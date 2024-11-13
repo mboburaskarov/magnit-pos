@@ -1,0 +1,8 @@
+module.exports = {
+  semi: false,
+  singleQuote: true,
+  jsxSingleQuote: true,
+  printWidth: 160,
+  tabWidth: 2,
+  endOfLine: 'auto',
+}

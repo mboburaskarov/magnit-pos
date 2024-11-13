@@ -1,0 +1,262 @@
+/* eslint-disable react/display-name */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-refresh/only-export-components */
+import 'ag-grid-enterprise'
+import { useMemo, useCallback, useEffect, useState, memo, Fragment } from 'react'
+import { Box } from '@mui/material'
+// import { useDispatch } from 'react-redux'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { AgGridReact } from 'ag-grid-react'
+import * as qs from 'qs'
+import { HeaderCheckbox, icons, OverlayLoadingTemplateFunc, OverlayNoRowsTemplate } from './AgGridComponents'
+import useStyles from './useStyles'
+import LoadingBlurry from '../LoadingBlurry'
+import ColumnsFilterButton from './ColumnsFilterButton'
+import AgGridBottom from './AgGridBottom'
+import debounce from 'lodash/debounce'
+import CheckBoxRenderer from './CheckboxRenderer'
+import { useQueryParams } from '../../src/hooks/useQueryParams'
+import addCssToElement from '../../utils/addCssToElement'
+import isEqual from '../../utils/isEqual'
+import { getMainMenuItems, onColumnResized, onDisplayedColumnsChanged, scrollShowHide, useScrollListener } from './AgGridFunctions'
+import { v4 as uuidv4 } from 'uuid'
+import { usePrevious } from 'react-use'
+
+const AgGridSimpleTable = ({
+  id,
+  emptyTableText,
+  data,
+  columns,
+  components,
+  selection,
+  navigateUrl,
+  noRedirect = false,
+  defaultOffsetSize = 10,
+  defaultOffsetIndex = 1,
+  offsetQuery = 'offset',
+  limitQuery = 'limit',
+  offsetCount: controlledOffsetCount,
+  pagination = true,
+  eventMessages,
+  download,
+  isDownloading,
+  isDataLoading,
+  tableSettings = false,
+  updaterAction,
+  selectedRowsIds = [],
+  setSelectAll,
+  addAllProducts,
+  deleteAllProducts,
+  setRemovedItems,
+  setAddedItems,
+  resetTable,
+  totalData,
+  columnGroup,
+  customDisplayColumnsChangeHandler,
+  simpleTable,
+  isRefreshing,
+  status,
+}) => {
+  const tableOffsetSizes = localStorage?.getItem('table_offset_sizes') ? JSON.parse(localStorage?.getItem('table_offset_sizes')) : {}
+  const classes = useStyles()
+  const location = useLocation()
+  const { values } = useQueryParams()
+  const [gridApi, setGridApi] = useState(null)
+  const [offsetIndex, setOffsetIndex] = useState(defaultOffsetIndex)
+  const [offsetSize, setOffsetSize] = useState(tableOffsetSizes?.[id] || defaultOffsetSize)
+  const [headerCheckboxChecked, setHeaderCheckboxChecked] = useState(null)
+  const OverlayLoadingTemplate = OverlayLoadingTemplateFunc()
+  const allColumns = useMemo(() => gridApi?.columnApi?.getAllGridColumns(), [columns, gridApi])
+  const popupParent = useMemo(() => document.querySelector('body'), [])
+  const agGridTableArea = useMemo(() => document.getElementsByClassName('ag-root-wrapper-body'), [])
+  const agGridTableScroll = useMemo(() => document.getElementsByClassName('ag-body-horizontal-scroll'), [])
+  const rowData = useMemo(() => data, [data, totalData])
+  useScrollListener(agGridTableArea, agGridTableScroll)
+  const navigate = useNavigate()
+
+  const prevStatus = usePrevious(status)
+
+  const defaultColDef = useMemo(
+    () => ({
+      sortable: true,
+      resizable: true,
+      cellClass: 'cell-class',
+      autoHeight: true,
+      lockPosition: false,
+      valueFormatter: (params) => {
+        if (params.value === null || params.value === undefined) {
+          return ''
+        }
+        return params.value
+      },
+      comparator: () => null,
+      menuTabs: ['generalMenuTab'],
+    }),
+    []
+  )
+  const modifyColumns = useMemo(() => {
+    if (selection) {
+      return [
+        {
+          field: 'checkboxSelectionField',
+          headerName: '',
+          headerComponent: memo((props) => (
+            <HeaderCheckbox
+              deleteAllProducts={deleteAllProducts}
+              addAllProducts={addAllProducts}
+              setSelectAll={setSelectAll}
+              checked={headerCheckboxChecked}
+              setChecked={setHeaderCheckboxChecked}
+              {...props}
+            />
+          )),
+          cellRenderer: memo((props) => (
+            <CheckBoxRenderer setAddedItems={setAddedItems} setRemovedItems={setRemovedItems} selectedRowsIds={selectedRowsIds} {...props} />
+          )),
+          width: 50,
+          resizable: false,
+          sortable: false,
+          lockPosition: 'left',
+        },
+        ...columns,
+      ]
+    }
+    return columns
+  }, [selection, columns, headerCheckboxChecked, selectedRowsIds])
+
+  // // Functions for ag-grid
+
+  // useEffect(() => {
+  //   if (gridApi?.api) {
+  //     if (!data?.length) {
+  //       addCssToElement(agGridTableScroll?.[0], {
+  //         opacity: 0,
+  //         position: 'static',
+  //       })
+  //       gridApi.api.showNoRowsOverlay()
+  //     } else {
+  //       addCssToElement(agGridTableScroll?.[0], {
+  //         opacity: 1,
+  //       })
+  //       if (isDataLoading) {
+  //         gridApi.api.showLoadingOverlay()
+  //       } else {
+  //         gridApi.api.hideOverlay()
+  //       }
+  //     }
+  //   }
+  // }, [isDataLoading, data, gridApi])
+  useEffect(() => {
+    const baseUrl = navigateUrl || location.pathname
+    if (baseUrl && !noRedirect) {
+      const offsetLimitParams = qs.stringify(
+        {
+          ...values,
+          [limitQuery]: offsetSize,
+          [offsetQuery]: (offsetIndex - 1) * offsetSize,
+        },
+        { addQueryPrefix: true }
+      )
+      navigate(`${baseUrl}${offsetLimitParams}`)
+    }
+  }, [offsetIndex, offsetSize, data, location.pathname, status])
+  useEffect(() => {
+    if (id) {
+      const new_table_offset_sizes = JSON.stringify({
+        ...tableOffsetSizes,
+        [id]: offsetSize,
+      })
+      localStorage.setItem('table_offset_sizes', new_table_offset_sizes)
+    }
+  }, [offsetSize])
+
+  const changeOffset = useCallback((newOffset) => {
+    setOffsetIndex(newOffset)
+  }, [])
+
+  useEffect(() => {
+    if (status !== prevStatus) {
+      setOffsetSize(values?.limit || defaultOffsetSize)
+      changeOffset(defaultOffsetIndex)
+    }
+  }, [status])
+
+  const isRowSelectable = useCallback(() => {
+    return true
+  }, [])
+  const pinnedBottomRowData = useMemo(() => {
+    return totalData
+  }, [totalData])
+
+  // // On Grid Ready
+  const onGridReady = useCallback((params) => {
+    setGridApi(params)
+    setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
+  }, [])
+
+  const getRowId = useCallback((params) => params.data._id, [data, columns, totalData])
+  return (
+    <Fragment>
+      <Box className={`${classes.root} ag-theme-alpine ${columnGroup ? 'column-group-header' : ''}`} id={id || 'simpleGrid'}>
+        <AgGridReact
+          // getMainMenuItems={(params) => getMainMenuItems(params)}
+          groupDisplayType='multipleColumns'
+          onGridReady={onGridReady}
+          overlayNoRowsTemplate={'<span></span>'}
+          overlayLoadingTemplate={OverlayLoadingTemplate}
+          // postProcessPopup={postProcessPopup}
+          rowData={rowData}
+          columnDefs={modifyColumns}
+          paginationOffsetSize={offsetSize}
+          components={components}
+          rowSelection='multiple'
+          getRowId={getRowId}
+          defaultColDef={defaultColDef}
+          // onSortChanged={onSortChanged}
+          isRowSelectable={isRowSelectable}
+          domLayout='autoHeight'
+          onDisplayedColumnsChanged={debounce((p) => onDisplayedColumnsChanged({ ...p, updaterAction }), 1000)}
+          onColumnResized={debounce((p) => onColumnResized({ ...p, updaterAction }), 1000)}
+          rowHeight={100}
+          suppressRowClickSelection={true}
+          suppressPaginationPanel={true}
+          suppressContextMenu={true}
+          suppressCellFocus={true}
+          icons={icons}
+          popupParent={popupParent}
+          enableCellTextSelection={true}
+          pinnedBottomRowData={pinnedBottomRowData}
+          alwaysShowHorizontalScroll={true}
+          debounceVerticalScrollbar={true}
+          suppressAnimationFrame={true}
+          animateRows={true}
+          animateColums={true}
+        />
+        <LoadingBlurry isLoading={isDataLoading} height={-50} outside />
+        {data?.length > 0 && pagination && (
+          <AgGridBottom
+            classes={classes}
+            controlledOffsetCount={controlledOffsetCount}
+            changeOffset={changeOffset}
+            offsetIndex={offsetIndex}
+            offsetQuery={offsetQuery}
+            resetTable={resetTable}
+            isRefreshing={isRefreshing}
+            isDownloading={isDownloading}
+            download={download}
+            offsetSize={offsetSize}
+            setOffsetSize={setOffsetSize}
+            eventMessages={eventMessages}
+          />
+        )}
+        {!data?.length && <OverlayNoRowsTemplate emptyTableText={emptyTableText} />}
+        {/* {tableSettings && (
+          <Box className={classes.tableSettingsButton}>
+            <ColumnsFilterButton columns={allColumns} isCatalog={isCatalog} />
+          </Box>
+        )} */}
+      </Box>
+    </Fragment>
+  )
+}
+export default memo(AgGridSimpleTable, (prevProps, nextProps) => isEqual(prevProps, nextProps))

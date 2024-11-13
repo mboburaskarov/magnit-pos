@@ -1,0 +1,505 @@
+/* Wrapper  */
+
+.ag-theme-alpine .ag-root-wrapper {
+  border: none;
+}
+.ag-watermark {
+  display: none !important;
+}
+
+.ag-body-viewport {
+  padding-top: 0;
+}
+
+.ag-center-cols-clipper {
+  min-height: unset !important;
+}
+.ag-center-cols-container {
+  min-height: unset !important;
+}
+.ag-center-cols-viewport {
+  min-height: unset !important;
+}
+
+.ag-center-cols-clipper .ag-row {
+  margin-left: 7px;
+}
+
+/* Header */
+.ag-theme-alpine .ag-header {
+  min-height: 60px !important;
+  height: 60px !important;
+  border: none;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+}
+
+.column-group-header.ag-theme-alpine .ag-header {
+  min-height: 101px !important;
+}
+
+.ag-theme-alpine .ag-header-group-cell-label {
+  justify-content: center !important;
+}
+.ag-theme-alpine .ag-header-group-cell-label:hover {
+  cursor: pointer;
+}
+.ag-theme-alpine .ag-header-group-cell-label .ag-header-group-text {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'LeagueSpartan';
+}
+
+.custom-group-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'LeagueSpartan';
+
+  white-space: pre-wrap;
+}
+
+.custom-group-cell:hover {
+  cursor: pointer;
+}
+
+.group-cell {
+  justify-content: center;
+}
+
+.ag-theme-alpine .ag-floating-bottom {
+  border: none;
+}
+
+.ag-floating-bottom-viewport .ag-row-pinned {
+  height: 80px !important;
+  margin-top: 10px;
+  margin-left: 7px;
+  border-radius: 16px;
+}
+
+.ag-floating-bottom-viewport .ag-row-pinned div {
+  color: rgb(73, 147, 221);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.ag-theme-alpine .ag-header-cell {
+  border-radius: 16px;
+  transition: none;
+}
+
+.ag-theme-alpine .ag-header-cell[col-id='checkboxSelectionField']:hover {
+  background: none;
+}
+
+.product-efficiency {
+  border-radius: 0 !important;
+  height: 50% !important;
+}
+.ag-theme-alpine .ag-header-cell {
+  border-radius: 16px;
+  transition: none;
+}
+
+.ag-theme-alpine .ag-header-cell[col-id='checkboxSelectionField']:hover {
+  background: none;
+}
+
+.ag-header-row.ag-header-row-column {
+  height: 100% !important;
+  margin-left: 7px;
+}
+.ag-theme-alpine .ag-header-row-column-group {
+  margin-left: 7px;
+}
+
+.ag-header-cell-label .ag-header-cell-text {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'LeagueSpartan';
+
+  text-align: left;
+}
+
+.ag-header-icon.ag-header-label-icon {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.ag-theme-alpine .ag-header-icon {
+  cursor: pointer;
+}
+.ag-theme-alpine .ag-sort-ascending-icon {
+  color: rgb(73, 147, 221);
+}
+.ag-theme-alpine .ag-sort-descending-icon {
+  color: rgb(73, 147, 221);
+}
+.ag-theme-alpine .ag-header-icon:hover {
+  color: rgb(73, 147, 221);
+}
+
+.ag-header-cell-menu-button:not(.ag-header-menu-always-show) {
+  transition: opacity, color 0.2s;
+}
+
+.ag-arrow-asc {
+  transform: rotate(180deg);
+}
+
+.ag-theme-alpine .ag-header-cell-resize {
+  cursor: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18"  viewBox="0 0 512 512"><path d="M377.941 169.941V216H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.568 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296h243.882v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.568 0-33.941l-86.059-86.059c-15.119-15.12-40.971-4.412-40.971 16.97z"/></svg>')
+      8 20,
+    ew-resize;
+}
+
+.ag-theme-alpine .ag-header-cell-resize::after {
+  display: none;
+}
+
+/* Menu */
+.ag-tabs.ag-menu {
+  border: none;
+  border-radius: 16px;
+  min-width: 464px;
+}
+
+.ag-theme-alpine .ag-menu-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0;
+}
+
+.ag-menu-option {
+  width: 100%;
+  padding: 0 24px;
+  margin: 4px 0;
+  height: 56px;
+  display: flex;
+  align-items: center;
+}
+
+.ag-theme-alpine .ag-menu-option-text {
+  padding: 0;
+  font-family: 'LeagueSpartan';
+
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 19px;
+  display: flex;
+  align-items: center;
+}
+
+.ag-theme-alpine .ag-menu-option-popup-pointer {
+  padding: 0;
+  margin-left: auto;
+}
+
+.ag-theme-alpine .ag-ltr .ag-menu-option-shortcut {
+  padding: 0;
+}
+
+.ag-theme-alpine .ag-ltr .ag-menu-option-icon {
+  padding: 0;
+  width: unset;
+}
+
+.ag-tabs-header.ag-menu-header {
+  display: none;
+}
+
+.ag-theme-alpine .ag-menu-separator {
+  width: 100%;
+  height: 2px;
+}
+
+/*  Rows */
+.ag-theme-alpine .ag-row {
+  border: none;
+}
+
+.ag-row::before {
+  display: none !important;
+}
+
+.ag-row.ag-row-even {
+  background: none;
+}
+.ag-row.ag-row-odd {
+  border-radius: 16px;
+}
+
+.ag-menu.ag-ltr.ag-popup-child[aria-label='SubMenu'] {
+  border: none;
+  border-radius: 16px;
+  min-width: 320px;
+  margin-left: 6px;
+  margin-top: -4px;
+}
+
+.ag-menu.ag-ltr.ag-popup-child[aria-label='SubMenu'] .ag-menu-option-part.ag-menu-option-icon {
+  order: 1;
+}
+
+.ag-cell-wrapper {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.ag-theme-alpine .ag-cell,
+.ag-theme-alpine .ag-full-width-row .ag-cell-wrapper.ag-row-group {
+  line-height: unset;
+}
+
+.ag-theme-alpine .ag-cell-highlight {
+  background: none !important;
+}
+
+/*.ag-theme-alpine .ag-cell-focus {*/
+/*  border: 1px solid transparent !important;*/
+/*}*/
+
+/* Row Group */
+.ag-cell-wrapper.ag-row-group {
+  align-items: center;
+}
+
+/* Bottom Filter */
+
+.ag-theme-alpine .ag-paging-panel {
+  border-top: 2px solid;
+}
+
+/* No Rows Overlay */
+.ag-theme-alpine .ag-overlay-no-rows-wrapper.ag-layout-auto-height {
+  padding-top: 70px;
+  padding-bottom: 17px;
+}
+
+.no-rows-container {
+  width: 100%;
+  height: 256px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  border: 1px dashed;
+  text-align: center;
+  margin-bottom: 40px;
+  margin-top: 16px;
+}
+.no-rows-root {
+  height: 100%;
+  max-width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.no-rows-root h3 {
+  text-align: center;
+  font-weight: 600;
+  font-family: 'LeagueSpartan', sans-serif;
+  font-size: 24px;
+  line-height: 28px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  letter-spacing: 0.00938em;
+}
+
+.no-rows-root p {
+  font-size: 16px;
+  font-family: 'LeagueSpartan';
+
+  font-weight: 600;
+  line-height: 19px;
+  letter-spacing: 0.00938em;
+  margin-top: 8px;
+}
+
+/* Loading Overlay */
+
+.ag-theme-alpine .ag-overlay-loading-wrapper {
+  background: none;
+}
+
+.loading-root {
+  border-radius: 32px;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 200;
+  backdrop-filter: blur(32px);
+  background: rgba(255, 255, 255, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Scrollbar */
+
+.ag-body-horizontal-scroll {
+  opacity: 0;
+  pointer-events: auto !important;
+  bottom: 0 !important;
+}
+
+.ag-center-cols-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+/* Status Bar */
+.ag-theme-alpine .ag-status-bar {
+  padding: 20px 0 0;
+}
+
+/* Pinned Column */
+.ag-theme-alpine .ag-pinned-left-header {
+  border-right: 2px solid !important;
+}
+.ag-theme-alpine .ag-pinned-right-header {
+  border-left: 2px solid !important;
+}
+.ag-theme-alpine .ag-cell.ag-cell-last-left-pinned:not(.ag-cell-range-right):not(.ag-cell-range-single-cell) {
+  border-right: 2px solid !important;
+  border-radius: 0;
+}
+.ag-theme-alpine .ag-cell.ag-cell-first-right-pinned:not(.ag-cell-range-left):not(.ag-cell-range-single-cell) {
+  border-left: 2px solid !important;
+  border-radius: 0;
+}
+
+/* Column DragnDrop */
+.ag-theme-alpine.ag-dnd-ghost {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  gap: 10px;
+  height: 56px !important;
+  border-radius: 16px;
+}
+
+.ag-dnd-ghost-icon {
+  margin: 0;
+  padding: 0;
+}
+
+.ag-dnd-ghost-label {
+  font-family: 'LeagueSpartan';
+
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* CheckBox */
+.ag-theme-alpine .ag-checkbox-input-wrapper:focus-within,
+.ag-theme-alpine .ag-checkbox-input-wrapper:active {
+  box-shadow: none;
+}
+
+.ag-theme-alpine .ag-checkbox-input-wrapper {
+  width: 14px;
+  height: 18px;
+}
+
+.ag-theme-alpine .ag-checkbox-input-wrapper input {
+  cursor: pointer;
+}
+
+.ag-theme-alpine .ag-checkbox-input-wrapper input,
+.ag-theme-alpine .ag-checkbox-input-wrapper input {
+  opacity: 1;
+}
+
+.ag-theme-alpine .ag-checkbox-input-wrapper::after {
+  display: none;
+}
+
+.shopListCenter {
+  border-radius: 0 !important;
+}
+
+.ag-theme-alpine .shopListLeft:hover,
+.ag-theme-alpine .shopListCenter:hover,
+.ag-theme-alpine .shopListRight:hover {
+  background: none !important;
+}
+
+.shopListRight .ag-header-cell-menu-button,
+.shopListCenter .ag-header-cell-menu-button,
+.shopListLeft .ag-header-cell-menu-button {
+  display: none;
+}
+
+.cell-class {
+  height: 100%;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 15px;
+  font-family: 'LeagueSpartan';
+
+  display: flex;
+  align-items: center;
+  border: none;
+  border-radius: 8px;
+}
+
+.shopCellLeft {
+  border-left: 2px solid !important;
+  border-radius: 0 !important;
+}
+
+.shopCellRight {
+  border-right: 2px solid !important;
+  border-radius: 0 !important;
+}
+
+.ag-theme-alpine .cell-class.shoCellLeft {
+  border: none !important;
+  border-left: 2px solid !important;
+}
+
+.ag-theme-alpine .cell-class.shopCellRight {
+  border: none !important;
+  border-right: 2px solid !important;
+}
+.pinned-header-with-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 26px;
+  width: 6px;
+  height: 6px;
+  background: #119676;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+.pinned-header-with-dot {
+  padding-left: 40px !important;
+}
+
+.ag-theme-alpine .ag-header-group-cell {
+  padding: 0;
+}
+
+.ag-cell-value,
+.ag-group-value {
+  overflow: visible;
+}

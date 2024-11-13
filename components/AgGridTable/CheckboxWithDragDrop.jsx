@@ -1,0 +1,134 @@
+import React, { memo, useMemo } from 'react'
+import { Checkbox, Box, FormControlLabel } from '@mui/material'
+import DragDropIcon from 'icons/DragDropIcon'
+import { arrayMove, sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc'
+import { useTranslation } from 'react-i18next'
+import { makeStyles } from '@mui/styles'
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    height: 48,
+    marginTop: 8,
+    backgroundColor: theme.palette.grey[100],
+    borderRadius: 16,
+    justifyContent: 'space-between',
+    zIndex: 1400,
+    paddingRight: 16,
+    paddingLeft: 16,
+    '&:nth-of-type(1)': {
+      marginTop: 0,
+    },
+  },
+  label: {
+    flex: '1 0 90%',
+    display: 'flex',
+    alignItems: 'center',
+    height: '100%',
+    cursor: 'pointer',
+    fontSize: theme.fontSize.base,
+    fontWeight: 600,
+    lineHeight: '19px',
+    color: theme.palette.grey[600],
+  },
+  dragdrop: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 20,
+    height: '100%',
+    cursor: 'n-resize',
+  },
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingLeft: 16,
+    '& h3': {
+      fontWeight: 600,
+    },
+  },
+}))
+
+function CheckboxWithDragDrop({ data, checkAllField, setData, dragHandle = true, customId }) {
+  const classes = useStyles()
+  const { t } = useTranslation()
+  const onSortEnd = (props) => {
+    const { oldIndex, newIndex } = props
+    const newList = arrayMove(data, oldIndex, newIndex)
+
+    setData(newList)
+    return newList
+  }
+  const handleChange = (propName, checked) => {
+    const changedData = data.map((el) => {
+      if (el.name === propName) {
+        el.colDef.hide = !checked
+      }
+      return el
+    })
+    setData(changedData)
+  }
+  const handleAllCheckedChange = (e) => {
+    const isChecked = e.target.checked
+    const changedData = data.map((el) => {
+      if (el?.always_active) return el
+      el.colDef.hide = !isChecked
+      return el
+    })
+    setData(changedData)
+  }
+  const DragHandle = sortableHandle(() => (
+    <div className={classes.dragdrop}>
+      <DragDropIcon />
+    </div>
+  ))
+  const SortableContainer = useMemo(() => sortableContainer(({ children }) => <Box>{children}</Box>), [classes])
+  const SortableItem = useMemo(
+    () =>
+      sortableElement(({ data, handleChange }) => (
+        <div className={classes.root}>
+          <FormControlLabel
+            control={<Checkbox name={data.name} />}
+            onChange={(e) => {
+              handleChange(data.name, e.target.checked)
+            }}
+            id={data.name}
+            disabled={data?.always_active}
+            checked={!data?.colDef.hide}
+            name={data.name}
+            label={data.label?.ru || data.label}
+          />
+          {dragHandle && <DragHandle />}
+        </div>
+      )),
+    [classes]
+  )
+
+  return (
+    <>
+      {checkAllField && (
+        <Box className={classes.header}>
+          <FormControlLabel
+            control={<Checkbox id={customId ? customId : 'toggle_all'} name='toggle_all' />}
+            onChange={handleAllCheckedChange}
+            checked={data?.filter((el) => el.colId !== 'checkboxSelectionField')?.every((el) => !el?.colDef.hide)}
+            label={t('menu.products.import.nav.select_all')}
+          />
+        </Box>
+      )}
+      <SortableContainer onSortEnd={onSortEnd} useDragHandle>
+        {data?.map(
+          (item, index) =>
+            item.colId !== 'checkboxSelectionField' && (
+              <SortableItem key={`item-${item.colId}`} index={index} data={item} handleChange={handleChange} classes={classes} />
+            )
+        )}
+      </SortableContainer>
+    </>
+  )
+}
+
+export default memo(CheckboxWithDragDrop)
