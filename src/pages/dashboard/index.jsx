@@ -30,7 +30,7 @@ export default function DashboarPage() {
   const { type } = useSelector((state) => state.user)
   const { values } = useQueryParams()
   const [detailing, setDetaling] = useState('week')
-  const [detalization, setDetalization] = useState({ name: 'по дням', value: 'day' })
+  const [detalization, setDetalization] = useState({ name: 'By day', value: 'day' })
   const check = type === 'SUPER_ADMIN' || type === 'ACCOUNTANT'
   const [sortBy, setSortBy] = useState(check ? 'SUM' : 'COUNT')
 

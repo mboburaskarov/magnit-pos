@@ -5,28 +5,32 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    minWidth: 600,
+    // minWidth: 600,
     backgroundColor: theme.palette.background.default,
-    padding: 24,
+    padding: '12px 12px 12px 16px',
     boxShadow: theme.boxShadow['32-12'],
-    borderRadius: 32,
+    borderRadius: 10,
     textAlign: 'center',
   },
   label: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    fontSize: 18,
+    fontWeight: 400,
     width: '100%',
+    color: theme.palette.grey[500],
     height: 48,
-    marginBottom: 24,
-    backgroundColor: theme.palette.grey[100],
+    marginBottom: 4,
+    // backgroundColor: theme.palette.grey[100],
     borderRadius: 32,
   },
   total_price: {
     fontSize: 24,
-    lineHeight: '28px',
+    lineHeight: '36px',
+    fontWeight: 600,
     fontFamily: theme.fontFamily.gilroyBold,
-    color: theme.palette.green[500],
+    color: theme.palette.dark[500],
   },
   point: {
     display: 'block',
@@ -36,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
   total_price_small: {
     marginTop: 4,
-    color: theme.palette.green[500],
+    color: theme.palette.dark[500],
   },
 }))
 
