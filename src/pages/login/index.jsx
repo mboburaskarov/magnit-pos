@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'end',
     backgroundColor: theme.palette.orange[100],
     padding: '93px 0 93px 130px',
-    height: 'auto',
+    height: '100%',
     borderRadius: '30px',
     '& img': {
       // width: "100%",
@@ -125,7 +125,7 @@ export default function LoginPage() {
   return (
     <LoadingContainer boxStyle={{ height: '100%' }} readyState={!false}>
       <Box className={classes.root}>
-        <Box className={classes.bgContainer} sx={{ height: 'auto', width: '60%' }}>
+        <Box className={classes.bgContainer} sx={{ height: 'auto', width: 'auto' }}>
           <img src='../login-bg.jpg' />
         </Box>
         <Box className={classes.container} sx={{ height: 686, width: '40%' }}>

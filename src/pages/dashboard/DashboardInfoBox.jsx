@@ -7,7 +7,7 @@ import { theme } from '../../assets/theme'
 export default function DashboardInfoBox({ noDot, ind, title, icon, count, percent, endText, withoutDivider }) {
   const isFall = percent < 0
   return (
-    <Box sx={(theme) => ({ border: 0.5, borderRadius: 4, borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' })}>
+    <Box sx={(theme) => ({ border: 1, borderRadius: 4, borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' })}>
       <Box key={ind} sx={(theme) => ({ px: 2.5, pt: 2.5, pb: '10px', m: 0 })}>
         <Box width='100%' alignItems={'center'} display='inline-flex'>
           {!noDot && (

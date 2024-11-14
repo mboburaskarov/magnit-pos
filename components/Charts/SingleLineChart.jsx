@@ -79,7 +79,7 @@ export default function SingleBarChart({
   return (
     <Box
       sx={(theme) => ({
-        border: 0.5,
+        border: 1,
         borderRadius: 4,
         borderColor: '#A4A5AB33',
         width: boxWidth,
@@ -101,7 +101,15 @@ export default function SingleBarChart({
             />
           ) : (
             <Box display='flex' alignItems='center'>
-              <Typography sx={(theme) => ({ fontSize: 24, lineHeight: '28px', fontFamily: theme.fontFamily.LeagueSpartan, color: theme.palette.black })}>
+              <Typography
+                sx={(theme) => ({
+                  fontSize: 22,
+                  lineHeight: '30px',
+                  fontWeight: 600,
+                  fontFamily: theme.fontFamily.LeagueSpartan,
+                  color: theme.palette.dark[500],
+                })}
+              >
                 {title}
               </Typography>
               {/* {!!data?.total && (

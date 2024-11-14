@@ -24,6 +24,8 @@ import RevenueIcon from '../../assets/icons/RevenueIcon'
 import ProductsIcon from '../../assets/icons/ProductsIcon'
 import OrdersIcon from '../../assets/icons/OrdersIcon'
 import VendorsIcon from '../../assets/icons/VendorsIcon'
+import SingleBarChart from '../../../components/Charts/SingleLineChart'
+import TotalOrdersByCity from '../../../components/Charts/SingleBarChart'
 
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
@@ -108,9 +110,11 @@ export default function DashboarPage() {
   return (
     <LoadingContainer readyState={!isLoading}>
       <DashboardHeader setSortBy={setSortBy} />
-      <Box display='flex' flexDirection='column' position='relative' pt={0} px={4} pb={3}>
-        <Box display='flex' flexDirection='row' position='relative' gap={2} pt={0} pb={3}>
-          <Box display='flex' flexDirection='column' position='relative' width={'70%'} pt={0} pb={0}>
+      <Box display='flex' flexDirection='column' position='relative' pt={0} px={4} pb={3} width={'100%'}>
+        {/* <Box display='flex' flexDirection='row' position='relative' gap={2} pt={0} pb={3}> */}
+        <Grid container>
+          <Grid xs={8}>
+            {/* <Box display='flex' flexDirection='column' position='relative' pt={0} pb={0}> */}
             <Grid container spacing={2} mt={'30px'} gap={'0'}>
               {OrdersStatistics?.filter((el) => (check ? el : el.title !== 'Общая сумма заказов'))?.map((el, ind) => (
                 <Grid xs={12} xl={6} sm={6} md={6} lg={6} gap={0} padding={'10px'} spacing={0}>
@@ -118,7 +122,7 @@ export default function DashboarPage() {
                 </Grid>
               ))}
             </Grid>
-            <Box display='inline-flex' columnGap={3} mt={5} width='100%'>
+            <Box display='inline-flex' columnGap={3} pr={'10px'} mt={5} width='100%'>
               <SingleLineChart
                 width='100%'
                 id='dashboard-chart'
@@ -134,11 +138,28 @@ export default function DashboarPage() {
                 measurmentUnit={sortBy === 'SUM' ? ' сум' : ' шт'}
               />
             </Box>
-          </Box>
-          <Box display='flex' width='30%' mt={5}>
-            <DashboardTopSales sortBy={sortBy} data={topSales?.data} />
-          </Box>
-        </Box>
+            {/* </Box> */}
+          </Grid>
+
+          <Grid xs={4} mt={5}>
+            <TotalOrdersByCity
+              width='100%'
+              id='dashboard-chart'
+              period={detailing}
+              detalization={detalization}
+              setDetalization={setDetalization}
+              sortBy={sortBy}
+              dataKey={sortBy === 'SUM' ? 'all_orders' : 'count'}
+              data={{
+                values: toFixData,
+                total: sortBy === 'SUM' ? totalSum : totalCount,
+              }}
+              measurmentUnit={sortBy === 'SUM' ? ' сум' : ' шт'}
+            />
+            {/* <DashboardTopSales sortBy={sortBy} data={topSales?.data} /> */}
+          </Grid>
+        </Grid>
+        {/* </Box> */}
         <Box mt={4} columnGap={3} display='inline-flex'>
           <DashboardTopClients sortBy={sortBy} data={topClients?.data} />
           <DashboardTopProducts sortBy={sortBy} data={topProducts?.data} />
