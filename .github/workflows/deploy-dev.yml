@@ -1,0 +1,30 @@
+name: Dev:Deploy pharma-frontend
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Deploy via SSH
+        env:
+          SSH_PASS: ${{ secrets.SSH_PASS_DEV }}
+          SSH_HOST: ${{ secrets.SSH_HOST_DEV }}
+          SSH_USER: ${{ secrets.SSH_USER_DEV }}
+          SSH_PORT: ${{ secrets.SSH_PORT_DEV }}
+        run: |
+          sshpass -p "$SSH_PASS" ssh -p "$SSH_PORT" -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << EOF
+            cd ~/Services/pharma-frontend
+            git pull
+            docker compose -f compose.prod.yml up -d --build
+          EOF
