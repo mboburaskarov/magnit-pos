@@ -49,7 +49,7 @@ const Body = ({ children, isLoading, isEmpty }) => (
 )
 
 export default function SingleBarChart({
-  title = 'Revenue Overview',
+  title = 'Barcha sotuvlar',
   measurmentUnit = '',
   colorCode,
   data,

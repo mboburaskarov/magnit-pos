@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     height: 56,
     margin: 0,
-    borderRadius: 16,
+    borderRadius: '50px',
     width: ({ maxWidth }) => maxWidth,
     backgroundColor: theme.palette.grey[100],
     color: theme.palette.grey[400],
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.grey[101],
     },
     '& .MuiOutlinedInput-input': {
-      padding: '15.5px 14px',
+      padding: '15.5px 5px',
     },
     '& .Mui-error:not(.Mui-focused)': {
       border: `2px solid ${theme.palette.red[500]}`,

@@ -24,21 +24,21 @@ export default function TotalOrdersByCity() {
 
   const totalRevenue = data.reduce((sum, item) => sum + item.revenue, 0)
   const detailingOptions = [
-    { name: 'By 30min', value: '30min' },
-    { name: 'By hour', value: 'hour' },
-    { name: 'By day', value: 'day' },
-    { name: 'By week', value: 'week' },
-    { name: 'By month', value: 'month' },
-    { name: 'By year', value: 'year' },
+    { name: 'Shu 30min', value: '30min' },
+    { name: 'Shu soat', value: 'hour' },
+    { name: 'Bu oy', value: 'day' },
+    { name: 'Bu hafta', value: 'week' },
+    { name: 'Bu Oy', value: 'month' },
+    { name: 'Bu yil', value: 'year' },
   ]
 
   return (
     <Box
       sx={{
         border: '1px solid #A4A5AB33',
-        borderRadius: '12px',
+        borderRadius: '32px',
         padding: 2,
-        maxWidth: 400,
+        maxWidth: 414,
         backgroundColor: '#fff',
         height: '100%',
       }}
@@ -46,15 +46,15 @@ export default function TotalOrdersByCity() {
       {/* Header */}
       <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
         <Typography variant='h6' sx={{ fontWeight: 600, fontSize: 22, lineHeight: '30px' }}>
-          Total Order by City
+          Filiallar bo’yicha
         </Typography>
         <SelectSimple
           id={'detailing'}
           name={'detailing'}
-          placeholder='Детализация'
+          placeholder='Tanlang'
           uncontrolled
           // onChange={setDetalization}
-          minWidth={130}
+          minWidth={120}
           // value={detalization}
           fullWidth
           boxStyle={{ width: 120 }}
@@ -76,7 +76,7 @@ export default function TotalOrdersByCity() {
       </Box>
 
       {/* RadialBarChart */}
-      <Box display='flex' padding={'37px'} width={'100%'} justifyContent='center' alignItems='center' position='relative'>
+      <Box display='flex' px={'37px'} width={'100%'} justifyContent='center' alignItems='center' position='relative'>
         <RadialBarChart width={340} height={340} innerRadius='40%' outerRadius='100%' barSize={15} data={radialChartData} startAngle={90} endAngle={450}>
           {/* <PolarAngleAxis type='number' domain={[0, 20000]} angleAxisId={0} tick={false} /> */}
           <RadialBar minAngle={15} background clockWise dataKey='value' />

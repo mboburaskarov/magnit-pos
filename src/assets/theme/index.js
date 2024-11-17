@@ -84,6 +84,7 @@ export const theme = ({ mode, palette }) => {
           },
         },
       },
+
       MuiButton: {
         defaultProps: {
           variant: 'contained',
@@ -102,8 +103,8 @@ export const theme = ({ mode, palette }) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            borderRadius: 16,
-            padding: '0 16px',
+            borderRadius: 50,
+            padding: '14px 20px',
             minHeight: 0,
             height: 56,
             minWidth: 0,
@@ -114,7 +115,7 @@ export const theme = ({ mode, palette }) => {
 
             '&.Mui-disabled': {
               cursor: 'auto',
-              background: palette.grey[100],
+              background: palette.grey[50],
               color: palette.grey[400],
               '&:hover': {
                 background: palette.grey[100],
@@ -496,8 +497,8 @@ export const theme = ({ mode, palette }) => {
       MuiOutlinedInput: {
         styleOverrides: {
           root: {
-            borderRadius: 16,
-            backgroundColor: palette.white,
+            borderRadius: 50,
+            // backgroundColor: palette.white,
             transition: '0.3s',
             color: palette.grey[600],
 
@@ -532,9 +533,9 @@ export const theme = ({ mode, palette }) => {
             fontWeight: 400,
             lineHeight: '24px',
             letterSpacing: 'normal',
-            border: '1px solid',
-            borderColor: palette.black,
-
+            // border: '1px solid',
+            // borderColor: palette.black,
+            backgroundColor: palette.grey[50],
             height: 56,
             '&.Mui-focused': {
               border: '1px solid',

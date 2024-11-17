@@ -7,12 +7,12 @@ const paletteLight = {
   },
   background: {
     default: '#fff',
-    defaultStrong: '#FE5000',
+    defaultStrong: '#FF6018',
     paper: '#FFFFFF',
     grey: '#f9f9fa',
   },
   primary: {
-    main: '#FE5000',
+    main: '#FE500050',
   },
   secondary: {
     main: '#F5F5F5',
@@ -31,7 +31,8 @@ const paletteLight = {
     disabledBackground: '#F5F5F5',
   },
   grey: {
-    50: '#fbfbfb',
+    10: '#A4A5AB1A',
+    50: '#f8f8fa',
     100: '#F5F5F5',
     101: '#eaeaea',
     200: '#eaeaea',
@@ -149,7 +150,7 @@ const paletteLight = {
     200: '#fed7aa',
     300: '#fdba74',
     400: '#fb923c',
-    500: '#FE5000',
+    500: '#FF6018',
     600: '#ea580c',
     700: '#c2410c',
     800: '#9a3412',

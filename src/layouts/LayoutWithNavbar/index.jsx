@@ -2,6 +2,7 @@ import { Box } from '@mui/material'
 import { Outlet } from 'react-router-dom'
 import NavBar from '../Navbar'
 import { makeStyles } from '@mui/styles'
+import LayoutHeader from '../LayoutHeader'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -10,13 +11,16 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100%',
   },
+  headerWrapper: {
+    padding: '20px 0 0 20px',
+  },
   wrapper: {
     display: 'flex',
     flex: '1 1 auto',
   },
   contentContainer: {
     flex: '1 1 auto',
-    paddingLeft: '22px',
+    // paddingLeft: '22px',
   },
   content: {
     display: 'flex',
@@ -35,12 +39,15 @@ export default function DashboardLayout() {
     <Box display='flex' width='100%' minHeight='100%'>
       <div className={classes.root}>
         <NavBar />
-        <div className={classes.wrapper}>
-          <div className={classes.contentContainer}>
-            <div className={classes.content}>
-              <main className={classes.main}>
-                <Outlet />
-              </main>
+        <div className={classes.headerWrapper}>
+          <LayoutHeader />
+          <div className={classes.wrapper}>
+            <div className={classes.contentContainer}>
+              <div className={classes.content}>
+                <main className={classes.main}>
+                  <Outlet />
+                </main>
+              </div>
             </div>
           </div>
         </div>

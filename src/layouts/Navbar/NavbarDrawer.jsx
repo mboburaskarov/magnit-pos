@@ -107,7 +107,7 @@ function NavbarDrawer({
           )}
         </Box>
       </List>
-      {!userData?.fullName ? (
+      {/* {!userData?.fullName ? (
         <Box position='relative' marginTop={'auto'}>
           <Box className={classes.fakeImage} />
           <Skeleton className={classes.skeleton} />
@@ -130,7 +130,7 @@ function NavbarDrawer({
             </Box>
           </Box>
         </ListItem>
-      )}
+      )} */}
     </div>
   )
 }

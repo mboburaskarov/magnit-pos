@@ -123,8 +123,9 @@
 
 .ag-header-cell-label .ag-header-cell-text {
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
   font-family: 'LeagueSpartan';
 
   text-align: left;
@@ -227,7 +228,7 @@
 
 /*  Rows */
 .ag-theme-alpine .ag-row {
-  border: none;
+  border-color: #a4a5ab1a;
 }
 
 .ag-row::before {
@@ -238,7 +239,7 @@
   background: none;
 }
 .ag-row.ag-row-odd {
-  border-radius: 16px;
+  /* border-radius: 16px; */
 }
 
 .ag-menu.ag-ltr.ag-popup-child[aria-label='SubMenu'] {
@@ -498,7 +499,10 @@
 .ag-theme-alpine .ag-header-group-cell {
   padding: 0;
 }
-
+.ag-header-cell,
+.ag-header-group-cell {
+  padding-left: 0;
+}
 .ag-cell-value,
 .ag-group-value {
   overflow: visible;

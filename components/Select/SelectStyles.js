@@ -37,22 +37,22 @@ export const generateCustomStyles = (props = {}) => {
       minHeight: mini ? 40 : 50,
       padding: 1,
       backgroundColor: 'inherit',
-      borderRadius: 16,
+      borderRadius: '50px',
     }),
     control: (provided, state) => ({
-      borderRadius: 16,
+      borderRadius: '50px',
       transition: '0.3s',
       minWidth: minWidth || 296,
       width: '100%',
       display: 'flex',
-      minHeight: mini ? 40 : 56,
+      minHeight: mini ? 40 : 50,
       fontWeight: 600,
-      backgroundColor: white ? palette.background.default : palette.grey[100],
+      backgroundColor: white ? palette.background.default : palette.grey[50],
       '&:hover': {
         backgroundColor: white ? palette.background.default : palette.grey[101],
       },
       boxShadow: state.isFocused
-        ? `0 0 0 2px ${palette.green[500]}`
+        ? `0 0 0 2px ${palette.orange[500]}`
         : error
         ? `0 0 0 2px red`
         : `0 0 0 ${solidBorder ? 1 : 0}px ${dashed ? 'transparent' : palette.grey[300]}`,
@@ -121,8 +121,8 @@ export const generateCustomStyles = (props = {}) => {
     multiValueRemove: (base, state) => ({
       ...base,
       cursor: 'pointer',
-      borderBottomRightRadius: 12,
-      borderTopRightRadius: 12,
+      borderBottomRightRadius: 16,
+      borderTopRightRadius: 16,
       display: state?.isDisabled || state?.data?.isFixed ? 'none' : 'flex',
       '&:hover': {
         backgroundColor: white ? palette.grey[100] : palette.white,
@@ -132,8 +132,8 @@ export const generateCustomStyles = (props = {}) => {
       ...provided,
       display: state?.isDisabled ? 'none' : 'flex',
       backgroundColor: 'inherit',
-      borderTopRightRadius: '16px',
-      borderBottomRightRadius: '16px',
+      borderTopRightRadius: '50px',
+      borderBottomRightRadius: '50px',
       '& > div:nth-last-of-type(1)': {
         display: state.isMulti ? 'none !important' : 'flex',
       },
@@ -148,7 +148,7 @@ export const generateCustomStyles = (props = {}) => {
     }),
     dropdownIndicator: (base) => ({
       ...base,
-      color: palette.grey[400],
+      color: palette.dark[500],
       padding: '0px',
       paddingRight: '16px',
       '&:hover': {
@@ -193,7 +193,7 @@ export const generateCustomStyles = (props = {}) => {
       fontFamily: 'LeagueSpartan',
       color: palette.grey[600],
       cursor: 'pointer',
-      backgroundColor: state.isFocused ? palette.grey[101] : state.isFocused ? palette.green[50] : 'transparent',
+      backgroundColor: state.isFocused ? palette.grey[101] : state.isFocused ? palette.orange[50] : 'transparent',
       '&:hover': {
         backgroundColor: palette.grey[101],
       },

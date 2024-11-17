@@ -235,7 +235,8 @@ const useStyles = makeStyles((theme) =>
         background: theme.palette.background.default,
       },
       '.ag-theme-alpine .ag-header': {
-        borderColor: theme.palette.grey[200],
+        borderColor: theme.palette.grey[10],
+        borderTop: 'transparent',
         background: theme.palette.background.default,
       },
       '.ag-theme-alpine .ag-header-group-cell-label:hover': {
@@ -276,7 +277,7 @@ const useStyles = makeStyles((theme) =>
         background: theme.palette.grey[200],
       },
       '.ag-row.ag-row-odd': {
-        background: theme.palette.grey[50],
+        background: '#fff',
       },
       ".ag-menu.ag-ltr.ag-popup-child[aria-label='SubMenu']": {
         background: theme.palette.background.default,
