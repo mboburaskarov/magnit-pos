@@ -7,14 +7,16 @@ export const order_statuses = [
   },
   {
     id: 'CANCELED',
-    color: 'red.500',
+    color: 'red.100',
+    bgColor: 'red.500',
     name: 'Отменено',
     countName: 'canceled',
   },
   {
     id: 'INACTIVE',
-    color: 'red.400',
-    name: 'Неактивный',
+    bgColor: 'red.100',
+    color: 'red.500',
+    name: 'Faol emas',
     countName: 'inactive',
     notVisible: true,
   },
@@ -28,7 +30,8 @@ export const order_statuses = [
   {
     id: 'PAID',
     color: 'green.400',
-    name: 'Оплаченный',
+    name: 'Yetkazib berildi',
+    bgColor: 'green.100',
     countName: 'paid',
   },
 

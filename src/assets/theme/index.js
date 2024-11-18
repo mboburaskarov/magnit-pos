@@ -97,7 +97,7 @@ export const theme = ({ mode, palette }) => {
             fontFamily: fontFamily.LeagueSpartan,
             fontSize: 16,
             fontWeight: 600,
-            lineHeight: 1.2,
+            lineHeight: '27px',
             textTransform: 'none',
             letterSpacing: 'normal',
             display: 'flex',
@@ -134,7 +134,7 @@ export const theme = ({ mode, palette }) => {
 
           containedSecondary: {
             color: mode === 'dark' ? 'white' : palette.green[500],
-            background: palette.grey[100],
+            background: palette.grey[50],
             '&:hover': {
               boxShadow: 'none',
               backgroundColor: palette.grey[200],

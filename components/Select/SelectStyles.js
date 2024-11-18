@@ -36,7 +36,7 @@ export const generateCustomStyles = (props = {}) => {
       width: '100%',
       minHeight: mini ? 40 : 50,
       padding: 1,
-      backgroundColor: 'inherit',
+      // backgroundColor: 'inherit',
       borderRadius: '50px',
     }),
     control: (provided, state) => ({
@@ -86,11 +86,12 @@ export const generateCustomStyles = (props = {}) => {
     singleValue: (provided) => ({
       ...provided,
       paddingLeft: 16,
-      fontSize: 16,
-      fontWeight: 600,
+      fontSize: 20,
+      fontWeight: 500,
       fontFamily: 'LeagueSpartan',
-      color: palette.grey[600],
+      color: palette.dark[500],
       alignItems: 'center',
+      lineHeight: '28px',
     }),
     multiValue: (provided) => ({
       ...provided,
@@ -131,7 +132,7 @@ export const generateCustomStyles = (props = {}) => {
     indicatorsContainer: (provided, state) => ({
       ...provided,
       display: state?.isDisabled ? 'none' : 'flex',
-      backgroundColor: 'inherit',
+      // backgroundColor: 'inherit',
       borderTopRightRadius: '50px',
       borderBottomRightRadius: '50px',
       '& > div:nth-last-of-type(1)': {

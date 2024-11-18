@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableRow, Button, Select, MenuItem } from '@mui/material'
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableRow, Button, Select, MenuItem, TableHead } from '@mui/material'
 import { RadialBarChart, RadialBar, Tooltip, PolarAngleAxis } from 'recharts'
 import SelectSimple from '../Select/SelectSimple'
 
@@ -37,15 +37,15 @@ export default function TotalOrdersByCity() {
       sx={{
         border: '1px solid #A4A5AB33',
         borderRadius: '32px',
-        padding: 2,
+        padding: '16px 4px',
         maxWidth: 414,
         backgroundColor: '#fff',
         height: '100%',
       }}
     >
       {/* Header */}
-      <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
-        <Typography variant='h6' sx={{ fontWeight: 600, fontSize: 22, lineHeight: '30px' }}>
+      <Box display='flex' justifyContent='space-between' alignItems='center' px={'16px'} mb={2}>
+        <Typography variant='h6' sx={{ fontWeight: 700, fontSize: 26, lineHeight: '32px' }}>
           Filiallar bo’yicha
         </Typography>
         <SelectSimple
@@ -101,19 +101,22 @@ export default function TotalOrdersByCity() {
 
       {/* Top Cities Table */}
       <Box mt={3}>
-        <Typography variant='subtitle1' sx={{ fontWeight: 600, mb: 1, lineHeight: '30px', fontSize: 22 }}>
+        <Typography variant='subtitle1' sx={{ fontWeight: 700, padding: '6px 16px', fontSize: 26, lineHeight: '32px' }}>
           Top Cities
         </Typography>
         <TableContainer>
           <Table size='small'>
+            <TableHead sx={{ mb: '25px' }}>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Filial</TableCell>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Buyurtma</TableCell>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Sotuvlar</TableCell>
+            </TableHead>
             <TableBody>
               {data.map((item) => (
                 <TableRow key={item.name}>
-                  <TableCell sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px', border: 'none' }}>{item.name}</TableCell>
-                  <TableCell sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px', border: 'none' }} align='center'>
-                    {item.orders}
-                  </TableCell>
-                  <TableCell sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px', border: 'none' }} align='right'>
+                  <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>{item.name}</TableCell>
+                  <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>{item.orders}</TableCell>
+                  <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>
                     ${item.revenue.toLocaleString()}
                   </TableCell>
                 </TableRow>
@@ -124,7 +127,7 @@ export default function TotalOrdersByCity() {
       </Box>
 
       {/* View All Button */}
-      <Box display='flex' justifyContent='center' mt={2}>
+      <Box display='flex' justifyContent='center' mt={2} px={'16px'}>
         <Button
           variant='outlined'
           sx={{
@@ -138,7 +141,7 @@ export default function TotalOrdersByCity() {
             textTransform: 'none',
           }}
         >
-          View All
+          Barchasi
         </Button>
       </Box>
     </Box>

@@ -29,7 +29,7 @@ function LayoutHeader() {
       padding={'14px 30px'}
       alignItems={'center'}
     >
-      <Box>
+      <Box sx={{ width: 381 }}>
         <InputSearch fullWidth id='producrs-search' name='search' placeholder='Search' uncontrolled />
       </Box>
       <Box display={'flex'}>
