@@ -49,7 +49,7 @@ const Body = ({ children, isLoading, isEmpty }) => (
 )
 
 export default function SingleBarChart({
-  title = 'Revenue Overview',
+  title = 'Barcha sotuvlar',
   measurmentUnit = '',
   colorCode,
   data,
@@ -135,7 +135,7 @@ export default function SingleBarChart({
             minWidth={130}
             value={detalization}
             fullWidth
-            boxStyle={{ width: 120 }}
+            boxStyle={{ width: 157 }}
             isClearable={false}
             options={
               period === 'today' || period === 'yesterday'

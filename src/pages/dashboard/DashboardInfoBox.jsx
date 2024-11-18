@@ -7,8 +7,8 @@ import { theme } from '../../assets/theme'
 export default function DashboardInfoBox({ noDot, ind, title, icon, count, percent, endText, withoutDivider }) {
   const isFall = percent < 0
   return (
-    <Box sx={(theme) => ({ border: 1, borderRadius: 4, borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' })}>
-      <Box key={ind} sx={(theme) => ({ px: 2.5, pt: 2.5, pb: '10px', m: 0 })}>
+    <Box sx={(theme) => ({ border: 1, borderRadius: '24px', borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' })}>
+      <Box key={ind} sx={(theme) => ({ pr: '14px', pl: '16px', pt: '16px', pb: '10px', m: 0 })}>
         <Box width='100%' alignItems={'center'} display='inline-flex'>
           {!noDot && (
             <Box
@@ -31,7 +31,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, perce
             </Box>
           )}
           <Box ml={'10px'}>
-            <Typography fontSize={16} fontWeight={'400'} lineHeight={'22px'} color={'dark.500'} mt={0.5}>
+            <Typography fontSize={18} fontWeight={'500'} lineHeight={'24px'} color={'dark.500'} mt={0.5}>
               {title}
             </Typography>
           </Box>
@@ -47,7 +47,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, perce
             <Box
               display='inline-flex'
               sx={{
-                borderRadius: 5,
+                borderRadius: '5px',
                 display: 'flex',
                 alignItems: 'center',
                 padding: '5px',
@@ -56,7 +56,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, perce
               alignItems='center'
             >
               {!isFall ? <GrowIcon /> : <FallIcon />}{' '}
-              <Typography color={isFall ? '#F45B69' : '#30BE82'} fontWeight='500' mr={0.5} fontSize={12} lineHeight={'16px'}>
+              <Typography color={isFall ? '#F45B69' : '#30BE82'} fontWeight='500' mr={0.5} fontSize={14} lineHeight={'18px'}>
                 {percent}%
               </Typography>
             </Box>
@@ -64,10 +64,10 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, perce
         )}
       </Box>
 
-      <Divider fullWidth sx={{ borderWidth: 0.5 }} orientation='vertical' flexItem />
-      <Box key={ind} sx={(theme) => ({ py: '10px', px: '16px', m: 0 })}>
+      {/* <Divider fullWidth sx={{ borderWidth: 0.5 }} orientation='vertical' flexItem /> */}
+      <Box key={ind} sx={(theme) => ({ pt: '10px', pb: '8px', px: '16px', m: 0, borderTop: 1, borderColor: '#A4A5AB33' })}>
         <Box>
-          <Typography color='grey.500' fontSize={'14px'} lineHeight={'18px'} fontWeight='400' variant='h1'>
+          <Typography color='grey.500' fontSize={'16px'} lineHeight={'20px'} fontWeight='500' variant='h1'>
             Update: September 17, 2023
           </Typography>
         </Box>

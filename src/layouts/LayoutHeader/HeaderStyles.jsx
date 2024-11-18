@@ -3,7 +3,7 @@ import makeStyles from '@mui/styles/makeStyles'
 
 const drawerWidth = '280px'
 
-export const navbarStyles = makeStyles((theme) => {
+export const headerStyles = makeStyles((theme) => {
   return {
     root: {
       zIndex: 15,
@@ -26,7 +26,6 @@ export const navbarStyles = makeStyles((theme) => {
     },
     list: {
       padding: 0,
-      marginTop: '30px',
       '&:hover': {
         '& .popper': {
           display: 'block',
@@ -57,7 +56,7 @@ export const navbarStyles = makeStyles((theme) => {
     close_icon: {
       position: 'absolute',
       right: ({ isOpen }) => (isOpen ? 20 : 0),
-      top: 40,
+      top: 32,
       '& > span > svg > path': {
         fill: theme.palette.grey[400],
       },
@@ -138,13 +137,12 @@ export const navbarStyles = makeStyles((theme) => {
     listItem: {
       width: '220px',
       height: 50,
-      fontSize: 20,
+      fontSize: 18,
       margin: '10px 0',
       borderRadius: 50,
-      // paddingLeft: '32px !important',
-      // paddingRight: '32px !important',
-      fontWeight: 500,
-      lineHeight: '28px',
+      paddingLeft: '32px !important',
+      paddingRight: '32px !important',
+      fontWeight: 400,
       color: theme.palette.dark[500],
       fontFamily: theme.fontFamily.LeagueSpartan,
       transition: '0.3s',
@@ -213,7 +211,7 @@ export const navbarStyles = makeStyles((theme) => {
       },
     },
     logo: {
-      padding: ({ isOpen }) => (isOpen ? 0 : '0 27px'),
+      padding: 26,
     },
     brandLogo: {
       height: 50,
@@ -244,22 +242,23 @@ export const navbarStyles = makeStyles((theme) => {
     },
     currentUser: {
       cursor: 'pointer',
-      width: 'calc(100% - 32px) !important',
+      // width: 'calc(100% - 32px) !important',
       marginTop: 'auto !important',
       // marginBottom: ({ isOpen }) => (isOpen ? 20 : 0) + 'px !important',
-      marginLeft: '16px !important',
-      padding: '12px 16px !important',
+      // marginLeft: '16px !important',
+      padding: '5px 8px !important',
+      backgroundColor: theme.palette.grey[50],
       borderRadius: '32px !important',
       '&:hover': {
-        backgroundColor: theme.palette.green[200],
+        backgroundColor: theme.palette.orange[200],
         '& p': {
-          color: theme.palette.green[500],
+          color: theme.palette.orange[500],
         },
         '& .shopname': {
           color: theme.palette.grey[600],
         },
       },
-      marginBottom: '24px !important',
+      // marginBottom: '24px !important',
     },
     avatarPlaceholder: {
       position: 'relative',
@@ -277,7 +276,7 @@ export const navbarStyles = makeStyles((theme) => {
       transition: '0.3s',
     },
     shopname: {
-      width: 130,
+      // width: 130,
       margin: 0,
       lineHeight: '19px',
       fontWeight: 600,
@@ -312,9 +311,9 @@ export const navbarStyles = makeStyles((theme) => {
     },
     itemLabel: {
       flex: '1 0 73%',
-      lineHeight: '28px',
-      fontSize: 20,
-      fontWeight: 500,
+      lineHeight: '24px',
+      fontSize: 18,
+      fontWeight: 400,
       color: theme.palette.dark[500],
     },
     itemArrow: {

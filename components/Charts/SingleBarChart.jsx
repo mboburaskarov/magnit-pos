@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableRow, Button, Select, MenuItem } from '@mui/material'
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableRow, Button, Select, MenuItem, TableHead } from '@mui/material'
 import { RadialBarChart, RadialBar, Tooltip, PolarAngleAxis } from 'recharts'
 import SelectSimple from '../Select/SelectSimple'
 
@@ -24,37 +24,37 @@ export default function TotalOrdersByCity() {
 
   const totalRevenue = data.reduce((sum, item) => sum + item.revenue, 0)
   const detailingOptions = [
-    { name: 'By 30min', value: '30min' },
-    { name: 'By hour', value: 'hour' },
-    { name: 'By day', value: 'day' },
-    { name: 'By week', value: 'week' },
-    { name: 'By month', value: 'month' },
-    { name: 'By year', value: 'year' },
+    { name: 'Shu 30min', value: '30min' },
+    { name: 'Shu soat', value: 'hour' },
+    { name: 'Bu oy', value: 'day' },
+    { name: 'Bu hafta', value: 'week' },
+    { name: 'Bu Oy', value: 'month' },
+    { name: 'Bu yil', value: 'year' },
   ]
 
   return (
     <Box
       sx={{
         border: '1px solid #A4A5AB33',
-        borderRadius: '12px',
-        padding: 2,
-        maxWidth: 400,
+        borderRadius: '32px',
+        padding: '16px 4px',
+        maxWidth: 414,
         backgroundColor: '#fff',
         height: '100%',
       }}
     >
       {/* Header */}
-      <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
-        <Typography variant='h6' sx={{ fontWeight: 600, fontSize: 22, lineHeight: '30px' }}>
-          Total Order by City
+      <Box display='flex' justifyContent='space-between' alignItems='center' px={'16px'} mb={2}>
+        <Typography variant='h6' sx={{ fontWeight: 700, fontSize: 26, lineHeight: '32px' }}>
+          Filiallar bo’yicha
         </Typography>
         <SelectSimple
           id={'detailing'}
           name={'detailing'}
-          placeholder='Детализация'
+          placeholder='Tanlang'
           uncontrolled
           // onChange={setDetalization}
-          minWidth={130}
+          minWidth={120}
           // value={detalization}
           fullWidth
           boxStyle={{ width: 120 }}
@@ -76,7 +76,7 @@ export default function TotalOrdersByCity() {
       </Box>
 
       {/* RadialBarChart */}
-      <Box display='flex' padding={'37px'} width={'100%'} justifyContent='center' alignItems='center' position='relative'>
+      <Box display='flex' px={'37px'} width={'100%'} justifyContent='center' alignItems='center' position='relative'>
         <RadialBarChart width={340} height={340} innerRadius='40%' outerRadius='100%' barSize={15} data={radialChartData} startAngle={90} endAngle={450}>
           {/* <PolarAngleAxis type='number' domain={[0, 20000]} angleAxisId={0} tick={false} /> */}
           <RadialBar minAngle={15} background clockWise dataKey='value' />
@@ -101,19 +101,22 @@ export default function TotalOrdersByCity() {
 
       {/* Top Cities Table */}
       <Box mt={3}>
-        <Typography variant='subtitle1' sx={{ fontWeight: 600, mb: 1, lineHeight: '30px', fontSize: 22 }}>
+        <Typography variant='subtitle1' sx={{ fontWeight: 700, padding: '6px 16px', fontSize: 26, lineHeight: '32px' }}>
           Top Cities
         </Typography>
         <TableContainer>
           <Table size='small'>
+            <TableHead sx={{ mb: '25px' }}>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Filial</TableCell>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Buyurtma</TableCell>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Sotuvlar</TableCell>
+            </TableHead>
             <TableBody>
               {data.map((item) => (
                 <TableRow key={item.name}>
-                  <TableCell sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px', border: 'none' }}>{item.name}</TableCell>
-                  <TableCell sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px', border: 'none' }} align='center'>
-                    {item.orders}
-                  </TableCell>
-                  <TableCell sx={{ fontSize: '18px', fontWeight: 400, lineHeight: '24px', border: 'none' }} align='right'>
+                  <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>{item.name}</TableCell>
+                  <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>{item.orders}</TableCell>
+                  <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>
                     ${item.revenue.toLocaleString()}
                   </TableCell>
                 </TableRow>
@@ -124,7 +127,7 @@ export default function TotalOrdersByCity() {
       </Box>
 
       {/* View All Button */}
-      <Box display='flex' justifyContent='center' mt={2}>
+      <Box display='flex' justifyContent='center' mt={2} px={'16px'}>
         <Button
           variant='outlined'
           sx={{
@@ -138,7 +141,7 @@ export default function TotalOrdersByCity() {
             textTransform: 'none',
           }}
         >
-          View All
+          Barchasi
         </Button>
       </Box>
     </Box>

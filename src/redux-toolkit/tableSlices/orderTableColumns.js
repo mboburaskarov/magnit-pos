@@ -24,13 +24,13 @@ const columns = [
     field: 'client',
     hide: false,
     minWidth: 70,
-    width: 200,
+    width: 300,
   },
   {
     field: 'receiver',
     hide: false,
     minWidth: 70,
-    width: 200,
+    width: 230,
   },
   {
     field: 'created_date',

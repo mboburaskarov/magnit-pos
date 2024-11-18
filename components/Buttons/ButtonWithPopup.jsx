@@ -86,7 +86,7 @@ const ButtonWithPopup = ({
   boxStyles,
   borderRadius,
   sx,
-  startIcon,
+  endIcon,
   ...rest
 }) => {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -116,7 +116,7 @@ const ButtonWithPopup = ({
         adornmentEnd={!noArrow && <FontAwesomeIcon icon={faChevronDown} />}
         {...buttonProps}
         isLoading={isLoading}
-        startIcon={startIcon}
+        endIcon={endIcon}
         sx={sx}
       >
         {buttonLabel}
