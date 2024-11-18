@@ -180,10 +180,8 @@ export default function DashboarPage() {
     <LoadingContainer readyState={!isLoading}>
       <DashboardHeader setSortBy={setSortBy} />
       <Box display='flex' flexDirection='column' position='relative' pt={0} px={'30px'} pb={3} width={'100%'}>
-        {/* <Box display='flex' flexDirection='row' position='relative' gap={2} pt={0} pb={3}> */}
         <Grid container>
           <Grid xs={8}>
-            {/* <Box display='flex' flexDirection='column' position='relative' pt={0} pb={0}> */}
             <Grid container gap={'0'}>
               {OrdersStatistics?.filter((el) => (check ? el : el.title !== 'Общая сумма заказов'))?.map((el, ind) => (
                 <Grid xs={12} xl={6} sm={6} md={6} lg={6} gap={0} pr={'20px'} pb={'20px'} spacing={2}>
@@ -207,7 +205,6 @@ export default function DashboarPage() {
                 measurmentUnit={sortBy === 'SUM' ? ' сум' : ' шт'}
               />
             </Box>
-            {/* </Box> */}
           </Grid>
 
           <Grid xs={4}>
