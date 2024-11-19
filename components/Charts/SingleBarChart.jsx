@@ -38,7 +38,7 @@ export default function TotalOrdersByCity() {
         border: '1px solid #A4A5AB33',
         borderRadius: '32px',
         padding: '16px 4px',
-        maxWidth: 414,
+        // maxWidth: 414,
         backgroundColor: '#fff',
         height: '100%',
       }}

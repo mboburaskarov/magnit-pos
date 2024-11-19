@@ -4,7 +4,7 @@ import { Box, ListItem, Skeleton, Typography } from '@mui/material'
 import { useSelector } from 'react-redux'
 import UserDrawer from '../Navbar/userDrawer'
 import NotificationSmallIcon from '../../assets/icons/NotificationSmallIcon'
-import { headerStyles } from './HEaderStyles'
+import { headerStyles } from './HeaderStyles'
 import ArrowDown from '../../assets/icons/ArrowDown'
 
 function LayoutHeader() {
