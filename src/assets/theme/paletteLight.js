@@ -31,8 +31,8 @@ const paletteLight = {
     disabledBackground: '#F5F5F5',
   },
   grey: {
-    10: '#A4A5AB1A',
-    50: '#A4A5AB0D',
+    10: '#f4f4f5',
+    50: '#f8f8fa',
     100: '#F5F5F5',
     101: '#eaeaea',
     200: '#eaeaea',
