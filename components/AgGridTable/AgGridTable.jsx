@@ -41,6 +41,7 @@ const AgGridSimpleTable = ({
   download,
   isDownloading,
   isDataLoading,
+  fullInfoAboutCurrentPage = false,
   tableSettings = false,
   updaterAction,
   selectedRowsIds = [],
@@ -217,7 +218,7 @@ const AgGridSimpleTable = ({
           domLayout='autoHeight'
           onDisplayedColumnsChanged={debounce((p) => onDisplayedColumnsChanged({ ...p, updaterAction }), 1000)}
           onColumnResized={debounce((p) => onColumnResized({ ...p, updaterAction }), 1000)}
-          rowHeight={100}
+          rowHeight={48}
           suppressRowClickSelection={true}
           suppressPaginationPanel={true}
           suppressContextMenu={true}
@@ -242,6 +243,7 @@ const AgGridSimpleTable = ({
             offsetQuery={offsetQuery}
             resetTable={resetTable}
             isRefreshing={isRefreshing}
+            fullInfoAboutCurrentPage={fullInfoAboutCurrentPage}
             isDownloading={isDownloading}
             download={download}
             offsetSize={offsetSize}

@@ -30,7 +30,7 @@ function LayoutHeader() {
       alignItems={'center'}
     >
       <Box sx={{ width: 381 }}>
-        <InputSearch fullWidth id='producrs-search' name='search' placeholder='Search' uncontrolled />
+        <InputSearch fullWidth id='producrs-search' className={classes.searchInput} name='search' placeholder='Search' uncontrolled />
       </Box>
       <Box display={'flex'}>
         <Box mr={'20px'}>

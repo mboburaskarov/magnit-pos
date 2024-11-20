@@ -27,11 +27,11 @@
 
 /* Header */
 .ag-theme-alpine .ag-header {
-  min-height: 60px !important;
-  height: 60px !important;
+  min-height: 48px !important;
+  height: 48px !important;
   border: none;
-  border-top: 2px solid;
-  border-bottom: 2px solid;
+  border: 1px solid;
+  /* border-color: the; */
 }
 
 .column-group-header.ag-theme-alpine .ag-header {
@@ -453,7 +453,7 @@
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  padding: 15px;
+  padding: 12px;
   font-family: 'LeagueSpartan';
 
   display: flex;

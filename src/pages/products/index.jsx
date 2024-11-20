@@ -25,6 +25,8 @@ import ProductDrawer from './ProductDrawer'
 import InputSwitch from '../../../components/Inputs/InputSwitch'
 import CheckAccess from '../../../components/CheckAccess'
 import StyledDialog from '../../../components/Dialogs/StyledDialog'
+import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
+import PlusIcon from '../../assets/icons/PlusIcon'
 
 export default function ProductsPage() {
   const dispatch = useDispatch()
@@ -170,9 +172,11 @@ export default function ProductsPage() {
   }, [productsList?.data, values?.limit, status])
   return (
     <LoadingContainer readyState={true}>
-      <Box display='flex' flexDirection='column' position='relative' pt={6} px={4} pb={3}>
-        <Typography variant='h1'>Товары</Typography>
-        <Box display='flex' mb={3} mt={4}>
+      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={4} pb={3}>
+        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+          Katalog
+        </Typography>
+        {/* <Box display='flex' mb={3} mt={4}>
           <TabContainer
             customTooltip
             tabs={products_statuses?.map((el) => ({ label: el.name, id: el.id }))}
@@ -187,47 +191,67 @@ export default function ProductsPage() {
             selected={status}
             setSelected={setStatus}
           />
+        </Box> */}
+        <Box mt={'16px'} minWidth={320}>
+          <InputSwitch
+            uncontrolled
+            id='app-type'
+            name='app-type'
+            value={appType}
+            defaultValue='ALL'
+            onChange={(e) => setAppType(e)}
+            options={[
+              { title: 'Brchasi', value: 'ALL' },
+              { title: 'Dorilar', value: 'BUCHET' },
+              { title: 'Vitaminlar', value: 'MARKET' },
+              { title: 'Shaxsiy parvarish', value: 'MARKET1' },
+              { title: 'Chaqaloq parvarishi', value: 'MARKET2' },
+              { title: 'Diagnostika', value: 'MARKET3' },
+              { title: 'Tibbiy buyumlar', value: 'MARKET4' },
+            ]}
+          />
         </Box>
-        <Box columnGap={2} display='inline-flex' width='100%'>
-          <Box width='100%'>
-            <InputSearch fullWidth id='producrs-search' name='search' placeholder='Введите информацию о продукте' uncontrolled />
-          </Box>
-          <Box mt={-2} minWidth={320}>
-            <InputSwitch
-              uncontrolled
-              id='app-type'
-              name='app-type'
-              value={appType}
-              defaultValue='ALL'
-              onChange={(e) => setAppType(e)}
-              options={[
-                { title: 'Все', value: 'ALL' },
-                { title: 'Букеты', value: 'BUCHET' },
-                { title: 'Подарки', value: 'MARKET' },
-              ]}
-            />
-          </Box>
-          <Box minWidth={180}>
-            <Button
-              fullWidth
-              startIcon={<FontAwesomeIcon width={14} icon={filterMenu ? faArrowUpWideShort : faArrowDownWideShort} />}
-              variant='contained'
-              color='secondary'
-              onClick={() => setFilterMenu((prev) => !prev)}
-            >
-              Фильтровать
-            </Button>
+        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'24px'} width='100%'>
+          <Box display={'flex'}>
+            <Box width='100%' sx={{ '& .MuiInputBase-root, .MuiFormControl-root': { border: 'none', height: 40 } }}>
+              <InputSearch id='producrs-search' name='search' placeholder='Qidirish: mahsulot, kategoriya, shtrix-kod' uncontrolled />
+            </Box>
+
+            <Box minWidth={106} ml={'16px'}>
+              <Button
+                sx={{
+                  height: '40px',
+                  padding: 0,
+                  bgcolor: '#fff',
+                  border: '1px solid #ECEDF2',
+                  color: 'dark.500',
+                  fontWeight: '500',
+                  fontSize: '16px',
+                  lineHeight: '24px',
+                }}
+                fullWidth
+                startIcon={<FilterMenuIcon />}
+                variant='contained'
+                color='secondary'
+                onClick={() => setFilterMenu((prev) => !prev)}
+              >
+                <Typography fontWeight={500} fontSize={'16px'} lineHeight={'25px'}>
+                  Filter
+                </Typography>
+              </Button>
+            </Box>
           </Box>
           <CheckAccess id={'product-create'}>
             <Box minWidth={156}>
               <Button
+                sx={{ height: '40px' }}
                 onClick={() => navigate('/products/create')}
                 fullWidth
-                startIcon={<FontAwesomeIcon width={14} icon={faPlus} />}
+                startIcon={<PlusIcon />}
                 variant='contained'
                 color='primary'
               >
-                Создать
+                Yangi qo'shish
               </Button>
             </Box>
           </CheckAccess>
@@ -244,6 +268,7 @@ export default function ProductsPage() {
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}
+            fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             status={status}
             isRefreshing={loading || isFetchingproductsList || productsListLoading}

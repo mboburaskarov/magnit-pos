@@ -12,9 +12,32 @@ export const authRequest = axios.create({
     'Content-Type': 'application/json; charset=utf-8',
   },
 })
+export const authRequest2 = axios.create({
+  baseURL: import.meta.env.VITE_BASE_API_URL2,
+  headers: {
+    Accept: 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json; charset=utf-8',
+  },
+})
 
 export const request = axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL,
+  headers: {
+    Authorization: localStorage.getItem('access_token'),
+    Accept: 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json; charset=utf-8',
+  },
+  transformRequest: [
+    (data) => {
+      return JSON.stringify(data)
+    },
+  ],
+})
+
+export const request2 = axios.create({
+  baseURL: import.meta.env.VITE_BASE_API_URL2,
   headers: {
     Authorization: localStorage.getItem('access_token'),
     Accept: 'application/json',

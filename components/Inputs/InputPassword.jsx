@@ -23,6 +23,12 @@ const useStyles = makeStyles(() => ({
   noLabel: {
     marginTop: 20,
   },
+  passInput: {
+    '& input': {
+      paddingTop: '17px !important',
+      paddingBottom: '7px !important',
+    },
+  },
 }))
 
 function InputPassword({
@@ -62,6 +68,7 @@ function InputPassword({
           placeholder={placeholder}
           disabled={disabled}
           onKeyDown={onKeyDown}
+          className={classes.passInput}
           fullWidth
           multiline={multiline}
           rows={rowsMax}

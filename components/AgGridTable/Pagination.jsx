@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
       minWidth: 40,
       height: 40,
       padding: 4,
-      borderRadius: 16,
+      borderRadius: 8,
       border: `1px solid transparent`,
       outline: 'none',
       backgroundColor: 'transparent',
@@ -33,9 +33,9 @@ const useStyles = makeStyles((theme) => ({
     },
     '& ul li button.Mui-selected': {
       backgroundColor: `transparent`,
-      border: `1px solid #e5e9eb`,
+      border: `1px solid ${theme.palette.orange[500]}`,
       fontWeight: 600,
-      color: theme.palette.primary[600],
+      color: theme.palette.orange[500],
     },
     '& ul li button:hover': {
       backgroundColor: theme.palette.grey[100],
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'transparent',
     cursor: 'pointer',
     '& svg': {
-      fill: theme.palette.green[500],
+      fill: theme.palette.bunker[950],
     },
   },
 }))

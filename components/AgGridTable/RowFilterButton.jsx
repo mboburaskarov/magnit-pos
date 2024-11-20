@@ -3,6 +3,7 @@ import { Box, Paper, List, ListItem, ClickAwayListener, Typography, Button } fro
 import { makeStyles } from '@mui/styles'
 import SortIcon from '../../src/assets/icons/SortIcon'
 import TickIcon from '../../src/assets/icons/TickIcon'
+import ArrowDown from '../../src/assets/icons/ArrowDown'
 
 const useStyles = makeStyles((theme) => ({
   lineSortContainer: {
@@ -50,17 +51,20 @@ function RowFilterButton({ offsetSize, setOffsetSize, setOffsetIndex, eventMessa
   }
 
   return (
-    <Box minWidth={196} position='relative'>
+    <Box borderRadius={'8px'} minWidth={75} display={'flex'} alignItems={'center'} position='relative'>
+      <Typography fontSize={'16px'} lineHeight={'24px'} color={'bunker.400'} fontWeight={'500'} mr={'8px'}>
+        Ko'rsatilmoqda{' '}
+      </Typography>
       <Button
-        sx={(theme) => ({ background: theme.palette.background.default })}
+        sx={(theme) => ({ height: '40px', padding: '8px 12px', borderRadius: '8px', background: theme.palette.background.default })}
         variant='outlined'
         size='small'
-        startIcon={<SortIcon />}
+        endIcon={<ArrowDown />}
         fullWidth
         onClick={() => setOpen(!open)}
         id={id ? id : 'rowFilterButton'}
       >
-        Показать по {offsetSize}
+        {offsetSize}
       </Button>
       {open && (
         <Paper className={classes.lineSortContainer}>

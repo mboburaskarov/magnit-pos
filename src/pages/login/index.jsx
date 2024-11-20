@@ -17,6 +17,7 @@ import { useDispatch } from 'react-redux'
 import { setUserData } from '../../redux-toolkit/userSlice'
 import { fetchToken } from '../../firebase'
 import PhoneNumber from '../../../components/Inputs/PhoneNumber'
+import LoginBg from '../../assets/icons/loginBg'
 // import { request } from '../../../utils/axios'
 
 const useStyles = makeStyles((theme) => ({
@@ -28,6 +29,13 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     padding: '30px 100px 30px 30px',
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'white',
+      border: '1px solid',
+    },
+    '& .MuiInputBase-root': {
+      border: '1px solid',
+    },
   },
   description: {
     marginBottom: 30,
@@ -44,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.orange[100],
     padding: '93px 0 93px 130px',
     height: '100%',
+    alignItems: 'center',
     borderRadius: '30px',
     '& img': {
       // width: "100%",
@@ -62,6 +71,9 @@ const useStyles = makeStyles((theme) => ({
     '& > div': {
       width: '100%',
       transition: 'all 0.3s ease-in-out',
+    },
+    '& .MuiOutlinedInput-input': {
+      paddingTop: '23px',
     },
   },
   title: {
@@ -92,7 +104,7 @@ export default function LoginPage() {
     localStorage.clear()
     return
   }, [])
-  const { mutate: logIn, isLoading: logInLoading } = useMutation(requests.logIn, {
+  const { mutate: logIn, isLoading: logInLoading } = useMutation(requests.logIn2, {
     onSuccess: async ({ data }) => {
       localStorage.setItem('access_token', data.token)
       localStorage.setItem('user_data', JSON.stringify(data.user))
@@ -125,10 +137,10 @@ export default function LoginPage() {
   return (
     <LoadingContainer boxStyle={{ height: '100%' }} readyState={!false}>
       <Box className={classes.root}>
-        <Box className={classes.bgContainer} sx={{ height: 'auto', width: 'auto' }}>
-          <img src='../login-bg.jpg' />
+        <Box className={classes.bgContainer} sx={{ height: 'auto', width: '55%' }}>
+          <LoginBg />
         </Box>
-        <Box className={classes.container} sx={{ height: 686, width: '40%' }}>
+        <Box className={classes.container} sx={{ height: 686, width: '45%' }}>
           <FormProvider {...methods}>
             <Box component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
               <BrandLogo />

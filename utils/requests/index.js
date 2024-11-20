@@ -1,8 +1,9 @@
-import { authRequest, fileUploadRequest, request, yandexMapsRequest } from '../axios'
+import { authRequest, authRequest2, fileUploadRequest, request, yandexMapsRequest } from '../axios'
 import * as qs from 'qs'
 
 export const requests = {
-  logIn: (data) => authRequest.post(`api/auth/sign-in-admin`, data),
+  logIn2: (data) => authRequest.post(`api/auth/sign-in-admin`, data),
+  logIn: (data) => authRequest2.post(`v1/login`, data),
   getUserInfo: () => request.get(`api/auth/get-user-information`),
 
   //category

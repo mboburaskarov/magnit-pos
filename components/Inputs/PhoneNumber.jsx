@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useIMask } from 'react-imask'
-import { Box, ClickAwayListener } from '@mui/material'
+import { Box, ClickAwayListener, Typography } from '@mui/material'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import TextField from './TextField'
@@ -60,7 +60,7 @@ const PhoneNumber = ({ name, required, country = countries[0], setCountry, setVa
                 },
               })}
             >
-              {`${country.flag} ${country.dial_code}`}
+              <Typography mt={'7px'}>{`${country.flag} ${country.dial_code}`}</Typography>
               <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
             </Box>
             <Box
