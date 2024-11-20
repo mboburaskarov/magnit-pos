@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Box, Button, keyframes } from '@mui/material'
+import { Box, Button, keyframes, Typography } from '@mui/material'
 import { memo } from 'react'
 import RowFilterButton from './RowFilterButton'
 import DownloadButton from './DownloadButton'
@@ -55,9 +55,12 @@ function AgGridBottom({
   offsetSize,
   setOffsetSize,
   eventMessages,
+  fullInfoAboutCurrentPage,
   resetTable,
   isRefreshing,
 }) {
+  console.log(offsetIndex, offsetQuery, offsetSize, download, controlledOffsetCount)
+
   return (
     <Box
       sx={(theme) => ({
@@ -66,21 +69,26 @@ function AgGridBottom({
         alignItems: 'center',
         width: '100%',
         paddingTop: 2,
-        borderTop: `2px solid ${theme.palette.grey[200]}`,
+        // borderTop: `2px solid ${theme.palette.grey[200]}`,
       })}
     >
-      <Pagination count={controlledOffsetCount} handleChangeOffset={changeOffset} offset={offsetIndex} offsetQuery={offsetQuery} />
-      <Box display='flex' alignItems='center'>
+      <Box width={'100%'} display='flex' justifyContent={'space-between'} alignItems='center'>
         {download && <DownloadButton isDownloading={isDownloading} download={download} />}
-        {resetTable && (
+        {/* {resetTable && (
           <RefreshButton
-            loading={isRefreshing}
-            onClick={() => {
-              resetTable()
+          loading={isRefreshing}
+          onClick={() => {
+            resetTable()
             }}
-          />
-        )}
+            />
+            )} */}
         <RowFilterButton eventMessage={eventMessages?.[1]} offsetSize={offsetSize} setOffsetSize={setOffsetSize} />
+        {fullInfoAboutCurrentPage && (
+          <Typography fontSize={'16px'} lineHeight={'24px'} color={'bunker.400'} fontWeight={'500'}>
+            {controlledOffsetCount} ta ro'yxatning {offsetIndex * offsetSize} dan {offsetIndex * offsetSize + Number(offsetSize)} gachasi ko'rsatilmoqda
+          </Typography>
+        )}
+        <Pagination count={controlledOffsetCount} handleChangeOffset={changeOffset} offset={offsetIndex} offsetQuery={offsetQuery} />
       </Box>
     </Box>
   )

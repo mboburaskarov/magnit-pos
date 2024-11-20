@@ -1,5 +1,6 @@
 import createStyles from '@mui/styles/createStyles'
 import { makeStyles } from '@mui/styles'
+import { pad } from 'lodash'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -235,9 +236,12 @@ const useStyles = makeStyles((theme) =>
         background: theme.palette.background.default,
       },
       '.ag-theme-alpine .ag-header': {
-        borderColor: theme.palette.grey[10],
+        borderColor: theme.palette.bunker[100],
         borderTop: 'transparent',
-        background: theme.palette.background.default,
+        background: theme.palette.grey[50],
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        height: 48,
       },
       '.ag-theme-alpine .ag-header-group-cell-label:hover': {
         background: theme.palette.grey[400],
@@ -258,8 +262,35 @@ const useStyles = makeStyles((theme) =>
       '.ag-theme-alpine .ag-header-cell:hover': {
         background: theme.palette.grey[100],
       },
+      // '.ag-header-row.ag-header-row-column': {
+      //   backgroundColor: theme.palette.grey[50],
+      // },
+      '.ag-cell-label-container': {
+        padding: '12px',
+      },
+      '.ag-body': {
+        borderColor: theme.palette.bunker[100],
+        border: '1px solid',
+        borderBottomLeftRadius: '20px',
+        borderBottomRightRadius: '20px',
+        overflow: 'hidden',
+      },
+      '.ag-theme-alpine .ag-cell.ag-cell-first-right-pinned:not(.ag-cell-range-left):not(.ag-cell-range-single-cell)': {
+        borderLeft: 'none !important',
+        boxShadow: '-2px 0px 8px 0px #0000000A',
+      },
+      '.ag-theme-alpine .ag-pinned-right-header': {
+        borderLeft: 'none !important',
+        boxShadow: '-2px 0px 8px 0px #0000000A',
+      },
+      '.ag-pinned-right-cols-container': {
+        marginRight: '0 !important',
+      },
       '.ag-header-cell-label .ag-header-cell-text': {
-        color: theme.palette.grey[400],
+        color: theme.palette.dark[500],
+        fontWeight: '500',
+        fontSize: '16px',
+        lineHeight: '24px',
       },
       '.ag-theme-alpine .ag-header-icon': {
         color: theme.palette.grey[400],

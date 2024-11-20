@@ -24,6 +24,11 @@ export const headerStyles = makeStyles((theme) => {
       },
       position: 'relative',
     },
+    searchInput: {
+      '&  .MuiInputBase-root': {
+        border: 'none !important',
+      },
+    },
     list: {
       padding: 0,
       '&:hover': {

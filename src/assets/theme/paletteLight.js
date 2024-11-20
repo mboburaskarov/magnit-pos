@@ -30,6 +30,11 @@ const paletteLight = {
   action: {
     disabledBackground: '#F5F5F5',
   },
+  bunker: {
+    100: '#ECEDF2',
+    400: '#868FAA',
+    950: '#111217',
+  },
   grey: {
     10: '#f4f4f5',
     50: '#f8f8fa',

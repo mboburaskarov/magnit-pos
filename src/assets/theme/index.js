@@ -198,7 +198,7 @@ export const theme = ({ mode, palette }) => {
               backgroundColor: 'transparent',
             },
             svg: {
-              fill: palette.orange[500],
+              fill: 'transparent',
             },
           },
           colorInherit: {
@@ -432,9 +432,9 @@ export const theme = ({ mode, palette }) => {
             '&:-webkit-autofill': {
               color: 'red',
               borderRadius: 16,
-              paddingTop: 21,
+              paddingTop: 18,
               paddingRight: 12,
-              paddingBottom: 8,
+              paddingBottom: 7,
               border: 'none !important',
               paddingLeft: 12,
               backgroundColor: 'transparent !important',
@@ -539,7 +539,7 @@ export const theme = ({ mode, palette }) => {
             height: 56,
             '&.Mui-focused': {
               border: '1px solid',
-              borderColor: palette.orange[500],
+              borderColor: `${palette.orange[500]}!important`,
             },
             '&.Mui-error:not(.Mui-focused)': {
               border: '1px solid red',
@@ -553,11 +553,11 @@ export const theme = ({ mode, palette }) => {
             '&:-webkit-autofill': {
               color: 'red',
               borderRadius: 16,
-              paddingTop: 14,
+              paddingTop: '14px !important',
               fontWeight: '400 !important',
 
               // paddingRight: 12,
-              // paddingBottom: 8,
+              paddingBottom: 9,
               border: 'none !important',
               // paddingLeft: 12,
               backgroundColor: 'transparent !important',

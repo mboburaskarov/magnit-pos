@@ -76,7 +76,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'photo') {
       return {
         ...el,
-        headerName: 'Фото',
+        headerName: 'Rasm',
         colId: el.field,
         cellRenderer: memo((p) => <Image {...p} setImages={setImages} />),
       }
@@ -84,7 +84,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'name') {
       return {
         ...el,
-        headerName: 'Наименования',
+        headerName: 'Mahsulot nomi',
         colId: el.field,
         cellRenderer: memo(({ data }) => {
           const isExpress = (data?.type === 'BUCHET' && data?.preparationTime === 0) || data?.isExpress || false
@@ -112,7 +112,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'cost') {
       return {
         ...el,
-        headerName: 'Цена',
+        headerName: 'Narxi',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='cost' />),
       }
@@ -128,7 +128,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'status') {
       return {
         ...el,
-        headerName: 'Статус',
+        headerName: 'Status',
         colId: el.field,
         cellRenderer: memo(({ data, rowIndex }) => (
           <StatusCell
@@ -143,7 +143,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'shop_name') {
       return {
         ...el,
-        headerName: 'Магазин',
+        headerName: "Do'kon nomi",
         colId: el.field,
         cellRenderer: memo(({ type, rowIndex, data }) => (
           <Typography style={{ whiteSpace: 'pre-line' }} id={`product-${type}-${rowIndex}`}>
@@ -155,7 +155,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'preparation_time') {
       return {
         ...el,
-        headerName: 'Время подготовки',
+        headerName: 'Tayyorlanish vaqti',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='минут' withDevider {...p} type='preparationTime' />),
       }
@@ -163,7 +163,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'rating_score') {
       return {
         ...el,
-        headerName: 'Рейтинг',
+        headerName: 'Reyting',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='ratingScore' />),
       }
@@ -171,7 +171,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'comments_count') {
       return {
         ...el,
-        headerName: 'Кол-во отзывов',
+        headerName: 'Sharxlar soni',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='commentsCount' />),
       }
@@ -179,7 +179,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'quantity') {
       return {
         ...el,
-        headerName: 'Кол-во',
+        headerName: 'Soni',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='quantity' />),
       }
@@ -187,7 +187,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'product_lifetime') {
       return {
         ...el,
-        headerName: 'Срок продукта',
+        headerName: 'Mahsulot muddati',
         colId: el.field,
         cellRenderer: memo((p) => <TimeCell {...p} type='sellDate' format='DD.MM.YYYY HH:mm' />),
       }
@@ -195,22 +195,22 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'actions') {
       return {
         ...el,
-        headerName: 'Действия',
+        headerName: 'Amallar',
         colId: el.field,
         cellRenderer: memo(({ data }) => (
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
-            <Box display='inline-flex' columnGap={2}>
+            <Box display='inline-flex' columnGap={'8px'}>
               <CheckAccess id={'product-edit'}>
-                <IconButton onClick={() => window.open(`/products/edit/${data._id}`, '_blank')} sx={{ borderRadius: 3, p: '14px' }}>
+                <IconButton onClick={() => window.open(`/products/edit/${data._id}`, '_blank')} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />
                 </IconButton>
               </CheckAccess>
               <CheckAccess id={'product-delete'}>
-                <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
+                <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data._id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <DeleteIcon />
                 </IconButton>
               </CheckAccess>
-              {data.status === 'ACTIVE' ? (
+              {/* {data.status === 'ACTIVE' ? (
                 <CheckAccess id={'product-deactive'}>
                   <IconButton onClick={() => setOpenConfirmDialog({ type: 'deactivate', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
                     <PauseIcon />
@@ -222,7 +222,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
                     <PlayIcon />
                   </IconButton>
                 </CheckAccess>
-              )}
+              )} */}
             </Box>
           </CheckAccess>
         )),

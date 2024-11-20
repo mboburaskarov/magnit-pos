@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiDrawer-paper': {
       width: '456px',
       padding: '64px 32px',
-      borderRadius: '0 40px 40px 0',
+      borderRadius: '40px 0 0 40px',
       boxShadow: 'none',
       backgroundColor: theme.palette.background.default,
     },
@@ -69,7 +69,7 @@ export default function UserLogOutDrawer({ isOpen, closeDrawer, goBack }) {
 
   return (
     <>
-      <Drawer open={isOpen} onClose={closeDrawer} anchor='left' elevation={1} className={classes.drawer}>
+      <Drawer open={isOpen} onClose={closeDrawer} anchor='right' elevation={1} className={classes.drawer}>
         <Box className={classes.wrapper}>
           <Box className={classes.body}>
             <Box width='100%' display='flex' alignItems='center'>

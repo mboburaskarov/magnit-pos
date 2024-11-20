@@ -5,19 +5,21 @@ import { makeStyles } from '@mui/styles'
 const useStyles = makeStyles((theme) => ({
   inner: {
     display: 'flex',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     padding: 4,
-    borderRadius: 16,
-    background: theme.palette.grey[100],
+    borderRadius: 24,
+    width: 'fit-content',
+    background: theme.palette.grey[50],
     transition: 'all 0.2s ease',
     '&:hover': {
-      background: theme.palette.grey[200],
+      background: theme.palette.grey[50],
     },
   },
   slider: {
     position: 'relative',
-    height: 48,
-    width: '100%',
+    height: 32,
+    marginLeft: '4px',
+    // width: '100%',
   },
   input: {
     visibility: 'hidden',
@@ -29,13 +31,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   button: {
-    position: 'absolute',
+    // position: 'absolute',
     display: 'inline-flex',
     width: '100%',
     alignItems: 'center',
     height: '100%',
     padding: '0 16px',
-    borderRadius: 14,
+    borderRadius: 23,
     textAlign: 'left',
     cursor: 'pointer',
     transition: '0.3s',
@@ -95,7 +97,14 @@ export default function SwitchSlider({ name, options, onChange, defaultValue, no
                 />
                 <label htmlFor={name + index} className={`${classes.button} radioButton`}>
                   <Box className={classes.radioTitle}>
-                    <Typography color={value === option.value ? 'green.500' : 'grey.400'} id={value + index}>
+                    <Typography
+                      fontWeight={500}
+                      fontSize={'14px'}
+                      lineHeight={'20px'}
+                      whiteSpace={'nowrap'}
+                      color={value === option.value ? 'orange.500' : 'dark.500'}
+                      id={value + index}
+                    >
                       {option.title}
                     </Typography>
                   </Box>
