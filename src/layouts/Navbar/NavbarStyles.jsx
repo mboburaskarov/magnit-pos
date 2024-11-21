@@ -59,7 +59,7 @@ export const navbarStyles = makeStyles((theme) => {
       right: ({ isOpen }) => (isOpen ? 20 : 0),
       top: 40,
       '& > span > svg > path': {
-        fill: theme.palette.grey[400],
+        // fill: theme.palette.grey[400],
       },
       zIndex: 9999999,
       width: 32,
