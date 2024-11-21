@@ -37,7 +37,7 @@ export default function NotificationCreateBody({ notificationBody }) {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
-      searchText: values?.search,
+      search: values?.search,
       status: 'ACTIVE',
     }
   }, [values?.offset, values?.limit, values?.search])
@@ -46,7 +46,7 @@ export default function NotificationCreateBody({ notificationBody }) {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
-      searchText: values?.search,
+      search: values?.search,
       status: 'ACTIVE',
     }
   }, [values?.offset, values?.limit, values?.search])

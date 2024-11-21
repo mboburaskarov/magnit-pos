@@ -1,16 +1,18 @@
 import CourierIcon from '../assets/icons/CourierIcon'
+import FinanceIcon from '../assets/icons/FInanceIcon'
 import MarketingIcon from '../assets/icons/MarketingIcon'
 import MenuOutline from '../assets/icons/MenuOutline'
 import OrdersIcon from '../assets/icons/OrdersIcon'
 import ProductsIcon from '../assets/icons/ProductsIcon'
 import ReportsIcon from '../assets/icons/ReportsIcon'
 import SettingsIcon from '../assets/icons/SettingsIcon'
+import UserOutlineIcon from '../assets/icons/UserOutlineIcon'
 import UsersIcon from '../assets/icons/UsersIcon'
 import VendorsIcon from '../assets/icons/VendorsIcon'
 
 export const navbatRouteData = [
   {
-    label: 'Dashboard',
+    label: 'Asosiy',
     id: '2',
     icon: <MenuOutline fill='red' stroke='red' color='red' />,
     href: '/shops',
@@ -30,13 +32,13 @@ export const navbatRouteData = [
     ],
   },
   {
-    label: 'Products',
+    label: 'Katalog',
     id: '3',
     icon: <ProductsIcon />,
     href: '/products',
     children: [
       {
-        label: 'Все товары',
+        label: 'Barcha tavarlar',
         active: '/products/*',
         id: '3.1',
         href: '/products',
@@ -50,13 +52,13 @@ export const navbatRouteData = [
     ],
   },
   {
-    label: 'Orders',
+    label: 'Sotuv',
     id: '5',
     icon: <OrdersIcon />,
     href: '/orders',
     children: [
       {
-        label: 'Все заказы',
+        label: 'Barcha sotuvlar',
         active: '/orders*',
         id: '5.1',
         href: '/orders/all',
@@ -76,9 +78,37 @@ export const navbatRouteData = [
     ],
   },
   {
-    label: 'Users',
+    label: 'Mijozlar',
     id: '1',
     icon: <UsersIcon />,
+    href: '/users',
+    children: [
+      {
+        label: 'Все клиенты',
+        active: '/clients/all/*',
+        id: '1.1',
+        href: '/clients/all',
+      },
+    ],
+  },
+  {
+    label: 'Sotuvchilar',
+    id: '1',
+    icon: <UserOutlineIcon />,
+    href: '/users',
+    children: [
+      {
+        label: 'Все клиенты',
+        active: '/clients/all/*',
+        id: '1.1',
+        href: '/clients/all',
+      },
+    ],
+  },
+  {
+    label: "To'lovlar",
+    id: '1',
+    icon: <FinanceIcon />,
     href: '/users',
     children: [
       {
@@ -150,7 +180,7 @@ export const navbatRouteData = [
   //   ],
   // },
   {
-    label: 'Settings',
+    label: 'Sozlamalar',
     id: '9',
     icon: <SettingsIcon />,
     href: '/settings',

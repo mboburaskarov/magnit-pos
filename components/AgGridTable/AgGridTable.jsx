@@ -58,6 +58,8 @@ const AgGridSimpleTable = ({
   isRefreshing,
   status,
 }) => {
+  console.log(data, columns)
+
   const tableOffsetSizes = localStorage?.getItem('table_offset_sizes') ? JSON.parse(localStorage?.getItem('table_offset_sizes')) : {}
   const classes = useStyles()
   const location = useLocation()
@@ -195,7 +197,7 @@ const AgGridSimpleTable = ({
     setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
   }, [])
 
-  const getRowId = useCallback((params) => params.data._id, [data, columns, totalData])
+  const getRowId = useCallback((params) => params.data.id, [data, columns, totalData])
   return (
     <Fragment>
       <Box className={`${classes.root} ag-theme-alpine ${columnGroup ? 'column-group-header' : ''}`} id={id || 'simpleGrid'}>

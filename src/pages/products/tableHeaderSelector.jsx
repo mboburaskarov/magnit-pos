@@ -8,10 +8,7 @@ import { products_statuses } from '../../assets/data/products-statuses'
 import ProductImagePlaceholder from '../../assets/icons/ProductImagePlaceholder'
 import EditIcon from '../../assets/icons/EditIcon'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
-import PlayIcon from '../../assets/icons/PlayIcon'
-import PauseIcon from '../../assets/icons/PauseIcon'
 import ExpressIcon from '../../assets/icons/ExpressIcon'
-import StyledDialog from '../../../components/Dialogs/StyledDialog'
 import StyledTooltip from '../../../components/StyledTooltip'
 import CheckAccess from '../../../components/CheckAccess'
 
@@ -24,6 +21,8 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
 }
 
 const Image = ({ data, rowIndex, setImages }) => {
+  console.log(data)
+
   return (
     <Box
       sx={{
@@ -38,10 +37,10 @@ const Image = ({ data, rowIndex, setImages }) => {
         },
       }}
     >
-      {data?.files?.[0] ? (
+      {data?.main_photo?.[0] ? (
         <img
           id={`product-image-${rowIndex}`}
-          src={getImageUrl(data?.files?.[0])}
+          src={data?.main_photo}
           alt={data?.name}
           style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
         />
@@ -72,8 +71,10 @@ const Image = ({ data, rowIndex, setImages }) => {
 }
 
 export default function tableHeaderSelector({ productsColumns, setImages, setOpenConfirmDialog, setIsDrawerOpen }) {
+  console.log('hi', productsColumns)
+
   const columns = productsColumns?.map((el) => {
-    if (el.field === 'photo') {
+    if (el.field === 'main_photo') {
       return {
         ...el,
         headerName: 'Rasm',
@@ -86,43 +87,55 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
         ...el,
         headerName: 'Mahsulot nomi',
         colId: el.field,
-        cellRenderer: memo(({ data }) => {
-          const isExpress = (data?.type === 'BUCHET' && data?.preparationTime === 0) || data?.isExpress || false
-          return (
-            <Box
-              sx={{ bgcolor: isExpress ? '#F7900930' : 'transparent', py: 1, px: 1.5, borderRadius: 3 }}
-              columnGap={0.5}
-              display='inline-flex'
-              alignItems='center'
-              onClick={() => setIsDrawerOpen(data._id)}
-            >
-              {isExpress && (
-                <StyledTooltip title='Экспресс продукт'>
-                  <ExpressIcon />
-                </StyledTooltip>
-              )}
-              <Typography sx={{ cursor: 'pointer', whiteSpace: 'pre-line' }} color='green.500'>
-                {data?.name}
-              </Typography>
-            </Box>
-          )
-        }),
+        cellRenderer: memo(({ data }) => <Typography>{data?.name}</Typography>),
       }
     }
-    if (el.field === 'cost') {
+    if (el.field === 'sum') {
       return {
         ...el,
-        headerName: 'Narxi',
+        headerName: 'Summa',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='cost' />),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='sum' />),
       }
     }
-    if (el.field === 'discount_cost') {
+    if (el.field === 'category') {
       return {
         ...el,
-        headerName: 'Цена со скидкой',
+        headerName: 'Kategoriya',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='discountCost' />),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='category' />),
+      }
+    }
+    if (el.field === 'retail_price') {
+      return {
+        ...el,
+        headerName: 'Sotish narxi',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='retail_price' />),
+      }
+    }
+    if (el.field === 'vat') {
+      return {
+        ...el,
+        headerName: 'QQS',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='%' withDevider {...p} type='murkup' />),
+      }
+    }
+    if (el.field === 'vat_price') {
+      return {
+        ...el,
+        headerName: 'QQS narxi',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='murkup_price' />),
+      }
+    }
+    if (el.field === 'supply_price') {
+      return {
+        ...el,
+        headerName: 'Sotib olish narxi',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='supply_price' />),
       }
     }
     if (el.field === 'status') {
@@ -140,56 +153,46 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
       }
     }
 
-    if (el.field === 'shop_name') {
+    if (el.field === 'manufacturer') {
       return {
         ...el,
         headerName: "Do'kon nomi",
         colId: el.field,
-        cellRenderer: memo(({ type, rowIndex, data }) => (
-          <Typography style={{ whiteSpace: 'pre-line' }} id={`product-${type}-${rowIndex}`}>
-            {data?.shop?.name}
-          </Typography>
-        )),
+        cellRenderer: memo(({ type, rowIndex, data }) => <Typography>{data?.manufacturer}</Typography>),
       }
     }
-    if (el.field === 'preparation_time') {
+
+    if (el.field === 'barcode') {
       return {
         ...el,
-        headerName: 'Tayyorlanish vaqti',
+        headerName: 'Shtix-kod',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='минут' withDevider {...p} type='preparationTime' />),
+        cellRenderer: memo((p) => <SimpleText currency='' {...p} type='barcode' />),
       }
     }
-    if (el.field === 'rating_score') {
+    if (el.field === 'product_variability') {
       return {
         ...el,
-        headerName: 'Reyting',
+        headerName: 'Ishlab chiqaruvchi',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='ratingScore' />),
+        cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='product_variability' />),
       }
     }
-    if (el.field === 'comments_count') {
-      return {
-        ...el,
-        headerName: 'Sharxlar soni',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='commentsCount' />),
-      }
-    }
+
     if (el.field === 'quantity') {
       return {
         ...el,
-        headerName: 'Soni',
+        headerName: 'Miqdori',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='quantity' />),
       }
     }
-    if (el.field === 'product_lifetime') {
+    if (el.field === 'expire_date') {
       return {
         ...el,
-        headerName: 'Mahsulot muddati',
+        headerName: 'Muddati',
         colId: el.field,
-        cellRenderer: memo((p) => <TimeCell {...p} type='sellDate' format='DD.MM.YYYY HH:mm' />),
+        cellRenderer: memo((p) => <TimeCell {...p} type='expire_date' format='DD.MM.YYYY HH:mm' />),
       }
     }
     if (el.field === 'actions') {

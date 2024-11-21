@@ -36,7 +36,7 @@ const PhoneNumber = ({ name, required, country = countries[0], setCountry, setVa
               alignItems='center'
               justifyContent='center'
               textAlign='center'
-              fontFamily='LeagueSpartan'
+              fontFamily='Gilroy'
               fontWeight={500}
               fontSize={16}
               lineHeight='26px'
@@ -87,7 +87,7 @@ const PhoneNumber = ({ name, required, country = countries[0], setCountry, setVa
                   py={2}
                   px={3}
                   color='dark.500'
-                  fontFamily='LeagueSpartan'
+                  fontFamily='Gilroy'
                   fontWeight={600}
                   fontSize={16}
                   lineHeight='20px'

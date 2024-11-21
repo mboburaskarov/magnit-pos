@@ -72,7 +72,7 @@ export const useStyles = makeStyles((theme) => ({
     height: 'auto',
     cursor: 'pointer',
     display: 'flex',
-    fontFamily: 'LeagueSpartan',
+    fontFamily: 'Gilroy',
     alignItems: 'center',
     userSelect: 'none',
     fontWeight: 600,

@@ -30,7 +30,7 @@ export default function UsersPage() {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
-      searchText: values?.search,
+      search: values?.search,
     }
   }, [status, values?.offset, values?.limit, values?.search])
 

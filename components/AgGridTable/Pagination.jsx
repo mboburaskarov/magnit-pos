@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.grey[600],
       fontSize: 16,
       lineHeight: '19px',
-      fontFamily: theme.fontFamily.LeagueSpartan,
+      fontFamily: theme.fontFamily.Gilroy,
       fontWeight: 600,
       cursor: 'pointer',
       '&[disabled]': {

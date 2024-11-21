@@ -44,7 +44,7 @@ export default function ClientsPage() {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
-      searchText: values?.search,
+      search: values?.search,
       source: sourceType === 'ALL' ? undefined : sourceType,
       group: values?.group_id,
       ordersCountFrom: values?.from_order_count,

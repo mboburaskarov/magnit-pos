@@ -28,7 +28,7 @@ export default function TransactionsPage() {
   const { columns } = useSelector((state) => state.courierstableColumns)
   const couriersFilter = useMemo(() => {
     return {
-      searchText: values?.search?.replaceAll('/', '\\'),
+      search: values?.search?.replaceAll('/', '\\'),
       offset: values?.offset || 0,
       limit: values?.limit || 10,
     }

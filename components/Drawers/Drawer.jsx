@@ -15,7 +15,7 @@ const Drawer = ({ open, setOpen, title, content }) => (
       },
     }}
   >
-    <Box fontFamily='LeagueSpartan' fontWeight={500} display='flex' alignItems='center' justifyContent='space-between' fontSize={16} px={2} pt={2} pb={2}>
+    <Box fontFamily='Gilroy' fontWeight={500} display='flex' alignItems='center' justifyContent='space-between' fontSize={16} px={2} pt={2} pb={2}>
       {title}
       <Box onClick={() => setOpen(false)}>
         <MiniCloseDialog />

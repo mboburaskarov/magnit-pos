@@ -56,7 +56,7 @@ export default function ShopsPage() {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
-      searchText: values?.search,
+      search: values?.search,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       ...(appType !== 'ALL' && { type: appType }),
       ...(status !== 'ALL' && { status }),

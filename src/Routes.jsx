@@ -35,6 +35,8 @@ export const filterNavData = (routes, urls, user_data) => {
 }
 export default function Routes() {
   const user_data = useSelector((state) => state.user)
+  console.log(user_data)
+
   const { role_actions } = user_data
   const [routeString, setRouteString] = useState([])
   const [isLoading, setIsLoading] = useState(true)

@@ -4,7 +4,7 @@ import typography from './typography'
 export const theme = ({ mode, palette }) => {
   const fontFamily = {
     inter: '"Inter", sans-serif',
-    LeagueSpartan: 'LeagueSpartan',
+    Gilroy: 'Gilroy',
   }
   return {
     mode,
@@ -69,7 +69,7 @@ export const theme = ({ mode, palette }) => {
         styleOverrides: {
           root: {},
           label: {
-            fontFamily: fontFamily.LeagueSpartan,
+            fontFamily: fontFamily.Gilroy,
             fontWeight: 400,
             fontSize: 18,
             lineHeight: '24px',
@@ -94,7 +94,7 @@ export const theme = ({ mode, palette }) => {
         },
         styleOverrides: {
           root: {
-            fontFamily: fontFamily.LeagueSpartan,
+            fontFamily: fontFamily.Gilroy,
             fontSize: 16,
             fontWeight: 600,
             lineHeight: '27px',
@@ -266,7 +266,7 @@ export const theme = ({ mode, palette }) => {
             fontWeight: '400 !important',
             fontSize: 18,
             lineHeight: '24px',
-            fontFamily: fontFamily.LeagueSpartan,
+            fontFamily: fontFamily.Gilroy,
             marginTop: 3,
           },
         },
@@ -283,13 +283,13 @@ export const theme = ({ mode, palette }) => {
             color: palette.black,
           },
           h1: {
-            fontFamily: fontFamily.LeagueSpartan,
+            fontFamily: fontFamily.Gilroy,
             color: palette.black,
           },
           h2: {
             fontSize: 24,
             lineHeight: '28px',
-            fontFamily: fontFamily.LeagueSpartan,
+            fontFamily: fontFamily.Gilroy,
             color: palette.black,
           },
           h4: {
@@ -359,7 +359,7 @@ export const theme = ({ mode, palette }) => {
             fontSize: 16,
             lineHeight: '19px',
             fontWeight: 600,
-            fontFamily: fontFamily.LeagueSpartan,
+            fontFamily: fontFamily.Gilroy,
             textAlign: 'center',
           },
           arrow: {
@@ -653,7 +653,7 @@ export const theme = ({ mode, palette }) => {
             fontWeight: 600,
             lineHeight: '19px',
             color: palette.grey[600],
-            fontFamily: fontFamily.LeagueSpartan,
+            fontFamily: fontFamily.Gilroy,
           },
           deleteIcon: {
             width: 24,

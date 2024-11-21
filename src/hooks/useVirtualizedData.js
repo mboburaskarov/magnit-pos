@@ -13,7 +13,7 @@ export default function useVirtualizedData(request, search, page = 1, id, filter
     request({
       limit: filters?.limit || 10,
       offset: (page - 1) * (filters?.limit || 10),
-      searchText: search,
+      search: search,
       ...filters,
     })
       .then((res) => {
