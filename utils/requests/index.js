@@ -1,9 +1,8 @@
-import { authRequest, authRequest2, fileUploadRequest, request, yandexMapsRequest } from '../axios'
+import { authRequest, fileUploadRequest, request, yandexMapsRequest } from '../axios'
 import * as qs from 'qs'
 
 export const requests = {
-  logIn2: (data) => authRequest.post(`api/auth/sign-in-admin`, data),
-  logIn: (data) => authRequest2.post(`v1/login`, data),
+  logIn: (data) => authRequest.post(`v1/login`, data),
   getUserInfo: () => request.get(`api/auth/get-user-information`),
 
   //category
@@ -41,7 +40,7 @@ export const requests = {
   deleteComment: (id) => request.delete(`api/admin/comments/${id}`),
 
   //products
-  getAllProducts: (filter) => request.get(`api/admin/products${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllProducts: (filter) => request.get(`v1/product/get-list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createProduct: (data) => request.post(`api/admin/products`, data),
   getSingleProduct: (id) => request.get(`api/admin/products/${id}`),
   getSingleProductHistory: (filter) => request.get(`api/admin/products-status${qs.stringify(filter, { addQueryPrefix: true })}`),

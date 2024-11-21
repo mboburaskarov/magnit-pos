@@ -96,7 +96,7 @@ export default function MapSelect({ label, onChange, defaultValue, onlyShow, hei
                     py={1}
                     px={3}
                     color='grey.600'
-                    fontFamily='LeagueSpartan'
+                    fontFamily='Gilroy'
                     fontWeight={600}
                     fontSize={16}
                     lineHeight='20px'
@@ -113,7 +113,7 @@ export default function MapSelect({ label, onChange, defaultValue, onlyShow, hei
                     py={2}
                     px={3}
                     color='grey.600'
-                    fontFamily='LeagueSpartan'
+                    fontFamily='Gilroy'
                     fontWeight={600}
                     fontSize={16}
                     lineHeight='20px'

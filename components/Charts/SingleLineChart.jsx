@@ -32,7 +32,7 @@ const Body = ({ children, isLoading, isEmpty }) => (
     sx={(theme) => ({
       width: '100%',
       height: '100%',
-      fontFamily: theme.fontFamily.LeagueSpartan,
+      fontFamily: theme.fontFamily.Gilroy,
       fontWeight: 600,
       fontSize: 14,
       lineHeight: '17px',
@@ -106,7 +106,7 @@ export default function SingleBarChart({
                   fontSize: 22,
                   lineHeight: '30px',
                   fontWeight: 600,
-                  fontFamily: theme.fontFamily.LeagueSpartan,
+                  fontFamily: theme.fontFamily.Gilroy,
                   color: theme.palette.dark[500],
                 })}
               >

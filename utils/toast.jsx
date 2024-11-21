@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: ({ primary }) => (primary ? 18 : 16),
     lineHeight: '19px',
     display: 'flex',
-    fontFamily: theme.fontFamily.LeagueSpartan,
+    fontFamily: theme.fontFamily.Gilroy,
     color: ({ primary }) => (primary ? 'white' : theme.palette.grey[600]),
     textAlign: 'left',
     '& a': {
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 17,
     lineHeight: '20px',
     display: 'flex',
-    fontFamily: theme.fontFamily.LeagueSpartan,
+    fontFamily: theme.fontFamily.Gilroy,
     color: ({ primary }) => (primary ? 'white' : theme.palette.grey[400]),
     textAlign: 'left',
     '& a': {

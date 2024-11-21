@@ -57,7 +57,7 @@ export const generateCustomStyles = (props = {}) => {
         ? `0 0 0 2px red`
         : `0 0 0 ${solidBorder ? 1 : 0}px ${dashed ? 'transparent' : palette.grey[300]}`,
       border: dashed && `1px dashed ${palette.grey[300]}`,
-      fontFamily: 'LeagueSpartan',
+      fontFamily: 'Gilroy',
       cursor: state.isMulti ? 'text' : 'pointer',
     }),
     input: (provided) => ({
@@ -66,7 +66,7 @@ export const generateCustomStyles = (props = {}) => {
       padding: '4px 16px',
       fontSize: '18px !important',
       fontWeight: 600,
-      fontFamily: 'LeagueSpartan',
+      fontFamily: 'Gilroy',
       color: `${palette.grey[600]} !important`,
       '& input': {
         font: 'inherit',
@@ -80,7 +80,7 @@ export const generateCustomStyles = (props = {}) => {
       lineHeight: '19px',
       fontWeight: 600,
       color: palette.grey[400],
-      fontFamily: 'LeagueSpartan',
+      fontFamily: 'Gilroy',
       whiteSpace: placeholderWrap ? 'wrap' : 'noWrap',
     }),
     singleValue: (provided) => ({
@@ -88,7 +88,7 @@ export const generateCustomStyles = (props = {}) => {
       paddingLeft: 16,
       fontSize: 20,
       fontWeight: 500,
-      fontFamily: 'LeagueSpartan',
+      fontFamily: 'Gilroy',
       color: palette.dark[500],
       alignItems: 'center',
       lineHeight: '28px',
@@ -103,7 +103,7 @@ export const generateCustomStyles = (props = {}) => {
       height: 40,
       borderRadius: 12,
       backgroundColor: white ? palette.grey[100] : palette.background.default,
-      fontFamily: 'LeagueSpartan',
+      fontFamily: 'Gilroy',
       cursor: 'pointer',
     }),
     multiValueLabel: (provided, state) => ({
@@ -179,7 +179,7 @@ export const generateCustomStyles = (props = {}) => {
       fontSize: 16,
       lineHeight: '19px',
       fontWeight: 600,
-      fontFamily: 'LeagueSpartan',
+      fontFamily: 'Gilroy',
       padding: 16,
     }),
     option: (base, state) => ({
@@ -191,7 +191,7 @@ export const generateCustomStyles = (props = {}) => {
       fontSize: 16,
       lineHeight: '19px',
       fontWeight: 600,
-      fontFamily: 'LeagueSpartan',
+      fontFamily: 'Gilroy',
       color: palette.grey[600],
       cursor: 'pointer',
       backgroundColor: state.isFocused ? palette.grey[101] : state.isFocused ? palette.orange[50] : 'transparent',

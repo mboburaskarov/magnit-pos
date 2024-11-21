@@ -52,7 +52,7 @@ export default function ProductsPage() {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
-      searchText: values?.search,
+      search: values?.search,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       dbId: values?.shop_id,
       category: values?.category_id,
@@ -101,6 +101,8 @@ export default function ProductsPage() {
       console.log('err', err)
     },
   })
+  console.log(productsList?.data?.data?.data)
+
   const { mutate: rejectProduct } = useMutation(requests.rejectProduct, {
     onSuccess: () => {
       refetch()
@@ -262,7 +264,7 @@ export default function ProductsPage() {
             id='products-main-table'
             tableSettings
             columns={tableColumns}
-            data={productsList?.data?.products || []}
+            data={productsList?.data?.data?.data || []}
             isDataLoading={isFetchingproductsList || productsListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {

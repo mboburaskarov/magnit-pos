@@ -19,12 +19,12 @@ export default function Navbar() {
   const classes = navbarStyles({ isOpen })
   const dispatch = useDispatch()
   const access_token = localStorage.getItem('access_token')
-  const { data: userInfo } = useQuery('userInfo', () => requests.getUserInfo(), { enabled: !!access_token })
-  const { data: rolesData } = useQuery('rolesData', () => requests.getAllRoles(), { enabled: !!userInfo })
-  const findRole = rolesData?.data?.orders?.find((item) => item?.name === userInfo?.data?.type)
-  const { data: roleActions } = useQuery('roleActions', () => requests.getSingleRoleActions({ roleId: findRole?._id }), {
-    enabled: !!findRole,
-  })
+  // const { data: userInfo } = useQuery('userInfo', () => requests.getUserInfo(), { enabled: !!access_token })
+  // const { data: rolesData } = useQuery('rolesData', () => requests.getAllRoles(), { enabled: !!userInfo })
+  // const findRole = rolesData?.data?.orders?.find((item) => item?.name === userInfo?.data?.type)
+  // const { data: roleActions } = useQuery('roleActions', () => requests.getSingleRoleActions({ roleId: findRole?._id }), {
+  // enabled: !!findRole,
+  // })
   const [currentRoutes, setCurrentRoutes] = useState(null)
   const [isUserOpen, setIsUserOpen] = useState(null)
   const currentRoutesRef = useRef(currentRoutes)
@@ -34,11 +34,11 @@ export default function Navbar() {
   useDeepCompareEffect(() => {
     if (currentRoutes) currentRoutesRef.current = currentRoutes
   }, [currentRoutes])
-  useEffect(() => {
-    if (userInfo?.data && roleActions?.data) {
-      dispatch(setUserData({ ...userInfo?.data, role_actions: roleActions?.data[0]?.actions }))
-    }
-  }, [roleActions?.data, userInfo?.data])
+  // useEffect(() => {
+  //   if (userInfo?.data && roleActions?.data) {
+  //     dispatch(setUserData({ ...userInfo?.data, role_actions: roleActions?.data[0]?.actions }))
+  //   }
+  // }, [roleActions?.data, userInfo?.data])
   const currentRoutesMemoized = useMemo(() => currentRoutes || currentRoutesRef?.current, [currentRoutesRef, currentRoutes])
   const routeString = []
   user_data?.role_actions?.forEach((item) => {

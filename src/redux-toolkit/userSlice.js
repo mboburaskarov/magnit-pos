@@ -4,17 +4,17 @@ const userData = createSlice({
   name: 'userData',
   initialState: {
     fullName: 'Buchet User',
-    type: 'NO ROLE',
+    type: 'SUPER_ADMIN',
     phone: '',
     id: 'undefined',
     role_actions: [],
   },
   reducers: {
     setUserData(state, action) {
-      state.fullName = action.payload.fullName
-      state.type = action.payload.type
+      state.fullName = `${action.payload.first_name} ${action.payload.last_name}`
+      state.type = 'SUPER_ADMIN'
       state.phone = action.payload.phone
-      state.id = action.payload._id
+      state.id = action.payload.id
       state.role_actions = action.payload.role_actions
     },
   },

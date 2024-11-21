@@ -48,7 +48,7 @@
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  font-family: 'LeagueSpartan';
+  font-family: 'Gilroy';
 }
 
 .custom-group-cell {
@@ -61,7 +61,7 @@
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  font-family: 'LeagueSpartan';
+  font-family: 'Gilroy';
 
   white-space: pre-wrap;
 }
@@ -126,7 +126,7 @@
   font-size: 20px;
   line-height: 28px;
   font-weight: 500;
-  font-family: 'LeagueSpartan';
+  font-family: 'Gilroy';
 
   text-align: left;
 }
@@ -193,7 +193,7 @@
 
 .ag-theme-alpine .ag-menu-option-text {
   padding: 0;
-  font-family: 'LeagueSpartan';
+  font-family: 'Gilroy';
 
   font-style: normal;
   font-weight: 600;
@@ -313,7 +313,7 @@
 .no-rows-root h3 {
   text-align: center;
   font-weight: 600;
-  font-family: 'LeagueSpartan', sans-serif;
+  font-family: 'Gilroy', sans-serif;
   font-size: 24px;
   line-height: 28px;
   display: flex;
@@ -324,7 +324,7 @@
 
 .no-rows-root p {
   font-size: 16px;
-  font-family: 'LeagueSpartan';
+  font-family: 'Gilroy';
 
   font-weight: 600;
   line-height: 19px;
@@ -401,7 +401,7 @@
 }
 
 .ag-dnd-ghost-label {
-  font-family: 'LeagueSpartan';
+  font-family: 'Gilroy';
 
   font-style: normal;
   font-weight: 600;
@@ -454,7 +454,7 @@
   font-size: 16px;
   font-weight: 600;
   padding: 12px;
-  font-family: 'LeagueSpartan';
+  font-family: 'Gilroy';
 
   display: flex;
   align-items: center;

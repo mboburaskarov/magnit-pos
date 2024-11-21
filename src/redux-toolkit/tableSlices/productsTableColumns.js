@@ -3,7 +3,7 @@ import arrayMove from '../../../utils/arrayMove'
 
 const columns = [
   {
-    field: 'photo',
+    field: 'main_photo',
     hide: false,
     minWidth: 70,
     width: 80,
@@ -12,49 +12,38 @@ const columns = [
     field: 'name',
     hide: false,
     minWidth: 70,
-    width: 310,
+    width: 370,
   },
   {
-    field: 'cost',
+    field: 'category',
+    hide: false,
+    minWidth: 70,
+    width: 170,
+  },
+
+  {
+    field: 'supply_price',
     hide: false,
     minWidth: 70,
     width: 170,
   },
   {
-    field: 'discount_cost',
+    field: 'vat',
+    hide: false,
+    minWidth: 70,
+    width: 80,
+  },
+  {
+    field: 'retail_price',
+    hide: false,
+    minWidth: 70,
+    width: 158,
+  },
+  {
+    field: 'vat_price',
     hide: false,
     minWidth: 70,
     width: 170,
-  },
-  {
-    field: 'status',
-    hide: false,
-    minWidth: 70,
-    width: 158,
-  },
-  {
-    field: 'shop_name',
-    hide: false,
-    minWidth: 70,
-    width: 200,
-  },
-  {
-    field: 'preparation_time',
-    hide: false,
-    minWidth: 70,
-    width: 158,
-  },
-  {
-    field: 'rating_score',
-    hide: false,
-    minWidth: 70,
-    width: 158,
-  },
-  {
-    field: 'comments_count',
-    hide: false,
-    minWidth: 70,
-    width: 176,
   },
   {
     field: 'quantity',
@@ -63,11 +52,43 @@ const columns = [
     width: 150,
   },
   {
-    field: 'product_lifetime',
+    field: 'sum',
     hide: false,
     minWidth: 70,
-    width: 200,
+    width: 170,
   },
+  {
+    field: 'manufacturer',
+    hide: false,
+    minWidth: 70,
+    width: 290,
+  },
+  // {
+  //   field: 'status',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 158,
+  // },
+  {
+    field: 'expire_date',
+    hide: false,
+    minWidth: 70,
+    width: 250,
+  },
+
+  {
+    field: 'barcode',
+    hide: false,
+    minWidth: 70,
+    width: 176,
+  },
+
+  // {
+  //   field: 'product_variability',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 200,
+  // },
   {
     field: 'actions',
     hide: false,

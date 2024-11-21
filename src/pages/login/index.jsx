@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 400,
     lineHeight: '24px',
     color: theme.palette.grey[500],
-    fontFamily: theme.fontFamily.LeagueSpartan,
+    fontFamily: theme.fontFamily.Gilroy,
   },
   bgContainer: {
     // width: "100%",
@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     lineHeight: '42px',
     color: theme.palette.black,
-    fontFamily: theme.fontFamily.LeagueSpartan,
+    fontFamily: theme.fontFamily.Gilroy,
   },
   link: {
     fontSize: 16,
@@ -101,14 +101,17 @@ export default function LoginPage() {
   const [fcmToken, setFcmToken] = useState(null)
   useEffect(() => {
     fetchToken(setFcmToken)
-    localStorage.clear()
+    // localStorage.clear()
     return
   }, [])
-  const { mutate: logIn, isLoading: logInLoading } = useMutation(requests.logIn2, {
+  const { mutate: logIn, isLoading: logInLoading } = useMutation(requests.logIn, {
     onSuccess: async ({ data }) => {
-      localStorage.setItem('access_token', data.token)
-      localStorage.setItem('user_data', JSON.stringify(data.user))
-      dispatch(setUserData(data?.user))
+      console.log(data)
+
+      const userData = data.data
+      localStorage.setItem('access_token', userData.token)
+      localStorage.setItem('user_data', JSON.stringify(userData.employee))
+      dispatch(setUserData(userData?.employee))
       navigate('/redirect')
     },
     onError: (err) => {
@@ -126,7 +129,7 @@ export default function LoginPage() {
 
     data.phone_number = country.dial_code + data.phone_number.replace(/[X() ]/g, '')
 
-    logIn({ phone: data.phone_number, password: data.password, fcmToken })
+    logIn({ data: { phone: data.phone_number, password: data.password, fcmToken } })
   }
 
   const onError = (err) => {

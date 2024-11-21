@@ -141,7 +141,7 @@ export default function ReportMainPage() {
           ))}
         </Box>
         <Box sx={(theme) => ({ p: 3, boxShadow: theme.boxShadow['16-8'], borderRadius: 4, width: '100%' })} justifyContent='flex-end' mt={2} width='100%'>
-          <Typography mb={2} sx={(theme) => ({ fontSize: 24, lineHeight: '28px', fontFamily: theme.fontFamily.LeagueSpartan, color: theme.palette.black })}>
+          <Typography mb={2} sx={(theme) => ({ fontSize: 24, lineHeight: '28px', fontFamily: theme.fontFamily.Gilroy, color: theme.palette.black })}>
             Всего заказавших: {totalActiveUsers} клиентов
           </Typography>
           <Box width='100%' columnGap={2} display='inline-flex'>

@@ -149,7 +149,7 @@ export const headerStyles = makeStyles((theme) => {
       paddingRight: '32px !important',
       fontWeight: 400,
       color: theme.palette.dark[500],
-      fontFamily: theme.fontFamily.LeagueSpartan,
+      fontFamily: theme.fontFamily.Gilroy,
       transition: '0.3s',
       cursor: 'pointer',
       '&.Mui-selected': {
@@ -207,7 +207,7 @@ export const headerStyles = makeStyles((theme) => {
       paddingRight: 32,
       fontWeight: 900,
       color: theme.palette.dark[500],
-      fontFamily: theme.fontFamily.LeagueSpartan,
+      fontFamily: theme.fontFamily.Gilroy,
       transition: '0.3s',
       '& svg': {
         marginRight: 10,
@@ -285,7 +285,7 @@ export const headerStyles = makeStyles((theme) => {
       margin: 0,
       lineHeight: '19px',
       fontWeight: 600,
-      fontFamily: "'LeagueSpartan', sans-serif",
+      fontFamily: "'Gilroy', sans-serif",
       color: theme.palette.grey[400],
       fontSize: 16,
       transition: 'all .2s',

@@ -33,7 +33,7 @@ export default function VendorsPage() {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
-      searchText: values?.search,
+      search: values?.search,
       ...(status !== 'ALL' && { status }),
     }
   }, [status, values?.offset, values?.limit, values?.search, values?.from_price, values?.to_price, values?.hashtag_id, values?.category_id, values?.shop_id])

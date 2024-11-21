@@ -11,18 +11,18 @@ const useStyles = makeStyles((theme) => ({
   title: {
     display: 'inline-flex',
     alignItems: 'center',
-    fontFamily: 'LeagueSpartan',
+    fontFamily: 'Gilroy',
     fontWeight: 'bold',
     '& a': {
       display: 'inline-flex',
       alignItems: 'center',
       marginRight: 16,
-      fontFamily: 'LeagueSpartan',
+      fontFamily: 'Gilroy',
     },
     '& span': {
       color: theme.palette.grey[400],
       marginRight: 8,
-      fontFamily: 'LeagueSpartan',
+      fontFamily: 'Gilroy',
       paddingRight: 10,
     },
   },

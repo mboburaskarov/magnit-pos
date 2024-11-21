@@ -30,14 +30,14 @@ const useStyles = makeStyles((theme) =>
         textDecoration: 'none',
       },
       p: {
-        fontFamily: 'LeagueSpartan',
+        fontFamily: 'Gilroy',
         fontSize: 14,
         lineHeight: '16px',
         fontWeight: 500,
         color: theme.palette.text.primary,
       },
       'h1, h2, h3, h4, h5, h5': {
-        fontFamily: 'LeagueSpartan',
+        fontFamily: 'Gilroy',
         color: theme.palette.text.primary,
       },
       '#root': {
