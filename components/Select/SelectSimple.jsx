@@ -63,7 +63,7 @@ export const useStyles = makeStyles((theme) => ({
     width: '40px',
     height: '40px',
     marginRight: 16,
-    borderRadius: '50px',
+    borderRadius: '40px',
     color: theme.palette.white,
     backgroundColor: theme.palette.green[600],
   },
@@ -215,7 +215,6 @@ function SelectSimple({
     placeholderWrap: placeholderWrap || true,
     dashed,
   })
-
   return (
     <Box className={cls.root} width={fullWidth && '100%'} {...boxStyle} maxWidth={maxWidth}>
       {label && (

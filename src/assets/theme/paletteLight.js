@@ -32,6 +32,7 @@ const paletteLight = {
   },
   bunker: {
     100: '#ECEDF2',
+    300: '#B1B7C8',
     400: '#868FAA',
     950: '#111217',
   },

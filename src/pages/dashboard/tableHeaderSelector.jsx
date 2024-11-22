@@ -109,8 +109,6 @@ export default function tableHeaderSelector({
           const isExpress = data?.isExpress
           const untilPickup = data.status === 'PAID' || data.status === 'CHECKING' || data.status === 'IN_PROGRESS'
           const untilDelivery = data.status === 'APPROVED' || data.status === 'IN_DELIVERY'
-          console.log(data, 'data')
-
           return (
             <Box
               sx={{ bgcolor: isExpress ? '#F7900920' : 'transparent', py: 1, px: 1.5, borderRadius: 3 }}

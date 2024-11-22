@@ -26,7 +26,7 @@ const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandle
             border: 0,
           },
           '& .MuiInputBase-root': {
-            borderRadius: right ? '0 16px 16px 0' : '16px 0 0 16px',
+            borderRadius: right ? '0 40px 40px 0' : '40px 0 0 40px',
           },
           '& input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button': {
             appearance: 'none',
@@ -120,7 +120,7 @@ function InputRange({
               defaultValue=''
               required={required}
             />
-            <Box sx={{ width: 2, background: 'grey.200' }} />
+            {/* <Box sx={{ width: 2, background: 'grey.200' }} /> */}
             <Controller
               render={({ field: { onChange: onControllerChange, value }, ...rest }) => (
                 <InputRangeComponent

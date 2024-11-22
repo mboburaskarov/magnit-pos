@@ -21,8 +21,6 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
 }
 
 const Image = ({ data, rowIndex, setImages }) => {
-  console.log(data)
-
   return (
     <Box
       sx={{
@@ -71,8 +69,6 @@ const Image = ({ data, rowIndex, setImages }) => {
 }
 
 export default function tableHeaderSelector({ productsColumns, setImages, setOpenConfirmDialog, setIsDrawerOpen }) {
-  console.log('hi', productsColumns)
-
   const columns = productsColumns?.map((el) => {
     if (el.field === 'main_photo') {
       return {

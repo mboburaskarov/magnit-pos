@@ -23,7 +23,6 @@ export const SocketProvider = ({ children }) => {
           warning(data?.error)
         }
       }
-      console.log(data)
     })
 
     return () => {

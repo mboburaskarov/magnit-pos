@@ -19,11 +19,18 @@ const useStyles = makeStyles((theme) => ({
     width: ({ maxWidth }) => maxWidth,
     backgroundColor: theme.palette.grey[100],
     color: theme.palette.grey[400],
+
     '&:hover': {
       backgroundColor: theme.palette.grey[101],
     },
     '& .MuiOutlinedInput-input': {
       padding: '15.5px 5px',
+    },
+    '& .MuiInputBase-input::placeholder': {
+      color: theme.palette.bunker[300], // Change placeholder color
+      fontSize: '18px', // Adjust font size
+      opacity: 1,
+      lineHeight: '24px',
     },
     '& .Mui-error:not(.Mui-focused)': {
       border: `2px solid ${theme.palette.red[500]}`,
@@ -51,6 +58,11 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiOutlinedInput-root': {
       backgroundColor: theme.palette.background.default,
       boxShadow: `inset 0 0 0 1px ${theme.palette.grey[300]}`,
+    },
+  },
+  grey: {
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: '#F8F8F9',
     },
   },
   inputEndText: {
@@ -106,7 +118,7 @@ const InputSearch = ({
         variant='outlined'
         placeholder={placeholder}
         fullWidth={fullWidth || false}
-        className={`${classes.input} ${white ? classes.white : ''}`}
+        className={`${classes.input} ${white ? classes.white : classes.grey}`}
         onChange={(e) => (uncontrolled ? setValue(e.target.value) : onChange(e))}
         onFocus={() => {
           if (onFocus) onFocus()
@@ -117,7 +129,7 @@ const InputSearch = ({
           InputProps: {
             startAdornment: <InputAdornment position='start'>{icon || <SearchIcon />}</InputAdornment>,
             endAdornment: (
-              <InputAdornment position='end'>
+              <InputAdornment position='absolute'>
                 {(value || searchTerm) && (
                   <div className={classes.resetIcon}>
                     {adornmentText ? <span>{adornmentText}</span> : ''}

@@ -15,7 +15,6 @@ function LayoutHeader() {
   const firstName = userData?.fullName?.split(' ')?.[0]
   const lastName = userData?.fullName?.split(' ')?.[1]
   const classes = headerStyles({ isOpen })
-  console.log(userData)
 
   return (
     <Box

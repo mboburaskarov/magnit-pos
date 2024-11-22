@@ -27,6 +27,9 @@ import CheckAccess from '../../../components/CheckAccess'
 import StyledDialog from '../../../components/Dialogs/StyledDialog'
 import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
 import PlusIcon from '../../assets/icons/PlusIcon'
+import EditorIcon from '../../assets/icons/EditorIcon'
+import FilterTableRowsMenu from './FilterTableRowsMenu'
+import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
 
 export default function ProductsPage() {
   const dispatch = useDispatch()
@@ -40,6 +43,7 @@ export default function ProductsPage() {
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
+  const [filterTableRowsMenu, setFilterTableRowsMenu] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(null)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const tableColumns = tableHeaderSelector({
@@ -49,6 +53,8 @@ export default function ProductsPage() {
     setIsDrawerOpen,
   })
   const productsListFilter = useMemo(() => {
+    console.log(values)
+
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
@@ -101,7 +107,6 @@ export default function ProductsPage() {
       console.log('err', err)
     },
   })
-  console.log(productsList?.data?.data?.data)
 
   const { mutate: rejectProduct } = useMutation(requests.rejectProduct, {
     onSuccess: () => {
@@ -215,14 +220,14 @@ export default function ProductsPage() {
         </Box>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'24px'} width='100%'>
           <Box display={'flex'}>
-            <Box width='100%' sx={{ '& .MuiInputBase-root, .MuiFormControl-root': { border: 'none', height: 40 } }}>
+            <Box width='100%' sx={{ '& .MuiInputBase-root, .MuiFormControl-root': { border: 'none', width: '400px', height: 48 } }}>
               <InputSearch id='producrs-search' name='search' placeholder='Qidirish: mahsulot, kategoriya, shtrix-kod' uncontrolled />
             </Box>
 
             <Box minWidth={106} ml={'16px'}>
               <Button
                 sx={{
-                  height: '40px',
+                  height: '48px',
                   padding: 0,
                   bgcolor: '#fff',
                   border: '1px solid #ECEDF2',
@@ -243,22 +248,31 @@ export default function ProductsPage() {
               </Button>
             </Box>
           </Box>
-          <CheckAccess id={'product-create'}>
-            <Box minWidth={156}>
-              <Button
-                sx={{ height: '40px' }}
-                onClick={() => navigate('/products/create')}
-                fullWidth
-                startIcon={<PlusIcon />}
-                variant='contained'
-                color='primary'
-              >
-                Yangi qo'shish
-              </Button>
+          <Box display={'flex'} alignItems={'center'}>
+            <Box
+            // onClick={() => setFilterTableRowsMenu(true)}
+            >
+              {/* <EditorIcon /> */}
+              <ColumnsFilterButton columns={tableColumns} isCatalog={false} />
             </Box>
-          </CheckAccess>
+            <CheckAccess id={'product-create'}>
+              <Box minWidth={156}>
+                <Button
+                  sx={{ height: '48px' }}
+                  onClick={() => navigate('/products/create')}
+                  fullWidth
+                  startIcon={<PlusIcon />}
+                  variant='contained'
+                  color='primary'
+                >
+                  Yangi qo'shish
+                </Button>
+              </Box>
+            </CheckAccess>
+          </Box>
         </Box>
         <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+        <FilterTableRowsMenu tableColumns={tableColumns} open={filterTableRowsMenu} setOpen={setFilterTableRowsMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'

@@ -138,12 +138,13 @@ export const navbarStyles = makeStyles((theme) => {
     listItem: {
       width: '220px',
       height: 50,
-      fontSize: 20,
+      fontSize: 18,
+
       margin: '10px 0',
       borderRadius: 50,
       // paddingLeft: '32px !important',
       // paddingRight: '32px !important',
-      fontWeight: 500,
+      fontWeight: 600,
       lineHeight: '28px',
       color: theme.palette.dark[500],
       fontFamily: theme.fontFamily.Gilroy,
@@ -313,8 +314,8 @@ export const navbarStyles = makeStyles((theme) => {
     itemLabel: {
       flex: '1 0 73%',
       lineHeight: '28px',
-      fontSize: 20,
-      fontWeight: 500,
+      fontSize: 18,
+      fontWeight: 600,
       color: theme.palette.dark[500],
     },
     itemArrow: {

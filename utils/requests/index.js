@@ -6,7 +6,7 @@ export const requests = {
   getUserInfo: () => request.get(`api/auth/get-user-information`),
 
   //category
-  getAllCategories: (filter) => request.get(`api/categories/parent-categories${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllCategories: (filter) => request.get(`v1/category/get-list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createCategory: (data) => request.post(`api/categories`, data),
   getAllCategoriesBuchet: (filter) => request.get(`api/categories${qs.stringify(filter, { addQueryPrefix: true })}`),
   createBillzCategory: (data) => request.post(`api/billz`, data),
@@ -58,7 +58,7 @@ export const requests = {
   refreshCouriers: (filter) => request.get(`api/admin/couriers/refresh${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //shops
-  getAllShops: (filter) => request.get(`api/admin/shops${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllShops: (filter) => request.get(`v1/store/get-list${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateShop: ({ id, data }) => request.patch(`api/admin/shops/${id}`, data),
   createShop: (data) => request.post(`api/admin/shops`, data),
   getSingleShop: (id) => request.get(`api/admin/shops/${id}`),

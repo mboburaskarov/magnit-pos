@@ -12,6 +12,8 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
   },
   headerWrapper: {
+    width: '100%',
+
     padding: '20px 0 0 20px',
   },
   wrapper: {

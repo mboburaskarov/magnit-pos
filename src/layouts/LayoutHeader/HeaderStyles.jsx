@@ -26,7 +26,8 @@ export const headerStyles = makeStyles((theme) => {
     },
     searchInput: {
       '&  .MuiInputBase-root': {
-        border: 'none !important',
+        backgroundColor: '#F8F8F9',
+        // border: 'none !important',
       },
     },
     list: {

@@ -109,7 +109,6 @@ export default function tableHeaderSelector({
           const isExpress = data?.isExpress
           const untilPickup = data.status === 'PAID' || data.status === 'CHECKING' || data.status === 'IN_PROGRESS'
           const untilDelivery = data.status === 'APPROVED' || data.status === 'IN_DELIVERY'
-          console.log(data, 'data')
 
           return (
             <Box

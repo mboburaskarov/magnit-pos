@@ -67,8 +67,6 @@ export default function ReportTraficPage() {
     refetchTableData()
   }, [referalsTableFilter])
 
-  console.log('tableData', tableData?.data?.referals)
-
   return (
     <LoadingContainer readyState={!isLoading}>
       <Box display='flex' flexDirection='column' position='relative' pt={6} px={4} pb={3}>

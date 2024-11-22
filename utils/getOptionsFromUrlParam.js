@@ -3,7 +3,7 @@ export default function getOptionsFromUrlParam(urlParam, optionsList, objectKey 
     optionsList
       ? {
           id: item,
-          [objectKey]: optionsList.find((option) => option?._id === item)?.[objectKey] ?? 'not found',
+          [objectKey]: optionsList.find((option) => option?.id === item)?.[objectKey] ?? 'not found',
         }
       : { id: item, name: item }
   )

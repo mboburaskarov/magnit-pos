@@ -1,4 +1,4 @@
-import { Box, Button, IconButton } from '@mui/material'
+import { Box, Button, IconButton, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
@@ -9,9 +9,8 @@ import SelectSimple from '../../../components/Select/SelectSimple'
 import InputRange from '../../../components/Inputs/InputRange'
 import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
 import * as qs from 'qs'
-import StyledTooltip from '../../../components/StyledTooltip'
-import ExpressIcon from '../../assets/icons/ExpressIcon'
-import LazySelect from '../../../components/Select/LazySelect'
+import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
+import CloseIcon from '../../assets/icons/CloseIcon'
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -27,11 +26,11 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const onSubmit = (data) => {
     setRegions(data.regions || [])
     const requestBody = {
-      category_id: data.category?._id || undefined,
+      category_id: data.category?.id || undefined,
       from_price: data.from_price || undefined,
       to_price: data.to_price || undefined,
-      shop_id: data.shop?._id || undefined,
-      hashtag_id: data.hashtag?._id || undefined,
+      shop_id: data.shop?.id || undefined,
+      hashtag_id: data.hashtag?.id || undefined,
       isExpress: isExpress || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
@@ -49,9 +48,9 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
 
     reset(
       {
-        category: category_id ? getOptionsFromUrlParam(category_id, categories?.data, 'nameRu') : null,
-        hashtag: hashtag_id ? getOptionsFromUrlParam(hashtag_id, hashtags?.data, 'nameRu') : null,
-        shop: shop_id ? getOptionsFromUrlParam(shop_id, shopList?.data?.shops) : null,
+        category: category_id ? getOptionsFromUrlParam(category_id, categories?.data?.data, 'name') : null,
+        // hashtag: hashtag_id ? getOptionsFromUrlParam(hashtag_id, hashtags?.data, 'nameRu') : null,
+        shop: shop_id ? getOptionsFromUrlParam(shop_id, shopList?.data?.data) : null,
         from_price: from_price,
         to_price: to_price,
       },
@@ -65,85 +64,70 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        padding: open ? 4 : 0,
-        border: `1px solid`,
-        borderColor: 'grey.200',
-        borderRadius: 4,
-        height: open ? 'auto' : 0,
-        opacity: open ? 1 : 0,
-        transition: open ? 'padding 0.3s ease-out' : 'padding 0.1s ease-in',
-        marginTop: open ? 4 : 0,
-      }}
-    >
-      <FormProvider {...methods}>
-        <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-          <Box columnGap={3} display='inline-flex' width='100%'>
-            <SelectSimple fullWidth id='shop' name='shop' minWidth='auto' label='Mагазин' placeholder='Выберите магазин' options={shopList?.data.shops} />
+    <StyledEmptyDialog open={open} title={'Filter'} customButtons={<CloseIcon onClick={() => setOpen(false)} />}>
+      <Box
+        sx={{
+          width: '100%',
+          padding: '24px',
+        }}
+      >
+        <FormProvider {...methods}>
+          <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
+            <SelectSimple
+              fullWidth
+              id='shop'
+              name='shop'
+              white
+              minWidth='auto'
+              label="Do'kon"
+              placeholder="Do'konni tanlang"
+              getOptionLabel={(el) => el.name}
+              options={shopList?.data?.data}
+            />
             <SelectSimple
               fullWidth
               id='category'
+              white
               name='category'
               minWidth='auto'
-              label='Kатегория'
-              placeholder='Выберите категория'
-              options={categories?.data}
-              getOptionLabel={(el) => el.nameRu}
+              label='Kategoriya'
+              placeholder='Kategoriyani tanlang'
+              options={categories?.data?.data}
+              getOptionLabel={(el) => el.name}
             />
-          </Box>
-          <Box columnGap={3} display='inline-flex' width='100%'>
-            <InputRange fullWidth id='price' label='Цена' name1='from_price' name2='to_price' placeholder1='от' placeholder2='до' />
             <SelectSimple
               fullWidth
               id='hashtag'
               name='hashtag'
+              white
               minWidth='auto'
-              label='Хэштеги'
-              placeholder='Выберите хэштег'
+              label='Ishlab chiqaruvchi'
+              placeholder='Ishlab chiqaruvchini tanlang'
               options={hashtags?.data}
               getOptionLabel={(el) => el.nameRu}
             />
-          </Box>
-          <Box alignItems='flex-end' columnGap={3} display='inline-flex' width='100%'>
-            <Box width={'100%'}>
-              <LazySelect
-                slug='regions'
-                id='regions'
-                name='regions'
-                placeholder={'Выберите регион'}
-                minWidth='auto'
-                isMulti
-                filterOption={(e) => {
-                  const regions = Array.isArray(getValues('regions')) ? getValues('regions') : []
-                  const isSelected = regions?.find((item) => item?._id === e?.data?._id)
-                  if (!isSelected) {
-                    return e
-                  }
-                }}
-                request={requests.getAllRegions}
-                filters={{ limit: 100 }}
-                control={control}
-                getOptionLabel={(option) => option?.nameRu || option?.nameUz || option?.nameEn || ''}
-              />
-            </Box>
-            <Box width='100%'>
-              <Button fullWidth color='secondary' variant='contained' startIcon={<ExpressIcon />} onClick={() => setIsExpress(!isExpress)}>
-                {!isExpress ? 'Показать только экспресс букеты' : 'Показать все продукты'}
+            <InputRange fullWidth id='prixwce' label='Sotib olish narxi' name1='from_price' name2='to_price' placeholder1='dan' placeholder2='gacha' />
+            <InputRange fullWidth id='prixwce' label='Sotish narxi' name1='from_price' name2='to_price' placeholder1='dan' placeholder2='gacha' />
+            <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
+              <Button
+                sx={{ bgcolor: '#fff !important', border: '1px solid #ECEDF2' }}
+                fullWidth
+                color='secondary'
+                variant='contained'
+                disabled={!formState.isDirty}
+                onClick={resetFilter}
+              >
+                <Typography fontWeight={600} lineHeight={'24px'} fontSize={'16px'}>
+                  Standart sozlama
+                </Typography>
+              </Button>
+              <Button fullWidth variant='contained' type='submit'>
+                Saqlash
               </Button>
             </Box>
           </Box>
-          <Box columnGap={2} display='flex' width='100%' mt={4}>
-            <Button fullWidth color='secondary' variant='contained' disabled={!formState.isDirty} onClick={resetFilter}>
-              Сбросить фильтры
-            </Button>
-            <Button fullWidth variant='contained' type='submit'>
-              Применить фильтры
-            </Button>
-          </Box>
-        </Box>
-      </FormProvider>
-    </Box>
+        </FormProvider>
+      </Box>
+    </StyledEmptyDialog>
   )
 }

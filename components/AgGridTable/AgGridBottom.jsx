@@ -59,8 +59,6 @@ function AgGridBottom({
   resetTable,
   isRefreshing,
 }) {
-  console.log(offsetIndex, offsetQuery, offsetSize, download, controlledOffsetCount)
-
   return (
     <Box
       sx={(theme) => ({

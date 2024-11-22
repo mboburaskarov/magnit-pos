@@ -37,10 +37,10 @@ export const generateCustomStyles = (props = {}) => {
       minHeight: mini ? 40 : 50,
       padding: 1,
       // backgroundColor: 'inherit',
-      borderRadius: '50px',
+      borderRadius: '40px',
     }),
     control: (provided, state) => ({
-      borderRadius: '50px',
+      borderRadius: '40px',
       transition: '0.3s',
       minWidth: minWidth || 296,
       width: '100%',
@@ -56,7 +56,7 @@ export const generateCustomStyles = (props = {}) => {
         : error
         ? `0 0 0 2px red`
         : `0 0 0 ${solidBorder ? 1 : 0}px ${dashed ? 'transparent' : palette.grey[300]}`,
-      border: dashed && `1px dashed ${palette.grey[300]}`,
+      border: dashed ? `1px dashed ${palette.grey[300]}` : `1px solid ${palette.bunker[100]}`,
       fontFamily: 'Gilroy',
       cursor: state.isMulti ? 'text' : 'pointer',
     }),

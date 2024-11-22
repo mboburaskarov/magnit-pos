@@ -395,6 +395,7 @@ export const theme = ({ mode, palette }) => {
           root: {
             '& .MuiSvgIcon-root': {
               fontSize: 24,
+              fill: palette.orange[500],
             },
           },
           colorPrimary: {
@@ -503,7 +504,7 @@ export const theme = ({ mode, palette }) => {
             color: palette.grey[600],
 
             '&:hover': {
-              backgroundColor: palette.grey[101],
+              // backgroundColor: palette.grey[101],
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
               border: 'none',
@@ -533,13 +534,13 @@ export const theme = ({ mode, palette }) => {
             fontWeight: 400,
             lineHeight: '24px',
             letterSpacing: 'normal',
-            // border: '1px solid',
-            // borderColor: palette.black,
-            backgroundColor: palette.grey[50],
+            border: '1px solid transparent !important',
+            borderColor: palette.bunker[100],
+            backgroundColor: palette.white,
             height: 56,
             '&.Mui-focused': {
-              border: '1px solid',
-              borderColor: `${palette.orange[500]}!important`,
+              boxSizing: 'border-box',
+              border: `1px solid ${palette.orange[500]} !important`,
             },
             '&.Mui-error:not(.Mui-focused)': {
               border: '1px solid red',

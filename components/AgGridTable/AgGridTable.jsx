@@ -58,8 +58,6 @@ const AgGridSimpleTable = ({
   isRefreshing,
   status,
 }) => {
-  console.log(data, columns)
-
   const tableOffsetSizes = localStorage?.getItem('table_offset_sizes') ? JSON.parse(localStorage?.getItem('table_offset_sizes')) : {}
   const classes = useStyles()
   const location = useLocation()

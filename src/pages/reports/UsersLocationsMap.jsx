@@ -5,8 +5,6 @@ import { Map, ObjectManager, Polyline, YMaps } from 'react-yandex-maps'
 const center = [41.31123758475188, 69.27976554916285]
 
 export default function UsersLocationsMap({ mapInfo }) {
-  console.log('mapInfo', mapInfo)
-
   const objectManagerDestination = mapInfo?.map((el, ind) => ({
     type: 'Feature',
     id: ind,
@@ -17,8 +15,6 @@ export default function UsersLocationsMap({ mapInfo }) {
       hintContent: el?.location?.name || 'location name',
     },
   }))
-
-  console.log('objectManagerDestination', objectManagerDestination)
 
   return (
     <Box
