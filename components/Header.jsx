@@ -6,6 +6,8 @@ import BackArrowIcon from '../src/assets/icons/BackArrow'
 import { makeStyles } from '@mui/styles'
 import { useNavigate } from 'react-router-dom'
 import CheckAccess from './CheckAccess'
+import RightArrowSmallIcon from '../src/assets/icons/RightArrowSmallIcon'
+import LeftArrowIcon from '../src/assets/icons/LeftArrow'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -56,7 +58,10 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.grey[200],
     },
   },
-  spanCardTitle: {
+  spanHEaderText: {
+    fontSize: '32px',
+    lineHeight: '48px',
+    fontWeight: '700 !important',
     paddingRight: 10,
   },
 }))
@@ -122,14 +127,15 @@ function Header({
           justifyContent: 'space-between',
           alignItems: 'center',
           width: '100%',
+          height: '88px',
           borderBottom: '2px solid',
-          borderColor: '#3CA98F10',
+          borderColor: 'bunker.100',
           position: 'fixed',
           top: 0,
           left: 0,
           zIndex: 10,
           py: 4,
-          bgcolor: 'background.defaultStrong',
+          bgcolor: 'white',
         }}
       >
         <Container>
@@ -137,8 +143,22 @@ function Header({
             <Box display='flex' width='100%' alignItems='center' justifyContent='space-between'>
               <Typography variant='h1' display='inline-flex' alignItems='center'>
                 {backIcon && (
-                  <IconButton color='primary' id={backButtonId} onClick={backButtonClickHandler} sx={{ mr: 2 }}>
-                    <BackArrowIcon />
+                  <IconButton color='primary' id={backButtonId} onClick={backButtonClickHandler} sx={{ mr: 2, p: '0' }}>
+                    <Box
+                      sx={{
+                        width: '48px',
+                        height: '48px',
+                        padding: '0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 'block',
+                        borderRadius: '50%',
+                        backgroundColor: 'bunker.100',
+                      }}
+                    >
+                      <LeftArrowIcon />
+                    </Box>
                     {backText && <Typography className={classes.spanCardTitle}>{backText}</Typography>}
                   </IconButton>
                 )}
@@ -150,7 +170,7 @@ function Header({
                         {typeText}
                       </Typography>
                     )}
-                    {text}
+                    <Typography className={classes.spanHEaderText}>{text}</Typography>
                   </Typography>
                   {description && <Typography color='textSecondary'>{description}</Typography>}
                 </Box>

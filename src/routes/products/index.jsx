@@ -1,10 +1,10 @@
-import LayoutWithNavbar from '../../layouts/LayoutWithNavbar'
+import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import ProductsPage from '../../pages/products'
 import ProductReviewsPage from '../../pages/products/product-reviews'
 
 const productsRoutes = {
   path: 'products',
-  element: <LayoutWithNavbar />,
+  element: <LayoutWithHeaderNavbar />,
   children: [
     {
       path: '',

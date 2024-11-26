@@ -17,7 +17,9 @@ import CheckAccess from '../../../../components/CheckAccess'
 import { useDispatch, useSelector } from 'react-redux'
 import UserCreateDrawer from './UserCreateDrawer'
 import UserEditDrawer from './UserEditDrawer'
+import SoonPage from '../../../../components/soon'
 export default function UsersPage() {
+  return <SoonPage />
   const dispatch = useDispatch()
   const { values } = useQueryParams()
   const { columns, loading } = useSelector((state) => state.usersTableColumns)

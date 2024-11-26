@@ -11,6 +11,7 @@ import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
 import * as qs from 'qs'
 import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
 import CloseIcon from '../../assets/icons/CloseIcon'
+import { theme } from '../../assets/theme'
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -21,16 +22,19 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
 
   const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 1000, offset: 0 }))
   const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 1000, offset: 0 }))
-  const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 1000, offset: 0 }))
+  const { data: producers } = useQuery('producers', () => requests.getAllProducer({ limit: 1000, offset: 0 }))
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])
+
     const requestBody = {
-      category_id: data.category?.id || undefined,
-      from_price: data.from_price || undefined,
-      to_price: data.to_price || undefined,
-      shop_id: data.shop?.id || undefined,
-      hashtag_id: data.hashtag?.id || undefined,
+      category_id: data.category_id?.id || undefined,
+      supply_price_from: data.supply_price_from || undefined,
+      supply_price_to: data.supply_price_to || undefined,
+      retail_price_from: data.retail_price_from || undefined,
+      retail_price_to: data.retail_price_to || undefined,
+      store_id: data.store_id?.id || undefined,
+      producer: data.producer?.name || undefined,
       isExpress: isExpress || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
@@ -44,22 +48,36 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { hashtag_id, category_id, shop_id, from_price, to_price } = values
+    const { supply_price_to, retail_price_to, supply_price_from, retail_price_from, category_id, store_id, producer } = values
 
     reset(
       {
-        category: category_id ? getOptionsFromUrlParam(category_id, categories?.data?.data, 'name') : null,
-        // hashtag: hashtag_id ? getOptionsFromUrlParam(hashtag_id, hashtags?.data, 'nameRu') : null,
-        shop: shop_id ? getOptionsFromUrlParam(shop_id, shopList?.data?.data) : null,
-        from_price: from_price,
-        to_price: to_price,
+        category_id: category_id ? getOptionsFromUrlParam(category_id, categories?.data?.data)[0] : null,
+        producer: producer ? getOptionsFromUrlParam(producer, producers?.data?.data)[0] : null,
+        store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data, 'name')[0] : null,
+        supply_price_to: supply_price_to,
+        retail_price_to: retail_price_to,
+        supply_price_from: supply_price_from,
+        retail_price_from: retail_price_from,
       },
       { keepDirty: true }
     )
-  }, [values?.hashtag_id, values.category_id, values.shop_id, values.from_price, values.to_price, categories?.data, hashtags?.data, shopList?.data?.shops])
+  }, [
+    values?.producer,
+    values?.category_id,
+    values?.store_id,
+    values?.retail_price_to,
+    values?.retail_price_from,
+    values?.supply_price_to,
+    values?.supply_price_from,
+    categories,
+    producers,
+    shopList,
+  ])
 
   const resetFilter = () => {
     reset()
+    setOpen(false)
     navigate(`/products?offset=0&limit=${values?.limit || 5}`)
   }
 
@@ -69,14 +87,22 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
         sx={{
           width: '100%',
           padding: '24px',
+          '& .MuiInputBase-root': {
+            border: `1px solid`,
+            borderColor: 'bunker.100',
+          },
+          '& svg': {
+            fill: '#868FAA',
+            stroke: '#868FAA',
+          },
         }}
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
             <SelectSimple
               fullWidth
-              id='shop'
-              name='shop'
+              id='sto'
+              name='store_id'
               white
               minWidth='auto'
               label="Do'kon"
@@ -86,9 +112,9 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
             />
             <SelectSimple
               fullWidth
-              id='category'
+              id='categ'
               white
-              name='category'
+              name='category_id'
               minWidth='auto'
               label='Kategoriya'
               placeholder='Kategoriyani tanlang'
@@ -97,17 +123,25 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
             />
             <SelectSimple
               fullWidth
-              id='hashtag'
-              name='hashtag'
+              id='produ'
+              name='producer'
               white
               minWidth='auto'
               label='Ishlab chiqaruvchi'
               placeholder='Ishlab chiqaruvchini tanlang'
-              options={hashtags?.data}
-              getOptionLabel={(el) => el.nameRu}
+              options={producers?.data?.data}
+              getOptionLabel={(el) => el.name}
             />
-            <InputRange fullWidth id='prixwce' label='Sotib olish narxi' name1='from_price' name2='to_price' placeholder1='dan' placeholder2='gacha' />
-            <InputRange fullWidth id='prixwce' label='Sotish narxi' name1='from_price' name2='to_price' placeholder1='dan' placeholder2='gacha' />
+            <InputRange
+              fullWidth
+              id='prixwce'
+              label='Sotib olish narxi'
+              name1='supply_price_from'
+              name2='supply_price_to'
+              placeholder1='dan'
+              placeholder2='gacha'
+            />
+            <InputRange fullWidth id='prixwce' label='Sotish narxi' name1='retail_price_from' name2='retail_price_to' placeholder1='dan' placeholder2='gacha' />
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
                 sx={{ bgcolor: '#fff !important', border: '1px solid #ECEDF2' }}

@@ -36,7 +36,7 @@ const TextField = ({
       {!onlyDisplay && label && <Label required={required}>{label}</Label>}
       <MuiTextField
         disabled={disabled}
-        label={label}
+        label={onlyDisplay && label}
         name={name}
         id={name}
         type={type || 'text'}

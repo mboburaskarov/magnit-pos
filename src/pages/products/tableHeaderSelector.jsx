@@ -35,16 +35,16 @@ const Image = ({ data, rowIndex, setImages }) => {
         },
       }}
     >
-      {data?.main_photo?.[0] ? (
-        <img
-          id={`product-image-${rowIndex}`}
-          src={data?.main_photo}
-          alt={data?.name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
-        />
-      ) : (
+      {/* {data?.main_photo?.[0] ? ( */}
+      <img
+        id={`product-image-${rowIndex}`}
+        src={data?.main_photo || '/public/default-img.avif'}
+        alt={data?.name}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
+      />
+      {/* ) : (
         <ProductImagePlaceholder />
-      )}
+      )} */}
       {data?.files?.[0] && (
         <Box
           sx={{
@@ -83,7 +83,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
         ...el,
         headerName: 'Mahsulot nomi',
         colId: el.field,
-        cellRenderer: memo(({ data }) => <Typography>{data?.name}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
       }
     }
     if (el.field === 'sum') {
@@ -99,7 +99,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
         ...el,
         headerName: 'Kategoriya',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='category' />),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='category' />),
       }
     }
     if (el.field === 'retail_price') {
@@ -115,7 +115,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
         ...el,
         headerName: 'QQS',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='%' withDevider {...p} type='murkup' />),
+        cellRenderer: memo((p) => <SimpleText currency='%' withDevider {...p} type='vat' />),
       }
     }
     if (el.field === 'vat_price') {
@@ -123,7 +123,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
         ...el,
         headerName: 'QQS narxi',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='murkup_price' />),
+        cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='vat_price' />),
       }
     }
     if (el.field === 'supply_price') {
@@ -188,7 +188,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
         ...el,
         headerName: 'Muddati',
         colId: el.field,
-        cellRenderer: memo((p) => <TimeCell {...p} type='expire_date' format='DD.MM.YYYY HH:mm' />),
+        cellRenderer: memo((p) => <TimeCell {...p} type='expire_date' format='DD.MM.YYYY' />),
       }
     }
     if (el.field === 'actions') {
@@ -200,12 +200,12 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
             <Box display='inline-flex' columnGap={'8px'}>
               <CheckAccess id={'product-edit'}>
-                <IconButton onClick={() => window.open(`/products/edit/${data._id}`, '_blank')} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <IconButton onClick={() => window.open(`/products/edit/${data.id}`, '_blank')} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />
                 </IconButton>
               </CheckAccess>
               <CheckAccess id={'product-delete'}>
-                <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data._id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <DeleteIcon />
                 </IconButton>
               </CheckAccess>

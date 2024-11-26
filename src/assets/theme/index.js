@@ -534,7 +534,7 @@ export const theme = ({ mode, palette }) => {
             fontWeight: 400,
             lineHeight: '24px',
             letterSpacing: 'normal',
-            border: '1px solid transparent !important',
+            border: '1px solid transparent',
             borderColor: palette.bunker[100],
             backgroundColor: palette.white,
             height: 56,

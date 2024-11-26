@@ -2,8 +2,9 @@ import { NavLink as RouterLink, useNavigate } from 'react-router-dom'
 import { useTheme } from '@mui/material'
 import ListItem from '@mui/material/ListItem'
 import ForwardArrow from '../../assets/icons/ForwardArrow'
-
+import { useTranslation } from 'react-i18next'
 function NavItem({ item, classes, handleClickNavItems, isActive }) {
+  const { t } = useTranslation()
   const { palette } = useTheme()
 
   return (
@@ -31,7 +32,7 @@ function NavItem({ item, classes, handleClickNavItems, isActive }) {
             alignItems: 'center',
           }}
         >
-          {item.label}
+          {t(item.label)}
         </div>
         {item?.icon && !!item?.children && (
           <div className={classes.itemArrow}>

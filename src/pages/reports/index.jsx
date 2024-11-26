@@ -16,8 +16,10 @@ import ForwardArrow from '../../assets/icons/ForwardArrow'
 import { useTheme } from '@mui/material'
 import dataTypeFilter from '../../../utils/dataTypeFilter'
 import CheckAccess from '../../../components/CheckAccess'
+import SoonPage from '../../../components/soon'
 
 export default function ReportMainPage() {
+  return <SoonPage />
   const { values } = useQueryParams()
   const navigate = useNavigate()
   const [detailing, setDetaling] = useState('week')

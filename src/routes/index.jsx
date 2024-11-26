@@ -1,30 +1,22 @@
 import authRoutes from './auth'
 import dashboardRoutes from './dashboard'
-import ordersRoutes from './orders'
+import salesRoutes from './sales'
 import productsRoutes from './products'
 import productsCreateRoutes from './products/product-create'
-import shopRoutes from './shops'
 import userRoutes from './users'
 import reportRoutes from './reports'
 import settingsRoutes from './settings'
-import shopCreateEditRoutes from './shops/shop-create-edit'
-import marketingRoutes from './marketing'
-import notificationsCreateRoutes from './marketing/notifications-create'
-import couriersRoutes from './couriers'
+import vendorRoutes from './vendors'
 
 const routes = [
   { ...dashboardRoutes },
   { ...authRoutes },
-  { ...ordersRoutes },
+  { ...salesRoutes },
   { ...productsRoutes },
   { ...productsCreateRoutes },
-  { ...shopRoutes },
   { ...userRoutes },
+  { ...vendorRoutes },
   { ...reportRoutes },
   { ...settingsRoutes },
-  { ...shopCreateEditRoutes },
-  { ...marketingRoutes },
-  { ...notificationsCreateRoutes },
-  { ...couriersRoutes },
 ]
 export default routes

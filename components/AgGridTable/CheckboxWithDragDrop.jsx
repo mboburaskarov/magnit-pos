@@ -12,14 +12,58 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: 48,
     marginTop: 8,
-    backgroundColor: theme.palette.grey[100],
-    borderRadius: 16,
+    backgroundColor: theme.palette.bg[10],
+    borderRadius: 12,
     justifyContent: 'space-between',
     zIndex: 1400,
     paddingRight: 16,
+    borderBottom: `1px solid ${theme.palette.bunker[100]}`,
     paddingLeft: 16,
     '&:nth-of-type(1)': {
       marginTop: 0,
+    },
+    '& [type=checkbox]': {
+      'accent-color': 'green',
+      backgroundColor: '#fff',
+      color: '#000',
+      border: '0.25rem solid green',
+    },
+
+    /* Pseudo element for check styling */
+
+    '& [type=checkbox]::before': {
+      content: '',
+      'accent-color': 'green',
+      backgroundColor: '#fff',
+      color: '#000',
+    },
+    '& [type=checkbox]::after': {
+      content: '',
+      'accent-color': 'green',
+      backgroundColor: '#fff',
+      color: '#000',
+    },
+
+    /* Checked */
+
+    '& [type=checkbox]:checked': {
+      'accent-color': 'green',
+      backgroundColor: '#fff',
+      color: '#000',
+    },
+
+    '& [type=checkbox]:checked::before': {
+      'accent-color': 'green',
+      backgroundColor: '#fff',
+      color: '#000',
+    },
+
+    /* Disabled */
+
+    '& [type=checkbox]:disabled': {
+      'accent-color': 'green',
+      backgroundColor: '#fff',
+      color: '#000',
     },
   },
   label: {

@@ -79,9 +79,18 @@ export default function ProductBody({ productData = null }) {
   const addCategoryButton = productCategories?.length > 0 ? !!productCategories?.at(-1)?.name : true
 
   return (
-    <Box pb={10} width='100%'>
+    <Box
+      pb={10}
+      width='100%'
+      sx={{
+        '& .MuiInputBase-root': {
+          border: '1px solid',
+          borderColor: 'bunker.100',
+        },
+      }}
+    >
       <SectionTitle noWrap withLine>
-        Основная информация
+        Asosiy
       </SectionTitle>
       <Box mt={1}>
         <TextField required fullWidth name='product_name' label='Наименование товара' placeholder='Введите название продукта' sx={{ mb: 3 }} />
@@ -151,7 +160,7 @@ export default function ProductBody({ productData = null }) {
       </Box>
       <Grid container columnGap={3} rowGap={3} mt={3}>
         <Grid item xs={5.9}>
-          <SelectSimple required fullWidth id='shop' name='shop' label='Mагазин' placeholder='Выберите магазин' options={shopList?.data.shops} />
+          {/* <SelectSimple required fullWidth id='shop' name='shop' label='Mагазин' placeholder='Выберите магазин' options={shopList?.data.shops} /> */}
         </Grid>
         {appType === 'BUCHET' && (
           <Grid item xs={5.8}>
@@ -162,7 +171,7 @@ export default function ProductBody({ productData = null }) {
               name='hashtag'
               label='Хэштеги'
               placeholder='Выберите хэштег'
-              options={hashtags?.data?.map((el) => ({ value: el.nameRu, name: el.nameRu, id: el._id }))}
+              // options={hashtags?.data?.map((el) => ({ value: el.nameRu, name: el.nameRu, id: el._id }))}
             />
           </Grid>
         )}
@@ -214,7 +223,7 @@ export default function ProductBody({ productData = null }) {
           name={'parent-category-name'}
           minWidth='auto'
           placeholder='Выберите родительскую категорию'
-          options={parentCategories?.data?.map((elm2) => ({ ...elm2, name: elm2.nameRu }))}
+          // options={parentCategories?.data?.map((elm2) => ({ ...elm2, name: elm2.nameRu }))}
           uncontrolled
           value={parentCategory}
           onChange={(val) => setParentCategory(val)}
@@ -231,7 +240,7 @@ export default function ProductBody({ productData = null }) {
               minWidth='auto'
               disabled={!parentCategory?._id}
               placeholder='Выберите категория'
-              options={filterTwoArrays(subCategories?.data, productCategories)?.map((elm2) => ({ ...elm2, name: elm2.nameRu }))}
+              // options={filterTwoArrays(subCategories?.data, productCategories)?.map((elm2) => ({ ...elm2, name: elm2.nameRu }))}
               uncontrolled
               value={el?.name && el}
               onChange={(val) =>

@@ -11,14 +11,11 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100%',
   },
-  headerWrapper: {
-    width: '100%',
 
-    padding: '20px 0 0 20px',
-  },
   wrapper: {
     display: 'flex',
     flex: '1 1 auto',
+    padding: '0 0 0 20px',
   },
   contentContainer: {
     flex: '1 1 auto',
@@ -41,15 +38,12 @@ export default function DashboardLayout() {
     <Box display='flex' width='100%' minHeight='100%'>
       <div className={classes.root}>
         <NavBar />
-        <div className={classes.headerWrapper}>
-          <LayoutHeader />
-          <div className={classes.wrapper}>
-            <div className={classes.contentContainer}>
-              <div className={classes.content}>
-                <main className={classes.main}>
-                  <Outlet />
-                </main>
-              </div>
+        <div className={classes.wrapper}>
+          <div className={classes.contentContainer}>
+            <div className={classes.content}>
+              <main className={classes.main}>
+                <Outlet />
+              </main>
             </div>
           </div>
         </div>

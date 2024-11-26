@@ -31,10 +31,10 @@ const useStyles = makeStyles((theme) => ({
     padding: '30px 100px 30px 30px',
     '& .MuiOutlinedInput-root': {
       backgroundColor: 'white',
-      border: '1px solid',
+      border: '1px solid ',
     },
     '& .MuiInputBase-root': {
-      border: '1px solid',
+      border: `1px solid ${theme.palette.bunker[100]} `,
     },
   },
   description: {
@@ -101,13 +101,10 @@ export default function LoginPage() {
   const [fcmToken, setFcmToken] = useState(null)
   useEffect(() => {
     fetchToken(setFcmToken)
-    // localStorage.clear()
     return
   }, [])
   const { mutate: logIn, isLoading: logInLoading } = useMutation(requests.logIn, {
     onSuccess: async ({ data }) => {
-      console.log(data)
-
       const userData = data.data
       localStorage.setItem('access_token', userData.token)
       localStorage.setItem('user_data', JSON.stringify(userData.employee))
@@ -129,7 +126,7 @@ export default function LoginPage() {
 
     data.phone_number = country.dial_code + data.phone_number.replace(/[X() ]/g, '')
 
-    logIn({ data: { phone: data.phone_number, password: data.password, fcmToken } })
+    logIn({ phone: data.phone_number, password: data.password, fcmToken })
   }
 
   const onError = (err) => {

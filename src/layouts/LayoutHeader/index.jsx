@@ -28,7 +28,14 @@ function LayoutHeader() {
       padding={'14px 30px'}
       alignItems={'center'}
     >
-      <Box sx={{ width: 381 }}>
+      <Box
+        sx={{
+          width: 381,
+          '& svg > path': {
+            fill: '#868FAA',
+          },
+        }}
+      >
         <InputSearch fullWidth id='producrs-search' className={classes.searchInput} name='search' placeholder='Search' uncontrolled />
       </Box>
       <Box display={'flex'}>

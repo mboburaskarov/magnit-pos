@@ -25,8 +25,10 @@ import ForwardArrow from '../../assets/icons/ForwardArrow'
 import { useNavigate } from 'react-router-dom'
 import CheckAccess from '../../../components/CheckAccess'
 import { useTheme } from '@mui/material'
+import SoonPage from '../../../components/soon'
 
 export default function ClientsPage() {
+  return <SoonPage />
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const theme = useTheme()

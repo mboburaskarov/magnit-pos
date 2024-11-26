@@ -1,0 +1,12 @@
+{
+  "navbar.dashboard": "Дашбоард",
+  "navbar.catalog": "Каталог",
+  "navbar.products": "Все товары",
+  "navbar.sales": "Продажи",
+  "navbar.new.sales": "Новая продажа",
+  "navbar.users": "Новая продажа",
+  "navbar.clients": "Клиенты",
+  "navbar.vendors": "Продавцы",
+  "navbar.payments": "Платежи",
+  "navbar.settings": "Настройки"
+}

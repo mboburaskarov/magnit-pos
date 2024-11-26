@@ -34,7 +34,7 @@ export const generateCustomStyles = (props = {}) => {
     valueContainer: (provided) => ({
       ...provided,
       width: '100%',
-      minHeight: mini ? 40 : 50,
+      minHeight: mini ? 40 : 48,
       padding: 1,
       // backgroundColor: 'inherit',
       borderRadius: '40px',
@@ -45,7 +45,7 @@ export const generateCustomStyles = (props = {}) => {
       minWidth: minWidth || 296,
       width: '100%',
       display: 'flex',
-      minHeight: mini ? 40 : 50,
+      minHeight: mini ? 40 : 48,
       fontWeight: 600,
       backgroundColor: white ? palette.background.default : palette.grey[50],
       '&:hover': {

@@ -102,7 +102,7 @@ function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
           <Box className={classes.inner}>
             <CheckboxWithDragDrop
               data={data?.filter((item) => {
-                if (item?.colId === 'actions' || item?.colId === 'supply_price_usd') return false
+                if (item?.colId === 'actfion' || item?.colId === 'supply_price_usd') return false
                 return true
               })}
               checkAllField

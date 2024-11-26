@@ -6,7 +6,7 @@ const columns = [
     field: 'main_photo',
     hide: false,
     minWidth: 70,
-    width: 80,
+    width: 90,
   },
   {
     field: 'name',

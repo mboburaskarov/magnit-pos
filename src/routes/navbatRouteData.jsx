@@ -12,79 +12,53 @@ import VendorsIcon from '../assets/icons/VendorsIcon'
 
 export const navbatRouteData = [
   {
-    label: 'Asosiy',
+    label: 'navbar.dashboard',
     id: '2',
-    icon: <MenuOutline fill='red' stroke='red' color='red' />,
-    href: '/shops',
-    children: [
-      {
-        label: 'Все магазины',
-        active: '/shops/*',
-        id: '2.1',
-        href: '/shops',
-      },
-      {
-        label: 'Вендоры',
-        active: '/shops/vendors/*',
-        id: '2.2',
-        href: '/shops/vendors',
-      },
-    ],
+    icon: <MenuOutline />,
+    href: '/dashboard',
   },
   {
-    label: 'Katalog',
+    label: 'navbar.catalog',
     id: '3',
     icon: <ProductsIcon />,
     href: '/products',
     children: [
       {
-        label: 'Barcha tavarlar',
+        label: 'navbar.products',
         active: '/products/*',
         id: '3.1',
         href: '/products',
       },
-      {
-        label: 'Отзывы продуктов',
-        active: '/products/reviews/*',
-        id: '3.2',
-        href: '/products/reviews',
-      },
     ],
   },
   {
-    label: 'Sotuv',
+    label: 'navbar.sales',
     id: '5',
     icon: <OrdersIcon />,
-    href: '/orders',
+    href: '/sales',
     children: [
       {
-        label: 'Barcha sotuvlar',
-        active: '/orders*',
+        label: 'navbar.sales',
+        active: '/sales*',
         id: '5.1',
-        href: '/orders/all',
+        href: '/sales/all',
       },
       {
-        label: 'QR продажа',
-        active: '/orders/qr-sale/*',
+        label: 'navbar.new.sales',
+        active: '/sales/new-sale/*',
         id: '5.2',
-        href: '/orders/qr-sale',
-      },
-      {
-        label: 'Транзакции',
-        active: '/orders/order-transactions/*',
-        id: '5.2',
-        href: '/orders/order-transactions',
+        href: '/sales/new-sale/id',
       },
     ],
   },
   {
-    label: 'Mijozlar',
+    label: 'navbar.clients',
     id: '1',
     icon: <UsersIcon />,
-    href: '/users',
+    href: '/clients/all/',
     children: [
       {
-        label: 'Все клиенты',
+        label: 'navbar.clients',
         active: '/clients/all/*',
         id: '1.1',
         href: '/clients/all',
@@ -92,30 +66,30 @@ export const navbatRouteData = [
     ],
   },
   {
-    label: 'Sotuvchilar',
+    label: 'navbar.vendors',
     id: '1',
     icon: <UserOutlineIcon />,
-    href: '/users',
+    href: '/vendors',
     children: [
       {
-        label: 'Все клиенты',
-        active: '/clients/all/*',
+        label: 'navbar.vendors',
+        active: '/vendors/all/*',
         id: '1.1',
-        href: '/clients/all',
+        href: '/vendors/all',
       },
     ],
   },
   {
-    label: "To'lovlar",
+    label: 'navbar.payments',
     id: '1',
     icon: <FinanceIcon />,
-    href: '/users',
+    href: '/reports',
     children: [
       {
-        label: 'Все клиенты',
-        active: '/clients/all/*',
+        label: 'navbar.payments',
+        active: '/reports/main/*',
         id: '1.1',
-        href: '/clients/all',
+        href: '/reports/main',
       },
     ],
   },
@@ -180,38 +154,13 @@ export const navbatRouteData = [
   //   ],
   // },
   {
-    label: 'Sozlamalar',
+    label: 'navbar.settings',
     id: '9',
     icon: <SettingsIcon />,
     href: '/settings',
     children: [
       {
-        label: 'Баннеры',
-        active: '/settings/banners/*',
-        id: '9.1',
-        href: '/settings/banners',
-      },
-
-      {
-        label: 'Категории',
-        active: '/settings/categories/*',
-        id: '9.2',
-        href: '/settings/categories',
-      },
-      {
-        label: 'Роли',
-        active: '/settings/roles/*',
-        id: '9.3',
-        href: '/settings/roles',
-      },
-      {
-        label: 'Хэштеги',
-        active: '/settings/hashtags/*',
-        id: '9.4',
-        href: '/settings/hashtags',
-      },
-      {
-        label: 'Пользователи',
+        label: 'navbar.settings',
         active: '/settings/users/*',
         id: '9.5',
         href: '/settings/users',

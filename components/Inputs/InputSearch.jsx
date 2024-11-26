@@ -19,7 +19,9 @@ const useStyles = makeStyles((theme) => ({
     width: ({ maxWidth }) => maxWidth,
     backgroundColor: theme.palette.grey[100],
     color: theme.palette.grey[400],
-
+    '& svg > path': {
+      fill: theme.palette.bunker[400],
+    },
     '&:hover': {
       backgroundColor: theme.palette.grey[101],
     },

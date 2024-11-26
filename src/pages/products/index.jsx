@@ -53,19 +53,19 @@ export default function ProductsPage() {
     setIsDrawerOpen,
   })
   const productsListFilter = useMemo(() => {
-    console.log(values)
-
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: values?.search,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
-      dbId: values?.shop_id,
-      category: values?.category_id,
-      hashtag: values?.hashtag_id,
-      maxPrice: values?.to_price,
+      store_id: values?.store_id,
+      category_id: values?.category_id,
+      producer: values?.producer,
+      supply_price_to: values?.supply_price_to,
+      retail_price_to: values?.retail_price_to,
       region: values?.region_id,
-      minPrice: values?.from_price,
+      supply_price_from: values?.supply_price_from,
+      retail_price_from: values?.retail_price_from,
       isExpress: values?.isExpress,
       ...(status !== 'ALL' && { status }),
       ...(appType !== 'ALL' && { type: appType }),
@@ -76,11 +76,13 @@ export default function ProductsPage() {
     values?.offset,
     values?.limit,
     values?.search,
-    values?.from_price,
-    values?.to_price,
-    values?.hashtag_id,
+    values?.producer,
     values?.category_id,
     values?.shop_id,
+    values?.supply_price_to,
+    values?.retail_price_to,
+    values?.supply_price_from,
+    values?.retail_price_from,
     values?.region_id,
     values?.isExpress,
     regions,
@@ -165,18 +167,21 @@ export default function ProductsPage() {
 
   useEffect(() => {
     const count =
-      status === 'ACTIVE'
-        ? productsList?.data?.active
-        : status === 'INACTIVE'
-        ? productsList?.data?.inactive
-        : status === 'INACTIVE_BY_VENDOR'
-        ? productsList?.data?.inactiveByVendor
-        : status === 'BLOCKED'
-        ? productsList?.data?.blocked
-        : productsList?.data.totalCount
+      // status === 'ACTIVE'
+      //   ? productsList?.data?.active
+      //   : status === 'INACTIVE'
+      //   ? productsList?.data?.inactive
+      //   : status === 'INACTIVE_BY_VENDOR'
+      //   ? productsList?.data?.inactiveByVendor
+      //   : status === 'BLOCKED'
+      //   ? productsList?.data?.blocked
+      // : productsList?.data.totalCount
+      productsList?.data?.data?._meta?.total_count
+
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [productsList?.data, values?.limit, status])
+
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={4} pb={3}>
@@ -220,7 +225,7 @@ export default function ProductsPage() {
         </Box>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'24px'} width='100%'>
           <Box display={'flex'}>
-            <Box width='100%' sx={{ '& .MuiInputBase-root, .MuiFormControl-root': { border: 'none', width: '400px', height: 48 } }}>
+            <Box width='100%' sx={{ '& .MuiInputBase-root, .MuiFormControl-root': { border: '1px solid transparent', width: '400px', height: 48 } }}>
               <InputSearch id='producrs-search' name='search' placeholder='Qidirish: mahsulot, kategoriya, shtrix-kod' uncontrolled />
             </Box>
 
@@ -317,12 +322,19 @@ export default function ProductsPage() {
               ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
               : openConfirmDialog?.type === 'deactivate'
               ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-              : 'Вы действительно хотите удалить продукт, вы не можете вернуть этот прогресс, после удаления вы не сможете восстановить продукт.'
+              : 'mahsulotini o’chirmoqchimisiz?'
           }
+          supDesc={'“Azitromitsin 250 mg”'}
           actions={
             <>
-              <Button variant='contained' color='secondary' onClick={() => setOpenConfirmDialog(null)}>
-                Нет
+              <Button
+                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                fullWidth
+                color='secondary'
+                variant='contained'
+                onClick={() => setOpenConfirmDialog(null)}
+              >
+                Yo'q
               </Button>
               <LoadingButton
                 variant='contained'
@@ -336,7 +348,7 @@ export default function ProductsPage() {
                     : deleteProduct(openConfirmDialog.id)
                 }
               >
-                Да
+                Ha, o'chirish
               </LoadingButton>
             </>
           }

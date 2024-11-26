@@ -9,6 +9,7 @@ import NavItem from './NavItem'
 import NavItemMini from './NavItemMini'
 import isEqual from '../../../utils/isEqual'
 import BackArrowIcon from '../../assets/icons/BackArrow'
+import { useTranslation } from 'react-i18next'
 
 function NavbarDrawer({
   classes,
@@ -22,6 +23,7 @@ function NavbarDrawer({
   drawerData,
   setIsUserOpen,
 }) {
+  const { t } = useTranslation()
   const location = useLocation()
   const userData = useSelector((state) => state.user)
   const firstName = userData?.fullName?.split(' ')?.[0]
@@ -50,7 +52,7 @@ function NavbarDrawer({
             <div className={`${classes.popper}`}>
               <ListItem className={classes.listItemPopper}>
                 {currentRoutesMemoized?.icon}
-                {currentRoutesMemoized?.label}
+                {t(currentRoutesMemoized?.label)}
               </ListItem>
               <div className={classes.hr} />
               {currentRoutesMemoized?.children?.map((item, index) => {
@@ -95,7 +97,7 @@ function NavbarDrawer({
               <ListItem className={classes.listItem} id='back-nav' onClick={() => setCurrentRoutes(null)}>
                 <>
                   <BackArrowIcon /> {currentRoutesMemoized?.icon}
-                  {currentRoutesMemoized?.label}
+                  {t(currentRoutesMemoized.label)}
                 </>
               </ListItem>
               {currentRoutesMemoized?.children?.map((item, index) => {

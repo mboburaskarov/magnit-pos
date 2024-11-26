@@ -6,7 +6,7 @@ export const requests = {
   getUserInfo: () => request.get(`api/auth/get-user-information`),
 
   //category
-  getAllCategories: (filter) => request.get(`v1/category/get-list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllCategories: (filter) => request.get(`v1/category/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createCategory: (data) => request.post(`api/categories`, data),
   getAllCategoriesBuchet: (filter) => request.get(`api/categories${qs.stringify(filter, { addQueryPrefix: true })}`),
   createBillzCategory: (data) => request.post(`api/billz`, data),
@@ -15,7 +15,7 @@ export const requests = {
   getSingleCategory: (id) => request.get(`api/categories/${id}`),
   deleteCategory: (id) => request.delete(`api/categories/${id}`),
   //hashtag
-  getAllHashtags: (filter) => request.get(`api/hashtags${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllProducer: (filter) => request.get(`v1/product/producer${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllClients: (filter) => request.get(`api/users${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //orders
@@ -40,12 +40,12 @@ export const requests = {
   deleteComment: (id) => request.delete(`api/admin/comments/${id}`),
 
   //products
-  getAllProducts: (filter) => request.get(`v1/product/get-list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createProduct: (data) => request.post(`api/admin/products`, data),
   getSingleProduct: (id) => request.get(`api/admin/products/${id}`),
   getSingleProductHistory: (filter) => request.get(`api/admin/products-status${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateProduct: ({ id, data }) => request.patch(`api/admin/products/${id}`, data),
-  deleteProduct: (id) => request.delete(`api/admin/products/${id}`),
+  deleteProduct: (id) => request.delete(`v1/product?id=${id}`),
   rejectProduct: (data) => request.post(`api/admin/products/reject`, data),
   activateProduct: (id) => request.post(`api/admin/products/update-status-to-active`, { id }),
   changeProductStatus: (data) => request.post(`api/admin/products/update-status`, data),
@@ -58,7 +58,7 @@ export const requests = {
   refreshCouriers: (filter) => request.get(`api/admin/couriers/refresh${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //shops
-  getAllShops: (filter) => request.get(`v1/store/get-list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllShops: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateShop: ({ id, data }) => request.patch(`api/admin/shops/${id}`, data),
   createShop: (data) => request.post(`api/admin/shops`, data),
   getSingleShop: (id) => request.get(`api/admin/shops/${id}`),

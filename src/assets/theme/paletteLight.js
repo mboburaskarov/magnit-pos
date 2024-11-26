@@ -30,10 +30,14 @@ const paletteLight = {
   action: {
     disabledBackground: '#F5F5F5',
   },
+  bg: {
+    10: '#F8F8F9',
+  },
   bunker: {
     100: '#ECEDF2',
     300: '#B1B7C8',
     400: '#868FAA',
+    500: '#677190',
     950: '#111217',
   },
   grey: {
@@ -83,7 +87,7 @@ const paletteLight = {
     200: '#e9d5ff',
     300: '#d8b4fe',
     400: '#c084fc',
-    500: '#a855f7',
+    500: '#2558FF',
     600: '#9333ea',
     700: '#7e22ce',
     800: '#6b21a8',
@@ -153,6 +157,7 @@ const paletteLight = {
   orange: {
     50: '#fff7ed',
     100: '#FE50000D',
+    150: '#FFE9D4',
     200: '#fed7aa',
     300: '#fdba74',
     400: '#fb923c',
@@ -163,6 +168,8 @@ const paletteLight = {
     900: '#7c2d12',
   },
   red: {
+    10: '#FFEDEB',
+
     50: '#fef2f2',
     100: '#F45B691A',
     200: '#fecaca',
