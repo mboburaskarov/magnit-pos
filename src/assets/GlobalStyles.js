@@ -237,7 +237,7 @@ const useStyles = makeStyles((theme) =>
       },
       '.ag-theme-alpine .ag-header': {
         borderColor: theme.palette.bunker[100],
-        borderTop: 'transparent',
+        borderBottom: 'transparent',
         background: theme.palette.grey[50],
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
