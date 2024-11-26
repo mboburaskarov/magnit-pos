@@ -38,7 +38,7 @@ const Image = ({ data, rowIndex, setImages }) => {
       {/* {data?.main_photo?.[0] ? ( */}
       <img
         id={`product-image-${rowIndex}`}
-        src={data?.main_photo || '/public/default-img.avif'}
+        src={data?.main_photo || '/default-img.avif'}
         alt={data?.name}
         style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
       />

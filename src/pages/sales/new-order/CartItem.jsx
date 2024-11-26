@@ -238,7 +238,7 @@ const CartItem = ({
                 <img
                   src={
                     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ5Tq8i6RC-Bm15tgZljQIp-TZjTv2qgnuLpvMmvnHwb4vOFpBMaio8MSQ9raE9kof5OU&usqp=CAU' ||
-                    '/public/default-img.avif'
+                    '/default-img.avif'
                   }
                   onClick={() => data.main_image_url && setProductId(data.id)}
                 />

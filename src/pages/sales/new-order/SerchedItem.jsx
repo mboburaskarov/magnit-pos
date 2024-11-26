@@ -47,7 +47,7 @@ export default function SerchedItem({
       >
         <Box flex='1 0 60%' display='flex' alignItems='center'>
           <div className={classes.searchImage}>
-            <img src={product?.main_photo || '/public/default-img.avif'} />{' '}
+            <img src={product?.main_photo || '/default-img.avif'} />{' '}
           </div>
           <Box ml={2}>
             <Typography id='product-name' className={classes.itemName}>
