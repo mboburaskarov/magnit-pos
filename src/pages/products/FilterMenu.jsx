@@ -90,6 +90,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
           '& .MuiInputBase-root': {
             border: `1px solid`,
             borderColor: 'bunker.100',
+            height: '48px',
           },
           '& svg': {
             fill: '#868FAA',

@@ -5,6 +5,7 @@ import Dialog from '@mui/material/Dialog'
 import Typography from '@mui/material/Typography'
 import BackArrow from '../../src/assets/icons/BackArrow'
 import { makeStyles } from '@mui/styles'
+import ButtonWithWrapper from '../Buttons/ButtonWithWrapper'
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -10,6 +10,7 @@ import StyledEmptyDialog from '../Dialogs/StyledeEmptyDialog'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import EditorIcon from '../../src/assets/icons/EditorIcon'
 import { changeColumnSequence, resetTableHeader } from '../../src/redux-toolkit/tableSlices/productsTableColumns'
+import ButtonWithWrapper from '../Buttons/ButtonWithWrapper'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -26,23 +27,25 @@ const useStyles = makeStyles((theme) => ({
   },
 
   btn: {
-    marginLeft: 10,
-    height: 40,
-    width: 40,
-    borderRadius: '50%',
-    display: 'flex',
     cursor: 'pointer',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: theme.palette.grey[100],
-    border: `1px solid ${theme.palette.grey[200]}`,
-    transition: 'all 0.3s ease',
+    // marginLeft: 10,
+    // height: 40,
+    // width: 40,
+
+    // borderRadius: '50%',
+    // display: 'flex',
+    // cursor: 'pointer',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    // background: theme.palette.grey[100],
+    // border: `1px solid ${theme.palette.grey[200]}`,
+    // transition: 'all 0.3s ease',
     '&:hover': {
-      background: `${theme.palette.green[600]} !important`,
-      border: `none`,
-      '& > svg > path': {
-        fill: `#fff !important`,
-      },
+      background: `${theme.palette.bunker[100]} !important`,
+      // border: `none`,
+      // '& > svg > path': {
+      //   fill: `#fff !important`,
+      // },
     },
   },
 }))
@@ -87,9 +90,8 @@ function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
 
   return (
     <>
-      <Box padding={'12px'} borderRadius={'50%'} border={'1px solid #ECEDF2'} mr={'16px'} display={'flex'} alignItems={'center'} onClick={() => setOpen(true)}>
-        <EditorIcon />
-      </Box>
+      <ButtonWithWrapper onClick={() => setOpen(true)} icon={<EditorIcon />} />
+
       <StyledEmptyDialog
         open={open}
         onClose={() => setOpen(false)}

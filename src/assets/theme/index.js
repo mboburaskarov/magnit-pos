@@ -128,7 +128,7 @@ export const theme = ({ mode, palette }) => {
             backgroundColor: palette.orange[500],
             color: '#fff',
             '&:hover': {
-              background: palette.orange[601],
+              background: palette.orange[600],
             },
           },
 

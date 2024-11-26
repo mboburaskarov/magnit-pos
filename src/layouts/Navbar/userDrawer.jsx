@@ -83,11 +83,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function UserDrawer({ isOpen: data, closeDrawer }) {
+export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
   const classes = useStyles()
   const [isLogout, setIsLogout] = useState(false)
-  const firstName = data?.fullName?.split(' ')?.[0]
-  const lastName = data?.fullName?.split(' ')?.[1]
+  const firstName = userData?.fullName?.split(' ')?.[0]
+  const lastName = userData?.fullName?.split(' ')?.[1]
+  console.log(userData)
 
   return (
     <>
@@ -119,7 +120,9 @@ export default function UserDrawer({ isOpen: data, closeDrawer }) {
                   )}
                 </Box>
                 <Box ml={1.5}>
-                  <Typography>{`${firstName} ${lastName}`}</Typography>
+                  <Typography>
+                    {firstName} {lastName}
+                  </Typography>
                   <Typography className={classes.shopname}>{data?.shops?.find((item) => item.shop_id === data?.current_shop_id)?.shop?.name}</Typography>
                 </Box>
               </Box>

@@ -225,7 +225,19 @@ export default function ProductsPage() {
         </Box>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'24px'} width='100%'>
           <Box display={'flex'}>
-            <Box width='100%' sx={{ '& .MuiInputBase-root, .MuiFormControl-root': { border: '1px solid transparent', width: '400px', height: 48 } }}>
+            <Box
+              width='100%'
+              sx={{
+                '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+                '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                  background: 'transparent',
+                  border: '1px solid transparent',
+
+                  width: '400px',
+                  height: 48,
+                },
+              }}
+            >
               <InputSearch id='producrs-search' name='search' placeholder='Qidirish: mahsulot, kategoriya, shtrix-kod' uncontrolled />
             </Box>
 

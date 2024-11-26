@@ -5,9 +5,15 @@ const useStyles = makeStyles((theme) => ({
   boxWrapper: {
     minWidth: '48px',
     height: '48px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     width: '48px',
     backgroundColor: 'bg.10',
     borderRadius: '50%',
+    '&:hover': {
+      backgroundColor: `${theme.palette.bunker[100]} !important`,
+    },
   },
   closeIcon: {
     fill: theme.palette.grey[400],
@@ -28,6 +34,7 @@ const CloseIcon = (props) => {
   return (
     <Box
       {...props}
+      classes={classes.boxWrapper}
       cursor='pointer'
       sx={{
         minWidth: '48px',
@@ -35,9 +42,13 @@ const CloseIcon = (props) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        cursor: 'pointer',
         width: '48px',
         backgroundColor: 'bg.10',
         borderRadius: '50%',
+        '&:hover': {
+          backgroundColor: 'bunker.100',
+        },
       }}
     >
       <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>

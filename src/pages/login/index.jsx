@@ -108,7 +108,10 @@ export default function LoginPage() {
       const userData = data.data
       localStorage.setItem('access_token', userData.token)
       localStorage.setItem('user_data', JSON.stringify(userData.employee))
+      console.log(userData?.employee)
+
       dispatch(setUserData(userData?.employee))
+      debugger
       navigate('/redirect')
     },
     onError: (err) => {

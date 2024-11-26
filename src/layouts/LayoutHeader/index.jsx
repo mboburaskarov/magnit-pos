@@ -12,6 +12,8 @@ function LayoutHeader() {
   const [isUserOpen, setIsUserOpen] = useState(null)
 
   const userData = useSelector((state) => state.user)
+  console.log(userData)
+
   const firstName = userData?.fullName?.split(' ')?.[0]
   const lastName = userData?.fullName?.split(' ')?.[1]
   const classes = headerStyles({ isOpen })
@@ -49,16 +51,18 @@ function LayoutHeader() {
             <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
               <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
                 <div className={classes.avatarPlaceholder}>
-                  {firstName.charAt(0)}
-                  {lastName.charAt(0)}
+                  {/* {firstName.charAt(0)}
+                  {lastName.charAt(0)} */}
+                  <img src='/default-user-img.png' />
                 </div>
 
                 <Box maxWidth='73%'>
                   <Typography id='user-username' className={classes.username}>
-                    {`${lastName.charAt(0) || ''} ${firstName.charAt(0) + '.' || ''}`}
+                    {`${firstName}`}
                   </Typography>
                   <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                    {userData.type.toLowerCase()}
+                    {/* {userData.type.toLowerCase()} */}
+                    Mirzo Ulugbek filial
                   </p>
                 </Box>
               </Box>
@@ -83,7 +87,7 @@ function LayoutHeader() {
         </Box>
       </Box>
 
-      <UserDrawer isOpen={isUserOpen} closeDrawer={() => setIsUserOpen(null)} />
+      {/* <UserDrawer isOpen={isUserOpen} userData={userData} closeDrawer={() => setIsUserOpen(null)} /> */}
     </Box>
   )
 }
