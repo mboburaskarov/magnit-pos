@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiInputBase-root': {
       height: 48,
       backgroundColor: theme.palette.background.default,
-      border: `1px solid ${theme.palette.grey[300]}`,
+      border: `1px solid ${theme.palette.bunker[100]}`,
     },
     '& .price': {
       justifyContent: 'center',

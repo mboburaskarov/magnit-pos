@@ -5,7 +5,7 @@ import Select, { components } from 'react-select'
 import { generateCustomStyles } from './SelectStyles'
 import DeleteIconBig from '../../src/assets/icons/DeleteIconBig'
 import DeleteSmallIcon from '../../src/assets/icons/DeleteSmallIcon'
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import Label from '../Label'
 
 const SingleValue = ({ children, selectProps, ...props }) => {
@@ -178,6 +178,7 @@ function SelectSimple({
   beforeContent,
   white,
   isMulti,
+  borderRadius,
   required = false,
   maxWidth,
   maxOptionMenuHeight,
@@ -186,6 +187,7 @@ function SelectSimple({
   disabled = false,
   removable,
   onRemove,
+  borderNone,
   index,
   small,
   mini,
@@ -202,6 +204,7 @@ function SelectSimple({
 }) {
   const cls = useStyles()
   const methods = useFormContext()
+
   const customStyles = generateCustomStyles({
     withAllSelect,
     minWidth: minWidth ?? (mini ? 150 : 256),
@@ -211,12 +214,14 @@ function SelectSimple({
     maxOptionMenuHeight,
     small,
     mini,
+    borderNone,
     solidBorder,
+    borderRadius,
     placeholderWrap: placeholderWrap || true,
     dashed,
   })
   return (
-    <Box className={cls.root} width={fullWidth && '100%'} {...boxStyle} maxWidth={maxWidth}>
+    <Box className={(cls.root, 'select')} width={fullWidth && '100%'} {...boxStyle} maxWidth={maxWidth}>
       {label && (
         <Label mb={1.5} required={required}>
           {label}

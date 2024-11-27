@@ -111,8 +111,7 @@ const useStyles = makeStyles((theme) => ({
     // },
   },
 }))
-function CartSearchBar({ handleAddProduct }) {
-  const [showOverlay, setShowOverlay] = useState()
+function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
   const { values } = useQueryParams()
   const [searchTearm, setSearchTerm] = useState('')
   useEffect(() => {

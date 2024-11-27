@@ -11,6 +11,7 @@ import CloseIcon from '../../src/assets/icons/CloseIcon'
 import EditorIcon from '../../src/assets/icons/EditorIcon'
 import { changeColumnSequence, resetTableHeader } from '../../src/redux-toolkit/tableSlices/productsTableColumns'
 import ButtonWithWrapper from '../Buttons/ButtonWithWrapper'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -58,7 +59,7 @@ function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
   const [data, setData] = useState([])
   const [selection, setSelection] = useState(false)
   const dispatch = useDispatch()
-
+  const { t } = useTranslation()
   useEffect(() => {
     if (columns) {
       const formattedData = columns
@@ -120,11 +121,11 @@ function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
                 onClick={resetTableHeaders}
               >
                 <Typography fontWeight={600} lineHeight={'24px'} fontSize={'16px'}>
-                  Standart sozlama
+                  {t('filter_dialog.reset.label')}
                 </Typography>
               </Button>
               <Button sx={{ height: 48 }} onClick={() => handleApply()} fullWidth variant='contained' type='submit'>
-                Saqlash
+                {t('filter_dialog.save.label')}
               </Button>
             </Box>
           </Box>

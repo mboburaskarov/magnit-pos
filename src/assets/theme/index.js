@@ -93,6 +93,7 @@ export const theme = ({ mode, palette }) => {
           disableElevation: true,
         },
         styleOverrides: {
+          disableElevation: {},
           root: {
             fontFamily: fontFamily.Gilroy,
             fontSize: 16,
@@ -114,13 +115,15 @@ export const theme = ({ mode, palette }) => {
             position: 'relative',
 
             '&.Mui-disabled': {
-              cursor: 'auto',
-              background: palette.grey[50],
-              color: palette.grey[400],
-              '&:hover': {
-                background: palette.grey[100],
-                color: palette.grey[400],
-              },
+              backgroundColor: `${palette.orange[50]} !important`,
+              color: `${palette.orange[200]} !important`,
+              // cursor: 'auto',
+              // background: palette.grey[50],
+              // color: palette.grey[400],
+              // '&:hover': {
+              //   background: palette.grey[100],
+              //   color: palette.grey[400],
+              // },
             },
           },
 

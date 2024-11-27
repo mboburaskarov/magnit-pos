@@ -6,13 +6,14 @@ import UserDrawer from '../Navbar/userDrawer'
 import NotificationSmallIcon from '../../assets/icons/NotificationSmallIcon'
 import { headerStyles } from './HeaderStyles'
 import ArrowDown from '../../assets/icons/ArrowDown'
+import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 function LayoutHeader() {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
   const [isUserOpen, setIsUserOpen] = useState(null)
-
+  const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
-  console.log(userData)
 
   const firstName = userData?.fullName?.split(' ')?.[0]
   const lastName = userData?.fullName?.split(' ')?.[1]
@@ -38,7 +39,7 @@ function LayoutHeader() {
           },
         }}
       >
-        <InputSearch fullWidth id='producrs-search' className={classes.searchInput} name='search' placeholder='Search' uncontrolled />
+        <InputSearch fullWidth id='producrs-search' className={classes.searchInput} name='search' placeholder={t('input.search.product')} uncontrolled />
       </Box>
       <Box display={'flex'}>
         <Box mr={'20px'}>

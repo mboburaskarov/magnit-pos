@@ -12,6 +12,7 @@ import * as qs from 'qs'
 import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
 import CloseIcon from '../../assets/icons/CloseIcon'
 import { theme } from '../../assets/theme'
+import { useTranslation } from 'react-i18next'
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -80,9 +81,9 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
     setOpen(false)
     navigate(`/products?offset=0&limit=${values?.limit || 5}`)
   }
-
+  const { t } = useTranslation()
   return (
-    <StyledEmptyDialog open={open} title={'Filter'} customButtons={<CloseIcon onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon onClick={() => setOpen(false)} />}>
       <Box
         sx={{
           width: '100%',
@@ -106,8 +107,8 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               name='store_id'
               white
               minWidth='auto'
-              label="Do'kon"
-              placeholder="Do'konni tanlang"
+              label={t('input.store.label')}
+              placeholder={t('input.store.placeholder')}
               getOptionLabel={(el) => el.name}
               options={shopList?.data?.data}
             />
@@ -117,8 +118,8 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               white
               name='category_id'
               minWidth='auto'
-              label='Kategoriya'
-              placeholder='Kategoriyani tanlang'
+              label={t('input.category.label')}
+              placeholder={t('input.store.placeholder')}
               options={categories?.data?.data}
               getOptionLabel={(el) => el.name}
             />
@@ -128,21 +129,29 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               name='producer'
               white
               minWidth='auto'
-              label='Ishlab chiqaruvchi'
-              placeholder='Ishlab chiqaruvchini tanlang'
+              label={t('input.manufacturer.label')}
+              placeholder={t('input.store.placeholder')}
               options={producers?.data?.data}
               getOptionLabel={(el) => el.name}
             />
             <InputRange
               fullWidth
               id='prixwce'
-              label='Sotib olish narxi'
+              label={t('input.supply_price.label')}
               name1='supply_price_from'
               name2='supply_price_to'
-              placeholder1='dan'
-              placeholder2='gacha'
+              placeholder1={t('input.price.from')}
+              placeholder2={t('input.price.to')}
             />
-            <InputRange fullWidth id='prixwce' label='Sotish narxi' name1='retail_price_from' name2='retail_price_to' placeholder1='dan' placeholder2='gacha' />
+            <InputRange
+              fullWidth
+              id='prixwce'
+              label={t('input.retail_price.label')}
+              name1='retail_price_from'
+              name2='retail_price_to'
+              placeholder1={t('input.price.from')}
+              placeholder2={t('input.price.to')}
+            />
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
                 sx={{ bgcolor: '#fff !important', border: '1px solid #ECEDF2' }}
@@ -153,11 +162,11 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 onClick={resetFilter}
               >
                 <Typography fontWeight={600} lineHeight={'24px'} fontSize={'16px'}>
-                  Standart sozlama
+                  {t('filter_dialog.reset.label')}
                 </Typography>
               </Button>
               <Button fullWidth variant='contained' type='submit'>
-                Saqlash
+                {t('filter_dialog.save.label')}
               </Button>
             </Box>
           </Box>

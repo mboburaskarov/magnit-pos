@@ -24,7 +24,7 @@ export default function SerchedItem({
       id={`cartSearchResult${index}`}
       className={classes.searchItem}
       onClick={() => {
-        handleAddProduct(product)
+        handleAddProduct({ discount_type: 'cash', discount_value: 100, product_id: product?.id, quantity: 1, unit_price: product?.retail_price })
       }}
       onKeyDown={(event) => {
         if (event.key === 'Enter' && fakeIndexForCheckSearch === index) {
@@ -50,7 +50,7 @@ export default function SerchedItem({
             <img src={product?.main_photo || '/default-img.avif'} />{' '}
           </div>
           <Box ml={2}>
-            <Typography id='product-name' className={classes.itemName}>
+            <Typography textOverflow={'ellipsis'} maxWidth={'190px'} whiteSpace={'nowrap'} overflow={'hidden'} id='product-name' className={classes.itemName}>
               <Highlighter
                 highlightClassName='highlighter'
                 searchWords={[searchTerm]}

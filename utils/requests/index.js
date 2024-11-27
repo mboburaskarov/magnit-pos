@@ -42,6 +42,8 @@ export const requests = {
   //products
   getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createProduct: (data) => request.post(`api/admin/products`, data),
+  createCartItem: (data) => request.post(`v1/cart_item`, data),
+  deleteCartItem: (id) => request.delete(`v1/cart_item/${id}`),
   getSingleProduct: (id) => request.get(`api/admin/products/${id}`),
   getSingleProductHistory: (filter) => request.get(`api/admin/products-status${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateProduct: ({ id, data }) => request.patch(`api/admin/products/${id}`, data),
@@ -56,9 +58,14 @@ export const requests = {
   editCourier: ({ id, data }) => request.patch(`api/admin/couriers/${id}`, data),
   payCourierOrders: (data) => request.post(`api/admin/courier-transactions`, data),
   refreshCouriers: (filter) => request.get(`api/admin/couriers/refresh${qs.stringify(filter, { addQueryPrefix: true })}`),
+  //register cash
 
+  getRegisterCashData: (id) => request.get(`v1/cash_box_session/cash_carried_sum/${id}`),
+  getRegisterCashList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getCartItemList: (filter) => request.get(`v1/cart_item/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   //shops
   getAllShops: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  // getAllStores: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateShop: ({ id, data }) => request.patch(`api/admin/shops/${id}`, data),
   createShop: (data) => request.post(`api/admin/shops`, data),
   getSingleShop: (id) => request.get(`api/admin/shops/${id}`),

@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles'
 // import ImageGallery from 'components/ImageGallery/ImageGallery'
 import PencilIcon from '../../../assets/icons/ArrowDown'
 import TrashIconGray from '../../../assets/icons/ArrowDown'
-import React, { memo } from 'react'
+import React, { memo, useState } from 'react'
 // import { asyncRemoveFromCartAction } from 'store/actions/cartActions/cartActions'
 import event from '../../../../utils/event'
 import { numberToPrice } from '../../../../utils/numberToPrice'
@@ -11,17 +11,32 @@ import InputQuantity from '../../../../components/Inputs/InputQuantity'
 import EditorIcon from '../../../assets/icons/EditorIcon'
 import EditIcon from '../../../assets/icons/EditIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import SelectSimple from '../../../../components/Select/SelectSimple'
 
 export const useStyles = makeStyles((theme) => ({
   root: {
     padding: 16,
-    borderRadius: 24,
+    borderRadius: 16,
     display: 'flex',
     width: '100%',
     alignItems: 'center',
-    background: theme.palette.grey[100],
+    background: theme.palette.bg[10],
     marginBottom: 8,
     height: '80px',
+    '& .MuiFormControl-root': {
+      backgroundColor: 'transparent',
+    },
+    '& .MuiInputBase-root': {
+      '& input[type=number]': {
+        padding: '10px 0px 10px 10px !important',
+        fontWeight: 500,
+        fontSize: '18px',
+        lineHeight: '28px',
+      },
+      borderRadius: '12px',
+      // border: 'none',
+    },
+    '& select': {},
     '& button': {
       border: 0,
       outline: 0,
@@ -51,7 +66,6 @@ export const useStyles = makeStyles((theme) => ({
     minWidth: 48,
     maxWidth: 48,
     borderRadius: 6,
-    marginLeft: '6px',
     border: `1px solid ${theme.palette.grey[200]}`,
     overflow: 'hidden',
     '& img': {
@@ -60,9 +74,13 @@ export const useStyles = makeStyles((theme) => ({
       objectFit: 'cover',
     },
   },
+
   text: {
     minWidth: 0,
     marginLeft: 8,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     '& p': {
       margin: 0,
       maxWidth: 300,
@@ -195,9 +213,13 @@ const CartItem = ({
   eposOn,
   refetchLabels,
   allSellers,
+  item,
+  deleteCartItem,
 }) => {
-  const cls = useStyles()
+  console.log(item)
 
+  const cls = useStyles()
+  const [quon, setQuon] = useState(0)
   return (
     <Box display={'flex'} width={'100%'}>
       <Box
@@ -220,12 +242,19 @@ const CartItem = ({
       >
         <Box className={cls.content}>
           <Box className={cls.details}>
-            <Box display={'flex'}>
+            <Box
+              display={'flex'}
+              sx={{
+                '& .MuiInputBase-root': {
+                  width: '80px',
+                },
+              }}
+            >
               <InputQuantity
                 id={`inputQuantity${index}`}
-                value={1}
+                value={quon}
                 name='quantity'
-                // onChange={handleChange}
+                onChange={({ target }) => console.log(target.value)}
                 // adornment={data?.measurement_unit?.short_name}
                 adornmentPosition='end'
                 adornmentClassName={cls.adornment}
@@ -234,6 +263,9 @@ const CartItem = ({
                 type='number'
                 disabled={false}
               />
+              <Box>
+                <SelectSimple white boxStyle={{ margin: '0 8px' }} minWidth={'84px'} borderRadius='12px' placeholder='' name={'dd'} />
+              </Box>
               <Box className={cls.img_cont}>
                 <img
                   src={
@@ -252,7 +284,7 @@ const CartItem = ({
             <Box display={'flex'}>
               <Box id='product-details' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', justifyContent: 'center' }}>
                 <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>A4</Typography>
-                <Box sx={{ display: 'flex', '& svg > g > path': { stroke: '#FF6018' } }}>
+                <Box sx={{ display: 'flex', '& svg > g > path': { stroke: '#FF6018' }, '& svg': { width: '20px', height: '20px' } }}>
                   <Typography sx={{ mr: '10px', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>127 950 so'm</Typography>
                   <EditIcon />
                 </Box>
@@ -268,6 +300,7 @@ const CartItem = ({
                   justifyContent: 'center',
                   backgroundColor: 'red.10',
                 }}
+                onClick={() => deleteCartItem(item?.id)}
               >
                 <DeleteIcon width='24px' />
               </Box>

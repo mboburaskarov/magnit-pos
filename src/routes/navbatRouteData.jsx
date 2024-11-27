@@ -45,9 +45,9 @@ export const navbatRouteData = [
       },
       {
         label: 'navbar.new.sales',
-        active: '/sales/new-sale/*',
+        active: '/sales/create*',
         id: '5.2',
-        href: '/sales/new-sale/id',
+        href: '/sales/create',
       },
     ],
   },

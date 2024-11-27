@@ -30,9 +30,11 @@ import PlusIcon from '../../assets/icons/PlusIcon'
 import EditorIcon from '../../assets/icons/EditorIcon'
 import FilterTableRowsMenu from './FilterTableRowsMenu'
 import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
+import { useTranslation } from 'react-i18next'
 
 export default function ProductsPage() {
   const dispatch = useDispatch()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.productsTableColumns)
   const { values } = useQueryParams()
@@ -48,6 +50,7 @@ export default function ProductsPage() {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
+    t,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     setIsDrawerOpen,
@@ -186,7 +189,7 @@ export default function ProductsPage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={4} pb={3}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          Katalog
+          {t('page.catalog.title')}
         </Typography>
         {/* <Box display='flex' mb={3} mt={4}>
           <TabContainer
@@ -213,13 +216,13 @@ export default function ProductsPage() {
             defaultValue='ALL'
             onChange={(e) => setAppType(e)}
             options={[
-              { title: 'Brchasi', value: 'ALL' },
-              { title: 'Dorilar', value: 'BUCHET' },
-              { title: 'Vitaminlar', value: 'MARKET' },
-              { title: 'Shaxsiy parvarish', value: 'MARKET1' },
-              { title: 'Chaqaloq parvarishi', value: 'MARKET2' },
-              { title: 'Diagnostika', value: 'MARKET3' },
-              { title: 'Tibbiy buyumlar', value: 'MARKET4' },
+              { title: t('switch.title.all'), value: 'ALL' },
+              { title: t('switch.title.medicine'), value: 'medicine' },
+              { title: t('switch.title.vitamin'), value: 'vitamin' },
+              { title: t('switch.title.self_care'), value: 'self_care' },
+              { title: t('switch.title.baby_care'), value: 'baby_care' },
+              { title: t('switch.title.diagnostic'), value: 'diagnostic' },
+              { title: t('switch.title.medical_supplies'), value: 'medical_supplies' },
             ]}
           />
         </Box>
@@ -238,7 +241,7 @@ export default function ProductsPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder='Qidirish: mahsulot, kategoriya, shtrix-kod' uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
             </Box>
 
             <Box minWidth={106} ml={'16px'}>
@@ -260,7 +263,7 @@ export default function ProductsPage() {
                 onClick={() => setFilterMenu((prev) => !prev)}
               >
                 <Typography fontWeight={500} fontSize={'16px'} lineHeight={'25px'}>
-                  Filter
+                  {t('filter_dialog.label')}
                 </Typography>
               </Button>
             </Box>
@@ -270,7 +273,7 @@ export default function ProductsPage() {
             // onClick={() => setFilterTableRowsMenu(true)}
             >
               {/* <EditorIcon /> */}
-              <ColumnsFilterButton columns={tableColumns} isCatalog={false} />
+              <ColumnsFilterButton title={t('ag_grid.table_setting.label')} columns={tableColumns} isCatalog={false} />
             </Box>
             <CheckAccess id={'product-create'}>
               <Box minWidth={156}>
@@ -282,7 +285,7 @@ export default function ProductsPage() {
                   variant='contained'
                   color='primary'
                 >
-                  Yangi qo'shish
+                  {t('button.add_new.text')}
                 </Button>
               </Box>
             </CheckAccess>

@@ -12,6 +12,7 @@ import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
 import CloseIcon from '../../assets/icons/CloseIcon'
 import CheckboxWithDragDrop from '../../../components/AgGridTable/CheckboxWithDragDrop'
 import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
+import { t } from 'i18next'
 
 export default function FilterTableRowsMenu({ tableColumns, open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -60,7 +61,7 @@ export default function FilterTableRowsMenu({ tableColumns, open, setOpen, setRe
   }
 
   return (
-    <StyledEmptyDialog open={open} title={'Jadval sozlamalari'} customButtons={<CloseIcon onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog open={open} title={t('ag_grid.table_setting.label')} customButtons={<CloseIcon onClick={() => setOpen(false)} />}>
       <Box
         sx={{
           width: '100%',

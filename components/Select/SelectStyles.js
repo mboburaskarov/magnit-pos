@@ -24,7 +24,19 @@ export const generateCustomStyles = (props = {}) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const theme = useTheme()
   const palette = theme.mode === 'dark' ? paletteDark : paletteLight
-  const { withAllSelect, minWidth, white, error, maxOptionMenuHeight, dashed, solidBorder, mini, placeholderWrap = true } = props
+  const {
+    withAllSelect,
+    minWidth,
+    white,
+    borderNone = false,
+    borderRadius,
+    error,
+    maxOptionMenuHeight,
+    dashed,
+    solidBorder,
+    mini,
+    placeholderWrap = true,
+  } = props
 
   return {
     container: (provided) => ({
@@ -34,13 +46,13 @@ export const generateCustomStyles = (props = {}) => {
     valueContainer: (provided) => ({
       ...provided,
       width: '100%',
-      minHeight: mini ? 40 : 48,
+      minHeight: mini ? 40 : 46,
       padding: 1,
       // backgroundColor: 'inherit',
       borderRadius: '40px',
     }),
     control: (provided, state) => ({
-      borderRadius: '40px',
+      borderRadius: borderRadius || '40px',
       transition: '0.3s',
       minWidth: minWidth || 296,
       width: '100%',
@@ -52,11 +64,12 @@ export const generateCustomStyles = (props = {}) => {
         backgroundColor: white ? palette.background.default : palette.grey[101],
       },
       boxShadow: state.isFocused
-        ? `0 0 0 2px ${palette.orange[500]}`
+        ? `0 0 0 1px ${palette.orange[500]}`
         : error
-        ? `0 0 0 2px red`
+        ? `0 0 0 1px red`
         : `0 0 0 ${solidBorder ? 1 : 0}px ${dashed ? 'transparent' : palette.grey[300]}`,
       border: dashed ? `1px dashed ${palette.grey[300]}` : `1px solid ${palette.bunker[100]}`,
+      border: borderNone ? 'none' : `1px solid ${palette.bunker[100]}`,
       fontFamily: 'Gilroy',
       cursor: state.isMulti ? 'text' : 'pointer',
     }),
@@ -186,7 +199,7 @@ export const generateCustomStyles = (props = {}) => {
       ...base,
       display: 'inline-flex',
       alignItems: 'center',
-      height: mini ? 40 : 56,
+      height: mini ? 40 : 48,
       padding: '0 16px',
       fontSize: 16,
       lineHeight: '19px',

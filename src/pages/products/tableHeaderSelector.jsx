@@ -68,12 +68,12 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ productsColumns, setImages, setOpenConfirmDialog, setIsDrawerOpen }) {
+export default function tableHeaderSelector({ productsColumns, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
   const columns = productsColumns?.map((el) => {
     if (el.field === 'main_photo') {
       return {
         ...el,
-        headerName: 'Rasm',
+        headerName: t('table_columns.photo'),
         colId: el.field,
         cellRenderer: memo((p) => <Image {...p} setImages={setImages} />),
       }
@@ -81,7 +81,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'name') {
       return {
         ...el,
-        headerName: 'Mahsulot nomi',
+        headerName: t('table_columns.name'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
       }
@@ -89,7 +89,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'sum') {
       return {
         ...el,
-        headerName: 'Summa',
+        headerName: t('table_columns.price'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='sum' />),
       }
@@ -97,7 +97,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'category') {
       return {
         ...el,
-        headerName: 'Kategoriya',
+        headerName: t('table_columns.category'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText withDevider {...p} type='category' />),
       }
@@ -105,7 +105,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'retail_price') {
       return {
         ...el,
-        headerName: 'Sotish narxi',
+        headerName: t('table_columns.retail_price'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='retail_price' />),
       }
@@ -113,7 +113,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'vat') {
       return {
         ...el,
-        headerName: 'QQS',
+        headerName: t('table_columns.vat'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='%' withDevider {...p} type='vat' />),
       }
@@ -121,7 +121,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'vat_price') {
       return {
         ...el,
-        headerName: 'QQS narxi',
+        headerName: t('table_columns.vat_price'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='vat_price' />),
       }
@@ -129,7 +129,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'supply_price') {
       return {
         ...el,
-        headerName: 'Sotib olish narxi',
+        headerName: t('table_columns.supply_price'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='supply_price' />),
       }
@@ -137,7 +137,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'status') {
       return {
         ...el,
-        headerName: 'Status',
+        headerName: t('table_columns.status'),
         colId: el.field,
         cellRenderer: memo(({ data, rowIndex }) => (
           <StatusCell
@@ -152,16 +152,16 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'manufacturer') {
       return {
         ...el,
-        headerName: "Do'kon nomi",
+        headerName: t('table_columns.manufacturer'),
         colId: el.field,
-        cellRenderer: memo(({ type, rowIndex, data }) => <Typography>{data?.manufacturer}</Typography>),
+        cellRenderer: memo((p) => <SimpleText type={'manufacturer'} {...p} />),
       }
     }
 
     if (el.field === 'barcode') {
       return {
         ...el,
-        headerName: 'Shtix-kod',
+        headerName: t('table_columns.barcode'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='' {...p} type='barcode' />),
       }
@@ -178,7 +178,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'quantity') {
       return {
         ...el,
-        headerName: 'Miqdori',
+        headerName: t('table_columns.quantity'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='quantity' />),
       }
@@ -186,7 +186,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'expire_date') {
       return {
         ...el,
-        headerName: 'Muddati',
+        headerName: t('table_columns.expire_date'),
         colId: el.field,
         cellRenderer: memo((p) => <TimeCell {...p} type='expire_date' format='DD.MM.YYYY' />),
       }
@@ -194,7 +194,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, setOpe
     if (el.field === 'actions') {
       return {
         ...el,
-        headerName: 'Amallar',
+        headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>

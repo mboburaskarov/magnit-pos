@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import CartSearchBar from './CartSearchBar'
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import CartItem from './CartItem'
-import { useMutation } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import NewCashRegister from '../create-cash-register'
+import { FormProvider, useForm } from 'react-hook-form'
 
 const useStyles = makeStyles((theme) => ({
   card_detail: {
@@ -26,11 +28,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 function NewSale() {
+  const [showOverlay, setShowOverlay] = useState(false)
+  const { data: cartItemsList, refetch: refetchcartItemsList } = useQuery('cartItemsList', () => requests.getCartItemList({ limit: 1000, offset: 0 }))
+  // return <NewCashRegister />
   const classes = useStyles()
-
-  const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createProduct, {
+  const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createCartItem, {
     onSuccess: () => {
-      navigate(`${location.pathname}`)
+      setShowOverlay(false)
+      refetchcartItemsList()
       success('Продукт успешно создан!')
     },
     onError: (err) => {
@@ -38,53 +43,69 @@ function NewSale() {
       console.log('err', err)
     },
   })
+  const { mutate: deleteCartItem, isLoading: isdeleteCartItem } = useMutation(requests.deleteCartItem, {
+    onSuccess: () => {
+      setShowOverlay(false)
+      refetchcartItemsList()
+      success('Продукт успешно создан!')
+    },
+    onError: (err) => {
+      error('Ошибка при создании товара!')
+      console.log('err', err)
+    },
+  })
+  const method = useForm()
   return (
-    <Box display={'flex'}>
-      <Box width={'100%'} padding={'20px'}>
-        <Box position={'relative'}>
-          <CartSearchBar handleAddProduct={handleAddProduct} />
-        </Box>
-        <Box mt={8} />
-        <Box padding={'24px 0'}>
-          <Box
-            sx={{
-              width: '100%',
-              display: 'flex',
-              mb: '16px',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
-              Sotuv (0)
-            </Typography>
-            <Box display={'flex'} alignItems={'center'}>
-              <Typography sx={{ mr: '12px', color: 'orange.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>Barchasini o'chirish</Typography>
-
-              <DeleteIcon width={'20px'} />
-            </Box>
+    <FormProvider {...method}>
+      <Box display={'flex'}>
+        <Box width={'100%'} padding={'20px'}>
+          <Box position={'relative'}>
+            <CartSearchBar showOverlay={showOverlay} setShowOverlay={setShowOverlay} handleAddProduct={handleAddProduct} />
           </Box>
-          {false ? (
-            <Box className={classes.empty_list}>
-              <Typography fontWeight={'800'} fontSize={'24px'} lineHeight={'32px'}>
-                Savat hozircha boʻsh
+          <Box mt={8} />
+          <Box padding={'24px 0'}>
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                mb: '16px',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
+                Sotuv (0)
               </Typography>
-              <Typography fontWeight={'500'} fontSize={'16px'} color={'bunker.500'} lineHeight={'24px'}>
-                Qidiruv paneli orqali mahsulotlarni qo'shing yoki mahsulotlarni skanerlang
-              </Typography>
+              <Box display={'flex'} alignItems={'center'}>
+                <Typography sx={{ mr: '12px', color: 'orange.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>Barchasini o'chirish</Typography>
+
+                <DeleteIcon width={'20px'} />
+              </Box>
             </Box>
-          ) : (
-            <Box>
-              <CartItem />
-              <CartItem />
-              <CartItem />
-              <CartItem />
-            </Box>
-          )}
+            {false ? (
+              <Box className={classes.empty_list}>
+                <Typography fontWeight={'800'} fontSize={'24px'} lineHeight={'32px'}>
+                  Savat hozircha boʻsh
+                </Typography>
+                <Typography fontWeight={'500'} fontSize={'16px'} color={'bunker.500'} lineHeight={'24px'}>
+                  Qidiruv paneli orqali mahsulotlarni qo'shing yoki mahsulotlarni skanerlang
+                </Typography>
+              </Box>
+            ) : (
+              <Box>
+                {cartItemsList?.data?.data?.map((el) => (
+                  <CartItem deleteCartItem={deleteCartItem} item={el} />
+                ))}
+                {/* <CartItem />
+                <CartItem />
+                <CartItem /> */}
+              </Box>
+            )}
+          </Box>
         </Box>
+        <Box className={classes.card_detail} width={'440px'}></Box>
       </Box>
-      <Box className={classes.card_detail} width={'440px'}></Box>
-    </Box>
+    </FormProvider>
   )
 }
 
