@@ -36,7 +36,7 @@ const Body = ({ children, isLoading, isEmpty }) => (
       fontWeight: 600,
       fontSize: 14,
       lineHeight: '17px',
-      color: theme.palette.grey[600],
+      color: theme.palette.gray[600],
     })}
   >
     {isEmpty ? (
@@ -155,7 +155,7 @@ export default function SingleBarChart({
         <Body id={id + 'body'} isLoading={isLoading} isEmpty={data?.values < 1}>
           <ResponsiveContainer id={id} width='100%' height={350}>
             <BarChart height={300} data={chartData.slice(sliderValue[0], sliderValue[1])}>
-              <CartesianGrid strokeDasharray='0' vertical={false} strokeWidth={2} stroke={paletteLight.grey[100]} strokeLinecap='round' />
+              <CartesianGrid strokeDasharray='0' vertical={false} strokeWidth={2} stroke={paletteLight.gray[100]} strokeLinecap='round' />
               <XAxis
                 dataKey='start_date'
                 tickLine={false}

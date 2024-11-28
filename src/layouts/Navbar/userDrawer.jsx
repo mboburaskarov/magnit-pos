@@ -57,13 +57,13 @@ const useStyles = makeStyles((theme) => ({
   },
   shopname: {
     marginTop: 2,
-    color: theme.palette.grey[400],
+    color: theme.palette.gray[400],
   },
   logoutBtn: {
     color: theme.palette.red[500],
   },
   actionBtn: {
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
     '& svg': {
       color: theme.palette.green[500],
     },
@@ -73,12 +73,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
-    backgroundColor: theme.palette.grey[100],
+    backgroundColor: theme.palette.gray[100],
     borderRadius: 24,
     cursor: 'pointer',
     transition: 'all .2s',
     '&:hover': {
-      backgroundColor: theme.palette.grey[101],
+      backgroundColor: theme.palette.gray[101],
     },
   },
 }))

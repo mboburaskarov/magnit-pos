@@ -17,7 +17,7 @@ export const headerStyles = makeStyles((theme) => {
 
         padding: ({ isOpen }) => (isOpen ? 30 : '30px 0'),
         borderRadius: 20,
-        backgroundColor: theme.palette.background.grey,
+        backgroundColor: theme.palette.background.gray,
       },
       '& nav': {
         // width: '330px',
@@ -41,7 +41,7 @@ export const headerStyles = makeStyles((theme) => {
       },
     },
     popper: {
-      backgroundColor: theme.palette.background.grey,
+      backgroundColor: theme.palette.background.gray,
       borderRadius: '16px',
       width: 256,
       outline: '0',
@@ -64,7 +64,7 @@ export const headerStyles = makeStyles((theme) => {
       right: ({ isOpen }) => (isOpen ? 20 : 0),
       top: 32,
       '& > span > svg > path': {
-        fill: theme.palette.grey[400],
+        fill: theme.palette.gray[400],
       },
       zIndex: 9999999,
       width: 32,
@@ -105,7 +105,7 @@ export const headerStyles = makeStyles((theme) => {
         width: 6,
       },
       '&::-webkit-scrollbar-thumb': {
-        background: theme.palette.grey[300],
+        background: theme.palette.gray[300],
         width: 6,
         borderRadius: 2,
       },
@@ -253,7 +253,7 @@ export const headerStyles = makeStyles((theme) => {
       // marginBottom: ({ isOpen }) => (isOpen ? 20 : 0) + 'px !important',
       // marginLeft: '16px !important',
       padding: '5px 8px !important',
-      backgroundColor: theme.palette.grey[50],
+      backgroundColor: theme.palette.gray[50],
       borderRadius: '32px !important',
       '&:hover': {
         backgroundColor: theme.palette.bunker[100],
@@ -261,7 +261,7 @@ export const headerStyles = makeStyles((theme) => {
         //   color: theme.palette.orange[500],
         // },
         // '& .shopname': {
-        //   color: theme.palette.grey[600],
+        //   color: theme.palette.gray[600],
         // },
       },
       // marginBottom: '24px !important',

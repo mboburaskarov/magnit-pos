@@ -8,7 +8,7 @@ const languages = ['ru', 'uz', 'en']
 function currency(args = {}) {
   const { supply_price = false } = args
   // const store = initializeStore()
-  const storeState = store.getState()
+  // const storeState = store.getState()
   const defaultCurrency = 'uz'
   const supplyCurrency = 'uz'
   const retailCurrency = 'uz'

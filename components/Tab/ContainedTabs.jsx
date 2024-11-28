@@ -8,7 +8,7 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     width: '100%',
     padding: 4,
-    backgroundColor: theme.palette.grey[100],
+    backgroundColor: theme.palette.gray[100],
   },
   tab: {
     flex: '0 0 50%',
@@ -17,7 +17,7 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: 16,
     fontWeight: 600,
     lineHeight: '19px',
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
     transition: 'all 0.3s',
     '&:hover': {
       backgroundColor: 'transparent',

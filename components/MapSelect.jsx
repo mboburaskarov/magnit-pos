@@ -95,7 +95,7 @@ export default function MapSelect({ label, onChange, defaultValue, onlyShow, hei
                     width='100%'
                     py={1}
                     px={3}
-                    color='grey.600'
+                    color='gray.600'
                     fontFamily='Gilroy'
                     fontWeight={600}
                     fontSize={16}
@@ -112,7 +112,7 @@ export default function MapSelect({ label, onChange, defaultValue, onlyShow, hei
                     width='100%'
                     py={2}
                     px={3}
-                    color='grey.600'
+                    color='gray.600'
                     fontFamily='Gilroy'
                     fontWeight={600}
                     fontSize={16}
@@ -125,10 +125,10 @@ export default function MapSelect({ label, onChange, defaultValue, onlyShow, hei
                       mapRef.current.setZoom(18)
                       setAddressSearch('')
                     }}
-                    sx={{ cursor: 'pointer', '&:hover': { bgcolor: 'grey.100' } }}
+                    sx={{ cursor: 'pointer', '&:hover': { bgcolor: 'gray.100' } }}
                   >
                     {item.name}{' '}
-                    <Typography ml={1} color='grey.400'>
+                    <Typography ml={1} color='gray.400'>
                       ({item.description})
                     </Typography>
                   </Box>

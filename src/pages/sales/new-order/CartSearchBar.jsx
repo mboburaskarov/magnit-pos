@@ -6,12 +6,15 @@ import SelectSimple from '../../../../components/Select/SelectSimple'
 import HeadPhonesIcon from '../../../assets/icons/HeadPhonesIcon'
 import { FormProvider, useForm } from 'react-hook-form'
 import AssigneMeButton from './AssigneMeButton'
+import UnlockIcon from '../../../assets/icons/UnlockIcon'
 import UserOutlineIcon from '../../../assets/icons/UserOutlineIcon'
 import SerchedItem from './SerchedItem'
 import { makeStyles } from '@mui/styles'
 import { requests } from '../../../../utils/requests'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { useQuery } from 'react-query'
+import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
+import ArrowDown from '../../../assets/icons/ArrowDown'
 const useStyles = makeStyles((theme) => ({
   overlay: {
     cursor: 'pointer',
@@ -36,16 +39,16 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
   searchResult: {
-    padding: 3,
+    // padding: 3,
     zIndex: 27,
-    maxHeight: '83vh',
-    overflow: 'scroll',
+    // maxHeight: '83vh',
+    // overflow: 'scroll',
     '&::-webkit-scrollbar': {
       background: 'transparent',
       width: 6,
     },
     '&::-webkit-scrollbar-thumb': {
-      background: theme.palette.grey[300],
+      background: theme.palette.gray[300],
       width: 6,
       borderRadius: 2,
     },
@@ -89,13 +92,19 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '14px',
     color: theme.palette.bunker[500],
   },
+  searchItemBox: {
+    width: 'calc(100% - 168px)',
+    display: 'flex',
+    backgroundColor: '#fff',
+    padding: '12px 16px',
+    borderRadius: 16,
+  },
   searchItem: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
     minHeight: 72,
-    padding: '11px 16px',
 
     marginTop: 16,
     // backgroundColor: theme.palette.background.default,
@@ -107,7 +116,7 @@ const useStyles = makeStyles((theme) => ({
     //   transition: 'all 0.01s ease',
     //   boxShadow: `0 0 0px 3px ${theme.palette.red[500]} !important`,
     //   outline: 'transparent !important',
-    //   background: theme.palette.grey[101],
+    //   background: theme.palette.gray[101],
     // },
   },
 }))
@@ -140,7 +149,7 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
         <Box display={'flex'}>
           <InputSearch
             id='product-search'
-            style={{ zIndex: 25 }}
+            style={{ zIndex: showOverlay ? 25 : 10 }}
             sx={{ marginRight: '16px !important', height: '48px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
             name='search'
             uncontrolled
@@ -180,7 +189,7 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
               }
               // options={[]}
               getOptionLabel={(option) => (
-                <Typography maxHeight={48} display='inline-flex' color='grey.600'>
+                <Typography maxHeight={48} display='inline-flex' color='gray.600'>
                   <Box px={0.5} width={32}>
                     <UserOutlineIcon />
                   </Box>
@@ -199,9 +208,35 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
             />
             <AssigneMeButton isSelected={true} />
           </Box>
-          <Box ml={'16px'} bgcolor={'#F8F8F9'} padding={'12px'} width={'48px'} height={'48px'} borderRadius={'50%'}>
-            <FinanceAndPaymentIcon />
-          </Box>
+          <ButtonWithPopup
+            id={'ff'}
+            noArrow
+            // endIcon={<ArrowDown />}
+            noMarginSvg
+            placement='bottom-end'
+            buttonLabel={
+              <Box ml={'16px'} className='cash_register_icon_wrapper' bgcolor={'#F8F8F9'} padding={'12px'} width={'48px'} height={'48px'} borderRadius={'50%'}>
+                <FinanceAndPaymentIcon />
+              </Box>
+            }
+            popperData={[
+              { title: 'Kassa aparatini yopish', icon: <UnlockIcon /> },
+              { title: "Kassa aparatini o'zgartirish", icon: <FinanceAndPaymentIcon />, soon: true },
+            ]}
+            // popperContentProps={{
+            //   customDateRanges: customDateRanges(),
+            //   onCustomRangeSelect: (name) => setCustomDateRangeSelected(name),
+            //   isFilter: true,
+            //   dateState: {
+            //     from: dateState.from,
+            //     to: dateState.to,
+            //     month: dateState.month,
+            //   },
+            //   setDateState: (val) => setDateState(val),
+            //   onClose: (data) => onClose(data),
+            // }}
+            // PopperContent={DateFilterDrawerSingle}
+          />
         </Box>
         {showOverlay && searchTearm && (
           <div

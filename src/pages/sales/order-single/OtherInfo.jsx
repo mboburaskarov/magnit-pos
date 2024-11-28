@@ -24,7 +24,7 @@ export default function OtherInfo({ orderData, yandexCourirerInfo }) {
         {orderData?.courierPhone && (
           <a style={{ width: '100%', display: 'block' }} href={`tel:${orderData?.courierPhone}`}>
             <Label>Номер телефона курьера</Label>
-            <Box marginTop={'8px'} padding={'16px'} width={'100%'} border='2px dashed' borderRadius={4} borderColor='grey.200'>
+            <Box marginTop={'8px'} padding={'16px'} width={'100%'} border='2px dashed' borderRadius={4} borderColor='gray.200'>
               <Typography variant='body1'>{formatPhoneNumber(`${orderData?.courierPhone}`)}</Typography>
             </Box>
           </a>
@@ -63,8 +63,8 @@ export default function OtherInfo({ orderData, yandexCourirerInfo }) {
                       left: 28.85,
                       bottom: 25,
                       position: 'absolute',
-                      bgcolor: 'grey.200',
-                      color: 'grey.600',
+                      bgcolor: 'gray.200',
+                      color: 'gray.600',
                       py: 1,
                       px: 1.5,
                       borderRadius: '0 0 8px 8px',

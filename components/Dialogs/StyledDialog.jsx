@@ -26,9 +26,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: '50% !important',
-    backgroundColor: theme.palette.grey[100] + ' !important',
+    backgroundColor: theme.palette.gray[100] + ' !important',
     '&:hover': {
-      backgroundColor: theme.palette.grey[101] + ' !important',
+      backgroundColor: theme.palette.gray[101] + ' !important',
     },
     '& svg': {
       fill: theme.palette.green[500] + ' !important',
@@ -41,12 +41,12 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: 'space-between',
       alignItems: 'center',
     },
-    borderBottom: `2px solid ${theme.palette.grey[100]}`,
+    borderBottom: `2px solid ${theme.palette.gray[100]}`,
   },
   border: {
     height: 2,
     borderRadius: 1,
-    background: theme.palette.grey[200],
+    background: theme.palette.gray[200],
   },
 }))
 

@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     fontSize: 16,
     fontWeight: 600,
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
     padding: '15px',
     fontFamily: theme.fontFamily.Gilroy,
     display: 'flex',
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     '& h3': {
       textAlign: 'center',
       fontWeight: '600',
-      color: theme.palette.grey[600],
+      color: theme.palette.gray[600],
       fontFamily: `"Gilroy", sans-serif`,
       fontSize: 24,
       lineHeight: '28px',
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
     },
     '& p': {
-      color: theme.palette.grey[300],
+      color: theme.palette.gray[300],
       marginTop: 8,
     },
   },

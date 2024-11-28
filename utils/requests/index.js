@@ -44,6 +44,7 @@ export const requests = {
   createProduct: (data) => request.post(`api/admin/products`, data),
   createCartItem: (data) => request.post(`v1/cart_item`, data),
   deleteCartItem: (id) => request.delete(`v1/cart_item/${id}`),
+  deleteAll: (ids) => request.post(`v1/cart_item/multiple/`, ids),
   getSingleProduct: (id) => request.get(`api/admin/products/${id}`),
   getSingleProductHistory: (filter) => request.get(`api/admin/products-status${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateProduct: ({ id, data }) => request.patch(`api/admin/products/${id}`, data),
@@ -60,7 +61,7 @@ export const requests = {
   refreshCouriers: (filter) => request.get(`api/admin/couriers/refresh${qs.stringify(filter, { addQueryPrefix: true })}`),
   //register cash
 
-  getRegisterCashData: (id) => request.get(`v1/cash_box_session/cash_carried_sum/${id}`),
+  getRegisterCashData: (id) => request.get(`v1/cash_box_history/${id}`),
   getRegisterCashList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getCartItemList: (filter) => request.get(`v1/cart_item/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   //shops
@@ -87,7 +88,7 @@ export const requests = {
   deleteVendor: (id) => request.delete(`api/admin/vendors/${id}`),
 
   //upload files
-  imageUpload: (data) => fileUploadRequest.post('/upload', data),
+  imageUpload: (data) => fileUploadRequest.post('v1/upload/file', data),
   fileUpload: (data) => fileUploadRequest.post('/upload', data),
 
   //yandex

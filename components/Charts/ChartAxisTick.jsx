@@ -9,12 +9,12 @@ export default function ChartAxisTick({ x, y, payload, detalization, index, visi
   return (
     <g transform={`translate(${x},${y})`}>
       {detalization.value === 'day' && (
-        <text x={0} y={0} dy={11} textAnchor='middle' fill={paletteLight.grey[400]} style={{ textTransform: 'capitalize' }}>
+        <text x={0} y={0} dy={11} textAnchor='middle' fill={paletteLight.gray[400]} style={{ textTransform: 'capitalize' }}>
           {dayjs(payload.value, 'DD.MM.YYYY | HH:mm').format('dd')}
         </text>
       )}
       {detalization.value === 'month' && !hideEvenTicksMonthOption && (
-        <text x={0} y={0} dy={11} textAnchor='middle' fill={paletteLight.grey[600]} style={{ textTransform: 'capitalize' }}>
+        <text x={0} y={0} dy={11} textAnchor='middle' fill={paletteLight.gray[600]} style={{ textTransform: 'capitalize' }}>
           {dayjs(payload.value, 'DD.MM.YYYY | HH:mm').format('MMMM')}
         </text>
       )}
@@ -23,7 +23,7 @@ export default function ChartAxisTick({ x, y, payload, detalization, index, visi
         y={0}
         dy={detalization.value === 'day' || detalization.value === 'month' ? 26 : detalization.value === 'week' ? 11 : 20}
         textAnchor='middle'
-        fill={paletteLight.grey[600]}
+        fill={paletteLight.gray[600]}
       >
         {detalization.value === 'hour' || detalization.value === '30min'
           ? getTimeFromDateTime(payload.value)
@@ -34,7 +34,7 @@ export default function ChartAxisTick({ x, y, payload, detalization, index, visi
           : getDateFromDateTime(payload.value)}
       </text>
       {detalization.value === 'week' && (
-        <text x={0} y={0} dy={26} textAnchor='middle' fill={paletteLight.grey[600]}>
+        <text x={0} y={0} dy={26} textAnchor='middle' fill={paletteLight.gray[600]}>
           {dayjs(payload.value, 'DD.MM.YYYY | HH:mm').day(7).format('DD.MM')}
         </text>
       )}

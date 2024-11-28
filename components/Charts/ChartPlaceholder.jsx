@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   text: {
-    color: theme.palette.grey[400],
+    color: theme.palette.gray[400],
     fontSize: 16,
     fontWeight: 600,
     width: 230,

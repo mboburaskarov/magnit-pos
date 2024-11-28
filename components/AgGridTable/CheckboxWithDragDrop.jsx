@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.fontSize.base,
     fontWeight: 600,
     lineHeight: '19px',
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
   },
   dragdrop: {
     display: 'flex',

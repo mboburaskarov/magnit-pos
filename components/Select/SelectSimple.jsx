@@ -12,7 +12,7 @@ const SingleValue = ({ children, selectProps, ...props }) => {
   return (
     <components.SingleValue selectProps={selectProps} {...props}>
       <Box display='flex' alignItems='center' flexWrap='wrap'>
-        {selectProps?.beforeContent && <Typography style={{ color: 'grey.400', marginRight: 2 }}>{selectProps?.beforeContent}</Typography>}
+        {selectProps?.beforeContent && <Typography style={{ color: 'gray.400', marginRight: 2 }}>{selectProps?.beforeContent}</Typography>}
         <span
           id={`select-${props?.data?.name}`}
           style={{
@@ -76,10 +76,10 @@ export const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     userSelect: 'none',
     fontWeight: 600,
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
 
     '&:hover': {
-      backgroundColor: theme.palette.grey[101],
+      backgroundColor: theme.palette.gray[101],
     },
   },
 }))

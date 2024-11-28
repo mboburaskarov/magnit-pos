@@ -14,7 +14,7 @@ export default function AssigneMeButton({ onClick, isSelected, title }) {
       top={12}
       height={32}
       width={32}
-      bgcolor={isSelected ? 'primary.main' : 'grey.400'}
+      bgcolor={isSelected ? 'primary.main' : 'gray.400'}
     >
       <StyledTooltip title={title || 'Показать мои заказы'}>
         <Box p={1}>

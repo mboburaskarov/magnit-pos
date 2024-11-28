@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: 'calc(100% + 8px)',
     width: '100%',
     background: theme.palette.background.default,
-    border: `1px solid ${theme.palette.grey[300]}`,
+    border: `1px solid ${theme.palette.gray[300]}`,
     borderRadius: 16,
     zIndex: '2',
     boxShadow: 'none',
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     padding: '18px 16px',
     '&:hover': {
-      background: theme.palette.grey[100],
+      background: theme.palette.gray[100],
     },
   },
 }))

@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
     // cursor: 'pointer',
     // alignItems: 'center',
     // justifyContent: 'center',
-    // background: theme.palette.grey[100],
-    // border: `1px solid ${theme.palette.grey[200]}`,
+    // background: theme.palette.gray[100],
+    // border: `1px solid ${theme.palette.gray[200]}`,
     // transition: 'all 0.3s ease',
     '&:hover': {
       background: `${theme.palette.bunker[100]} !important`,

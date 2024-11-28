@@ -9,7 +9,7 @@ const paletteLight = {
     default: '#fff',
     defaultStrong: '#FF6018',
     paper: '#FFFFFF',
-    grey: '#f9f9fa',
+    gray: '#f9f9fa',
   },
   primary: {
     main: '#FE500050',
@@ -41,9 +41,10 @@ const paletteLight = {
     700: '#434961',
 
     500: '#677190',
+    800: '#3A4052',
     950: '#111217',
   },
-  grey: {
+  gray: {
     10: '#f4f4f5',
     50: '#f8f8fa',
     100: '#F5F5F5',
@@ -72,6 +73,19 @@ const paletteLight = {
     900: '#14532d',
   },
   bluegray: {
+    50: '#f8fafc',
+    100: '#EFF6F5',
+    200: '#e0e7ee',
+    300: '#cbd5e1',
+    400: '#94a3b8',
+    401: 'linear-gradient(0deg, rgba(0, 0, 0, 0.07), rgba(0, 0, 0, 0.07)), #ACBBCF',
+    500: '#64748b',
+    600: '#475569',
+    700: '#334155',
+    800: '#1e293b',
+    900: '#0f172a',
+  },
+  blue: {
     50: '#f8fafc',
     100: '#EFF6F5',
     200: '#e0e7ee',

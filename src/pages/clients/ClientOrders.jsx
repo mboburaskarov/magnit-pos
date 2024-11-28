@@ -159,7 +159,7 @@ export default function UserOrders({ id }) {
 
   return (
     <>
-      <SectionTitle mt={1} grey>
+      <SectionTitle mt={1} gray>
         Заказы пользователей ({userOrders?.data.totalCount}/{userOrders?.data.done})
       </SectionTitle>
       <AgGridTable

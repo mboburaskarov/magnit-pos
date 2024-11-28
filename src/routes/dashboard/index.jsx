@@ -1,9 +1,9 @@
-import LayoutWithNavbar from '../../layouts/LayoutWithNavbar'
+import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import DashboarPage from '../../pages/dashboard'
 
 const dashboardRoutes = {
   path: 'dashboard',
-  element: <LayoutWithNavbar />,
+  element: <LayoutWithHeaderNavbar />,
   children: [
     {
       path: '',

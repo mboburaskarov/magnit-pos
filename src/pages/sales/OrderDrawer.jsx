@@ -120,7 +120,7 @@ export default function OrderDrawer({ isOpen: order, onClose, refetch }) {
 
             <Typography mt={0.5} ml={2} fontSize={28} variant='h2'>
               Заказ {dayjs(orderData?.data?.createdAt).format('DD.MM.YYYY HH:mm')}
-              <Typography color='grey.400' mt={1} variant='body1'>
+              <Typography color='gray.400' mt={1} variant='body1'>
                 Cтатус • {order_statuses.find((el) => el.id === orderData?.data?.status)?.name}
               </Typography>
             </Typography>
@@ -153,13 +153,13 @@ export default function OrderDrawer({ isOpen: order, onClose, refetch }) {
           </Box>
         }
       >
-        <SectionTitle grey>История заказа</SectionTitle>
+        <SectionTitle gray>История заказа</SectionTitle>
         <OrderHistory id={_id} />
-        <SectionTitle mt={6} grey>
+        <SectionTitle mt={6} gray>
           Кол-во продуктов
         </SectionTitle>
         <ProductsInOrders setImages={setOpenImageGallery} products={orderData?.data?.products} />
-        <SectionTitle mt={6} grey>
+        <SectionTitle mt={6} gray>
           Доп. информация
         </SectionTitle>
         <DrawerInfoBox
@@ -218,8 +218,8 @@ export default function OrderDrawer({ isOpen: order, onClose, refetch }) {
                         left: 29,
                         bottom: 25,
                         position: 'absolute',
-                        bgcolor: 'grey.200',
-                        color: 'grey.600',
+                        bgcolor: 'gray.200',
+                        color: 'gray.600',
                         py: 1,
                         px: 1.5,
                         borderRadius: '0 0 8px 8px',

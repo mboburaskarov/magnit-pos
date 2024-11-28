@@ -48,7 +48,7 @@ export default function UserDrawer({ isOpen: id, onClose, setOpenConfirmDialog }
           <Image data={userData?.data} />
           <Typography mt={1} ml={2} fontSize={28} variant='h2'>
             {userData?.data?.fullName}
-            <Typography display='flex' alignItems='center' color='grey.400' mt={1} variant='body1'>
+            <Typography display='flex' alignItems='center' color='gray.400' mt={1} variant='body1'>
               {shop_statuses.find((el) => el.id === userData?.data?.status)?.name} • {dayjs(userData?.data?.createdAt).format('DD.MM.YYYY')}
             </Typography>
           </Typography>
@@ -72,7 +72,7 @@ export default function UserDrawer({ isOpen: id, onClose, setOpenConfirmDialog }
       }
     >
       <ClientOrders id={id} />
-      <SectionTitle mt={6} grey>
+      <SectionTitle mt={6} gray>
         Информация
       </SectionTitle>
       <DrawerInfoBox

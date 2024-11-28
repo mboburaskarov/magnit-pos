@@ -224,7 +224,7 @@ export default function OrderEditDialog({ isOpen, orderData, setIsOpen, orderId,
                   </>
                   <MuiTextField
                     type='text'
-                    sx={{ border: '2px solid', width: '120px', height: 56, borderColor: 'grey.200', borderRadius: '16px' }}
+                    sx={{ border: '2px solid', width: '120px', height: 56, borderColor: 'gray.200', borderRadius: '16px' }}
                     disabled={!shop || !products[index]?.productDetails}
                     size='small'
                     value={products[index]?.amount}

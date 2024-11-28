@@ -28,12 +28,12 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: 'space-between',
       alignItems: 'center',
     },
-    borderBottom: `2px solid ${theme.palette.grey[100]}`,
+    borderBottom: `2px solid ${theme.palette.gray[100]}`,
   },
   border: {
     height: 2,
     borderRadius: 1,
-    background: theme.palette.grey[200],
+    background: theme.palette.gray[200],
   },
 }))
 

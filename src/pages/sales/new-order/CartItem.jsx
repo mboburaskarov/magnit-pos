@@ -66,7 +66,7 @@ export const useStyles = makeStyles((theme) => ({
     minWidth: 48,
     maxWidth: 48,
     borderRadius: 6,
-    border: `1px solid ${theme.palette.grey[200]}`,
+    border: `1px solid ${theme.palette.gray[200]}`,
     overflow: 'hidden',
     '& img': {
       height: '100%',
@@ -82,24 +82,29 @@ export const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'space-between',
     '& p': {
+      display: '-webkit-box',
+      '-webkit-line-clamp': 1,
+      '-webkit-box-orient': 'vertical',
+      overflow: 'hidden',
+      'text-overflow': 'ellipsis',
       margin: 0,
-      maxWidth: 300,
+      // maxWidth: 300,
       fontWeight: 600,
       fontSize: 16,
       lineHeight: '19px',
       wordWrap: 'break-word',
       '& span': {
-        color: theme.palette.grey[400],
+        color: theme.palette.gray[400],
         margin: '0 4px',
       },
     },
   },
   name: {
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
     marginBottom: 8,
   },
   articul: {
-    color: theme.palette.grey[400],
+    color: theme.palette.gray[400],
   },
   actions: {
     display: 'flex',
@@ -133,7 +138,7 @@ export const useStyles = makeStyles((theme) => ({
     lineHeight: '16px',
     fontWeight: 600,
     textDecoration: 'line-through',
-    color: theme.palette.grey[400],
+    color: theme.palette.gray[400],
   },
   right: {
     marginLeft: 12,
@@ -183,7 +188,7 @@ export const useStyles = makeStyles((theme) => ({
     width: 0,
     margin: 0,
     '& p': {
-      color: `${theme.palette.grey[400]} !important`,
+      color: `${theme.palette.gray[400]} !important`,
     },
   },
   discountPercent: {
@@ -276,8 +281,17 @@ const CartItem = ({
                 />
               </Box>
               <Box id='product-details' className={cls.text}>
-                <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>Raqamli termometr</Typography>
-                <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>50609549182024</Typography>
+                <Typography
+                  sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}
+                  textOverflow={'ellipsis'}
+                  // maxWidth={'calc(100%)'}
+                  // whiteSpace={'nowrap'}
+
+                  overflow={'hidden'}
+                >
+                  {item?.product?.name}
+                </Typography>
+                <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}> {item?.product?.barcode}</Typography>
               </Box>
             </Box>
 
@@ -285,7 +299,10 @@ const CartItem = ({
               <Box id='product-details' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', justifyContent: 'center' }}>
                 <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>A4</Typography>
                 <Box sx={{ display: 'flex', '& svg > g > path': { stroke: '#FF6018' }, '& svg': { width: '20px', height: '20px' } }}>
-                  <Typography sx={{ mr: '10px', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>127 950 so'm</Typography>
+                  <Typography sx={{ mr: '10px', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
+                    {' '}
+                    {item?.product?.supply_price}
+                  </Typography>
                   <EditIcon />
                 </Box>
               </Box>

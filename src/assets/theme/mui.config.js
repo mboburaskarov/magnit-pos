@@ -1,7 +1,7 @@
 const colors = {
   white: '#ffffff',
   black: '#000000',
-  grey: {
+  gray: {
     50: '#fbfbfb',
     100: '#F5F5F5',
     101: '#eaeaea',

@@ -70,7 +70,7 @@ export default function ProductHistory({ id }) {
         colId: 'user',
         minWidth: 50,
         cellRenderer: ({ data }) => (
-          <Typography sx={{ whiteSpace: 'pre-line', color: !data?.userInfo?.fullName && 'grey.400' }}>
+          <Typography sx={{ whiteSpace: 'pre-line', color: !data?.userInfo?.fullName && 'gray.400' }}>
             {data?.userInfo?.fullName || 'Неопределенный'}
           </Typography>
         ),
@@ -81,7 +81,7 @@ export default function ProductHistory({ id }) {
         minWidth: 125,
         width: 125,
         maxWidth: 125,
-        cellRenderer: ({ data }) => <Typography sx={{ whiteSpace: 'pre-line', color: !data?.duration && 'grey.400' }}>{data?.duration || '-'}</Typography>,
+        cellRenderer: ({ data }) => <Typography sx={{ whiteSpace: 'pre-line', color: !data?.duration && 'gray.400' }}>{data?.duration || '-'}</Typography>,
       },
       {
         headerName: 'Изменения',

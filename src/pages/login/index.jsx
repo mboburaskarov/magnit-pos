@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 18,
     fontWeight: 400,
     lineHeight: '24px',
-    color: theme.palette.grey[500],
+    color: theme.palette.gray[500],
     fontFamily: theme.fontFamily.Gilroy,
   },
   bgContainer: {

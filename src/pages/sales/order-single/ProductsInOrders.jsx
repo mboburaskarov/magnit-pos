@@ -10,7 +10,7 @@ import { success } from '../../../../utils/toast'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, endText = 'сум' }) => {
   return (
-    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'grey.400' }} id={`product-${type}-${rowIndex}`}>
+    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
       {withDevider ? thousandDivider(data?.[type], endText) : data?.[type] || 'Неопределенный'}
     </Typography>
   )

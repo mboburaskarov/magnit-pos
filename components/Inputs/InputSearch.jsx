@@ -17,13 +17,13 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     borderRadius: '50px',
     width: ({ maxWidth }) => maxWidth,
-    backgroundColor: theme.palette.grey[100],
-    color: theme.palette.grey[400],
+    backgroundColor: theme.palette.gray[100],
+    color: theme.palette.gray[400],
     '& svg > path': {
       fill: theme.palette.bunker[400],
     },
     '&:hover': {
-      backgroundColor: theme.palette.grey[101],
+      backgroundColor: theme.palette.gray[101],
     },
     '& .MuiOutlinedInput-input': {
       padding: '15.5px 5px',
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   resetIcon: {
     position: 'absolute',
     right: '1rem',
-    color: theme.palette.grey[400],
+    color: theme.palette.gray[400],
     '& button:hover': {
       cursor: 'pointer',
       color: theme.palette.red[500],
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     '& button': {
       backgroundColor: 'transparent',
       border: 0,
-      color: theme.palette.grey[400],
+      color: theme.palette.gray[400],
     },
     '& span': {
       marginRight: 10,
@@ -59,10 +59,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
     '& .MuiOutlinedInput-root': {
       backgroundColor: theme.palette.background.default,
-      boxShadow: `inset 0 0 0 1px ${theme.palette.grey[300]}`,
+      boxShadow: `inset 0 0 0 1px ${theme.palette.gray[300]}`,
     },
   },
-  grey: {
+  gray: {
     '& .MuiOutlinedInput-root': {
       backgroundColor: '#F8F8F9',
     },
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
   inputEndText: {
     position: 'absolute',
     right: ({ handleClickGiftCards }) => (handleClickGiftCards ? '5rem' : '1rem'),
-    color: theme.palette.grey[400],
+    color: theme.palette.gray[400],
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'spaceBetween',
@@ -120,7 +120,7 @@ const InputSearch = ({
         variant='outlined'
         placeholder={placeholder}
         fullWidth={fullWidth || false}
-        className={`${classes.input} ${white ? classes.white : classes.grey}`}
+        className={`${classes.input} ${white ? classes.white : classes.gray}`}
         onChange={(e) => (uncontrolled ? setValue(e.target.value) : onChange(e))}
         onFocus={() => {
           if (onFocus) onFocus()

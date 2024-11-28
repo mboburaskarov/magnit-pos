@@ -61,7 +61,7 @@ export default function FilterMenu({ open, setRegions, setOpen, operatorsList })
         width: '100%',
         padding: open ? 4 : 0,
         border: `1px solid`,
-        borderColor: 'grey.200',
+        borderColor: 'gray.200',
         borderRadius: 4,
         height: open ? 'auto' : 0,
         opacity: open ? 1 : 0,
@@ -85,7 +85,7 @@ export default function FilterMenu({ open, setRegions, setOpen, operatorsList })
                 }
                 options={operatorsList?.data?.admins}
                 getOptionLabel={(option) => (
-                  <Typography maxHeight={48} display='inline-flex' color='grey.600'>
+                  <Typography maxHeight={48} display='inline-flex' color='gray.600'>
                     <Box px={0.5} width={32}>
                       <HeadPhonesIcon size={18} />
                     </Box>
@@ -117,9 +117,9 @@ export default function FilterMenu({ open, setRegions, setOpen, operatorsList })
                 filters={{ limit: 100 }}
                 control={control}
                 getOptionLabel={(option) => (
-                  <Typography color='grey.600'>
+                  <Typography color='gray.600'>
                     {option.fullName} <br />{' '}
-                    <Typography fontSize={14} color='grey.400'>
+                    <Typography fontSize={14} color='gray.400'>
                       {formatPhoneNumber('+' + option.phone)}
                     </Typography>
                   </Typography>
@@ -139,7 +139,7 @@ export default function FilterMenu({ open, setRegions, setOpen, operatorsList })
                   { label: 'MOBILE', value: 'MOBILE' },
                 ]}
                 getOptionLabel={(option) => (
-                  <Typography maxHeight={48} display='inline-flex' color='grey.600'>
+                  <Typography maxHeight={48} display='inline-flex' color='gray.600'>
                     {option.label}
                   </Typography>
                 )}

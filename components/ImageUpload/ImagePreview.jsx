@@ -172,7 +172,7 @@ export default function ImagePreview({
               alignItems: 'center',
               justifyContent: 'center',
               '&:hover': {
-                bgcolor: mode === 'dark' ? 'rgb(64, 64, 64)' : 'grey.200',
+                bgcolor: mode === 'dark' ? 'rgb(64, 64, 64)' : 'gray.200',
                 '& > svg > rect': { fill: mode === 'dark' ? 'rgb(64, 64, 64)' : '#eaeaea' },
               },
             }}

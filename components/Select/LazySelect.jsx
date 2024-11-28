@@ -16,7 +16,7 @@ import LoadingBlock from '../LoadingBlock'
 const SingleValue = ({ children, selectProps, ...props }) => (
   <components.SingleValue selectProps={selectProps} {...props}>
     <Box display='flex' alignItems='center' flexWrap='wrap'>
-      {selectProps?.beforeContent && <Typography sx={{ color: 'grey.400', marginRight: 2 }}>{selectProps?.beforeContent}</Typography>}
+      {selectProps?.beforeContent && <Typography sx={{ color: 'gray.400', marginRight: 2 }}>{selectProps?.beforeContent}</Typography>}
       <span
         style={{
           lineHeight: 1.2,

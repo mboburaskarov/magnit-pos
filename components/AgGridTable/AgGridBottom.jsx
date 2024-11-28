@@ -69,7 +69,7 @@ function AgGridBottom({
         alignItems: 'center',
         width: '100%',
         paddingTop: 2,
-        // borderTop: `2px solid ${theme.palette.grey[200]}`,
+        // borderTop: `2px solid ${theme.palette.gray[200]}`,
       })}
     >
       <Box width={'100%'} display='flex' justifyContent={'space-between'} alignItems='center'>

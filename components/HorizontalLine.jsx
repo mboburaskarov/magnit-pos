@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles'
 const useStyles = makeStyles((theme) => ({
   line: {
     width: '100%',
-    border: `2px dashed ${theme.palette.grey[200]}`,
+    border: `2px dashed ${theme.palette.gray[200]}`,
     borderStyle: 'none none dashed',
     color: '#fff',
     backgroundColor: theme.palette.background.default,

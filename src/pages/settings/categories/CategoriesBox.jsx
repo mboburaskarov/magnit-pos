@@ -33,9 +33,9 @@ export default function CategoriesBox({ ind, data, setOpenConfirmDialog, setIsDr
         display='inline-flex'
         width='100%'
         justifyContent='space-between'
-        backgroundColor={isOpen ? 'grey.100' : ind % 2 === 0 ? 'grey.50' : 'background.default'}
+        backgroundColor={isOpen ? 'gray.100' : ind % 2 === 0 ? 'gray.50' : 'background.default'}
         onClick={() => setIsOpen(!isOpen)}
-        sx={{ cursor: 'pointer', transition: 'ease all 0.2s', '&:hover': { bgcolor: 'grey.100' } }}
+        sx={{ cursor: 'pointer', transition: 'ease all 0.2s', '&:hover': { bgcolor: 'gray.100' } }}
       >
         <Box columnGap={2} display='inline-flex'>
           <Box sx={{ img: { width: 96, height: 96, borderRadius: '16px', objectFit: 'cover' } }}>
@@ -48,19 +48,19 @@ export default function CategoriesBox({ ind, data, setOpenConfirmDialog, setIsDr
             <Box mt={1} display='inline-flex'>
               <Box alignItems='center' display='inline-flex'>
                 <DateIcon />
-                <Typography ml={0.7} color='grey.500' fontSize={18} lineHeight='24px'>
+                <Typography ml={0.7} color='gray.500' fontSize={18} lineHeight='24px'>
                   {dayjs(data?.createdAt).format('DD.MM.YYYY HH:mm') || '-'}
                 </Typography>
               </Box>
               <Box alignItems='center' ml={2} display='inline-flex'>
                 <ReviewUserIcon />
-                <Typography ml={0.7} color='grey.500' fontSize={18} lineHeight='24px'>
+                <Typography ml={0.7} color='gray.500' fontSize={18} lineHeight='24px'>
                   {data?.user?.fullName || 'Отсутствует'}
                 </Typography>
               </Box>
               <Box alignItems='center' ml={2} display='inline-flex'>
                 <ReviewOrderIcon />
-                <Typography ml={0.7} color='grey.500' fontSize={18} lineHeight='24px'>
+                <Typography ml={0.7} color='gray.500' fontSize={18} lineHeight='24px'>
                   {data?.productCount || '0'} продукты
                 </Typography>
               </Box>
@@ -106,7 +106,7 @@ export default function CategoriesBox({ ind, data, setOpenConfirmDialog, setIsDr
             ))
           ) : (
             <Box px={4} py={3} ml={4}>
-              <Typography color='grey.500' fontWeight={500} variant='h2'>
+              <Typography color='gray.500' fontWeight={500} variant='h2'>
                 Подкатегории не найдены
               </Typography>
             </Box>

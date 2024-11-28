@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
       fontFamily: 'Gilroy',
     },
     '& span': {
-      color: theme.palette.grey[400],
+      color: theme.palette.gray[400],
       marginRight: 8,
       fontFamily: 'Gilroy',
       paddingRight: 10,
@@ -43,11 +43,11 @@ const useStyles = makeStyles((theme) => ({
     background: 'transparent',
     transition: 'all 0.3s ease',
     '&:hover circle': {
-      fill: theme.palette.grey[200],
+      fill: theme.palette.gray[200],
     },
   },
   spanCard: {
-    backgroundColor: theme.palette.grey[100],
+    backgroundColor: theme.palette.gray[100],
     display: 'flex',
     minHeight: '48px',
     alignItems: 'center',
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '32px',
     transition: 'all 0.3s ease',
     '&:hover': {
-      backgroundColor: theme.palette.grey[200],
+      backgroundColor: theme.palette.gray[200],
     },
   },
   spanHEaderText: {
@@ -166,7 +166,7 @@ function Header({
                 <Box display='flex' flexDirection='column'>
                   <Typography sx={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', lineHeight: '48px' }} variant='h1'>
                     {typeText && (
-                      <Typography mr={1} color='grey.400' variant='span'>
+                      <Typography mr={1} color='gray.400' variant='span'>
                         {typeText}
                       </Typography>
                     )}

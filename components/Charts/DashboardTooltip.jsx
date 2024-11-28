@@ -19,10 +19,10 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 18,
     fontWeight: 400,
     width: '100%',
-    color: theme.palette.grey[500],
+    color: theme.palette.gray[500],
     height: 48,
     marginBottom: 4,
-    // backgroundColor: theme.palette.grey[100],
+    // backgroundColor: theme.palette.gray[100],
     borderRadius: 32,
   },
   total_price: {

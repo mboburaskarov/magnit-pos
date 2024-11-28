@@ -59,16 +59,16 @@ export const generateCustomStyles = (props = {}) => {
       display: 'flex',
       minHeight: mini ? 40 : 48,
       fontWeight: 600,
-      backgroundColor: white ? palette.background.default : palette.grey[50],
+      backgroundColor: white ? palette.background.default : palette.gray[50],
       '&:hover': {
-        backgroundColor: white ? palette.background.default : palette.grey[101],
+        backgroundColor: white ? palette.background.default : palette.gray[101],
       },
       boxShadow: state.isFocused
         ? `0 0 0 1px ${palette.orange[500]}`
         : error
         ? `0 0 0 1px red`
-        : `0 0 0 ${solidBorder ? 1 : 0}px ${dashed ? 'transparent' : palette.grey[300]}`,
-      border: dashed ? `1px dashed ${palette.grey[300]}` : `1px solid ${palette.bunker[100]}`,
+        : `0 0 0 ${solidBorder ? 1 : 0}px ${dashed ? 'transparent' : palette.gray[300]}`,
+      border: dashed ? `1px dashed ${palette.gray[300]}` : `1px solid ${palette.bunker[100]}`,
       border: borderNone ? 'none' : `1px solid ${palette.bunker[100]}`,
       fontFamily: 'Gilroy',
       cursor: state.isMulti ? 'text' : 'pointer',
@@ -80,7 +80,7 @@ export const generateCustomStyles = (props = {}) => {
       fontSize: '18px !important',
       fontWeight: 600,
       fontFamily: 'Gilroy',
-      color: `${palette.grey[600]} !important`,
+      color: `${palette.gray[600]} !important`,
       '& input': {
         font: 'inherit',
       },
@@ -92,7 +92,7 @@ export const generateCustomStyles = (props = {}) => {
       fontSize: 16,
       lineHeight: '19px',
       fontWeight: 600,
-      color: palette.grey[400],
+      color: palette.gray[400],
       fontFamily: 'Gilroy',
       whiteSpace: placeholderWrap ? 'wrap' : 'noWrap',
     }),
@@ -112,10 +112,10 @@ export const generateCustomStyles = (props = {}) => {
       fontSize: 16,
       lineHeight: '19px',
       fontWeight: 600,
-      color: palette.grey[600],
+      color: palette.gray[600],
       height: 40,
       borderRadius: 12,
-      backgroundColor: white ? palette.grey[100] : palette.background.default,
+      backgroundColor: white ? palette.gray[100] : palette.background.default,
       fontFamily: 'Gilroy',
       cursor: 'pointer',
     }),
@@ -124,7 +124,7 @@ export const generateCustomStyles = (props = {}) => {
       minWidth: 20,
       display: 'flex',
       alignItems: 'center',
-      color: palette.grey[600],
+      color: palette.gray[600],
       fontSize: 16,
       padding: state?.isDisabled || state?.data?.isFixed ? '0 8px' : '0',
     }),
@@ -139,7 +139,7 @@ export const generateCustomStyles = (props = {}) => {
       borderTopRightRadius: 16,
       display: state?.isDisabled || state?.data?.isFixed ? 'none' : 'flex',
       '&:hover': {
-        backgroundColor: white ? palette.grey[100] : palette.white,
+        backgroundColor: white ? palette.gray[100] : palette.white,
       },
     }),
     indicatorsContainer: (provided, state) => ({
@@ -147,6 +147,7 @@ export const generateCustomStyles = (props = {}) => {
       display: state?.isDisabled ? 'none' : 'flex',
       // backgroundColor: 'inherit',
       borderTopRightRadius: '50px',
+
       borderBottomRightRadius: '50px',
       '& > div:nth-last-of-type(1)': {
         display: state.isMulti ? 'none !important' : 'flex',
@@ -164,9 +165,9 @@ export const generateCustomStyles = (props = {}) => {
       ...base,
       color: palette.dark[500],
       padding: '0px',
-      paddingRight: '16px',
+      paddingRight: '10px',
       '&:hover': {
-        color: palette.grey[400],
+        color: palette.gray[400],
       },
     }),
     menu: (base) => ({
@@ -183,8 +184,8 @@ export const generateCustomStyles = (props = {}) => {
       maxHeight: maxOptionMenuHeight || 300,
       padding: 0,
       '&::-webkit-scrollbar-thumb': {
-        backgroundColor: palette.grey[200],
-        outline: `1px solid ${palette.grey[200]}`,
+        backgroundColor: palette.gray[200],
+        outline: `1px solid ${palette.gray[200]}`,
       },
     }),
     noOptionsMessage: (base) => ({
@@ -205,14 +206,14 @@ export const generateCustomStyles = (props = {}) => {
       lineHeight: '19px',
       fontWeight: 600,
       fontFamily: 'Gilroy',
-      color: palette.grey[600],
+      color: palette.gray[600],
       cursor: 'pointer',
-      backgroundColor: state.isFocused ? palette.grey[101] : state.isFocused ? palette.orange[50] : 'transparent',
+      backgroundColor: state.isFocused ? palette.gray[101] : state.isFocused ? palette.orange[50] : 'transparent',
       '&:hover': {
-        backgroundColor: palette.grey[101],
+        backgroundColor: palette.gray[101],
       },
       '&:first-child': {
-        borderBottom: withAllSelect && `2px dashed ${palette.grey[200]}`,
+        borderBottom: withAllSelect && `2px dashed ${palette.gray[200]}`,
       },
     }),
     menuPortal: (base) => ({ ...base, zIndex: 9999 }),

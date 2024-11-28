@@ -66,7 +66,7 @@ export default function FilterMenu({ open, setOpen }) {
         width: '100%',
         padding: open ? 4 : 0,
         border: `1px solid`,
-        borderColor: 'grey.200',
+        borderColor: 'gray.200',
         borderRadius: 4,
         height: open ? 'auto' : 0,
         opacity: open ? 1 : 0,

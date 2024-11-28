@@ -90,7 +90,7 @@ export default function BannersPage() {
                     borderRadius={4}
                     px={4}
                     py={3}
-                    backgroundColor={ind % 2 === 0 ? 'grey.50' : 'background.default'}
+                    backgroundColor={ind % 2 === 0 ? 'gray.50' : 'background.default'}
                     display='inline-flex'
                     width='100%'
                     justifyContent='space-between'
@@ -102,19 +102,19 @@ export default function BannersPage() {
                       <Box mt={2} display='inline-flex'>
                         <Box alignItems='center' display='inline-flex'>
                           <BannerValueIcon />
-                          <Typography ml={0.7} color='grey.600' fontSize={18} lineHeight='24px'>
+                          <Typography ml={0.7} color='gray.600' fontSize={18} lineHeight='24px'>
                             {banner?.type || '-'}
                           </Typography>
                         </Box>
                         <Box alignItems='center' display='inline-flex' ml={2}>
                           <BannerUserIcon />
-                          <Typography ml={0.7} color='grey.600' fontSize={18} lineHeight='24px'>
+                          <Typography ml={0.7} color='gray.600' fontSize={18} lineHeight='24px'>
                             {banner?.userInfo?.fullName || 'Новый пользователь'}
                           </Typography>
                         </Box>
                         <Box alignItems='center' display='inline-flex' ml={2}>
                           <BannerDate />
-                          <Typography ml={0.7} color='grey.600' fontSize={18} lineHeight='24px'>
+                          <Typography ml={0.7} color='gray.600' fontSize={18} lineHeight='24px'>
                             {dayjs(banner?.createdAt).format('DD.MM.YYYY HH:mm') || '00.00.0000 00:00'}
                           </Typography>
                         </Box>

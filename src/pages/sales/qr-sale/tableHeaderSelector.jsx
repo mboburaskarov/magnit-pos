@@ -174,7 +174,7 @@ export default function tableHeaderSelector({ orderColumns, searchTerm, setIsDra
         headerName: 'Модератор',
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          <Typography sx={{ color: !data.moderator && 'grey.400' }} id={`${data._id}-moderator`} style={{ whiteSpace: 'pre-line' }}>
+          <Typography sx={{ color: !data.moderator && 'gray.400' }} id={`${data._id}-moderator`} style={{ whiteSpace: 'pre-line' }}>
             {data.moderator?.fullName || 'Отсутствует'} <br /> {data.moderator?.phone && `+${data.moderator?.phone}`}
           </Typography>
         )),

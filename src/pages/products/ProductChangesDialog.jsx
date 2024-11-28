@@ -16,11 +16,11 @@ export default function ProductChangesDialog({ setChangesData, changesData }) {
         {changesData?.map((el, ind) => {
           return (
             <Box mb={2.5} key={ind}>
-              <Label textTransform='capitalize' color='grey.600'>
+              <Label textTransform='capitalize' color='gray.600'>
                 {el.keyName.toLowerCase()}
               </Label>
               <Box alignItems='center' mt={1} columnGap={1} width='100%' display='inline-flex'>
-                <Typography sx={{ wordBreak: 'break-all' }} fontSize={18} fontWeight={600} py={1.5} px={2} borderRadius={2} bgcolor='grey.100' width='100%'>
+                <Typography sx={{ wordBreak: 'break-all' }} fontSize={18} fontWeight={600} py={1.5} px={2} borderRadius={2} bgcolor='gray.100' width='100%'>
                   {el.keyName === 'files' ? (
                     <Box>
                       {el.oldValue?.map((img, ind) => (
@@ -47,7 +47,7 @@ export default function ProductChangesDialog({ setChangesData, changesData }) {
                   <RightArrowSmallIcon />
                 </Box>
 
-                <Typography sx={{ wordBreak: 'break-all' }} fontSize={18} fontWeight={600} py={1.5} px={2} borderRadius={2} bgcolor='grey.100' width='100%'>
+                <Typography sx={{ wordBreak: 'break-all' }} fontSize={18} fontWeight={600} py={1.5} px={2} borderRadius={2} bgcolor='gray.100' width='100%'>
                   {el.keyName === 'files' ? (
                     <Box>
                       {el.newValue?.map((img, ind) => (

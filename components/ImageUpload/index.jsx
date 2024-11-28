@@ -102,14 +102,14 @@ export default function ImageUpload({ id, images, onChange, label, width, height
               py: 3,
               px: 6,
               paddingBottom: 4,
-              borderColor: isDragReject ? 'red.300' : 'grey.300',
+              borderColor: isDragReject ? 'red.300' : 'gray.300',
               flexDirection: 'column',
               borderRadius: 4,
               height: 128,
               cursor: 'pointer',
-              backgroundColor: isDragActive ? theme.palette.grey[200] : theme.palette.grey[100],
+              backgroundColor: isDragActive ? theme.palette.gray[200] : theme.palette.gray[100],
               '&:hover': {
-                backgroundColor: theme.palette.grey[200],
+                backgroundColor: theme.palette.gray[200],
               },
             })}
             {...getRootProps()}

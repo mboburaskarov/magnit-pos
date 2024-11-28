@@ -9,7 +9,7 @@ const paletteLight = {
     default: '#fff',
     defaultStrong: '#FF6018',
     paper: '#FFFFFF',
-    grey: '#f9f9fa',
+    gray: '#f9f9fa',
   },
   primary: {
     main: '#FE500050',
@@ -43,7 +43,7 @@ const paletteLight = {
     500: '#677190',
     950: '#111217',
   },
-  grey: {
+  gray: {
     10: '#f4f4f5',
     50: '#f8f8fa',
     100: '#F5F5F5',

@@ -139,7 +139,7 @@ export default function ProductReviewsPage() {
               getOptionLabel={(option) => (
                 <Typography>
                   {option.fullName} <br />{' '}
-                  <Typography fontSize={14} color='grey.400'>
+                  <Typography fontSize={14} color='gray.400'>
                     {formatPhoneNumber('+' + option.phone)}
                   </Typography>
                 </Typography>

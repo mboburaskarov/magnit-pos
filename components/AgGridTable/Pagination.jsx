@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
       border: `1px solid transparent`,
       outline: 'none',
       backgroundColor: 'transparent',
-      color: theme.palette.grey[600],
+      color: theme.palette.gray[600],
       fontSize: 16,
       lineHeight: '19px',
       fontFamily: theme.fontFamily.Gilroy,
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.orange[500],
     },
     '& ul li button:hover': {
-      backgroundColor: theme.palette.grey[100],
+      backgroundColor: theme.palette.gray[100],
     },
     '& ul li button.Mui-selected:hover': {
       backgroundColor: 'transparent',

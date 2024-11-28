@@ -16,14 +16,14 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   closeIcon: {
-    fill: theme.palette.grey[400],
+    fill: theme.palette.gray[400],
     '& > circle': {
-      fill: theme.palette.grey[100],
+      fill: theme.palette.gray[100],
     },
     '&:hover': {
-      fill: theme.palette.grey[401],
+      fill: theme.palette.gray[401],
       '& > circle': {
-        fill: theme.palette.grey[101],
+        fill: theme.palette.gray[101],
       },
     },
   },

@@ -16,11 +16,11 @@ const OneSideOfCompare = ({ imagesArr = [], right, backgroundBlack }) => {
     <>
       <Box position='relative' display='flex' alignItems='center' flexDirection='column'>
         <Typography sx={{ fontSize: 24, fontWeight: 600, color: backgroundBlack ? 'common.white' : 'green.600', mb: 5 }}>
-          <Typography fontSize={20} variant='span' color={backgroundBlack ? 'common.white' : 'grey.600'}>
+          <Typography fontSize={20} variant='span' color={backgroundBlack ? 'common.white' : 'gray.600'}>
             {right ? 'Фото продукта: ' : 'Фото заказа: '}
           </Typography>
           {count + 1}{' '}
-          <Typography fontSize={20} variant='span' color={backgroundBlack ? 'common.white' : 'grey.600'}>
+          <Typography fontSize={20} variant='span' color={backgroundBlack ? 'common.white' : 'gray.600'}>
             из{' '}
           </Typography>
           {imagesArr.length}
@@ -102,7 +102,7 @@ const CompareImageGallery = ({ open, setOpen, imagesArr = [], imagesToCompareArr
   const hasImages = Array.isArray(imagesArr) && imagesArr.length > 0
   const hasImagesToCompare = Array.isArray(imagesToCompareArr) && imagesToCompareArr.length > 0
   useEffect(() => {
-    if(!hasImages && !hasImagesToCompare && open) {
+    if (!hasImages && !hasImagesToCompare && open) {
       setOpen(false)
       error('Ошибка при открытии')
     }
@@ -111,7 +111,7 @@ const CompareImageGallery = ({ open, setOpen, imagesArr = [], imagesToCompareArr
     <Box
       sx={{
         position: 'fixed',
-        display: open ? 'flex' : 'none', 
+        display: open ? 'flex' : 'none',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: backgroundBlack ? 'rgba(0, 0, 0, .8)' : 'rgba(255, 255, 255, .9)',

@@ -81,7 +81,7 @@ function LayoutHeader() {
             width: '50px',
             height: '50px',
             borderRadius: '100%',
-            backgroundColor: 'grey.50',
+            backgroundColor: 'gray.50',
           }}
         >
           <NotificationSmallIcon />

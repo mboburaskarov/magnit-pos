@@ -103,7 +103,7 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
             display='inline-flex'
             sx={{
               '&  > p': { fontWeight: 500, textAlign: 'left', color: 'dark.500', lineHeight: '28px', fontSize: 20 },
-              '& > span': { lineHeight: '19px', color: 'grey.600', fontWeight: 600, ml: 1 },
+              '& > span': { lineHeight: '19px', color: 'gray.600', fontWeight: 600, ml: 1 },
             }}
           >
             <p>{customDateRangeSelected || 'Vaqt tanlang'}</p>

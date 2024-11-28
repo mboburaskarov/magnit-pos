@@ -17,7 +17,7 @@ export default function AssigneMeButton({ onClick, isSelected, title }) {
       height={40}
       padding={'8px'}
       width={40}
-      bgcolor={isSelected ? '#fff' : 'grey.400'}
+      bgcolor={isSelected ? '#fff' : 'gray.400'}
     >
       <StyledTooltip title={title || 'Показать мои заказы'}>
         <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>

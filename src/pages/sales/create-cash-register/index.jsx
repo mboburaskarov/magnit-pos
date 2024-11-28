@@ -10,6 +10,7 @@ import { useMutation, useQuery } from 'react-query'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
+import { get } from 'lodash'
 const useStyles = makeStyles((theme) => ({
   box: {
     display: 'flex',
@@ -133,7 +134,7 @@ function NewCashRegister() {
                 <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
                 <Box display={'flex'} justifyContent={'end'}>
                   <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
-                    0
+                    {get(registerCashData, 'data.data.cash_amount', null)}
                     <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
                       UZS
                     </Typography>
@@ -152,7 +153,7 @@ function NewCashRegister() {
                 <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
                 <Box display={'flex'} justifyContent={'end'}>
                   <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
-                    0
+                    {get(registerCashData, 'data.data.cashless_amount', null)}
                     <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
                       UZS
                     </Typography>

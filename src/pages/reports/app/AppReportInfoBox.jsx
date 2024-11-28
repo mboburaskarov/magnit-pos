@@ -13,7 +13,7 @@ export default function AppReportInfoBox({ data, headerText }) {
       sx={(theme) => ({ px: 3, py: 2.5, boxShadow: theme.boxShadow['16-8'], borderRadius: 6 })}
     >
       <Box justifyContent='space-between' width='100%' display='inline-flex'>
-        <Box pb={2.5} borderBottom='1px solid' borderColor='grey.200' width='100%' mt={1} justifyContent='space-between' display='inline-flex'>
+        <Box pb={2.5} borderBottom='1px solid' borderColor='gray.200' width='100%' mt={1} justifyContent='space-between' display='inline-flex'>
           <Typography fontSize={24}>{headerText}</Typography>
         </Box>
       </Box>
@@ -43,7 +43,7 @@ export default function AppReportInfoBox({ data, headerText }) {
               <Box ml={1.5}>
                 <Typography whiteSpace='nowrap' fontSize={16} color='green.600' variant='h2'>
                   {thousandDivider(el.count)}
-                  <Typography ml={0.5} whiteSpace='nowrap' variant='span' fontSize={16} color='grey.500'>
+                  <Typography ml={0.5} whiteSpace='nowrap' variant='span' fontSize={16} color='gray.500'>
                     шт
                   </Typography>
                 </Typography>
@@ -54,7 +54,7 @@ export default function AppReportInfoBox({ data, headerText }) {
       ) : (
         <Box
           border='1px solid'
-          borderColor='grey.200'
+          borderColor='gray.200'
           borderRadius='0 0 12px 12px'
           flexDirection='column'
           width='100%'

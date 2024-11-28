@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     '& .MuiInputAdornment-root .MuiTypography-root': {
-      color: theme.palette.grey[600],
+      color: theme.palette.gray[600],
     },
     '& .MuiInputBase-root': {
       height: 48,
@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme) => ({
       height: 48,
       maxHeight: 48,
       borderRadius: 12,
-      backgroundColor: theme.palette.grey[200],
-      color: theme.palette.grey[600],
+      backgroundColor: theme.palette.gray[200],
+      color: theme.palette.gray[600],
       cursor: 'default',
     },
   },
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
       '-webkit-appearance': 'none',
       cursor: 'pointer',
       display: 'block',
-      color: theme.palette.grey[400],
+      color: theme.palette.gray[400],
       textAlign: 'center',
       background: `url('/images/input-arrows.svg') no-repeat 100% 50%`,
       width: 10,

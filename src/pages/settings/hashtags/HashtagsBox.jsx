@@ -22,7 +22,7 @@ export default function HashtagsBox({ ind, data, setOpenConfirmDialog }) {
         display='inline-flex'
         width='100%'
         justifyContent='space-between'
-        backgroundColor={ind % 2 === 0 ? 'grey.50' : 'background.default'}
+        backgroundColor={ind % 2 === 0 ? 'gray.50' : 'background.default'}
       >
         <Box columnGap={2} display='inline-flex'>
           <Box sx={{ img: { width: 96, height: 96, borderRadius: '16px', objectFit: 'cover' } }}>
@@ -35,19 +35,19 @@ export default function HashtagsBox({ ind, data, setOpenConfirmDialog }) {
             <Box mt={1} display='inline-flex'>
               <Box alignItems='center' display='inline-flex'>
                 <DateIcon />
-                <Typography ml={0.7} color='grey.500' fontSize={18} lineHeight='24px'>
+                <Typography ml={0.7} color='gray.500' fontSize={18} lineHeight='24px'>
                   {dayjs(data?.createdAt).format('DD.MM.YYYY HH:mm') || '-'}
                 </Typography>
               </Box>
               <Box alignItems='center' ml={2} display='inline-flex'>
                 <ReviewUserIcon />
-                <Typography ml={0.7} color='grey.500' fontSize={18} lineHeight='24px'>
+                <Typography ml={0.7} color='gray.500' fontSize={18} lineHeight='24px'>
                   {data?.user?.fullName || 'Отсутствует'}
                 </Typography>
               </Box>
               <Box alignItems='center' ml={2} display='inline-flex'>
                 <ReviewOrderIcon />
-                <Typography ml={0.7} color='grey.500' fontSize={18} lineHeight='24px'>
+                <Typography ml={0.7} color='gray.500' fontSize={18} lineHeight='24px'>
                   {data?.productCount || '0'} продуктов
                 </Typography>
               </Box>
