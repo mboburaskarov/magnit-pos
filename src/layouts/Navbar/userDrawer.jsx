@@ -88,7 +88,6 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
   const [isLogout, setIsLogout] = useState(false)
   const firstName = userData?.fullName?.split(' ')?.[0]
   const lastName = userData?.fullName?.split(' ')?.[1]
-  console.log(userData)
 
   return (
     <>

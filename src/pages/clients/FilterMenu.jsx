@@ -40,7 +40,6 @@ export default function FilterMenu({ open, setOpen }) {
 
   useEffect(() => {
     const { group_id, from_order_count, to_order_count, to_last_order_time, from_last_order_time, to_average_cheque, from_average_cheque } = values
-    // console.log('from_last_order_time', from_last_order_time)
     reset(
       {
         groups: group_id ? getOptionsFromUrlParam(group_id, client_groups?.data, 'id') : null,

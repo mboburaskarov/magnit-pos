@@ -205,7 +205,6 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
   const SortablePhoto = SortableElement(({ item, i }) => (
     <div key={i} className={classes.img_box}>
       <img src={item.file_url} {...item} alt={item.file_name} className={classes.img_item} />
-      {console.log(item)}
       <div className={`${classes.preview_actions} visible`}>
         {item.is_main ? (
           <div className={classes.preview_icon} key={i}>

@@ -72,10 +72,8 @@ function NewCashRegister() {
     refetchregisterCashList()
     // refetchstoreList()
   }, [])
-  console.log(registerCashData)
 
   useEffect(() => {
-    console.log('hi', methods.watch('registerCash_id'))
     refetchregisterCashData()
   }, [methods.watch('registerCash_id')])
   const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createProduct, {
