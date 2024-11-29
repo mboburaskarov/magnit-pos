@@ -28,7 +28,7 @@ function LayoutHeader() {
       // boxShadow='0px 12px 24px 0px rgba(0, 0, 0, 0.02)'
       display={'flex'}
       justifyContent={'space-between'}
-      padding={'14px 30px'}
+      padding={'20px 20px 0px 20px'}
       alignItems={'center'}
     >
       <Box
@@ -41,8 +41,8 @@ function LayoutHeader() {
       >
         <InputSearch fullWidth id='producrs-search' className={classes.searchInput} name='search' placeholder={t('input.search.product')} uncontrolled />
       </Box>
-      <Box display={'flex'}>
-        <Box mr={'20px'}>
+      <Box display={'flex'} height={'48px'}>
+        <Box mr={'17px'} width={'240px'}>
           {!userData?.fullName ? (
             <Box position='relative' marginTop={'auto'}>
               <Box className={classes.fakeImage} />
@@ -67,7 +67,7 @@ function LayoutHeader() {
                   </p>
                 </Box>
               </Box>
-              <Box>
+              <Box display={'flex'} alignItems={'center'}>
                 <ArrowDown />
               </Box>
             </ListItem>
@@ -78,8 +78,8 @@ function LayoutHeader() {
             alignItems: 'center',
             justifyContent: 'center',
             display: 'flex',
-            width: '50px',
-            height: '50px',
+            width: '48px',
+            height: '48px',
             borderRadius: '100%',
             backgroundColor: 'gray.50',
           }}

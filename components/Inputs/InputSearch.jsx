@@ -26,10 +26,10 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.gray[101],
     },
     '& .MuiOutlinedInput-input': {
-      padding: '15.5px 5px',
+      // padding: '15.5px 5px',
     },
     '& .MuiInputBase-input::placeholder': {
-      color: theme.palette.bunker[300], // Change placeholder color
+      color: theme.palette.bunker[400], // Change placeholder color
       fontSize: '18px', // Adjust font size
       opacity: 1,
       lineHeight: '24px',

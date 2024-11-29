@@ -12,6 +12,8 @@ import { error, success } from '../../../../utils/toast'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import { get } from 'lodash'
 import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 const useStyles = makeStyles((theme) => ({
   box: {
     display: 'flex',
@@ -68,33 +70,31 @@ const useStyles = makeStyles((theme) => ({
 }))
 function NewCashRegister() {
   const classes = useStyles()
+  const userData = useSelector((state) => state.user)
+  const navigate = useNavigate()
+
   const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
-  // const { watch } = useFormContext()
   const { data: registerCashList, refetch: refetchregisterCashList } = useQuery('registerCashList', () =>
     requests.getRegisterCashList({ limit: 1000, offset: 0 })
   )
   const { data: registerCashData, refetch: refetchregisterCashData } = useQuery('registerCashData', () =>
     requests.getRegisterCashData(methods.watch('registerCash_id')?.id)
   )
-  // const { data: storeList, refetch: refetchstoreList } = useQuery('storeList', () => requests.getAllShops({ limit: 1000, offset: 0 }))
   useEffect(() => {
     refetchregisterCashList()
-    // refetchstoreList()
   }, [])
   useEffect(() => {
-    console.log(registerCashData)
     if (registerCashData) setCanCreate((a) => ({ ...a, canCreate: true }))
   }, [registerCashData])
   useEffect(() => {
     refetchregisterCashData().then(() => {
       setCanCreate({ canCreate: true, is_open: get(methods.watch('registerCash_id'), 'is_open') })
     })
-    console.log(methods.watch('registerCash_id'))
   }, [methods.watch('registerCash_id')])
   const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createProduct, {
     onSuccess: () => {
-      navigate(`${location.pathname}`)
+      // navigate(`${location.pathname}`)
       success('Продукт успешно создан!')
     },
     onError: (err) => {
@@ -102,8 +102,49 @@ function NewCashRegister() {
       console.log('err', err)
     },
   })
-  console.log(get(canCreate, 'is_open'))
 
+  const { mutate: handleSaleCreate, isLoading: isCreatingSale } = useMutation(requests.createSale, {
+    onSuccess: ({ data }) => {
+      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+      success('Продукт успешно создан!')
+    },
+    onError: (err) => {
+      error('Ошибка при создании товара!')
+      console.log('err', err)
+    },
+  })
+  const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashBox, {
+    onSuccess: () => {
+      // navigate(`${location.pathname}`)
+      const requestSaleBody = {
+        cash_box_id: get(registerCashData, 'data.data.cash_box_id', null),
+        employee_id: userData?.id,
+      }
+      handleSaleCreate(requestSaleBody)
+      // success('Продукт успешно создан!')
+    },
+    onError: (err) => {
+      error('Ошибка при создании товара!')
+      console.log('err', err)
+    },
+  })
+  const onSubmit = (data) => {
+    console.log(registerCashData)
+
+    const requestBody = {
+      cash_amount: Number(get(data, 'open_amout')),
+      cash_box_id: get(registerCashData, 'data.data.cash_box_id', null),
+      description: get(data, 'description'),
+      employee_id: userData?.id,
+      is_open: true,
+    }
+
+    handleCashBoxCreate(requestBody)
+  }
+  const onError = (err) => {
+    console.log('err', err)
+    error('Пожалуйста, заполните все поля!')
+  }
   return (
     <FormProvider {...methods}>
       <Box className={classes.box}>
@@ -131,7 +172,7 @@ function NewCashRegister() {
                 />
                 <Box height={'24px'} />
                 <OutLineTextField
-                  // endAdornmentText={'UZS'}
+                  endAdornmentText={'UZS'}
                   end
                   type={'number'}
                   fullWidth
@@ -139,12 +180,16 @@ function NewCashRegister() {
                   label='Ochilish miqdori'
                   placeholder='Miqdorni kiriting'
                 />
-                {/* <TextField type={'number'} fullWidth name='open_amout' label='Ochilish miqdori' placeholder='Miqdorni kiriting' /> */}
                 <Box height={'24px'} />
 
                 <TextField fullWidth name='description' label='Izoh' placeholder='Fikr kiriting' />
               </Box>
-              <Button disabled={!get(canCreate, 'canCreate')} sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}>
+              <Button
+                type='submit'
+                onClick={methods.handleSubmit(onSubmit, onError)}
+                disabled={!get(canCreate, 'canCreate')}
+                sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}
+              >
                 Kassani oching <ArrowRightIcon />
               </Button>
             </Box>

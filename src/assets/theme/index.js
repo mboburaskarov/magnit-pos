@@ -117,13 +117,13 @@ export const theme = ({ mode, palette }) => {
             '&.Mui-disabled': {
               backgroundColor: `${palette.orange[50]} !important`,
               color: `${palette.orange[200]} !important`,
-              // cursor: 'auto',
-              // background: palette.gray[50],
-              // color: palette.gray[400],
-              // '&:hover': {
-              //   background: palette.gray[100],
-              //   color: palette.gray[400],
-              // },
+              cursor: 'auto',
+              background: palette.gray[50],
+              color: palette.gray[400],
+              '&:hover': {
+                background: palette.gray[100],
+                color: palette.gray[400],
+              },
             },
           },
 
@@ -551,7 +551,8 @@ export const theme = ({ mode, palette }) => {
           },
           input: {
             '&::placeholder': {
-              color: palette.dark[500],
+              color: palette.bunker[400],
+              opacity: 1,
               fontWeight: '400 !important',
             },
             '&:-webkit-autofill': {
