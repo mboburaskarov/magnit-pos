@@ -15,8 +15,8 @@ function CardShiftDetails() {
   return (
     <div>
       <FeatureRichTable
-        columns={columns?.filter((column) => column)}
-        data={[]}
+        columns={[]}
+        data={[{}]}
         isDataLoading={false}
         tableSettings={false}
         totalData={[]}

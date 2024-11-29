@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import SelectSimple from '../../../../components/Select/SelectSimple'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import TextField from '../../../../components/Inputs/TextField'
@@ -11,6 +11,7 @@ import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import { get } from 'lodash'
+import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
 const useStyles = makeStyles((theme) => ({
   box: {
     display: 'flex',
@@ -55,10 +56,19 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.orange[500],
     borderRadius: '50%',
   },
+  closeStoreDot: {
+    width: 30,
+    height: 30,
+    display: 'flex',
+    borderRadius: '50%',
+    backgroundColor: 'red',
+    marginRight: '10px',
+    marginBottom: '5px',
+  },
 }))
 function NewCashRegister() {
   const classes = useStyles()
-
+  const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
   // const { watch } = useFormContext()
   const { data: registerCashList, refetch: refetchregisterCashList } = useQuery('registerCashList', () =>
@@ -72,9 +82,15 @@ function NewCashRegister() {
     refetchregisterCashList()
     // refetchstoreList()
   }, [])
-
   useEffect(() => {
-    refetchregisterCashData()
+    console.log(registerCashData)
+    if (registerCashData) setCanCreate((a) => ({ ...a, canCreate: true }))
+  }, [registerCashData])
+  useEffect(() => {
+    refetchregisterCashData().then(() => {
+      setCanCreate({ canCreate: true, is_open: get(methods.watch('registerCash_id'), 'is_open') })
+    })
+    console.log(methods.watch('registerCash_id'))
   }, [methods.watch('registerCash_id')])
   const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createProduct, {
     onSuccess: () => {
@@ -86,12 +102,21 @@ function NewCashRegister() {
       console.log('err', err)
     },
   })
+  console.log(get(canCreate, 'is_open'))
+
   return (
     <FormProvider {...methods}>
       <Box className={classes.box}>
         <Box className={classes.wrapper}>
-          <Typography fontSize={'32px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'} p={'24px'}>
-            Kassirni tanlang
+          <Typography display={'flex'} alignItems={'center'} fontSize={'32px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'} p={'24px'}>
+            {get(canCreate, 'is_open') ? (
+              'Kassirni tanlang'
+            ) : (
+              <>
+                <span className={classes.closeStoreDot} />
+                Kassa Yopiq
+              </>
+            )}
           </Typography>
           <Box display={'flex'} p={'40px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
             <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -105,12 +130,21 @@ function NewCashRegister() {
                   name={'registerCash_id'}
                 />
                 <Box height={'24px'} />
-                <TextField required type={'number'} fullWidth name='description' label='Ochilish miqdori' placeholder='Miqdorni kiriting' />
+                <OutLineTextField
+                  endAdornmentText={'UZS'}
+                  end
+                  type={'number'}
+                  fullWidth
+                  name='open_amout'
+                  label='Ochilish miqdori'
+                  placeholder='Miqdorni kiriting'
+                />
+                <TextField type={'number'} fullWidth name='open_amout' label='Ochilish miqdori' placeholder='Miqdorni kiriting' />
                 <Box height={'24px'} />
 
-                <TextField required fullWidth name='description' label='Izoh' placeholder='Fikr kiriting' />
+                <TextField fullWidth name='description' label='Izoh' placeholder='Fikr kiriting' />
               </Box>
-              <Button disabled={true} sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}>
+              <Button disabled={!get(canCreate, 'canCreate')} sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}>
                 Kassani oching <ArrowRightIcon />
               </Button>
             </Box>
