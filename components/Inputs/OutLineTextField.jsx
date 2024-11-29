@@ -42,21 +42,21 @@ const OutLineTextField = ({
         id={name}
         type={type || 'text'}
         placeholder={placeholder}
-        endAdornment={
-          <InputAdornment position='end'>
-            <IconButton
-            // aria-label={
-            //   // showPassword ? 'hide the password' : 'display the password'
-            // }
-            // onClick={handleClickShowPassword}
-            // onMouseDown={handleMouseDownPassword}
-            // onMouseUp={handleMouseUpPassword}
-            >
-              {endAdornmentText}
-              {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
-            </IconButton>
-          </InputAdornment>
-        }
+        // endAdornment={
+        //   <InputAdornment position='end'>
+        //     <IconButton
+        //     // aria-label={
+        //     //   // showPassword ? 'hide the password' : 'display the password'
+        //     // }
+        //     // onClick={handleClickShowPassword}
+        //     // onMouseDown={handleMouseDownPassword}
+        //     // onMouseUp={handleMouseUpPassword}
+        //     >
+        //       {endAdornmentText}
+        //       {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
+        //     </IconButton>
+        //   </InputAdornment>
+        // }
         inputRef={inputRef}
         autoComplete={autoComplete ? autoComplete : name === 'shopType' ? 'off' : 'on'}
         InputProps={InputProps}

@@ -61,7 +61,7 @@ export const theme = ({ mode, palette }) => {
       MuiCircularProgress: {
         styleOverrides: {
           root: {
-            color: palette.green[500],
+            color: palette.orange[500],
           },
         },
       },
