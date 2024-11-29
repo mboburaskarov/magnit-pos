@@ -31,18 +31,25 @@ function NavbarDrawer({
   return (
     <div id='navbar' className={classes.container}>
       <div className={classes.logo}>
-        <Box display='flex'>
-          <Link to='/dashboard' className={classes.brandLogo}>
-            <span className={classes.logo_main}>
-              <LogoMain />
-            </span>
-            {isOpen && <LogoLetters />}
-          </Link>
-        </Box>
+        {isOpen && (
+          <Box
+            display='flex'
+            sx={{
+              '& a': {
+                padding: '2px 6px',
+              },
+            }}
+          >
+            <Link to='/dashboard' className={classes.brandLogo}>
+              <span className={classes.logo_main}>{<LogoMain />}</span>
+              {<LogoLetters />}
+            </Link>
+          </Box>
+        )}
 
         <button type='button' className={classes.close_icon} onClick={handleDrawerToggle}>
           <span className={isOpen ? classes.right_faced : classes.left_faced}>
-            <SidebarIcon withoutBoxLine={!isOpen} />
+            <SidebarIcon withoutBoxLine={false} />
           </span>
         </button>
       </div>

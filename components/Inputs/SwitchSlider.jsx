@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
   slider: {
     position: 'relative',
     height: 40,
+    '&:first-child': {
+      marginLeft: '0px',
+    },
     marginLeft: '4px',
     // width: '100%',
   },

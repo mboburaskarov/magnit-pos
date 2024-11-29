@@ -27,8 +27,8 @@
 
 /* Header */
 .ag-theme-alpine .ag-header {
-  min-height: 48px !important;
-  height: 48px !important;
+  min-height: 56px !important;
+  height: 56px !important;
   border: none;
   border: 1px solid;
   /* border-color: the; */

@@ -42,21 +42,21 @@ const OutLineTextField = ({
         id={name}
         type={type || 'text'}
         placeholder={placeholder}
-        // endAdornment={
-        //   <InputAdornment position='end'>
-        //     <IconButton
-        //     // aria-label={
-        //     //   // showPassword ? 'hide the password' : 'display the password'
-        //     // }
-        //     // onClick={handleClickShowPassword}
-        //     // onMouseDown={handleMouseDownPassword}
-        //     // onMouseUp={handleMouseUpPassword}
-        //     >
-        //       {endAdornmentText}
-        //       {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
-        //     </IconButton>
-        //   </InputAdornment>
-        // }
+        endAdornment={
+          <InputAdornment position='end'>
+            <IconButton
+            // aria-label={
+            //   // showPassword ? 'hide the password' : 'display the password'
+            // }
+            // onClick={handleClickShowPassword}
+            // onMouseDown={handleMouseDownPassword}
+            // onMouseUp={handleMouseUpPassword}
+            >
+              {endAdornmentText}
+              {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
+            </IconButton>
+          </InputAdornment>
+        }
         inputRef={inputRef}
         autoComplete={autoComplete ? autoComplete : name === 'shopType' ? 'off' : 'on'}
         InputProps={InputProps}
@@ -72,6 +72,17 @@ const OutLineTextField = ({
         fullWidth={fullWidth}
         error={!!methods?.formState?.errors?.[name]}
         sx={(theme) => ({
+          '& .MuiInputAdornment-root': {
+            '& > .MuiButtonBase-root': {
+              background: 'transparent !important',
+              fontSize: '18px !important',
+              fontWeight: '500',
+              lineHeight: '28px',
+              color: theme.palette.bunker[400],
+              paddingRight: '12px',
+              width: 'auto',
+            },
+          },
           '& .MuiInputLabel-root.Mui-disabled': {
             fontSize: 22,
             fontFamily: 'Gilroy',
@@ -101,10 +112,6 @@ const OutLineTextField = ({
             },
             '&.Mui-focused': {
               bgcolor: bgcolor ? '#' + bgcolor : !white ? 'background.default' : 'white',
-            },
-            '& > .MuiButtonBase-root': {
-              background: 'transparent !important',
-              fontSize: '14px !important',
             },
           },
           '& .MuiOutlinedInput-input': {

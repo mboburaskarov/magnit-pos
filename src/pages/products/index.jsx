@@ -187,7 +187,7 @@ export default function ProductsPage() {
 
   return (
     <LoadingContainer readyState={true}>
-      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={4} pb={3}>
+      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           {t('page.catalog.title')}
         </Typography>
@@ -207,7 +207,7 @@ export default function ProductsPage() {
             setSelected={setStatus}
           />
         </Box> */}
-        <Box mt={'16px'} minWidth={320}>
+        <Box minWidth={320}>
           <InputSwitch
             uncontrolled
             id='app-type'
@@ -226,7 +226,7 @@ export default function ProductsPage() {
             ]}
           />
         </Box>
-        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'24px'} width='100%'>
+        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box
               width='100%'
@@ -244,7 +244,7 @@ export default function ProductsPage() {
               <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
             </Box>
 
-            <Box minWidth={106} ml={'16px'}>
+            <Box minWidth={113} ml={'16px'}>
               <Button
                 sx={{
                   height: '48px',
@@ -255,6 +255,9 @@ export default function ProductsPage() {
                   fontWeight: '500',
                   fontSize: '16px',
                   lineHeight: '24px',
+                  '& span': {
+                    mr: '12px',
+                  },
                 }}
                 fullWidth
                 startIcon={<FilterMenuIcon />}

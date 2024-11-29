@@ -60,6 +60,8 @@ export const requests = {
   payCourierOrders: (data) => request.post(`api/admin/courier-transactions`, data),
   refreshCouriers: (filter) => request.get(`api/admin/couriers/refresh${qs.stringify(filter, { addQueryPrefix: true })}`),
   //register cash
+  createSale: (data) => request.post(`v1/sale`, data),
+  createCashBox: (data) => request.post(`v1/cash_box_operation`, data),
 
   getRegisterCashData: (id) => request.get(`v1/cash_box_history/${id}`),
   getRegisterCashList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),

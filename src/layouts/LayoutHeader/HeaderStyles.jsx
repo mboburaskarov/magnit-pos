@@ -1,7 +1,7 @@
 import { faWeight } from '@fortawesome/free-solid-svg-icons'
 import makeStyles from '@mui/styles/makeStyles'
 
-const drawerWidth = '280px'
+const drawerWidth = '296px'
 
 export const headerStyles = makeStyles((theme) => {
   return {
@@ -252,7 +252,8 @@ export const headerStyles = makeStyles((theme) => {
       marginTop: 'auto !important',
       // marginBottom: ({ isOpen }) => (isOpen ? 20 : 0) + 'px !important',
       // marginLeft: '16px !important',
-      padding: '5px 8px !important',
+      padding: '4px 12px 4px 4px !important',
+      justifyContent: 'space-between',
       backgroundColor: theme.palette.gray[50],
       borderRadius: '32px !important',
       '&:hover': {

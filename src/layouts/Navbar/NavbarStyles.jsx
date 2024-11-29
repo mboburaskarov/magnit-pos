@@ -1,7 +1,7 @@
 import { faWeight } from '@fortawesome/free-solid-svg-icons'
 import makeStyles from '@mui/styles/makeStyles'
 
-const drawerWidth = '280px'
+const drawerWidth = '296px'
 
 export const navbarStyles = makeStyles((theme) => {
   return {
@@ -15,7 +15,7 @@ export const navbarStyles = makeStyles((theme) => {
         margin: 20,
         height: 'calc(100% - 40px)',
 
-        padding: ({ isOpen }) => (isOpen ? 30 : '30px 0'),
+        padding: ({ isOpen }) => (isOpen ? '24px 16px' : '30px 0'),
         borderRadius: 20,
         backgroundColor: theme.palette.background.gray,
       },
@@ -26,7 +26,7 @@ export const navbarStyles = makeStyles((theme) => {
     },
     list: {
       padding: 0,
-      marginTop: '30px',
+      marginTop: '32px',
       '&:hover': {
         '& .popper': {
           display: 'block',
@@ -55,7 +55,7 @@ export const navbarStyles = makeStyles((theme) => {
       display: 'none',
     },
     close_icon: {
-      position: 'absolute',
+      // position: 'absolute',
       right: ({ isOpen }) => (isOpen ? 20 : 0),
       top: 40,
       '& > span > svg > path': {
@@ -65,11 +65,13 @@ export const navbarStyles = makeStyles((theme) => {
       width: 32,
       height: 32,
       backgroundColor: 'transparent',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      // display: 'flex',
+      // alignItems: 'center',
+      // justifyContent: 'center',
       outline: '0',
       border: '0',
+      top: 0,
+      bottom: 0,
       cursor: 'pointer',
       '& span': {
         display: 'flex',
@@ -136,11 +138,17 @@ export const navbarStyles = makeStyles((theme) => {
       },
     },
     listItem: {
-      width: '220px',
-      height: 50,
+      width: '100%',
+      height: 48,
       fontSize: 18,
-
-      margin: '10px 0',
+      padding: '10px 20px',
+      '&:first-child': {
+        margin: '0 0 8px',
+      },
+      '&:last-child': {
+        margin: '8px 0 0px',
+      },
+      margin: '8px 0',
       borderRadius: 50,
       // paddingLeft: '32px !important',
       // paddingRight: '32px !important',
@@ -214,7 +222,11 @@ export const navbarStyles = makeStyles((theme) => {
       },
     },
     logo: {
-      padding: ({ isOpen }) => (isOpen ? 0 : '0 27px'),
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: ({ isOpen }) => (isOpen ? 'space-between' : 'center'),
+      position: 'relative',
+      padding: ({ isOpen }) => (isOpen ? '0 8px 0 0px' : '0 0 0 0'),
     },
     brandLogo: {
       height: 50,
@@ -225,9 +237,9 @@ export const navbarStyles = makeStyles((theme) => {
       },
     },
     logo_main: {
-      marginRight: 10,
+      marginRight: 0,
       display: 'flex',
-      width: '43px',
+      width: '50px',
       alignItems: 'center',
       '& > svg > path': {
         fill: theme.mode === 'dark' && 'white',
@@ -304,7 +316,7 @@ export const navbarStyles = makeStyles((theme) => {
       alignItems: 'center',
       height: '100%',
       transition: '0.3s',
-      paddingRight: 12,
+      paddingRight: 16,
       '& svg': {
         width: 24,
         height: 24,
