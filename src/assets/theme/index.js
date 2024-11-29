@@ -557,11 +557,11 @@ export const theme = ({ mode, palette }) => {
             '&:-webkit-autofill': {
               color: 'red',
               borderRadius: 16,
-              paddingTop: '14px !important',
+              paddingTop: '10px !important',
               fontWeight: '400 !important',
 
               // paddingRight: 12,
-              paddingBottom: 9,
+              paddingBottom: 8,
               border: 'none !important',
               // paddingLeft: 12,
               backgroundColor: 'transparent !important',

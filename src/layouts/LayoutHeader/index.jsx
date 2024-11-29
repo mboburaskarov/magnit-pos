@@ -88,7 +88,7 @@ function LayoutHeader() {
         </Box>
       </Box>
 
-      {/* <UserDrawer isOpen={isUserOpen} userData={userData} closeDrawer={() => setIsUserOpen(null)} /> */}
+      <UserDrawer isOpen={isUserOpen} userData={userData} closeDrawer={() => setIsUserOpen(null)} />
     </Box>
   )
 }

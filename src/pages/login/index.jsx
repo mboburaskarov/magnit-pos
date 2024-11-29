@@ -111,7 +111,6 @@ export default function LoginPage() {
       console.log(userData?.employee)
 
       dispatch(setUserData(userData?.employee))
-      debugger
       navigate('/redirect')
     },
     onError: (err) => {
