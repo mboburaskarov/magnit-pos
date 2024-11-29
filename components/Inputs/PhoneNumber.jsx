@@ -46,17 +46,17 @@ const PhoneNumber = ({ name, required, country = countries[0], setCountry, setVa
                 width: 120,
                 height: 56,
                 cursor: 'pointer',
-                borderRight: `2px solid ${theme.palette.grey[200]}`,
+                borderRight: `2px solid ${theme.palette.gray[200]}`,
                 borderRadius: '16px 0 0 16px',
                 fontSize: 16,
                 fontWeight: 400,
                 svg: {
                   ml: 1,
-                  color: 'grey.300',
+                  color: 'gray.300',
                   fontSize: 16,
                 },
                 '&:hover': {
-                  // bgcolor: 'grey.200',
+                  // bgcolor: 'gray.200',
                 },
               })}
             >
@@ -95,7 +95,7 @@ const PhoneNumber = ({ name, required, country = countries[0], setCountry, setVa
                     setCountry(item)
                     setOpen(false)
                   }}
-                  sx={{ cursor: 'pointer', '&:hover': { bgcolor: 'grey.100' } }}
+                  sx={{ cursor: 'pointer', '&:hover': { bgcolor: 'gray.100' } }}
                 >
                   {item.name}
                 </Box>

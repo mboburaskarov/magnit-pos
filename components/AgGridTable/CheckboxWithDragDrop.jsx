@@ -1,9 +1,9 @@
 import React, { memo, useMemo } from 'react'
 import { Checkbox, Box, FormControlLabel } from '@mui/material'
-import DragDropIcon from 'icons/DragDropIcon'
 import { arrayMove, sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc'
-import { useTranslation } from 'react-i18next'
+// import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@mui/styles'
+import DragDropIcon from '../../src/assets/icons/DragDropIcon'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,14 +12,58 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: 48,
     marginTop: 8,
-    backgroundColor: theme.palette.grey[100],
-    borderRadius: 16,
+    backgroundColor: theme.palette.bg[10],
+    borderRadius: 12,
     justifyContent: 'space-between',
     zIndex: 1400,
     paddingRight: 16,
+    borderBottom: `1px solid ${theme.palette.bunker[100]}`,
     paddingLeft: 16,
     '&:nth-of-type(1)': {
       marginTop: 0,
+    },
+    '& [type=checkbox]': {
+      'accent-color': 'green',
+      backgroundColor: '#fff',
+      color: '#000',
+      border: '0.25rem solid green',
+    },
+
+    /* Pseudo element for check styling */
+
+    '& [type=checkbox]::before': {
+      content: '',
+      'accent-color': 'green',
+      backgroundColor: '#fff',
+      color: '#000',
+    },
+    '& [type=checkbox]::after': {
+      content: '',
+      'accent-color': 'green',
+      backgroundColor: '#fff',
+      color: '#000',
+    },
+
+    /* Checked */
+
+    '& [type=checkbox]:checked': {
+      'accent-color': 'green',
+      backgroundColor: '#fff',
+      color: '#000',
+    },
+
+    '& [type=checkbox]:checked::before': {
+      'accent-color': 'green',
+      backgroundColor: '#fff',
+      color: '#000',
+    },
+
+    /* Disabled */
+
+    '& [type=checkbox]:disabled': {
+      'accent-color': 'green',
+      backgroundColor: '#fff',
+      color: '#000',
     },
   },
   label: {
@@ -31,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.fontSize.base,
     fontWeight: 600,
     lineHeight: '19px',
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
   },
   dragdrop: {
     display: 'flex',
@@ -54,7 +98,6 @@ const useStyles = makeStyles((theme) => ({
 
 function CheckboxWithDragDrop({ data, checkAllField, setData, dragHandle = true, customId }) {
   const classes = useStyles()
-  const { t } = useTranslation()
   const onSortEnd = (props) => {
     const { oldIndex, newIndex } = props
     const newList = arrayMove(data, oldIndex, newIndex)
@@ -63,23 +106,16 @@ function CheckboxWithDragDrop({ data, checkAllField, setData, dragHandle = true,
     return newList
   }
   const handleChange = (propName, checked) => {
-    const changedData = data.map((el) => {
+    const changedData = data?.map((el) => {
       if (el.name === propName) {
-        el.colDef.hide = !checked
+        el.hide = !checked
       }
       return el
     })
+
     setData(changedData)
   }
-  const handleAllCheckedChange = (e) => {
-    const isChecked = e.target.checked
-    const changedData = data.map((el) => {
-      if (el?.always_active) return el
-      el.colDef.hide = !isChecked
-      return el
-    })
-    setData(changedData)
-  }
+
   const DragHandle = sortableHandle(() => (
     <div className={classes.dragdrop}>
       <DragDropIcon />
@@ -91,15 +127,15 @@ function CheckboxWithDragDrop({ data, checkAllField, setData, dragHandle = true,
       sortableElement(({ data, handleChange }) => (
         <div className={classes.root}>
           <FormControlLabel
-            control={<Checkbox name={data.name} />}
+            control={<Checkbox name={data?.name} />}
             onChange={(e) => {
-              handleChange(data.name, e.target.checked)
+              handleChange(data?.name, e.target.checked)
             }}
-            id={data.name}
+            id={data?.name}
             disabled={data?.always_active}
-            checked={!data?.colDef.hide}
-            name={data.name}
-            label={data.label?.ru || data.label}
+            checked={!data?.hide}
+            name={data?.name}
+            label={data?.label?.ru || data?.label}
           />
           {dragHandle && <DragHandle />}
         </div>
@@ -108,26 +144,16 @@ function CheckboxWithDragDrop({ data, checkAllField, setData, dragHandle = true,
   )
 
   return (
-    <>
-      {checkAllField && (
-        <Box className={classes.header}>
-          <FormControlLabel
-            control={<Checkbox id={customId ? customId : 'toggle_all'} name='toggle_all' />}
-            onChange={handleAllCheckedChange}
-            checked={data?.filter((el) => el.colId !== 'checkboxSelectionField')?.every((el) => !el?.colDef.hide)}
-            label={t('menu.products.import.nav.select_all')}
-          />
-        </Box>
-      )}
+    <Box width={'100%'}>
       <SortableContainer onSortEnd={onSortEnd} useDragHandle>
         {data?.map(
           (item, index) =>
-            item.colId !== 'checkboxSelectionField' && (
-              <SortableItem key={`item-${item.colId}`} index={index} data={item} handleChange={handleChange} classes={classes} />
+            item?.colId !== 'checkboxSelectionField' && (
+              <SortableItem key={`item-${item?.colId}`} index={index} data={item} handleChange={handleChange} classes={classes} />
             )
         )}
       </SortableContainer>
-    </>
+    </Box>
   )
 }
 

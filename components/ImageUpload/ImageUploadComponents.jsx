@@ -17,7 +17,7 @@ export const SortablePhoto = SortableElement(({ item, i, setEditingImage, setUpl
         transition: 'width .2s ease',
         marginRight: 2,
         border: `1px solid`,
-        borderColor: 'grey.200',
+        borderColor: 'gray.200',
         borderRadius: 4,
         '& > img': {
           width: '100%',

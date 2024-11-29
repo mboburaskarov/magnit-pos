@@ -31,10 +31,10 @@ const Drawer = ({ open, setOpen, title, content }) => (
           p: 2,
           color: 'secondary.main',
           borderBottom: '1px solid',
-          borderColor: 'grey.100',
+          borderColor: 'gray.100',
           '&:first-of-type': {
             borderTop: '1px solid',
-            borderColor: 'grey.100',
+            borderColor: 'gray.100',
           },
         },
       }}

@@ -4,6 +4,7 @@ import { memo } from 'react'
 import RowFilterButton from './RowFilterButton'
 import DownloadButton from './DownloadButton'
 import Pagination from './Pagination'
+import { useTranslation } from 'react-i18next'
 
 const rotateAnimation = keyframes`
   0% {
@@ -59,8 +60,7 @@ function AgGridBottom({
   resetTable,
   isRefreshing,
 }) {
-  console.log(offsetIndex, offsetQuery, offsetSize, download, controlledOffsetCount)
-
+  const { t } = useTranslation()
   return (
     <Box
       sx={(theme) => ({
@@ -69,7 +69,7 @@ function AgGridBottom({
         alignItems: 'center',
         width: '100%',
         paddingTop: 2,
-        // borderTop: `2px solid ${theme.palette.grey[200]}`,
+        // borderTop: `2px solid ${theme.palette.gray[200]}`,
       })}
     >
       <Box width={'100%'} display='flex' justifyContent={'space-between'} alignItems='center'>
@@ -85,7 +85,7 @@ function AgGridBottom({
         <RowFilterButton eventMessage={eventMessages?.[1]} offsetSize={offsetSize} setOffsetSize={setOffsetSize} />
         {fullInfoAboutCurrentPage && (
           <Typography fontSize={'16px'} lineHeight={'24px'} color={'bunker.400'} fontWeight={'500'}>
-            {controlledOffsetCount} ta ro'yxatning {offsetIndex * offsetSize} dan {offsetIndex * offsetSize + Number(offsetSize)} gachasi ko'rsatilmoqda
+            {t('ag_grid.bottom.info', { from: controlledOffsetCount, start: offsetIndex * offsetSize, end: offsetIndex * offsetSize + Number(offsetSize) })}
           </Typography>
         )}
         <Pagination count={controlledOffsetCount} handleChangeOffset={changeOffset} offset={offsetIndex} offsetQuery={offsetQuery} />

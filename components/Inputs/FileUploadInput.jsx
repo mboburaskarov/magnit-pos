@@ -40,8 +40,8 @@ export default function FileUploadInput({ id, onChange, label, placeholder, defa
           mt={1.5}
           width='100%'
           height={56}
-          bgcolor='grey.100'
-          sx={{ cursor: file?.key && 'pointer', '&:hover': { bgcolor: 'grey.200' } }}
+          bgcolor='gray.100'
+          sx={{ cursor: file?.key && 'pointer', '&:hover': { bgcolor: 'gray.200' } }}
         >
           {file?.key ? (
             <a target='_blank' rel='noreferrer' href={getImageUrl(file?.key)}>
@@ -52,7 +52,7 @@ export default function FileUploadInput({ id, onChange, label, placeholder, defa
           ) : (
             <FileIcon width={20} />
           )}
-          <Typography whiteSpace='nowrap' color={file?.name ? 'grey.600' : 'grey.400'} ml={1}>
+          <Typography whiteSpace='nowrap' color={file?.name ? 'gray.600' : 'gray.400'} ml={1}>
             {isUploadingFile ? 'Файл загружается...' : file?.name ? `${file?.name} ${(file?.size / 1024).toFixed(1)} KB` : placeholder}
           </Typography>
           <input accept='.pdf,.doc,.txt,.docx' onChange={onHandleChange} id={id} style={{ opacity: '0', width: 0 }} type='file' />

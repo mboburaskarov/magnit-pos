@@ -1,9 +1,17 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/display-name */
 import { memo, useEffect, useState } from 'react'
-import { Box } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import StyledDialog from '../Dialogs/StyledDialog'
+import CheckboxWithDragDrop from './CheckboxWithDragDrop'
+import { useDispatch, useSelector } from 'react-redux'
+import StyledEmptyDialog from '../Dialogs/StyledeEmptyDialog'
+import CloseIcon from '../../src/assets/icons/CloseIcon'
+import EditorIcon from '../../src/assets/icons/EditorIcon'
+import { changeColumnSequence, resetTableHeader } from '../../src/redux-toolkit/tableSlices/productsTableColumns'
+import ButtonWithWrapper from '../Buttons/ButtonWithWrapper'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -20,40 +28,29 @@ const useStyles = makeStyles((theme) => ({
   },
 
   btn: {
-    marginLeft: 10,
-    height: 40,
-    width: 40,
-    borderRadius: '50%',
-    display: 'flex',
     cursor: 'pointer',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: theme.palette.grey[100],
-    border: `1px solid ${theme.palette.grey[200]}`,
-    transition: 'all 0.3s ease',
+    // marginLeft: 10,
+    // height: 40,
+    // width: 40,
+
+    // borderRadius: '50%',
+    // display: 'flex',
+    // cursor: 'pointer',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    // background: theme.palette.gray[100],
+    // border: `1px solid ${theme.palette.gray[200]}`,
+    // transition: 'all 0.3s ease',
     '&:hover': {
-      background: `${theme.palette.green[600]} !important`,
-      border: `none`,
-      '& > svg > path': {
-        fill: `#fff !important`,
-      },
+      background: `${theme.palette.bunker[100]} !important`,
+      // border: `none`,
+      // '& > svg > path': {
+      //   fill: `#fff !important`,
+      // },
     },
   },
 }))
-const Button = memo(({ setOpen }) => {
-  const classes = useStyles()
 
-  return (
-    <div id='table-settings-button' className={classes.btn} type='button' onClick={() => setOpen((prev) => !prev)}>
-      <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path
-          d='M15.2188 9.875L13.875 9.125C14.0312 8.375 14.0312 7.65625 13.875 6.90625L15.2188 6.15625C15.375 6.0625 15.4375 5.875 15.375 5.71875C15.0312 4.59375 14.4375 3.59375 13.6875 2.75C13.5625 2.625 13.375 2.59375 13.2188 2.6875L11.875 3.4375C11.3125 2.96875 10.6875 2.59375 10 2.34375V0.8125C10 0.65625 9.875 0.5 9.6875 0.46875C8.53125 0.1875 7.375 0.21875 6.28125 0.46875C6.09375 0.5 6 0.65625 6 0.8125V2.34375C5.28125 2.59375 4.65625 2.96875 4.09375 3.46875L2.75 2.6875C2.59375 2.59375 2.40625 2.625 2.28125 2.75C1.53125 3.59375 0.9375 4.59375 0.59375 5.71875C0.53125 5.875 0.59375 6.0625 0.75 6.15625L2.09375 6.90625C1.96875 7.65625 1.96875 8.375 2.09375 9.125L0.75 9.875C0.59375 9.96875 0.53125 10.1562 0.59375 10.3125C0.9375 11.4375 1.53125 12.4375 2.28125 13.2812C2.40625 13.4062 2.59375 13.4375 2.75 13.3438L4.09375 12.5938C4.65625 13.0625 5.28125 13.4375 6 13.6875V15.2188C6 15.375 6.125 15.5312 6.28125 15.5938C7.4375 15.8438 8.59375 15.8125 9.6875 15.5938C9.875 15.5312 10 15.375 10 15.2188V13.6875C10.6875 13.4375 11.3125 13.0625 11.875 12.5938L13.2188 13.3438C13.375 13.4375 13.5625 13.4062 13.6875 13.2812C14.4688 12.4375 15.0312 11.4375 15.4062 10.3125C15.4375 10.1562 15.375 9.96875 15.2188 9.875ZM8 10.5C6.59375 10.5 5.5 9.40625 5.5 8C5.5 6.625 6.59375 5.5 8 5.5C9.375 5.5 10.5 6.625 10.5 8C10.5 9.40625 9.375 10.5 8 10.5Z'
-          fill='#119676'
-        />
-      </svg>
-    </div>
-  )
-})
 const SELECTION_ID = 'checkboxSelectionField'
 
 function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
@@ -61,17 +58,18 @@ function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
   const [open, setOpen] = useState(false)
   const [data, setData] = useState([])
   const [selection, setSelection] = useState(false)
-
+  const dispatch = useDispatch()
+  const { t } = useTranslation()
   useEffect(() => {
     if (columns) {
       const formattedData = columns
         ?.filter((el) => !el.is_temporary && el.colId !== SELECTION_ID)
         ?.map((el) => ({
           ...el,
-          label: el.colDef?.headerName,
-          desc: el.colDef.desc,
+          label: el.headerName,
+          desc: el.desc,
           name: el.colId,
-          always_active: el?.always_active ?? el?.colDef?.always_active,
+          always_active: el?.always_active ?? el?.always_active,
         }))
 
       setSelection(columns?.filter((el) => el.colId === SELECTION_ID)?.length > 0)
@@ -82,44 +80,57 @@ function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
   const handleApply = () => {
     setOpen(false)
 
-    data.forEach((el, idx) => {
-      if (el.colId !== SELECTION_ID) {
-        el.columnApi.setColumnVisible(el.colId, !el?.colDef?.hide)
-        if (el?.instanceId !== idx) {
-          if (selection) {
-            el.columnApi.moveColumn(el.colId, idx + 1)
-          } else {
-            el.columnApi.moveColumn(el.colId, idx)
-          }
-        }
-      }
-    })
+    dispatch(changeColumnSequence(data))
+  }
+
+  const resetTableHeaders = () => {
+    setOpen(false)
+
+    dispatch(resetTableHeader())
   }
 
   return (
     <>
-      <Button setOpen={setOpen} />
-      <StyledDialog
+      <ButtonWithWrapper onClick={() => setOpen(true)} icon={<EditorIcon />} />
+
+      <StyledEmptyDialog
         open={open}
         onClose={() => setOpen(false)}
-        title={title || 'Поля таблицы'}
+        title={title || 'Jadval sozlamalari'}
         buttonId='submit-button'
+        customButtons={<CloseIcon onClick={() => setOpen(false)} />}
         customOnSubmit={handleApply}
-        buttonLabel={applyBtnLabel || 'Применить'}
       >
-        <Box py={4} px={7} className={classes.container}>
+        <Box p={'24px'} className={classes.container}>
           <Box className={classes.inner}>
-            {/* <CheckboxWithDragDrop
+            <CheckboxWithDragDrop
               data={data?.filter((item) => {
-                if (supplyPriceRoute && (item?.colId === 'supply_price' || item?.colId === 'supply_price_usd')) return false
+                if (item?.colId === 'actfion' || item?.colId === 'supply_price_usd') return false
                 return true
               })}
               checkAllField
               setData={setData}
-            /> */}
+            />
+            <Box columnGap={2} display='flex' width='100%' mt={'24px'}>
+              <Button
+                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                fullWidth
+                color='secondary'
+                variant='contained'
+                // disabled={!formState.isDirty}
+                onClick={resetTableHeaders}
+              >
+                <Typography fontWeight={600} lineHeight={'24px'} fontSize={'16px'}>
+                  {t('filter_dialog.reset.label')}
+                </Typography>
+              </Button>
+              <Button sx={{ height: 48 }} onClick={() => handleApply()} fullWidth variant='contained' type='submit'>
+                {t('filter_dialog.save.label')}
+              </Button>
+            </Box>
           </Box>
         </Box>
-      </StyledDialog>
+      </StyledEmptyDialog>
     </>
   )
 }

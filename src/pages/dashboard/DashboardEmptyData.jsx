@@ -4,7 +4,7 @@ export default function DashboardEmptyData() {
   return (
     <Box
       border='1px solid'
-      borderColor='grey.200'
+      borderColor='gray.200'
       borderRadius='0 0 12px 12px'
       flexDirection='column'
       width='100%'

@@ -17,7 +17,7 @@ export const navbarStyles = makeStyles((theme) => {
 
         padding: ({ isOpen }) => (isOpen ? 30 : '30px 0'),
         borderRadius: 20,
-        backgroundColor: theme.palette.background.grey,
+        backgroundColor: theme.palette.background.gray,
       },
       '& nav': {
         // width: '330px',
@@ -36,7 +36,7 @@ export const navbarStyles = makeStyles((theme) => {
       },
     },
     popper: {
-      backgroundColor: theme.palette.background.grey,
+      backgroundColor: theme.palette.background.gray,
       borderRadius: '16px',
       width: 256,
       outline: '0',
@@ -59,7 +59,7 @@ export const navbarStyles = makeStyles((theme) => {
       right: ({ isOpen }) => (isOpen ? 20 : 0),
       top: 40,
       '& > span > svg > path': {
-        // fill: theme.palette.grey[400],
+        // fill: theme.palette.gray[400],
       },
       zIndex: 9999999,
       width: 32,
@@ -100,7 +100,7 @@ export const navbarStyles = makeStyles((theme) => {
         width: 6,
       },
       '&::-webkit-scrollbar-thumb': {
-        background: theme.palette.grey[300],
+        background: theme.palette.gray[300],
         width: 6,
         borderRadius: 2,
       },
@@ -138,12 +138,13 @@ export const navbarStyles = makeStyles((theme) => {
     listItem: {
       width: '220px',
       height: 50,
-      fontSize: 20,
+      fontSize: 18,
+
       margin: '10px 0',
       borderRadius: 50,
       // paddingLeft: '32px !important',
       // paddingRight: '32px !important',
-      fontWeight: 500,
+      fontWeight: 600,
       lineHeight: '28px',
       color: theme.palette.dark[500],
       fontFamily: theme.fontFamily.Gilroy,
@@ -256,7 +257,7 @@ export const navbarStyles = makeStyles((theme) => {
           color: theme.palette.green[500],
         },
         '& .shopname': {
-          color: theme.palette.grey[600],
+          color: theme.palette.gray[600],
         },
       },
       marginBottom: '24px !important',
@@ -282,7 +283,7 @@ export const navbarStyles = makeStyles((theme) => {
       lineHeight: '19px',
       fontWeight: 600,
       fontFamily: "'Gilroy', sans-serif",
-      color: theme.palette.grey[400],
+      color: theme.palette.gray[400],
       fontSize: 16,
       transition: 'all .2s',
       whiteSpace: 'nowrap',
@@ -295,7 +296,7 @@ export const navbarStyles = makeStyles((theme) => {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
-      color: theme.palette.grey[600],
+      color: theme.palette.gray[600],
     },
     itemIcon: {
       flex: '0 0 17%',
@@ -313,8 +314,8 @@ export const navbarStyles = makeStyles((theme) => {
     itemLabel: {
       flex: '1 0 73%',
       lineHeight: '28px',
-      fontSize: 20,
-      fontWeight: 500,
+      fontSize: 18,
+      fontWeight: 600,
       color: theme.palette.dark[500],
     },
     itemArrow: {

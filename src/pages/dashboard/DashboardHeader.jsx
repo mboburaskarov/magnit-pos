@@ -23,7 +23,7 @@ export default function DashboardHeader({ setSortBy }) {
         <Typography variant='h1' fontWeight={600} mb={'5px'} fontSize={'40px'} lineHeight={'50px'} color={'dark.500'}>
           Hayrli kun, Mr. Oybek!
         </Typography>
-        <Typography variant='h1' fontWeight={300} fontSize={'16px'} lineHeight={'24px'} color={'grey.500'}>
+        <Typography variant='h1' fontWeight={300} fontSize={'16px'} lineHeight={'24px'} color={'gray.500'}>
           Welcome to Store, Manage your shop with store
         </Typography>
       </Box>

@@ -8,8 +8,9 @@ import { useNavigate } from 'react-router-dom'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import ProductBody from '../ProductBody'
 import Header from '../../../../components/Header'
-
+import { useTranslation } from 'react-i18next'
 export default function ProductCreatePage() {
+  const { t } = useTranslation()
   const methods = useForm()
   const navigate = useNavigate()
 
@@ -64,8 +65,9 @@ export default function ProductCreatePage() {
           isLoading={isCreatingProduct}
           buttonText='Создать'
           backIcon
+          noActions
           backHref='/products'
-          text='Новый продукт'
+          text={t('create_new_product.top.new_product')}
           checkAccessId={'product-create'}
           onSubmit={methods.handleSubmit(onSubmit, onError)}
         />

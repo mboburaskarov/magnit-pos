@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
   shopBtn: {
     marginBottom: 8,
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
     '& svg': {
       display: 'none',
     },
@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme) => ({
   red: {
     color: theme.palette.red[500],
   },
-  grey: {
-    color: theme.palette.grey[600],
+  gray: {
+    color: theme.palette.gray[600],
   },
   backBtn: {
     width: 48,
@@ -93,7 +93,7 @@ export default function UserLogOutDrawer({ isOpen, closeDrawer, goBack }) {
                 Да, выйти
               </Button>
               <Box pb={2} />
-              <Button color='secondary' fullWidth onClick={goBack} className={classes.grey}>
+              <Button color='secondary' fullWidth onClick={goBack} className={classes.gray}>
                 Отмена
               </Button>
             </Box>

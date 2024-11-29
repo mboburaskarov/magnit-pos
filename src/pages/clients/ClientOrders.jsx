@@ -13,7 +13,7 @@ import { order_statuses } from '../../assets/data/order-statuses'
 import Highlighter from 'react-highlight-words'
 import TruncatedText from '../../../components/TruncatedText'
 import TimeCell from '../../../components/AgGridTable/Cells/TimeCell'
-import OrderDrawer from '../orders/OrderDrawer'
+import OrderDrawer from '../sales/OrderDrawer'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, endText = 'сум' }) => {
   return (
@@ -159,7 +159,7 @@ export default function UserOrders({ id }) {
 
   return (
     <>
-      <SectionTitle mt={1} grey>
+      <SectionTitle mt={1} gray>
         Заказы пользователей ({userOrders?.data.totalCount}/{userOrders?.data.done})
       </SectionTitle>
       <AgGridTable

@@ -9,7 +9,7 @@ const paletteLight = {
     default: '#fff',
     defaultStrong: '#FF6018',
     paper: '#FFFFFF',
-    grey: '#f9f9fa',
+    gray: '#f9f9fa',
   },
   primary: {
     main: '#FE500050',
@@ -30,12 +30,21 @@ const paletteLight = {
   action: {
     disabledBackground: '#F5F5F5',
   },
+  bg: {
+    10: '#F8F8F9',
+  },
   bunker: {
     100: '#ECEDF2',
+    200: '#D5D7E2',
+    300: '#B1B7C8',
     400: '#868FAA',
+    700: '#434961',
+
+    500: '#677190',
+    800: '#3A4052',
     950: '#111217',
   },
-  grey: {
+  gray: {
     10: '#f4f4f5',
     50: '#f8f8fa',
     100: '#F5F5F5',
@@ -76,13 +85,26 @@ const paletteLight = {
     800: '#1e293b',
     900: '#0f172a',
   },
+  blue: {
+    50: '#f8fafc',
+    100: '#EFF6F5',
+    200: '#e0e7ee',
+    300: '#cbd5e1',
+    400: '#94a3b8',
+    401: 'linear-gradient(0deg, rgba(0, 0, 0, 0.07), rgba(0, 0, 0, 0.07)), #ACBBCF',
+    500: '#64748b',
+    600: '#475569',
+    700: '#334155',
+    800: '#1e293b',
+    900: '#0f172a',
+  },
   purple: {
     50: '#faf5ff',
     100: '#f3e8ff',
     200: '#e9d5ff',
     300: '#d8b4fe',
     400: '#c084fc',
-    500: '#a855f7',
+    500: '#2558FF',
     600: '#9333ea',
     700: '#7e22ce',
     800: '#6b21a8',
@@ -152,6 +174,7 @@ const paletteLight = {
   orange: {
     50: '#fff7ed',
     100: '#FE50000D',
+    150: '#FFE9D4',
     200: '#fed7aa',
     300: '#fdba74',
     400: '#fb923c',
@@ -162,6 +185,8 @@ const paletteLight = {
     900: '#7c2d12',
   },
   red: {
+    10: '#FFEDEB',
+
     50: '#fef2f2',
     100: '#F45B691A',
     200: '#fecaca',

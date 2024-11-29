@@ -74,9 +74,9 @@ export default function ProductDrawer({ isOpen: id, onClose, setImages, setOpenC
           <Image setImages={setImages} data={productData?.data} />
           <Typography mt={0.5} ml={2} fontSize={28} variant='h2'>
             {productData?.data?.name}
-            <Typography display='flex' alignItems='center' color='grey.400' mt={1} variant='body1'>
+            <Typography display='flex' alignItems='center' color='gray.400' mt={1} variant='body1'>
               <ReviewIcon />
-              <Typography ml={0.5} color='grey.400'>
+              <Typography ml={0.5} color='gray.400'>
                 {productData?.data?.averageRating} рейтинг
               </Typography>{' '}
               • {productData?.data?.commentsCount} отзывов
@@ -128,19 +128,19 @@ export default function ProductDrawer({ isOpen: id, onClose, setImages, setOpenC
         </Box>
       }
     >
-      <SectionTitle grey>История продукта</SectionTitle>
+      <SectionTitle gray>История продукта</SectionTitle>
       <ProductHistory id={id} />
       {productData?.data?.status === 'REJECTED' && (
         <>
-          <SectionTitle grey mt={6}>
+          <SectionTitle gray mt={6}>
             Причина отклона
           </SectionTitle>
-          <Box mt={2} overflow={'hidden'} bgcolor={'grey.100'} borderRadius={3} p={4}>
+          <Box mt={2} overflow={'hidden'} bgcolor={'gray.100'} borderRadius={3} p={4}>
             <Typography sx={{ width: '100%', wordBreak: 'break-word' }}>{productData?.data?.rejectedComment || 'Нет'}</Typography>
           </Box>
         </>
       )}
-      <SectionTitle mt={6} grey>
+      <SectionTitle mt={6} gray>
         Доп. информация
       </SectionTitle>
       <DrawerInfoBox

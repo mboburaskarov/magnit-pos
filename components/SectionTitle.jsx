@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import HorizontalLine from './HorizontalLine'
 
-export default function SectionTitle({ children, component = 'h3', small, large, fontSize, grey, color, noWrap, withLine, ...rest }) {
+export default function SectionTitle({ children, component = 'h3', small, large, fontSize, gray, color, noWrap, withLine, ...rest }) {
   return (
     <Typography
       component={component}
@@ -11,7 +11,7 @@ export default function SectionTitle({ children, component = 'h3', small, large,
         alignItems: 'center',
         display: 'inline-flex',
         whiteSpace: noWrap ? 'nowrap' : 'normal',
-        color: color || (grey ? 'grey.600' : 'black'),
+        color: color || (gray ? 'gray.600' : 'black'),
         fontSize: fontSize || small ? 16 : large ? 36 : 24,
         lineHeight: '12px',
       }}

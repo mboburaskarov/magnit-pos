@@ -1,8 +1,6 @@
 import { Box, Typography } from '@mui/material'
 
 const StatusCell = ({ id, title, bgcolor, color = '#fff' }) => {
-  console.log(bgcolor)
-
   return (
     <Box
       id={id}

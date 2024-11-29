@@ -9,15 +9,15 @@ const useStyles = makeStyles((theme) => ({
     padding: 4,
     borderRadius: 24,
     width: 'fit-content',
-    background: theme.palette.grey[50],
+    background: theme.palette.gray[50],
     transition: 'all 0.2s ease',
     '&:hover': {
-      background: theme.palette.grey[50],
+      background: theme.palette.gray[50],
     },
   },
   slider: {
     position: 'relative',
-    height: 32,
+    height: 40,
     marginLeft: '4px',
     // width: '100%',
   },

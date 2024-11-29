@@ -12,8 +12,6 @@ const category_types = [
 ]
 
 export default function ActionsSubBox({ setIsDrawerOpen, ind, data, setOpenConfirmDialog }) {
-  console.log('data', data)
-
   return (
     <Box
       key={ind}

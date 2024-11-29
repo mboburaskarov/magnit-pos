@@ -93,6 +93,7 @@ export const theme = ({ mode, palette }) => {
           disableElevation: true,
         },
         styleOverrides: {
+          disableElevation: {},
           root: {
             fontFamily: fontFamily.Gilroy,
             fontSize: 16,
@@ -114,13 +115,15 @@ export const theme = ({ mode, palette }) => {
             position: 'relative',
 
             '&.Mui-disabled': {
-              cursor: 'auto',
-              background: palette.grey[50],
-              color: palette.grey[400],
-              '&:hover': {
-                background: palette.grey[100],
-                color: palette.grey[400],
-              },
+              backgroundColor: `${palette.orange[50]} !important`,
+              color: `${palette.orange[200]} !important`,
+              // cursor: 'auto',
+              // background: palette.gray[50],
+              // color: palette.gray[400],
+              // '&:hover': {
+              //   background: palette.gray[100],
+              //   color: palette.gray[400],
+              // },
             },
           },
 
@@ -128,17 +131,17 @@ export const theme = ({ mode, palette }) => {
             backgroundColor: palette.orange[500],
             color: '#fff',
             '&:hover': {
-              background: palette.orange[601],
+              background: palette.orange[600],
             },
           },
 
           containedSecondary: {
-            color: mode === 'dark' ? 'white' : palette.green[500],
-            background: palette.grey[50],
+            backgroundColor: palette.white,
+            color: '#000',
             '&:hover': {
-              boxShadow: 'none',
-              backgroundColor: palette.grey[200],
+              background: '#00000020',
             },
+            border: `1px solid ${palette.bunker[100]}`,
           },
           containedRed: {
             backgroundColor: palette.red[600],
@@ -150,12 +153,12 @@ export const theme = ({ mode, palette }) => {
 
           outlinedPrimary: {
             padding: '0 16px',
-            color: palette.grey[600],
+            color: palette.gray[600],
             backgroundColor: palette.background.defaultStrong,
-            border: `1px solid ${palette.grey[300]}`,
+            border: `1px solid ${palette.gray[300]}`,
             '&:hover': {
-              backgroundColor: palette.grey[101],
-              border: `1px solid ${palette.grey[300]}`,
+              backgroundColor: palette.gray[101],
+              border: `1px solid ${palette.gray[300]}`,
             },
           },
 
@@ -203,9 +206,9 @@ export const theme = ({ mode, palette }) => {
           },
           colorInherit: {
             color: palette.orange[500],
-            backgroundColor: palette.grey[100],
+            backgroundColor: palette.gray[100],
             '&:hover': {
-              background: palette.grey[101],
+              background: palette.gray[101],
             },
           },
           colorPrimary: {
@@ -245,7 +248,7 @@ export const theme = ({ mode, palette }) => {
           },
           track: {
             borderRadius: 32,
-            backgroundColor: palette.grey[300],
+            backgroundColor: palette.gray[300],
             opacity: '1 !important',
           },
         },
@@ -298,7 +301,7 @@ export const theme = ({ mode, palette }) => {
             color: palette.black,
           },
           body1: {
-            // color: palette.grey[600],
+            // color: palette.gray[600],
           },
         },
       },
@@ -354,7 +357,7 @@ export const theme = ({ mode, palette }) => {
         styleOverrides: {
           tooltip: {
             padding: 16,
-            backgroundColor: palette.grey[300],
+            backgroundColor: palette.gray[300],
             borderRadius: 16,
             fontSize: 16,
             lineHeight: '19px',
@@ -363,7 +366,7 @@ export const theme = ({ mode, palette }) => {
             textAlign: 'center',
           },
           arrow: {
-            color: palette.grey[300],
+            color: palette.gray[300],
             '&:before': {
               borderRadius: '0 0 2px 0',
             },
@@ -395,6 +398,7 @@ export const theme = ({ mode, palette }) => {
           root: {
             '& .MuiSvgIcon-root': {
               fontSize: 24,
+              fill: palette.orange[500],
             },
           },
           colorPrimary: {
@@ -500,10 +504,10 @@ export const theme = ({ mode, palette }) => {
             borderRadius: 50,
             // backgroundColor: palette.white,
             transition: '0.3s',
-            color: palette.grey[600],
+            color: palette.gray[600],
 
             '&:hover': {
-              backgroundColor: palette.grey[101],
+              // backgroundColor: palette.gray[101],
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
               border: 'none',
@@ -515,7 +519,7 @@ export const theme = ({ mode, palette }) => {
           },
 
           notchedOutline: {
-            borderColor: palette.grey[300],
+            borderColor: palette.gray[300],
             borderWidth: 0,
           },
           multiline: {
@@ -533,13 +537,13 @@ export const theme = ({ mode, palette }) => {
             fontWeight: 400,
             lineHeight: '24px',
             letterSpacing: 'normal',
-            // border: '1px solid',
-            // borderColor: palette.black,
-            backgroundColor: palette.grey[50],
-            height: 56,
+            border: '1px solid transparent',
+            borderColor: palette.bunker[100],
+            backgroundColor: palette.white,
+            height: 48,
             '&.Mui-focused': {
-              border: '1px solid',
-              borderColor: `${palette.orange[500]}!important`,
+              boxSizing: 'border-box',
+              border: `1px solid ${palette.orange[500]} !important`,
             },
             '&.Mui-error:not(.Mui-focused)': {
               border: '1px solid red',
@@ -553,11 +557,11 @@ export const theme = ({ mode, palette }) => {
             '&:-webkit-autofill': {
               color: 'red',
               borderRadius: 16,
-              paddingTop: '14px !important',
+              paddingTop: '10px !important',
               fontWeight: '400 !important',
 
               // paddingRight: 12,
-              paddingBottom: 9,
+              paddingBottom: 8,
               border: 'none !important',
               // paddingLeft: 12,
               backgroundColor: 'transparent !important',
@@ -575,13 +579,13 @@ export const theme = ({ mode, palette }) => {
         styleOverrides: {
           root: {
             width: '100%',
-            background: palette.grey[50],
+            background: palette.gray[50],
             borderRadius: 16,
             marginTop: 8,
           },
           content: {
             padding: '0 16px',
-            color: palette.grey[500],
+            color: palette.gray[500],
             width: '100%',
             minHeight: 48,
             '&.Mui-selected': {
@@ -632,7 +636,7 @@ export const theme = ({ mode, palette }) => {
         styleOverrides: {
           root: {
             marginTop: '0 !important',
-            color: palette.grey[600],
+            color: palette.gray[600],
           },
           positionEnd: {
             display: 'flex',
@@ -646,13 +650,13 @@ export const theme = ({ mode, palette }) => {
       MuiChip: {
         styleOverrides: {
           root: {
-            backgroundColor: palette.grey[100],
+            backgroundColor: palette.gray[100],
             height: 40,
             borderRadius: 12,
             fontSize: 16,
             fontWeight: 600,
             lineHeight: '19px',
-            color: palette.grey[600],
+            color: palette.gray[600],
             fontFamily: fontFamily.Gilroy,
           },
           deleteIcon: {

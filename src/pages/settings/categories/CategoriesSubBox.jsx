@@ -58,19 +58,19 @@ export default function CategoriesSubBox({ setIsDrawerOpen, ind, data, setOpenCo
           <Box mt={1} display='inline-flex'>
             <Box alignItems='center' display='inline-flex'>
               <DateIcon />
-              <Typography ml={0.7} color='grey.500' fontSize={16} lineHeight='24px'>
+              <Typography ml={0.7} color='gray.500' fontSize={16} lineHeight='24px'>
                 {dayjs(data?.createdAt).format('DD.MM.YYYY HH:mm') || '-'}
               </Typography>
             </Box>
             <Box alignItems='center' ml={2} display='inline-flex'>
               <ReviewUserIcon />
-              <Typography ml={0.7} color='grey.500' fontSize={16} lineHeight='24px'>
+              <Typography ml={0.7} color='gray.500' fontSize={16} lineHeight='24px'>
                 {data?.user?.fullName || 'Отсутствует'}
               </Typography>
             </Box>
             <Box alignItems='center' ml={2} display='inline-flex'>
               <ReviewOrderIcon />
-              <Typography ml={0.7} color='grey.500' fontSize={16} lineHeight='24px'>
+              <Typography ml={0.7} color='gray.500' fontSize={16} lineHeight='24px'>
                 {data?.productCount || '0'} продукты
               </Typography>
             </Box>

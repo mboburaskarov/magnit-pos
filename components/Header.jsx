@@ -6,6 +6,8 @@ import BackArrowIcon from '../src/assets/icons/BackArrow'
 import { makeStyles } from '@mui/styles'
 import { useNavigate } from 'react-router-dom'
 import CheckAccess from './CheckAccess'
+import RightArrowSmallIcon from '../src/assets/icons/RightArrowSmallIcon'
+import LeftArrowIcon from '../src/assets/icons/LeftArrow'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -20,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
       fontFamily: 'Gilroy',
     },
     '& span': {
-      color: theme.palette.grey[400],
+      color: theme.palette.gray[400],
       marginRight: 8,
       fontFamily: 'Gilroy',
       paddingRight: 10,
@@ -41,11 +43,11 @@ const useStyles = makeStyles((theme) => ({
     background: 'transparent',
     transition: 'all 0.3s ease',
     '&:hover circle': {
-      fill: theme.palette.grey[200],
+      fill: theme.palette.gray[200],
     },
   },
   spanCard: {
-    backgroundColor: theme.palette.grey[100],
+    backgroundColor: theme.palette.gray[100],
     display: 'flex',
     minHeight: '48px',
     alignItems: 'center',
@@ -53,10 +55,13 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '32px',
     transition: 'all 0.3s ease',
     '&:hover': {
-      backgroundColor: theme.palette.grey[200],
+      backgroundColor: theme.palette.gray[200],
     },
   },
-  spanCardTitle: {
+  spanHEaderText: {
+    fontSize: '32px',
+    lineHeight: '48px',
+    fontWeight: '700 !important',
     paddingRight: 10,
   },
 }))
@@ -122,14 +127,15 @@ function Header({
           justifyContent: 'space-between',
           alignItems: 'center',
           width: '100%',
+          height: '88px',
           borderBottom: '2px solid',
-          borderColor: '#3CA98F10',
+          borderColor: 'bunker.100',
           position: 'fixed',
           top: 0,
           left: 0,
           zIndex: 10,
           py: 4,
-          bgcolor: 'background.defaultStrong',
+          bgcolor: 'white',
         }}
       >
         <Container>
@@ -137,8 +143,22 @@ function Header({
             <Box display='flex' width='100%' alignItems='center' justifyContent='space-between'>
               <Typography variant='h1' display='inline-flex' alignItems='center'>
                 {backIcon && (
-                  <IconButton color='primary' id={backButtonId} onClick={backButtonClickHandler} sx={{ mr: 2 }}>
-                    <BackArrowIcon />
+                  <IconButton color='primary' id={backButtonId} onClick={backButtonClickHandler} sx={{ mr: 2, p: '0' }}>
+                    <Box
+                      sx={{
+                        width: '48px',
+                        height: '48px',
+                        padding: '0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 'block',
+                        borderRadius: '50%',
+                        backgroundColor: 'bunker.100',
+                      }}
+                    >
+                      <LeftArrowIcon />
+                    </Box>
                     {backText && <Typography className={classes.spanCardTitle}>{backText}</Typography>}
                   </IconButton>
                 )}
@@ -146,11 +166,11 @@ function Header({
                 <Box display='flex' flexDirection='column'>
                   <Typography sx={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', lineHeight: '48px' }} variant='h1'>
                     {typeText && (
-                      <Typography mr={1} color='grey.400' variant='span'>
+                      <Typography mr={1} color='gray.400' variant='span'>
                         {typeText}
                       </Typography>
                     )}
-                    {text}
+                    <Typography className={classes.spanHEaderText}>{text}</Typography>
                   </Typography>
                   {description && <Typography color='textSecondary'>{description}</Typography>}
                 </Box>

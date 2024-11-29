@@ -5,14 +5,14 @@ import Select, { components } from 'react-select'
 import { generateCustomStyles } from './SelectStyles'
 import DeleteIconBig from '../../src/assets/icons/DeleteIconBig'
 import DeleteSmallIcon from '../../src/assets/icons/DeleteSmallIcon'
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import Label from '../Label'
 
 const SingleValue = ({ children, selectProps, ...props }) => {
   return (
     <components.SingleValue selectProps={selectProps} {...props}>
       <Box display='flex' alignItems='center' flexWrap='wrap'>
-        {selectProps?.beforeContent && <Typography style={{ color: 'grey.400', marginRight: 2 }}>{selectProps?.beforeContent}</Typography>}
+        {selectProps?.beforeContent && <Typography style={{ color: 'gray.400', marginRight: 2 }}>{selectProps?.beforeContent}</Typography>}
         <span
           id={`select-${props?.data?.name}`}
           style={{
@@ -63,7 +63,7 @@ export const useStyles = makeStyles((theme) => ({
     width: '40px',
     height: '40px',
     marginRight: 16,
-    borderRadius: '50px',
+    borderRadius: '40px',
     color: theme.palette.white,
     backgroundColor: theme.palette.green[600],
   },
@@ -76,10 +76,10 @@ export const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     userSelect: 'none',
     fontWeight: 600,
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
 
     '&:hover': {
-      backgroundColor: theme.palette.grey[101],
+      backgroundColor: theme.palette.gray[101],
     },
   },
 }))
@@ -178,6 +178,7 @@ function SelectSimple({
   beforeContent,
   white,
   isMulti,
+  borderRadius,
   required = false,
   maxWidth,
   maxOptionMenuHeight,
@@ -186,6 +187,7 @@ function SelectSimple({
   disabled = false,
   removable,
   onRemove,
+  borderNone,
   index,
   small,
   mini,
@@ -202,6 +204,7 @@ function SelectSimple({
 }) {
   const cls = useStyles()
   const methods = useFormContext()
+
   const customStyles = generateCustomStyles({
     withAllSelect,
     minWidth: minWidth ?? (mini ? 150 : 256),
@@ -211,13 +214,14 @@ function SelectSimple({
     maxOptionMenuHeight,
     small,
     mini,
+    borderNone,
     solidBorder,
+    borderRadius,
     placeholderWrap: placeholderWrap || true,
     dashed,
   })
-
   return (
-    <Box className={cls.root} width={fullWidth && '100%'} {...boxStyle} maxWidth={maxWidth}>
+    <Box className={(cls.root, 'select')} width={fullWidth && '100%'} {...boxStyle} maxWidth={maxWidth}>
       {label && (
         <Label mb={1.5} required={required}>
           {label}

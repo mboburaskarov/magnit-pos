@@ -57,13 +57,13 @@ const useStyles = makeStyles((theme) => ({
   },
   shopname: {
     marginTop: 2,
-    color: theme.palette.grey[400],
+    color: theme.palette.gray[400],
   },
   logoutBtn: {
     color: theme.palette.red[500],
   },
   actionBtn: {
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
     '& svg': {
       color: theme.palette.green[500],
     },
@@ -73,21 +73,21 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
-    backgroundColor: theme.palette.grey[100],
+    backgroundColor: theme.palette.gray[100],
     borderRadius: 24,
     cursor: 'pointer',
     transition: 'all .2s',
     '&:hover': {
-      backgroundColor: theme.palette.grey[101],
+      backgroundColor: theme.palette.gray[101],
     },
   },
 }))
 
-export default function UserDrawer({ isOpen: data, closeDrawer }) {
+export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
   const classes = useStyles()
   const [isLogout, setIsLogout] = useState(false)
-  const firstName = data?.fullName?.split(' ')?.[0]
-  const lastName = data?.fullName?.split(' ')?.[1]
+  const firstName = userData?.fullName?.split(' ')?.[0]
+  const lastName = userData?.fullName?.split(' ')?.[1]
 
   return (
     <>
@@ -119,7 +119,9 @@ export default function UserDrawer({ isOpen: data, closeDrawer }) {
                   )}
                 </Box>
                 <Box ml={1.5}>
-                  <Typography>{`${firstName} ${lastName}`}</Typography>
+                  <Typography>
+                    {firstName} {lastName}
+                  </Typography>
                   <Typography className={classes.shopname}>{data?.shops?.find((item) => item.shop_id === data?.current_shop_id)?.shop?.name}</Typography>
                 </Box>
               </Box>

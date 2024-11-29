@@ -21,9 +21,9 @@ export default function ActionsBox({ ind, data, setOpenConfirmDialog, setIsDrawe
         display='inline-flex'
         width='100%'
         justifyContent='space-between'
-        backgroundColor={isOpen ? 'grey.100' : ind % 2 === 0 ? 'grey.50' : 'background.default'}
+        backgroundColor={isOpen ? 'gray.100' : ind % 2 === 0 ? 'gray.50' : 'background.default'}
         onClick={() => setIsOpen(!isOpen)}
-        sx={{ cursor: data?.type === 'PAGE' ? 'pointer' : 'default', transition: 'ease all 0.2s', '&:hover': { bgcolor: 'grey.100' } }}
+        sx={{ cursor: data?.type === 'PAGE' ? 'pointer' : 'default', transition: 'ease all 0.2s', '&:hover': { bgcolor: 'gray.100' } }}
       >
         <Box display='flex' alignItems={'center'}>
           <Box sx={{ bgcolor: 'transparent', py: 1, px: 1.5, borderRadius: 3 }} columnGap={2} display='inline-flex' alignItems='center'>
@@ -79,7 +79,7 @@ export default function ActionsBox({ ind, data, setOpenConfirmDialog, setIsDrawe
             ))
           ) : (
             <Box px={4} py={3} ml={4}>
-              <Typography color='grey.500' fontWeight={500} variant='h2'>
+              <Typography color='gray.500' fontWeight={500} variant='h2'>
                 Подкатегории не найдены
               </Typography>
             </Box>

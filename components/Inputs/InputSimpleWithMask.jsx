@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
       padding: ({ centerMode }) => centerMode && '0px !important',
     },
     '& .MuiInputAdornment-root .MuiTypography-root': {
-      color: theme.palette.grey[600],
+      color: theme.palette.gray[600],
     },
     '& .price': {
       justifyContent: 'center',
@@ -25,8 +25,8 @@ const useStyles = makeStyles((theme) => ({
       height: 48,
       maxHeight: 48,
       borderRadius: 12,
-      backgroundColor: theme.palette.grey[200],
-      color: theme.palette.grey[600],
+      backgroundColor: theme.palette.gray[200],
+      color: theme.palette.gray[600],
       cursor: 'default',
     },
   },
@@ -52,8 +52,8 @@ const useStyles = makeStyles((theme) => ({
     height: 32,
     maxHeight: 32,
     borderRadius: 8,
-    backgroundColor: theme.palette.grey[200],
-    color: theme.palette.grey[600],
+    backgroundColor: theme.palette.gray[200],
+    color: theme.palette.gray[600],
     cursor: 'default',
   },
   textfield: {
@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
   },
   dashed: {
     '& .MuiInputBase-root': {
-      border: `1px dashed ${theme.palette.grey[300]}`,
+      border: `1px dashed ${theme.palette.gray[300]}`,
     },
   },
   inputSelect: {
@@ -85,12 +85,12 @@ const useStyles = makeStyles((theme) => ({
     '& > div > div > div:nth-of-type(1)': {
       width: 150,
       minWidth: 0,
-      background: theme.palette.grey[200],
+      background: theme.palette.gray[200],
       minHeight: 48,
       height: 48,
     },
     '& > div > div > div:nth-of-type(1):hover': {
-      background: theme.palette.grey[200],
+      background: theme.palette.gray[200],
     },
     '& > div > div > div:nth-of-type(1) > div:nth-of-type(1)': {
       minHeight: 42,

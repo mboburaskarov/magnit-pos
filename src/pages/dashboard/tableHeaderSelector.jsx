@@ -109,8 +109,6 @@ export default function tableHeaderSelector({
           const isExpress = data?.isExpress
           const untilPickup = data.status === 'PAID' || data.status === 'CHECKING' || data.status === 'IN_PROGRESS'
           const untilDelivery = data.status === 'APPROVED' || data.status === 'IN_DELIVERY'
-          console.log(data, 'data')
-
           return (
             <Box
               sx={{ bgcolor: isExpress ? '#F7900920' : 'transparent', py: 1, px: 1.5, borderRadius: 3 }}
@@ -390,7 +388,7 @@ export default function tableHeaderSelector({
                   })
                 }
                 getOptionLabel={(option) => (
-                  <Typography fontSize={14} maxHeight={32} display='inline-flex' color='grey.600'>
+                  <Typography fontSize={14} maxHeight={32} display='inline-flex' color='gray.600'>
                     <Box px={0.1} width={32}>
                       <HeadPhonesIcon size={14} />
                     </Box>
@@ -427,7 +425,7 @@ export default function tableHeaderSelector({
         headerName: 'Модератор',
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          <Typography sx={{ color: !data.moderator && 'grey.400' }} id={`${data._id}-moderator`} style={{ whiteSpace: 'pre-line' }}>
+          <Typography sx={{ color: !data.moderator && 'gray.400' }} id={`${data._id}-moderator`} style={{ whiteSpace: 'pre-line' }}>
             {data.moderator?.fullName || 'Отсутствует'} <br /> {data.moderator?.phone && `+${data.moderator?.phone}`}
           </Typography>
         )),
@@ -519,7 +517,7 @@ export default function tableHeaderSelector({
         cellRenderer: memo(({ data }) => (
           <Box width={200}>
             <Typography
-              color={data.lastNote ? 'green.500' : 'grey.400'}
+              color={data.lastNote ? 'green.500' : 'gray.400'}
               style={{ whiteSpace: 'nowrap', cursor: data?.lastNote ? 'pointer' : 'revert', textOverflow: 'ellipsis', overflow: 'hidden' }}
               onClick={() => {
                 if (data?.lastNote) {

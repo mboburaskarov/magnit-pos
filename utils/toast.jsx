@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '19px',
     display: 'flex',
     fontFamily: theme.fontFamily.Gilroy,
-    color: ({ primary }) => (primary ? 'white' : theme.palette.grey[600]),
+    color: ({ primary }) => (primary ? 'white' : theme.palette.gray[600]),
     textAlign: 'left',
     '& a': {
       color: theme.palette.green[500],
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '20px',
     display: 'flex',
     fontFamily: theme.fontFamily.Gilroy,
-    color: ({ primary }) => (primary ? 'white' : theme.palette.grey[400]),
+    color: ({ primary }) => (primary ? 'white' : theme.palette.gray[400]),
     textAlign: 'left',
     '& a': {
       color: theme.palette.green[500],

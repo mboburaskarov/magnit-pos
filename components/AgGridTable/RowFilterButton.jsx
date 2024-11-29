@@ -4,6 +4,8 @@ import { makeStyles } from '@mui/styles'
 import SortIcon from '../../src/assets/icons/SortIcon'
 import TickIcon from '../../src/assets/icons/TickIcon'
 import ArrowDown from '../../src/assets/icons/ArrowDown'
+import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme) => ({
   lineSortContainer: {
@@ -11,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: 'calc(100% + 8px)',
     width: '100%',
     background: theme.palette.background.default,
-    border: `1px solid ${theme.palette.grey[300]}`,
+    border: `1px solid ${theme.palette.gray[300]}`,
     borderRadius: 16,
     zIndex: '2',
     boxShadow: 'none',
@@ -33,11 +35,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     padding: '18px 16px',
     '&:hover': {
-      background: theme.palette.grey[100],
+      background: theme.palette.gray[100],
     },
   },
 }))
 function RowFilterButton({ offsetSize, setOffsetSize, setOffsetIndex, eventMessage, id }) {
+  const { t } = useTranslation()
   const classes = useStyles()
   const [open, setOpen] = useState(false)
 
@@ -53,7 +56,7 @@ function RowFilterButton({ offsetSize, setOffsetSize, setOffsetIndex, eventMessa
   return (
     <Box borderRadius={'8px'} minWidth={75} display={'flex'} alignItems={'center'} position='relative'>
       <Typography fontSize={'16px'} lineHeight={'24px'} color={'bunker.400'} fontWeight={'500'} mr={'8px'}>
-        Ko'rsatilmoqda{' '}
+        {t('ag_grid.bottom.limit')}
       </Typography>
       <Button
         sx={(theme) => ({ height: '40px', padding: '8px 12px', borderRadius: '8px', background: theme.palette.background.default })}

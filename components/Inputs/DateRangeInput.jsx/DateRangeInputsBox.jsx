@@ -28,7 +28,7 @@ export default function DateRangeInputsBox({ dateState }) {
   }, [dateState])
 
   return (
-    <Box width='100%' sx={(theme) => ({ display: 'flex', justifyContent: 'center', borderTop: `2px solid ${theme.palette.grey[200]}` })} py={3} px={3}>
+    <Box width='100%' sx={(theme) => ({ display: 'flex', justifyContent: 'center', borderTop: `2px solid ${theme.palette.gray[200]}` })} py={3} px={3}>
       <Box display='flex' alignItems='center'>
         <Box flexGrow='50%'>
           <Box columnGap={1} display='flex'>

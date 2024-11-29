@@ -27,9 +27,14 @@ import CheckAccess from '../../../components/CheckAccess'
 import StyledDialog from '../../../components/Dialogs/StyledDialog'
 import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
 import PlusIcon from '../../assets/icons/PlusIcon'
+import EditorIcon from '../../assets/icons/EditorIcon'
+import FilterTableRowsMenu from './FilterTableRowsMenu'
+import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
+import { useTranslation } from 'react-i18next'
 
 export default function ProductsPage() {
   const dispatch = useDispatch()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.productsTableColumns)
   const { values } = useQueryParams()
@@ -40,10 +45,12 @@ export default function ProductsPage() {
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
+  const [filterTableRowsMenu, setFilterTableRowsMenu] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(null)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
+    t,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     setIsDrawerOpen,
@@ -54,12 +61,14 @@ export default function ProductsPage() {
       offset: values?.offset || 0,
       search: values?.search,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
-      dbId: values?.shop_id,
-      category: values?.category_id,
-      hashtag: values?.hashtag_id,
-      maxPrice: values?.to_price,
+      store_id: values?.store_id,
+      category_id: values?.category_id,
+      producer: values?.producer,
+      supply_price_to: values?.supply_price_to,
+      retail_price_to: values?.retail_price_to,
       region: values?.region_id,
-      minPrice: values?.from_price,
+      supply_price_from: values?.supply_price_from,
+      retail_price_from: values?.retail_price_from,
       isExpress: values?.isExpress,
       ...(status !== 'ALL' && { status }),
       ...(appType !== 'ALL' && { type: appType }),
@@ -70,11 +79,13 @@ export default function ProductsPage() {
     values?.offset,
     values?.limit,
     values?.search,
-    values?.from_price,
-    values?.to_price,
-    values?.hashtag_id,
+    values?.producer,
     values?.category_id,
     values?.shop_id,
+    values?.supply_price_to,
+    values?.retail_price_to,
+    values?.supply_price_from,
+    values?.retail_price_from,
     values?.region_id,
     values?.isExpress,
     regions,
@@ -101,7 +112,6 @@ export default function ProductsPage() {
       console.log('err', err)
     },
   })
-  console.log(productsList?.data?.data?.data)
 
   const { mutate: rejectProduct } = useMutation(requests.rejectProduct, {
     onSuccess: () => {
@@ -160,23 +170,26 @@ export default function ProductsPage() {
 
   useEffect(() => {
     const count =
-      status === 'ACTIVE'
-        ? productsList?.data?.active
-        : status === 'INACTIVE'
-        ? productsList?.data?.inactive
-        : status === 'INACTIVE_BY_VENDOR'
-        ? productsList?.data?.inactiveByVendor
-        : status === 'BLOCKED'
-        ? productsList?.data?.blocked
-        : productsList?.data.totalCount
+      // status === 'ACTIVE'
+      //   ? productsList?.data?.active
+      //   : status === 'INACTIVE'
+      //   ? productsList?.data?.inactive
+      //   : status === 'INACTIVE_BY_VENDOR'
+      //   ? productsList?.data?.inactiveByVendor
+      //   : status === 'BLOCKED'
+      //   ? productsList?.data?.blocked
+      // : productsList?.data.totalCount
+      productsList?.data?.data?._meta?.total_count
+
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [productsList?.data, values?.limit, status])
+
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={4} pb={3}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          Katalog
+          {t('page.catalog.title')}
         </Typography>
         {/* <Box display='flex' mb={3} mt={4}>
           <TabContainer
@@ -203,26 +216,38 @@ export default function ProductsPage() {
             defaultValue='ALL'
             onChange={(e) => setAppType(e)}
             options={[
-              { title: 'Brchasi', value: 'ALL' },
-              { title: 'Dorilar', value: 'BUCHET' },
-              { title: 'Vitaminlar', value: 'MARKET' },
-              { title: 'Shaxsiy parvarish', value: 'MARKET1' },
-              { title: 'Chaqaloq parvarishi', value: 'MARKET2' },
-              { title: 'Diagnostika', value: 'MARKET3' },
-              { title: 'Tibbiy buyumlar', value: 'MARKET4' },
+              { title: t('switch.title.all'), value: 'ALL' },
+              { title: t('switch.title.medicine'), value: 'medicine' },
+              { title: t('switch.title.vitamin'), value: 'vitamin' },
+              { title: t('switch.title.self_care'), value: 'self_care' },
+              { title: t('switch.title.baby_care'), value: 'baby_care' },
+              { title: t('switch.title.diagnostic'), value: 'diagnostic' },
+              { title: t('switch.title.medical_supplies'), value: 'medical_supplies' },
             ]}
           />
         </Box>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'24px'} width='100%'>
           <Box display={'flex'}>
-            <Box width='100%' sx={{ '& .MuiInputBase-root, .MuiFormControl-root': { border: 'none', height: 40 } }}>
-              <InputSearch id='producrs-search' name='search' placeholder='Qidirish: mahsulot, kategoriya, shtrix-kod' uncontrolled />
+            <Box
+              width='100%'
+              sx={{
+                '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+                '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                  background: 'transparent',
+                  border: '1px solid transparent',
+
+                  width: '400px',
+                  height: 48,
+                },
+              }}
+            >
+              <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
             </Box>
 
             <Box minWidth={106} ml={'16px'}>
               <Button
                 sx={{
-                  height: '40px',
+                  height: '48px',
                   padding: 0,
                   bgcolor: '#fff',
                   border: '1px solid #ECEDF2',
@@ -238,27 +263,36 @@ export default function ProductsPage() {
                 onClick={() => setFilterMenu((prev) => !prev)}
               >
                 <Typography fontWeight={500} fontSize={'16px'} lineHeight={'25px'}>
-                  Filter
+                  {t('filter_dialog.label')}
                 </Typography>
               </Button>
             </Box>
           </Box>
-          <CheckAccess id={'product-create'}>
-            <Box minWidth={156}>
-              <Button
-                sx={{ height: '40px' }}
-                onClick={() => navigate('/products/create')}
-                fullWidth
-                startIcon={<PlusIcon />}
-                variant='contained'
-                color='primary'
-              >
-                Yangi qo'shish
-              </Button>
+          <Box display={'flex'} alignItems={'center'}>
+            <Box
+            // onClick={() => setFilterTableRowsMenu(true)}
+            >
+              {/* <EditorIcon /> */}
+              <ColumnsFilterButton title={t('ag_grid.table_setting.label')} columns={tableColumns} isCatalog={false} />
             </Box>
-          </CheckAccess>
+            <CheckAccess id={'product-create'}>
+              <Box minWidth={156}>
+                <Button
+                  sx={{ height: '48px' }}
+                  onClick={() => navigate('/products/create')}
+                  fullWidth
+                  startIcon={<PlusIcon />}
+                  variant='contained'
+                  color='primary'
+                >
+                  {t('button.add_new.text')}
+                </Button>
+              </Box>
+            </CheckAccess>
+          </Box>
         </Box>
         <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+        <FilterTableRowsMenu tableColumns={tableColumns} open={filterTableRowsMenu} setOpen={setFilterTableRowsMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'
@@ -303,12 +337,19 @@ export default function ProductsPage() {
               ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
               : openConfirmDialog?.type === 'deactivate'
               ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-              : 'Вы действительно хотите удалить продукт, вы не можете вернуть этот прогресс, после удаления вы не сможете восстановить продукт.'
+              : 'mahsulotini o’chirmoqchimisiz?'
           }
+          supDesc={'“Azitromitsin 250 mg”'}
           actions={
             <>
-              <Button variant='contained' color='secondary' onClick={() => setOpenConfirmDialog(null)}>
-                Нет
+              <Button
+                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                fullWidth
+                color='secondary'
+                variant='contained'
+                onClick={() => setOpenConfirmDialog(null)}
+              >
+                Yo'q
               </Button>
               <LoadingButton
                 variant='contained'
@@ -322,7 +363,7 @@ export default function ProductsPage() {
                     : deleteProduct(openConfirmDialog.id)
                 }
               >
-                Да
+                Ha, o'chirish
               </LoadingButton>
             </>
           }

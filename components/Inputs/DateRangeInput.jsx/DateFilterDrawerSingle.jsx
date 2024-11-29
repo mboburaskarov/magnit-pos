@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 17,
         lineHeight: '19px',
         fontWeight: 600,
-        color: theme.palette.grey[600],
+        color: theme.palette.gray[600],
         backgroundColor: theme.palette.background.default,
 
         '&:focus-visible': {
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     '& .DayPicker-Weekdays': {
-      background: theme.palette.grey[50],
+      background: theme.palette.gray[50],
       height: 40,
       borderRadius: 12,
       display: 'block',
@@ -88,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
       height: 40,
       padding: 0,
       marginRight: 4,
-      color: theme.palette.grey[400],
+      color: theme.palette.gray[400],
       fontSize: 16,
       lineHeight: '19px',
       fontWeight: 600,
@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
       height: 42,
       padding: 0,
       marginRight: 0,
-      color: theme.palette.grey[600],
+      color: theme.palette.gray[600],
       fontSize: 16,
       lineHeight: '19px',
       fontWeight: 600,
@@ -125,18 +125,18 @@ const useStyles = makeStyles((theme) => ({
       },
       '&:last-child': {
         marginRight: 0,
-        color: theme.palette.grey[600],
+        color: theme.palette.gray[600],
       },
       '&:nth-child(6)': {
-        color: theme.palette.grey[600],
+        color: theme.palette.gray[600],
       },
     },
     '& .DayPicker-Day.DayPicker-Day--outside': {
-      color: `${theme.palette.grey[400]} !important`,
+      color: `${theme.palette.gray[400]} !important`,
       cursor: 'pointer',
       '&:hover': {
         backgroundColor: `transparent !important`,
-        color: theme.palette.grey[400],
+        color: theme.palette.gray[400],
       },
     },
 
@@ -146,7 +146,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside)': {
       backgroundColor: theme.palette.type === 'dark' ? theme.palette.green[200] : theme.palette.green[50],
-      color: theme.palette.type === 'dark' ? theme.palette.grey[700] : theme.palette.grey[600],
+      color: theme.palette.type === 'dark' ? theme.palette.gray[700] : theme.palette.gray[600],
       '&:last-child': {
         borderRadius: '0 12px 12px 0',
       },
@@ -172,11 +172,11 @@ const useStyles = makeStyles((theme) => ({
         !isOneDayDifference && `-9px 0 0px 0px ${theme.palette.type === 'dark' ? theme.palette.green[200] : theme.palette.green[50]}`,
     },
     '& .DayPicker-Day.DayPicker-Day--disabled': {
-      color: `${theme.palette.grey[400]} !important`,
+      color: `${theme.palette.gray[400]} !important`,
       cursor: 'not-allowed',
       '&:not(.DayPicker-Day--outside):hover': {
         backgroundColor: `#fff !important`,
-        color: `${theme.palette.grey[400]} !important`,
+        color: `${theme.palette.gray[400]} !important`,
         borderRadius: '12px !important',
         zIndex: 1,
         boxShadow: 'none !important',
@@ -358,7 +358,7 @@ export default function DateFilterDrawerSingle({
                 width: '320px',
                 display: 'flex',
                 flexDirection: 'column',
-                borderLeft: `2px solid ${theme.palette.grey[200]}`,
+                borderLeft: `2px solid ${theme.palette.gray[200]}`,
               })}
               p={3}
               pb={1}

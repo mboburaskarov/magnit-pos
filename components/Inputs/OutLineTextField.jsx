@@ -1,0 +1,137 @@
+import { Box, IconButton, InputAdornment, OutlinedInput as MuiTextField } from '@mui/material'
+import { useFormContext } from 'react-hook-form'
+import Label from '../Label'
+
+const OutLineTextField = ({
+  placeholder,
+  inputRef,
+  InputProps,
+  uncontrolled,
+  value,
+  setValue,
+  sx,
+  borderRadius,
+  white,
+  onKeyDown,
+  withShadow,
+  autoFocus,
+  required = false,
+  name,
+  endAdornmentText,
+  type,
+  label,
+  disabled,
+  dashed,
+  fullWidth,
+  multiline,
+  centerMode,
+  onBoxClick = () => {},
+  bgcolor,
+  autoComplete,
+  ...props
+}) => {
+  const methods = useFormContext()
+  const onlyDisplay = dashed && disabled
+  return (
+    <Box onClick={onBoxClick} width={fullWidth && '100%'}>
+      {!onlyDisplay && label && <Label required={required}>{label}</Label>}
+      <MuiTextField
+        disabled={disabled}
+        label={onlyDisplay && label}
+        name={name}
+        id={name}
+        type={type || 'text'}
+        placeholder={placeholder}
+        endAdornment={
+          <InputAdornment position='end'>
+            <IconButton
+            // aria-label={
+            //   // showPassword ? 'hide the password' : 'display the password'
+            // }
+            // onClick={handleClickShowPassword}
+            // onMouseDown={handleMouseDownPassword}
+            // onMouseUp={handleMouseUpPassword}
+            >
+              {endAdornmentText}
+              {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
+            </IconButton>
+          </InputAdornment>
+        }
+        inputRef={inputRef}
+        autoComplete={autoComplete ? autoComplete : name === 'shopType' ? 'off' : 'on'}
+        InputProps={InputProps}
+        {...(!uncontrolled && methods?.register(name, { required }))}
+        {...(uncontrolled && {
+          value: onlyDisplay && !value ? 'Неопределенный' : value,
+          onChange: (e) => setValue(e.target.value),
+        })}
+        multiline={multiline}
+        rows={4}
+        onKeyDown={onKeyDown}
+        autoFocus={autoFocus}
+        fullWidth={fullWidth}
+        error={!!methods?.formState?.errors?.[name]}
+        sx={(theme) => ({
+          '& .MuiInputLabel-root.Mui-disabled': {
+            fontSize: 22,
+            fontFamily: 'Gilroy',
+            left: -14,
+            top: 8,
+            fontWeight: 400,
+          },
+          '& .MuiOutlinedInput-root': {
+            mt: label ? (onlyDisplay ? 3.5 : 1.5) : 0,
+            boxShadow: withShadow && '0px 0px 24px rgba(0, 0, 0, 0.08)',
+            fontFamily: 'Gilroy',
+            fontWeight: 400,
+            fontSize: 16,
+            lineHeight: '24px',
+            borderRadius: borderRadius || 4,
+            color: 'dark.500',
+            border: disabled && (dashed ? '2px dashed' : '2px solid'),
+            borderColor: disabled && 'gray.300',
+            background: '#' + bgcolor || (white && theme.palette.gray[200]) || (disabled && `${theme.palette.gray[100]} !important`),
+            p: '0 !important',
+            '&:hover': { fieldset: { borderColor: 'gray.200' } },
+            fieldset: { borderColor: 'gray.200' },
+            '&.Mui-focused fieldset': {
+              transition: '0.3s',
+              borderColor: methods?.formState?.errors?.[name] ? 'custom.error' : 'primary.main',
+              zIndex: name === 'phone' ? 2 : 0,
+            },
+            '&.Mui-focused': {
+              bgcolor: bgcolor ? '#' + bgcolor : !white ? 'background.default' : 'white',
+            },
+            '& > .MuiButtonBase-root': {
+              background: 'transparent !important',
+              fontSize: '14px !important',
+            },
+          },
+          '& .MuiOutlinedInput-input': {
+            textAlign: centerMode ? 'center' : 'left',
+            height: 'auto',
+            py: centerMode ? 0 : 2,
+            pr: centerMode ? 0 : 2,
+            pl: centerMode ? 0 : type === 'tel' ? 17 : 2,
+            '-webkit-text-fill-color': onlyDisplay && `${theme.palette.gray[600]} !important`,
+            '&::placeholder': {
+              color: disabled ? 'gray.100' : 'secondary.light',
+              fontFamily: 'Gilroy',
+              fontWeight: 600,
+              fontSize: 16,
+              lineHeight: '26px',
+              opacity: 1,
+            },
+          },
+          '& .MuiOutlinedInput-input.Mui-disabled': {
+            WebkitTextFillColor: theme.palette.gray[600],
+          },
+          ...sx,
+        })}
+        {...props}
+      />
+    </Box>
+  )
+}
+
+export default OutLineTextField

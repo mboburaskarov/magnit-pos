@@ -21,7 +21,7 @@ export default function tableHeaderSelector({ setOpenConfirmDialog, isNonPaid })
       headerName: 'Название магазина',
       colId: 'shop_name',
       cellRenderer: memo(({ data }) => (
-        <Typography sx={{ cursor: 'pointer', whiteSpace: 'pre-line', color: !data?.shopName && 'grey.400' }}>{data?.shopName || 'Неопределенный'}</Typography>
+        <Typography sx={{ cursor: 'pointer', whiteSpace: 'pre-line', color: !data?.shopName && 'gray.400' }}>{data?.shopName || 'Неопределенный'}</Typography>
       )),
     },
     {
@@ -30,7 +30,7 @@ export default function tableHeaderSelector({ setOpenConfirmDialog, isNonPaid })
       headerName: 'Имя',
       colId: 'name',
       cellRenderer: memo(({ data }) => (
-        <Typography sx={{ cursor: 'pointer', whiteSpace: 'pre-line', color: !data?.fullName && 'grey.400' }}>{data?.fullName || 'Неопределенный'}</Typography>
+        <Typography sx={{ cursor: 'pointer', whiteSpace: 'pre-line', color: !data?.fullName && 'gray.400' }}>{data?.fullName || 'Неопределенный'}</Typography>
       )),
     },
 

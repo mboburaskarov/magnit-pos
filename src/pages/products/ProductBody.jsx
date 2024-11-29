@@ -6,9 +6,11 @@ import SectionTitle from '../../../components/SectionTitle'
 import ImageUpload from '../../../components/ImageUpload'
 import InputSwitch from '../../../components/Inputs/InputSwitch'
 import SelectSimple from '../../../components/Select/SelectSimple'
+import CategoriesTree from '../../../components/CategoriesTree'
 import { useQuery } from 'react-query'
 import { requests } from '../../../utils/requests'
 import { useFormContext } from 'react-hook-form'
+import UploadImage from '../../../components/UploadImage'
 
 const filterTwoArrays = (array1, array2) => {
   const arr = array1?.filter((item) => {
@@ -25,13 +27,14 @@ export default function ProductBody({ productData = null }) {
   const [hasDiscontPrice, setHasDiscontPrice] = useState(false)
   const [parentCategory, setParentCategory] = useState(null)
 
+  const [images, setImages] = useState([])
   const appType = watch('app_type') || 'BUCHET'
 
   const { data: shopList, refetch: refetchShopList } = useQuery('shopList', () => requests.getAllShops({ limit: 1000, offset: 0, type: appType }))
   const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories())
   const { data: subCategories, refetch: refetchCategories } = useQuery(
     ['subCategories', parentCategory, appType],
-    () => requests.getAllCategories({ type: appType, subId: parentCategory._id }),
+    () => requests.getAllCategories({ type: appType, subId: parentCategory.id }),
     { enabled: !!appType && !!productData?.categories?.length > 0 }
   )
   const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 1000, offset: 0 }))
@@ -79,20 +82,96 @@ export default function ProductBody({ productData = null }) {
   const addCategoryButton = productCategories?.length > 0 ? !!productCategories?.at(-1)?.name : true
 
   return (
-    <Box pb={10} width='100%'>
+    <Box
+      pb={10}
+      width='100%'
+      sx={{
+        '& .MuiInputBase-root': {
+          border: '1px solid',
+          borderColor: 'bunker.100',
+        },
+      }}
+    >
       <SectionTitle noWrap withLine>
-        Основная информация
+        Asosiy
       </SectionTitle>
       <Box mt={1}>
-        <TextField required fullWidth name='product_name' label='Наименование товара' placeholder='Введите название продукта' sx={{ mb: 3 }} />
-        <ImageUpload
+        <TextField required fullWidth borderRadius={'40px'} name='product_name' label='Mahsulot nomi' placeholder='Mahsulot nomini kiriting' sx={{ mb: 3 }} />
+        {/* <ImageUpload
           id='images'
           name='images'
           images={productData?.files?.map((el, ind) => ({ key: el, name: el, sequence_number: ind }))}
           onChange={(imagesArr) => setValue('images', imagesArr)}
+        /> */}
+        <UploadImage
+          id='images'
+          name='images'
+          // register={register}
+          images={images}
+          onChange={(imagesArr) => {
+            setImages(imagesArr)
+            // setValue('images', imagesArr)
+          }}
         />
-        <Box alignItems='flex-end' width='100%' columnGap={3} display='inline-flex' my={3}>
-          <TextField required type='number' fullWidth name='product_price' label='Цена' placeholder='Введите цену' />
+        <SectionTitle noWrap withLine>
+          Kategoriya
+        </SectionTitle>
+        <CategoriesTree />
+        <SectionTitle noWrap withLine>
+          Narxlar
+        </SectionTitle>
+        <Box alignItems='flex-end' width='100%' columnGap={3} flexDirection={'column'} display='inline-flex' my={3}>
+          <Box display={'flex'} width={'100%'}>
+            <TextField
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              name='product_price'
+              label='Sotib olish narxi'
+              placeholder='Sotib olish narxini kiriting'
+            />
+            <Box width={'20px'} />
+            <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='QQS' placeholder='QQS kiriting' />
+          </Box>
+          <Box mt={'24px'} display={'flex'} width={'100%'}>
+            <TextField
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              name='product_price'
+              label='Sotish narxi'
+              placeholder='Sotish olish narxini kiriting'
+            />
+            <Box width={'20px'} />
+
+            <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='QQS narxi' placeholder='QQS narxini kiriting' />
+          </Box>
+        </Box>
+        <SectionTitle noWrap withLine>
+          Miqdori
+        </SectionTitle>{' '}
+        <SectionTitle noWrap withLine>
+          Xususiyatlari
+        </SectionTitle>
+        <TextField
+          required
+          fullWidth
+          borderRadius={'40px'}
+          name='product_name'
+          label='Ishlab chiqaruvchi'
+          placeholder='Ishlab chiqaruvchini kiriting'
+          sx={{ mb: 3 }}
+        />
+        <Box display={'flex'} width={'100%'} mt={'24px'}>
+          <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='Muddati' placeholder='Muddatini kiriting' />
+          <Box width={'20px'} />
+
+          <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='Shtix-kod' placeholder='Shtix-kodni kiriting' />
+        </Box>
+        {/* <Box alignItems='flex-end' width='100%' columnGap={3} display='inline-flex' my={3}>
+          <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='Цена' placeholder='Введите цену' />
           <Box width={500}>
             <Button
               onClick={() => setHasDiscontPrice(!hasDiscontPrice)}
@@ -129,13 +208,13 @@ export default function ProductBody({ productData = null }) {
             label='Цена со скидкой'
             placeholder='Введите цену со скидкой'
           />
-        </Box>
-        <TextField required multiline fullWidth name='description' label='Описание' placeholder='Введите описание' />
+        </Box> */}
+        {/* <TextField required multiline fullWidth name='description' label='Описание' placeholder='Введите описание' /> */}
       </Box>
-      <SectionTitle mt={4} noWrap withLine>
+      {/* <SectionTitle mt={4} noWrap withLine>
         Характеристики
-      </SectionTitle>
-      <Box mt={1}>
+      </SectionTitle> */}
+      {/* <Box mt={1}>
         <Box>
           <InputSwitch
             id='app_type'
@@ -148,11 +227,11 @@ export default function ProductBody({ productData = null }) {
             ]}
           />
         </Box>
-      </Box>
-      <Grid container columnGap={3} rowGap={3} mt={3}>
-        <Grid item xs={5.9}>
-          <SelectSimple required fullWidth id='shop' name='shop' label='Mагазин' placeholder='Выберите магазин' options={shopList?.data.shops} />
-        </Grid>
+      </Box> */}
+      {/* <Grid container columnGap={3} rowGap={3} mt={3}>
+        <Grid item xs={5.9}> */}
+      {/* <SelectSimple required fullWidth id='shop' name='shop' label='Mагазин' placeholder='Выберите магазин' options={shopList?.data.shops} /> */}
+      {/* </Grid>
         {appType === 'BUCHET' && (
           <Grid item xs={5.8}>
             <SelectSimple
@@ -162,7 +241,7 @@ export default function ProductBody({ productData = null }) {
               name='hashtag'
               label='Хэштеги'
               placeholder='Выберите хэштег'
-              options={hashtags?.data?.map((el) => ({ value: el.nameRu, name: el.nameRu, id: el._id }))}
+              // options={hashtags?.data?.map((el) => ({ value: el.nameRu, name: el.nameRu, id: el._id }))}
             />
           </Grid>
         )}
@@ -204,25 +283,25 @@ export default function ProductBody({ productData = null }) {
         <Grid item xs={5.8}>
           <TextField fullWidth name='width' label='Ширина' placeholder='Введите ширину' />
         </Grid>
-      </Grid>
-      <SectionTitle mt={4} noWrap withLine>
+      </Grid> */}
+      {/* <SectionTitle mt={4} noWrap withLine>
         Категории
-      </SectionTitle>
-      <Box>
+      </SectionTitle> */}
+      {/* <Box>
         <SelectSimple
           fullWidth
           name={'parent-category-name'}
           minWidth='auto'
           placeholder='Выберите родительскую категорию'
-          options={parentCategories?.data?.map((elm2) => ({ ...elm2, name: elm2.nameRu }))}
+          // options={parentCategories?.data?.map((elm2) => ({ ...elm2, name: elm2.nameRu }))}
           uncontrolled
           value={parentCategory}
           onChange={(val) => setParentCategory(val)}
           required
           // disabled={appType === 'BUCHET'}
         />
-      </Box>
-      <Box>
+      </Box> */}
+      {/* <Box>
         {productCategories.map((el, ind) => (
           <Box key={ind} mt={2} columnGap={3} width='100%' display='inline-flex'>
             <SelectSimple
@@ -231,7 +310,7 @@ export default function ProductBody({ productData = null }) {
               minWidth='auto'
               disabled={!parentCategory?._id}
               placeholder='Выберите категория'
-              options={filterTwoArrays(subCategories?.data, productCategories)?.map((elm2) => ({ ...elm2, name: elm2.nameRu }))}
+              // options={filterTwoArrays(subCategories?.data, productCategories)?.map((elm2) => ({ ...elm2, name: elm2.nameRu }))}
               uncontrolled
               value={el?.name && el}
               onChange={(val) =>
@@ -272,7 +351,7 @@ export default function ProductBody({ productData = null }) {
             <Box width='100%' />
           </Box>
         )}
-      </Box>
+      </Box> */}
     </Box>
   )
 }

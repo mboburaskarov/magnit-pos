@@ -71,39 +71,40 @@ export default function DashboarPage() {
   const [openAllNotes, setOpenAllNotes] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const DataTypeFilter = useMemo(() => dataTypeFilter(detalization), [values?.start_date, values?.end_date, detalization])
-  const { data: operatorsList } = useQuery('operatorsList', () => requests.getAllAdmins({ limit: 1000, offset: 0 }))
-  const { data: orderNotes, refetch: refetchNotes } = useQuery(['orderNote', orderIdForNote], () => requests.getOrderNote({ orderId: orderIdForNote }), {
-    enabled: !!orderIdForNote,
-  })
+  // const { data: operatorsList } = useQuery('operatorsList', () => requests.getAllAdmins({ limit: 1000, offset: 0 }))
+  // const { data: orderNotes, refetch: refetchNotes } = useQuery(['orderNote', orderIdForNote], () => requests.getOrderNote({ orderId: orderIdForNote }), {
+  //   enabled: !!orderIdForNote,
+  // })
   const [isShopWarning, setIsShopWarning] = useState(false)
   const [trackingWebview, setTrackingWebview] = useState(null)
-  const {
-    data: orderList,
-    isLoading: orderListLoading,
-    isFetching: isFetchingOrderList,
-    refetch,
-  } = useQuery(['orderList', orderListFilter], () => requests.getAllOrders(orderListFilter))
+  // const {
+  //   data: orderList,
+  //   isLoading: orderListLoading,
+  //   isFetching: isFetchingOrderList,
+  //   refetch,
+  // } = useQuery(['orderList', orderListFilter], () => requests.getAllOrders(orderListFilter))
   const userData = useSelector((state) => state.user)
 
-  const { data: mainInfo, refetch: refetchMainInfo, isLoading } = useQuery('mainListDashboard', () => requests.getDashboardMainInfo(dashboardFilter))
-  const { data: topSales, refetch: refetchTopSales } = useQuery('topSalesDashboard', () => requests.getDashboardTopSales(dashboardFilter))
-  const { data: topClients, refetch: refetchTopClients } = useQuery('topClientsDashboard', () => requests.getDashboardTopClients(dashboardFilter))
-  const { data: topProducts, refetch: refetchTopProducts } = useQuery('topProductsDashboard', () => requests.getDashboardTopProducts(dashboardFilter))
-  const { data: topCategories, refetch: refetchTopCategories } = useQuery('topCategoriesDashboard', () => requests.getDashboardTopCategories(dashboardFilter))
-  const { data: vendorMap } = useQuery('topVendorMap', () => requests.getDashboardVendorMap())
-  const { data: chartInfo, refetch: refetchChartData } = useQuery('chartInfoDashboard', () =>
-    requests.getDashboardChartInfo({ ...dashboardFilter, type: DataTypeFilter })
-  )
+  // const { data: mainInfo, refetch: refetchMainInfo, isLoading } = useQuery('mainListDashboard', () => requests.getDashboardMainInfo(dashboardFilter))
+  // const { data: topSales, refetch: refetchTopSales } = useQuery('topSalesDashboard', () => requests.getDashboardTopSales(dashboardFilter))
+  // const { data: topClients, refetch: refetchTopClients } = useQuery('topClientsDashboard', () => requests.getDashboardTopClients(dashboardFilter))
+  // const { data: topProducts, refetch: refetchTopProducts } = useQuery('topProductsDashboard', () => requests.getDashboardTopProducts(dashboardFilter))
+  // const { data: topCategories, refetch: refetchTopCategories } = useQuery('topCategoriesDashboard', () => requests.getDashboardTopCategories(dashboardFilter))
+  // const { data: vendorMap } = useQuery('topVendorMap', () => requests.getDashboardVendorMap())
+  // const { data: chartInfo, refetch: refetchChartData } = useQuery('chartInfoDashboard', () =>
+  //   requests.getDashboardChartInfo({ ...dashboardFilter, type: DataTypeFilter })
+  // )
+  const chartInfo = []
   useEffect(() => {
-    refetchMainInfo()
-    refetchTopSales()
-    refetchTopClients()
-    refetchTopProducts()
-    refetchTopCategories()
+    // refetchMainInfo()
+    // refetchTopSales()
+    // refetchTopClients()
+    // refetchTopProducts()
+    // refetchTopCategories()
 
     const dateDifference = dayjs(dashboardFilter.toDate).diff(dashboardFilter.fromDate, 'day')
     setDetaling(getDetaling(dateDifference))
-    refetchChartData()
+    // refetchChartData()
   }, [dashboardFilter, DataTypeFilter])
   const toFixData = useMemo(
     () =>
@@ -119,17 +120,17 @@ export default function DashboarPage() {
       })),
     [chartInfo, DataTypeFilter]
   )
-  const { mutate: assigneOperator } = useMutation(requests.assigneOperator, {
-    onSuccess: () => {
-      success('Заказ успешно передан оператору!')
+  // const { mutate: assigneOperator } = useMutation(requests.assigneOperator, {
+  //   onSuccess: () => {
+  //     success('Заказ успешно передан оператору!')
 
-      refetch()
-    },
-    onError: (err) => {
-      error('Ошибка при назначении заказа оператору!')
-      console.log('err', err)
-    },
-  })
+  //     refetch()
+  //   },
+  //   onError: (err) => {
+  //     error('Ошибка при назначении заказа оператору!')
+  //     console.log('err', err)
+  //   },
+  // })
   const totalSum = chartInfo?.data?.reduce((acc, item) => acc + item?.totalAmount, 0)
   const totalCount = chartInfo?.data?.reduce((acc, item) => acc + item?.count, 0)
   const OrdersStatistics = [
@@ -144,7 +145,7 @@ export default function DashboarPage() {
       icon: <ProductsIcon />,
       count: 0,
       endText: '$',
-      withoutDivider: String(mainInfo?.data?.ordersTotalAmount).length > 6,
+      // withoutDivider: String(mainInfo?.data?.ordersTotalAmount).length > 6,
       percent: -5,
     },
     {
@@ -166,18 +167,18 @@ export default function DashboarPage() {
     setIsDrawerOpen,
     setIsOrderCreateNote,
     setOrderIdForNote,
-    refetchNotes,
+    // refetchNotes,
     setOpenAllNotes,
     setOpenConfirmDialog,
-    operatorsList: operatorsList?.data?.admins || [],
-    assigneOperator,
+    // operatorsList: operatorsList?.data?.admins || [],
+    // assigneOperator,
     userData,
     setIsShopWarning,
     setTrackingWebview,
   })
 
   return (
-    <LoadingContainer readyState={!isLoading}>
+    <LoadingContainer readyState={true}>
       <DashboardHeader setSortBy={setSortBy} />
       <Box display='flex' flexDirection='column' position='relative' pt={0} px={'30px'} pb={3} width={'100%'}>
         <Grid container>
@@ -242,15 +243,15 @@ export default function DashboarPage() {
             id='orders-main-table'
             tableSettings
             columns={tableColumns}
-            data={orderList?.data?.orders}
-            isDataLoading={isFetchingOrderList || orderListLoading}
+            // data={orderList?.data?.orders}
+            // isDataLoading={isFetchingOrderList || orderListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             status={status}
-            isRefreshing={loading || isFetchingOrderList || orderListLoading}
+            // isRefreshing={loading || isFetchingOrderList || orderListLoading}
           />
         </Box>
       </Box>

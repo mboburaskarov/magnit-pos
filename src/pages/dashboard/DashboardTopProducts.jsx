@@ -66,7 +66,7 @@ export default function DashboardTopProducts({ data, sortBy }) {
       sx={(theme) => ({ px: 3, py: 2.5, border: 0.5, borderRadius: 4, borderColor: '#A4A5AB33', borderRadius: 6 })}
     >
       <Box justifyContent='space-between' width='100%' display='inline-flex'>
-        <Box pb={2.5} borderBottom='1px solid' borderColor='grey.200' width='100%' mt={1} justifyContent='space-between' display='inline-flex'>
+        <Box pb={2.5} borderBottom='1px solid' borderColor='gray.200' width='100%' mt={1} justifyContent='space-between' display='inline-flex'>
           <Typography fontSize={24}>Топ продуктов</Typography>
           <ProductIcon />
         </Box>
@@ -98,7 +98,7 @@ export default function DashboardTopProducts({ data, sortBy }) {
               <Box ml={1.5}>
                 <Typography whiteSpace='nowrap' fontSize={16} color='green.600' variant='h2'>
                   {thousandDivider(sortBy === 'SUM' ? el.totalAmount : el.count)}
-                  <Typography ml={0.5} whiteSpace='nowrap' variant='span' fontSize={16} color='grey.500'>
+                  <Typography ml={0.5} whiteSpace='nowrap' variant='span' fontSize={16} color='gray.500'>
                     {sortBy === 'SUM' ? 'сум' : 'шт'}
                   </Typography>
                 </Typography>

@@ -12,14 +12,14 @@ import Label from '../Label'
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
 
     '& .MuiOutlinedInput-root': {
       backgroundColor: ({ disabled }) => disabled && theme.palette.background.default,
-      border: ({ disabled, dashed }) => disabled && `2px ${dashed ? 'dashed' : 'solid'} ${theme.palette.grey[200]}`,
+      border: ({ disabled, dashed }) => disabled && `2px ${dashed ? 'dashed' : 'solid'} ${theme.palette.gray[200]}`,
       borderRadius: ({ customRadius }) => (customRadius ? customRadius : null),
       '& > input': {
-        '-webkit-text-fill-color': theme.palette.grey[600] + ' !important',
+        '-webkit-text-fill-color': theme.palette.gray[600] + ' !important',
       },
     },
   },
@@ -41,11 +41,11 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     fontFamily: 'Inter',
     fontWeight: 600,
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
     top: '-32px',
     right: '45px',
     '& svg': {
-      color: theme.palette.grey[400],
+      color: theme.palette.gray[400],
       marginLeft: 8,
     },
   },
@@ -53,15 +53,15 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     fontFamily: 'Inter',
     fontWeight: 600,
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
     top: '-32px',
     right: '0px',
     '& svg': {
-      color: theme.palette.grey[400],
+      color: theme.palette.gray[400],
       marginLeft: 8,
     },
     '& h5': {
-      color: theme.palette.grey[400],
+      color: theme.palette.gray[400],
       marginBottom: 0,
     },
   },
@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     color: theme.palette.black,
     '&:hover': {
-      backgroundColor: theme.palette.grey[100],
+      backgroundColor: theme.palette.gray[100],
     },
   },
   time_block: {
@@ -90,13 +90,13 @@ const useStyles = makeStyles((theme) => ({
     },
     '& > span': {
       width: 4,
-      color: theme.palette.grey[400],
+      color: theme.palette.gray[400],
       margin: '0 8px',
     },
   },
   line: {
     height: 3,
-    backgroundColor: theme.palette.grey[200],
+    backgroundColor: theme.palette.gray[200],
     width: 320,
     position: 'absolute',
     left: -32,
@@ -116,7 +116,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     cursor: 'pointer',
     '&:hover': {
-      backgroundColor: theme.palette.grey[100],
+      backgroundColor: theme.palette.gray[100],
     },
   },
 }))
@@ -390,7 +390,7 @@ function InputDatePicker({
                             <DeleteSmallIcon />
                           </button>
                         ) : (
-                          <FontAwesomeIcon icon={faCalendarAlt} color={disabled ? palette.grey[400] : palette.green[500]} />
+                          <FontAwesomeIcon icon={faCalendarAlt} color={disabled ? palette.gray[400] : palette.green[500]} />
                         )}
                       </InputAdornment>
                     ),

@@ -6,7 +6,7 @@ const columns = [
     field: 'main_photo',
     hide: false,
     minWidth: 70,
-    width: 80,
+    width: 90,
   },
   {
     field: 'name',
@@ -106,8 +106,7 @@ const productsTableColumns = createSlice({
   },
   reducers: {
     changeColumnSequence(state, payload) {
-      const newColumns = arrayMove(payload?.tableColumns || state.columns, payload.oldIndex, payload.newIndex, 'sequence_number')
-      state.columns = newColumns
+      state.columns = payload.payload
     },
     resetColumnsWidth(state, payload) {
       const newColumns = state.columns.map((el) => ({
@@ -134,25 +133,26 @@ const productsTableColumns = createSlice({
       state.columns = action.payload
     },
     resetTableHeader(state, action) {
-      if (typeof action.payload?.refetch === 'function') action.payload?.refetch()
-      state.loading = true
+      // if (typeof action.payload?.refetch === 'function') action.payload?.refetch()
+      // state.loading = true
 
-      const existingColumns = state.columns
-      const newColumns = columns
-      const existingColumnsMap = new Map(existingColumns.map((col) => [col.field, col]))
-      newColumns.forEach((newCol) => {
-        const existingCol = existingColumnsMap.get(newCol.field)
+      // const existingColumns = state.columns
+      // const newColumns = columns
+      // const existingColumnsMap = new Map(existingColumns.map((col) => [col.field, col]))
+      // newColumns.forEach((newCol) => {
+      //   const existingCol = existingColumnsMap.get(newCol.field)
 
-        if (existingCol) {
-          existingCol.width = newCol.width
-          existingCol.hide = newCol.hide
-          existingColumnsMap.delete(newCol.field)
-        } else {
-          state.columns.push(newCol)
-        }
-      })
-      state.columns = state.columns.filter((col) => !existingColumnsMap.has(col.field))
-      state.loading = false
+      //   if (existingCol) {
+      //     existingCol.width = newCol.width
+      //     existingCol.hide = newCol.hide
+      //     existingColumnsMap.delete(newCol.field)
+      //   } else {
+      //     state.columns.push(newCol)
+      //   }
+      // })
+      // state.columns = state.columns.filter((col) => !existingColumnsMap.has(col.field))
+      // state.loading = false
+      state.columns = columns
     },
   },
 })

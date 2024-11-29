@@ -6,12 +6,28 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    '& .cash_register_icon_wrapper': {
+      '&:hover': {
+        backgroundColor: theme.palette.gray[100],
+      },
+    },
     position: 'relative',
     '& > button span span span svg': {
       marginLeft: ({ noMarginSvg }) => !noMarginSvg && 10,
     },
     '& > button': {
-      borderRadius: ({ borderRadius }) => (borderRadius ? borderRadius : null),
+      // borderRadius: ({ borderRadius }) => (borderRadius ? borderRadius : null),
+    },
+
+    '& .MuiButtonBase-root': {
+      border: 0,
+      height: 48,
+      padding: 0,
+      backgroundColor: 'transparent',
+
+      '&:hover': {
+        backgroundColor: 'transparent',
+      },
     },
   },
   above: {
@@ -20,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
   options: {
     background: theme.palette.background.default,
-    color: theme.palette.grey[600],
+    color: theme.palette.gray[600],
     boxShadow: theme.boxShadow['16-8'],
     display: 'flex',
     marginTop: 10,
@@ -28,18 +44,43 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     overflow: 'hidden',
     // padding: ' 8px 16px',
-    borderRadius: 24,
+    position: 'relative',
+    borderRadius: 12,
+    '& > .soon > svg > path': {
+      stroke: theme.palette.gray[400],
+
+      // borderRadius: ({ borderRadius }) => (borderRadius ? borderRadius : null),
+    },
+    '& > .soon > span > b': {
+      color: theme.palette.gray[400],
+
+      // borderRadius: ({ borderRadius }) => (borderRadius ? borderRadius : null),
+    },
+    // '& .soon-icon': {
+    //   // position: 'absolute',
+    //   // backgroundColor: theme.palette.orange[500],
+    //   color: '#fff',
+    //   padding: '0 5px',
+    //   borderRadius: '10px',
+    //   right: 10,
+    //   fontSize: '10px',
+    //   top: 5,
+    // },
     '& > button': {
       backgroundColor: 'transparent',
       border: 0,
       display: 'flex',
       alignItems: 'center',
-      height: 72,
-      padding: '0 16px',
+      // height: 48,
+      padding: '10px 16px',
       cursor: 'pointer',
-
+      position: 'relative',
+      '& > svg': {
+        width: 20,
+        height: 20,
+      },
       '&:hover': {
-        backgroundColor: theme.palette.grey[100],
+        backgroundColor: theme.palette.gray[100],
       },
     },
     '& > button > span': {
@@ -47,18 +88,25 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: 'column',
       alignItems: 'flex-start',
       marginLeft: 16,
-      color: theme.palette.grey[600],
+      fontWeight: 500,
+      fontFamily: 'Gilroy',
+      fontSize: 18,
+      lineHeight: '28px',
+      color: theme.palette.bunker[950],
     },
     '& > button b': {
-      fontWeight: 600,
-      fontSize: 16,
-      lineHeight: '19px',
+      fontFamily: 'Gilroy',
+      fontSize: 18,
+      fontWeight: 500,
+
+      lineHeight: '28px',
+      color: theme.palette.bunker[950],
     },
     '& > button > span span': {
-      fontWeight: 600,
-      fontSize: 16,
-      lineHeight: '19px',
-      color: theme.palette.grey[400],
+      fontWeight: 500,
+      fontSize: 18,
+      lineHeight: '28px',
+      color: theme.palette.bunker[950],
     },
   },
   backdrop: {
@@ -134,16 +182,20 @@ const ButtonWithPopup = ({
                   (el, index) =>
                     el && (
                       <button
+                        className={el?.soon ? 'soon' : ''}
                         id={el?.id}
                         type='button'
                         key={index}
                         onClick={() => {
+                          if (el?.soon) return
+
                           if (el.clickHandler) {
                             el.clickHandler()
                           }
                           handleClose()
                         }}
                       >
+                        {/* {el?.soon && <span className='soon-icon'>Soon</span>} */}
                         {el.icon}
                         <span>
                           <b>{el.title}</b>

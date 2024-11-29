@@ -13,20 +13,20 @@ export default function DrawerInfoBox({ infoData, columnGap = 2, mb = 4, mt = 2 
           sx={{
             cursor: `${el.onBoxCLick && 'pointer'}`,
             '&:hover': {
-              backgroundColor: `${el.onBoxCLick && 'grey.200'}`,
+              backgroundColor: `${el.onBoxCLick && 'gray.200'}`,
             },
             transitionProperty: `${el.onBoxCLick && 'background-color'}`,
             transitionDuration: `${el.onBoxCLick && '250ms'}`,
             transitionDelay: `${el.onBoxCLick && '0ms'}`,
           }}
           py={1.5}
-          bgcolor='grey.100'
+          bgcolor='gray.100'
           width={el?.fullWidth ? '100%' : `calc(50% - ${(columnGap / 2) * 8}px)`}
           display='flex'
           flexDirection='column'
         >
-          <Typography color='grey.400'>{el.title}</Typography>
-          <Typography sx={{ '& > a': { color: 'grey.600', fontWeight: 'bold', '&:hover': { color: 'green.500' } } }} lineHeight='22px' fontSize={18}>
+          <Typography color='gray.400'>{el.title}</Typography>
+          <Typography sx={{ '& > a': { color: 'gray.600', fontWeight: 'bold', '&:hover': { color: 'green.500' } } }} lineHeight='22px' fontSize={18}>
             {el.fileLink ? (
               <a target='_blank' rel='noreferrer' href={getImageUrl(el.fileLink)}>
                 {el.info}

@@ -17,7 +17,7 @@ export const headerStyles = makeStyles((theme) => {
 
         padding: ({ isOpen }) => (isOpen ? 30 : '30px 0'),
         borderRadius: 20,
-        backgroundColor: theme.palette.background.grey,
+        backgroundColor: theme.palette.background.gray,
       },
       '& nav': {
         // width: '330px',
@@ -26,7 +26,8 @@ export const headerStyles = makeStyles((theme) => {
     },
     searchInput: {
       '&  .MuiInputBase-root': {
-        border: 'none !important',
+        backgroundColor: '#F8F8F9',
+        // border: 'none !important',
       },
     },
     list: {
@@ -40,7 +41,7 @@ export const headerStyles = makeStyles((theme) => {
       },
     },
     popper: {
-      backgroundColor: theme.palette.background.grey,
+      backgroundColor: theme.palette.background.gray,
       borderRadius: '16px',
       width: 256,
       outline: '0',
@@ -63,7 +64,7 @@ export const headerStyles = makeStyles((theme) => {
       right: ({ isOpen }) => (isOpen ? 20 : 0),
       top: 32,
       '& > span > svg > path': {
-        fill: theme.palette.grey[400],
+        fill: theme.palette.gray[400],
       },
       zIndex: 9999999,
       width: 32,
@@ -104,7 +105,7 @@ export const headerStyles = makeStyles((theme) => {
         width: 6,
       },
       '&::-webkit-scrollbar-thumb': {
-        background: theme.palette.grey[300],
+        background: theme.palette.gray[300],
         width: 6,
         borderRadius: 2,
       },
@@ -252,16 +253,16 @@ export const headerStyles = makeStyles((theme) => {
       // marginBottom: ({ isOpen }) => (isOpen ? 20 : 0) + 'px !important',
       // marginLeft: '16px !important',
       padding: '5px 8px !important',
-      backgroundColor: theme.palette.grey[50],
+      backgroundColor: theme.palette.gray[50],
       borderRadius: '32px !important',
       '&:hover': {
-        backgroundColor: theme.palette.orange[200],
-        '& p': {
-          color: theme.palette.orange[500],
-        },
-        '& .shopname': {
-          color: theme.palette.grey[600],
-        },
+        backgroundColor: theme.palette.bunker[100],
+        // '& p': {
+        //   color: theme.palette.orange[500],
+        // },
+        // '& .shopname': {
+        //   color: theme.palette.gray[600],
+        // },
       },
       // marginBottom: '24px !important',
     },
@@ -277,17 +278,21 @@ export const headerStyles = makeStyles((theme) => {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
+      overflow: 'hidden',
       color: '#fff',
       transition: '0.3s',
+      '& img': {
+        width: '100%',
+      },
     },
     shopname: {
       // width: 130,
       margin: 0,
-      lineHeight: '19px',
+      lineHeight: '16px',
       fontWeight: 600,
       fontFamily: "'Gilroy', sans-serif",
-      color: theme.palette.grey[400],
-      fontSize: 16,
+      color: theme.palette.bunker[400],
+      fontSize: 12,
       transition: 'all .2s',
       whiteSpace: 'nowrap',
       overflow: 'hidden',
@@ -299,7 +304,10 @@ export const headerStyles = makeStyles((theme) => {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
-      color: theme.palette.grey[600],
+      fontWeight: '600',
+      lineHeight: '24px',
+      fontSize: '16px',
+      color: theme.palette.bunker[950],
     },
     itemIcon: {
       flex: '0 0 17%',

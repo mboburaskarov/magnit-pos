@@ -1,7 +1,7 @@
 const colors = {
   white: '#ffffff',
   black: '#000000',
-  grey: {
+  gray: {
     50: '#fbfbfb',
     100: '#F5F5F5',
     101: '#eaeaea',
@@ -16,6 +16,19 @@ const colors = {
     900: '#262626',
   },
   bluegray: {
+    50: '#f8fafc',
+    100: '#f1f3f5',
+    200: '#e0e7ee',
+    300: '#cbd5e1',
+    400: '#94a3b8',
+    401: 'linear-gradient(0deg, rgba(0, 0, 0, 0.07), rgba(0, 0, 0, 0.07)), #ACBBCF',
+    500: '#64748b',
+    600: '#475569',
+    700: '#334155',
+    800: '#1e293b',
+    900: '#0f172a',
+  },
+  blue: {
     50: '#f8fafc',
     100: '#f1f3f5',
     200: '#e0e7ee',

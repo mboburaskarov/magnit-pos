@@ -21,7 +21,7 @@ export default function tableHeaderSelector() {
       headerName: 'Название магазина',
       colId: 'shop_name',
       cellRenderer: memo(({ data }) => (
-        <Typography sx={{ cursor: 'pointer', whiteSpace: 'pre-line', color: !data?.shopName && 'grey.400' }}>{data?.shopName || 'Неопределенный'}</Typography>
+        <Typography sx={{ cursor: 'pointer', whiteSpace: 'pre-line', color: !data?.shopName && 'gray.400' }}>{data?.shopName || 'Неопределенный'}</Typography>
       )),
     },
     {
@@ -73,7 +73,7 @@ export default function tableHeaderSelector() {
       headerName: 'ПИН',
       colId: 'pin',
       cellRenderer: memo(({ type, rowIndex, data }) => (
-        <Typography sx={{ whiteSpace: 'pre-line', color: !data?.pin && 'grey.400' }} id={`report-accounting-${type}-${rowIndex}`}>
+        <Typography sx={{ whiteSpace: 'pre-line', color: !data?.pin && 'gray.400' }} id={`report-accounting-${type}-${rowIndex}`}>
           {data?.pin || 'Неопределенный'}
         </Typography>
       )),

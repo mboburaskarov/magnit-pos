@@ -36,7 +36,7 @@ const TextField = ({
       {!onlyDisplay && label && <Label required={required}>{label}</Label>}
       <MuiTextField
         disabled={disabled}
-        label={label}
+        label={onlyDisplay && label}
         name={name}
         id={name}
         type={type || 'text'}
@@ -73,11 +73,11 @@ const TextField = ({
             borderRadius: borderRadius || 4,
             color: 'dark.500',
             border: disabled && (dashed ? '2px dashed' : '2px solid'),
-            borderColor: disabled && 'grey.300',
-            background: '#' + bgcolor || (white && theme.palette.grey[200]) || (disabled && `${theme.palette.grey[100]} !important`),
+            borderColor: disabled && 'gray.300',
+            background: '#' + bgcolor || (white && theme.palette.gray[200]) || (disabled && `${theme.palette.gray[100]} !important`),
             p: '0 !important',
-            '&:hover': { fieldset: { borderColor: 'grey.200' } },
-            fieldset: { borderColor: 'grey.200' },
+            '&:hover': { fieldset: { borderColor: 'gray.200' } },
+            fieldset: { borderColor: 'gray.200' },
             '&.Mui-focused fieldset': {
               transition: '0.3s',
               borderColor: methods?.formState?.errors?.[name] ? 'custom.error' : 'primary.main',
@@ -93,9 +93,9 @@ const TextField = ({
             py: centerMode ? 0 : 2,
             pr: centerMode ? 0 : 2,
             pl: centerMode ? 0 : type === 'tel' ? 17 : 2,
-            '-webkit-text-fill-color': onlyDisplay && `${theme.palette.grey[600]} !important`,
+            '-webkit-text-fill-color': onlyDisplay && `${theme.palette.gray[600]} !important`,
             '&::placeholder': {
-              color: disabled ? 'grey.100' : 'secondary.light',
+              color: disabled ? 'gray.100' : 'secondary.light',
               fontFamily: 'Gilroy',
               fontWeight: 600,
               fontSize: 16,
@@ -104,7 +104,7 @@ const TextField = ({
             },
           },
           '& .MuiOutlinedInput-input.Mui-disabled': {
-            WebkitTextFillColor: theme.palette.grey[600],
+            WebkitTextFillColor: theme.palette.gray[600],
           },
           ...sx,
         })}

@@ -6,16 +6,18 @@ import UserDrawer from '../Navbar/userDrawer'
 import NotificationSmallIcon from '../../assets/icons/NotificationSmallIcon'
 import { headerStyles } from './HeaderStyles'
 import ArrowDown from '../../assets/icons/ArrowDown'
+import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 function LayoutHeader() {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
   const [isUserOpen, setIsUserOpen] = useState(null)
-
+  const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
+
   const firstName = userData?.fullName?.split(' ')?.[0]
   const lastName = userData?.fullName?.split(' ')?.[1]
   const classes = headerStyles({ isOpen })
-  console.log(userData)
 
   return (
     <Box
@@ -29,8 +31,15 @@ function LayoutHeader() {
       padding={'14px 30px'}
       alignItems={'center'}
     >
-      <Box sx={{ width: 381 }}>
-        <InputSearch fullWidth id='producrs-search' className={classes.searchInput} name='search' placeholder='Search' uncontrolled />
+      <Box
+        sx={{
+          width: 381,
+          '& svg > path': {
+            fill: '#868FAA',
+          },
+        }}
+      >
+        <InputSearch fullWidth id='producrs-search' className={classes.searchInput} name='search' placeholder={t('input.search.product')} uncontrolled />
       </Box>
       <Box display={'flex'}>
         <Box mr={'20px'}>
@@ -43,16 +52,18 @@ function LayoutHeader() {
             <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
               <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
                 <div className={classes.avatarPlaceholder}>
-                  {firstName.charAt(0)}
-                  {lastName.charAt(0)}
+                  {/* {firstName.charAt(0)}
+                  {lastName.charAt(0)} */}
+                  <img src='/default-user-img.png' />
                 </div>
 
                 <Box maxWidth='73%'>
                   <Typography id='user-username' className={classes.username}>
-                    {`${lastName.charAt(0) || ''} ${firstName.charAt(0) + '.' || ''}`}
+                    {`${firstName}`}
                   </Typography>
                   <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                    {userData.type.toLowerCase()}
+                    {/* {userData.type.toLowerCase()} */}
+                    Mirzo Ulugbek filial
                   </p>
                 </Box>
               </Box>
@@ -70,14 +81,14 @@ function LayoutHeader() {
             width: '50px',
             height: '50px',
             borderRadius: '100%',
-            backgroundColor: 'grey.50',
+            backgroundColor: 'gray.50',
           }}
         >
           <NotificationSmallIcon />
         </Box>
       </Box>
 
-      <UserDrawer isOpen={isUserOpen} closeDrawer={() => setIsUserOpen(null)} />
+      <UserDrawer isOpen={isUserOpen} userData={userData} closeDrawer={() => setIsUserOpen(null)} />
     </Box>
   )
 }
