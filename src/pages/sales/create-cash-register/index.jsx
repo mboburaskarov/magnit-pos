@@ -131,7 +131,7 @@ function NewCashRegister() {
                 />
                 <Box height={'24px'} />
                 <OutLineTextField
-                  endAdornmentText={'UZS'}
+                  // endAdornmentText={'UZS'}
                   end
                   type={'number'}
                   fullWidth
@@ -139,7 +139,7 @@ function NewCashRegister() {
                   label='Ochilish miqdori'
                   placeholder='Miqdorni kiriting'
                 />
-                <TextField type={'number'} fullWidth name='open_amout' label='Ochilish miqdori' placeholder='Miqdorni kiriting' />
+                {/* <TextField type={'number'} fullWidth name='open_amout' label='Ochilish miqdori' placeholder='Miqdorni kiriting' /> */}
                 <Box height={'24px'} />
 
                 <TextField fullWidth name='description' label='Izoh' placeholder='Fikr kiriting' />
