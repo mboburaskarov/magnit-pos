@@ -42,7 +42,7 @@ function NavbarDrawer({
           >
             <Link to='/dashboard' className={classes.brandLogo}>
               <span className={classes.logo_main}>{<LogoMain />}</span>
-              {<LogoLetters />}
+              <span className={classes.logo_letter_main}> {<LogoLetters />}</span>
             </Link>
           </Box>
         )}
