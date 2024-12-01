@@ -72,6 +72,7 @@ export const navbarStyles = makeStyles((theme) => {
       border: '0',
       top: 0,
       bottom: 0,
+      marginBottom: '1px',
       cursor: 'pointer',
       '& span': {
         display: 'flex',
@@ -172,7 +173,7 @@ export const navbarStyles = makeStyles((theme) => {
       },
       '& svg': {
         marginRight: 10,
-        height: 20,
+        // height: 20,
         transition: '0.3s',
       },
       '&:hover > div': {
@@ -226,7 +227,7 @@ export const navbarStyles = makeStyles((theme) => {
       alignItems: 'center',
       justifyContent: ({ isOpen }) => (isOpen ? 'space-between' : 'center'),
       position: 'relative',
-      padding: ({ isOpen }) => (isOpen ? '0 8px 0 0px' : '0 0 0 0'),
+      padding: ({ isOpen }) => (isOpen ? '0 7px 0 0px' : '0 0 0 0'),
     },
     brandLogo: {
       height: 50,
@@ -236,10 +237,13 @@ export const navbarStyles = makeStyles((theme) => {
         fill: theme.mode === 'dark' && 'white',
       },
     },
+    logo_letter_main: {
+      marginTop: '3px',
+    },
     logo_main: {
       marginRight: 0,
       display: 'flex',
-      width: '50px',
+      // width: '50px',
       alignItems: 'center',
       '& > svg > path': {
         fill: theme.mode === 'dark' && 'white',
