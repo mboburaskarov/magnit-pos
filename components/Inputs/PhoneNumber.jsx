@@ -8,7 +8,7 @@ import Drawer from '../Drawers/Drawer'
 import { countries } from '../../src/assets/data/countries'
 import Label from '../Label'
 
-const PhoneNumber = ({ name, required, country = countries[0], setCountry, setValue, label, fullWidth, uncontrolled }) => {
+const PhoneNumber = ({ login = true, name, required, country = countries[0], setCountry, setValue, label, fullWidth, uncontrolled }) => {
   const [open, setOpen] = useState(false)
   const [openDrawer, setOpenDrawer] = useState(false)
   const { ref, setUnmaskedValue, value } = useIMask({
@@ -44,7 +44,7 @@ const PhoneNumber = ({ name, required, country = countries[0], setCountry, setVa
               onClick={() => setOpen(!open)}
               sx={(theme) => ({
                 width: 120,
-                height: 56,
+                height: login ? 56 : 48,
                 cursor: 'pointer',
                 borderRight: `2px solid ${theme.palette.gray[200]}`,
                 borderRadius: '16px 0 0 16px',
@@ -60,7 +60,7 @@ const PhoneNumber = ({ name, required, country = countries[0], setCountry, setVa
                 },
               })}
             >
-              <Typography mt={'7px'}>{`${country.flag} ${country.dial_code}`}</Typography>
+              <Typography mt={login ? '7px' : '2px'}>{`${country.flag} ${country.dial_code}`}</Typography>
               <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
             </Box>
             <Box

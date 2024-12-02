@@ -191,10 +191,34 @@ function NewSale() {
       }),
     { enabled: false }
   )
+  const { mutate: changeDiscountValue, isLoading: ischangeDiscountValue } = useMutation(requests.changeDiscountValue, {
+    onSuccess: () => {
+      // setShowOverlay(false)
+      refetchcartItemsList()
+      success('Продукт успешно создан!')
+    },
+    onError: (err) => {
+      error('Ошибка при создании товара!')
+      console.log('err', err)
+    },
+  })
   useEffect(() => {
     method.setValue('discount', inputDiscount)
     console.log(method)
   }, [inputDiscount, method.setValue])
+  useEffect(() => {
+    changeDiscountValue({
+      id: id,
+      body: {
+        discount_type: discount,
+        discount_value: method.getValues('discount'),
+        // product_id: product?.id,
+        // quantity: 1,
+        // unit_price: product?.retail_price,
+      },
+    })
+    console.log(method.getValues('discount'))
+  }, [method.watch('discount')])
   useEffect(() => {
     if (customerId) {
       requests.getSingleCustomers(customerId).then(({ data }) => {
@@ -504,16 +528,16 @@ function NewSale() {
           </Box>
         </Box>
       </Box>
-      {/* <ClientCreateMini
+      <ClientCreateMini
         quickCreateClientName={'quickCreateClientName'}
-        openDrawer={true}
+        openDrawer={openClientCreateMini}
         closeDrawer={() => setOpenClientCreateMini(false)}
         // setOpenClientCreate={setOpenClientCreate}
         // setClientDataMini={setClientDataMini}
-        clientData={null}
+        clientData={clientDetails}
         // handleAddClient={handleAddClient}
         afterCreate={(clientId) => setCreatedClientId(clientId)}
-      /> */}
+      />
       <ClientVerification isOpen={false} clientInfo={clientDetails} closeDrawer={() => {}} handleAddClient={() => {}} setClientInfo={() => {}} />
     </FormProvider>
   )

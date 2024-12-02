@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { Box, Grid, Typography, Button } from '@mui/material'
+import { Box, Grid, Typography, Button, TextField } from '@mui/material'
 import InputSimple from '../../Inputs/InputSearch'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import InputSwitchNew from '../../Inputs/InputSwitch'
-import InputPhone from '../../Inputs/InputSearch'
+import InputPhone from '../../Inputs/PhoneNumber'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import GreenCard from '../../../src/assets/icons/GrowIcon'
@@ -34,7 +34,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function MainDetails({ clientData, quickCreateClientName }) {
+export default function MainDetails() {
+  const clientData = []
+  const quickCreateClientName = []
   const classes = useStyles()
   const { control, errors, setValue, watch } = useFormContext()
   const { t } = useTranslation()
@@ -70,10 +72,12 @@ export default function MainDetails({ clientData, quickCreateClientName }) {
     <Box mt={4}>
       <Grid container spacing={3}>
         <Grid item xs={4}>
-          <InputSimple
+          <Typography>{t('menu.clients.new.date_of_birth')}</Typography>
+
+          <TextField
             id='client-name'
             name='name'
-            label={t('menu.clients.new.name')}
+            // label={'menu.clients.new.name'}
             control={control}
             fullWidth
             error={errors?.name}
@@ -84,10 +88,12 @@ export default function MainDetails({ clientData, quickCreateClientName }) {
           />
         </Grid>
         <Grid item xs={4}>
-          <InputSimple
+          <Typography>{t('menu.clients.new.date_of_birth')}</Typography>
+
+          <TextField
             id='last_name'
             name='last_name'
-            label={t('menu.clients.new.last_name')}
+            // label={t('menu.clients.new.last_name')}
             control={control}
             fullWidth
             error={errors?.last_name}
@@ -97,10 +103,12 @@ export default function MainDetails({ clientData, quickCreateClientName }) {
           />
         </Grid>
         <Grid item xs={4}>
-          <InputSimple
+          <Typography>{t('menu.clients.new.date_of_birth')}</Typography>
+
+          <TextField
             id='middle_name'
             name='middle_name'
-            label={t('menu.clients.new.middle_name')}
+            // label={t('menu.clients.new.middle_name')}
             control={control}
             fullWidth
             error={errors?.middle_name}
@@ -115,11 +123,12 @@ export default function MainDetails({ clientData, quickCreateClientName }) {
         <Grid item xs={6}>
           <Typography>{t('menu.clients.new.date_of_birth')}</Typography>
           <Box display='flex'>
-            <InputSimple
+            <TextField
               id='day'
               name='day'
               placeholder={t('menu.clients.new.dd')}
               fullWidth
+              // label='def'
               control={control}
               boxStyle={{ flex: '0 0 25%', mr: 1, mt: 2 }}
               type='number'
@@ -130,7 +139,7 @@ export default function MainDetails({ clientData, quickCreateClientName }) {
                 e.target.value = e.target.value.toString().slice(0, 2)
               }}
             />
-            <InputSimple
+            <TextField
               id='month'
               name='month'
               placeholder={t('menu.clients.new.mm')}
@@ -145,7 +154,7 @@ export default function MainDetails({ clientData, quickCreateClientName }) {
                 e.target.value = e.target.value.toString().slice(0, 2)
               }}
             />
-            <InputSimple
+            <TextField
               id='year'
               name='year'
               placeholder={t('menu.clients.new.yyyy')}
@@ -163,10 +172,12 @@ export default function MainDetails({ clientData, quickCreateClientName }) {
           </Box>
         </Grid>
         <Grid item xs={6}>
+          <Typography>{t('menu.clients.new.date_of_birth')}</Typography>
+
           <InputSwitchNew
             id='client-gender'
             name='clientGender'
-            label={t('menu.clients.new.gender')}
+            // label={t('menu.clients.new.gender')}
             control={control}
             defaultValue='male'
             options={[
@@ -188,6 +199,7 @@ export default function MainDetails({ clientData, quickCreateClientName }) {
             <Typography className={classes.required}>{t('menu.clients.new.phone')}</Typography>
           </Box>
           <InputPhone
+            login={false}
             id='phone'
             name='phone'
             placeholder={t('menu.settings.shops.shop_create.phone_placeholder')}
@@ -199,7 +211,7 @@ export default function MainDetails({ clientData, quickCreateClientName }) {
             error={errors?.phone}
           />
         </Grid>
-        <Grid item xs={6}>
+        {/* <Grid item xs={6}>
           <Box mt={4} mb={2}>
             <Typography>{t('menu.clients.cards.card')}</Typography>
           </Box>
@@ -284,7 +296,7 @@ export default function MainDetails({ clientData, quickCreateClientName }) {
               </Box>
             </Box>
           </StyledDialog>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Box>
   )
