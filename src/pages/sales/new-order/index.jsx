@@ -26,6 +26,8 @@ import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import ClientCreateMini from '../../../../components/Sales/ClientCreateMini'
+import OrderDrawer from '../../../../components/Sales/ClientCreateMini/OrderDrawer'
+import DraftDrawer from '../../../../components/Sales/DraftDrawer'
 
 const useStyles = makeStyles((theme) => ({
   card_detail: {
@@ -166,6 +168,7 @@ function NewSale() {
   const method = useForm()
 
   const [showOverlay, setShowOverlay] = useState(false)
+  const [isOpenDraft, setIsOpenDraft] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
 
@@ -188,7 +191,7 @@ function NewSale() {
       requests.getAllCustomers({
         // company_id,
         search: searchTerm,
-        // limit: 100,
+        //mit: 100,
         // from_sale_search: 1,
       }),
     { enabled: false }
@@ -354,7 +357,7 @@ function NewSale() {
             <Box className={classes.cart_detail_icon}>
               <FileIcon />
             </Box>
-            <Box className={classes.cart_detail_icon}>
+            <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
               <TimeAndDate />
             </Box>
             <Box className={classes.cart_detail_icon}>
@@ -547,6 +550,44 @@ function NewSale() {
           </Box>
         </Box>
       </Box>
+      {/* <OrderDrawer
+        eposOn={true}
+        webkassaOn={true}
+        accessToPrint={true}
+        isOpen={true}
+        closeDrawer={() => {}}
+        // printContainer={printContainer}
+        cheque={[]}
+        paymentTypes={[]}
+        cashbackPercent={[]}
+        loyaltyProgramType={[]}
+        cashbackPaymentPercentage={100}
+        isLoading={false}
+        clientInfo={[]}
+        setClientInfo={() => {}}
+        onSubmit={() => {}}
+        shop={{}}
+        user={{}}
+        orderNumber={'34343'}
+        setOpenClientCreateMini={setOpenClientCreateMini}
+        setOpenClientCard={() => {}}
+        setQuickCreateClientName={() => {}}
+        // clientInputRef={clientInputRef}
+        createdClientId={() => {}}
+        setCreatedClientId={() => {}}
+        openDebt={false}
+        setOpenDebt={() => {}}
+        eposTransaction={'eposTransaction'}
+        webkassaTransaction={'webkassaTransaction'}
+        sellers={'sellersName'}
+        deleteDebt={() => {}}
+        eposChecked={'eposChecked'}
+        setEposChecked={() => {}}
+        // control={control}
+        // isAutoIncome={!!autoIncomePayments?.length}
+        // setOpenAutoIncome={setOpenAutoIncome}
+      /> */}
+      <DraftDrawer open={isOpenDraft} setOpen={setIsOpenDraft} />
       <ClientCreateMini
         quickCreateClientName={'quickCreateClientName'}
         openDrawer={openClientCreateMini}
