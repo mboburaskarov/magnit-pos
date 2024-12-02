@@ -155,7 +155,7 @@ function NewCashRegister() {
             ) : (
               <>
                 <span className={classes.closeStoreDot} />
-                Kassa Yopiq
+                Kassa Yopiq.
               </>
             )}
           </Typography>

@@ -13,10 +13,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '16px',
-    backgroundColor: ({ primary }) => (primary ? theme.palette.green[600] : theme.palette.background.default),
-    minHeight: 72,
+    backgroundColor: ({ primary }) => (primary ? theme.palette.green[600] : theme.palette.green[10]),
+    minHeight: 60,
     boxShadow: theme.boxShadow['32-12'],
-    borderRadius: 24,
+    borderRadius: '32px',
+    color: theme.palette.green[700],
+    border: '1px solid ',
+    borderColor: theme.palette.green[700],
     '& button': {
       background: 'transparent',
       border: 0,
@@ -35,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '19px',
     display: 'flex',
     fontFamily: theme.fontFamily.Gilroy,
-    color: ({ primary }) => (primary ? 'white' : theme.palette.gray[600]),
+    color: ({ primary }) => (primary ? 'white' : theme.palette.green[700]),
     textAlign: 'left',
     '& a': {
       color: theme.palette.green[500],
@@ -97,9 +100,9 @@ const Notification = ({ closeToast, message, icon, body, primary }) => {
         <span id='toastify-message' className={cls.message}>
           {message}
         </span>
-        <span id='toastify-message-body' className={cls.bodyText}>
+        {/* <span id='toastify-message-body' className={cls.bodyText}>
           {body}
-        </span>
+        </span> */}
       </div>
       <button type='button' id='close-toast' onClick={closeToast}>
         <TimesSmallIcon color={primary && 'white'} />
