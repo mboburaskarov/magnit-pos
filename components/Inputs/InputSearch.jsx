@@ -13,7 +13,7 @@ import SearchIcon from '../../src/assets/icons/SearchIcon'
 const useStyles = makeStyles((theme) => ({
   input: {
     position: 'relative',
-    height: 56,
+    height: 48,
     margin: 0,
     borderRadius: '50px',
     width: ({ maxWidth }) => maxWidth,
