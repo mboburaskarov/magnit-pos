@@ -36,7 +36,7 @@ function NavItem({ item, classes, handleClickNavItems, isActive }) {
         </div>
         {item?.icon && !!item?.children && (
           <div className={classes.itemArrow}>
-            <BottomArrowIcon />
+            <BottomArrowIcon color={isActive ? '#fff' : palette.bunker[400]} />
           </div>
         )}
       </ListItem>

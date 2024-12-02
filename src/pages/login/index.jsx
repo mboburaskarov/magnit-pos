@@ -108,10 +108,10 @@ export default function LoginPage() {
       const userData = data.data
       localStorage.setItem('access_token', userData.token)
       localStorage.setItem('user_data', JSON.stringify(userData.employee))
-      console.log(userData?.employee)
-
       dispatch(setUserData(userData?.employee))
-      navigate('/redirect')
+      setTimeout(() => {
+        navigate('/')
+      }, 300)
     },
     onError: (err) => {
       error('Hеверный логин или пароль')
@@ -159,6 +159,7 @@ export default function LoginPage() {
                     placeholder='Введите номер телефона'
                     secondary
                     required
+                    login={false}
                     country={country}
                     setCountry={setCountry}
                   />
@@ -176,7 +177,7 @@ export default function LoginPage() {
                 <Link className={classes.link}>Forgot Password?</Link>
               </Box> */}
               <Box width='100%' mt={4}>
-                <LoadingButton variant='contained' size='large' type='submit' fullWidth onClick={onSubmit} id='login-button'>
+                <LoadingButton variant='contained' size='large' type='submit' fullWidth loading={logInLoading} onClick={onSubmit} id='login-button'>
                   Login
                 </LoadingButton>
               </Box>

@@ -129,8 +129,6 @@ function NewCashRegister() {
     },
   })
   const onSubmit = (data) => {
-    console.log(registerCashData)
-
     const requestBody = {
       cash_amount: Number(get(data, 'open_amout')),
       cash_box_id: get(registerCashData, 'data.data.cash_box_id', null),
@@ -155,7 +153,7 @@ function NewCashRegister() {
             ) : (
               <>
                 <span className={classes.closeStoreDot} />
-                Kassa Yopiq.
+                Kassa Yopiq
               </>
             )}
           </Typography>

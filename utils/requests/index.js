@@ -42,7 +42,8 @@ export const requests = {
   updateComment: ({ id, data }) => request.patch(`api/admin/comments/${id}`, data),
   deleteComment: (id) => request.delete(`api/admin/comments/${id}`),
   //discount
-  changeDiscountValue: ({ id, body }) => request.put(`v1/cart_item/${id}`, body),
+  changeDiscountValue: ({ id, body }) => request.put(`v1/cart_item/sale/${id}`, body),
+  getCashBoxDetaildWithSaleId: (id) => request.get(`v1/sale/${id}`),
 
   //products
   getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -137,6 +138,9 @@ export const requests = {
   getDashboardTopProducts: (filter) => request.get(`api/dashboard/top-products${qs.stringify(filter, { addQueryPrefix: true })}`),
   getDashboardTopCategories: (filter) => request.get(`api/dashboard/top-categories${qs.stringify(filter, { addQueryPrefix: true })}`),
   getDashboardVendorMap: (filter) => request.get(`api/dashboard/shops-location${qs.stringify(filter, { addQueryPrefix: true })}`),
+  //
+
+  payForSale: (data) => request.post('v1/sale', data),
 
   // notifications
   getAllNotifications: (filter) => request.get(`api/notifications/notifications-by-group${qs.stringify(filter, { addQueryPrefix: true })}`),

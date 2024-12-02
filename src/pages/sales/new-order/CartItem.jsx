@@ -221,8 +221,6 @@ const CartItem = ({
   item,
   deleteCartItem,
 }) => {
-  console.log(item)
-
   const cls = useStyles()
   const [quon, setQuon] = useState(0)
   return (
@@ -301,7 +299,7 @@ const CartItem = ({
                 <Box sx={{ display: 'flex', '& svg > g > path': { stroke: '#FF6018' }, '& svg': { width: '20px', height: '20px' } }}>
                   <Typography sx={{ mr: '10px', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
                     {' '}
-                    {item?.product?.supply_price}
+                    {item?.total_price}
                   </Typography>
                   <EditIcon />
                 </Box>
@@ -370,8 +368,8 @@ const CartItem = ({
       <Box display={'flex'} flexDirection={'column'} padding={'16px'} bgcolor={'bg.10'} ml={'8px'} height={'80px'} borderRadius={'16px'} minWidth={'160px'}>
         <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>Sotuv bonusi</Typography>
         <Box display={'flex'} justifyContent={'space-between'}>
-          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>2%</Typography>
-          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>4 986 so'm</Typography>
+          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}> {item?.product?.bonus_percent}%</Typography>
+          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>{item?.product?.bonus_amount}</Typography>
         </Box>
       </Box>
     </Box>

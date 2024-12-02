@@ -123,17 +123,12 @@ const useStyles = makeStyles((theme) => ({
 function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
   const { values } = useQueryParams()
   const [searchTearm, setSearchTerm] = useState('')
-  useEffect(() => {
-    setSearchTerm(values?.search)
-    values?.search?.length > 0 ? setShowOverlay(true) : setShowOverlay(false)
-  }, [values?.search])
+
   const productsListFilter = useMemo(() => {
     return {
-      limit: values?.limit || 10,
-      offset: values?.offset || 0,
-      search: values?.search,
+      search: searchTearm,
     }
-  }, [values?.offset, values?.limit, values?.search])
+  }, [searchTearm])
   const {
     data: productsList,
     isLoading: productsListLoading,
@@ -152,15 +147,17 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
             style={{ zIndex: showOverlay ? 25 : 10 }}
             sx={{ marginRight: '16px !important', height: '48px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
             name='search'
-            uncontrolled
+            // uncontrolled
             placeholder={'Qidirish: mahsulot, kategoriya, shtrix-kod'}
             fullWidth
-            // onChange={(e) => {
-            //   // setFakeIndexForCheckSearch(-1)
-            //   // setSearchTerm(e.target.value)
-            //   setShowOverlay(true)
-            //   // setPage(1)
-            // }}
+            onChange={(e) => {
+              // console.log(e.target.value)
+
+              // setFakeIndexForCheckSearch(-1)
+              setSearchTerm(e.target.value)
+              setShowOverlay(true)
+              // setPage(1)
+            }}
             // }}
             // onFocus={() => event('new_sale_search_attempts')}
             // onKeyDown={(e) => {
