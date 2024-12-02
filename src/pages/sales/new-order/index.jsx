@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import CartSearchBar from './CartSearchBar'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
@@ -7,13 +7,20 @@ import { useMutation, useQuery } from 'react-query'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import FileIcon from '../../../assets/icons/FileIcon'
 import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
 import TextField from '../../../../components/Inputs/TextField'
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
+import SearchInput from '../../../../components/Inputs/SearchInput'
+import { useDebounce } from 'use-debounce'
+import { Palette } from '@mui/icons-material'
+import Label from '../../../../components/Label'
+import { get } from 'lodash'
+import Highlighter from 'react-highlight-words'
 
 const useStyles = makeStyles((theme) => ({
   card_detail: {
@@ -93,15 +100,105 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.bunker[100],
     boxShadow: '0px 4px 12px 0px #00000014',
   },
+
+  searchItemList: {
+    // maxHeight: 320,
+    overflowY: 'scroll',
+    position: 'absolute',
+    zIndex: 2,
+    width: 'calc(100% - 40px)',
+    // maxWidth: 316,
+    margin: '0 auto',
+    overflow: 'hidden',
+    borderRadius: 16,
+    backgroundColor: theme.palette.background.default,
+    boxShadow: theme.boxShadow['16-8'],
+  },
+  searchItem: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    minHeight: 56,
+    padding: '0 16px',
+    cursor: 'pointer',
+    '&:focus-visible': {
+      outline: 'none !important',
+      backgroundColor: theme.palette.gray[100],
+    },
+  },
+  noSuchClientAdd: {
+    cursor: 'pointer',
+    alignItems: 'center',
+    display: 'inline-flex',
+    width: '100%',
+    height: 62,
+    padding: '0 16px',
+    '&:focus-visible': {
+      outline: 'none !important',
+      backgroundColor: theme.palette.gray[100],
+    },
+  },
+  warningIcon: {
+    color: theme.palette.red[500],
+  },
 }))
 function NewSale() {
   const userData = useSelector((state) => state.user)
+  const { id } = useParams()
+  const method = useForm()
+
   const [showOverlay, setShowOverlay] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [customers, setCustomers] = useState([])
+  const [discount, setDiscountType] = useState([])
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 200)
+  const [customerId, setCustomerId] = useState('')
+  const [clientDetails, setClientDetails] = useState(null)
+
   const [inputDiscount, setInputDiscount] = useState(0)
   const { data: cartItemsList, refetch: refetchcartItemsList } = useQuery('cartItemsList', () =>
-    requests.getCartItemList({ employee_id: userData?.id, limit: 1000, offset: 0 })
+    requests.getCartItemList({ sale_id: id, limit: 1000, offset: 0 })
   )
   const classes = useStyles()
+  const searchResult = useQuery(
+    ['searchCustomers', debouncedSearchTerm],
+    () =>
+      requests.getAllCustomers({
+        // company_id,
+        search: searchTerm,
+        // limit: 100,
+        // from_sale_search: 1,
+      }),
+    { enabled: false }
+  )
+  useEffect(() => {
+    method.setValue('discount', inputDiscount)
+    console.log(method)
+  }, [inputDiscount, method.setValue])
+  useEffect(() => {
+    if (customerId) {
+      requests.getSingleCustomers(customerId).then(({ data }) => {
+        console.log(data)
+
+        setClientDetails(get(data, 'data'))
+        // if (!smsAuthRole) handleAddClient({ ...data, check_auth_code: false })
+      })
+    }
+  }, [customerId])
+  useEffect(() => {
+    if (debouncedSearchTerm.length > 3) {
+      searchResult.refetch().then(({ data }) => {
+        console.log(get(data, 'data.data.data'))
+
+        if (get(data, 'data.data.data')) {
+          setCustomers(get(data, 'data.data.data'))
+        } else {
+          setCustomers([])
+        }
+      })
+    }
+  }, [debouncedSearchTerm])
   const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createCartItem, {
     onSuccess: () => {
       setShowOverlay(false)
@@ -137,9 +234,8 @@ function NewSale() {
       console.log('err', err)
     },
   })
-  const method = useForm()
   console.log(cartItemsList)
-
+  const totalPrice = 0
   const { t } = useTranslation()
   return (
     <FormProvider {...method}>
@@ -204,32 +300,136 @@ function NewSale() {
             </Box>
           </Box>
           <Box mb={'24px'}>
-            <TextField required fullWidth name='description' label='Mizoj' placeholder='Mijoz yoki telefon raqami' />
+            <Box sx={{ display: 'flex', mb: '4px', justifyContent: 'space-between' }}>
+              <Label>Mijoz</Label>
+              <Typography color={'orange.500'} fontSize={'14px'} fontWeight={'600'}>
+                Yaratish
+              </Typography>
+            </Box>
+
+            <SearchInput
+              id='client-search-bar'
+              name='search'
+              placeholder={'menu.orders.new_order.cart_container.client_placeholder'}
+              fullWidth
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) onEnter()
+              }}
+              value={searchTerm}
+              // inputRef={clientInputRef}
+              setSearchTerm={setSearchTerm}
+              client
+              // disabled={disabled}
+              error={!!searchTerm && searchTerm.length < 4}
+            />
+            {!!searchTerm && searchTerm.length < 4 && (
+              <Box display='flex' alignItems='center'>
+                <Box className={classes.warningIcon}>{/* <FontAwesomeIcon icon={faExclamationCircle} /> */}</Box>
+                <Typography
+                  sx={(theme) => ({
+                    color: theme.palette.red[500],
+                    fontSize: '14px',
+                    fontFamily: 'Inter',
+                    lineHeight: '16.94px',
+                    marginLeft: '4px',
+                  })}
+                >
+                  Qidirish uchun kamida 4 ta belgi kiriting
+                </Typography>
+              </Box>
+            )}
+            {searchTerm.length > 3 && (
+              <Box className={classes.searchItemList}>
+                {totalPrice >= 0 && (
+                  <Box
+                    id='searchResult0'
+                    tabIndex={0}
+                    onClick={() => setOpenClientCreateMini(true)}
+                    className={classes.noSuchClientAdd}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' && fakeIndexForCheckClient === 0) {
+                        setOpenClientCreateMini(true)
+                      }
+                    }}
+                  >
+                    {/* <PlusSmallIcon fill='#fff' /> */}
+                    <Typography style={{ marginLeft: '7px' }}>
+                      {'buttons.add'} “{searchTerm}”
+                    </Typography>
+                  </Box>
+                )}
+
+                {customers.map((item, index) => (
+                  <Box
+                    key={index}
+                    tabIndex={index + 1}
+                    id={`searchResult${index + 1}`}
+                    className={classes.searchItem}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' && fakeIndexForCheckClient === index + 1) {
+                        setCustomerId(item?.id)
+                        // if (smsAuthRole) handleClick()
+                      }
+                    }}
+                    onClick={() => {
+                      setCustomerId(item?.id)
+                      // if (smsAuthRole) handleClick()
+                    }}
+                  >
+                    <Typography>
+                      <Highlighter
+                        highlightClassName='highlighter'
+                        searchWords={searchTerm ? searchTerm?.split(' ') : []}
+                        autoEscape
+                        textToHighlight={`${item.first_name} ${item.last_name}`}
+                      />
+                    </Typography>
+                    <Typography style={{ color: 'gray.400', whiteSpace: 'pre' }}>
+                      <Highlighter
+                        highlightClassName='highlighter'
+                        searchWords={searchTerm ? searchTerm?.split(' ') : []}
+                        autoEscape
+                        textToHighlight={item.phone_numbers?.join('\r\n') || ''}
+                      />
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            )}
+            {/* <TextField required fullWidth name='description' label='Mizoj' placeholder='Mijoz yoki telefon raqami' /> */}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
-            <TextField required type={'number'} fullWidth name='description' label='Mijoz' placeholder='Chegirmani kiritng' />
+            <TextField required type={'number'} fullWidth name='discount' label='Mijoz' placeholder='Chegirmani kiritng' />
             <Box ml={'8px'}>
               <InputSwitch
                 uncontrolled
                 id='app-type'
                 name='app-type'
                 // value={appType}
-                style={{ marginTop: '40px', width: 'auto' }}
-                defaultValue='ALL'
-                onChange={(e) => console.log(e)}
+                style={{ marginTop: '20px', width: 'auto' }}
+                defaultValue='percent'
+                onChange={setDiscountType}
                 options={[
-                  { title: '%', value: 'ALL' },
-                  { title: 'UZS', value: 'medicine' },
+                  { title: '%', value: 'percent' },
+                  { title: 'UZS', value: 'sum' },
                 ]}
               />
             </Box>
           </Box>
           <Box mt='8px' display={'flex'}>
-            {[15, 30, 50, 75].map((el, index) => (
-              <Box sx={{ color: el === inputDiscount ? 'orange.500' : '#000' }} onClick={() => setInputDiscount(el)} className={classes.percent}>
-                {el}%
-              </Box>
-            ))}
+            {discount === 'percent' &&
+              [15, 30, 50, 75].map((el, index) => (
+                <Box sx={{ color: el === inputDiscount ? 'orange.500' : '#000' }} onClick={() => setInputDiscount(el)} className={classes.percent}>
+                  {el}%
+                </Box>
+              ))}
+            {discount === 'sum' &&
+              [50, 100, 300, 500].map((el, index) => (
+                <Box sx={{ color: el === inputDiscount ? 'orange.500' : '#000' }} onClick={() => setInputDiscount(el)} className={classes.percent}>
+                  {el}k
+                </Box>
+              ))}
           </Box>
           <Box className={classes.priceDetails}>
             <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
