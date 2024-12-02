@@ -4,6 +4,7 @@ import SearchIcon from '../../../assets/icons/SearchIcon'
 import paletteLight from '../../../assets/theme/paletteLight'
 import ZoomTextIcon from '../../../assets/icons/ZoomTextIcon'
 import { useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 // import currency from '../../../utils/currency'
 
 export default function SerchedItem({
@@ -21,6 +22,7 @@ export default function SerchedItem({
   product,
 }) {
   const userData = useSelector((state) => state.user)
+  const { id } = useParams()
   return (
     <div
       id={`cartSearchResult${index}`}
@@ -30,6 +32,7 @@ export default function SerchedItem({
           discount_type: 'cash',
           discount_value: 100,
           employee_id: userData.id,
+          sale_id: id,
           product_id: product?.id,
           quantity: 1,
           unit_price: product?.retail_price,

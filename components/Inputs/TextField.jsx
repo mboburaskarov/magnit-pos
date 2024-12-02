@@ -64,7 +64,7 @@ const TextField = ({
             fontWeight: 400,
           },
           '& .MuiOutlinedInput-root': {
-            mt: label ? (onlyDisplay ? 3.5 : 1.5) : 0,
+            mt: label ? (onlyDisplay ? 3.5 : '4px') : 0,
             boxShadow: withShadow && '0px 0px 24px rgba(0, 0, 0, 0.08)',
             fontFamily: 'Gilroy',
             fontWeight: 400,
