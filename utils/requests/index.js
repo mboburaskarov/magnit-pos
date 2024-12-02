@@ -41,6 +41,8 @@ export const requests = {
   getAllComments: (filter) => request.get(`api/admin/comments${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateComment: ({ id, data }) => request.patch(`api/admin/comments/${id}`, data),
   deleteComment: (id) => request.delete(`api/admin/comments/${id}`),
+  //discount
+  changeDiscountValue: ({ id, body }) => request.put(`v1/cart_item/${id}`, body),
 
   //products
   getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),

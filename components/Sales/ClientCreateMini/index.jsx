@@ -178,8 +178,8 @@ export default function ClientCreateMini({
           <form id='create-client-form-mini' onSubmit={methods.handleSubmit(onSubmit, onError)} noValidate>
             <Box>
               <MainDetails quickCreateClientName={quickCreateClientName} clientData={clientData} />
-              <GroupsTags clientData={clientData} />
-              <Box width='100%' mt={4}>
+              {/* <GroupsTags clientData={clientData} /> */}
+              {/* <Box width='100%' mt={4}>
                 <Button
                   id='expand-client-fields'
                   color='secondary'
@@ -201,7 +201,7 @@ export default function ClientCreateMini({
                   />
                   {t('menu.clients.new.expand_fields')}
                 </Button>
-              </Box>
+              </Box> */}
             </Box>
           </form>
         </FormProvider>
