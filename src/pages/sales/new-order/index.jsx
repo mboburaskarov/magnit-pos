@@ -14,7 +14,7 @@ import TextField from '../../../../components/Inputs/TextField'
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import SearchInput from '../../../../components/Inputs/SearchInput'
 import { useDebounce } from 'use-debounce'
 import { Palette } from '@mui/icons-material'
@@ -165,7 +165,7 @@ function NewSale() {
   const { id } = useParams()
   const method = useForm()
 
-  const [showOverlay, setShowOverlay] = useState(true)
+  const [showOverlay, setShowOverlay] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
 
@@ -173,12 +173,14 @@ function NewSale() {
   const [discount, setDiscountType] = useState([])
   const [debouncedSearchTerm] = useDebounce(searchTerm, 200)
   const [customerId, setCustomerId] = useState('')
+  const navigate = useNavigate()
   const [clientDetails, setClientDetails] = useState(null)
 
   const [inputDiscount, setInputDiscount] = useState(0)
   const { data: cartItemsList, refetch: refetchcartItemsList } = useQuery('cartItemsList', () =>
-    requests.getCartItemList({ sale_id: id, limit: 1000, offset: 0 })
+    requests.getCartItemList({ sale_id: id, limit: 1000, offset: 0 }).catch(() => navigate('/sales/create'))
   )
+  const { data: cashBoxDetails, refetch: refetchCashBoxDetaild } = useQuery('cashBoxDetails', () => requests.getCashBoxDetaildWithSaleId(id))
   const classes = useStyles()
   const searchResult = useQuery(
     ['searchCustomers', debouncedSearchTerm],
@@ -206,6 +208,9 @@ function NewSale() {
     method.setValue('discount', inputDiscount)
     console.log(method)
   }, [inputDiscount, method.setValue])
+  useEffect(() => {
+    refetchcartItemsList().catch(() => console.log('dede'))
+  }, [])
   useEffect(() => {
     changeDiscountValue({
       id: id,
@@ -277,9 +282,23 @@ function NewSale() {
       console.log('err', err)
     },
   })
+  const { mutate: payForSale, isLoading: ispayForSale } = useMutation(requests.payForSale, {
+    onSuccess: () => {
+      // setShowOverlay(false)
+      // refetchcartItemsList()
+      success('Продукт успешно создан!')
+    },
+    onError: (err) => {
+      error('Ошибка при создании товара!')
+      console.log('err', err)
+    },
+  })
   console.log(cartItemsList)
   const totalPrice = 0
   const { t } = useTranslation()
+  const pay = () => {
+    payForSale({ cash_box_id: 1, employee_id: userData?.id })
+  }
   return (
     <FormProvider {...method}>
       <Box display={'flex'}>
@@ -307,7 +326,7 @@ function NewSale() {
                 <DeleteIcon width={'20px'} />
               </Box>
             </Box>
-            {false ? (
+            {!cartItemsList?.data?.data?.data?.length ? (
               <Box className={classes.empty_list}>
                 <Typography fontWeight={'800'} fontSize={'24px'} lineHeight={'32px'}>
                   Savat hozircha boʻsh
@@ -475,7 +494,7 @@ function NewSale() {
                 onChange={setDiscountType}
                 options={[
                   { title: '%', value: 'percent' },
-                  { title: 'UZS', value: 'sum' },
+                  { title: 'UZS', value: 'cash' },
                 ]}
               />
             </Box>
@@ -487,7 +506,7 @@ function NewSale() {
                   {el}%
                 </Box>
               ))}
-            {discount === 'sum' &&
+            {discount === 'cash' &&
               [50, 100, 300, 500].map((el, index) => (
                 <Box sx={{ color: el === inputDiscount ? 'orange.500' : '#000' }} onClick={() => setInputDiscount(el)} className={classes.percent}>
                   {el}k
@@ -511,7 +530,7 @@ function NewSale() {
                 57 450 so'm
               </Typography>
             </Box>
-            <Button color='primary' sx={{ mb: '16px', display: 'flex', justifyContent: 'space-between' }}>
+            <Button onClick={() => pay()} color='primary' sx={{ mb: '16px', display: 'flex', justifyContent: 'space-between' }}>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
                 To'lov
               </Typography>
