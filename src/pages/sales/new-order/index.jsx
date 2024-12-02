@@ -21,6 +21,11 @@ import { Palette } from '@mui/icons-material'
 import Label from '../../../../components/Label'
 import { get } from 'lodash'
 import Highlighter from 'react-highlight-words'
+import ClientVerification from './ClientVerification'
+import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import ClientCreateMini from '../../../../components/Sales/ClientCreateMini'
 
 const useStyles = makeStyles((theme) => ({
   card_detail: {
@@ -142,6 +147,18 @@ const useStyles = makeStyles((theme) => ({
   warningIcon: {
     color: theme.palette.red[500],
   },
+  clientInfo: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    background: theme.palette.white,
+    height: 48,
+    borderRadius: 40,
+    border: '1px solid',
+    borderColor: theme.palette.bunker[100],
+    padding: '4px 12px',
+  },
 }))
 function NewSale() {
   const userData = useSelector((state) => state.user)
@@ -150,6 +167,8 @@ function NewSale() {
 
   const [showOverlay, setShowOverlay] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
+
   const [customers, setCustomers] = useState([])
   const [discount, setDiscountType] = useState([])
   const [debouncedSearchTerm] = useDebounce(searchTerm, 200)
@@ -187,7 +206,7 @@ function NewSale() {
     }
   }, [customerId])
   useEffect(() => {
-    if (debouncedSearchTerm.length > 3) {
+    if (debouncedSearchTerm?.length > 3) {
       searchResult.refetch().then(({ data }) => {
         console.log(get(data, 'data.data.data'))
 
@@ -302,28 +321,47 @@ function NewSale() {
           <Box mb={'24px'}>
             <Box sx={{ display: 'flex', mb: '4px', justifyContent: 'space-between' }}>
               <Label>Mijoz</Label>
-              <Typography color={'orange.500'} fontSize={'14px'} fontWeight={'600'}>
+              <Typography onClick={() => setOpenClientCreateMini(true)} color={'orange.500'} fontSize={'14px'} fontWeight={'600'}>
                 Yaratish
               </Typography>
             </Box>
+            {customerId ? (
+              <Box className={classes.clientInfo}>
+                <Box display='flex' alignItems='center' justifyContent='space-between'>
+                  <UserFilledIcon />
+                  <Box ml={2}>
+                    <Typography sx={{ fontSize: '18px', lineHeight: '24px', fontWeight: '500', color: 'bunker.950' }} style={{ cursor: 'pointer' }}>
+                      frfrfrf
+                    </Typography>
+                    <Typography sx={{ fontSize: '12px', lineHeight: '16px', fontWeight: '500', color: 'bunker.400' }} color='textSecondary'>
+                      frfrf
+                    </Typography>
+                  </Box>
+                </Box>
+                {/* <MuiButton style={{ color: colors.gray[400] }} onClick={() => setClientInfo()}> */}
+                <FontAwesomeIcon icon={faTimesCircle} />
 
-            <SearchInput
-              id='client-search-bar'
-              name='search'
-              placeholder={'menu.orders.new_order.cart_container.client_placeholder'}
-              fullWidth
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.keyCode === 13) onEnter()
-              }}
-              value={searchTerm}
-              // inputRef={clientInputRef}
-              setSearchTerm={setSearchTerm}
-              client
-              // disabled={disabled}
-              error={!!searchTerm && searchTerm.length < 4}
-            />
-            {!!searchTerm && searchTerm.length < 4 && (
+                {/* </MuiButton> */}
+              </Box>
+            ) : (
+              <SearchInput
+                id='client-search-bar'
+                name='search'
+                placeholder={'menu.orders.new_order.cart_container.client_placeholder'}
+                fullWidth
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) onEnter()
+                }}
+                value={searchTerm}
+                // inputRef={clientInputRef}
+                setSearchTerm={setSearchTerm}
+                client
+                // disabled={disabled}
+                error={!!searchTerm && searchTerm?.length < 4}
+              />
+            )}
+            {!!searchTerm && searchTerm?.length < 4 && (
               <Box display='flex' alignItems='center'>
                 <Box className={classes.warningIcon}>{/* <FontAwesomeIcon icon={faExclamationCircle} /> */}</Box>
                 <Typography
@@ -339,7 +377,7 @@ function NewSale() {
                 </Typography>
               </Box>
             )}
-            {searchTerm.length > 3 && (
+            {searchTerm?.length > 3 && (
               <Box className={classes.searchItemList}>
                 {totalPrice >= 0 && (
                   <Box
@@ -360,7 +398,7 @@ function NewSale() {
                   </Box>
                 )}
 
-                {customers.map((item, index) => (
+                {customers?.map((item, index) => (
                   <Box
                     key={index}
                     tabIndex={index + 1}
@@ -374,6 +412,7 @@ function NewSale() {
                     }}
                     onClick={() => {
                       setCustomerId(item?.id)
+                      setSearchTerm()
                       // if (smsAuthRole) handleClick()
                     }}
                   >
@@ -465,6 +504,17 @@ function NewSale() {
           </Box>
         </Box>
       </Box>
+      {/* <ClientCreateMini
+        quickCreateClientName={'quickCreateClientName'}
+        openDrawer={true}
+        closeDrawer={() => setOpenClientCreateMini(false)}
+        // setOpenClientCreate={setOpenClientCreate}
+        // setClientDataMini={setClientDataMini}
+        clientData={null}
+        // handleAddClient={handleAddClient}
+        afterCreate={(clientId) => setCreatedClientId(clientId)}
+      /> */}
+      <ClientVerification isOpen={false} clientInfo={clientDetails} closeDrawer={() => {}} handleAddClient={() => {}} setClientInfo={() => {}} />
     </FormProvider>
   )
 }
