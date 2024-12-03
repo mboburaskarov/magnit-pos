@@ -25,8 +25,9 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: theme.palette.gray[101],
     },
-    '& .MuiOutlinedInput-input': {
+    '& .MuiOutlinedInput-root': {
       // padding: '15.5px 5px',
+      border: `2px solid transparent`,
     },
     '& .MuiInputBase-input::placeholder': {
       color: theme.palette.bunker[400], // Change placeholder color

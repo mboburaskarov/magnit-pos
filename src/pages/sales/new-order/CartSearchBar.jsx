@@ -178,6 +178,7 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
               id='operator'
               name='operator'
               minWidth='auto'
+              borderNone
               fullWidth
               placeholder={
                 <Typography ml={4} color='#bdbdbd'>

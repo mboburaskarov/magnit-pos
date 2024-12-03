@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
       transition: 'all 0.3s ease-in-out',
     },
     '& .MuiOutlinedInput-input': {
-      paddingTop: '23px',
+      paddingTop: '18px',
     },
   },
   title: {
@@ -146,8 +146,8 @@ export default function LoginPage() {
           <FormProvider {...methods}>
             <Box component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
               <BrandLogo />
-              <h1 className={classes.title}>Welcome 👋</h1>
-              <h4 className={classes.description}>Please login here </h4>
+              <h1 className={classes.title}>Добро пожаловать 👋</h1>
+              <h4 className={classes.description}>Пожалуйста, войдите сюда</h4>
               <Box width='100%'>
                 {/* <Box display="flex" justifyContent="space-between">
             <Typography>Номер телефона</Typography>

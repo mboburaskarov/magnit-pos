@@ -339,7 +339,7 @@ function InputDatePicker({
               InputProps={{
                 endAdornment: (
                   <InputAdornment sx={{ paddingRight: 1 }} position='start'>
-                    <FontAwesomeIcon icon={faCalendarAlt} color={palette.green[500]} />
+                    <FontAwesomeIcon icon={faCalendarAlt} color={palette.orange[500]} />
                   </InputAdornment>
                 ),
               }}
@@ -390,7 +390,7 @@ function InputDatePicker({
                             <DeleteSmallIcon />
                           </button>
                         ) : (
-                          <FontAwesomeIcon icon={faCalendarAlt} color={disabled ? palette.gray[400] : palette.green[500]} />
+                          <FontAwesomeIcon icon={faCalendarAlt} color={disabled ? palette.gray[400] : palette.orange[500]} />
                         )}
                       </InputAdornment>
                     ),

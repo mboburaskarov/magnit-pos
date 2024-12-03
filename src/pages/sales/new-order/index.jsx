@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: '8px',
+    // marginRight: '8px',
   },
   cart_detail_icon: {
     width: 48,
@@ -63,8 +63,9 @@ const useStyles = makeStyles((theme) => ({
     height: 48,
     display: 'flex',
     alignItems: 'center',
+    marginLeft: '16px',
     justifyContent: 'center',
-    backgroundColor: 'bg.10',
+    backgroundColor: theme.palette.bg[10],
     cursor: 'pointer',
     '&:hover': {
       backgroundColor: theme.palette.bunker[100],
@@ -234,7 +235,7 @@ function NewSale() {
     onSuccess: () => {
       setShowOverlay(false)
       refetchcartItemsList()
-      success('Продукт успешно создан!')
+      // success('Продукт успешно создан!')
     },
     onError: (err) => {
       error('Ошибка при создании товара! #4')
@@ -388,7 +389,7 @@ function NewSale() {
                     </Typography>
                   </Box>
                 </Box>
-                <Box onClick={() => setCustomerId('')}>
+                <Box height={'24px'} onClick={() => setCustomerId('')}>
                   <TimesSmallIcon />
                 </Box>
               </Box>

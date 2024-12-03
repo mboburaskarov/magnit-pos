@@ -435,12 +435,12 @@ export const theme = ({ mode, palette }) => {
           input: {
             '&:-webkit-autofill': {
               color: 'red',
-              borderRadius: 16,
-              paddingTop: 18,
+              borderRadius: '40px',
+              paddingTop: '11px !important',
               paddingRight: 12,
-              paddingBottom: 7,
+              paddingBottom: '1px !important',
               border: 'none !important',
-              paddingLeft: 12,
+              paddingLeft: 16,
               backgroundColor: 'transparent !important',
               '-webkit-box-shadow': '0 0 0 1000px white inset !important',
               ' -webkit-text-fill-color': 'inherit !important' /* Inherit the text color */,
@@ -538,6 +538,7 @@ export const theme = ({ mode, palette }) => {
             lineHeight: '24px',
             letterSpacing: 'normal',
             border: '2px solid transparent',
+            borderColor: 'transparent',
             borderColor: palette.bunker[100],
             backgroundColor: palette.white,
             height: 48,
@@ -553,7 +554,7 @@ export const theme = ({ mode, palette }) => {
             '&::placeholder': {
               color: palette.bunker[400],
               opacity: 1,
-              fontWeight: '400 !important',
+              fontWeight: '500 !important',
             },
             '&:-webkit-autofill': {
               color: 'red',
@@ -568,7 +569,7 @@ export const theme = ({ mode, palette }) => {
               backgroundColor: 'transparent !important',
               '-webkit-box-shadow': '0 0 0 1000px white inset !important',
               ' -webkit-text-fill-color': 'inherit !important' /* Inherit the text color */,
-              fontSize: 'inherit !important' /* Maintain font size */,
+              fontSize: '16px !important' /* Maintain font size */,
               lineHeight: 'inherit !important' /* Prevent height issues */,
               // padding: "inherit !important" /* Preserve padding */,
               borderRadius: 'inherit !important' /* Keep border radius consistent */,
@@ -684,6 +685,7 @@ export const theme = ({ mode, palette }) => {
       MuiDialog: {
         styleOverrides: {
           paper: {
+            position: 'unset',
             backgroundColor: palette.background.default,
             zIndex: 11,
             '::-webkit-scrollbar-thumb': {

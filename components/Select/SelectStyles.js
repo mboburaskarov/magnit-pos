@@ -33,6 +33,7 @@ export const generateCustomStyles = (props = {}) => {
     error,
     maxOptionMenuHeight,
     dashed,
+    inicatoorRight = false,
     solidBorder,
     mini,
     placeholderWrap = true,
@@ -167,7 +168,7 @@ export const generateCustomStyles = (props = {}) => {
       ...base,
       color: palette.dark[500],
       padding: '0px',
-      paddingRight: '5px',
+      paddingRight: inicatoorRight ? '4px' : '12px',
       '&:hover': {
         color: palette.gray[400],
       },

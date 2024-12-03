@@ -275,6 +275,7 @@ const CartItem = ({
                   options={[{ id: 1, name: 'Dona' }]}
                   borderRadius='12px'
                   placeholder=''
+                  inicatoorRight={true}
                   name={'dd'}
                 />
               </Box>

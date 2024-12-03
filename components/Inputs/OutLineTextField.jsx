@@ -97,7 +97,7 @@ const OutLineTextField = ({
             fontWeight: 400,
             fontSize: 16,
             lineHeight: '24px',
-            borderRadius: borderRadius || 4,
+            borderRadius: borderRadius || '40px',
             color: 'dark.500',
             border: disabled && (dashed ? '2px dashed' : '2px solid'),
             borderColor: disabled && 'gray.300',

@@ -25,8 +25,8 @@ const Image = ({ data, rowIndex, setImages }) => {
     <Box
       sx={{
         position: 'relative',
-        width: '48px',
-        height: '48px',
+        width: '40px',
+        height: '40px',
         borderRadius: 2,
         '&:hover': {
           '#overlay_image': {
@@ -158,6 +158,19 @@ export default function tableHeaderSelector({ productsColumns, setImages, t, set
       }
     }
 
+    if (el.field === 'number') {
+      return {
+        ...el,
+        headerName: '№',
+        colId: el.field,
+        cellRenderer: memo(({ rowIndex }) => (
+          <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+            {rowIndex + 1}
+          </Typography>
+        )),
+      }
+    }
+
     if (el.field === 'barcode') {
       return {
         ...el,
@@ -228,6 +241,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, t, set
       }
     }
   })
+  console.log(columns)
 
   return columns
 }

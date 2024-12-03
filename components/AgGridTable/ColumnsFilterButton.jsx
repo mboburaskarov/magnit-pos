@@ -63,7 +63,7 @@ function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
   useEffect(() => {
     if (columns) {
       const formattedData = columns
-        ?.filter((el) => !el.is_temporary && el.colId !== SELECTION_ID)
+        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
         ?.map((el) => ({
           ...el,
           label: el.headerName,

@@ -54,7 +54,7 @@ function ColumnsFilterButton({ columns, updaterAction, title, applyBtnLabel }) {
   const { t } = useTranslation()
   const [data, setData] = useState(
     columns
-      ?.filter((el) => !el.is_temporary)
+      ?.filter((el) => !el?.is_temporary)
       ?.map((el) => ({
         ...el,
         label: el.Header,
@@ -72,7 +72,7 @@ function ColumnsFilterButton({ columns, updaterAction, title, applyBtnLabel }) {
       })
       setData(
         columns
-          ?.filter((el) => !el.is_temporary)
+          ?.filter((el) => !el?.is_temporary)
           ?.map((el) => ({
             ...el,
             label: el.Header,
