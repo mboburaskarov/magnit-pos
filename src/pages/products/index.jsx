@@ -51,6 +51,7 @@ export default function ProductsPage() {
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
+    values,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     setIsDrawerOpen,
@@ -234,7 +235,7 @@ export default function ProductsPage() {
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                   background: 'transparent',
-                  border: '1px solid transparent',
+                  border: '2px solid transparent',
 
                   width: '400px',
                   height: 48,
@@ -265,7 +266,7 @@ export default function ProductsPage() {
                 color='secondary'
                 onClick={() => setFilterMenu((prev) => !prev)}
               >
-                <Typography fontWeight={500} fontSize={'16px'} lineHeight={'25px'}>
+                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
                   {t('filter_dialog.label')}
                 </Typography>
               </Button>

@@ -27,6 +27,7 @@ const useStyles = makeStyles(() => ({
     '& input': {
       paddingTop: '17px !important',
       paddingBottom: '7px !important',
+      paddingLeft: '16px !important',
     },
   },
 }))

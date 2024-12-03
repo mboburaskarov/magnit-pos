@@ -38,7 +38,7 @@ const PhoneNumber = ({ login = true, name, required, country = countries[0], set
               textAlign='center'
               fontFamily='Gilroy'
               fontWeight={500}
-              fontSize={16}
+              fontSize={18}
               lineHeight='26px'
               color='dark.500'
               onClick={() => setOpen(!open)}
@@ -60,8 +60,8 @@ const PhoneNumber = ({ login = true, name, required, country = countries[0], set
                 },
               })}
             >
-              <Typography mt={login ? '7px' : '2px'}>{`${country.flag} ${country.dial_code}`}</Typography>
-              <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
+              <Typography fontSize={'16px'} mt={login ? '7px' : '2px'}>{`${country.flag} ${country.dial_code}`}</Typography>
+              <FontAwesomeIcon width={'15px'} icon={open ? faChevronUp : faChevronDown} />
             </Box>
             <Box
               display={open ? 'block' : 'none'}

@@ -11,6 +11,8 @@ import DeleteIcon from '../../assets/icons/DeleteIcon'
 import ExpressIcon from '../../assets/icons/ExpressIcon'
 import StyledTooltip from '../../../components/StyledTooltip'
 import CheckAccess from '../../../components/CheckAccess'
+import { useQueryParams } from '../../hooks/useQueryParams'
+import { get } from 'lodash'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -25,8 +27,8 @@ const Image = ({ data, rowIndex, setImages }) => {
     <Box
       sx={{
         position: 'relative',
-        width: '48px',
-        height: '48px',
+        width: '40px',
+        height: '40px',
         borderRadius: 2,
         '&:hover': {
           '#overlay_image': {
@@ -68,7 +70,8 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ productsColumns, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
+export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
+  // const { values } = useQueryParams()
   const columns = productsColumns?.map((el) => {
     if (el.field === 'main_photo') {
       return {
@@ -158,6 +161,23 @@ export default function tableHeaderSelector({ productsColumns, setImages, t, set
       }
     }
 
+    if (el.field === 'number') {
+      return {
+        ...el,
+        headerName: '№',
+        colId: el.field,
+        cellRenderer: memo(({ rowIndex, api, ...p }) => {
+          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+
+          return (
+            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+              {absoluteIndex}
+            </Typography>
+          )
+        }),
+      }
+    }
+
     if (el.field === 'barcode') {
       return {
         ...el,
@@ -228,6 +248,7 @@ export default function tableHeaderSelector({ productsColumns, setImages, t, set
       }
     }
   })
+  console.log(columns)
 
   return columns
 }

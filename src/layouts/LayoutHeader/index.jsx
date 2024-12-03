@@ -14,7 +14,6 @@ function LayoutHeader() {
   const [isUserOpen, setIsUserOpen] = useState(null)
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
-  console.log(userData)
 
   const firstName = userData?.fullName?.split(' ')?.[0]
   const lastName = userData?.fullName?.split(' ')?.[1]

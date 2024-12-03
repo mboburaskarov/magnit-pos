@@ -14,6 +14,8 @@ import { get } from 'lodash'
 import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { Palette } from '@mui/icons-material'
+import { theme } from '../../../assets/theme'
 const useStyles = makeStyles((theme) => ({
   box: {
     display: 'flex',
@@ -161,7 +163,7 @@ function NewCashRegister() {
             <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <Box sx={{ '& div': { backgroundColor: 'transparent' } }}>
                 <SelectSimple
-                  onChange={() => console.log()}
+                  onChange={() => console.log('hi')}
                   options={registerCashList?.data?.data}
                   required
                   label={'Kassa'}
@@ -188,7 +190,7 @@ function NewCashRegister() {
                 disabled={!get(canCreate, 'canCreate')}
                 sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}
               >
-                Kassani oching <ArrowRightIcon />
+                Kassani oching <ArrowRightIcon color={!get(canCreate, 'canCreate') ? '#FF6018' : '#fff'} />
               </Button>
             </Box>
             <Box sx={{ border: '1px solid', mx: '40px', borderColor: 'bunker.100' }} />

@@ -1,10 +1,12 @@
-import { Box, Drawer, Typography } from '@mui/material'
+import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import React, { useState } from 'react'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import InputSearch from '../Inputs/InputSearch'
 import DraftParentItemsBox from './DraftParentItemsBox'
 import DraftChildDrawer from './DraftChildDrawer'
+import FilterMenuIcon from '../../src/assets/icons/FilterMenuIcon'
+import DraftFilter from './DraftFilter'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -22,6 +24,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 function DraftDrawer({ open, setOpen }) {
   const classes = useStyles()
+  const [draftfilter, setDraftFilter] = useState(false)
+
   const [isOpenChild, setIsOpenChild] = useState(false)
 
   return (
@@ -34,8 +38,34 @@ function DraftDrawer({ open, setOpen }) {
             </Typography>
             <CloseIcon onClick={() => setOpen(false)} />
           </Box>
-          <Box padding={'24px'}>
+          <Box display={'flex'} padding={'24px'}>
             <InputSearch fullWidth placeholder={'Qidirish: ID, mijoz, sotuvchi'} />
+            <Box minWidth={113} ml={'16px'}>
+              <Button
+                sx={{
+                  height: '48px',
+                  padding: 0,
+                  bgcolor: '#fff',
+                  border: '1px solid #ECEDF2',
+                  color: 'dark.500',
+                  fontWeight: '500',
+                  fontSize: '16px',
+                  lineHeight: '24px',
+                  '& span': {
+                    mr: '12px',
+                  },
+                }}
+                fullWidth
+                startIcon={<FilterMenuIcon />}
+                variant='contained'
+                color='secondary'
+                onClick={() => setDraftFilter((prev) => !prev)}
+              >
+                <Typography fontWeight={500} fontSize={'16px'} lineHeight={'25px'}>
+                  Filter
+                </Typography>
+              </Button>
+            </Box>
           </Box>
           <Box padding={'0 20px'}>
             <DraftParentItemsBox setIsOpenChild={setIsOpenChild} />
@@ -44,6 +74,7 @@ function DraftDrawer({ open, setOpen }) {
       ) : (
         <DraftChildDrawer setChildOpen={setIsOpenChild} open={isOpenChild} setOpen={setOpen} />
       )}
+      <DraftFilter setRegions={() => {}} open={draftfilter} setOpen={setDraftFilter} />
     </Drawer>
   )
 }

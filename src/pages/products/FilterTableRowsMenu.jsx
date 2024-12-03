@@ -24,17 +24,6 @@ export default function FilterTableRowsMenu({ tableColumns, open, setOpen, setRe
   const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 1000, offset: 0 }))
   const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 1000, offset: 0 }))
 
-  const [data, setData] = useState(
-    tableColumns
-      ?.filter((el) => !el.is_temporary)
-      ?.map((el) => ({
-        ...el,
-        label: el.Header,
-        desc: el.desc,
-        name: el.accessor,
-      }))
-  )
-
   const onSubmit = (data) => {
     setRegions(data.regions || [])
     const requestBody = {

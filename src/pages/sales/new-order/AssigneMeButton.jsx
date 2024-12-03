@@ -11,9 +11,9 @@ export default function AssigneMeButton({ onClick, isSelected, title }) {
       onClick={onClick}
       sx={{ cursor: 'pointer' }}
       position='absolute'
-      left={6}
+      left={4}
       borderRadius={'50%'}
-      top={5}
+      top={4}
       height={40}
       padding={'8px'}
       width={40}

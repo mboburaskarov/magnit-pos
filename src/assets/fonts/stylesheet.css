@@ -24,16 +24,15 @@
 
 @font-face {
   font-family: 'Gilroy';
-  src: url('./Gilroy-GX.ttf') format('truetype');
-  font-weight: 400;
+  src: url('./Gilroy-Medium.ttf') format('truetype');
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
-
 @font-face {
   font-family: 'Gilroy';
-  src: url('./Gilroy-Medium.ttf') format('truetype');
-  font-weight: 500;
+  src: url('./Gilroy-SemiBold.ttf') format('truetype');
+  font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
@@ -48,7 +47,7 @@
 
 @font-face {
   font-family: 'Gilroy';
-  src: url('./Gilroy-SemiBold.ttf') format('truetype');
+  src: url('./Gilroy-ExtraBold.ttf') format('truetype');
   font-weight: 800;
   font-style: normal;
   font-display: swap;
