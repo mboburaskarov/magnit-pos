@@ -1,7 +1,15 @@
-FROM node:20.11 as build
+FROM node:20-alpine
 
 WORKDIR /app
 
+COPY package*.json ./
+
 COPY . .
 
-RUN yarn global add vite@4.4
+RUN yarn
+
+RUN yarn build
+
+EXPOSE 3000
+
+CMD ["yarn", "start"]
