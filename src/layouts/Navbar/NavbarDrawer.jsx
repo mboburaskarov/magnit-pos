@@ -10,6 +10,7 @@ import NavItemMini from './NavItemMini'
 import isEqual from '../../../utils/isEqual'
 import BackArrowIcon from '../../assets/icons/BackArrow'
 import { useTranslation } from 'react-i18next'
+import { size } from 'lodash'
 
 function NavbarDrawer({
   classes,
@@ -54,7 +55,7 @@ function NavbarDrawer({
         </button>
       </div>
       <List className={classes.list}>
-        {!isOpen && (
+        {!isOpen && size(currentRoutesMemoized, 0) != 0 && (
           <div className={`${classes.popperParent} popper`}>
             <div className={`${classes.popper}`}>
               <ListItem className={classes.listItemPopper}>
