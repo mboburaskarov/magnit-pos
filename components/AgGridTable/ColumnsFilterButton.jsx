@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
   container: {
     maxHeight: 'calc(100vh - 160px)',
     display: 'flex',
+    position: 'relative',
     flexDirection: 'column',
   },
   inner: {
@@ -25,6 +26,8 @@ const useStyles = makeStyles((theme) => ({
       background: 'transparent',
       width: 16,
     },
+    paddingTop: '24px',
+    paddingBottom: '100px',
   },
 
   btn: {
@@ -101,7 +104,7 @@ function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
         customButtons={<CloseIcon onClick={() => setOpen(false)} />}
         customOnSubmit={handleApply}
       >
-        <Box p={'24px'} className={classes.container}>
+        <Box p={'24px'} pt={'0'} className={classes.container}>
           <Box className={classes.inner}>
             <CheckboxWithDragDrop
               data={data?.filter((item) => {
@@ -111,7 +114,7 @@ function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
               checkAllField
               setData={setData}
             />
-            <Box columnGap={2} display='flex' width='100%' mt={'24px'}>
+            <Box columnGap={2} display='flex' bottom={'24px'} left={'24px'} pt={'24px'} right={'24px'} bgcolor='#fff' position={'absolute'} mt={'24px'}>
               <Button
                 sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
                 fullWidth

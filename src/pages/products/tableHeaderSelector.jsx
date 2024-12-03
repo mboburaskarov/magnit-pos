@@ -163,11 +163,19 @@ export default function tableHeaderSelector({ productsColumns, setImages, t, set
         ...el,
         headerName: '№',
         colId: el.field,
-        cellRenderer: memo(({ rowIndex }) => (
-          <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-            {rowIndex + 1}
-          </Typography>
-        )),
+        cellRenderer: memo(({ rowIndex, api, ...p }) => {
+          const currentPage = api.paginationGetCurrentPage() // Get the current page index
+          const pageSize = api.paginationGetPageSize() // Get the number of rows per page
+          const absoluteIndex = currentPage * pageSize + rowIndex + 1 // Calculate the absolute index
+
+          console.log(absoluteIndex)
+
+          return (
+            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+              {rowIndex + 1}
+            </Typography>
+          )
+        }),
       }
     }
 
