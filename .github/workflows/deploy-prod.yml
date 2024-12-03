@@ -67,4 +67,3 @@ jobs:
                 docker stop "${{ env.CONTAINER_NAME }}" || true
                 docker rm "${{ env.CONTAINER_NAME }}" || true
                 docker run -d --name "${{ env.CONTAINER_NAME }}" -p "${{ env.PORT }}"  "${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ github.sha }}"
-                docker compose -f compose.prod.yml up -d --build
