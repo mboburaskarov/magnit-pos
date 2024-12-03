@@ -80,7 +80,7 @@ function NavbarDrawer({
           </div>
         )}
         <Box className='fixed_navlist'>
-          {!currentRoutes && isOpen && (
+          {!size(currentRoutes) && isOpen && (
             <div className={classes.parent}>
               {drawerData?.map((item, index) => (
                 <NavItem
@@ -100,11 +100,14 @@ function NavbarDrawer({
               ))}
             </div>
           )}
-          {isOpen && currentRoutes && (
+          {isOpen && size(currentRoutes, 0) != 0 && (
             <div className={`${classes.child} ${classes.activeChild}`}>
-              <ListItem className={classes.listItem + ' bottomIcon'} id='back-nav' onClick={() => setCurrentRoutes(null)}>
+              <ListItem className={classes.listItem} id='back-nav' onClick={() => setCurrentRoutes(null)}>
                 <>
-                  <BackArrowIcon /> {currentRoutesMemoized?.icon}
+                  <div className=' bottomIcon'>
+                    <BackArrowIcon />
+                  </div>
+                  {currentRoutesMemoized?.icon}
                   {t(currentRoutesMemoized.label)}
                 </>
               </ListItem>
