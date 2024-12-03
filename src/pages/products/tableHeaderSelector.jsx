@@ -11,6 +11,8 @@ import DeleteIcon from '../../assets/icons/DeleteIcon'
 import ExpressIcon from '../../assets/icons/ExpressIcon'
 import StyledTooltip from '../../../components/StyledTooltip'
 import CheckAccess from '../../../components/CheckAccess'
+import { useQueryParams } from '../../hooks/useQueryParams'
+import { get } from 'lodash'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -68,7 +70,8 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ productsColumns, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
+export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
+  // const { values } = useQueryParams()
   const columns = productsColumns?.map((el) => {
     if (el.field === 'main_photo') {
       return {
@@ -164,15 +167,11 @@ export default function tableHeaderSelector({ productsColumns, setImages, t, set
         headerName: '№',
         colId: el.field,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
-          const currentPage = api.paginationGetCurrentPage() // Get the current page index
-          const pageSize = api.paginationGetPageSize() // Get the number of rows per page
-          const absoluteIndex = currentPage * pageSize + rowIndex + 1 // Calculate the absolute index
-
-          console.log(absoluteIndex)
+          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
 
           return (
             <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-              {rowIndex + 1}
+              {absoluteIndex}
             </Typography>
           )
         }),

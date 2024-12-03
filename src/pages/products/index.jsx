@@ -51,6 +51,7 @@ export default function ProductsPage() {
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
+    values,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     setIsDrawerOpen,
