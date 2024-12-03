@@ -170,6 +170,12 @@ export const navbarStyles = makeStyles((theme) => {
       '&:hover': {
         backgroundColor: theme.palette.orange[500],
         color: theme.palette.white,
+        '& .bottomIcon > svg > path': {
+          fill: '#fff',
+        },
+        '&.bottomIcon > svg > path': {
+          fill: '#fff',
+        },
       },
       '& svg': {
         marginRight: 10,

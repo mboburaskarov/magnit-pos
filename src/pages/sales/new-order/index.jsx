@@ -262,11 +262,10 @@ function NewSale() {
 
   useEffect(() => {
     method.setValue('discount', inputDiscount)
-    console.log(method)
   }, [inputDiscount, method.setValue])
 
   useEffect(() => {
-    refetchcartItemsList().catch(() => console.log('dede'))
+    refetchcartItemsList()
   }, [])
 
   useEffect(() => {

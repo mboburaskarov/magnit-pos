@@ -101,7 +101,7 @@ function NavbarDrawer({
           )}
           {isOpen && currentRoutes && (
             <div className={`${classes.child} ${classes.activeChild}`}>
-              <ListItem className={classes.listItem} id='back-nav' onClick={() => setCurrentRoutes(null)}>
+              <ListItem className={classes.listItem + ' bottomIcon'} id='back-nav' onClick={() => setCurrentRoutes(null)}>
                 <>
                   <BackArrowIcon /> {currentRoutesMemoized?.icon}
                   {t(currentRoutesMemoized.label)}

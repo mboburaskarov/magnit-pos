@@ -163,7 +163,7 @@ function NewCashRegister() {
             <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <Box sx={{ '& div': { backgroundColor: 'transparent' } }}>
                 <SelectSimple
-                  onChange={() => console.log()}
+                  onChange={() => console.log('hi')}
                   options={registerCashList?.data?.data}
                   required
                   label={'Kassa'}

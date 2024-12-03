@@ -92,7 +92,6 @@ const useStyles = makeStyles((theme) => ({
 // eslint-disable-next-line react-refresh/only-export-components
 const Notification = ({ closeToast, type, message, icon, body, primary }) => {
   const cls = useStyles({ primary, type })
-  console.log(icon)
 
   return (
     <Box className={cls.root}>
