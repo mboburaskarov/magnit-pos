@@ -219,7 +219,7 @@ const CartItem = ({
   refetchLabels,
   allSellers,
   item,
-  deleteCartItem,
+  setOpenConfirmDialog,
 }) => {
   const cls = useStyles()
   const [quon, setQuon] = useState(0)
@@ -257,17 +257,26 @@ const CartItem = ({
                 id={`inputQuantity${index}`}
                 value={quon}
                 name='quantity'
-                onChange={({ target }) => console.log(target.value)}
+                onChange={({ target }) => setQuon(target.value)}
                 // adornment={data?.measurement_unit?.short_name}
                 adornmentPosition='end'
                 adornmentClassName={cls.adornment}
-                max={2}
+                max={100}
                 // maxErrorMessage={maxErrorMessage}
                 type='number'
                 disabled={false}
               />
               <Box>
-                <SelectSimple white boxStyle={{ margin: '0 8px' }} minWidth={'84px'} borderRadius='12px' placeholder='' name={'dd'} />
+                <SelectSimple
+                  white
+                  isClearable={false}
+                  boxStyle={{ margin: '0 8px' }}
+                  minWidth={'84px'}
+                  options={[{ id: 1, name: 'Dona' }]}
+                  borderRadius='12px'
+                  placeholder=''
+                  name={'dd'}
+                />
               </Box>
               <Box className={cls.img_cont}>
                 <img
@@ -315,7 +324,9 @@ const CartItem = ({
                   justifyContent: 'center',
                   backgroundColor: 'red.10',
                 }}
-                onClick={() => deleteCartItem(item?.id)}
+                onClick={() => setOpenConfirmDialog({ type: 'deleteOne', id: item?.id, name: item?.product?.name })}
+
+                // onClick={() => deleteCartItem(item?.id)}
               >
                 <DeleteIcon width='24px' />
               </Box>

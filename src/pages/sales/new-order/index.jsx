@@ -19,7 +19,7 @@ import SearchInput from '../../../../components/Inputs/SearchInput'
 import { useDebounce } from 'use-debounce'
 import { Palette } from '@mui/icons-material'
 import Label from '../../../../components/Label'
-import { get } from 'lodash'
+import { get, size } from 'lodash'
 import Highlighter from 'react-highlight-words'
 import ClientVerification from './ClientVerification'
 import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
@@ -28,6 +28,10 @@ import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import ClientCreateMini from '../../../../components/Sales/ClientCreateMini'
 import OrderDrawer from '../../../../components/Sales/ClientCreateMini/OrderDrawer'
 import DraftDrawer from '../../../../components/Sales/DraftDrawer'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
+import { LoadingButton } from '@mui/lab'
+import TimesSmallIcon from '../../../assets/icons/TimesSmallIcon'
 
 const useStyles = makeStyles((theme) => ({
   card_detail: {
@@ -49,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: '8px',
   },
   cart_detail_icon: {
     width: 48,
@@ -60,6 +65,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'bg.10',
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: theme.palette.bunker[100],
+    },
   },
   empty_list: {
     border: `1px dashed ${theme.palette.bunker[300]}`,
@@ -164,79 +173,119 @@ const useStyles = makeStyles((theme) => ({
 }))
 function NewSale() {
   const userData = useSelector((state) => state.user)
+  const { t } = useTranslation()
   const { id } = useParams()
+  const navigate = useNavigate()
   const method = useForm()
+  const classes = useStyles()
+  const totalPrice = 0
 
   const [showOverlay, setShowOverlay] = useState(false)
   const [isOpenDraft, setIsOpenDraft] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
-
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [customers, setCustomers] = useState([])
-  const [discount, setDiscountType] = useState([])
+  const [discount, setDiscountType] = useState('percent')
   const [debouncedSearchTerm] = useDebounce(searchTerm, 200)
   const [customerId, setCustomerId] = useState('')
-  const navigate = useNavigate()
   const [clientDetails, setClientDetails] = useState(null)
-
   const [inputDiscount, setInputDiscount] = useState(0)
-  const { data: cartItemsList, refetch: refetchcartItemsList } = useQuery('cartItemsList', () =>
-    requests.getCartItemList({ sale_id: id, limit: 1000, offset: 0 }).catch(() => navigate('/sales/create'))
-  )
-  const { data: cashBoxDetails, refetch: refetchCashBoxDetaild } = useQuery('cashBoxDetails', () => requests.getCashBoxDetaildWithSaleId(id))
-  const classes = useStyles()
+
   const searchResult = useQuery(
     ['searchCustomers', debouncedSearchTerm],
     () =>
       requests.getAllCustomers({
-        // company_id,
         search: searchTerm,
-        //mit: 100,
-        // from_sale_search: 1,
       }),
     { enabled: false }
   )
+
+  const { mutate: deleteAll, isLoading: isdeleteAll } = useMutation(requests.deleteAll, {
+    onSuccess: () => {
+      setShowOverlay(false)
+      refetchcartItemsList()
+      setOpenConfirmDialog(null)
+
+      success('Продукт успешно создан!')
+    },
+    onError: (err) => {
+      error('Ошибка при создании товара! #2')
+      console.log('err', err)
+    },
+  })
+  const { mutate: payForSale, isLoading: ispayForSale } = useMutation(requests.payForSale, {
+    onSuccess: () => {},
+    onError: (err) => {
+      error('Ошибка при создании товара! #1')
+      console.log('err', err)
+    },
+  })
   const { mutate: changeDiscountValue, isLoading: ischangeDiscountValue } = useMutation(requests.changeDiscountValue, {
     onSuccess: () => {
-      // setShowOverlay(false)
+      refetchcartItemsList()
+    },
+    onError: (err) => {
+      error('Ошибка при создании товара! #5')
+      console.log('err', err)
+    },
+  })
+  const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createCartItem, {
+    onSuccess: () => {
+      setShowOverlay(false)
       refetchcartItemsList()
       success('Продукт успешно создан!')
     },
     onError: (err) => {
-      error('Ошибка при создании товара!')
+      error('Ошибка при создании товара! #4')
       console.log('err', err)
     },
   })
+  const { mutate: deleteCartItem, isLoading: isdeleteCartItem } = useMutation(requests.deleteCartItem, {
+    onSuccess: () => {
+      setShowOverlay(false)
+      refetchcartItemsList()
+      setOpenConfirmDialog(null)
+      success('Продукт успешно создан!')
+    },
+    onError: (err) => {
+      error('Ошибка при создании товара! #3')
+      console.log('err', err)
+    },
+  })
+
+  const { data: cartItemsList, refetch: refetchcartItemsList } = useQuery('cartItemsList', () =>
+    requests.getCartItemList({ sale_id: id, limit: 1000, offset: 0 }).catch(() => navigate('/sales/create'))
+  )
+  const { data: cashBoxDetails, refetch: refetchCashBoxDetaild } = useQuery('cashBoxDetails', () => requests.getCashBoxDetaildWithSaleId(id))
+
   useEffect(() => {
     method.setValue('discount', inputDiscount)
     console.log(method)
   }, [inputDiscount, method.setValue])
+
   useEffect(() => {
     refetchcartItemsList().catch(() => console.log('dede'))
   }, [])
+
   useEffect(() => {
     changeDiscountValue({
       id: id,
       body: {
         discount_type: discount,
-        discount_value: method.getValues('discount'),
-        // product_id: product?.id,
-        // quantity: 1,
-        // unit_price: product?.retail_price,
+        discount_value: Number(method.getValues('discount')),
       },
     })
-    console.log(method.getValues('discount'))
   }, [method.watch('discount')])
+
   useEffect(() => {
     if (customerId) {
       requests.getSingleCustomers(customerId).then(({ data }) => {
-        console.log(data)
-
         setClientDetails(get(data, 'data'))
-        // if (!smsAuthRole) handleAddClient({ ...data, check_auth_code: false })
       })
     }
   }, [customerId])
+
   useEffect(() => {
     if (debouncedSearchTerm?.length > 3) {
       searchResult.refetch().then(({ data }) => {
@@ -250,55 +299,7 @@ function NewSale() {
       })
     }
   }, [debouncedSearchTerm])
-  const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createCartItem, {
-    onSuccess: () => {
-      setShowOverlay(false)
-      refetchcartItemsList()
-      success('Продукт успешно создан!')
-    },
-    onError: (err) => {
-      error('Ошибка при создании товара!')
-      console.log('err', err)
-    },
-  })
-  console.log(inputDiscount)
 
-  const { mutate: deleteCartItem, isLoading: isdeleteCartItem } = useMutation(requests.deleteCartItem, {
-    onSuccess: () => {
-      setShowOverlay(false)
-      refetchcartItemsList()
-      success('Продукт успешно создан!')
-    },
-    onError: (err) => {
-      error('Ошибка при создании товара!')
-      console.log('err', err)
-    },
-  })
-  const { mutate: deleteAll, isLoading: isdeleteAll } = useMutation(requests.deleteAll, {
-    onSuccess: () => {
-      setShowOverlay(false)
-      refetchcartItemsList()
-      success('Продукт успешно создан!')
-    },
-    onError: (err) => {
-      error('Ошибка при создании товара!')
-      console.log('err', err)
-    },
-  })
-  const { mutate: payForSale, isLoading: ispayForSale } = useMutation(requests.payForSale, {
-    onSuccess: () => {
-      // setShowOverlay(false)
-      // refetchcartItemsList()
-      success('Продукт успешно создан!')
-    },
-    onError: (err) => {
-      error('Ошибка при создании товара!')
-      console.log('err', err)
-    },
-  })
-  console.log(cartItemsList)
-  const totalPrice = 0
-  const { t } = useTranslation()
   const pay = () => {
     payForSale({ cash_box_id: 1, employee_id: userData?.id })
   }
@@ -323,11 +324,16 @@ function NewSale() {
               <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
                 Sotuv (0)
               </Typography>
-              <Box display={'flex'} alignItems={'center'} onClick={() => deleteAll(cartItemsList?.data?.data?.data?.map((el) => el.id))}>
-                <Typography sx={{ mr: '12px', color: 'orange.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>Barchasini o'chirish</Typography>
-
-                <DeleteIcon width={'20px'} />
-              </Box>
+              {get(cartItemsList, 'data.data.data', 0).length ? (
+                <Box display={'flex'} alignItems={'center'} onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}>
+                  <Typography sx={{ mr: '12px', color: 'orange.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>
+                    Barchasini o'chirish
+                  </Typography>
+                  <DeleteIcon width={'20px'} />
+                </Box>
+              ) : (
+                <></>
+              )}
             </Box>
             {!cartItemsList?.data?.data?.data?.length ? (
               <Box className={classes.empty_list}>
@@ -341,7 +347,7 @@ function NewSale() {
             ) : (
               <Box>
                 {cartItemsList?.data?.data?.data?.map((el) => (
-                  <CartItem deleteCartItem={deleteCartItem} item={el} />
+                  <CartItem setOpenConfirmDialog={setOpenConfirmDialog} item={el} />
                 ))}
               </Box>
             )}
@@ -361,7 +367,7 @@ function NewSale() {
               <TimeAndDate />
             </Box>
             <Box className={classes.cart_detail_icon}>
-              <DeleteIcon />
+              <DeleteIcon width={'24px'} />
             </Box>
           </Box>
           <Box mb={'24px'}>
@@ -377,17 +383,16 @@ function NewSale() {
                   <UserFilledIcon />
                   <Box ml={2}>
                     <Typography sx={{ fontSize: '18px', lineHeight: '24px', fontWeight: '500', color: 'bunker.950' }} style={{ cursor: 'pointer' }}>
-                      frfrfrf
+                      {get(customerId, 'name')}
                     </Typography>
                     <Typography sx={{ fontSize: '12px', lineHeight: '16px', fontWeight: '500', color: 'bunker.400' }} color='textSecondary'>
-                      frfrf
+                      Balans: {get(customerId, 'balance')}
                     </Typography>
                   </Box>
                 </Box>
-                {/* <MuiButton style={{ color: colors.gray[400] }} onClick={() => setClientInfo()}> */}
-                <FontAwesomeIcon icon={faTimesCircle} />
-
-                {/* </MuiButton> */}
+                <Box onClick={() => setCustomerId('')}>
+                  <TimesSmallIcon />
+                </Box>
               </Box>
             ) : (
               <SearchInput
@@ -425,7 +430,7 @@ function NewSale() {
             )}
             {searchTerm?.length > 3 && (
               <Box className={classes.searchItemList}>
-                {totalPrice >= 0 && (
+                {size(customers) == 0 && (
                   <Box
                     id='searchResult0'
                     tabIndex={0}
@@ -437,10 +442,8 @@ function NewSale() {
                       }
                     }}
                   >
-                    {/* <PlusSmallIcon fill='#fff' /> */}
-                    <Typography style={{ marginLeft: '7px' }}>
-                      {'buttons.add'} “{searchTerm}”
-                    </Typography>
+                    <PlusSmallIcon fill='#fff' />
+                    <Typography style={{ marginLeft: '7px' }}>“{searchTerm}”</Typography>
                   </Box>
                 )}
 
@@ -452,14 +455,13 @@ function NewSale() {
                     className={classes.searchItem}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter' && fakeIndexForCheckClient === index + 1) {
-                        setCustomerId(item?.id)
-                        // if (smsAuthRole) handleClick()
+                        setCustomerId({ id: item?.id, name: item?.first_name + ' ' + item?.first_name, balance: item?.balance })
                       }
                     }}
                     onClick={() => {
-                      setCustomerId(item?.id)
+                      setCustomerId({ id: item?.id, name: item?.first_name + ' ' + item?.first_name, balance: item?.balance })
+
                       setSearchTerm()
-                      // if (smsAuthRole) handleClick()
                     }}
                   >
                     <Typography>
@@ -587,6 +589,55 @@ function NewSale() {
         // isAutoIncome={!!autoIncomePayments?.length}
         // setOpenAutoIncome={setOpenAutoIncome}
       /> */}
+      {openConfirmDialog && (
+        <ConfirmDialog
+          open={!!openConfirmDialog}
+          setOpen={setOpenConfirmDialog}
+          icon={<BigWarningIcon />}
+          title={
+            openConfirmDialog?.type === 'activate'
+              ? 'Активировать продукт?'
+              : openConfirmDialog?.type === 'deactivate'
+              ? 'Деактивировать продукт?'
+              : 'Удалить продукт?'
+          }
+          desc={
+            openConfirmDialog?.type === 'activate'
+              ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
+              : openConfirmDialog?.type === 'deactivate'
+              ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
+              : openConfirmDialog.type === 'deleteAll'
+              ? 'Barcha mahsulotlarni o’chirmoqchimisiz'
+              : 'mahsulotini o’chirmoqchimisiz?'
+          }
+          supDesc={openConfirmDialog.type === 'deleteAll' ? '' : openConfirmDialog?.name}
+          actions={
+            <>
+              <Button
+                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                fullWidth
+                color='secondary'
+                variant='contained'
+                onClick={() => setOpenConfirmDialog(null)}
+              >
+                Yo'q
+              </Button>
+              <LoadingButton
+                variant='contained'
+                type='button'
+                loading={isdeleteCartItem}
+                onClick={() => {
+                  openConfirmDialog.type === 'deleteOne'
+                    ? deleteCartItem(openConfirmDialog.id)
+                    : deleteAll({ ids: get(cartItemsList, 'data.data.data', []).map((el) => el.id) })
+                }}
+              >
+                Ha, o'chirish
+              </LoadingButton>
+            </>
+          }
+        />
+      )}
       <DraftDrawer open={isOpenDraft} setOpen={setIsOpenDraft} />
       <ClientCreateMini
         quickCreateClientName={'quickCreateClientName'}

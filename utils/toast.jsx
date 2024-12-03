@@ -13,13 +13,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '16px',
-    backgroundColor: ({ primary }) => (primary ? theme.palette.green[600] : theme.palette.green[10]),
+    backgroundColor: ({ type }) => (type == 'success' ? theme.palette.green[10] : type == 'warning' ? '#FFF9E9' : '#FFEDEB'),
     minHeight: 60,
     boxShadow: theme.boxShadow['32-12'],
     borderRadius: '32px',
-    color: theme.palette.green[700],
+    color: ({ type }) => (type == 'success' ? theme.palette.green[700] : type == 'warning' ? '#FFC120' : '#FF4639'),
     border: '1px solid ',
-    borderColor: theme.palette.green[700],
+    borderColor: ({ type }) => (type == 'success' ? theme.palette.green[700] : type == 'warning' ? '#FFC120' : '#FF4639'),
     '& button': {
       background: 'transparent',
       border: 0,
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '19px',
     display: 'flex',
     fontFamily: theme.fontFamily.Gilroy,
-    color: ({ primary }) => (primary ? 'white' : theme.palette.green[700]),
+    color: ({ type }) => (type == 'success' ? theme.palette.green[700] : type == 'warning' ? '#FFC120' : '#FF4639'),
     textAlign: 'left',
     '& a': {
       color: theme.palette.green[500],
@@ -90,8 +90,9 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // eslint-disable-next-line react-refresh/only-export-components
-const Notification = ({ closeToast, message, icon, body, primary }) => {
-  const cls = useStyles({ primary })
+const Notification = ({ closeToast, type, message, icon, body, primary }) => {
+  const cls = useStyles({ primary, type })
+  console.log(icon)
 
   return (
     <Box className={cls.root}>
@@ -112,14 +113,14 @@ const Notification = ({ closeToast, message, icon, body, primary }) => {
 }
 
 export const success = (msg) => {
-  toast(<Notification icon={<TickSmallIcon />} message={msg} />)
+  toast(<Notification type='success' icon={<TickSmallIcon />} message={msg} />)
 }
 export const warning = (msg) => {
-  toast(<Notification icon={<WarningSmallIcon />} message={msg} />)
+  toast(<Notification type='warning' icon={<WarningSmallIcon />} message={msg} />)
 }
 export const error = (msg) => {
-  toast(<Notification icon={<DeleteMiddleIcon />} message={msg} />)
+  toast(<Notification type='error' icon={<DeleteMiddleIcon />} message={msg} />)
 }
 export const notification = (title, body) => {
-  toast(<Notification icon={<NotificationSmallIcon color='white' />} message={title} body={body} primary />, { autoClose: false })
+  toast(<Notification type='notification' icon={<NotificationSmallIcon color='white' />} message={title} body={body} primary />, { autoClose: false })
 }
