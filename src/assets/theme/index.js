@@ -141,7 +141,7 @@ export const theme = ({ mode, palette }) => {
             '&:hover': {
               background: '#00000020',
             },
-            border: `1px solid ${palette.bunker[100]}`,
+            border: `2px solid ${palette.bunker[100]}`,
           },
           containedRed: {
             backgroundColor: palette.red[600],
@@ -155,10 +155,10 @@ export const theme = ({ mode, palette }) => {
             padding: '0 16px',
             color: palette.gray[600],
             backgroundColor: palette.background.defaultStrong,
-            border: `1px solid ${palette.gray[300]}`,
+            border: `2px solid ${palette.gray[300]}`,
             '&:hover': {
               backgroundColor: palette.gray[101],
-              border: `1px solid ${palette.gray[300]}`,
+              border: `2px solid ${palette.gray[300]}`,
             },
           },
 
@@ -537,16 +537,16 @@ export const theme = ({ mode, palette }) => {
             fontWeight: 400,
             lineHeight: '24px',
             letterSpacing: 'normal',
-            border: '1px solid transparent',
+            border: '2px solid transparent',
             borderColor: palette.bunker[100],
             backgroundColor: palette.white,
             height: 48,
             '&.Mui-focused': {
               boxSizing: 'border-box',
-              border: `1px solid ${palette.orange[500]} !important`,
+              border: `2px solid ${palette.orange[500]} !important`,
             },
             '&.Mui-error:not(.Mui-focused)': {
-              border: '1px solid red',
+              border: '2px solid red',
             },
           },
           input: {
