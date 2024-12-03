@@ -380,7 +380,7 @@ function NewSale() {
                 <Box display='flex' alignItems='center' justifyContent='space-between'>
                   <UserFilledIcon />
                   <Box ml={2}>
-                    <Typography sx={{ fontSize: '18px', lineHeight: '24px', fontWeight: '500', color: 'bunker.950' }} style={{ cursor: 'pointer' }}>
+                    <Typography sx={{ fontSize: '18px', lineHeight: '28px', fontWeight: '500', color: 'bunker.950' }} style={{ cursor: 'pointer' }}>
                       {get(customerId, 'name')}
                     </Typography>
                     <Typography sx={{ fontSize: '12px', lineHeight: '16px', fontWeight: '500', color: 'bunker.400' }} color='textSecondary'>
