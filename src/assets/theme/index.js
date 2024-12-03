@@ -419,7 +419,7 @@ export const theme = ({ mode, palette }) => {
         styleOverrides: {
           root: {
             width: '445px',
-            borderRadius: 16,
+            borderRadius: 40,
             backgroundColor: palette.background.paper,
             '&:hover': {
               backgroundColor: palette.background.paper,
