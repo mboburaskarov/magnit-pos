@@ -64,9 +64,9 @@ export const generateCustomStyles = (props = {}) => {
         backgroundColor: white ? palette.background.default : palette.gray[101],
       },
       boxShadow: state.isFocused
-        ? `0 0 0 1px ${palette.orange[500]}`
+        ? `0 0 0 2px ${palette.orange[500]}`
         : error
-        ? `0 0 0 1px red`
+        ? `0 0 0 2px red`
         : `0 0 0 ${solidBorder ? 1 : 0}px ${dashed ? 'transparent' : palette.gray[300]}`,
       border: dashed ? `1px dashed ${palette.gray[300]}` : `1px solid ${palette.bunker[100]}`,
       border: borderNone ? 'none' : `1px solid ${palette.bunker[100]}`,

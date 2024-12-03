@@ -166,7 +166,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.white,
     height: 48,
     borderRadius: 40,
-    border: '1px solid',
+    border: '2px solid',
     borderColor: theme.palette.bunker[100],
     padding: '4px 12px',
   },
@@ -440,7 +440,7 @@ function NewSale() {
                       }
                     }}
                   >
-                    <PlusSmallIcon fill='#fff' />
+                    {/* <PlusSmallIcon fill='#fff' /> */}
                     <Typography style={{ marginLeft: '7px' }}>“{searchTerm}”</Typography>
                   </Box>
                 )}
