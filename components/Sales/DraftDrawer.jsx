@@ -39,9 +39,6 @@ function DraftDrawer({ open, setOpen }) {
           </Box>
           <Box padding={'0 20px'}>
             <DraftParentItemsBox setIsOpenChild={setIsOpenChild} />
-            <DraftParentItemsBox />
-            <DraftParentItemsBox />
-            <DraftParentItemsBox />
           </Box>
         </Box>
       ) : (

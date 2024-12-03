@@ -29,8 +29,8 @@ export default function SerchedItem({
       className={classes.searchItem}
       onClick={() => {
         handleAddProduct({
-          discount_type: 'cash',
-          discount_value: 100,
+          discount_type: 'percent',
+          discount_value: 0,
           employee_id: userData.id,
           sale_id: id,
           product_id: product?.id,

@@ -98,8 +98,10 @@ export const generateCustomStyles = (props = {}) => {
     }),
     singleValue: (provided) => ({
       ...provided,
-      paddingLeft: 16,
-      fontSize: 20,
+      // paddingLeft: 16,
+      paddingLeft: 8,
+      fontSize: 17,
+      // fontSize: 20,
       fontWeight: 500,
       fontFamily: 'Gilroy',
       color: palette.dark[500],
@@ -165,7 +167,7 @@ export const generateCustomStyles = (props = {}) => {
       ...base,
       color: palette.dark[500],
       padding: '0px',
-      paddingRight: '10px',
+      paddingRight: '5px',
       '&:hover': {
         color: palette.gray[400],
       },
