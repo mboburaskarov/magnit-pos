@@ -289,8 +289,6 @@ function NewSale() {
   useEffect(() => {
     if (debouncedSearchTerm?.length > 3) {
       searchResult.refetch().then(({ data }) => {
-        console.log(get(data, 'data.data.data'))
-
         if (get(data, 'data.data.data')) {
           setCustomers(get(data, 'data.data.data'))
         } else {
