@@ -36,9 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function MainDetails() {
-  const clientData = []
-  const quickCreateClientName = []
+export default function MainDetails({ quickCreateClientName, clientData }) {
   const classes = useStyles()
   const { control, errors, setValue, register, watch } = useFormContext()
   const { t } = useTranslation()
@@ -89,7 +87,7 @@ export default function MainDetails() {
             error={errors?.first_name}
             placeholder={'Mijoz ismini kiriting'}
             required
-            // defaultValue={quickCreateClientName || clientData.name || ''}
+            defaultValue={quickCreateClientName || clientData.name || ''}
             asteriks
           />
         </Grid>
