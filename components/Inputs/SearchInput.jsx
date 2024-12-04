@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
       // backgroundColor: theme.palette.gray[101],
     },
     '& .MuiOutlinedInput-input': {
-      padding: '15.5px 14px',
+      padding: '15.5px 5px',
     },
     '& .Mui-error:not(.Mui-focused)': {
       border: `3px solid ${theme.palette.red[500]}`,

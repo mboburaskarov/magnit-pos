@@ -33,6 +33,7 @@ import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import { LoadingButton } from '@mui/lab'
 import TimesSmallIcon from '../../../assets/icons/TimesSmallIcon'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import OutsideClickHandler from 'react-outside-click-handler'
 
 const useStyles = makeStyles((theme) => ({
   card_detail: {
@@ -170,7 +171,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 40,
     border: '2px solid',
     borderColor: theme.palette.bunker[100],
-    padding: '4px 12px',
+    padding: '4px 14px',
   },
 }))
 function NewSale() {
@@ -402,7 +403,7 @@ function NewSale() {
               <SearchInput
                 id='client-search-bar'
                 name='search'
-                placeholder={'menu.orders.new_order.cart_container.client_placeholder'}
+                placeholder={'Mijoz ismini kiriting'}
                 fullWidth
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyDown={(e) => {
@@ -433,62 +434,68 @@ function NewSale() {
               </Box>
             )}
             {searchTerm?.length > 2 && (
-              <Box className={classes.searchItemList}>
-                {size(customers) == 0 && (
-                  <Box
-                    id='searchResult0'
-                    tabIndex={0}
-                    onClick={() => {
-                      setOpenClientCreateMini(true), setQuickCreateClientName(searchTerm)
-                    }}
-                    className={classes.noSuchClientAdd}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' && fakeIndexForCheckClient === 0) {
-                        setOpenClientCreateMini(true)
-                      }
-                    }}
-                  >
-                    {/* <PlusSmallIcon fill='#fff' /> */}
-                    <Typography style={{ marginLeft: '7px' }}>qo'shish “{searchTerm}”</Typography>
-                  </Box>
-                )}
+              <OutsideClickHandler
+                onOutsideClick={() => {
+                  setSearchTerm('')
+                }}
+              >
+                <Box className={classes.searchItemList}>
+                  {size(customers) == 0 && (
+                    <Box
+                      id='searchResult0'
+                      tabIndex={0}
+                      onClick={() => {
+                        setOpenClientCreateMini(true), setQuickCreateClientName(searchTerm)
+                      }}
+                      className={classes.noSuchClientAdd}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' && fakeIndexForCheckClient === 0) {
+                          setOpenClientCreateMini(true)
+                        }
+                      }}
+                    >
+                      {/* <PlusSmallIcon fill='#fff' /> */}
+                      <Typography style={{ marginLeft: '7px' }}>qo'shish “{searchTerm}”</Typography>
+                    </Box>
+                  )}
 
-                {customers?.map((item, index) => (
-                  <Box
-                    key={index}
-                    tabIndex={index + 1}
-                    id={`searchResult${index + 1}`}
-                    className={classes.searchItem}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' && fakeIndexForCheckClient === index + 1) {
+                  {customers?.map((item, index) => (
+                    <Box
+                      key={index}
+                      tabIndex={index + 1}
+                      id={`searchResult${index + 1}`}
+                      className={classes.searchItem}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' && fakeIndexForCheckClient === index + 1) {
+                          setCustomerId({ id: item?.id, name: item?.first_name + ' ' + item?.first_name, balance: item?.balance })
+                        }
+                      }}
+                      onClick={() => {
                         setCustomerId({ id: item?.id, name: item?.first_name + ' ' + item?.first_name, balance: item?.balance })
-                      }
-                    }}
-                    onClick={() => {
-                      setCustomerId({ id: item?.id, name: item?.first_name + ' ' + item?.first_name, balance: item?.balance })
 
-                      setSearchTerm()
-                    }}
-                  >
-                    <Typography>
-                      <Highlighter
-                        highlightClassName='highlighter'
-                        searchWords={searchTerm ? searchTerm?.split(' ') : []}
-                        autoEscape
-                        textToHighlight={`${item.first_name} ${item.last_name}`}
-                      />
-                    </Typography>
-                    <Typography style={{ color: 'gray.400', whiteSpace: 'pre' }}>
-                      <Highlighter
-                        highlightClassName='highlighter'
-                        searchWords={searchTerm ? searchTerm?.split(' ') : []}
-                        autoEscape
-                        textToHighlight={item.phone_numbers?.join('\r\n') || ''}
-                      />
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
+                        setSearchTerm()
+                      }}
+                    >
+                      <Typography>
+                        <Highlighter
+                          highlightClassName='highlighter'
+                          searchWords={searchTerm ? searchTerm?.split(' ') : []}
+                          autoEscape
+                          textToHighlight={`${item.first_name} ${item.last_name}`}
+                        />
+                      </Typography>
+                      <Typography style={{ color: 'gray.400', whiteSpace: 'pre' }}>
+                        <Highlighter
+                          highlightClassName='highlighter'
+                          searchWords={searchTerm ? searchTerm?.split(' ') : []}
+                          autoEscape
+                          textToHighlight={item.phone_numbers?.join('\r\n') || ''}
+                        />
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </OutsideClickHandler>
             )}
             {/* <TextField required fullWidth name='description' label='Mizoj' placeholder='Mijoz yoki telefon raqami' /> */}
           </Box>
