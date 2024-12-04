@@ -9,7 +9,7 @@ import { useMutation, useQuery } from 'react-query'
 import AgGridTable from '../../../components/AgGridTable/AgGridTable'
 import { useDispatch, useSelector } from 'react-redux'
 import tableHeaderSelector from './tableHeaderSelector'
-import { resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
 import InputSearch from '../../../components/Inputs/InputSearch'
 import ImageGallery from '../../../components/ImageGallery'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -31,6 +31,7 @@ import EditorIcon from '../../assets/icons/EditorIcon'
 import FilterTableRowsMenu from './FilterTableRowsMenu'
 import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
 import { useTranslation } from 'react-i18next'
+const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ProductsPage() {
   const dispatch = useDispatch()
@@ -56,6 +57,24 @@ export default function ProductsPage() {
     setOpenConfirmDialog,
     setIsDrawerOpen,
   })
+
+  /// filter table columns with permission
+  useEffect(() => {
+    if (tableColumns) {
+      const formattedData = tableColumns
+        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
+        ?.map((el) => ({
+          ...el,
+          label: el.headerName,
+          desc: el.desc,
+          name: el.colId,
+          always_active: el?.always_active ?? el?.always_active,
+        }))
+
+      dispatch(changeColumnSequence(formattedData))
+    }
+  }, [])
+
   const productsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
@@ -285,7 +304,7 @@ export default function ProductsPage() {
                   sx={{ height: '48px' }}
                   onClick={() => navigate('/products/create')}
                   fullWidth
-                  startIcon={<PlusIcon />}
+                  startIcon={<PlusIcon color='#fff' />}
                   variant='contained'
                   color='primary'
                 >

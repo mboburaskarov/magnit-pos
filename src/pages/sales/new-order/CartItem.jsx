@@ -276,7 +276,7 @@ const CartItem = ({
                   borderRadius='12px'
                   placeholder=''
                   inicatoorRight={true}
-                  name={'dd'}
+                  name={`type.${item.product.id}`}
                 />
               </Box>
               <Box className={cls.img_cont}>

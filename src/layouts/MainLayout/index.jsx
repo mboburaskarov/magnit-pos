@@ -1,4 +1,5 @@
 import { makeStyles } from '@mui/styles'
+import { useDispatch } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 
 const useStyles = makeStyles(() => ({

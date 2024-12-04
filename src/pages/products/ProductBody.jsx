@@ -11,6 +11,11 @@ import { useQuery } from 'react-query'
 import { requests } from '../../../utils/requests'
 import { useFormContext } from 'react-hook-form'
 import UploadImage from '../../../components/UploadImage'
+import OutLineTextField from '../../../components/Inputs/OutLineTextField'
+import InputDatePicker from '../../../components/Inputs/InputDatePicker'
+import { useTranslation } from 'react-i18next'
+import InputWithButton from '../../../components/Inputs/InputWithButton'
+import Label from '../../../components/Label'
 
 const filterTwoArrays = (array1, array2) => {
   const arr = array1?.filter((item) => {
@@ -26,7 +31,7 @@ export default function ProductBody({ productData = null }) {
   const [productCategories, setProductCategories] = useState([{}])
   const [hasDiscontPrice, setHasDiscontPrice] = useState(false)
   const [parentCategory, setParentCategory] = useState(null)
-
+  const { t } = useTranslation()
   const [images, setImages] = useState([])
   const appType = watch('app_type') || 'BUCHET'
 
@@ -80,14 +85,21 @@ export default function ProductBody({ productData = null }) {
     }
   }, [])
   const addCategoryButton = productCategories?.length > 0 ? !!productCategories?.at(-1)?.name : true
+  const { refetch } = useQuery('barcode', () => requests.generateBarcode(), { enabled: false })
 
+  const generateBarcode = () => {
+    refetch().then(({ data }) => {
+      clearErrors('barcode')
+      setValue('barcode', data?.data?.barcode)
+    })
+  }
   return (
     <Box
       pb={10}
       width='100%'
       sx={{
         '& .MuiInputBase-root': {
-          border: '1px solid',
+          border: '2px solid',
           borderColor: 'bunker.100',
         },
       }}
@@ -95,7 +107,7 @@ export default function ProductBody({ productData = null }) {
       <SectionTitle noWrap withLine>
         Asosiy
       </SectionTitle>
-      <Box mt={1}>
+      <Box mt={'24px'}>
         <TextField required fullWidth borderRadius={'40px'} name='product_name' label='Mahsulot nomi' placeholder='Mahsulot nomini kiriting' sx={{ mb: 3 }} />
         {/* <ImageUpload
           id='images'
@@ -103,26 +115,33 @@ export default function ProductBody({ productData = null }) {
           images={productData?.files?.map((el, ind) => ({ key: el, name: el, sequence_number: ind }))}
           onChange={(imagesArr) => setValue('images', imagesArr)}
         /> */}
-        <UploadImage
-          id='images'
-          name='images'
-          // register={register}
-          images={images}
-          onChange={(imagesArr) => {
-            setImages(imagesArr)
-            // setValue('images', imagesArr)
-          }}
-        />
+        <Box mt={'24px'}>
+          <Label>Rasm</Label>
+          <UploadImage
+            id='images'
+            name='images'
+            // register={register}
+            images={images}
+            onChange={(imagesArr) => {
+              setImages(imagesArr)
+              // setValue('images', imagesArr)
+            }}
+          />
+        </Box>
+        <Box height={'56px'} />
+
         <SectionTitle noWrap withLine>
           Kategoriya
         </SectionTitle>
         <CategoriesTree />
+        <Box height={'56px'} />
         <SectionTitle noWrap withLine>
           Narxlar
         </SectionTitle>
         <Box alignItems='flex-end' width='100%' columnGap={3} flexDirection={'column'} display='inline-flex' my={3}>
           <Box display={'flex'} width={'100%'}>
-            <TextField
+            <OutLineTextField
+              endAdornmentText={'UZS'}
               required
               type='number'
               fullWidth
@@ -132,10 +151,20 @@ export default function ProductBody({ productData = null }) {
               placeholder='Sotib olish narxini kiriting'
             />
             <Box width={'20px'} />
-            <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='QQS' placeholder='QQS kiriting' />
+            <OutLineTextField
+              endAdornmentText={'%'}
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              name='product_price'
+              label='QQS'
+              placeholder='QQS kiriting'
+            />
           </Box>
           <Box mt={'24px'} display={'flex'} width={'100%'}>
-            <TextField
+            <OutLineTextField
+              endAdornmentText={'UZS'}
               required
               type='number'
               fullWidth
@@ -146,15 +175,30 @@ export default function ProductBody({ productData = null }) {
             />
             <Box width={'20px'} />
 
-            <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='QQS narxi' placeholder='QQS narxini kiriting' />
+            <OutLineTextField
+              endAdornmentText={'UZS'}
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              name='product_price'
+              label='QQS narxi'
+              placeholder='QQS narxini kiriting'
+            />
           </Box>
         </Box>
+        <Box height={'56px'} />
+
         <SectionTitle noWrap withLine>
           Miqdori
-        </SectionTitle>{' '}
+        </SectionTitle>
+        <Box height={'56px'} />
+
         <SectionTitle noWrap withLine>
           Xususiyatlari
         </SectionTitle>
+        <Box height={'24px'} />
+
         <TextField
           required
           fullWidth
@@ -165,10 +209,36 @@ export default function ProductBody({ productData = null }) {
           sx={{ mb: 3 }}
         />
         <Box display={'flex'} width={'100%'} mt={'24px'}>
-          <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='Muddati' placeholder='Muddatini kiriting' />
+          <InputDatePicker
+            // withTime
+            defaultValue={new Date()}
+            name='expired_date'
+            // minDate={new Date()}
+            // minTime={new Date()}
+            // minT
+            required
+            id='expired_date'
+            label='Дата закрытия'
+            placeholder='Дата закрытия'
+          />
+          {/* <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='Muddati' placeholder='Muddatini kiriting' /> */}
           <Box width={'20px'} />
-
-          <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='Shtix-kod' placeholder='Shtix-kodni kiriting' />
+          <InputWithButton
+            name='barcode'
+            label={t('create_new_product.main_section.barcode')}
+            // control={control}
+            uncontrolled
+            placeholder={t('create_new_product.main_section.enter_barcode')}
+            text={t('create_new_product.main_section.generate')}
+            handleClick={generateBarcode}
+            // error={errors?.barcode}
+            asteriks
+            required
+            // disabled={code}
+            buttonId='generateBarcode'
+            fullWidth
+          />
+          {/* <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='Shtix-kod' placeholder='Shtix-kodni kiriting' /> */}
         </Box>
         {/* <Box alignItems='flex-end' width='100%' columnGap={3} display='inline-flex' my={3}>
           <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='Цена' placeholder='Введите цену' />

@@ -8,17 +8,17 @@ import { useSelector } from 'react-redux'
 import { useQuery } from 'react-query'
 import Pagination from './Table/Pagination'
 import RowFilterButton from './Table/RowFilterButton'
-import requests from './CheckAccess'
 import { useFormContext } from 'react-hook-form'
-// import LoadingBlock from 'components/LoadingBlock'
+import LoadingBlock from '../components/LoadingBlock'
 import CreateEditCategories from './CreateEditCategories'
 import { useQueryParams } from '../src/hooks/useQueryParams'
 import { makeStyles } from '@mui/styles'
+import { requests } from '../utils/requests'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '24px 24px 0 24px',
-    border: `1px solid ${theme.palette.gray[300]}`,
+    border: `1px solid ${theme.palette.bunker[100]}`,
     paddingTop: 0,
     borderRadius: 24,
     marginTop: 16,
@@ -50,13 +50,21 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
   },
   addCategoryButton: {
-    position: 'sticky',
-    bottom: -2,
-    paddingBottom: '16px',
-    paddingTop: '24px',
-    backgroundColor: theme.palette.background.default,
-    width: '100%',
+    // position: 'sticky',
+    height: '48px',
+    width: '48px',
+    minWidth: '48px',
+    backgroundColor: theme.palette.bg[10],
+    borderRadius: '50%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: '16px',
     zIndex: 1,
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: theme.palette.bunker[100],
+    },
   },
 }))
 
@@ -105,7 +113,7 @@ export default function FileSystemNavigator({
     refetch,
     isLoading,
   } = useQuery('categories', () =>
-    requests.category.getAll({
+    requests.getAllCategories({
       company_id,
       limit: pageSize,
       search: values?.search,
@@ -144,19 +152,18 @@ export default function FileSystemNavigator({
       <Box className={showBorder ? classes.root : null}>
         <Box display='flex' className={showBorder ? classes.searchBar : ''} mb={showBorder ? 0 : 3}>
           <InputSearch name='search' placeholder={t('placeholders.category_name')} fullWidth uncontrolled />
+          {canAdd && (
+            <Box className={classes.addCategoryButton}>
+              {/* <Button id='add-category' onClick={() => setCreateEdit(true)} secondary fullWidth disabled={disabled}> */}
+              <PlusIcon style={{ marginRight: 8 }} />
+              {/* {t('buttons.new_category')} */}
+              {/* </Button> */}
+            </Box>
+          )}
         </Box>
 
-        {canAdd && (
-          <Box className={classes.addCategoryButton}>
-            <Button id='add-category' onClick={() => setCreateEdit(true)} secondary fullWidth disabled={disabled}>
-              <PlusIcon style={{ marginRight: 8 }} fill='#4993DD' />
-              {t('buttons.new_category')}
-            </Button>
-          </Box>
-        )}
         {isLoading ? (
-          // <LoadingBlock />
-          <>loadingss</>
+          <LoadingBlock />
         ) : (
           searchedCategories?.length !== 0 && (
             <TreeSelectCategory
@@ -169,11 +176,11 @@ export default function FileSystemNavigator({
           )
         )}
 
-        <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' my={3}>
+        {/* <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' my={3}>
           <Pagination count={pageCount} handleChangePage={changePage} page={pageIndex + 1} pageQuery='page' />
 
           <RowFilterButton id='row-filter' pageSize={pageSize} setPageSize={setPageSize} setPageIndex={setPageIndex} />
-        </Box>
+        </Box> */}
       </Box>
 
       <CreateEditCategories

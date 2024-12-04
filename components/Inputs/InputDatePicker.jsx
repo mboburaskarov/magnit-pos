@@ -8,6 +8,7 @@ import { faCalendarAlt, faChevronDown, faChevronUp } from '@fortawesome/free-sol
 import { makeStyles } from '@mui/styles'
 import DeleteSmallIcon from '../../src/assets/icons/DeleteSmallIcon'
 import Label from '../Label'
+import CalendarIcon from '../../src/assets/icons/CalendarIcon'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -298,7 +299,7 @@ function InputDatePicker({
   return (
     <Box width={fullWidth ? '100%' : 320} maxWidth={maxWidth} className={classes.root} mt={!label && !noMarginTop && '21px'} {...boxStyle}>
       {label && (
-        <Label required={required} mb={1.5}>
+        <Label required={required} mb={'4px'}>
           {label}
         </Label>
       )}
@@ -339,7 +340,8 @@ function InputDatePicker({
               InputProps={{
                 endAdornment: (
                   <InputAdornment sx={{ paddingRight: 1 }} position='start'>
-                    <FontAwesomeIcon icon={faCalendarAlt} color={palette.orange[500]} />
+                    {/* <FontAwesomeIcon icon={faCalendarAlt} color={palette.orange[500]} /> */}
+                    <CalendarIcon />
                   </InputAdornment>
                 ),
               }}
@@ -390,7 +392,9 @@ function InputDatePicker({
                             <DeleteSmallIcon />
                           </button>
                         ) : (
-                          <FontAwesomeIcon icon={faCalendarAlt} color={disabled ? palette.gray[400] : palette.orange[500]} />
+                          <CalendarIcon />
+
+                          // <FontAwesomeIcon icon={faCalendarAlt} color={disabled ? palette.gray[400] : palette.orange[500]} />
                         )}
                       </InputAdornment>
                     ),

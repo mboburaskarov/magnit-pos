@@ -6,6 +6,7 @@ export const requests = {
   getUserInfo: () => request.get(`api/auth/get-user-information`),
 
   //category
+  // categoryGetAll
   getAllCategories: (filter) => request.get(`v1/category/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createCategory: (data) => request.post(`api/categories`, data),
   getAllCategoriesBuchet: (filter) => request.get(`api/categories${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -18,8 +19,12 @@ export const requests = {
   getAllProducer: (filter) => request.get(`v1/product/producer${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllClients: (filter) => request.get(`api/users${qs.stringify(filter, { addQueryPrefix: true })}`),
   //customers
+  createCustomer: (data) => request.post(`v1/customer`, data),
+
   getAllCustomers: (filter) => request.get(`v1/customer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleCustomers: (id) => request.get(`v1/customer/${id}`),
+  //barcode
+  generateBarcode: () => request.get(`v1/customer/`),
 
   //orders
   getAllOrders: (filter) => request.get(`api/admin/orders${qs.stringify(filter, { addQueryPrefix: true })}`),

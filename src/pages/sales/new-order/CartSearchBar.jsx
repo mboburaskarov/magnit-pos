@@ -151,8 +151,6 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
             placeholder={'Qidirish: mahsulot, kategoriya, shtrix-kod'}
             fullWidth
             onChange={(e) => {
-              // console.log(e.target.value)
-
               // setFakeIndexForCheckSearch(-1)
               setSearchTerm(e.target.value)
               setShowOverlay(true)

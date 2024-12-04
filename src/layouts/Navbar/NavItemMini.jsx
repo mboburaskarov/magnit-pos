@@ -49,8 +49,6 @@ function NavItemMini({ item, handleClickNavItems, isActive }) {
           },
         })}
         onMouseOver={(event) => {
-          console.log(item.children?.length)
-
           if (item.children?.length > 0 && !isOpen) {
             event.preventDefault()
             handleClickNavItems(item)

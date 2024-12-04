@@ -143,7 +143,7 @@ function Header({
             <Box display='flex' width='100%' alignItems='center' justifyContent='space-between'>
               <Typography variant='h1' display='inline-flex' alignItems='center'>
                 {backIcon && (
-                  <IconButton color='primary' id={backButtonId} onClick={backButtonClickHandler} sx={{ mr: 2, p: '0' }}>
+                  <IconButton color='primary' id={backButtonId} onClick={backButtonClickHandler} sx={{ mr: 2, p: '0', backgroundColor: '#fff' }}>
                     <Box
                       sx={{
                         width: '48px',

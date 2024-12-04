@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Box, Grid, Typography, Button, TextField } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { Box, Grid, Typography, Button } from '@mui/material'
 import InputSimple from '../../Inputs/InputSearch'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -12,6 +12,8 @@ import StyledCardDialog from '../../Dialogs/StyledeEmptyDialog'
 import StyledDialog from '../../Dialogs/StyledeEmptyDialog'
 import palette from '../../../src/assets/theme/mui.config'
 import { makeStyles } from '@mui/styles'
+import InputDatePicker from '../../Inputs/InputDatePicker'
+import TextField from '../../Inputs/TextField'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -38,9 +40,13 @@ export default function MainDetails() {
   const clientData = []
   const quickCreateClientName = []
   const classes = useStyles()
-  const { control, errors, setValue, watch } = useFormContext()
+  const { control, errors, setValue, register, watch } = useFormContext()
   const { t } = useTranslation()
-  const cards = watch('cards')
+  // const cards = watch('cards')
+  useEffect(() => {
+    // register('dial_code')
+    setValue('dial_code', '+998')
+  }, [])
   const [cardCode, setCardCode] = useState('')
   const [cardName, setCardName] = useState('')
   const [openCardDialogProgress, setOpenCardDialogProgress] = useState(false)
@@ -69,51 +75,37 @@ export default function MainDetails() {
   }
 
   return (
-    <Box mt={4}>
+    <Box mt={'24px'}>
       <Grid container spacing={3}>
-        <Grid item xs={4}>
-          <Typography>{t('menu.clients.new.date_of_birth')}</Typography>
+        <Grid item xs={6}>
+          <Typography mb='4px'>{'Ism'}</Typography>
 
           <TextField
             id='client-name'
-            name='name'
+            name='first_name'
             // label={'menu.clients.new.name'}
             control={control}
             fullWidth
-            error={errors?.name}
-            placeholder={t('menu.clients.new.enter_name')}
+            error={errors?.first_name}
+            placeholder={'Mijoz ismini kiriting'}
             required
-            defaultValue={quickCreateClientName || clientData.name || ''}
+            // defaultValue={quickCreateClientName || clientData.name || ''}
             asteriks
           />
         </Grid>
-        <Grid item xs={4}>
-          <Typography>{t('menu.clients.new.date_of_birth')}</Typography>
+        <Grid item xs={6}>
+          <Typography mb='4px'>{'Familiya'}</Typography>
 
           <TextField
-            id='last_name'
+            id='last-name'
             name='last_name'
             // label={t('menu.clients.new.last_name')}
             control={control}
+            required
             fullWidth
             error={errors?.last_name}
-            placeholder={t('menu.clients.new.enter_last_name')}
-            defaultValue={clientData ? clientData.last_name : ''}
-            asteriks
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <Typography>{t('menu.clients.new.date_of_birth')}</Typography>
-
-          <TextField
-            id='middle_name'
-            name='middle_name'
-            // label={t('menu.clients.new.middle_name')}
-            control={control}
-            fullWidth
-            error={errors?.middle_name}
-            placeholder={t('menu.clients.new.enter_middle_name')}
-            defaultValue={clientData ? clientData.middle_name : ''}
+            placeholder={'Mijoz familiyasini kiriting'}
+            // defaultValue={clientData ? clientData.last_name : ''}
             asteriks
           />
         </Grid>
@@ -121,72 +113,41 @@ export default function MainDetails() {
       <Box mb={4} />
       <Grid container spacing={4}>
         <Grid item xs={6}>
-          <Typography>{t('menu.clients.new.date_of_birth')}</Typography>
-          <Box display='flex'>
-            <TextField
-              id='day'
-              name='day'
-              placeholder={t('menu.clients.new.dd')}
-              fullWidth
-              // label='def'
-              control={control}
-              boxStyle={{ flex: '0 0 25%', mr: 1, mt: 2 }}
-              type='number'
-              error={errors?.day}
-              defaultValue={clientData ? clientData.day : ''}
-              max={31}
-              onInput={(e) => {
-                e.target.value = e.target.value.toString().slice(0, 2)
-              }}
-            />
-            <TextField
-              id='month'
-              name='month'
-              placeholder={t('menu.clients.new.mm')}
-              fullWidth
-              control={control}
-              boxStyle={{ flex: '0 0 25%', mr: 1, mt: 2 }}
-              type='number'
-              error={errors?.month}
-              defaultValue={clientData ? clientData.month : ''}
-              max={12}
-              onInput={(e) => {
-                e.target.value = e.target.value.toString().slice(0, 2)
-              }}
-            />
-            <TextField
-              id='year'
-              name='year'
-              placeholder={t('menu.clients.new.yyyy')}
-              fullWidth
-              control={control}
-              boxStyle={{ flex: '0 0 50%', mt: 2 }}
-              type='number'
-              error={errors?.year}
-              defaultValue={clientData ? clientData.year : ''}
-              max={new Date().getFullYear()}
-              onInput={(e) => {
-                e.target.value = e.target.value.toString().slice(0, 4)
-              }}
-            />
-          </Box>
+          <Typography mb='4px'>{"Tug'ulgan kuni"}</Typography>
+          <InputDatePicker
+            // withTime
+            noMarginTop
+            defaultValue={new Date()}
+            name='date_of_birth'
+            // minDate={new Date()}
+            // minTime={new Date()}
+            // minT
+            error={errors?.date_of_birth}
+            required
+            id='birth-Date'
+            showYearDropdown
+            // label='Дата закрытия'
+            placeholder='kk/oo/yyyy'
+          />
         </Grid>
         <Grid item xs={6}>
-          <Typography>{t('menu.clients.new.date_of_birth')}</Typography>
+          <Typography mb='4px'>{'Jinsi'}</Typography>
 
           <InputSwitchNew
             id='client-gender'
-            name='clientGender'
+            noMarginTop
+            name='gender'
             // label={t('menu.clients.new.gender')}
             control={control}
             defaultValue='male'
+            error={errors?.gender}
             options={[
               {
-                title: t('menu.clients.new.male'),
+                title: 'Erkak',
                 value: 'male',
               },
               {
-                title: t('menu.clients.new.female'),
+                title: 'Ayol',
                 value: 'female',
               },
             ]}
@@ -195,8 +156,10 @@ export default function MainDetails() {
       </Grid>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <Box mt={4} mb={2}>
-            <Typography className={classes.required}>{t('menu.clients.new.phone')}</Typography>
+          <Box mt={'25px'}>
+            <Typography mb={'4px'} className={classes.required}>
+              {'Telefon raqam'}
+            </Typography>
           </Box>
           <InputPhone
             login={false}
@@ -204,22 +167,42 @@ export default function MainDetails() {
             name='phone'
             placeholder={t('menu.settings.shops.shop_create.phone_placeholder')}
             control={control}
-            defaultValue={clientData ? [clientData.phone][0] : ''}
+            // defaultValue={clientData ? [clientData.phone][0] : ''}
             fullWidth
             boxStyle={{ marginBottom: '0', marginTop: 'auto' }}
             required
+            setCountry={({ dial_code }) => setValue('dial_code', dial_code)}
             error={errors?.phone}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Box mt={'24px'}>
+            <Typography className={classes.required} mb='4px'>
+              {'Teglar'}
+            </Typography>
+          </Box>
+          <TextField
+            id='tags'
+            name='tags'
+            // label={t('menu.clients.new.last_name')}
+            control={control}
+            fullWidth
+            required
+            error={errors?.tags}
+            placeholder={'Teg kiriting'}
+            defaultValue={clientData ? clientData.last_name : ''}
+            asteriks
           />
         </Grid>
         {/* <Grid item xs={6}>
           <Box mt={4} mb={2}>
-            <Typography>{t('menu.clients.cards.card')}</Typography>
+            <Typography mb='4px'>{t('menu.clients.cards.card')}</Typography>
           </Box>
           {cards && cards[0] ? (
             <Box className={classes.card}>
               <Box display='flex' alignItems='center'>
                 <GreenCard style={{ width: '38px', height: '24px', marginRight: 24 }} />
-                <Typography>{cards[0].name}</Typography>
+                <Typography mb='4px'>{cards[0].name}</Typography>
               </Box>
               <FontAwesomeIcon icon={faTimesCircle} onClick={() => setValue('cards', [])} color={palette.red[500]} />
             </Box>

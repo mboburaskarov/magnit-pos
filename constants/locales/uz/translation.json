@@ -56,5 +56,7 @@
   "navbar.clients": "Mijozlar",
   "navbar.vendors": "Sotuvchilar",
   "navbar.payments": "To'lovlar",
-  "navbar.settings": "Sozlamalar"
+  "navbar.settings": "Sozlamalar",
+
+  "create_new_product.main_section.generate": "Yangi yaratish"
 }
