@@ -87,7 +87,7 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
             error={errors?.first_name}
             placeholder={'Mijoz ismini kiriting'}
             required
-            defaultValue={quickCreateClientName || clientData.name || ''}
+            defaultValue={quickCreateClientName || clientData?.name || ''}
             asteriks
           />
         </Grid>
