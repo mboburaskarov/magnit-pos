@@ -192,6 +192,7 @@ function NewSale() {
   const [debouncedSearchTerm] = useDebounce(searchTerm, 200)
   const [customerId, setCustomerId] = useState('')
   const [clientDetails, setClientDetails] = useState(null)
+  const [quickCreateClientName, setQuickCreateClientName] = useState(null)
   const [inputDiscount, setInputDiscount] = useState(0)
 
   const searchResult = useQuery(
@@ -437,7 +438,9 @@ function NewSale() {
                   <Box
                     id='searchResult0'
                     tabIndex={0}
-                    onClick={() => setOpenClientCreateMini(true)}
+                    onClick={() => {
+                      setOpenClientCreateMini(true), setQuickCreateClientName(searchTerm)
+                    }}
                     className={classes.noSuchClientAdd}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter' && fakeIndexForCheckClient === 0) {
@@ -644,7 +647,7 @@ function NewSale() {
       <DraftDrawer open={isOpenDraft} setOpen={setIsOpenDraft} />
       <ClientCreateMini
         setCustomerId={setCustomerId}
-        quickCreateClientName={'quickCreateClientName'}
+        quickCreateClientName={quickCreateClientName}
         openDrawer={openClientCreateMini}
         closeDrawer={() => setOpenClientCreateMini(false)}
         // setOpenClientCreate={setOpenClientCreate}
