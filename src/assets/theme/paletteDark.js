@@ -1,4 +1,4 @@
-const paletteDark = {
+const paletteLight = {
   type: 'light',
   white: '#ffffff',
   black: '#111217',
@@ -221,4 +221,4 @@ const paletteDark = {
     tableShadow: 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 100%)',
   },
 }
-export default paletteDark
+export default paletteLight
