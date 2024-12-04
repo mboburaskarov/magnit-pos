@@ -286,8 +286,6 @@ export default function OrderEditDialog({ isOpen, orderData, setIsOpen, orderId,
               withTime
               value={deliveryTime}
               onChange={(e) => {
-                console.log(e, 'e')
-
                 setDeliveryTime(e)
               }}
               uncontrolled

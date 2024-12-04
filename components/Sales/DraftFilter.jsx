@@ -94,7 +94,6 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
             height: '48px',
           },
           '& svg': {
-            fill: '#868FAA',
             stroke: '#868FAA',
           },
         }}
@@ -116,11 +115,12 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
               // withTime
               defaultValue={new Date()}
               name='expired_date'
-              minDate={new Date()}
+              // minDate={new Date()}
               // minTime={new Date()}
               // minT
               required
               id='expired_date'
+              showYearDropdown
               label='Дата закрытия'
               placeholder='Дата закрытия'
             />

@@ -32,6 +32,7 @@ import ConfirmDialog from '../../../../components/ConfirmDialog'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import { LoadingButton } from '@mui/lab'
 import TimesSmallIcon from '../../../assets/icons/TimesSmallIcon'
+import LoadingContainer from '../../../../components/LoadingContainer'
 
 const useStyles = makeStyles((theme) => ({
   card_detail: {
@@ -255,9 +256,11 @@ function NewSale() {
     },
   })
 
-  const { data: cartItemsList, refetch: refetchcartItemsList } = useQuery('cartItemsList', () =>
-    requests.getCartItemList({ sale_id: id, limit: 1000, offset: 0 }).catch(() => navigate('/sales/create'))
-  )
+  const {
+    data: cartItemsList,
+    refetch: refetchcartItemsList,
+    isLoading: isCartItemsLIstLoading,
+  } = useQuery('cartItemsList', () => requests.getCartItemList({ sale_id: id, limit: 1000, offset: 0 }).catch(() => navigate('/sales/create')))
   const { data: cashBoxDetails, refetch: refetchCashBoxDetaild } = useQuery('cashBoxDetails', () => requests.getCashBoxDetaildWithSaleId(id))
 
   useEffect(() => {
@@ -287,7 +290,7 @@ function NewSale() {
   }, [customerId])
 
   useEffect(() => {
-    if (debouncedSearchTerm?.length > 3) {
+    if (debouncedSearchTerm?.length > 2) {
       searchResult.refetch().then(({ data }) => {
         if (get(data, 'data.data.data')) {
           setCustomers(get(data, 'data.data.data'))
@@ -333,22 +336,24 @@ function NewSale() {
                 <></>
               )}
             </Box>
-            {!cartItemsList?.data?.data?.data?.length ? (
-              <Box className={classes.empty_list}>
-                <Typography fontWeight={'800'} fontSize={'24px'} lineHeight={'32px'}>
-                  Savat hozircha boʻsh
-                </Typography>
-                <Typography fontWeight={'500'} fontSize={'16px'} color={'bunker.500'} lineHeight={'24px'}>
-                  Qidiruv paneli orqali mahsulotlarni qo'shing yoki mahsulotlarni skanerlang
-                </Typography>
-              </Box>
-            ) : (
-              <Box>
-                {cartItemsList?.data?.data?.data?.map((el) => (
-                  <CartItem setOpenConfirmDialog={setOpenConfirmDialog} item={el} />
-                ))}
-              </Box>
-            )}
+            <LoadingContainer noHeight readyState={!isCartItemsLIstLoading}>
+              {!size(get(cartItemsList, 'data.data.data')) ? (
+                <Box className={classes.empty_list}>
+                  <Typography fontWeight={'800'} fontSize={'24px'} lineHeight={'32px'}>
+                    Savat hozircha boʻsh
+                  </Typography>
+                  <Typography fontWeight={'500'} fontSize={'16px'} color={'bunker.500'} lineHeight={'24px'}>
+                    Qidiruv paneli orqali mahsulotlarni qo'shing yoki mahsulotlarni skanerlang
+                  </Typography>
+                </Box>
+              ) : (
+                <Box>
+                  {get(cartItemsList, 'data.data.data', []).map((el) => (
+                    <CartItem setOpenConfirmDialog={setOpenConfirmDialog} item={el} />
+                  ))}
+                </Box>
+              )}
+            </LoadingContainer>
           </Box>
         </Box>
         <Box className={classes.card_detail}>
@@ -407,10 +412,10 @@ function NewSale() {
                 setSearchTerm={setSearchTerm}
                 client
                 // disabled={disabled}
-                error={!!searchTerm && searchTerm?.length < 4}
+                error={!!searchTerm && searchTerm?.length < 3}
               />
             )}
-            {!!searchTerm && searchTerm?.length < 4 && (
+            {!!searchTerm && searchTerm?.length < 3 && (
               <Box display='flex' alignItems='center'>
                 <Box className={classes.warningIcon}>{/* <FontAwesomeIcon icon={faExclamationCircle} /> */}</Box>
                 <Typography
@@ -426,7 +431,7 @@ function NewSale() {
                 </Typography>
               </Box>
             )}
-            {searchTerm?.length > 3 && (
+            {searchTerm?.length > 2 && (
               <Box className={classes.searchItemList}>
                 {size(customers) == 0 && (
                   <Box
@@ -441,7 +446,7 @@ function NewSale() {
                     }}
                   >
                     {/* <PlusSmallIcon fill='#fff' /> */}
-                    <Typography style={{ marginLeft: '7px' }}>“{searchTerm}”</Typography>
+                    <Typography style={{ marginLeft: '7px' }}>qo'shish “{searchTerm}”</Typography>
                   </Box>
                 )}
 
@@ -638,6 +643,7 @@ function NewSale() {
       )}
       <DraftDrawer open={isOpenDraft} setOpen={setIsOpenDraft} />
       <ClientCreateMini
+        setCustomerId={setCustomerId}
         quickCreateClientName={'quickCreateClientName'}
         openDrawer={openClientCreateMini}
         closeDrawer={() => setOpenClientCreateMini(false)}

@@ -6,21 +6,21 @@ export default function SectionTitle({ children, component = 'h3', small, large,
     <Typography
       component={component}
       sx={{
-        fontWeight: 900,
+        fontWeight: 700,
         width: '100%',
         alignItems: 'center',
         display: 'inline-flex',
         whiteSpace: noWrap ? 'nowrap' : 'normal',
         color: color || (gray ? 'gray.600' : 'black'),
-        fontSize: fontSize || small ? 16 : large ? 36 : 24,
-        lineHeight: '12px',
+        fontSize: '24px',
+        lineHeight: '32px',
       }}
       {...rest}
     >
       {children}
       {withLine && (
         <Box width='100%' ml={2}>
-          <HorizontalLine />
+          {/* <HorizontalLine /> */}
         </Box>
       )}
     </Typography>

@@ -505,7 +505,6 @@ export const theme = ({ mode, palette }) => {
             // backgroundColor: palette.white,
             transition: '0.3s',
             color: palette.gray[600],
-
             '&:hover': {
               // backgroundColor: palette.gray[101],
             },
@@ -517,7 +516,9 @@ export const theme = ({ mode, palette }) => {
             },
             paddingRight: '0px !important',
           },
-
+          input: {
+            padding: '4px 14px',
+          },
           notchedOutline: {
             borderColor: palette.gray[300],
             borderWidth: 0,

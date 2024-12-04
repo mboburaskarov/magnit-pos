@@ -248,7 +248,6 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
       }
     }
   })
-  console.log(columns)
 
   return columns
 }

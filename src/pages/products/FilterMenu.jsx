@@ -89,7 +89,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
           width: '100%',
           padding: '24px',
           '& .MuiInputBase-root': {
-            border: `1px solid`,
+            border: `2px solid`,
             borderColor: 'bunker.100',
             height: '48px',
           },

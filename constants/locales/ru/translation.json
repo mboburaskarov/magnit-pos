@@ -56,5 +56,20 @@
   "navbar.clients": "Клиенты",
   "navbar.vendors": "Продавцы",
   "navbar.payments": "Платежи",
-  "navbar.settings": "Настройки"
+  "navbar.settings": "Настройки",
+
+  "menu.clients.new.male": "Мужской",
+  "menu.clients.new.female": "Женский",
+  "menu.clients.new.phone": "Телефон",
+
+  "menu.clients.new_client": "Новый клиент",
+  "menu.clients.new.date_of_birth": "День рождения",
+  "menu.clients.new.MM": "ММ",
+  "menu.clients.new.mm": "ММ",
+  "menu.clients.new.name": "Имя",
+  "create_new_product.main_section.generate": "Yangi yaratish",
+  "create_new_product.main_section.barcode": "Баркод",
+  "create_new_product.main_section.enter_barcode": "Введите баркод",
+  "placeholders.category_name": "Название категории",
+  "create_new_product.top.new_product": "Каталог"
 }
