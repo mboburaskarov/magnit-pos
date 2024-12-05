@@ -13,7 +13,7 @@ import SearchIcon from '../../src/assets/icons/SearchIcon'
 const useStyles = makeStyles((theme) => ({
   input: {
     position: 'relative',
-    height: 56,
+    height: 48,
     margin: 0,
     borderRadius: '50px',
     width: ({ maxWidth }) => maxWidth,
@@ -25,11 +25,12 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: theme.palette.gray[101],
     },
-    '& .MuiOutlinedInput-input': {
-      padding: '15.5px 5px',
+    '& .MuiOutlinedInput-root': {
+      // padding: '15.5px 5px',
+      border: `2px solid transparent`,
     },
     '& .MuiInputBase-input::placeholder': {
-      color: theme.palette.bunker[300], // Change placeholder color
+      color: theme.palette.bunker[400], // Change placeholder color
       fontSize: '18px', // Adjust font size
       opacity: 1,
       lineHeight: '24px',

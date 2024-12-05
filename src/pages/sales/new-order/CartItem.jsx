@@ -219,10 +219,8 @@ const CartItem = ({
   refetchLabels,
   allSellers,
   item,
-  deleteCartItem,
+  setOpenConfirmDialog,
 }) => {
-  console.log(item)
-
   const cls = useStyles()
   const [quon, setQuon] = useState(0)
   return (
@@ -259,26 +257,30 @@ const CartItem = ({
                 id={`inputQuantity${index}`}
                 value={quon}
                 name='quantity'
-                onChange={({ target }) => console.log(target.value)}
+                onChange={({ target }) => setQuon(target.value)}
                 // adornment={data?.measurement_unit?.short_name}
                 adornmentPosition='end'
                 adornmentClassName={cls.adornment}
-                max={2}
+                max={100}
                 // maxErrorMessage={maxErrorMessage}
                 type='number'
                 disabled={false}
               />
               <Box>
-                <SelectSimple white boxStyle={{ margin: '0 8px' }} minWidth={'84px'} borderRadius='12px' placeholder='' name={'dd'} />
+                <SelectSimple
+                  white
+                  isClearable={false}
+                  boxStyle={{ margin: '0 8px' }}
+                  minWidth={'84px'}
+                  options={[{ id: 1, name: 'Dona' }]}
+                  borderRadius='12px'
+                  placeholder=''
+                  inicatoorRight={true}
+                  name={`type.${item.product.id}`}
+                />
               </Box>
               <Box className={cls.img_cont}>
-                <img
-                  src={
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ5Tq8i6RC-Bm15tgZljQIp-TZjTv2qgnuLpvMmvnHwb4vOFpBMaio8MSQ9raE9kof5OU&usqp=CAU' ||
-                    '/default-img.avif'
-                  }
-                  onClick={() => data.main_image_url && setProductId(data.id)}
-                />
+                <img src={item?.product?.main_photo || '/default-img.avif'} onClick={() => data.main_image_url && setProductId(data.id)} />
               </Box>
               <Box id='product-details' className={cls.text}>
                 <Typography
@@ -301,7 +303,7 @@ const CartItem = ({
                 <Box sx={{ display: 'flex', '& svg > g > path': { stroke: '#FF6018' }, '& svg': { width: '20px', height: '20px' } }}>
                   <Typography sx={{ mr: '10px', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
                     {' '}
-                    {item?.product?.supply_price}
+                    {item?.total_price}
                   </Typography>
                   <EditIcon />
                 </Box>
@@ -317,7 +319,9 @@ const CartItem = ({
                   justifyContent: 'center',
                   backgroundColor: 'red.10',
                 }}
-                onClick={() => deleteCartItem(item?.id)}
+                onClick={() => setOpenConfirmDialog({ type: 'deleteOne', id: item?.id, name: item?.product?.name })}
+
+                // onClick={() => deleteCartItem(item?.id)}
               >
                 <DeleteIcon width='24px' />
               </Box>
@@ -370,8 +374,8 @@ const CartItem = ({
       <Box display={'flex'} flexDirection={'column'} padding={'16px'} bgcolor={'bg.10'} ml={'8px'} height={'80px'} borderRadius={'16px'} minWidth={'160px'}>
         <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>Sotuv bonusi</Typography>
         <Box display={'flex'} justifyContent={'space-between'}>
-          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>2%</Typography>
-          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>4 986 so'm</Typography>
+          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}> {item?.product?.bonus_percent}%</Typography>
+          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>{item?.product?.bonus_amount}</Typography>
         </Box>
       </Box>
     </Box>

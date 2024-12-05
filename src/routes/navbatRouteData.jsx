@@ -8,7 +8,7 @@ import ReportsIcon from '../assets/icons/ReportsIcon'
 import SettingsIcon from '../assets/icons/SettingsIcon'
 import UserOutlineIcon from '../assets/icons/UserOutlineIcon'
 import UsersIcon from '../assets/icons/UsersIcon'
-import VendorsIcon from '../assets/icons/VendorsIcon'
+import QrScanIcon from '../assets/icons/QrScanIcon'
 
 export const navbatRouteData = [
   {
@@ -34,7 +34,7 @@ export const navbatRouteData = [
   {
     label: 'navbar.sales',
     id: '5',
-    icon: <OrdersIcon />,
+    icon: <QrScanIcon />,
     href: '/sales',
     children: [
       {

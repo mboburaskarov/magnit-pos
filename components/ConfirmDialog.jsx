@@ -50,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '24px',
     lineHeight: '32px',
     fontWeight: '600',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
     '& div': {
       color: theme.palette.orange[500],
       marginRight: '10px',

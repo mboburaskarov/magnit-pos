@@ -1,7 +1,7 @@
 import { NavLink as RouterLink, useNavigate } from 'react-router-dom'
 import { useTheme } from '@mui/material'
 import ListItem from '@mui/material/ListItem'
-import ForwardArrow from '../../assets/icons/ForwardArrow'
+import BottomArrowIcon from '../../assets/icons/BottomArrowIcon'
 import { useTranslation } from 'react-i18next'
 function NavItem({ item, classes, handleClickNavItems, isActive }) {
   const { t } = useTranslation()
@@ -35,8 +35,8 @@ function NavItem({ item, classes, handleClickNavItems, isActive }) {
           {t(item.label)}
         </div>
         {item?.icon && !!item?.children && (
-          <div className={classes.itemArrow}>
-            <ForwardArrow />
+          <div className={classes.itemArrow + ' bottomIcon'}>
+            <BottomArrowIcon color={isActive ? '#fff' : palette.bunker[400]} />
           </div>
         )}
       </ListItem>

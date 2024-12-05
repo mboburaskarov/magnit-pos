@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import FeatureRichTable from '../../../../components/Table/FeatureRichTable'
 import { tableHeaders } from './table-headers'
+import { Button } from '@mui/material'
+import CashTypeDrawer from './cashTypeDrawer'
 
 function CardShiftDetails() {
+  const [open, setOpen] = useState()
   const columns = tableHeaders({
     setPayment: () => {},
     setOpenCurrencyValue: () => {},
@@ -14,6 +17,7 @@ function CardShiftDetails() {
   })
   return (
     <div>
+      <Button onClick={() => setOpen(true)}>open</Button>
       <FeatureRichTable
         columns={[]}
         data={[{}]}
@@ -25,6 +29,7 @@ function CardShiftDetails() {
         blueTotalData
         // updateMyData={updateTableData}
       />
+      <CashTypeDrawer open={open} setOpen={setOpen} />
     </div>
   )
 }

@@ -12,7 +12,8 @@ const paletteLight = {
     gray: '#f9f9fa',
   },
   primary: {
-    main: '#FE500050',
+    main: '#FF6018',
+    // main: '#FE500050',
   },
   secondary: {
     main: '#F5F5F5',
@@ -60,6 +61,7 @@ const paletteLight = {
     900: '#262626',
   },
   green: {
+    10: '#E9F8EF',
     50: '#F1FFFB',
     100: '#3FC28A1A',
     200: '#DFEEEA',
@@ -68,7 +70,7 @@ const paletteLight = {
     500: '#3CA98F',
     600: '#119676',
     601: '#0E8064',
-    700: '#16a34a',
+    700: '#28B95E',
     800: '#166534',
     900: '#14532d',
   },

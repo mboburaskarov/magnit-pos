@@ -3,6 +3,12 @@ import arrayMove from '../../../utils/arrayMove'
 
 const columns = [
   {
+    field: 'number',
+    hide: false,
+    minWidth: 60,
+    width: 60,
+  },
+  {
     field: 'main_photo',
     hide: false,
     minWidth: 70,

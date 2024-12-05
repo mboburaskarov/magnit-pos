@@ -6,6 +6,7 @@ export const requests = {
   getUserInfo: () => request.get(`api/auth/get-user-information`),
 
   //category
+  // categoryGetAll
   getAllCategories: (filter) => request.get(`v1/category/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createCategory: (data) => request.post(`api/categories`, data),
   getAllCategoriesBuchet: (filter) => request.get(`api/categories${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -17,6 +18,16 @@ export const requests = {
   //hashtag
   getAllProducer: (filter) => request.get(`v1/product/producer${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllClients: (filter) => request.get(`api/users${qs.stringify(filter, { addQueryPrefix: true })}`),
+  //customers
+  createCustomer: (data) => request.post(`v1/customer`, data),
+
+  getAllCustomers: (filter) => request.get(`v1/customer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getSingleCustomers: (id) => request.get(`v1/customer/${id}`),
+  //barcode
+  generateBarcode: () => request.get(`v1/customer/`),
+  //draft
+  getDarftList: (filter) => request.get(`v1/draft/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  createDraft: (data) => request.post(`v1/draft`, data),
 
   //orders
   getAllOrders: (filter) => request.get(`api/admin/orders${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -38,13 +49,16 @@ export const requests = {
   getAllComments: (filter) => request.get(`api/admin/comments${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateComment: ({ id, data }) => request.patch(`api/admin/comments/${id}`, data),
   deleteComment: (id) => request.delete(`api/admin/comments/${id}`),
+  //discount
+  changeDiscountValue: ({ id, body }) => request.put(`v1/cart_item/sale/${id}`, body),
+  getCashBoxDetaildWithSaleId: (id) => request.get(`v1/sale/${id}`),
 
   //products
   getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createProduct: (data) => request.post(`api/admin/products`, data),
   createCartItem: (data) => request.post(`v1/cart_item`, data),
   deleteCartItem: (id) => request.delete(`v1/cart_item/${id}`),
-  deleteAll: (ids) => request.post(`v1/cart_item/multiple/`, ids),
+  deleteAll: (ids) => request.post(`v1/cart_item/multiple`, ids),
   getSingleProduct: (id) => request.get(`api/admin/products/${id}`),
   getSingleProductHistory: (filter) => request.get(`api/admin/products-status${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateProduct: ({ id, data }) => request.patch(`api/admin/products/${id}`, data),
@@ -60,6 +74,8 @@ export const requests = {
   payCourierOrders: (data) => request.post(`api/admin/courier-transactions`, data),
   refreshCouriers: (filter) => request.get(`api/admin/couriers/refresh${qs.stringify(filter, { addQueryPrefix: true })}`),
   //register cash
+  createSale: (data) => request.post(`v1/sale`, data),
+  createCashBox: (data) => request.post(`v1/cash_box_operation`, data),
 
   getRegisterCashData: (id) => request.get(`v1/cash_box_history/${id}`),
   getRegisterCashList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -130,6 +146,9 @@ export const requests = {
   getDashboardTopProducts: (filter) => request.get(`api/dashboard/top-products${qs.stringify(filter, { addQueryPrefix: true })}`),
   getDashboardTopCategories: (filter) => request.get(`api/dashboard/top-categories${qs.stringify(filter, { addQueryPrefix: true })}`),
   getDashboardVendorMap: (filter) => request.get(`api/dashboard/shops-location${qs.stringify(filter, { addQueryPrefix: true })}`),
+  //
+
+  payForSale: (data) => request.post('v1/sale', data),
 
   // notifications
   getAllNotifications: (filter) => request.get(`api/notifications/notifications-by-group${qs.stringify(filter, { addQueryPrefix: true })}`),

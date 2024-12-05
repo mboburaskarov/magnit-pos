@@ -33,7 +33,19 @@ const OutLineTextField = ({
   const methods = useFormContext()
   const onlyDisplay = dashed && disabled
   return (
-    <Box onClick={onBoxClick} width={fullWidth && '100%'}>
+    <Box
+      onClick={onBoxClick}
+      width={fullWidth && '100%'}
+      sx={
+        multiline && {
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '20px',
+            height: 'auto',
+            padding: '0',
+          },
+        }
+      }
+    >
       {!onlyDisplay && label && <Label required={required}>{label}</Label>}
       <MuiTextField
         disabled={disabled}
@@ -72,6 +84,17 @@ const OutLineTextField = ({
         fullWidth={fullWidth}
         error={!!methods?.formState?.errors?.[name]}
         sx={(theme) => ({
+          '& .MuiInputAdornment-root': {
+            '& > .MuiButtonBase-root': {
+              background: 'transparent !important',
+              fontSize: '18px !important',
+              fontWeight: '500',
+              lineHeight: '28px',
+              color: theme.palette.bunker[400],
+              paddingRight: '12px',
+              width: 'auto',
+            },
+          },
           '& .MuiInputLabel-root.Mui-disabled': {
             fontSize: 22,
             fontFamily: 'Gilroy',
@@ -86,7 +109,7 @@ const OutLineTextField = ({
             fontWeight: 400,
             fontSize: 16,
             lineHeight: '24px',
-            borderRadius: borderRadius || 4,
+            borderRadius: borderRadius || '40px',
             color: 'dark.500',
             border: disabled && (dashed ? '2px dashed' : '2px solid'),
             borderColor: disabled && 'gray.300',
@@ -101,10 +124,6 @@ const OutLineTextField = ({
             },
             '&.Mui-focused': {
               bgcolor: bgcolor ? '#' + bgcolor : !white ? 'background.default' : 'white',
-            },
-            '& > .MuiButtonBase-root': {
-              background: 'transparent !important',
-              fontSize: '14px !important',
             },
           },
           '& .MuiOutlinedInput-input': {

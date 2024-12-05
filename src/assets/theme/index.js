@@ -61,7 +61,7 @@ export const theme = ({ mode, palette }) => {
       MuiCircularProgress: {
         styleOverrides: {
           root: {
-            color: palette.green[500],
+            color: palette.orange[500],
           },
         },
       },
@@ -117,13 +117,13 @@ export const theme = ({ mode, palette }) => {
             '&.Mui-disabled': {
               backgroundColor: `${palette.orange[50]} !important`,
               color: `${palette.orange[200]} !important`,
-              // cursor: 'auto',
-              // background: palette.gray[50],
-              // color: palette.gray[400],
-              // '&:hover': {
-              //   background: palette.gray[100],
-              //   color: palette.gray[400],
-              // },
+              cursor: 'auto',
+              background: palette.gray[50],
+              color: palette.gray[400],
+              '&:hover': {
+                background: palette.gray[100],
+                color: palette.gray[400],
+              },
             },
           },
 
@@ -141,7 +141,7 @@ export const theme = ({ mode, palette }) => {
             '&:hover': {
               background: '#00000020',
             },
-            border: `1px solid ${palette.bunker[100]}`,
+            border: `2px solid ${palette.bunker[100]}`,
           },
           containedRed: {
             backgroundColor: palette.red[600],
@@ -155,10 +155,10 @@ export const theme = ({ mode, palette }) => {
             padding: '0 16px',
             color: palette.gray[600],
             backgroundColor: palette.background.defaultStrong,
-            border: `1px solid ${palette.gray[300]}`,
+            border: `2px solid ${palette.gray[300]}`,
             '&:hover': {
               backgroundColor: palette.gray[101],
-              border: `1px solid ${palette.gray[300]}`,
+              border: `2px solid ${palette.gray[300]}`,
             },
           },
 
@@ -396,6 +396,10 @@ export const theme = ({ mode, palette }) => {
         },
         styleOverrides: {
           root: {
+            color: '#fff',
+            border: '1px solid #ccc !important',
+            height: '20px',
+            width: '20px',
             '& .MuiSvgIcon-root': {
               fontSize: 24,
               fill: palette.orange[500],
@@ -419,7 +423,7 @@ export const theme = ({ mode, palette }) => {
         styleOverrides: {
           root: {
             width: '445px',
-            borderRadius: 16,
+            borderRadius: 40,
             backgroundColor: palette.background.paper,
             '&:hover': {
               backgroundColor: palette.background.paper,
@@ -435,12 +439,12 @@ export const theme = ({ mode, palette }) => {
           input: {
             '&:-webkit-autofill': {
               color: 'red',
-              borderRadius: 16,
-              paddingTop: 18,
+              borderRadius: '40px',
+              paddingTop: '11px !important',
               paddingRight: 12,
-              paddingBottom: 7,
+              paddingBottom: '1px !important',
               border: 'none !important',
-              paddingLeft: 12,
+              paddingLeft: 16,
               backgroundColor: 'transparent !important',
               '-webkit-box-shadow': '0 0 0 1000px white inset !important',
               ' -webkit-text-fill-color': 'inherit !important' /* Inherit the text color */,
@@ -505,7 +509,6 @@ export const theme = ({ mode, palette }) => {
             // backgroundColor: palette.white,
             transition: '0.3s',
             color: palette.gray[600],
-
             '&:hover': {
               // backgroundColor: palette.gray[101],
             },
@@ -517,7 +520,9 @@ export const theme = ({ mode, palette }) => {
             },
             paddingRight: '0px !important',
           },
-
+          input: {
+            padding: '4px 14px',
+          },
           notchedOutline: {
             borderColor: palette.gray[300],
             borderWidth: 0,
@@ -537,22 +542,24 @@ export const theme = ({ mode, palette }) => {
             fontWeight: 400,
             lineHeight: '24px',
             letterSpacing: 'normal',
-            border: '1px solid transparent',
+            border: '2px solid transparent',
+            borderColor: 'transparent',
             borderColor: palette.bunker[100],
             backgroundColor: palette.white,
             height: 48,
             '&.Mui-focused': {
               boxSizing: 'border-box',
-              border: `1px solid ${palette.orange[500]} !important`,
+              border: `2px solid ${palette.orange[500]} !important`,
             },
             '&.Mui-error:not(.Mui-focused)': {
-              border: '1px solid red',
+              border: '2px solid red',
             },
           },
           input: {
             '&::placeholder': {
-              color: palette.dark[500],
-              fontWeight: '400 !important',
+              color: palette.bunker[400],
+              opacity: 1,
+              fontWeight: '500 !important',
             },
             '&:-webkit-autofill': {
               color: 'red',
@@ -567,7 +574,7 @@ export const theme = ({ mode, palette }) => {
               backgroundColor: 'transparent !important',
               '-webkit-box-shadow': '0 0 0 1000px white inset !important',
               ' -webkit-text-fill-color': 'inherit !important' /* Inherit the text color */,
-              fontSize: 'inherit !important' /* Maintain font size */,
+              fontSize: '16px !important' /* Maintain font size */,
               lineHeight: 'inherit !important' /* Prevent height issues */,
               // padding: "inherit !important" /* Preserve padding */,
               borderRadius: 'inherit !important' /* Keep border radius consistent */,
@@ -683,6 +690,7 @@ export const theme = ({ mode, palette }) => {
       MuiDialog: {
         styleOverrides: {
           paper: {
+            position: 'unset',
             backgroundColor: palette.background.default,
             zIndex: 11,
             '::-webkit-scrollbar-thumb': {

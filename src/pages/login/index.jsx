@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
       transition: 'all 0.3s ease-in-out',
     },
     '& .MuiOutlinedInput-input': {
-      paddingTop: '23px',
+      paddingTop: '18px',
     },
   },
   title: {
@@ -108,10 +108,10 @@ export default function LoginPage() {
       const userData = data.data
       localStorage.setItem('access_token', userData.token)
       localStorage.setItem('user_data', JSON.stringify(userData.employee))
-      console.log(userData?.employee)
-
       dispatch(setUserData(userData?.employee))
-      navigate('/redirect')
+      setTimeout(() => {
+        navigate('/')
+      }, 300)
     },
     onError: (err) => {
       error('Hеверный логин или пароль')
@@ -146,8 +146,8 @@ export default function LoginPage() {
           <FormProvider {...methods}>
             <Box component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
               <BrandLogo />
-              <h1 className={classes.title}>Welcome 👋</h1>
-              <h4 className={classes.description}>Please login here </h4>
+              <h1 className={classes.title}>Добро пожаловать 👋</h1>
+              <h4 className={classes.description}>Пожалуйста, войдите сюда</h4>
               <Box width='100%'>
                 {/* <Box display="flex" justifyContent="space-between">
             <Typography>Номер телефона</Typography>
@@ -159,6 +159,7 @@ export default function LoginPage() {
                     placeholder='Введите номер телефона'
                     secondary
                     required
+                    login={false}
                     country={country}
                     setCountry={setCountry}
                   />
@@ -176,7 +177,7 @@ export default function LoginPage() {
                 <Link className={classes.link}>Forgot Password?</Link>
               </Box> */}
               <Box width='100%' mt={4}>
-                <LoadingButton variant='contained' size='large' type='submit' fullWidth onClick={onSubmit} id='login-button'>
+                <LoadingButton variant='contained' size='large' type='submit' fullWidth loading={logInLoading} onClick={onSubmit} id='login-button'>
                   Login
                 </LoadingButton>
               </Box>

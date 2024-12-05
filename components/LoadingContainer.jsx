@@ -1,6 +1,6 @@
 import { Box, CircularProgress } from '@mui/material'
 
-export default function LoadingContainer({ children, readyState = false, fullHeight = true, noHeight = false }) {
+export default function LoadingContainer({ children, readyState = false, fullHeight = false, noHeight = false }) {
   return (
     <Box
       sx={{
@@ -19,7 +19,7 @@ export default function LoadingContainer({ children, readyState = false, fullHei
       ) : (
         <Box
           sx={{
-            height: '100vh',
+            height: fullHeight ? '100vh' : noHeight ? '100%' : 'calc(100vh - 112px)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',

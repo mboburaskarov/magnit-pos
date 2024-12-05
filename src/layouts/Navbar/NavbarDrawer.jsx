@@ -10,6 +10,7 @@ import NavItemMini from './NavItemMini'
 import isEqual from '../../../utils/isEqual'
 import BackArrowIcon from '../../assets/icons/BackArrow'
 import { useTranslation } from 'react-i18next'
+import { size } from 'lodash'
 
 function NavbarDrawer({
   classes,
@@ -31,23 +32,30 @@ function NavbarDrawer({
   return (
     <div id='navbar' className={classes.container}>
       <div className={classes.logo}>
-        <Box display='flex'>
-          <Link to='/dashboard' className={classes.brandLogo}>
-            <span className={classes.logo_main}>
-              <LogoMain />
-            </span>
-            {isOpen && <LogoLetters />}
-          </Link>
-        </Box>
+        {isOpen && (
+          <Box
+            display='flex'
+            sx={{
+              '& a': {
+                padding: '2px 6px',
+              },
+            }}
+          >
+            <Link to='/dashboard' className={classes.brandLogo}>
+              <span className={classes.logo_main}>{<LogoMain />}</span>
+              <span className={classes.logo_letter_main}> {<LogoLetters />}</span>
+            </Link>
+          </Box>
+        )}
 
         <button type='button' className={classes.close_icon} onClick={handleDrawerToggle}>
           <span className={isOpen ? classes.right_faced : classes.left_faced}>
-            <SidebarIcon withoutBoxLine={!isOpen} />
+            <SidebarIcon withoutBoxLine={false} />
           </span>
         </button>
       </div>
       <List className={classes.list}>
-        {!isOpen && (
+        {!isOpen && size(currentRoutesMemoized, 0) != 0 && (
           <div className={`${classes.popperParent} popper`}>
             <div className={`${classes.popper}`}>
               <ListItem className={classes.listItemPopper}>
@@ -72,7 +80,7 @@ function NavbarDrawer({
           </div>
         )}
         <Box className='fixed_navlist'>
-          {!currentRoutes && isOpen && (
+          {!size(currentRoutes) && isOpen && (
             <div className={classes.parent}>
               {drawerData?.map((item, index) => (
                 <NavItem
@@ -92,11 +100,14 @@ function NavbarDrawer({
               ))}
             </div>
           )}
-          {isOpen && currentRoutes && (
+          {isOpen && size(currentRoutes, 0) != 0 && (
             <div className={`${classes.child} ${classes.activeChild}`}>
               <ListItem className={classes.listItem} id='back-nav' onClick={() => setCurrentRoutes(null)}>
                 <>
-                  <BackArrowIcon /> {currentRoutesMemoized?.icon}
+                  <div className=' bottomIcon'>
+                    <BackArrowIcon />
+                  </div>
+                  {currentRoutesMemoized?.icon}
                   {t(currentRoutesMemoized.label)}
                 </>
               </ListItem>

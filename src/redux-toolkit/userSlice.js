@@ -8,6 +8,7 @@ const userData = createSlice({
     phone: '',
     id: 'undefined',
     role_actions: [],
+    store: [],
   },
   reducers: {
     setUserData(state, action) {
@@ -15,6 +16,7 @@ const userData = createSlice({
       state.type = 'SUPER_ADMIN'
       state.phone = action.payload.phone
       state.id = action.payload.id
+      state.store = action.payload.store
       state.role_actions = action.payload.role_actions
     },
   },

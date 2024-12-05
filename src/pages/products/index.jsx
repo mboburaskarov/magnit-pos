@@ -9,7 +9,7 @@ import { useMutation, useQuery } from 'react-query'
 import AgGridTable from '../../../components/AgGridTable/AgGridTable'
 import { useDispatch, useSelector } from 'react-redux'
 import tableHeaderSelector from './tableHeaderSelector'
-import { resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
 import InputSearch from '../../../components/Inputs/InputSearch'
 import ImageGallery from '../../../components/ImageGallery'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -31,6 +31,7 @@ import EditorIcon from '../../assets/icons/EditorIcon'
 import FilterTableRowsMenu from './FilterTableRowsMenu'
 import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
 import { useTranslation } from 'react-i18next'
+const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ProductsPage() {
   const dispatch = useDispatch()
@@ -51,10 +52,29 @@ export default function ProductsPage() {
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
+    values,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     setIsDrawerOpen,
   })
+
+  /// filter table columns with permission
+  useEffect(() => {
+    if (tableColumns) {
+      const formattedData = tableColumns
+        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
+        ?.map((el) => ({
+          ...el,
+          label: el.headerName,
+          desc: el.desc,
+          name: el.colId,
+          always_active: el?.always_active ?? el?.always_active,
+        }))
+
+      dispatch(changeColumnSequence(formattedData))
+    }
+  }, [])
+
   const productsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
@@ -187,7 +207,7 @@ export default function ProductsPage() {
 
   return (
     <LoadingContainer readyState={true}>
-      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={4} pb={3}>
+      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           {t('page.catalog.title')}
         </Typography>
@@ -207,7 +227,7 @@ export default function ProductsPage() {
             setSelected={setStatus}
           />
         </Box> */}
-        <Box mt={'16px'} minWidth={320}>
+        <Box minWidth={320}>
           <InputSwitch
             uncontrolled
             id='app-type'
@@ -226,7 +246,7 @@ export default function ProductsPage() {
             ]}
           />
         </Box>
-        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'24px'} width='100%'>
+        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box
               width='100%'
@@ -234,7 +254,7 @@ export default function ProductsPage() {
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                   background: 'transparent',
-                  border: '1px solid transparent',
+                  border: '2px solid transparent',
 
                   width: '400px',
                   height: 48,
@@ -244,7 +264,7 @@ export default function ProductsPage() {
               <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
             </Box>
 
-            <Box minWidth={106} ml={'16px'}>
+            <Box minWidth={113} ml={'16px'}>
               <Button
                 sx={{
                   height: '48px',
@@ -255,6 +275,9 @@ export default function ProductsPage() {
                   fontWeight: '500',
                   fontSize: '16px',
                   lineHeight: '24px',
+                  '& span': {
+                    mr: '12px',
+                  },
                 }}
                 fullWidth
                 startIcon={<FilterMenuIcon />}
@@ -262,7 +285,7 @@ export default function ProductsPage() {
                 color='secondary'
                 onClick={() => setFilterMenu((prev) => !prev)}
               >
-                <Typography fontWeight={500} fontSize={'16px'} lineHeight={'25px'}>
+                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
                   {t('filter_dialog.label')}
                 </Typography>
               </Button>
@@ -281,7 +304,7 @@ export default function ProductsPage() {
                   sx={{ height: '48px' }}
                   onClick={() => navigate('/products/create')}
                   fullWidth
-                  startIcon={<PlusIcon />}
+                  startIcon={<PlusIcon color='#fff' />}
                   variant='contained'
                   color='primary'
                 >

@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) =>
       },
 
       '.datepicker .react-datepicker__day-name': {
-        color: theme.palette.green[500],
+        color: theme.palette.orange[500],
       },
 
       '.datepicker .react-datepicker__day': {
@@ -71,32 +71,35 @@ const useStyles = makeStyles((theme) =>
       },
       '.datepicker .react-datepicker__day--in-range': {
         color: theme.palette.common.white,
-        backgroundColor: theme.palette.green[600],
+        backgroundColor: theme.palette.orange[600],
       },
       '.datepicker .react-datepicker__day--outside-month': {
         color: theme.palette.gray[400],
       },
       '.datepicker .react-datepicker__day--selected': {
-        backgroundColor: theme.palette.green[600],
+        backgroundColor: theme.palette.orange[600],
         color: theme.palette.common.white,
       },
       '.datepicker .react-datepicker__year-text--keyboard-selected': {
-        backgroundColor: theme.palette.green[600],
+        backgroundColor: theme.palette.orange[600],
         color: theme.palette.common.white,
       },
       '.datepicker .react-datepicker__day:hover': {
-        backgroundColor: theme.palette.green[600],
+        backgroundColor: theme.palette.orange[600],
         color: theme.palette.common.white,
+      },
+      '.react-datepicker__day--disabled': {
+        color: `${theme.palette.gray[100]} !important`,
       },
 
       '.datepicker .react-datepicker__navigation-icon::before, .react-datepicker__year-read-view--down-arrow, .react-datepicker__month-read-view--down-arrow, .react-datepicker__month-year-read-view--down-arrow':
         {
-          borderColor: theme.palette.green[500],
+          borderColor: theme.palette.orange[500],
         },
       '.react-datepicker__day--keyboard-selected, .react-datepicker__month-text--keyboard-selected, .react-datepicker__quarter-text--keyboard-selected, .react-datepicker__year-text--keyboard-selected':
         {
           color: `${theme.palette.common.white} !important`,
-          backgroundColor: `${theme.palette.green[500]} !important`,
+          backgroundColor: `${theme.palette.orange[500]} !important`,
         },
 
       // multi option select :only color:
@@ -288,7 +291,7 @@ const useStyles = makeStyles((theme) =>
       },
       '.ag-header-cell-label .ag-header-cell-text': {
         color: theme.palette.dark[500],
-        fontWeight: '500',
+        fontWeight: '600',
         fontSize: '16px',
         lineHeight: '24px',
       },

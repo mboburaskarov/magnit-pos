@@ -27,8 +27,8 @@
 
 /* Header */
 .ag-theme-alpine .ag-header {
-  min-height: 48px !important;
-  height: 48px !important;
+  min-height: 56px !important;
+  height: 56px !important;
   border: none;
   border: 1px solid;
   /* border-color: the; */
@@ -93,6 +93,7 @@
 
 .ag-theme-alpine .ag-header-cell {
   border-radius: 16px;
+  height: 56px !important;
   transition: none;
 }
 
@@ -125,7 +126,7 @@
   margin: 0;
   font-size: 20px;
   line-height: 28px;
-  font-weight: 500;
+  font-weight: 600;
   font-family: 'Gilroy';
 
   text-align: left;
@@ -253,7 +254,9 @@
 .ag-menu.ag-ltr.ag-popup-child[aria-label='SubMenu'] .ag-menu-option-part.ag-menu-option-icon {
   order: 1;
 }
-
+.ag-ltr .ag-cell[col-id='number'] {
+  justify-content: center;
+}
 .ag-cell-wrapper {
   word-break: break-word;
   overflow-wrap: break-word;
