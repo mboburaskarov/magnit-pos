@@ -639,7 +639,7 @@ function NewSale() {
       /> */}
       <ReturnExchangeDrawer
         returnExchangeOrder={returnExchangeOrder}
-        isOpen={true}
+        isOpen={false}
         setExchangeOrderDetails={setExchangeOrderDetails}
         closeDrawer={() => handleCloseReturnAndDraftDrawer()}
         clientRef={clientRef}
