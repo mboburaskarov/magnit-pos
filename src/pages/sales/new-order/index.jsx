@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import CartSearchBar from './CartSearchBar'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
@@ -6,6 +6,8 @@ import CartItem from './CartItem'
 import { useMutation, useQuery } from 'react-query'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
+import { useReactToPrint } from 'react-to-print'
+
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import FileIcon from '../../../assets/icons/FileIcon'
@@ -36,6 +38,7 @@ import LoadingContainer from '../../../../components/LoadingContainer'
 import OutsideClickHandler from 'react-outside-click-handler'
 import CreateDraftDrawer from './createDraftDrawer'
 import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchangeDrawer'
+import RippedPaperCheck from '../../../../components/ChequePaper/RippedPaperCheck'
 
 const useStyles = makeStyles((theme) => ({
   card_detail: {
@@ -199,10 +202,12 @@ function NewSale() {
   const [quickCreateClientName, setQuickCreateClientName] = useState(null)
   const [inputDiscount, setInputDiscount] = useState(0)
   const [webkassaOn, setWebkassaOn] = useState(false)
+  const [isOrderDrower, setIsOrderDrower] = useState(false)
   const [singleOrder, setSingleOrder] = useState(null)
   const clientRef = useRef()
   const [exchangeOrderDetails, setExchangeOrderDetails] = useState(null)
   const [isOpenReturnExchange, setIsOpenReturnExchange] = useState(false)
+  const printContainer = useRef()
 
   const searchResult = useQuery(
     ['searchCustomers', debouncedSearchTerm],
@@ -340,6 +345,16 @@ function NewSale() {
     )
     navigate(`${location.pathname}${searchParams}`)
   }
+
+  const reactToPrintContent = useCallback(() => printContainer.current, [printContainer.current])
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: 'documentName.current',
+    // onBeforePrint: () => {
+    //   navigate('/order/create')
+    // },
+    removeAfterPrint: true,
+  })
   return (
     <FormProvider {...method}>
       <Box display={'flex'}>
@@ -571,7 +586,7 @@ function NewSale() {
                 Jami narxi:
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
-                383 450 so'm
+                {get(cartItemsList, 'data.data.total_amount')} so'm
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
@@ -582,7 +597,7 @@ function NewSale() {
                 57 450 so'm
               </Typography>
             </Box>
-            <Button onClick={() => pay()} color='primary' sx={{ mb: '16px', display: 'flex', justifyContent: 'space-between' }}>
+            <Button onClick={() => setIsOrderDrower(true)} color='primary' sx={{ mb: '16px', display: 'flex', justifyContent: 'space-between' }}>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
                 To'lov
               </Typography>
@@ -590,7 +605,6 @@ function NewSale() {
                 57 450 so'm
               </Typography>
             </Button>
-            {console.log(cartItemsList)}
             <Button disabled={size(get(cartItemsList, 'data.data.data')) == 0} color='secondary' onClick={() => setIsCreateOpenDraft(true)}>
               <TimeAndDate />
               <Typography ml={'12px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
@@ -696,6 +710,13 @@ function NewSale() {
           }
         />
       )}
+      <OrderDrawer
+        cartItemsList={get(cartItemsList, 'data.data')}
+        printContainer={printContainer}
+        isOrderDrower={isOrderDrower}
+        cashBoxDetails={cashBoxDetails}
+        setIsOrderDrower={setIsOrderDrower}
+      />
       <CreateDraftDrawer
         customerId={customerId}
         refetchcartItemsList={refetchcartItemsList}
@@ -703,6 +724,9 @@ function NewSale() {
         open={isCreateOpenDraft}
         setOpen={setIsCreateOpenDraft}
       />
+      {/* <Box ref={printContainer}>
+        <RippedPaperCheck id='cheque_of_orders' printContainer={printContainer} />
+      </Box> */}
       <DraftDrawer cashBoxDetails={cashBoxDetails} open={isOpenDraft} setOpen={setIsOpenDraft} />
       <ClientCreateMini
         setCustomerId={setCustomerId}

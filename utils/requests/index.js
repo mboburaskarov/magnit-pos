@@ -4,6 +4,9 @@ import * as qs from 'qs'
 export const requests = {
   logIn: (data) => authRequest.post(`v1/login`, data),
   getUserInfo: () => request.get(`api/auth/get-user-information`),
+  //payment types
+  getPaymentTypesList: (filter) => request.get(`v1/payment_type/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  addToOrderPayment: (data) => request.post(`v1/sale/final`, data),
 
   //category
   // categoryGetAll

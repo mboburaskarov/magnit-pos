@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 function DraftParentItemsBox({ setIsOpenChild, item }) {
   const classes = useStyles()
-  console.log(item)
 
   return (
     <Box

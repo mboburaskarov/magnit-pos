@@ -81,8 +81,6 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
   })
 
   const onSubmit = (data) => {
-    console.log(size(get(data, 'phone')))
-
     if (size(get(data, 'phone')) < 14) {
       error('Phone number is less than 14')
     }

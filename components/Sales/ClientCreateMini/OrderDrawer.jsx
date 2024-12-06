@@ -2,25 +2,24 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { getGiftCardTitle } from '../../../utils/getGiftCardTitle'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Box, Drawer, Button, Typography, Button as MuiButton, Checkbox, useTheme } from '@mui/material'
+import { Box, Drawer, Button, Typography, Button as MuiButton, Checkbox, useTheme, Grid } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import BackArrowIcon from '../../../src/assets/icons/ArrowRightIcon'
-import CashIcon from '../../../src/assets/icons/ArrowRightIcon'
-import PlusIcon from '../../../src/assets/icons/ArrowRightIcon'
+import CashIcon from '../../../src/assets/icons/InComeCashIcon'
+import PlusIcon from '../../../src/assets/icons/PlusIcon'
 import UserFilledIcon from '../../../src/assets/icons/ArrowRightIcon'
-import PencilIcon from '../../../src/assets/icons/ArrowRightIcon'
+import PencilIcon from '../../../src/assets/icons/PauseIcon'
 import addToOrderPayment from './PaymentMethodInput'
 import removeFromOrderPayment from './PaymentMethodInput'
 import balanceAmountSelector from './PaymentMethodInput'
 import cartTotalPriceWithoutDiscountSelector from './PaymentMethodInput'
 import { numberToPrice } from '../../../utils/numberToPrice'
 import { v4 as uuidv4 } from 'uuid'
-import requests from './index'
 import { RippedPaperItem } from '../../RippedPaperList'
 import ShortcutWrapper from '../../ShortcutWrapper'
 import PaymentMethodInput from './PaymentMethodInput'
@@ -28,18 +27,22 @@ import PaymentMethodInput from './PaymentMethodInput'
 import GiftCardIcon from '../../../src/assets/icons/ArrowRightIcon'
 import GiftCardDrawer from '../../../src/assets/icons/ArrowRightIcon'
 import GiftCardInfo from '../../../src/assets/icons/ArrowRightIcon'
-import RemovePaymentIcon from '../../../src/assets/icons/ArrowRightIcon'
+import RemovePaymentIcon from '../../../src/assets/icons/CloseIcon'
 import CertificateCardDrawer from '../../../src/assets/icons/BigWarningIcon'
 import { giftCardPaymentIds } from '../../../constants/giftCardPaymentIds'
 import ButtonWithSwitch from './ButtonWithSwitch'
 import PaymeGo from '../../../src/assets/icons/BigWarningCircleIcon'
 import { paymeGoId } from '../../../constants/paymeGoId'
 import PaymeSmallIcon from '../../../src/assets/icons/ArrowRightIcon'
+import AddPaumentTypeIcon from '../../../src/assets/icons/AddPaymentTypeIcon'
+import { FormProvider, useForm } from 'react-hook-form'
+import { requests } from '../../../utils/requests'
+import { get, size } from 'lodash'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
-      width: 'calc(100% - 128px)',
+      width: 'calc(100% - 64px)',
       padding: 64,
       borderRadius: '64px 0 0 64px',
       backgroundColor: theme.palette.background.default,
@@ -57,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'flex-start',
     width: '100%',
-    height: 'auto',
+    height: '-webkit-fill-available',
   },
   body: {
     flex: '1 0 50%',
@@ -149,7 +152,7 @@ const useStyles = makeStyles((theme) => ({
   box: {
     flex: '0 0 32.3%',
     borderRadius: 16,
-    marginRight: 8,
+    // marginRight: 8,
     marginBottom: 16,
     border: `1px solid ${theme.palette.gray[300]}`,
     overflow: 'hidden',
@@ -235,684 +238,245 @@ const intitalDebtInfo = {
 const MAX_F_BUTTONS_QUANTITY = 10
 
 export default function OrderDrawer({
-  isOpen,
+  setIsOrderDrower,
+  isOrderDrower,
   closeDrawer,
   printContainer,
-  orderNumber,
-  cashbackPaymentPercentage,
-  cheque,
-  paymentTypes,
-  isLoading,
-  onSubmit,
-  accessToPrint,
-  shop,
+  cartItemsList,
+  cashBoxDetails,
+  // onSubmit,
   noCheck,
   half,
-  user,
-  clientInfo,
-  setOpenClientCreateMini,
-  setOpenClientCard,
-  setClientInfo,
-  setQuickCreateClientName,
-  clientInputRef,
-  createdClientId,
-  setCreatedClientId,
-  openDebt,
+
   setOpenDebt,
-  eposTransaction,
-  webkassaTransaction,
-  eposOn,
-  webkassaOn,
-  sellers,
-  deleteDebt,
-  eposChecked,
-  setEposChecked,
-  control,
-  cashbackPercent,
-  loyaltyProgramType,
-  isAutoIncome,
-  setOpenAutoIncome,
 }) {
+  const methods = useForm()
+
   const classes = useStyles()
   const [payments, setPayments] = useState([])
+  const [paymentsList, setPaymentsList] = useState([])
+  const [paymentAmount, setPaymentAmount] = useState(0)
   const [payme, setPayme] = useState(false)
   const { id } = useParams()
   const theme = useTheme()
   const { t } = useTranslation()
-  const forbiddenRoutes = useSelector((state) => state?.permissionRoutes)
-  const [giftCardOpen, setGiftCardOpen] = useState(false)
-  const [giftCardId, setGiftCardId] = useState(0)
-  const smsAuthRole = forbiddenRoutes?.find((el) => el?.slug === 'order-assign-client-sms-auth')
-  const debtRoute = forbiddenRoutes.find((el) => el.slug === 'order-debt')
-  const orderNewRoute = forbiddenRoutes.find((el) => el.slug === 'order-new')
-  const giftCardsRoute = forbiddenRoutes.find((el) => el?.slug === 'gift-cards')
-  const giftCardPayment = forbiddenRoutes.find((el) => el?.slug === 'pay-gift-card')
-  const totalPrice = useSelector((state) => state.cart.totalPrice, shallowEqual)
-  const { cartItems, orderPayments, returnItems, discount, returnPayments } = useSelector((state) => state.cart)
-  const isReturnDrawer = returnItems?.length > 0 ? (returnItems?.length > 0 && cartItems?.length > 0 ? totalPrice < 0 : true) : false
-  const { data: orderDetails, refetch } = useQuery(['orderDetails', id], () => requests.order.getSingle(id))
-
-  const { refetch: refetchParent, isFetching: isLoadingParent } = useQuery('orderDetails', () => requests.order.getSingle(orderDetails?.data?.parent_id), {
-    enabled: false,
-    cacheTime: 5000,
+  const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
+  const { mutate: addToOrderPayment, isLoading: isaddToOrderPayment } = useMutation(requests.addToOrderPayment, {
+    onSuccess: () => {
+      setShowOverlay(false)
+      refetchcartItemsList()
+      setOpenConfirmDialog(null)
+      success('Продукт успешно создан!')
+    },
+    onError: (err) => {
+      error('Ошибка при создании товара! #3')
+      console.log('err', err)
+    },
   })
+  const handleAddPaymentType = (type) => {
+    const isThereType = paymentsList.some((item) => item.id == type.id)
 
-  useEffect(() => {
-    if (isOpen) refetch()
-  }, [isOpen])
-
-  const { loyalty_payment, not_loyalty_payment } = orderDetails?.data?.order_detail || {}
-
-  const exchangeItemsTotalPrice = cartItems?.reduce((a, b) => a + b?.total_price, 0)
-
-  const debtAmount = orderDetails?.data?.parent_order_debt?.amount || 0
-  const debtPaidAmount = orderDetails?.data?.parent_order_debt?.paid_amount || 0
-  const maxDebt = debtAmount - debtPaidAmount
-  const minDebt = maxDebt - (maxDebt - returnItems.reduce((total, returnItem) => (total += Math.abs(Number(returnItem.total_price))), 0))
-  const totalOrderDebt = maxDebt > minDebt ? minDebt : maxDebt
-  const debtRepayedAmount = debtAmount === debtPaidAmount ? 0 : debtPaidAmount
-
-  const [shopDetails, setShopDetails] = useState(null)
-  const dispatch = useDispatch()
-  const totalPriceWithoutDiscount = useSelector((state) => cartTotalPriceWithoutDiscountSelector(state), shallowEqual)
-
-  const balanceAmount = useSelector((state) => balanceAmountSelector(state), shallowEqual)
-  const returnAmount = Number((balanceAmount + totalOrderDebt).toFixed(2))
-  const overallAmount = isReturnDrawer ? returnAmount : Number(balanceAmount)
-  const [editDebt, setEditDebt] = useState(intitalDebtInfo)
-  const [maxKeys, setMaxKeys] = useState(0)
-
-  const calculateClientBalance = () => {
-    const paidAmount = orderPayments?.filter((el) => el.company_payment_type_id === 'cashback')?.reduce((init, el) => (init += el?.paid_amount), 0) || 0
-    return clientInfo?.balance - paidAmount
-  }
-
-  const notLoyaltyPaidAmount = useMemo(
-    () =>
-      orderPayments
-        ?.filter((payment) => payment?.company_payment_type_id !== 'cashback' && payment?.type !== 'gift-card')
-        ?.reduce((a, b) => a + Math.abs(b?.paid_amount), 0),
-    [orderPayments]
-  )
-  const loyaltyPaidAmount = useMemo(
-    () => orderPayments?.filter((payment) => payment?.company_payment_type_id === 'cashback')?.reduce((a, b) => a + Math.abs(b?.paid_amount), 0),
-    [orderPayments]
-  )
-
-  const addOrderPaymentReturn = (item) => {
-    let payload
-    let maxAmount
-    if (item?.balance) {
-      maxAmount = Math.abs(loyalty_payment) > Math.abs(totalPrice) ? overallAmount : -Math.abs(loyalty_payment - loyaltyPaidAmount)
-      payload = {
-        company_payment_type_id: 'cashback',
-        id: uuidv4(),
-        paid_amount: maxAmount,
-        returned_amount: 0,
-        name: t('menu.sales.all.balance'),
-        max_amount: -maxAmount,
-      }
-    } else {
-      maxAmount =
-        Math.abs(not_loyalty_payment) > Math.abs(totalPrice) - totalOrderDebt || !not_loyalty_payment
-          ? overallAmount
-          : -Math.abs(not_loyalty_payment + debtRepayedAmount - exchangeItemsTotalPrice - notLoyaltyPaidAmount)
-      payload = {
-        company_payment_type_id: item.id,
-        id: uuidv4(),
-        paid_amount: maxAmount,
-        returned_amount: 0,
-        name: item.name,
-        max_amount: -maxAmount,
-      }
-    }
-
-    if (payload?.paid_amount && !!overallAmount) dispatch(addToOrderPayment(payload))
-  }
-  useEffect(() => {
-    const cashbackPayment = orderPayments?.find((payment) => payment.company_payment_type_id === 'cashback')
-    if (!clientInfo && !!cashbackPayment) {
-      dispatch(removeFromOrderPayment(cashbackPayment))
-    }
-  }, [clientInfo])
-
-  const addOrderPayment = (item) => {
-    if (overallAmount > 0 || returnItems.length > 0) {
-      if (item?.balance) {
-        const alreadyPaidAmount = orderPayments?.filter((el) => el.name === t('menu.sales.all.balance'))?.reduce((i, el) => (i += el.paid_amount || 0), 0) || 0
-        const calculatePaidAmount = () => {
-          const limitPercentage = (cashbackPaymentPercentage ?? 100) / 100
-          const payableAmount = totalPrice * limitPercentage - alreadyPaidAmount
-          return item?.balance >= overallAmount
-            ? overallAmount > payableAmount
-              ? payableAmount
-              : overallAmount
-            : item?.balance > payableAmount
-            ? payableAmount
-            : item?.balance - alreadyPaidAmount
-        }
-        const payload = {
-          company_payment_type_id: 'cashback',
-          id: uuidv4(),
-          paid_amount: calculatePaidAmount(),
-          returned_amount: 0,
-          name: t('menu.sales.all.balance'),
-        }
-        if ((payload?.returned_amount || payload?.paid_amount) && alreadyPaidAmount < item.balance) {
-          dispatch(addToOrderPayment(payload))
-        }
-      } else if (overallAmount !== 0) {
-        const payload = {
-          company_payment_type_id: item.id,
-          id: uuidv4(),
-          paid_amount: overallAmount,
-          returned_amount: 0,
-          name: item.name,
-          max_amount: item?.max_amount,
-        }
-        if (payload?.returned_amount || payload?.paid_amount) {
-          dispatch(addToOrderPayment(payload))
-        }
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (shop) {
-      requests.shop
-        .getSingle(shop.id)
-        .then(({ data }) => setShopDetails(data))
-        .catch((err) => console.error(err))
-    }
-  }, [shop])
-
-  useEffect(() => {
-    if (!!paymentTypes?.data?.company_payment_types?.length)
-      if (!debtRoute) {
-        let modPayments = [
-          ...paymentTypes?.data?.company_payment_types?.filter((type) => !giftCardPaymentIds.includes(type?.payment_type?.id)),
-          {
-            id: 'debt',
-            name: t('menu.sales.all.debt'),
-          },
-        ]?.map((item, index) => ({
-          ...item,
-          shortcut: `F${index + 1}`,
-        }))
-        if (webkassaOn) {
-          modPayments.pop()
-          if (isReturnDrawer) {
-            modPayments = modPayments.map((item) => {
-              const match = returnPayments.find((i) => i.company_payment_type_id === item.id)
-              return match
-                ? {
-                    ...item,
-                    max_amount: match?.paid_amount - match?.returned_amount,
-                    disabled: false,
-                  }
-                : { ...item, disabled: true }
-            })
-          }
-        }
-        setPayments(modPayments)
-        setMaxKeys(modPayments?.length)
+    setPaymentsList((prev) => {
+      if (prev?.length < size(get(paymentTypesList, 'data.data', [])) && !isThereType) {
+        return [...prev, { ...type, amount: get(cartItemsList, 'total_amount') - paymentAmount }]
       } else {
-        let modPaymentsElse = [...paymentTypes?.data?.company_payment_types]?.map((item, index) => ({
-          ...item,
-          shortcut: `F${index + 1}`,
-        }))
-        if (webkassaOn && isReturnDrawer) {
-          modPaymentsElse = modPaymentsElse.map((item) => {
-            const match = returnPayments.find((i) => i.company_payment_type_id === item.id)
-            return match
-              ? {
-                  ...item,
-                  max_amount: match?.paid_amount - match?.returned_amount,
-                  disabled: false,
-                }
-              : { ...item, disabled: true }
-          })
-        }
-        setPayments(modPaymentsElse)
-        setMaxKeys(modPaymentsElse?.length)
-      }
-  }, [paymentTypes?.data, webkassaOn, returnPayments])
-
-  useEffect(() => {
-    if (!clientInfo) {
-      dispatch(removeFromOrderPayment(orderPayments.filter((item) => item.company_payment_type_id === 'debt')[0]))
-    }
-  }, [clientInfo])
-
-  const isCashbackDisabled = isReturnDrawer ? loyaltyPaidAmount === loyalty_payment : !overallAmount || calculateClientBalance() === 0
-
-  const handleClickGiftCard = useCallback(() => {
-    setGiftCardOpen((prev) => !prev)
-  }, [])
-
-  const handleReturnGiftCard = () => {
-    refetchParent().then(({ data }) => {
-      const giftCard = data?.data?.order_detail?.order_payments?.find((el) => el?.is_certificate || el?.is_voucher)
-      const payload = {
-        company_payment_type_id: giftCard?.company_payment_type?.name.toUpperCase(),
-        id: uuidv4(),
-        paid_amount: Math.abs(overallAmount) < giftCard?.paid_amount ? overallAmount : -giftCard?.paid_amount,
-        returned_amount: 0,
-        gift_card_id: giftCard?.gift_card_id,
-        name: t(getGiftCardTitle(giftCard?.company_payment_type?.name)),
-        max_amount: giftCard?.paid_amount,
-        type: 'gift-card',
-      }
-      if (payload?.paid_amount && !orderPayments?.find((el) => el?.gift_card_id === giftCard?.gift_card_id)) {
-        dispatch(addToOrderPayment(payload))
+        return prev
       }
     })
   }
+  useEffect(() => {
+    let amount = 0
+    paymentsList.map((el) => {
+      amount += el.amount
+    })
+    setPaymentAmount(amount)
+  }, [paymentsList])
+  const onSubmit = (data) => {
+    const payment_types = paymentsList.map((el) => ({ amount: el.amount, payment_type_id: el.id }))
+    const requestBody = {
+      cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
+      payment_types,
+      sale_id: id,
+      total_amount: get(cartItemsList, 'total_amount'),
+    }
+    addToOrderPayment(requestBody)
+    // setOpen(false)
+
+    // const requestBody = {
+    //   cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
+    //   created_by: get(userData, 'id'),
+    //   description: get(data, 'description'),
+    //   customer_id: get(customerId, 'id'),
+    //   draft_time: get(data, 'draft_time'),
+    //   sale_id: id,
+    //   store_id: get(userData, 'store.id'),
+    // }
+    // createDraft(requestBody)
+  }
 
   return (
-    <>
-      <Box hidden>
-        {!noCheck && (
-          <Box
-            width='calc(100% + 32px)'
-            mx={-2}
-            mt={-4}
-            // style={{ transform: 'rotateX(180deg)' }}
-            ref={printContainer}
-          >
-            <RippedPaperItem
-              id='cheque_of_orders'
-              data={cheque}
-              noFormControl
-              discount={discount}
-              orderItems={cartItems}
-              totalPriceWithoutDiscount={totalPriceWithoutDiscount}
-              totalPrice={totalPrice}
-              shop={shopDetails}
-              user={user}
-              clientName={`${clientInfo?.first_name || ''} ${clientInfo?.last_name || ''}`}
-              sellers={sellers}
-              returnItems={returnItems}
-              orderNumber={orderNumber}
-              eposTransaction={eposTransaction}
-              webkassaTransaction={webkassaTransaction}
-              eposOn={eposOn && eposChecked}
-              webkassaOn={webkassaOn}
-            />
-          </Box>
-        )}
-      </Box>
-      <Drawer
-        open={isOpen}
-        onClose={closeDrawer}
-        onKeyDown={(e) => {
-          if (e.code === 'KeyL') {
-            onSubmit()
-          }
-          if (payments?.find((payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.id === 'debt' && maxKeys <= MAX_F_BUTTONS_QUANTITY)) {
-            setOpenDebt(true)
-          }
-          if (
-            payments?.find(
-              (payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.payment_type?.id === paymeGoId && maxKeys <= MAX_F_BUTTONS_QUANTITY
-            )
-          ) {
-            if (!orderPayments?.length) setPayme(true)
-            return
-          }
-          if (!giftCardsRoute && !giftCardPayment && `F${payments?.length + 1}` === e.code) {
-            if (!isReturnDrawer) handleClickGiftCard()
-            else !isLoadingParent && handleReturnGiftCard()
-          }
-          if (payments?.find((payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.id !== 'debt' && maxKeys <= MAX_F_BUTTONS_QUANTITY)) {
-            const payment = payments?.find((payment) => payment?.shortcut === e.code)
-            isReturnDrawer ? addOrderPaymentReturn(payment) : addOrderPayment(payment)
-          }
-        }}
-        anchor='right'
-        elevation={1}
-        className={`${classes.drawer} ${half ? classes.half : ''}`}
+    <Box hidden>
+      <Box
+        width='calc(100% + 32px)'
+        mx={-2}
+        mt={-4}
+        // style={{ transform: 'rotateX(180deg)' }}
+        ref={printContainer}
       >
-        <Box className={classes.wrapper}>
-          {!noCheck && (
-            <Box maxWidth='25%'>
-              <Box
-                mx={-2}
-                mt={-4}
-                style={{
-                  // transform: 'rotateX(180deg)',
-                  width: 320,
-                }}
-              >
-                <RippedPaperItem
-                  id='cheque_of_orders'
-                  data={cheque}
-                  noFormControl
-                  discount={discount}
-                  orderItems={cartItems}
-                  totalPriceWithoutDiscount={totalPriceWithoutDiscount}
-                  totalPrice={totalPrice}
-                  shop={shopDetails}
-                  user={user}
-                  clientName={`${clientInfo?.first_name || ''} ${clientInfo?.last_name || ''}`}
-                  sellers={sellers}
-                  returnItems={returnItems}
-                  orderNumber={orderNumber}
-                  eposTransaction={eposTransaction}
-                  webkassaTransaction={webkassaTransaction}
-                  eposOn={eposOn && eposChecked}
-                  webkassaOn={webkassaOn}
-                />
-              </Box>
-            </Box>
-          )}
-          <Box ml={half ? 0 : 10} className={classes.body}>
-            <Box width='100%' display='flex' justifyContent='space-between'>
-              <Button id='cancel-button' secondary adornmentStart={<BackArrowIcon />} className={classes.backBtn} onClick={closeDrawer}>
-                {t('buttons.back')}
-                <ShortcutWrapper color='#BDBDBD' margin='0 0 0 8px' shortcut='B' />
-              </Button>
-
-              <Box display='flex'>
-                {!!clientInfo && loyaltyProgramType === 'CASHBACK' && !!cashbackPercent && (
-                  <ButtonWithSwitch control={control} title={`${t('loyalty_program.cashback')} ${cashbackPercent}%`} defaultValue={true} name='with_cashback' />
-                )}
-                {eposOn && (
-                  <Box className={classes.checkboxContainer}>
-                    <Checkbox
-                      checked={eposChecked}
-                      onChange={() => setEposChecked((prev) => !prev)}
-                      className={classes.checkbox}
-                      icon={<FontAwesomeIcon icon={faCircle} style={{ color: theme.palette.blue[500] }} />}
-                      checkedIcon={<FontAwesomeIcon icon={faCheckCircle} style={{ color: theme.palette.blue[500] }} />}
-                    />
-                  </Box>
-                )}
-                <Box style={{ display: 'flex', flexDirection: 'row' }} width={196}>
-                  <button
-                    id='BUTTON_WITHOUT_HANDLEPRINT'
-                    type='submit'
-                    onClick={() => {
-                      accessToPrint.current = false
-                      onSubmit()
-                    }}
-                    disabled={returnItems.length ? overallAmount !== 0 : overallAmount > 0 || isLoading}
-                    style={{
-                      position: 'absolute',
-                      right: '500px',
-                      width: '1px',
-                      height: '1px',
-                      opacity: '0',
-                    }}
+        <Drawer
+          open={isOrderDrower}
+          onClose={() => setIsOrderDrower(false)}
+          onKeyDown={(e) => {
+            if (e.code === 'KeyL') {
+              // onSubmit()
+            }
+            if (
+              payments?.find((payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.id === 'debt' && maxKeys <= MAX_F_BUTTONS_QUANTITY)
+            ) {
+              setOpenDebt(true)
+            }
+            if (
+              payments?.find(
+                (payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.payment_type?.id === paymeGoId && maxKeys <= MAX_F_BUTTONS_QUANTITY
+              )
+            ) {
+              if (!orderPayments?.length) setPayme(true)
+              return
+            }
+            // if (!giftCardsRoute && !giftCardPayment && `F${payments?.length + 1}` === e.code) {
+            //   if (!isReturnDrawer) handleClickGiftCard()
+            //   else !isLoadingParent && handleReturnGiftCard()
+            // }
+            if (
+              payments?.find((payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.id !== 'debt' && maxKeys <= MAX_F_BUTTONS_QUANTITY)
+            ) {
+              const payment = payments?.find((payment) => payment?.shortcut === e.code)
+              isReturnDrawer ? addOrderPaymentReturn(payment) : addOrderPayment(payment)
+            }
+          }}
+          anchor='right'
+          elevation={1}
+          className={`${classes.drawer} ${half ? classes.half : ''}`}
+        >
+          <FormProvider {...methods}>
+            <Box className={classes.wrapper}>
+              <Box width='calc(75% - 64px)' padding={'0 40px 0 0'}>
+                <Box mb={'40px'} display='flex' width={'100%'} justifyContent={'space-between'}>
+                  <Box
+                    width={'416px'}
+                    borderRadius={'16px'}
+                    boxShadow='0px 2px 8px 0px #0000000A'
+                    border={'1px solid'}
+                    padding={'24px'}
+                    borderColor={'bunker.100'}
+                    mr={'24px'}
                   >
-                    .
-                  </button>
-                  {!orderNewRoute && (
-                    <Button
-                      id='pay-button'
-                      primary
-                      fullWidth
-                      type='submit'
-                      onClick={() => {
-                        if (isAutoIncome) {
-                          setOpenAutoIncome(true)
-                          return
-                        }
-                        onSubmit()
-                      }}
-                      disabled={returnItems.length ? (overallAmount || 0) !== 0 : overallAmount > 0 || isLoading}
-                      isLoading={isLoading}
-                    >
-                      {t('buttons.pay')}
-                      <ShortcutWrapper color={orderPayments?.length ? '#ffffff' : '#BDBDBD'} margin='0 0 0 8px' shortcut='L' />
-                    </Button>
-                  )}
-                </Box>
-              </Box>
-            </Box>
-            <Box display='flex' mt={4.5}>
-              <Box flex='0 0 50%'>
-                <h3 className={classes.priceTitle}>{t('menu.sales.new.overall')}:</h3>
-                <span id='total-price' className={classes.price}>
-                  {numberToPrice(totalPrice)}
-                </span>
-              </Box>
-              {overallAmount < 0 ? (
-                returnItems.length > 0 ? (
-                  <Box flex='0 0 50%'>
-                    <h3 className={classes.priceTitle}>{t('menu.sales.new.to_pay')}:</h3>
-                    <span id='for-payment' className={classes.price}>
-                      {numberToPrice(overallAmount)}
-                    </span>
+                    <Typography fontSize={24} fontWeight={'700'} lineHeight={'32px'} color={'bunker.500'}>
+                      Jami:
+                    </Typography>
+                    <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={'bunker.950'}>
+                      {get(cartItemsList, 'total_amount')}
+                    </Typography>
                   </Box>
-                ) : (
-                  <Box flex='0 0 50%'>
-                    <h3 className={`${classes.priceTitle} ${classes.paid} ${classes.change}`}>{t('menu.sales.new.surrender')}:</h3>
-                    <span id='cashback' className={`${classes.price} ${classes.paid} ${classes.change}`}>
-                      {numberToPrice(Math.abs(overallAmount))}
-                    </span>
-                  </Box>
-                )
-              ) : (
-                <Box flex='0 0 50%'>
-                  <h3 className={`${classes.priceTitle} ${classes.paid}`}>{t('menu.sales.new.to_pay')}:</h3>
-                  <span className={`${classes.price} ${classes.paid}`}>{numberToPrice(overallAmount)}</span>
-                </Box>
-              )}
-            </Box>
-            <Box mt={4} display='flex' flexWrap='wrap'>
-              {payments?.map((item, index) => {
-                const disabled =
-                  overallAmount === 0 ||
-                  (orderPayments.some((res) => res.company_payment_type_id === 'debt') && item?.id === 'debt') ||
-                  (isReturnDrawer && item?.id === 'debt')
-
-                const webkassaReturnDisable =
-                  Math.abs(orderPayments?.find((el) => el.company_payment_type_id === item.id)?.paid_amount) === item.max_amount && webkassaOn
-
-                const canPayWithGo = !!!orderPayments?.length
-
-                return (
-                  <Box key={index} flex='0 0 32.3%' mr={1} mb={1}>
-                    <MuiButton
-                      fullWidth
-                      className={`${classes.paymentBtn} ${
-                        disabled || item?.disabled || webkassaReturnDisable || (!canPayWithGo && item?.name === 'Payme Go') ? classes.disabledPaymentBtn : ''
-                      }`}
-                      id='add-payment-button'
-                      disabled={disabled || item?.disabled || webkassaReturnDisable || (!canPayWithGo && item?.name === 'Payme Go')}
-                      onClick={() => {
-                        if (item?.payment_type?.id === paymeGoId) {
-                          setPayme(true)
-                          return
-                        }
-                        if (item?.id === 'debt') {
-                          setEditDebt({
-                            ...editDebt,
-                            amount: editDebt?.amount ? editDebt?.amount : overallAmount.toString(),
-                          })
-                          setOpenDebt(true)
-                        } else {
-                          isReturnDrawer ? addOrderPaymentReturn(item) : addOrderPayment(item)
-                        }
-                      }}
-                    >
-                      <div className={`${classes.cashIcon} ${disabled || (!canPayWithGo && item?.name === 'Payme Go') ? classes.disabledCashIcon : ''}`}>
-                        {item?.payment_type?.id === paymeGoId ? <PaymeSmallIcon /> : <CashIcon />}
-                      </div>
-                      <span id='payment-name' className={`${classes.paymentName} ${disabled ? classes.disabledPaymentName : ''}`}>
-                        {item.name}
-                        {index <= 10 && <ShortcutWrapper color='#BDBDBD' margin='0 0 0 8px' shortcut={item?.shortcut} />}
-                      </span>
-                      <PlusIcon className={disabled ? classes.disabledCashIcon : ''} />
-                    </MuiButton>
-                  </Box>
-                )
-              })}
-              {!giftCardsRoute && !giftCardPayment && (
-                <Box flex='0 0 32.3%' mr={1} mb={1}>
-                  <MuiButton
-                    id='gift-card'
-                    fullWidth
-                    className={`${classes.paymentBtn} ${!overallAmount && classes.disabledPaymentBtn}`}
-                    disabled={!overallAmount || isLoadingParent}
-                    onClick={() => {
-                      if (!isReturnDrawer) handleClickGiftCard()
-                      else handleReturnGiftCard()
-                    }}
+                  <Box
+                    borderRadius={'16px'}
+                    boxShadow='0px 2px 8px 0px #0000000A'
+                    border={'1px solid'}
+                    padding={'24px'}
+                    borderColor={'bunker.100'}
+                    width={'416px'}
                   >
-                    <div className={`${classes.cashIcon}`}>
-                      <GiftCardIcon />
-                    </div>
-                    <span id='payment-name' className={`${classes.paymentName}`}>
-                      {t('menu.marketing.card')}
-                      {payments.length <= 10 && <ShortcutWrapper color='#BDBDBD' margin='0 0 0 8px' shortcut={`F${payments.length + 1}`} />}
-                    </span>
-                    <PlusIcon />
-                  </MuiButton>
+                    <Typography fontSize={24} fontWeight={'700'} lineHeight={'32px'} color={'bunker.500'}>
+                      To’lash kerak:
+                    </Typography>
+                    <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={'red.500'}>
+                      {paymentAmount} UZS
+                    </Typography>
+                  </Box>
                 </Box>
-              )}
-              {!!clientInfo && (
-                <Box flex='0 0 32.3%' mr={1} mb={1}>
-                  <MuiButton
-                    id='client-balance'
-                    fullWidth
-                    className={`${classes.paymentBtn} ${
-                      isCashbackDisabled || (!orderDetails?.data?.order_detail?.is_authorized && smsAuthRole) ? classes.disabledPaymentBtn : ''
-                    }`}
-                    disabled={isCashbackDisabled || (!orderDetails?.data?.order_detail?.is_authorized && smsAuthRole)}
-                    onClick={() => (isReturnDrawer ? addOrderPaymentReturn(clientInfo) : addOrderPayment(clientInfo))}
-                  >
-                    <div className={`${classes.cashIcon}`}>
-                      <UserFilledIcon />
-                    </div>
-                    <span className={`${classes.paymentName} ${classes.clientBalance}`}>
-                      <span>{t('menu.sales.all.balance')}</span>
-                      <span id='balance-amount' className={classes.balanceAmount}>
-                        {numberToPrice(calculateClientBalance())}
-                      </span>
-                    </span>
-                    <PlusIcon />
-                  </MuiButton>
-                </Box>
-              )}
-            </Box>
-            <Box display='flex' flexWrap='wrap' mt={4}>
-              {!!isReturnDrawer && !!totalOrderDebt && (
-                <Box className={classes.box}>
-                  <div className={classes.boxHeader}>
-                    <Typography id='payment-type'>{t('menu.sales.all.debt')}</Typography>
-                  </div>
-                  <div className={classes.boxBody}>
-                    <PaymentMethodInput
-                      classes={classes}
-                      item={{
-                        company_payment_type_id: 'debt',
-                        id: uuidv4(),
-                        paid_amount: -totalOrderDebt,
-                        returned_amount: 0,
-                        name: t('menu.sales.all.debt'),
-                      }}
-                      disabled
-                      minusMark
-                    />
-                  </div>
-                </Box>
-              )}
-              {orderPayments?.map((item, index) => (
-                <Box id={`payment-box${index}`} className={classes.box} key={index}>
-                  <div className={classes.boxHeader}>
-                    <Typography id='payment-type'>{item.name}</Typography>
-                    <Box display='flex' alignItems='center'>
-                      {item.company_payment_type_id === 'debt' && (
-                        <MuiButton
-                          onClick={() => {
-                            setOpenDebt(true)
-                            setEditDebt({
-                              ...editDebt,
-                              active: true,
-                            })
-                          }}
-                          sx={{ padding: 0 }}
+                <Box>
+                  <Typography fontSize={16} fontWeight={'600'} lineHeight={'24px'} color={'bunker.700'}>
+                    To'lov turi:
+                  </Typography>
+                  <Grid container display={'flex'}>
+                    {get(paymentTypesList, 'data.data', []).map((item) => (
+                      <Grid sx='3' sm='3' lg='3' xl='3' xs='3' m={'3'} onClick={() => handleAddPaymentType(item)}>
+                        <Box
+                          display={'flex'}
+                          p={'20px'}
+                          height={'80px'}
+                          bgcolor={'bg.10'}
+                          mr={'16px'}
+                          mb={'16px'}
+                          justifyContent={'space-between'}
+                          borderRadius={'24px'}
                         >
-                          <PencilIcon />
-                        </MuiButton>
-                      )}
-                      {item?.type === 'gift-card' && (
-                        <MuiButton onClick={() => setGiftCardId(item?.code)} sx={{ padding: 0 }}>
-                          <GiftCardInfo />
-                        </MuiButton>
-                      )}
-                      <MuiButton
-                        sx={() => ({
-                          paddingRight: 0,
-                          paddingLeft: 1,
-                        })}
-                        onClick={() => {
-                          dispatch(removeFromOrderPayment(item))
-                          if (item.company_payment_type_id === 'debt') {
-                            setEditDebt(intitalDebtInfo)
-                            deleteDebt(id)
-                          }
-                        }}
-                      >
-                        <RemovePaymentIcon />
-                      </MuiButton>
-                    </Box>
-                  </div>
-                  <div className={classes.boxBody}>
-                    <PaymentMethodInput
-                      id={item.company_payment_type_id === 'cashback' ? 'balance-payment-input' : 'payment-input'}
-                      index={index}
-                      classes={classes}
-                      item={item}
-                      isReturnDrawer={isReturnDrawer}
-                      cashbackPaymentPercentage={cashbackPaymentPercentage}
-                      orderPayments={orderPayments}
-                      totalPrice={isReturnDrawer ? -totalPrice : totalPrice}
-                      clientInfo={clientInfo}
-                      max={item?.type === 'gift-card' ? item?.max_amount : item.company_payment_type_id === 'cashback' ? loyalty_payment : not_loyalty_payment}
-                      disabled={item.company_payment_type_id === 'debt'}
-                      webkassaOn={webkassaOn}
-                    />
-                    {item?.type === 'gift-card' && (
-                      <Typography
-                        sx={(theme) => ({
-                          fontSize: '14px',
-                          color: theme.palette.gray[400],
-                          position: 'absolute',
-                          bottom: '12px',
-                        })}
-                      >
-                        {t('titles.from')} {numberToPrice(item?.max_amount)}
-                      </Typography>
-                    )}
-                  </div>
+                          <Typography fontSize={18} fontWeight={'600'} lineHeight={'40px'} color={'bunker.600'}>
+                            {get(item, 'name')}
+                          </Typography>
+                          <AddPaumentTypeIcon />
+                        </Box>
+                      </Grid>
+                    ))}
+                  </Grid>
                 </Box>
-              ))}
+                <Box>
+                  <Grid container width={'100%'} display={'flex'}>
+                    {paymentsList?.map((el) => (
+                      <Grid sx='3' sm='3' lg='3' xl='3' xs='3' m={'3'} key={el.id}>
+                        <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.box}>
+                          <div className={classes.boxHeader}>
+                            <Typography id='payment-type'>{el.name}</Typography>
+                            <Box display='flex' alignItems='center'>
+                              <MuiButton
+                                variant='primary'
+                                sx={() => ({
+                                  paddingRight: 0,
+                                  paddingLeft: 1,
+                                })}
+                              >
+                                <RemovePaymentIcon />
+                              </MuiButton>
+                            </Box>
+                          </div>
+                          <div className={classes.boxBody}>
+                            <PaymentMethodInput
+                              id={'cashback' ? 'balance-payment-input' : 'payment-input'}
+                              index={el}
+                              classes={classes}
+                              item={el}
+                              isReturnDrawer={true}
+                              cashbackPaymentPercentage={1}
+                              orderPayments={paymentsList}
+                              totalPrice={1}
+                              clientInfo={'clientInfo'}
+                              max={222}
+                              disabled={false}
+                              webkassaOn={true}
+                            />
+                          </div>
+                        </Box>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+              </Box>
+              <Box width='calc(75% - 64px)'>
+                <Box
+                  mx={-2}
+                  mt={-4}
+                  style={{
+                    width: 320,
+                  }}
+                >
+                  <RippedPaperItem />
+                </Box>
+              </Box>
             </Box>
-          </Box>
-        </Box>
-      </Drawer>
-      {/* <DebtDrawer
-        orderPayments={orderPayments}
-        open={openDebt}
-        setOpen={setOpenDebt}
-        clientInfo={clientInfo}
-        setClientInfo={setClientInfo}
-        setOpenClientCreateMini={setOpenClientCreateMini}
-        setOpenClientCard={setOpenClientCard}
-        setQuickCreateClientName={setQuickCreateClientName}
-        clientInputRef={clientInputRef}
-        createdClientId={createdClientId}
-        setCreatedClientId={setCreatedClientId}
-        overallAmount={overallAmount}
-        editDebt={editDebt}
-        setEditDebt={setEditDebt}
-      /> */}
-      <GiftCardDrawer isOpen={giftCardOpen} closeDrawer={handleClickGiftCard} modal />
-      <CertificateCardDrawer id={giftCardId} closeDrawer={() => setGiftCardId(null)} />
-      <PaymeGo open={payme} setOpen={setPayme} totalPrice={totalPrice} onSubmit={onSubmit} />
-    </>
+            <Button onClick={onSubmit}>To'lash</Button>
+          </FormProvider>
+        </Drawer>
+      </Box>
+    </Box>
   )
 }

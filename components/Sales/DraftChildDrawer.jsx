@@ -43,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 function DraftChildDrawer({ open, setChildOpen, setOpen }) {
   const classes = useStyles()
-  console.log(open)
 
   return (
     <Box className={classes.drawer}>
