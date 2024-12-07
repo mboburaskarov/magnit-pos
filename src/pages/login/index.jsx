@@ -105,6 +105,8 @@ export default function LoginPage() {
   }, [])
   const { mutate: logIn, isLoading: logInLoading } = useMutation(requests.logIn, {
     onSuccess: async ({ data }) => {
+      console.log(data)
+
       const userData = data.data
       localStorage.setItem('access_token', userData.token)
       localStorage.setItem('user_data', JSON.stringify(userData.employee))

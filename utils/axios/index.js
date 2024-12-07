@@ -16,7 +16,7 @@ export const authRequest = axios.create({
 export const request = axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL,
   headers: {
-    Authorization: localStorage.getItem('access_token'),
+    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     Accept: 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json; charset=utf-8',
