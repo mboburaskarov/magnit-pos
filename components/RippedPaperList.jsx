@@ -43,8 +43,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function RippedPaperList({ defaultValue, data, name = 'cheque_id', control, shop }) {
+export default function RippedPaperList({
+  cashBoxDetails,
+  printContainer,
+  customerId,
+  paymentsList,
+  cartItemsList,
+  defaultValue,
+  data,
+  name = 'cheque_id',
+  control,
+  shop,
+}) {
   const classes = useStyles()
+  console.log(paymentsList)
 
   return (
     <Box className={classes.root}>
@@ -56,7 +68,15 @@ export default function RippedPaperList({ defaultValue, data, name = 'cheque_id'
           <RadioGroup defaultValue={defaultValue || data?.cheques?.[0]?.id} aria-label='cheque' onChange={(e) => onChange(e.target.value)}>
             <Box className={classes.inner}>
               {data?.cheques?.map((el, index) => (
-                <RippedPaperItem shop={shop} data={el} key={index} />
+                <RippedPaperItem
+                  customerId={customerId}
+                  cashBoxDetails={cashBoxDetails}
+                  paymentsList={paymentsList}
+                  shop={shop}
+                  data={el}
+                  key={index}
+                  cartItemsList={cartItemsList}
+                />
               ))}
             </Box>
           </RadioGroup>
@@ -66,13 +86,13 @@ export default function RippedPaperList({ defaultValue, data, name = 'cheque_id'
   )
 }
 
-export function RippedPaperItem({}) {
+export function RippedPaperItem({ printContainer, cashBoxDetails, customerId, paymentsList, cartItemsList }) {
   const classes = useStyles()
 
   return (
     <Box px={2} className={classes.wrapper}>
       {/* {!noFormControl && <FormControlLabel value={data?.id} control={<StyledRadio />} label={data?.name} className={classes.label} checked={checked} />} */}
-      <RippedPaperCheck />
+      <RippedPaperCheck customerId={customerId} cashBoxDetails={cashBoxDetails} cartItemsList={cartItemsList} paymentsList={paymentsList} />
     </Box>
   )
 }

@@ -222,7 +222,7 @@ const CartItem = ({
   setOpenConfirmDialog,
 }) => {
   const cls = useStyles()
-  const [quon, setQuon] = useState(0)
+  const [quon, setQuon] = useState(1)
   return (
     <Box display={'flex'} width={'100%'}>
       <Box
@@ -276,6 +276,7 @@ const CartItem = ({
                   borderRadius='12px'
                   placeholder=''
                   inicatoorRight={true}
+                  defaultValue={{ id: 1, name: 'Dona' }}
                   name={`type.${item.product.id}`}
                 />
               </Box>

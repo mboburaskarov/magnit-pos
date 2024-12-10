@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     padding: '0',
     background: 'white',
-    width: '320px',
+    // width: '320px',
     '@media print': {
       width: '100%',
     },

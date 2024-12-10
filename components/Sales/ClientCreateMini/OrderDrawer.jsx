@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -39,6 +39,8 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { requests } from '../../../utils/requests'
 import { get, size } from 'lodash'
 import { LoadingButton } from '@mui/lab'
+import { useReactToPrint } from 'react-to-print'
+import { error, success } from '../../../utils/toast'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -275,15 +277,19 @@ export default function OrderDrawer({
   isOrderDrower,
   closeDrawer,
   printContainer,
+  // handlePrint,
   cartItemsList,
+  customerId,
   cashBoxDetails,
   // onSubmit,
+  refetchcartItemsList,
   noCheck,
   half,
 
   setOpenDebt,
 }) {
   const methods = useForm()
+  console.log(cartItemsList)
 
   const classes = useStyles()
   const [payments, setPayments] = useState([])
@@ -294,12 +300,16 @@ export default function OrderDrawer({
   const { id } = useParams()
   const theme = useTheme()
   const { t } = useTranslation()
+  console.log(maxAmount)
+
   const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
   const { mutate: addToOrderPayment, isLoading: isaddToOrderPayment } = useMutation(requests.addToOrderPayment, {
     onSuccess: () => {
-      setShowOverlay(false)
+      // setShowOverlay(false)
       refetchcartItemsList()
-      setOpenConfirmDialog(null)
+      setIsOrderDrower(false)
+      handlePrint()
+
       success('Продукт успешно создан!')
     },
     onError: (err) => {
@@ -346,18 +356,29 @@ export default function OrderDrawer({
     paymentsList.map((el) => {
       amount += Number(el.amount)
     })
-    setMaxAmount(get(cartItemsList, 'total_amount') - amount)
+
+    setMaxAmount(Number(get(cartItemsList, 'total_amount')) - amount)
     setPaymentAmount(amount)
-  }, [paymentsList])
+  }, [paymentsList, cartItemsList])
+  const documentName = useRef('BILLZ CHEQUE')
+
+  const reactToPrintContent = useCallback(() => printContainer.current, [])
+
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent, // This should be a function
+    documentTitle: documentName.current,
+    removeAfterPrint: true,
+  })
   const onSubmit = (data) => {
     const payment_types = paymentsList.map((el) => ({ amount: el.amount, payment_type_id: el.id }))
     const requestBody = {
       cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
       payment_types,
       sale_id: id,
-      discount_amount: 0,
+      // discount_amount: 0,
       total_amount: get(cartItemsList, 'total_amount'),
     }
+
     addToOrderPayment(requestBody)
     // setOpen(false)
 
@@ -376,7 +397,7 @@ export default function OrderDrawer({
     ...paymentsList,
     ...Array.from({ length: 8 - paymentsList.length }, (_, index) => ({ id: `placeholder-${index}`, isPlaceholder: true })),
   ]
-  console.log(mpaddedPaymentsList)
+  console.log(maxAmount)
 
   return (
     <Box hidden>
@@ -385,7 +406,7 @@ export default function OrderDrawer({
         mx={-2}
         mt={-4}
         // style={{ transform: 'rotateX(180deg)' }}
-        ref={printContainer}
+        // ref={printContainer}
       >
         <Drawer
           open={isOrderDrower}
@@ -541,15 +562,25 @@ export default function OrderDrawer({
                   </Grid>
                 </Box>
               </Box>
-              <Box width='calc(75% - 64px)'>
+              <Box maxWidth='400px'>
                 <Box
                   mx={-2}
                   mt={-4}
                   style={{
-                    width: 320,
+                    // width: 320,
+                    padding: '20px',
                   }}
+                  ref={printContainer}
                 >
-                  <RippedPaperItem />
+                  <RippedPaperItem
+                    paymentsList={paymentsList}
+                    cartItemsList={cartItemsList}
+                    id='cheque_of_orders'
+                    cashBoxDetails={cashBoxDetails}
+                    customerId={customerId}
+                    noFormControl
+                    printContainer={printContainer}
+                  />
                 </Box>
               </Box>
             </Box>

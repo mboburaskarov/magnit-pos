@@ -355,7 +355,7 @@ export default function DateFilterDrawerSingle({
 
             <Box
               sx={(theme) => ({
-                width: '320px',
+                // width: '320px',
                 display: 'flex',
                 flexDirection: 'column',
                 borderLeft: `2px solid ${theme.palette.gray[200]}`,

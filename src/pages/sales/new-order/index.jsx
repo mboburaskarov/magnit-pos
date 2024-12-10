@@ -205,6 +205,8 @@ function NewSale() {
   const [isOrderDrower, setIsOrderDrower] = useState(false)
   const [singleOrder, setSingleOrder] = useState(null)
   const clientRef = useRef()
+  // const documentName = useRef('BILLZ CHEQUE')
+
   const [exchangeOrderDetails, setExchangeOrderDetails] = useState(null)
   const [isOpenReturnExchange, setIsOpenReturnExchange] = useState(false)
   const printContainer = useRef()
@@ -345,16 +347,19 @@ function NewSale() {
     )
     navigate(`${location.pathname}${searchParams}`)
   }
+  console.log(cartItemsList, size(get(cartItemsList, 'data.data.data')) == 0)
 
-  const reactToPrintContent = useCallback(() => printContainer.current, [printContainer.current])
-  const handlePrint = useReactToPrint({
-    content: reactToPrintContent,
-    documentTitle: 'documentName.current',
-    // onBeforePrint: () => {
-    //   navigate('/order/create')
-    // },
-    removeAfterPrint: true,
-  })
+  // Correct the content function
+  // const reactToPrintContent = useCallback(() => printContainer.current, [])
+
+  // const handlePrint = useReactToPrint({
+  //   content: reactToPrintContent, // This should be a function
+  //   documentTitle: documentName.current,
+  //   removeAfterPrint: true,
+  // })
+  // const handlePrint = () => {
+  //   console.log(printContainer.current, documentName), handlePrint2()
+  // }
   return (
     <FormProvider {...method}>
       <Box display={'flex'}>
@@ -597,7 +602,12 @@ function NewSale() {
                 57 450 so'm
               </Typography>
             </Box>
-            <Button onClick={() => setIsOrderDrower(true)} color='primary' sx={{ mb: '16px', display: 'flex', justifyContent: 'space-between' }}>
+            <Button
+              disabled={size(get(cartItemsList, 'data.data.data')) === 0}
+              onClick={() => setIsOrderDrower(true)}
+              color='primary'
+              sx={{ mb: '16px', display: 'flex', justifyContent: 'space-between' }}
+            >
               <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
                 To'lov
               </Typography>
@@ -714,7 +724,10 @@ function NewSale() {
         cartItemsList={get(cartItemsList, 'data.data')}
         printContainer={printContainer}
         isOrderDrower={isOrderDrower}
+        // handlePrint={handlePrint}
         cashBoxDetails={cashBoxDetails}
+        customerId={customerId}
+        refetchcartItemsList={refetchcartItemsList}
         setIsOrderDrower={setIsOrderDrower}
       />
       <CreateDraftDrawer

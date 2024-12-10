@@ -11,8 +11,21 @@ import useStyles from './useStyles'
 import palette from '../../src/assets/theme/mui.config'
 import { get } from 'lodash'
 import ChequeBarcode from './ChequeBarcode'
+import dayjs from 'dayjs'
 
-function RippedPaperCheck({ data, margin, checked, chequeData: cheque, logo = '', noSticky, orderItems }) {
+function RippedPaperCheck({
+  data,
+  margin,
+  cashBoxDetails,
+  customerId,
+  checked,
+  paymentsList,
+  cartItemsList,
+  chequeData: cheque,
+  logo = '',
+  noSticky,
+  orderItems,
+}) {
   const classes = useStyles()
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
@@ -34,10 +47,11 @@ function RippedPaperCheck({ data, margin, checked, chequeData: cheque, logo = ''
 
     return !!found ? found?.is_active === true : true
   }
+  console.log(cashBoxDetails)
 
   return (
     <Box className={`${classes.root} ${noSticky ? classes.noSticky : ''}`}>
-      <Box width='320px' display='flex' alignItems='center' flexDirection='column' mb={4}>
+      {/* <Box display='flex' alignItems='center' flexDirection='column' mb={4}>
         {checked && (
           <>
             <Box my={1}>
@@ -46,34 +60,30 @@ function RippedPaperCheck({ data, margin, checked, chequeData: cheque, logo = ''
             <Typography variant='h5'>{data?.name || t('menu.settings.shops.shop_create.cheque_type')}</Typography>
           </>
         )}
-      </Box>
+      </Box> */}
 
       <Box className={classes.inner} mx={margin && 4}>
         <Box px={2} py={4}>
-          {cheque?.has_logo && (
-            <div className={classes.canvasContainer}>
-              <Box width={288} height={96} className={classes.canvas}>
-                {logo?.value && (
-                  <img
-                    src={logo?.value}
-                    alt=''
-                    style={{
-                      position: 'relative',
-                      top: logo?.y,
-                      left: logo?.x,
-                      transformOrigin: 'left top',
-                      transform: `rotate(${logo?.rotation}deg)`,
-                      color: palette.black,
-                      width: `${logo?.width}px`,
-                      height: `${logo?.height}px`,
-                      verticalAlign: 'middle',
-                      lineHeight: `${logo?.height}px`,
-                    }}
-                  />
-                )}
-              </Box>
-            </div>
-          )}
+          <div className={classes.canvasContainer}>
+            {/* <Box width={288} height={96} className={classes.canvas}> */}
+            <img
+              src={'/brand_cheque.png'}
+              alt=''
+              style={{
+                position: 'relative',
+                top: logo?.y,
+                left: logo?.x,
+                transformOrigin: 'left top',
+                transform: `rotate(${logo?.rotation}deg)`,
+                color: palette.black,
+                width: `${logo?.width}px`,
+                height: `${logo?.height}px`,
+                verticalAlign: 'middle',
+                lineHeight: `${logo?.height}px`,
+              }}
+            />
+            {/* </Box> */}
+          </div>
           <div className={classes.border} />
           <Fragment key={'index'}>
             <Box className={classes.content}>
@@ -85,7 +95,7 @@ function RippedPaperCheck({ data, margin, checked, chequeData: cheque, logo = ''
                   id={`return-price-${'index2'}`}
                   rowData={{
                     type: `Sotuv raqami:`,
-                    value: `#3232323`,
+                    value: `#${get(cashBoxDetails, 'data.data.sale_number')}`,
                   }}
                 />
               )}
@@ -103,7 +113,7 @@ function RippedPaperCheck({ data, margin, checked, chequeData: cheque, logo = ''
                   id={`return-price-${'index4'}`}
                   rowData={{
                     type: `Sana:`,
-                    value: `32.11.2090, 10:45:09`,
+                    value: ` ${dayjs().day(7).format('DD.MM.YYYY, HH:mm:ss')}`,
                   }}
                 />
               )}
@@ -121,7 +131,7 @@ function RippedPaperCheck({ data, margin, checked, chequeData: cheque, logo = ''
                   id={`return-price-${'index6'}`}
                   rowData={{
                     type: `Sotuvchi:`,
-                    value: `Islombek`,
+                    value: `${get(userData, 'fullName')}`,
                   }}
                 />
               )}
@@ -130,7 +140,7 @@ function RippedPaperCheck({ data, margin, checked, chequeData: cheque, logo = ''
                   id={`return-price-${'index8'}`}
                   rowData={{
                     type: `Mijoz:`,
-                    value: `Muminov Bekzodbek`,
+                    value: `${get(customerId, 'name', '')}`,
                   }}
                 />
               )}
@@ -139,31 +149,35 @@ function RippedPaperCheck({ data, margin, checked, chequeData: cheque, logo = ''
                   id={`return-price-${'index9'}`}
                   rowData={{
                     type: `Kontakt:`,
-                    value: `+998 99 999 99 99`,
+                    value: `${get(customerId, 'phone', '')}`,
                   }}
                 />
               )}
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
           </Fragment>
-          <Fragment key={'index3'}>
-            <Box className={classes.content}>
-              <p id={`return-name-${'index'}`}>
-                <b className={classes.bold}>1. Azitromirsin 250 mg / Dorilar/ Antibiotik</b>
-              </p>
-              {disableSumsOnGoods() && (
-                <DashedRow
-                  id={`return-price-${'index'}`}
-                  rowData={{
-                    type: `2 dona x 239 9000`,
-                    value: `789 900 UZS`,
-                  }}
-                />
-              )}
-            </Box>
-            {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
-          </Fragment>
-          <Fragment key={'index35'}>
+          {get(cartItemsList, 'data').map((el, index) => (
+            <Fragment key={'index3'}>
+              <Box className={classes.content}>
+                <p id={`return-name-${'index'}`}>
+                  <b className={classes.bold}>
+                    {index + 1}. {get(el, 'product.name')}
+                  </b>
+                </p>
+                {disableSumsOnGoods() && (
+                  <DashedRow
+                    id={`return-price-${'index'}`}
+                    rowData={{
+                      type: `${get(el, 'quantity')} dona`,
+                      value: `${get(el, 'total_price')} so'm`,
+                    }}
+                  />
+                )}
+              </Box>
+              {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
+            </Fragment>
+          ))}
+          {/* <Fragment key={'index35'}>
             <Box className={classes.content}>
               <p id={`return-name-${'index'}`}>
                 <b className={classes.bold}>2. Azitromirsin 250 mg / Dorilar/ Antibiotik</b>
@@ -179,7 +193,7 @@ function RippedPaperCheck({ data, margin, checked, chequeData: cheque, logo = ''
               )}
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
-          </Fragment>
+          </Fragment> */}
           <Fragment key={'index39'}>
             <Box className={classes.content}>
               {/* <p id={`return-name-${'index'}`}>
@@ -190,11 +204,23 @@ function RippedPaperCheck({ data, margin, checked, chequeData: cheque, logo = ''
                   id={`return-price-${'index'}`}
                   rowData={{
                     type: `Jami`,
-                    value: `789 900 UZS`,
+                    value: `${get(cartItemsList, 'total_amount')}`,
                   }}
                 />
               )}
-              {disableSumsOnGoods() && (
+              {paymentsList.map(
+                (el) =>
+                  disableSumsOnGoods() && (
+                    <DashedRow
+                      id={`return-price-${'index'}`}
+                      rowData={{
+                        type: `${el.name}:`,
+                        value: `${el.amount}`,
+                      }}
+                    />
+                  )
+              )}
+              {/* {disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index'}`}
                   rowData={{
@@ -211,7 +237,7 @@ function RippedPaperCheck({ data, margin, checked, chequeData: cheque, logo = ''
                     value: `789 900 UZS`,
                   }}
                 />
-              )}
+              )} */}
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             <ChequeBarcode orderNumber={'323232323'} />
