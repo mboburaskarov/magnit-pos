@@ -16,13 +16,13 @@ export default function DateRangeInputsBox({ dateState }) {
   const { reset } = useFormContext()
 
   useEffect(() => {
-    if (dateState.from && dateState.to) {
-      const from_day = dayjs(dateState.from).format('DD')
-      const from_month = dayjs(dateState.from).format('MM')
-      const from_year = dayjs(dateState.from).format('YYYY')
-      const to_day = dayjs(dateState.to).format('DD')
-      const to_month = dayjs(dateState.to).format('MM')
-      const to_year = dayjs(dateState.to).format('YYYY')
+    if (dateState?.from && dateState?.to) {
+      const from_day = dayjs(dateState?.from).format('DD')
+      const from_month = dayjs(dateState?.from).format('MM')
+      const from_year = dayjs(dateState?.from).format('YYYY')
+      const to_day = dayjs(dateState?.to).format('DD')
+      const to_month = dayjs(dateState?.to).format('MM')
+      const to_year = dayjs(dateState?.to).format('YYYY')
       reset({ from_day, from_month, from_year, to_day, to_month, to_year })
     }
   }, [dateState])

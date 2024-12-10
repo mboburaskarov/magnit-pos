@@ -113,7 +113,17 @@ export const theme = ({ mode, palette }) => {
             border: '0',
             cursor: 'pointer',
             position: 'relative',
-
+            '&.MuiButton-containedPrimary.Mui-disabled': {
+              '& p': {
+                color: `${palette.orange[200]} !important`,
+              },
+            },
+            '&.MuiButton-containedSecondary.Mui-disabled': {
+              backgroundColor: '#fff !important',
+              '& p': {
+                color: `${palette.bunker[300]} !important`,
+              },
+            },
             '&.Mui-disabled': {
               backgroundColor: `${palette.orange[50]} !important`,
               color: `${palette.orange[200]} !important`,

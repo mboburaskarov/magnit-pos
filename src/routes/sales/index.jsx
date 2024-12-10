@@ -1,6 +1,7 @@
 import LayoutWithNavbar from '../../layouts/LayoutWithNavbar'
 import MainLayout from '../../layouts/MainLayout'
 import SalesPage from '../../pages/sales'
+import AllSales from '../../pages/sales/all'
 import CardShiftDetails from '../../pages/sales/card-shift-details'
 import NewCashRegister from '../../pages/sales/create-cash-register'
 import NewSale from '../../pages/sales/new-order'
@@ -26,7 +27,7 @@ const salesRoutes = {
       children: [
         {
           path: '',
-          element: <SalesPage />,
+          element: <AllSales />,
         },
       ],
     },

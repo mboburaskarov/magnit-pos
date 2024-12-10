@@ -448,7 +448,7 @@ export default function OrderDrawer({
               <Box width='calc(75% - 64px)' padding={'0 40px 0 0'}>
                 <Box mb={'40px'} display='flex' width={'100%'} justifyContent={'space-between'}>
                   <Box
-                    width={'416px'}
+                    width={'100%'}
                     borderRadius={'16px'}
                     boxShadow='0px 2px 8px 0px #0000000A'
                     border={'1px solid'}
@@ -469,7 +469,7 @@ export default function OrderDrawer({
                     border={'1px solid'}
                     padding={'24px'}
                     borderColor={'bunker.100'}
-                    width={'416px'}
+                    width={'100%'}
                   >
                     <Typography fontSize={24} fontWeight={'700'} lineHeight={'32px'} color={'bunker.500'}>
                       {maxAmount < 0 ? 'Qaytim' : 'To’lash kerak'}
@@ -485,7 +485,7 @@ export default function OrderDrawer({
                   </Typography>
                   <Grid container display={'flex'}>
                     {get(paymentTypesList, 'data.data', []).map((item) => (
-                      <Grid sx='3' sm='3' lg='3' xl='3' xs='3' m={'3'} onClick={() => handleAddPaymentType(item)}>
+                      <Grid sx='3' sm='3' lg='3' xl='3' xs='3' p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
                         <Box
                           display={'flex'}
                           p={'20px'}
@@ -496,8 +496,8 @@ export default function OrderDrawer({
                           }}
                           height={'80px'}
                           bgcolor={'bg.10'}
-                          mr={'16px'}
-                          mb={'16px'}
+                          // mr={'16px'}
+                          // mb={'16px'}
                           justifyContent={'space-between'}
                           borderRadius={'24px'}
                         >

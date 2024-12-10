@@ -179,7 +179,7 @@ const paletteLight = {
     50: '#fff7ed',
     100: '#FE50000D',
     150: '#FFE9D4',
-    200: '#fed7aa',
+    200: '#FFCEA8',
     300: '#fdba74',
     400: '#fb923c',
     500: '#FF6018',

@@ -235,8 +235,9 @@ export default function DateFilterDrawerSingle({
   const label = useRef('')
   const weekDays = useMemo(() => localeData.weekdays().map((item) => item[0].toUpperCase() + item.slice(1)), [localeData])
   const weekdaysMin = useMemo(() => localeData.weekdaysMin().map((item) => item[0].toUpperCase() + item.slice(1)), [localeData])
+  console.log(dateState)
 
-  const classes = useStyles({ isOneDayDifference: dateState.from - dateState.to === -86000000 || dateState.from - dateState.to === 0 })
+  const classes = useStyles({ isOneDayDifference: dateState?.from - dateState?.to === -86000000 || dateState?.from - dateState?.to === 0 })
 
   function isSelectingFirstDay(from, to, day) {
     const isBeforeFirstDay = from && DateUtils.isDayBefore(day, from)
@@ -341,10 +342,10 @@ export default function DateFilterDrawerSingle({
                 firstDayOfWeek={1}
                 weekdaysLong={weekDays}
                 weekdaysShort={weekdaysMin}
-                selectedDays={[dateState.from, { from: dateState.from, to: dateState.to }]}
+                selectedDays={[dateState?.from, { from: dateState?.from, to: dateState?.to }]}
                 fromMonth={fromMonth}
                 month={dateState?.from ? dateState?.from : dateState?.month ? dateState?.month : new Date()}
-                modifiers={{ start: dateState.from, end: dateState.to }}
+                modifiers={{ start: dateState?.from, end: dateState?.to }}
                 onDayClick={handleDayClick}
                 onDayMouseEnter={handleDayMouseEnter}
                 showOutsideDays

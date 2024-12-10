@@ -616,7 +616,7 @@ function NewSale() {
               </Typography>
             </Button>
             <Button disabled={size(get(cartItemsList, 'data.data.data')) == 0} color='secondary' onClick={() => setIsCreateOpenDraft(true)}>
-              <TimeAndDate />
+              <TimeAndDate disabled={size(get(cartItemsList, 'data.data.data'))} />
               <Typography ml={'12px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
                 Draft
               </Typography>

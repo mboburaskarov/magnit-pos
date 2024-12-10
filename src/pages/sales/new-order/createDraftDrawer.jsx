@@ -50,9 +50,12 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
 
   const [eposChecked, setEposChecked] = useState(false)
   const changeExpireDate = (type, date = new Date()) => {
+    console.log('ff', type, date)
+
     if (type === 'ertaga') {
       const nextWeek = new Date(date)
       nextWeek.setDate(nextWeek.getDate() + 1)
+      console.log('er', nextWeek)
       setValue('draft_time', nextWeek)
     }
     if (type === '3kun') {
@@ -116,7 +119,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
                   // minTime={new Date()}
                   // minT
                   required
-                  id='draft_time'
+                  id='draft_time_id'
                   showYearDropdown
                   label='Kechiktirish muddati'
                   placeholder='Kechiktirish muddati'
