@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Palette } from '@mui/icons-material'
 import { theme } from '../../../assets/theme'
+import LoadingContainer from '../../../../components/LoadingContainer'
 const useStyles = makeStyles((theme) => ({
   box: {
     display: 'flex',
@@ -83,8 +84,22 @@ function NewCashRegister() {
   const { data: registerCashData, refetch: refetchregisterCashData } = useQuery('registerCashData', () =>
     requests.getRegisterCashData(methods.watch('registerCash_id')?.id)
   )
+  const { mutate: checkSaleExist, isLoading: isCheckSaleExist } = useMutation(requests.checkSaleExist, {
+    onSuccess: ({ data }) => {
+      // console.log(data.data, 'ff')
+      if (get(data, 'data')) {
+        navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+      }
+      success('Продукт успешно создан!')
+    },
+    onError: (err) => {
+      error('Ошибка при создании товара!')
+      console.log('err', err)
+    },
+  })
   useEffect(() => {
-    refetchregisterCashList()
+    checkSaleExist()
+    // refetchregisterCashList()
   }, [])
   useEffect(() => {
     if (registerCashData) setCanCreate((a) => ({ ...a, canCreate: true }))
@@ -94,6 +109,7 @@ function NewCashRegister() {
       setCanCreate({ canCreate: true, is_open: get(methods.watch('registerCash_id'), 'is_open') })
     })
   }, [methods.watch('registerCash_id')])
+
   const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createProduct, {
     onSuccess: () => {
       // navigate(`${location.pathname}`)
@@ -146,102 +162,104 @@ function NewCashRegister() {
     error('Пожалуйста, заполните все поля!')
   }
   return (
-    <FormProvider {...methods}>
-      <Box className={classes.box}>
-        <Box className={classes.wrapper}>
-          <Typography display={'flex'} alignItems={'center'} fontSize={'32px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'} p={'24px'}>
-            {get(canCreate, 'is_open') ? (
-              'Kassirni tanlang'
-            ) : (
-              <>
-                <span className={classes.closeStoreDot} />
-                Kassa Yopiq
-              </>
-            )}
-          </Typography>
-          <Box display={'flex'} p={'40px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
-            <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <Box sx={{ '& div': { backgroundColor: 'transparent' } }}>
-                <SelectSimple
-                  onChange={() => console.log('hi')}
-                  options={registerCashList?.data?.data}
-                  required
-                  label={'Kassa'}
-                  placeholder='Kassirni tanlang'
-                  name={'registerCash_id'}
-                />
-                <Box height={'24px'} />
-                <OutLineTextField
-                  endAdornmentText={'UZS'}
-                  end
-                  type={'number'}
-                  fullWidth
-                  name='open_amout'
-                  label='Ochilish miqdori'
-                  placeholder='Miqdorni kiriting'
-                />
-                <Box height={'24px'} />
+    <LoadingContainer readyState={!isCheckSaleExist}>
+      <FormProvider {...methods}>
+        <Box className={classes.box}>
+          <Box className={classes.wrapper}>
+            <Typography display={'flex'} alignItems={'center'} fontSize={'32px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'} p={'24px'}>
+              {get(canCreate, 'is_open') ? (
+                'Kassirni tanlang'
+              ) : (
+                <>
+                  <span className={classes.closeStoreDot} />
+                  Kassa Yopiq
+                </>
+              )}
+            </Typography>
+            <Box display={'flex'} p={'40px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
+              <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <Box sx={{ '& div': { backgroundColor: 'transparent' } }}>
+                  <SelectSimple
+                    onChange={() => console.log('hi')}
+                    options={registerCashList?.data?.data}
+                    required
+                    label={'Kassa'}
+                    placeholder='Kassirni tanlang'
+                    name={'registerCash_id'}
+                  />
+                  <Box height={'24px'} />
+                  <OutLineTextField
+                    endAdornmentText={'UZS'}
+                    end
+                    type={'number'}
+                    fullWidth
+                    name='open_amout'
+                    label='Ochilish miqdori'
+                    placeholder='Miqdorni kiriting'
+                  />
+                  <Box height={'24px'} />
 
-                <TextField fullWidth name='description' label='Izoh' placeholder='Fikr kiriting' />
+                  <TextField fullWidth name='description' label='Izoh' placeholder='Fikr kiriting' />
+                </Box>
+                <Button
+                  type='submit'
+                  onClick={methods.handleSubmit(onSubmit, onError)}
+                  disabled={!get(canCreate, 'canCreate')}
+                  sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}
+                >
+                  Kassani oching <ArrowRightIcon color={!get(canCreate, 'canCreate') ? '#FF6018' : '#fff'} />
+                </Button>
               </Box>
-              <Button
-                type='submit'
-                onClick={methods.handleSubmit(onSubmit, onError)}
-                disabled={!get(canCreate, 'canCreate')}
-                sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}
-              >
-                Kassani oching <ArrowRightIcon color={!get(canCreate, 'canCreate') ? '#FF6018' : '#fff'} />
-              </Button>
-            </Box>
-            <Box sx={{ border: '1px solid', mx: '40px', borderColor: 'bunker.100' }} />
+              <Box sx={{ border: '1px solid', mx: '40px', borderColor: 'bunker.100' }} />
 
-            <Box sx={{ width: '100%' }}>
-              <Typography fontSize={'16px'} lineHeight={'24px'} fontWeight={'600'} color={'bunker.700'}>
-                Kassangizda mavjud:
-              </Typography>
-              <Box className={classes.card_box}>
-                <Box display={'flex'} alignItems={'center'}>
-                  <Box className={classes.iconBox}>
-                    <MoneyOutlineIcon />
-                  </Box>
-                  <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.950'}>
-                    Naqd
-                  </Typography>
-                </Box>
-                <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
-                <Box display={'flex'} justifyContent={'end'}>
-                  <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
-                    {get(registerCashData, 'data.data.cash_amount', null)}
-                    <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
-                      UZS
+              <Box sx={{ width: '100%' }}>
+                <Typography fontSize={'16px'} lineHeight={'24px'} fontWeight={'600'} color={'bunker.700'}>
+                  Kassangizda mavjud:
+                </Typography>
+                <Box className={classes.card_box}>
+                  <Box display={'flex'} alignItems={'center'}>
+                    <Box className={classes.iconBox}>
+                      <MoneyOutlineIcon />
+                    </Box>
+                    <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.950'}>
+                      Naqd
                     </Typography>
-                  </Typography>
-                </Box>
-              </Box>
-              <Box className={classes.card_box}>
-                <Box display={'flex'} alignItems={'center'}>
-                  <Box className={classes.iconBox}>
-                    <CartOutlineIcon />
                   </Box>
-                  <Typography fontSize={'24px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'}>
-                    Karta
-                  </Typography>
-                </Box>
-                <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
-                <Box display={'flex'} justifyContent={'end'}>
-                  <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
-                    {get(registerCashData, 'data.data.cashless_amount', null)}
-                    <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
-                      UZS
+                  <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
+                  <Box display={'flex'} justifyContent={'end'}>
+                    <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
+                      {get(registerCashData, 'data.data.cash_amount', null)}
+                      <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
+                        UZS
+                      </Typography>
                     </Typography>
-                  </Typography>
+                  </Box>
+                </Box>
+                <Box className={classes.card_box}>
+                  <Box display={'flex'} alignItems={'center'}>
+                    <Box className={classes.iconBox}>
+                      <CartOutlineIcon />
+                    </Box>
+                    <Typography fontSize={'24px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'}>
+                      Karta
+                    </Typography>
+                  </Box>
+                  <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
+                  <Box display={'flex'} justifyContent={'end'}>
+                    <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
+                      {get(registerCashData, 'data.data.cashless_amount', null)}
+                      <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
+                        UZS
+                      </Typography>
+                    </Typography>
+                  </Box>
                 </Box>
               </Box>
             </Box>
           </Box>
         </Box>
-      </Box>
-    </FormProvider>
+      </FormProvider>
+    </LoadingContainer>
   )
 }
 

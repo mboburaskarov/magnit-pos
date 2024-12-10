@@ -12,6 +12,8 @@ const userData = createSlice({
   },
   reducers: {
     setUserData(state, action) {
+      console.log(action)
+
       state.fullName = `${action.payload.first_name} ${action.payload.last_name}`
       state.type = 'SUPER_ADMIN'
       state.phone = action.payload.phone

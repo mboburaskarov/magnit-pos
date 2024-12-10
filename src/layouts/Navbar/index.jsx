@@ -12,6 +12,7 @@ import { filterNavData } from '../../Routes'
 import { useQuery } from 'react-query'
 import { requests } from '../../../utils/requests'
 import { setUserData } from '../../redux-toolkit/userSlice'
+import { get } from 'lodash'
 
 export default function Navbar() {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
@@ -19,7 +20,7 @@ export default function Navbar() {
   const classes = navbarStyles({ isOpen })
   const dispatch = useDispatch()
   const access_token = localStorage.getItem('access_token')
-  // const { data: userInfo } = useQuery('userInfo', () => requests.getUserInfo(), { enabled: !!access_token })
+  const { data: userInfo } = useQuery('userInfo', () => requests.getUserInfo(), { enabled: !!access_token })
   // const { data: rolesData } = useQuery('rolesData', () => requests.getAllRoles(), { enabled: !!userInfo })
   // const findRole = rolesData?.data?.orders?.find((item) => item?.name === userInfo?.data?.type)
   // const { data: roleActions } = useQuery('roleActions', () => requests.getSingleRoleActions({ roleId: findRole?._id }), {
@@ -28,17 +29,21 @@ export default function Navbar() {
   const [currentRoutes, setCurrentRoutes] = useState(null)
   const [isUserOpen, setIsUserOpen] = useState(null)
   const currentRoutesRef = useRef(currentRoutes)
+  console.log(userInfo, user_data)
+
   const handleDrawerToggle = useCallback(() => {
     dispatch(sidebarToggle(!isOpen))
   }, [isOpen, dispatch])
   useDeepCompareEffect(() => {
     if (currentRoutes) currentRoutesRef.current = currentRoutes
   }, [currentRoutes])
-  // useEffect(() => {
-  //   if (userInfo?.data && roleActions?.data) {
-  //     dispatch(setUserData({ ...userInfo?.data, role_actions: roleActions?.data[0]?.actions }))
-  //   }
-  // }, [roleActions?.data, userInfo?.data])
+  useEffect(() => {
+    console.log(userInfo)
+
+    if (userInfo?.data) {
+      dispatch(setUserData({ ...userInfo?.data?.data }))
+    }
+  }, [userInfo?.data])
   const currentRoutesMemoized = useMemo(() => currentRoutes || currentRoutesRef?.current, [currentRoutesRef, currentRoutes])
   const routeString = []
   user_data?.role_actions?.forEach((item) => {
