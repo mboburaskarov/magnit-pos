@@ -112,7 +112,8 @@ export default function LoginPage() {
       localStorage.setItem('user_data', JSON.stringify(userData.employee))
       dispatch(setUserData(userData?.employee))
       setTimeout(() => {
-        navigate('/')
+        // navigate('/')
+        window.location.replace('/redirect')
       }, 300)
     },
     onError: (err) => {

@@ -60,8 +60,8 @@ request.interceptors.response.use(
     }
 
     if (err.response.status === 401 || err.response.status === 403) {
-      localStorage.clear()
-      window.location.replace('/login')
+      // localStorage.clear()
+      // window.location.replace('/login')
     }
 
     return Promise.reject(err)
