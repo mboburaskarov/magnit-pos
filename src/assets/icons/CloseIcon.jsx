@@ -36,6 +36,7 @@ const CloseIcon = (props) => {
       {...props}
       classes={classes.boxWrapper}
       cursor='pointer'
+      className='icon-wrapper'
       sx={{
         minWidth: '48px',
         height: '48px',

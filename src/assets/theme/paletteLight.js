@@ -2,6 +2,8 @@ const paletteLight = {
   type: 'light',
   white: '#ffffff',
   black: '#111217',
+  red: '#FF4639',
+  green: '#28B95E',
   common: {
     white: '#ffffff',
   },
@@ -198,7 +200,7 @@ const paletteLight = {
     501: '#db5151',
     600: '#ff0844',
     601: '#ff0844',
-    700: '#b91c1c',
+    700: '#FF4639',
     800: '#991b1b',
     900: '#7f1d1d',
   },

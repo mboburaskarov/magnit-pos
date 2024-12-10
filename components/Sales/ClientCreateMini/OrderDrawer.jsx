@@ -38,6 +38,7 @@ import AddPaumentTypeIcon from '../../../src/assets/icons/AddPaymentTypeIcon'
 import { FormProvider, useForm } from 'react-hook-form'
 import { requests } from '../../../utils/requests'
 import { get, size } from 'lodash'
+import { LoadingButton } from '@mui/lab'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -141,7 +142,7 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.gray[300]}`,
   },
   placeholder: {
-    height: 128,
+    height: 110,
     border: `1px dashed ${theme.palette.gray[200]}`,
     borderRadius: 16,
     flex: '0 0 32.3%',
@@ -154,31 +155,59 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 16,
     // marginRight: 8,
     marginBottom: 16,
-    border: `1px solid ${theme.palette.gray[300]}`,
+    border: `2px solid ${theme.palette.gray[300]}`,
     overflow: 'hidden',
   },
   outline: {
     transition: 'all 0.4s ease',
-    boxShadow: `0 0 0 3px ${theme.palette.blue[500]}`,
+    border: `2px solid ${theme.palette.orange[500]}`,
+
+    // boxShadow: `0 0 0 3px ${theme.palette.orange[500]}`,
   },
   boxHeader: {
     backgroundColor: theme.palette.gray[100],
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 56,
-    padding: '18px 16px',
+    height: 48,
+    padding: '8px 5px 8px 12px',
     borderBottom: `1px solid ${theme.palette.gray[300]}`,
+    '& .MuiButtonBase-root': {
+      padding: 0,
+      width: '32px !important',
+      height: '32px !important',
+      '&:hover': {
+        backgroundColor: theme.palette.red[10],
+        '& .icon-wrapper': {
+          backgroundColor: theme.palette.red[10],
+          '& svg path': {
+            fill: theme.palette.red[700],
+          },
+          // borderRadius: 0,
+        },
+      },
+      '& .icon-wrapper': {
+        height: '32px !important',
+        width: '32px !important',
+        minWidth: '32px !important',
+        // borderRadius: 0,
+      },
+    },
   },
 
   input: {
     height: 56,
     cursor: 'pointer',
+
     backgroundColor: theme.palette.background.default,
     '& input': {
       textAlign: 'center',
       cursor: 'pointer',
       backgroundColor: theme.palette.background.default,
+      fontSize: '16px',
+      lineHeight: '24px',
+      fontWeight: '500',
+      color: theme.palette.bunker[950],
     },
     '& input::-webkit-inner-spin-button, input::-webkit-outer-spin-button': {
       appearance: 'none',
@@ -202,7 +231,11 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     position: 'relative',
     width: '100%',
-    height: 72,
+    padding: '12px',
+    '& > .MuiFormControl-root': {
+      height: 34,
+    },
+    // height: ,
   },
   change: {
     color: theme.palette.red[500],
@@ -255,6 +288,7 @@ export default function OrderDrawer({
   const classes = useStyles()
   const [payments, setPayments] = useState([])
   const [paymentsList, setPaymentsList] = useState([])
+  const [maxAmount, setMaxAmount] = useState(0)
   const [paymentAmount, setPaymentAmount] = useState(0)
   const [payme, setPayme] = useState(false)
   const { id } = useParams()
@@ -274,6 +308,8 @@ export default function OrderDrawer({
     },
   })
   const handleAddPaymentType = (type) => {
+    if (!isVisiblePaymentType(type)) return
+
     const isThereType = paymentsList.some((item) => item.id == type.id)
 
     setPaymentsList((prev) => {
@@ -284,11 +320,33 @@ export default function OrderDrawer({
       }
     })
   }
+  const removePaymentType = (id) => {
+    const removedItem = paymentsList.filter((el) => el.id != id)
+    console.log(removedItem, id, paymentsList)
+
+    setPaymentsList(removedItem)
+  }
+
+  const isVisiblePaymentType = useCallback(
+    (type) => {
+      if (paymentsList.length == 0) return true
+
+      const totalEnteredMoney = paymentsList.reduce((sum, item) => sum + item.amount, 0)
+      const totalAmount = get(cartItemsList, 'total_amount')
+      const isThereType = type === 'overAll' ? false : paymentsList.some((item) => item.id == type.id)
+
+      if (totalEnteredMoney >= totalAmount || isThereType) return false
+
+      return true
+    },
+    [paymentsList]
+  )
   useEffect(() => {
     let amount = 0
     paymentsList.map((el) => {
-      amount += el.amount
+      amount += Number(el.amount)
     })
+    setMaxAmount(get(cartItemsList, 'total_amount') - amount)
     setPaymentAmount(amount)
   }, [paymentsList])
   const onSubmit = (data) => {
@@ -297,6 +355,7 @@ export default function OrderDrawer({
       cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
       payment_types,
       sale_id: id,
+      discount_amount: 0,
       total_amount: get(cartItemsList, 'total_amount'),
     }
     addToOrderPayment(requestBody)
@@ -313,6 +372,11 @@ export default function OrderDrawer({
     // }
     // createDraft(requestBody)
   }
+  const mpaddedPaymentsList = [
+    ...paymentsList,
+    ...Array.from({ length: 8 - paymentsList.length }, (_, index) => ({ id: `placeholder-${index}`, isPlaceholder: true })),
+  ]
+  console.log(mpaddedPaymentsList)
 
   return (
     <Box hidden>
@@ -375,7 +439,7 @@ export default function OrderDrawer({
                       Jami:
                     </Typography>
                     <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={'bunker.950'}>
-                      {get(cartItemsList, 'total_amount')}
+                      {get(cartItemsList, 'total_amount')} UZS
                     </Typography>
                   </Box>
                   <Box
@@ -387,10 +451,10 @@ export default function OrderDrawer({
                     width={'416px'}
                   >
                     <Typography fontSize={24} fontWeight={'700'} lineHeight={'32px'} color={'bunker.500'}>
-                      To’lash kerak:
+                      {maxAmount < 0 ? 'Qaytim' : 'To’lash kerak'}
                     </Typography>
-                    <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={'red.500'}>
-                      {paymentAmount} UZS
+                    <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={maxAmount === 0 ? 'green.700' : 'red.700'}>
+                      {maxAmount} UZS
                     </Typography>
                   </Box>
                 </Box>
@@ -404,6 +468,11 @@ export default function OrderDrawer({
                         <Box
                           display={'flex'}
                           p={'20px'}
+                          sx={{
+                            '& p': {
+                              color: isVisiblePaymentType(item) ? 'bunker.600' : 'bunker.400',
+                            },
+                          }}
                           height={'80px'}
                           bgcolor={'bg.10'}
                           mr={'16px'}
@@ -411,10 +480,10 @@ export default function OrderDrawer({
                           justifyContent={'space-between'}
                           borderRadius={'24px'}
                         >
-                          <Typography fontSize={18} fontWeight={'600'} lineHeight={'40px'} color={'bunker.600'}>
+                          <Typography fontSize={18} fontWeight={'600'} lineHeight={'40px'}>
                             {get(item, 'name')}
                           </Typography>
-                          <AddPaumentTypeIcon />
+                          <AddPaumentTypeIcon color={isVisiblePaymentType(item) ? '#2558FF' : '#AFD5FF'} />
                         </Box>
                       </Grid>
                     ))}
@@ -422,40 +491,51 @@ export default function OrderDrawer({
                 </Box>
                 <Box>
                   <Grid container width={'100%'} display={'flex'}>
-                    {paymentsList?.map((el) => (
+                    {mpaddedPaymentsList?.map((el) => (
                       <Grid sx='3' sm='3' lg='3' xl='3' xs='3' m={'3'} key={el.id}>
-                        <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.box}>
-                          <div className={classes.boxHeader}>
-                            <Typography id='payment-type'>{el.name}</Typography>
-                            <Box display='flex' alignItems='center'>
-                              <MuiButton
-                                variant='primary'
-                                sx={() => ({
-                                  paddingRight: 0,
-                                  paddingLeft: 1,
-                                })}
-                              >
-                                <RemovePaymentIcon />
-                              </MuiButton>
-                            </Box>
-                          </div>
-                          <div className={classes.boxBody}>
-                            <PaymentMethodInput
-                              id={'cashback' ? 'balance-payment-input' : 'payment-input'}
-                              index={el}
-                              classes={classes}
-                              item={el}
-                              isReturnDrawer={true}
-                              cashbackPaymentPercentage={1}
-                              orderPayments={paymentsList}
-                              totalPrice={1}
-                              clientInfo={'clientInfo'}
-                              max={222}
-                              disabled={false}
-                              webkassaOn={true}
-                            />
-                          </div>
-                        </Box>
+                        {el?.amount ? (
+                          <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.box}>
+                            <div className={classes.boxHeader}>
+                              <Typography lineHeight={'24px'} fontSize={'16px'} fontWeight={'600'} color={'bunker.950'} id='payment-type'>
+                                {el.name}
+                              </Typography>
+                              <Box display='flex' alignItems='center'>
+                                <MuiButton
+                                  variant='primary'
+                                  onClick={() => removePaymentType(el.id)}
+                                  sx={() => ({
+                                    paddingRight: 0,
+                                    paddingLeft: 1,
+                                  })}
+                                >
+                                  <RemovePaymentIcon />
+                                </MuiButton>
+                              </Box>
+                            </div>
+                            <div className={classes.boxBody}>
+                              <PaymentMethodInput
+                                id={el.id}
+                                index={el.id}
+                                classes={classes}
+                                item={el}
+                                isReturnDrawer={true}
+                                removePaymentType={removePaymentType}
+                                cashbackPaymentPercentage={1}
+                                paymentsList={paymentsList}
+                                setPaymentsList={setPaymentsList}
+                                totalPrice={1}
+                                clientInfo={'clientInfo'}
+                                max={maxAmount}
+                                totalAmount={get(cartItemsList, 'total_amount')}
+                                paymentAmount={paymentAmount}
+                                disabled={false}
+                                webkassaOn={true}
+                              />
+                            </div>
+                          </Box>
+                        ) : (
+                          <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.placeholder}></Box>
+                        )}
                       </Grid>
                     ))}
                   </Grid>
@@ -473,7 +553,9 @@ export default function OrderDrawer({
                 </Box>
               </Box>
             </Box>
-            <Button onClick={onSubmit}>To'lash</Button>
+            <LoadingButton sx={{ minHeight: '48px !important ', display: 'flex' }} variant='contained' disabled={maxAmount > 0} onClick={onSubmit}>
+              To'lash
+            </LoadingButton>
           </FormProvider>
         </Drawer>
       </Box>

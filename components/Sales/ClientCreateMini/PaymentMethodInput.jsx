@@ -1,66 +1,42 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { TextField } from '@mui/material'
-import PriceFormattedNegativeInput from '../../Inputs/PriceFormattedNegativeInput'
-import { useDispatch } from 'react-redux'
-import setOrderAmount from './OrderDrawer'
-import { error } from '../../../utils/toast'
-import PriceFormattedInput from '../../Inputs/PriceFormattedInput'
 import { useTranslation } from 'react-i18next'
-import { numberToPrice } from '../../../utils/numberToPrice'
 
 export default function PaymentMethodInput({
   classes,
   item,
-  orderPayments,
-  totalPrice,
-  clientInfo,
-  cashbackPaymentPercentage,
+  paymentsList,
+  removePaymentType,
   id,
+  setPaymentsList,
   index,
   disabled,
-  minusMark,
-  isReturnDrawer,
-  webkassaOn,
+  totalAmount,
+  paymentAmount,
   max,
 }) {
-  const dispatch = useDispatch()
   const { t } = useTranslation()
-  const [value, setValue] = useState(webkassaOn ? (isReturnDrawer ? -item?.max_amount : item?.paid_amount) : item?.paid_amount)
-  const maxValue = useMemo(() => item?.max_amount, [item])
 
-  // useEffect(() => {
-  //   const hasOnlyZero = new RegExp('^[0]+$').test(value)
-  //   if ((value !== '' && !hasOnlyZero) || value === 0) {
-  //     dispatch(setOrderAmount(item?.id, Number(value)))
-  //   }
-  // }, [value])
+  const [value, setValue] = useState(item?.amount || 0)
 
   useEffect(() => {
-    setValue(item?.amount)
-  }, [orderPayments])
+    setValue(item?.amount || 0)
+  }, [item])
 
-  const handleReturnCashback = (numValue) => {
-    const isCashback = item?.company_payment_type_id === 'cashback'
-    const inputs = document.querySelectorAll(`#${isCashback ? 'balance-payment-input' : 'payment-input'}`)
-    let count = 0
-    inputs?.forEach((input) => {
-      count += Number(input?.value?.replaceAll(' ', ''))
-    })
-
-    if (count > max) {
-      const maxAmount = max > Math.abs(totalPrice) ? totalPrice : max
-      if (isCashback) {
-        error('menu.sales.toast.error.loyalty_payment', {
-          max: numberToPrice(maxAmount),
-        })
-      } else
-        error('menu.sales.toast.error.not_loyalty_payment', {
-          max: numberToPrice(maxAmount),
-        })
-
-      setValue(item?.paid_amount)
-    } else setValue(-numValue)
+  const handleChange = (e) => {
+    const inputValue = Number(e.target.value)
+    //|| max + value >= inputValue
+    // inputValue < max || max + value >= inputValue
+    // if (inputValue < max || max + value >= inputValue) {
+    if (inputValue <= 0) return removePaymentType(item.id)
+    const updatedPaymentList = paymentsList.map((payment) => (payment.id === id ? { ...payment, amount: inputValue } : payment))
+    setPaymentsList(updatedPaymentList)
+    setValue(inputValue)
+    // } else {
+    //   setValue(value)
+    // }
   }
+
   return (
     <TextField
       id={id}
@@ -71,71 +47,15 @@ export default function PaymentMethodInput({
       disabled={disabled}
       fullWidth
       value={value}
-      inputComponent={PriceFormattedNegativeInput}
-      onFocus={(e) => {
+      onFocus={() => {
         const box = document.getElementById(`payment-box${index}`)
         box.classList.add(classes?.outline)
       }}
-      onBlur={(e) => {
+      onBlur={() => {
         const box = document.getElementById(`payment-box${index}`)
         box.classList.remove(classes?.outline)
       }}
-      InputProps={{
-        allowNegative: false,
-        inputComponent: PriceFormattedInput,
-      }}
-      onChange={(e) => {
-        if (max < Number(e.target.value)) {
-          setValue(Number(e.target.value))
-        }
-        // let numValue = Number(e.target.value)
-        // if (!!maxValue && webkassaOn && isReturnDrawer && maxValue < numValue) {
-        //   setValue(-maxValue)
-        //   return
-        // }
-        // if (!!max && isReturnDrawer) {
-        //   handleReturnCashback(numValue)
-        //   return
-        // }
-        // if (item?.type === 'gift-card' && numValue > max) {
-        //   error(`menu.marketing.${item?.company_payment_type_id?.toLowerCase()}.not_enough_balance`)
-        //   setValue(item?.paid_amount)
-        //   return
-        // }
-        // if (item?.company_payment_type_id === 'cashback') {
-        //   const cashbackPaymentAmount =
-        //     orderPayments?.filter((el) => el.company_payment_type_id === 'cashback')?.reduce((init, el) => (init += el?.paid_amount), 0) || 0
-        //   const leftSum = totalPrice - cashbackPaymentAmount
-        //   const availableClientBalance = clientInfo?.balance - cashbackPaymentAmount + item?.paid_amount
-
-        //   const limitPercentage = (cashbackPaymentPercentage ?? 100) / 100
-        //   const payableAmount = totalPrice * limitPercentage - cashbackPaymentAmount + item?.paid_amount
-        //   if (numValue > payableAmount && numValue) {
-        //     error(
-        //       t('menu.sales.new.cashback_percent_error', {
-        //         cashbackPaymentPercentage,
-        //       })
-        //     )
-        //     setValue(item?.paid_amount)
-        //     return
-        //   }
-        //   if (numValue > availableClientBalance && availableClientBalance > 0) {
-        //     error('menu.sales.new.not_enough_balance')
-        //     setValue(item?.paid_amount)
-        //     return
-        //   }
-        // }
-        // if (item?.name !== t('menu.sales.operations.cash') && numValue > totalPrice) {
-        //   setValue(item?.paid_amount)
-        //   return
-        // }
-
-        // if (isReturnDrawer) {
-        //   setValue(-e.target.value)
-        // } else {
-        //   setValue(e.target.value)
-        // }
-      }}
+      onChange={handleChange}
     />
   )
 }
