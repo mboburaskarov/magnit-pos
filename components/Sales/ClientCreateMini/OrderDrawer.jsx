@@ -289,7 +289,6 @@ export default function OrderDrawer({
   setOpenDebt,
 }) {
   const methods = useForm()
-  console.log(cartItemsList)
 
   const classes = useStyles()
   const [payments, setPayments] = useState([])
@@ -300,7 +299,6 @@ export default function OrderDrawer({
   const { id } = useParams()
   const theme = useTheme()
   const { t } = useTranslation()
-  console.log(maxAmount)
 
   const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
   const { mutate: addToOrderPayment, isLoading: isaddToOrderPayment } = useMutation(requests.addToOrderPayment, {
@@ -332,7 +330,6 @@ export default function OrderDrawer({
   }
   const removePaymentType = (id) => {
     const removedItem = paymentsList.filter((el) => el.id != id)
-    console.log(removedItem, id, paymentsList)
 
     setPaymentsList(removedItem)
   }
@@ -397,7 +394,6 @@ export default function OrderDrawer({
     ...paymentsList,
     ...Array.from({ length: 8 - paymentsList.length }, (_, index) => ({ id: `placeholder-${index}`, isPlaceholder: true })),
   ]
-  console.log(maxAmount)
 
   return (
     <Box hidden>

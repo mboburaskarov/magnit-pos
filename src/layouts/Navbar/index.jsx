@@ -29,7 +29,6 @@ export default function Navbar() {
   const [currentRoutes, setCurrentRoutes] = useState(null)
   const [isUserOpen, setIsUserOpen] = useState(null)
   const currentRoutesRef = useRef(currentRoutes)
-  console.log(userInfo, user_data)
 
   const handleDrawerToggle = useCallback(() => {
     dispatch(sidebarToggle(!isOpen))
@@ -38,8 +37,6 @@ export default function Navbar() {
     if (currentRoutes) currentRoutesRef.current = currentRoutes
   }, [currentRoutes])
   useEffect(() => {
-    console.log(userInfo)
-
     if (userInfo?.data) {
       dispatch(setUserData({ ...userInfo?.data?.data }))
     }

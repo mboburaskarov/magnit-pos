@@ -13,27 +13,9 @@ export default function ImageUpload({ id, images, onChange, label, width, height
   const [editingImage, setEditingImage] = useState(null)
 
   const filterAndSetImages = (data) => {
-    setUploadedImages((oldImages) => {
-      const newImages = editingImage
-        ? oldImages.map((el) => {
-            if (el.name === editingImage) {
-              el.name = data?.file_name
-              el.key = data?.file_url
-            }
-            return el
-          })
-        : [
-            ...oldImages,
-            {
-              name: data?.file_name,
-              key: data?.file_url,
-            },
-          ].map((el, ind) => ({
-            ...el,
-            sequence_number: ind,
-          }))
-
-      return newImages
+    setUploadedImages({
+      name: data?.file_name,
+      key: data?.file_url,
     })
   }
 

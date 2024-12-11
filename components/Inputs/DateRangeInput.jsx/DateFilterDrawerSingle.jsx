@@ -235,7 +235,6 @@ export default function DateFilterDrawerSingle({
   const label = useRef('')
   const weekDays = useMemo(() => localeData.weekdays().map((item) => item[0].toUpperCase() + item.slice(1)), [localeData])
   const weekdaysMin = useMemo(() => localeData.weekdaysMin().map((item) => item[0].toUpperCase() + item.slice(1)), [localeData])
-  console.log(dateState)
 
   const classes = useStyles({ isOneDayDifference: dateState?.from - dateState?.to === -86000000 || dateState?.from - dateState?.to === 0 })
 

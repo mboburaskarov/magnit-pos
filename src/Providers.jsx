@@ -58,6 +58,7 @@ function Providers({ children }) {
       setThemeMode(user_theme)
     }
   }, [values.theme_changed, prefersDarkMode])
+  console.log(themeMode)
 
   const muiTheme = useMemo(() => {
     const themeObj = theme({

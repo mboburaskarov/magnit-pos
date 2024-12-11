@@ -86,9 +86,6 @@ function NewCashRegister() {
   )
   const { mutate: checkSaleExist, isLoading: isCheckSaleExist } = useMutation(requests.checkSaleExist, {
     onSuccess: ({ data }) => {
-      console.log(data)
-
-      // console.log(data.data, 'ff')
       if (get(data, 'data')) {
         navigate(`/sales/new-sale/${get(data, 'data.id')}`)
       }
@@ -182,7 +179,7 @@ function NewCashRegister() {
               <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <Box sx={{ '& div': { backgroundColor: 'transparent' } }}>
                   <SelectSimple
-                    onChange={() => console.log('hi')}
+                    onChange={() => {}}
                     options={registerCashList?.data?.data}
                     required
                     label={'Kassa'}

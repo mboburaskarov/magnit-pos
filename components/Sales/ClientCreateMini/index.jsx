@@ -49,7 +49,6 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
   const classes = useStyles()
   const methods = useForm()
   const userData = useSelector((state) => state.user)
-  console.log(quickCreateClientName)
 
   useEffect(() => {
     methods.register('dial_code')

@@ -160,6 +160,12 @@ export const navbatRouteData = [
     href: '/settings',
     children: [
       {
+        label: 'navbar.profile',
+        active: '/settings/profile/*',
+        id: '9.5',
+        href: '/settings/profile',
+      },
+      {
         label: 'navbar.settings',
         active: '/settings/users/*',
         id: '9.5',

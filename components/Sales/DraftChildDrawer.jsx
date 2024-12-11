@@ -52,8 +52,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
-  console.log(open)
-
   const reactToPrintContent = useCallback(() => printContainer.current, [])
   const printContainer = useRef()
   const documentName = useRef('Cheque')
@@ -67,7 +65,6 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   const classes = useStyles()
   const { mutate: deleteDraft, isLoading: isDeleteDraft } = useMutation(requests.deleteDraft, {
     onSuccess: ({ data }) => {
-      console.log(data)
       refetchDraftList()
       setChildOpen(false)
       setOpen(false)
@@ -80,7 +77,6 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   })
   const { mutate: completeDraft, isLoading: isCompleteDraft } = useMutation(requests.completeDraft, {
     onSuccess: ({ data }) => {
-      console.log(data)
       refetchDraftList()
       setChildOpen(false)
       setOpen(false)

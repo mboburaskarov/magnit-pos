@@ -9,7 +9,7 @@ export const requests = {
   addToOrderPayment: (data) => request.post(`v1/sale/final`, data),
 
   checkSaleExist: () => request.get(`v1/sale/check`),
-
+  changeEmployeeInfo: (data) => request.put(`v1/employee/info`, data),
   //category
   // categoryGetAll
   getAllCategories: (filter) => request.get(`v1/category/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -54,6 +54,7 @@ export const requests = {
   deleteOrder: (data) => request.post(`api/admin/orders/cancelled`, data),
   rePay: (data) => request.post(`api/unipos/create`, data),
   //comments
+  changePassword: (data) => request.put(`v1/employee/reset-password`, data),
   getAllComments: (filter) => request.get(`api/admin/comments${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateComment: ({ id, data }) => request.patch(`api/admin/comments/${id}`, data),
   deleteComment: (id) => request.delete(`api/admin/comments/${id}`),

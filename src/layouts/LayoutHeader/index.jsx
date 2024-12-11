@@ -8,6 +8,7 @@ import { headerStyles } from './HeaderStyles'
 import ArrowDown from '../../assets/icons/ArrowDown'
 import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
+import { get } from 'lodash'
 
 function LayoutHeader() {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
@@ -15,8 +16,8 @@ function LayoutHeader() {
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
 
-  const firstName = userData?.fullName?.split(' ')?.[0]
-  const lastName = userData?.fullName?.split(' ')?.[1]
+  const firstName = userData?.first_name
+  const lastName = userData?.last_name
   const classes = headerStyles({ isOpen })
 
   return (
@@ -54,7 +55,7 @@ function LayoutHeader() {
                 <div className={classes.avatarPlaceholder}>
                   {/* {firstName.charAt(0)}
                   {lastName.charAt(0)} */}
-                  <img src='/default-user-img.png' />
+                  <img src={get(userData, 'photo')} />
                 </div>
 
                 <Box maxWidth='73%'>

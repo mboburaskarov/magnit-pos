@@ -37,8 +37,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 function DraftParentItemsBox({ setIsOpenChild, item }) {
   const classes = useStyles()
-  console.log(item)
-  // const { data: darftList, refetch, isDarftList } = useQuery('darftList', () => requests.getDarftById({}))
   return (
     <Box
       onClick={() => setIsOpenChild({ item })}

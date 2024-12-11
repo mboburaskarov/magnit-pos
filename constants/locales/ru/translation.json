@@ -57,7 +57,8 @@
   "navbar.vendors": "Продавцы",
   "navbar.payments": "Платежи",
   "navbar.settings": "Настройки",
-
+  "navbar.profile": "Profile",
+  "change_password.label": "Change Password",
   "menu.clients.new.male": "Мужской",
   "menu.clients.new.female": "Женский",
   "menu.clients.new.phone": "Телефон",

@@ -1,7 +1,7 @@
 const paletteLight = {
   type: 'light',
-  white: '#ffffff',
-  black: '#111217',
+  black: '#ffffff',
+  white: '#111217',
   common: {
     white: '#ffffff',
   },

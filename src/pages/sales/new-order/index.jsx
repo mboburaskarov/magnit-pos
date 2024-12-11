@@ -347,7 +347,6 @@ function NewSale() {
     )
     navigate(`${location.pathname}${searchParams}`)
   }
-  console.log(cartItemsList, size(get(cartItemsList, 'data.data.data')) == 0)
 
   // Correct the content function
   // const reactToPrintContent = useCallback(() => printContainer.current, [])

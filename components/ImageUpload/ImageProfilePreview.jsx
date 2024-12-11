@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress } from '@mui/material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import getImageUrl from '../../utils/getImageUrl'
 import ImageUploadGallery from './ImageUploadGallery'
 import { useState } from 'react'
@@ -80,62 +80,36 @@ export default function ImagePreview({
       )}
 
       {uploadedImages?.length && withoutTextBox ? (
-        <Box
-          sx={{ cursor: 'pointer', '&:hover': { '#upload-img-preview': { transform: 'rotate(0deg) !important' }, img: { transform: 'rotate(0deg)' } } }}
-          position='relative'
-          width={width || 128}
-          height={height || 228}
-          {...getRootProps()}
-        >
+        <Box display={'flex'} width={'100%'} alignItems={'center'}>
           <Box
-            id='countBox'
-            sx={{
-              position: 'absolute',
-              top: 4,
-              right: 4,
-              bgcolor: 'white',
-              color: 'green.600',
-              width: 28,
-              height: 28,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: '50%',
-              fontWeight: 600,
-              zIndex: 7,
-              transition: 'all 0.2s ease-in-out',
-            }}
+            sx={{ cursor: 'pointer', '&:hover': { '#upload-img-preview': { transform: 'rotate(0deg) !important' }, img: { transform: 'rotate(0deg)' } } }}
+            position='relative'
+            width={width || 128}
+            height={height || 228}
           >
-            {uploadedImages?.length}
-          </Box>
-          <Box
-            onClick={(e) => {
-              e.stopPropagation()
-              // setOpenGallery(true)
-              deleteImage()
-            }}
-            id='countBox'
-            sx={{
-              position: 'absolute',
-              top: 40,
-              right: 4,
-              bgcolor: 'white',
-              color: 'green.600',
-              width: 28,
-              height: 28,
-              display: 'flex',
-              padding: '5px',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: '50%',
-              fontWeight: 600,
-              zIndex: 7,
-              transition: 'all 0.2s ease-in-out',
-            }}
-          >
-            <DeleteIcon />
-          </Box>
-          <Button
+            {/* <Box
+              id='countBox'
+              sx={{
+                position: 'absolute',
+                top: 4,
+                right: 4,
+                bgcolor: 'white',
+                color: 'green.600',
+                width: 28,
+                height: 28,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: '50%',
+                fontWeight: 600,
+                zIndex: 7,
+                transition: 'all 0.2s ease-in-out',
+              }}
+            >
+              {uploadedImages?.length}
+            </Box> */}
+
+            {/* <Button
             onClick={(e) => {
               e.stopPropagation()
               setOpenGallery(true)
@@ -144,47 +118,116 @@ export default function ImagePreview({
             sx={{ position: 'absolute', bottom: 8, left: 8, zIndex: 8, height: 36, borderRadius: 2, width: `calc(${width || 128}px - 16px)` }}
           >
             просмотр
-          </Button>
-          <input id={id} {...getInputProps()} data-test='upload-photo' />
+          </Button> */}
+            <input id={id} {...getInputProps()} data-test='upload-photo' />
 
-          {uploadedImages.slice(0, 3).map((el, ind) => (
-            <Box
-              id={`upload-img-preview`}
-              sx={{
-                transition: 'all 0.2s ease',
-                zIndex: 5 - ind,
-                transform: `rotate(${ind * 10}deg)`,
-                img: { objectFit: 'cover', borderRadius: '50%', boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 8px', opacity: ind !== 0 ? 0.4 : 1 },
-              }}
-              position='absolute'
-              key={ind}
-            >
-              <img src={getImageUrl(el.key)} alt={`image of ${el.key || 'product'}`} width={width || 128} height={height || 128} />
-            </Box>
-          ))}
+            {uploadedImages.slice(0, 3).map((el, ind) => (
+              <Box
+                id={`upload-img-preview`}
+                sx={{
+                  transition: 'all 0.2s ease',
+                  zIndex: 5 - ind,
+                  transform: `rotate(${ind * 10}deg)`,
+                  img: { objectFit: 'cover', borderRadius: '50%', opacity: ind !== 0 ? 0.4 : 1 },
+                }}
+                position='absolute'
+                key={ind}
+              >
+                <img src={getImageUrl(el.key)} alt={`image of ${el.key || 'product'}`} width={width || 128} height={height || 128} />
+              </Box>
+            ))}
+          </Box>
+          <Button
+            sx={{
+              width: '156',
+              height: '32px',
+              bgcolor: 'white',
+              border: '1px solid',
+              borderColor: 'bunker.100',
+              mr: '16px',
+              ml: '24px',
+            }}
+            variant='secondary'
+            {...getRootProps()}
+          >
+            <Typography fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'orange.500'}>
+              Rasimni yangilash
+            </Typography>
+          </Button>
+          <Button
+            variant='secondary'
+            onClick={(e) => {
+              e.stopPropagation()
+              // setOpenGallery(true)
+              deleteImage()
+            }}
+            id='countBox'
+            sx={{
+              // position: 'absolute',
+              // top: 40,
+              // right: 4,
+              width: '123px',
+              height: '32px',
+              bgcolor: 'red.10',
+              color: 'green.600',
+              display: 'flex',
+              padding: '5px',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: '40px',
+              fontWeight: 600,
+              zIndex: 7,
+              transition: 'all 0.2s ease-in-out',
+            }}
+          >
+            <DeleteIcon />{' '}
+            <Typography ml={'12px'} fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'red.700'}>
+              O'chirish
+            </Typography>
+          </Button>
         </Box>
       ) : (
         withoutTextBox && (
-          <Box
-            sx={{
-              cursor: 'pointer',
-              bgcolor: mode === 'dark' ? 'rgb(64, 64, 64)' : 'rgb(245, 245, 245)',
-              borderRadius: '50%',
-              display: 'flex',
-              overflow: 'hidden',
-              alignItems: 'center',
-              justifyContent: 'center',
-              '&:hover': {
-                bgcolor: mode === 'dark' ? 'rgb(64, 64, 64)' : 'gray.200',
-                '& > svg > rect': { fill: mode === 'dark' ? 'rgb(64, 64, 64)' : '#eaeaea' },
-              },
-            }}
-            {...getRootProps()}
-            height={height || 228}
-            width={width || 128}
-          >
-            <input id={id} {...getInputProps()} data-test='upload-photo' />
-            <ImagePlaceholder />
+          <Box display={'flex'} alignItems={'center'}>
+            <Box
+              variant='secondary'
+              sx={{
+                cursor: 'pointer',
+                bgcolor: mode === 'dark' ? 'rgb(64, 64, 64)' : 'rgb(245, 245, 245)',
+                borderRadius: '50%',
+                display: 'flex',
+                overflow: 'hidden',
+                alignItems: 'center',
+                justifyContent: 'center',
+                '&:hover': {
+                  bgcolor: mode === 'dark' ? 'rgb(64, 64, 64)' : 'gray.200',
+                  '& > svg > rect': { fill: mode === 'dark' ? 'rgb(64, 64, 64)' : '#eaeaea' },
+                },
+              }}
+              {...getRootProps()}
+              height={height || 228}
+              width={width || 128}
+            >
+              <input id={id} {...getInputProps()} data-test='upload-photo' />
+              <ImagePlaceholder />
+            </Box>
+            <Button
+              sx={{
+                width: '156',
+                height: '32px',
+                bgcolor: 'white',
+                border: '1px solid',
+                borderColor: 'bunker.100',
+                mr: '16px',
+                ml: '24px',
+              }}
+              variant='secondary'
+              {...getRootProps()}
+            >
+              <Typography fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'orange.500'}>
+                Rasimni yangilash
+              </Typography>
+            </Button>
           </Box>
         )
       )}

@@ -47,7 +47,6 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
   useEffect(() => {
     refetch()
   }, [])
-  console.log(darftList)
 
   const draftListData = get(darftList, 'data.data.data', [])
   return (

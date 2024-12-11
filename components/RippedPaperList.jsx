@@ -56,7 +56,6 @@ export default function RippedPaperList({
   shop,
 }) {
   const classes = useStyles()
-  console.log(paymentsList)
 
   return (
     <Box className={classes.root}>
