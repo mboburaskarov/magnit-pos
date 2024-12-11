@@ -20,7 +20,7 @@ export default function Navbar() {
   const classes = navbarStyles({ isOpen })
   const dispatch = useDispatch()
   const access_token = localStorage.getItem('access_token')
-  const { data: userInfo } = useQuery('userInfo', () => requests.getUserInfo(), { enabled: !!access_token })
+  const { data: userInfo } = useQuery('userInfo', () => requests.getUserInfo())
   // const { data: rolesData } = useQuery('rolesData', () => requests.getAllRoles(), { enabled: !!userInfo })
   // const findRole = rolesData?.data?.orders?.find((item) => item?.name === userInfo?.data?.type)
   // const { data: roleActions } = useQuery('roleActions', () => requests.getSingleRoleActions({ roleId: findRole?._id }), {

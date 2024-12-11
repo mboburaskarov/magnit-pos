@@ -32,8 +32,11 @@ export const requests = {
   generateBarcode: () => request.get(`v1/customer/`),
   //draft
   getDarftList: (filter) => request.get(`v1/draft/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getDarftChildList: (id) => request.get(`v1/draft/${id}`),
+  getDarftById: (id) => request.get(`v1/draft/list${id})}`),
   createDraft: (data) => request.post(`v1/draft`, data),
-
+  deleteDraft: (id) => request.delete(`v1/draft/${id}`),
+  completeDraft: (data) => request.put(`v1/draft/complete/${data}`),
   //orders
   getAllOrders: (filter) => request.get(`api/admin/orders${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAlltransactionsOrders: (filter) => request.get(`api/admin/orders/transactions${qs.stringify(filter, { addQueryPrefix: true })}`),

@@ -9,6 +9,7 @@ import InputSearch from '../../../components/Inputs/InputSearch'
 import dayjs from 'dayjs'
 import DateFilterDrawerSingle from '../../../components/Inputs/DateRangeInput.jsx/DateFilterDrawerSingle'
 import { customDateRanges } from '../../../constants/customDateRanges'
+import AllOrdersContainer from '../../../components/Sales/AllOrdersContainer'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -109,7 +110,7 @@ function AllSales() {
         <Box className={classes.content} mx={4}>
           <Box mt={6}>
             <Typography className={classes.title} component='h2'>
-              <p>{t('menu.orders.all.heading')}</p>
+              <p>Barcha sotuvlar</p>
               <Box>
                 <span id='orders-count'>{2}</span>
                 <ButtonWithPopup
@@ -147,7 +148,7 @@ function AllSales() {
                 <InputSearch
                   id='order-search'
                   name='search'
-                  placeholder={t('menu.orders.all.id_placeholder')}
+                  placeholder={'Sotuv IDsi'}
                   fullWidth
                   onFocus={() => event('all_sales_search_attempts')}
                   uncontrolled
@@ -254,7 +255,79 @@ function AllSales() {
         </Box>
         <Box className={classes.cart_details}>
           <Box width='100%' height='100%'>
-            {/* <AllOrdersContainer data={stats?.data} /> */}
+            <AllOrdersContainer
+              data={{
+                total_products_measurement_value: 37,
+                total_services_measurement_value: 0,
+                total_sets_measurement_value: 0,
+                total_returned_measurement_value: 0,
+                total_exchange_measurement_value: 0,
+                total_returnals_count: 0,
+                total_exchanges_count: 0,
+                total_returnals_sum: 0,
+                total_exchanges_sum: 0,
+                total_transactions_sum: 21607849.1,
+                payment_types_stats: [
+                  {
+                    company_payment_type_id: '0acedac6-7a99-4626-a56d-bcdd46565e39',
+                    company_payment_type: {
+                      id: '0acedac6-7a99-4626-a56d-bcdd46565e39',
+                      name: 'UzCard',
+                      payment_type_id: 'a0ed9cff-9576-432f-849b-7bbcc2fed641',
+                    },
+                    sum: 429957,
+                  },
+                  {
+                    company_payment_type_id: '1658e0bf-5b68-45a8-a3a8-c0b036ed8692',
+                    company_payment_type: {
+                      id: '1658e0bf-5b68-45a8-a3a8-c0b036ed8692',
+                      name: 'Наличные',
+                      payment_type_id: '00ed9cff-9576-432f-849b-7bbcc2fed640',
+                    },
+                    sum: 14351127.1,
+                  },
+                  {
+                    company_payment_type_id: '17393a96-c817-4439-ad36-aed56c28e39a',
+                    company_payment_type: {
+                      id: '17393a96-c817-4439-ad36-aed56c28e39a',
+                      name: 'HUMO',
+                      payment_type_id: 'f0ed9cff-9576-432f-849b-7bbcc2fed646',
+                    },
+                    sum: 12000,
+                  },
+                  {
+                    company_payment_type_id: '64132298-1317-4a70-90ea-fc5762f90c5c',
+                    company_payment_type: {
+                      id: '64132298-1317-4a70-90ea-fc5762f90c5c',
+                      name: 'VISA',
+                      payment_type_id: 'd0ed9cff-9576-432f-849b-7bbcc2fed644',
+                    },
+                    sum: 66159,
+                  },
+                  {
+                    company_payment_type_id: '79dc0ff8-9f1b-4863-b794-241b08d041d0',
+                    company_payment_type: {
+                      id: '79dc0ff8-9f1b-4863-b794-241b08d041d0',
+                      name: 'Карта',
+                      payment_type_id: '00ed9cff-9576-432f-849b-7bbcc2fed640',
+                    },
+                    sum: 6748606,
+                  },
+                ],
+                total_with_cashback: 0,
+                total_loyalty_balance_income: 0,
+                total_returned_cashback: 0,
+                total_debt_amount: 0,
+                total_paid_debt_amount: 0,
+                total_unpaid_debt_amount: 0,
+                total_returned_debt_amount: 0,
+                debt_payment_stats: null,
+                insurance_payment_stats: [],
+                count: 22,
+                total_certificate_amount: 0,
+                total_certificate_count: 0,
+              }}
+            />
             {/* <AllOrderDrawer
               isOpen={isOpen}
               closeDrawer={closeDrawer}

@@ -4,6 +4,7 @@ import { makeStyles } from '@mui/styles'
 import React from 'react'
 import ArrowRightIcon from '../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../src/assets/icons/BagOutline'
+import { get } from 'lodash'
 const useStyles = makeStyles((theme) => ({
   productImg: {
     width: '48px',
@@ -12,19 +13,34 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '8px',
   },
 }))
-function DraftChildItemsBox({ setIsOpenChild }) {
+function DraftChildItemsBox({ item, setIsOpenChild }) {
+  console.log(item)
+
   const classes = useStyles()
   return (
-    <Box display={'flex'} height={'80px'} justifyContent={'space-between'} onClick={setIsOpenChild}>
+    <Box display={'flex'} mb={'10px'} height={'80px'} justifyContent={'space-between'} onClick={setIsOpenChild}>
       <Box borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} mr={'8px'} display={'flex'} width={'100%'} justifyContent={'space-between'}>
-        <Box display={'flex'}>
+        <Box display={'flex'} maxWidth={'70%'}>
           <img className={classes.productImg} src='/default-img.avif' />
           <Box>
-            <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
-              Azitromitsin 250 mg / 2 dona
+            <Typography
+              sx={{
+                display: '-webkit-box',
+                overflow: 'hidden',
+                wordWrap: 'break-word',
+                textOverflow: 'ellipsis',
+                '-webkit-box-orient': 'vertical',
+                '-webkit-line-clamp': '1',
+              }}
+              fontSize={'16px'}
+              fontWeight={'600'}
+              lineHeight={'24px'}
+              color={'bunker.950'}
+            >
+              {get(item, 'product.name')}
             </Typography>
             <Typography mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
-              50609549182024
+              {get(item, 'product.barcode')}
             </Typography>
           </Box>
         </Box>
@@ -33,7 +49,7 @@ function DraftChildItemsBox({ setIsOpenChild }) {
             C2
           </Typography>
           <Typography mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-            232 323 so'm
+            {get(item, 'total_price')} so'm
           </Typography>
         </Box>
       </Box>
@@ -43,10 +59,11 @@ function DraftChildItemsBox({ setIsOpenChild }) {
         </Typography>
         <Box mt={'4px'} display={'flex'} justifyContent={'space-between'} width={'100%'}>
           <Typography fontSize={'14px'} fontWeight={'500'} color={'purple.500'} lineHeight={'20px'}>
-            2%
+            {get(item, 'discount_value')}
+            {get(item, 'discount_type') === 'percent' ? '%' : "so'm"}
           </Typography>
           <Typography fontSize={'14px'} fontWeight={'500'} color={'purple.500'} lineHeight={'20px'}>
-            2 323 so'm
+            {get(item, 'discount_amount')} so'm
           </Typography>
         </Box>
       </Box>

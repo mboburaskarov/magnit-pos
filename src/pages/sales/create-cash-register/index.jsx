@@ -86,6 +86,8 @@ function NewCashRegister() {
   )
   const { mutate: checkSaleExist, isLoading: isCheckSaleExist } = useMutation(requests.checkSaleExist, {
     onSuccess: ({ data }) => {
+      console.log(data)
+
       // console.log(data.data, 'ff')
       if (get(data, 'data')) {
         navigate(`/sales/new-sale/${get(data, 'data.id')}`)

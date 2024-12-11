@@ -298,7 +298,7 @@ function NewSale() {
 
   useEffect(() => {
     refetchcartItemsList()
-  }, [])
+  }, [id])
 
   useEffect(() => {
     changeDiscountValue({

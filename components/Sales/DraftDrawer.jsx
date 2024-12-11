@@ -8,9 +8,10 @@ import DraftChildDrawer from './DraftChildDrawer'
 import FilterMenuIcon from '../../src/assets/icons/FilterMenuIcon'
 import DraftFilter from './DraftFilter'
 import { requests } from '../../utils/requests'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { get } from 'lodash'
 import { useSelector } from 'react-redux'
+import { error, success } from '../../utils/toast'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -32,6 +33,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
   const userData = useSelector((state) => state.user)
 
   const [isOpenChild, setIsOpenChild] = useState(false)
+
   const {
     data: darftList,
     refetch,
@@ -39,12 +41,14 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
   } = useQuery('darftList', () =>
     requests.getDarftList({
       store_id: get(userData, 'store.id'),
-      cash_box_id: get(cashBoxDetails, 'data.cash_box_id'),
+      cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
     })
   )
   useEffect(() => {
     refetch()
   }, [])
+  console.log(darftList)
+
   const draftListData = get(darftList, 'data.data.data', [])
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
@@ -92,7 +96,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
           </Box>
         </Box>
       ) : (
-        <DraftChildDrawer setChildOpen={setIsOpenChild} open={isOpenChild} setOpen={setOpen} />
+        <DraftChildDrawer refetchDraftList={refetch} setChildOpen={setIsOpenChild} open={isOpenChild} setOpen={setOpen} />
       )}
       <DraftFilter setRegions={() => {}} open={draftfilter} setOpen={setDraftFilter} />
     </Drawer>

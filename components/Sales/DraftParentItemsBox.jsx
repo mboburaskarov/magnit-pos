@@ -6,6 +6,8 @@ import ArrowRightIcon from '../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../src/assets/icons/BagOutline'
 import { get } from 'lodash'
 import dayjs from 'dayjs'
+import { useQuery } from 'react-query'
+import { requests } from '../../utils/requests'
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {
     backgroundColor: '#fff ',
@@ -35,7 +37,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 function DraftParentItemsBox({ setIsOpenChild, item }) {
   const classes = useStyles()
-
+  console.log(item)
+  // const { data: darftList, refetch, isDarftList } = useQuery('darftList', () => requests.getDarftById({}))
   return (
     <Box
       onClick={() => setIsOpenChild({ item })}
@@ -68,11 +71,11 @@ function DraftParentItemsBox({ setIsOpenChild, item }) {
           <Box display={'flex'} mb={'4px'}>
             <img className={classes.usrImg} src='/default-user-img.png' />
             <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
-              {get(item, 'customer') == null ? 'Unknown' : get(item, 'customer')}
+              {get(item, 'customer.first_name') == null ? 'Unknown' : get(item, 'customer.first_name')}
             </Typography>
           </Box>
           <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-            {get(item, 'unit_price')}
+            {get(item, 'total_price')} so'm
           </Typography>
         </Box>
         <Box className={classes.rightArrowIcon}>

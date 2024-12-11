@@ -15,7 +15,7 @@ import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import { useSelector } from 'react-redux'
 import { get } from 'lodash'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { LoadingButton } from '@mui/lab'
 
 const useStyles = makeStyles((theme) => ({
@@ -69,8 +69,12 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
       setValue('draft_time', nextWeek)
     }
   }
+  const navigate = useNavigate()
+
   const { mutate: createDraft, isLoading: isCreateDraft } = useMutation(requests.createDraft, {
     onSuccess: ({ data }) => {
+      console.log(data)
+      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
       setOpen(false)
       refetchcartItemsList()
       success('Продукт успешно создан!')
