@@ -30,9 +30,13 @@ function Profile() {
   const { mutate: changeEmployeeInfo } = useMutation(requests.changeEmployeeInfo, {
     onSuccess: ({ data }) => {
       dispatch(setUserData({ ...data?.data }))
+      console.log(data)
 
       success('Заказ успешно передан оператору!')
-      setOpen(false)
+      // setOpen(false)
+      // resetField('nafirst_nameme')
+      // methods.setValue('first_name', data?.data?.first_name)
+      // methods.reset({ ...data?.data, language: { name: 'frf', value: data?.data?.language } })
       // navigate(`/products${requestParams}`)
       // refetch()
     },
@@ -42,7 +46,9 @@ function Profile() {
     },
   })
   const onSubmit = (data) => {
-    if (!size(get(data, 'image_uz'))) {
+    console.log(data)
+
+    if (!size(get(data, 'photo'))) {
       return error('rasm!')
     }
     if (userTheme !== data?.theme?.value) {
@@ -58,7 +64,7 @@ function Profile() {
     const requestBody = {
       first_name: get(data, 'first_name'),
       last_name: get(data, 'last_name'),
-      photo: get(data, 'image_uz').key,
+      photo: get(data, 'photo.key', get(data, 'photo')),
       language: get(data, 'language').value,
     }
     changeEmployeeInfo(requestBody)
@@ -81,8 +87,8 @@ function Profile() {
             withoutTextBox
             height={80}
             images={{ key: get(userData, 'photo'), value: get(userData, 'photo') }}
-            onChange={(images) => methods.setValue('image_uz', images)}
-            name={'image_uz'}
+            onChange={(images) => methods.setValue('photo', images)}
+            name={'photo'}
             label={' '}
             type={'BANNER'}
           />
@@ -103,6 +109,7 @@ function Profile() {
             Xavfsizlik
           </Typography>
           <Button
+            onClick={() => setOpen(true)}
             sx={{
               width: '100%',
               border: '2px solid',
@@ -112,7 +119,7 @@ function Profile() {
             variant='secondary'
           >
             <LockIcon />
-            <Typography onClick={() => setOpen(true)} ml={'12px'} lineHeight={'24px'} fontSize={'14px'} fontWeight={'600'}>
+            <Typography ml={'12px'} lineHeight={'24px'} fontSize={'14px'} fontWeight={'600'}>
               Parolni o'zgartirish
             </Typography>
           </Button>
@@ -162,7 +169,13 @@ function Profile() {
               />
             </Box>
           </Box>
-          <LoadingButton sx={{ margin: '50px 0 0 auto' }} variant='contained' type='submit' onClick={methods.handleSubmit(onSubmit, onError)}>
+          <LoadingButton
+            sx={{ margin: '50px 0 0 auto' }}
+            variant='contained'
+            type='submit'
+            // disabled={!isDirty}
+            onClick={methods.handleSubmit(onSubmit, onError)}
+          >
             Saqlash
           </LoadingButton>
         </Box>
