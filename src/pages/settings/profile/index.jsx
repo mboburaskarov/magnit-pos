@@ -1,64 +1,76 @@
+import React, { useState, useMemo } from 'react'
 import { Box, Button, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useMutation } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { get, size } from 'lodash'
+import { LoadingButton } from '@mui/lab'
+
 import UploadImage from '../../../../components/UploadImage'
 import TextField from '../../../../components/Inputs/TextField'
 import SelectSimple from '../../../../components/Select/SelectSimple'
-import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import Label from '../../../../components/Label'
 import ImageUpload from '../../../../components/ProfileImageUpload'
-import LockIcon from '../../../assets/icons/LockIcon'
 import ChangePassWordDialog from './changePasswordDialog'
-import { LoadingButton } from '@mui/lab'
 import { error, success } from '../../../../utils/toast'
-import { get, size } from 'lodash'
-import { useMutation } from 'react-query'
 import { requests } from '../../../../utils/requests'
-import { useDispatch, useSelector } from 'react-redux'
 import { setUserData } from '../../../redux-toolkit/userSlice'
 import i18n from '../../../i18n'
-import { useNavigate } from 'react-router-dom'
+import LockIcon from '../../../assets/icons/LockIcon'
 
-function Profile() {
+// Constants for options
+const LANGUAGE_OPTIONS = [
+  { name: "O'zbekcha", value: 'uz' },
+  { name: 'Русский', value: 'ru' },
+]
+
+const THEME_OPTIONS = [
+  { name: 'Auto', value: 'auto' },
+  { name: 'Dark', value: 'dark' },
+  { name: 'Light', value: 'light' },
+]
+
+// Helper function to get initial value for SelectSimple based on the current value
+const getSelectDefaultValue = (options, value) => {
+  return options.find((option) => option.value === value) || options[0]
+}
+
+const Profile = () => {
   const userData = useSelector((state) => state.user)
   const dispatch = useDispatch()
   const userTheme = localStorage.getItem('user_theme')
   const navigate = useNavigate()
 
-  const [images, setImages] = useState([])
   const [open, setOpen] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false)
   const methods = useForm()
+
   const { mutate: changeEmployeeInfo } = useMutation(requests.changeEmployeeInfo, {
     onSuccess: ({ data }) => {
       dispatch(setUserData({ ...data?.data }))
-      console.log(data)
-
-      success('Заказ успешно передан оператору!')
-      // setOpen(false)
-      // resetField('nafirst_nameme')
-      // methods.setValue('first_name', data?.data?.first_name)
-      // methods.reset({ ...data?.data, language: { name: 'frf', value: data?.data?.language } })
-      // navigate(`/products${requestParams}`)
-      // refetch()
+      setIsEditMode(false)
+      success('Profile updated successfully!')
     },
-    onError: (err) => {
-      error('Ошибка при назначении заказа оператору!')
-      console.log('err', err)
+    onError: () => {
+      error('Error updating profile!')
     },
   })
-  const onSubmit = (data) => {
-    console.log(data)
 
+  const handleFormSubmit = (data) => {
     if (!size(get(data, 'photo'))) {
-      return error('rasm!')
+      return error('Please upload an image!')
     }
+
+    // Theme handling
     if (userTheme !== data?.theme?.value) {
       localStorage.setItem('user_theme', data?.theme?.value || 'auto')
       navigate(`/settings/profile?theme_changed=${data?.theme?.value}`)
     }
-    if (get(data, 'language').value) {
-      if (i18n.language !== get(data, 'language').value) {
-        i18n.changeLanguage(get(data, 'language').value)
-      }
+
+    // Language handling
+    if (get(data, 'language')?.value && i18n.language !== get(data, 'language').value) {
+      i18n.changeLanguage(get(data, 'language').value)
     }
 
     const requestBody = {
@@ -67,48 +79,69 @@ function Profile() {
       photo: get(data, 'photo.key', get(data, 'photo')),
       language: get(data, 'language').value,
     }
+
     changeEmployeeInfo(requestBody)
-    // console.log(requestBody)
   }
-  const onError = (err) => {
-    console.log('err', err)
-    error('Пожалуйста, заполните все поля!')
+
+  const handleFormError = () => {
+    error('Please fill all required fields!')
   }
+
+  const languageDefaultValue = useMemo(() => getSelectDefaultValue(LANGUAGE_OPTIONS, i18n.language), [i18n.language])
+  const themeDefaultValue = useMemo(() => getSelectDefaultValue(THEME_OPTIONS, userTheme), [userTheme])
+
   return (
     <FormProvider {...methods}>
-      <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
-        <Box width={'716px'}>
+      <Box display='flex' alignItems='center' justifyContent='center'>
+        <Box width='716px'>
           <Box height={'24px'} />
-          <Typography mb='24px' lineHeight={'40px'} fontSize={'28px'} fontWeight={'700'}>
+
+          <Typography variant='h4' fontWeight={700} mb={3}>
             Profile
           </Typography>
+
           <ImageUpload
             width={80}
-            withoutTextBox
             height={80}
-            images={{ key: get(userData, 'photo'), value: get(userData, 'photo') }}
+            isEditMode={isEditMode}
+            setIsEditMode={setIsEditMode}
+            withoutTextBox
+            images={{
+              key: get(userData, 'photo'),
+              value: get(userData, 'photo'),
+            }}
             onChange={(images) => methods.setValue('photo', images)}
-            name={'photo'}
+            name='photo'
             label={' '}
-            type={'BANNER'}
+            type='BANNER'
           />
-          <Box display={'flex'} mb={'56px'} mt={'24px'}>
-            <Box width={'100%'}>
-              <Label mb='4px'>Ism</Label>
-              <TextField defaultValue={get(userData, 'first_name')} required fullWidth name='first_name' id='first_name' placeholder='Fikr kiriting' />
-            </Box>
-            <Box width={'24px'} />
-            <Box width={'100%'}>
-              <Label mb='4px'>Familiya</Label>
 
-              <TextField defaultValue={get(userData, 'last_name')} required fullWidth name='last_name' id='last_name' placeholder='Fikr kiriting' />
+          <Box display='flex' gap={3} mt={3} mb={7}>
+            <Box flex={1}>
+              <Label>First Name</Label>
+              <TextField
+                disabled={!isEditMode}
+                defaultValue={get(userData, 'first_name')}
+                required
+                fullWidth
+                name='first_name'
+                placeholder='Enter first name'
+              />
+            </Box>
+
+            <Box flex={1}>
+              <Label>Last Name</Label>
+              <TextField disabled={!isEditMode} defaultValue={get(userData, 'last_name')} required fullWidth name='last_name' placeholder='Enter last name' />
             </Box>
           </Box>
 
-          <Typography mb='24px' lineHeight={'40px'} fontSize={'28px'} fontWeight={'700'}>
-            Xavfsizlik
+          <Typography variant='h5' fontWeight={700} mb={3}>
+            Security
           </Typography>
+
           <Button
+            fullWidth
+            disabled={!isEditMode}
             onClick={() => setOpen(true)}
             sx={{
               width: '100%',
@@ -116,68 +149,32 @@ function Profile() {
               borderColor: 'bunker.100',
               height: '48px',
             }}
-            variant='secondary'
+            variant='primary'
+            startIcon={<LockIcon color={!isEditMode && '#ccc'} />}
           >
-            <LockIcon />
-            <Typography ml={'12px'} lineHeight={'24px'} fontSize={'14px'} fontWeight={'600'}>
-              Parolni o'zgartirish
-            </Typography>
+            Change Password
           </Button>
-          <Typography mt={'56px'} mb='24px' lineHeight={'40px'} fontSize={'28px'} fontWeight={'700'}>
-            Interfeys
-          </Typography>
-          <Box display={'flex'}>
-            <Box width={'100%'}>
-              <Label mb='4px'>Til</Label>
-              <SelectSimple
-                white
-                isClearable={false}
-                onChange={() => {}}
-                defaultValue={i18n.language == 'uz' ? { name: "O'zbekch", value: 'uz' } : { name: 'Ruscha', value: 'ru' }}
-                options={[
-                  { name: "O'zbekch", value: 'uz' },
-                  { name: 'Ruscha', value: 'ru' },
-                ]}
-                required
-                placeholder='Kassirni tanlang'
-                name={'language'}
-              />
-            </Box>
-            <Box width={'24px'} />
 
-            <Box width={'100%'}>
-              <Label mb='4px'>Mavzu</Label>
-              <SelectSimple
-                isClearable={false}
-                white
-                onChange={() => {}}
-                defaultValue={
-                  userTheme == 'dark'
-                    ? { name: 'Dark', value: 'dark' }
-                    : userTheme == 'light'
-                    ? { name: 'Light', value: 'light' }
-                    : { name: 'Auto', value: 'auto' }
-                }
-                options={[
-                  { name: 'Auto', value: 'auto' },
-                  { name: 'Dark', value: 'dark' },
-                  { name: 'Light', value: 'light' },
-                ]}
-                required
-                placeholder='Kassirni tanlang'
-                name={'theme'}
-              />
+          <Typography variant='h5' fontWeight={700} mt={7} mb={3}>
+            Interface
+          </Typography>
+
+          <Box display='flex' gap={3}>
+            <Box flex={1}>
+              <Label>Language</Label>
+              <SelectSimple disabled={!isEditMode} white isClearable={false} defaultValue={languageDefaultValue} options={LANGUAGE_OPTIONS} name='language' />
+            </Box>
+
+            <Box flex={1}>
+              <Label>Theme</Label>
+              <SelectSimple disabled={!isEditMode} white isClearable={false} defaultValue={themeDefaultValue} options={THEME_OPTIONS} name='theme' />
             </Box>
           </Box>
-          <LoadingButton
-            sx={{ margin: '50px 0 0 auto' }}
-            variant='contained'
-            type='submit'
-            // disabled={!isDirty}
-            onClick={methods.handleSubmit(onSubmit, onError)}
-          >
-            Saqlash
-          </LoadingButton>
+          {isEditMode && (
+            <LoadingButton sx={{ mt: 6 }} variant='contained' fullWidth onClick={methods.handleSubmit(handleFormSubmit, handleFormError)}>
+              Save
+            </LoadingButton>
+          )}
         </Box>
       </Box>
 

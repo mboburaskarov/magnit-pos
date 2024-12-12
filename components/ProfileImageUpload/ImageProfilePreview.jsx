@@ -4,6 +4,7 @@ import ImageUploadGallery from './ImageUploadGallery'
 import { useState } from 'react'
 import { useTheme } from '@mui/styles'
 import DeleteIcon from '../../src/assets/icons/DeleteIcon'
+import EditIcon from '../../src/assets/icons/EditIcon'
 
 const ImagePlaceholder = () => {
   const { mode } = useTheme()
@@ -44,6 +45,8 @@ export default function ImagePreview({
   isUploadingImage,
   onSortEnd,
   setEditingImage,
+  setIsEditMode,
+  isEditMode,
   setUploadedImages,
   id,
   getInputProps,
@@ -135,54 +138,72 @@ export default function ImagePreview({
               <img src={getImageUrl(uploadedImages.key)} alt={`image of ${uploadedImages.key || 'product'}`} width={width || 128} height={height || 128} />
             </Box>
           </Box>
-          <Button
-            sx={{
-              width: '156',
-              height: '32px',
-              bgcolor: 'white',
-              border: '1px solid',
-              borderColor: 'bunker.100',
-              mr: '16px',
-              ml: '24px',
-            }}
-            variant='secondary'
-            {...getRootProps()}
-          >
-            <Typography fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'orange.500'}>
-              Rasimni yangilash
-            </Typography>
-          </Button>
-          <Button
-            variant='secondary'
-            onClick={(e) => {
-              e.stopPropagation()
-              // setOpenGallery(true)
-              deleteImage()
-            }}
-            id='countBox'
-            sx={{
-              // position: 'absolute',
-              // top: 40,
-              // right: 4,
-              width: '123px',
-              height: '32px',
-              bgcolor: 'red.10',
-              color: 'green.600',
-              display: 'flex',
-              padding: '5px',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: '40px',
-              fontWeight: 600,
-              zIndex: 7,
-              transition: 'all 0.2s ease-in-out',
-            }}
-          >
-            <DeleteIcon />{' '}
-            <Typography ml={'12px'} fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'red.700'}>
-              O'chirish
-            </Typography>
-          </Button>
+          {isEditMode ? (
+            <>
+              <Button
+                sx={{
+                  width: '156',
+                  height: '32px',
+                  bgcolor: 'white',
+                  border: '1px solid',
+                  borderColor: 'bunker.100',
+                  mr: '16px',
+                  ml: '24px',
+                }}
+                variant='secondary'
+                {...getRootProps()}
+              >
+                <Typography fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'orange.500'}>
+                  Rasimni yangilash
+                </Typography>
+              </Button>
+
+              <Button
+                variant='secondary'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  // setOpenGallery(true)
+                  deleteImage()
+                }}
+                id='countBox'
+                sx={{
+                  // position: 'absolute',
+                  // top: 40,
+                  // right: 4,
+                  width: '123px',
+                  height: '32px',
+                  bgcolor: 'red.10',
+                  color: 'green.600',
+                  display: 'flex',
+                  padding: '5px',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: '40px',
+                  fontWeight: 600,
+                  zIndex: 7,
+                  transition: 'all 0.2s ease-in-out',
+                }}
+              >
+                <DeleteIcon />{' '}
+                <Typography ml={'12px'} fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'red.700'}>
+                  O'chirish
+                </Typography>
+              </Button>
+            </>
+          ) : (
+            <Box
+              onClick={() => setIsEditMode(true)}
+              sx={{
+                ml: '20px',
+                '& svg': {
+                  width: '20px',
+                  height: '20px',
+                },
+              }}
+            >
+              <EditIcon color='rgb(255, 96, 24)' />
+            </Box>
+          )}
         </Box>
       ) : (
         withoutTextBox && (

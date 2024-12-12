@@ -8,9 +8,9 @@ import { error } from '../../utils/toast'
 import ImagePreview from './ImageProfilePreview'
 import Label from '../Label'
 
-export default function ImageUpload({ id, images, onChange, label, width, height, type, withoutTextBox }) {
+export default function ImageUpload({ id, images, setEditingImage, setIsEditMode, onChange, isEditMode, label, width, height, type, withoutTextBox }) {
   const [uploadedImages, setUploadedImages] = useState(images || [])
-  const [editingImage, setEditingImage] = useState(null)
+  // const [editingImage, setEditingImage] = useState(null)
 
   const filterAndSetImages = (data) => {
     setUploadedImages({
@@ -22,7 +22,7 @@ export default function ImageUpload({ id, images, onChange, label, width, height
   const { mutate: uploadImage, isLoading: isUploadingImage } = useMutation(requests.imageUpload, {
     onSuccess: ({ data }) => {
       filterAndSetImages(data)
-      setEditingImage(null)
+      // setEditingImage(null)
     },
     onError: (err) => {
       error('Ошибка при добавлении изображения!')
@@ -68,6 +68,7 @@ export default function ImageUpload({ id, images, onChange, label, width, height
       <Label mb={1.5}>{label || 'Фото'}</Label>
       <Box sx={{ position: 'relative', display: 'flex', width: '100%', maxWidth: '100%', height: '100%', minHeight: 48, columnGap: 3 }}>
         <ImagePreview
+          setIsEditMode={setIsEditMode}
           withoutTextBox={withoutTextBox}
           uploadedImages={uploadedImages}
           isUploadingImage={isUploadingImage}
@@ -75,6 +76,7 @@ export default function ImageUpload({ id, images, onChange, label, width, height
           setEditingImage={setEditingImage}
           setUploadedImages={setUploadedImages}
           id={id}
+          isEditMode={isEditMode}
           getRootProps={getRootProps}
           getInputProps={getInputProps}
           width={width}
