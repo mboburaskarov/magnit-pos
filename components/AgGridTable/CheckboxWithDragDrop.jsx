@@ -19,6 +19,12 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: 16,
     borderBottom: `1px solid ${theme.palette.bunker[100]}`,
     paddingLeft: 16,
+    '& label': {
+      margin: 0,
+      '& span': {
+        margin: '0 8px 0 0',
+      },
+    },
     '&:nth-of-type(1)': {
       marginTop: 0,
     },
@@ -75,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.fontSize.base,
     fontWeight: 600,
     lineHeight: '19px',
+    margin: '0 !important',
     color: theme.palette.gray[600],
   },
   dragdrop: {

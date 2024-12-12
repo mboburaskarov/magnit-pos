@@ -86,8 +86,8 @@ const useStyles = makeStyles((theme) => ({
 export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
   const classes = useStyles()
   const [isLogout, setIsLogout] = useState(false)
-  const firstName = userData?.fullName?.split(' ')?.[0]
-  const lastName = userData?.fullName?.split(' ')?.[1]
+  const firstName = userData?.first_name
+  const lastName = userData?.last_name
 
   return (
     <>
@@ -109,13 +109,13 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
               </Box>
               <Box display='flex' alignItems='center' mt={4}>
                 <Box width={40} height={40} borderRadius={2} overflow='hidden'>
-                  {!data?.image_url ? (
+                  {!userData?.photo ? (
                     <div className={classes.avatarPlaceholder}>
                       {firstName?.charAt(0)}
                       {lastName?.charAt(0)}
                     </div>
                   ) : (
-                    <img src={data?.image_url} alt={data?.first_name} className={classes.avatar} />
+                    <img src={userData?.photo} alt={data?.first_name} className={classes.avatar} />
                   )}
                 </Box>
                 <Box ml={1.5}>

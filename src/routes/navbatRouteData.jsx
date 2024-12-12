@@ -166,10 +166,10 @@ export const navbatRouteData = [
         href: '/settings/profile',
       },
       {
-        label: 'navbar.settings',
-        active: '/settings/users/*',
+        label: 'navbar.stores',
+        active: '/settings/stores/*',
         id: '9.5',
-        href: '/settings/users',
+        href: '/settings/stores',
       },
     ],
   },

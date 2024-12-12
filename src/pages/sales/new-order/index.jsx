@@ -419,13 +419,13 @@ function NewSale() {
               </Typography>
             </Box>
             <Box className={classes.cart_detail_icon}>
-              <FileIcon />
+              <FileIcon color='#ccc' />
             </Box>
             <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
               <TimeAndDate />
             </Box>
             <Box className={classes.cart_detail_icon}>
-              <DeleteIcon width={'24px'} />
+              <DeleteIcon color='#ccc' width={'24px'} />
             </Box>
           </Box>
           <Box mb={'24px'}>

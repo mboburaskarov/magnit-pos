@@ -3,8 +3,11 @@ import { Box, TextField, Typography } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
 import { NumberFormatBase } from 'react-number-format'
 import Label from '../Label'
+import { useTheme } from '@mui/styles'
 
 const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandler, name, onChange, right, ...rest }) => {
+  const theme = useTheme()
+
   return (
     <Box sx={{ position: 'relative', display: 'flex', width: '100%' }}>
       <NumberFormatBase
@@ -22,6 +25,7 @@ const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandle
         onBlur={blurHandler}
         sx={{
           margin: 0,
+          backgroundColor: `${theme.palette.white} !important`,
           '& .MuiInputBase-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
             border: 0,
           },

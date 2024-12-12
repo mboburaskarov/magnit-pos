@@ -25,8 +25,11 @@ export const headerStyles = makeStyles((theme) => {
       position: 'relative',
     },
     searchInput: {
+      '&.MuiFormControl-root': {
+        backgroundColor: `${theme.palette.white} !important`,
+      },
       '&  .MuiInputBase-root': {
-        backgroundColor: '#F8F8F9',
+        backgroundColor: theme.palette.background.gray,
         border: '2px solid transparent',
 
         // border: 'none !important',

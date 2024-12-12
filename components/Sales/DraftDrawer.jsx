@@ -1,6 +1,6 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import InputSearch from '../Inputs/InputSearch'
 import DraftParentItemsBox from './DraftParentItemsBox'
@@ -12,6 +12,8 @@ import { useMutation, useQuery } from 'react-query'
 import { get } from 'lodash'
 import { useSelector } from 'react-redux'
 import { error, success } from '../../utils/toast'
+import { useQueryParams } from '../../src/hooks/useQueryParams'
+import dayjs from 'dayjs'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -31,19 +33,21 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
   const classes = useStyles()
   const [draftfilter, setDraftFilter] = useState(false)
   const userData = useSelector((state) => state.user)
+  const { values } = useQueryParams()
 
   const [isOpenChild, setIsOpenChild] = useState(false)
-
-  const {
-    data: darftList,
-    refetch,
-    isDarftList,
-  } = useQuery('darftList', () =>
-    requests.getDarftList({
+  const draftsListFilter = useMemo(() => {
+    return {
+      limit: values?.limit || 10,
+      offset: values?.offset || 0,
+      search: values?.search || null,
       store_id: get(userData, 'store.id'),
       cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
-    })
-  )
+      customer_id: values?.customer_id,
+      draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : null,
+    }
+  }, [values?.customer_id, values?.draft_date, values?.search])
+  const { data: darftList, refetch, isDarftList } = useQuery(['darftList', draftsListFilter], () => requests.getDarftList(draftsListFilter))
   useEffect(() => {
     refetch()
   }, [])
@@ -60,7 +64,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
             <CloseIcon onClick={() => setOpen(false)} />
           </Box>
           <Box display={'flex'} padding={'24px'}>
-            <InputSearch fullWidth placeholder={'Qidirish: ID, mijoz, sotuvchi'} />
+            <InputSearch fullWidth uncontrolled placeholder={'Qidirish: ID, mijoz, sotuvchi'} />
             <Box minWidth={113} ml={'16px'}>
               <Button
                 sx={{

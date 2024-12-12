@@ -2,7 +2,7 @@
 /* eslint-disable react/display-name */
 import { memo, useEffect, useState } from 'react'
 import { Box, Button, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
+import { makeStyles, useTheme } from '@mui/styles'
 import StyledDialog from '../Dialogs/StyledDialog'
 import CheckboxWithDragDrop from './CheckboxWithDragDrop'
 import { useDispatch, useSelector } from 'react-redux'
@@ -91,17 +91,17 @@ function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
 
     dispatch(resetTableHeader())
   }
-
+  const theme = useTheme()
   return (
     <>
-      <ButtonWithWrapper onClick={() => setOpen(true)} icon={<EditorIcon />} />
+      <ButtonWithWrapper onClick={() => setOpen(true)} icon={<EditorIcon color={theme.palette.black} />} />
 
       <StyledEmptyDialog
         open={open}
         onClose={() => setOpen(false)}
         title={title || 'Jadval sozlamalari'}
         buttonId='submit-button'
-        customButtons={<CloseIcon onClick={() => setOpen(false)} />}
+        customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
         customOnSubmit={handleApply}
       >
         <Box p={'24px'} pt={'0'} className={classes.container}>
@@ -114,9 +114,19 @@ function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
               checkAllField
               setData={setData}
             />
-            <Box columnGap={2} display='flex' bottom={'24px'} left={'24px'} pt={'24px'} right={'24px'} bgcolor='#fff' position={'absolute'} mt={'24px'}>
+            <Box
+              columnGap={2}
+              display='flex'
+              bottom={'24px'}
+              left={'24px'}
+              pt={'24px'}
+              right={'24px'}
+              bgcolor={theme.palette.background}
+              position={'absolute'}
+              mt={'24px'}
+            >
               <Button
-                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                sx={{ bgcolor: `${theme.palette.background.gray} !important`, height: 48, border: '1px solid #ECEDF2' }}
                 fullWidth
                 color='secondary'
                 variant='contained'

@@ -1,41 +1,39 @@
 import { Box, Button, TextField, Typography } from '@mui/material'
-import TabContainer from '../../../components/Tab/TabContainer'
-import LoadingContainer from '../../../components/LoadingContainer'
+import TabContainer from '../../../../components/Tab/TabContainer'
+import LoadingContainer from '../../../../components/LoadingContainer'
 import { useEffect, useMemo, useState } from 'react'
-import { products_statuses } from '../../assets/data/products-statuses'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { requests } from '../../../utils/requests'
+import { products_statuses } from '../../../assets/data/products-statuses'
+import { useQueryParams } from '../../../hooks/useQueryParams'
 import { useMutation, useQuery } from 'react-query'
-import AgGridTable from '../../../components/AgGridTable/AgGridTable'
+import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import { useDispatch, useSelector } from 'react-redux'
 import tableHeaderSelector from './tableHeaderSelector'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
-import InputSearch from '../../../components/Inputs/InputSearch'
-import ImageGallery from '../../../components/ImageGallery'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/productsTableColumns'
+import InputSearch from '../../../../components/Inputs/InputSearch'
+import ImageGallery from '../../../../components/ImageGallery'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDownWideShort, faArrowUpWideShort, faPlus } from '@fortawesome/free-solid-svg-icons'
 import FilterMenu from './FilterMenu'
 import { useNavigate } from 'react-router-dom'
-import { error, success } from '../../../utils/toast'
-import ConfirmDialog from '../../../components/ConfirmDialog'
-import BigWarningIcon from '../../assets/icons/BigWarningIcon'
+import { error, success } from '../../../../utils/toast'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import { LoadingButton } from '@mui/lab'
-import BigTickIcon from '../../assets/icons/BigTickIcon'
-import ProductDrawer from './ProductDrawer'
-import InputSwitch from '../../../components/Inputs/InputSwitch'
-import CheckAccess from '../../../components/CheckAccess'
-import StyledDialog from '../../../components/Dialogs/StyledDialog'
-import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
-import PlusIcon from '../../assets/icons/PlusIcon'
-import EditorIcon from '../../assets/icons/EditorIcon'
+import BigTickIcon from '../../../assets/icons/BigTickIcon'
+// import ProductDrawer from './ProductDrawer'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
+import CheckAccess from '../../../../components/CheckAccess'
+import StyledDialog from '../../../../components/Dialogs/StyledDialog'
+import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
+import PlusIcon from '../../../assets/icons/PlusIcon'
+import EditorIcon from '../../../assets/icons/EditorIcon'
 import FilterTableRowsMenu from './FilterTableRowsMenu'
-import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
+import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButton'
 import { useTranslation } from 'react-i18next'
-import { useTheme } from '@mui/styles'
+import { requests } from '../../../../utils/requests'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function ProductsPage() {
-  const theme = useTheme()
+export default function StoresPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -282,7 +280,7 @@ export default function ProductsPage() {
                   },
                 }}
                 fullWidth
-                startIcon={<FilterMenuIcon color={theme.palette.black} />}
+                startIcon={<FilterMenuIcon />}
                 variant='contained'
                 color='secondary'
                 onClick={() => setFilterMenu((prev) => !prev)}
@@ -336,14 +334,14 @@ export default function ProductsPage() {
           />
         </Box>
       </Box>
-      <ProductDrawer
+      {/* <ProductDrawer
         setOpenConfirmDialog={setOpenConfirmDialog}
         setImages={setOpenImageGallery}
         refetch={refetch}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(null)}
         setRejectComment={setRejectComment}
-      />
+      /> */}
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (
         <ConfirmDialog

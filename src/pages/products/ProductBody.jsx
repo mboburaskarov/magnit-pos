@@ -16,6 +16,10 @@ import InputDatePicker from '../../../components/Inputs/InputDatePicker'
 import { useTranslation } from 'react-i18next'
 import InputWithButton from '../../../components/Inputs/InputWithButton'
 import Label from '../../../components/Label'
+import productStoresTableHeaderSelector from './productStoresTableHeaderSelector'
+import AgGridTable from '../../../components/AgGridTable/AgGridTable'
+import { useSelector } from 'react-redux'
+import { useQueryParams } from '../../hooks/useQueryParams'
 
 const filterTwoArrays = (array1, array2) => {
   const arr = array1?.filter((item) => {
@@ -30,19 +34,26 @@ export default function ProductBody({ productData = null }) {
   const { setValue, watch } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
   const [hasDiscontPrice, setHasDiscontPrice] = useState(false)
+  const { columns, loading } = useSelector((state) => state.storesListTableColumnsForProduct)
+  const { values } = useQueryParams()
+
   const [parentCategory, setParentCategory] = useState(null)
   const { t } = useTranslation()
   const [images, setImages] = useState([])
   const appType = watch('app_type') || 'BUCHET'
-
+  const tableColumns = productStoresTableHeaderSelector({
+    productsColumns: columns,
+    t,
+    values,
+  })
   const { data: shopList, refetch: refetchShopList } = useQuery('shopList', () => requests.getAllShops({ limit: 1000, offset: 0, type: appType }))
   const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories())
-  const { data: subCategories, refetch: refetchCategories } = useQuery(
-    ['subCategories', parentCategory, appType],
-    () => requests.getAllCategories({ type: appType, subId: parentCategory.id }),
-    { enabled: !!appType && !!productData?.categories?.length > 0 }
-  )
-  const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 1000, offset: 0 }))
+  // const { data: subCategories, refetch: refetchCategories } = useQuery(
+  //   ['subCategories', parentCategory, appType],
+  //   () => requests.getAllCategories({ type: appType, subId: parentCategory.id }),
+  //   { enabled: !!appType && !!productData?.categories?.length > 0 }
+  // )
+  // const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 1000, offset: 0 }))
 
   useEffect(() => {
     if (productData) {
@@ -77,7 +88,7 @@ export default function ProductBody({ productData = null }) {
   }, [productCategories])
   useEffect(() => {
     refetchShopList()
-    refetchCategories()
+    // refetchCategories()
   }, [appType])
   useEffect(() => {
     if (!productData) {
@@ -96,8 +107,9 @@ export default function ProductBody({ productData = null }) {
   return (
     <Box
       pb={10}
-      width='100%'
+      width='690px'
       sx={{
+        margin: 'auto',
         '& .MuiInputBase-root': {
           border: '2px solid',
           borderColor: 'bunker.100',
@@ -192,6 +204,26 @@ export default function ProductBody({ productData = null }) {
         <SectionTitle noWrap withLine>
           Miqdori
         </SectionTitle>
+        <Box mt={'24px'}>
+          <AgGridTable
+            id='products-main-tables'
+            tableSettings
+            columns={tableColumns}
+            data={[
+              { name: 'salom', amount: 2, min_amount: 4 },
+              { name: 'salom', amount: 1, min_amount: 5 },
+            ]}
+            isDataLoading={false}
+            offsetCount={1}
+            // updaterAction={(newData) => {
+            //   if (newData) dispatch(updateTableHeader(newData))
+            // }}
+            // fullInfoAboutCurrentPage
+            // resetTable={() => dispatch(resetTableHeader({ refetch }))}
+            // status={status}
+            isRefreshing={false}
+          />
+        </Box>
         <Box height={'56px'} />
 
         <SectionTitle noWrap withLine>

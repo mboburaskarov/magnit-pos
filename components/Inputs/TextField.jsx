@@ -84,7 +84,7 @@ const TextField = ({
               zIndex: name === 'phone' ? 2 : 0,
             },
             '&.Mui-focused': {
-              bgcolor: bgcolor ? '#' + bgcolor : !white ? 'background.default' : 'white',
+              bgcolor: bgcolor ? '#' + bgcolor : !white ? 'background.gray' : 'background.gray',
             },
           },
           '& .MuiOutlinedInput-input': {

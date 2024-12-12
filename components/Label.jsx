@@ -5,7 +5,7 @@ export default function Label({ children, required, ...props }) {
   return (
     <Typography
       sx={{ '&::after': { content: '" *"', color: 'red.500', display: required ? 'block' : 'none', ml: '2px' } }}
-      color={prefersDarkMode.matches ? '#fff' : '#434961'}
+      color={prefersDarkMode.matches ? '#fff' : 'bunker.700'}
       fontSize={16}
       fontWeight={600}
       variant='h5'

@@ -9,6 +9,7 @@ import Profile from '../../pages/settings/profile'
 import RegionsPage from '../../pages/settings/regions'
 import RolesPage from '../../pages/settings/roles'
 import UsersPage from '../../pages/settings/users'
+import StoresPage from '../../pages/settings/stores'
 
 const settingsRoutes = {
   path: 'settings',
@@ -22,6 +23,10 @@ const settingsRoutes = {
     {
       path: 'profile',
       element: <Profile />,
+    },
+    {
+      path: 'stores',
+      element: <StoresPage />,
     },
     {
       path: 'roles',

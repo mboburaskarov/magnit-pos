@@ -167,7 +167,7 @@ const Profile = () => {
 
             <Box flex={1}>
               <Label>Theme</Label>
-              <SelectSimple disabled={!isEditMode} white isClearable={false} defaultValue={themeDefaultValue} options={THEME_OPTIONS} name='theme' />
+              <SelectSimple disabled={false} white isClearable={false} defaultValue={themeDefaultValue} options={THEME_OPTIONS} name='theme' />
             </Box>
           </Box>
           {isEditMode && (

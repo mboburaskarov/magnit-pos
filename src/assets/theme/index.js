@@ -1,5 +1,6 @@
 import { colors } from '@mui/material'
 import typography from './typography'
+import { getMarginRight } from 'react-table-sticky'
 
 export const theme = ({ mode, palette }) => {
   const fontFamily = {
@@ -119,7 +120,7 @@ export const theme = ({ mode, palette }) => {
               },
             },
             '&.MuiButton-containedSecondary.Mui-disabled': {
-              backgroundColor: '#fff !important',
+              backgroundColor: palette.background.gray,
               '& p': {
                 color: `${palette.bunker[300]} !important`,
               },
@@ -146,7 +147,7 @@ export const theme = ({ mode, palette }) => {
           },
 
           containedSecondary: {
-            backgroundColor: palette.white,
+            backgroundColor: `${palette.background.gray} !important`,
             color: '#000',
             '&:hover': {
               background: '#00000020',
@@ -407,9 +408,10 @@ export const theme = ({ mode, palette }) => {
         styleOverrides: {
           root: {
             color: '#fff',
-            border: '1px solid #ccc !important',
+            // border: '1px solid #ccc !important',
             height: '20px',
             width: '20px',
+            // marginRight: '8px',
             '& .MuiSvgIcon-root': {
               fontSize: 24,
               fill: palette.orange[500],
@@ -472,6 +474,7 @@ export const theme = ({ mode, palette }) => {
         defaultProps: { autoComplete: 'off' },
         styleOverrides: {
           root: {
+            backgroundColor: `${palette.white} !important`,
             margin: '0 !important',
           },
         },
@@ -526,7 +529,7 @@ export const theme = ({ mode, palette }) => {
               border: 'none',
             },
             '&.Mui-disabled.MuiOutlinedInput-root': {
-              backgroundColor: 'white',
+              backgroundColor: palette.background.gray,
             },
             paddingRight: '0px !important',
           },

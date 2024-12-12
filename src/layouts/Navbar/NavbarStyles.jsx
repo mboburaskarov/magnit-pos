@@ -240,7 +240,7 @@ export const navbarStyles = makeStyles((theme) => {
       display: 'flex',
       alignItems: 'center',
       '& > svg > path': {
-        fill: theme.mode === 'dark' && 'white',
+        // fill: theme.mode === 'dark' && 'white',
       },
     },
     logo_letter_main: {
@@ -252,7 +252,7 @@ export const navbarStyles = makeStyles((theme) => {
       // width: '50px',
       alignItems: 'center',
       '& > svg > path': {
-        fill: theme.mode === 'dark' && 'white',
+        // fill: theme.mode === 'dark' && 'white',
       },
       '& > svg > path:nth-child(2)': {
         fill: theme.mode === 'dark' && '#1D1D1B',

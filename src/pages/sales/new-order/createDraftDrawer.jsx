@@ -149,7 +149,15 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
               />
               <Box height={'8px'} />
 
-              <Box display={'flex'} alignItems={'center'}>
+              <Box
+                display={'flex'}
+                sx={{
+                  '& .MuiCheckbox-root': {
+                    border: '1px solid #ccc !important',
+                  },
+                }}
+                alignItems={'center'}
+              >
                 <Checkbox
                   checked={eposChecked}
                   onChange={() => setEposChecked((prev) => !prev)}

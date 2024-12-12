@@ -127,6 +127,9 @@ export default function ImagePreview({
             <Box
               id={`upload-img-preview`}
               sx={{
+                maxWidth: '80px',
+                maxHeight: '80px',
+                overflow: 'hidden',
                 transition: 'all 0.2s ease',
                 // zIndex: 5 - ind,
                 // transform: `rotate(${ind * 10}deg)`,

@@ -93,7 +93,6 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   useEffect(() => {
     refetch()
   }, [open])
-  console.log(get(darftChildList, 'data.data'))
 
   return (
     <LoadingContainer readyState={!isDarftChildList}>

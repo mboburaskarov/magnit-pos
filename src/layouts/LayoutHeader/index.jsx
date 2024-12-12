@@ -44,7 +44,7 @@ function LayoutHeader() {
       </Box>
       <Box display={'flex'} height={'48px'}>
         <Box mr={'17px'} width={'240px'}>
-          {!userData?.fullName ? (
+          {!userData?.first_name ? (
             <Box position='relative' marginTop={'auto'}>
               <Box className={classes.fakeImage} />
               <Skeleton className={classes.skeleton} />
@@ -60,7 +60,7 @@ function LayoutHeader() {
 
                 <Box maxWidth='73%'>
                   <Typography id='user-username' className={classes.username}>
-                    {`${firstName}`}
+                    {`${firstName}`}f
                   </Typography>
                   <p id='user-shopname' className={`${classes.shopname} shopname`}>
                     {/* {userData.type.toLowerCase()} */}

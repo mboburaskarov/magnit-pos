@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   },
   gray: {
     '& .MuiOutlinedInput-root': {
-      backgroundColor: '#F8F8F9',
+      backgroundColor: theme.palette.background.gray,
     },
   },
   inputEndText: {

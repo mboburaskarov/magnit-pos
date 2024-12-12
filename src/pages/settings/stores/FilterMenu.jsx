@@ -3,17 +3,16 @@ import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { requests } from '../../../utils/requests'
-import SelectSimple from '../../../components/Select/SelectSimple'
-import InputRange from '../../../components/Inputs/InputRange'
-import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
+import { useQueryParams } from '../../../hooks/useQueryParams'
+import { requests } from '../../../../utils/requests'
+import SelectSimple from '../../../../components/Select/SelectSimple'
+import InputRange from '../../../../components/Inputs/InputRange'
+import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
 import * as qs from 'qs'
-import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
-import CloseIcon from '../../assets/icons/CloseIcon'
-import { theme } from '../../assets/theme'
+import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
+import CloseIcon from '../../../assets/icons/CloseIcon'
+import { theme } from '../../../assets/theme'
 import { useTranslation } from 'react-i18next'
-import { useTheme } from '@mui/styles'
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -76,7 +75,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
     producers,
     shopList,
   ])
-  const theme = useTheme()
 
   const resetFilter = () => {
     reset()
@@ -85,7 +83,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
   const { t } = useTranslation()
   return (
-    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon onClick={() => setOpen(false)} />}>
       <Box
         sx={{
           width: '100%',
@@ -156,7 +154,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
             />
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
-                sx={{ bgcolor: `${theme.palette.background.gray} !important`, border: '1px solid #ECEDF2' }}
+                sx={{ bgcolor: '#fff !important', border: '1px solid #ECEDF2' }}
                 fullWidth
                 color='secondary'
                 variant='contained'

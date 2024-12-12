@@ -311,7 +311,7 @@ const useStyles = makeStyles((theme) =>
         background: theme.palette.gray[200],
       },
       '.ag-row.ag-row-odd': {
-        background: '#fff',
+        background: 'none',
       },
       ".ag-menu.ag-ltr.ag-popup-child[aria-label='SubMenu']": {
         background: theme.palette.background.default,
