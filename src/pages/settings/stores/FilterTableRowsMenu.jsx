@@ -13,6 +13,7 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 import CheckboxWithDragDrop from '../../../../components/AgGridTable/CheckboxWithDragDrop'
 import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButton'
 import { t } from 'i18next'
+import { useTheme } from '@mui/styles'
 
 export default function FilterTableRowsMenu({ tableColumns, open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -48,9 +49,14 @@ export default function FilterTableRowsMenu({ tableColumns, open, setOpen, setRe
     reset()
     navigate(`/products?offset=0&limit=${values?.limit || 5}`)
   }
+  const theme = useTheme()
 
   return (
-    <StyledEmptyDialog open={open} title={t('ag_grid.table_setting.label')} customButtons={<CloseIcon onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog
+      open={open}
+      title={t('ag_grid.table_setting.label')}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+    >
       <Box
         sx={{
           width: '100%',

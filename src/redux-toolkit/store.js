@@ -4,8 +4,6 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { sidebarSettingsSlice } from './sidebarSettingsSlice'
 import { userSlice } from './userSlice'
 import { orderTableColumnsSlice } from './tableSlices/orderTableColumns'
-import { productsTableColumnsSlice } from './tableSlices/productsTableColumns'
-import { shopTableColumnsSlice } from './tableSlices/shopTableColumns'
 import { notificationsTableColumnsSlice } from './tableSlices/notificationsTableColumns'
 import { notificationCustomTableColumnsSlice } from './tableSlices/notificationsCustomTableColumns'
 import { rolesTableColumnsSlice } from './tableSlices/rolesTableColumns'
@@ -14,12 +12,14 @@ import { usersTableColumnsSlice } from './tableSlices/userTableColumns'
 import { transactionsTableColumnsSlice } from './tableSlices/transactionsTableColumns'
 import { couriersColumns } from './tableSlices/couriers'
 import { qrSaleTableColumnsSlice } from './tableSlices/qrSaleTableColumns'
+import { productsTableColumnsSlice } from './tableSlices/productsTableColumns'
+import { storeTableColumnsSlice } from './tableSlices/storeTableColumns'
 import { storesListTableColumnsForProductSlice } from './tableSlices/storesListTableColumnsForProduct'
 
 // Define your migration function here
 const migrations = {
   // Example migration
-  2: (state) => {
+  17: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -37,7 +37,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 2, // Current version of the persisted state
+  version: 17, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -49,11 +49,11 @@ const reducer = combineReducers({
   orderTableColumns: orderTableColumnsSlice,
   transactionsTableColumns: transactionsTableColumnsSlice,
   qrSaleTableColumns: qrSaleTableColumnsSlice,
-  shopTableColumns: shopTableColumnsSlice,
   productsTableColumns: productsTableColumnsSlice,
   clientTableColumns: clientTableColumnsSlice,
   user: userSlice,
   storesListTableColumnsForProduct: storesListTableColumnsForProductSlice,
+  storeTableColumns: storeTableColumnsSlice,
   notificationsTableColumns: notificationsTableColumnsSlice,
   notificationCustomCreate: notificationCustomTableColumnsSlice,
   rolesTableColumns: rolesTableColumnsSlice,

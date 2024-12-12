@@ -5,8 +5,8 @@ const columns = [
   {
     field: 'number',
     hide: false,
-    minWidth: 70,
-    width: 200,
+    minWidth: 60,
+    width: 60,
   },
 
   {
@@ -22,13 +22,19 @@ const columns = [
     width: 192,
   },
   {
-    field: 'employee_number',
+    field: 'employee_count',
     hide: false,
     minWidth: 70,
     width: 94,
   },
   {
-    field: 'cashRegistes_number',
+    field: 'cash_box_count',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'store_code',
     hide: false,
     minWidth: 70,
     width: 200,
@@ -37,13 +43,14 @@ const columns = [
   {
     field: 'actions',
     hide: false,
-    minWidth: 70,
-    width: 220,
+    minWidth: 96,
+    width: 96,
+    pinned: 'right',
   },
 ]
 
-const shopTableColumns = createSlice({
-  name: 'shopTableColumns',
+const storeTableColumns = createSlice({
+  name: 'storeTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -101,5 +108,5 @@ const shopTableColumns = createSlice({
   },
 })
 
-export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } = shopTableColumns.actions
-export const shopTableColumnsSlice = shopTableColumns.reducer
+export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } = storeTableColumns.actions
+export const storeTableColumnsSlice = storeTableColumns.reducer

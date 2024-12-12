@@ -4,11 +4,12 @@ import LoadingContainer from '../../../../components/LoadingContainer'
 import { useEffect, useMemo, useState } from 'react'
 import { products_statuses } from '../../../assets/data/products-statuses'
 import { useQueryParams } from '../../../hooks/useQueryParams'
+import { requests } from '../../../../utils/requests'
 import { useMutation, useQuery } from 'react-query'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import { useDispatch, useSelector } from 'react-redux'
 import tableHeaderSelector from './tableHeaderSelector'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/productsTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/storeTableColumns'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import ImageGallery from '../../../../components/ImageGallery'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -30,14 +31,15 @@ import EditorIcon from '../../../assets/icons/EditorIcon'
 import FilterTableRowsMenu from './FilterTableRowsMenu'
 import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButton'
 import { useTranslation } from 'react-i18next'
-import { requests } from '../../../../utils/requests'
+import { useTheme } from '@mui/styles'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function StoresPage() {
+export default function ProductsPage() {
+  const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.productsTableColumns)
+  const { columns, loading } = useSelector((state) => state.storeTableColumns)
   const { values } = useQueryParams()
   const [status, setStatus] = useState('ALL')
   const [regions, setRegions] = useState([])
@@ -48,6 +50,7 @@ export default function StoresPage() {
   const [filterMenu, setFilterMenu] = useState(false)
   const [filterTableRowsMenu, setFilterTableRowsMenu] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(null)
+
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
@@ -60,6 +63,8 @@ export default function StoresPage() {
 
   /// filter table columns with permission
   useEffect(() => {
+    console.log(columns)
+
     if (tableColumns) {
       const formattedData = tableColumns
         ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
@@ -75,7 +80,7 @@ export default function StoresPage() {
     }
   }, [])
 
-  const productsListFilter = useMemo(() => {
+  const storesListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
@@ -111,13 +116,14 @@ export default function StoresPage() {
     regions,
   ])
   const {
-    data: productsList,
-    isLoading: productsListLoading,
-    isFetching: isFetchingproductsList,
+    data: storesList,
+    isLoading: storesListLoading,
+    isFetching: isFetchingstoresList,
     refetch,
-  } = useQuery(['productsList', productsListFilter], () => requests.getAllProducts(productsListFilter))
+  } = useQuery(['storesList', storesListFilter], () => requests.getAllStores(storesListFilter))
+  console.log(storesList)
 
-  const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
+  const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteStore, {
     onSuccess: () => {
       refetch()
       success('Продукт успешно удален!')
@@ -186,48 +192,48 @@ export default function StoresPage() {
 
   useEffect(() => {
     refetch()
-  }, [productsListFilter])
+  }, [storesListFilter])
 
   useEffect(() => {
     const count =
       // status === 'ACTIVE'
-      //   ? productsList?.data?.active
+      //   ? storesList?.data?.active
       //   : status === 'INACTIVE'
-      //   ? productsList?.data?.inactive
+      //   ? storesList?.data?.inactive
       //   : status === 'INACTIVE_BY_VENDOR'
-      //   ? productsList?.data?.inactiveByVendor
+      //   ? storesList?.data?.inactiveByVendor
       //   : status === 'BLOCKED'
-      //   ? productsList?.data?.blocked
-      // : productsList?.data.totalCount
-      productsList?.data?.data?._meta?.total_count
+      //   ? storesList?.data?.blocked
+      // : storesList?.data.totalCount
+      storesList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [productsList?.data, values?.limit, status])
+  }, [storesList?.data, values?.limit, status])
 
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {t('page.catalog.title')}
+          Do'konlar
         </Typography>
         {/* <Box display='flex' mb={3} mt={4}>
           <TabContainer
             customTooltip
             tabs={products_statuses?.map((el) => ({ label: el.name, id: el.id }))}
             counts={[
-              productsList?.data?.totalCount,
-              productsList?.data?.active,
-              productsList?.data?.inactive,
-              productsList?.data?.inactiveByVendor,
-              productsList?.data?.blocked,
-              productsList?.data?.rejected,
+              storesList?.data?.totalCount,
+              storesList?.data?.active,
+              storesList?.data?.inactive,
+              storesList?.data?.inactiveByVendor,
+              storesList?.data?.blocked,
+              storesList?.data?.rejected,
             ]}
             selected={status}
             setSelected={setStatus}
           />
         </Box> */}
-        <Box minWidth={320}>
+        {/* <Box minWidth={320}>
           <InputSwitch
             uncontrolled
             id='app-type'
@@ -245,7 +251,7 @@ export default function StoresPage() {
               { title: t('switch.title.medical_supplies'), value: 'medical_supplies' },
             ]}
           />
-        </Box>
+        </Box> */}
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box
@@ -264,7 +270,7 @@ export default function StoresPage() {
               <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
             </Box>
 
-            <Box minWidth={113} ml={'16px'}>
+            {/* <Box minWidth={113} ml={'16px'}>
               <Button
                 sx={{
                   height: '48px',
@@ -280,7 +286,7 @@ export default function StoresPage() {
                   },
                 }}
                 fullWidth
-                startIcon={<FilterMenuIcon />}
+                startIcon={<FilterMenuIcon color={theme.palette.black} />}
                 variant='contained'
                 color='secondary'
                 onClick={() => setFilterMenu((prev) => !prev)}
@@ -289,7 +295,7 @@ export default function StoresPage() {
                   {t('filter_dialog.label')}
                 </Typography>
               </Button>
-            </Box>
+            </Box> */}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box
@@ -302,7 +308,7 @@ export default function StoresPage() {
               <Box minWidth={156}>
                 <Button
                   sx={{ height: '48px' }}
-                  onClick={() => navigate('/products/create')}
+                  // onClick={() => navigate('/products/create')}
                   fullWidth
                   startIcon={<PlusIcon color='#fff' />}
                   variant='contained'
@@ -321,8 +327,8 @@ export default function StoresPage() {
             id='products-main-table'
             tableSettings
             columns={tableColumns}
-            data={productsList?.data?.data?.data || []}
-            isDataLoading={isFetchingproductsList || productsListLoading}
+            data={storesList?.data?.data?.data || []}
+            isDataLoading={isFetchingstoresList || storesListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
@@ -330,7 +336,7 @@ export default function StoresPage() {
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             status={status}
-            isRefreshing={loading || isFetchingproductsList || productsListLoading}
+            isRefreshing={loading || isFetchingstoresList || storesListLoading}
           />
         </Box>
       </Box>
@@ -360,9 +366,9 @@ export default function StoresPage() {
               ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
               : openConfirmDialog?.type === 'deactivate'
               ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-              : 'mahsulotini o’chirmoqchimisiz?'
+              : "do'konini o’chirmoqchimisiz?"
           }
-          supDesc={'“Azitromitsin 250 mg”'}
+          supDesc={openConfirmDialog.name}
           actions={
             <>
               <Button

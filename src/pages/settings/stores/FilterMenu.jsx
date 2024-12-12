@@ -13,6 +13,7 @@ import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { theme } from '../../../assets/theme'
 import { useTranslation } from 'react-i18next'
+import { useTheme } from '@mui/styles'
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -75,6 +76,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
     producers,
     shopList,
   ])
+  const theme = useTheme()
 
   const resetFilter = () => {
     reset()
@@ -83,7 +85,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
   const { t } = useTranslation()
   return (
-    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}>
       <Box
         sx={{
           width: '100%',

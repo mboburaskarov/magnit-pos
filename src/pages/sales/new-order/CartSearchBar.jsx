@@ -207,11 +207,12 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
           <ButtonWithPopup
             id={'ff'}
             noArrow
-            // endIcon={<ArrowDown />}
+            ml={'16px'}
+            // endIcon={<ArrowDown />
             noMarginSvg
             placement='bottom-end'
             buttonLabel={
-              <Box ml={'16px'} className='cash_register_icon_wrapper' bgcolor={'#F8F8F9'} padding={'12px'} width={'48px'} height={'48px'} borderRadius={'50%'}>
+              <Box className='cash_register_icon_wrapper' bgcolor={'#F8F8F9'} padding={'12px'} width={'48px'} height={'48px'} borderRadius={'50%'}>
                 <FinanceAndPaymentIcon />
               </Box>
             }

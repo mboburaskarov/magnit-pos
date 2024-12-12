@@ -68,14 +68,14 @@ const Image = ({ data, rowIndex, setImages }) => {
 export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
   // const { values } = useQueryParams()
   const columns = productsColumns?.map((el) => {
-    if (el.field === 'main_photo') {
-      return {
-        ...el,
-        headerName: t('table_columns.photo'),
-        colId: el.field,
-        cellRenderer: memo((p) => <Image {...p} setImages={setImages} />),
-      }
-    }
+    // if (el.field === 'main_photo') {
+    //   return {
+    //     ...el,
+    //     headerName: t('table_columns.photo'),
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <Image {...p} setImages={setImages} />),
+    //   }
+    // }
     if (el.field === 'name') {
       return {
         ...el,
@@ -84,77 +84,110 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
       }
     }
-    if (el.field === 'sum') {
+    if (el.field === 'location') {
       return {
         ...el,
-        headerName: t('table_columns.price'),
+        headerName: 'Manzil',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='sum' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='location' />),
       }
     }
-    if (el.field === 'category') {
+    if (el.field === 'employee_count') {
       return {
         ...el,
-        headerName: t('table_columns.category'),
+        headerName: 'Hodimlar soni',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='category' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='employee_count' />),
       }
     }
-    if (el.field === 'retail_price') {
+    if (el.field === 'cash_box_count') {
       return {
         ...el,
-        headerName: t('table_columns.retail_price'),
+        headerName: 'Kassalar soni',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='retail_price' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='cash_box_count' />),
       }
     }
-    if (el.field === 'vat') {
+    if (el.field === 'store_code') {
       return {
         ...el,
-        headerName: t('table_columns.vat'),
+        headerName: "Do'kon ko'di",
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='%' withDevider {...p} type='vat' />),
-      }
-    }
-    if (el.field === 'vat_price') {
-      return {
-        ...el,
-        headerName: t('table_columns.vat_price'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='vat_price' />),
-      }
-    }
-    if (el.field === 'supply_price') {
-      return {
-        ...el,
-        headerName: t('table_columns.supply_price'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='supply_price' />),
-      }
-    }
-    if (el.field === 'status') {
-      return {
-        ...el,
-        headerName: t('table_columns.status'),
-        colId: el.field,
-        cellRenderer: memo(({ data, rowIndex }) => (
-          <StatusCell
-            id={`products-status-${rowIndex}`}
-            bgcolor={products_statuses.find((el) => el.id === data.status)?.color}
-            title={products_statuses.find((el) => el.id === data.status)?.name}
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='store_code' />),
       }
     }
 
-    if (el.field === 'manufacturer') {
-      return {
-        ...el,
-        headerName: t('table_columns.manufacturer'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText type={'manufacturer'} {...p} />),
-      }
-    }
+    // if (el.field === 'sum') {
+    //   return {
+    //     ...el,
+    //     headerName: t('table_columns.price'),
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='sum' />),
+    //   }
+    // }
+    // if (el.field === 'category') {
+    //   return {
+    //     ...el,
+    //     headerName: t('table_columns.category'),
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText withDevider {...p} type='category' />),
+    //   }
+    // }
+    // if (el.field === 'retail_price') {
+    //   return {
+    //     ...el,
+    //     headerName: t('table_columns.retail_price'),
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='retail_price' />),
+    //   }
+    // }
+    // if (el.field === 'vat') {
+    //   return {
+    //     ...el,
+    //     headerName: t('table_columns.vat'),
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText currency='%' withDevider {...p} type='vat' />),
+    //   }
+    // }
+    // if (el.field === 'vat_price') {
+    //   return {
+    //     ...el,
+    //     headerName: t('table_columns.vat_price'),
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='vat_price' />),
+    //   }
+    // }
+    // if (el.field === 'supply_price') {
+    //   return {
+    //     ...el,
+    //     headerName: t('table_columns.supply_price'),
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='supply_price' />),
+    //   }
+    // }
+    // if (el.field === 'status') {
+    //   return {
+    //     ...el,
+    //     headerName: t('table_columns.status'),
+    //     colId: el.field,
+    //     cellRenderer: memo(({ data, rowIndex }) => (
+    //       <StatusCell
+    //         id={`products-status-${rowIndex}`}
+    //         bgcolor={products_statuses.find((el) => el.id === data.status)?.color}
+    //         title={products_statuses.find((el) => el.id === data.status)?.name}
+    //       />
+    //     )),
+    //   }
+    // }
+
+    // if (el.field === 'manufacturer') {
+    //   return {
+    //     ...el,
+    //     headerName: t('table_columns.manufacturer'),
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText type={'manufacturer'} {...p} />),
+    //   }
+    // }
 
     if (el.field === 'number') {
       return {
@@ -173,39 +206,39 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
       }
     }
 
-    if (el.field === 'barcode') {
-      return {
-        ...el,
-        headerName: t('table_columns.barcode'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' {...p} type='barcode' />),
-      }
-    }
-    if (el.field === 'product_variability') {
-      return {
-        ...el,
-        headerName: 'Ishlab chiqaruvchi',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='product_variability' />),
-      }
-    }
+    // if (el.field === 'barcode') {
+    //   return {
+    //     ...el,
+    //     headerName: t('table_columns.barcode'),
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText currency='' {...p} type='barcode' />),
+    //   }
+    // }
+    // if (el.field === 'product_variability') {
+    //   return {
+    //     ...el,
+    //     headerName: 'Ishlab chiqaruvchi',
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='product_variability' />),
+    //   }
+    // }
 
-    if (el.field === 'quantity') {
-      return {
-        ...el,
-        headerName: t('table_columns.quantity'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='quantity' />),
-      }
-    }
-    if (el.field === 'expire_date') {
-      return {
-        ...el,
-        headerName: t('table_columns.expire_date'),
-        colId: el.field,
-        cellRenderer: memo((p) => <TimeCell {...p} type='expire_date' format='DD.MM.YYYY' />),
-      }
-    }
+    // if (el.field === 'quantity') {
+    //   return {
+    //     ...el,
+    //     headerName: t('table_columns.quantity'),
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText {...p} type='quantity' />),
+    //   }
+    // }
+    // if (el.field === 'expire_date') {
+    //   return {
+    //     ...el,
+    //     headerName: t('table_columns.expire_date'),
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <TimeCell {...p} type='expire_date' format='DD.MM.YYYY' />),
+    //   }
+    // }
     if (el.field === 'actions') {
       return {
         ...el,
@@ -220,7 +253,10 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
                 </IconButton>
               </CheckAccess>
               <CheckAccess id={'product-delete'}>
-                <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <IconButton
+                  onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: data.name })}
+                  sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+                >
                   <DeleteIcon />
                 </IconButton>
               </CheckAccess>

@@ -61,6 +61,9 @@ export const requests = {
   //discount
   changeDiscountValue: ({ id, body }) => request.put(`v1/cart_item/sale/${id}`, body),
   getCashBoxDetaildWithSaleId: (id) => request.get(`v1/sale/${id}`),
+  //store
+  getAllStores: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  deleteStore: (id) => request.delete(`v1/store/${id}`),
 
   //products
   getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -90,6 +93,7 @@ export const requests = {
   getRegisterCashList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getCartItemList: (filter) => request.get(`v1/cart_item/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   //shops
+
   getAllShops: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   // getAllStores: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateShop: ({ id, data }) => request.patch(`api/admin/shops/${id}`, data),

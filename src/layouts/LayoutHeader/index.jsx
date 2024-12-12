@@ -60,7 +60,7 @@ function LayoutHeader() {
 
                 <Box maxWidth='73%'>
                   <Typography id='user-username' className={classes.username}>
-                    {`${firstName}`}f
+                    {`${firstName}`}
                   </Typography>
                   <p id='user-shopname' className={`${classes.shopname} shopname`}>
                     {/* {userData.type.toLowerCase()} */}
