@@ -1,5 +1,5 @@
 import { Box, Typography, Dialog } from '@mui/material'
-import { makeStyles } from '@mui/styles'
+import { makeStyles, useTheme } from '@mui/styles'
 import CloseIcon from '../src/assets/icons/CloseIcon'
 // import { theme } from '../src/assets/theme'
 
@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }))
-
+// const theme = useTheme()
 const ConfirmDialog = ({ open, setOpen, actions, title = '', icon, desc, descWidth, supDesc, noCloseIcon, setDisableSubmit }) => {
   const handleClose = () => {
     setOpen(false)
@@ -89,9 +89,7 @@ const ConfirmDialog = ({ open, setOpen, actions, title = '', icon, desc, descWid
             <Typography variant='h2' fontWeight={'700'} fontSize={'24px'} lineHeight={'32px'}>
               {title}
             </Typography>
-            <Box>
-              <CloseIcon />
-            </Box>
+            <Box>{/* <CloseIcon color={theme.palette.black} /> */}</Box>
           </Box>
         )}
         <Box className={classes.content}>

@@ -1,60 +1,71 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
-import TabContainer from '../../../components/Tab/TabContainer'
-import LoadingContainer from '../../../components/LoadingContainer'
-import { useEffect, useMemo, useState } from 'react'
-import { products_statuses } from '../../assets/data/products-statuses'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { requests } from '../../../utils/requests'
-import { useMutation, useQuery } from 'react-query'
-import AgGridTable from '../../../components/AgGridTable/AgGridTable'
-import { useDispatch, useSelector } from 'react-redux'
-import tableHeaderSelector from './tableHeaderSelector'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
-import InputSearch from '../../../components/Inputs/InputSearch'
-import ImageGallery from '../../../components/ImageGallery'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowDownWideShort, faArrowUpWideShort, faPlus } from '@fortawesome/free-solid-svg-icons'
-import FilterMenu from './FilterMenu'
-import { useNavigate } from 'react-router-dom'
-import { error, success } from '../../../utils/toast'
-import ConfirmDialog from '../../../components/ConfirmDialog'
-import BigWarningIcon from '../../assets/icons/BigWarningIcon'
 import { LoadingButton } from '@mui/lab'
+import { Box, Button, TextField, Typography } from '@mui/material'
+import { useEffect, useMemo, useState } from 'react'
+import { useMutation, useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import AgGridTable from '../../../components/AgGridTable/AgGridTable'
+import ConfirmDialog from '../../../components/ConfirmDialog'
+import ImageGallery from '../../../components/ImageGallery'
+import InputSearch from '../../../components/Inputs/InputSearch'
+import LoadingContainer from '../../../components/LoadingContainer'
+import { requests } from '../../../utils/requests'
+import { error, success } from '../../../utils/toast'
 import BigTickIcon from '../../assets/icons/BigTickIcon'
+import BigWarningIcon from '../../assets/icons/BigWarningIcon'
+import { useQueryParams } from '../../hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/vendorsTableColumns'
+import FilterMenu from './FilterMenu'
+import tableHeaderSelector from './tableHeaderSelector'
 // import ProductDrawer from './ProductDrawer'
-import InputSwitch from '../../../components/Inputs/InputSwitch'
+import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
 import CheckAccess from '../../../components/CheckAccess'
 import StyledDialog from '../../../components/Dialogs/StyledDialog'
+import InputSwitch from '../../../components/Inputs/InputSwitch'
+import DeleteIcon from '../../assets/icons/DeleteIcon'
 import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
+import LockIcon from '../../assets/icons/LockIcon'
 import PlusIcon from '../../assets/icons/PlusIcon'
-import EditorIcon from '../../assets/icons/EditorIcon'
+import CreateVendorDrawer from './createVendorDrawer'
 import FilterTableRowsMenu from './FilterTableRowsMenu'
-import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
-import { useTranslation } from 'react-i18next'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function VendorsPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.productsTableColumns)
+  const { columns, loading } = useSelector((state) => state.vendorsTableColumns)
   const { values } = useQueryParams()
   const [status, setStatus] = useState('ALL')
   const [regions, setRegions] = useState([])
   const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
+  const [openCreateVendorDrawer, setopenCreateVendorDrawer] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
   const [filterTableRowsMenu, setFilterTableRowsMenu] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(null)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const [slectedVendors, setSelectedVendors] = useState([])
+  const methods = useForm()
+  const selectVendors = (isChecked, id) => {
+    if (isChecked) {
+      setSelectedVendors((p) => [...p, id])
+    } else {
+      setSelectedVendors((p) => p.filter((ids) => ids !== id))
+    }
+  }
+
   const tableColumns = tableHeaderSelector({
-    productsColumns: columns,
+    vendorsColumns: columns,
     t,
     values,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
+    selectVendors,
     setIsDrawerOpen,
   })
 
@@ -75,7 +86,7 @@ export default function VendorsPage() {
     }
   }, [])
 
-  const productsListFilter = useMemo(() => {
+  const vendorsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
@@ -111,13 +122,13 @@ export default function VendorsPage() {
     regions,
   ])
   const {
-    data: productsList,
-    isLoading: productsListLoading,
-    isFetching: isFetchingproductsList,
+    data: vendorsList,
+    isLoading: vendorsListLoading,
+    isFetching: isFetchingvendorsList,
     refetch,
-  } = useQuery(['productsList', productsListFilter], () => requests.getAllProducts(productsListFilter))
+  } = useQuery(['vendorsList', vendorsListFilter], () => requests.getAllVendors(vendorsListFilter))
 
-  const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
+  const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteVendor, {
     onSuccess: () => {
       refetch()
       success('Продукт успешно удален!')
@@ -149,7 +160,7 @@ export default function VendorsPage() {
       console.log('err', err)
     },
   })
-  const { mutate: activateProduct, isLoading: isActivatingProduct } = useMutation(requests.activateProduct, {
+  const { mutate: activateProduct, isLoading: isActivatingProduct } = useMutation(requests.activateVendor, {
     onSuccess: () => {
       success('Продукт успешно активирован!')
       setTimeout(() => {
@@ -166,7 +177,7 @@ export default function VendorsPage() {
       console.log('err', err)
     },
   })
-  const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.changeProductStatus, {
+  const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.deActivateVendor, {
     onSuccess: () => {
       success('Продукт успешно деактивирован!')
       setTimeout(() => {
@@ -186,42 +197,42 @@ export default function VendorsPage() {
 
   useEffect(() => {
     refetch()
-  }, [productsListFilter])
+  }, [vendorsListFilter])
 
   useEffect(() => {
     const count =
       // status === 'ACTIVE'
-      //   ? productsList?.data?.active
+      //   ? vendorsList?.data?.active
       //   : status === 'INACTIVE'
-      //   ? productsList?.data?.inactive
+      //   ? vendorsList?.data?.inactive
       //   : status === 'INACTIVE_BY_VENDOR'
-      //   ? productsList?.data?.inactiveByVendor
+      //   ? vendorsList?.data?.inactiveByVendor
       //   : status === 'BLOCKED'
-      //   ? productsList?.data?.blocked
-      // : productsList?.data.totalCount
-      productsList?.data?.data?._meta?.total_count
+      //   ? vendorsList?.data?.blocked
+      // : vendorsList?.data.totalCount
+      vendorsList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [productsList?.data, values?.limit, status])
+  }, [vendorsList?.data, values?.limit, status])
 
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {t('page.catalog.title')}
+          Vendors
         </Typography>
         {/* <Box display='flex' mb={3} mt={4}>
           <TabContainer
             customTooltip
             tabs={products_statuses?.map((el) => ({ label: el.name, id: el.id }))}
             counts={[
-              productsList?.data?.totalCount,
-              productsList?.data?.active,
-              productsList?.data?.inactive,
-              productsList?.data?.inactiveByVendor,
-              productsList?.data?.blocked,
-              productsList?.data?.rejected,
+              vendorsList?.data?.totalCount,
+              vendorsList?.data?.active,
+              vendorsList?.data?.inactive,
+              vendorsList?.data?.inactiveByVendor,
+              vendorsList?.data?.blocked,
+              vendorsList?.data?.rejected,
             ]}
             selected={status}
             setSelected={setStatus}
@@ -254,7 +265,7 @@ export default function VendorsPage() {
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                   background: 'transparent',
-                  border: '2px solid transparent',
+                  // border: '2px solid transparent',
 
                   width: '400px',
                   height: 48,
@@ -290,6 +301,56 @@ export default function VendorsPage() {
                 </Typography>
               </Button>
             </Box>
+            {slectedVendors.length > 0 && (
+              <>
+                <Box minWidth={48} ml={'16px'}>
+                  <Button
+                    sx={{
+                      height: '48px',
+                      padding: 0,
+                      bgcolor: '#fff',
+                      border: '1px solid #ECEDF2',
+                      color: 'dark.500',
+                      fontWeight: '500',
+                      fontSize: '16px',
+                      lineHeight: '24px',
+                      '& span': {
+                        mr: '12px',
+                      },
+                    }}
+                    fullWidth
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => deActivateProduct(slectedVendors)}
+                  >
+                    <LockIcon color='#111217' />
+                  </Button>
+                </Box>
+                <Box minWidth={48} ml={'16px'}>
+                  <Button
+                    sx={{
+                      height: '48px',
+                      padding: 0,
+                      bgcolor: '#fff',
+                      border: '1px solid #ECEDF2',
+                      color: 'dark.500',
+                      fontWeight: '500',
+                      fontSize: '16px',
+                      lineHeight: '24px',
+                      '& span': {
+                        mr: '12px',
+                      },
+                    }}
+                    fullWidth
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => deleteProduct({ data: slectedVendors })}
+                  >
+                    <DeleteIcon width='24px' />
+                  </Button>
+                </Box>
+              </>
+            )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box
@@ -302,7 +363,7 @@ export default function VendorsPage() {
               <Box minWidth={156}>
                 <Button
                   sx={{ height: '48px' }}
-                  onClick={() => navigate('/products/create')}
+                  onClick={() => setopenCreateVendorDrawer(true)}
                   fullWidth
                   startIcon={<PlusIcon color='#fff' />}
                   variant='contained'
@@ -321,8 +382,8 @@ export default function VendorsPage() {
             id='products-main-table'
             tableSettings
             columns={tableColumns}
-            data={productsList?.data?.data?.data || []}
-            isDataLoading={isFetchingproductsList || productsListLoading}
+            data={vendorsList?.data?.data?.data || []}
+            isDataLoading={isFetchingvendorsList || vendorsListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
@@ -330,7 +391,7 @@ export default function VendorsPage() {
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             status={status}
-            isRefreshing={loading || isFetchingproductsList || productsListLoading}
+            isRefreshing={loading || isFetchingvendorsList || vendorsListLoading}
           />
         </Box>
       </Box>
@@ -350,19 +411,19 @@ export default function VendorsPage() {
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
           title={
             openConfirmDialog?.type === 'activate'
-              ? 'Активировать продукт?'
+              ? 'Активировать сотрудника?'
               : openConfirmDialog?.type === 'deactivate'
-              ? 'Деактивировать продукт?'
-              : 'Удалить продукт?'
+              ? 'Деактивировать сотрудника?'
+              : 'Удалить сотрудника?'
           }
           desc={
             openConfirmDialog?.type === 'activate'
-              ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
+              ? 'Вы действительно хотите активировать сотрудника, но после активации вы не сможете отменить процесс.'
               : openConfirmDialog?.type === 'deactivate'
-              ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-              : 'mahsulotini o’chirmoqchimisiz?'
+              ? 'Вы уверены, что хотите удалить сотрудника? После удаления вы не сможете отменить процесс.'
+              : 'ni o’chirmoqchimisiz?'
           }
-          supDesc={'“Azitromitsin 250 mg”'}
+          supDesc={openConfirmDialog.name}
           actions={
             <>
               <Button
@@ -380,10 +441,10 @@ export default function VendorsPage() {
                 loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
                 onClick={() =>
                   openConfirmDialog?.type === 'activate'
-                    ? activateProduct(openConfirmDialog.id)
+                    ? activateProduct([openConfirmDialog.id])
                     : openConfirmDialog?.type === 'deactivate'
-                    ? deActivateProduct({ id: openConfirmDialog.id, status: 'INACTIVE' })
-                    : deleteProduct(openConfirmDialog.id)
+                    ? deActivateProduct([openConfirmDialog.id])
+                    : deleteProduct({ data: [openConfirmDialog.id] })
                 }
               >
                 Ha, o'chirish
@@ -417,6 +478,17 @@ export default function VendorsPage() {
           </Box>
         )}
       </StyledDialog>
+      <CreateVendorDrawer
+        setCustomerId={'setCustomerId'}
+        quickCreateClientName={'quickCreateClientName'}
+        openDrawer={openCreateVendorDrawer}
+        closeDrawer={() => setopenCreateVendorDrawer(false)}
+        // setOpenClientCreate={setOpenClientCreate}
+        // setClientDataMini={setClientDataMini}
+        clientData={'clientDetails'}
+        // handleAddClient={handleAddClient}
+        // afterCreate={(clientId) => setCreatedClientId(clientId)}
+      />
     </LoadingContainer>
   )
 }

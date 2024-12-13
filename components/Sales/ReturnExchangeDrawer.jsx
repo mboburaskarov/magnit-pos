@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import * as qs from 'qs'
 import { useNavigate } from 'react-router-dom'
 import { Box, Button, Drawer, Typography, CircularProgress } from '@mui/material'
-import { makeStyles } from '@mui/styles'
+import { makeStyles, useTheme } from '@mui/styles'
 import { Skeleton } from '@mui/material'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import InputSearch from '../Inputs/InputSearch'
@@ -372,7 +372,7 @@ export default function ReturnExchangeDrawer({
       })) || []
 
   const orderItemsList = [...orderItemListFiltered, ...returnedItemsList]
-
+  const theme = useTheme()
   return (
     <>
       <Drawer open={isOpen} onClose={closeDrawer} anchor='right' elevation={1} className={classes.drawer}>
@@ -386,7 +386,7 @@ export default function ReturnExchangeDrawer({
                   </Typography>
                 </Box>
                 <Box onClick={closeDrawer}>
-                  <CloseIcon />
+                  <CloseIcon color={theme.palette.black} />
                 </Box>
               </Box>
               <Box display='flex' width='100%' mt={4}>

@@ -4,22 +4,18 @@ export const vendor_statuses = [
     name: 'Все',
   },
   {
-    id: 'ACTIVE',
+    id: 'active',
     color: 'green.500',
     name: 'Активный',
   },
   {
-    id: 'INACTIVE',
+    id: 'deleted',
     color: 'red.400',
     name: 'Неактивный',
   },
+
   {
-    id: 'CREATED_BY_ADMIN',
-    color: 'yellow.400',
-    name: 'Aдмином',
-  },
-  {
-    id: 'BLOCKED',
+    id: 'blocked',
     color: 'red.600',
     name: 'Заблокирован',
   },

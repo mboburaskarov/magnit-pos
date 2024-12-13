@@ -1,6 +1,7 @@
 import { Box, Drawer, Typography } from '@mui/material'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import LoadingContainer from '../LoadingContainer'
+import { useTheme } from '@mui/styles'
 
 const DRAWER_WIDTH = 768
 
@@ -8,7 +9,7 @@ export default function CardDrawer({ isOpen, closeDrawer, actions, children, tit
   const onClose = () => {
     closeDrawer()
   }
-
+  const theme = useTheme()
   return (
     <Drawer
       open={!!isOpen}
@@ -58,7 +59,7 @@ export default function CardDrawer({ isOpen, closeDrawer, actions, children, tit
                   <Typography>{title}</Typography>
                 </Box>
                 <Box onClick={onClose}>
-                  <CloseIcon />
+                  <CloseIcon color={theme.palette.black} />
                 </Box>
               </Box>
               <Box height={96} />

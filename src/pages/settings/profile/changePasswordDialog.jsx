@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import { useMutation } from 'react-query'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
+import { useTheme } from '@mui/styles'
 
 export default function ChangePassWordDialog({ open, setOpen }) {
   const [canChange, setCanChange] = useState(false)
@@ -42,9 +43,15 @@ export default function ChangePassWordDialog({ open, setOpen }) {
       console.log('err', err)
     },
   })
+  const theme = useTheme()
   const { t } = useTranslation()
   return (
-    <StyledEmptyDialog open={open} title={t('change_password.label')} onClose={setOpen} customButtons={<CloseIcon onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog
+      open={open}
+      title={t('change_password.label')}
+      onClose={setOpen}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+    >
       <Box
         sx={{
           width: '100%',

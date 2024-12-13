@@ -123,6 +123,25 @@ input[type='number'] {
   -moz-appearance: textfield;
 }
 
+.customCheckbox {
+  width: 20px;
+  height: 20px;
+  /* border: 1px; */
+  border-radius: 4px;
+  vertical-align: middle;
+  border: 1.5px solid #868faa;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  cursor: pointer;
+}
+.customCheckbox:checked {
+  appearance: auto;
+  -webkit-appearance: auto;
+  /* border-radius: 4px; */
+  clip-path: inset(1px round 4px);
+  background-color: '#2558FF';
+}
 .loading-container {
   width: 100%; /* Full width */
   height: 200px; /* Fixed height */

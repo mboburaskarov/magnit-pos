@@ -323,9 +323,9 @@ const useStyles = makeStyles((theme) =>
       '.no-rows-container': {
         borderColor: theme.palette.gray[300],
       },
-      '.no-rows-root p': {
-        color: theme.palette.gray[300],
-      },
+      // '.no-rows-root p': {
+      //   color: theme.palette.gray[300],
+      // },
       '.ag-theme-alpine .ag-pinned-left-header': {
         borderColor: theme.palette.gray[200] + ' !important',
       },

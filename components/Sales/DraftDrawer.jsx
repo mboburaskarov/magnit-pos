@@ -1,5 +1,5 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
+import { makeStyles, useTheme } from '@mui/styles'
 import React, { useEffect, useMemo, useState } from 'react'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import InputSearch from '../Inputs/InputSearch'
@@ -34,6 +34,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
   const [draftfilter, setDraftFilter] = useState(false)
   const userData = useSelector((state) => state.user)
   const { values } = useQueryParams()
+  console.log(values.draft_date)
 
   const [isOpenChild, setIsOpenChild] = useState(false)
   const draftsListFilter = useMemo(() => {
@@ -44,14 +45,14 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
       store_id: get(userData, 'store.id'),
       cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
       customer_id: values?.customer_id,
-      draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : null,
+      draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : ' ',
     }
   }, [values?.customer_id, values?.draft_date, values?.search])
   const { data: darftList, refetch, isDarftList } = useQuery(['darftList', draftsListFilter], () => requests.getDarftList(draftsListFilter))
   useEffect(() => {
     refetch()
   }, [])
-
+  const theme = useTheme()
   const draftListData = get(darftList, 'data.data.data', [])
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
@@ -61,7 +62,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
             <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
               Qoralamalar
             </Typography>
-            <CloseIcon onClick={() => setOpen(false)} />
+            <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
           </Box>
           <Box display={'flex'} padding={'24px'}>
             <InputSearch fullWidth uncontrolled placeholder={'Qidirish: ID, mijoz, sotuvchi'} />

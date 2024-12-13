@@ -1,5 +1,5 @@
 import { Box, Button, Checkbox, Drawer, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
+import { makeStyles, useTheme } from '@mui/styles'
 import React, { useState } from 'react'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import WaitingCashAmoutIcon from '../../../assets/icons/WaitingCashAmoutIcon'
@@ -98,6 +98,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
     console.log('err', err)
     error('Пожалуйста, заполните все поля!')
   }
+  const theme = useTheme()
   return (
     <FormProvider {...methods}>
       <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
@@ -107,7 +108,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
               <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
                 Kechiktirish
               </Typography>
-              <CloseIcon onClick={() => setOpen(false)} />
+              <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
             </Box>
             <Box display={'flex'} padding={'24px'} flexDirection={'column'}>
               <Box>

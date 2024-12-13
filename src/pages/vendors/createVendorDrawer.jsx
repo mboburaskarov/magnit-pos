@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
 import { useSelector } from 'react-redux'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
-import useDidUpdate from '../../../src/hooks/useDidUpdate'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import MainDetails from './mainDetails'
@@ -44,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function ClientCreateMini({ quickCreateClientName, openDrawer, closeDrawer, setCustomerId, clientData }) {
+export default function CreateVendorDrawer({ quickCreateClientName, openDrawer, closeDrawer, setCustomerId, clientData }) {
   const { t } = useTranslation()
   const classes = useStyles()
   const methods = useForm()
@@ -54,23 +53,23 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
     methods.register('dial_code')
   }, [])
 
-  useDidUpdate(() => {
-    if (clientData) {
-      methods.reset(clientData)
-    }
-  }, [clientData])
+  // useDidUpdate(() => {
+  //   if (clientData) {
+  //     methods.reset(clientData)
+  //   }
+  // }, [clientData])
   useEffect(() => {
     methods.reset()
   }, [])
   // useEffect(() => {
   //   methods.reset()
   // }, [quickCreateClientName])
-  const { mutate: handleSaleCreate, isLoading: isCreateCustomer } = useMutation(requests.createCustomer, {
+  const { mutate: handleSaleCreate, isLoading: isCreateCustomer } = useMutation(requests.createVendor, {
     onSuccess: ({ data }) => {
       closeDrawer(false)
       methods.reset()
 
-      setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance') })
+      // setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance') })
       success('Продукт успешно создан!')
     },
     onError: (err) => {
@@ -80,17 +79,22 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
   })
 
   const onSubmit = (data) => {
+    console.log(data)
+
     if (size(get(data, 'phone')) < 14) {
       error('Phone number is less than 14')
     }
     const requestBody = {
-      birthday: data?.date_of_birth,
-      created_by: userData?.id,
+      birthdate: data?.date_of_birth,
+      // created_by: userData?.id,
       first_name: data?.first_name,
       gender: data?.gender,
+      language: 'ru',
+      password: data?.password,
       last_name: data?.last_name,
-      phone: [data?.dial_code + data?.phone?.replace(/[()\s]/g, '')],
-      tag_id: data?.tags,
+      role_id: data?.role?.id,
+      store_id: data?.store?.id,
+      phone: '+998' + data?.phone?.replace(/[()\s]/g, ''),
     }
     handleSaleCreate(requestBody)
   }

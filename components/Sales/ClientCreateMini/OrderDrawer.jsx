@@ -525,7 +525,7 @@ export default function OrderDrawer({
                                     paddingLeft: 1,
                                   })}
                                 >
-                                  <RemovePaymentIcon />
+                                  <RemovePaymentIcon color={theme.palette.black} />
                                 </MuiButton>
                               </Box>
                             </div>

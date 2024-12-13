@@ -1,5 +1,5 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
+import { makeStyles, useTheme } from '@mui/styles'
 import React, { useState } from 'react'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import WaitingCashAmoutIcon from '../../../assets/icons/WaitingCashAmoutIcon'
@@ -82,7 +82,7 @@ function CashTypeDrawer({ open, setOpen }) {
   const [draftfilter, setDraftFilter] = useState(false)
 
   const [isOpenChild, setIsOpenChild] = useState(false)
-
+  const theme = useTheme()
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
       <Box>
@@ -90,7 +90,7 @@ function CashTypeDrawer({ open, setOpen }) {
           <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
             Naqt
           </Typography>
-          <CloseIcon onClick={() => setOpen(false)} />
+          <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
         </Box>
         <Box display={'flex'} padding={'24px'} flexDirection={'column'}>
           <Box className={classes.tbBox}>

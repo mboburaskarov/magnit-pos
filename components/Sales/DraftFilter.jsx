@@ -13,12 +13,13 @@ import StyledEmptyDialog from '../../components/Dialogs/StyledeEmptyDialog'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import { useTranslation } from 'react-i18next'
 import InputDatePicker from '../../components/Inputs/InputDatePicker'
+import { useTheme } from '@mui/styles'
 
 export default function DraftFilter({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const { id } = useParams()
-
+  const theme = useTheme()
   const methods = useForm()
   const { formState, reset, control, getValues } = methods
 
@@ -60,7 +61,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
   }
   const { t } = useTranslation()
   return (
-    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}>
       <Box
         sx={{
           width: '100%',

@@ -1,27 +1,27 @@
-import { Box, Drawer, Typography, Grid, Button as MuiButton, Button } from '@mui/material'
-import CloseIcon from '../../../src/assets/icons/CloseIcon'
-import colors from '../../../src/assets/theme/mui.config'
-import { numberToPrice } from '../../../utils/numberToPrice'
-import InputSimple from '../../Inputs/InputSearch'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import ClientSearchBar from 'components/Sales/ClientSearchBar'
-import UserFilledIcon from '../../../src/assets/icons/UserFilledIcon'
+import { Box, Button, Drawer, Grid, Button as MuiButton, Typography } from '@mui/material'
+import { makeStyles, useTheme } from '@mui/styles'
 import InputDatePicker from 'components/Input/InputDatePicker'
-import { v4 as uuidv4 } from 'uuid'
-import { requests } from 'services/requests'
-import { useQuery } from 'react-query'
-import { useDispatch } from 'react-redux'
-import { error, success } from '../../../utils/toast'
 import PriceFormattedInput from 'components/Input/PriceFormattedInput'
-import { useParams } from 'react-router-dom'
+import ClientSearchBar from 'components/Sales/ClientSearchBar'
 import dayjs from 'dayjs'
 import useWebsocketMutation from 'hooks/useWebsocketMutation'
-import { addToOrderPayment, removeFromOrderPayment } from 'store/actions/cartActions/cartActions'
-import thousandDivider from '../../../utils/thousandDivider'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
+import { useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom'
+import { requests } from 'services/requests'
+import { addToOrderPayment, removeFromOrderPayment } from 'store/actions/cartActions/cartActions'
+import { v4 as uuidv4 } from 'uuid'
+import CloseIcon from '../../../src/assets/icons/CloseIcon'
+import UserFilledIcon from '../../../src/assets/icons/UserFilledIcon'
+import colors from '../../../src/assets/theme/mui.config'
 import currency from '../../../utils/currency'
-import { makeStyles } from '@mui/styles'
+import { numberToPrice } from '../../../utils/numberToPrice'
+import thousandDivider from '../../../utils/thousandDivider'
+import { error, success } from '../../../utils/toast'
+import InputSimple from '../../Inputs/InputSearch'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -175,13 +175,13 @@ export default function EditDrawer({
       createMutate(requestBody)
     }
   }
-
+  const theme = useTheme()
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={cls.drawer}>
       <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' mb={4}>
         <Typography variant='h1'>{editDebt.active ? t('menu.clients.debts.change_debt') : t('menu.clients.debts.new_debt')}</Typography>
         <Box id='close-product-card' onClick={() => setOpen(false)}>
-          <CloseIcon />
+          <CloseIcon color={theme.palette.black} />
         </Box>
       </Box>
       <Box height='100%'>

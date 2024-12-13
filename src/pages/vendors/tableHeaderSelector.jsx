@@ -1,18 +1,14 @@
-import { memo } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import TimeCell from '../../../components/AgGridTable/Cells/TimeCell'
-import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
-import thousandDivider from '../../../utils/thousandDivider'
-import getImageUrl from '../../../utils/getImageUrl'
-import { products_statuses } from '../../assets/data/products-statuses'
-import ProductImagePlaceholder from '../../assets/icons/ProductImagePlaceholder'
-import EditIcon from '../../assets/icons/EditIcon'
-import DeleteIcon from '../../assets/icons/DeleteIcon'
-import ExpressIcon from '../../assets/icons/ExpressIcon'
-import StyledTooltip from '../../../components/StyledTooltip'
-import CheckAccess from '../../../components/CheckAccess'
-import { useQueryParams } from '../../hooks/useQueryParams'
 import { get } from 'lodash'
+import { memo } from 'react'
+import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
+import CheckAccess from '../../../components/CheckAccess'
+import thousandDivider from '../../../utils/thousandDivider'
+import { vendor_statuses } from '../../assets/data/vendor-statuses'
+import DeleteIcon from '../../assets/icons/DeleteIcon'
+import EditIcon from '../../assets/icons/EditIcon'
+import LockIcon from '../../assets/icons/LockIcon'
+import UnLockIcon from '../../assets/icons/UnLock'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -70,147 +66,75 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
+export default function tableHeaderSelector({ vendorsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen, selectVendors }) {
   // const { values } = useQueryParams()
-  const columns = productsColumns?.map((el) => {
-    if (el.field === 'main_photo') {
+  const columns = vendorsColumns?.map((el) => {
+    if (el.field === 'checkbox') {
       return {
         ...el,
-        headerName: t('table_columns.photo'),
+        headerName: '',
         colId: el.field,
-        cellRenderer: memo((p) => <Image {...p} setImages={setImages} />),
+        cellRenderer: memo((p) => (
+          <input onChange={(e) => selectVendors(e.target.checked, p.data.id)} name='checkbox_zero' className='customCheckbox' type='checkbox' />
+        )),
       }
     }
-    if (el.field === 'name') {
+    if (el.field === 'public_id') {
       return {
         ...el,
-        headerName: t('table_columns.name'),
+        headerName: 'ID',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='public_id' />),
       }
     }
-    if (el.field === 'sum') {
+    if (el.field === 'fish') {
       return {
         ...el,
-        headerName: t('table_columns.price'),
+        headerName: 'FISH',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='sum' />),
+        cellRenderer: memo((p) => <Typography>{get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')}</Typography>),
       }
     }
-    if (el.field === 'category') {
+    if (el.field === 'store') {
       return {
         ...el,
-        headerName: t('table_columns.category'),
+        headerName: "Do'kon",
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='category' />),
+        cellRenderer: memo((p) => <Typography>{get(p, 'data.[store].name')}</Typography>),
       }
     }
-    if (el.field === 'retail_price') {
+    if (el.field === 'phone') {
       return {
         ...el,
-        headerName: t('table_columns.retail_price'),
+        headerName: 'Telefon',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='retail_price' />),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='phone' />),
       }
     }
-    if (el.field === 'vat') {
+    if (el.field === 'role') {
       return {
         ...el,
-        headerName: t('table_columns.vat'),
+        headerName: 'Rol',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='%' withDevider {...p} type='vat' />),
+        cellRenderer: memo((p) => <Typography>{get(p, 'data.[role].name')}</Typography>),
       }
     }
-    if (el.field === 'vat_price') {
-      return {
-        ...el,
-        headerName: t('table_columns.vat_price'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='vat_price' />),
-      }
-    }
-    if (el.field === 'supply_price') {
-      return {
-        ...el,
-        headerName: t('table_columns.supply_price'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='supply_price' />),
-      }
-    }
+
     if (el.field === 'status') {
       return {
         ...el,
-        headerName: t('table_columns.status'),
+        headerName: 'Status',
         colId: el.field,
         cellRenderer: memo(({ data, rowIndex }) => (
           <StatusCell
             id={`products-status-${rowIndex}`}
-            bgcolor={products_statuses.find((el) => el.id === data.status)?.color}
-            title={products_statuses.find((el) => el.id === data.status)?.name}
+            bgcolor={vendor_statuses.find((el) => el.id === data.status)?.color}
+            title={vendor_statuses.find((el) => el.id === data.status)?.name}
           />
         )),
       }
     }
 
-    if (el.field === 'manufacturer') {
-      return {
-        ...el,
-        headerName: t('table_columns.manufacturer'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText type={'manufacturer'} {...p} />),
-      }
-    }
-
-    if (el.field === 'number') {
-      return {
-        ...el,
-        headerName: '№',
-        colId: el.field,
-        cellRenderer: memo(({ rowIndex, api, ...p }) => {
-          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
-
-          return (
-            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-              {absoluteIndex}
-            </Typography>
-          )
-        }),
-      }
-    }
-
-    if (el.field === 'barcode') {
-      return {
-        ...el,
-        headerName: t('table_columns.barcode'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' {...p} type='barcode' />),
-      }
-    }
-    if (el.field === 'product_variability') {
-      return {
-        ...el,
-        headerName: 'Ishlab chiqaruvchi',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='product_variability' />),
-      }
-    }
-
-    if (el.field === 'quantity') {
-      return {
-        ...el,
-        headerName: t('table_columns.quantity'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='quantity' />),
-      }
-    }
-    if (el.field === 'expire_date') {
-      return {
-        ...el,
-        headerName: t('table_columns.expire_date'),
-        colId: el.field,
-        cellRenderer: memo((p) => <TimeCell {...p} type='expire_date' format='DD.MM.YYYY' />),
-      }
-    }
     if (el.field === 'actions') {
       return {
         ...el,
@@ -219,29 +143,38 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         cellRenderer: memo(({ data }) => (
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
             <Box display='inline-flex' columnGap={'8px'}>
+              {data.status === 'active' ? (
+                <CheckAccess id={'product-deactive'}>
+                  <IconButton
+                    sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+                    onClick={() => setOpenConfirmDialog({ type: 'deactivate', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
+                  >
+                    <LockIcon color='#111217' />
+                  </IconButton>
+                </CheckAccess>
+              ) : (
+                <CheckAccess id={'product-active'}>
+                  <IconButton
+                    sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+                    onClick={() => setOpenConfirmDialog({ type: 'activate', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
+                  >
+                    <UnLockIcon color='#111217' />
+                  </IconButton>
+                </CheckAccess>
+              )}
               <CheckAccess id={'product-edit'}>
                 <IconButton onClick={() => window.open(`/products/edit/${data.id}`, '_blank')} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />
                 </IconButton>
               </CheckAccess>
               <CheckAccess id={'product-delete'}>
-                <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <IconButton
+                  onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
+                  sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+                >
                   <DeleteIcon />
                 </IconButton>
               </CheckAccess>
-              {/* {data.status === 'ACTIVE' ? (
-                <CheckAccess id={'product-deactive'}>
-                  <IconButton onClick={() => setOpenConfirmDialog({ type: 'deactivate', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                    <PauseIcon />
-                  </IconButton>
-                </CheckAccess>
-              ) : (
-                <CheckAccess id={'product-active'}>
-                  <IconButton onClick={() => setOpenConfirmDialog({ type: 'activate', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                    <PlayIcon />
-                  </IconButton>
-                </CheckAccess>
-              )} */}
             </Box>
           </CheckAccess>
         )),

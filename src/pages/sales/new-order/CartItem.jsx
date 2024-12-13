@@ -300,7 +300,7 @@ const CartItem = ({
 
             <Box display={'flex'}>
               <Box id='product-details' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', justifyContent: 'center' }}>
-                <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>A4</Typography>
+                <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>A4</Typography>
                 <Box sx={{ display: 'flex', '& svg > g > path': { stroke: '#FF6018' }, '& svg': { width: '20px', height: '20px' } }}>
                   <Typography sx={{ mr: '10px', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
                     {' '}

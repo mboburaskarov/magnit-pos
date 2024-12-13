@@ -65,6 +65,8 @@ export const requests = {
   getAllStores: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   deleteStore: (id) => request.delete(`v1/store/${id}`),
 
+  // getAllVendors: (filter) => request.get(`v1/employee/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   //products
   getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createProduct: (data) => request.post(`api/admin/products`, data),
@@ -95,6 +97,7 @@ export const requests = {
   //shops
 
   getAllShops: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  // getAllRoles: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   // getAllStores: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateShop: ({ id, data }) => request.patch(`api/admin/shops/${id}`, data),
   createShop: (data) => request.post(`api/admin/shops`, data),
@@ -110,12 +113,14 @@ export const requests = {
   deleteUser: (id) => request.delete(`api/admin/users/${id}`),
 
   //vendors
-  getAllVendors: (filter) => request.get(`api/admin/vendors${qs.stringify(filter, { addQueryPrefix: true })}`),
-  createVendor: (data) => request.post(`api/admin/vendors`, data),
+  getAllVendors: (filter) => request.get(`v1/employee/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  createVendor: (data) => request.post(`v1/employee`, data),
+
   updateVendor: ({ id, data }) => request.patch(`api/admin/vendors/${id}`, data),
   getSingleVendor: (id) => request.get(`api/admin/vendors/${id}`),
-  deleteVendor: (id) => request.delete(`api/admin/vendors/${id}`),
-
+  deleteVendor: (ids) => request.delete(`v1/employee/delete`, ids),
+  activateVendor: (ids) => request.put(`v1/employee/unblock`, ids),
+  deActivateVendor: (ids) => request.put(`v1/employee/block`, ids),
   //upload files
   imageUpload: (data) => fileUploadRequest.post('v1/upload/file', data),
   fileUpload: (data) => fileUploadRequest.post('/upload', data),
@@ -179,7 +184,7 @@ export const requests = {
   createHashtag: (data) => request.post('api/hashtags', data),
 
   // roles
-  getAllRoles: (filter) => request.get(`api/roles${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllRoles: (filter) => request.get(`v1/role/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleRole: (id) => request.get(`api/roles/${id}`),
   createRole: (data) => request.post('api/roles', data),
   deleteRole: (id) => request.delete(`api/roles/${id}`),

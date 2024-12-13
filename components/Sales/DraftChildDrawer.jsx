@@ -1,5 +1,5 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
+import { makeStyles, useTheme } from '@mui/styles'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import InputSearch from '../Inputs/InputSearch'
@@ -93,7 +93,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   useEffect(() => {
     refetch()
   }, [open])
-
+  const theme = useTheme()
   return (
     <LoadingContainer readyState={!isDarftChildList}>
       <Box className={classes.drawer}>
@@ -113,6 +113,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
           </Box>
 
           <CloseIcon
+            color={theme.palette.black}
             onClick={() => {
               setOpen(false), setChildOpen(false)
             }}

@@ -1,4 +1,4 @@
-import { makeStyles } from '@mui/styles'
+import { makeStyles, useTheme } from '@mui/styles'
 import { Box, Drawer, Typography, Button } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import CloseIcon from '../src/assets/icons/CloseIcon'
@@ -135,7 +135,7 @@ function SectionDrawer({
     headerBorderBottom,
   })
   const { t } = useTranslation()
-
+  const theme = useTheme()
   return (
     <Drawer
       open={open}
@@ -212,7 +212,7 @@ function SectionDrawer({
                     backgroundColor: closeIcon && 'transparent',
                   }}
                 >
-                  {closeIcon ? <CloseIcon /> : t(nextButtonLabel)}
+                  {closeIcon ? <CloseIcon color={theme.palette.black} /> : t(nextButtonLabel)}
                 </Button>
               </Box>
             ))}
