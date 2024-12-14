@@ -116,8 +116,8 @@ export const requests = {
   getAllVendors: (filter) => request.get(`v1/employee/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createVendor: (data) => request.post(`v1/employee`, data),
 
-  updateVendor: ({ id, data }) => request.patch(`api/admin/vendors/${id}`, data),
-  getSingleVendor: (id) => request.get(`api/admin/vendors/${id}`),
+  updateVendor: ({ id, data }) => request.put(`v1/employee/${id}`, data),
+  getSingleVendor: (id) => request.get(`v1/employee/${id}`),
   deleteVendor: (ids) => request.delete(`v1/employee/delete`, ids),
   activateVendor: (ids) => request.put(`v1/employee/unblock`, ids),
   deActivateVendor: (ids) => request.put(`v1/employee/block`, ids),

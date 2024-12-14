@@ -340,12 +340,12 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
           <div className={classes.previewIcon}>
             <PreviewIcon />
           </div>
-          <Typography className={classes.previewText}>{'Rasmni shu yerga tashlang'}</Typography>
+          <Typography className={classes.previewText}>{t('create_new_product.products_set_section.photo_first')}</Typography>
         </Box>
         <Typography color='textSecondary' className={classes.previewText}>
-          yoki
+          {t('create_new_product.products_set_section.photo_second')}
         </Typography>
-        <Typography className={classes.uploadPhotoText}>{'bu yerni bosing'}</Typography>
+        <Typography className={classes.uploadPhotoText}>{t('create_new_product.products_set_section.photo_third')}</Typography>
       </div>
     </div>
   )

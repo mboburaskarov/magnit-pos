@@ -117,18 +117,26 @@ export default function ProductBody({ productData = null }) {
       }}
     >
       <SectionTitle noWrap withLine>
-        Asosiy
+        {t('create_new_product.main_section.label')}
       </SectionTitle>
       <Box mt={'24px'}>
-        <TextField required fullWidth borderRadius={'40px'} name='product_name' label='Mahsulot nomi' placeholder='Mahsulot nomini kiriting' sx={{ mb: 3 }} />
+        <TextField
+          required
+          fullWidth
+          borderRadius={'40px'}
+          name='product_name'
+          label={t('create_new_product.product_name')}
+          placeholder={t('create_new_product.product_name.placeholder')}
+          sx={{ mb: 3 }}
+        />
         {/* <ImageUpload
           id='images'
           name='images'
           images={productData?.files?.map((el, ind) => ({ key: el, name: el, sequence_number: ind }))}
           onChange={(imagesArr) => setValue('images', imagesArr)}
         /> */}
-        <Box mt={'24px'}>
-          <Label>Rasm</Label>
+        <uox mt={'24px'}>
+          <Label>{t('create_new_product.products_set_section.image')}</Label>
           <UploadImage
             id='images'
             name='images'
@@ -139,16 +147,16 @@ export default function ProductBody({ productData = null }) {
               // setValue('images', imagesArr)
             }}
           />
-        </Box>
+        </uox>
         <Box height={'56px'} />
 
         <SectionTitle noWrap withLine>
-          Kategoriya
+          {t('create_new_product.additional_information.category')}
         </SectionTitle>
         <CategoriesTree />
         <Box height={'56px'} />
         <SectionTitle noWrap withLine>
-          Narxlar
+          {t('create_new_product.create_packages.price')}
         </SectionTitle>
         <Box alignItems='flex-end' width='100%' columnGap={3} flexDirection={'column'} display='inline-flex' my={3}>
           <Box display={'flex'} width={'100%'}>
@@ -159,8 +167,8 @@ export default function ProductBody({ productData = null }) {
               fullWidth
               borderRadius={'40px'}
               name='product_price'
-              label='Sotib olish narxi'
-              placeholder='Sotib olish narxini kiriting'
+              label={t('create_new_product.supply_price')}
+              placeholder={t('create_new_product.supply_price.placeholder')}
             />
             <Box width={'20px'} />
             <OutLineTextField
@@ -170,8 +178,8 @@ export default function ProductBody({ productData = null }) {
               fullWidth
               borderRadius={'40px'}
               name='product_price'
-              label='QQS'
-              placeholder='QQS kiriting'
+              label={t('create_new_product.vat')}
+              placeholder={t('create_new_product.vat.placeholder')}
             />
           </Box>
           <Box mt={'24px'} display={'flex'} width={'100%'}>
@@ -182,8 +190,8 @@ export default function ProductBody({ productData = null }) {
               fullWidth
               borderRadius={'40px'}
               name='product_price'
-              label='Sotish narxi'
-              placeholder='Sotish olish narxini kiriting'
+              label={t('create_new_product.retail_price')}
+              placeholder={t('create_new_product.retail_price.placeholder')}
             />
             <Box width={'20px'} />
 
@@ -194,15 +202,15 @@ export default function ProductBody({ productData = null }) {
               fullWidth
               borderRadius={'40px'}
               name='product_price'
-              label='QQS narxi'
-              placeholder='QQS narxini kiriting'
+              label={t('create_new_product.vat_price')}
+              placeholder={t('create_new_product.vat_price.placeholder')}
             />
           </Box>
         </Box>
         <Box height={'56px'} />
 
         <SectionTitle noWrap withLine>
-          Miqdori
+          {t('create_new_product.amount_section.label')}
         </SectionTitle>
         <Box mt={'24px'}>
           <AgGridTable
@@ -227,7 +235,7 @@ export default function ProductBody({ productData = null }) {
         <Box height={'56px'} />
 
         <SectionTitle noWrap withLine>
-          Xususiyatlari
+          {t('create_new_product.features.label')}
         </SectionTitle>
         <Box height={'24px'} />
 
@@ -236,8 +244,8 @@ export default function ProductBody({ productData = null }) {
           fullWidth
           borderRadius={'40px'}
           name='product_name'
-          label='Ishlab chiqaruvchi'
-          placeholder='Ishlab chiqaruvchini kiriting'
+          label={t('create_new_product.features.manufacturer')}
+          placeholder={t('create_new_product.features.manufacturer.placeholder')}
           sx={{ mb: 3 }}
         />
         <Box display={'flex'} width={'100%'} mt={'24px'}>

@@ -171,6 +171,12 @@ export const navbatRouteData = [
         id: '9.5',
         href: '/settings/stores',
       },
+      {
+        label: 'page.role.title',
+        active: '/settings/roles/*',
+        id: '9.5',
+        href: '/settings/roles',
+      },
     ],
   },
   // {

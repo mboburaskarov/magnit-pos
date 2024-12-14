@@ -378,13 +378,11 @@ function NewSale() {
               }}
             >
               <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
-                Sotuv (0)
+                {t('page.new_sale.label')} (0)
               </Typography>
               {get(cartItemsList, 'data.data.data', 0).length ? (
                 <Box display={'flex'} alignItems={'center'} onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}>
-                  <Typography sx={{ mr: '12px', color: 'orange.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>
-                    Barchasini o'chirish
-                  </Typography>
+                  <Typography sx={{ mr: '12px', color: 'orange.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>{t('delete_all')}</Typography>
                   <DeleteIcon width={'20px'} />
                 </Box>
               ) : (
@@ -395,10 +393,10 @@ function NewSale() {
               {!size(get(cartItemsList, 'data.data.data')) ? (
                 <Box className={classes.empty_list}>
                   <Typography fontWeight={'800'} fontSize={'24px'} lineHeight={'32px'}>
-                    Savat hozircha boʻsh
+                    {t('page.new_sale.empty_cart_title')}
                   </Typography>
                   <Typography fontWeight={'500'} fontSize={'16px'} color={'bunker.500'} lineHeight={'24px'}>
-                    Qidiruv paneli orqali mahsulotlarni qo'shing yoki mahsulotlarni skanerlang
+                    {t('page.new_sale.empty_cart_desc')}
                   </Typography>
                 </Box>
               ) : (
@@ -430,9 +428,9 @@ function NewSale() {
           </Box>
           <Box mb={'24px'}>
             <Box sx={{ display: 'flex', mb: '4px', justifyContent: 'space-between' }}>
-              <Label>Mijoz</Label>
+              <Label>{t('client')}</Label>
               <Typography onClick={() => setOpenClientCreateMini(true)} color={'orange.500'} fontSize={'14px'} fontWeight={'600'}>
-                Yaratish
+                {t('create')}
               </Typography>
             </Box>
             {customerId ? (
@@ -444,7 +442,7 @@ function NewSale() {
                       {get(customerId, 'name')}
                     </Typography>
                     <Typography sx={{ fontSize: '12px', lineHeight: '16px', fontWeight: '500', color: 'bunker.400' }} color='textSecondary'>
-                      Balans: {get(customerId, 'balance')}
+                      {t('balans')}: {get(customerId, 'balance')}
                     </Typography>
                   </Box>
                 </Box>
@@ -456,7 +454,7 @@ function NewSale() {
               <SearchInput
                 id='client-search-bar'
                 name='search'
-                placeholder={'Mijoz ismini kiriting'}
+                placeholder={t('client.placeholder')}
                 fullWidth
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyDown={(e) => {
@@ -482,7 +480,7 @@ function NewSale() {
                     marginLeft: '4px',
                   })}
                 >
-                  Qidirish uchun kamida 3 ta belgi kiriting
+                  {t('min_length_for_search_employee')}
                 </Typography>
               </Box>
             )}
@@ -508,7 +506,9 @@ function NewSale() {
                       }}
                     >
                       {/* <PlusSmallIcon fill='#fff' /> */}
-                      <Typography style={{ marginLeft: '7px' }}>qo'shish “{searchTerm}”</Typography>
+                      <Typography style={{ marginLeft: '7px' }}>
+                        {t('add')} “{searchTerm}”
+                      </Typography>
                     </Box>
                   )}
 
@@ -553,7 +553,7 @@ function NewSale() {
             {/* <TextField required fullWidth name='description' label='Mizoj' placeholder='Mijoz yoki telefon raqami' /> */}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
-            <TextField required type={'number'} fullWidth name='discount' label='Mijoz' placeholder='Chegirmani kiritng' />
+            <TextField required type={'number'} fullWidth name='discount' label={t('client')} placeholder='Chegirmani kiritng' />
             <Box ml={'8px'}>
               <InputSwitch
                 uncontrolled
@@ -587,7 +587,7 @@ function NewSale() {
           <Box className={classes.priceDetails}>
             <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
               <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>
-                Jami narxi:
+                {t('total_amount')}:
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
                 {get(cartItemsList, 'data.data.total_amount')} so'm
@@ -595,7 +595,7 @@ function NewSale() {
             </Box>
             <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
               <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>
-                Chegirma:
+                {t('discount')}:
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
                 57 450 so'm
@@ -608,7 +608,7 @@ function NewSale() {
               sx={{ mb: '16px', display: 'flex', justifyContent: 'space-between' }}
             >
               <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
-                To'lov
+                {t('pay')}
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
                 57 450 so'm
@@ -617,7 +617,7 @@ function NewSale() {
             <Button disabled={size(get(cartItemsList, 'data.data.data')) == 0} color='secondary' onClick={() => setIsCreateOpenDraft(true)}>
               <TimeAndDate disabled={size(get(cartItemsList, 'data.data.data'))} />
               <Typography ml={'12px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
-                Draft
+                {t('draft')}
               </Typography>
             </Button>
           </Box>

@@ -21,9 +21,6 @@ export default function FilterTableRowsMenu({ tableColumns, open, setOpen, setRe
   const methods = useForm()
   const { formState, reset, control, getValues } = methods
   const [isExpress, setIsExpress] = useState(false)
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 1000, offset: 0 }))
-  const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 1000, offset: 0 }))
-  const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 1000, offset: 0 }))
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])

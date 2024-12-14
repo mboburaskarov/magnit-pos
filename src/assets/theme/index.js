@@ -1,6 +1,4 @@
-import { colors } from '@mui/material'
 import typography from './typography'
-import { getMarginRight } from 'react-table-sticky'
 
 export const theme = ({ mode, palette }) => {
   const fontFamily = {
@@ -130,7 +128,7 @@ export const theme = ({ mode, palette }) => {
               color: `${palette.orange[200]} !important`,
               cursor: 'auto',
               background: palette.gray[50],
-              color: palette.gray[400],
+              // color: palette.gray[400],
               '&:hover': {
                 background: palette.gray[100],
                 color: palette.gray[400],
@@ -451,7 +449,7 @@ export const theme = ({ mode, palette }) => {
           input: {
             '&:-webkit-autofill': {
               color: 'red',
-              borderRadius: '40px',
+              // borderRadius: '40px',
               paddingTop: '11px !important',
               paddingRight: 12,
               paddingBottom: '1px !important',
@@ -556,7 +554,7 @@ export const theme = ({ mode, palette }) => {
             lineHeight: '24px',
             letterSpacing: 'normal',
             border: '2px solid transparent',
-            borderColor: 'transparent',
+            // borderColor: 'transparent',
             borderColor: palette.bunker[100],
             backgroundColor: palette.white,
             height: 48,
@@ -576,7 +574,7 @@ export const theme = ({ mode, palette }) => {
             },
             '&:-webkit-autofill': {
               color: 'red',
-              borderRadius: 16,
+              // borderRadius: 16,
               paddingTop: '10px !important',
               fontWeight: '400 !important',
 

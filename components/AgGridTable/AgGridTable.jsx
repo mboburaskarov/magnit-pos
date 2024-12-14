@@ -125,28 +125,6 @@ const AgGridSimpleTable = ({
     return columns
   }, [selection, columns, headerCheckboxChecked, selectedRowsIds])
 
-  // // Functions for ag-grid
-
-  // useEffect(() => {
-  //   if (gridApi?.api) {
-  //     if (!data?.length) {
-  //       addCssToElement(agGridTableScroll?.[0], {
-  //         opacity: 0,
-  //         position: 'static',
-  //       })
-  //       gridApi.api.showNoRowsOverlay()
-  //     } else {
-  //       addCssToElement(agGridTableScroll?.[0], {
-  //         opacity: 1,
-  //       })
-  //       if (isDataLoading) {
-  //         gridApi.api.showLoadingOverlay()
-  //       } else {
-  //         gridApi.api.hideOverlay()
-  //       }
-  //     }
-  //   }
-  // }, [isDataLoading, data, gridApi])
   useEffect(() => {
     const baseUrl = navigateUrl || location.pathname
     if (baseUrl && !noRedirect) {

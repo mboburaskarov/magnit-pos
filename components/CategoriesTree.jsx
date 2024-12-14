@@ -50,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
   },
   addCategoryButton: {
-    // position: 'sticky',
     height: '48px',
     width: '48px',
     minWidth: '48px',

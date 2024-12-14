@@ -7,6 +7,7 @@ import userRoutes from './users'
 import reportRoutes from './reports'
 import settingsRoutes from './settings'
 import vendorRoutes from './vendors'
+import rolesCreateRoutes from './settings/role-create'
 
 const routes = [
   { ...dashboardRoutes },
@@ -14,6 +15,7 @@ const routes = [
   { ...salesRoutes },
   { ...productsRoutes },
   { ...productsCreateRoutes },
+  { ...rolesCreateRoutes },
   { ...userRoutes },
   { ...vendorRoutes },
   { ...reportRoutes },

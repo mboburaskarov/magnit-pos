@@ -130,7 +130,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
               }}
             >
               <Button primary fullWidth size='small' style={{ borderRadius: 16 }} isLoading={isCreateCustomer} form='create-client-form-mini' type='submit'>
-                {t('menu.clients.create')}
+                {t('create')}
               </Button>
             </Box>
           </form>

@@ -23,29 +23,16 @@ export default function ErrorPageLocal({ errorData }) {
         }}
       >
         <Box marginTop='10vh' marginLeft='10vw'>
-          <Box
-            width={'80vw'}
-            display={'flex'}
-            alignItems={'center'}
-            justifyContent={'space-between'}
-          >
-            <Typography
-              variant='h1'
-              color='primary'
-              style={{ fontSize: 48, lineHeight: '56px' }}
-            >
-              Error message &quot;Buchet&quot;
+          <Box width={'80vw'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
+            <Typography variant='h1' color='primary' style={{ fontSize: 48, lineHeight: '56px' }}>
+              Error message &quot;Pharma Cosmos&quot;
             </Typography>
             <Button onClick={() => window.location.reload()} primary>
               Reload
             </Button>
           </Box>
           <br />
-          <Typography
-            style={{ fontSize: 25, lineHeight: '26px', color: '#fff' }}
-          >
-            {errorData?.error?.message}
-          </Typography>
+          <Typography style={{ fontSize: 25, lineHeight: '26px', color: '#fff' }}>{errorData?.error?.message}</Typography>
           <br />
           {error.map((el, ind) => (
             <Typography key={ind} style={{ lineHeight: '22px', color: '#fff' }}>
@@ -57,10 +44,7 @@ export default function ErrorPageLocal({ errorData }) {
           <br />
           <Box style={{ maxHeight: '350px', overflowY: 'scroll' }}>
             {errorInfo.map((el, ind) => (
-              <Typography
-                key={ind}
-                style={{ lineHeight: '22px', color: 'rgb(255,255,255, 0.8)' }}
-              >
+              <Typography key={ind} style={{ lineHeight: '22px', color: 'rgb(255,255,255, 0.8)' }}>
                 {ind !== 1 && ind !== 0 ? 'at ' + el : el}
               </Typography>
             ))}

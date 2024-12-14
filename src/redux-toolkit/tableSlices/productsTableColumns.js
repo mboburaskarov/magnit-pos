@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import arrayMove from '../../../utils/arrayMove'
 
 const columns = [
   {

@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux'
 import { error, success } from '../../utils/toast'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
 import dayjs from 'dayjs'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -30,11 +31,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 function DraftDrawer({ open, setOpen, cashBoxDetails }) {
+  const { t } = useTranslation()
   const classes = useStyles()
   const [draftfilter, setDraftFilter] = useState(false)
   const userData = useSelector((state) => state.user)
   const { values } = useQueryParams()
-  console.log(values.draft_date)
 
   const [isOpenChild, setIsOpenChild] = useState(false)
   const draftsListFilter = useMemo(() => {
@@ -45,7 +46,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
       store_id: get(userData, 'store.id'),
       cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
       customer_id: values?.customer_id,
-      draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : ' ',
+      draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : '',
     }
   }, [values?.customer_id, values?.draft_date, values?.search])
   const { data: darftList, refetch, isDarftList } = useQuery(['darftList', draftsListFilter], () => requests.getDarftList(draftsListFilter))
@@ -60,7 +61,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
         <Box>
           <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
             <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
-              Qoralamalar
+              {t('draft')}
             </Typography>
             <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
           </Box>
@@ -88,7 +89,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
                 onClick={() => setDraftFilter((prev) => !prev)}
               >
                 <Typography fontWeight={500} fontSize={'16px'} lineHeight={'25px'}>
-                  Filter
+                  {t('filter')}
                 </Typography>
               </Button>
             </Box>

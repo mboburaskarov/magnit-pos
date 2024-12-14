@@ -112,9 +112,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   lowerBlockItem: {
-    // display: 'flex',
-    // alignItems: 'center',
-    // flexWrap: 'wrap',
     marginRight: '10px',
     marginBottom: 8,
     '& svg': {

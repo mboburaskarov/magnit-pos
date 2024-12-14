@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import StyledEmptyDialog from '../Dialogs/StyledeEmptyDialog'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import EditorIcon from '../../src/assets/icons/EditorIcon'
-import { changeColumnSequence, resetTableHeader } from '../../src/redux-toolkit/tableSlices/productsTableColumns'
+import { changeColumnSequence, resetTableHeader } from '../../src/redux-toolkit/tableSlices/storeTableColumns'
 import ButtonWithWrapper from '../Buttons/ButtonWithWrapper'
 import { useTranslation } from 'react-i18next'
 

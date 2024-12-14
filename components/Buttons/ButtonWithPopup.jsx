@@ -56,16 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
       // borderRadius: ({ borderRadius }) => (borderRadius ? borderRadius : null),
     },
-    // '& .soon-icon': {
-    //   // position: 'absolute',
-    //   // backgroundColor: theme.palette.orange[500],
-    //   color: '#fff',
-    //   padding: '0 5px',
-    //   borderRadius: '10px',
-    //   right: 10,
-    //   fontSize: '10px',
-    //   top: 5,
-    // },
+
     '& > button': {
       backgroundColor: 'transparent',
       border: 0,

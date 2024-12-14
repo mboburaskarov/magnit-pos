@@ -69,8 +69,8 @@ export const generateCustomStyles = (props = {}) => {
         : error
         ? `0 0 0 2px red`
         : `0 0 0 ${solidBorder ? 1 : 0}px ${dashed ? 'transparent' : palette.gray[300]}`,
-      border: dashed ? `1px dashed ${palette.gray[300]}` : `1px solid ${palette.bunker[100]}`,
-      border: borderNone ? 'none' : `1px solid ${palette.bunker[100]}`,
+      border: dashed ? `1px dashed ${palette.gray[300]}` : `2px solid ${palette.bunker[100]}`,
+      border: borderNone ? 'none' : `2px solid ${palette.bunker[100]}`,
       fontFamily: 'Gilroy',
       cursor: state.isMulti ? 'text' : 'pointer',
     }),

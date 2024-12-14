@@ -15,6 +15,7 @@ import { useQueryParams } from '../../../hooks/useQueryParams'
 import { useQuery } from 'react-query'
 import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import ArrowDown from '../../../assets/icons/ArrowDown'
+import { useNavigate } from 'react-router-dom'
 const useStyles = makeStyles((theme) => ({
   overlay: {
     cursor: 'pointer',
@@ -123,6 +124,7 @@ const useStyles = makeStyles((theme) => ({
 function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
   const { values } = useQueryParams()
   const [searchTearm, setSearchTerm] = useState('')
+  const navigate = useNavigate()
 
   const productsListFilter = useMemo(() => {
     return {
@@ -217,7 +219,7 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
               </Box>
             }
             popperData={[
-              { title: 'Kassa aparatini yopish', icon: <UnlockIcon /> },
+              { title: 'Kassa aparatini yopish', icon: <UnlockIcon />, clickHandler: () => navigate('/sales/cash-shift/f') },
               { title: "Kassa aparatini o'zgartirish", icon: <FinanceAndPaymentIcon />, soon: true },
             ]}
             // popperContentProps={{

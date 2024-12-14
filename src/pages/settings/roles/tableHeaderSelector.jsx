@@ -1,57 +1,162 @@
 import { memo } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
+import TimeCell from '../../../../components/AgGridTable/Cells/TimeCell'
+import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
+import thousandDivider from '../../../../utils/thousandDivider'
+import { products_statuses } from '../../../assets/data/products-statuses'
 import EditIcon from '../../../assets/icons/EditIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import CheckAccess from '../../../../components/CheckAccess'
+import { get } from 'lodash'
+import UnlockIcon from '../../../assets/icons/UnlockIcon'
+import LockIcon from '../../../assets/icons/LockIcon'
+import StyledTooltip from '../../../../components/StyledTooltip'
 
-export default function tableHeaderSelector({ rolesColumns, setOpenConfirmDialog, setIsDrawerOpen }) {
-  const columns = rolesColumns?.map((el) => {
-    if (el.field === 'name') {
+const SimpleText = ({ data, width = 'auto', rowIndex, type, withDevider, currency }) => {
+  return (
+    <Typography sx={{ maxWidth: width, textOverflow: 'ellipsis', overflow: 'hidden', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
+      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
+    </Typography>
+  )
+}
+
+const Image = ({ data, rowIndex, setImages }) => {
+  return (
+    <Box
+      sx={{
+        position: 'relative',
+        width: '40px',
+        height: '40px',
+        borderRadius: 2,
+        '&:hover': {
+          '#overlay_image': {
+            opacity: 0.5,
+          },
+        },
+      }}
+    >
+      {/* {data?.main_photo?.[0] ? ( */}
+      <img
+        id={`product-image-${rowIndex}`}
+        src={data?.main_photo || '/default-img.avif'}
+        alt={data?.name}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
+      />
+      {/* ) : (
+        <ProductImagePlaceholder />
+      )} */}
+      {data?.files?.[0] && (
+        <Box
+          sx={{
+            transition: 'all 0.2s ease',
+            cursor: 'pointer',
+            opacity: 0,
+            borderRadius: 2,
+            bottom: 0,
+            right: 0,
+            top: 0,
+            left: 0,
+            bgcolor: 'green.600',
+            position: 'absolute',
+            zIndex: 2,
+          }}
+          id='overlay_image'
+          onClick={() => setImages({ data: data?.files })}
+        />
+      )}
+    </Box>
+  )
+}
+
+export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
+  // const { values } = useQueryParams()
+  console.log(productsColumns)
+
+  const columns = productsColumns?.map((el) => {
+    if (el.field === 'checkbox') {
       return {
         ...el,
-        headerName: 'Наименования',
+        headerName: '',
         colId: el.field,
-        cellRenderer: memo(({ data }) => {
-          return (
-            <Box sx={{ bgcolor: 'transparent', py: 1, px: 1.5, borderRadius: 3 }} columnGap={0.5} display='inline-flex' alignItems='center'>
-              <Typography sx={{ cursor: 'pointer', whiteSpace: 'pre-line' }} color='green.500'>
-                {data?.name}
-              </Typography>
-            </Box>
-          )
-        }),
-      }
-    }
-
-    if (el.field === 'description') {
-      return {
-        ...el,
-        headerName: 'Описание',
-        colId: el.field,
-        cellRenderer: memo(({ data }) => (
-          <Box sx={{ bgcolor: 'transparent', py: 1, px: 1.5, borderRadius: 3 }} columnGap={0.5} display='inline-flex' alignItems='center'>
-            <Typography sx={{ cursor: 'pointer', whiteSpace: 'pre-line' }} color='gray.500'>
-              {data?.description || data?.name}
-            </Typography>
-          </Box>
+        cellRenderer: memo((p) => (
+          <input onChange={(e) => selectVendors(e.target.checked, p.data.id)} name='checkbox_zero' className='customCheckbox' type='checkbox' />
         )),
       }
     }
+    if (el.field === 'public_id') {
+      return {
+        ...el,
+        headerName: 'ID',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='public_id' />),
+      }
+    }
+    if (el.field === 'name') {
+      return {
+        ...el,
+        headerName: 'Name',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
+      }
+    }
+    if (el.field === 'permission_count') {
+      return {
+        ...el,
+        headerName: 'Ruxsatlar',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='permission_count' />),
+      }
+    }
+    if (el.field === 'description') {
+      return {
+        ...el,
+        headerName: 'Tasnif',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <StyledTooltip title={p.data.description}>
+            <SimpleText width={el.width} {...p} type='description' />
+          </StyledTooltip>
+        )),
+      }
+    }
+
     if (el.field === 'actions') {
       return {
         ...el,
-        headerName: 'Действия',
+        headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          <CheckAccess id={'role-edit role-delete'}>
-            <Box display='inline-flex' columnGap={2}>
-              <CheckAccess id={'role-edit'}>
-                <IconButton onClick={() => setIsDrawerOpen({ type: 'role_edit', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
+          <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
+            <Box display='inline-flex' columnGap={'8px'}>
+              {data.status === 'active' ? (
+                <CheckAccess id={'product-deactive'}>
+                  <IconButton
+                    sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+                    onClick={() => setOpenConfirmDialog({ type: 'deactivate', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
+                  >
+                    <LockIcon color='#111217' />
+                  </IconButton>
+                </CheckAccess>
+              ) : (
+                <CheckAccess id={'product-active'}>
+                  <IconButton
+                    sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+                    onClick={() => setOpenConfirmDialog({ type: 'activate', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
+                  >
+                    <UnlockIcon color='#111217' />
+                  </IconButton>
+                </CheckAccess>
+              )}
+              <CheckAccess id={'product-edit'}>
+                <IconButton onClick={() => setopenCreateVendorDrawer({ mode: 'edit', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />
                 </IconButton>
               </CheckAccess>
-              <CheckAccess id={'role-delete'}>
-                <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
+              <CheckAccess id={'product-delete'}>
+                <IconButton
+                  onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
+                  sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+                >
                   <DeleteIcon />
                 </IconButton>
               </CheckAccess>

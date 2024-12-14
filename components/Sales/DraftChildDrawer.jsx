@@ -19,6 +19,8 @@ import LoadingContainer from '../LoadingContainer'
 import { RippedPaperItem } from '../RippedPaperList'
 import { useReactToPrint } from 'react-to-print'
 import { useNavigate } from 'react-router-dom'
+import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -56,7 +58,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   const printContainer = useRef()
   const documentName = useRef('Cheque')
   const navigate = useNavigate()
-
+  const { t } = useTranslation()
   const handlePrint = useReactToPrint({
     content: reactToPrintContent, // This should be a function
     documentTitle: documentName.current,
@@ -104,7 +106,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
             </Box>
             <Box ml={'16px'}>
               <Typography fontSize={24} lineHeight={'32px'} fontWeight={700}>
-                Qoralama {get(darftChildList, 'data.data.data[0].draft_number')}
+                {t('draft')} {get(darftChildList, 'data.data.data[0].draft_number')}
               </Typography>
               <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
                 2332 323 so'm
@@ -123,11 +125,11 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
         <Box padding={'24px 20px 0'}>
           <Box alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
             <Typography fontSize={20} lineHeight={'32px'} fontWeight={600}>
-              Savatcha
+              {t('cart')}
             </Typography>
             <Box display={'flex'} alignItems={'center'}>
               <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                Sotuvchi:
+                {t('vendor')}:
               </Typography>
               <img className={classes.usrImg} src='/default-user-img.png' />
 
@@ -143,7 +145,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
           </Box>
           <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
             <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
-              Tafsilotlar
+              {t('features')}
             </Typography>
             <Box display={'flex'} justifyContent={'space-between'}>
               <Box width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
@@ -156,7 +158,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
               </Box>
               <Box width={'100%'} bgcolor={'bg.10'} borderRadius={'16px'} padding={'16px'}>
                 <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                  Do’kon
+                  {t('store')}
                 </Typography>
                 <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
                   Pharma Cosmos
@@ -184,20 +186,20 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
               <WithdrawIcon />
 
               <Typography fontSize={16} ml={'12px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                Chop etish
+                {t('print')}
               </Typography>
             </Button>
             <LoadingButton loading={isDeleteDraft} onClick={() => deleteDraft(get(open, 'item.id'))} fullWidth color='secondary' variant='contained'>
               <DeleteIcon width='24px' />
 
               <Typography fontSize={16} ml={'12px'} color={'red.500'} lineHeight={'24px'} fontWeight={600}>
-                O'chirish
+                {t('delete')}
               </Typography>
             </LoadingButton>
             <Button onClick={() => completeDraft(get(open, 'item.id'))} fullWidth variant='contained' type='submit'>
               <MarkRectangleIcon />
               <Typography fontSize={16} ml={'12px'} color={'white'} lineHeight={'24px'} fontWeight={600}>
-                Yakunlash
+                {t('finish')}
               </Typography>
             </Button>
           </Box>

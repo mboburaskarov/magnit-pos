@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function CreateVendorDrawer({ quickCreateClientName, openDrawer, closeDrawer, setCustomerId, clientData }) {
+export default function CreateVendorDrawer({ refetchVendorList, quickCreateClientName, openDrawer, closeDrawer, setCustomerId, clientData }) {
   const { t } = useTranslation()
   const classes = useStyles()
   const methods = useForm()
@@ -68,7 +68,21 @@ export default function CreateVendorDrawer({ quickCreateClientName, openDrawer, 
     onSuccess: ({ data }) => {
       closeDrawer(false)
       methods.reset()
+      refetchVendorList()
+      // setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance') })
+      success('Продукт успешно создан!')
+    },
+    onError: (err) => {
+      error('Ошибка при создании товара!')
+      console.log('err', err)
+    },
+  })
 
+  const { mutate: handleUpdateVendor, isLoading: isUpdateVendor } = useMutation(requests.updateVendor, {
+    onSuccess: ({ data }) => {
+      closeDrawer(false)
+      methods.reset()
+      refetchVendorList()
       // setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance') })
       success('Продукт успешно создан!')
     },
@@ -96,7 +110,11 @@ export default function CreateVendorDrawer({ quickCreateClientName, openDrawer, 
       store_id: data?.store?.id,
       phone: '+998' + data?.phone?.replace(/[()\s]/g, ''),
     }
-    handleSaleCreate(requestBody)
+    if (openDrawer?.mode === 'edit') {
+      handleUpdateVendor({ data: requestBody, id: openDrawer?.id })
+    } else {
+      handleSaleCreate(requestBody)
+    }
   }
 
   const onError = (err) => {
@@ -120,7 +138,7 @@ export default function CreateVendorDrawer({ quickCreateClientName, openDrawer, 
                 padding: '0 24px',
               }}
             >
-              <MainDetails quickCreateClientName={quickCreateClientName} clientData={clientData} />
+              <MainDetails openDrawer={openDrawer} quickCreateClientName={quickCreateClientName} clientData={clientData} />
             </Box>
             <Box
               width={196}

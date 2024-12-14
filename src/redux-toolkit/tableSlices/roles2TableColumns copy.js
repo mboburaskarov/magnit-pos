@@ -3,42 +3,22 @@ import arrayMove from '../../../utils/arrayMove'
 
 const columns = [
   {
-    field: 'checkbox',
-    hide: false,
-    minWidth: 45,
-    width: 45,
-  },
-  {
-    field: 'public_id',
-    hide: false,
-    minWidth: 60,
-    width: 120,
-  },
-  {
     field: 'name',
     hide: false,
-    minWidth: 70,
-    width: 250,
-  },
-  {
-    field: 'permission_count',
-    hide: false,
-    minWidth: 70,
-    width: 160,
+    minWidth: 150,
+    width: 191,
   },
   {
     field: 'description',
     hide: false,
-    minWidth: 70,
-    width: 160,
+    minWidth: 150,
+    width: 191,
   },
-
   {
     field: 'actions',
     hide: false,
-    minWidth: 136,
-    width: 136,
-    pinned: 'right',
+    minWidth: 160,
+    width: 220,
   },
 ]
 

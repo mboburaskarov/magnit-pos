@@ -66,7 +66,16 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ vendorsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen, selectVendors }) {
+export default function tableHeaderSelector({
+  setopenCreateVendorDrawer,
+  vendorsColumns,
+  values,
+  setImages,
+  t,
+  setOpenConfirmDialog,
+  setIsDrawerOpen,
+  selectVendors,
+}) {
   // const { values } = useQueryParams()
   const columns = vendorsColumns?.map((el) => {
     if (el.field === 'checkbox') {
@@ -163,7 +172,7 @@ export default function tableHeaderSelector({ vendorsColumns, values, setImages,
                 </CheckAccess>
               )}
               <CheckAccess id={'product-edit'}>
-                <IconButton onClick={() => window.open(`/products/edit/${data.id}`, '_blank')} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <IconButton onClick={() => setopenCreateVendorDrawer({ mode: 'edit', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />
                 </IconButton>
               </CheckAccess>

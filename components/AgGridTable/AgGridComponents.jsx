@@ -39,22 +39,6 @@ export const icons = {
   menuRemoveRowGroup: `<i class="fas fa-align-left fa-lg"  style="padding-right: 12px; color: #119676;"></i>`,
 }
 
-// export function CustomCircularProgress({ percentage }) {
-//   return (
-//     <div style={{ width: 18, height: 18 }}>
-//       <CircularProgressbar
-//         styles={buildStyles({
-//           strokeLinecap: 'butt',
-//           trailColor: '#EAEAEA',
-//           pathColor: '#1F78FF',
-//         })}
-//         strokeWidth={24}
-//         value={percentage}
-//       />
-//     </div>
-//   )
-// }
-
 export const HeaderCheckbox = ({ api, percentage, deleteAllProducts, addAllProducts, setSelectAll, checked, setChecked }) => {
   const selectAllCondition = !!setSelectAll && percentage > 0 && percentage < 100
 

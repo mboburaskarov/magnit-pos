@@ -1,6 +1,5 @@
 import createStyles from '@mui/styles/createStyles'
 import { makeStyles } from '@mui/styles'
-import { pad } from 'lodash'
 
 const useStyles = makeStyles((theme) =>
   createStyles({

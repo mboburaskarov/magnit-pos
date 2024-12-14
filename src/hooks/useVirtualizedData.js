@@ -30,7 +30,7 @@ export default function useVirtualizedData(request, search, page = 1, id, filter
         setHasMore(res?.data?.totalCount > filters?.limit && res?.data?.[id]?.length)
         setLoading(false)
       })
-      .catch((e) => {
+      .catch(() => {
         setError(true)
       })
   }

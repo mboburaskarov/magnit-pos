@@ -5,7 +5,8 @@ import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Highlighter from 'react-highlight-words'
 import { Box } from '@mui/material'
-import PencilIcon from '../../src/assets/icons/BigWarningIcon'
+import InfoIcon from '../../src/assets/icons/InfoIcon'
+import StyledTooltip from '../StyledTooltip'
 
 const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disabled = false, handleCreate, searchTerm, highlight }) => {
   const tree = useMemo(() => flattenTree({ items }), [items])
@@ -145,15 +146,10 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
                   display='inline-flex'
                 >
                   {label}
-                  <Box
-                    onClick={(e) => {
-                      if (disabled) return
-                      e.stopPropagation()
-                      handleCreate(value)
-                    }}
-                    padding='8px 16px 1px 8px'
-                  >
-                    <PencilIcon />
+                  <Box padding='14px 16px 1px 8px'>
+                    <StyledTooltip title='Экспресс продукт'>
+                      <InfoIcon />
+                    </StyledTooltip>
                   </Box>
                 </Box>
               ),
@@ -199,15 +195,10 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
                 display='inline-flex'
               >
                 {label}
-                <Box
-                  onClick={(e) => {
-                    if (disabled) return
-                    e.stopPropagation()
-                    handleCreate(value)
-                  }}
-                  padding='8px 16px 1px 8px'
-                >
-                  <PencilIcon />
+                <Box padding='14px 16px 1px 8px'>
+                  <StyledTooltip title='Экспресс продукт'>
+                    <InfoIcon />
+                  </StyledTooltip>
                 </Box>
               </Box>
             ),

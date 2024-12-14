@@ -9,7 +9,16 @@ const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandle
   const theme = useTheme()
 
   return (
-    <Box sx={{ position: 'relative', display: 'flex', width: '100%' }}>
+    <Box
+      sx={{
+        position: 'relative',
+        display: 'flex',
+        width: '100%',
+        // '& .MuiFormControl-root:nth-child(1) > .MuiInputBase-root': {
+        //   borderRight: 'none !important',
+        // },
+      }}
+    >
       <NumberFormatBase
         name={name}
         id={id}
@@ -35,6 +44,9 @@ const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandle
           '& input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button': {
             appearance: 'none',
             margin: 0,
+          },
+          '& .MuiInputBase-root:first-child': {
+            borderLeft: right && 'none !important',
           },
         }}
         {...rest}
@@ -69,7 +81,7 @@ function InputRange({
 
   return (
     <Box width={fullWidth && '100%'} {...boxStyle}>
-      <Box flexDirection='column' display='flex' justifyContent='space-between'>
+      <Box flexDirection='column' display='flex' justifyContent='space-between' sx={{}}>
         <Label mb={1} required={required}>
           {label}
         </Label>
@@ -79,7 +91,16 @@ function InputRange({
           </Typography>
         )}
         {uncontrolled ? (
-          <Box sx={{ position: 'relative', display: 'flex', width: '100%' }}>
+          <Box
+            sx={{
+              position: 'relative',
+              display: 'flex',
+              width: '100%',
+              '& .MuiInputBase-root:first-child': {
+                borderRight: 'none !important',
+              },
+            }}
+          >
             <InputRangeComponent
               value={value?.min_price === 0 ? '' : value?.min_price}
               id={`${id}-0`}
@@ -104,7 +125,13 @@ function InputRange({
             />
           </Box>
         ) : (
-          <Box sx={{ position: 'relative', display: 'flex', width: '100%' }}>
+          <Box
+            sx={{
+              position: 'relative',
+              display: 'flex',
+              width: '100%',
+            }}
+          >
             <Controller
               render={({ field: { onChange: onControllerChange, value }, ...rest }) => (
                 <InputRangeComponent

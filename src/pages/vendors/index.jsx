@@ -20,7 +20,7 @@ import tableHeaderSelector from './tableHeaderSelector'
 // import ProductDrawer from './ProductDrawer'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
+import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButtonForVendor'
 import CheckAccess from '../../../components/CheckAccess'
 import StyledDialog from '../../../components/Dialogs/StyledDialog'
 import InputSwitch from '../../../components/Inputs/InputSwitch'
@@ -67,6 +67,7 @@ export default function VendorsPage() {
     setOpenConfirmDialog,
     selectVendors,
     setIsDrawerOpen,
+    setopenCreateVendorDrawer,
   })
 
   /// filter table columns with permission
@@ -220,7 +221,7 @@ export default function VendorsPage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          Vendors
+          {t('clients')}
         </Typography>
         {/* <Box display='flex' mb={3} mt={4}>
           <TabContainer
@@ -363,7 +364,7 @@ export default function VendorsPage() {
               <Box minWidth={156}>
                 <Button
                   sx={{ height: '48px' }}
-                  onClick={() => setopenCreateVendorDrawer(true)}
+                  onClick={() => setopenCreateVendorDrawer({ mode: 'add' })}
                   fullWidth
                   startIcon={<PlusIcon color='#fff' />}
                   variant='contained'
@@ -479,6 +480,7 @@ export default function VendorsPage() {
         )}
       </StyledDialog>
       <CreateVendorDrawer
+        refetchVendorList={refetch}
         setCustomerId={'setCustomerId'}
         quickCreateClientName={'quickCreateClientName'}
         openDrawer={openCreateVendorDrawer}

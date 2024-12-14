@@ -76,7 +76,7 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
     <Box mt={'24px'}>
       <Grid container spacing={3}>
         <Grid item xs={6}>
-          <Typography mb='4px'>{'Ism'}</Typography>
+          <Typography mb='4px'>{t('client_name')}</Typography>
 
           <TextField
             id='client-name'
@@ -85,14 +85,14 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
             control={control}
             fullWidth
             error={errors?.first_name}
-            placeholder={'Mijoz ismini kiriting'}
+            placeholder={t('client_name.placeholder')}
             required
             defaultValue={quickCreateClientName || clientData?.name || ''}
             asteriks
           />
         </Grid>
         <Grid item xs={6}>
-          <Typography mb='4px'>{'Familiya'}</Typography>
+          <Typography mb='4px'>{t('client_last_name')}</Typography>
 
           <TextField
             id='last-name'
@@ -102,7 +102,7 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
             // required
             fullWidth
             error={errors?.last_name}
-            placeholder={'Mijoz familiyasini kiriting'}
+            placeholder={t('client_last_name.placeholder')}
             // defaultValue={clientData ? clientData.last_name : ''}
             asteriks
           />
@@ -111,7 +111,7 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
       <Box mb={4} />
       <Grid container spacing={4}>
         <Grid item xs={6}>
-          <Typography mb='4px'>{"Tug'ulgan kuni"}</Typography>
+          <Typography mb='4px'>{t('birthdate')}</Typography>
           <InputDatePicker
             // withTime
             noMarginTop
@@ -129,7 +129,7 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
           />
         </Grid>
         <Grid item xs={6}>
-          <Typography mb='4px'>{'Jinsi'}</Typography>
+          <Typography mb='4px'>{t('gender')}</Typography>
 
           <InputSwitchNew
             id='client-gender'
@@ -141,11 +141,11 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
             error={errors?.gender}
             options={[
               {
-                title: 'Erkak',
+                title: t('gender_male'),
                 value: 'male',
               },
               {
-                title: 'Ayol',
+                title: t('gender_female'),
                 value: 'female',
               },
             ]}
@@ -156,14 +156,14 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
         <Grid item xs={6}>
           <Box mt={'25px'}>
             <Typography mb={'4px'} className={classes.required}>
-              {'Telefon raqam'}
+              {t('phone_number')}
             </Typography>
           </Box>
           <InputPhone
             login={false}
             id='phone'
             name='phone'
-            placeholder={t('menu.settings.shops.shop_create.phone_placeholder')}
+            // placeholder={t('phone_number.placeholder')}
             control={control}
             // defaultValue={clientData ? [clientData.phone][0] : ''}
             fullWidth
@@ -176,7 +176,7 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
         <Grid item xs={6}>
           <Box mt={'24px'}>
             <Typography className={classes.required} mb='4px'>
-              {'Teglar'}
+              {t('tags')}
             </Typography>
           </Box>
           <TextField
@@ -187,7 +187,7 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
             fullWidth
             // required
             error={errors?.tags}
-            placeholder={'Teg kiriting'}
+            placeholder={t('tags.placeholder')}
             defaultValue={clientData ? clientData.last_name : ''}
             asteriks
           />

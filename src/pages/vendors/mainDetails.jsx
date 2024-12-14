@@ -13,6 +13,7 @@ import TextField from '../../../components/Inputs/TextField'
 import Label from '../../../components/Label'
 import SelectSimple from '../../../components/Select/SelectSimple'
 import { requests } from '../../../utils/requests'
+import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -35,15 +36,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function MainDetails({ clientData }) {
+export default function MainDetails({ clientData, openDrawer }) {
   const classes = useStyles()
+  const { data: employeeInfo, refetch: refetemployeeInfo } = useQuery('employeeInfo', () => requests.getSingleVendor(openDrawer?.id))
+  const mode = openDrawer?.mode
   const { control, errors, setValue, register, watch } = useFormContext()
   const { t } = useTranslation()
   // const cards = watch('cards')
   useEffect(() => {
+    refetemployeeInfo
+  }, [openDrawer])
+  useEffect(() => {
+    if (mode === 'edit') {
+      setValue('first_name', get(employeeInfo, 'data.data.first_name'))
+      setValue('last_name', get(employeeInfo, 'data.data.last_name'))
+      setValue('phone', get(employeeInfo, 'data.data.phone'))
+      // setValue('password', get(employeeInfo, 'data.data.password'))
+      get(employeeInfo, 'data.data.birthdate', false) && setValue('date_of_birth', new Date(get(employeeInfo, 'data.data.birthdate')))
+      setValue('gender', get(employeeInfo, 'data.data.gender'))
+      setValue('store', get(employeeInfo, 'data.data.store'))
+      setValue('role', get(employeeInfo, 'data.data.role'))
+    }
     // register('dial_code')
     // setValue('dial_code', '+998')
-  }, [])
+  }, [employeeInfo])
   const [cardCode, setCardCode] = useState('')
   const [cardName, setCardName] = useState('')
   const [openCardDialogProgress, setOpenCardDialogProgress] = useState(false)
@@ -52,7 +68,6 @@ export default function MainDetails({ clientData }) {
   const [open, setOpen] = useState(false)
   const { data: storesList, refetch: refetstoresList } = useQuery('storesList', () => requests.getAllShops({ limit: 1000, offset: 0 }))
   const { data: rolesList, refetch: refetrolesList } = useQuery('rolesList', () => requests.getAllRoles({ limit: 1000, offset: 0 }))
-  console.log(rolesList)
 
   const onEnterPress = () => {
     if (openCardDialogProgress) {
@@ -104,7 +119,7 @@ export default function MainDetails({ clientData }) {
             name='last_name'
             // label={t('menu.clients.new.last_name')}
             control={control}
-            // required
+            required
             fullWidth
             error={errors?.last_name}
             placeholder={'Mijoz familiyasini kiriting'}
@@ -148,7 +163,7 @@ export default function MainDetails({ clientData }) {
             // label={t('menu.clients.new.last_name')}
             control={control}
             fullWidth
-            // required
+            required={mode === 'edit' ? false : true}
             error={errors?.password}
             placeholder={'Parol kiriting'}
             defaultValue={clientData ? clientData.last_name : ''}
@@ -252,12 +267,28 @@ export default function MainDetails({ clientData }) {
       <Grid container spacing={4}>
         <Grid item xs={6}>
           <Label mb='4px'>{"Do'kon"}</Label>
-          <SelectSimple placeholder={"Do'kon tanlang"} disabled={false} white isClearable={false} options={get(storesList, 'data.data.data')} name='store' />
+          <SelectSimple
+            placeholder={"Do'kon tanlang"}
+            disabled={false}
+            white
+            required
+            isClearable={false}
+            options={get(storesList, 'data.data.data')}
+            name='store'
+          />
         </Grid>
         <Grid item xs={6}>
           <Label mb='4px'>{'Rol'}</Label>
 
-          <SelectSimple placeholder={'Rol tanlang'} disabled={false} white isClearable={false} options={get(rolesList, 'data.data')} name='role' />
+          <SelectSimple
+            required
+            placeholder={'Rol tanlang'}
+            disabled={false}
+            white
+            isClearable={false}
+            options={get(rolesList, 'data.data.data')}
+            name='role'
+          />
         </Grid>
       </Grid>
 
@@ -277,7 +308,7 @@ export default function MainDetails({ clientData }) {
             // minTime={new Date()}
             // minT
             error={errors?.date_of_birth}
-            // required
+            required
             id='birth-Date'
             showYearDropdown
             // label='Дата закрытия'
@@ -290,6 +321,7 @@ export default function MainDetails({ clientData }) {
           <InputSwitchNew
             id='client-gender'
             noMarginTop
+            required
             name='gender'
             // label={t('menu.clients.new.gender')}
             control={control}
