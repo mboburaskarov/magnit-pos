@@ -127,7 +127,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         cellRenderer: memo(({ data }) => (
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
             <Box display='inline-flex' columnGap={'8px'}>
-              {data.status === 'active' ? (
+              {/* {data.status === 'active' ? (
                 <CheckAccess id={'product-deactive'}>
                   <IconButton
                     sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
@@ -145,7 +145,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
                     <UnlockIcon color='#111217' />
                   </IconButton>
                 </CheckAccess>
-              )}
+              )} */}
               <CheckAccess id={'product-edit'}>
                 <IconButton onClick={() => setopenCreateVendorDrawer({ mode: 'edit', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />

@@ -36,8 +36,8 @@ const columns = [
   {
     field: 'actions',
     hide: false,
-    minWidth: 136,
-    width: 136,
+    minWidth: 96,
+    width: 96,
     pinned: 'right',
   },
 ]
