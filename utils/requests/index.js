@@ -188,7 +188,7 @@ export const requests = {
   getAllRoles: (filter) => request.get(`v1/role/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleRole: (id) => request.get(`api/roles/${id}`),
   createRole: (data) => request.post('v1/role', data),
-  deleteRole: (id) => request.delete(`api/roles/${id}`),
+  deleteRole: (id) => request.delete(`v1/role/${id}`),
   updateRole: ({ id, data }) => request.patch(`api/roles/${id}`, data),
 
   // actions

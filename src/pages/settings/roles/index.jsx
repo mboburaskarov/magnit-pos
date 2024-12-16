@@ -121,7 +121,7 @@ export default function RolesPage() {
   } = useQuery(['storesList', storesListFilter], () => requests.getAllRoles(storesListFilter))
   console.log(storesList)
 
-  const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteStore, {
+  const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteRole, {
     onSuccess: () => {
       refetch()
       success('Продукт успешно удален!')
