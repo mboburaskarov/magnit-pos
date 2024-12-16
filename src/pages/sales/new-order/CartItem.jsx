@@ -275,7 +275,11 @@ const CartItem = ({
                   isClearable={false}
                   boxStyle={{ margin: '0 8px' }}
                   minWidth={'84px'}
-                  options={[{ id: 1, name: 'Dona' }]}
+                  options={[
+                    { id: 1, name: 'Dona' },
+                    { id: 2, name: 'Kaseta' },
+                    { id: 3, name: 'Quti' },
+                  ]}
                   borderRadius='12px'
                   placeholder=''
                   inicatoorRight={true}
@@ -304,12 +308,20 @@ const CartItem = ({
             <Box display={'flex'}>
               <Box id='product-details' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', justifyContent: 'center' }}>
                 <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>A4</Typography>
-                <Box sx={{ display: 'flex', '& svg > g > path': { stroke: '#FF6018' }, '& svg': { width: '20px', height: '20px' } }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    '& svg > g > path': { stroke: '#FF6018' },
+                    '& svg': { width: '20px', height: '20px' },
+                  }}
+                >
                   <Typography sx={{ mr: '10px', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
                     {' '}
                     {item?.total_price}
                   </Typography>
-                  <EditIcon />
+                  <Box sx={{ cursor: 'pointer' }}>
+                    <EditIcon />
+                  </Box>
                 </Box>
               </Box>
               <Box
@@ -322,6 +334,10 @@ const CartItem = ({
                   alignItems: 'center',
                   justifyContent: 'center',
                   backgroundColor: 'red.10',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'red.100',
+                  },
                 }}
                 onClick={() => setOpenConfirmDialog({ type: 'deleteOne', id: item?.id, name: item?.product?.name })}
 
