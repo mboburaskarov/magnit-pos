@@ -160,19 +160,19 @@ export const navbatRouteData = [
     href: '/settings',
     children: [
       {
-        label: 'navbar.profile',
+        label: 'Профиль',
         active: '/settings/profile/*',
         id: '9.5',
         href: '/settings/profile',
       },
       {
-        label: 'navbar.stores',
+        label: 'Магазины',
         active: '/settings/stores/*',
         id: '9.5',
         href: '/settings/stores',
       },
       {
-        label: 'page.role.title',
+        label: 'Роли',
         active: '/settings/roles/*',
         id: '9.5',
         href: '/settings/roles',

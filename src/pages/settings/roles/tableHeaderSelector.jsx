@@ -70,7 +70,6 @@ const Image = ({ data, rowIndex, setImages }) => {
 
 export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
   // const { values } = useQueryParams()
-  console.log(productsColumns)
 
   const columns = productsColumns?.map((el) => {
     if (el.field === 'checkbox') {

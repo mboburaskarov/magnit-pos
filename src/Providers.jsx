@@ -52,8 +52,8 @@ function Providers({ children }) {
     const user_theme = localStorage.getItem('user_theme')
 
     if (!user_theme || user_theme === 'auto') {
-      // setThemeMode('light')
-      setThemeMode(prefersDarkMode.matches ? 'dark' : 'light')
+      setThemeMode('light')
+      // setThemeMode(prefersDarkMode.matches ? 'dark' : 'light')
     } else {
       setThemeMode(user_theme)
     }
@@ -61,7 +61,8 @@ function Providers({ children }) {
 
   const muiTheme = useMemo(() => {
     const themeObj = theme({
-      palette: themeMode === 'dark' ? paletteDark : paletteLight,
+      palette: themeMode === 'dark' ? paletteLight : paletteLight,
+      // palette: themeMode === 'dark' ? paletteDark : paletteLight,
       mode: themeMode,
     })
     return createTheme(themeObj)

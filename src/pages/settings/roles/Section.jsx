@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import StyledSwitch from '../../../../components/Switch/StyledSwitch'
 import TreeSelectCategory from '../../../../components/TreeSelectCategory/index'
 import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -10,6 +11,9 @@ const useStyles = makeStyles((theme) => ({
     padding: '0px 0 32px 0',
     marginBottom: '24px',
     borderBottom: `2px solid ${theme.palette.bunker[100]}`,
+    '&:last-child': {
+      border: 'none',
+    },
   },
   title: {
     color: theme.palette.black,
@@ -49,22 +53,33 @@ export default function Section({ section, sectionRef, setDisabled, disabled, se
   // const [disabled, setDisabled] = useState(false)
 
   const sectionArrays =
-    section?.permissions?.map((permission) => ({
-      id: permission?.id,
-      name: permission?.name,
-      is_active: permission?.is_active,
-      children:
-        permission?.children?.map((child) => ({
-          id: child?.id,
-          name: child?.name,
-          is_active: child?.is_active,
-        })) || [],
-    })) || []
-  return section?.permissions?.length ? (
+    [
+      {
+        id: section?.id,
+        name: section?.entity_name,
+        is_active: false,
+        children:
+          section?.children?.map((children) => ({
+            id: children?.id,
+            name: children?.entity_name,
+            is_active: children?.is_active,
+            children:
+              children?.children?.map((child) => ({
+                id: child?.id,
+                name: child?.entity_name,
+                is_active: child?.is_active,
+              })) || [],
+          })) || [],
+      },
+    ] || []
+  console.log(sectionArrays)
+
+  return section ? (
     <Box ref={sectionRef} id={id} className={classes.root}>
       <Box display='flex' alignItems='center' justifyContent='space-between' mb={4}>
         <Typography variant='h3' className={classes.title}>
-          {t(`navbar.${section?.key}`)}
+          {/* {t(`navbar.${section?.key}`)} */}
+          {get(section, 'entity_name')}
         </Typography>
         <StyledSwitch
           checked={!disabled?.includes(section.key)}

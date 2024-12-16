@@ -36,6 +36,9 @@ export const useStyles = makeStyles((theme) => ({
       borderRadius: '12px',
       // border: 'none',
     },
+    '& .MuiFormControl-root': {
+      backgroundColor: 'transparent !important',
+    },
     '& select': {},
     '& button': {
       border: 0,

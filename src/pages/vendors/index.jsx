@@ -249,12 +249,12 @@ export default function VendorsPage() {
             onChange={(e) => setAppType(e)}
             options={[
               { title: t('switch.title.all'), value: 'ALL' },
-              { title: t('switch.title.medicine'), value: 'medicine' },
-              { title: t('switch.title.vitamin'), value: 'vitamin' },
-              { title: t('switch.title.self_care'), value: 'self_care' },
-              { title: t('switch.title.baby_care'), value: 'baby_care' },
-              { title: t('switch.title.diagnostic'), value: 'diagnostic' },
-              { title: t('switch.title.medical_supplies'), value: 'medical_supplies' },
+              { title: t('switch.title.active'), value: 'medicine' },
+              { title: t('switch.title.inactive'), value: 'vitamin' },
+              { title: t('switch.title.less_amount'), value: 'self_care' },
+              { title: t('switch.title.empty'), value: 'baby_care' },
+              { title: t('switch.title.less_date'), value: 'diagnostic' },
+              { title: t('switch.title.outofdate'), value: 'medical_supplies' },
             ]}
           />
         </Box>

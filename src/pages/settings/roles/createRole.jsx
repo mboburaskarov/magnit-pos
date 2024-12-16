@@ -67,7 +67,7 @@ export default function RoleCreatePage() {
           backIcon
           noActions
           backHref='/settings/roles'
-          text={t('create_new_product.top.new_product')}
+          text={'Создать роль'}
           checkAccessId={'product-create'}
           onSubmit={methods.handleSubmit(onSubmit, onError)}
         />

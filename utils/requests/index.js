@@ -97,6 +97,7 @@ export const requests = {
   //shops
 
   getAllShops: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllRolesWithPermissions: (filter) => request.get(`v1/permission/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   // getAllRoles: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   // getAllStores: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateShop: ({ id, data }) => request.patch(`api/admin/shops/${id}`, data),
@@ -186,7 +187,7 @@ export const requests = {
   // roles
   getAllRoles: (filter) => request.get(`v1/role/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleRole: (id) => request.get(`api/roles/${id}`),
-  createRole: (data) => request.post('api/roles', data),
+  createRole: (data) => request.post('v1/role', data),
   deleteRole: (id) => request.delete(`api/roles/${id}`),
   updateRole: ({ id, data }) => request.patch(`api/roles/${id}`, data),
 
@@ -200,6 +201,7 @@ export const requests = {
 
   // role-actions
   createRoleActionInsertMany: (data) => request.post('api/role-actions/insert-many', data),
+  // createRole: (data) => request.post('api/role-actions/insert-many', data),
   getSingleRoleActions: (filter) => request.get(`api/role-actions${qs.stringify(filter, { addQueryPrefix: true })}`),
   updaterRoleActionMany: (data) => request.post('api/role-actions/update-many', data),
 

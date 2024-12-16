@@ -11,6 +11,7 @@ import EditableCell from './editable-cell'
 import thousandDivider from '../../../../utils/thousandDivider'
 import currency from '../../../../utils/currency'
 import colors from '../../../assets/theme/mui.config'
+import SoonPage from '../../../../components/soon'
 
 function CardShiftDetails() {
   const { t } = useTranslation()
@@ -5104,8 +5105,7 @@ function CardShiftDetails() {
       setTotalData(result)
     }
   }, [columns, tableData])
-  console.log(columns, tableData)
-
+  return <SoonPage />
   return (
     <div>
       <Button onClick={() => setOpen(true)}>open</Button>

@@ -28,6 +28,8 @@ import SingleBarChart from '../../../components/Charts/SingleLineChart'
 import TotalOrdersByCity from '../../../components/Charts/SingleBarChart'
 import AgGridTable from '../../../components/AgGridTable/AgGridTable'
 import tableHeaderSelector from './tableHeaderSelector'
+import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
@@ -36,13 +38,14 @@ export default function DashboarPage() {
   const { type } = useSelector((state) => state.user)
   const { values } = useQueryParams()
   const [detailing, setDetaling] = useState('week')
-  const [detalization, setDetalization] = useState({ name: 'By day', value: 'day' })
+
+  const [detalization, setDetalization] = useState({ name: 'Сегодня', value: 'day' })
   const check = type === 'SUPER_ADMIN' || type === 'ACCOUNTANT'
   const [sortBy, setSortBy] = useState(check ? 'SUM' : 'COUNT')
   const { columns, loading } = useSelector((state) => state.orderTableColumns)
   const [regions, setRegions] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
-
+  const { t } = useTranslation()
   const dashboardFilter = useMemo(() => {
     return { type: sortBy, fromDate: values?.start_date, toDate: values?.end_date }
   }, [values?.start_date, values?.end_date, sortBy])
@@ -135,13 +138,13 @@ export default function DashboarPage() {
   const totalCount = chartInfo?.data?.reduce((acc, item) => acc + item?.count, 0)
   const OrdersStatistics = [
     {
-      title: 'Barcha sotuvlar',
+      title: t('all_sales'),
       icon: <RevenueIcon />,
       count: 0,
       percent: 10,
     },
     {
-      title: 'Barcha dorilar',
+      title: t('all_medicien'),
       icon: <ProductsIcon />,
       count: 0,
       endText: '$',
@@ -149,13 +152,13 @@ export default function DashboarPage() {
       percent: -5,
     },
     {
-      title: 'Sotuvlar',
+      title: t('sales'),
       icon: <OrdersIcon />,
       count: 0,
       percent: 8,
     },
     {
-      title: 'Filiallar',
+      title: t('branches'),
       icon: <VendorsIcon />,
       count: 0,
       percent: 20,
@@ -237,7 +240,7 @@ export default function DashboarPage() {
         </Box> */}
         <Box sx={{ border: '1px solid #A4A5AB33', borderRadius: '32px', mt: '32px', p: '20px' }}>
           <Typography fontWeight={600} fontSize={'26px'} pl={'6px'} pb={'20px'} py={'24px'} lineHeight={'32px'}>
-            Orders
+            {t('orders')}
           </Typography>
           <AgGridTable
             id='orders-main-table'

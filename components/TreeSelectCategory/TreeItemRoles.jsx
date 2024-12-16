@@ -15,6 +15,8 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
   const activeParentRef = useRef('')
 
   const handleChange = ({ event, parents = [], children = [] }) => {
+    console.log(parents, children)
+
     const {
       target: { value, checked },
     } = event
@@ -126,6 +128,7 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
     nodes?.map((node) => {
       const { id: value, name: label, children } = node
       const checked = selected.includes(value) || parents.some((parent) => selected.includes(parent))
+      console.log(children, nodes)
 
       if (children && children.length > 0) {
         const indeterminate = isIndeterminate({ tree, selected, node: value })

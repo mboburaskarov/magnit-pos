@@ -6,6 +6,9 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    '& .MuiButton-endIcon': {
+      marginRight: '10px !important',
+    },
     '& .cash_register_icon_wrapper': {
       '&:hover': {
         backgroundColor: theme.palette.gray[100],

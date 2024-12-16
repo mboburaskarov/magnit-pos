@@ -10,7 +10,7 @@ import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle, faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
-import { useMutation } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import { useSelector } from 'react-redux'
@@ -47,7 +47,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
   const { id } = useParams()
 
   const methods = useForm()
-
+  // const { data: darftList, refetch, isDarftList } = useQuery('darftList', () => requests.getDarftList())
   const [eposChecked, setEposChecked] = useState(false)
   const changeExpireDate = (type, date = new Date()) => {
     if (type === 'ertaga') {
@@ -73,6 +73,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
       setOpen(false)
       refetchcartItemsList()
+      // refetch()
       success('Продукт успешно создан!')
     },
     onError: (err) => {

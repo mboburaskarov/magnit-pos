@@ -52,7 +52,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
   const { data: darftList, refetch, isDarftList } = useQuery(['darftList', draftsListFilter], () => requests.getDarftList(draftsListFilter))
   useEffect(() => {
     refetch()
-  }, [])
+  }, [open])
   const theme = useTheme()
   const draftListData = get(darftList, 'data.data.data', [])
   return (
@@ -66,7 +66,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
             <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
           </Box>
           <Box display={'flex'} padding={'24px'}>
-            <InputSearch fullWidth uncontrolled placeholder={'Qidirish: ID, mijoz, sotuvchi'} />
+            <InputSearch fullWidth uncontrolled placeholder={'Поиск: ID, Клиент, Продавец'} />
             <Box minWidth={113} ml={'16px'}>
               <Button
                 sx={{

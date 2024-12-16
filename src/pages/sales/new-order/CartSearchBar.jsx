@@ -150,7 +150,7 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
             sx={{ marginRight: '16px !important', height: '48px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
             name='search'
             // uncontrolled
-            placeholder={'Qidirish: mahsulot, kategoriya, shtrix-kod'}
+            placeholder={'Поиск: товар, категория, штрих-код'}
             fullWidth
             onChange={(e) => {
               // setFakeIndexForCheckSearch(-1)

@@ -95,6 +95,9 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   useEffect(() => {
     refetch()
   }, [open])
+  // useEffect(() => {
+  //   // refetchDraftList()
+  // }, [])
   const theme = useTheme()
   return (
     <LoadingContainer readyState={!isDarftChildList}>

@@ -2,13 +2,15 @@ import { useState } from 'react'
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableRow, Button, Select, MenuItem, TableHead } from '@mui/material'
 import { RadialBarChart, RadialBar, Tooltip, PolarAngleAxis } from 'recharts'
 import SelectSimple from '../Select/SelectSimple'
+import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 const data = [
-  { name: 'Toronto', orders: 30, revenue: 5690, fill: '#FE5000' },
-  { name: 'New York', orders: 45, revenue: 8300, fill: '#FEC400' },
-  { name: 'Phoenix', orders: 60, revenue: 10200, fill: '#00C49F' },
-  { name: 'San Francisco', orders: 25, revenue: 3500, fill: '#0088FE' },
-  { name: 'London', orders: 80, revenue: 15870, fill: '#FF8042' },
+  { name: 'OQTEPA', orders: 30, revenue: 5690, fill: '#FE5000' },
+  { name: 'SERGELI 8', orders: 45, revenue: 8300, fill: '#FEC400' },
+  { name: 'QUSHBEGI', orders: 60, revenue: 10200, fill: '#00C49F' },
+  { name: 'SEBZOR', orders: 25, revenue: 3500, fill: '#0088FE' },
+  { name: 'UCHTEPA', orders: 80, revenue: 15870, fill: '#FF8042' },
 ]
 
 const radialChartData = data.map((item) => ({
@@ -19,17 +21,17 @@ const radialChartData = data.map((item) => ({
 
 export default function TotalOrdersByCity() {
   const [period, setPeriod] = useState('This Month')
-
+  const [detalization, setDetalization] = useState()
   const handlePeriodChange = (event) => setPeriod(event.target.value)
-
+  const { t } = useTranslation()
   const totalRevenue = data.reduce((sum, item) => sum + item.revenue, 0)
   const detailingOptions = [
-    { name: 'Shu 30min', value: '30min' },
-    { name: 'Shu soat', value: 'hour' },
-    { name: 'Bu oy', value: 'day' },
-    { name: 'Bu hafta', value: 'week' },
-    { name: 'Bu Oy', value: 'month' },
-    { name: 'Bu yil', value: 'year' },
+    { name: 'Это 30 минут', value: '30min' },
+    { name: 'Это час', value: 'hour' },
+    { name: 'Сегодня', value: 'day' },
+    { name: 'На этой неделе', value: 'week' },
+    { name: 'Это месяц', value: 'month' },
+    { name: 'В этом году', value: 'year' },
   ]
 
   return (
@@ -46,16 +48,16 @@ export default function TotalOrdersByCity() {
       {/* Header */}
       <Box display='flex' justifyContent='space-between' alignItems='center' px={'16px'} mb={2}>
         <Typography variant='h6' sx={{ fontWeight: 700, fontSize: 26, lineHeight: '32px' }}>
-          Filiallar bo’yicha
+          По филиалам
         </Typography>
         <SelectSimple
           id={'detailing'}
           name={'detailing'}
           placeholder='Tanlang'
           uncontrolled
-          // onChange={setDetalization}
+          onChange={setDetalization}
           minWidth={120}
-          // value={detalization}
+          value={detalization}
           fullWidth
           boxStyle={{ width: 120 }}
           isClearable={false}
@@ -102,14 +104,14 @@ export default function TotalOrdersByCity() {
       {/* Top Cities Table */}
       <Box mt={3}>
         <Typography variant='subtitle1' sx={{ fontWeight: 700, padding: '6px 16px', fontSize: 26, lineHeight: '32px' }}>
-          Top Cities
+          Верхние ветки
         </Typography>
         <TableContainer>
           <Table size='small'>
             <TableHead sx={{ mb: '25px' }}>
-              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Filial</TableCell>
-              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Buyurtma</TableCell>
-              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Sotuvlar</TableCell>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>филиал</TableCell>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Заказ</TableCell>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Продажи</TableCell>
             </TableHead>
             <TableBody>
               {data.map((item) => (
@@ -141,7 +143,7 @@ export default function TotalOrdersByCity() {
             textTransform: 'none',
           }}
         >
-          Barchasi
+          {t('all')}
         </Button>
       </Box>
     </Box>

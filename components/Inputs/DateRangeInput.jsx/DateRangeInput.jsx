@@ -14,27 +14,27 @@ import ArrowDown from '../../../src/assets/icons/ArrowDown'
 const customDateRanges = () => [
   {
     id: 'yesterday',
-    label: 'Shu soat',
+    label: 'Это час',
     values: [dayjs().subtract(1, 'day').format('DD.MM.YYYY'), dayjs().subtract(1, 'day').format('DD.MM.YYYY')],
   },
   {
     id: 'today',
-    label: 'Bugun kun',
+    label: 'Сегодня',
     values: [dayjs().format('DD.MM.YYYY'), dayjs().format('DD.MM.YYYY')],
   },
   {
     id: 'week',
-    label: 'Shu hafta',
+    label: 'На этой неделе',
     values: [dayjs().startOf('week').format('DD.MM.YYYY'), dayjs().format('DD.MM.YYYY')],
   },
   {
     id: 'month',
-    label: 'Bu yil',
+    label: 'Это месяц',
     values: [dayjs().startOf('month').format('DD.MM.YYYY'), dayjs().format('DD.MM.YYYY')],
   },
   {
     id: 'year',
-    label: 'Shu yil',
+    label: 'В этом году',
     values: [dayjs().startOf('year').format('DD.MM.YYYY'), dayjs().format('DD.MM.YYYY')],
   },
 ]
@@ -102,8 +102,8 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
           <Box
             display='inline-flex'
             sx={{
-              '&  > p': { fontWeight: 500, textAlign: 'left', color: 'dark.500', lineHeight: '28px', fontSize: 20 },
-              '& > span': { lineHeight: '19px', color: 'gray.600', fontWeight: 600, ml: 1 },
+              '&  > p': { fontWeight: 500, textAlign: 'left', color: 'dark.500', margin: '0 20px', lineHeight: '28px', fontSize: 20 },
+              '& > span': { lineHeight: '19px', color: 'gray.600', fontWeight: 600, ml: 1, mr: '2px !important' },
             }}
           >
             <p>{customDateRangeSelected || 'Vaqt tanlang'}</p>

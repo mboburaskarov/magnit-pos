@@ -56,7 +56,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       {
         category_id: category_id ? getOptionsFromUrlParam(category_id, categories?.data?.data)[0] : null,
         producer: producer ? getOptionsFromUrlParam(producer, producers?.data?.data)[0] : null,
-        store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data, 'name')[0] : null,
+        store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data?.data, 'name')[0] : null,
         supply_price_to: supply_price_to,
         retail_price_to: retail_price_to,
         supply_price_from: supply_price_from,
@@ -112,7 +112,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               label={t('input.store.label')}
               placeholder={t('input.store.placeholder')}
               getOptionLabel={(el) => el.name}
-              options={shopList?.data?.data}
+              options={shopList?.data?.data?.data}
             />
             <SelectSimple
               fullWidth

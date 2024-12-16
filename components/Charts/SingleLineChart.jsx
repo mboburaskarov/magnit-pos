@@ -12,14 +12,15 @@ import getShorterNumber from '../../utils/getShorterNumber'
 import { getDateFromDateTime, getTimeFromDateTime } from '../../utils/parseDateTime'
 import LoadingBlurry from '../LoadingBlurry'
 import thousandDivider from '../../utils/thousandDivider'
+import { useTranslation } from 'react-i18next'
 
 const detailingOptions = [
-  { name: 'By 30min', value: '30min' },
-  { name: 'By hour', value: 'hour' },
-  { name: 'By day', value: 'day' },
-  { name: 'By week', value: 'week' },
-  { name: 'By month', value: 'month' },
-  { name: 'By year', value: 'year' },
+  { name: 'Это 30 минут', value: '30min' },
+  { name: 'Это час', value: 'hour' },
+  { name: 'Сегодня', value: 'day' },
+  { name: 'На этой неделе', value: 'week' },
+  { name: 'Это месяц', value: 'month' },
+  { name: 'В этом году', value: 'year' },
 ]
 
 const purpleColor = '#a811d6'
@@ -49,7 +50,7 @@ const Body = ({ children, isLoading, isEmpty }) => (
 )
 
 export default function SingleBarChart({
-  title = 'Barcha sotuvlar',
+  title,
   measurmentUnit = '',
   colorCode,
   data,
@@ -62,6 +63,7 @@ export default function SingleBarChart({
   sortBy,
   id,
 }) {
+  const { t } = useTranslation()
   const [chartData, setChartData] = useState([])
   const [sliderValue, setSliderValue] = useState([0, 100])
 
@@ -110,7 +112,7 @@ export default function SingleBarChart({
                   color: theme.palette.dark[500],
                 })}
               >
-                {title}
+                {t('all_sales')}
               </Typography>
               {/* {!!data?.total && (
                 <Typography

@@ -22,13 +22,13 @@
 
   "page.catalog.title": "Katalog",
 
-  "switch.title.all": "Barchasi",
-  "switch.title.medicine": "Dorilar",
-  "switch.title.vitamin": "Vitaminlar",
-  "switch.title.self_care": "Shaxsiy parvarish",
-  "switch.title.baby_care": "Chaqaloqlar parvarishi",
-  "switch.title.diagnostic": "Diagnostika",
-  "switch.title.medical_supplies": "Tibbiy buyumlar",
+  "switch.title.all": "Все",
+  "switch.title.active": "Активный",
+  "switch.title.inactive": "Не активен",
+  "switch.title.less_amount": "осталось немного",
+  "switch.title.empty": "Остатки продуктов",
+  "switch.title.less_date": "Срок короткий",
+  "switch.title.outofdate": "Истекший",
 
   "button.add_new.text": "Yangi qo'shish",
 

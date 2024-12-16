@@ -10,6 +10,7 @@ import dayjs from 'dayjs'
 import DateFilterDrawerSingle from '../../../components/Inputs/DateRangeInput.jsx/DateFilterDrawerSingle'
 import { customDateRanges } from '../../../constants/customDateRanges'
 import AllOrdersContainer from '../../../components/Sales/AllOrdersContainer'
+import SoonPage from '../../../components/soon'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -103,14 +104,14 @@ function AllSales() {
     start_date: new Date(),
   })
   const [customDateRangeSelected, setCustomDateRangeSelected] = useState(t('dates.today'))
-
+  return <SoonPage />
   return (
     <Box position='relative'>
       <Box className={classes.root}>
         <Box className={classes.content} mx={4}>
           <Box mt={6}>
             <Typography className={classes.title} component='h2'>
-              <p>Barcha sotuvlar</p>
+              <p>{t('all_sales')}</p>
               <Box>
                 <span id='orders-count'>{2}</span>
                 <ButtonWithPopup

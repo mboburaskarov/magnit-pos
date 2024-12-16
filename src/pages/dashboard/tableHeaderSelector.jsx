@@ -67,7 +67,7 @@ export default function tableHeaderSelector({
     if (el.field === 'id') {
       return {
         ...el,
-        headerName: 'Order ID',
+        headerName: 'Заказ ID',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box display={'flex'} gap={1} alignItems={'center'}>
@@ -182,7 +182,7 @@ export default function tableHeaderSelector({
     if (el.field === 'client') {
       return {
         ...el,
-        headerName: 'Customer Name',
+        headerName: 'Имя клиента',
         colId: el.field,
         cellRenderer: memo(({ data }) => (
           <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + data?.client?.phone)}>
@@ -204,7 +204,7 @@ export default function tableHeaderSelector({
     if (el.field === 'receiver') {
       return {
         ...el,
-        headerName: 'Vendor',
+        headerName: 'Продавец',
         colId: el.field,
         cellRenderer: memo(({ data }) => (
           <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + data.receiver.phoneNumber)}>

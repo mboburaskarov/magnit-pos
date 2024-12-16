@@ -218,8 +218,8 @@ export default function ProductBody({ productData = null }) {
             tableSettings
             columns={tableColumns}
             data={[
-              { name: 'salom', amount: 2, min_amount: 4 },
-              { name: 'salom', amount: 1, min_amount: 5 },
+              { name: 'Sergili', amount: 2, min_amount: 4 },
+              { name: 'Oqtepa', amount: 1, min_amount: 5 },
             ]}
             isDataLoading={false}
             offsetCount={1}

@@ -63,8 +63,6 @@ export default function RolesPage() {
 
   /// filter table columns with permission
   useEffect(() => {
-    console.log(columns)
-
     if (tableColumns) {
       const formattedData = tableColumns
         ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
@@ -233,25 +231,7 @@ export default function RolesPage() {
             setSelected={setStatus}
           />
         </Box> */}
-        {/* <Box minWidth={320}>
-          <InputSwitch
-            uncontrolled
-            id='app-type'
-            name='app-type'
-            value={appType}
-            defaultValue='ALL'
-            onChange={(e) => setAppType(e)}
-            options={[
-              { title: t('switch.title.all'), value: 'ALL' },
-              { title: t('switch.title.medicine'), value: 'medicine' },
-              { title: t('switch.title.vitamin'), value: 'vitamin' },
-              { title: t('switch.title.self_care'), value: 'self_care' },
-              { title: t('switch.title.baby_care'), value: 'baby_care' },
-              { title: t('switch.title.diagnostic'), value: 'diagnostic' },
-              { title: t('switch.title.medical_supplies'), value: 'medical_supplies' },
-            ]}
-          />
-        </Box> */}
+
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box

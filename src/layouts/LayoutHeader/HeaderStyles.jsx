@@ -294,11 +294,11 @@ export const headerStyles = makeStyles((theme) => {
     shopname: {
       // width: 130,
       margin: 0,
-      lineHeight: '16px',
+      lineHeight: '20px',
       fontWeight: 600,
       fontFamily: "'Gilroy', sans-serif",
       color: theme.palette.bunker[400],
-      fontSize: 12,
+      fontSize: 14,
       transition: 'all .2s',
       whiteSpace: 'nowrap',
       overflow: 'hidden',
