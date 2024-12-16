@@ -87,7 +87,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
     if (el.field === 'location') {
       return {
         ...el,
-        headerName: 'Manzil',
+        headerName: 'Адрес',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='location' />),
       }
@@ -95,7 +95,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
     if (el.field === 'employee_count') {
       return {
         ...el,
-        headerName: 'Hodimlar soni',
+        headerName: 'Количество сотрудников',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='employee_count' />),
       }
@@ -103,7 +103,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
     if (el.field === 'cash_box_count') {
       return {
         ...el,
-        headerName: 'Kassalar soni',
+        headerName: 'Количество коробок',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='cash_box_count' />),
       }
@@ -111,7 +111,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
     if (el.field === 'store_code') {
       return {
         ...el,
-        headerName: "Do'kon ko'di",
+        headerName: 'В магазине увидел',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='store_code' />),
       }
