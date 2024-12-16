@@ -28,6 +28,9 @@ import UserOutlineIcon from '../../../assets/icons/UserOutlineIcon'
 import FinanceIcon from '../../../assets/icons/FInanceIcon'
 import { get } from 'lodash'
 import { makeStyles } from '@mui/styles'
+import { error, success } from '../../../../utils/toast'
+import { useNavigate } from 'react-router-dom'
+import useDidUpdate from '../../../hooks/useDidUpdate'
 // import productStoresTableHeaderSelector from './productStoresTableHeaderSelector'
 
 const useStyles = makeStyles((theme) => ({
@@ -103,6 +106,8 @@ export default function RoleBody({ productData = null }) {
   const [hasDiscontPrice, setHasDiscontPrice] = useState(false)
   // const { columns, loading } = useSelector((state) => state.storesListTableColumnsForProduct)
   const { values } = useQueryParams()
+  const navigate = useNavigate()
+
   const [selected, setSelected] = useState([])
   const [disabled, setDisabled] = useState([])
   const classes = useStyles()
@@ -188,7 +193,7 @@ export default function RoleBody({ productData = null }) {
     }
   }, [])
 
-  const addCategoryButton = productCategories?.length > 0 ? !!productCategories?.at(-1)?.name : true
+  // const addCategoryButton = productCategories?.length > 0 ? !!productCategories?.at(-1)?.name : true
   const { refetch } = useQuery('barcode', () => requests.generateBarcode(), { enabled: false })
 
   const generateBarcode = () => {
@@ -200,20 +205,55 @@ export default function RoleBody({ productData = null }) {
 
   const { mutate: createRole, isLoading: createRoleLoading } = useMutation(requests.createRole, {
     onSuccess: async ({ data }) => {
-      const userData = data.data
-      localStorage.setItem('access_token', userData.token)
-      localStorage.setItem('user_data', JSON.stringify(userData.employee))
-      dispatch(setUserData(userData?.employee))
-      setTimeout(() => {
-        // navigate('/')
-        window.location.replace('/redirect')
-      }, 300)
+      success('Роль создана')
+      navigate('/settings/roles')
     },
     onError: (err) => {
-      error('Hеверный логин или пароль')
+      error('Ошибка создания роли')
       console.log('err', err)
     },
   })
+  const filterPermissions = (sections) => {
+    const permissions = sections
+      ?.map((section) => {
+        const foundPermissions = section.permissions?.filter((permission) => permission?.entity_name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+        return foundPermissions?.length ? { ...section, permissions: foundPermissions } : null
+      })
+      .filter((item) => item)
+    return permissions
+  }
+  useEffect(() => {
+    setPermissionList(get(rolesAndPermissionList, 'data.data', []))
+    if (get(rolesAndPermissionList, 'data.data', [])) {
+      // const keys = rolePermissions?.data?.sections?.map((el) => el.key)
+      // setDisabled(keys)
+      const permissions = []
+
+      get(rolesAndPermissionList, 'data.data', [])
+        ?.filter((section) => section.permissions?.length)
+        ?.forEach((section) => {
+          section?.permissions?.forEach((permission) => {
+            if (permission?.is_active) {
+              permissions.push(permission.id)
+              return
+            }
+            permission.children.forEach((el) => {
+              if (el.is_active) {
+                permissions.push(el.id)
+              }
+            })
+          })
+        })
+      setSelected(permissions)
+    }
+  }, [rolesAndPermissionList])
+  useDidUpdate(() => {
+    if (searchTerm === '') setPermissionList(get(rolesAndPermissionList, 'data.data', []) || [])
+    else {
+      const filteredPermissions = filterPermissions(get(rolesAndPermissionList, 'data.data', []))
+      setPermissionList(filteredPermissions)
+    }
+  }, [searchTerm])
 
   const onSubmit = (data) => {
     // console.log('fff', data, get(rolesAndPermissionList, 'data.data', []))
@@ -221,25 +261,19 @@ export default function RoleBody({ productData = null }) {
 
     const permissions = []
     get(rolesAndPermissionList, 'data.data', [])
-      ?.filter((section) => section && !disabled.includes(section?.key))
+      ?.filter((section) => section.permissions?.length && !disabled.includes(section.key))
       ?.forEach((section) => {
-        section?.children?.forEach((permission) => {
+        section?.permissions?.forEach((permission) => {
           permissions.push({
-            // name: permission.entity_name,
-            parent_id: section?.id || '',
+            parent_id: permission?.id || '',
             children_ids: selected?.includes(permission?.id)
-              ? [
-                  ...new Set(
-                    section.children.map((el) => {
-                      el.id
-                    })
-                  ),
-                ]
-              : [...new Set(selected.filter((el) => section.children.find((child) => child.id == el)))] || [],
-            is_active: !!selected?.includes(section?.id),
+              ? [...new Set(permission.children.map((el) => el.id))]
+              : [...new Set(selected.filter((el) => permission.children.find((child) => child.id === el)))] || [],
+            is_active: !!selected?.includes(permission?.id),
           })
         })
       })
+
     const requestBody = {
       // id,
       name: get(data, 'name'),
@@ -254,7 +288,6 @@ export default function RoleBody({ productData = null }) {
   const onError = (err) => {
     console.log(err)
   }
-  console.log(selected)
 
   return (
     <FormProvider {...methods}>
@@ -279,8 +312,8 @@ export default function RoleBody({ productData = null }) {
               fullWidth
               borderRadius={'40px'}
               name='name'
-              label={t('create_new_product.product_name')}
-              placeholder={t('create_new_product.product_name.placeholder')}
+              label={t('role.name')}
+              placeholder={t('role.name.placeholder')}
               // sx={{ mb: '24px' }}
             />
             <Box height={'24px'} />
@@ -290,18 +323,18 @@ export default function RoleBody({ productData = null }) {
               multiline
               borderRadius={'16px'}
               name='description'
-              label={t('create_new_product.product_name')}
-              placeholder={t('create_new_product.product_name.placeholder')}
+              label={t('role.description')}
+              placeholder={t('role.description.placeholder')}
               sx={{ mb: 3 }}
             />
             <Box width='100%'>
               <Box mt={4} pb={4}>
                 <Typography mb={'16px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'}>
-                  Tizimdagi ruxsatlar
+                  {t('Системные разрешения')}
                 </Typography>
                 <InputSearch
                   name='search'
-                  placeholder={'поиск'}
+                  placeholder={'Поиск'}
                   fullWidth
                   onChange={(e) => {
                     setSearchTerm(e.target.value)
@@ -312,7 +345,7 @@ export default function RoleBody({ productData = null }) {
               </Box>
               <Box sx={{ borderRadius: '16px', padding: '16px', border: '2px solid', borderColor: 'bunker.100' }}>
                 <SearchContext.Provider value={searchTerm}>
-                  {get(rolesAndPermissionList, 'data.data', []).map((section, index) => (
+                  {permissionList.map((section, index) => (
                     <Section
                       selected={selected}
                       setSelected={setSelected}

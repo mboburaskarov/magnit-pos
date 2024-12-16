@@ -362,7 +362,7 @@ export default function ProductsPage() {
               ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
               : openConfirmDialog?.type === 'deactivate'
               ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-              : 'mahsulotini o’chirmoqchimisiz?'
+              : 'Вы хотите удалить продукт?'
           }
           supDesc={'“Azitromitsin 250 mg”'}
           actions={
@@ -374,7 +374,7 @@ export default function ProductsPage() {
                 variant='contained'
                 onClick={() => setOpenConfirmDialog(null)}
               >
-                Yo'q
+                Нет
               </Button>
               <LoadingButton
                 variant='contained'
@@ -388,7 +388,7 @@ export default function ProductsPage() {
                     : deleteProduct(openConfirmDialog.id)
                 }
               >
-                Ha, o'chirish
+                Да, удалить
               </LoadingButton>
             </>
           }

@@ -33,7 +33,6 @@ const SimpleInput = ({ data, rowIndex, type, withDevider, currency }) => {
 
 export default function productStoresTableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
   // const { values } = useQueryParams()
-  console.log(productsColumns)
 
   const columns = productsColumns?.map((el) => {
     if (el.field === 'name') {

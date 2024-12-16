@@ -42,7 +42,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, cashBoxDetails }) {
   const classes = useStyles()
-  const { setValue, getValues } = useFormContext()
   const userData = useSelector((state) => state.user)
   const { id } = useParams()
 
@@ -51,19 +50,19 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
   const [eposChecked, setEposChecked] = useState(false)
   const changeExpireDate = (type, date = new Date()) => {
     if (type === 'ertaga') {
-      const nextWeek = new Date(date)
-      nextWeek.setDate(nextWeek.getDate() + 1)
-      setValue('draft_time', nextWeek)
+      const nextDay = new Date(date)
+      nextDay.setDate(nextDay.getDate() + 1)
+      methods.setValue('draft_time', nextDay)
     }
     if (type === '3kun') {
-      const nextWeek = new Date(date)
-      nextWeek.setDate(nextWeek.getDate() + 3)
-      setValue('draft_time', nextWeek)
+      const nextThreeDays = new Date(date)
+      nextThreeDays.setDate(nextThreeDays.getDate() + 3)
+      methods.setValue('draft_time', nextThreeDays)
     }
     if (type === '1hafta') {
       const nextWeek = new Date(date)
       nextWeek.setDate(nextWeek.getDate() + 7)
-      setValue('draft_time', nextWeek)
+      methods.setValue('draft_time', nextWeek)
     }
   }
   const navigate = useNavigate()
@@ -74,10 +73,10 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
       setOpen(false)
       refetchcartItemsList()
       // refetch()
-      success('Продукт успешно создан!')
+      success('Черновик создан!')
     },
     onError: (err) => {
-      error('Ошибка при создании товара!')
+      error('Ошибка при Черновик создан!')
       console.log('err', err)
     },
   })
@@ -107,7 +106,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
           <Box>
             <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
               <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
-                Kechiktirish
+                Черновик
               </Typography>
               <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
             </Box>
@@ -123,18 +122,18 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
                   required
                   id='draft_time_id'
                   showYearDropdown
-                  label='Kechiktirish muddati'
-                  placeholder='Kechiktirish muddati'
+                  label='Время черновика'
+                  placeholder='Время черновика'
                 />
                 <Box display={'flex'} justifyContent={'start'}>
-                  <Typography onClick={() => changeExpireDate('ertaga')} className={classes.expireInitialDate}>
-                    Ertaga qadar
+                  <Typography sx={{ cursor: 'pointer' }} onClick={() => changeExpireDate('ertaga')} className={classes.expireInitialDate}>
+                    До завтра
                   </Typography>
-                  <Typography onClick={() => changeExpireDate('3kun')} className={classes.expireInitialDate}>
-                    3 kunga
+                  <Typography sx={{ cursor: 'pointer' }} onClick={() => changeExpireDate('3kun')} className={classes.expireInitialDate}>
+                    3 дней
                   </Typography>
-                  <Typography onClick={() => changeExpireDate('1hafta')} className={classes.expireInitialDate}>
-                    1 haftaga
+                  <Typography sx={{ cursor: 'pointer' }} onClick={() => changeExpireDate('1hafta')} className={classes.expireInitialDate}>
+                    1 недели
                   </Typography>
                 </Box>
               </Box>
@@ -146,14 +145,16 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
                 fullWidth
                 borderRadius={'20px'}
                 name='description'
-                label='Eslatma'
-                placeholder="Misol uchun tovar haydovchi tomonidan olindi va to'landi"
+                label='ЗаметкаClick to apply'
+                placeholder='Например, товар забирает и оплачивает водитель.'
               />
               <Box height={'8px'} />
 
               <Box
                 display={'flex'}
+                onClick={() => setEposChecked((prev) => !prev)}
                 sx={{
+                  cursor: 'pointer',
                   '& .MuiCheckbox-root': {
                     border: '1px solid #ccc !important',
                   },
@@ -161,14 +162,16 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
                 alignItems={'center'}
               >
                 <Checkbox
-                  checked={eposChecked}
+                  name='id'
+                  id='id'
                   onChange={() => setEposChecked((prev) => !prev)}
+                  checked={eposChecked}
                   className={classes.checkbox}
                   icon={<FontAwesomeIcon icon={faCircle} style={{ fill: 'orange.500' }} />}
                   checkedIcon={<FontAwesomeIcon icon={faCheckCircle} style={{ fill: 'orange.500' }} />}
                 />
                 <Typography ml={'10px'} fontSize={'16px'}>
-                  Kechiktirish uchun chekni chop eting
+                  Печать чека за просрочку платежа
                 </Typography>
               </Box>
             </Box>
@@ -180,7 +183,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
             onClick={methods.handleSubmit(onSubmit, onError)}
             sx={{ mb: '20px', mx: '20px' }}
           >
-            Kechiktirish
+            Сохранить
           </LoadingButton>
         </Box>
       </Drawer>

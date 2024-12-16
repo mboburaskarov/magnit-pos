@@ -262,7 +262,7 @@ const useStyles = makeStyles((theme) =>
       },
 
       '.ag-theme-alpine .ag-header-cell:hover': {
-        background: theme.palette.gray[100],
+        backgroundColor: `${theme.palette.bunker[100]} !important`,
       },
       // '.ag-header-row.ag-header-row-column': {
       //   backgroundColor: theme.palette.gray[50],
@@ -270,6 +270,7 @@ const useStyles = makeStyles((theme) =>
       '.ag-cell-label-container': {
         padding: '12px',
       },
+
       '.ag-body': {
         borderColor: theme.palette.bunker[100],
         border: '1px solid',

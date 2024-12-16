@@ -8,19 +8,11 @@ import { get } from 'lodash'
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    padding: '0px 0 32px 0',
-    marginBottom: '24px',
-    borderBottom: `2px solid ${theme.palette.bunker[100]}`,
-    '&:last-child': {
-      border: 'none',
-    },
+    padding: '32px 0 32px 0',
   },
   title: {
-    color: theme.palette.black,
-    // fontFamily: theme.fontFamily.gilroyBold,
-    fontWeight: '600',
-    lineHeight: '32px',
-    fontSize: '20px',
+    color: theme.palette.gray[600],
+    fontFamily: theme.fontFamily.gilroyBold,
   },
   line: {
     width: '100%',
@@ -53,33 +45,22 @@ export default function Section({ section, sectionRef, setDisabled, disabled, se
   // const [disabled, setDisabled] = useState(false)
 
   const sectionArrays =
-    [
-      {
-        id: section?.id,
-        name: section?.entity_name,
-        is_active: false,
-        children:
-          section?.children?.map((children) => ({
-            id: children?.id,
-            name: children?.entity_name,
-            is_active: children?.is_active,
-            children:
-              children?.children?.map((child) => ({
-                id: child?.id,
-                name: child?.entity_name,
-                is_active: child?.is_active,
-              })) || [],
-          })) || [],
-      },
-    ] || []
-  console.log(sectionArrays)
-
-  return section ? (
+    section?.permissions?.map((permission) => ({
+      id: permission?.id,
+      name: permission?.entity_name,
+      is_active: permission?.is_active,
+      children:
+        permission?.children?.map((child) => ({
+          id: child?.id,
+          name: child?.entity_name,
+          is_active: child?.is_active,
+        })) || [],
+    })) || []
+  return section?.permissions?.length ? (
     <Box ref={sectionRef} id={id} className={classes.root}>
       <Box display='flex' alignItems='center' justifyContent='space-between' mb={4}>
         <Typography variant='h3' className={classes.title}>
-          {/* {t(`navbar.${section?.key}`)} */}
-          {get(section, 'entity_name')}
+          {t(`navbar.${section?.key}`)}
         </Typography>
         <StyledSwitch
           checked={!disabled?.includes(section.key)}

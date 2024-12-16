@@ -22,10 +22,10 @@ export default function RoleCreatePage() {
   const { mutate: createProduct, isLoading: isCreatingProduct } = useMutation(requests.createProduct, {
     onSuccess: () => {
       navigate('/products')
-      success('Продукт успешно создан!')
+      success('Продукт Роль была создана!')
     },
     onError: (err) => {
-      error('Ошибка при создании товара!')
+      error('Ошибка при Роль была создана!')
       console.log('err', err)
     },
   })

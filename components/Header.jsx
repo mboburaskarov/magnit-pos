@@ -128,6 +128,7 @@ function Header({
           alignItems: 'center',
           width: '100%',
           height: '88px',
+          padding: '20px',
           borderBottom: '2px solid',
           borderColor: 'bunker.100',
           position: 'fixed',

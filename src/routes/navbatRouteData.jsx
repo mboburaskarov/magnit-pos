@@ -29,6 +29,12 @@ export const navbatRouteData = [
         id: '3.1',
         href: '/products',
       },
+      {
+        label: 'navbar.import',
+        active: '/products/import/*',
+        id: '3.1',
+        href: '/products/import',
+      },
     ],
   },
   {
@@ -38,16 +44,16 @@ export const navbatRouteData = [
     href: '/sales',
     children: [
       {
-        label: 'navbar.sales',
-        active: '/sales*',
-        id: '5.1',
-        href: '/sales/all',
-      },
-      {
         label: 'navbar.new.sales',
         active: '/sales/create*',
         id: '5.2',
         href: '/sales/create',
+      },
+      {
+        label: 'navbar.sales',
+        active: '/sales*',
+        id: '5.1',
+        href: '/sales/all',
       },
     ],
   },
@@ -65,34 +71,7 @@ export const navbatRouteData = [
       },
     ],
   },
-  {
-    label: 'navbar.vendors',
-    id: '1',
-    icon: <UserOutlineIcon />,
-    href: '/vendors',
-    children: [
-      {
-        label: 'navbar.vendors',
-        active: '/vendors/all/*',
-        id: '1.1',
-        href: '/vendors/all',
-      },
-    ],
-  },
-  {
-    label: 'navbar.payments',
-    id: '1',
-    icon: <FinanceIcon />,
-    href: '/reports',
-    children: [
-      {
-        label: 'navbar.payments',
-        active: '/reports/main/*',
-        id: '1.1',
-        href: '/reports/main',
-      },
-    ],
-  },
+
   // {
   //   label: 'Маркетинг',
   //   id: '10',
@@ -164,6 +143,11 @@ export const navbatRouteData = [
         active: '/settings/profile/*',
         id: '9.5',
         href: '/settings/profile',
+      },
+      {
+        label: 'navbar.vendors',
+        id: '1',
+        href: '/vendors/all',
       },
       {
         label: 'Магазины',

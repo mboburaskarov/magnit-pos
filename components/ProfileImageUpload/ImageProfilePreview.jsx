@@ -157,7 +157,7 @@ export default function ImagePreview({
                 {...getRootProps()}
               >
                 <Typography fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'orange.500'}>
-                  Rasimni yangilash
+                  Обновить изображение
                 </Typography>
               </Button>
 
@@ -189,7 +189,7 @@ export default function ImagePreview({
               >
                 <DeleteIcon />{' '}
                 <Typography ml={'12px'} fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'red.700'}>
-                  O'chirish
+                  Удалить
                 </Typography>
               </Button>
             </>
@@ -247,7 +247,7 @@ export default function ImagePreview({
               {...getRootProps()}
             >
               <Typography fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'orange.500'}>
-                Rasimni yangilash
+                Обновить изображение
               </Typography>
             </Button>
           </Box>

@@ -226,10 +226,10 @@ function NewSale() {
       refetchcartItemsList()
       setOpenConfirmDialog(null)
 
-      success('Продукт успешно создан!')
+      success('Корзина была очищенаClick to apply!')
     },
     onError: (err) => {
-      error('Ошибка при создании товара! #2')
+      error('Ошибка при Корзина была очищенаClick to apply')
       console.log('err', err)
     },
   })
@@ -265,10 +265,10 @@ function NewSale() {
       setShowOverlay(false)
       refetchcartItemsList()
       setOpenConfirmDialog(null)
-      success('Продукт успешно создан!')
+      success('Продукт Элемент корзины был удален!')
     },
     onError: (err) => {
-      error('Ошибка при создании товара! #3')
+      error('Ошибка при Элемент корзины был удален')
       console.log('err', err)
     },
   })
@@ -381,7 +381,7 @@ function NewSale() {
                 {t('page.new_sale.label')} (0)
               </Typography>
               {get(cartItemsList, 'data.data.data', 0).length ? (
-                <Box display={'flex'} alignItems={'center'} onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}>
+                <Box display={'flex'} sx={{ cursor: 'pointer' }} alignItems={'center'} onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}>
                   <Typography sx={{ mr: '12px', color: 'orange.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>{t('delete_all')}</Typography>
                   <DeleteIcon width={'20px'} />
                 </Box>
@@ -429,7 +429,7 @@ function NewSale() {
           <Box mb={'24px'}>
             <Box sx={{ display: 'flex', mb: '4px', justifyContent: 'space-between' }}>
               <Label>{t('client')}</Label>
-              <Typography onClick={() => setOpenClientCreateMini(true)} color={'orange.500'} fontSize={'14px'} fontWeight={'600'}>
+              <Typography sx={{ cursor: 'pointer' }} onClick={() => setOpenClientCreateMini(true)} color={'orange.500'} fontSize={'14px'} fontWeight={'600'}>
                 {t('create')}
               </Typography>
             </Box>
@@ -573,13 +573,21 @@ function NewSale() {
           <Box mt='8px' display={'flex'}>
             {discount === 'percent' &&
               [15, 30, 50, 75].map((el, index) => (
-                <Box sx={{ color: el === inputDiscount ? 'orange.500' : '#000' }} onClick={() => setInputDiscount(el)} className={classes.percent}>
+                <Box
+                  sx={{ cursor: 'pointer', color: el === inputDiscount ? 'orange.500' : '#000' }}
+                  onClick={() => setInputDiscount(el)}
+                  className={classes.percent}
+                >
                   {el}%
                 </Box>
               ))}
             {discount === 'cash' &&
               [50, 100, 300, 500].map((el, index) => (
-                <Box sx={{ color: el === inputDiscount ? 'orange.500' : '#000' }} onClick={() => setInputDiscount(el)} className={classes.percent}>
+                <Box
+                  sx={{ cursor: 'pointer', color: el === inputDiscount ? 'orange.500' : '#000' }}
+                  onClick={() => setInputDiscount(el)}
+                  className={classes.percent}
+                >
                   {el}k
                 </Box>
               ))}
@@ -598,7 +606,7 @@ function NewSale() {
                 {t('discount')}:
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
-                57 450 so'm
+                {get(cartItemsList, 'data.data.discount_amount')} so'm
               </Typography>
             </Box>
             <Button
@@ -611,7 +619,7 @@ function NewSale() {
                 {t('pay')}
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
-                57 450 so'm
+                {get(cartItemsList, 'data.data.total_amount') + get(cartItemsList, 'data.data.discount_amount')} so'm
               </Typography>
             </Button>
             <Button disabled={size(get(cartItemsList, 'data.data.data')) == 0} color='secondary' onClick={() => setIsCreateOpenDraft(true)}>
@@ -688,8 +696,8 @@ function NewSale() {
               : openConfirmDialog?.type === 'deactivate'
               ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
               : openConfirmDialog.type === 'deleteAll'
-              ? 'Barcha mahsulotlarni o’chirmoqchimisiz'
-              : 'mahsulotini o’chirmoqchimisiz?'
+              ? 'Вы хотите удалить все продукты?'
+              : 'Вы хотите удалить продукт?'
           }
           supDesc={openConfirmDialog.type === 'deleteAll' ? '' : openConfirmDialog?.name}
           actions={
@@ -701,7 +709,7 @@ function NewSale() {
                 variant='contained'
                 onClick={() => setOpenConfirmDialog(null)}
               >
-                Yo'q
+                Нет
               </Button>
               <LoadingButton
                 variant='contained'
@@ -713,7 +721,7 @@ function NewSale() {
                     : deleteAll({ ids: get(cartItemsList, 'data.data.data', []).map((el) => el.id) })
                 }}
               >
-                Ha, o'chirish
+                Да, Удалить
               </LoadingButton>
             </>
           }

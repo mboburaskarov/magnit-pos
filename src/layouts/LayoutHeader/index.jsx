@@ -64,7 +64,7 @@ function LayoutHeader() {
                   </Typography>
                   <p id='user-shopname' className={`${classes.shopname} shopname`}>
                     {/* {userData.type.toLowerCase()} */}
-                    Mirzo Ulugbek filial
+                    {get(userData, 'store.name')}
                   </p>
                 </Box>
               </Box>

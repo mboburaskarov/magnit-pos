@@ -1,18 +1,18 @@
 // import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
 import { Typography } from '@mui/material'
 import EmptyTableData from '../../src/assets/icons/EmptyTableData'
+import { useTranslation } from 'react-i18next'
 export const OverlayNoRowsTemplate = ({ emptyTableText }) => {
+  const { t } = useTranslation()
   return (
     <div className='no-rows-container'>
       <div className='no-rows-root'>
         <EmptyTableData />
         <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.950'}>
-          {emptyTableText?.title ? emptyTableText?.title : 'Mahsulot mavjud emas'}
+          {emptyTableText?.title ? emptyTableText?.title : t('table.data.empty.title')}
         </Typography>
         <Typography mb={'50px'} fontSize={'18px'} mt={'8px'} lineHeight={'28px'} fontWeight={'500'} color={'bunker.500'}>
-          {emptyTableText?.description
-            ? emptyTableText?.description
-            : "Agar siz qidirayotgan mahsulotni topa olmasangiz, iltimos,Yangi qo’shish tugmasini bosing va kerakli ma'lumotlarni kiriting."}
+          {emptyTableText?.description ? emptyTableText?.description : t('table.data.empty.description')}
         </Typography>
       </div>
     </div>

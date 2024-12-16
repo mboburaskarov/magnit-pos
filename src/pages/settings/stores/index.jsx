@@ -121,7 +121,6 @@ export default function ProductsPage() {
     isFetching: isFetchingstoresList,
     refetch,
   } = useQuery(['storesList', storesListFilter], () => requests.getAllStores(storesListFilter))
-  console.log(storesList)
 
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteStore, {
     onSuccess: () => {

@@ -1,5 +1,6 @@
 import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import ProductsPage from '../../pages/products'
+import ImportPage from '../../pages/products/import'
 import ProductReviewsPage from '../../pages/products/product-reviews'
 
 const productsRoutes = {
@@ -13,6 +14,10 @@ const productsRoutes = {
     {
       path: 'reviews',
       element: <ProductReviewsPage />,
+    },
+    {
+      path: 'import',
+      element: <ImportPage />,
     },
   ],
 }

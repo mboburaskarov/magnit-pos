@@ -89,7 +89,7 @@ function NewCashRegister() {
       if (get(data, 'data')) {
         navigate(`/sales/new-sale/${get(data, 'data.id')}`)
       }
-      success('Продукт успешно создан!')
+      // success('Продукт успешно создан!')
     },
     onError: (err) => {
       error('Ошибка при создании товара!')
@@ -109,21 +109,21 @@ function NewCashRegister() {
     })
   }, [methods.watch('registerCash_id')])
 
-  const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createProduct, {
-    onSuccess: () => {
-      // navigate(`${location.pathname}`)
-      success('Продукт успешно создан!')
-    },
-    onError: (err) => {
-      error('Ошибка при создании товара!')
-      console.log('err', err)
-    },
-  })
+  // const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createProduct, {
+  //   onSuccess: () => {
+  //     // navigate(`${location.pathname}`)
+  //     success('Продукт успешно создан!')
+  //   },
+  //   onError: (err) => {
+  //     error('Ошибка при создании товара!')
+  //     console.log('err', err)
+  //   },
+  // })
 
   const { mutate: handleSaleCreate, isLoading: isCreatingSale } = useMutation(requests.createSale, {
     onSuccess: ({ data }) => {
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
-      success('Продукт успешно создан!')
+      // success('Продукт успешно создан!')
     },
     onError: (err) => {
       error('Ошибка при создании товара!')

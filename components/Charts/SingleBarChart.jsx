@@ -109,7 +109,7 @@ export default function TotalOrdersByCity() {
         <TableContainer>
           <Table size='small'>
             <TableHead sx={{ mb: '25px' }}>
-              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>филиал</TableCell>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Филиал</TableCell>
               <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Заказ</TableCell>
               <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Продажи</TableCell>
             </TableHead>

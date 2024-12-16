@@ -10,6 +10,7 @@ import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import MainDetails from './mainDetails'
+import PlusIcon from '../../assets/icons/PlusIcon'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -70,10 +71,10 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
       methods.reset()
       refetchVendorList()
       // setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance') })
-      success('Продукт успешно создан!')
+      success('Вендор создан!')
     },
     onError: (err) => {
-      error('Ошибка при создании товара!')
+      error('Ошибка при Вендор создан!')
       console.log('err', err)
     },
   })
@@ -93,8 +94,6 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
   })
 
   const onSubmit = (data) => {
-    console.log(data)
-
     if (size(get(data, 'phone')) < 14) {
       error('Phone number is less than 14')
     }
@@ -151,8 +150,17 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
                 bottom: 0,
               }}
             >
-              <Button primary fullWidth size='small' style={{ borderRadius: 16 }} isLoading={isCreateCustomer} form='create-client-form-mini' type='submit'>
-                {t('menu.clients.create')}
+              <Button
+                primary
+                startIcon={<PlusIcon color='#fff' />}
+                fullWidth
+                size='small'
+                style={{ borderRadius: 16 }}
+                isLoading={isCreateCustomer}
+                form='create-client-form-mini'
+                type='submit'
+              >
+                {t('create')}
               </Button>
             </Box>
           </form>

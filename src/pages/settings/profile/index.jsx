@@ -97,7 +97,7 @@ const Profile = () => {
           <Box height={'24px'} />
 
           <Typography variant='h4' fontWeight={700} mb={3}>
-            Profile
+            Профиль
           </Typography>
 
           <ImageUpload
@@ -118,7 +118,7 @@ const Profile = () => {
 
           <Box display='flex' gap={3} mt={3} mb={7}>
             <Box flex={1}>
-              <Label>First Name</Label>
+              <Label>Имя</Label>
               <TextField
                 disabled={!isEditMode}
                 defaultValue={get(userData, 'first_name')}
@@ -130,13 +130,13 @@ const Profile = () => {
             </Box>
 
             <Box flex={1}>
-              <Label>Last Name</Label>
+              <Label>Фамилия</Label>
               <TextField disabled={!isEditMode} defaultValue={get(userData, 'last_name')} required fullWidth name='last_name' placeholder='Enter last name' />
             </Box>
           </Box>
 
           <Typography variant='h5' fontWeight={700} mb={3}>
-            Security
+            Безопасность
           </Typography>
 
           <Button
@@ -152,27 +152,27 @@ const Profile = () => {
             variant='primary'
             startIcon={<LockIcon color={!isEditMode && '#ccc'} />}
           >
-            Change Password
+            Изменить пароль
           </Button>
 
           <Typography variant='h5' fontWeight={700} mt={7} mb={3}>
-            Interface
+            Интерфейс
           </Typography>
 
           <Box display='flex' gap={3}>
             <Box flex={1}>
-              <Label>Language</Label>
+              <Label>Язык</Label>
               <SelectSimple disabled={!isEditMode} white isClearable={false} defaultValue={languageDefaultValue} options={LANGUAGE_OPTIONS} name='language' />
             </Box>
 
             <Box flex={1}>
-              <Label>Theme</Label>
+              <Label>Тема</Label>
               <SelectSimple disabled={true} white isClearable={false} defaultValue={themeDefaultValue} options={THEME_OPTIONS} name='theme' />
             </Box>
           </Box>
           {isEditMode && (
             <LoadingButton sx={{ mt: 6 }} variant='contained' fullWidth onClick={methods.handleSubmit(handleFormSubmit, handleFormError)}>
-              Save
+              Сохранить
             </LoadingButton>
           )}
         </Box>

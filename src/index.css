@@ -16,7 +16,9 @@
   padding: 0;
   box-sizing: border-box;
 }
-
+p {
+  user-select: none;
+}
 a {
   font-weight: 500;
   color: #fe5000cc;

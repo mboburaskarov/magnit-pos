@@ -308,10 +308,10 @@ export default function OrderDrawer({
       setIsOrderDrower(false)
       handlePrint()
 
-      success('Продукт успешно создан!')
+      success('Продажа завершена!')
     },
     onError: (err) => {
-      error('Ошибка при создании товара! #3')
+      error('Ошибка при Продажа завершена')
       console.log('err', err)
     },
   })

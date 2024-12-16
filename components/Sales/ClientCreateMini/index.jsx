@@ -71,10 +71,10 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       methods.reset()
 
       setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance') })
-      success('Продукт успешно создан!')
+      success('Продажа была создана!')
     },
     onError: (err) => {
-      error('Ошибка при создании товара!')
+      error('Ошибка при Продажа была создана!')
       console.log('err', err)
     },
   })

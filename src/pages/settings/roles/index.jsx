@@ -32,6 +32,8 @@ import FilterTableRowsMenu from './FilterTableRowsMenu'
 import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButtonForRole'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/styles'
+import LockIcon from '../../../assets/icons/LockIcon'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function RolesPage() {
@@ -52,6 +54,14 @@ export default function RolesPage() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(null)
 
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const [slectedVendors, setSelectedVendors] = useState([])
+  const selectVendors = (isChecked, id) => {
+    if (isChecked) {
+      setSelectedVendors((p) => [...p, id])
+    } else {
+      setSelectedVendors((p) => p.filter((ids) => ids !== id))
+    }
+  }
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
@@ -59,6 +69,7 @@ export default function RolesPage() {
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     setIsDrawerOpen,
+    selectVendors,
   })
 
   /// filter table columns with permission
@@ -276,6 +287,56 @@ export default function RolesPage() {
                 </Typography>
               </Button>
             </Box> */}
+            {slectedVendors.length > 0 && (
+              <>
+                <Box minWidth={48} ml={'16px'}>
+                  <Button
+                    sx={{
+                      height: '48px',
+                      padding: 0,
+                      bgcolor: '#fff',
+                      border: '1px solid #ECEDF2',
+                      color: 'dark.500',
+                      fontWeight: '500',
+                      fontSize: '16px',
+                      lineHeight: '24px',
+                      '& span': {
+                        mr: '12px',
+                      },
+                    }}
+                    fullWidth
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => deActivateProduct(slectedVendors)}
+                  >
+                    <LockIcon color='#111217' />
+                  </Button>
+                </Box>
+                <Box minWidth={48} ml={'16px'}>
+                  <Button
+                    sx={{
+                      height: '48px',
+                      padding: 0,
+                      bgcolor: '#fff',
+                      border: '1px solid #ECEDF2',
+                      color: 'dark.500',
+                      fontWeight: '500',
+                      fontSize: '16px',
+                      lineHeight: '24px',
+                      '& span': {
+                        mr: '12px',
+                      },
+                    }}
+                    fullWidth
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => deleteProduct({ data: slectedVendors })}
+                  >
+                    <DeleteIcon width='24px' />
+                  </Button>
+                </Box>
+              </>
+            )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box
@@ -369,7 +430,7 @@ export default function RolesPage() {
                     ? activateProduct(openConfirmDialog.id)
                     : openConfirmDialog?.type === 'deactivate'
                     ? deActivateProduct({ id: openConfirmDialog.id, status: 'INACTIVE' })
-                    : deleteProduct(openConfirmDialog.id)
+                    : deleteProduct({ data: [openConfirmDialog.id] })
                 }
               >
                 Ha, o'chirish

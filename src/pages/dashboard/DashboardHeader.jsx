@@ -51,7 +51,7 @@ export default function DashboardHeader({ setSortBy }) {
         </Box> */}
 
         <DateRangeInput
-          defaultFilterData={{ label: 'На этой неделе', start_date: dayjs().tz().startOf('week'), end_date: dayjs().tz() }}
+          defaultFilterData={{ label: 'Это час', start_date: dayjs().tz().startOf('week'), end_date: dayjs().tz() }}
           id='accounting-report-date-range'
         />
         <CheckAccess id='shop-create'>

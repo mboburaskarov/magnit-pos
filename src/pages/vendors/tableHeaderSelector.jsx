@@ -99,7 +99,7 @@ export default function tableHeaderSelector({
     if (el.field === 'fish') {
       return {
         ...el,
-        headerName: 'FISH',
+        headerName: t('fish'),
         colId: el.field,
         cellRenderer: memo((p) => <Typography>{get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')}</Typography>),
       }
@@ -107,7 +107,7 @@ export default function tableHeaderSelector({
     if (el.field === 'store') {
       return {
         ...el,
-        headerName: "Do'kon",
+        headerName: t('store'),
         colId: el.field,
         cellRenderer: memo((p) => <Typography>{get(p, 'data.[store].name')}</Typography>),
       }
@@ -115,7 +115,7 @@ export default function tableHeaderSelector({
     if (el.field === 'phone') {
       return {
         ...el,
-        headerName: 'Telefon',
+        headerName: t('phone'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText withDevider {...p} type='phone' />),
       }
@@ -123,7 +123,7 @@ export default function tableHeaderSelector({
     if (el.field === 'role') {
       return {
         ...el,
-        headerName: 'Rol',
+        headerName: t('role'),
         colId: el.field,
         cellRenderer: memo((p) => <Typography>{get(p, 'data.[role].name')}</Typography>),
       }
@@ -132,7 +132,7 @@ export default function tableHeaderSelector({
     if (el.field === 'status') {
       return {
         ...el,
-        headerName: 'Status',
+        headerName: t('status'),
         colId: el.field,
         cellRenderer: memo(({ data, rowIndex }) => (
           <StatusCell

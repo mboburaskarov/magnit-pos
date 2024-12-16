@@ -92,11 +92,11 @@ export default function MainDetails({ clientData, openDrawer }) {
   return (
     <Box mt={'24px'}>
       <Typography fontSize={'20px'} lineHeight={'32px'} mb='24px' fontWeight={'600'} color={'#000'}>
-        Profil
+        {t('profile')}
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={6}>
-          <Label mb='4px'>{'Ism'}</Label>
+          <Label mb='4px'>{t('first_name')}</Label>
 
           <TextField
             id='client-name'
@@ -105,14 +105,14 @@ export default function MainDetails({ clientData, openDrawer }) {
             control={control}
             fullWidth
             error={errors?.first_name}
-            placeholder={'Mijoz ismini kiriting'}
+            placeholder={t('first_name.placeholder')}
             required
             defaultValue={clientData?.name || ''}
             asteriks
           />
         </Grid>
         <Grid item xs={6}>
-          <Label mb='4px'>{'Familiya'}</Label>
+          <Label mb='4px'>{t('last_name')}</Label>
 
           <TextField
             id='last-name'
@@ -122,7 +122,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             required
             fullWidth
             error={errors?.last_name}
-            placeholder={'Mijoz familiyasini kiriting'}
+            placeholder={t('last_name')}
             // defaultValue={clientData ? clientData.last_name : ''}
             asteriks
           />
@@ -134,7 +134,7 @@ export default function MainDetails({ clientData, openDrawer }) {
         <Grid item xs={6}>
           <Box>
             <Label mb={'4px'} className={classes.required}>
-              {'Telefon raqam'}
+              {t('phone_number')}
             </Label>
           </Box>
           <InputPhone
@@ -154,7 +154,7 @@ export default function MainDetails({ clientData, openDrawer }) {
         <Grid item xs={6}>
           <Box>
             <Label className={classes.required} mb='4px'>
-              {'Parol'}
+              {t('password')}
             </Label>
           </Box>
           <TextField
@@ -165,7 +165,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             fullWidth
             required={mode === 'edit' ? false : true}
             error={errors?.password}
-            placeholder={'Parol kiriting'}
+            placeholder={t('Введите пароль')}
             defaultValue={clientData ? clientData.last_name : ''}
             asteriks
           />
@@ -266,9 +266,9 @@ export default function MainDetails({ clientData, openDrawer }) {
 
       <Grid container spacing={4}>
         <Grid item xs={6}>
-          <Label mb='4px'>{"Do'kon"}</Label>
+          <Label mb='4px'>{t('store')}</Label>
           <SelectSimple
-            placeholder={"Do'kon tanlang"}
+            placeholder={t('store.placeholder')}
             disabled={false}
             white
             required
@@ -278,11 +278,11 @@ export default function MainDetails({ clientData, openDrawer }) {
           />
         </Grid>
         <Grid item xs={6}>
-          <Label mb='4px'>{'Rol'}</Label>
+          <Label mb='4px'>{t('role')}</Label>
 
           <SelectSimple
             required
-            placeholder={'Rol tanlang'}
+            placeholder={t('role.placeholder')}
             disabled={false}
             white
             isClearable={false}
@@ -298,7 +298,7 @@ export default function MainDetails({ clientData, openDrawer }) {
       </Typography>
       <Grid container spacing={4}>
         <Grid item xs={6}>
-          <Label mb='4px'>{"Tug'ulgan kuni"}</Label>
+          <Label mb='4px'>{t('birthdate')}</Label>
           <InputDatePicker
             // withTime
             noMarginTop
@@ -316,7 +316,7 @@ export default function MainDetails({ clientData, openDrawer }) {
           />
         </Grid>
         <Grid item xs={6}>
-          <Label mb='4px'>{'Jinsi'}</Label>
+          <Label mb='4px'>{t('gender')}</Label>
 
           <InputSwitchNew
             id='client-gender'
@@ -329,11 +329,11 @@ export default function MainDetails({ clientData, openDrawer }) {
             error={errors?.gender}
             options={[
               {
-                title: 'Erkak',
+                title: t('gender_male'),
                 value: 'male',
               },
               {
-                title: 'Ayol',
+                title: t('gender_female'),
                 value: 'female',
               },
             ]}

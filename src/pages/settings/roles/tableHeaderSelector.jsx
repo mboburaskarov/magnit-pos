@@ -8,8 +8,6 @@ import EditIcon from '../../../assets/icons/EditIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import CheckAccess from '../../../../components/CheckAccess'
 import { get } from 'lodash'
-import UnlockIcon from '../../../assets/icons/UnlockIcon'
-import LockIcon from '../../../assets/icons/LockIcon'
 import StyledTooltip from '../../../../components/StyledTooltip'
 
 const SimpleText = ({ data, width = 'auto', rowIndex, type, withDevider, currency }) => {
@@ -68,7 +66,7 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
+export default function tableHeaderSelector({ productsColumns, values, setImages, t, selectVendors, setOpenConfirmDialog, setIsDrawerOpen }) {
   // const { values } = useQueryParams()
 
   const columns = productsColumns?.map((el) => {
@@ -93,7 +91,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
     if (el.field === 'name') {
       return {
         ...el,
-        headerName: 'Name',
+        headerName: t('name'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
       }
@@ -101,7 +99,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
     if (el.field === 'permission_count') {
       return {
         ...el,
-        headerName: 'Ruxsatlar',
+        headerName: t('permissions'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='permission_count' />),
       }
@@ -109,7 +107,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
     if (el.field === 'description') {
       return {
         ...el,
-        headerName: 'Tasnif',
+        headerName: t('description'),
         colId: el.field,
         cellRenderer: memo((p) => (
           <StyledTooltip title={p.data.description}>

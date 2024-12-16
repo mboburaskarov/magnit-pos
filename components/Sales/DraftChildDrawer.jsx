@@ -70,10 +70,10 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
       refetchDraftList()
       setChildOpen(false)
       setOpen(false)
-      success('Продукт успешно создан!')
+      success('Черновик удален!')
     },
     onError: (err) => {
-      error('Ошибка при создании товара!')
+      error('Ошибка при Черновик удален!')
       console.log('err', err)
     },
   })
