@@ -37,7 +37,7 @@ export default function ReportAccountingPage() {
     return { limit: values?.limitNonPaid || 10, offset: values?.offsetNonPaid || 0, dbId: shop?._id, fromDate: values?.start_date, toDate: values?.end_date }
   }, [values?.limitNonPaid, values?.offsetNonPaid, shop, values?.start_date, values?.end_date])
 
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 1000, offset: 0 }))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
 
   const {
     data: accountingReportData,

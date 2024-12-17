@@ -6,7 +6,6 @@ import productsCreateRoutes from './products/product-create'
 import userRoutes from './users'
 import reportRoutes from './reports'
 import settingsRoutes from './settings'
-import vendorRoutes from './vendors'
 import rolesCreateRoutes from './settings/role-create'
 
 const routes = [
@@ -17,7 +16,6 @@ const routes = [
   { ...productsCreateRoutes },
   { ...rolesCreateRoutes },
   { ...userRoutes },
-  { ...vendorRoutes },
   { ...reportRoutes },
   { ...settingsRoutes },
 ]

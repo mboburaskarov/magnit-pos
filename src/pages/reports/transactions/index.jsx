@@ -21,7 +21,7 @@ export default function TransactionsReportPage() {
     return { limit: values?.limit || 10, offset: values?.offset || 0, shopId: shop?._id, fromDate: values?.start_date, toDate: values?.end_date }
   }, [values?.limit, values?.offset, shop, values?.start_date, values?.end_date])
 
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 1000, offset: 0 }))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
 
   const {
     data: transactionsReportData,

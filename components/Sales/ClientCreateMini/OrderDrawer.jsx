@@ -1,4 +1,4 @@
-import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
+import { Box, Drawer, Grid, Button as MuiButton, TextField, Typography, useTheme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -268,16 +268,35 @@ export default function OrderDrawer({
   setOpenDebt,
 }) {
   const methods = useForm()
+  let timeout
 
   const classes = useStyles()
   const [payments, setPayments] = useState([])
   const [paymentsList, setPaymentsList] = useState([])
   const [maxAmount, setMaxAmount] = useState(0)
   const [paymentAmount, setPaymentAmount] = useState(0)
+  const [scanningText, setScanningText] = useState('')
+  const [isOpenScanDialog, setOpenScanDialog] = useState(false)
+  const [isScanning, setIsScanning] = useState(false)
+  const scanningTextRef = useRef('')
   const [payme, setPayme] = useState(false)
   const { id } = useParams()
   const theme = useTheme()
   const { t } = useTranslation()
+
+  useEffect(() => {
+    scanningTextRef.current = scanningText
+  }, [scanningText])
+
+  useEffect(() => {
+    let amount = 0
+    paymentsList.map((el) => {
+      amount += Number(el.amount)
+    })
+
+    setMaxAmount(Number(get(cartItemsList, 'total_amount')) - amount)
+    setPaymentAmount(amount)
+  }, [paymentsList, cartItemsList])
 
   const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
   const { mutate: addToOrderPayment, isLoading: isaddToOrderPayment } = useMutation(requests.addToOrderPayment, {
@@ -315,14 +334,14 @@ export default function OrderDrawer({
 
   const isVisiblePaymentType = useCallback(
     (type) => {
-      if (type?.type == 'app') {
-        return !paymentsList.filter((item) => item.type === 'app').length
-      }
-      if (paymentsList.length == 0) return true
-
       const totalEnteredMoney = paymentsList.reduce((sum, item) => sum + item.amount, 0)
       const totalAmount = get(cartItemsList, 'total_amount')
       const isThereType = type === 'overAll' ? false : paymentsList.some((item) => item.id == type.id)
+
+      if (type?.type == 'app' && totalAmount - totalEnteredMoney > 0 && paymentsList.length !== 0) {
+        return !paymentsList.find((item) => item.type === 'app')
+      }
+      if (paymentsList.length == 0) return true
 
       if (totalEnteredMoney >= totalAmount || isThereType) return false
 
@@ -330,16 +349,8 @@ export default function OrderDrawer({
     },
     [paymentsList]
   )
-  useEffect(() => {
-    let amount = 0
-    paymentsList.map((el) => {
-      amount += Number(el.amount)
-    })
 
-    setMaxAmount(Number(get(cartItemsList, 'total_amount')) - amount)
-    setPaymentAmount(amount)
-  }, [paymentsList, cartItemsList])
-  const documentName = useRef('BILLZ CHEQUE')
+  const documentName = useRef('Pharma CHEQUE')
 
   const reactToPrintContent = useCallback(() => printContainer.current, [])
 
@@ -349,6 +360,11 @@ export default function OrderDrawer({
     removeAfterPrint: true,
   })
   const onSubmit = (data) => {
+    setScanningText('')
+    scanningTextRef.current = ''
+
+    return
+
     const payment_types = paymentsList.map((el) => ({ amount: el.amount, payment_type_id: el.id }))
     const requestBody = {
       cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
@@ -360,7 +376,6 @@ export default function OrderDrawer({
 
     addToOrderPayment(requestBody)
     // setOpen(false)
-
     // const requestBody = {
     //   cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
     //   created_by: get(userData, 'id'),
@@ -376,6 +391,40 @@ export default function OrderDrawer({
     ...paymentsList,
     ...Array.from({ length: 8 - paymentsList.length }, (_, index) => ({ id: `placeholder-${index}`, isPlaceholder: true })),
   ]
+
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (!isScanning) return
+
+      if (timeout) clearTimeout(timeout)
+
+      setScanningText((prev) => {
+        const updatedText = prev + e.key
+        scanningTextRef.current = updatedText
+        return updatedText
+      })
+
+      timeout = setTimeout(() => {
+        onSubmit()
+      }, 300)
+    }
+
+    window.addEventListener('keypress', handleKeyPress)
+
+    return () => {
+      window.removeEventListener('keypress', handleKeyPress)
+      if (timeout) clearTimeout(timeout)
+    }
+  }, [isScanning, setIsScanning])
+
+  const handleFinish = () => {
+    if (paymentsList.find((el) => el.type === 'app')) {
+      setOpenScanDialog(true)
+      setIsScanning(true)
+    } else {
+      onSubmit()
+    }
+  }
 
   return (
     <Box hidden>
@@ -562,7 +611,7 @@ export default function OrderDrawer({
                 </Box>
               </Box>
             </Box>
-            <LoadingButton sx={{ minHeight: '48px !important ', display: 'flex' }} variant='contained' disabled={maxAmount > 0} onClick={onSubmit}>
+            <LoadingButton sx={{ minHeight: '48px !important ', display: 'flex' }} variant='contained' disabled={maxAmount > 0} onClick={() => handleFinish()}>
               To'lash
             </LoadingButton>
           </FormProvider>
@@ -570,23 +619,35 @@ export default function OrderDrawer({
       </Box>
       <StyledDialog
         backbtn={false}
-        customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+        onClose={() => {
+          setIsScanning(false)
+          setOpenScanDialog(false)
+        }}
+        customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpenScanDialog(false)} />}
         buttonLabel={'ff'}
         title={
           <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.500'}>
             Сканер
           </Typography>
         }
-        open={true}
+        open={isOpenScanDialog}
       >
         <Box sx={{ padding: '40px', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
           <QrScanIcon width='64' />
-          <Typography justifyContent={'center'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.950'}>
+          <Typography mb={'16px'} justifyContent={'center'} textAlign={'center'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.950'}>
             Отсканируйте QR-код клиента, чтобы завершить платеж.
           </Typography>
-          <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.500'}>
-            Тип оплаты: Payme
-          </Typography>
+          {/* <Box mb={'16px'}> */}
+          {/* <TextField disabled value={scanningText} /> */}
+          {/* </Box> */}
+          <Box sx={{ display: 'flex' }}>
+            <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.500'}>
+              Тип оплаты:
+            </Typography>
+            <Typography ml={'5px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'purple.500'}>
+              {paymentsList.find((el) => el.type === 'app')?.name}
+            </Typography>
+          </Box>
         </Box>
       </StyledDialog>
     </Box>

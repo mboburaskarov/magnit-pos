@@ -92,11 +92,9 @@ export default function ProductsPage() {
       supply_price_from: values?.supply_price_from,
       retail_price_from: values?.retail_price_from,
       isExpress: values?.isExpress,
-      ...(status !== 'ALL' && { status }),
-      ...(appType !== 'ALL' && { type: appType }),
+      ...(appType !== 'ALL' && { status: appType }),
     }
   }, [
-    status,
     appType,
     values?.offset,
     values?.limit,
@@ -205,7 +203,7 @@ export default function ProductsPage() {
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [productsList?.data, values?.limit, status])
+  }, [productsList?.data, values?.limit, appType])
 
   return (
     <LoadingContainer readyState={true}>
@@ -239,12 +237,12 @@ export default function ProductsPage() {
             onChange={(e) => setAppType(e)}
             options={[
               { title: t('switch.title.all'), value: 'ALL' },
-              { title: t('switch.title.active'), value: 'medicine' },
-              { title: t('switch.title.inactive'), value: 'vitamin' },
-              { title: t('switch.title.less_amount'), value: 'self_care' },
-              { title: t('switch.title.empty'), value: 'baby_care' },
-              { title: t('switch.title.less_date'), value: 'diagnostic' },
-              { title: t('switch.title.outofdate'), value: 'medical_supplies' },
+              { title: t('switch.title.active'), value: 'active' },
+              { title: t('switch.title.inactive'), value: 'inacttive' },
+              { title: t('switch.title.less_amount'), value: 'low-stock' },
+              { title: t('switch.title.empty'), value: 'zero-stock' },
+              { title: t('switch.title.less_date'), value: 'imminent' },
+              { title: t('switch.title.outofdate'), value: 'expired' },
             ]}
           />
         </Box>
@@ -331,7 +329,7 @@ export default function ProductsPage() {
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            status={status}
+            status={appType}
             isRefreshing={loading || isFetchingproductsList || productsListLoading}
           />
         </Box>
@@ -384,7 +382,7 @@ export default function ProductsPage() {
                   openConfirmDialog?.type === 'activate'
                     ? activateProduct(openConfirmDialog.id)
                     : openConfirmDialog?.type === 'deactivate'
-                    ? deActivateProduct({ id: openConfirmDialog.id, status: 'INACTIVE' })
+                    ? deActivateProduct({ id: openConfirmDialog.id, appType: 'INACTIVE' })
                     : deleteProduct(openConfirmDialog.id)
                 }
               >

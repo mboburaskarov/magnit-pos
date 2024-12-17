@@ -11,7 +11,7 @@ export default function BannerCreateBody({}) {
   const { setValue, watch } = useFormContext()
   const { data: shopList, refetch: refetchShopListData } = useQuery(
     ['getAllShops'],
-    () => requests.getAllShops({ type: watch('appType')?.id, limit: 1000, offset: 0 }),
+    () => requests.getAllShops({ type: watch('appType')?.id, limit: 20, offset: 0 }),
     { enabled: !!watch('appType')?.id }
   )
 

@@ -47,8 +47,8 @@ export default function ProductReviewsPage() {
     refetch,
   } = useQuery('commentList', () => requests.getAllComments(commentListFilter))
 
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 1000, offset: 0 }))
-  const { data: clientList } = useQuery('clientList', () => requests.getAllClients({ limit: 1000, offset: 0 }))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
+  const { data: clientList } = useQuery('clientList', () => requests.getAllClients({ limit: 20, offset: 0 }))
 
   useEffect(() => {
     refetch()

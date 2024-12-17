@@ -2,18 +2,18 @@ import { Box, Grid, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import InputSwitchNew from '../../../components/Inputs/InputSwitch'
-import InputPhone from '../../../components/Inputs/PhoneNumber'
+import InputSwitchNew from '../../../../components/Inputs/InputSwitch'
+import InputPhone from '../../../../components/Inputs/PhoneNumber'
 
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
 import { useQuery } from 'react-query'
-import InputDatePicker from '../../../components/Inputs/InputDatePicker'
-import TextField from '../../../components/Inputs/TextField'
-import Label from '../../../components/Label'
-import SelectSimple from '../../../components/Select/SelectSimple'
-import { requests } from '../../../utils/requests'
-import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
+import InputDatePicker from '../../../../components/Inputs/InputDatePicker'
+import TextField from '../../../../components/Inputs/TextField'
+import Label from '../../../../components/Label'
+import SelectSimple from '../../../../components/Select/SelectSimple'
+import { requests } from '../../../../utils/requests'
+import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -66,8 +66,8 @@ export default function MainDetails({ clientData, openDrawer }) {
   const [openCardDialogSuccess, setOpenCardDialogSuccess] = useState(false)
   const [openCardDialogError, setOpenCardDialogError] = useState(false)
   const [open, setOpen] = useState(false)
-  const { data: storesList, refetch: refetstoresList } = useQuery('storesList', () => requests.getAllShops({ limit: 1000, offset: 0 }))
-  const { data: rolesList, refetch: refetrolesList } = useQuery('rolesList', () => requests.getAllRoles({ limit: 1000, offset: 0 }))
+  const { data: storesList, refetch: refetstoresList } = useQuery('storesList', () => requests.getAllShops({ limit: 20, offset: 0 }))
+  const { data: rolesList, refetch: refetrolesList } = useQuery('rolesList', () => requests.getAllRoles({ limit: 20, offset: 0 }))
 
   const onEnterPress = () => {
     if (openCardDialogProgress) {

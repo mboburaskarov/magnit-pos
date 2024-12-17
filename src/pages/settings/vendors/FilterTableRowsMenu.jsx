@@ -6,11 +6,11 @@ import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButtonForVendor'
-import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
-import { requests } from '../../../utils/requests'
-import CloseIcon from '../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../hooks/useQueryParams'
+import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButtonForVendor'
+import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
+import { requests } from '../../../../utils/requests'
+import CloseIcon from '../../../assets/icons/CloseIcon'
+import { useQueryParams } from '../../../hooks/useQueryParams'
 
 export default function FilterTableRowsMenu({ tableColumns, open, setOpen, setRegions }) {
   const navigate = useNavigate()

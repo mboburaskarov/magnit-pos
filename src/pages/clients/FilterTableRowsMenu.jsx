@@ -1,19 +1,14 @@
-import { Box, Button, IconButton, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { requests } from '../../../../utils/requests'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import InputRange from '../../../../components/Inputs/InputRange'
-import * as qs from 'qs'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import CheckboxWithDragDrop from '../../../../components/AgGridTable/CheckboxWithDragDrop'
-import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButtonForStore'
-import { t } from 'i18next'
+import { Box } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import { t } from 'i18next'
+import * as qs from 'qs'
+import { useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
+import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
+import CloseIcon from '../../assets/icons/CloseIcon'
+import { useQueryParams } from '../../hooks/useQueryParams'
 
 export default function FilterTableRowsMenu({ tableColumns, open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -21,9 +16,6 @@ export default function FilterTableRowsMenu({ tableColumns, open, setOpen, setRe
   const methods = useForm()
   const { formState, reset, control, getValues } = methods
   const [isExpress, setIsExpress] = useState(false)
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
-  const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 20, offset: 0 }))
-  const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])
@@ -50,7 +42,6 @@ export default function FilterTableRowsMenu({ tableColumns, open, setOpen, setRe
     navigate(`/products?offset=0&limit=${values?.limit || 5}`)
   }
   const theme = useTheme()
-
   return (
     <StyledEmptyDialog
       open={open}

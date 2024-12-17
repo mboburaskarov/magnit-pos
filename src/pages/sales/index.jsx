@@ -53,7 +53,7 @@ export default function SalesPage() {
   const shop = values?.shop
   const client = values?.client
 
-  const { data: operatorsList } = useQuery('operatorsList', () => requests.getAllAdmins({ limit: 1000, offset: 0 }))
+  const { data: operatorsList } = useQuery('operatorsList', () => requests.getAllAdmins({ limit: 20, offset: 0 }))
   const { data: orderNotes, refetch: refetchNotes } = useQuery(['orderNote', orderIdForNote], () => requests.getOrderNote({ orderId: orderIdForNote }), {
     enabled: !!orderIdForNote,
   })

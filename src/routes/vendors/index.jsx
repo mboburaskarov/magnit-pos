@@ -1,5 +1,5 @@
 import LayoutWithNavbar from '../../layouts/LayoutWithNavbar'
-import VendorsPage from '../../pages/vendors'
+import VendorsPage from '../../pages/settings/vendors'
 
 const vendorRoutes = {
   path: 'vendors',

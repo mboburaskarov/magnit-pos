@@ -48,7 +48,7 @@ export default function OrderSinglePage() {
       navigate('/orders/all')
       error('Ошибка при загрузке заказа!')
     },
-    retry: 1
+    retry: 1,
   })
   const claimId = orderData?.data?.claimId
   const { data: deliveryInfo } = useQuery(['deliveryInfo', id], () => requests.getYandexDeliveryInfo(id), { enabled: !!orderData?.data?.id })
@@ -61,7 +61,7 @@ export default function OrderSinglePage() {
     () =>
       requests.getShopProblems({
         orderNumber: orderData?.data?.orderNumber,
-        limit: 1000,
+        limit: 20,
         fromDate: '2023-01-01T00:00:00.000Z',
       }),
     { enabled: !!orderData?.data?.orderNumber }

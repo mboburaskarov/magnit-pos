@@ -25,12 +25,7 @@ const columns = [
     minWidth: 70,
     width: 170,
   },
-  {
-    field: 'expire_date',
-    hide: false,
-    minWidth: 70,
-    width: 250,
-  },
+
   {
     field: 'supply_price',
     hide: false,
@@ -79,6 +74,12 @@ const columns = [
   //   minWidth: 70,
   //   width: 158,
   // },
+  {
+    field: 'expire_date',
+    hide: false,
+    minWidth: 70,
+    width: 250,
+  },
 
   {
     field: 'barcode',
@@ -102,8 +103,8 @@ const columns = [
   },
 ]
 
-const productsTableColumns = createSlice({
-  name: 'productsTableColumns',
+const salesTableColumns = createSlice({
+  name: 'salesTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -161,6 +162,5 @@ const productsTableColumns = createSlice({
   },
 })
 
-export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
-  productsTableColumns.actions
-export const productsTableColumnsSlice = productsTableColumns.reducer
+export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } = salesTableColumns.actions
+export const salesTableColumnsSlice = salesTableColumns.reducer

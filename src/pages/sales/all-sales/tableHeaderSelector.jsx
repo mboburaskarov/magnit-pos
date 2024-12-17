@@ -1,27 +1,22 @@
 import { memo } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import TimeCell from '../../../components/AgGridTable/Cells/TimeCell'
-import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
-import thousandDivider from '../../../utils/thousandDivider'
-import getImageUrl from '../../../utils/getImageUrl'
-import { products_statuses } from '../../assets/data/products-statuses'
-import ProductImagePlaceholder from '../../assets/icons/ProductImagePlaceholder'
-import EditIcon from '../../assets/icons/EditIcon'
-import DeleteIcon from '../../assets/icons/DeleteIcon'
-import ExpressIcon from '../../assets/icons/ExpressIcon'
-import StyledTooltip from '../../../components/StyledTooltip'
-import CheckAccess from '../../../components/CheckAccess'
-import { useQueryParams } from '../../hooks/useQueryParams'
+import TimeCell from '../../../../components/AgGridTable/Cells/TimeCell'
+import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
+import thousandDivider from '../../../../utils/thousandDivider'
+import getImageUrl from '../../../../utils/getImageUrl'
+import { products_statuses } from '../../../assets/data/products-statuses'
+import ProductImagePlaceholder from '../../../assets/icons/ProductImagePlaceholder'
+import EditIcon from '../../../assets/icons/EditIcon'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import ExpressIcon from '../../../assets/icons/ExpressIcon'
+import StyledTooltip from '../../../../components/StyledTooltip'
+import CheckAccess from '../../../../components/CheckAccess'
+import { useQueryParams } from '../../../hooks/useQueryParams'
 import { get } from 'lodash'
-import dayjs from 'dayjs'
-import { useTheme } from '@mui/styles'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
-      id={`product-${type}-${rowIndex}`}
-    >
+    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
       {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
     </Typography>
   )
@@ -76,14 +71,6 @@ const Image = ({ data, rowIndex, setImages }) => {
 }
 
 export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
-  const theme = useTheme()
-  const getDateColor = (date) => {
-    console.log(date)
-
-    if (date > 25) return { color: theme.palette.green[700] }
-    if (date > 3 && date < 25) return { color: theme.palette.orange[400] }
-    if (date < 3) return { color: theme.palette.red[400] }
-  }
   // const { values } = useQueryParams()
   const columns = productsColumns?.map((el) => {
     if (el.field === 'main_photo') {
@@ -221,12 +208,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         ...el,
         headerName: t('table_columns.expire_date'),
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')}</Typography>
-            <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <TimeCell {...p} type='expire_date' format='DD.MM.YYYY' />),
       }
     }
     if (el.field === 'actions') {

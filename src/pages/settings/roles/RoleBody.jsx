@@ -142,7 +142,7 @@ export default function RoleBody({ productData = null }) {
   //   values,
   // })
   const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery('rolesAndPermissionList', () =>
-    requests.getAllRolesWithPermissions({ limit: 1000, offset: 0, type: appType })
+    requests.getAllRolesWithPermissions({ limit: 20, offset: 0, type: appType })
   )
   const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories())
   // const { data: subCategories, refetch: refetchCategories } = useQuery(
@@ -150,7 +150,7 @@ export default function RoleBody({ productData = null }) {
   //   () => requests.getAllCategories({ type: appType, subId: parentCategory.id }),
   //   { enabled: !!appType && !!productData?.categories?.length > 0 }
   // )
-  // const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 1000, offset: 0 }))
+  // const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 20, offset: 0 }))
 
   useEffect(() => {
     if (productData) {

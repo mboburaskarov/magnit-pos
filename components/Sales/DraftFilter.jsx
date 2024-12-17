@@ -23,7 +23,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
   const methods = useForm()
   const { formState, reset, control, getValues } = methods
 
-  const { data: customers } = useQuery('customers', () => requests.getAllCustomers({ limit: 1000, offset: 0 }))
+  const { data: customers } = useQuery('customers', () => requests.getAllCustomers({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])

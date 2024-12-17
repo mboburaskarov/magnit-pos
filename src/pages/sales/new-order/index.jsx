@@ -289,7 +289,7 @@ function NewSale() {
     data: cartItemsList,
     refetch: refetchcartItemsList,
     isLoading: isCartItemsLIstLoading,
-  } = useQuery('cartItemsList', () => requests.getCartItemList({ sale_id: id, limit: 1000, offset: 0 }).catch(() => navigate('/sales/create')))
+  } = useQuery('cartItemsList', () => requests.getCartItemList({ sale_id: id, limit: 20, offset: 0 }).catch(() => navigate('/sales/create')))
   const { data: cashBoxDetails, refetch: refetchCashBoxDetaild } = useQuery('cashBoxDetails', () => requests.getCashBoxDetaildWithSaleId(id))
 
   useEffect(() => {
@@ -347,13 +347,6 @@ function NewSale() {
     )
     navigate(`${location.pathname}${searchParams}`)
   }
-
-  useEffect(() => {
-    window.addEventListener('keypress', (e) => {
-      console.log(e.key)
-      console.log(e.timeStamp)
-    })
-  }, [])
 
   // Correct the content function
   // const reactToPrintContent = useCallback(() => printContainer.current, [])
@@ -675,7 +668,7 @@ function NewSale() {
         // isAutoIncome={!!autoIncomePayments?.length}
         // setOpenAutoIncome={setOpenAutoIncome}
       /> */}
-      <ReturnExchangeDrawer
+      {/* <ReturnExchangeDrawer
         returnExchangeOrder={returnExchangeOrder}
         isOpen={false}
         setExchangeOrderDetails={setExchangeOrderDetails}
@@ -684,7 +677,7 @@ function NewSale() {
         singleOrder={singleOrder}
         setSingleOrder={setSingleOrder}
         webkassaOn={webkassaOn}
-      />
+      /> */}
       {openConfirmDialog && (
         <ConfirmDialog
           open={!!openConfirmDialog}

@@ -6,11 +6,11 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
 import { useSelector } from 'react-redux'
-import CloseIcon from '../../../src/assets/icons/CloseIcon'
-import { requests } from '../../../utils/requests'
-import { error, success } from '../../../utils/toast'
+import CloseIcon from '../../../assets/icons/CloseIcon'
+import { requests } from '../../../../utils/requests'
+import { error, success } from '../../../../utils/toast'
 import MainDetails from './mainDetails'
-import PlusIcon from '../../assets/icons/PlusIcon'
+import PlusIcon from '../../../assets/icons/PlusIcon'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {

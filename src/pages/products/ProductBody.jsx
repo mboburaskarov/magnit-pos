@@ -46,14 +46,14 @@ export default function ProductBody({ productData = null }) {
     t,
     values,
   })
-  const { data: shopList, refetch: refetchShopList } = useQuery('shopList', () => requests.getAllShops({ limit: 1000, offset: 0, type: appType }))
+  const { data: shopList, refetch: refetchShopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0, type: appType }))
   const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories())
   // const { data: subCategories, refetch: refetchCategories } = useQuery(
   //   ['subCategories', parentCategory, appType],
   //   () => requests.getAllCategories({ type: appType, subId: parentCategory.id }),
   //   { enabled: !!appType && !!productData?.categories?.length > 0 }
   // )
-  // const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 1000, offset: 0 }))
+  // const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 20, offset: 0 }))
 
   useEffect(() => {
     if (productData) {

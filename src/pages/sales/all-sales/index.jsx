@@ -1,38 +1,38 @@
 import { Box, Button, TextField, Typography } from '@mui/material'
-import TabContainer from '../../../components/Tab/TabContainer'
-import LoadingContainer from '../../../components/LoadingContainer'
+import TabContainer from '../../../../components/Tab/TabContainer'
+import LoadingContainer from '../../../../components/LoadingContainer'
 import { useEffect, useMemo, useState } from 'react'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { requests } from '../../../utils/requests'
+import { useQueryParams } from '../../../hooks/useQueryParams'
+import { requests } from '../../../../utils/requests'
 import { useMutation, useQuery } from 'react-query'
-import AgGridTable from '../../../components/AgGridTable/AgGridTable'
+import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import { useDispatch, useSelector } from 'react-redux'
 import tableHeaderSelector from './tableHeaderSelector'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/salesTableColumns'
-import InputSearch from '../../../components/Inputs/InputSearch'
-import ImageGallery from '../../../components/ImageGallery'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/salesTableColumns'
+import InputSearch from '../../../../components/Inputs/InputSearch'
+import ImageGallery from '../../../../components/ImageGallery'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDownWideShort, faArrowUpWideShort, faPlus } from '@fortawesome/free-solid-svg-icons'
 import FilterMenu from './FilterMenu'
 import { useNavigate } from 'react-router-dom'
-import { error, success } from '../../../utils/toast'
-import ConfirmDialog from '../../../components/ConfirmDialog'
-import BigWarningIcon from '../../assets/icons/BigWarningIcon'
+import { error, success } from '../../../../utils/toast'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import { LoadingButton } from '@mui/lab'
-import BigTickIcon from '../../assets/icons/BigTickIcon'
+import BigTickIcon from '../../../assets/icons/BigTickIcon'
 // import ProductDrawer from './ProductDrawer'
-import InputSwitch from '../../../components/Inputs/InputSwitch'
-import CheckAccess from '../../../components/CheckAccess'
-import StyledDialog from '../../../components/Dialogs/StyledDialog'
-import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
-import PlusIcon from '../../assets/icons/PlusIcon'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
+import CheckAccess from '../../../../components/CheckAccess'
+import StyledDialog from '../../../../components/Dialogs/StyledDialog'
+import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
+import PlusIcon from '../../../assets/icons/PlusIcon'
 import FilterTableRowsMenu from './FilterTableRowsMenu'
-import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
+import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButton'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/styles'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function ClientsPage() {
+export default function AllSalesPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -209,7 +209,7 @@ export default function ClientsPage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {t('clients')}
+          {t('sales')}
         </Typography>
         {/* <Box display='flex' mb={3} mt={4}>
           <TabContainer

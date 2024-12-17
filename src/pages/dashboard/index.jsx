@@ -74,7 +74,7 @@ export default function DashboarPage() {
   const [openAllNotes, setOpenAllNotes] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const DataTypeFilter = useMemo(() => dataTypeFilter(detalization), [values?.start_date, values?.end_date, detalization])
-  // const { data: operatorsList } = useQuery('operatorsList', () => requests.getAllAdmins({ limit: 1000, offset: 0 }))
+  // const { data: operatorsList } = useQuery('operatorsList', () => requests.getAllAdmins({ limit: 20, offset: 0 }))
   // const { data: orderNotes, refetch: refetchNotes } = useQuery(['orderNote', orderIdForNote], () => requests.getOrderNote({ orderId: orderIdForNote }), {
   //   enabled: !!orderIdForNote,
   // })

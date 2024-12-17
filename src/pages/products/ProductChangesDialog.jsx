@@ -7,8 +7,8 @@ import getImageUrl from '../../../utils/getImageUrl'
 import RightArrowSmallIcon from '../../assets/icons/RightArrowSmallIcon'
 
 export default function ProductChangesDialog({ setChangesData, changesData }) {
-  const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 1000, offset: 0 }))
-  const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 1000, offset: 0 }))
+  const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 20, offset: 0 }))
+  const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 20, offset: 0 }))
 
   return (
     <StyledDialog titleStyles={{ marginLeft: -32 }} onClose={() => setChangesData(null)} title='Изменения' open={changesData}>

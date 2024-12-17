@@ -15,14 +15,14 @@ export default function SocialNetworks() {
   const { data: groups } = useQuery('customer-group', () =>
     requests.customer.getAllGroups({
       type: 'group',
-      limit: 1000,
+      limit: 20,
     })
   )
 
   const { data: tags } = useQuery('customer-tag', () =>
     requests.customer.getAllGroups({
       type: 'tag',
-      limit: 1000,
+      limit: 20,
     })
   )
 

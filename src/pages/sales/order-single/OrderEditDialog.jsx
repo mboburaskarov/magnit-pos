@@ -32,7 +32,7 @@ export default function OrderEditDialog({ isOpen, orderData, setIsOpen, orderId,
   const shopId = useMemo(() => {
     return { dbId: shop?._id }
   }, [shop])
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 1000, offset: 0 }))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
   const { data: productsList, refetch } = useQuery('productsList', () => requests.getAllProducts(shopId))
 
   const { mutate: editOrder } = useMutation(requests.editOrder, {

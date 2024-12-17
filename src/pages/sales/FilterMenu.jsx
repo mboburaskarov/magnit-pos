@@ -19,7 +19,7 @@ export default function FilterMenu({ open, setRegions, setOpen, operatorsList })
   const methods = useForm()
   const { formState, reset, setValue, control, getValues } = methods
   const userData = useSelector((state) => state.user)
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 1000, offset: 0 }))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
     const requestBody = {

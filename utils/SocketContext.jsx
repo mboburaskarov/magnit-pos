@@ -13,11 +13,11 @@ export const SocketProvider = ({ children }) => {
     socket.on(user_data?.id, (data) => {
       if (Array.isArray(data)) {
         setSocketData(data)
-        success('Данные получены из billz')
+        success('Данные получены из pharma')
         localStorage.setItem('socketData', JSON.stringify(data))
       } else {
         if (data?.success) {
-          warning('Успешно обновлено billz категории!')
+          warning('Успешно обновлено pharma категории!')
         }
         if (!data?.succes) {
           warning(data?.error)

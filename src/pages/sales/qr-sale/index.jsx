@@ -43,8 +43,8 @@ export default function QRsalePage() {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [isShopWarning, setIsShopWarning] = useState(false)
 
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 1000, offset: 0 }))
-  const { data: operatorsList } = useQuery('operatorsList', () => requests.getAllAdmins({ limit: 1000, offset: 0 }))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
+  const { data: operatorsList } = useQuery('operatorsList', () => requests.getAllAdmins({ limit: 20, offset: 0 }))
   const { data: orderNotes, refetch: refetchNotes } = useQuery(['orderNote', orderIdForNote], () => requests.getOrderNote({ orderId: orderIdForNote }), {
     enabled: !!orderIdForNote,
   })

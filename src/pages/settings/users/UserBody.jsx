@@ -13,7 +13,7 @@ import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 export default function UserBody({ userData }) {
   const { setValue } = useFormContext()
   const [country, setCountry] = useState(countries[0])
-  const { data: rolesList } = useQuery('rolesList', () => requests.getAllRoles({ offset: 0, limit: 1000 }))
+  const { data: rolesList } = useQuery('rolesList', () => requests.getAllRoles({ offset: 0, limit: 20 }))
   useEffect(() => {
     if (userData) {
       setValue('full_name', userData?.fullName)

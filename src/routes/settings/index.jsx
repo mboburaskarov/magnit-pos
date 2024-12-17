@@ -10,6 +10,7 @@ import RegionsPage from '../../pages/settings/regions'
 import RolesPage from '../../pages/settings/roles'
 import UsersPage from '../../pages/settings/users'
 import StoresPage from '../../pages/settings/stores'
+import VendorsPage from '../../pages/settings/vendors'
 
 const settingsRoutes = {
   path: 'settings',
@@ -45,6 +46,10 @@ const settingsRoutes = {
       element: <HashtagsPage />,
     },
     { path: 'users', element: <UsersPage /> },
+    {
+      path: 'vendors',
+      element: <VendorsPage />,
+    },
   ],
 }
 

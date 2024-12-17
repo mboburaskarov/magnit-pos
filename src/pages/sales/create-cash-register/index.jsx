@@ -79,7 +79,7 @@ function NewCashRegister() {
   const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
   const { data: registerCashList, refetch: refetchregisterCashList } = useQuery('registerCashList', () =>
-    requests.getRegisterCashList({ limit: 1000, offset: 0 })
+    requests.getRegisterCashList({ limit: 20, offset: 0 })
   )
   const { data: registerCashData, refetch: refetchregisterCashData } = useQuery('registerCashData', () =>
     requests.getRegisterCashData(methods.watch('registerCash_id')?.id)

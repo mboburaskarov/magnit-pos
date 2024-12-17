@@ -3,15 +3,15 @@ import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { requests } from '../../../utils/requests'
-import SelectSimple from '../../../components/Select/SelectSimple'
-import InputRange from '../../../components/Inputs/InputRange'
-import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
+import { useQueryParams } from '../../../hooks/useQueryParams'
+import { requests } from '../../../../utils/requests'
+import SelectSimple from '../../../../components/Select/SelectSimple'
+import InputRange from '../../../../components/Inputs/InputRange'
+import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
 import * as qs from 'qs'
-import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
-import CloseIcon from '../../assets/icons/CloseIcon'
-import { theme } from '../../assets/theme'
+import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
+import CloseIcon from '../../../assets/icons/CloseIcon'
+import { theme } from '../../../assets/theme'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/styles'
 
@@ -56,7 +56,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       {
         category_id: category_id ? getOptionsFromUrlParam(category_id, categories?.data?.data)[0] : null,
         producer: producer ? getOptionsFromUrlParam(producer, producers?.data?.data)[0] : null,
-        store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data?.data, 'name')[0] : null,
+        store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data, 'name')[0] : null,
         supply_price_to: supply_price_to,
         retail_price_to: retail_price_to,
         supply_price_from: supply_price_from,
@@ -76,13 +76,13 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
     producers,
     shopList,
   ])
-  const theme = useTheme()
 
   const resetFilter = () => {
     reset()
     setOpen(false)
     navigate(`/products?offset=0&limit=${values?.limit || 5}`)
   }
+  const theme = useTheme()
   const { t } = useTranslation()
   return (
     <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}>
@@ -112,7 +112,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               label={t('input.store.label')}
               placeholder={t('input.store.placeholder')}
               getOptionLabel={(el) => el.name}
-              options={shopList?.data?.data?.data}
+              options={shopList?.data?.data}
             />
             <SelectSimple
               fullWidth
@@ -156,7 +156,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
             />
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
-                sx={{ bgcolor: `${theme.palette.background.gray} !important`, border: '1px solid #ECEDF2' }}
+                sx={{ bgcolor: '#fff !important', border: '1px solid #ECEDF2' }}
                 fullWidth
                 color='secondary'
                 variant='contained'
