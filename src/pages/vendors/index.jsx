@@ -221,7 +221,7 @@ export default function VendorsPage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {t('clients')}
+          {t('vendors')}
         </Typography>
         {/* <Box display='flex' mb={3} mt={4}>
           <TabContainer

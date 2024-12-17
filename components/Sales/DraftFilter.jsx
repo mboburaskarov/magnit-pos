@@ -80,7 +80,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
           <Box
             sx={{
               '& .react-datepicker-popper': {
-                transform: 'translate(596px, 530px) !important',
+                // transform: 'translate(596px, 530px) !important',
               },
             }}
             rowGap={3}

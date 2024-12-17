@@ -348,6 +348,13 @@ function NewSale() {
     navigate(`${location.pathname}${searchParams}`)
   }
 
+  useEffect(() => {
+    window.addEventListener('keypress', (e) => {
+      console.log(e.key)
+      console.log(e.timeStamp)
+    })
+  }, [])
+
   // Correct the content function
   // const reactToPrintContent = useCallback(() => printContainer.current, [])
 

@@ -1,46 +1,25 @@
-import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
-import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import { useMutation, useQuery } from 'react-query'
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import { faCircle } from '@fortawesome/free-solid-svg-icons'
-import { getGiftCardTitle } from '../../../utils/getGiftCardTitle'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Box, Drawer, Button, Typography, Button as MuiButton, Checkbox, useTheme, Grid } from '@mui/material'
+import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import BackArrowIcon from '../../../src/assets/icons/ArrowRightIcon'
-import CashIcon from '../../../src/assets/icons/InComeCashIcon'
-import PlusIcon from '../../../src/assets/icons/PlusIcon'
-import UserFilledIcon from '../../../src/assets/icons/ArrowRightIcon'
-import PencilIcon from '../../../src/assets/icons/PauseIcon'
-import addToOrderPayment from './PaymentMethodInput'
-import removeFromOrderPayment from './PaymentMethodInput'
-import balanceAmountSelector from './PaymentMethodInput'
-import cartTotalPriceWithoutDiscountSelector from './PaymentMethodInput'
-import { numberToPrice } from '../../../utils/numberToPrice'
-import { v4 as uuidv4 } from 'uuid'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useParams } from 'react-router-dom'
 import { RippedPaperItem } from '../../RippedPaperList'
-import ShortcutWrapper from '../../ShortcutWrapper'
 import PaymentMethodInput from './PaymentMethodInput'
 // import DebtDrawer from './DebtDrawer'
-import GiftCardIcon from '../../../src/assets/icons/ArrowRightIcon'
-import GiftCardDrawer from '../../../src/assets/icons/ArrowRightIcon'
-import GiftCardInfo from '../../../src/assets/icons/ArrowRightIcon'
-import RemovePaymentIcon from '../../../src/assets/icons/CloseIcon'
-import CertificateCardDrawer from '../../../src/assets/icons/BigWarningIcon'
-import { giftCardPaymentIds } from '../../../constants/giftCardPaymentIds'
-import ButtonWithSwitch from './ButtonWithSwitch'
-import PaymeGo from '../../../src/assets/icons/BigWarningCircleIcon'
-import { paymeGoId } from '../../../constants/paymeGoId'
-import PaymeSmallIcon from '../../../src/assets/icons/ArrowRightIcon'
-import AddPaumentTypeIcon from '../../../src/assets/icons/AddPaymentTypeIcon'
-import { FormProvider, useForm } from 'react-hook-form'
-import { requests } from '../../../utils/requests'
-import { get, size } from 'lodash'
 import { LoadingButton } from '@mui/lab'
+import { get, size } from 'lodash'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useReactToPrint } from 'react-to-print'
+import { paymeGoId } from '../../../constants/paymeGoId'
+import AddPaumentTypeIcon from '../../../src/assets/icons/AddPaymentTypeIcon'
+import RemovePaymentIcon from '../../../src/assets/icons/CloseIcon'
+import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
+import StyledDialog from '../../Dialogs/StyledeEmptyDialog'
+
+import CloseIcon from '../../../src/assets/icons/CloseIcon'
+import QrScanIcon from '../../../src/assets/icons/QrScanIcon'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -336,6 +315,9 @@ export default function OrderDrawer({
 
   const isVisiblePaymentType = useCallback(
     (type) => {
+      if (type?.type == 'app') {
+        return !paymentsList.filter((item) => item.type === 'app').length
+      }
       if (paymentsList.length == 0) return true
 
       const totalEnteredMoney = paymentsList.reduce((sum, item) => sum + item.amount, 0)
@@ -586,6 +568,27 @@ export default function OrderDrawer({
           </FormProvider>
         </Drawer>
       </Box>
+      <StyledDialog
+        backbtn={false}
+        customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+        buttonLabel={'ff'}
+        title={
+          <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.500'}>
+            Сканер
+          </Typography>
+        }
+        open={true}
+      >
+        <Box sx={{ padding: '40px', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+          <QrScanIcon width='64' />
+          <Typography justifyContent={'center'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.950'}>
+            Отсканируйте QR-код клиента, чтобы завершить платеж.
+          </Typography>
+          <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.500'}>
+            Тип оплаты: Payme
+          </Typography>
+        </Box>
+      </StyledDialog>
     </Box>
   )
 }
