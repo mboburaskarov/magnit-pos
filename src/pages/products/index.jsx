@@ -64,7 +64,10 @@ export default function ProductsPage() {
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
+        ?.filter(
+          (el) => !el?.is_temporary && el?.colId !== SELECTION_ID
+          // && el.field !== 'category'
+        )
         ?.map((el) => ({
           ...el,
           label: el.headerName,

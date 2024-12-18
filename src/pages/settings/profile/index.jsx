@@ -44,11 +44,26 @@ const Profile = () => {
 
   const [open, setOpen] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
-  const methods = useForm()
+  const methods = useForm({
+    defaultValues: {
+      first_name: get(userData, 'first_name'),
+      last_name: get(userData, 'last_name'),
+    },
+  })
 
-  const { mutate: changeEmployeeInfo } = useMutation(requests.changeEmployeeInfo, {
+  const { mutate: getUserInfo } = useMutation(requests.getUserInfo, {
     onSuccess: ({ data }) => {
       dispatch(setUserData({ ...data?.data }))
+      setIsEditMode(false)
+    },
+    onError: () => {
+      error('Error getting profile!')
+    },
+  })
+  const { mutate: changeEmployeeInfo } = useMutation(requests.changeEmployeeInfo, {
+    onSuccess: ({ data }) => {
+      getUserInfo()
+      // dispatch(setUserData({ ...data?.data }))
       setIsEditMode(false)
       success('Profile updated successfully!')
     },
@@ -119,19 +134,12 @@ const Profile = () => {
           <Box display='flex' gap={3} mt={3} mb={7}>
             <Box flex={1}>
               <Label>Имя</Label>
-              <TextField
-                disabled={!isEditMode}
-                defaultValue={get(userData, 'first_name')}
-                required
-                fullWidth
-                name='first_name'
-                placeholder='Enter first name'
-              />
+              <TextField disabled={!isEditMode} required fullWidth name='first_name' placeholder='Enter first name' />
             </Box>
 
             <Box flex={1}>
               <Label>Фамилия</Label>
-              <TextField disabled={!isEditMode} defaultValue={get(userData, 'last_name')} required fullWidth name='last_name' placeholder='Enter last name' />
+              <TextField disabled={!isEditMode} required fullWidth name='last_name' placeholder='Enter last name' />
             </Box>
           </Box>
 

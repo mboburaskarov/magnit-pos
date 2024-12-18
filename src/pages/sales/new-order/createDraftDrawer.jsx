@@ -164,6 +164,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
                 <Checkbox
                   name='id'
                   id='id'
+                  onClick={() => setEposChecked((prev) => !prev)}
                   onChange={() => setEposChecked((prev) => !prev)}
                   checked={eposChecked}
                   className={classes.checkbox}

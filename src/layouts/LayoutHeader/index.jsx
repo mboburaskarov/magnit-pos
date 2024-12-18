@@ -9,7 +9,7 @@ import ArrowDown from '../../assets/icons/ArrowDown'
 import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
 import { get } from 'lodash'
-
+import img from '../../../public/default-user-img.png'
 function LayoutHeader() {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
   const [isUserOpen, setIsUserOpen] = useState(null)
@@ -55,7 +55,10 @@ function LayoutHeader() {
                 <div className={classes.avatarPlaceholder}>
                   {/* {firstName.charAt(0)}
                   {lastName.charAt(0)} */}
-                  <img src={get(userData, 'photo')} />
+                  <img
+                    src={get(userData, 'photo')}
+                    // onError={(e) => (e.currentTarget.src = 'http://localhost:8000/default-user-img.png')}
+                  />
                 </div>
 
                 <Box maxWidth='73%'>

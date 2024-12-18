@@ -15,8 +15,11 @@ import { useQueryParams } from '../../hooks/useQueryParams'
 import { get } from 'lodash'
 import dayjs from 'dayjs'
 import { useTheme } from '@mui/styles'
+import DefaultImgIcon from '../../assets/icons/defaultImgIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
+  type == 'categories[0].name' && console.log(type, data)
+
   return (
     <Typography
       sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
@@ -42,16 +45,16 @@ const Image = ({ data, rowIndex, setImages }) => {
         },
       }}
     >
-      {/* {data?.main_photo?.[0] ? ( */}
-      <img
-        id={`product-image-${rowIndex}`}
-        src={data?.main_photo || '/default-img.avif'}
-        alt={data?.name}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
-      />
-      {/* ) : (
-        <ProductImagePlaceholder />
-      )} */}
+      {data?.main_photo?.[0] ? (
+        <img
+          id={`product-image-${rowIndex}`}
+          src={data?.main_photo || '/default-img.avif'}
+          alt={data?.name}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
+        />
+      ) : (
+        <DefaultImgIcon />
+      )}
       {data?.files?.[0] && (
         <Box
           sx={{
@@ -115,7 +118,11 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         ...el,
         headerName: t('table_columns.category'),
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='category' />),
+        cellRenderer: memo((p) => (
+          <Typography sx={{ whiteSpace: 'pre-line', color: 'gray.400' }} id={`product-${p.data.categories[0]?.name}-${p.rowIndex}`}>
+            {get(p, 'data.categories.[0].name', '-')}
+          </Typography>
+        )),
       }
     }
     if (el.field === 'retail_price') {
