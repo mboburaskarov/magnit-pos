@@ -107,7 +107,7 @@ export default function tableHeaderSelector({
     if (el.field === 'store') {
       return {
         ...el,
-        headerName: t('store'),
+        headerName: t('branch'),
         colId: el.field,
         cellRenderer: memo((p) => <Typography>{get(p, 'data.[store].name')}</Typography>),
       }
@@ -137,7 +137,8 @@ export default function tableHeaderSelector({
         cellRenderer: memo(({ data, rowIndex }) => (
           <StatusCell
             id={`products-status-${rowIndex}`}
-            bgcolor={vendor_statuses.find((el) => el.id === data.status)?.color}
+            color={vendor_statuses.find((el) => el.id === data.status)?.color}
+            bgcolor={vendor_statuses.find((el) => el.id === data.status)?.bgcolor}
             title={vendor_statuses.find((el) => el.id === data.status)?.name}
           />
         )),

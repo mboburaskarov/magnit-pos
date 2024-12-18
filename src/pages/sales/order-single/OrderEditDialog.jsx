@@ -248,6 +248,7 @@ export default function OrderEditDialog({ isOpen, orderData, setIsOpen, orderId,
               placeholder='Введите номер телефона'
               label='Номер телефона'
               secondary
+              // disabled
               fullWidth
               country={country}
               uncontrolled

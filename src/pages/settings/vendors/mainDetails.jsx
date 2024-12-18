@@ -139,6 +139,7 @@ export default function MainDetails({ clientData, openDrawer }) {
           </Box>
           <InputPhone
             login={false}
+            disabled
             id='phone'
             name='phone'
             placeholder={t('menu.settings.shops.shop_create.phone_placeholder')}
@@ -266,7 +267,7 @@ export default function MainDetails({ clientData, openDrawer }) {
 
       <Grid container spacing={4}>
         <Grid item xs={6}>
-          <Label mb='4px'>{t('store')}</Label>
+          <Label mb='4px'>{t('branch')}</Label>
           <SelectSimple
             placeholder={t('store.placeholder')}
             disabled={false}

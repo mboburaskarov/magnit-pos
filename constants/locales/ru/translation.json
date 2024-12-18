@@ -136,6 +136,7 @@
   "status": "Статус",
   "sales": "Продажи",
   "branches": "Филиалы",
+  "branch": "Филиал",
   "add": "добавить",
   "min_length_for_search_employee": "Введите минимум 3 символа для поиска",
   "client_name": "Имя",

@@ -8,7 +8,7 @@ import Drawer from '../Drawers/Drawer'
 import { countries } from '../../src/assets/data/countries'
 import Label from '../Label'
 
-const PhoneNumber = ({ login = true, name, required, country = countries[0], setCountry, setValue, label, fullWidth, uncontrolled }) => {
+const PhoneNumber = ({ login = true, name, disabled = false, required, country = countries[0], setCountry, setValue, label, fullWidth, uncontrolled }) => {
   const [open, setOpen] = useState(false)
   const [openDrawer, setOpenDrawer] = useState(false)
   const { ref, setUnmaskedValue, value } = useIMask({
@@ -41,7 +41,7 @@ const PhoneNumber = ({ login = true, name, required, country = countries[0], set
               fontSize={18}
               lineHeight='26px'
               color='dark.500'
-              onClick={() => setOpen(!open)}
+              onClick={() => !disabled && setOpen(!open)}
               sx={(theme) => ({
                 width: 120,
                 height: login ? 56 : 48,

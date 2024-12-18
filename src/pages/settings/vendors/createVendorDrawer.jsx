@@ -107,7 +107,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
       last_name: data?.last_name,
       role_id: data?.role?.id,
       store_id: data?.store?.id,
-      phone: '+998' + data?.phone?.replace(/[()\s]/g, ''),
+      phone: '998' + data?.phone?.replace(/[()\s]/g, ''),
     }
     if (openDrawer?.mode === 'edit') {
       handleUpdateVendor({ data: requestBody, id: openDrawer?.id })

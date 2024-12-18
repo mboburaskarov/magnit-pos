@@ -33,6 +33,7 @@ export default function UserBody({ userData }) {
         <Box width='100%'>
           <PhoneNumber
             name='phone_number'
+            // disabled={true}
             placeholder='Введите номер телефона'
             label='Номер телефона'
             secondary

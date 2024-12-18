@@ -5,18 +5,27 @@ export const vendor_statuses = [
   },
   {
     id: 'active',
-    color: 'green.500',
+    color: 'green.700',
+    bgcolor: 'green.10',
     name: 'Активный',
   },
+  // {
+  //   id: 'inactive',
+  //   color: 'green.700',
+  //   bgcolor: 'green.10',
+  //   name: 'Активный',
+  // },
   {
     id: 'deleted',
-    color: 'red.400',
-    name: 'Неактивный',
+    color: 'red.700',
+    bgcolor: 'red.10',
+    name: 'Удалено',
   },
 
   {
     id: 'blocked',
-    color: 'red.600',
+    color: 'bunker.500',
+    bgcolor: 'bunker.100',
     name: 'Заблокирован',
   },
 ]

@@ -162,6 +162,7 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
           <InputPhone
             login={false}
             id='phone'
+            disabled
             name='phone'
             // placeholder={t('phone_number.placeholder')}
             control={control}

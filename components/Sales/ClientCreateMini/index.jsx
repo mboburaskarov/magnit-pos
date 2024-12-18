@@ -65,7 +65,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
   // useEffect(() => {
   //   methods.reset()
   // }, [quickCreateClientName])
-  const { mutate: handleSaleCreate, isLoading: isCreateCustomer } = useMutation(requests.createCustomer, {
+  const { mutate: handleCustomerCreate, isLoading: isCreateCustomer } = useMutation(requests.createCustomer, {
     onSuccess: ({ data }) => {
       closeDrawer(false)
       methods.reset()
@@ -89,10 +89,11 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       first_name: data?.first_name,
       gender: data?.gender,
       last_name: data?.last_name,
-      phone: [data?.dial_code + data?.phone?.replace(/[()\s]/g, '')],
+      store_id: get(userData, 'store.id'),
+      phone: '998' + data?.phone?.replace(/[()\s]/g, ''),
       tag_id: data?.tags,
     }
-    handleSaleCreate(requestBody)
+    handleCustomerCreate(requestBody)
   }
 
   const onError = (err) => {

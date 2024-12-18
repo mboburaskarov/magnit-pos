@@ -8,7 +8,7 @@ import { useMutation, useQuery } from 'react-query'
 import AgGridTable from '../../../components/AgGridTable/AgGridTable'
 import { useDispatch, useSelector } from 'react-redux'
 import tableHeaderSelector from './tableHeaderSelector'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/salesTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/clientTableColumns'
 import InputSearch from '../../../components/Inputs/InputSearch'
 import ImageGallery from '../../../components/ImageGallery'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -27,7 +27,7 @@ import StyledDialog from '../../../components/Dialogs/StyledDialog'
 import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
 import PlusIcon from '../../assets/icons/PlusIcon'
 import FilterTableRowsMenu from './FilterTableRowsMenu'
-import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
+import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButtonForClient'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/styles'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -37,10 +37,11 @@ export default function ClientsPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.productsTableColumns)
+  const { columns, loading } = useSelector((state) => state.clientTableColumns)
   const { values } = useQueryParams()
   const [status, setStatus] = useState('ALL')
   const [regions, setRegions] = useState([])
+  const [selectClients, setselectClients] = useState([])
   const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
@@ -50,12 +51,13 @@ export default function ClientsPage() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(null)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const tableColumns = tableHeaderSelector({
-    productsColumns: columns,
+    clientsColumns: columns,
     t,
     values,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     setIsDrawerOpen,
+    setselectClients,
   })
 
   /// filter table columns with permission
@@ -75,7 +77,7 @@ export default function ClientsPage() {
     }
   }, [])
 
-  const productsListFilter = useMemo(() => {
+  const clientsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
@@ -111,11 +113,12 @@ export default function ClientsPage() {
     regions,
   ])
   const {
-    data: productsList,
-    isLoading: productsListLoading,
-    isFetching: isFetchingproductsList,
+    data: clientsList,
+    isLoading: clientsListLoading,
+    isFetching: isFetchingclientsList,
     refetch,
-  } = useQuery(['productsList', productsListFilter], () => requests.getAllProducts(productsListFilter))
+  } = useQuery(['clientsList', clientsListFilter], () => requests.getAllCustomers(clientsListFilter))
+  console.log(clientsList)
 
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
     onSuccess: () => {
@@ -166,7 +169,7 @@ export default function ClientsPage() {
       console.log('err', err)
     },
   })
-  const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.changeProductStatus, {
+  const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.changeclientstatus, {
     onSuccess: () => {
       success('Продукт успешно деактивирован!')
       setTimeout(() => {
@@ -186,24 +189,24 @@ export default function ClientsPage() {
 
   useEffect(() => {
     refetch()
-  }, [productsListFilter])
+  }, [clientsListFilter])
 
   useEffect(() => {
     const count =
       // status === 'ACTIVE'
-      //   ? productsList?.data?.active
+      //   ? clientsList?.data?.active
       //   : status === 'INACTIVE'
-      //   ? productsList?.data?.inactive
+      //   ? clientsList?.data?.inactive
       //   : status === 'INACTIVE_BY_VENDOR'
-      //   ? productsList?.data?.inactiveByVendor
+      //   ? clientsList?.data?.inactiveByVendor
       //   : status === 'BLOCKED'
-      //   ? productsList?.data?.blocked
-      // : productsList?.data.totalCount
-      productsList?.data?.data?._meta?.total_count
+      //   ? clientsList?.data?.blocked
+      // : clientsList?.data.totalCount
+      clientsList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [productsList?.data, values?.limit, status])
+  }, [clientsList?.data, values?.limit, status])
 
   return (
     <LoadingContainer readyState={true}>
@@ -214,14 +217,14 @@ export default function ClientsPage() {
         {/* <Box display='flex' mb={3} mt={4}>
           <TabContainer
             customTooltip
-            tabs={products_statuses?.map((el) => ({ label: el.name, id: el.id }))}
+            tabs={clients_statuses?.map((el) => ({ label: el.name, id: el.id }))}
             counts={[
-              productsList?.data?.totalCount,
-              productsList?.data?.active,
-              productsList?.data?.inactive,
-              productsList?.data?.inactiveByVendor,
-              productsList?.data?.blocked,
-              productsList?.data?.rejected,
+              clientsList?.data?.totalCount,
+              clientsList?.data?.active,
+              clientsList?.data?.inactive,
+              clientsList?.data?.inactiveByVendor,
+              clientsList?.data?.blocked,
+              clientsList?.data?.rejected,
             ]}
             selected={status}
             setSelected={setStatus}
@@ -302,7 +305,7 @@ export default function ClientsPage() {
               <Box minWidth={156}>
                 <Button
                   sx={{ height: '48px' }}
-                  onClick={() => navigate('/products/create')}
+                  onClick={() => navigate('/clients/create')}
                   fullWidth
                   startIcon={<PlusIcon color='#fff' />}
                   variant='contained'
@@ -318,11 +321,11 @@ export default function ClientsPage() {
         <FilterTableRowsMenu tableColumns={tableColumns} open={filterTableRowsMenu} setOpen={setFilterTableRowsMenu} />
         <Box>
           <AgGridTable
-            id='products-main-table'
+            id='clients-main-table'
             tableSettings
             columns={tableColumns}
-            data={productsList?.data?.data?.data || []}
-            isDataLoading={isFetchingproductsList || productsListLoading}
+            data={clientsList?.data?.data?.data || []}
+            isDataLoading={isFetchingclientsList || clientsListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
@@ -330,7 +333,7 @@ export default function ClientsPage() {
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             status={status}
-            isRefreshing={loading || isFetchingproductsList || productsListLoading}
+            isRefreshing={loading || isFetchingclientsList || clientsListLoading}
           />
         </Box>
       </Box>
