@@ -62,6 +62,7 @@ export const navbatRouteData = [
     id: '1',
     icon: <UsersIcon />,
     href: '/clients',
+    active: '/clients/all/*',
     children: [
       {
         label: 'navbar.clients',

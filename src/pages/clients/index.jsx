@@ -1,35 +1,32 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
-import TabContainer from '../../../components/Tab/TabContainer'
-import LoadingContainer from '../../../components/LoadingContainer'
-import { useEffect, useMemo, useState } from 'react'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { requests } from '../../../utils/requests'
-import { useMutation, useQuery } from 'react-query'
-import AgGridTable from '../../../components/AgGridTable/AgGridTable'
-import { useDispatch, useSelector } from 'react-redux'
-import tableHeaderSelector from './tableHeaderSelector'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/clientTableColumns'
-import InputSearch from '../../../components/Inputs/InputSearch'
-import ImageGallery from '../../../components/ImageGallery'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowDownWideShort, faArrowUpWideShort, faPlus } from '@fortawesome/free-solid-svg-icons'
-import FilterMenu from './FilterMenu'
-import { useNavigate } from 'react-router-dom'
-import { error, success } from '../../../utils/toast'
-import ConfirmDialog from '../../../components/ConfirmDialog'
-import BigWarningIcon from '../../assets/icons/BigWarningIcon'
 import { LoadingButton } from '@mui/lab'
+import { Box, Button, TextField, Typography } from '@mui/material'
+import { useEffect, useMemo, useState } from 'react'
+import { useMutation, useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import AgGridTable from '../../../components/AgGridTable/AgGridTable'
+import ConfirmDialog from '../../../components/ConfirmDialog'
+import ImageGallery from '../../../components/ImageGallery'
+import InputSearch from '../../../components/Inputs/InputSearch'
+import LoadingContainer from '../../../components/LoadingContainer'
+import { requests } from '../../../utils/requests'
+import { error, success } from '../../../utils/toast'
 import BigTickIcon from '../../assets/icons/BigTickIcon'
+import BigWarningIcon from '../../assets/icons/BigWarningIcon'
+import { useQueryParams } from '../../hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/clientTableColumns'
+import FilterMenu from './FilterMenu'
+import tableHeaderSelector from './tableHeaderSelector'
 // import ProductDrawer from './ProductDrawer'
-import InputSwitch from '../../../components/Inputs/InputSwitch'
+import { useTheme } from '@mui/styles'
+import { useTranslation } from 'react-i18next'
+import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButtonForClient'
 import CheckAccess from '../../../components/CheckAccess'
 import StyledDialog from '../../../components/Dialogs/StyledDialog'
+import DeleteIcon from '../../assets/icons/DeleteIcon'
 import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
 import PlusIcon from '../../assets/icons/PlusIcon'
 import FilterTableRowsMenu from './FilterTableRowsMenu'
-import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButtonForClient'
-import { useTranslation } from 'react-i18next'
-import { useTheme } from '@mui/styles'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ClientsPage() {
@@ -50,6 +47,13 @@ export default function ClientsPage() {
   const [filterTableRowsMenu, setFilterTableRowsMenu] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(null)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const selectClientsFunc = (isChecked, id) => {
+    if (isChecked) {
+      setselectClients((p) => [...p, id])
+    } else {
+      setselectClients((p) => p.filter((ids) => ids !== id))
+    }
+  }
   const tableColumns = tableHeaderSelector({
     clientsColumns: columns,
     t,
@@ -57,7 +61,7 @@ export default function ClientsPage() {
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     setIsDrawerOpen,
-    setselectClients,
+    selectClientsFunc,
   })
 
   /// filter table columns with permission
@@ -120,7 +124,7 @@ export default function ClientsPage() {
   } = useQuery(['clientsList', clientsListFilter], () => requests.getAllCustomers(clientsListFilter))
   console.log(clientsList)
 
-  const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
+  const { mutate: deleteClient, isLoading: isDeletingProduct } = useMutation(requests.deleteClient, {
     onSuccess: () => {
       refetch()
       success('Продукт успешно удален!')
@@ -214,41 +218,7 @@ export default function ClientsPage() {
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           {t('clients')}
         </Typography>
-        {/* <Box display='flex' mb={3} mt={4}>
-          <TabContainer
-            customTooltip
-            tabs={clients_statuses?.map((el) => ({ label: el.name, id: el.id }))}
-            counts={[
-              clientsList?.data?.totalCount,
-              clientsList?.data?.active,
-              clientsList?.data?.inactive,
-              clientsList?.data?.inactiveByVendor,
-              clientsList?.data?.blocked,
-              clientsList?.data?.rejected,
-            ]}
-            selected={status}
-            setSelected={setStatus}
-          />
-        </Box> */}
-        <Box minWidth={320}>
-          <InputSwitch
-            uncontrolled
-            id='app-type'
-            name='app-type'
-            value={appType}
-            defaultValue='ALL'
-            onChange={(e) => setAppType(e)}
-            options={[
-              { title: t('switch.title.all'), value: 'ALL' },
-              { title: t('switch.title.active'), value: 'medicine' },
-              { title: t('switch.title.inactive'), value: 'vitamin' },
-              { title: t('switch.title.less_amount'), value: 'self_care' },
-              { title: t('switch.title.empty'), value: 'baby_care' },
-              { title: t('switch.title.less_date'), value: 'diagnostic' },
-              { title: t('switch.title.outofdate'), value: 'medical_supplies' },
-            ]}
-          />
-        </Box>
+
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box
@@ -293,6 +263,56 @@ export default function ClientsPage() {
                 </Typography>
               </Button>
             </Box>
+            {selectClients.length > 0 && (
+              <>
+                {/* <Box minWidth={48} ml={'16px'}>
+                  <Button
+                    sx={{
+                      height: '48px',
+                      padding: 0,
+                      bgcolor: '#fff',
+                      border: '1px solid #ECEDF2',
+                      color: 'dark.500',
+                      fontWeight: '500',
+                      fontSize: '16px',
+                      lineHeight: '24px',
+                      '& span': {
+                        mr: '12px',
+                      },
+                    }}
+                    fullWidth
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => deActivateProduct(selectClients)}
+                  >
+                    <LockIcon color='#111217' />
+                  </Button>
+                </Box> */}
+                <Box minWidth={48} ml={'16px'}>
+                  <Button
+                    sx={{
+                      height: '48px',
+                      padding: 0,
+                      bgcolor: '#fff',
+                      border: '1px solid #ECEDF2',
+                      color: 'dark.500',
+                      fontWeight: '500',
+                      fontSize: '16px',
+                      lineHeight: '24px',
+                      '& span': {
+                        mr: '12px',
+                      },
+                    }}
+                    fullWidth
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => deleteClient({ data: selectClients })}
+                  >
+                    <DeleteIcon width='24px' />
+                  </Button>
+                </Box>
+              </>
+            )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box
@@ -386,7 +406,7 @@ export default function ClientsPage() {
                     ? activateProduct(openConfirmDialog.id)
                     : openConfirmDialog?.type === 'deactivate'
                     ? deActivateProduct({ id: openConfirmDialog.id, status: 'INACTIVE' })
-                    : deleteProduct(openConfirmDialog.id)
+                    : deleteClient({ data: [openConfirmDialog.id] })
                 }
               >
                 Да, удалить

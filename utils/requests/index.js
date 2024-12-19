@@ -38,6 +38,7 @@ export const requests = {
   deleteDraft: (id) => request.delete(`v1/draft/${id}`),
   completeDraft: (data) => request.put(`v1/draft/complete/${data}`),
   //orders
+  getSaleDetails: (id) => request.get(`v1/sale/${id}`),
   getAllOrders: (filter) => request.get(`api/admin/orders${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAlltransactionsOrders: (filter) => request.get(`api/admin/orders/transactions${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleOrder: (id) => request.get(`api/admin/orders/${id}`),
@@ -95,6 +96,7 @@ export const requests = {
   getRegisterCashList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getCartItemList: (filter) => request.get(`v1/cart_item/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   //shops
+  getAllSales: (filter) => request.get(`v1/sale/list${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getAllShops: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllRolesWithPermissions: (filter) => request.get(`v1/permission/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -190,6 +192,7 @@ export const requests = {
   createRole: (data) => request.post('v1/role', data),
   deleteRole: (id) => request.delete(`v1/role/multiple/delete`, id),
   updateRole: ({ id, data }) => request.patch(`api/roles/${id}`, data),
+  deleteClient: (id) => request.delete(`v1/customer/soft-delete`, id),
 
   // actions
   getAllActions: () => request.get(`api/actions`),

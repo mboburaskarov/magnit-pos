@@ -13,6 +13,8 @@ import StyledTooltip from '../../../../components/StyledTooltip'
 import CheckAccess from '../../../../components/CheckAccess'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { get } from 'lodash'
+import dayjs from 'dayjs'
+import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -22,145 +24,19 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-const Image = ({ data, rowIndex, setImages }) => {
-  return (
-    <Box
-      sx={{
-        position: 'relative',
-        width: '40px',
-        height: '40px',
-        borderRadius: 2,
-        '&:hover': {
-          '#overlay_image': {
-            opacity: 0.5,
-          },
-        },
-      }}
-    >
-      {/* {data?.main_photo?.[0] ? ( */}
-      <img
-        id={`product-image-${rowIndex}`}
-        src={data?.main_photo || '/default-img.avif'}
-        alt={data?.name}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
-      />
-      {/* ) : (
-        <ProductImagePlaceholder />
-      )} */}
-      {data?.files?.[0] && (
-        <Box
-          sx={{
-            transition: 'all 0.2s ease',
-            cursor: 'pointer',
-            opacity: 0,
-            borderRadius: 2,
-            bottom: 0,
-            right: 0,
-            top: 0,
-            left: 0,
-            bgcolor: 'green.600',
-            position: 'absolute',
-            zIndex: 2,
-          }}
-          id='overlay_image'
-          onClick={() => setImages({ data: data?.files })}
-        />
-      )}
-    </Box>
-  )
-}
-
-export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
+export default function tableHeaderSelector({
+  productsColumns,
+  setOpenSaleDrawer,
+  selectClientsFunc,
+  values,
+  setImages,
+  t,
+  setOpenConfirmDialog,
+  setIsDrawerOpen,
+}) {
   // const { values } = useQueryParams()
+
   const columns = productsColumns?.map((el) => {
-    if (el.field === 'main_photo') {
-      return {
-        ...el,
-        headerName: t('table_columns.photo'),
-        colId: el.field,
-        cellRenderer: memo((p) => <Image {...p} setImages={setImages} />),
-      }
-    }
-    if (el.field === 'name') {
-      return {
-        ...el,
-        headerName: t('table_columns.name'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
-      }
-    }
-    if (el.field === 'sum') {
-      return {
-        ...el,
-        headerName: t('table_columns.price'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='sum' />),
-      }
-    }
-    if (el.field === 'category') {
-      return {
-        ...el,
-        headerName: t('table_columns.category'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='category' />),
-      }
-    }
-    if (el.field === 'retail_price') {
-      return {
-        ...el,
-        headerName: t('table_columns.retail_price'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='retail_price' />),
-      }
-    }
-    if (el.field === 'vat') {
-      return {
-        ...el,
-        headerName: t('table_columns.vat'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='%' withDevider {...p} type='vat' />),
-      }
-    }
-    if (el.field === 'vat_price') {
-      return {
-        ...el,
-        headerName: t('table_columns.vat_price'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='vat_price' />),
-      }
-    }
-    if (el.field === 'supply_price') {
-      return {
-        ...el,
-        headerName: t('table_columns.supply_price'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='supply_price' />),
-      }
-    }
-    if (el.field === 'status') {
-      return {
-        ...el,
-        headerName: t('table_columns.status'),
-        colId: el.field,
-        cellRenderer: memo(({ data, rowIndex }) => (
-          <StatusCell
-            id={`products-status-${rowIndex}`}
-            bgcolor={products_statuses.find((el) => el.id === data.status)?.color}
-            title={products_statuses.find((el) => el.id === data.status)?.name}
-          />
-        )),
-      }
-    }
-
-    if (el.field === 'manufacturer') {
-      return {
-        ...el,
-        headerName: t('table_columns.manufacturer'),
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText type={'manufacturer'} {...p} />),
-      }
-    }
-
     if (el.field === 'number') {
       return {
         ...el,
@@ -178,72 +54,259 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
       }
     }
 
-    if (el.field === 'barcode') {
+    if (el.field === 'sale_number') {
       return {
         ...el,
-        headerName: t('table_columns.barcode'),
+        headerName: 'ID',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' {...p} type='barcode' />),
+        cellRenderer: memo((p) => (
+          <Box sx={{ '& p': { color: 'orange.500' }, cursor: 'pointer' }} onClick={() => setOpenSaleDrawer({ id: p.data.id })}>
+            <SimpleText {...p} type='sale_number' />
+          </Box>
+        )),
       }
     }
-    if (el.field === 'product_variability') {
+    if (el.field === 'document') {
       return {
         ...el,
-        headerName: 'Ishlab chiqaruvchi',
+        headerName: 'Документ',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='product_variability' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='document' />),
+      }
+    }
+    if (el.field === 'organisation') {
+      return {
+        ...el,
+        headerName: 'Организация',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='organisation' />),
+      }
+    }
+    if (el.field === 'total_amount') {
+      return {
+        ...el,
+        headerName: 'Общая сумма',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='total_amount' />),
+      }
+    }
+    if (el.field === 'cash') {
+      return {
+        ...el,
+        headerName: 'Наличные',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>
+              {get(
+                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Naqd'),
+                'amount',
+                0
+              )}
+            </Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'humo') {
+      return {
+        ...el,
+        headerName: 'Humo',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>
+              {get(
+                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'humo'),
+                'amount',
+                0
+              )}
+            </Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'uzcard') {
+      return {
+        ...el,
+        headerName: 'Uzcard',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>
+              {get(
+                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Uzcard'),
+                'amount',
+                0
+              )}
+            </Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'visa') {
+      return {
+        ...el,
+        headerName: 'Visa',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>
+              {get(
+                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Visa'),
+                'amount',
+                0
+              )}
+            </Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'payme') {
+      return {
+        ...el,
+        headerName: 'Payme',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>
+              {get(
+                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Payme'),
+                'amount',
+                0
+              )}
+            </Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'click') {
+      return {
+        ...el,
+        headerName: 'Click',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>
+              {get(
+                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Click'),
+                'amount',
+                0
+              )}
+            </Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'uzumbank') {
+      return {
+        ...el,
+        headerName: 'Uzumbank',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>
+              {get(
+                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Uzumbank'),
+                'amount',
+                0
+              )}
+            </Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'balance') {
+      return {
+        ...el,
+        headerName: 'Баланс',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>
+              {get(
+                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Balance'),
+                'amount',
+                0
+              )}
+            </Typography>
+          </Box>
+        )),
       }
     }
 
-    if (el.field === 'quantity') {
+    if (el.field === 'created_at') {
       return {
         ...el,
-        headerName: t('table_columns.quantity'),
+        headerName: 'Дата регистрации',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='quantity' />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH.mm.ss')}</Typography>
+          </Box>
+        )),
       }
     }
-    if (el.field === 'expire_date') {
+    if (el.field === 'store') {
       return {
         ...el,
-        headerName: t('table_columns.expire_date'),
+        headerName: 'Филиал',
         colId: el.field,
-        cellRenderer: memo((p) => <TimeCell {...p} type='expire_date' format='DD.MM.YYYY' />),
+        cellRenderer: memo((p) => (
+          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
+            {get(p, 'data.cash_box.store.name', '-')}
+          </Typography>
+        )),
       }
     }
-    if (el.field === 'actions') {
+
+    if (el.field === 'employee') {
       return {
         ...el,
-        headerName: t('table_columns.actions'),
+        headerName: 'Сотрудник',
         colId: el.field,
-        cellRenderer: memo(({ data }) => (
-          <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
-            <Box display='inline-flex' columnGap={'8px'}>
-              <CheckAccess id={'product-edit'}>
-                <IconButton onClick={() => window.open(`/products/edit/${data.id}`, '_blank')} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-                  <EditIcon />
-                </IconButton>
-              </CheckAccess>
-              <CheckAccess id={'product-delete'}>
-                <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-                  <DeleteIcon />
-                </IconButton>
-              </CheckAccess>
-              {/* {data.status === 'ACTIVE' ? (
-                <CheckAccess id={'product-deactive'}>
-                  <IconButton onClick={() => setOpenConfirmDialog({ type: 'deactivate', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                    <PauseIcon />
-                  </IconButton>
-                </CheckAccess>
-              ) : (
-                <CheckAccess id={'product-active'}>
-                  <IconButton onClick={() => setOpenConfirmDialog({ type: 'activate', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                    <PlayIcon />
-                  </IconButton>
-                </CheckAccess>
-              )} */}
+        cellRenderer: memo((p) => (
+          <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + p.data?.employee?.phone)}>
+            <Box display={'flex'} alignItems={'center'}>
+              <img
+                style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }}
+                src={p.data.employee?.image ? getImageUrl(p.data.employee?.image) : '/default-user-img.png'}
+              />
+              <a href={`tel:${'+' + p.data.employee?.phone}`}>
+                <Typography
+                  id={p.data.employee?._id}
+                  style={{ whiteSpace: 'pre-line', color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}
+                >
+                  {p.data.employee?.first_name}
+                </Typography>
+              </a>
             </Box>
-          </CheckAccess>
+          </StyledTooltip>
+        )),
+      }
+    }
+    if (el.field === 'customer') {
+      return {
+        ...el,
+        headerName: 'Клиент',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + p.data?.customer?.phone)}>
+            <Box display={'flex'} alignItems={'center'}>
+              <img
+                style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }}
+                src={p.data.customer?.image ? getImageUrl(p.data.customer?.image) : '/default-user-img.png'}
+              />
+              <a href={`tel:${'+' + p.data.customer?.phone}`}>
+                <Typography
+                  id={p.data.customer?._id}
+                  style={{ whiteSpace: 'pre-line', color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}
+                >
+                  {get(p, 'data.customer?.first_name', 'Unknown')}
+                </Typography>
+              </a>
+            </Box>
+          </StyledTooltip>
         )),
       }
     }

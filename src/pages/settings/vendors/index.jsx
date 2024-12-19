@@ -223,41 +223,7 @@ export default function VendorsPage() {
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           {t('vendors')}
         </Typography>
-        {/* <Box display='flex' mb={3} mt={4}>
-          <TabContainer
-            customTooltip
-            tabs={products_statuses?.map((el) => ({ label: el.name, id: el.id }))}
-            counts={[
-              vendorsList?.data?.totalCount,
-              vendorsList?.data?.active,
-              vendorsList?.data?.inactive,
-              vendorsList?.data?.inactiveByVendor,
-              vendorsList?.data?.blocked,
-              vendorsList?.data?.rejected,
-            ]}
-            selected={status}
-            setSelected={setStatus}
-          />
-        </Box> */}
-        <Box minWidth={320}>
-          <InputSwitch
-            uncontrolled
-            id='app-type'
-            name='app-type'
-            value={appType}
-            defaultValue='ALL'
-            onChange={(e) => setAppType(e)}
-            options={[
-              { title: t('switch.title.all'), value: 'ALL' },
-              { title: t('switch.title.active'), value: 'medicine' },
-              { title: t('switch.title.inactive'), value: 'vitamin' },
-              { title: t('switch.title.less_amount'), value: 'self_care' },
-              { title: t('switch.title.empty'), value: 'baby_care' },
-              { title: t('switch.title.less_date'), value: 'diagnostic' },
-              { title: t('switch.title.outofdate'), value: 'medical_supplies' },
-            ]}
-          />
-        </Box>
+
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box

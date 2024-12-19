@@ -30,6 +30,7 @@ import FilterTableRowsMenu from './FilterTableRowsMenu'
 import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButton'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/styles'
+import SaleDrawer from './saleDrawer'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function AllSalesPage() {
@@ -37,7 +38,7 @@ export default function AllSalesPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.productsTableColumns)
+  const { columns, loading } = useSelector((state) => state.salesTableColumns)
   const { values } = useQueryParams()
   const [status, setStatus] = useState('ALL')
   const [regions, setRegions] = useState([])
@@ -46,6 +47,7 @@ export default function AllSalesPage() {
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
+  const [openSaleDrawer, setOpenSaleDrawer] = useState(false)
   const [filterTableRowsMenu, setFilterTableRowsMenu] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(null)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
@@ -56,6 +58,7 @@ export default function AllSalesPage() {
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     setIsDrawerOpen,
+    setOpenSaleDrawer,
   })
 
   /// filter table columns with permission
@@ -75,7 +78,7 @@ export default function AllSalesPage() {
     }
   }, [])
 
-  const productsListFilter = useMemo(() => {
+  const salesListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
@@ -111,11 +114,11 @@ export default function AllSalesPage() {
     regions,
   ])
   const {
-    data: productsList,
-    isLoading: productsListLoading,
-    isFetching: isFetchingproductsList,
+    data: salesList,
+    isLoading: salesListLoading,
+    isFetching: isFetchingsalesList,
     refetch,
-  } = useQuery(['productsList', productsListFilter], () => requests.getAllProducts(productsListFilter))
+  } = useQuery(['salesList', salesListFilter], () => requests.getAllSales(salesListFilter))
 
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
     onSuccess: () => {
@@ -186,24 +189,24 @@ export default function AllSalesPage() {
 
   useEffect(() => {
     refetch()
-  }, [productsListFilter])
+  }, [salesListFilter])
 
   useEffect(() => {
     const count =
       // status === 'ACTIVE'
-      //   ? productsList?.data?.active
+      //   ? salesList?.data?.active
       //   : status === 'INACTIVE'
-      //   ? productsList?.data?.inactive
+      //   ? salesList?.data?.inactive
       //   : status === 'INACTIVE_BY_VENDOR'
-      //   ? productsList?.data?.inactiveByVendor
+      //   ? salesList?.data?.inactiveByVendor
       //   : status === 'BLOCKED'
-      //   ? productsList?.data?.blocked
-      // : productsList?.data.totalCount
-      productsList?.data?.data?._meta?.total_count
+      //   ? salesList?.data?.blocked
+      // : salesList?.data.totalCount
+      salesList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [productsList?.data, values?.limit, status])
+  }, [salesList?.data, values?.limit, status])
 
   return (
     <LoadingContainer readyState={true}>
@@ -216,12 +219,12 @@ export default function AllSalesPage() {
             customTooltip
             tabs={products_statuses?.map((el) => ({ label: el.name, id: el.id }))}
             counts={[
-              productsList?.data?.totalCount,
-              productsList?.data?.active,
-              productsList?.data?.inactive,
-              productsList?.data?.inactiveByVendor,
-              productsList?.data?.blocked,
-              productsList?.data?.rejected,
+              salesList?.data?.totalCount,
+              salesList?.data?.active,
+              salesList?.data?.inactive,
+              salesList?.data?.inactiveByVendor,
+              salesList?.data?.blocked,
+              salesList?.data?.rejected,
             ]}
             selected={status}
             setSelected={setStatus}
@@ -321,8 +324,8 @@ export default function AllSalesPage() {
             id='products-main-table'
             tableSettings
             columns={tableColumns}
-            data={productsList?.data?.data?.data || []}
-            isDataLoading={isFetchingproductsList || productsListLoading}
+            data={salesList?.data?.data?.data || []}
+            isDataLoading={isFetchingsalesList || salesListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
@@ -330,10 +333,11 @@ export default function AllSalesPage() {
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             status={status}
-            isRefreshing={loading || isFetchingproductsList || productsListLoading}
+            isRefreshing={loading || isFetchingsalesList || salesListLoading}
           />
         </Box>
       </Box>
+      <SaleDrawer open={openSaleDrawer} setOpen={setOpenSaleDrawer} />
       {/* <ProductDrawer
         setOpenConfirmDialog={setOpenConfirmDialog}
         setImages={setOpenImageGallery}

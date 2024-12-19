@@ -13,6 +13,7 @@ import StyledTooltip from '../../../components/StyledTooltip'
 import CheckAccess from '../../../components/CheckAccess'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import { get } from 'lodash'
+import dayjs from 'dayjs'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -22,7 +23,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ clientsColumns, setselectClients, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
+export default function tableHeaderSelector({ clientsColumns, selectClientsFunc, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
   // const { values } = useQueryParams()
   const columns = clientsColumns?.map((el) => {
     if (el.field === 'checkbox') {
@@ -31,7 +32,7 @@ export default function tableHeaderSelector({ clientsColumns, setselectClients, 
         headerName: '',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <input onChange={(e) => setselectClients(e.target.checked, p.data.id)} name='checkbox_zero' className='customCheckbox' type='checkbox' />
+          <input onChange={(e) => selectClientsFunc(e.target.checked, p.data.id)} name='checkbox_zero' className='customCheckbox' type='checkbox' />
         )),
       }
     }
@@ -91,7 +92,12 @@ export default function tableHeaderSelector({ clientsColumns, setselectClients, 
         ...el,
         headerName: 'Последняя покупка',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='sale_date' />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{dayjs(p.data?.['sale_date']).format('DD.MM.YYYY')}</Typography>
+            {/* <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography> */}
+          </Box>
+        )),
       }
     }
     if (el.field === 'birthday') {
@@ -99,7 +105,12 @@ export default function tableHeaderSelector({ clientsColumns, setselectClients, 
         ...el,
         headerName: 'Дата рождения',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='birthday' />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{dayjs(p.data?.['birthday']).format('DD.MM.YYYY')}</Typography>
+            {/* <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography> */}
+          </Box>
+        )),
       }
     }
     if (el.field === 'created_at') {
