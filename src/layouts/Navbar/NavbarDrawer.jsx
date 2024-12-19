@@ -63,19 +63,21 @@ function NavbarDrawer({
                 {t(currentRoutesMemoized?.label)}
               </ListItem>
               <div className={classes.hr} />
-              {currentRoutesMemoized?.children?.map((item, index) => {
-                return (
-                  <NavItem
-                    item={item}
-                    key={index}
-                    classes={classes}
-                    handleClickNavItems={setCurrentRoutes}
-                    handleShowDialog={setShowDialog}
-                    setNextHref={setNextHref}
-                    isActive={`/${location.pathname.split('/')[1]}` === item?.href}
-                  />
-                )
-              })}
+              <Box p={'20px'}>
+                {currentRoutesMemoized?.children?.map((item, index) => {
+                  return (
+                    <NavItem
+                      item={item}
+                      key={index}
+                      classes={classes}
+                      handleClickNavItems={setCurrentRoutes}
+                      handleShowDialog={setShowDialog}
+                      setNextHref={setNextHref}
+                      isActive={`/${location.pathname.split('/')[1]}` === item?.href}
+                    />
+                  )
+                })}
+              </Box>
             </div>
           </div>
         )}

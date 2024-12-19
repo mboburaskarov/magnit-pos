@@ -1,4 +1,5 @@
 import { faWeight } from '@fortawesome/free-solid-svg-icons'
+import { BorderColor } from '@mui/icons-material'
 import makeStyles from '@mui/styles/makeStyles'
 
 const drawerWidth = '296px'
@@ -38,7 +39,11 @@ export const navbarStyles = makeStyles((theme) => {
     popper: {
       backgroundColor: theme.palette.background.gray,
       borderRadius: '16px',
-      width: 256,
+      width: 280,
+      backgroundColor: '#fff',
+      boxShadow: '0px 4px 12px 0px #00000014',
+      border: '1px solid',
+      borderColor: theme.palette.bunker[100],
       outline: '0',
       minHeight: 402,
       '& > a': {
@@ -143,6 +148,12 @@ export const navbarStyles = makeStyles((theme) => {
       height: 48,
       fontSize: 18,
       padding: '10px 20px',
+      '&.active': {
+        backgroundColor: theme.palette.orange[500],
+        '& .itemLabel': {
+          color: '#fff',
+        },
+      },
       '&:first-child': {
         margin: '0 0 8px',
       },
@@ -215,16 +226,17 @@ export const navbarStyles = makeStyles((theme) => {
     listItemPopper: {
       cursor: 'pointer',
       height: 56,
-      fontSize: 16,
-      paddingLeft: 32,
-      paddingRight: 32,
-      fontWeight: 900,
+      fontSize: 18,
+      padding: '16px 20px',
+      fontWeight: 600,
+      lineHeight: '28px',
       color: theme.palette.dark[500],
       fontFamily: theme.fontFamily.Gilroy,
       transition: '0.3s',
       '& svg': {
         marginRight: 10,
-        height: 20,
+        height: 24,
+        width: 24,
         transition: '0.3s',
       },
     },
@@ -338,6 +350,7 @@ export const navbarStyles = makeStyles((theme) => {
       lineHeight: '28px',
       fontSize: 18,
       fontWeight: 600,
+
       color: theme.palette.dark[500],
     },
     itemArrow: {
@@ -380,9 +393,9 @@ export const navbarStyles = makeStyles((theme) => {
       },
     },
     hr: {
-      height: 2,
+      height: 1,
 
-      border: `1px dashed ${theme.palette.green[200]}`,
+      border: `1px solid ${theme.palette.bunker[100]}`,
     },
     activeChild: {
       transform: 'translateX(0) !important',
@@ -397,6 +410,7 @@ export const navbarStyles = makeStyles((theme) => {
     },
     child: {
       minHeight: '370px',
+
       backgroundColor: 'tramsparent',
       transform: 'translateX(100%)',
       // transition: 'transform .4s cubic-bezier(.4, .0, .2, 1)',

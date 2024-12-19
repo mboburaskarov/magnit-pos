@@ -241,7 +241,7 @@ export default function ProductsPage() {
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                   background: 'transparent',
-                  border: '2px solid transparent',
+                  // border: '2px solid transparent',
 
                   width: '400px',
                   height: 48,

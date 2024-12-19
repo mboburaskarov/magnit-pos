@@ -27,7 +27,7 @@ import StyledDialog from '../../../../components/Dialogs/StyledDialog'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import PlusIcon from '../../../assets/icons/PlusIcon'
 import FilterTableRowsMenu from './FilterTableRowsMenu'
-import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButton'
+import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButtonForSale'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/styles'
 import SaleDrawer from './saleDrawer'
@@ -230,25 +230,7 @@ export default function AllSalesPage() {
             setSelected={setStatus}
           />
         </Box> */}
-        <Box minWidth={320}>
-          <InputSwitch
-            uncontrolled
-            id='app-type'
-            name='app-type'
-            value={appType}
-            defaultValue='ALL'
-            onChange={(e) => setAppType(e)}
-            options={[
-              { title: t('switch.title.all'), value: 'ALL' },
-              { title: t('switch.title.active'), value: 'medicine' },
-              { title: t('switch.title.inactive'), value: 'vitamin' },
-              { title: t('switch.title.less_amount'), value: 'self_care' },
-              { title: t('switch.title.empty'), value: 'baby_care' },
-              { title: t('switch.title.less_date'), value: 'diagnostic' },
-              { title: t('switch.title.outofdate'), value: 'medical_supplies' },
-            ]}
-          />
-        </Box>
+
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box
