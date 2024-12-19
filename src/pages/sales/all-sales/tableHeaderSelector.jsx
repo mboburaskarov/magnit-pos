@@ -6,7 +6,7 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import getImageUrl from '../../../../utils/getImageUrl'
 import { products_statuses } from '../../../assets/data/products-statuses'
 import ProductImagePlaceholder from '../../../assets/icons/ProductImagePlaceholder'
-import EditIcon from '../../../assets/icons/EditIcon'
+import DefaultUserImgIcon from '../../../assets/icons/DefaultUserImgIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import ExpressIcon from '../../../assets/icons/ExpressIcon'
 import StyledTooltip from '../../../../components/StyledTooltip'
@@ -268,14 +268,15 @@ export default function tableHeaderSelector({
         cellRenderer: memo((p) => (
           <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + p.data?.employee?.phone)}>
             <Box display={'flex'} alignItems={'center'}>
-              <img
-                style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }}
-                src={p.data.employee?.image ? getImageUrl(p.data.employee?.image) : '/default-user-img.png'}
-              />
+              {p.data.employee?.image ? (
+                <img style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data.customer?.image)} />
+              ) : (
+                <DefaultUserImgIcon />
+              )}
               <a href={`tel:${'+' + p.data.employee?.phone}`}>
                 <Typography
                   id={p.data.employee?._id}
-                  style={{ whiteSpace: 'pre-line', color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}
+                  style={{ whiteSpace: 'pre-line', color: 'bunker.950', fontSize: '16px', lineHeight: '24px', marginLeft: '8px', fontWeight: 600 }}
                 >
                   {p.data.employee?.first_name}
                 </Typography>
@@ -293,14 +294,15 @@ export default function tableHeaderSelector({
         cellRenderer: memo((p) => (
           <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + p.data?.customer?.phone)}>
             <Box display={'flex'} alignItems={'center'}>
-              <img
-                style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }}
-                src={p.data.customer?.image ? getImageUrl(p.data.customer?.image) : '/default-user-img.png'}
-              />
+              {p.data.customer?.image ? (
+                <img style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data.customer?.image)} />
+              ) : (
+                <DefaultUserImgIcon />
+              )}
               <a href={`tel:${'+' + p.data.customer?.phone}`}>
                 <Typography
                   id={p.data.customer?._id}
-                  style={{ whiteSpace: 'pre-line', color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}
+                  style={{ whiteSpace: 'pre-line', color: 'bunker.950', marginLeft: '8px', fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}
                 >
                   {get(p, 'data.customer?.first_name', 'Unknown')}
                 </Typography>
