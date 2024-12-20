@@ -13,6 +13,7 @@ import StyledTooltip from '../../../components/StyledTooltip'
 import CheckAccess from '../../../components/CheckAccess'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import { get } from 'lodash'
+import InputQuantity from '../../../components/Inputs/InputQuantity'
 // import TextField from '../../../components/Inputs/TextField'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
@@ -64,7 +65,23 @@ export default function productStoresTableHeaderSelector({ productsColumns, valu
         ...el,
         headerName: 'Miqdor',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleInput currency='' {...p} type='name' />),
+        cellRenderer: memo((p) => (
+          <InputQuantity
+            id={`inputQuantity${p.rowIndex}`}
+            // value={0}
+            name={`inputQuantity${p.rowIndex}`}
+            fullWidth
+            // onChange={({ target }) => setQuon(target.value)}
+            // adornment={data?.measurement_unit?.short_name}
+            adornmentPosition='end'
+            // adornmentClassName={cls.adornment}
+            max={100}
+            required
+            // maxErrorMessage={maxErrorMessage}
+            type='number'
+            disabled={false}
+          />
+        )),
       }
     }
     if (el.field === 'min_amount') {
@@ -72,7 +89,22 @@ export default function productStoresTableHeaderSelector({ productsColumns, valu
         ...el,
         headerName: 'Kichik miqdor',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleInput currency='' {...p} type='name' />),
+        cellRenderer: memo((p) => (
+          <InputQuantity
+            id={`inputQuantity${p.rowIndex}`}
+            // value={0}
+            name='quantity'
+            fullWidth
+            // onChange={({ target }) => setQuon(target.value)}
+            // adornment={data?.measurement_unit?.short_name}
+            adornmentPosition='end'
+            // adornmentClassName={cls.adornment}
+            max={100}
+            // maxErrorMessage={maxErrorMessage}
+            type='number'
+            disabled={false}
+          />
+        )),
       }
     }
   })

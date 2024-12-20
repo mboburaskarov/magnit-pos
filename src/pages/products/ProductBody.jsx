@@ -20,6 +20,7 @@ import productStoresTableHeaderSelector from './productStoresTableHeaderSelector
 import AgGridTable from '../../../components/AgGridTable/AgGridTable'
 import { useSelector } from 'react-redux'
 import { useQueryParams } from '../../hooks/useQueryParams'
+import { get } from 'lodash'
 
 const filterTwoArrays = (array1, array2) => {
   const arr = array1?.filter((item) => {
@@ -46,7 +47,8 @@ export default function ProductBody({ productData = null }) {
     t,
     values,
   })
-  const { data: shopList, refetch: refetchShopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0, type: appType }))
+  const { data: storeList, refetch: refetchShopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0, type: appType }))
+  const { data: unitsList, refetch: refetchUnitList } = useQuery('unitsList', () => requests.getAllUnits({ limit: 20, offset: 0, type: appType }))
   const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories())
   // const { data: subCategories, refetch: refetchCategories } = useQuery(
   //   ['subCategories', parentCategory, appType],
@@ -127,7 +129,7 @@ export default function ProductBody({ productData = null }) {
           required
           fullWidth
           borderRadius={'40px'}
-          name='product_name'
+          name='name'
           label={t('create_new_product.product_name')}
           placeholder={t('create_new_product.product_name.placeholder')}
           sx={{ mb: 3 }}
@@ -138,7 +140,7 @@ export default function ProductBody({ productData = null }) {
           images={productData?.files?.map((el, ind) => ({ key: el, name: el, sequence_number: ind }))}
           onChange={(imagesArr) => setValue('images', imagesArr)}
         /> */}
-        <uox mt={'24px'}>
+        <Box mt={'24px'}>
           <Label>{t('create_new_product.products_set_section.image')}</Label>
           <UploadImage
             id='images'
@@ -150,13 +152,13 @@ export default function ProductBody({ productData = null }) {
               // setValue('images', imagesArr)
             }}
           />
-        </uox>
+        </Box>
         <Box height={'56px'} />
 
-        <SectionTitle noWrap withLine>
+        {/* <SectionTitle noWrap withLine>
           {t('create_new_product.additional_information.category')}
         </SectionTitle>
-        <CategoriesTree />
+        <CategoriesTree /> */}
         <Box height={'56px'} />
         <SectionTitle noWrap withLine>
           {t('create_new_product.create_packages.price')}
@@ -169,7 +171,7 @@ export default function ProductBody({ productData = null }) {
               type='number'
               fullWidth
               borderRadius={'40px'}
-              name='product_price'
+              name='supply_price'
               label={t('create_new_product.supply_price')}
               placeholder={t('create_new_product.supply_price.placeholder')}
             />
@@ -180,7 +182,7 @@ export default function ProductBody({ productData = null }) {
               type='number'
               fullWidth
               borderRadius={'40px'}
-              name='product_price'
+              name='vat'
               label={t('create_new_product.vat')}
               placeholder={t('create_new_product.vat.placeholder')}
             />
@@ -192,7 +194,7 @@ export default function ProductBody({ productData = null }) {
               type='number'
               fullWidth
               borderRadius={'40px'}
-              name='product_price'
+              name='retail_price'
               label={t('create_new_product.retail_price')}
               placeholder={t('create_new_product.retail_price.placeholder')}
             />
@@ -204,37 +206,58 @@ export default function ProductBody({ productData = null }) {
               type='number'
               fullWidth
               borderRadius={'40px'}
-              name='product_price'
+              name='vat_price'
               label={t('create_new_product.vat_price')}
+              placeholder={t('create_new_product.vat_price.placeholder')}
+            />
+          </Box>
+          <Box mt={'24px'} display={'flex'} width={'100%'}>
+            <OutLineTextField
+              endAdornmentText={'UZS'}
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              name='bonus_amount'
+              label={'Bonus narxi'}
+              placeholder={t('create_new_product.retail_price.placeholder')}
+            />
+            <Box width={'20px'} />
+
+            <OutLineTextField
+              endAdornmentText={'UZS'}
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              name='bonus_percent'
+              label={'Bonus Foizi'}
               placeholder={t('create_new_product.vat_price.placeholder')}
             />
           </Box>
         </Box>
         <Box height={'56px'} />
 
-        <SectionTitle noWrap withLine>
+        {/* <SectionTitle noWrap withLine>
           {t('create_new_product.amount_section.label')}
-        </SectionTitle>
-        <Box mt={'24px'}>
+        </SectionTitle> */}
+        {/* <Box mt={'24px'}>
           <AgGridTable
             id='products-main-tables'
             tableSettings
             columns={tableColumns}
-            data={[
-              { name: 'Sergili', amount: 2, min_amount: 4 },
-              { name: 'Oqtepa', amount: 1, min_amount: 5 },
-            ]}
+            data={get(storeList, 'data.data.data')}
             isDataLoading={false}
             offsetCount={1}
             // updaterAction={(newData) => {
             //   if (newData) dispatch(updateTableHeader(newData))
             // }}
-            // fullInfoAboutCurrentPage
+            fullInfoAboutCurrentPage
             // resetTable={() => dispatch(resetTableHeader({ refetch }))}
             // status={status}
             isRefreshing={false}
           />
-        </Box>
+        </Box> */}
         <Box height={'56px'} />
 
         <SectionTitle noWrap withLine>
@@ -246,7 +269,7 @@ export default function ProductBody({ productData = null }) {
             required
             fullWidth
             borderRadius={'40px'}
-            name='product_name'
+            name='manufacturer'
             label={t('create_new_product.features.manufacturer')}
             placeholder={t('create_new_product.features.manufacturer.placeholder')}
             sx={{ mb: 3 }}
@@ -254,24 +277,26 @@ export default function ProductBody({ productData = null }) {
           <Box width={'20px'} />
 
           <SelectSimple
+            isMulti
             onChange={() => {}}
-            // options={registerCashList?.data?.data}
+            options={get(unitsList, 'data.data')}
             required
             label={'Unit'}
             placeholder='Unitni tanlang'
-            name={'registerCash_id'}
+            name={'product_unit'}
+            getOptionLabel={(option) => option.unit_name}
           />
         </Box>
         <Box display={'flex'} width={'100%'} mt={'24px'}>
           <InputDatePicker
             // withTime
             defaultValue={new Date()}
-            name='expired_date'
+            name='expire_date'
             // minDate={new Date()}
             // minTime={new Date()}
             // minT
             required
-            id='expired_date'
+            id='expire_date'
             label='Дата закрытия'
             placeholder='Дата закрытия'
           />

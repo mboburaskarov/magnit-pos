@@ -9,10 +9,13 @@ import LoadingContainer from '../../../../components/LoadingContainer'
 import ProductBody from '../ProductBody'
 import Header from '../../../../components/Header'
 import { useTranslation } from 'react-i18next'
+import { get } from 'lodash'
+import { useSelector } from 'react-redux'
 export default function ProductCreatePage() {
   const { t } = useTranslation()
   const methods = useForm()
   const navigate = useNavigate()
+  const userData = useSelector((state) => state.user)
 
   useEffect(() => {
     methods.register('categories')
@@ -31,24 +34,37 @@ export default function ProductCreatePage() {
   })
 
   const onSubmit = (data) => {
+    console.log(data)
+
     const requestBody = {
-      name: data?.product_name,
-      dbId: data?.shop?._id,
-      categories: data?.categories?.map((el) => el._id),
-      quantityOfCategories: data?.categories?.map((el) => Number(el.quantity)).filter((elm) => !!elm),
-      description: data?.description,
-      cost: Number(data?.product_price),
-      isDiscount: Boolean(data?.product_price_with_discount),
-      discountCost: Number(data?.product_price_with_discount),
-      isFastDelivery: Boolean(data?.is_fast_delivery),
-      is_new: Boolean(data?.is_new),
-      preparationTime: data?.preparation_time?.time || 0,
-      sellDate: '2023-08-01T11:36:45.660Z',
-      status: 'ACTIVE',
-      files: data?.images?.map((el) => el.key) || [],
-      hashtag: data?.hashtag !== '' ? data?.hashtag?.map((el) => el.id) : [],
-      type: data?.app_type,
-      size: { name: data?.size_name?.value, height: Number(data?.height), width: Number(data?.width) },
+      name: get(data, 'name'),
+      barcode: get(data, 'barcode'),
+      bonus_amount: Number(get(data, 'bonus_amount')),
+      bonus_percent: Number(get(data, 'bonus_percent')),
+      description: get(data, 'description'),
+      expire_date: get(data, 'expire_date'),
+      manufacturer: get(data, 'manufacturer'),
+      name: get(data, 'name'),
+      photos: get(data, 'images', []),
+      product_unit: get(data, 'product_unit').map(({ id, ...rest }) => ({
+        unit_type_id: id,
+        ...rest,
+      })),
+      quantity: 2,
+      retail_price: Number(get(data, 'retail_price')),
+      status: 'active',
+      store_id: get(userData, 'store_id'),
+      store_product: [
+        {
+          quantity: 2,
+          small_quantity: 1,
+          store_id: '816afeb0-a73d-4313-8120-9b22600bc9d5',
+        },
+      ],
+      sum: Number(get(data, 'retail_price')),
+      supply_price: Number(get(data, 'supply_price')),
+      vat: Number(get(data, 'vat')),
+      vat_price: Number(get(data, 'vat_price')),
     }
 
     createProduct(requestBody)
@@ -65,7 +81,7 @@ export default function ProductCreatePage() {
           isLoading={isCreatingProduct}
           buttonText='Создать'
           backIcon
-          noActions
+          // noActions
           backHref='/products'
           text={t('create_new_product.top.new_product')}
           checkAccessId={'product-create'}

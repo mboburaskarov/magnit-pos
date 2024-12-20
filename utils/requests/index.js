@@ -67,10 +67,11 @@ export const requests = {
   deleteStore: (id) => request.delete(`v1/store/${id}`),
 
   // getAllVendors: (filter) => request.get(`v1/employee/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllUnits: (filter) => request.get(`v1/unit-types/list${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //products
   getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  createProduct: (data) => request.post(`api/admin/products`, data),
+  createProduct: (data) => request.post(`v1/product`, data),
   createCartItem: (data) => request.post(`v1/cart_item`, data),
   deleteCartItem: (id) => request.delete(`v1/cart_item/${id}`),
   deleteAll: (ids) => request.post(`v1/cart_item/multiple`, ids),
