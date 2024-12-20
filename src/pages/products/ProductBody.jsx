@@ -114,6 +114,9 @@ export default function ProductBody({ productData = null }) {
           border: '2px solid',
           borderColor: 'bunker.100',
         },
+        '& h5': {
+          mb: 0,
+        },
       }}
     >
       <SectionTitle noWrap withLine>
@@ -238,16 +241,27 @@ export default function ProductBody({ productData = null }) {
           {t('create_new_product.features.label')}
         </SectionTitle>
         <Box height={'24px'} />
+        <Box display={'flex'} width={'100%'} mt={'24px'}>
+          <TextField
+            required
+            fullWidth
+            borderRadius={'40px'}
+            name='product_name'
+            label={t('create_new_product.features.manufacturer')}
+            placeholder={t('create_new_product.features.manufacturer.placeholder')}
+            sx={{ mb: 3 }}
+          />
+          <Box width={'20px'} />
 
-        <TextField
-          required
-          fullWidth
-          borderRadius={'40px'}
-          name='product_name'
-          label={t('create_new_product.features.manufacturer')}
-          placeholder={t('create_new_product.features.manufacturer.placeholder')}
-          sx={{ mb: 3 }}
-        />
+          <SelectSimple
+            onChange={() => {}}
+            // options={registerCashList?.data?.data}
+            required
+            label={'Unit'}
+            placeholder='Unitni tanlang'
+            name={'registerCash_id'}
+          />
+        </Box>
         <Box display={'flex'} width={'100%'} mt={'24px'}>
           <InputDatePicker
             // withTime

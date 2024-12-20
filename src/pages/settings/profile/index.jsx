@@ -108,7 +108,7 @@ const Profile = () => {
   return (
     <FormProvider {...methods}>
       <Box display='flex' alignItems='center' justifyContent='center'>
-        <Box width='716px'>
+        <Box width='calc(100% - 60px)'>
           <Box height={'24px'} />
 
           <Typography variant='h4' fontWeight={700} mb={3}>

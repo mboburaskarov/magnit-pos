@@ -294,7 +294,7 @@ export default function RoleBody({ productData = null }) {
       <form className={classes.form} id='role-create' onSubmit={methods.handleSubmit(onSubmit, onError)}>
         <Box
           pb={10}
-          width='690px'
+          width='100%'
           sx={{
             margin: 'auto',
             '& .MuiInputBase-root': {
