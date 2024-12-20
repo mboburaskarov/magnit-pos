@@ -321,7 +321,7 @@ const useStyles = makeStyles((theme) =>
         borderColor: theme.palette.gray[200],
       },
       '.no-rows-container': {
-        borderColor: theme.palette.gray[300],
+        borderColor: theme.palette.bunker[100],
       },
       // '.no-rows-root p': {
       //   color: theme.palette.gray[300],

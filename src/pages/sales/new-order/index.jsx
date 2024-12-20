@@ -120,6 +120,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     border: '1px solid',
+    backgroundColor: theme.palette.white,
     borderRadius: '16px',
     borderColor: theme.palette.bunker[100],
     boxShadow: '0px 4px 12px 0px #00000014',
