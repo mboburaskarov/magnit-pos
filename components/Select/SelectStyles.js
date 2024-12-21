@@ -47,7 +47,7 @@ export const generateCustomStyles = (props = {}) => {
     valueContainer: (provided) => ({
       ...provided,
       width: '100%',
-      minHeight: mini ? 40 : 46,
+      minHeight: mini ? 40 : 44,
       padding: 1,
       // backgroundColor: 'inherit',
       borderRadius: '40px',
@@ -116,8 +116,8 @@ export const generateCustomStyles = (props = {}) => {
       lineHeight: '19px',
       fontWeight: 600,
       color: palette.gray[600],
-      height: 40,
-      borderRadius: 12,
+      height: 34,
+      borderRadius: '20px',
       backgroundColor: white ? palette.gray[100] : palette.background.default,
       fontFamily: 'Gilroy',
       cursor: 'pointer',
@@ -150,7 +150,7 @@ export const generateCustomStyles = (props = {}) => {
       display: state?.isDisabled ? 'none' : 'flex',
       // backgroundColor: 'inherit',
       borderTopRightRadius: '50px',
-
+      marginRight: '5px',
       borderBottomRightRadius: '50px',
       '& > div:nth-last-of-type(1)': {
         display: state.isMulti ? 'none !important' : 'flex',

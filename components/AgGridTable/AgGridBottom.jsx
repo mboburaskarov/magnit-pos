@@ -61,6 +61,7 @@ function AgGridBottom({
   isRefreshing,
 }) {
   const { t } = useTranslation()
+
   return (
     <Box
       sx={(theme) => ({

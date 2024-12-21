@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { Box, IconButton, TextField, Typography } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import TimeCell from '../../../components/AgGridTable/Cells/TimeCell'
 import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
 import thousandDivider from '../../../utils/thousandDivider'
@@ -14,6 +14,7 @@ import CheckAccess from '../../../components/CheckAccess'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import { get } from 'lodash'
 import InputQuantity from '../../../components/Inputs/InputQuantity'
+import TextField from '../../../components/Inputs/TextField'
 // import TextField from '../../../components/Inputs/TextField'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
@@ -32,8 +33,20 @@ const SimpleInput = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function productStoresTableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
+export default function productStoresTableHeaderSelector({
+  productsColumns,
+  values,
+  setImages,
+  t,
+  setOpenConfirmDialog,
+  setIsDrawerOpen,
+  register,
+  getValues,
+  setValues,
+  applyAllFunc,
+}) {
   // const { values } = useQueryParams()
+  console.log(productsColumns)
 
   const columns = productsColumns?.map((el) => {
     if (el.field === 'name') {
@@ -50,10 +63,12 @@ export default function productStoresTableHeaderSelector({ productsColumns, valu
         headerName: '№',
         colId: el.field,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
+          console.log(rowIndex)
+
           const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
 
           return (
-            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+            <Typography id={`product-${'number'}-${rowIndex}`} fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
               {absoluteIndex}
             </Typography>
           )
@@ -67,17 +82,15 @@ export default function productStoresTableHeaderSelector({ productsColumns, valu
         colId: el.field,
         cellRenderer: memo((p) => (
           <InputQuantity
-            id={`inputQuantity${p.rowIndex}`}
-            // value={0}
-            name={`inputQuantity${p.rowIndex}`}
+            applyAll
+            aplyAllFunc={() => applyAllFunc(p.data.id, 'quantity')}
+            id={`store_product.${p.data.id}.quantity`}
+            name={`store_product.${p.data.id}.quantity`}
             fullWidth
-            // onChange={({ target }) => setQuon(target.value)}
-            // adornment={data?.measurement_unit?.short_name}
+            adornment={p.data?.measurement_unit?.short_name}
             adornmentPosition='end'
-            // adornmentClassName={cls.adornment}
-            max={100}
             required
-            // maxErrorMessage={maxErrorMessage}
+            defaultValue={0}
             type='number'
             disabled={false}
           />
@@ -85,23 +98,22 @@ export default function productStoresTableHeaderSelector({ productsColumns, valu
       }
     }
     if (el.field === 'min_amount') {
+      console.log('hi')
+
       return {
         ...el,
         headerName: 'Kichik miqdor',
         colId: el.field,
         cellRenderer: memo((p) => (
           <InputQuantity
-            id={`inputQuantity${p.rowIndex}`}
-            // value={0}
-            name='quantity'
+            applyAll
+            aplyAllFunc={() => applyAllFunc(p.data.id, 'small_quantity')}
+            id={`store_product.${p.data.id}.small_quantity`}
+            name={`store_product.${p.data.id}.small_quantity`}
             fullWidth
-            // onChange={({ target }) => setQuon(target.value)}
-            // adornment={data?.measurement_unit?.short_name}
-            adornmentPosition='end'
-            // adornmentClassName={cls.adornment}
-            max={100}
-            // maxErrorMessage={maxErrorMessage}
+            required
             type='number'
+            defaultValue={0}
             disabled={false}
           />
         )),

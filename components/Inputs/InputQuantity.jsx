@@ -1,5 +1,9 @@
 import { Box, TextField, Typography, InputAdornment } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { set } from 'lodash'
+import { useState } from 'react'
+import { useFormContext } from 'react-hook-form'
+import Label from '../Label'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -33,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
   multiline: {
     height: 'auto',
+    marginTop: '4px !important',
   },
   hasAdornment: {
     '& .MuiOutlinedInput-adornedEnd': {
@@ -55,6 +60,16 @@ const useStyles = makeStyles((theme) => ({
       opacity: 1,
     },
   },
+  applyAll: {
+    position: 'absolute',
+    top: 0,
+    right: 15,
+    zIndex: 9,
+    backgroundColor: theme.palette.orange[500],
+    color: theme.palette.white,
+    padding: '2px 8px',
+    borderRadius: 10,
+  },
 }))
 
 function InputQuantity({
@@ -71,6 +86,7 @@ function InputQuantity({
   multiline,
   rowsMax,
   required = false,
+  uncontrolled = false,
   inputStyles,
   inputRef,
   disabled = false,
@@ -78,10 +94,15 @@ function InputQuantity({
   value,
   id,
   max,
+  applyAll,
+  aplyAllFunc = () => {},
   maxErrorMessage,
   name,
 }) {
+  const methods = useFormContext()
+
   const classes = useStyles()
+  const [isApplyAll, setApplyAll] = useState(false)
   const adornmentProps = adornment
     ? adornmentPosition === 'start'
       ? {
@@ -114,9 +135,17 @@ function InputQuantity({
 
   return (
     <Box className={classes.root} {...boxStyle}>
-      <Typography className={classes.label} variant='h5'>
-        {label}
-      </Typography>
+      {label && <Label required={required}>{label}</Label>}
+      {applyAll && isApplyAll && (
+        <Box
+          onClick={() => {
+            aplyAllFunc(), setApplyAll(false)
+          }}
+          className={classes.applyAll}
+        >
+          Применить ко всем
+        </Box>
+      )}
       <TextField
         id={id}
         name={name}
@@ -126,42 +155,53 @@ function InputQuantity({
         placeholder={placeholder}
         fullWidth={fullWidth}
         multiline={multiline}
+        onFocus={(e) => setApplyAll(true)}
         autoComplete='off'
-        onChange={(e) => {
-          const val = Number(e.target.value)
-          if (max) {
-            if (val <= max) {
-              onChange(e)
-            } else {
-              if (maxErrorMessage) {
-                maxErrorMessage(max)
+        {...(!uncontrolled && methods?.register(name, { required }))}
+        {...(uncontrolled && {
+          onChange: (e) => {
+            const val = Number(e.target.value)
+            if (max) {
+              if (val <= max) {
+                onChange(e)
+              } else {
+                if (maxErrorMessage) {
+                  maxErrorMessage(max)
+                }
+                onChange({
+                  target: {
+                    value: max,
+                  },
+                })
               }
-              onChange({
-                target: {
-                  value: max,
-                },
-              })
+            } else {
+              onChange(e)
             }
-          } else {
-            onChange(e)
-          }
-        }}
-        onBlur={(e) => {
-          if (e.target.value === '') {
-            onChange({
-              ...e,
-              target: {
-                ...e.target,
-                value: 0,
-              },
-            })
-          }
-        }}
+          },
+        })}
+        {...(uncontrolled && {
+          onBlur: (e) => {
+            // onChange({
+            //   ...e,
+            //   target: {
+            //     ...e.target,
+            //     value: 0,
+            //   },
+            // })
+          },
+        })}
+        {...(!uncontrolled && {
+          onBlur: (e) => {
+            setTimeout(() => {
+              setApplyAll(false)
+            }, 200)
+          },
+        })}
         rows={rowsMax}
         {...inputProps}
         style={{
           ...inputStyles,
-          width: `calc(74px +  ${String(value || 1).length ? String(value || 1).length * 10 : 0}px)`,
+          width: fullWidth ? '100%' : `calc(74px +  ${String(value || 1).length ? String(value || 1).length * 10 : 0}px)`,
         }}
         className={`${classes.textfield} ${!label && classes.noMargin} ${multiline && classes.multiline} ${adornment && classes.hasAdornment}`}
         error={!!error}

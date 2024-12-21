@@ -46,28 +46,31 @@ export default function ProductCreatePage() {
       manufacturer: get(data, 'manufacturer'),
       name: get(data, 'name'),
       photos: get(data, 'images', []),
-      product_unit: get(data, 'product_unit').map(({ id, ...rest }) => ({
+      product_unit: get(data, 'product_unit').map(({ id, value, ...rest }) => ({
         unit_type_id: id,
+        unit_name: value,
+        box_grain_count: get(data, 'box_grain_count'),
         ...rest,
       })),
-      quantity: 2,
+      quantity: Object.values(get(data, 'store_product')).reduce((total, product) => {
+        return Number(total) + Number(product.quantity)
+      }, 0),
       retail_price: Number(get(data, 'retail_price')),
       status: 'active',
       store_id: get(userData, 'store_id'),
-      store_product: [
-        {
-          quantity: 2,
-          small_quantity: 1,
-          store_id: '816afeb0-a73d-4313-8120-9b22600bc9d5',
-        },
-      ],
+      store_product: Object.values(get(data, 'store_product')).map((item) => ({
+        ...item,
+        quantity: Number(item.quantity),
+        small_quantity: Number(item.small_quantity),
+      })),
       sum: Number(get(data, 'retail_price')),
       supply_price: Number(get(data, 'supply_price')),
       vat: Number(get(data, 'vat')),
       vat_price: Number(get(data, 'vat_price')),
     }
+    console.log(requestBody)
 
-    createProduct(requestBody)
+    // createProduct(requestBody)
   }
   const onError = (err) => {
     console.log('err', err)

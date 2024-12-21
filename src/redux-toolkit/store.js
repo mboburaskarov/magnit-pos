@@ -17,11 +17,12 @@ import { storeTableColumnsSlice } from './tableSlices/storeTableColumns'
 import { storesListTableColumnsForProductSlice } from './tableSlices/storesListTableColumnsForProduct'
 import { vendorsTableColumnsSlice } from './tableSlices/vendorsTableColumns'
 import { salesTableColumnsSlice } from './tableSlices/salesTableColumns'
+import { importsTableColumnsSlice } from './tableSlices/importsTableColumns'
 
 // Define your migration function here
 const migrations = {
   // Example migration
-  3: (state) => {
+  6: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -39,7 +40,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 3, // Current version of the persisted state
+  version: 6, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -52,6 +53,7 @@ const reducer = combineReducers({
   transactionsTableColumns: transactionsTableColumnsSlice,
   qrSaleTableColumns: qrSaleTableColumnsSlice,
   productsTableColumns: productsTableColumnsSlice,
+  importsTableColumns: importsTableColumnsSlice,
   salesTableColumns: salesTableColumnsSlice,
   vendorsTableColumns: vendorsTableColumnsSlice,
   clientTableColumns: clientTableColumnsSlice,

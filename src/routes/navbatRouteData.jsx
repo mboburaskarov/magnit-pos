@@ -25,7 +25,7 @@ export const navbatRouteData = [
     children: [
       {
         label: 'navbar.products',
-        active: '/products/*',
+        active: '/products*',
         id: '31',
         href: '/products',
       },

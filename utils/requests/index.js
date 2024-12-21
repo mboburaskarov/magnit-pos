@@ -13,6 +13,7 @@ export const requests = {
   //category
   // categoryGetAll
   getAllCategories: (filter) => request.get(`v1/category/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllImports: (filter) => request.get(`v1/import/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createCategory: (data) => request.post(`api/categories`, data),
   getAllCategoriesBuchet: (filter) => request.get(`api/categories${qs.stringify(filter, { addQueryPrefix: true })}`),
   createBillzCategory: (data) => request.post(`api/billz`, data),
