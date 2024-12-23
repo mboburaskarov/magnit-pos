@@ -2,6 +2,7 @@ import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import ProductsPage from '../../pages/products'
 import ImportPage from '../../pages/products/import'
 import ImportDetailsPage from '../../pages/products/importDetails'
+import ImportWithCheckingPage from '../../pages/products/importWithChecking'
 
 const productsRoutes = {
   path: 'products',
@@ -22,6 +23,15 @@ const productsRoutes = {
         {
           path: '',
           element: <ImportDetailsPage />,
+        },
+      ],
+    },
+    {
+      path: 'import-with-checking/:id',
+      children: [
+        {
+          path: '',
+          element: <ImportWithCheckingPage />,
         },
       ],
     },

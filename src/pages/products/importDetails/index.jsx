@@ -76,7 +76,7 @@ export default function ImportDetailsPage() {
     }
   }, [])
 
-  const importDetailsListFilter = useMemo(() => {
+  const importWithCheckingDetailsFilter = useMemo(() => {
     return {
       import_id: id,
       limit: values?.limit || 10,
@@ -111,11 +111,11 @@ export default function ImportDetailsPage() {
     regions,
   ])
   const {
-    data: importDetailsList,
-    isLoading: importDetailsListLoading,
-    isFetching: isFetchingimportDetailsList,
+    data: importWithCheckingDetails,
+    isLoading: importWithCheckingDetailsLoading,
+    isFetching: isFetchingimportWithCheckingDetails,
     refetch,
-  } = useQuery(['importDetailsList', importDetailsListFilter], () => requests.getImportDetails(importDetailsListFilter))
+  } = useQuery(['importWithCheckingDetails', importWithCheckingDetailsFilter], () => requests.getImportDetails(importWithCheckingDetailsFilter))
 
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
     onSuccess: () => {
@@ -186,24 +186,24 @@ export default function ImportDetailsPage() {
 
   useEffect(() => {
     refetch()
-  }, [importDetailsListFilter])
+  }, [importWithCheckingDetailsFilter])
 
   useEffect(() => {
     const count =
       // status === 'ACTIVE'
-      //   ? importDetailsList?.data?.active
+      //   ? importWithCheckingDetails?.data?.active
       //   : status === 'INACTIVE'
-      //   ? importDetailsList?.data?.inactive
+      //   ? importWithCheckingDetails?.data?.inactive
       //   : status === 'INACTIVE_BY_VENDOR'
-      //   ? importDetailsList?.data?.inactiveByVendor
+      //   ? importWithCheckingDetails?.data?.inactiveByVendor
       //   : status === 'BLOCKED'
-      //   ? importDetailsList?.data?.blocked
-      // : importDetailsList?.data.totalCount
-      importDetailsList?.data?.data?._meta?.total_count
+      //   ? importWithCheckingDetails?.data?.blocked
+      // : importWithCheckingDetails?.data.totalCount
+      importWithCheckingDetails?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [importDetailsList?.data, values?.limit, appType])
+  }, [importWithCheckingDetails?.data, values?.limit, appType])
 
   return (
     <LoadingContainer readyState={true}>
@@ -267,8 +267,8 @@ export default function ImportDetailsPage() {
                 </Box>
               }
               popperData={[
-                { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => navigate('/sales/cash-shift/f') },
-                { title: 'Импорт с проверкой', icon: <ImportWithIcon />, clickHandler: () => navigate('/sales/cash-shift/f') },
+                { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => navigate(`/products/import-with-checking/${id}`) },
+                { title: 'Импорт с проверкой', icon: <ImportWithIcon />, clickHandler: () => navigate(`/products/import-with-checking/${id}`) },
               ]}
             />
           </Box>
@@ -291,8 +291,8 @@ export default function ImportDetailsPage() {
             id='imports-main-table'
             tableSettings
             columns={tableColumns}
-            data={importDetailsList?.data?.data?.data || []}
-            isDataLoading={isFetchingimportDetailsList || importDetailsListLoading}
+            data={importWithCheckingDetails?.data?.data?.data || []}
+            isDataLoading={isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
@@ -300,7 +300,7 @@ export default function ImportDetailsPage() {
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             status={appType}
-            isRefreshing={loading || isFetchingimportDetailsList || importDetailsListLoading}
+            isRefreshing={loading || isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
           />
         </Box>
       </Box>

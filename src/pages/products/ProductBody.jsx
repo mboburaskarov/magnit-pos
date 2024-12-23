@@ -236,7 +236,7 @@ export default function ProductBody({ productData = null }) {
               fullWidth
               borderRadius={'40px'}
               name='bonus_amount'
-              label={'Bonus narxi'}
+              label={'Цена бонуса'}
               placeholder={t('create_new_product.retail_price.placeholder')}
             />
             <Box width={'20px'} />
@@ -248,7 +248,7 @@ export default function ProductBody({ productData = null }) {
               fullWidth
               borderRadius={'40px'}
               name='bonus_percent'
-              label={'Bonus Foizi'}
+              label={'Бонусный процент'}
               placeholder={t('create_new_product.vat_price.placeholder')}
             />
           </Box>
@@ -302,7 +302,7 @@ export default function ProductBody({ productData = null }) {
             }}
           >
             <InputQuantity
-              label={'Box grain count'}
+              label={'Количество зерен'}
               id={`box_grain_count`}
               name={`box_grain_count`}
               fullWidth
@@ -339,7 +339,7 @@ export default function ProductBody({ productData = null }) {
             InputProps={{
               endAdornment: (
                 <Button id={'buttonId'} variant='text'>
-                  {'Yaratish'}
+                  {'Создать'}
                 </Button>
               ),
             }}

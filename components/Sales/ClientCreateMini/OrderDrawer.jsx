@@ -441,7 +441,7 @@ export default function OrderDrawer({
                     mr={'24px'}
                   >
                     <Typography fontSize={24} fontWeight={'700'} lineHeight={'32px'} color={'bunker.500'}>
-                      Jami:
+                      Итого:
                     </Typography>
                     <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={'bunker.950'}>
                       {get(cartItemsList, 'total_amount')} UZS
@@ -456,7 +456,7 @@ export default function OrderDrawer({
                     width={'100%'}
                   >
                     <Typography fontSize={24} fontWeight={'700'} lineHeight={'32px'} color={'bunker.500'}>
-                      {maxAmount < 0 ? 'Qaytim' : 'To’lash kerak'}
+                      {maxAmount < 0 ? 'Возврат' : 'Должен платить'}
                     </Typography>
                     <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={maxAmount === 0 ? 'green.700' : 'red.700'}>
                       {maxAmount} UZS
@@ -566,7 +566,7 @@ export default function OrderDrawer({
               </Box>
             </Box>
             <LoadingButton sx={{ minHeight: '48px !important ', display: 'flex' }} variant='contained' disabled={maxAmount > 0} onClick={() => handleFinish()}>
-              To'lash
+              Оплатить
             </LoadingButton>
           </FormProvider>
         </Drawer>

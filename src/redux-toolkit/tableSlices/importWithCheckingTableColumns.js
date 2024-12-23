@@ -2,90 +2,52 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const columns = [
   {
-    field: 'public_id',
+    field: 'checkbox',
     hide: false,
-    minWidth: 60,
-    width: 60,
+    minWidth: 45,
+    width: 45,
+  },
+  {
+    field: 'name',
+    hide: false,
+    minWidth: 150,
+    width: 150,
   },
 
   {
-    field: 'import_date',
+    field: 'sku',
     hide: false,
     minWidth: 70,
-    width: 370,
+    width: 200,
   },
   {
-    field: 'created_by',
+    field: 'barcode',
     hide: false,
     minWidth: 70,
-    width: 370,
+    width: 200,
   },
   {
-    field: 'accepted_by',
+    field: 'declared',
     hide: false,
     minWidth: 70,
-    width: 370,
+    width: 200,
   },
   {
-    field: 'accepted_amount',
+    field: 'scanned',
     hide: false,
     minWidth: 70,
     width: 170,
   },
   {
-    field: 'accepted_count',
+    field: 'product_activities',
     hide: false,
     minWidth: 70,
-    width: 120,
-  },
-  {
-    field: 'received_amount',
-    hide: false,
-    minWidth: 70,
-    width: 250,
-  },
-
-  {
-    field: 'received_count',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
-  {
-    field: 'status',
-    hide: false,
-    minWidth: 70,
-    width: 130,
-  },
-
-  {
-    field: 'created_at',
-    hide: false,
-    minWidth: 70,
-    width: 350,
-  },
-  {
-    field: 'sender',
-    hide: false,
-    minWidth: 70,
-    width: 350,
-  },
-  {
-    field: 'recivers',
-    hide: false,
-    minWidth: 70,
-    width: 350,
-  },
-  {
-    field: 'stores',
-    hide: false,
-    minWidth: 70,
-    width: 350,
+    width: 420,
   },
 ]
 
-const importDetailsTableColumns = createSlice({
-  name: 'importDetailsTableColumns',
+const importWithCheckingTableColumns = createSlice({
+  name: 'importWithCheckingTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -125,5 +87,5 @@ const importDetailsTableColumns = createSlice({
 })
 
 export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
-  importDetailsTableColumns.actions
-export const importDetailsTableColumnsSlice = importDetailsTableColumns.reducer
+  importWithCheckingTableColumns.actions
+export const importWithCheckingTableColumnsSlice = importWithCheckingTableColumns.reducer

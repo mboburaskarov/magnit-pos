@@ -163,7 +163,7 @@ export default function MainDetails({ clientData, openDrawer }) {
 
       <Box mb={4} />
       <Typography fontSize={'20px'} lineHeight={'32px'} mb='24px' fontWeight={'600'} color={'#000'}>
-        Do'kon va rollar
+        Магазин и роли
       </Typography>
 
       <Grid container spacing={4}>
@@ -196,7 +196,7 @@ export default function MainDetails({ clientData, openDrawer }) {
 
       <Box mb={4} />
       <Typography fontSize={'20px'} lineHeight={'32px'} mb='24px' fontWeight={'600'} color={'#000'}>
-        Qo’shimcha ma’lumotlar
+        Дополнительная информация
       </Typography>
       <Grid container spacing={4}>
         <Grid item xs={6}>

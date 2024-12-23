@@ -168,7 +168,7 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
               fullWidth
               placeholder={
                 <Typography ml={4} color='#bdbdbd'>
-                  Sotuvchi
+                  Сотрудники
                 </Typography>
               }
               // options={[]}

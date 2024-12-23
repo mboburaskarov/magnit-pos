@@ -349,17 +349,6 @@ function NewSale() {
     navigate(`${location.pathname}${searchParams}`)
   }
 
-  // Correct the content function
-  // const reactToPrintContent = useCallback(() => printContainer.current, [])
-
-  // const handlePrint = useReactToPrint({
-  //   content: reactToPrintContent, // This should be a function
-  //   documentTitle: documentName.current,
-  //   removeAfterPrint: true,
-  // })
-  // const handlePrint = () => {
-  //   console.log(printContainer.current, documentName), handlePrint2()
-  // }
   return (
     <FormProvider {...method}>
       <Box display={'flex'}>

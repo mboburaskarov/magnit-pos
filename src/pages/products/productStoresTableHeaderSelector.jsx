@@ -42,7 +42,7 @@ export default function productStoresTableHeaderSelector({
     if (el.field === 'name') {
       return {
         ...el,
-        headerName: "Do'kon",
+        headerName: t('store'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='' {...p} type='name' />),
       }
@@ -66,7 +66,7 @@ export default function productStoresTableHeaderSelector({
     if (el.field === 'amount') {
       return {
         ...el,
-        headerName: 'Miqdor',
+        headerName: 'Количество',
         colId: el.field,
         cellRenderer: memo((p) => (
           <InputQuantity
@@ -88,7 +88,7 @@ export default function productStoresTableHeaderSelector({
     if (el.field === 'min_amount') {
       return {
         ...el,
-        headerName: 'Kichik miqdor',
+        headerName: 'Небольшое количество',
         colId: el.field,
         cellRenderer: memo((p) => (
           <InputQuantity

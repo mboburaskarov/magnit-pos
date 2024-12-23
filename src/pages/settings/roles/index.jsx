@@ -121,8 +121,6 @@ export default function RolesPage() {
     isFetching: isFetchingstoresList,
     refetch,
   } = useQuery(['storesList', storesListFilter], () => requests.getAllRoles(storesListFilter))
-  console.log(storesList)
-
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteRole, {
     onSuccess: () => {
       refetch()
@@ -338,18 +336,14 @@ export default function RolesPage() {
           setOpen={setOpenConfirmDialog}
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
           title={
-            openConfirmDialog?.type === 'activate'
-              ? 'Активировать продукт?'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Деактивировать продукт?'
-              : 'Удалить продукт?'
+            openConfirmDialog?.type === 'activate' ? 'Активировать роль?' : openConfirmDialog?.type === 'deactivate' ? 'Деактивировать роль?' : 'Удалить роль?'
           }
           desc={
             openConfirmDialog?.type === 'activate'
               ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
               : openConfirmDialog?.type === 'deactivate'
               ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-              : "do'konini o’chirmoqchimisiz?"
+              : 'хотите ли вы удалить роль?'
           }
           supDesc={openConfirmDialog.name}
           actions={
@@ -361,7 +355,7 @@ export default function RolesPage() {
                 variant='contained'
                 onClick={() => setOpenConfirmDialog(null)}
               >
-                Yo'q
+                Нет
               </Button>
               <LoadingButton
                 variant='contained'
@@ -375,7 +369,7 @@ export default function RolesPage() {
                     : deleteProduct({ data: [openConfirmDialog.id] })
                 }
               >
-                Ha, o'chirish
+                Да, удалить
               </LoadingButton>
             </>
           }

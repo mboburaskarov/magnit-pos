@@ -379,7 +379,7 @@ export default function VendorsPage() {
               ? 'Вы действительно хотите активировать сотрудника, но после активации вы не сможете отменить процесс.'
               : openConfirmDialog?.type === 'deactivate'
               ? 'Вы уверены, что хотите удалить сотрудника? После удаления вы не сможете отменить процесс.'
-              : 'ni o’chirmoqchimisiz?'
+              : 'вы хотите удалить?'
           }
           supDesc={openConfirmDialog.name}
           actions={
@@ -391,7 +391,7 @@ export default function VendorsPage() {
                 variant='contained'
                 onClick={() => setOpenConfirmDialog(null)}
               >
-                Yo'q
+                Нет
               </Button>
               <LoadingButton
                 variant='contained'
@@ -405,7 +405,7 @@ export default function VendorsPage() {
                     : deleteProduct({ data: [openConfirmDialog.id] })
                 }
               >
-                Ha, o'chirish
+                Да, удалить
               </LoadingButton>
             </>
           }

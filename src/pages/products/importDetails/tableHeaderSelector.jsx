@@ -177,7 +177,7 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
         )),
       }
     }
-    if (el.field === 'reciver') {
+    if (el.field === 'recivers') {
       return {
         ...el,
         headerName: 'Дата импорта',
