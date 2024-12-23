@@ -1,12 +1,11 @@
 import authRoutes from './auth'
 import dashboardRoutes from './dashboard'
-import salesRoutes from './sales'
 import productsRoutes from './products'
 import productsCreateRoutes from './products/product-create'
-import userRoutes from './users'
-import reportRoutes from './reports'
+import salesRoutes from './sales'
 import settingsRoutes from './settings'
 import rolesCreateRoutes from './settings/role-create'
+import userRoutes from './users'
 
 const routes = [
   { ...dashboardRoutes },
@@ -16,7 +15,6 @@ const routes = [
   { ...productsCreateRoutes },
   { ...rolesCreateRoutes },
   { ...userRoutes },
-  { ...reportRoutes },
   { ...settingsRoutes },
 ]
 export default routes

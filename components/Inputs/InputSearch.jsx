@@ -132,7 +132,7 @@ const InputSearch = ({
           InputProps: {
             startAdornment: <InputAdornment position='start'>{icon || <SearchIcon />}</InputAdornment>,
             endAdornment: (
-              <InputAdornment position='absolute'>
+              <InputAdornment position='start'>
                 {(value || searchTerm) && (
                   <div className={classes.resetIcon}>
                     {adornmentText ? <span>{adornmentText}</span> : ''}

@@ -17,23 +17,18 @@ import { useQueryParams } from '../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/clientTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-// import ProductDrawer from './ProductDrawer'
 import { useTheme } from '@mui/styles'
 import { useTranslation } from 'react-i18next'
-import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButtonForClient'
-import CheckAccess from '../../../components/CheckAccess'
+import ColumnsFilterButtonForAll from '../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import StyledDialog from '../../../components/Dialogs/StyledDialog'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
 import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
-import PlusIcon from '../../assets/icons/PlusIcon'
-import FilterTableRowsMenu from './FilterTableRowsMenu'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ClientsPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.clientTableColumns)
   const { values } = useQueryParams()
   const [status, setStatus] = useState('ALL')
@@ -264,29 +259,6 @@ export default function ClientsPage() {
             </Box>
             {selectClients.length > 0 && (
               <>
-                {/* <Box minWidth={48} ml={'16px'}>
-                  <Button
-                    sx={{
-                      height: '48px',
-                      padding: 0,
-                      bgcolor: '#fff',
-                      border: '1px solid #ECEDF2',
-                      color: 'dark.500',
-                      fontWeight: '500',
-                      fontSize: '16px',
-                      lineHeight: '24px',
-                      '& span': {
-                        mr: '12px',
-                      },
-                    }}
-                    fullWidth
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => deActivateProduct(selectClients)}
-                  >
-                    <LockIcon color='#111217' />
-                  </Button>
-                </Box> */}
                 <Box minWidth={48} ml={'16px'}>
                   <Button
                     sx={{
@@ -314,30 +286,18 @@ export default function ClientsPage() {
             )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
-            <Box
-            // onClick={() => setFilterTableRowsMenu(true)}
-            >
-              {/* <EditorIcon /> */}
-              <ColumnsFilterButton title={t('ag_grid.table_setting.label')} columns={tableColumns} isCatalog={false} />
+            <Box>
+              <ColumnsFilterButtonForAll
+                title={t('ag_grid.table_setting.label')}
+                columns={tableColumns}
+                isCatalog={false}
+                changeColumnSequence={changeColumnSequence}
+                resetTableHeader={resetTableHeader}
+              />
             </Box>
-            {/* <CheckAccess id={'product-create'}>
-              <Box minWidth={156}>
-                <Button
-                  sx={{ height: '48px' }}
-                  onClick={() => navigate('/clients/create')}
-                  fullWidth
-                  startIcon={<PlusIcon color='#fff' />}
-                  variant='contained'
-                  color='primary'
-                >
-                  {t('button.add_new.text')}
-                </Button>
-              </Box>
-            </CheckAccess> */}
           </Box>
         </Box>
         <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
-        <FilterTableRowsMenu tableColumns={tableColumns} open={filterTableRowsMenu} setOpen={setFilterTableRowsMenu} />
         <Box>
           <AgGridTable
             id='clients-main-table'
@@ -356,14 +316,7 @@ export default function ClientsPage() {
           />
         </Box>
       </Box>
-      {/* <ProductDrawer
-        setOpenConfirmDialog={setOpenConfirmDialog}
-        setImages={setOpenImageGallery}
-        refetch={refetch}
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(null)}
-        setRejectComment={setRejectComment}
-      /> */}
+
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (
         <ConfirmDialog

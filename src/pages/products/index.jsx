@@ -1,37 +1,30 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
-import TabContainer from '../../../components/Tab/TabContainer'
-import LoadingContainer from '../../../components/LoadingContainer'
-import { useEffect, useMemo, useState } from 'react'
-import { products_statuses } from '../../assets/data/products-statuses'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { requests } from '../../../utils/requests'
-import { useMutation, useQuery } from 'react-query'
-import AgGridTable from '../../../components/AgGridTable/AgGridTable'
-import { useDispatch, useSelector } from 'react-redux'
-import tableHeaderSelector from './tableHeaderSelector'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
-import InputSearch from '../../../components/Inputs/InputSearch'
-import ImageGallery from '../../../components/ImageGallery'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowDownWideShort, faArrowUpWideShort, faPlus } from '@fortawesome/free-solid-svg-icons'
-import FilterMenu from './FilterMenu'
-import { useNavigate } from 'react-router-dom'
-import { error, success } from '../../../utils/toast'
-import ConfirmDialog from '../../../components/ConfirmDialog'
-import BigWarningIcon from '../../assets/icons/BigWarningIcon'
 import { LoadingButton } from '@mui/lab'
-import BigTickIcon from '../../assets/icons/BigTickIcon'
-import ProductDrawer from './ProductDrawer'
-import InputSwitch from '../../../components/Inputs/InputSwitch'
+import { Box, Button, TextField, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import AgGridTable from '../../../components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../components/CheckAccess'
+import ConfirmDialog from '../../../components/ConfirmDialog'
 import StyledDialog from '../../../components/Dialogs/StyledDialog'
+import ImageGallery from '../../../components/ImageGallery'
+import InputSearch from '../../../components/Inputs/InputSearch'
+import InputSwitch from '../../../components/Inputs/InputSwitch'
+import LoadingContainer from '../../../components/LoadingContainer'
+import { requests } from '../../../utils/requests'
+import { error, success } from '../../../utils/toast'
+import BigTickIcon from '../../assets/icons/BigTickIcon'
+import BigWarningIcon from '../../assets/icons/BigWarningIcon'
 import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
 import PlusIcon from '../../assets/icons/PlusIcon'
-import EditorIcon from '../../assets/icons/EditorIcon'
-import FilterTableRowsMenu from './FilterTableRowsMenu'
-import ColumnsFilterButton from '../../../components/AgGridTable/ColumnsFilterButton'
-import { useTranslation } from 'react-i18next'
-import { useTheme } from '@mui/styles'
+import { useQueryParams } from '../../hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
+import FilterMenu from './FilterMenu'
+import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ProductsPage() {
@@ -41,14 +34,12 @@ export default function ProductsPage() {
   const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.productsTableColumns)
   const { values } = useQueryParams()
-  const [status, setStatus] = useState('ALL')
   const [regions, setRegions] = useState([])
   const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
-  const [filterTableRowsMenu, setFilterTableRowsMenu] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(null)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const tableColumns = tableHeaderSelector({
@@ -214,22 +205,7 @@ export default function ProductsPage() {
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           {t('page.catalog.title')}
         </Typography>
-        {/* <Box display='flex' mb={3} mt={4}>
-          <TabContainer
-            customTooltip
-            tabs={products_statuses?.map((el) => ({ label: el.name, id: el.id }))}
-            counts={[
-              productsList?.data?.totalCount,
-              productsList?.data?.active,
-              productsList?.data?.inactive,
-              productsList?.data?.inactiveByVendor,
-              productsList?.data?.blocked,
-              productsList?.data?.rejected,
-            ]}
-            selected={status}
-            setSelected={setStatus}
-          />
-        </Box> */}
+
         <Box minWidth={320}>
           <InputSwitch
             uncontrolled
@@ -295,11 +271,14 @@ export default function ProductsPage() {
             </Box>
           </Box>
           <Box display={'flex'} alignItems={'center'}>
-            <Box
-            // onClick={() => setFilterTableRowsMenu(true)}
-            >
-              {/* <EditorIcon /> */}
-              <ColumnsFilterButton title={t('ag_grid.table_setting.label')} columns={tableColumns} isCatalog={false} />
+            <Box>
+              <ColumnsFilterButtonForAll
+                title={t('ag_grid.table_setting.label')}
+                columns={tableColumns}
+                isCatalog={false}
+                resetTableHeader={resetTableHeader}
+                changeColumnSequence={changeColumnSequence}
+              />
             </Box>
             <CheckAccess id={'product-create'}>
               <Box minWidth={156}>
@@ -318,7 +297,6 @@ export default function ProductsPage() {
           </Box>
         </Box>
         <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
-        <FilterTableRowsMenu tableColumns={tableColumns} open={filterTableRowsMenu} setOpen={setFilterTableRowsMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'
@@ -337,14 +315,7 @@ export default function ProductsPage() {
           />
         </Box>
       </Box>
-      <ProductDrawer
-        setOpenConfirmDialog={setOpenConfirmDialog}
-        setImages={setOpenImageGallery}
-        refetch={refetch}
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(null)}
-        setRejectComment={setRejectComment}
-      />
+
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (
         <ConfirmDialog

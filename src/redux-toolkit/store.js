@@ -1,24 +1,18 @@
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { persistReducer, persistStore } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { sidebarSettingsSlice } from './sidebarSettingsSlice'
-import { userSlice } from './userSlice'
-import { orderTableColumnsSlice } from './tableSlices/orderTableColumns'
-import { notificationsTableColumnsSlice } from './tableSlices/notificationsTableColumns'
-import { notificationCustomTableColumnsSlice } from './tableSlices/notificationsCustomTableColumns'
-import { rolesTableColumnsSlice } from './tableSlices/rolesTableColumns'
 import { clientTableColumnsSlice } from './tableSlices/clientTableColumns'
-import { usersTableColumnsSlice } from './tableSlices/userTableColumns'
-import { transactionsTableColumnsSlice } from './tableSlices/transactionsTableColumns'
-import { couriersColumns } from './tableSlices/couriers'
-import { qrSaleTableColumnsSlice } from './tableSlices/qrSaleTableColumns'
+import { importDetailsTableColumnsSlice } from './tableSlices/importDetailTableColumns'
+import { importsTableColumnsSlice } from './tableSlices/importsTableColumns'
+import { orderTableColumnsSlice } from './tableSlices/orderTableColumns'
 import { productsTableColumnsSlice } from './tableSlices/productsTableColumns'
+import { rolesTableColumnsSlice } from './tableSlices/rolesTableColumns'
+import { salesTableColumnsSlice } from './tableSlices/salesTableColumns'
 import { storeTableColumnsSlice } from './tableSlices/storeTableColumns'
 import { storesListTableColumnsForProductSlice } from './tableSlices/storesListTableColumnsForProduct'
 import { vendorsTableColumnsSlice } from './tableSlices/vendorsTableColumns'
-import { salesTableColumnsSlice } from './tableSlices/salesTableColumns'
-import { importsTableColumnsSlice } from './tableSlices/importsTableColumns'
-import { importDetailsTableColumnsSlice } from './tableSlices/importDetailTableColumns'
+import { userSlice } from './userSlice'
 
 // Define your migration function here
 const migrations = {
@@ -51,8 +45,6 @@ const persistConfig = {
 const reducer = combineReducers({
   sidebarSettings: sidebarSettingsSlice,
   orderTableColumns: orderTableColumnsSlice,
-  transactionsTableColumns: transactionsTableColumnsSlice,
-  qrSaleTableColumns: qrSaleTableColumnsSlice,
   productsTableColumns: productsTableColumnsSlice,
   importsTableColumns: importsTableColumnsSlice,
   importDetailsColumns: importDetailsTableColumnsSlice,
@@ -62,11 +54,7 @@ const reducer = combineReducers({
   user: userSlice,
   storesListTableColumnsForProduct: storesListTableColumnsForProductSlice,
   storeTableColumns: storeTableColumnsSlice,
-  notificationsTableColumns: notificationsTableColumnsSlice,
-  notificationCustomCreate: notificationCustomTableColumnsSlice,
   rolesTableColumns: rolesTableColumnsSlice,
-  usersTableColumns: usersTableColumnsSlice,
-  courierstableColumns: couriersColumns,
 })
 
 const persistedReducer = persistReducer(persistConfig, reducer)

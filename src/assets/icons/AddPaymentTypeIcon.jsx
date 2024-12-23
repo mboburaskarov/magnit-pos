@@ -4,9 +4,9 @@ const AddPaumentTypeIcon = ({ color = '#111217' }) => (
     <path
       d='M20 16V24M24 20H16M20 30C25.5228 30 30 25.5228 30 20C30 14.4772 25.5228 10 20 10C14.4772 10 10 14.4772 10 20C10 25.5228 14.4772 30 20 30Z'
       stroke='white'
-      stroke-width='1.5'
-      stroke-linecap='round'
-      stroke-linejoin='round'
+      strokeWidth='1.5'
+      strokeLinecap='round'
+      strokeLinejoin='round'
     />
   </svg>
 )

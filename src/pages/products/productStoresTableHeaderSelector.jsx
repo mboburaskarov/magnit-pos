@@ -15,7 +15,6 @@ import { useQueryParams } from '../../hooks/useQueryParams'
 import { get } from 'lodash'
 import InputQuantity from '../../../components/Inputs/InputQuantity'
 import TextField from '../../../components/Inputs/TextField'
-// import TextField from '../../../components/Inputs/TextField'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (

@@ -16,18 +16,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({
-  productsColumns,
-  setOpenSaleDrawer,
-  selectClientsFunc,
-  values,
-  setImages,
-  t,
-  setOpenConfirmDialog,
-  setIsDrawerOpen,
-}) {
-  // const { values } = useQueryParams()
-
+export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer, values }) {
   const columns = productsColumns?.map((el) => {
     if (el.field === 'number') {
       return {

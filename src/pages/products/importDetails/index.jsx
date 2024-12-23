@@ -7,31 +7,26 @@ import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButtonForImportDetails'
-import CheckAccess from '../../../../components/CheckAccess'
+import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import StyledDialog from '../../../../components/Dialogs/StyledDialog'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
-import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
-import PlusIcon from '../../../assets/icons/PlusIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/importDetailTableColumns'
 import FilterMenu from './FilterMenu'
 // import ProductDrawer from './ProductDrawer'
-import tableHeaderSelector from './tableHeaderSelector'
 import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import ImportIcon from '../../../assets/icons/ImportIcon'
-import UnlockIcon from '../../../assets/icons/UnlockIcon'
 import ImportWithIcon from '../../../assets/icons/ImportWithIcon'
 import ImportWithoutIcon from '../../../assets/icons/ImportWithoutIcon'
-import FilterTableRowsMenu from './FilterTableRowsMenu'
+import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ImportDetailsPage() {
@@ -216,22 +211,6 @@ export default function ImportDetailsPage() {
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           {'Детали импорта'}
         </Typography>
-        {/* <Box display='flex' mb={3} mt={4}>
-          <TabContainer
-            customTooltip
-            tabs={imports_statuses?.map((el) => ({ label: el.name, id: el.id }))}
-            counts={[
-              importDetailsList?.data?.totalCount,
-              importDetailsList?.data?.active,
-              importDetailsList?.data?.inactive,
-              importDetailsList?.data?.inactiveByVendor,
-              importDetailsList?.data?.blocked,
-              importDetailsList?.data?.rejected,
-            ]}
-            selected={status}
-            setSelected={setStatus}
-          />
-        </Box> */}
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
@@ -241,8 +220,6 @@ export default function ImportDetailsPage() {
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                   background: 'transparent',
-                  // border: '2px solid transparent',
-
                   width: '400px',
                   height: 48,
                 },
@@ -293,32 +270,21 @@ export default function ImportDetailsPage() {
                 { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => navigate('/sales/cash-shift/f') },
                 { title: 'Импорт с проверкой', icon: <ImportWithIcon />, clickHandler: () => navigate('/sales/cash-shift/f') },
               ]}
-              // popperContentProps={{
-              //   customDateRanges: customDateRanges(),
-              //   onCustomRangeSelect: (name) => setCustomDateRangeSelected(name),
-              //   isFilter: true,
-              //   dateState: {
-              //     from: dateState.from,
-              //     to: dateState.to,
-              //     month: dateState.month,
-              //   },
-              //   setDateState: (val) => setDateState(val),
-              //   onClose: (data) => onClose(data),
-              // }}
-              // PopperContent={DateFilterDrawerSingle}
             />
           </Box>
           <Box display={'flex'} alignItems={'center'}>
-            <Box
-            // onClick={() => setFilterTableRowsMenu(true)}
-            >
-              {/* <EditorIcon /> */}
-              <ColumnsFilterButton title={t('ag_grid.table_setting.label')} columns={tableColumns} isCatalog={false} />
+            <Box>
+              <ColumnsFilterButtonForAll
+                title={t('ag_grid.table_setting.label')}
+                columns={tableColumns}
+                isCatalog={false}
+                resetTableHeader={resetTableHeader}
+                changeColumnSequence={changeColumnSequence}
+              />
             </Box>
           </Box>
         </Box>
         <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
-        <FilterTableRowsMenu tableColumns={tableColumns} open={filterTableRowsMenu} setOpen={setFilterTableRowsMenu} />
 
         <Box>
           <AgGridTable
@@ -338,14 +304,7 @@ export default function ImportDetailsPage() {
           />
         </Box>
       </Box>
-      {/* <ProductDrawer
-        setOpenConfirmDialog={setOpenConfirmDialog}
-        setImages={setOpenImageGallery}
-        refetch={refetch}
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(null)}
-        setRejectComment={setRejectComment}
-      /> */}
+
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (
         <ConfirmDialog

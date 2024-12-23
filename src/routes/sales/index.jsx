@@ -1,7 +1,4 @@
 import LayoutWithNavbar from '../../layouts/LayoutWithNavbar'
-import MainLayout from '../../layouts/MainLayout'
-import SalesPage from '../../pages/sales'
-import AllSales from '../../pages/sales/all'
 import AllSalesPage from '../../pages/sales/all-sales'
 import CardShiftDetails from '../../pages/sales/card-shift-details'
 import NewCashRegister from '../../pages/sales/create-cash-register'

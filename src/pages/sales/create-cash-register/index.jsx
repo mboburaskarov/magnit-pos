@@ -109,17 +109,6 @@ function NewCashRegister() {
     })
   }, [methods.watch('registerCash_id')])
 
-  // const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createProduct, {
-  //   onSuccess: () => {
-  //     // navigate(`${location.pathname}`)
-  //     success('Продукт успешно создан!')
-  //   },
-  //   onError: (err) => {
-  //     error('Ошибка при создании товара!')
-  //     console.log('err', err)
-  //   },
-  // })
-
   const { mutate: handleSaleCreate, isLoading: isCreatingSale } = useMutation(requests.createSale, {
     onSuccess: ({ data }) => {
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
@@ -132,13 +121,11 @@ function NewCashRegister() {
   })
   const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashBox, {
     onSuccess: () => {
-      // navigate(`${location.pathname}`)
       const requestSaleBody = {
         cash_box_id: get(registerCashData, 'data.data.cash_box_id', null),
         employee_id: userData?.id,
       }
       handleSaleCreate(requestSaleBody)
-      // success('Продукт успешно создан!')
     },
     onError: (err) => {
       error('Ошибка при создании товара!')

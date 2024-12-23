@@ -1,13 +1,10 @@
-import { memo } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import TimeCell from '../../../../components/AgGridTable/Cells/TimeCell'
-import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { products_statuses } from '../../../assets/data/products-statuses'
-import EditIcon from '../../../assets/icons/EditIcon'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import CheckAccess from '../../../../components/CheckAccess'
 import { get } from 'lodash'
+import { memo } from 'react'
+import CheckAccess from '../../../../components/CheckAccess'
+import thousandDivider from '../../../../utils/thousandDivider'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import EditIcon from '../../../assets/icons/EditIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (

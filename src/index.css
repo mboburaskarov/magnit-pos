@@ -141,7 +141,7 @@ input[type='number'] {
   appearance: auto;
   -webkit-appearance: auto;
   /* border-radius: 4px; */
-  clip-path: inset(1px round 4px);
+  clippath: inset(1px round 4px);
   background-color: '#2558FF';
 }
 .loading-container {

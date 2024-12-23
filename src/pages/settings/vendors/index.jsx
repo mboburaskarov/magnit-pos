@@ -20,16 +20,14 @@ import tableHeaderSelector from './tableHeaderSelector'
 // import ProductDrawer from './ProductDrawer'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButtonForVendor'
+import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../../components/CheckAccess'
 import StyledDialog from '../../../../components/Dialogs/StyledDialog'
-import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import LockIcon from '../../../assets/icons/LockIcon'
 import PlusIcon from '../../../assets/icons/PlusIcon'
 import CreateVendorDrawer from './createVendorDrawer'
-import FilterTableRowsMenu from './FilterTableRowsMenu'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function VendorsPage() {
@@ -232,8 +230,6 @@ export default function VendorsPage() {
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                   background: 'transparent',
-                  // border: '2px solid transparent',
-
                   width: '400px',
                   height: 48,
                 },
@@ -320,11 +316,14 @@ export default function VendorsPage() {
             )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
-            <Box
-            // onClick={() => setFilterTableRowsMenu(true)}
-            >
-              {/* <EditorIcon /> */}
-              <ColumnsFilterButton title={t('ag_grid.table_setting.label')} columns={tableColumns} isCatalog={false} />
+            <Box>
+              <ColumnsFilterButtonForAll
+                title={t('ag_grid.table_setting.label')}
+                columns={tableColumns}
+                isCatalog={false}
+                changeColumnSequence={changeColumnSequence}
+                resetTableHeader={resetTableHeader}
+              />
             </Box>
             <CheckAccess id={'product-create'}>
               <Box minWidth={156}>
@@ -343,7 +342,6 @@ export default function VendorsPage() {
           </Box>
         </Box>
         <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
-        <FilterTableRowsMenu tableColumns={tableColumns} open={filterTableRowsMenu} setOpen={setFilterTableRowsMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'
@@ -362,14 +360,7 @@ export default function VendorsPage() {
           />
         </Box>
       </Box>
-      {/* <ProductDrawer
-        setOpenConfirmDialog={setOpenConfirmDialog}
-        setImages={setOpenImageGallery}
-        refetch={refetch}
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(null)}
-        setRejectComment={setRejectComment}
-      /> */}
+
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (
         <ConfirmDialog
@@ -451,11 +442,7 @@ export default function VendorsPage() {
         quickCreateClientName={'quickCreateClientName'}
         openDrawer={openCreateVendorDrawer}
         closeDrawer={() => setopenCreateVendorDrawer(false)}
-        // setOpenClientCreate={setOpenClientCreate}
-        // setClientDataMini={setClientDataMini}
         clientData={'clientDetails'}
-        // handleAddClient={handleAddClient}
-        // afterCreate={(clientId) => setCreatedClientId(clientId)}
       />
     </LoadingContainer>
   )

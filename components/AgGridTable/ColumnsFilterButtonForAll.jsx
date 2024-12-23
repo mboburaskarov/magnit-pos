@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import StyledEmptyDialog from '../Dialogs/StyledeEmptyDialog'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import EditorIcon from '../../src/assets/icons/EditorIcon'
-import { changeColumnSequence, resetTableHeader } from '../../src/redux-toolkit/tableSlices/productsTableColumns'
 import ButtonWithWrapper from '../Buttons/ButtonWithWrapper'
 import { useTranslation } from 'react-i18next'
 
@@ -41,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SELECTION_ID = 'checkboxSelectionField'
 
-function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
+function ColumnsFilterButtonForAll({ columns, title, changeColumnSequence, resetTableHeader }) {
   const classes = useStyles()
   const [open, setOpen] = useState(false)
   const [data, setData] = useState([])
@@ -133,4 +132,4 @@ function ColumnsFilterButton({ columns, title, applyBtnLabel }) {
   )
 }
 
-export default memo(ColumnsFilterButton)
+export default memo(ColumnsFilterButtonForAll)

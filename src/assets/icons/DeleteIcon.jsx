@@ -4,9 +4,9 @@ export default function DeleteIcon({ color = '#FF4639', width = '16px' }) {
       <path
         d='M3.33333 5.33331V12C3.33333 13.4727 4.52724 14.6666 6 14.6666H10C11.4728 14.6666 12.6667 13.4727 12.6667 12V5.33331M9.33333 7.33331V11.3333M6.66667 7.33331L6.66667 11.3333M10.6667 3.33331L9.72916 1.92705C9.48187 1.55611 9.06556 1.33331 8.61975 1.33331H7.38025C6.93444 1.33331 6.51813 1.55611 6.27084 1.92705L5.33333 3.33331M10.6667 3.33331H5.33333M10.6667 3.33331H14M5.33333 3.33331H2'
         stroke={color}
-        stroke-width='1.5'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeWidth='1.5'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
     </svg>
   )

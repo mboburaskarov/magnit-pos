@@ -18,8 +18,6 @@ export default function ChangePassWordDialog({ open, setOpen }) {
 
   const onSubmit = (data) => {
     changePassword({ confirm_password: data.first_pass, new_password: data.second_pass })
-    // setOpen(false)
-    // navigate(`/products${requestParams}`)
   }
 
   const onError = (err) => {

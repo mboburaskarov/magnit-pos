@@ -168,31 +168,20 @@ export default function ProductBody({ productData = null }) {
           placeholder={t('create_new_product.product_name.placeholder')}
           sx={{ mb: 3 }}
         />
-        {/* <ImageUpload
-          id='images'
-          name='images'
-          images={productData?.files?.map((el, ind) => ({ key: el, name: el, sequence_number: ind }))}
-          onChange={(imagesArr) => setValue('images', imagesArr)}
-        /> */}
+
         <Box mt={'24px'}>
           <Label>{t('create_new_product.products_set_section.image')}</Label>
           <UploadImage
             id='images'
             name='images'
-            // register={register}
             images={images}
             onChange={(imagesArr) => {
               setImages(imagesArr)
-              // setValue('images', imagesArr)
             }}
           />
         </Box>
         <Box height={'56px'} />
 
-        {/* <SectionTitle noWrap withLine>
-          {t('create_new_product.additional_information.category')}
-        </SectionTitle>
-        <CategoriesTree /> */}
         <Box height={'56px'} />
         <SectionTitle noWrap withLine>
           {t('create_new_product.create_packages.price')}
@@ -329,7 +318,6 @@ export default function ProductBody({ productData = null }) {
               disabled={false}
             />
           </Box>
-          {/* <TextField required fullWidth borderRadius={'40px'} name='box_grain_count' label={'Box grain count'} placeholder={'Box grain count'} sx={{ mb: 3 }} /> */}
           <Box width={'20px'} />
           <Box
             sx={{
@@ -340,33 +328,17 @@ export default function ProductBody({ productData = null }) {
           >
             <SelectSimple
               isMulti
-              // onChange={() => {}}
-              // options={get(storeList, 'data.data.data')}
               required
               white
               label={'Unit'}
               placeholder='Unitni tanlang'
               name={'product_unit'}
               options={get(unitsList, 'data.data', []).map((el) => ({ value: el.codename, name: el.unit_name, id: el.id }))}
-
-              // getOptionLabel={(option) => option.name}
             />
           </Box>
         </Box>
         <Box display={'flex'} width={'100%'} mt={'24px'}>
-          <InputDatePicker
-            // withTime
-            defaultValue={new Date()}
-            name='expire_date'
-            // minDate={new Date()}
-            // minTime={new Date()}
-            // minT
-            required
-            id='expire_date'
-            label='Дата закрытия'
-            placeholder='Дата закрытия'
-          />
-          {/* <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='Muddati' placeholder='Muddatini kiriting' /> */}
+          <InputDatePicker defaultValue={new Date()} name='expire_date' required id='expire_date' label='Дата закрытия' placeholder='Дата закрытия' />
           <Box width={'20px'} />
           <TextField
             required
@@ -384,191 +356,8 @@ export default function ProductBody({ productData = null }) {
             placeholder={t('create_new_product.main_section.enter_barcode')}
             sx={{ mb: 3 }}
           />
-
-          {/* <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='Shtix-kod' placeholder='Shtix-kodni kiriting' /> */}
         </Box>
-        {/* <Box alignItems='flex-end' width='100%' columnGap={3} display='inline-flex' my={3}>
-          <TextField required type='number' fullWidth borderRadius={'40px'} name='product_price' label='Цена' placeholder='Введите цену' />
-          <Box width={500}>
-            <Button
-              onClick={() => setHasDiscontPrice(!hasDiscontPrice)}
-              startIcon={
-                <Box
-                  sx={{
-                    borderRadius: 2,
-                    borderColor: 'green.600',
-                    border: '2px solid',
-                    height: 24,
-                    width: 24,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    bgcolor: 'common.white',
-                  }}
-                >
-                  {hasDiscontPrice && <TickIcon width={12} />}
-                </Box>
-              }
-              fullWidth
-              color={hasDiscontPrice ? 'primary' : 'secondary'}
-            >
-              Скидочная цена
-            </Button>
-          </Box>
-          <TextField
-            onBoxClick={() => !hasDiscontPrice && setHasDiscontPrice(true)}
-            type='number'
-            disabled={!hasDiscontPrice}
-            required={hasDiscontPrice}
-            fullWidth
-            name='product_price_with_discount'
-            label='Цена со скидкой'
-            placeholder='Введите цену со скидкой'
-          />
-        </Box> */}
-        {/* <TextField required multiline fullWidth name='description' label='Описание' placeholder='Введите описание' /> */}
       </Box>
-      {/* <SectionTitle mt={4} noWrap withLine>
-        Характеристики
-      </SectionTitle> */}
-      {/* <Box mt={1}>
-        <Box>
-          <InputSwitch
-            id='app_type'
-            name='app_type'
-            label='Выберите тип приложения'
-            defaultValue={'BUCHET'}
-            options={[
-              { title: 'Buchet', value: 'BUCHET' },
-              { title: 'Market', value: 'MARKET' },
-            ]}
-          />
-        </Box>
-      </Box> */}
-      {/* <Grid container columnGap={3} rowGap={3} mt={3}>
-        <Grid item xs={5.9}> */}
-      {/* <SelectSimple required fullWidth id='shop' name='shop' label='Mагазин' placeholder='Выберите магазин' options={shopList?.data.shops} /> */}
-      {/* </Grid>
-        {appType === 'BUCHET' && (
-          <Grid item xs={5.8}>
-            <SelectSimple
-              isMulti
-              fullWidth
-              id='hashtag'
-              name='hashtag'
-              label='Хэштеги'
-              placeholder='Выберите хэштег'
-              // options={hashtags?.data?.map((el) => ({ value: el.nameRu, name: el.nameRu, id: el._id }))}
-            />
-          </Grid>
-        )}
-        <Grid item xs={appType !== 'BUCHET' ? 5.8 : 5.9}>
-          <SelectSimple
-            id='preparation_time'
-            name='preparation_time'
-            label='Время подготовки'
-            placeholder='Выберите время подготовки'
-            options={[
-              { name: '0 express', time: 0 },
-              { name: '10 минут', time: 10 },
-              { name: '15 минут', time: 15 },
-              { name: '40 минут', time: 40 },
-              { name: '60 минут', time: 60 },
-              { name: '90 минут', time: 90 },
-              { name: '3 часа', time: 180 },
-              { name: '1 День', time: 1440 },
-            ]}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <SelectSimple
-            fullWidth
-            id='size_name'
-            name='size_name'
-            label='Название размера'
-            placeholder='Выберите Название размера'
-            options={[
-              { value: 'S', name: 'S' },
-              { value: 'M', name: 'M' },
-              { value: 'L', name: 'L' },
-            ]}
-          />
-        </Grid>
-        <Grid item xs={5.8}>
-          <TextField fullWidth name='height' label='Высота' placeholder='Введите высоту' />
-        </Grid>
-        <Grid item xs={5.8}>
-          <TextField fullWidth name='width' label='Ширина' placeholder='Введите ширину' />
-        </Grid>
-      </Grid> */}
-      {/* <SectionTitle mt={4} noWrap withLine>
-        Категории
-      </SectionTitle> */}
-      {/* <Box>
-        <SelectSimple
-          fullWidth
-          name={'parent-category-name'}
-          minWidth='auto'
-          placeholder='Выберите родительскую категорию'
-          // options={parentCategories?.data?.map((elm2) => ({ ...elm2, name: elm2.nameRu }))}
-          uncontrolled
-          value={parentCategory}
-          onChange={(val) => setParentCategory(val)}
-          required
-          // disabled={appType === 'BUCHET'}
-        />
-      </Box> */}
-      {/* <Box>
-        {productCategories.map((el, ind) => (
-          <Box key={ind} mt={2} columnGap={3} width='100%' display='inline-flex'>
-            <SelectSimple
-              fullWidth
-              name={el?.name ? el?.name + '-name' : 'category-name'}
-              minWidth='auto'
-              disabled={!parentCategory?._id}
-              placeholder='Выберите категория'
-              // options={filterTwoArrays(subCategories?.data, productCategories)?.map((elm2) => ({ ...elm2, name: elm2.nameRu }))}
-              uncontrolled
-              value={el?.name && el}
-              onChange={(val) =>
-                setProductCategories((prev) => {
-                  return prev.map((el, index) => {
-                    if (index === ind) return { ...val }
-                    return el
-                  })
-                })
-              }
-              required
-            />
-            <TextField
-              type='number'
-              required={!!el?.name}
-              value={el?.quantity || ''}
-              setValue={(val) =>
-                setProductCategories((prev) => {
-                  return prev.map((el, index) => {
-                    if (index === ind) return { ...el, quantity: val }
-                    return el
-                  })
-                })
-              }
-              disabled={!el?.name}
-              uncontrolled
-              fullWidth
-              name={el?.quantity ? el.quantity + '-quantity' : 'category-quantity'}
-              placeholder='Введите количество'
-            />
-          </Box>
-        ))}
-        {addCategoryButton && (
-          <Box mt={2} columnGap={4} width='100%' display='inline-flex'>
-            <Button color='secondary' onClick={() => setProductCategories((prev) => [...prev, {}])} fullWidth>
-              Добавить категории
-            </Button>
-            <Box width='100%' />
-          </Box>
-        )}
-      </Box> */}
     </Box>
   )
 }

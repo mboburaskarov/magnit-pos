@@ -1,9 +1,9 @@
 export default function CartOutlineIcon() {
   return (
     <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-      <rect x='22' y='3' width='18' height='20' rx='4' transform='rotate(90 22 3)' stroke='#fff' stroke-width='1.5' />
+      <rect x='22' y='3' width='18' height='20' rx='4' transform='rotate(90 22 3)' stroke='#fff' strokeWidth='1.5' />
       <circle cx='6' cy='17' r='1' fill='#fff' />
-      <path d='M2 7L22 7L22 11L2 11L2 7Z' stroke='#fff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+      <path d='M2 7L22 7L22 11L2 11L2 7Z' stroke='#fff' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
     </svg>
   )
 }

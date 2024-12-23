@@ -50,7 +50,6 @@ export default function RoleCreatePage() {
           })
         })
       })
-    console.log(data)
 
     const requestBody = {
       // id,

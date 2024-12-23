@@ -1,26 +1,23 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-refresh/only-export-components */
-import 'ag-grid-enterprise'
-import { useMemo, useCallback, useEffect, useState, memo, Fragment } from 'react'
 import { Box } from '@mui/material'
+import 'ag-grid-enterprise'
+import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 // import { useDispatch } from 'react-redux'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { AgGridReact } from 'ag-grid-react'
-import * as qs from 'qs'
-import { HeaderCheckbox, icons, OverlayLoadingTemplateFunc, OverlayNoRowsTemplate } from './AgGridComponents'
-import useStyles from './useStyles'
-import LoadingBlurry from '../LoadingBlurry'
-import ColumnsFilterButton from './ColumnsFilterButton'
-import AgGridBottom from './AgGridBottom'
 import debounce from 'lodash/debounce'
-import CheckBoxRenderer from './CheckboxRenderer'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
-import addCssToElement from '../../utils/addCssToElement'
-import isEqual from '../../utils/isEqual'
-import { getMainMenuItems, onColumnResized, onDisplayedColumnsChanged, scrollShowHide, useScrollListener } from './AgGridFunctions'
-import { v4 as uuidv4 } from 'uuid'
+import * as qs from 'qs'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { usePrevious } from 'react-use'
+import { useQueryParams } from '../../src/hooks/useQueryParams'
+import isEqual from '../../utils/isEqual'
+import LoadingBlurry from '../LoadingBlurry'
+import AgGridBottom from './AgGridBottom'
+import { HeaderCheckbox, icons, OverlayLoadingTemplateFunc, OverlayNoRowsTemplate } from './AgGridComponents'
+import { onColumnResized, onDisplayedColumnsChanged, scrollShowHide, useScrollListener } from './AgGridFunctions'
+import CheckBoxRenderer from './CheckboxRenderer'
+import useStyles from './useStyles'
 
 const AgGridSimpleTable = ({
   id,
@@ -230,11 +227,6 @@ const AgGridSimpleTable = ({
           />
         )}
         {!data?.length && <OverlayNoRowsTemplate emptyTableText={emptyTableText} />}
-        {/* {tableSettings && (
-          <Box className={classes.tableSettingsButton}>
-            <ColumnsFilterButton columns={allColumns} isCatalog={isCatalog} />
-          </Box>
-        )} */}
       </Box>
     </Fragment>
   )

@@ -1,5 +1,3 @@
-import { faWeight } from '@fortawesome/free-solid-svg-icons'
-import { BorderColor } from '@mui/icons-material'
 import makeStyles from '@mui/styles/makeStyles'
 
 const drawerWidth = '296px'

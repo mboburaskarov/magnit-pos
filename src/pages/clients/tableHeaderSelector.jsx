@@ -1,19 +1,13 @@
-import { memo } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import TimeCell from '../../../components/AgGridTable/Cells/TimeCell'
-import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
-import thousandDivider from '../../../utils/thousandDivider'
-import getImageUrl from '../../../utils/getImageUrl'
-import { products_statuses } from '../../assets/data/products-statuses'
-import ProductImagePlaceholder from '../../assets/icons/ProductImagePlaceholder'
-import EditIcon from '../../assets/icons/EditIcon'
-import DeleteIcon from '../../assets/icons/DeleteIcon'
-import ExpressIcon from '../../assets/icons/ExpressIcon'
-import StyledTooltip from '../../../components/StyledTooltip'
-import CheckAccess from '../../../components/CheckAccess'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { get } from 'lodash'
 import dayjs from 'dayjs'
+import { get } from 'lodash'
+import { memo } from 'react'
+import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
+import CheckAccess from '../../../components/CheckAccess'
+import thousandDivider from '../../../utils/thousandDivider'
+import { products_statuses } from '../../assets/data/products-statuses'
+import DeleteIcon from '../../assets/icons/DeleteIcon'
+import EditIcon from '../../assets/icons/EditIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -24,7 +18,6 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
 }
 
 export default function tableHeaderSelector({ clientsColumns, selectClientsFunc, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
-  // const { values } = useQueryParams()
   const columns = clientsColumns?.map((el) => {
     if (el.field === 'checkbox') {
       return {
@@ -95,7 +88,6 @@ export default function tableHeaderSelector({ clientsColumns, selectClientsFunc,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <Typography>{dayjs(p.data?.['sale_date']).format('DD.MM.YYYY')}</Typography>
-            {/* <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography> */}
           </Box>
         )),
       }
@@ -108,7 +100,6 @@ export default function tableHeaderSelector({ clientsColumns, selectClientsFunc,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <Typography>{dayjs(p.data?.['birthday']).format('DD.MM.YYYY')}</Typography>
-            {/* <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography> */}
           </Box>
         )),
       }
@@ -168,19 +159,6 @@ export default function tableHeaderSelector({ clientsColumns, selectClientsFunc,
                   <DeleteIcon />
                 </IconButton>
               </CheckAccess>
-              {/* {data.status === 'ACTIVE' ? (
-                <CheckAccess id={'product-deactive'}>
-                  <IconButton onClick={() => setOpenConfirmDialog({ type: 'deactivate', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                    <PauseIcon />
-                  </IconButton>
-                </CheckAccess>
-              ) : (
-                <CheckAccess id={'product-active'}>
-                  <IconButton onClick={() => setOpenConfirmDialog({ type: 'activate', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                    <PlayIcon />
-                  </IconButton>
-                </CheckAccess>
-              )} */}
             </Box>
           </CheckAccess>
         )),
