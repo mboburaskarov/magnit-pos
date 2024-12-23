@@ -12,7 +12,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     padding: '0',
     background: 'white',
-    // width: '320px',
     '@media print': {
       width: '100%',
     },
@@ -120,8 +119,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'inline-block',
   },
   discount: {
-    // color: `${theme.palette.red[500]} !important`,
-
     fontWeight: 500,
   },
   crossed: {

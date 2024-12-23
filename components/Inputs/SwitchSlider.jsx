@@ -5,7 +5,6 @@ import { makeStyles } from '@mui/styles'
 const useStyles = makeStyles((theme) => ({
   inner: {
     display: 'flex',
-    // justifyContent: 'space-between',
     padding: 4,
     borderRadius: 24,
     width: 'fit-content',
@@ -22,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: '0px',
     },
     marginLeft: '4px',
-    // width: '100%',
   },
   input: {
     visibility: 'hidden',
@@ -34,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   button: {
-    // position: 'absolute',
     display: 'inline-flex',
     width: '100%',
     alignItems: 'center',

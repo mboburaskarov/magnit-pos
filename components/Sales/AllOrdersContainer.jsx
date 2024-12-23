@@ -6,15 +6,12 @@ import CashCircledIcon from '../../src/assets/icons/BackArrow'
 import thousandDivider from '../../utils/thousandDivider'
 import { numberToPrice } from '../../utils/numberToPrice'
 import { useTranslation } from 'react-i18next'
-// import useWebsocketMutation from '../../src/hooks/useWebsocketMutation'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
-// import event from '../../utils/event'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHandHoldingUsd } from '@fortawesome/free-solid-svg-icons'
 import { useReactToPrint } from 'react-to-print'
-// import ZReport from './ZReport'
 import dayjs from 'dayjs'
 import { makeStyles } from '@mui/styles'
 import { requests } from '../../utils/requests'
@@ -94,7 +91,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // borderBottom: `2px dashed ${theme.palette.gray[200]}`,
   },
   title: {
     fontSize: 16,
@@ -143,29 +139,8 @@ function AllOrdersContainer({ data }) {
   const cls = useStyles()
   const printContainer = useRef()
   const documentName = useRef('Report')
-  // const forbiddenRoutes = useSelector((state) => state?.permissionRoutes)
-  // const printReportRoute = forbiddenRoutes.find((el) => el.slug === 'report-print')
   const { t } = useTranslation()
   const { values: queryParams } = useQueryParams()
-  // const { mutate, isLoading } = useWebsocketMutation(requests.order.generateReport, {
-  //   onSuccess: (res) => {
-  //     console.log('RES', res)
-  //   },
-  //   onError(err) {
-  //     console.log(err)
-  //   },
-  //   onWebsocketSuccess: (message) => {
-  //     event('all_sales_report_print')
-  //     const link = document.createElement('a')
-  //     link.href = message.data.url
-  //     document.body.appendChild(link)
-  //     link.click()
-  //     document.body.removeChild(link)
-  //   },
-  //   onWebsocketError: (err) => {
-  //     console.log('WS ERROR', err)
-  //   },
-  // })
 
   const user_id = useSelector((state) => state.company)
 
@@ -387,21 +362,6 @@ function AllOrdersContainer({ data }) {
               </Box>
             </Box>
           </Box>
-        </Box>
-      </Box>
-      <Box hidden>
-        <Box
-          maxWidth='100vw'
-          maxHeight='100vh'
-          // mx={-2}
-          // mt={-4}
-          ref={printContainer}
-        >
-          {/* <ZReport
-            refContainer={printContainer}
-            id='z-report'
-            {...reportData}
-          /> */}
         </Box>
       </Box>
     </>

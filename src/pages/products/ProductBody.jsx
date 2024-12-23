@@ -77,12 +77,6 @@ export default function ProductBody({ productData = null }) {
   }, [values.limit, values.offset])
   const { data: unitsList, refetch: refetchUnitList } = useQuery('unitsList', () => requests.getAllUnits({ limit: 20, offset: 0, type: appType }))
   const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories())
-  // const { data: subCategories, refetch: refetchCategories } = useQuery(
-  //   ['subCategories', parentCategory, appType],
-  //   () => requests.getAllCategories({ type: appType, subId: parentCategory.id }),
-  //   { enabled: !!appType && !!productData?.categories?.length > 0 }
-  // )
-  // const { data: hashtags } = useQuery('hashtags', () => requests.getAllHashtags({ limit: 20, offset: 0 }))
 
   useEffect(() => {
     if (productData) {

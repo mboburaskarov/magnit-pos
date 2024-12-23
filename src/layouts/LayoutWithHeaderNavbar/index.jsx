@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
   },
   contentContainer: {
     flex: '1 1 auto',
-    // paddingLeft: '22px',
   },
   content: {
     display: 'flex',

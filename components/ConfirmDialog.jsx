@@ -1,7 +1,6 @@
 import { Box, Typography, Dialog } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import CloseIcon from '../src/assets/icons/CloseIcon'
-// import { theme } from '../src/assets/theme'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,8 +62,6 @@ const useStyles = makeStyles((theme) => ({
     '& button': {
       height: '56px !important',
       width: '100%',
-
-      // minWidth: '196px',
     },
     '& button:nth-child(1)': {
       marginRight: 32,
@@ -72,7 +69,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }))
-// const theme = useTheme()
 const ConfirmDialog = ({ open, setOpen, actions, title = '', icon, desc, descWidth, supDesc, noCloseIcon, setDisableSubmit }) => {
   const handleClose = () => {
     setOpen(false)
@@ -89,14 +85,10 @@ const ConfirmDialog = ({ open, setOpen, actions, title = '', icon, desc, descWid
             <Typography variant='h2' fontWeight={'700'} fontSize={'24px'} lineHeight={'32px'}>
               {title}
             </Typography>
-            <Box>{/* <CloseIcon color={theme.palette.black} /> */}</Box>
           </Box>
         )}
         <Box className={classes.content}>
-          <Box className={classes.title}>
-            {icon}
-            {/* <Typography variant='h2'>{title}</Typography> */}
-          </Box>
+          <Box className={classes.title}>{icon}</Box>
           <Typography sx={{ display: 'flex', width: descWidth ? descWidth : null }} className={classes.desc} mb={5}>
             {supDesc && <Box>{supDesc}</Box>}
             {typeof desc === 'string' ? desc : desc}

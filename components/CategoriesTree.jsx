@@ -153,10 +153,7 @@ export default function FileSystemNavigator({
           <InputSearch name='search' placeholder={t('placeholders.category_name')} fullWidth uncontrolled />
           {canAdd && (
             <Box className={classes.addCategoryButton}>
-              {/* <Button id='add-category' onClick={() => setCreateEdit(true)} secondary fullWidth disabled={disabled}> */}
               <PlusIcon style={{ marginRight: 8 }} />
-              {/* {t('buttons.new_category')} */}
-              {/* </Button> */}
             </Box>
           )}
         </Box>
@@ -174,12 +171,6 @@ export default function FileSystemNavigator({
             />
           )
         )}
-
-        {/* <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' my={3}>
-          <Pagination count={pageCount} handleChangePage={changePage} page={pageIndex + 1} pageQuery='page' />
-
-          <RowFilterButton id='row-filter' pageSize={pageSize} setPageSize={setPageSize} setPageIndex={setPageIndex} />
-        </Box> */}
       </Box>
 
       <CreateEditCategories

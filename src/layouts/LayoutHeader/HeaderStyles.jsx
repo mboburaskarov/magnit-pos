@@ -8,7 +8,6 @@ export const headerStyles = makeStyles((theme) => {
     root: {
       zIndex: 15,
       display: 'flex',
-      // width: '400px',
       '& .MuiPaper-root': {
         border: 0,
         overflowX: 'hidden',
@@ -19,9 +18,7 @@ export const headerStyles = makeStyles((theme) => {
         borderRadius: 20,
         backgroundColor: theme.palette.background.gray,
       },
-      '& nav': {
-        // width: '330px',
-      },
+
       position: 'relative',
     },
     searchInput: {
@@ -31,8 +28,6 @@ export const headerStyles = makeStyles((theme) => {
       '&  .MuiInputBase-root': {
         backgroundColor: theme.palette.background.gray,
         border: '2px solid transparent',
-
-        // border: 'none !important',
       },
     },
     list: {
@@ -253,24 +248,14 @@ export const headerStyles = makeStyles((theme) => {
     },
     currentUser: {
       cursor: 'pointer',
-      // width: 'calc(100% - 32px) !important',
       marginTop: 'auto !important',
-      // marginBottom: ({ isOpen }) => (isOpen ? 20 : 0) + 'px !important',
-      // marginLeft: '16px !important',
       padding: '4px 12px 4px 4px !important',
       justifyContent: 'space-between',
       backgroundColor: theme.palette.gray[50],
       borderRadius: '32px !important',
       '&:hover': {
         backgroundColor: theme.palette.bunker[100],
-        // '& p': {
-        //   color: theme.palette.orange[500],
-        // },
-        // '& .shopname': {
-        //   color: theme.palette.gray[600],
-        // },
       },
-      // marginBottom: '24px !important',
     },
     avatarPlaceholder: {
       position: 'relative',
@@ -292,7 +277,6 @@ export const headerStyles = makeStyles((theme) => {
       },
     },
     shopname: {
-      // width: 130,
       margin: 0,
       lineHeight: '20px',
       fontWeight: 600,
@@ -394,7 +378,6 @@ export const headerStyles = makeStyles((theme) => {
       minHeight: '370px',
       backgroundColor: 'tramsparent',
       transform: 'translateX(100%)',
-      // transition: 'transform .4s cubic-bezier(.4, .0, .2, 1)',
     },
     skeleton: {
       width: 'calc(100% - 32px)',

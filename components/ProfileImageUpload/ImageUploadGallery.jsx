@@ -131,27 +131,6 @@ const ImageUploadGallery = ({ open, setOpen, uploadedImages, onSortEnd, setEditi
                   )
               )}
           </SortableGallery>
-          {/* <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, userSelect: 'none', mt: 3 }}>
-            {uploadedImages?.length !== 0 &&
-              uploadedImages?.map((image, idx) => (
-                <Box
-                  key={image?.id}
-                  sx={{
-                    img: {
-                      width: count === idx ? 72 : 56,
-                      height: count === idx ? 72 : 56,
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      objectFit: 'cover',
-                    },
-                  }}
-                  onClick={() => setCount(idx)}
-                  alt=''
-                >
-                  <img src={getImageUrl(image.key)} alt='image of order' />
-                </Box>
-              ))}
-          </Box> */}
         </Box>
       </Box>
     </Box>

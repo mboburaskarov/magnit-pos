@@ -49,7 +49,6 @@ export const generateCustomStyles = (props = {}) => {
       width: '100%',
       minHeight: mini ? 40 : 44,
       padding: 1,
-      // backgroundColor: 'inherit',
       borderRadius: '40px',
     }),
     control: (provided, state) => ({
@@ -99,10 +98,8 @@ export const generateCustomStyles = (props = {}) => {
     }),
     singleValue: (provided) => ({
       ...provided,
-      // paddingLeft: 16,
       paddingLeft: 8,
       fontSize: 17,
-      // fontSize: 20,
       fontWeight: 500,
       fontFamily: 'Gilroy',
       color: palette.dark[500],
@@ -148,7 +145,6 @@ export const generateCustomStyles = (props = {}) => {
     indicatorsContainer: (provided, state) => ({
       ...provided,
       display: state?.isDisabled ? 'none' : 'flex',
-      // backgroundColor: 'inherit',
       borderTopRightRadius: '50px',
       marginRight: '5px',
       borderBottomRightRadius: '50px',

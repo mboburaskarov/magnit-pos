@@ -4,7 +4,6 @@
 import { Box } from '@mui/material'
 import 'ag-grid-enterprise'
 import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
-// import { useDispatch } from 'react-redux'
 import { AgGridReact } from 'ag-grid-react'
 import debounce from 'lodash/debounce'
 import * as qs from 'qs'
@@ -164,7 +163,6 @@ const AgGridSimpleTable = ({
     return totalData
   }, [totalData])
 
-  // // On Grid Ready
   const onGridReady = useCallback((params) => {
     setGridApi(params)
     setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
@@ -175,12 +173,10 @@ const AgGridSimpleTable = ({
     <Fragment>
       <Box className={`${classes.root} ag-theme-alpine ${columnGroup ? 'column-group-header' : ''}`} id={id || 'simpleGrid'}>
         <AgGridReact
-          // getMainMenuItems={(params) => getMainMenuItems(params)}
           groupDisplayType='multipleColumns'
           onGridReady={onGridReady}
           overlayNoRowsTemplate={'<span></span>'}
           overlayLoadingTemplate={OverlayLoadingTemplate}
-          // postProcessPopup={postProcessPopup}
           rowData={rowData}
           columnDefs={modifyColumns}
           paginationOffsetSize={offsetSize}
@@ -188,7 +184,6 @@ const AgGridSimpleTable = ({
           rowSelection='multiple'
           getRowId={getRowId}
           defaultColDef={defaultColDef}
-          // onSortChanged={onSortChanged}
           isRowSelectable={isRowSelectable}
           domLayout='autoHeight'
           onDisplayedColumnsChanged={debounce((p) => onDisplayedColumnsChanged({ ...p, updaterAction }), 1000)}

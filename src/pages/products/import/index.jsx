@@ -249,10 +249,7 @@ export default function ImportPage() {
             </Box>
           </Box>
           <Box display={'flex'} alignItems={'center'}>
-            <Box
-            // onClick={() => setFilterTableRowsMenu(true)}
-            >
-              {/* <EditorIcon /> */}
+            <Box>
               <ColumnsFilterButtonForAll
                 title={t('ag_grid.table_setting.label')}
                 columns={tableColumns}

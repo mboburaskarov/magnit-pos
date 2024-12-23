@@ -7,7 +7,6 @@ export const navbarStyles = makeStyles((theme) => {
     root: {
       zIndex: 15,
       display: 'flex',
-      // width: '400px',
       '& .MuiPaper-root': {
         border: 0,
         overflowX: 'hidden',
@@ -18,9 +17,7 @@ export const navbarStyles = makeStyles((theme) => {
         borderRadius: 20,
         backgroundColor: theme.palette.background.gray,
       },
-      '& nav': {
-        // width: '330px',
-      },
+
       position: 'relative',
     },
     list: {
@@ -35,7 +32,6 @@ export const navbarStyles = makeStyles((theme) => {
       },
     },
     popper: {
-      backgroundColor: theme.palette.background.gray,
       borderRadius: '16px',
       width: 280,
       backgroundColor: '#fff',
@@ -58,19 +54,11 @@ export const navbarStyles = makeStyles((theme) => {
       display: 'none',
     },
     close_icon: {
-      // position: 'absolute',
       right: ({ isOpen }) => (isOpen ? 20 : 0),
-      top: 40,
-      '& > span > svg > path': {
-        // fill: theme.palette.gray[400],
-      },
       zIndex: 9999999,
       width: 32,
       height: 32,
       backgroundColor: 'transparent',
-      // display: 'flex',
-      // alignItems: 'center',
-      // justifyContent: 'center',
       outline: '0',
       border: '0',
       top: 0,
@@ -160,8 +148,6 @@ export const navbarStyles = makeStyles((theme) => {
       },
       margin: '8px 0',
       borderRadius: 50,
-      // paddingLeft: '32px !important',
-      // paddingRight: '32px !important',
       fontWeight: 600,
       lineHeight: '28px',
       color: theme.palette.dark[500],
@@ -188,7 +174,6 @@ export const navbarStyles = makeStyles((theme) => {
       },
       '& svg': {
         marginRight: 10,
-        // height: 20,
         transition: '0.3s',
       },
       '&:hover > div': {
@@ -249,9 +234,6 @@ export const navbarStyles = makeStyles((theme) => {
       height: 50,
       display: 'flex',
       alignItems: 'center',
-      '& > svg > path': {
-        // fill: theme.mode === 'dark' && 'white',
-      },
     },
     logo_letter_main: {
       marginTop: '3px',
@@ -259,11 +241,8 @@ export const navbarStyles = makeStyles((theme) => {
     logo_main: {
       marginRight: 0,
       display: 'flex',
-      // width: '50px',
       alignItems: 'center',
-      '& > svg > path': {
-        // fill: theme.mode === 'dark' && 'white',
-      },
+
       '& > svg > path:nth-child(2)': {
         fill: theme.mode === 'dark' && '#1D1D1B',
       },
@@ -279,7 +258,6 @@ export const navbarStyles = makeStyles((theme) => {
       cursor: 'pointer',
       width: 'calc(100% - 32px) !important',
       marginTop: 'auto !important',
-      // marginBottom: ({ isOpen }) => (isOpen ? 20 : 0) + 'px !important',
       marginLeft: '16px !important',
       padding: '12px 16px !important',
       borderRadius: '32px !important',
@@ -411,7 +389,6 @@ export const navbarStyles = makeStyles((theme) => {
 
       backgroundColor: 'tramsparent',
       transform: 'translateX(100%)',
-      // transition: 'transform .4s cubic-bezier(.4, .0, .2, 1)',
     },
     skeleton: {
       width: 'calc(100% - 32px)',

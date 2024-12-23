@@ -59,7 +59,6 @@ export default function ClientsPage() {
     selectClientsFunc,
   })
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
@@ -221,8 +220,6 @@ export default function ClientsPage() {
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                   background: 'transparent',
-                  // border: '2px solid transparent',
-
                   width: '400px',
                   height: 48,
                 },

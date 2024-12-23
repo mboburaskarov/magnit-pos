@@ -20,9 +20,6 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: '660px',
       borderRadius: '24px 0 0 24px',
       backgroundColor: theme.palette.background.default,
-      '& form': {
-        // position: 'relative',
-      },
     },
   },
   header: {
@@ -62,9 +59,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
   useEffect(() => {
     methods.reset()
   }, [])
-  // useEffect(() => {
-  //   methods.reset()
-  // }, [quickCreateClientName])
+
   const { mutate: handleCustomerCreate, isLoading: isCreateCustomer } = useMutation(requests.createCustomer, {
     onSuccess: ({ data }) => {
       closeDrawer(false)

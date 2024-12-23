@@ -64,7 +64,6 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, perce
         )}
       </Box>
 
-      {/* <Divider fullWidth sx={{ borderWidth: 0.5 }} orientation='vertical' flexItem /> */}
       <Box key={ind} sx={(theme) => ({ pt: '10px', pb: '8px', px: '16px', m: 0, borderTop: 1, borderColor: '#A4A5AB33' })}>
         <Box>
           <Typography color='gray.500' fontSize={'16px'} lineHeight={'20px'} fontWeight='500' variant='h1'>

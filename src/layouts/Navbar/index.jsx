@@ -72,38 +72,6 @@ export default function Navbar() {
       </div>
 
       <UserDrawer isOpen={isUserOpen} closeDrawer={() => setIsUserOpen(null)} />
-
-      {/* <ConfirmDialog
-        open={showDialog}
-        setOpen={setShowDialog}
-        icon={<BigWarningIcon />}
-        title={t('alerts.save_changes_postpone')}
-        desc={t('alerts.save_changes_postpone_desc')}
-        actions={
-          <>
-            <Button
-              secondary
-              id='stopOrderPostpone'
-              onClick={() => {
-                setShowDialog(false)
-                navigate(nextHref)
-                window.sessionStorage.removeItem('disableRoute')
-                window.sessionStorage.removeItem('expiredDatePostpone')
-              }}
-            >
-              {t('buttons.dont_save')}
-            </Button>
-            <Button
-              size='medium'
-              variant='contained'
-              onClick={onSubmitPostpone}
-              isLoading={creatingPostpone}
-            >
-              {t('buttons.save_changes')}
-            </Button>
-          </>
-        }
-      /> */}
     </>
   )
 }

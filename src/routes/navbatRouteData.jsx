@@ -62,76 +62,8 @@ export const navbatRouteData = [
     id: '1',
     icon: <UsersIcon />,
     href: '/clients/all',
-    // children: [
-    //   {
-    //     label: 'navbar.clients',
-    //     active: '/clients/all/*',
-    //     id: '11',
-    //     href: '/clients/all',
-    //   },
-    // ],
   },
 
-  // {
-  //   label: 'Маркетинг',
-  //   id: '10',
-  //   icon: <MarketingIcon />,
-  //   href: '/marketing',
-  //   children: [
-  //     {
-  //       label: 'Уведомления',
-  //       active: '/marketing/*',
-  //       id: '10.1',
-  //       href: '/marketing/notifications',
-  //     },
-  //   ],
-  // },
-
-  // {
-  //   label: 'Отчеты',
-  //   id: '8',
-  //   icon: <ReportsIcon />,
-  //   href: '/reports',
-  //   children: [
-  //     {
-  //       label: 'Отчет клиентов',
-  //       active: '/reports/main/*',
-  //       id: '8.1',
-  //       href: '/reports/main',
-  //     },
-  //     {
-  //       label: 'Отчет о доставке',
-  //       active: '/reports/delivery/*',
-  //       id: '8.4',
-  //       href: '/reports/delivery',
-  //     },
-  //     {
-  //       label: 'Отчет трафика',
-  //       active: '/reports/trafic/*',
-  //       id: '8.3',
-  //       href: '/reports/trafic',
-  //     },
-  //     {
-  //       label: 'Отчет о приложении',
-  //       active: '/reports/app/*',
-  //       id: '8.5',
-  //       href: '/reports/app',
-  //     },
-
-  //     {
-  //       label: 'Бухгалтерский отчет',
-  //       active: '/reports/accounting/*',
-  //       id: '8.2',
-  //       href: '/reports/accounting',
-  //     },
-  //     {
-  //       label: 'Отчет транзакции',
-  //       active: '/reports/transactions/*',
-  //       id: '8.3',
-  //       href: '/reports/transactions',
-  //     },
-  //   ],
-  // },
   {
     label: 'navbar.settings',
     id: '9',
@@ -164,10 +96,4 @@ export const navbatRouteData = [
       },
     ],
   },
-  // {
-  //   label: 'Курьеры',
-  //   id: '11',
-  //   icon: <CourierIcon />,
-  //   href: '/couriers',
-  // },
 ]

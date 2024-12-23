@@ -471,7 +471,6 @@ function NewSale() {
             )}
             {!!searchTerm && searchTerm?.length < 3 && (
               <Box display='flex' alignItems='center'>
-                <Box className={classes.warningIcon}>{/* <FontAwesomeIcon icon={faExclamationCircle} /> */}</Box>
                 <Typography
                   sx={(theme) => ({
                     color: theme.palette.red[500],
@@ -506,7 +505,6 @@ function NewSale() {
                         }
                       }}
                     >
-                      {/* <PlusSmallIcon fill='#fff' /> */}
                       <Typography style={{ marginLeft: '7px' }}>
                         {t('add')} “{searchTerm}”
                       </Typography>
@@ -551,7 +549,6 @@ function NewSale() {
                 </Box>
               </OutsideClickHandler>
             )}
-            {/* <TextField required fullWidth name='description' label='Mizoj' placeholder='Mijoz yoki telefon raqami' /> */}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <TextField required type={'number'} fullWidth name='discount' label={t('client')} placeholder='Chegirmani kiritng' />
@@ -632,53 +629,7 @@ function NewSale() {
           </Box>
         </Box>
       </Box>
-      {/* <OrderDrawer
-        eposOn={true}
-        webkassaOn={true}
-        accessToPrint={true}
-        isOpen={true}
-        closeDrawer={() => {}}
-        // printContainer={printContainer}
-        cheque={[]}
-        paymentTypes={[]}
-        cashbackPercent={[]}
-        loyaltyProgramType={[]}
-        cashbackPaymentPercentage={100}
-        isLoading={false}
-        clientInfo={[]}
-        setClientInfo={() => {}}
-        onSubmit={() => {}}
-        shop={{}}
-        user={{}}
-        orderNumber={'34343'}
-        setOpenClientCreateMini={setOpenClientCreateMini}
-        setOpenClientCard={() => {}}
-        setQuickCreateClientName={() => {}}
-        // clientInputRef={clientInputRef}
-        createdClientId={() => {}}
-        setCreatedClientId={() => {}}
-        openDebt={false}
-        setOpenDebt={() => {}}
-        eposTransaction={'eposTransaction'}
-        webkassaTransaction={'webkassaTransaction'}
-        sellers={'sellersName'}
-        deleteDebt={() => {}}
-        eposChecked={'eposChecked'}
-        setEposChecked={() => {}}
-        // control={control}
-        // isAutoIncome={!!autoIncomePayments?.length}
-        // setOpenAutoIncome={setOpenAutoIncome}
-      /> */}
-      {/* <ReturnExchangeDrawer
-        returnExchangeOrder={returnExchangeOrder}
-        isOpen={false}
-        setExchangeOrderDetails={setExchangeOrderDetails}
-        closeDrawer={() => handleCloseReturnAndDraftDrawer()}
-        clientRef={clientRef}
-        singleOrder={singleOrder}
-        setSingleOrder={setSingleOrder}
-        webkassaOn={webkassaOn}
-      /> */}
+
       {openConfirmDialog && (
         <ConfirmDialog
           open={!!openConfirmDialog}
@@ -745,19 +696,14 @@ function NewSale() {
         open={isCreateOpenDraft}
         setOpen={setIsCreateOpenDraft}
       />
-      {/* <Box ref={printContainer}>
-        <RippedPaperCheck id='cheque_of_orders' printContainer={printContainer} />
-      </Box> */}
+
       <DraftDrawer cashBoxDetails={cashBoxDetails} open={isOpenDraft} setOpen={setIsOpenDraft} />
       <ClientCreateMini
         setCustomerId={setCustomerId}
         quickCreateClientName={quickCreateClientName}
         openDrawer={openClientCreateMini}
         closeDrawer={() => setOpenClientCreateMini(false)}
-        // setOpenClientCreate={setOpenClientCreate}
-        // setClientDataMini={setClientDataMini}
         clientData={clientDetails}
-        // handleAddClient={handleAddClient}
         afterCreate={(clientId) => setCreatedClientId(clientId)}
       />
       <ClientVerification isOpen={false} clientInfo={clientDetails} closeDrawer={() => {}} handleAddClient={() => {}} setClientInfo={() => {}} />

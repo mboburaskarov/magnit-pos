@@ -125,11 +125,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'end',
     alignItems: 'center',
     width: '100%',
-    // height: '100%',
     padding: '8px',
     borderRadius: 16,
     color: theme.palette.common.white,
-    // background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3))',
     cursor: 'move',
     '&.visible:hover': {
       display: 'flex',
@@ -158,7 +156,6 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   preview_btn: {
-    // minWidth: 80,
     marginLeft: '8px',
     maxWidth: 32,
     height: 32,
@@ -226,11 +223,8 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
             <StarOutlinedIcon />
           </div>
         )}
-        {/* <label onClick={() => setEditingImage(item.file_name)} className={classes.preview_text} htmlFor={id}>
-          {t('buttons.replace')}
-        </label> */}
+
         <Button onClick={() => deleteImage(item)} className={classes.preview_btn}>
-          {/* {t('buttons.delete')} */}
           <DeleteIcon width='24px' />
         </Button>
       </div>

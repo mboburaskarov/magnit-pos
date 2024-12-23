@@ -56,17 +56,7 @@ const OutLineTextField = ({
         placeholder={placeholder}
         endAdornment={
           <InputAdornment position='end'>
-            <IconButton
-            // aria-label={
-            //   // showPassword ? 'hide the password' : 'display the password'
-            // }
-            // onClick={handleClickShowPassword}
-            // onMouseDown={handleMouseDownPassword}
-            // onMouseUp={handleMouseUpPassword}
-            >
-              {endAdornmentText}
-              {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
-            </IconButton>
+            <IconButton>{endAdornmentText}</IconButton>
           </InputAdornment>
         }
         inputRef={inputRef}

@@ -51,14 +51,10 @@ export default function ProductsPage() {
     setIsDrawerOpen,
   })
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
-        ?.filter(
-          (el) => !el?.is_temporary && el?.colId !== SELECTION_ID
-          // && el.field !== 'category'
-        )
+        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
         ?.map((el) => ({
           ...el,
           label: el.headerName,
@@ -233,8 +229,6 @@ export default function ProductsPage() {
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                   background: 'transparent',
-                  // border: '2px solid transparent',
-
                   width: '400px',
                   height: 48,
                 },

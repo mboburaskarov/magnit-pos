@@ -1,4 +1,3 @@
-// import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
 import { Typography } from '@mui/material'
 import EmptyTableData from '../../src/assets/icons/EmptyTableData'
 import { useTranslation } from 'react-i18next'
@@ -46,8 +45,7 @@ export const HeaderCheckbox = ({ api, percentage, deleteAllProducts, addAllProdu
     <div>
       {selectAllCondition && checked ? (
         <></>
-      ) : /* <CustomCircularProgress percentage={percentage} /> */
-      selectAllCondition && !checked ? (
+      ) : selectAllCondition && !checked ? (
         <input disabled type='checkbox' style={{ cursor: 'not-allowed' }} />
       ) : (
         <input

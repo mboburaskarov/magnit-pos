@@ -107,15 +107,6 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
             }}
           >
             <p>{customDateRangeSelected || 'Vaqt tanlang'}</p>
-            {/* {dateDifference === 0 ? (
-              <span>{dayjs(dateState?.from).format('DD.MM.YYYY')} </span>
-            ) : (
-              <span>
-                {dayjs(dateState?.from).format('DD.MM.YYYY')}
-                {dateState?.to ? ' - ' : ''}
-                {dayjs(dateState?.to).format('DD.MM.YYYY')}
-              </span>
-            )} */}
           </Box>
         }
         popperContentProps={{

@@ -55,9 +55,6 @@ const PhoneNumber = ({ login = true, name, disabled = false, required, country =
                   color: 'gray.300',
                   fontSize: 16,
                 },
-                '&:hover': {
-                  // bgcolor: 'gray.200',
-                },
               })}
             >
               <Typography fontSize={'16px'} mt={login ? '7px' : '2px'}>{`${country.flag} ${country.dial_code}`}</Typography>

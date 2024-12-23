@@ -2,7 +2,6 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    // width: 'calc(80vw - 64px)',
     width: (props) => (props.width ? props.width : props?.isOpen ? 'calc(100vw - 320px)' : 'calc(100vw - 160px)'),
     position: 'relative',
   },
@@ -66,11 +65,9 @@ const useStyles = makeStyles((theme) => ({
     },
     '& th > div::before': {
       content: '',
-      // backgroundImage: `url('../images/anchor.svg')`,
       position: 'absolute',
       top: 0,
       left: 0,
-      // backgroundSize: `18px 18px`,
       height: 18,
       width: 18,
     },

@@ -47,14 +47,11 @@ export const yandexMapsRequest = axios.create({
   ],
 })
 
-// Get new access token when it is expired
 request.interceptors.response.use(
   (response) => {
     return response
   },
   (err) => {
-    // show notification if user has no internet connection
-    // it is not perfect solution though
     if (err?.toJSON()?.message === 'Network Error') {
       debouncedShowNotification()
     }
@@ -67,22 +64,3 @@ request.interceptors.response.use(
     return Promise.reject(err)
   }
 )
-// fileUploadRequest.interceptors.response.use(
-//   (response) => {
-//     return response
-//   },
-//   (err) => {
-//     // show notification if user has no internet connection
-//     // it is not perfect solution though
-//     if (err?.toJSON()?.message === 'Network Error') {
-//       debouncedShowNotification()
-//     }
-
-//     if (err.response.status === 401 || err.response.status === 403) {
-//       localStorage.clear()
-//       window.location.replace('/login')
-//     }
-
-//     return Promise.reject(err)
-//   }
-// )

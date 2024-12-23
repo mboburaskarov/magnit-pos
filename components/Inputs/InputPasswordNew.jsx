@@ -20,9 +20,7 @@ const useStyles = makeStyles(() => ({
   noMargin: {
     marginTop: 0,
   },
-  noLabel: {
-    // marginTop: 20,
-  },
+  noLabel: {},
 }))
 
 function InputPassword({

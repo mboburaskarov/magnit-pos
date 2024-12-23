@@ -36,7 +36,6 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
               marksUncheckedRef.current = marksUncheckedRef?.current?.filter((marksUnchecked) => ![...childNodes, node].includes(marksUnchecked))
             }
           } else {
-            // const childNodes = getTreeNodes({ tree, node, depth: 1 });
             const childNodes = getTreeNodes({ tree, node })
             const childNodesLength = childNodes.length
 

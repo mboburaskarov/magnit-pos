@@ -47,8 +47,6 @@ const useStyles = makeStyles((theme) =>
         boxShadow: theme.boxShadow['32-12'],
       },
 
-      // DatePicker
-
       '.datepicker .react-datepicker': {
         backgroundColor: theme.palette.background.default,
         boxShadow: theme.boxShadow['16-8'],
@@ -101,7 +99,6 @@ const useStyles = makeStyles((theme) =>
           backgroundColor: `${theme.palette.orange[500]} !important`,
         },
 
-      // multi option select :only color:
       '.label': {
         color: theme.palette.gray[600],
       },
@@ -134,7 +131,6 @@ const useStyles = makeStyles((theme) =>
         borderColor: theme.palette.gray[200],
       },
 
-      // rich text editor :only color:
       '.rdw-storybook-root': {
         backgroundColor: theme.palette.gray[100],
       },
@@ -191,7 +187,6 @@ const useStyles = makeStyles((theme) =>
         backgroundColor: theme.palette.gray[101],
       },
 
-      // ag grid styles :only color:
       '.ag-theme-alpine.ag-dnd-ghost': {
         backgroundColor: theme.palette.background.default + ' !important',
         borderColor: theme.palette.background.default + ' !important',
@@ -264,9 +259,6 @@ const useStyles = makeStyles((theme) =>
       '.ag-theme-alpine .ag-header-cell:hover': {
         backgroundColor: `${theme.palette.bunker[100]} !important`,
       },
-      // '.ag-header-row.ag-header-row-column': {
-      //   backgroundColor: theme.palette.gray[50],
-      // },
       '.ag-cell-label-container': {
         padding: '12px',
       },
@@ -327,9 +319,6 @@ const useStyles = makeStyles((theme) =>
         borderColor: theme.palette.bunker[100],
       },
 
-      // '.no-rows-root p': {
-      //   color: theme.palette.gray[300],
-      // },
       '.ag-theme-alpine .ag-pinned-left-header': {
         borderColor: theme.palette.gray[200] + ' !important',
       },

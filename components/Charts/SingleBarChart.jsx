@@ -40,12 +40,10 @@ export default function TotalOrdersByCity() {
         border: '1px solid #A4A5AB33',
         borderRadius: '32px',
         padding: '16px 4px',
-        // maxWidth: 414,
         backgroundColor: '#fff',
         height: '100%',
       }}
     >
-      {/* Header */}
       <Box display='flex' justifyContent='space-between' alignItems='center' px={'16px'} mb={2}>
         <Typography variant='h6' sx={{ fontWeight: 700, fontSize: 26, lineHeight: '32px' }}>
           По филиалам

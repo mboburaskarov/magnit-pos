@@ -12,7 +12,6 @@ function NavItem({ item, classes, handleClickNavItems, isActive }) {
       <ListItem
         aria-describedby='popper'
         className={`${classes.listItem} ${item.className || ''} drawer_list_item`}
-        // style={{ backgroundColor: isActive && palette.orange[500] }}
         component={RouterLink}
         to={item.href}
         onClick={(event) => {

@@ -90,38 +90,6 @@ export default function ImagePreview({
             width={width || 128}
             height={height || 228}
           >
-            {/* <Box
-              id='countBox'
-              sx={{
-                position: 'absolute',
-                top: 4,
-                right: 4,
-                bgcolor: 'white',
-                color: 'green.600',
-                width: 28,
-                height: 28,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: '50%',
-                fontWeight: 600,
-                zIndex: 7,
-                transition: 'all 0.2s ease-in-out',
-              }}
-            >
-              {uploadedImages?.length}
-            </Box> */}
-
-            {/* <Button
-            onClick={(e) => {
-              e.stopPropagation()
-              setOpenGallery(true)
-            }}
-            size='small'
-            sx={{ position: 'absolute', bottom: 8, left: 8, zIndex: 8, height: 36, borderRadius: 2, width: `calc(${width || 128}px - 16px)` }}
-          >
-            просмотр
-          </Button> */}
             <input id={id} {...getInputProps()} data-test='upload-photo' />
 
             <Box
@@ -131,8 +99,6 @@ export default function ImagePreview({
                 maxHeight: '80px',
                 overflow: 'hidden',
                 transition: 'all 0.2s ease',
-                // zIndex: 5 - ind,
-                // transform: `rotate(${ind * 10}deg)`,
                 img: { objectFit: 'cover', borderRadius: '50%' },
               }}
               position='absolute'
@@ -165,14 +131,10 @@ export default function ImagePreview({
                 variant='secondary'
                 onClick={(e) => {
                   e.stopPropagation()
-                  // setOpenGallery(true)
                   deleteImage()
                 }}
                 id='countBox'
                 sx={{
-                  // position: 'absolute',
-                  // top: 40,
-                  // right: 4,
                   width: '123px',
                   height: '32px',
                   bgcolor: 'red.10',
@@ -289,13 +251,10 @@ export default function ImagePreview({
               zIndex: 7,
               transition: 'all 0.2s ease-in-out',
             }}
-          >
-            {/* {uploadedImages?.length} */}
-          </Box>
+          ></Box>
           <Button onClick={() => setOpenGallery(true)} size='small' sx={{ position: 'absolute', bottom: 8, left: 8, zIndex: 8, height: 36, borderRadius: 2 }}>
             просмотр
           </Button>
-          {/* {uploadedImages.slice(0, 3).map((el, ind) => ( */}
           <Box
             id={`upload-img-preview`}
             sx={{
@@ -309,7 +268,6 @@ export default function ImagePreview({
           >
             <img src={getImageUrl(uploadedImages.key)} alt={`image of ${uploadedImages.key || 'product'}`} width={128} height={128} />
           </Box>
-          {/* ))} */}
         </Box>
       ) : (
         !withoutTextBox && (
@@ -318,16 +276,6 @@ export default function ImagePreview({
           </Box>
         )
       )}
-
-      {/* <ImageUploadGallery
-        onSortEnd={onSortEnd}
-        setEditingImage={setEditingImage}
-        setUploadedImages={setUploadedImages}
-        id={id}
-        open={openGallery}
-        setOpen={setOpenGallery}
-        uploadedImages={uploadedImages}
-      /> */}
     </Box>
   )
 }

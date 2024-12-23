@@ -82,20 +82,6 @@ const columns = [
     minWidth: 70,
     width: 350,
   },
-
-  // {
-  //   field: 'product_variability',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 200,
-  // },
-  // {
-  //   field: 'actions',
-  //   hide: false,
-  //   minWidth: 96,
-  //   width: 96,
-  //   pinned: 'right',
-  // },
 ]
 
 const importDetailsTableColumns = createSlice({
@@ -133,25 +119,6 @@ const importDetailsTableColumns = createSlice({
       state.columns = action.payload
     },
     resetTableHeader(state, action) {
-      // if (typeof action.payload?.refetch === 'function') action.payload?.refetch()
-      // state.loading = true
-
-      // const existingColumns = state.columns
-      // const newColumns = columns
-      // const existingColumnsMap = new Map(existingColumns.map((col) => [col.field, col]))
-      // newColumns.forEach((newCol) => {
-      //   const existingCol = existingColumnsMap.get(newCol.field)
-
-      //   if (existingCol) {
-      //     existingCol.width = newCol.width
-      //     existingCol.hide = newCol.hide
-      //     existingColumnsMap.delete(newCol.field)
-      //   } else {
-      //     state.columns.push(newCol)
-      //   }
-      // })
-      // state.columns = state.columns.filter((col) => !existingColumnsMap.has(col.field))
-      // state.loading = false
       state.columns = columns
     },
   },

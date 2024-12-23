@@ -23,14 +23,6 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
     </Typography>
   )
 }
-const SimpleInput = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Box>
-      {/* <TextField id={`product-${type}-${rowIndex}`} /> */}
-      {/* <TextField id={`product-${type}-${rowIndex}`} fullWidth name='description' label='Izoh' placeholder='Fikr kiriting' /> */}
-    </Box>
-  )
-}
 
 export default function productStoresTableHeaderSelector({
   productsColumns,

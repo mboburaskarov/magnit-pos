@@ -111,7 +111,6 @@ export default function ImagePreview({
           <Box
             onClick={(e) => {
               e.stopPropagation()
-              // setOpenGallery(true)
               deleteImage()
             }}
             id='countBox'

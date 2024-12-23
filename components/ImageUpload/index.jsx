@@ -106,7 +106,6 @@ export default function ImageUpload({ id, images, onChange, label, width, height
               justifyContent: 'center',
               width: '100%',
               py: 3,
-              // borderRight: '50%',
               px: 6,
               paddingBottom: 4,
               borderColor: isDragReject ? 'red.300' : 'gray.300',

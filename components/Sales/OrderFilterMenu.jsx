@@ -63,18 +63,7 @@ export default function OrderFilterMenu({ filterMenu, setDate, setFilterMenu }) 
               endDate={localEndDate}
             />
           </Box>
-          <Box flex='1 0 30%'>
-            {/* <LazySelect
-              slug='customers'
-              id='customers'
-              name='client'
-              label={t('menu.orders.all.filter_menu_order.client')}
-              minWidth='auto'
-              placeholder={t('menu.orders.all.filter_menu_order.select_client')}
-              control={control}
-              request={requests.customer?.getAll}
-            /> */}
-          </Box>
+          <Box flex='1 0 30%'></Box>
         </Box>
         <Box display='flex' width='100%' mt={4}>
           <Button
@@ -87,13 +76,7 @@ export default function OrderFilterMenu({ filterMenu, setDate, setFilterMenu }) 
           >
             {t('menu.orders.all.filter_menu_order.reset')}
           </Button>
-          <Button
-            variant='contained'
-            style={{ flex: '1 0 45%' }}
-            type='submit'
-            // disabled={!formState.isDirty}
-            disabled={!formState.isDirty && !localStartDate}
-          >
+          <Button variant='contained' style={{ flex: '1 0 45%' }} type='submit' disabled={!formState.isDirty && !localStartDate}>
             {t('menu.orders.all.filter_menu_order.apply')}
           </Button>
         </Box>

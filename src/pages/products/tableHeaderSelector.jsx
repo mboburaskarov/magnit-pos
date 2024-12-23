@@ -250,19 +250,6 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
                   <DeleteIcon />
                 </IconButton>
               </CheckAccess>
-              {/* {data.status === 'ACTIVE' ? (
-                <CheckAccess id={'product-deactive'}>
-                  <IconButton onClick={() => setOpenConfirmDialog({ type: 'deactivate', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                    <PauseIcon />
-                  </IconButton>
-                </CheckAccess>
-              ) : (
-                <CheckAccess id={'product-active'}>
-                  <IconButton onClick={() => setOpenConfirmDialog({ type: 'activate', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                    <PlayIcon />
-                  </IconButton>
-                </CheckAccess>
-              )} */}
             </Box>
           </CheckAccess>
         )),

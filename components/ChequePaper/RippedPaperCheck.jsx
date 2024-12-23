@@ -50,21 +50,9 @@ function RippedPaperCheck({
 
   return (
     <Box className={`${classes.root} ${noSticky ? classes.noSticky : ''}`}>
-      {/* <Box display='flex' alignItems='center' flexDirection='column' mb={4}>
-        {checked && (
-          <>
-            <Box my={1}>
-              <TickOutlinedIcon />
-            </Box>
-            <Typography variant='h5'>{data?.name || t('menu.settings.shops.shop_create.cheque_type')}</Typography>
-          </>
-        )}
-      </Box> */}
-
       <Box className={classes.inner} mx={margin && 4}>
         <Box px={2} py={4}>
           <div className={classes.canvasContainer}>
-            {/* <Box width={288} height={96} className={classes.canvas}> */}
             <img
               src={'/brand_cheque.png'}
               alt=''
@@ -81,14 +69,10 @@ function RippedPaperCheck({
                 lineHeight: `${logo?.height}px`,
               }}
             />
-            {/* </Box> */}
           </div>
           <div className={classes.border} />
           <Fragment key={'index'}>
             <Box className={classes.content}>
-              {/* <p id={`return-name-${'index'}`}>
-                <b className={classes.bold}>crcrcr</b>
-              </p> */}
               {disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index2'}`}
@@ -176,28 +160,9 @@ function RippedPaperCheck({
               {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             </Fragment>
           ))}
-          {/* <Fragment key={'index35'}>
-            <Box className={classes.content}>
-              <p id={`return-name-${'index'}`}>
-                <b className={classes.bold}>2. Azitromirsin 250 mg / Dorilar/ Antibiotik</b>
-              </p>
-              {disableSumsOnGoods() && (
-                <DashedRow
-                  id={`return-price-${'index'}`}
-                  rowData={{
-                    type: `1 dona x 239 9000`,
-                    value: `789 900 UZS`,
-                  }}
-                />
-              )}
-            </Box>
-            {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
-          </Fragment> */}
+
           <Fragment key={'index39'}>
             <Box className={classes.content}>
-              {/* <p id={`return-name-${'index'}`}>
-                <b className={classes.bold}>1. Azitromirsin 250 mg / Dorilar/ Antibiotik</b>
-              </p> */}
               {disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index'}`}
@@ -219,24 +184,6 @@ function RippedPaperCheck({
                     />
                   )
               )}
-              {/* {disableSumsOnGoods() && (
-                <DashedRow
-                  id={`return-price-${'index'}`}
-                  rowData={{
-                    type: `Naqt:`,
-                    value: `789 900 UZS`,
-                  }}
-                />
-              )}
-              {disableSumsOnGoods() && (
-                <DashedRow
-                  id={`return-price-${'index'}`}
-                  rowData={{
-                    type: `Humo:`,
-                    value: `789 900 UZS`,
-                  }}
-                />
-              )} */}
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             <ChequeBarcode orderNumber={'323232323'} />

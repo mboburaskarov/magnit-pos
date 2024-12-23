@@ -213,18 +213,7 @@ const CustomTimeInput = ({ date, onChange }) => {
   const classes = useStyles()
   const diff = (+dayjs().format('HH') - +dayjs().tz().format('HH')) * 3600000
   const isFuture = dayjs(date).startOf('minute').diff(dayjs().tz().startOf('minute')) + diff > 0
-  const value =
-    date instanceof Date && !isNaN(date)
-      ? // Getting time from Date because `value` comes here without seconds
-        date.toLocaleTimeString('it-IT')
-      : ''
-
-  // useEffect(() => {
-  //   if (isFuture) {
-  //     error('toast.error.future_time')
-  //     onChange(`${dayjs().tz().hour()}:${dayjs().tz().minute()}`)
-  //   }
-  // }, [isFuture])
+  const value = date instanceof Date && !isNaN(date) ? date.toLocaleTimeString('it-IT') : ''
 
   const [hh, mm, ss] = value.split(':')
 
@@ -340,7 +329,6 @@ function InputDatePicker({
               InputProps={{
                 endAdornment: (
                   <InputAdornment sx={{ paddingRight: 1 }} position='start'>
-                    {/* <FontAwesomeIcon icon={faCalendarAlt} color={palette.orange[500]} /> */}
                     <CalendarIcon />
                   </InputAdornment>
                 ),
@@ -393,8 +381,6 @@ function InputDatePicker({
                           </button>
                         ) : (
                           <CalendarIcon />
-
-                          // <FontAwesomeIcon icon={faCalendarAlt} color={disabled ? palette.gray[400] : palette.orange[500]} />
                         )}
                       </InputAdornment>
                     ),

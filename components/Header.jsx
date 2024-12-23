@@ -153,7 +153,6 @@ function Header({
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        padding: 'block',
                         borderRadius: '50%',
                         backgroundColor: 'bunker.100',
                       }}

@@ -30,8 +30,6 @@ function NavItemMini({ item, handleClickNavItems, isActive }) {
           justifyContent: 'center',
           width: 48,
           height: 48,
-          // marginLeft: '24px',
-          // marginBottom: '8px',
           borderRadius: '50%',
           cursor: 'pointer',
           backgroundColor: isActive && theme.palette.orange[500],

@@ -5,7 +5,6 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    // minWidth: 600,
     backgroundColor: theme.palette.background.default,
     padding: '12px 12px 12px 16px',
     boxShadow: theme.boxShadow['32-12'],
@@ -22,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.gray[500],
     height: 48,
     marginBottom: 4,
-    // backgroundColor: theme.palette.gray[100],
     borderRadius: 32,
   },
   total_price: {
@@ -80,7 +78,6 @@ export default function DashboardTooltip({ active, payload, label, isMultiLine, 
                 if (aSize > bSize) {
                   return -1
                 }
-                // a должно быть равным b
                 return 0
               })
               .map((item, index) => (

@@ -18,9 +18,7 @@ const useStyles = makeStyles((theme) => ({
     '& > button span span span svg': {
       marginLeft: ({ noMarginSvg }) => !noMarginSvg && 10,
     },
-    '& > button': {
-      // borderRadius: ({ borderRadius }) => (borderRadius ? borderRadius : null),
-    },
+    '& > button': {},
 
     '& .MuiButtonBase-root': {
       border: 0,
@@ -46,18 +44,13 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 300,
     flexDirection: 'column',
     overflow: 'hidden',
-    // padding: ' 8px 16px',
     position: 'relative',
     borderRadius: 12,
     '& > .soon > svg > path': {
       stroke: theme.palette.gray[400],
-
-      // borderRadius: ({ borderRadius }) => (borderRadius ? borderRadius : null),
     },
     '& > .soon > span > b': {
       color: theme.palette.gray[400],
-
-      // borderRadius: ({ borderRadius }) => (borderRadius ? borderRadius : null),
     },
 
     '& > button': {
@@ -65,7 +58,6 @@ const useStyles = makeStyles((theme) => ({
       border: 0,
       display: 'flex',
       alignItems: 'center',
-      // height: 48,
       padding: '10px 16px',
       cursor: 'pointer',
       position: 'relative',
@@ -189,7 +181,6 @@ const ButtonWithPopup = ({
                           handleClose()
                         }}
                       >
-                        {/* {el?.soon && <span className='soon-icon'>Soon</span>} */}
                         {el.icon}
                         <span>
                           <b>{el.title}</b>

@@ -158,20 +158,6 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
               setShowOverlay(true)
               // setPage(1)
             }}
-            // }}
-            // onFocus={() => event('new_sale_search_attempts')}
-            // onKeyDown={(e) => {
-            //   if (e.key === 'Enter') {
-            //     onEnter()
-            //   }
-            // }}
-            // disabled={webkassaOn}
-            // onClick={() => setFakeIndexForCheckSearch(-1)}
-            // adornmentTextHotKey={t('buttons.press')}
-            // value={searchTerm}
-            // handleClickGiftCards={!giftCardsRoute && !giftCardSale && handleClickGiftCards}
-            // inputRef={searchInputRef}
-            // setSearchTerm={setSearchTerm}
           />
           <Box position={'relative'} minWidth={'240px'}>
             <SelectSimple
@@ -191,18 +177,8 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
                   <Box px={0.5} width={32}>
                     <UserOutlineIcon />
                   </Box>
-                  {/* {option.fullName} */}
                 </Typography>
               )}
-
-              // filterOption={(candidate, input) => {
-              //   const formatText = (text) => {
-              //     const newText = String(text)?.toLowerCase()?.replaceAll(' ', '')
-              //     return newText
-              //   }
-              //   const inputFrmttd = formatText(input)
-              //   return formatText(candidate?.data?.fullName)?.includes(inputFrmttd) || formatText(candidate?.data?.phone)?.includes(inputFrmttd)
-              // }}
             />
             <AssigneMeButton isSelected={true} />
           </Box>
@@ -222,19 +198,6 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
               { title: 'Kassa aparatini yopish', icon: <UnlockIcon />, clickHandler: () => navigate('/sales/cash-shift/f') },
               { title: "Kassa aparatini o'zgartirish", icon: <FinanceAndPaymentIcon />, soon: true },
             ]}
-            // popperContentProps={{
-            //   customDateRanges: customDateRanges(),
-            //   onCustomRangeSelect: (name) => setCustomDateRangeSelected(name),
-            //   isFilter: true,
-            //   dateState: {
-            //     from: dateState.from,
-            //     to: dateState.to,
-            //     month: dateState.month,
-            //   },
-            //   setDateState: (val) => setDateState(val),
-            //   onClose: (data) => onClose(data),
-            // }}
-            // PopperContent={DateFilterDrawerSingle}
           />
         </Box>
         {showOverlay && searchTearm && (

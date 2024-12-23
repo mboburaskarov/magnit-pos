@@ -79,9 +79,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
         <FormProvider {...methods}>
           <Box
             sx={{
-              '& .react-datepicker-popper': {
-                // transform: 'translate(596px, 530px) !important',
-              },
+              '& .react-datepicker-popper': {},
             }}
             rowGap={3}
             flexWrap='wrap'
@@ -90,13 +88,8 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
             onSubmit={methods.handleSubmit(onSubmit, onError)}
           >
             <InputDatePicker
-              // withTime
               defaultValue={new Date()}
               name='expired_date'
-              // minDate={new Date()}
-              // minTime={new Date()}
-              // minT
-              // required
               id='expired_date'
               showYearDropdown
               label='Дата закрытия'

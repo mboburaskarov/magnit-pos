@@ -18,7 +18,6 @@ import { setUserData } from '../../redux-toolkit/userSlice'
 import { fetchToken } from '../../firebase'
 import PhoneNumber from '../../../components/Inputs/PhoneNumber'
 import LoginBg from '../../assets/icons/loginBg'
-// import { request } from '../../../utils/axios'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: theme.fontFamily.Gilroy,
   },
   bgContainer: {
-    // width: "100%",
     display: 'flex',
     justifyContent: 'end',
     backgroundColor: theme.palette.orange[100],
@@ -54,13 +52,9 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     alignItems: 'center',
     borderRadius: '30px',
-    '& img': {
-      // width: "100%",
-    },
   },
   container: {
     backgroundColor: theme.palette.background.paper,
-    // width: 504,
     height: 'auto',
     borderRadius: 32,
     paddingLeft: 50,
@@ -88,7 +82,6 @@ const useStyles = makeStyles((theme) => ({
   link: {
     fontSize: 16,
     fontWeight: 400,
-    fontWeight: '22px',
   },
 }))
 
@@ -110,7 +103,6 @@ export default function LoginPage() {
       localStorage.setItem('user_data', JSON.stringify(userData.employee))
       dispatch(setUserData(userData?.employee))
       setTimeout(() => {
-        // navigate('/')
         window.location.replace('/redirect')
       }, 300)
     },
@@ -150,9 +142,6 @@ export default function LoginPage() {
               <h1 className={classes.title}>Добро пожаловать 👋</h1>
               <h4 className={classes.description}>Пожалуйста, войдите сюда</h4>
               <Box width='100%'>
-                {/* <Box display="flex" justifyContent="space-between">
-            <Typography>Номер телефона</Typography>
-          </Box> */}
                 <Box minWidth={'445px'}>
                   <PhoneNumber
                     fullWidth
@@ -164,19 +153,12 @@ export default function LoginPage() {
                     country={country}
                     setCountry={setCountry}
                   />
-                  {/* <EmailInput dashed disabled fullWidth name='phone_number' placeholder='Введите номер телефона' secondary label={'Email Address'} required /> */}
                 </Box>
                 <Box sx={{ marginTop: '20px' }}>
-                  {/* <Box display="flex" justifyContent="space-between">
-                  <Typography>Пароль</Typography>
-                </Box> */}
                   <InputPassword id='password' name='password' label={'Password'} autoCompleteOff required fullWidth minLength={8} secondary />
                 </Box>
               </Box>
-              {/* <Box display={'flex'} alignItems={'center'} sx={{ marginTop: '16px', paddingRight: '23px' }} justifyContent={'space-between'}>
-                <CheckBox />
-                <Link className={classes.link}>Forgot Password?</Link>
-              </Box> */}
+
               <Box width='100%' mt={4}>
                 <LoadingButton variant='contained' size='large' type='submit' fullWidth loading={logInLoading} onClick={onSubmit} id='login-button'>
                   Login

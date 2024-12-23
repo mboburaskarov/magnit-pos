@@ -14,9 +14,6 @@ const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandle
         position: 'relative',
         display: 'flex',
         width: '100%',
-        // '& .MuiFormControl-root:nth-child(1) > .MuiInputBase-root': {
-        //   borderRight: 'none !important',
-        // },
       }}
     >
       <NumberFormatBase
@@ -151,7 +148,6 @@ function InputRange({
               defaultValue=''
               required={required}
             />
-            {/* <Box sx={{ width: 2, background: 'gray.200' }} /> */}
             <Controller
               render={({ field: { onChange: onControllerChange, value }, ...rest }) => (
                 <InputRangeComponent

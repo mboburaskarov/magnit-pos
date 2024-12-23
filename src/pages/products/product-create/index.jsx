@@ -35,7 +35,6 @@ export default function ProductCreatePage() {
 
   const onSubmit = (data) => {
     const requestBody = {
-      name: get(data, 'name'),
       barcode: get(data, 'barcode'),
       bonus_amount: Number(get(data, 'bonus_amount')),
       bonus_percent: Number(get(data, 'bonus_percent')),

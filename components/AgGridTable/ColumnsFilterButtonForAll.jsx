@@ -114,7 +114,6 @@ function ColumnsFilterButtonForAll({ columns, title, changeColumnSequence, reset
                 fullWidth
                 color='secondary'
                 variant='contained'
-                // disabled={!formState.isDirty}
                 onClick={resetTableHeaders}
               >
                 <Typography fontWeight={600} lineHeight={'24px'} fontSize={'16px'}>

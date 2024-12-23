@@ -134,7 +134,6 @@ export default function DateOrderAccordion({
   useEffect(() => {
     if (!noRedirect) {
       const pageParams = qs.stringify({ ...queryParams?.values, limit: pageSize, page: pageIndex + 1 }, { addQueryPrefix: true })
-      // navigate(`/order/all${pageParams}`)
     }
   }, [navigate, pageIndex, pageSize])
 

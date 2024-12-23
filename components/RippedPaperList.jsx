@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     padding: '32px 0',
     width: '59vw',
-    // transform: 'rotateX(180deg)',
     '&::-webkit-scrollbar': {
       background: theme.palette.gray[200],
       borderRadius: 16,
@@ -39,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
   },
   wrapper: {
     width: '100%',
-    // transform: 'rotateX(180deg)',
   },
 }))
 
@@ -90,7 +88,6 @@ export function RippedPaperItem({ printContainer, cashBoxDetails, customerId, pa
 
   return (
     <Box px={2} className={classes.wrapper}>
-      {/* {!noFormControl && <FormControlLabel value={data?.id} control={<StyledRadio />} label={data?.name} className={classes.label} checked={checked} />} */}
       <RippedPaperCheck customerId={customerId} cashBoxDetails={cashBoxDetails} cartItemsList={cartItemsList} paymentsList={paymentsList} />
     </Box>
   )

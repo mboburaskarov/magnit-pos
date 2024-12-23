@@ -101,7 +101,6 @@ export default function MainDetails({ clientData, openDrawer }) {
           <TextField
             id='client-name'
             name='first_name'
-            // label={'menu.clients.new.name'}
             control={control}
             fullWidth
             error={errors?.first_name}
@@ -114,18 +113,7 @@ export default function MainDetails({ clientData, openDrawer }) {
         <Grid item xs={6}>
           <Label mb='4px'>{t('last_name')}</Label>
 
-          <TextField
-            id='last-name'
-            name='last_name'
-            // label={t('menu.clients.new.last_name')}
-            control={control}
-            required
-            fullWidth
-            error={errors?.last_name}
-            placeholder={t('last_name')}
-            // defaultValue={clientData ? clientData.last_name : ''}
-            asteriks
-          />
+          <TextField id='last-name' name='last_name' control={control} required fullWidth error={errors?.last_name} placeholder={t('last_name')} asteriks />
         </Grid>
       </Grid>
       <Box mb={4} />
@@ -171,93 +159,6 @@ export default function MainDetails({ clientData, openDrawer }) {
             asteriks
           />
         </Grid>
-
-        {/* <Grid item xs={6}>
-          <Box mt={4} mb={2}>
-            <Label mb='4px'>{t('menu.clients.cards.card')}</Label>
-          </Box>
-          {cards && cards[0] ? (
-            <Box className={classes.card}>
-              <Box display='flex' alignItems='center'>
-                <GreenCard style={{ width: '38px', height: '24px', marginRight: 24 }} />
-                <Label mb='4px'>{cards[0].name}</Label>
-              </Box>
-              <FontAwesomeIcon icon={faTimesCircle} onClick={() => setValue('cards', [])} color={palette.red[500]} />
-            </Box>
-          ) : (
-            <Box>
-              <Button
-                id='add-client-card'
-                secondary
-                fullWidth
-                onClick={() => {
-                  setOpenCardDialogProgress(true)
-                }}
-              >
-                <FontAwesomeIcon icon={faPlus} style={{ marginRight: 8 }} />
-                {t('buttons.add_card')}
-              </Button>
-            </Box>
-          )}
-          <StyledCardDialog
-            open={openCardDialogProgress}
-            onClose={() => {
-              setOpenCardDialogProgress(false)
-              setCardCode('')
-            }}
-            cardCode={cardCode}
-            setCardCode={setCardCode}
-            onEnterPress={onEnterPress}
-          />
-          <StyledCardDialog
-            open={openCardDialogSuccess}
-            onClose={() => {
-              setOpenCardDialogSuccess(false)
-              setCardCode('')
-            }}
-            type='success'
-          />
-          <StyledCardDialog
-            open={openCardDialogError}
-            onClose={() => {
-              setOpenCardDialogError(false)
-              setCardCode('')
-            }}
-            type='error'
-          />
-          <StyledDialog
-            open={open}
-            onClose={(e) => {
-              e.preventDefault()
-              setOpen(false)
-              setCardCode('')
-            }}
-            title={t('buttons.add_card')}
-            buttonLabel={t('buttons.add')}
-            // disabled={!cardName}
-            customOnSubmit={() => {
-              setCardCode('')
-              setCardName('')
-              setValue('cards', [{ code: cardCode, name: cardName }])
-              setOpen(false)
-            }}
-          >
-            <Box py={4} px={7}>
-              <Box display='flex' my={2}>
-                <InputSimple
-                  id='card_name'
-                  name='card_name'
-                  label={t('menu.clients.new.card_name')}
-                  fullWidth
-                  placeholder={t('placeholders.enter_title')}
-                  uncontrolled
-                  value={cardName}
-                  onChange={(e) => setCardName(e.target.value)}
-                />
-              </Box>
-            </Box>
-          </StyledDialog>
-        </Grid> */}
       </Grid>
 
       <Box mb={4} />
@@ -300,21 +201,7 @@ export default function MainDetails({ clientData, openDrawer }) {
       <Grid container spacing={4}>
         <Grid item xs={6}>
           <Label mb='4px'>{t('birthdate')}</Label>
-          <InputDatePicker
-            // withTime
-            noMarginTop
-            // defaultValue={new Date()}
-            name='date_of_birth'
-            // minDate={new Date()}
-            // minTime={new Date()}
-            // minT
-            error={errors?.date_of_birth}
-            required
-            id='birth-Date'
-            showYearDropdown
-            // label='Дата закрытия'
-            placeholder='kk/oo/yyyy'
-          />
+          <InputDatePicker noMarginTop name='date_of_birth' error={errors?.date_of_birth} required id='birth-Date' showYearDropdown placeholder='kk/oo/yyyy' />
         </Grid>
         <Grid item xs={6}>
           <Label mb='4px'>{t('gender')}</Label>
@@ -324,7 +211,6 @@ export default function MainDetails({ clientData, openDrawer }) {
             noMarginTop
             required
             name='gender'
-            // label={t('menu.clients.new.gender')}
             control={control}
             defaultValue='male'
             error={errors?.gender}

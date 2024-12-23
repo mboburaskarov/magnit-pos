@@ -1,5 +1,4 @@
 import { Box, Button, Typography } from '@mui/material'
-// import Button from 'stories/Button/Button'
 
 export default function ErrorPageLocal({ errorData }) {
   const error = errorData?.error.stack.split(' at ')

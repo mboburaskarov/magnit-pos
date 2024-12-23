@@ -179,17 +179,6 @@ function InputQuantity({
             }
           },
         })}
-        {...(uncontrolled && {
-          onBlur: (e) => {
-            // onChange({
-            //   ...e,
-            //   target: {
-            //     ...e.target,
-            //     value: 0,
-            //   },
-            // })
-          },
-        })}
         {...(!uncontrolled && {
           onBlur: (e) => {
             setTimeout(() => {

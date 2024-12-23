@@ -6,7 +6,6 @@ import { useMutation, useQuery } from 'react-query'
 import { useParams } from 'react-router-dom'
 import { RippedPaperItem } from '../../RippedPaperList'
 import PaymentMethodInput from './PaymentMethodInput'
-// import DebtDrawer from './DebtDrawer'
 import { LoadingButton } from '@mui/lab'
 import { get, size } from 'lodash'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -134,7 +133,6 @@ const useStyles = makeStyles((theme) => ({
   box: {
     flex: '0 0 32.3%',
     borderRadius: 16,
-    // marginRight: 8,
     marginBottom: 16,
     border: `2px solid ${theme.palette.gray[300]}`,
     overflow: 'hidden',
@@ -142,8 +140,6 @@ const useStyles = makeStyles((theme) => ({
   outline: {
     transition: 'all 0.4s ease',
     border: `2px solid ${theme.palette.orange[500]}`,
-
-    // boxShadow: `0 0 0 3px ${theme.palette.orange[500]}`,
   },
   boxHeader: {
     backgroundColor: theme.palette.gray[100],
@@ -164,14 +160,12 @@ const useStyles = makeStyles((theme) => ({
           '& svg path': {
             fill: theme.palette.red[700],
           },
-          // borderRadius: 0,
         },
       },
       '& .icon-wrapper': {
         height: '32px !important',
         width: '32px !important',
         minWidth: '32px !important',
-        // borderRadius: 0,
       },
     },
   },
@@ -216,7 +210,6 @@ const useStyles = makeStyles((theme) => ({
     '& > .MuiFormControl-root': {
       height: 34,
     },
-    // height: ,
   },
   change: {
     color: theme.palette.red[500],
@@ -256,11 +249,9 @@ export default function OrderDrawer({
   isOrderDrower,
   closeDrawer,
   printContainer,
-  // handlePrint,
   cartItemsList,
   customerId,
   cashBoxDetails,
-  // onSubmit,
   refetchcartItemsList,
   noCheck,
   half,
@@ -301,7 +292,6 @@ export default function OrderDrawer({
   const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
   const { mutate: addToOrderPayment, isLoading: isaddToOrderPayment } = useMutation(requests.addToOrderPayment, {
     onSuccess: () => {
-      // setShowOverlay(false)
       refetchcartItemsList()
       setIsOrderDrower(false)
       handlePrint()
@@ -364,28 +354,6 @@ export default function OrderDrawer({
     scanningTextRef.current = ''
 
     return
-
-    const payment_types = paymentsList.map((el) => ({ amount: el.amount, payment_type_id: el.id }))
-    const requestBody = {
-      cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
-      payment_types,
-      sale_id: id,
-      // discount_amount: 0,
-      total_amount: get(cartItemsList, 'total_amount'),
-    }
-
-    addToOrderPayment(requestBody)
-    // setOpen(false)
-    // const requestBody = {
-    //   cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
-    //   created_by: get(userData, 'id'),
-    //   description: get(data, 'description'),
-    //   customer_id: get(customerId, 'id'),
-    //   draft_time: get(data, 'draft_time'),
-    //   sale_id: id,
-    //   store_id: get(userData, 'store.id'),
-    // }
-    // createDraft(requestBody)
   }
   const mpaddedPaymentsList = [
     ...paymentsList,
@@ -428,19 +396,12 @@ export default function OrderDrawer({
 
   return (
     <Box hidden>
-      <Box
-        width='calc(100% + 32px)'
-        mx={-2}
-        mt={-4}
-        // style={{ transform: 'rotateX(180deg)' }}
-        // ref={printContainer}
-      >
+      <Box width='calc(100% + 32px)' mx={-2} mt={-4}>
         <Drawer
           open={isOrderDrower}
           onClose={() => setIsOrderDrower(false)}
           onKeyDown={(e) => {
             if (e.code === 'KeyL') {
-              // onSubmit()
             }
             if (
               payments?.find((payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.id === 'debt' && maxKeys <= MAX_F_BUTTONS_QUANTITY)
@@ -455,10 +416,6 @@ export default function OrderDrawer({
               if (!orderPayments?.length) setPayme(true)
               return
             }
-            // if (!giftCardsRoute && !giftCardPayment && `F${payments?.length + 1}` === e.code) {
-            //   if (!isReturnDrawer) handleClickGiftCard()
-            //   else !isLoadingParent && handleReturnGiftCard()
-            // }
             if (
               payments?.find((payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.id !== 'debt' && maxKeys <= MAX_F_BUTTONS_QUANTITY)
             ) {
@@ -512,7 +469,7 @@ export default function OrderDrawer({
                   </Typography>
                   <Grid container display={'flex'}>
                     {get(paymentTypesList, 'data.data', []).map((item) => (
-                      <Grid sx='3' sm='3' lg='3' xl='3' xs='3' p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
+                      <Grid item sx='3' sm='3' lg='3' xl='3' xs='3' p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
                         <Box
                           display={'flex'}
                           p={'20px'}
@@ -523,8 +480,6 @@ export default function OrderDrawer({
                           }}
                           height={'80px'}
                           bgcolor={'bg.10'}
-                          // mr={'16px'}
-                          // mb={'16px'}
                           justifyContent={'space-between'}
                           borderRadius={'24px'}
                         >
@@ -540,7 +495,7 @@ export default function OrderDrawer({
                 <Box>
                   <Grid container width={'100%'} display={'flex'}>
                     {mpaddedPaymentsList?.map((el) => (
-                      <Grid sx='3' sm='3' lg='3' xl='3' xs='3' m={'3'} key={el.id}>
+                      <Grid item sx='3' sm='3' lg='3' xl='3' xs='3' m={'3'} key={el.id}>
                         {el?.amount ? (
                           <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.box}>
                             <div className={classes.boxHeader}>
@@ -594,7 +549,6 @@ export default function OrderDrawer({
                   mx={-2}
                   mt={-4}
                   style={{
-                    // width: 320,
                     padding: '20px',
                   }}
                   ref={printContainer}
@@ -637,9 +591,7 @@ export default function OrderDrawer({
           <Typography mb={'16px'} justifyContent={'center'} textAlign={'center'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.950'}>
             Отсканируйте QR-код клиента, чтобы завершить платеж.
           </Typography>
-          {/* <Box mb={'16px'}> */}
-          {/* <TextField disabled value={scanningText} /> */}
-          {/* </Box> */}
+
           <Box sx={{ display: 'flex' }}>
             <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.500'}>
               Тип оплаты:

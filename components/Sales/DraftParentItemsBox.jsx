@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '4px',
   },
   productsNumsWrapper: {
-    display: 'flex',
     height: '48px',
     minWidth: '88px',
     backgroundColor: '#fff',

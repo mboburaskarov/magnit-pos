@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.gray[101],
     },
     '& .MuiOutlinedInput-root': {
-      // padding: '15.5px 5px',
       border: `2px solid transparent`,
     },
     '& .MuiInputBase-input::placeholder': {

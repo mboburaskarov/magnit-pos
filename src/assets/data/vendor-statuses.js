@@ -9,12 +9,7 @@ export const vendor_statuses = [
     bgcolor: 'green.10',
     name: 'Активный',
   },
-  // {
-  //   id: 'inactive',
-  //   color: 'green.700',
-  //   bgcolor: 'green.10',
-  //   name: 'Активный',
-  // },
+
   {
     id: 'deleted',
     color: 'red.700',

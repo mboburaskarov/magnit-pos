@@ -77,7 +77,6 @@ export default function SerchedItem({
                   autoEscape
                   textToHighlight={`${product?.name} / ${product?.category?.name}`}
                 />
-                {/* {product?.name} */}
               </Typography>
               <Typography id='product-barcode'>
                 <Highlighter

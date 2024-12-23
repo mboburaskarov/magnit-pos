@@ -83,8 +83,6 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
       setChildOpen(false)
       setOpen(false)
       navigate(`/sales/new-sale/${get(data, 'data')}`)
-
-      // success('Продукт успешно создан!')
     },
     onError: (err) => {
       error('Ошибка при создании товараa!')
@@ -95,9 +93,6 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   useEffect(() => {
     refetch()
   }, [open])
-  // useEffect(() => {
-  //   // refetchDraftList()
-  // }, [])
   const theme = useTheme()
   return (
     <LoadingContainer readyState={!isDarftChildList}>
@@ -206,31 +201,6 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
               </Typography>
             </Button>
           </Box>
-          {/* <DraftParentItemsBox />
-        <DraftParentItemsBox />
-        <DraftParentItemsBox />
-        <DraftParentItemsBox /> */}
-          {/* <Box maxWidth='400px'>
-            <Box
-              mx={-2}
-              mt={-4}
-              style={{
-                // width: 320,
-                padding: '20px',
-              }}
-              ref={printContainer}
-            >
-              <RippedPaperItem
-                paymentsList={[]}
-                cartItemsList={[]}
-                id='cheque_of_orders'
-                cashBoxDetails={[]}
-                customerId={[]}
-                noFormControl
-                printContainer={printContainer}
-              />
-            </Box>
-          </Box> */}
         </Box>
       </Box>
     </LoadingContainer>

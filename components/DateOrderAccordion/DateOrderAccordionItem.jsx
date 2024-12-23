@@ -149,7 +149,6 @@ const useStyles = makeStyles((theme) => ({
   },
   info: {
     display: 'flex',
-    // width: '100%',
     justifyContent: 'flex-start',
   },
   red: {
@@ -270,9 +269,6 @@ function DateOrderAccordionItem({ data, setIsOpen, searchTerm, title }) {
               ) : (
                 ''
               )}
-              {/* {data?.product?.measurement_unit?.short_name
-                ? data?.product?.measurement_unit?.short_name
-                : data?.product?.measurement_unit?.name || ''} */}
               {t('dashboard.units')}
             </Box>
           </Box>

@@ -26,7 +26,6 @@ function LayoutHeader() {
       zIndex={12}
       backgroundColor='white'
       position='sticky'
-      // boxShadow='0px 12px 24px 0px rgba(0, 0, 0, 0.02)'
       display={'flex'}
       justifyContent={'space-between'}
       padding={'20px 20px 0px 20px'}
@@ -53,12 +52,7 @@ function LayoutHeader() {
             <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
               <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
                 <div className={classes.avatarPlaceholder}>
-                  {/* {firstName.charAt(0)}
-                  {lastName.charAt(0)} */}
-                  <img
-                    src={get(userData, 'photo')}
-                    // onError={(e) => (e.currentTarget.src = 'http://localhost:8000/default-user-img.png')}
-                  />
+                  <img src={get(userData, 'photo')} />
                 </div>
 
                 <Box maxWidth='73%'>
@@ -66,7 +60,6 @@ function LayoutHeader() {
                     {`${firstName}`}
                   </Typography>
                   <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                    {/* {userData.type.toLowerCase()} */}
                     {get(userData, 'store.name')}
                   </p>
                 </Box>

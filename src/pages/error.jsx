@@ -1,5 +1,4 @@
 import { Box, Button, Typography } from '@mui/material'
-// import Button from 'stories/Button/Button'
 import { useState } from 'react'
 
 export default function ErrorPage({ errorData }) {

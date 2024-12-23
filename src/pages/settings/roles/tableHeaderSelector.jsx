@@ -33,16 +33,13 @@ const Image = ({ data, rowIndex, setImages }) => {
         },
       }}
     >
-      {/* {data?.main_photo?.[0] ? ( */}
       <img
         id={`product-image-${rowIndex}`}
         src={data?.main_photo || '/default-img.avif'}
         alt={data?.name}
         style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
       />
-      {/* ) : (
-        <ProductImagePlaceholder />
-      )} */}
+
       {data?.files?.[0] && (
         <Box
           sx={{
@@ -125,25 +122,6 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         cellRenderer: memo(({ data }) => (
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
             <Box display='inline-flex' columnGap={'8px'}>
-              {/* {data.status === 'active' ? (
-                <CheckAccess id={'product-deactive'}>
-                  <IconButton
-                    sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
-                    onClick={() => setOpenConfirmDialog({ type: 'deactivate', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
-                  >
-                    <LockIcon color='#111217' />
-                  </IconButton>
-                </CheckAccess>
-              ) : (
-                <CheckAccess id={'product-active'}>
-                  <IconButton
-                    sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
-                    onClick={() => setOpenConfirmDialog({ type: 'activate', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
-                  >
-                    <UnlockIcon color='#111217' />
-                  </IconButton>
-                </CheckAccess>
-              )} */}
               <CheckAccess id={'product-edit'}>
                 <IconButton onClick={() => setopenCreateVendorDrawer({ mode: 'edit', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />

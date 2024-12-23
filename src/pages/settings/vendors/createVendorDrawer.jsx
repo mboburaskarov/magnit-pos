@@ -54,17 +54,10 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
     methods.register('dial_code')
   }, [])
 
-  // useDidUpdate(() => {
-  //   if (clientData) {
-  //     methods.reset(clientData)
-  //   }
-  // }, [clientData])
   useEffect(() => {
     methods.reset()
   }, [])
-  // useEffect(() => {
-  //   methods.reset()
-  // }, [quickCreateClientName])
+
   const { mutate: handleSaleCreate, isLoading: isCreateCustomer } = useMutation(requests.createVendor, {
     onSuccess: ({ data }) => {
       closeDrawer(false)

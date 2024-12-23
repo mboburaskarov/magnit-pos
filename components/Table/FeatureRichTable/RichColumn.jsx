@@ -1,6 +1,4 @@
 import { Box, ClickAwayListener, Typography } from '@mui/material'
-// import SelectTreeDialog from 'components/SelectTreeDialog'
-// import TruncatedText from 'components/Typography/TruncatedText'
 import useDeepCompareEffect from '../../../src/hooks/useDeepCompareEffect'
 import ArrowDown from 'icons/ArrowDown'
 import HamburgerIcon from 'icons/HamburgerIcon'
@@ -54,7 +52,6 @@ export default function RichColumn({
     const columnWidth = getTextWidth(columnLabel || '', `normal normal 600 16px "Inter"`)
     const maxCellWidth = Math.max(...cellsWidth, columnWidth)
     const result = Number.isFinite(maxCellWidth) ? maxCellWidth + 52 : 0
-    // 52px = 32px (padding) + 16px (sort arrow icon width) + 4px (icon margin)
     return result
   }
   useDeepCompareEffect(
@@ -130,7 +127,6 @@ export default function RichColumn({
           const width = calculateMaxCellWidth(column.id, label) || column.default_width
           dispatch(
             updateTableColumnProperty(column.id, {
-              // width: column.default_width,
               width,
             })
           )
@@ -234,16 +230,7 @@ export default function RichColumn({
     <ClickAwayListener onClickAway={() => setOpen(false)}>
       <Box className={classes.rich_column_root} ref={columnRef}>
         {canBeDragged ? <DragHandle>{renderColumnInner()}</DragHandle> : renderColumnInner()}
-        {/* <SelectTreeDialog
-          anchorEl={columnRef}
-          open={open}
-          data={menuOptions}
-          column={column}
-          close={() => {
-            setOpen(false)
-          }}
-          placement='bottom'
-        /> */}
+
         {canBeResized && <Box {...resizeProps} className={classes.rich_column_resizer} />}
       </Box>
     </ClickAwayListener>

@@ -23,9 +23,7 @@ export const useStyles = makeStyles((theme) => ({
     background: theme.palette.bg[10],
     marginBottom: 8,
     height: '80px',
-    '& .MuiFormControl-root': {
-      backgroundColor: 'transparent',
-    },
+
     '& .MuiInputBase-root': {
       '& input[type=number]': {
         padding: '10px 0px 10px 10px !important',
@@ -345,48 +343,6 @@ const CartItem = ({
               >
                 <DeleteIcon width='24px' />
               </Box>
-            </Box>
-          </Box>
-
-          <Box className={cls.actions}>
-            <Box className={cls.left}>
-              {/* <Box className={cls.price}>
-                {data?.discount_percent ? (
-                  <span id='product-discount-percent' className={cls.discountPercent}>
-                    {Math.round(data?.discount_percent * 100) / 100}%
-                  </span>
-                ) : null}
-                <Box style={{ cursor: !data?.wholeSaleEnabled && 'pointer' }} onClick={() => !discountRoute && setCurrentData(data)}>
-                  {(data.discount_value || data?.hasCommonDiscount || data?.discount_unit === 'CURRENCY') && (
-                    <span id='discount-product-price' className={cls.newPrice}>
-                      {numberToPrice(+(data.total_price / data.measurement_value).toFixed(2))}
-                    </span>
-                  )}
-                  <span
-                    id='product-price'
-                    style={{ color: data?.wholeSaleEnabled && '#8B5CF6' }}
-                    className={data.discount_value || data?.hasCommonDiscount || data?.discount_unit === 'CURRENCY' ? cls.oldPrice : ''}
-                  >
-                    {numberToPrice(data?.price)}
-                  </span>
-                </Box>
-                {!discountRoute && (
-                  <button onClick={() => setCurrentData(data)} type='button'>
-                    <PencilIcon style={{ fill: data?.wholeSaleEnabled && '#8B5CF6' }} />
-                  </button>
-                )}
-              </Box> */}
-              {/* {!!data.sellers?.length &&
-                data.sellers.map((item) => (
-                  <Box className={cls.seller}>
-                    <span
-                      style={{
-                        background: item?.color ? item?.color : allSellers?.find((el) => el?.seller_id === item?.seller_id)?.color,
-                      }}
-                    />
-                    <Typography component='h5'>{item?.seller_name}</Typography>
-                  </Box>
-                ))} */}
             </Box>
           </Box>
         </Box>

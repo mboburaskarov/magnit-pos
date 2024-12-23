@@ -70,19 +70,11 @@ function AgGridBottom({
         alignItems: 'center',
         width: '100%',
         paddingTop: 2,
-        // borderTop: `2px solid ${theme.palette.gray[200]}`,
       })}
     >
       <Box width={'100%'} display='flex' justifyContent={'space-between'} alignItems='center'>
         {download && <DownloadButton isDownloading={isDownloading} download={download} />}
-        {/* {resetTable && (
-          <RefreshButton
-          loading={isRefreshing}
-          onClick={() => {
-            resetTable()
-            }}
-            />
-            )} */}
+
         <RowFilterButton eventMessage={eventMessages?.[1]} offsetSize={offsetSize} setOffsetSize={setOffsetSize} />
         {fullInfoAboutCurrentPage && (
           <Typography fontSize={'16px'} lineHeight={'24px'} color={'bunker.400'} fontWeight={'500'}>

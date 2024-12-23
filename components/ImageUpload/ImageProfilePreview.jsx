@@ -87,38 +87,6 @@ export default function ImagePreview({
             width={width || 128}
             height={height || 228}
           >
-            {/* <Box
-              id='countBox'
-              sx={{
-                position: 'absolute',
-                top: 4,
-                right: 4,
-                bgcolor: 'white',
-                color: 'green.600',
-                width: 28,
-                height: 28,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: '50%',
-                fontWeight: 600,
-                zIndex: 7,
-                transition: 'all 0.2s ease-in-out',
-              }}
-            >
-              {uploadedImages?.length}
-            </Box> */}
-
-            {/* <Button
-            onClick={(e) => {
-              e.stopPropagation()
-              setOpenGallery(true)
-            }}
-            size='small'
-            sx={{ position: 'absolute', bottom: 8, left: 8, zIndex: 8, height: 36, borderRadius: 2, width: `calc(${width || 128}px - 16px)` }}
-          >
-            просмотр
-          </Button> */}
             <input id={id} {...getInputProps()} data-test='upload-photo' />
 
             {uploadedImages.slice(0, 3).map((el, ind) => (
@@ -158,14 +126,10 @@ export default function ImagePreview({
             variant='secondary'
             onClick={(e) => {
               e.stopPropagation()
-              // setOpenGallery(true)
               deleteImage()
             }}
             id='countBox'
             sx={{
-              // position: 'absolute',
-              // top: 40,
-              // right: 4,
               width: '123px',
               height: '32px',
               bgcolor: 'red.10',

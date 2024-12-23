@@ -82,7 +82,6 @@ export default function SingleBarChart({
     <Box
       sx={(theme) => ({
         border: 1,
-        borderRadius: 4,
         borderColor: '#A4A5AB33',
         width: boxWidth,
         minHeight: 432,
@@ -114,18 +113,6 @@ export default function SingleBarChart({
               >
                 {t('all_sales')}
               </Typography>
-              {/* {!!data?.total && (
-                <Typography
-                  sx={(theme) => ({
-                    fontSize: 24,
-                    lineHeight: '28px',
-                    color: 'green.500',
-                    marginLeft: 2,
-                  })}
-                >
-                  {thousandDivider(data?.total || 0)} {measurmentUnit}
-                </Typography>
-              )} */}
             </Box>
           )}
           <SelectSimple

@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next'
 import event from '../../../utils/event'
 import LoadingBlurry from '../../LoadingBlurry'
 import useDidUpdate from '../../../src/hooks/useDidUpdate'
-// import Placeholder from '../../Placeholder'
 import colors from '../../../src/assets/theme/mui.config'
 import { useSelector } from 'react-redux'
 import checkTableProps from './checkTableProps'
@@ -102,10 +101,8 @@ function FeatureRichTable({
       },
       getRowId: (row, relativeIndex, parent) => row?.id || row?.product_id || (parent ? [parent?.id, relativeIndex].join('.') : relativeIndex),
       manualPagination: true,
-      // autoResetSelectedRows,
       pageCount: controlledPageCount,
       updateMyData,
-      // autoResetPage: false,
       autoResetPage: true,
     },
     useExpanded,
@@ -151,22 +148,6 @@ function FeatureRichTable({
     }
   )
 
-  // useMountedLayoutEffect(() => {
-  //   const rows = selectedFlatRows.map((item) => item.original)
-  //   if (onRowSelect) {
-  //     onRowSelect(rows)
-  //   }
-  //   if (setSelectedRows) {
-  //     setSelectedRows(rows)
-  //   }
-  // }, [setSelectedRows, selectedRowIds])
-
-  // useMountedLayoutEffect(() => {
-  //   const rows = selectedFlatRows.map((item) => item.original)
-  //   if (setSelectedRows) {
-  //     setSelectedRows(rows)
-  //   }
-  // }, [])
   useMountedLayoutEffect(() => {
     const rows = selectedFlatRows.map((item) => item.original)
     if (setSelectedRows) {
@@ -311,10 +292,6 @@ function FeatureRichTable({
                     </TableSortableHeaderCell>
                   )
                 })}
-                {/* <td
-                  className={classes.td}
-                  style={{ minWidth: 64, width: 64 }}
-                /> */}
               </TableSortableHeader>
             ))}
           </thead>

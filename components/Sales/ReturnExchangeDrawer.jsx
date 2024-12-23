@@ -9,7 +9,6 @@ import InputSearch from '../Inputs/InputSearch'
 import LoadingContainer from '../LoadingContainer'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
-// import { requests } from 'services/requests'
 import DateOrderAccordionItem from '../DateOrderAccordion/DateOrderAccordionItem'
 import FilterButton from '../Buttons/ButtonWithPopup'
 import ArrowBackIcon from '../../src/assets/icons/ArrowRightIcon'
@@ -214,15 +213,6 @@ export default function ReturnExchangeDrawer({
 
   const { data: customer, refetch: refetchCusomter } = useQuery(['customer', customer_id], () => requests.customer.getSingle(customer_id), { enabled: false })
 
-  // useEffect(() => {
-  //   if (
-  //     !!order_payments?.find(
-  //       (payment) => payment.company_payment_type_id === paymeGoId
-  //     )
-  //   ) {
-  //     setItems(order_items)
-  //   } else setItems([])
-  // }, [order_payments])
   const forbiddenRoutes = useSelector((state) => state.permissionRoutes)
   const returnFromOtherStore = forbiddenRoutes?.find((item) => item?.slug === 'return-from-another-store')
 
@@ -464,18 +454,7 @@ export default function ReturnExchangeDrawer({
                       ) : item?.product?.type === 'CERTIFICATE' ? (
                         <GiftCardListItem key={index} data={item} />
                       ) : (
-                        <OrderItemCheck
-                          key={index}
-                          data={item}
-                          items={items}
-                          setItems={setItems}
-                          // isPayme={
-                          //   !!order_payments?.find(
-                          //     (payment) =>
-                          //       payment.company_payment_type_id === paymeGoId
-                          //   )
-                          // }
-                        />
+                        <OrderItemCheck key={index} data={item} items={items} setItems={setItems} />
                       )
                     )}
                   </Box>

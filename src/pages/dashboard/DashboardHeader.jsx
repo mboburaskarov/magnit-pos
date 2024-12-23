@@ -15,15 +15,7 @@ export default function DashboardHeader({ setSortBy }) {
   const userData = useSelector((state) => state.user)
 
   return (
-    <Box
-      p={'30px 30px 50px 30px'}
-      // zIndex={isOpen ? 12 : 3}
-      bgcolor='background.default'
-      top={0}
-      // position='sticky'
-      display='inline-flex'
-      justifyContent='space-between'
-    >
+    <Box p={'30px 30px 50px 30px'} bgcolor='background.default' top={0} display='inline-flex' justifyContent='space-between'>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <Typography variant='h1' fontWeight={600} mb={'5px'} fontSize={'40px'} lineHeight={'50px'} color={'dark.500'}>
           {t('greeting')}, {get(userData, 'first_name')}!
@@ -33,36 +25,13 @@ export default function DashboardHeader({ setSortBy }) {
         </Typography>
       </Box>
       <Box display='inline-flex' columnGap={3}>
-        {/* <Box width={180}>
-          {check && (
-            <InputSwitch
-              uncontrolled
-              noMarginTop
-              name='activity_type'
-              required={true}
-              defaultValue='SUM'
-              onChange={(val) => setSortBy(val)}
-              options={[
-                { title: 'сум', value: 'SUM' },
-                { title: 'шт', value: 'COUNT' },
-              ]}
-            />
-          )}
-        </Box> */}
-
         <DateRangeInput
           defaultFilterData={{ label: 'Это час', start_date: dayjs().tz().startOf('week'), end_date: dayjs().tz() }}
           id='accounting-report-date-range'
         />
         <CheckAccess id='shop-create'>
           <Box>
-            <Button
-              onClick={() => navigate('/shops/create')}
-              fullWidth
-              // startIcon={<FontAwesomeIcon width={14} icon={faPlus} />}
-              variant='contained'
-              color='primary'
-            >
+            <Button onClick={() => navigate('/shops/create')} fullWidth variant='contained' color='primary'>
               {t('all_reports')}
             </Button>
           </Box>

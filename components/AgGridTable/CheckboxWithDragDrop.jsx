@@ -1,7 +1,6 @@
 import React, { memo, useMemo } from 'react'
 import { Checkbox, Box, FormControlLabel } from '@mui/material'
 import { arrayMove, sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc'
-// import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@mui/styles'
 import DragDropIcon from '../../src/assets/icons/DragDropIcon'
 

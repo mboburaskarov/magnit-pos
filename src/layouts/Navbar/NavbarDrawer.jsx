@@ -122,30 +122,6 @@ function NavbarDrawer({
           )}
         </Box>
       </List>
-      {/* {!userData?.fullName ? (
-        <Box position='relative' marginTop={'auto'}>
-          <Box className={classes.fakeImage} />
-          <Skeleton className={classes.skeleton} />
-        </Box>
-      ) : (
-        <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
-          <Box display='flex' alignItems='center' justifyContent='flex-start'>
-            <div className={classes.avatarPlaceholder}>
-              {firstName.charAt(0)}
-              {lastName.charAt(0)}
-            </div>
-
-            <Box maxWidth='73%'>
-              <Typography id='user-username' className={classes.username}>
-                {`${lastName || ''} ${firstName.charAt(0) + '.' || ''}`}
-              </Typography>
-              <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                {userData.type.toLowerCase()}
-              </p>
-            </Box>
-          </Box>
-        </ListItem>
-      )} */}
     </div>
   )
 }

@@ -102,7 +102,6 @@ function CashTypeDrawer({ open, setOpen }) {
               <Typography className={classes.tbHeaderAmount}>6 666 666 UZS</Typography>
             </Box>
           </Box>
-          {/*  */}
           <Box className={classes.tbBox}>
             <Box className={classes.tbHeader}>
               <Box display={'flex'}>
@@ -122,7 +121,6 @@ function CashTypeDrawer({ open, setOpen }) {
               </Box>
             </Box>
           </Box>
-          {/*  */}
           <Box className={classes.tbBox}>
             <Box className={classes.tbHeader}>
               <Box display={'flex'}>
