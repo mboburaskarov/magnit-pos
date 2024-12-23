@@ -4924,8 +4924,6 @@ function CardShiftDetails() {
   useDeepCompareEffect(() => {
     setTimeout(() => {
       if (data?.payment_methods?.length) {
-        console.log('hi')
-
         const newData = data?.payment_methods?.map((elm) => {
           const expected =
             (elm?.expected?.find((el) => el?.currency_name === 'USD')?.cash_amount +

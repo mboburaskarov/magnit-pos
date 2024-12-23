@@ -11,7 +11,7 @@ import * as qs from 'qs'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import CheckboxWithDragDrop from '../../../../components/AgGridTable/CheckboxWithDragDrop'
-import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButtonForStore'
+import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButtonForRole'
 import { t } from 'i18next'
 import { useTheme } from '@mui/styles'
 

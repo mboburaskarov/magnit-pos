@@ -3,8 +3,8 @@ import { createSlice } from '@reduxjs/toolkit'
 const userData = createSlice({
   name: 'userData',
   initialState: {
-    first_name: 'Buchet User',
-    last_name: 'Buchet User',
+    first_name: 'Unknown',
+    last_name: 'Unknown',
     type: 'SUPER_ADMIN',
     phone: '',
     id: 'undefined',

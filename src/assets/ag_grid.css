@@ -299,6 +299,9 @@
   height: 0 !important;
   /* border: none; */
 }
+.ag-body-horizontal-scroll {
+  display: none !important;
+}
 .no-rows-container {
   width: 100%;
   /* height: 256px; */

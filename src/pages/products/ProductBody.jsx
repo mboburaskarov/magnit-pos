@@ -45,8 +45,6 @@ export default function ProductBody({ productData = null }) {
   const [images, setImages] = useState([])
   const appType = watch('app_type') || 'BUCHET'
   const applyAllFunc = (id, type) => {
-    console.log('ff')
-
     if (type === 'quantity') {
       const quantity = getValues(`store_product.${id}.quantity`)
       get(storeList, 'data.data.data', []).map((el) => {
@@ -124,12 +122,9 @@ export default function ProductBody({ productData = null }) {
     if (productCategories.length > 0) setValue('categories', productCategories)
   }, [productCategories])
   useEffect(() => {
-    console.log(get(storeList, 'data.data._meta.total_count'))
-
     refetchShopList()
     const offsetsCount = Math.ceil(get(storeList, 'data.data._meta.total_count') / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-    // refetchCategories()
   }, [appType, values.limit])
   useEffect(() => {
     if (!productData) {
@@ -138,7 +133,6 @@ export default function ProductBody({ productData = null }) {
   }, [])
   const addCategoryButton = productCategories?.length > 0 ? !!productCategories?.at(-1)?.name : true
   const { refetch } = useQuery('barcode', () => requests.generateBarcode(), { enabled: false })
-  console.log(getValues('product_unit'))
   const generateBarcode = () => {
     refetch().then(({ data }) => {
       clearErrors('barcode')

@@ -122,7 +122,6 @@ export default function ClientsPage() {
     isFetching: isFetchingclientsList,
     refetch,
   } = useQuery(['clientsList', clientsListFilter], () => requests.getAllCustomers(clientsListFilter))
-  console.log(clientsList)
 
   const { mutate: deleteClient, isLoading: isDeletingProduct } = useMutation(requests.deleteClient, {
     onSuccess: () => {
@@ -321,7 +320,7 @@ export default function ClientsPage() {
               {/* <EditorIcon /> */}
               <ColumnsFilterButton title={t('ag_grid.table_setting.label')} columns={tableColumns} isCatalog={false} />
             </Box>
-            <CheckAccess id={'product-create'}>
+            {/* <CheckAccess id={'product-create'}>
               <Box minWidth={156}>
                 <Button
                   sx={{ height: '48px' }}
@@ -334,7 +333,7 @@ export default function ClientsPage() {
                   {t('button.add_new.text')}
                 </Button>
               </Box>
-            </CheckAccess>
+            </CheckAccess> */}
           </Box>
         </Box>
         <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />

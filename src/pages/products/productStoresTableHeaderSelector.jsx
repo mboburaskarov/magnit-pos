@@ -46,7 +46,6 @@ export default function productStoresTableHeaderSelector({
   applyAllFunc,
 }) {
   // const { values } = useQueryParams()
-  console.log(productsColumns)
 
   const columns = productsColumns?.map((el) => {
     if (el.field === 'name') {
@@ -63,8 +62,6 @@ export default function productStoresTableHeaderSelector({
         headerName: '№',
         colId: el.field,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
-          console.log(rowIndex)
-
           const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
 
           return (
@@ -98,8 +95,6 @@ export default function productStoresTableHeaderSelector({
       }
     }
     if (el.field === 'min_amount') {
-      console.log('hi')
-
       return {
         ...el,
         headerName: 'Kichik miqdor',

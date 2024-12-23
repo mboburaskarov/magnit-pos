@@ -34,8 +34,6 @@ export default function ProductCreatePage() {
   })
 
   const onSubmit = (data) => {
-    console.log(data)
-
     const requestBody = {
       name: get(data, 'name'),
       barcode: get(data, 'barcode'),
@@ -68,7 +66,6 @@ export default function ProductCreatePage() {
       vat: Number(get(data, 'vat')),
       vat_price: Number(get(data, 'vat_price')),
     }
-    console.log(requestBody)
 
     // createProduct(requestBody)
   }

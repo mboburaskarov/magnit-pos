@@ -1,16 +1,19 @@
 import { Box, Container } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { error, success } from '../../../../utils/toast'
-import { useMutation } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { requests } from '../../../../utils/requests'
 import { useNavigate } from 'react-router-dom'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import RoleBody from './RoleBody'
 import Header from '../../../../components/Header'
 import { useTranslation } from 'react-i18next'
+import { get } from 'lodash'
 export default function RoleCreatePage() {
   const { t } = useTranslation()
+  const [selected, setSelected] = useState([])
+  const [disabled, setDisabled] = useState([])
   const methods = useForm()
   const navigate = useNavigate()
 
@@ -19,53 +22,59 @@ export default function RoleCreatePage() {
     return
   }, [])
 
-  const { mutate: createProduct, isLoading: isCreatingProduct } = useMutation(requests.createProduct, {
-    onSuccess: () => {
-      navigate('/products')
-      success('Продукт Роль была создана!')
+  const { mutate: createRole, isLoading: createRoleLoading } = useMutation(requests.createRole, {
+    onSuccess: async ({ data }) => {
+      success('Роль создана')
+      navigate('/settings/roles')
     },
     onError: (err) => {
-      error('Ошибка при Роль была создана!')
+      error('Ошибка создания роли')
       console.log('err', err)
     },
   })
-
+  const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery('rolesAndPermissionList', () =>
+    requests.getAllRolesWithPermissions({ limit: 20, offset: 0, type: appType })
+  )
   const onSubmit = (data) => {
-    const requestBody = {
-      name: data?.product_name,
-      dbId: data?.shop?._id,
-      categories: data?.categories?.map((el) => el._id),
-      quantityOfCategories: data?.categories?.map((el) => Number(el.quantity)).filter((elm) => !!elm),
-      description: data?.description,
-      cost: Number(data?.product_price),
-      isDiscount: Boolean(data?.product_price_with_discount),
-      discountCost: Number(data?.product_price_with_discount),
-      isFastDelivery: Boolean(data?.is_fast_delivery),
-      is_new: Boolean(data?.is_new),
-      preparationTime: data?.preparation_time?.time || 0,
-      sellDate: '2023-08-01T11:36:45.660Z',
-      status: 'ACTIVE',
-      files: data?.images?.map((el) => el.key) || [],
-      hashtag: data?.hashtag !== '' ? data?.hashtag?.map((el) => el.id) : [],
-      type: data?.app_type,
-      size: { name: data?.size_name?.value, height: Number(data?.height), width: Number(data?.width) },
-    }
+    const permissions = []
+    get(rolesAndPermissionList, 'data.data', [])
+      ?.filter((section) => section.permissions?.length && !disabled.includes(section.key))
+      ?.forEach((section) => {
+        section?.permissions?.forEach((permission) => {
+          permissions.push({
+            parent_id: permission?.id || '',
+            children_ids: selected?.includes(permission?.id)
+              ? [...new Set(permission.children.map((el) => el.id))]
+              : [...new Set(selected.filter((el) => permission.children.find((child) => child.id === el)))] || [],
+            is_active: !!selected?.includes(permission?.id),
+          })
+        })
+      })
+    console.log(data)
 
-    createProduct(requestBody)
+    const requestBody = {
+      // id,
+      name: get(data, 'name'),
+      description: get(data, 'description'),
+      // data: {
+      permissions,
+      // },
+    }
+    createRole(requestBody)
+    // update(requestBody)
   }
   const onError = (err) => {
-    console.log('err', err)
-    error('Пожалуйста, заполните все поля!')
+    console.log(err)
   }
 
   return (
     <LoadingContainer readyState={true}>
       <Box pb={10}>
         <Header
-          isLoading={isCreatingProduct}
+          isLoading={createRoleLoading}
           buttonText='Создать'
           backIcon
-          noActions
+          // noActions
           backHref='/settings/roles'
           text={'Создать роль'}
           checkAccessId={'product-create'}
@@ -74,7 +83,7 @@ export default function RoleCreatePage() {
         <Container>
           <FormProvider {...methods}>
             <Box flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-              <RoleBody />
+              <RoleBody selected={selected} setSelected={setSelected} disabled={disabled} setDisabled={setDisabled} />
             </Box>
           </FormProvider>
         </Container>

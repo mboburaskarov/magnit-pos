@@ -1,44 +1,47 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
-import TabContainer from '../../../../components/Tab/TabContainer'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { useEffect, useMemo, useState } from 'react'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { requests } from '../../../../utils/requests'
-import { useMutation, useQuery } from 'react-query'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import { useDispatch, useSelector } from 'react-redux'
-import tableHeaderSelector from './tableHeaderSelector'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/salesTableColumns'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import ImageGallery from '../../../../components/ImageGallery'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowDownWideShort, faArrowUpWideShort, faPlus } from '@fortawesome/free-solid-svg-icons'
-import FilterMenu from './FilterMenu'
-import { useNavigate } from 'react-router-dom'
-import { error, success } from '../../../../utils/toast'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import { LoadingButton } from '@mui/lab'
-import BigTickIcon from '../../../assets/icons/BigTickIcon'
-// import ProductDrawer from './ProductDrawer'
-import InputSwitch from '../../../../components/Inputs/InputSwitch'
+import { Box, Button, TextField, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
+import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
+import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButtonForImportDetails'
 import CheckAccess from '../../../../components/CheckAccess'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
 import StyledDialog from '../../../../components/Dialogs/StyledDialog'
+import ImageGallery from '../../../../components/ImageGallery'
+import InputSearch from '../../../../components/Inputs/InputSearch'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
+import LoadingContainer from '../../../../components/LoadingContainer'
+import { requests } from '../../../../utils/requests'
+import { error, success } from '../../../../utils/toast'
+import BigTickIcon from '../../../assets/icons/BigTickIcon'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import PlusIcon from '../../../assets/icons/PlusIcon'
+import { useQueryParams } from '../../../hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/importDetailTableColumns'
+import FilterMenu from './FilterMenu'
+// import ProductDrawer from './ProductDrawer'
+import tableHeaderSelector from './tableHeaderSelector'
+import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
+import ImportIcon from '../../../assets/icons/ImportIcon'
+import UnlockIcon from '../../../assets/icons/UnlockIcon'
+import ImportWithIcon from '../../../assets/icons/ImportWithIcon'
+import ImportWithoutIcon from '../../../assets/icons/ImportWithoutIcon'
 import FilterTableRowsMenu from './FilterTableRowsMenu'
-import ColumnsFilterButton from '../../../../components/AgGridTable/ColumnsFilterButtonForSale'
-import { useTranslation } from 'react-i18next'
-import { useTheme } from '@mui/styles'
-import SaleDrawer from './saleDrawer'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function AllSalesPage() {
+export default function ImportDetailsPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
+  const { id } = useParams()
+
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.salesTableColumns)
+  const { columns, loading } = useSelector((state) => state.importDetailsColumns)
   const { values } = useQueryParams()
   const [status, setStatus] = useState('ALL')
   const [regions, setRegions] = useState([])
@@ -47,25 +50,26 @@ export default function AllSalesPage() {
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
-  const [openSaleDrawer, setOpenSaleDrawer] = useState(false)
   const [filterTableRowsMenu, setFilterTableRowsMenu] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(null)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const tableColumns = tableHeaderSelector({
-    productsColumns: columns,
+    importsColumns: columns,
     t,
     values,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     setIsDrawerOpen,
-    setOpenSaleDrawer,
   })
 
   /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
+        ?.filter(
+          (el) => !el?.is_temporary && el?.colId !== SELECTION_ID
+          // && el.field !== 'category'
+        )
         ?.map((el) => ({
           ...el,
           label: el.headerName,
@@ -73,13 +77,13 @@ export default function AllSalesPage() {
           name: el.colId,
           always_active: el?.always_active ?? el?.always_active,
         }))
-
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
 
-  const salesListFilter = useMemo(() => {
+  const importDetailsListFilter = useMemo(() => {
     return {
+      import_id: id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: values?.search,
@@ -93,11 +97,9 @@ export default function AllSalesPage() {
       supply_price_from: values?.supply_price_from,
       retail_price_from: values?.retail_price_from,
       isExpress: values?.isExpress,
-      ...(status !== 'ALL' && { status }),
-      ...(appType !== 'ALL' && { type: appType }),
+      ...(appType !== 'ALL' && { status: appType }),
     }
   }, [
-    status,
     appType,
     values?.offset,
     values?.limit,
@@ -114,11 +116,11 @@ export default function AllSalesPage() {
     regions,
   ])
   const {
-    data: salesList,
-    isLoading: salesListLoading,
-    isFetching: isFetchingsalesList,
+    data: importDetailsList,
+    isLoading: importDetailsListLoading,
+    isFetching: isFetchingimportDetailsList,
     refetch,
-  } = useQuery(['salesList', salesListFilter], () => requests.getAllSales(salesListFilter))
+  } = useQuery(['importDetailsList', importDetailsListFilter], () => requests.getImportDetails(importDetailsListFilter))
 
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
     onSuccess: () => {
@@ -169,7 +171,7 @@ export default function AllSalesPage() {
       console.log('err', err)
     },
   })
-  const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.changeProductStatus, {
+  const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.changeimportstatus, {
     onSuccess: () => {
       success('Продукт успешно деактивирован!')
       setTimeout(() => {
@@ -189,42 +191,42 @@ export default function AllSalesPage() {
 
   useEffect(() => {
     refetch()
-  }, [salesListFilter])
+  }, [importDetailsListFilter])
 
   useEffect(() => {
     const count =
       // status === 'ACTIVE'
-      //   ? salesList?.data?.active
+      //   ? importDetailsList?.data?.active
       //   : status === 'INACTIVE'
-      //   ? salesList?.data?.inactive
+      //   ? importDetailsList?.data?.inactive
       //   : status === 'INACTIVE_BY_VENDOR'
-      //   ? salesList?.data?.inactiveByVendor
+      //   ? importDetailsList?.data?.inactiveByVendor
       //   : status === 'BLOCKED'
-      //   ? salesList?.data?.blocked
-      // : salesList?.data.totalCount
-      salesList?.data?.data?._meta?.total_count
+      //   ? importDetailsList?.data?.blocked
+      // : importDetailsList?.data.totalCount
+      importDetailsList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [salesList?.data, values?.limit, status])
+  }, [importDetailsList?.data, values?.limit, appType])
 
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {t('sales')}
+          {'Детали импорта'}
         </Typography>
         {/* <Box display='flex' mb={3} mt={4}>
           <TabContainer
             customTooltip
-            tabs={products_statuses?.map((el) => ({ label: el.name, id: el.id }))}
+            tabs={imports_statuses?.map((el) => ({ label: el.name, id: el.id }))}
             counts={[
-              salesList?.data?.totalCount,
-              salesList?.data?.active,
-              salesList?.data?.inactive,
-              salesList?.data?.inactiveByVendor,
-              salesList?.data?.blocked,
-              salesList?.data?.rejected,
+              importDetailsList?.data?.totalCount,
+              importDetailsList?.data?.active,
+              importDetailsList?.data?.inactive,
+              importDetailsList?.data?.inactiveByVendor,
+              importDetailsList?.data?.blocked,
+              importDetailsList?.data?.rejected,
             ]}
             selected={status}
             setSelected={setStatus}
@@ -275,6 +277,36 @@ export default function AllSalesPage() {
                 </Typography>
               </Button>
             </Box>
+            <ButtonWithPopup
+              id={'ff'}
+              noArrow
+              ml={'16px'}
+              // endIcon={<ArrowDown />
+              noMarginSvg
+              placement='bottom-end'
+              buttonLabel={
+                <Box className='cash_register_icon_wrapper' bgcolor={'#F8F8F9'} padding={'12px'} width={'48px'} height={'48px'} borderRadius={'50%'}>
+                  <ImportIcon />
+                </Box>
+              }
+              popperData={[
+                { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => navigate('/sales/cash-shift/f') },
+                { title: 'Импорт с проверкой', icon: <ImportWithIcon />, clickHandler: () => navigate('/sales/cash-shift/f') },
+              ]}
+              // popperContentProps={{
+              //   customDateRanges: customDateRanges(),
+              //   onCustomRangeSelect: (name) => setCustomDateRangeSelected(name),
+              //   isFilter: true,
+              //   dateState: {
+              //     from: dateState.from,
+              //     to: dateState.to,
+              //     month: dateState.month,
+              //   },
+              //   setDateState: (val) => setDateState(val),
+              //   onClose: (data) => onClose(data),
+              // }}
+              // PopperContent={DateFilterDrawerSingle}
+            />
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box
@@ -283,43 +315,29 @@ export default function AllSalesPage() {
               {/* <EditorIcon /> */}
               <ColumnsFilterButton title={t('ag_grid.table_setting.label')} columns={tableColumns} isCatalog={false} />
             </Box>
-            {/* <CheckAccess id={'product-create'}>
-              <Box minWidth={156}>
-                <Button
-                  sx={{ height: '48px' }}
-                  onClick={() => navigate('/products/create')}
-                  fullWidth
-                  startIcon={<PlusIcon color='#fff' />}
-                  variant='contained'
-                  color='primary'
-                >
-                  {t('button.add_new.text')}
-                </Button>
-              </Box>
-            </CheckAccess> */}
           </Box>
         </Box>
         <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
         <FilterTableRowsMenu tableColumns={tableColumns} open={filterTableRowsMenu} setOpen={setFilterTableRowsMenu} />
+
         <Box>
           <AgGridTable
-            id='products-main-table'
+            id='imports-main-table'
             tableSettings
             columns={tableColumns}
-            data={salesList?.data?.data?.data || []}
-            isDataLoading={isFetchingsalesList || salesListLoading}
+            data={importDetailsList?.data?.data?.data || []}
+            isDataLoading={isFetchingimportDetailsList || importDetailsListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            status={status}
-            isRefreshing={loading || isFetchingsalesList || salesListLoading}
+            status={appType}
+            isRefreshing={loading || isFetchingimportDetailsList || importDetailsListLoading}
           />
         </Box>
       </Box>
-      <SaleDrawer open={openSaleDrawer} setOpen={setOpenSaleDrawer} />
       {/* <ProductDrawer
         setOpenConfirmDialog={setOpenConfirmDialog}
         setImages={setOpenImageGallery}
@@ -368,7 +386,7 @@ export default function AllSalesPage() {
                   openConfirmDialog?.type === 'activate'
                     ? activateProduct(openConfirmDialog.id)
                     : openConfirmDialog?.type === 'deactivate'
-                    ? deActivateProduct({ id: openConfirmDialog.id, status: 'INACTIVE' })
+                    ? deActivateProduct({ id: openConfirmDialog.id, appType: 'INACTIVE' })
                     : deleteProduct(openConfirmDialog.id)
                 }
               >

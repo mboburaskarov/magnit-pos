@@ -18,8 +18,6 @@ import { useTheme } from '@mui/styles'
 import DefaultImgIcon from '../../assets/icons/defaultImgIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  type == 'categories[0].name' && console.log(type, data)
-
   return (
     <Typography
       sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}

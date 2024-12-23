@@ -323,6 +323,10 @@ const useStyles = makeStyles((theme) =>
       '.no-rows-container': {
         borderColor: theme.palette.bunker[100],
       },
+      '.no-rows-container': {
+        borderColor: theme.palette.bunker[100],
+      },
+
       // '.no-rows-root p': {
       //   color: theme.palette.gray[300],
       // },
