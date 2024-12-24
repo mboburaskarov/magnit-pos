@@ -229,7 +229,7 @@ export default function RolesPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'Поиск по таблице'} uncontrolled />
             </Box>
 
             {slectedVendors.length > 0 && (

@@ -235,7 +235,7 @@ export default function VendorsPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'ID, имя, телефон'} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>

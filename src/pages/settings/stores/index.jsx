@@ -221,7 +221,7 @@ export default function ProductsPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'Поиск по таблице'} uncontrolled />
             </Box>
           </Box>
           <Box display={'flex'} alignItems={'center'}>
