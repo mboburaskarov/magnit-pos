@@ -11,7 +11,6 @@ module.exports = {
     // 'react/jsx-uses-react': 'error',
     // 'react/jsx-uses-vars': 'error',
     // 'unused-imports/no-unused-imports': 'error',
-    //
     'react/prop-types': 'off',
     'react/display-name': 'off',
     'react-refresh/only-export-components': 'off',
