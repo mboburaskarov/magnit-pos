@@ -85,6 +85,8 @@ export const requests = {
   activateProduct: (id) => request.post(`api/admin/products/update-status-to-active`, { id }),
   changeProductStatus: (data) => request.post(`api/admin/products/update-status`, data),
 
+  loadWithoutChecking: (id) => request.patch(`v1/import-detail/accept-all/${id}`),
+  sendScannedImport: (data) => request.patch(`v1/import-detail/add-scan`, data),
   // couriers
   getAllCouriers: (filter) => request.get(`api/admin/couriers${qs.stringify(filter, { addQueryPrefix: true })}`),
   createCourier: (data) => request.post(`api/admin/couriers`, data),

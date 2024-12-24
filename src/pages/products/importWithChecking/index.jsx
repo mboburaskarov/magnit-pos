@@ -21,11 +21,20 @@ import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/importWithCheckingTableColumns'
 import FilterMenu from './FilterMenu'
+import errorAudio from '../../../assets/audio/error.mp3'
+import successAudio from '../../../assets/audio/normal.mp3'
+import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 // import ProductDrawer from './ProductDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
+import { get } from 'lodash'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
+import InputQuantity from '../../../../components/Inputs/InputQuantity'
+import Header from '../../../../components/Header'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ImportWithCheckingPage() {
+  const errorScanAudio = new Audio(errorAudio)
+  const successScanAudio = new Audio(successAudio)
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -36,9 +45,11 @@ export default function ImportWithCheckingPage() {
   const { values } = useQueryParams()
   const [regions, setRegions] = useState([])
   const [imports, setImports] = useState([])
+  const [barcode, setBarcode] = useState('')
 
   const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
+  const [manualNumber, setManualNumber] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
@@ -90,10 +101,9 @@ export default function ImportWithCheckingPage() {
       supply_price_from: values?.supply_price_from,
       retail_price_from: values?.retail_price_from,
       isExpress: values?.isExpress,
-      ...(appType !== 'ALL' && { status: appType }),
+      // ...(appType !== 'ALL' && { status: appType }),
     }
   }, [
-    appType,
     values?.offset,
     values?.limit,
     values?.search,
@@ -201,14 +211,40 @@ export default function ImportWithCheckingPage() {
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [importWithCheckingDetails?.data, values?.limit, appType])
-
+  }, [importWithCheckingDetails?.data, values?.limit])
+  const { mutate: addScan, isLoading: isAddScan } = useMutation(requests.sendScannedImport, {
+    onSuccess: () => {
+      refetch()
+      successScanAudio.play()
+      // success('Продукт успешно деактивирован!')
+    },
+    onError: (err) => {
+      errorScanAudio.play()
+      error('Ошибка при сканирование!')
+    },
+  })
+  useEffect(() => {
+    setManualNumber(0)
+  }, [appType])
+  const sendScannedImport = () => {
+    addScan({ barcode, count: Number(manualNumber), import_id: id })
+  }
   return (
     <LoadingContainer readyState={true}>
+      <Header
+        isLoading={false}
+        buttonText='Создать'
+        backIcon
+        noActions
+        backHref='/imports'
+        text={'Импорт с проверкой'}
+        checkAccessId={'product-create'}
+        // onSubmit={methods.handleSubmit(onSubmit, onError)}
+      />
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+        {/* <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           {'Импорт с проверкой'}
-        </Typography>
+        </Typography> */}
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
@@ -223,34 +259,34 @@ export default function ImportWithCheckingPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} />
+              <InputSearch
+                icon={<BarcodeIcon />}
+                onKeyDown={({ code }) => code === 'Enter' && sendScannedImport()}
+                onChange={({ target }) => setBarcode(get(target, 'value'))}
+                id='producrs-search'
+                name='search'
+                placeholder={t('input.search.product.multi')}
+              />
             </Box>
-
-            <Box minWidth={113} ml={'16px'}>
-              <Button
-                sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
-                  },
-                }}
-                fullWidth
-                startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
-              >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
+            {appType === 'manual' && (
+              <Box sx={{ ml: '16px' }}>
+                <InputQuantity uncontrolled onChange={({ target }) => setManualNumber(target.value)} />
+              </Box>
+            )}
+            <Box sx={{ ml: '16px' }}>
+              <InputSwitch
+                noMarginTop
+                uncontrolled
+                id='app-type'
+                name='app-type'
+                value={appType}
+                defaultValue='auto'
+                onChange={(e) => setAppType(e)}
+                options={[
+                  { title: 'Руководство', value: 'manual' },
+                  { title: 'Сканирование', value: 'auto' },
+                ]}
+              />
             </Box>
           </Box>
           <Box display={'flex'} alignItems={'center'}>
@@ -280,7 +316,7 @@ export default function ImportWithCheckingPage() {
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            status={appType}
+            // status={appType}
             isRefreshing={loading || isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
           />
         </Box>

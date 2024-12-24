@@ -5,9 +5,15 @@ const columns = [
     field: 'public_id',
     hide: false,
     minWidth: 60,
-    width: 60,
+    width: 130,
   },
 
+  {
+    field: 'document_number',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
   {
     field: 'import_date',
     hide: false,
@@ -43,7 +49,7 @@ const columns = [
     field: 'status',
     hide: false,
     minWidth: 70,
-    width: 130,
+    width: 170,
   },
 
   {

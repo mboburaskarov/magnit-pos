@@ -17,6 +17,7 @@ import dayjs from 'dayjs'
 import { useTheme } from '@mui/styles'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 import { Link } from 'react-router-dom'
+import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -79,6 +80,8 @@ const Image = ({ data, rowIndex, setImages }) => {
 
 export default function tableHeaderSelector({ importsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
   const theme = useTheme()
+  console.log(importsColumns)
+
   const getDateColor = (date) => {
     if (date > 25) return { color: theme.palette.green[700] }
     if (date > 3 && date < 25) return { color: theme.palette.orange[400] }
@@ -108,8 +111,8 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
         cellRenderer: memo((p) => (
           <StatusCell
             id={`products-status-${p.rowIndex}`}
-            bgcolor={products_statuses.find((el) => el.id === p.data.teg)?.color}
-            title={products_statuses.find((el) => el.id === p.data.teg)?.name}
+            bgcolor={imports_list_statuses.find((el) => el.id === p.data.status)?.color}
+            title={imports_list_statuses.find((el) => el.id === p.data.status)?.name}
           />
         )),
       }

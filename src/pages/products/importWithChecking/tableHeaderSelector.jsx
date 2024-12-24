@@ -101,23 +101,24 @@ export default function tableHeaderSelector({ importsColumns, selectImports, val
         ...el,
         headerName: t('name'),
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='name' />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-line'>
+            <Typography sx={{ whiteSpace: 'pre-line' }}>{p.data?.product?.name}</Typography>
+          </Box>
+        )),
       }
     }
-    if (el.field === 'sku') {
-      return {
-        ...el,
-        headerName: 'SKU',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='sku' />),
-      }
-    }
+
     if (el.field === 'barcode') {
       return {
         ...el,
         headerName: 'Штрих-код',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='barcode' />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.product?.barcode}</Typography>
+          </Box>
+        )),
       }
     }
     if (el.field === 'declared') {
@@ -125,7 +126,11 @@ export default function tableHeaderSelector({ importsColumns, selectImports, val
         ...el,
         headerName: 'Объявлено',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='declared' />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.received_count}</Typography>
+          </Box>
+        )),
       }
     }
     if (el.field === 'scanned') {
@@ -133,7 +138,11 @@ export default function tableHeaderSelector({ importsColumns, selectImports, val
         ...el,
         headerName: 'Сканирование',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='scanned' />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.accepted_count}</Typography>
+          </Box>
+        )),
       }
     }
     if (el.field === 'product_activities') {

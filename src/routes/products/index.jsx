@@ -9,7 +9,7 @@ const productsRoutes = {
   element: <LayoutWithHeaderNavbar />,
   children: [
     {
-      path: '',
+      path: 'all',
       element: <ProductsPage />,
     },
 
@@ -23,15 +23,6 @@ const productsRoutes = {
         {
           path: '',
           element: <ImportDetailsPage />,
-        },
-      ],
-    },
-    {
-      path: 'import-with-checking/:id',
-      children: [
-        {
-          path: '',
-          element: <ImportWithCheckingPage />,
         },
       ],
     },

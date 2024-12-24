@@ -29,6 +29,8 @@ function NavbarDrawer({
   const userData = useSelector((state) => state.user)
   const firstName = userData?.fullName?.split(' ')?.[0]
   const lastName = userData?.fullName?.split(' ')?.[1]
+  console.log(location.pathname)
+
   return (
     <div id='navbar' className={classes.container}>
       <div className={classes.logo}>
@@ -115,7 +117,7 @@ function NavbarDrawer({
               </ListItem>
               {currentRoutesMemoized?.children?.map((item, index) => {
                 return (
-                  <NavItem isActive={`${location.pathname}` === item?.href} item={item} key={index} classes={classes} handleClickNavItems={setCurrentRoutes} />
+                  <NavItem isActive={`${location.pathname}` == item?.href} item={item} key={index} classes={classes} handleClickNavItems={setCurrentRoutes} />
                 )
               })}
             </div>

@@ -27,7 +27,7 @@ export const navbatRouteData = [
         label: 'navbar.products',
         active: '/products*',
         id: '31',
-        href: '/products',
+        href: '/products/all',
       },
       {
         label: 'navbar.import',

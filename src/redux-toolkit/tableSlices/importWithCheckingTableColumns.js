@@ -11,15 +11,9 @@ const columns = [
     field: 'name',
     hide: false,
     minWidth: 150,
-    width: 150,
-  },
-
-  {
-    field: 'sku',
-    hide: false,
-    minWidth: 70,
     width: 200,
   },
+
   {
     field: 'barcode',
     hide: false,

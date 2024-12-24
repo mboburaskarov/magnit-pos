@@ -27,6 +27,7 @@ import ImportIcon from '../../../assets/icons/ImportIcon'
 import ImportWithIcon from '../../../assets/icons/ImportWithIcon'
 import ImportWithoutIcon from '../../../assets/icons/ImportWithoutIcon'
 import tableHeaderSelector from './tableHeaderSelector'
+import { get } from 'lodash'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ImportDetailsPage() {
@@ -204,7 +205,20 @@ export default function ImportDetailsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [importWithCheckingDetails?.data, values?.limit, appType])
+  const { mutate: loadWithoutCheckingFetch, isLoading: isLoadWithoutChecking } = useMutation(requests.loadWithoutChecking, {
+    onSuccess: () => {
+      navigate('/products/import')
+      success('Весь импорт принят!')
+    },
+    onError: (err) => {
+      error('Ошибка при весь импорт принят!')
 
+      console.log('err', err)
+    },
+  })
+  const loadWithoutChecking = () => {
+    loadWithoutCheckingFetch(id)
+  }
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
@@ -254,23 +268,25 @@ export default function ImportDetailsPage() {
                 </Typography>
               </Button>
             </Box>
-            <ButtonWithPopup
-              id={'ff'}
-              noArrow
-              ml={'16px'}
-              // endIcon={<ArrowDown />
-              noMarginSvg
-              placement='bottom-end'
-              buttonLabel={
-                <Box className='cash_register_icon_wrapper' bgcolor={'#F8F8F9'} padding={'12px'} width={'48px'} height={'48px'} borderRadius={'50%'}>
-                  <ImportIcon />
-                </Box>
-              }
-              popperData={[
-                { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => navigate(`/products/import-with-checking/${id}`) },
-                { title: 'Импорт с проверкой', icon: <ImportWithIcon />, clickHandler: () => navigate(`/products/import-with-checking/${id}`) },
-              ]}
-            />
+            {get(importWithCheckingDetails, 'data.data.data[0].import.status') === 'new' && (
+              <ButtonWithPopup
+                id={'ff'}
+                noArrow
+                ml={'16px'}
+                // endIcon={<ArrowDown />
+                noMarginSvg
+                placement='bottom-end'
+                buttonLabel={
+                  <Box className='cash_register_icon_wrapper' bgcolor={'#F8F8F9'} padding={'12px'} width={'48px'} height={'48px'} borderRadius={'50%'}>
+                    <ImportIcon />
+                  </Box>
+                }
+                popperData={[
+                  { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => loadWithoutChecking() },
+                  { title: 'Импорт с проверкой', icon: <ImportWithIcon />, clickHandler: () => navigate(`/products/import-with-checking/${id}`) },
+                ]}
+              />
+            )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box>

@@ -7,6 +7,7 @@ import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { products_statuses } from '../../../assets/data/products-statuses'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
+import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -69,6 +70,8 @@ const Image = ({ data, rowIndex, setImages }) => {
 
 export default function tableHeaderSelector({ importsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
   const theme = useTheme()
+  console.log(imports_list_statuses)
+
   const getDateColor = (date) => {
     if (date > 25) return { color: theme.palette.green[700] }
     if (date > 3 && date < 25) return { color: theme.palette.orange[400] }
@@ -81,10 +84,18 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
         ...el,
         headerName: '№',
         colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='public_id' />),
+      }
+    }
+    if (el.field === 'document_number') {
+      return {
+        ...el,
+        headerName: 'Номер импорта',
+        colId: el.field,
         cellRenderer: memo((p) => (
           <Link to={`/products/imports/${p.data.id}`}>
             <Typography fontWeight={'600'} color={'orange.500'} fontSize={'16px'} lineHeight={'24px'}>
-              {p.data.public_id}
+              {p.data.document_number}
             </Typography>
           </Link>
         )),
@@ -98,8 +109,8 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
         cellRenderer: memo((p) => (
           <StatusCell
             id={`products-status-${p.rowIndex}`}
-            bgcolor={products_statuses.find((el) => el.id === p.data.teg)?.color}
-            title={products_statuses.find((el) => el.id === p.data.teg)?.name}
+            bgcolor={imports_list_statuses.find((el) => el.id === p.data.status)?.color}
+            title={imports_list_statuses.find((el) => el.id === p.data.status)?.name}
           />
         )),
       }

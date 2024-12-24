@@ -17,7 +17,7 @@
   box-sizing: border-box;
 }
 p {
-  user-select: none;
+  /* user-select: none; */
 }
 a {
   font-weight: 500;
