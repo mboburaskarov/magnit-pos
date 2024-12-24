@@ -6,7 +6,7 @@ import StyledTooltip from '../../../../components/StyledTooltip'
 import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 import getImageUrl from '../../../../utils/getImageUrl'
 import thousandDivider from '../../../../utils/thousandDivider'
-import DefaultUserImgIcon from '../../../assets/icons/DefaultUserImgIcon'
+// import DefaultUserImgIcon from '../../../assets/icons/DefaultUserImgIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -249,11 +249,11 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         cellRenderer: memo((p) => (
           <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + p.data?.employee?.phone)}>
             <Box display={'flex'} alignItems={'center'}>
-              {p.data.employee?.image ? (
+              {/* {p.data.employee?.image ? (
                 <img style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data.customer?.image)} />
               ) : (
                 <DefaultUserImgIcon />
-              )}
+              )} */}
               <a href={`tel:${'+' + p.data.employee?.phone}`}>
                 <Typography
                   id={p.data.employee?._id}
@@ -275,11 +275,11 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         cellRenderer: memo((p) => (
           <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + p.data?.customer?.phone)}>
             <Box display={'flex'} alignItems={'center'}>
-              {p.data.customer?.image ? (
+              {/* {p.data.customer?.image ? (
                 <img style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data.customer?.image)} />
               ) : (
                 <DefaultUserImgIcon />
-              )}
+              )} */}
               <a href={`tel:${'+' + p.data.customer?.phone}`}>
                 <Typography
                   id={p.data.customer?._id}
