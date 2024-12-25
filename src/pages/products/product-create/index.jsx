@@ -66,7 +66,7 @@ export default function ProductCreatePage() {
       vat_price: Number(get(data, 'vat_price')),
     }
 
-    // createProduct(requestBody)
+    createProduct(requestBody)
   }
   const onError = (err) => {
     console.log('err', err)

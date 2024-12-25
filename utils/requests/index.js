@@ -11,6 +11,8 @@ export const requests = {
   checkSaleExist: () => request.get(`v1/sale/check`),
   changeEmployeeInfo: (data) => request.put(`v1/employee/info`, data),
   //category
+  finishImportChecking: (id) => request.patch(`v1/import-detail/accept-some/${id}`),
+
   // categoryGetAll
   getAllCategories: (filter) => request.get(`v1/category/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllImports: (filter) => request.get(`v1/import/list${qs.stringify(filter, { addQueryPrefix: true })}`),

@@ -23,6 +23,7 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import FilterMenu from './FilterMenu'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
+import overplusAudio from '../../../assets/audio/overplus.mp3'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 // import ProductDrawer from './ProductDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
@@ -35,6 +36,7 @@ const SELECTION_ID = 'checkboxSelectionField'
 export default function ImportWithCheckingPage() {
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
+  const overplusScanAudio = new Audio(overplusAudio)
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -49,7 +51,7 @@ export default function ImportWithCheckingPage() {
 
   const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
-  const [manualNumber, setManualNumber] = useState(0)
+  const [manualNumber, setManualNumber] = useState(1)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
@@ -191,6 +193,17 @@ export default function ImportWithCheckingPage() {
       console.log('err', err)
     },
   })
+  const { mutate: finishImportChecking, isLoading: isFinishImportChecking } = useMutation(requests.finishImportChecking, {
+    onSuccess: () => {
+      success('Импорт завершен!')
+      navigate('/products/import')
+      setOpenConfirmDialog(null)
+    },
+    onError: (err) => {
+      error('Ошибка при импорт завершен!')
+      setOpenConfirmDialog(null)
+    },
+  })
 
   useEffect(() => {
     refetch()
@@ -213,9 +226,13 @@ export default function ImportWithCheckingPage() {
     setOffsetCount(offsetsCount || 0)
   }, [importWithCheckingDetails?.data, values?.limit])
   const { mutate: addScan, isLoading: isAddScan } = useMutation(requests.sendScannedImport, {
-    onSuccess: () => {
+    onSuccess: ({ data }) => {
+      if (get(data, 'data.surplus')) {
+        overplusScanAudio.play()
+      } else {
+        successScanAudio.play()
+      }
       refetch()
-      successScanAudio.play()
       // success('Продукт успешно деактивирован!')
     },
     onError: (err) => {
@@ -233,13 +250,13 @@ export default function ImportWithCheckingPage() {
     <LoadingContainer readyState={true}>
       <Header
         isLoading={false}
-        buttonText='Создать'
+        buttonText='Завершить'
         backIcon
-        noActions
-        backHref='/imports'
+        // noActions
+        backHref='/products/import'
         text={'Импорт с проверкой'}
         checkAccessId={'product-create'}
-        // onSubmit={methods.handleSubmit(onSubmit, onError)}
+        onSubmit={() => setOpenConfirmDialog(true)}
       />
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         {/* <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
@@ -270,7 +287,7 @@ export default function ImportWithCheckingPage() {
             </Box>
             {appType === 'manual' && (
               <Box sx={{ ml: '16px' }}>
-                <InputQuantity uncontrolled onChange={({ target }) => setManualNumber(target.value)} />
+                <InputQuantity uncontrolled defaultValue={1} onChange={({ target }) => setManualNumber(target.value)} />
               </Box>
             )}
             <Box sx={{ ml: '16px' }}>
@@ -328,21 +345,9 @@ export default function ImportWithCheckingPage() {
           open={!!openConfirmDialog}
           setOpen={setOpenConfirmDialog}
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={
-            openConfirmDialog?.type === 'activate'
-              ? 'Активировать продукт?'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Деактивировать продукт?'
-              : 'Удалить продукт?'
-          }
-          desc={
-            openConfirmDialog?.type === 'activate'
-              ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-              : 'Вы хотите удалить продукт?'
-          }
-          supDesc={'“Azitromitsin 250 mg”'}
+          title={'Завершить'}
+          desc={'Вы действительно хотите завершить импорт?'}
+          supDesc={''}
           actions={
             <>
               <Button
@@ -358,15 +363,9 @@ export default function ImportWithCheckingPage() {
                 variant='contained'
                 type='button'
                 loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                onClick={() =>
-                  openConfirmDialog?.type === 'activate'
-                    ? activateProduct(openConfirmDialog.id)
-                    : openConfirmDialog?.type === 'deactivate'
-                    ? deActivateProduct({ id: openConfirmDialog.id, appType: 'INACTIVE' })
-                    : deleteProduct(openConfirmDialog.id)
-                }
+                onClick={() => finishImportChecking(id)}
               >
-                Да, удалить
+                Да, завершить
               </LoadingButton>
             </>
           }
