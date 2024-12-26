@@ -45,7 +45,7 @@ export default function ChangePassWordDialog({ open, setOpen }) {
   return (
     <StyledEmptyDialog
       open={open}
-      title={t('change_password.label')}
+      title={'Изменить пароль'}
       onClose={setOpen}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
     >
@@ -66,13 +66,13 @@ export default function ChangePassWordDialog({ open, setOpen }) {
         <FormProvider {...methods}>
           <Box>
             <Box width={'100%'}>
-              <Label mb='4px'>Parolni kiriting</Label>
-              <InputPassword fullWidth name='first_pass' placeholder='Fikr kiriting' />
+              <Label mb='4px'>Введите пароль</Label>
+              <InputPassword fullWidth name='first_pass' placeholder='Введите пароль' />
             </Box>
             <Box height={'24px'} />
             <Box width={'100%'}>
-              <Label mb='4px'>Parolni qaytadan kiriting</Label>
-              <InputPassword noMargin fullWidth name='second_pass' placeholder='Fikr kiriting' />
+              <Label mb='4px'>Повторно введите пароль</Label>
+              <InputPassword noMargin fullWidth name='second_pass' placeholder='Повторно введите пароль' />
             </Box>
           </Box>
           <Box height={'24px'} />
@@ -91,7 +91,7 @@ export default function ChangePassWordDialog({ open, setOpen }) {
           >
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button disabled={!canChange} fullWidth variant='contained' type='submit'>
-                {t('change')}
+                Изменять
               </Button>
             </Box>
           </Box>
