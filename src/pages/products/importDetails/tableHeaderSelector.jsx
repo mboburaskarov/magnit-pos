@@ -93,11 +93,9 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
         headerName: '№',
         colId: el.field,
         cellRenderer: memo((p) => (
-          // <Link to={`/imports/${p.data.id}`}>
           <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
             {p.data.public_id}
           </Typography>
-          // </Link>
         )),
       }
     }
@@ -109,8 +107,9 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
         cellRenderer: memo((p) => (
           <StatusCell
             id={`products-status-${p.rowIndex}`}
-            bgcolor={imports_list_statuses.find((el) => el.id === p.data.status)?.color}
-            title={imports_list_statuses.find((el) => el.id === p.data.status)?.name}
+            color={imports_list_statuses.find((el) => el.id === p.data.import.status)?.color}
+            bgcolor={imports_list_statuses.find((el) => el.id === p.data.import.status)?.bgcolor}
+            title={imports_list_statuses.find((el) => el.id === p.data.import.status)?.name}
           />
         )),
       }
@@ -132,7 +131,7 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
     if (el.field === 'created_by') {
       return {
         ...el,
-        headerName: 'Дата импорта',
+        headerName: 'Создано',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'created_by'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
@@ -145,7 +144,7 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
     if (el.field === 'accepted_by') {
       return {
         ...el,
-        headerName: 'Дата импорта',
+        headerName: 'Принято',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'accepted_by'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
@@ -157,7 +156,7 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
     if (el.field === 'stores') {
       return {
         ...el,
-        headerName: 'Дата импорта',
+        headerName: 'Магазины',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'stores'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
@@ -169,7 +168,7 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
     if (el.field === 'sender') {
       return {
         ...el,
-        headerName: 'Дата импорта',
+        headerName: 'Отправитель',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'sender'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
@@ -181,7 +180,7 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
     if (el.field === 'recivers') {
       return {
         ...el,
-        headerName: 'Дата импорта',
+        headerName: 'Получатель',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'reciver'}-${p.rowIndex}`} whiteSpace='pre-wrap'>

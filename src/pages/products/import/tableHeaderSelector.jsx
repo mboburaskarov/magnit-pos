@@ -107,7 +107,8 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
         cellRenderer: memo((p) => (
           <StatusCell
             id={`products-status-${p.rowIndex}`}
-            bgcolor={imports_list_statuses.find((el) => el.id === p.data.status)?.color}
+            color={imports_list_statuses.find((el) => el.id === p.data.status)?.color}
+            bgcolor={imports_list_statuses.find((el) => el.id === p.data.status)?.bgcolor}
             title={imports_list_statuses.find((el) => el.id === p.data.status)?.name}
           />
         )),

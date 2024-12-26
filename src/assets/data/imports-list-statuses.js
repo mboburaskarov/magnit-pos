@@ -1,22 +1,26 @@
 export const imports_list_statuses = [
   {
     id: 'new',
-    color: 'lightblue.500',
+    color: 'lightblue.700',
+    bgcolor: 'lightblue.100',
     name: 'Новый',
   },
   {
     id: 'pending',
-    color: 'yellow.400',
+    color: 'yellow.500',
+    bgcolor: 'yellow.10',
     name: 'Ожидании',
   },
   {
     id: 'completed',
-    color: 'green.500',
+    color: 'green.700',
+    bgcolor: 'green.10',
     name: 'Завершенный',
   },
   {
     id: 'canceled',
-    color: 'red.500',
+    color: 'red.700',
+    bgcolor: 'red.10',
     name: 'Отменено',
   },
 ]

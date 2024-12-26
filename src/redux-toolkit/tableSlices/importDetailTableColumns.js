@@ -2,29 +2,28 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const columns = [
   {
-    field: 'public_id',
-    hide: false,
-    minWidth: 60,
-    width: 60,
-  },
-
-  {
     field: 'import_date',
     hide: false,
     minWidth: 70,
     width: 370,
   },
+  // {
+  //   field: 'created_by',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 170,
+  // },
+  // {
+  //   field: 'accepted_by',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 170,
+  // },
   {
-    field: 'created_by',
+    field: 'status',
     hide: false,
     minWidth: 70,
-    width: 370,
-  },
-  {
-    field: 'accepted_by',
-    hide: false,
-    minWidth: 70,
-    width: 370,
+    width: 180,
   },
   {
     field: 'accepted_amount',
@@ -51,37 +50,31 @@ const columns = [
     minWidth: 70,
     width: 170,
   },
-  {
-    field: 'status',
-    hide: false,
-    minWidth: 70,
-    width: 130,
-  },
 
   {
     field: 'created_at',
     hide: false,
     minWidth: 70,
-    width: 350,
+    width: 170,
   },
-  {
-    field: 'sender',
-    hide: false,
-    minWidth: 70,
-    width: 350,
-  },
-  {
-    field: 'recivers',
-    hide: false,
-    minWidth: 70,
-    width: 350,
-  },
-  {
-    field: 'stores',
-    hide: false,
-    minWidth: 70,
-    width: 350,
-  },
+  // {
+  //   field: 'sender',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 170,
+  // },
+  // {
+  //   field: 'recivers',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 170,
+  // },
+  // {
+  //   field: 'stores',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 170,
+  // },
 ]
 
 const importDetailsTableColumns = createSlice({

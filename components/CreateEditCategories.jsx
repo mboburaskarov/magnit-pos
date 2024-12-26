@@ -214,6 +214,8 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
   }
   const { mutate: createCategory, isLoading: iscreateCategory } = useMutation(requests.createCategory, {
     onSuccess: () => {
+      closeDrawer()
+      refetch()
       success('Создать категорию!')
     },
     onError: (err) => {
@@ -223,6 +225,8 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
   })
   const { mutate: updateCategory, isLoading: isupdateCategory } = useMutation(requests.updateCategory, {
     onSuccess: () => {
+      closeDrawer()
+      refetch()
       success('Изменить категорию!')
     },
     onError: (err) => {
