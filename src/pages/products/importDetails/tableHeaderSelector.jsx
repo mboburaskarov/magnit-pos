@@ -87,18 +87,23 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
   }
   // const { values } = useQueryParams()
   const columns = importsColumns?.map((el) => {
-    if (el.field === 'public_id') {
+    if (el.field === 'number') {
       return {
         ...el,
         headerName: '№',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-            {p.data.public_id}
-          </Typography>
-        )),
+        cellRenderer: memo(({ rowIndex, api, ...p }) => {
+          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+
+          return (
+            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+              {absoluteIndex}
+            </Typography>
+          )
+        }),
       }
     }
+
     if (el.field === 'status') {
       return {
         ...el,
