@@ -7,7 +7,12 @@ const columns = [
     minWidth: 60,
     width: 60,
   },
-
+  {
+    field: 'barcode',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
   // {
   //   field: 'created_by',
   //   hide: false,

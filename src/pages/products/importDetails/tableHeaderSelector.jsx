@@ -104,6 +104,18 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
       }
     }
 
+    if (el.field === 'barcode') {
+      return {
+        ...el,
+        headerName: 'Штрих-код',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.product?.barcode}</Typography>
+          </Box>
+        )),
+      }
+    }
     if (el.field === 'status') {
       return {
         ...el,
