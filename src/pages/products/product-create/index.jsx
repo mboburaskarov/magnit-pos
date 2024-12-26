@@ -26,7 +26,7 @@ export default function ProductCreatePage() {
 
   const { mutate: createProduct, isLoading: isCreatingProduct } = useMutation(requests.createProduct, {
     onSuccess: () => {
-      navigate('/products')
+      navigate('/products/all')
       success('Продукт успешно создан!')
     },
     onError: (err) => {
