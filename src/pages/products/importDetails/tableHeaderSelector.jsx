@@ -116,6 +116,42 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
         )),
       }
     }
+    if (el.field === 'name') {
+      return {
+        ...el,
+        headerName: 'Название',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.product?.name}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'supply_price') {
+      return {
+        ...el,
+        headerName: t('table_columns.supply_price'),
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.product?.supply_price}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'retail_price') {
+      return {
+        ...el,
+        headerName: t('table_columns.retail_price'),
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.product?.retail_price}</Typography>
+          </Box>
+        )),
+      }
+    }
     if (el.field === 'status') {
       return {
         ...el,
@@ -132,96 +168,6 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
       }
     }
 
-    if (el.field === 'import_date') {
-      return {
-        ...el,
-        headerName: 'Дата импорта',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['import_date']).format('DD.MM.YYYY HH.mm.ss')}</Typography>
-          </Box>
-        )),
-      }
-    }
-
-    if (el.field === 'created_by') {
-      return {
-        ...el,
-        headerName: 'Создано',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'created_by'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.['created_by']}</Typography>
-          </Box>
-        )),
-      }
-    }
-
-    if (el.field === 'accepted_by') {
-      return {
-        ...el,
-        headerName: 'Принято',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'accepted_by'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.['accepted_by']}</Typography>
-          </Box>
-        )),
-      }
-    }
-    if (el.field === 'stores') {
-      return {
-        ...el,
-        headerName: 'Магазины',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'stores'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.['stores']}</Typography>
-          </Box>
-        )),
-      }
-    }
-    if (el.field === 'sender') {
-      return {
-        ...el,
-        headerName: 'Отправитель',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'sender'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.['sender']}</Typography>
-          </Box>
-        )),
-      }
-    }
-    if (el.field === 'recivers') {
-      return {
-        ...el,
-        headerName: 'Получатель',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'reciver'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.['reciver']}</Typography>
-          </Box>
-        )),
-      }
-    }
-    if (el.field === 'accepted_amount') {
-      return {
-        ...el,
-        headerName: 'Принятая сумма',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='accepted_amount' />),
-      }
-    }
-    if (el.field === 'received_amount') {
-      return {
-        ...el,
-        headerName: 'Полученная сумма',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='received_amount' />),
-      }
-    }
     if (el.field === 'received_count') {
       return {
         ...el,
@@ -230,14 +176,16 @@ export default function tableHeaderSelector({ importsColumns, values, setImages,
         cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='received_count' />),
       }
     }
-    if (el.field === 'accepted_count') {
+
+    if (el.field === 'scanned') {
       return {
         ...el,
-        headerName: 'Принятый счет',
+        headerName: 'Сканированиe',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='accepted_count' />),
+        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='scanned' />),
       }
     }
+
     if (el.field === 'created_at') {
       return {
         ...el,

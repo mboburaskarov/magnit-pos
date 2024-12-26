@@ -8,10 +8,28 @@ const columns = [
     width: 60,
   },
   {
+    field: 'name',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
     field: 'barcode',
     hide: false,
     minWidth: 70,
     width: 200,
+  },
+  {
+    field: 'supply_price',
+    hide: false,
+    minWidth: 70,
+    width: 170,
+  },
+  {
+    field: 'retail_price',
+    hide: false,
+    minWidth: 70,
+    width: 158,
   },
   // {
   //   field: 'created_by',
@@ -31,27 +49,15 @@ const columns = [
     minWidth: 70,
     width: 180,
   },
+
   {
-    field: 'accepted_amount',
+    field: 'received_count',
     hide: false,
     minWidth: 70,
     width: 170,
   },
   {
-    field: 'accepted_count',
-    hide: false,
-    minWidth: 70,
-    width: 120,
-  },
-  {
-    field: 'received_amount',
-    hide: false,
-    minWidth: 70,
-    width: 250,
-  },
-
-  {
-    field: 'received_count',
+    field: 'scanned',
     hide: false,
     minWidth: 70,
     width: 170,
