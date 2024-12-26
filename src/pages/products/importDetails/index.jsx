@@ -229,7 +229,7 @@ export default function ImportDetailsPage() {
           backIcon
           noActions
           backHref='/products/import'
-          text={'Импорт с проверкой'}
+          text={'Детали импорта'}
           checkAccessId={'product-create'}
           // onSubmit={() => setOpenConfirmDialog(true)}
         />
