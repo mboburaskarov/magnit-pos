@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, Container, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -222,7 +222,7 @@ export default function ImportDetailsPage() {
   }
   return (
     <LoadingContainer readyState={true}>
-      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
+      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
         <Header
           isLoading={false}
           buttonText='Детали импорта'
@@ -233,100 +233,101 @@ export default function ImportDetailsPage() {
           checkAccessId={'product-create'}
           // onSubmit={() => setOpenConfirmDialog(true)}
         />
-
-        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} width='100%'>
-          <Box display={'flex'}>
-            <Box
-              width='100%'
-              sx={{
-                '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                  background: 'transparent',
-                  width: '400px',
-                  height: 48,
-                },
-              }}
-            >
-              <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
-            </Box>
-
-            <Box minWidth={113} ml={'16px'}>
-              <Button
+        <Container>
+          <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} width='100%'>
+            <Box display={'flex'}>
+              <Box
+                width='100%'
                 sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
+                  '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+                  '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                    background: 'transparent',
+                    width: '400px',
+                    height: 48,
                   },
                 }}
-                fullWidth
-                startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
               >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
-            </Box>
-            {get(importWithCheckingDetails, 'data.data.data[0].import.status') === 'new' && (
-              <ButtonWithPopup
-                id={'ff'}
-                noArrow
-                ml={'16px'}
-                // endIcon={<ArrowDown />
-                noMarginSvg
-                placement='bottom-end'
-                buttonLabel={
-                  <Box className='cash_register_icon_wrapper' bgcolor={'#F8F8F9'} padding={'12px'} width={'48px'} height={'48px'} borderRadius={'50%'}>
-                    <ImportIcon />
-                  </Box>
-                }
-                popperData={[
-                  { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => loadWithoutChecking() },
-                  { title: 'Импорт с проверкой', icon: <ImportWithIcon />, clickHandler: () => navigate(`/products/import-with-checking/${id}`) },
-                ]}
-              />
-            )}
-          </Box>
-          <Box display={'flex'} alignItems={'center'}>
-            <Box>
-              <ColumnsFilterButtonForAll
-                title={t('ag_grid.table_setting.label')}
-                columns={tableColumns}
-                isCatalog={false}
-                resetTableHeader={resetTableHeader}
-                changeColumnSequence={changeColumnSequence}
-              />
-            </Box>
-          </Box>
-        </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+                <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
+              </Box>
 
-        <Box>
-          <AgGridTable
-            id='imports-main-table'
-            tableSettings
-            columns={tableColumns}
-            data={importWithCheckingDetails?.data?.data?.data || []}
-            isDataLoading={isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
-            offsetCount={offsetCount}
-            updaterAction={(newData) => {
-              if (newData) dispatch(updateTableHeader(newData))
-            }}
-            fullInfoAboutCurrentPage
-            resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            status={appType}
-            isRefreshing={loading || isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
-          />
-        </Box>
+              <Box minWidth={113} ml={'16px'}>
+                <Button
+                  sx={{
+                    height: '48px',
+                    padding: 0,
+                    bgcolor: '#fff',
+                    border: '1px solid #ECEDF2',
+                    color: 'dark.500',
+                    fontWeight: '500',
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    '& span': {
+                      mr: '12px',
+                    },
+                  }}
+                  fullWidth
+                  startIcon={<FilterMenuIcon color={theme.palette.black} />}
+                  variant='contained'
+                  color='secondary'
+                  onClick={() => setFilterMenu((prev) => !prev)}
+                >
+                  <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
+                    {t('filter_dialog.label')}
+                  </Typography>
+                </Button>
+              </Box>
+              {get(importWithCheckingDetails, 'data.data.data[0].import.status') === 'new' && (
+                <ButtonWithPopup
+                  id={'ff'}
+                  noArrow
+                  ml={'16px'}
+                  // endIcon={<ArrowDown />
+                  noMarginSvg
+                  placement='bottom-end'
+                  buttonLabel={
+                    <Box className='cash_register_icon_wrapper' bgcolor={'#F8F8F9'} padding={'12px'} width={'48px'} height={'48px'} borderRadius={'50%'}>
+                      <ImportIcon />
+                    </Box>
+                  }
+                  popperData={[
+                    { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => loadWithoutChecking() },
+                    { title: 'Импорт с проверкой', icon: <ImportWithIcon />, clickHandler: () => navigate(`/products/import-with-checking/${id}`) },
+                  ]}
+                />
+              )}
+            </Box>
+            <Box display={'flex'} alignItems={'center'}>
+              <Box>
+                <ColumnsFilterButtonForAll
+                  title={t('ag_grid.table_setting.label')}
+                  columns={tableColumns}
+                  isCatalog={false}
+                  resetTableHeader={resetTableHeader}
+                  changeColumnSequence={changeColumnSequence}
+                />
+              </Box>
+            </Box>
+          </Box>
+          <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+
+          <Box>
+            <AgGridTable
+              id='imports-main-table'
+              tableSettings
+              columns={tableColumns}
+              data={importWithCheckingDetails?.data?.data?.data || []}
+              isDataLoading={isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
+              offsetCount={offsetCount}
+              updaterAction={(newData) => {
+                if (newData) dispatch(updateTableHeader(newData))
+              }}
+              fullInfoAboutCurrentPage
+              resetTable={() => dispatch(resetTableHeader({ refetch }))}
+              status={appType}
+              isRefreshing={loading || isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
+            />
+          </Box>
+        </Container>
       </Box>
 
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />

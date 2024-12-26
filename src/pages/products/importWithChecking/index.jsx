@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, Container, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -258,87 +258,88 @@ export default function ImportWithCheckingPage() {
         checkAccessId={'product-create'}
         onSubmit={() => setOpenConfirmDialog(true)}
       />
-      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        {/* <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+      <Container>
+        <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
+          {/* <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           {'Импорт с проверкой'}
         </Typography> */}
 
-        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-          <Box display={'flex'}>
-            <Box
-              width='100%'
-              sx={{
-                '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                  background: 'transparent',
-                  width: '400px',
-                  height: 48,
-                },
-              }}
-            >
-              <InputSearch
-                icon={<BarcodeIcon />}
-                onKeyDown={({ code }) => code === 'Enter' && sendScannedImport()}
-                onChange={({ target }) => setBarcode(get(target, 'value'))}
-                id='producrs-search'
-                name='search'
-                placeholder={t('input.search.product.multi')}
-              />
-            </Box>
-            {appType === 'manual' && (
-              <Box sx={{ ml: '16px' }}>
-                <InputQuantity uncontrolled defaultValue={1} onChange={({ target }) => setManualNumber(target.value)} />
+          <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
+            <Box display={'flex'}>
+              <Box
+                width='100%'
+                sx={{
+                  '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+                  '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                    background: 'transparent',
+                    width: '400px',
+                    height: 48,
+                  },
+                }}
+              >
+                <InputSearch
+                  icon={<BarcodeIcon />}
+                  onKeyDown={({ code }) => code === 'Enter' && sendScannedImport()}
+                  onChange={({ target }) => setBarcode(get(target, 'value'))}
+                  id='producrs-search'
+                  name='search'
+                  placeholder={t('input.search.product.multi')}
+                />
               </Box>
-            )}
-            <Box sx={{ ml: '16px' }}>
-              <InputSwitch
-                noMarginTop
-                uncontrolled
-                id='app-type'
-                name='app-type'
-                value={appType}
-                defaultValue='auto'
-                onChange={(e) => setAppType(e)}
-                options={[
-                  { title: 'Руководство', value: 'manual' },
-                  { title: 'Сканирование', value: 'auto' },
-                ]}
-              />
+              {appType === 'manual' && (
+                <Box sx={{ ml: '16px' }}>
+                  <InputQuantity uncontrolled defaultValue={1} onChange={({ target }) => setManualNumber(target.value)} />
+                </Box>
+              )}
+              <Box sx={{ ml: '16px' }}>
+                <InputSwitch
+                  noMarginTop
+                  uncontrolled
+                  id='app-type'
+                  name='app-type'
+                  value={appType}
+                  defaultValue='auto'
+                  onChange={(e) => setAppType(e)}
+                  options={[
+                    { title: 'Руководство', value: 'manual' },
+                    { title: 'Сканирование', value: 'auto' },
+                  ]}
+                />
+              </Box>
+            </Box>
+            <Box display={'flex'} alignItems={'center'}>
+              <Box>
+                <ColumnsFilterButtonForAll
+                  title={t('ag_grid.table_setting.label')}
+                  columns={tableColumns}
+                  isCatalog={false}
+                  resetTableHeader={resetTableHeader}
+                  changeColumnSequence={changeColumnSequence}
+                />
+              </Box>
             </Box>
           </Box>
-          <Box display={'flex'} alignItems={'center'}>
-            <Box>
-              <ColumnsFilterButtonForAll
-                title={t('ag_grid.table_setting.label')}
-                columns={tableColumns}
-                isCatalog={false}
-                resetTableHeader={resetTableHeader}
-                changeColumnSequence={changeColumnSequence}
-              />
-            </Box>
+          <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+
+          <Box>
+            <AgGridTable
+              id='imports-main-table'
+              tableSettings
+              columns={tableColumns}
+              data={importWithCheckingDetails?.data?.data?.data || []}
+              isDataLoading={isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
+              offsetCount={offsetCount}
+              updaterAction={(newData) => {
+                if (newData) dispatch(updateTableHeader(newData))
+              }}
+              fullInfoAboutCurrentPage
+              resetTable={() => dispatch(resetTableHeader({ refetch }))}
+              // status={appType}
+              isRefreshing={loading || isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
+            />
           </Box>
         </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
-
-        <Box>
-          <AgGridTable
-            id='imports-main-table'
-            tableSettings
-            columns={tableColumns}
-            data={importWithCheckingDetails?.data?.data?.data || []}
-            isDataLoading={isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
-            offsetCount={offsetCount}
-            updaterAction={(newData) => {
-              if (newData) dispatch(updateTableHeader(newData))
-            }}
-            fullInfoAboutCurrentPage
-            resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            // status={appType}
-            isRefreshing={loading || isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
-          />
-        </Box>
-      </Box>
-
+      </Container>
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (
         <ConfirmDialog
