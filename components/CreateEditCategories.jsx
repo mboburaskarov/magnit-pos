@@ -235,7 +235,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
   //   enabled: !!editId && open,
   // })
 
-  const { data: editData, refetch: editDataFetch, editLoading } = useQuery('editData', () => requests.getCategory(editId))
+  const { data: editData, refetch: editDataFetch, editLoading } = useQuery('editData', () => editId && requests.getCategory(editId))
   // const[ editData, setEditData] = useState([])
   useEffect(() => {
     if (editId) editDataFetch()
