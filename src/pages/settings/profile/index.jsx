@@ -170,7 +170,7 @@ const Profile = () => {
           <Box display='flex' gap={3}>
             <Box flex={1}>
               <Label>Язык</Label>
-              <SelectSimple disabled={!isEditMode} white isClearable={false} defaultValue={languageDefaultValue} options={LANGUAGE_OPTIONS} name='language' />
+              <SelectSimple disabled={true} white isClearable={false} defaultValue={languageDefaultValue} options={LANGUAGE_OPTIONS} name='language' />
             </Box>
 
             <Box flex={1}>
