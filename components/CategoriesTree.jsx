@@ -121,15 +121,24 @@ export default function FileSystemNavigator({
   )
 
   useEffect(() => {
-    const pages = Math.ceil(categories?.data.count / pageSize)
+    const pages = Math.ceil(categories?.data?.data?.length / pageSize)
     setPageCount(pages ?? 1)
-  }, [categories?.data])
+  }, [categories?.data?.data])
+  function renameSubRows(obj) {
+    if (obj.sub_category) {
+      obj.subRows = obj.sub_category
+      delete obj.sub_category
 
+      obj.subRows.forEach(renameSubRows) // Recurse through sub_category if exists
+    }
+    return obj
+  }
   useEffect(() => {
     refetch()
-    setSearchedCategories(categories?.data?.categories)
-  }, [values?.search, categories?.data?.categories, pageIndex, pageSize])
-
+  }, [values?.search, pageIndex, pageSize])
+  useEffect(() => {
+    setSearchedCategories(categories?.data?.data.map((el) => renameSubRows(el)))
+  }, [categories?.data?.data])
   useEffect(() => {
     setValue2('category_ids', selected)
   }, [selected, setValue2])
@@ -139,12 +148,14 @@ export default function FileSystemNavigator({
   }, [values?.search])
 
   useEffect(() => {
-    if (getValues('category_ids')) setSelected(getValues('category_ids'))
+    // if (getValues('category_ids')) setSelected(getValues('category_ids'))
   }, [getValues('category_ids')])
 
   const handleCreateButtonClick = (data) => {
+    refetch()
     setCreateEdit(data)
   }
+  console.log(createEdit)
 
   return (
     <>
@@ -152,7 +163,7 @@ export default function FileSystemNavigator({
         <Box display='flex' className={showBorder ? classes.searchBar : ''} mb={showBorder ? 0 : 3}>
           <InputSearch name='search' placeholder={t('placeholders.category_name')} fullWidth uncontrolled />
           {canAdd && (
-            <Box className={classes.addCategoryButton}>
+            <Box className={classes.addCategoryButton} onClick={() => setCreateEdit(true)}>
               <PlusIcon style={{ marginRight: 8 }} />
             </Box>
           )}
@@ -171,6 +182,11 @@ export default function FileSystemNavigator({
             />
           )
         )}
+        <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' my={3}>
+          <Pagination count={pageCount} handleChangePage={changePage} page={pageIndex + 1} pageQuery='page' />
+
+          <RowFilterButton id='row-filter' pageSize={pageSize} setPageSize={setPageSize} setPageIndex={setPageIndex} />
+        </Box>
       </Box>
 
       <CreateEditCategories

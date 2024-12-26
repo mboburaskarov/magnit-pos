@@ -66,6 +66,10 @@
   "menu.clients.new.female": "Женский",
   "menu.clients.new.phone": "Телефон",
 
+  "menu.finance.categories.new": "Новая категория",
+  "alerts.enter_category_data": "Введите данные категории",
+  "placeholders.enter_category_name": "Введите название категории",
+
   "menu.clients.new_client": "Новый клиент",
   "menu.clients.new.date_of_birth": "День рождения",
   "menu.clients.new.MM": "ММ",
@@ -98,9 +102,19 @@
   "create_new_product.products_set_section.photo_first": "Перекиньте изображение сюда",
   "create_new_product.products_set_section.photo_second": "или",
   "create_new_product.products_set_section.photo_third": "кликните сюда",
+  "buttons.add_subcategory": "Добавить подкатегорию",
+  "menu.finance.categories.edit": "Редактирование категории",
+  "menu.finance.categories.delete_subcattegory.title": "Удалить подкатегорию?",
+  "menu.products.import.nav.show_by": "Показать по",
+  "menu.products.import.nav.lines": " строк",
 
   "create_new_product.additional_information.category": "Категория",
   "create_new_product.create_packages.price": "Цена",
+  "buttons.apply": "Применить",
+  "placeholders.enter_subcategory_name": "Введите название подкатегории",
+  "menu.finance.categories.delete_subcattegory.desc": "Вы уверены что хотите удалить подкатегорию? Вы не сможете привязывать к ней финансовые транзакции",
+  "buttons.cancel": "Отменить",
+  "buttons.delete": "Удалить",
 
   "page.new_sale.label": "Продажа",
   "page.new_sale.empty_cart_title": "Корзина на данный момент пуста",

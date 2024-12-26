@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '& button:nth-child(1)': {
       marginRight: 32,
-      color: theme.palette.bunker[950],
+      // color: theme.palette.bunker[950],
     },
   },
 }))

@@ -19,6 +19,8 @@ export default function ProductCreatePage() {
 
   useEffect(() => {
     methods.register('categories')
+    methods.register('category_ids')
+
     return
   }, [])
 
@@ -34,6 +36,8 @@ export default function ProductCreatePage() {
   })
 
   const onSubmit = (data) => {
+    console.log(data)
+
     const requestBody = {
       barcode: get(data, 'barcode'),
       bonus_amount: Number(get(data, 'bonus_amount')),
@@ -42,11 +46,12 @@ export default function ProductCreatePage() {
       expire_date: get(data, 'expire_date'),
       manufacturer: get(data, 'manufacturer'),
       name: get(data, 'name'),
-      photos: get(data, 'images', []),
+      photos: get(data, 'images', []).map((el) => el.file_url),
+      category_ids: methods.getValues('category_ids'),
       product_unit: get(data, 'product_unit').map(({ id, value, ...rest }) => ({
         unit_type_id: id,
         unit_name: value,
-        box_grain_count: get(data, 'box_grain_count'),
+        box_grain_count: Number(get(data, 'box_grain_count')),
         ...rest,
       })),
       quantity: Object.values(get(data, 'store_product')).reduce((total, product) => {
@@ -81,7 +86,7 @@ export default function ProductCreatePage() {
           buttonText='Создать'
           backIcon
           // noActions
-          backHref='/products'
+          backHref='/products/all'
           text={t('create_new_product.top.new_product')}
           checkAccessId={'product-create'}
           onSubmit={methods.handleSubmit(onSubmit, onError)}

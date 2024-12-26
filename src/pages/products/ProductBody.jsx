@@ -62,6 +62,7 @@ export default function ProductBody({ productData = null }) {
     t,
     values,
     register,
+    register,
     setValues: setValue,
     getValues: getValues,
     applyAllFunc: applyAllFunc,
@@ -165,17 +166,13 @@ export default function ProductBody({ productData = null }) {
 
         <Box mt={'24px'}>
           <Label>{t('create_new_product.products_set_section.image')}</Label>
-          <UploadImage
-            id='images'
-            name='images'
-            images={images}
-            onChange={(imagesArr) => {
-              setImages(imagesArr)
-            }}
-          />
+          <UploadImage id='images' name='images' images={images} onChange={(imagesArr) => setValue('images', imagesArr)} />
         </Box>
         <Box height={'56px'} />
-
+        <SectionTitle noWrap withLine>
+          {t('create_new_product.additional_information.category')}
+        </SectionTitle>
+        <CategoriesTree />
         <Box height={'56px'} />
         <SectionTitle noWrap withLine>
           {t('create_new_product.create_packages.price')}
@@ -267,9 +264,9 @@ export default function ProductBody({ productData = null }) {
             pagination
             isDataLoading={false}
             offsetCount={offsetCount}
-            updaterAction={(newData) => {
-              if (newData) dispatch(updateTableHeader(newData))
-            }}
+            // updaterAction={(newData) => {
+            //   if (newData) dispatch(updateTableHeader(newData))
+            // }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             // status={status}
@@ -287,7 +284,7 @@ export default function ProductBody({ productData = null }) {
             required
             fullWidth
             borderRadius={'40px'}
-            type={'number'}
+            // type={'te'}
             name='manufacturer'
             label={t('create_new_product.features.manufacturer')}
             placeholder={t('create_new_product.features.manufacturer.placeholder')}

@@ -1,4 +1,5 @@
 import MainLayout from '../../layouts/MainLayout'
+import ImportDetailsPage from '../../pages/products/importDetails'
 import ImportWithCheckingPage from '../../pages/products/importWithChecking'
 import ProductCreatePage from '../../pages/products/product-create'
 import ProductEditPage from '../../pages/products/product-edit'
@@ -21,6 +22,15 @@ const productsCreateRoutes = {
         {
           path: '',
           element: <ImportWithCheckingPage />,
+        },
+      ],
+    },
+    {
+      path: 'imports/:id',
+      children: [
+        {
+          path: '',
+          element: <ImportDetailsPage />,
         },
       ],
     },

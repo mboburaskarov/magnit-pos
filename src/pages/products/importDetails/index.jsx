@@ -28,6 +28,7 @@ import ImportWithIcon from '../../../assets/icons/ImportWithIcon'
 import ImportWithoutIcon from '../../../assets/icons/ImportWithoutIcon'
 import tableHeaderSelector from './tableHeaderSelector'
 import { get } from 'lodash'
+import Header from '../../../../components/Header'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ImportDetailsPage() {
@@ -222,11 +223,18 @@ export default function ImportDetailsPage() {
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {'Детали импорта'}
-        </Typography>
+        <Header
+          isLoading={false}
+          buttonText='Детали импорта'
+          backIcon
+          noActions
+          backHref='/products/import'
+          text={'Импорт с проверкой'}
+          checkAccessId={'product-create'}
+          // onSubmit={() => setOpenConfirmDialog(true)}
+        />
 
-        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
+        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} width='100%'>
           <Box display={'flex'}>
             <Box
               width='100%'

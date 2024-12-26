@@ -1,5 +1,5 @@
 import { Box, Tooltip, Typography, Button } from '@mui/material'
-import InputSimple from '../components/Inputs/InputSearch'
+import InputSimple from '../components/Inputs/InputSimple'
 import LoadingContainer from '../components/LoadingContainer'
 import SectionDrawer from '../components/SectionDrawer'
 import useDeepCompareEffect from '../src/hooks/useDeepCompareEffect'
@@ -8,13 +8,13 @@ import useWebsocketMutation from '../src/hooks/useDebounce'
 import PlusIconBlue from '../src/assets/icons/PlusIcon'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import requests from './CategoriesTree'
 import { error, success } from '../utils/toast'
 import ConfirmDialog from '../components/ConfirmDialog'
 import BigWarningCircleIcon from '../src/assets/icons/BigWarningCircleIcon'
 import { makeStyles } from '@mui/styles'
+import { requests } from '../utils/requests'
 
 const DeleteIcon = (
   <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -119,12 +119,12 @@ const InputCustom = ({
         adornment={
           topInput ? (
             inputTree?.name && (
-              <Box style={{ cursor: 'pointer' }} onClick={() => setConfirmToDelete(true)}>
+              <Box style={{ cursor: 'pointer', display: 'flex' }} onClick={() => setConfirmToDelete(true)}>
                 {DeleteIcon}
               </Box>
             )
           ) : (
-            <Box style={{ cursor: 'pointer' }} onClick={() => setConfirmToDelete(true)}>
+            <Box style={{ cursor: 'pointer', display: 'flex' }} onClick={() => setConfirmToDelete(true)}>
               {DeleteIcon}
             </Box>
           )
@@ -146,11 +146,11 @@ const InputCustom = ({
         open={!!confirmToDelete}
         setOpen={setConfirmToDelete}
         icon={<BigWarningCircleIcon />}
-        title={'menu.finance.categories.delete_subcattegory.title'}
-        desc='menu.finance.categories.delete_subcattegory.desc'
+        title={t('menu.finance.categories.delete_subcattegory.title')}
+        desc={t('menu.finance.categories.delete_subcattegory.desc')}
         actions={
           <>
-            <Button secondary id='stop' onClick={() => setConfirmToDelete(false)}>
+            <Button variant='contained' id='stop' onClick={() => setConfirmToDelete(false)}>
               {t('buttons.cancel')}
             </Button>
             <Button
@@ -175,21 +175,24 @@ const AddCustomButtom = ({ customStyle, addFunction }) => {
   return (
     <Box width='100%' height='100%' display='flex' alignItems='center' justifyContent='space-between' flexDirection='row'>
       <Box style={customStyle} className={useStyles().lineSecond} />
-      <Button sx={{ width: '96%', marginTop: 2 }} onClick={() => addFunction()} secondary>
-        <PlusIconBlue />
-        <Typography sx={{ color: '#4993DD', ml: 2 }}>{t('buttons.add_subcategory')}</Typography>
+      <Button sx={{ width: '96%', color: '#fff', marginTop: 2 }} onClick={() => addFunction()} secondary>
+        <PlusIconBlue color='#fff' />
+        <Typography sx={{ color: '#fff', ml: 2 }}>{t('buttons.add_subcategory')}</Typography>
       </Button>
     </Box>
   )
 }
 
 export default function CreateEditCategories({ open, closeDrawer, isLoading = false, refetch, editId, withoutNavigate, focusId, ...rest }) {
+  console.log(editId)
+
   const { values } = useQueryParams()
   const subRowObj = {
     name: '',
     subRows: [],
   }
   const [inputTree, setInputTree] = useState(subRowObj)
+
   const [duplicateName, setDuplicateName] = useState(false)
   const { t } = useTranslation()
   const cls = useStyles()
@@ -209,55 +212,69 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
       navigate(`/products/catalog/management?limit=${values?.limit}&page=1`)
     }
   }
-
-  const { mutate: createCategory } =
-    (requests?.category?.create,
-    {
-      onWebsocketSuccess: () => {
-        success(t('menu.finance.categories.toasts.create_success').replace('REPLACEMENT_TEXT', inputTree?.name), true)
-        refetch()
-        onClose()
-      },
-      onWebsocketError: (err) => {
-        if (err?.error?.message === 'duplicate_name') {
-          setDuplicateName(true)
-        } else {
-          error(t('menu.finance.categories.toasts.create_error'), true)
-          onClose()
-        }
-      },
-    })
-  const { mutate: updateCategory } =
-    (requests?.category?.update,
-    {
-      onWebsocketSuccess: () => {
-        success(t('menu.finance.categories.toasts.update_success'), true)
-        refetch()
-        onClose()
-      },
-      onWebsocketError: (err) => {
-        if (err?.error.message === 'duplicate_name') {
-          setDuplicateName(true)
-        } else {
-          error(t('menu.finance.categories.toasts.update_error'), true)
-          onClose()
-        }
-      },
-    })
-
-  const { data: editData, isLoading: editLoading } = useQuery('financeCategoriySingle', () => requests.category.getSingle(editId), {
-    enabled: !!editId && open,
+  const { mutate: createCategory, isLoading: iscreateCategory } = useMutation(requests.createCategory, {
+    onSuccess: () => {
+      success('Создать категорию!')
+    },
+    onError: (err) => {
+      error('Ошибка при Создать категорию!')
+      console.log('err', err)
+    },
+  })
+  const { mutate: updateCategory, isLoading: isupdateCategory } = useMutation(requests.updateCategory, {
+    onSuccess: () => {
+      success('Изменить категорию!')
+    },
+    onError: (err) => {
+      error('Ошибка при Изменить категорию!')
+      console.log('err', err)
+    },
   })
 
+  // const { data: editData, isLoading: editLoading } = useQuery('financeCategoriySingle', () => requests.category.getSingle(editId), {
+  //   enabled: !!editId && open,
+  // })
+
+  const { data: editData, refetch: editDataFetch, editLoading } = useQuery('editData', () => requests.getCategory(editId))
+  // const[ editData, setEditData] = useState([])
   useEffect(() => {
-    if (editData?.data) {
-      setInputTree(editData?.data)
+    if (editId) editDataFetch()
+  }, [editId])
+  function renameSubRows(obj) {
+    console.log('jiww')
+
+    if (obj.subRows) {
+      obj.sub_category = obj.subRows
+      delete obj.subRows
+
+      obj.sub_category.forEach(renameSubRows) // Recurse through sub_category if exists
+    }
+    return obj
+  }
+  function renameSubCats(obj) {
+    console.log('jiww', obj)
+
+    if (obj.sub_category) {
+      obj.subRows = obj.sub_category
+      delete obj.sub_category
+
+      obj.subRows.forEach(renameSubCats) // Recurse through sub_category if exists
+    }
+    return obj
+  }
+  useEffect(() => {
+    if (editData?.data?.data) {
+      setInputTree(renameSubCats(editData?.data?.data))
     }
   }, [editData])
+  console.log(inputTree)
 
   const onSubmit = () => {
-    const data = { ...inputTree }
+    const data = { ...renameSubRows(inputTree) }
+
     if (editId) {
+      console.log(data)
+
       updateCategory({ id: editId, data })
     } else {
       createCategory(data)
@@ -272,7 +289,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
         fullWidth
         anchor='bottom'
         topOffset='64px'
-        nextButtonLabel={editId ? t('buttons.apply') : t('buttons?.create')}
+        nextButtonLabel={editId ? t('buttons.apply') : t('create')}
         onNextButtonClick={onSubmit}
         title={editId ? t('menu.finance.categories.edit') : t('menu.finance.categories.new')}
         isLoading={isLoading}
@@ -307,6 +324,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                       required
                       inputTree={inputTree}
                       noMarginTop
+                      uncontrolled
                       addValue={(e) =>
                         setInputTree({
                           ...inputTree,

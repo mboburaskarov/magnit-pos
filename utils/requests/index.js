@@ -15,13 +15,14 @@ export const requests = {
 
   // categoryGetAll
   getAllCategories: (filter) => request.get(`v1/category/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getCategory: (id) => request.get(`v1/category/${id}`),
   getAllImports: (filter) => request.get(`v1/import/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getImportDetails: (filter) => request.get(`v1/import-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  createCategory: (data) => request.post(`api/categories`, data),
+  createCategory: (data) => request.post(`v1/category`, data),
   getAllCategoriesBuchet: (filter) => request.get(`api/categories${qs.stringify(filter, { addQueryPrefix: true })}`),
   createBillzCategory: (data) => request.post(`api/billz`, data),
   getCategoryBillz: (filter) => request.get(`api/billz/categories${qs.stringify(filter, { addQueryPrefix: true })}`),
-  updateCategory: ({ id, data }) => request.patch(`api/categories/${id}`, data),
+  updateCategory: ({ id, data }) => request.put(`v1/category/${id}`, data),
   getSingleCategory: (id) => request.get(`api/categories/${id}`),
   deleteCategory: (id) => request.delete(`api/categories/${id}`),
   //hashtag

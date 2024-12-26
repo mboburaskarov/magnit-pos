@@ -17,15 +17,6 @@ const productsRoutes = {
       path: 'import',
       element: <ImportPage />,
     },
-    {
-      path: 'imports/:id',
-      children: [
-        {
-          path: '',
-          element: <ImportDetailsPage />,
-        },
-      ],
-    },
   ],
 }
 

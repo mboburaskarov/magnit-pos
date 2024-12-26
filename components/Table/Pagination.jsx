@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Pagination as MuiPagination, PaginationItem } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import ArrowForward from '../../src/assets/icons/ArrowRightIcon'
-import BackArrowIcon from '../../src/assets/icons/ArrowRightIcon'
+import ArrowForward from '../../src/assets/icons/ArrowRight'
+import BackArrowIcon from '../../src/assets/icons/LeftArrow'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
 import useDidUpdate from '../../src/hooks/useDidUpdate'
 import * as qs from 'qs'
@@ -96,7 +96,7 @@ export default function Pagination({ count, handleChangePage, page, pageQuery })
       renderItem={(props) =>
         ['previous', 'next'].includes(props.type) ? (
           <button {...props} type='button' className={classes.arrowBtn} id={props.type === 'previous' ? 'previousPageBtn' : 'nextPageBtn'}>
-            {props.type === 'previous' ? <BackArrowIcon /> : <ArrowForward />}
+            {props.type === 'previous' ? <BackArrowIcon color='#FF6018' /> : <ArrowForward />}
           </button>
         ) : (
           <PaginationItem id={`pageCount-${pageValue}`} {...props} />

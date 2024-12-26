@@ -4,7 +4,8 @@ import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Highlighter from 'react-highlight-words'
 import { Box } from '@mui/material'
-import PencilIcon from '../../src/assets/icons/BackArrow'
+import PencilIcon from '../../src/assets/icons/EditIcon'
+import { get } from 'lodash'
 
 const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, searchTerm, highlight }) => {
   const tree = useMemo(() => flattenTree(items), [items])
@@ -205,7 +206,7 @@ const getParentIds = (target, children, parents = []) => {
     if (node.id === target) {
       return parents.concat(node.id)
     }
-    const found = getParentIds(target, node.subRows, parents.concat(node.id))
+    const found = getParentIds(target, get(node, 'subRows', []), parents.concat(node.id))
     if (found) {
       return found
     }

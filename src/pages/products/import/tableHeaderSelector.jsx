@@ -70,8 +70,6 @@ const Image = ({ data, rowIndex, setImages }) => {
 
 export default function tableHeaderSelector({ importsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
   const theme = useTheme()
-  console.log(imports_list_statuses)
-
   const getDateColor = (date) => {
     if (date > 25) return { color: theme.palette.green[700] }
     if (date > 3 && date < 25) return { color: theme.palette.orange[400] }
