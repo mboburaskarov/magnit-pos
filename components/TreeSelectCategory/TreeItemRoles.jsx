@@ -1,6 +1,7 @@
 import React, { useMemo, useRef } from 'react'
 import { makeStyles } from '@mui/styles'
-import MuiTreeItem from '@mui/lab/TreeItem'
+import { TreeItem as MuiTreeItem } from '@mui/x-tree-view/TreeItem'
+
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Highlighter from 'react-highlight-words'
@@ -168,7 +169,7 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
         })
 
         return (
-          <MuiTreeItem key={value} nodeId={value} label={treeItemLabel}>
+          <MuiTreeItem id={value}  key={value} nodeId={value} label={treeItemLabel}>
             {renderTreeItem({
               nodes: children,
               parents: [value],
@@ -215,7 +216,7 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
         parents,
       })
 
-      return <MuiTreeItem key={value} nodeId={value} label={treeItemLabel} />
+      return <MuiTreeItem id={value}  key={value} nodeId={value} label={treeItemLabel} />
     }) || null
 
   return renderTreeItem({ nodes: items })

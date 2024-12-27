@@ -97,7 +97,7 @@ const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, s
           })
 
           return (
-            <MuiTreeItem key={value} nodeId={value} label={treeItemLabel}>
+            <MuiTreeItem id={value} key={value} nodeId={value} label={treeItemLabel}>
               {renderTreeItem({
                 nodes: children,
                 parents: [value],
@@ -149,7 +149,7 @@ const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, s
           parents,
         })
 
-        return <MuiTreeItem key={value} nodeId={value} label={treeItemLabel} />
+        return <MuiTreeItem id={value}  key={value} nodeId={value} label={treeItemLabel} />
       }) || null,
     [tree, selected, items, searchTerm, highlight, disabled, handleCreate, handleChange]
   )
