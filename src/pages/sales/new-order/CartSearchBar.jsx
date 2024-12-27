@@ -16,6 +16,8 @@ import { useQuery } from 'react-query'
 import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import ArrowDown from '../../../assets/icons/ArrowDown'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { get } from 'lodash'
 const useStyles = makeStyles((theme) => ({
   overlay: {
     cursor: 'pointer',
@@ -125,6 +127,7 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
   const { values } = useQueryParams()
   const [searchTearm, setSearchTerm] = useState('')
   const navigate = useNavigate()
+  const userData = useSelector((state) => state.user)
 
   const productsListFilter = useMemo(() => {
     return {
@@ -136,10 +139,12 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
     isLoading: productsListLoading,
     isFetching: isFetchingproductsList,
     refetch,
-  } = useQuery(['productsList', productsListFilter], () => requests.getAllProducts(productsListFilter))
+  } = useQuery(['productsList', productsListFilter], () => requests.getAllStoreProducts({id: get(userData,'store.id')},productsListFilter))
   const methods = useForm()
   const classes = useStyles()
-  const productsData = productsList?.data?.data?.data
+  const productsData = productsList?.data?.data
+  console.log(productsList);
+  
   return (
     <Box className={classes.quick_search} mb={4}>
       <FormProvider {...methods}>
@@ -211,7 +216,7 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
         {showOverlay && searchTearm && (
           <Box className={classes.searchResult}>
             {productsData?.length ? (
-              productsData?.map((product) => <SerchedItem handleAddProduct={handleAddProduct} product={product} searchTerm={searchTearm} classes={classes} />)
+              productsData?.map((product) => <SerchedItem handleAddProduct={handleAddProduct} item={product} product={get(product,'product')} searchTerm={searchTearm} classes={classes} />)
             ) : (
               <span>Dori mavjud emas</span>
             )}

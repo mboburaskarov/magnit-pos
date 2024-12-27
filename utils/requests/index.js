@@ -1,3 +1,4 @@
+import { get } from 'lodash'
 import { authRequest, fileUploadRequest, request, yandexMapsRequest } from '../axios'
 import * as qs from 'qs'
 
@@ -76,6 +77,7 @@ export const requests = {
 
   //products
   getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllStoreProducts: (data,filter) => request.get(`v1/product/store/${get(data,'id')}${qs.stringify(filter, { addQueryPrefix: true })}`),
   createProduct: (data) => request.post(`v1/product`, data),
   createCartItem: (data) => request.post(`v1/cart_item`, data),
   deleteCartItem: (id) => request.delete(`v1/cart_item/${id}`),

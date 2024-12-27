@@ -92,7 +92,7 @@ export default function SerchedItem({
           <Box flex='0 0 22%' pr={2} textAlign='right'>
             <Typography className={classes.itemQuantity}>
               {product?.quantity > 0 ? (
-                <span>Miqdor: {product?.quantity}</span>
+                <span>Miqdor: {item?.quantity}</span>
               ) : (
                 <Typography color={'orange.500'} fontWeight={'500'} fontSize={'14px'} lineHeight={'20px'}>
                   Sotuvda yo'q
