@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react'
 import { makeStyles } from '@mui/styles'
-import { TreeItem as MuiTreeItem } from '@mui/lab/TreeItem'
+import { TreeItem as MuiTreeItem } from '@mui/lab'
 // import MuiTreeItem from '@mui/lab/TreeItem'
 
 import Checkbox from '@mui/material/Checkbox'
