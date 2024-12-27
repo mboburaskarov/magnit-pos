@@ -16,6 +16,8 @@ import SaleChildItemsBox from './SaleChildItemsBox'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
+    height: 'calc(100vh - 80px)',
+    overflowY: 'auto',
     '& .MuiDrawer-paper': {
       width: '660px',
       borderRadius: '24px 0 0 24px',

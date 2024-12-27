@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     position: 'relative !important',
     '& .MuiPaper-root': {
-      height: '100vh',
+      // height: '100vh',
       // position: 'relative !important',
     },
     '& .MuiDrawer-paper': {
