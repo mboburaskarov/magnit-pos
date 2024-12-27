@@ -13,7 +13,7 @@ import StyledTooltip from '../StyledTooltip'
 const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disabled = false, handleCreate, searchTerm, highlight }) => {
   const tree = useMemo(() => flattenTree({ items }), [items])
   const marksUncheckedRef = useRef(createMarksUnchecked({ tree, items, selected }))
-  console.log('tree view role')
+  console.log('tree view rolee')
 
   const activeParentRef = useRef('')
 
