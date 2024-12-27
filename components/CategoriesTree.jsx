@@ -16,13 +16,25 @@ import { makeStyles } from '@mui/styles'
 import { requests } from '../utils/requests'
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  roots: {
     padding: '24px 24px 0 24px',
     border: `1px solid ${theme.palette.bunker[100]}`,
     paddingTop: 0,
     borderRadius: 24,
     marginTop: 16,
     maxHeight: 808,
+    // overflowY: 'scroll',
+    '&::-webkit-scrollbar': {
+      width: 0,
+    },
+  },
+  root: {
+    // padding: '24px 24px 0 24px',
+    // border: `1px solid ${theme.palette.bunker[100]}`,
+    paddingTop: 0,
+    borderRadius: 24,
+    marginTop: 16,
+    maxHeight: 708,
     overflowY: 'scroll',
     '&::-webkit-scrollbar': {
       width: 0,
@@ -159,7 +171,8 @@ export default function FileSystemNavigator({
 
   return (
     <>
-      <Box className={showBorder ? classes.root : null}>
+      <Box className={showBorder ? classes.roots : null}>
+        <Box className={showBorder ? classes.root : null}>
         <Box display='flex' className={showBorder ? classes.searchBar : ''} mb={showBorder ? 0 : 3}>
           <InputSearch name='search' placeholder={t('placeholders.category_name')} fullWidth uncontrolled />
           {canAdd && (
@@ -182,6 +195,7 @@ export default function FileSystemNavigator({
             />
           )
         )}
+        </Box>
         <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' my={3}>
           <Pagination count={pageCount} handleChangePage={changePage} page={pageIndex + 1} pageQuery='page' />
 

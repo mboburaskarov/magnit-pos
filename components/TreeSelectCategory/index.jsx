@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 56,
   },
   list: {
-    minHeight: '200px',
+    // minHeight: '200px',
     '& .MuiTreeItem-root': {
       width: '100%',
       background: theme.palette.bg[10],
