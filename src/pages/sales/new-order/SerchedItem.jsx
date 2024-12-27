@@ -3,8 +3,15 @@ import Highlighter from 'react-highlight-words'
 import SearchIcon from '../../../assets/icons/SearchIcon'
 import paletteLight from '../../../assets/theme/paletteLight'
 import ZoomTextIcon from '../../../assets/icons/ZoomTextIcon'
+import CloseIcon from '../../../assets/icons/CloseIcon'
+
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { get } from 'lodash'
+import { useState } from 'react'
+import { requests } from '../../../../utils/requests'
+import { useMutation } from 'react-query'
+import { error, success } from '../../../../utils/toast'
 // import currency from '../../../utils/currency'
 
 export default function SerchedItem({
@@ -14,6 +21,7 @@ export default function SerchedItem({
   fakeIndexForCheckSearch,
   item,
   getShopPrice,
+  isChild = true,
   classes,
   searchTerm,
   wholeSaleEnabled,
@@ -22,7 +30,22 @@ export default function SerchedItem({
   product,
 }) {
   const userData = useSelector((state) => state.user)
+  const [openSimilar, setOpenSimilar] = useState(false)
+  const [similarProductList, setSimilarProductList] = useState([])
   const { id } = useParams()
+  const { mutate: getAllSimilarStoreProducts, isLoading: isgetAllSimilarStoreProducts } = useMutation(requests.getAllSimilarStoreProducts, {
+    onSuccess: ({ data }) => {
+      console.log(data)
+
+      setOpenSimilar(true)
+      setSimilarProductList(data)
+      // success('Корзина была очищенаClick to apply!')
+    },
+    onError: (err) => {
+      error('Ошибка при Корзина была очищенаClick to apply')
+      console.log('err', err)
+    },
+  })
   return (
     <div
       id={`cartSearchResult${index}`}
@@ -75,7 +98,7 @@ export default function SerchedItem({
                   highlightClassName='highlighter'
                   searchWords={[searchTerm]}
                   autoEscape
-                  textToHighlight={`${product?.name} / ${product?.category?.name}`}
+                  textToHighlight={`${product?.name} / ${product?.categories?.[0]?.name}`}
                 />
               </Typography>
               <Typography id='product-barcode'>
@@ -101,18 +124,23 @@ export default function SerchedItem({
             </Typography>
             <Typography className={classes.itemPrice}>{product?.retail_price} so'm</Typography>
           </Box>
-          <Box
-            width={'48px'}
-            minWidth={'48px'}
-            display={'flex'}
-            alignItems={'center'}
-            justifyContent={'center'}
-            height={'48px'}
-            borderRadius={'50%'}
-            bgcolor={'#F8F8F9'}
-          >
-            <ZoomTextIcon />
-          </Box>
+          {!isChild && (
+            <Box
+              width={'48px'}
+              minWidth={'48px'}
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'center'}
+              height={'48px'}
+              borderRadius={'50%'}
+              bgcolor={'#F8F8F9'}
+              onClick={(e) => {
+                e.stopPropagation(), !openSimilar ? getAllSimilarStoreProducts(get(product, 'id')) : setOpenSimilar(false)
+              }}
+            >
+              {!openSimilar ? <ZoomTextIcon /> : <CloseIcon color='#000' />}
+            </Box>
+          )}
         </Box>
 
         <Box display={'flex'} flexDirection={'column'} padding={'16px'} bgcolor={'bg.10'} ml={'8px'} height={'80px'} borderRadius={'16px'} minWidth={'160px'}>
@@ -122,6 +150,12 @@ export default function SerchedItem({
             <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>{product?.bonus_amount}</Typography>
           </Box>
         </Box>
+      </Box>
+      <Box sx={{ paddingLeft: '40px', width: '100%' }}>
+        {openSimilar &&
+          get(similarProductList, 'data', []).map((item) => (
+            <SerchedItem classes={classes} item={item} searchTerm={searchTerm} product={get(item, 'product')} key={item?.id} />
+          ))}
       </Box>
     </div>
   )

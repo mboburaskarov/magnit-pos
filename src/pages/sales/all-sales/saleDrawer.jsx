@@ -1,4 +1,4 @@
-import { Drawer } from '@mui/material'
+import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
@@ -9,9 +9,17 @@ import { useSelector } from 'react-redux'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { requests } from '../../../../utils/requests'
 import SaleChildDrawer from './saleChildDrawer'
+import WithdrawIcon from '../../../assets/icons/WithdrawIcon'
+import { height, positions } from '@mui/system'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
+    overflow: 'hidden',
+    position: 'relative !important',
+    '& .MuiPaper-root': {
+      height: '100vh',
+      // position: 'relative !important',
+    },
     '& .MuiDrawer-paper': {
       width: '660px',
       borderRadius: '24px 0 0 24px',
@@ -47,8 +55,33 @@ function SaleDrawer({ open, setOpen, cashBoxDetails }) {
     refetch()
   }, [open])
   return (
-    <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
+    <Drawer sx={{ height: '100vh !important' }} open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
       <SaleChildDrawer refetchDraftList={refetch} open={open} setOpen={setOpen} />
+      <Box
+        sx={{
+          // position: 'fixed',
+          bottom: 10,
+          mb: '10px',
+          // width: 'calc(100vw - 40px)',
+          m: '10px 20px',
+          // right: '20px',
+          // left: '20px',
+          '& .MuiButtonBase-root': {
+            height: 48,
+          },
+        }}
+        // columnGap={2}
+        // display='flex'
+        // width='100%'
+        // mt={4}
+      >
+        <Button fullWidth color='secondary' variant='contained'>
+          <WithdrawIcon />
+          <Typography fontSize={16} ml={'12px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+            {t('print')}
+          </Typography>
+        </Button>
+      </Box>
     </Drawer>
   )
 }

@@ -50,6 +50,7 @@ export const requests = {
   getSingleOrder: (id) => request.get(`api/admin/orders/${id}`),
   getSingleOrderHistory: (filter) => request.get(`api/admin/orders-status${qs.stringify(filter, { addQueryPrefix: true })}`),
   acceptOrder: (data) => request.post(`api/admin/orders/approve-by-admin`, data),
+  finishSaleWithoutAppPaymentType: (data) => request.post(`v1/sale/final`, data),
   finishOrder: (data) => request.post(`api/admin/orders/done`, data),
   cancelOrder: (data) => request.post(`api/admin/orders/rejected`, data),
   editOrder: (data) => request.patch(`api/admin/orders/${data?.orderId}`, data),
@@ -70,6 +71,7 @@ export const requests = {
   getCashBoxDetaildWithSaleId: (id) => request.get(`v1/sale/${id}`),
   //store
   getAllStores: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllSimilarStoreProducts: (id) => request.get(`v1/product/similar/${id}`),
   deleteStore: (id) => request.delete(`v1/store/${id}`),
 
   // getAllVendors: (filter) => request.get(`v1/employee/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -77,7 +79,7 @@ export const requests = {
 
   //products
   getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getAllStoreProducts: (data,filter) => request.get(`v1/product/store/${get(data,'id')}${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllStoreProducts: (data, filter) => request.get(`v1/product/store/${get(data, 'id')}${qs.stringify(filter, { addQueryPrefix: true })}`),
   createProduct: (data) => request.post(`v1/product`, data),
   createCartItem: (data) => request.post(`v1/cart_item`, data),
   deleteCartItem: (id) => request.delete(`v1/cart_item/${id}`),

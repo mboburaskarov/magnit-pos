@@ -290,7 +290,7 @@ export default function OrderDrawer({
   }, [paymentsList, cartItemsList])
 
   const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
-  const { mutate: addToOrderPayment, isLoading: isaddToOrderPayment } = useMutation(requests.addToOrderPayment, {
+  const { mutate: finishSaleWithoutAppPaymentType, isLoading: isfinishSaleWithoutAppPaymentType } = useMutation(requests.finishSaleWithoutAppPaymentType, {
     onSuccess: () => {
       refetchcartItemsList()
       setIsOrderDrower(false)
@@ -349,16 +349,32 @@ export default function OrderDrawer({
     documentTitle: documentName.current,
     removeAfterPrint: true,
   })
+
   const onSubmit = (data) => {
     setScanningText('')
     scanningTextRef.current = ''
+    const paymentTypes = mpaddedPaymentsList
+      .filter((type) => get(type, 'isPlaceholder', false) == false)
+      .map(({ id, ...type }) => ({
+        amount: get(type, 'amount'),
+        total_amount: id,
+      }))
 
+    console.log(paymentTypes)
+
+    finishSaleWithoutAppPaymentType({
+      cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
+      payment_types: paymentTypes,
+      sale_id: id,
+      total_amount: get(cartItemsList, 'total_amount'),
+    })
     return
   }
   const mpaddedPaymentsList = [
     ...paymentsList,
     ...Array.from({ length: 8 - paymentsList.length }, (_, index) => ({ id: `placeholder-${index}`, isPlaceholder: true })),
   ]
+  console.log(cashBoxDetails, mpaddedPaymentsList)
 
   useEffect(() => {
     const handleKeyPress = (e) => {

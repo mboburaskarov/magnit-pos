@@ -105,10 +105,10 @@ const useStyles = makeStyles((theme) => ({
   searchItem: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'start',
     width: '100%',
     minHeight: 72,
-
+    flexDirection: 'column',
     marginTop: 16,
     // backgroundColor: theme.palette.background.default,
     borderRadius: 16,
@@ -139,12 +139,12 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
     isLoading: productsListLoading,
     isFetching: isFetchingproductsList,
     refetch,
-  } = useQuery(['productsList', productsListFilter], () => requests.getAllStoreProducts({id: get(userData,'store.id')},productsListFilter))
+  } = useQuery(['productsList', productsListFilter], () => requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter))
   const methods = useForm()
   const classes = useStyles()
   const productsData = productsList?.data?.data
-  console.log(productsList);
-  
+  console.log(productsList)
+
   return (
     <Box className={classes.quick_search} mb={4}>
       <FormProvider {...methods}>
@@ -213,10 +213,20 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
             className={classes.overlay}
           />
         )}
+        {console.log(productsData)}
         {showOverlay && searchTearm && (
           <Box className={classes.searchResult}>
             {productsData?.length ? (
-              productsData?.map((product) => <SerchedItem handleAddProduct={handleAddProduct} item={product} product={get(product,'product')} searchTerm={searchTearm} classes={classes} />)
+              productsData?.map((product) => (
+                <SerchedItem
+                  isChild={false}
+                  handleAddProduct={handleAddProduct}
+                  item={product}
+                  product={get(product, 'product')}
+                  searchTerm={searchTearm}
+                  classes={classes}
+                />
+              ))
             ) : (
               <span>Dori mavjud emas</span>
             )}

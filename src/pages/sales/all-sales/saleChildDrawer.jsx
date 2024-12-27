@@ -65,135 +65,112 @@ function SaleChildDrawer({ open, setOpen }) {
 
   const theme = useTheme()
   return (
-    <LoadingContainer readyState={!issaleDetailsList}>
-      <Box className={classes.drawer}>
-        <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
-          <Box display={'flex'} alignItems={'center'}>
-            <Box
-              onClick={() => {
-                setOpen(false), setOpen(false)
-              }}
-              className={classes.rightArrowIcon}
-            >
-              <LeftArrowIcon />
-            </Box>
-            <Box ml={'16px'}>
-              <Typography fontSize={24} lineHeight={'32px'} fontWeight={700}>
-                #{get(saleDetailsList, 'data.data.sale_number')}
-              </Typography>
-              <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
-                {get(saleDetailsList, 'data.data.total_amount')} so'm
-              </Typography>
-            </Box>
-          </Box>
-
-          <CloseIcon
-            color={theme.palette.black}
+    // <LoadingContainer readyState={!issaleDetailsList}>
+    <Box className={classes.drawer}>
+      <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
+        <Box display={'flex'} alignItems={'center'}>
+          <Box
             onClick={() => {
               setOpen(false), setOpen(false)
             }}
-          />
+            className={classes.rightArrowIcon}
+          >
+            <LeftArrowIcon />
+          </Box>
+          <Box ml={'16px'}>
+            <Typography fontSize={24} lineHeight={'32px'} fontWeight={700}>
+              #{get(saleDetailsList, 'data.data.sale_number')}
+            </Typography>
+            <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
+              {get(saleDetailsList, 'data.data.total_amount')} so'm
+            </Typography>
+          </Box>
         </Box>
 
-        <Box padding={'24px 20px 0'}>
-          <Box alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
-            <Typography fontSize={20} lineHeight={'32px'} fontWeight={600}>
-              {t('cart')}
-            </Typography>
-            <Box display={'flex'} alignItems={'center'}>
-              <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                {t('vendor')}:
-              </Typography>
-              <img className={classes.usrImg} src='/default-user-img.png' />
+        <CloseIcon
+          color={theme.palette.black}
+          onClick={() => {
+            setOpen(false), setOpen(false)
+          }}
+        />
+      </Box>
 
-              <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
-                {get(saleDetailsList, 'data.data.employee.first_name')}
+      <Box padding={'24px 20px 0'}>
+        <Box alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
+          <Typography fontSize={20} lineHeight={'32px'} fontWeight={600}>
+            {t('cart')}
+          </Typography>
+          <Box display={'flex'} alignItems={'center'}>
+            <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+              {t('vendor')}:
+            </Typography>
+            <img className={classes.usrImg} src='/default-user-img.png' />
+
+            <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
+              {get(saleDetailsList, 'data.data.employee.first_name')}
+            </Typography>
+          </Box>
+        </Box>
+        <Box padding={'16px 0'}>
+          {get(saleDetailsList, 'data.data.sale_items', []).map((el) => (
+            <SaleChildItemsBox key={el.id} item={el} />
+          ))}
+        </Box>
+        <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
+          <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
+            {t('features')}
+          </Typography>
+          <Box display={'flex'} justifyContent={'space-between'}>
+            <Box width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
+              <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                Yaratilgan sana
+              </Typography>
+              <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                {dayjs(get(saleDetailsList, 'data.data.created_at')).format('DD.MM.YYYY | HH:mm:ss')}
+              </Typography>
+            </Box>
+            <Box width={'100%'} bgcolor={'bg.10'} borderRadius={'16px'} padding={'16px'}>
+              <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                {t('store')}
+              </Typography>
+              <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                Pharma Cosmos
               </Typography>
             </Box>
           </Box>
-          <Box padding={'16px 0'}>
-            {get(saleDetailsList, 'data.data.sale_items', []).map((el) => (
-              <SaleChildItemsBox key={el.id} item={el} />
+          <Box display={'flex'} justifyContent={'space-between'}>
+            <Box width={'50%'} mt={'16px'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
+              <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                Yaratilgan sana
+              </Typography>
+              <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                {dayjs(get(saleDetailsList, 'data.data.created_at')).format('DD.MM.YYYY | HH:mm:ss')}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+        <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
+          <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
+            {t('pay')}
+          </Typography>
+          <Grid container display={'flex'} justifyContent={'space-between'}>
+            {get(saleDetailsList, 'data.data.sale_payments', []).map((pays) => (
+              <Grid item xs={12} sm={6} md={4} width={'100%'} padding={'4px'}>
+                <Box bgcolor={'bg.10'} borderRadius={'16px'} padding={'12px 16px'}>
+                  <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                    {get(pays, 'payment_type.name')}
+                  </Typography>
+                  <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                    {get(pays, 'amount')} so'm
+                  </Typography>
+                </Box>
+              </Grid>
             ))}
-          </Box>
-          <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
-            <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
-              {t('features')}
-            </Typography>
-            <Box display={'flex'} justifyContent={'space-between'}>
-              <Box width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
-                <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                  Yaratilgan sana
-                </Typography>
-                <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                  {dayjs(get(saleDetailsList, 'data.data.created_at')).format('DD.MM.YYYY | HH:mm:ss')}
-                </Typography>
-              </Box>
-              <Box width={'100%'} bgcolor={'bg.10'} borderRadius={'16px'} padding={'16px'}>
-                <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                  {t('store')}
-                </Typography>
-                <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                  Pharma Cosmos
-                </Typography>
-              </Box>
-            </Box>
-            <Box display={'flex'} justifyContent={'space-between'}>
-              <Box width={'50%'} mt={'16px'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
-                <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                  Yaratilgan sana
-                </Typography>
-                <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                  {dayjs(get(saleDetailsList, 'data.data.created_at')).format('DD.MM.YYYY | HH:mm:ss')}
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-          <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
-            <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
-              {t('pay')}
-            </Typography>
-            <Grid container display={'flex'} justifyContent={'space-between'}>
-              {get(saleDetailsList, 'data.data.sale_payments', []).map((pays) => (
-                <Grid item xs={12} sm={6} md={4} width={'100%'} padding={'4px'}>
-                  <Box bgcolor={'bg.10'} borderRadius={'16px'} padding={'12px 16px'}>
-                    <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                      {get(pays, 'payment_type.name')}
-                    </Typography>
-                    <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                      {get(pays, 'amount')} so'm
-                    </Typography>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: 10,
-              width: 'calc(100wh - 40px)',
-              right: '20px',
-              left: '20px',
-              '& .MuiButtonBase-root': {
-                height: 48,
-              },
-            }}
-            columnGap={2}
-            display='flex'
-            width='100%'
-            mt={4}
-          >
-            <Button fullWidth color='secondary' variant='contained'>
-              <WithdrawIcon />
-              <Typography fontSize={16} ml={'12px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                {t('print')}
-              </Typography>
-            </Button>
-          </Box>
+          </Grid>
         </Box>
       </Box>
-    </LoadingContainer>
+    </Box>
+    // </LoadingContainer>
   )
 }
 
