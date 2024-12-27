@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from 'react'
 import { makeStyles } from '@mui/styles'
-// import { TreeItem as MuiTreeItem } from '@mui/x-tree-view/TreeItem'
-import MuiTreeItem from '@mui/lab/TreeItem'
+import { TreeItem as MuiTreeItem } from '@mui/lab/TreeItem'
+// import MuiTreeItem from '@mui/lab/TreeItem'
 
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
