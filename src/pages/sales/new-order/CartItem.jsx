@@ -12,6 +12,7 @@ import EditorIcon from '../../../assets/icons/EditorIcon'
 import EditIcon from '../../../assets/icons/EditIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import SelectSimple from '../../../../components/Select/SelectSimple'
+import StyledTooltip from '../../../../components/StyledTooltip'
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -254,36 +255,37 @@ const CartItem = ({
                 },
               }}
             >
-              <InputQuantity
-                id={`inputQuantity${index}`}
-                value={quon}
-                name='quantity'
-                onChange={({ target }) => setQuon(target.value)}
-                // adornment={data?.measurement_unit?.short_name}
-                adornmentPosition='end'
-                adornmentClassName={cls.adornment}
-                max={100}
-                // maxErrorMessage={maxErrorMessage}
-                type='number'
-                disabled={false}
-              />
-              <Box>
-                <SelectSimple
-                  white
-                  isClearable={false}
-                  boxStyle={{ margin: '0 8px' }}
-                  minWidth={'84px'}
-                  options={[
-                    { id: 1, name: 'Dona' },
-                    { id: 2, name: 'Kaseta' },
-                    { id: 3, name: 'Quti' },
-                  ]}
-                  borderRadius='12px'
-                  placeholder=''
-                  inicatoorRight={true}
-                  defaultValue={{ id: 1, name: 'Dona' }}
-                  name={`type.${item.product.id}`}
+              <StyledTooltip placement='top' title='Кусок'>
+                <InputQuantity
+                  id={`inputQuantity${index}`}
+                  value={quon}
+                  name='quantity'
+                  onChange={({ target }) => setQuon(target.value)}
+                  // adornment={data?.measurement_unit?.short_name}
+                  adornmentPosition='end'
+                  adornmentClassName={cls.adornment}
+                  max={100}
+                  // maxErrorMessage={maxErrorMessage}
+                  type='number'
+                  disabled={false}
                 />
+              </StyledTooltip>
+              <Box>
+                <StyledTooltip placement='top' title='Пачка'>
+                  <InputQuantity
+                    id={`inputQuantity${index}`}
+                    value={quon}
+                    name='quantity'
+                    onChange={({ target }) => setQuon(target.value)}
+                    // adornment={data?.measurement_unit?.short_name}
+                    adornmentPosition='end'
+                    adornmentClassName={cls.adornment}
+                    max={100}
+                    // maxErrorMessage={maxErrorMessage}
+                    type='number'
+                    disabled={false}
+                  />
+                </StyledTooltip>
               </Box>
               <Box className={cls.img_cont}>
                 <img src={item?.product?.main_photo || '/default-img.avif'} onClick={() => data.main_image_url && setProductId(data.id)} />
