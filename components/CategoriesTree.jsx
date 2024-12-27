@@ -155,7 +155,7 @@ export default function FileSystemNavigator({
     refetch()
     setCreateEdit(data)
   }
-  console.log(searchedCategories)
+  console.log('cattree')
 
   return (
     <>

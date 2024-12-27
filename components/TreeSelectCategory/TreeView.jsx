@@ -25,6 +25,7 @@ const StyledTreeView = ({
   useDidUpdate(() => {
     setExpanded(expandedTrees)
   }, [expandedTrees])
+  console.log('tree view')
 
   return (
     <TreeView

@@ -66,6 +66,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 export default function TreeSelect({ selected, setSelected, categories, disabled, handleCreate, searchTerm, highlight, roles }) {
   const classes = useStyles({})
+  console.log('index')
+
   return (
     <StyledTreeView
       classes={classes}
