@@ -1,6 +1,6 @@
 import { memo, useCallback, useMemo } from 'react'
-// import MuiTreeItem from '@mui/lab/TreeItem'
-import { TreeItem as MuiTreeItem } from '@mui/x-tree-view/TreeItem'
+import MuiTreeItem from '@mui/lab/TreeItem'
+// import { TreeItem as MuiTreeItem } from '@mui/lab'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Highlighter from 'react-highlight-words'
@@ -97,7 +97,7 @@ const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, s
           })
 
           return (
-            <MuiTreeItem id={value} key={value} nodeId={value} label={treeItemLabel}>
+            <MuiTreeItem itemId={value} key={value} nodeId={value} label={treeItemLabel}>
               {renderTreeItem({
                 nodes: children,
                 parents: [value],
@@ -149,7 +149,7 @@ const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, s
           parents,
         })
 
-        return <MuiTreeItem id={value}  key={value} nodeId={value} label={treeItemLabel} />
+        return <MuiTreeItem itemId={value}  key={value} nodeId={value} label={treeItemLabel} />
       }) || null,
     [tree, selected, items, searchTerm, highlight, disabled, handleCreate, handleChange]
   )
