@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import ExpandMoreIcon from '../../src/assets/icons/BottomArrowIcon'
 import ChevronRightIcon from '../../src/assets/icons/ArrowRight'
-import TreeView from '@mui/lab/TreeView'
+import TreeView from '@mui/x-tree-view'
 import useDidUpdate from '../../src/hooks/useDidUpdate'
 import TreeItem from './TreeItem'
 import TreeItemRoles from './TreeItemRoles'
