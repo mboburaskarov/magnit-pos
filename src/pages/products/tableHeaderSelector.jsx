@@ -76,7 +76,7 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
+export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setOpenProductDrawer, setIsDrawerOpen }) {
   const theme = useTheme()
   const getDateColor = (date) => {
     if (date > 25) return { color: theme.palette.green[700] }
@@ -98,7 +98,11 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         ...el,
         headerName: t('table_columns.name'),
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
+        cellRenderer: memo((p) => (
+          <Box sx={{ '& p': { color: 'orange.500' }, cursor: 'pointer' }} onClick={() => setOpenProductDrawer(p.data.id)}>
+            <SimpleText {...p} type='name' />
+          </Box>
+        )),
       }
     }
     if (el.field === 'sum') {

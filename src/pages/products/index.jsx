@@ -25,6 +25,7 @@ import { useQueryParams } from '../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
+import ProductDrawer from './product-edit/productDrawer'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ProductsPage() {
@@ -38,6 +39,7 @@ export default function ProductsPage() {
   const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
+  const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(null)
@@ -46,6 +48,7 @@ export default function ProductsPage() {
     productsColumns: columns,
     t,
     values,
+    setOpenProductDrawer,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     setIsDrawerOpen,
@@ -309,6 +312,7 @@ export default function ProductsPage() {
           />
         </Box>
       </Box>
+      <ProductDrawer open={openProductDrawer} setOpen={setOpenProductDrawer} />
 
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (

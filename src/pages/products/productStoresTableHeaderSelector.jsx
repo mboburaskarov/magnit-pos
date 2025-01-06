@@ -78,7 +78,7 @@ export default function productStoresTableHeaderSelector({
             adornment={p.data?.measurement_unit?.short_name}
             adornmentPosition='end'
             required
-            defaultValue={0}
+            defaultValue={get(p, 'data.quantity')}
             type='number'
             disabled={false}
           />
@@ -99,7 +99,7 @@ export default function productStoresTableHeaderSelector({
             fullWidth
             required
             type='number'
-            defaultValue={0}
+            defaultValue={get(p, 'data.small_quantity')}
             disabled={false}
           />
         )),

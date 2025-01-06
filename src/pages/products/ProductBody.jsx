@@ -69,6 +69,7 @@ export default function ProductBody({ productData = null }) {
   })
   const { data: storeList, refetch: refetchShopList } = useQuery('shopList', () =>
     requests.getAllStores({
+      product_id: get(productData, 'id'),
       limit: values?.limit || 5,
       offset: values?.offset || 0,
     })
@@ -77,24 +78,37 @@ export default function ProductBody({ productData = null }) {
     refetchShopList()
   }, [values.limit, values.offset])
   const { data: unitsList, refetch: refetchUnitList } = useQuery('unitsList', () => requests.getAllUnits({ limit: 20, offset: 0, type: appType }))
-  const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories())
+  const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories({ product_id: get(productData, 'id') }))
 
   useEffect(() => {
     if (productData) {
-      setValue('product_name', productData?.name)
-      setValue('app_type', productData?.type || 'BUCHET')
-      setValue('product_price', productData?.cost)
-      setValue('product_price_with_discount', productData?.discountCost)
-      setValue('description', productData?.description)
-      setValue('shop', productData?.shop)
-      setValue(
-        'hashtag',
-        productData?.hashtag?.map((el) => ({ value: el.nameRu, name: el.nameRu, id: el._id }))
-      )
-      setValue('preparation_time', {
-        name: `${productData?.preparationTime} ${productData?.preparationTime === 0 ? 'express' : 'минут'}`,
-        time: productData?.preparationTime,
-      })
+      setValue('name', productData?.name)
+      setImages(productData?.photos?.map((item) => ({ file_name: item, file_url: item })))
+      setValue('supply_price', productData?.supply_price || 0)
+      setValue('retail_price', productData?.retail_price || 0)
+      setValue('vat', productData?.vat || 0)
+      setValue('vat_price', productData?.vat_price || 0)
+      setValue('bonus_amount', productData?.bonus_amount || 0)
+      setValue('bonus_percent', productData?.bonus_percent || 0)
+      setValue('manufacturer', productData?.manufacturer || 0)
+      setValue('box_grain_count', productData?.box_grain_count || 0)
+      setValue('product_unit', productData?.product_units?.map(({ unit_name, ...item }) => ({ ...item, name: unit_name })) || 0)
+      setValue('expire_date', new Date(productData?.expire_date) || new Date())
+      setValue('barcode', productData?.barcode || 0)
+
+      // setValue('app_type', productData?.type || 'BUCHET')
+      // setValue('product_price', productData?.cost)
+      // setValue('product_price_with_discount', productData?.discountCost)
+      // setValue('description', productData?.description)
+      // setValue('shop', productData?.shop)
+      // setValue(
+      //   'hashtag',
+      //   productData?.hashtag?.map((el) => ({ value: el.nameRu, name: el.nameRu, id: el._id }))
+      // )
+      // setValue('preparation_time', {
+      //   name: `${productData?.preparationTime} ${productData?.preparationTime === 0 ? 'express' : 'минут'}`,
+      //   time: productData?.preparationTime,
+      // })
       setProductCategories(productData?.categories?.map((el, ind) => ({ ...el, name: el.nameRu, quantity: productData?.quantityOfCategories?.[ind] })))
       setHasDiscontPrice(productData?.isDiscount)
     }
@@ -108,13 +122,14 @@ export default function ProductBody({ productData = null }) {
   }, [storeList])
   useEffect(() => {
     if (!!parentCategories?.data && !!productData) {
-      const parentCategory = parentCategories?.data?.find((el) => el._id === productData?.categories?.[0]?.parentId)
+      const parentCategory = []
+      // parentCategories?.data?.find((el) => el._id === productData?.categories?.[0]?.parentId)
       setParentCategory({ ...parentCategory, name: parentCategory.nameRu })
     }
   }, [parentCategories, productData])
 
   useEffect(() => {
-    if (productCategories.length > 0) setValue('categories', productCategories)
+    if (productCategories?.length > 0) setValue('categories', productCategories)
   }, [productCategories])
   useEffect(() => {
     refetchShopList()
