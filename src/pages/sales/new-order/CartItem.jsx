@@ -258,9 +258,9 @@ const CartItem = ({
               <StyledTooltip placement='top' title='Кусок'>
                 <InputQuantity
                   id={`inputQuantity${index}`}
-                  value={quon}
-                  name='quantity'
-                  onChange={({ target }) => setQuon(target.value)}
+                  // value={quon}
+                  name='box'
+                  // onChange={({ target }) => setQuon(target.value)}
                   // adornment={data?.measurement_unit?.short_name}
                   adornmentPosition='end'
                   adornmentClassName={cls.adornment}
@@ -274,9 +274,9 @@ const CartItem = ({
                 <StyledTooltip placement='top' title='Пачка'>
                   <InputQuantity
                     id={`inputQuantity${index}`}
-                    value={quon}
+                    // value={quon}
                     name='quantity'
-                    onChange={({ target }) => setQuon(target.value)}
+                    // onChange={({ target }) => setQuon(target.value)}
                     // adornment={data?.measurement_unit?.short_name}
                     adornmentPosition='end'
                     adornmentClassName={cls.adornment}
