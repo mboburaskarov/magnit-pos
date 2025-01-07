@@ -114,7 +114,7 @@ function SaleChildDrawer({ open, setOpen }) {
           </Box>
         </Box>
         <Box padding={'16px 0'}>
-          {get(saleDetailsList, 'data.data.sale_items', []).map((el) => (
+          {get(saleDetailsList, 'data.data.cart_items', []).map((el) => (
             <SaleChildItemsBox key={el.id} item={el} />
           ))}
         </Box>

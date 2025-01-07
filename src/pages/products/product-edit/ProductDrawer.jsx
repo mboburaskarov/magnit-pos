@@ -15,6 +15,7 @@ import LockIcon from '../../../assets/icons/LockIcon'
 import LockOpenIcon from '../../../assets/icons/LockOpenIcon'
 import CheckAccess from '../../../../components/CheckAccess'
 import CancelOrderIcon from '../../../assets/icons/CancelOrderIcon'
+import { get } from 'lodash'
 
 const Image = ({ data, setImages }) => {
   console.log(data)
@@ -76,12 +77,8 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
           <Image setImages={setImages} data={productData?.data?.data} />
           <Typography mt={0.5} ml={2} fontSize={28} variant='h2'>
             {productData?.data?.data?.name}
-            <Typography display='flex' alignItems='center' color='grey.400' mt={1} variant='body1'>
-              <ReviewIcon />
-              <Typography ml={0.5} color='grey.400'>
-                {productData?.data?.data?.averageRating} рейтинг
-              </Typography>{' '}
-              • {productData?.data?.data?.commentsCount} отзывов
+            <Typography display='flex' alignItems='center' color='bunker.400' mt={1} fontWeight={'500'}>
+              {get(productData, 'data.data.sum')} сум
             </Typography>
           </Typography>
         </Box>
@@ -148,7 +145,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
       </SectionTitle>
       <DrawerInfoBox
         infoData={[
-          { title: 'Цена', info: thousandDivider(productData?.data?.data?.cost, 'сум') },
+          { title: 'Цена', info: thousandDivider(productData?.data?.data?.sum, 'сум') },
           { title: 'Скидочная цена', info: productData?.data?.data?.discountCost ? thousandDivider(productData?.data?.data?.discountCost, 'сум') : '-' },
           { title: 'Время подготовки', info: productData?.data?.data?.preparationTime + ' минут' },
           { title: 'Название магазина', info: productData?.data?.data?.shop?.[0] && productData?.data?.data?.shop?.[0]?.name },
