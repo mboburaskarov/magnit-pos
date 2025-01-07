@@ -85,7 +85,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       gender: data?.gender,
       last_name: data?.last_name,
       store_id: get(userData, 'store.id'),
-      phone: '998' + data?.phone?.replace(/[()\s]/g, ''),
+      phone: ['998' + data?.phone?.replace(/[()\s]/g, '')],
       tag_id: data?.tags,
     }
     handleCustomerCreate(requestBody)

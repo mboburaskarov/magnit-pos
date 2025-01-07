@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { RippedPaperItem } from '../../RippedPaperList'
 import PaymentMethodInput from './PaymentMethodInput'
 import { LoadingButton } from '@mui/lab'
@@ -274,6 +274,7 @@ export default function OrderDrawer({
   const { id } = useParams()
   const theme = useTheme()
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     scanningTextRef.current = scanningText
@@ -291,10 +292,14 @@ export default function OrderDrawer({
 
   const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
   const { mutate: finishSaleWithoutAppPaymentType, isLoading: isfinishSaleWithoutAppPaymentType } = useMutation(requests.finishSaleWithoutAppPaymentType, {
-    onSuccess: () => {
-      refetchcartItemsList()
-      setIsOrderDrower(false)
-      handlePrint()
+    onSuccess: ({ data }) => {
+      console.log(data)
+
+      // refetchcartItemsList()
+      ///
+      // navigate('/')
+      // setIsOrderDrower(false)
+      // handlePrint()
 
       success('Продажа завершена!')
     },
