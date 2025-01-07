@@ -265,6 +265,7 @@ const CartItem = ({
                   adornmentPosition='end'
                   adornmentClassName={cls.adornment}
                   max={100}
+                  defaultValue={1}
                   // maxErrorMessage={maxErrorMessage}
                   type='number'
                   disabled={false}
@@ -276,6 +277,7 @@ const CartItem = ({
                     id={`inputQuantity${index}`}
                     // value={quon}
                     name='quantity'
+                    defaultValue={1}
                     // onChange={({ target }) => setQuon(target.value)}
                     // adornment={data?.measurement_unit?.short_name}
                     adornmentPosition='end'
