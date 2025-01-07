@@ -312,7 +312,7 @@ export default function ProductsPage() {
           />
         </Box>
       </Box>
-      <ProductDrawer open={openProductDrawer} setOpen={setOpenProductDrawer} />
+      <ProductDrawer open={openProductDrawer} onClose={setOpenProductDrawer} />
 
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (
