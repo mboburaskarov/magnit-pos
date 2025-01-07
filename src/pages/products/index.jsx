@@ -25,7 +25,7 @@ import { useQueryParams } from '../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-import ProductDrawer from './product-edit/productDrawer'
+import ProductDrawer from './product-edit/ProductDrawer'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ProductsPage() {
