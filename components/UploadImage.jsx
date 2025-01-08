@@ -192,7 +192,6 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
   const { t } = useTranslation()
   const classes = useStyles()
   const [uploadedImages, setUploadedImages] = useState(images || [])
-  console.log(uploadedImages)
 
   const [editingImage, setEditingImage] = useState(null)
   const setActiveImage = (file_name) => {

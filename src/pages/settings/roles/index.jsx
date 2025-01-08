@@ -25,6 +25,7 @@ import StyledDialog from '../../../../components/Dialogs/StyledDialog'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import LockIcon from '../../../assets/icons/LockIcon'
 import PlusIcon from '../../../assets/icons/PlusIcon'
+import RolesCreateDrawer from './RolesCreateDrawer'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function RolesPage() {
@@ -39,6 +40,7 @@ export default function RolesPage() {
   const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
+  const [openCreatePermission, setOpenCreatePermission] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
   const [filterTableRowsMenu, setFilterTableRowsMenu] = useState(false)
@@ -211,8 +213,9 @@ export default function RolesPage() {
 
   return (
     <LoadingContainer readyState={true}>
+      <RolesCreateDrawer isOpen={openCreatePermission} onClose={() => setOpenCreatePermission(null)} />
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+        <Typography variant='h1' onClick={() => setOpenCreatePermission(true)} fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           {t('page.role.title')}
         </Typography>
 

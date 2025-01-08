@@ -31,7 +31,6 @@ export default function ProductHistory({ id }) {
     isFetching: isFetchingproductDataHistory,
     refetch,
   } = useQuery('productDataHistory', () => requests.getSingleProductHistory(productHistoryFilter, id))
-  console.log(productDataHistory)
 
   useEffect(() => {
     const count = productDataHistory?.data?.data?.totalCount

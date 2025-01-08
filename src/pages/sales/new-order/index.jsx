@@ -312,14 +312,6 @@ function NewSale() {
   }, [method.watch('discount')])
 
   useEffect(() => {
-    if (customerId) {
-      requests.getSingleCustomers(customerId).then(({ data }) => {
-        setClientDetails(get(data, 'data'))
-      })
-    }
-  }, [customerId])
-
-  useEffect(() => {
     if (debouncedSearchTerm?.length > 2) {
       searchResult.refetch().then(({ data }) => {
         if (get(data, 'data.data.data')) {
@@ -512,7 +504,7 @@ function NewSale() {
                         }
                       }}
                       onClick={() => {
-                        setCustomerId({ id: item?.id, name: item?.first_name + ' ' + item?.first_name, balance: item?.balance })
+                        setCustomerId({ id: item?.id, name: item?.first_name + ' ' + item?.last_name, balance: item?.balance })
 
                         setSearchTerm()
                       }}

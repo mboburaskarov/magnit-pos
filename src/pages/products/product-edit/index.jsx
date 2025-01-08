@@ -70,7 +70,6 @@ export default function ProductEditPage() {
       vat: Number(get(data, 'vat')),
       vat_price: Number(get(data, 'vat_price')),
     }
-    console.log(requestBody)
 
     updateProduct({ id, data: requestBody })
   }
@@ -78,7 +77,6 @@ export default function ProductEditPage() {
     console.log('err', err)
     error('Пожалуйста, заполните все поля!')
   }
-  console.log(productData)
 
   return (
     <LoadingContainer readyState={!productDataLoading}>

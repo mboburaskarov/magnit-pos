@@ -184,8 +184,6 @@ const AddCustomButtom = ({ customStyle, addFunction }) => {
 }
 
 export default function CreateEditCategories({ open, closeDrawer, isLoading = false, refetch, editId, withoutNavigate, focusId, ...rest }) {
-  console.log(editId)
-
   const { values } = useQueryParams()
   const subRowObj = {
     name: '',
@@ -245,8 +243,6 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
     if (editId) editDataFetch()
   }, [editId])
   function renameSubRows(obj) {
-    console.log('jiww')
-
     if (obj.subRows) {
       obj.sub_category = obj.subRows
       delete obj.subRows
@@ -256,8 +252,6 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
     return obj
   }
   function renameSubCats(obj) {
-    console.log('jiww', obj)
-
     if (obj.sub_category) {
       obj.subRows = obj.sub_category
       delete obj.sub_category
@@ -271,14 +265,11 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
       setInputTree(renameSubCats(editData?.data?.data))
     }
   }, [editData])
-  console.log(inputTree)
 
   const onSubmit = () => {
     const data = { ...renameSubRows(inputTree) }
 
     if (editId) {
-      console.log(data)
-
       updateCategory({ id: editId, data })
     } else {
       createCategory(data)

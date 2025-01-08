@@ -15,8 +15,6 @@ import ImagePlaceholder from '../../../assets/icons/ImagePlaceholder'
 import ProductHistory from './ProductHistory'
 
 const Image = ({ data, setImages }) => {
-  console.log(data)
-
   return (
     <Box
       sx={{

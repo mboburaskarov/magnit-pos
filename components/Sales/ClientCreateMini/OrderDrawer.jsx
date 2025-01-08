@@ -293,13 +293,11 @@ export default function OrderDrawer({
   const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
   const { mutate: finishSaleWithoutAppPaymentType, isLoading: isfinishSaleWithoutAppPaymentType } = useMutation(requests.finishSaleWithoutAppPaymentType, {
     onSuccess: ({ data }) => {
-      console.log(data)
-
       // refetchcartItemsList()
       ///
-      // navigate('/')
-      // setIsOrderDrower(false)
-      // handlePrint()
+      navigate(`/sales/new-sale/${get(data, 'data', '/')}`)
+      setIsOrderDrower(false)
+      handlePrint()
 
       success('Продажа завершена!')
     },
@@ -356,16 +354,18 @@ export default function OrderDrawer({
   })
 
   const onSubmit = (data) => {
+    console.log(cartItemsList)
+    setOpenScanDialog(false)
+
     setScanningText('')
+
     scanningTextRef.current = ''
     const paymentTypes = mpaddedPaymentsList
       .filter((type) => get(type, 'isPlaceholder', false) == false)
       .map(({ id, ...type }) => ({
         amount: get(type, 'amount'),
-        total_amount: id,
+        payment_type_id: id,
       }))
-
-    console.log(paymentTypes)
 
     finishSaleWithoutAppPaymentType({
       cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
@@ -373,16 +373,18 @@ export default function OrderDrawer({
       sale_id: id,
       total_amount: get(cartItemsList, 'total_amount'),
     })
+    setPaymentsList([])
     return
   }
   const mpaddedPaymentsList = [
     ...paymentsList,
     ...Array.from({ length: 8 - paymentsList.length }, (_, index) => ({ id: `placeholder-${index}`, isPlaceholder: true })),
   ]
-  console.log(cashBoxDetails, mpaddedPaymentsList)
+  console.log(isOpenScanDialog, isScanning)
 
   useEffect(() => {
     const handleKeyPress = (e) => {
+      if (!isOpenScanDialog) return
       if (!isScanning) return
 
       if (timeout) clearTimeout(timeout)
@@ -404,7 +406,7 @@ export default function OrderDrawer({
       window.removeEventListener('keypress', handleKeyPress)
       if (timeout) clearTimeout(timeout)
     }
-  }, [isScanning, setIsScanning])
+  }, [isOpenScanDialog, isScanning, setIsScanning])
 
   const handleFinish = () => {
     if (paymentsList.find((el) => el.type === 'app')) {

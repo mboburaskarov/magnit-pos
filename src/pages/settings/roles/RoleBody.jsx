@@ -19,6 +19,7 @@ import QrScanIcon from '../../../assets/icons/QrScanIcon'
 import UserOutlineIcon from '../../../assets/icons/UserOutlineIcon'
 import UsersIcon from '../../../assets/icons/UsersIcon'
 import useDidUpdate from '../../../hooks/useDidUpdate'
+import ActionCreateBody from './ActionCreateBody'
 
 export const SearchContext = createContext()
 
@@ -72,6 +73,7 @@ const items = [
 export default function RoleBody({ productData = null, disabled, setSelected, selected, setDisabled }) {
   const { setValue, watch } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
+  const [childrens, setChildrens] = useState([])
 
   const sectionRefs = [
     useRef(null),

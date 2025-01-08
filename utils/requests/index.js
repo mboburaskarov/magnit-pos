@@ -94,6 +94,7 @@ export const requests = {
 
   loadWithoutChecking: (id) => request.patch(`v1/import-detail/accept-all/${id}`),
   sendScannedImport: (data) => request.patch(`v1/import-detail/add-scan`, data),
+  sendScannedImportNumber: ({ id, scanned_count }) => request.put(`v1/import-detail/${id}`, { scanned_count }),
   // couriers
   getAllCouriers: (filter) => request.get(`api/admin/couriers${qs.stringify(filter, { addQueryPrefix: true })}`),
   createCourier: (data) => request.post(`api/admin/couriers`, data),
@@ -206,8 +207,11 @@ export const requests = {
   updateRole: ({ id, data }) => request.patch(`api/roles/${id}`, data),
   deleteClient: (id) => request.delete(`v1/customer/soft-delete`, id),
 
-  // actions
-  getAllActions: () => request.get(`api/actions`),
+  // permissions
+  createPermission: (data) => request.post(`v1/permission`, data),
+
+  //actions
+  getAllActions: () => request.get(`v1/permission/list-parents`),
   getSingleAction: (id) => request.get(`api/actions/${id}`),
   createActionInsertMany: (data) => request.post(`api/actions/insert-many`, data),
   createAction: (data) => request.post(`api/actions`, data),

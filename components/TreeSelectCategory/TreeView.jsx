@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import ExpandMoreIcon from '../../src/assets/icons/BottomArrowIcon'
 import ChevronRightIcon from '../../src/assets/icons/ArrowRight'
 // import { RichTreeView as TreeView } from '@mui/x-tree-view/RichTreeView';
-import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
-import { TreeView } from '@mui/lab';
+import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView'
+import { TreeView } from '@mui/lab'
 import useDidUpdate from '../../src/hooks/useDidUpdate'
 import TreeItem from './TreeItem'
 import TreeItemRoles from './TreeItemRoles'
@@ -27,7 +27,6 @@ const StyledTreeView = ({
   useDidUpdate(() => {
     setExpanded(expandedTrees)
   }, [expandedTrees])
-  console.log('tree view')
 
   return (
     <SimpleTreeView

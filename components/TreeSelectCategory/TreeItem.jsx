@@ -15,7 +15,6 @@ import { get } from 'lodash'
 
 const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, searchTerm, highlight }) => {
   const tree = useMemo(() => flattenTree(items), [items])
-  console.log('tree item')
 
   const handleChange = useCallback(
     ({ event }) => {

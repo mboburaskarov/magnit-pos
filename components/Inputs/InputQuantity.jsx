@@ -98,6 +98,7 @@ function InputQuantity({
   aplyAllFunc = () => {},
   maxErrorMessage,
   name,
+  onBlur = () => {},
 }) {
   const methods = useFormContext()
 
@@ -178,12 +179,16 @@ function InputQuantity({
               onChange(e)
             }
           },
+          onBlur: (e) => {
+            onBlur(e)
+          },
         })}
         {...(!uncontrolled && {
           onBlur: (e) => {
             setTimeout(() => {
               setApplyAll(false)
             }, 200)
+            onBlur(e)
           },
         })}
         rows={rowsMax}

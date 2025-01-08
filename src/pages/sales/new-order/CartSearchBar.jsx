@@ -143,7 +143,6 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
   const methods = useForm()
   const classes = useStyles()
   const productsData = productsList?.data?.data
-  console.log(productsList)
 
   return (
     <Box className={classes.quick_search} mb={4}>
@@ -213,7 +212,6 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
             className={classes.overlay}
           />
         )}
-        {console.log(productsData)}
         {showOverlay && searchTearm && (
           <Box className={classes.searchResult}>
             {productsData?.length ? (

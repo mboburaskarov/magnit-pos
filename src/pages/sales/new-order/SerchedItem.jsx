@@ -35,8 +35,6 @@ export default function SerchedItem({
   const { id } = useParams()
   const { mutate: getAllSimilarStoreProducts, isLoading: isgetAllSimilarStoreProducts } = useMutation(requests.getAllSimilarStoreProducts, {
     onSuccess: ({ data }) => {
-      console.log(data)
-
       setOpenSimilar(true)
       setSimilarProductList(data)
       // success('Корзина была очищенаClick to apply!')

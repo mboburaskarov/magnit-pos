@@ -65,7 +65,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       closeDrawer(false)
       methods.reset()
 
-      setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance') })
+      setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance', 0) })
       success('Продажа была создана!')
     },
     onError: (err) => {

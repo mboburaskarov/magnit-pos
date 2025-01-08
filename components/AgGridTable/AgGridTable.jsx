@@ -169,6 +169,11 @@ const AgGridSimpleTable = ({
   }, [])
 
   const getRowId = useCallback((params) => params.data.id, [data, columns, totalData])
+  console.log(rowData?.[0]?.accepted_count)
+  console.log(rowData?.[1]?.accepted_count)
+  // console.log(rowData?.[1]?.product?.name)
+  // console.log(rowData?.[0]?.product?.name)
+
   return (
     <Fragment>
       <Box className={`${classes.root} ag-theme-alpine ${columnGroup ? 'column-group-header' : ''}`} id={id || 'simpleGrid'}>
