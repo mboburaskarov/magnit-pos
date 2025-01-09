@@ -36,8 +36,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function MainDetails({ clientData, openDrawer }) {
+  console.log(openDrawer)
+
   const classes = useStyles()
-  const { data: employeeInfo, refetch: refetemployeeInfo } = useQuery('employeeInfo', () => requests.getSingleVendor(openDrawer?.id))
+  const { data: employeeInfo, refetch: refetemployeeInfo } = useQuery(['employeeInfo', openDrawer], () => requests.getSingleVendor(get(openDrawer, 'id', 'no')))
   const mode = openDrawer?.mode
   const { control, errors, setValue, register, watch } = useFormContext()
   const { t } = useTranslation()
@@ -54,7 +56,7 @@ export default function MainDetails({ clientData, openDrawer }) {
       get(employeeInfo, 'data.data.birthdate', false) && setValue('date_of_birth', new Date(get(employeeInfo, 'data.data.birthdate')))
       setValue('gender', get(employeeInfo, 'data.data.gender'))
       setValue('store', get(employeeInfo, 'data.data.store'))
-      setValue('role', get(employeeInfo, 'data.data.role'))
+      setValue('role', get(employeeInfo, 'data.data.roles'))
     }
     // register('dial_code')
     // setValue('dial_code', '+998')

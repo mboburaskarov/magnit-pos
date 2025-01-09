@@ -42,7 +42,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
     setOpen(false)
-    navigate(`/products${requestParams}`)
+    navigate(`/products/all${requestParams}`)
   }
 
   const onError = (err) => {

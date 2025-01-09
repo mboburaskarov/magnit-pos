@@ -16,6 +16,7 @@ import { get } from 'lodash'
 import dayjs from 'dayjs'
 import { useTheme } from '@mui/styles'
 import DefaultImgIcon from '../../assets/icons/defaultImgIcon'
+import { useNavigate } from 'react-router-dom'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -78,6 +79,7 @@ const Image = ({ data, rowIndex, setImages }) => {
 
 export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setOpenProductDrawer, setIsDrawerOpen }) {
   const theme = useTheme()
+  const navigate = useNavigate()
   const getDateColor = (date) => {
     if (date > 25) return { color: theme.palette.green[700] }
     if (date > 3 && date < 25) return { color: theme.palette.orange[400] }
@@ -245,7 +247,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
             <Box display='inline-flex' columnGap={'8px'}>
               <CheckAccess id={'product-edit'}>
-                <IconButton onClick={() => window.open(`/products/edit/${data.id}`, '_blank')} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <IconButton onClick={() => navigate(`/products/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />
                 </IconButton>
               </CheckAccess>
