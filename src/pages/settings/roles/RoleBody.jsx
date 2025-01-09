@@ -70,11 +70,14 @@ const items = [
     icon: <CartOutlineIcon gray />,
   },
 ]
-export default function RoleBody({ productData = null, disabled, setSelected, selected, setDisabled }) {
+export default function RoleBody({ productData = null, disabled, setSelected, selected, setDisabled, roleData }) {
   const { setValue, watch } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
   const [childrens, setChildrens] = useState([])
-
+  useEffect(() => {
+    setValue('name', get(roleData, 'name'))
+    setValue('description', get(roleData, 'description'))
+  }, [roleData])
   const sectionRefs = [
     useRef(null),
     useRef(null),
@@ -90,18 +93,19 @@ export default function RoleBody({ productData = null, disabled, setSelected, se
 
   const [searchTerm, setSearchTerm] = useState('')
   const [permissionList, setPermissionList] = useState([])
+  console.log(get(roleData, 'id'))
 
   const { t } = useTranslation()
   const appType = watch('app_type') || 'Pharma'
-  const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery('rolesAndPermissionList', () =>
-    requests.getAllRolesWithPermissions({ limit: 20, offset: 0, type: appType })
+  const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery(['rolesAndPermissionList', roleData], () =>
+    requests.getAllRolesWithPermissions({ role_id: get(roleData, 'id'), limit: 20, offset: 0, type: appType })
   )
   const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories())
 
   useEffect(() => {
     if (productData) {
       setValue('product_name', productData?.name)
-      setValue('app_type', productData?.type || 'BUCHET')
+      setValue('app_type', productData?.type || 'Pharma')
       setValue('product_price', productData?.cost)
       setValue('product_price_with_discount', productData?.discountCost)
       setValue('description', productData?.description)
@@ -133,11 +137,6 @@ export default function RoleBody({ productData = null, disabled, setSelected, se
     refetchrolesAndPermissionList()
     // refetchCategories()
   }, [appType])
-  useEffect(() => {
-    if (!productData) {
-      setValue('app_type', 'BUCHET')
-    }
-  }, [])
 
   const filterPermissions = (sections) => {
     const permissions = sections

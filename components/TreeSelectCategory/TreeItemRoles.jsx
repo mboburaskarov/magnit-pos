@@ -125,7 +125,9 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
   }
   const renderTreeItem = ({ nodes, parents = [], level = 0 }) =>
     nodes?.map((node) => {
-      const { id: value, name: label, children } = node
+      console.log(node)
+
+      const { id: value, name: label, description, children } = node
       const checked = selected.includes(value) || parents.some((parent) => selected.includes(parent))
 
       if (children && children.length > 0) {
@@ -148,7 +150,7 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
                 >
                   {label}
                   <Box padding='14px 16px 1px 8px'>
-                    <StyledTooltip title='Экспресс продукт'>
+                    <StyledTooltip title={description}>
                       <InfoIcon />
                     </StyledTooltip>
                   </Box>
@@ -197,7 +199,7 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
               >
                 {label}
                 <Box padding='14px 16px 1px 8px'>
-                  <StyledTooltip title='Экспресс продукт'>
+                  <StyledTooltip title={description}>
                     <InfoIcon />
                   </StyledTooltip>
                 </Box>

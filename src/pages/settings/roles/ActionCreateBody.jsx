@@ -60,6 +60,7 @@ export default function ActionCreateBody() {
             uncontrolled
             onChange={(e) => setValue('type_action', e)}
             options={[
+              { title: 'Модуль', value: 'MODULE' },
               { title: 'Страница', value: 'PAGE' },
               { title: 'Действие', value: 'ACTION' },
               { title: 'Таблица', value: 'TABLE' },
@@ -164,6 +165,24 @@ export default function ActionCreateBody() {
               <Box display={'flex'} flexDirection={'column'} gap={2}>
                 <TextField required fullWidth name='name' label='Название' placeholder='Введите название' />
                 <TextField required fullWidth name='route' label='Id' placeholder='Введите ID' />
+                <TextField
+                  required
+                  multiline
+                  fullWidth
+                  name='description'
+                  label='Описание'
+                  borderRadius={'20px'}
+                  placeholder='Введите Описание'
+                  sx={{ mb: 2 }}
+                />
+              </Box>
+              <Box height={'20px'} />
+            </>
+          ) : type_action === 'MODULE' ? (
+            <>
+              <Box display={'flex'} flexDirection={'column'} gap={2}>
+                <TextField required fullWidth name='name' label='Название' placeholder='Введите название' />
+                <TextField required fullWidth name='key' label='Ключ' placeholder='Введите ключ' />
                 <TextField
                   required
                   multiline
