@@ -9,6 +9,7 @@ import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import CheckAccess from '../../../../components/CheckAccess'
 import { get } from 'lodash'
 import StyledTooltip from '../../../../components/StyledTooltip'
+import { useNavigate } from 'react-router-dom'
 
 const SimpleText = ({ data, width = 'auto', rowIndex, type, withDevider, currency }) => {
   return (
@@ -65,7 +66,7 @@ const Image = ({ data, rowIndex, setImages }) => {
 
 export default function tableHeaderSelector({ productsColumns, values, setImages, t, selectVendors, setOpenConfirmDialog, setIsDrawerOpen }) {
   // const { values } = useQueryParams()
-
+  const navigate = useNavigate()
   const columns = productsColumns?.map((el) => {
     if (el.field === 'checkbox') {
       return {
@@ -123,7 +124,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
             <Box display='inline-flex' columnGap={'8px'}>
               <CheckAccess id={'product-edit'}>
-                <IconButton onClick={() => window.open(`/roles/edit/${data.id}`, '_blank')} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <IconButton onClick={() => navigate(`/roles/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />
                 </IconButton>
               </CheckAccess>
