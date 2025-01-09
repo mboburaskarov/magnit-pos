@@ -90,6 +90,8 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
     if (size(get(data, 'phone')) < 14) {
       error('Phone number is less than 14')
     }
+    console.log(data)
+
     const requestBody = {
       birthdate: data?.date_of_birth,
       // created_by: userData?.id,
@@ -98,7 +100,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
       language: 'ru',
       password: data?.password,
       last_name: data?.last_name,
-      role_id: data?.role?.id,
+      role_ids: data?.role?.map((role) => get(role, 'id')),
       store_id: data?.store?.id,
       phone: '998' + data?.phone?.replace(/[()\s]/g, ''),
     }

@@ -35,11 +35,8 @@ export default function RoleCreatePage() {
   const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery('rolesAndPermissionListForCreate', () =>
     requests.getAllRolesWithPermissions({ limit: 20, offset: 0 })
   )
-  console.log(rolesAndPermissionList)
 
   const onSubmit = (data) => {
-    console.log(rolesAndPermissionList, data)
-
     const permissions = []
     get(rolesAndPermissionList, 'data.data', [])
       ?.filter((section) => section.permissions?.length && !disabled.includes(section.key))

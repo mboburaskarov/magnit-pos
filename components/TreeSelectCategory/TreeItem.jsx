@@ -25,7 +25,6 @@ const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, s
       let newSelect = selected.slice()
       const foundRow = tree.find((el) => el.id === value)
       const childIds = getChildIds(foundRow)
-
       if (checked) {
         newSelect = [...selected, ...(childIds || [])]?.filter((v, i, a) => a.indexOf(v) === i)
       } else if (!checked && childIds?.some((elem) => newSelect?.includes(elem))) {

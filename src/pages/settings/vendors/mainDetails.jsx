@@ -187,8 +187,10 @@ export default function MainDetails({ clientData, openDrawer }) {
             placeholder={t('role.placeholder')}
             disabled={false}
             white
+            isMulti
             isClearable={false}
-            options={get(rolesList, 'data.data.data')}
+            options={get(rolesList, 'data.data.data', []).map((el) => ({ value: el.id, name: el.name, id: el.id }))}
+            // options={get(rolesList, 'data.data.data')}
             name='role'
           />
         </Grid>

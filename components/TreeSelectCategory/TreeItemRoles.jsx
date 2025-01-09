@@ -22,7 +22,6 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
     } = event
 
     let newSelect = selected.slice()
-
     if (checked) {
       newSelect = [...parents, value].reverse().reduce(
         (prev, curr, index) => {
@@ -96,14 +95,13 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
         ?.forEach((item) => {
           const node = item
           const childNodes = getTreeNodes({ tree, node, depth: 1 })
-
           if (childNodes.length > 0) {
             marksUncheckedRef.current = [...new Set([...marksUncheckedRef?.current, ...childNodes])]
           } else {
             marksUncheckedRef.current = [...new Set([...marksUncheckedRef?.current, node])]
           }
         })
-      newSelect = newSelect?.filter((select) => select !== value)
+      newSelect = newSelect?.filter((select) => select !== value && select != 'e14d59f2-0292-4c9e-a8b4-33c804208393')
     }
 
     if (disableMultiParentSelection) {
@@ -121,7 +119,10 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
       }
     }
 
-    onSelect([...newSelect, ...children?.filter((child) => child?.id !== 'create')?.map((el) => el?.id)])
+    onSelect([
+      ...newSelect,
+      // , ...children?.filter((child) => child?.id !== 'create')?.map((el) => el?.id)
+    ])
   }
   const renderTreeItem = ({ nodes, parents = [], level = 0 }) =>
     nodes?.map((node) => {
