@@ -13,7 +13,6 @@ import TextField from '../../../../components/Inputs/TextField'
 import Label from '../../../../components/Label'
 import SelectSimple from '../../../../components/Select/SelectSimple'
 import { requests } from '../../../../utils/requests'
-import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
 
 const useStyles = makeStyles((theme) => ({
   card: {
