@@ -33,9 +33,13 @@ export default function RoleCreatePage() {
     },
   })
   const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery('rolesAndPermissionList', () =>
-    requests.getAllRolesWithPermissions({ limit: 20, offset: 0, type: appType })
+    requests.getAllRolesWithPermissions({ limit: 20, offset: 0 })
   )
+  console.log(rolesAndPermissionList)
+
   const onSubmit = (data) => {
+    console.log(rolesAndPermissionList, data)
+
     const permissions = []
     get(rolesAndPermissionList, 'data.data', [])
       ?.filter((section) => section.permissions?.length && !disabled.includes(section.key))
@@ -82,7 +86,13 @@ export default function RoleCreatePage() {
         <Container>
           <FormProvider {...methods}>
             <Box flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-              <RoleBody selected={selected} setSelected={setSelected} disabled={disabled} setDisabled={setDisabled} />
+              <RoleBody
+                rolesAndPermissionList={rolesAndPermissionList}
+                selected={selected}
+                setSelected={setSelected}
+                disabled={disabled}
+                setDisabled={setDisabled}
+              />
             </Box>
           </FormProvider>
         </Container>

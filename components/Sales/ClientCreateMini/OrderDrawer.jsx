@@ -354,7 +354,6 @@ export default function OrderDrawer({
   })
 
   const onSubmit = (data) => {
-    console.log(cartItemsList)
     setOpenScanDialog(false)
 
     setScanningText('')
@@ -380,7 +379,6 @@ export default function OrderDrawer({
     ...paymentsList,
     ...Array.from({ length: 8 - paymentsList.length }, (_, index) => ({ id: `placeholder-${index}`, isPlaceholder: true })),
   ]
-  console.log(isOpenScanDialog, isScanning)
 
   useEffect(() => {
     const handleKeyPress = (e) => {

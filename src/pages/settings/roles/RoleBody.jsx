@@ -70,7 +70,7 @@ const items = [
     icon: <CartOutlineIcon gray />,
   },
 ]
-export default function RoleBody({ productData = null, disabled, setSelected, selected, setDisabled, roleData }) {
+export default function RoleBody({ rolesAndPermissionList, productData = null, disabled, setSelected, selected, setDisabled, roleData }) {
   const { setValue, watch } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
   const [childrens, setChildrens] = useState([])
@@ -93,13 +93,10 @@ export default function RoleBody({ productData = null, disabled, setSelected, se
 
   const [searchTerm, setSearchTerm] = useState('')
   const [permissionList, setPermissionList] = useState([])
-  console.log(get(roleData, 'id'))
 
   const { t } = useTranslation()
   const appType = watch('app_type') || 'Pharma'
-  const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery(['rolesAndPermissionList', roleData], () =>
-    requests.getAllRolesWithPermissions({ role_id: get(roleData, 'id'), limit: 20, offset: 0, type: appType })
-  )
+
   const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories())
 
   useEffect(() => {
@@ -134,7 +131,7 @@ export default function RoleBody({ productData = null, disabled, setSelected, se
     if (productCategories.length > 0) setValue('categories', productCategories)
   }, [productCategories])
   useEffect(() => {
-    refetchrolesAndPermissionList()
+    // refetchrolesAndPermissionList()
     // refetchCategories()
   }, [appType])
 

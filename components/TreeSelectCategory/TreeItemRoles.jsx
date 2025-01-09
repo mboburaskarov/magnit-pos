@@ -125,8 +125,6 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
   }
   const renderTreeItem = ({ nodes, parents = [], level = 0 }) =>
     nodes?.map((node) => {
-      console.log(node)
-
       const { id: value, name: label, description, children } = node
       const checked = selected.includes(value) || parents.some((parent) => selected.includes(parent))
 

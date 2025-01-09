@@ -25,7 +25,7 @@ export default function RoleEditPage() {
   }, [])
   console.log(id)
 
-  const { mutate: createRole, isLoading: createRoleLoading } = useMutation(requests.createRole, {
+  const { mutate: createRole, isLoading: createRoleLoading } = useMutation(requests.editRole, {
     onSuccess: async ({ data }) => {
       success('Роль создана')
       navigate('/settings/roles')
@@ -36,11 +36,12 @@ export default function RoleEditPage() {
     },
   })
   const { data: singleRoleData, refetch: refetchsingleRoleData } = useQuery('singleRoleData', () => requests.getSingleRole(id))
-  console.log(singleRoleData)
-
+  const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery('rolesAndPermissionList', () =>
+    requests.getAllRolesWithPermissions({ role_id: get(roleData, 'id'), limit: 20, offset: 0 })
+  )
   const onSubmit = (data) => {
     const permissions = []
-    get(singleRoleData, 'data.data', [])
+    get(rolesAndPermissionList, 'data.data', [])
       ?.filter((section) => section.permissions?.length && !disabled.includes(section.key))
       ?.forEach((section) => {
         section?.permissions?.forEach((permission) => {
@@ -55,14 +56,13 @@ export default function RoleEditPage() {
       })
 
     const requestBody = {
-      // id,
       name: get(data, 'name'),
       description: get(data, 'description'),
       // data: {
       permissions,
       // },
     }
-    createRole(requestBody)
+    createRole({ id, data: requestBody })
     // update(requestBody)
   }
   const onError = (err) => {
@@ -86,6 +86,7 @@ export default function RoleEditPage() {
           <FormProvider {...methods}>
             <Box flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
               <RoleBody
+                rolesAndPermissionList={rolesAndPermissionList}
                 selected={selected}
                 setSelected={setSelected}
                 disabled={disabled}

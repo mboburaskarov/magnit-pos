@@ -204,6 +204,7 @@ export const requests = {
   getSingleRole: (id) => request.get(`v1/role/${id}`),
   createRole: (data) => request.post('v1/role', data),
   deleteRole: (id) => request.delete(`v1/role/multiple/delete`, id),
+  editRole: ({ id, data }) => request.put(`v1/role/${id}`, data),
   updateRole: ({ id, data }) => request.patch(`api/roles/${id}`, data),
   deleteClient: (id) => request.delete(`v1/customer/soft-delete`, id),
 
