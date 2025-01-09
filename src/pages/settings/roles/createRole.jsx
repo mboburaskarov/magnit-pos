@@ -32,7 +32,7 @@ export default function RoleCreatePage() {
       console.log('err', err)
     },
   })
-  const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery('rolesAndPermissionList', () =>
+  const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery('rolesAndPermissionListForCreate', () =>
     requests.getAllRolesWithPermissions({ limit: 20, offset: 0 })
   )
   console.log(rolesAndPermissionList)

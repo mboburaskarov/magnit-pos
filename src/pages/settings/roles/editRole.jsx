@@ -36,8 +36,8 @@ export default function RoleEditPage() {
     },
   })
   const { data: singleRoleData, refetch: refetchsingleRoleData } = useQuery('singleRoleData', () => requests.getSingleRole(id))
-  const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery('rolesAndPermissionList', () =>
-    requests.getAllRolesWithPermissions({ role_id: get(roleData, 'id'), limit: 20, offset: 0 })
+  const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery(['rolesAndPermissionListForEdit', id], () =>
+    requests.getAllRolesWithPermissions({ role_id: id, limit: 20, offset: 0 })
   )
   const onSubmit = (data) => {
     const permissions = []

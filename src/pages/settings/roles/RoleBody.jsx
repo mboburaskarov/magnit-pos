@@ -97,7 +97,7 @@ export default function RoleBody({ rolesAndPermissionList, productData = null, d
   const { t } = useTranslation()
   const appType = watch('app_type') || 'Pharma'
 
-  const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories())
+  // const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories())
 
   useEffect(() => {
     if (productData) {
@@ -120,12 +120,12 @@ export default function RoleBody({ rolesAndPermissionList, productData = null, d
     }
   }, [productData])
 
-  useEffect(() => {
-    if (!!parentCategories?.data && !!productData) {
-      const parentCategory = parentCategories?.data?.find((el) => el._id === productData?.categories?.[0]?.parentId)
-      setParentCategory({ ...parentCategory, name: parentCategory.nameRu })
-    }
-  }, [parentCategories, productData])
+  // useEffect(() => {
+  //   if (!!parentCategories?.data && !!productData) {
+  //     const parentCategory = parentCategories?.data?.find((el) => el._id === productData?.categories?.[0]?.parentId)
+  //     setParentCategory({ ...parentCategory, name: parentCategory.nameRu })
+  //   }
+  // }, [parentCategories, productData])
 
   useEffect(() => {
     if (productCategories.length > 0) setValue('categories', productCategories)
