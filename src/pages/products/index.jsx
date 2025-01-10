@@ -94,7 +94,7 @@ export default function ProductsPage() {
     values?.search,
     values?.producer,
     values?.category_id,
-    values?.shop_id,
+    values?.store_id,
     values?.supply_price_to,
     values?.retail_price_to,
     values?.supply_price_from,
@@ -216,7 +216,7 @@ export default function ProductsPage() {
             options={[
               { title: t('switch.title.all'), value: 'ALL' },
               { title: t('switch.title.active'), value: 'active' },
-              { title: t('switch.title.inactive'), value: 'inacttive' },
+              { title: t('switch.title.inactive'), value: 'inactive' },
               { title: t('switch.title.less_amount'), value: 'low-stock' },
               { title: t('switch.title.empty'), value: 'zero-stock' },
               { title: t('switch.title.less_date'), value: 'imminent' },
@@ -293,7 +293,7 @@ export default function ProductsPage() {
             </CheckAccess>
           </Box>
         </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+        <FilterMenu refetch={refetch} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'

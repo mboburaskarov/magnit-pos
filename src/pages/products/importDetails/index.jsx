@@ -84,34 +84,10 @@ export default function ImportDetailsPage() {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: values?.search,
-      regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
-      store_id: values?.store_id,
-      category_id: values?.category_id,
-      producer: values?.producer,
-      supply_price_to: values?.supply_price_to,
-      retail_price_to: values?.retail_price_to,
-      region: values?.region_id,
-      supply_price_from: values?.supply_price_from,
-      retail_price_from: values?.retail_price_from,
-      isExpress: values?.isExpress,
-      ...(appType !== 'ALL' && { status: appType }),
+      received_amount_to: values?.received_amount_to,
+      received_amount_from: values?.received_amount_from,
     }
-  }, [
-    appType,
-    values?.offset,
-    values?.limit,
-    values?.search,
-    values?.producer,
-    values?.category_id,
-    values?.shop_id,
-    values?.supply_price_to,
-    values?.retail_price_to,
-    values?.supply_price_from,
-    values?.retail_price_from,
-    values?.region_id,
-    values?.isExpress,
-    regions,
-  ])
+  }, [values?.received_amount_to, values?.received_amount_from, values?.offset, values?.limit, values?.search])
   const {
     data: importWithCheckingDetails,
     isLoading: importWithCheckingDetailsLoading,
@@ -308,7 +284,7 @@ export default function ImportDetailsPage() {
               </Box>
             </Box>
           </Box>
-          <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+          <FilterMenu id={id} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
 
           <Box>
             <AgGridTable

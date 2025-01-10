@@ -15,14 +15,14 @@ import { theme } from '../../assets/theme'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/styles'
 
-export default function FilterMenu({ open, setOpen, setRegions }) {
+export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
   const { formState, reset, control, getValues } = methods
   const [isExpress, setIsExpress] = useState(false)
 
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 100, offset: 0 }))
   const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 20, offset: 0 }))
   const { data: producers } = useQuery('producers', () => requests.getAllProducer({ limit: 20, offset: 0 }))
 
@@ -79,9 +79,20 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const theme = useTheme()
 
   const resetFilter = () => {
+    reset(
+      {
+        supply_price_to: null,
+        retail_price_to: null,
+        supply_price_from: null,
+        retail_price_from: null,
+      },
+      { keepDirty: true }
+    )
     reset()
+    methods.setValue('')
+    // refetch()
     setOpen(false)
-    navigate(`/products?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/products/all?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
   return (

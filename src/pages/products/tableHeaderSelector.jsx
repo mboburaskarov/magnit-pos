@@ -208,6 +208,14 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         cellRenderer: memo((p) => <SimpleText currency='' {...p} type='barcode' />),
       }
     }
+    if (el.field === 'material_code') {
+      return {
+        ...el,
+        headerName: 'Код продукта',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' {...p} type='material_code' />),
+      }
+    }
     if (el.field === 'product_variability') {
       return {
         ...el,

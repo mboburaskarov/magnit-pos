@@ -75,6 +75,12 @@ const columns = [
   },
 
   {
+    field: 'material_code',
+    hide: false,
+    minWidth: 70,
+    width: 176,
+  },
+  {
     field: 'barcode',
     hide: false,
     minWidth: 70,

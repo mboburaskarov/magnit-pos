@@ -14,6 +14,10 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 import { theme } from '../../../assets/theme'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/styles'
+import InputDateRangePicker from '../../../../components/Inputs/InputDateRangePicker'
+import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -21,28 +25,30 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const methods = useForm()
   const { formState, reset, control, getValues } = methods
   const [isExpress, setIsExpress] = useState(false)
-
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
   const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
   const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 20, offset: 0 }))
   const { data: producers } = useQuery('producers', () => requests.getAllProducer({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])
+    console.log(data)
 
     const requestBody = {
-      category_id: data.category_id?.id || undefined,
-      supply_price_from: data.supply_price_from || undefined,
-      supply_price_to: data.supply_price_to || undefined,
-      retail_price_from: data.retail_price_from || undefined,
-      retail_price_to: data.retail_price_to || undefined,
+      received_amount_from: data.received_amount_from || undefined,
+      received_amount_to: data.received_amount_to || undefined,
+      status: data.status?.value || undefined,
+      import_date: data.import_date || undefined,
       store_id: data.store_id?.id || undefined,
-      producer: data.producer?.name || undefined,
-      isExpress: isExpress || undefined,
+      start_date: dayjs(startDate).format('YYYY-MM-DD') || undefined,
+      end_date: dayjs(endDate).format('YYYY-MM-DD') || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
+    console.log(requestParams, requestBody)
 
     setOpen(false)
-    navigate(`/products${requestParams}`)
+    navigate(`/products/import${requestParams}`)
   }
 
   const onError = (err) => {
@@ -50,30 +56,28 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { supply_price_to, retail_price_to, supply_price_from, retail_price_from, category_id, store_id, producer } = values
+    const { received_amount_to, start_date, end_date, status, import_date, received_amount_from, store_id } = values
 
     reset(
       {
-        category_id: category_id ? getOptionsFromUrlParam(category_id, categories?.data?.data)[0] : null,
-        producer: producer ? getOptionsFromUrlParam(producer, producers?.data?.data)[0] : null,
         store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data?.data, 'name')[0] : null,
-        supply_price_to: supply_price_to,
-        retail_price_to: retail_price_to,
-        supply_price_from: supply_price_from,
-        retail_price_from: retail_price_from,
+        received_amount_to: received_amount_to,
+        received_amount_from: received_amount_from,
+        status: status ? getOptionsFromUrlParam(status, imports_list_statuses, 'name')[0] : null,
+        import_date: import_date,
+        start_date: start_date,
+        end_date: end_date,
       },
       { keepDirty: true }
     )
   }, [
-    values?.producer,
-    values?.category_id,
     values?.store_id,
-    values?.retail_price_to,
-    values?.retail_price_from,
-    values?.supply_price_to,
-    values?.supply_price_from,
-    categories,
-    producers,
+    values?.status,
+    values?.start_date,
+    values?.end_date,
+    values?.received_amount_to,
+    values?.received_amount_from,
+    values?.import_date,
     shopList,
   ])
   const theme = useTheme()
@@ -81,7 +85,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/products?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/products/import?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
   return (
@@ -114,46 +118,52 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               getOptionLabel={(el) => el.name}
               options={shopList?.data?.data?.data}
             />
+            <InputDateRangePicker
+              id='import-date'
+              name='date'
+              noValidation
+              label={'Дата импорта'}
+              minWidth='auto'
+              placeholder={'Дата импорта'}
+              fullWidth
+              startDate={startDate}
+              endDate={endDate}
+              setStartDate={setStartDate}
+              setEndDate={setEndDate}
+              control={control}
+            />
+            {/* <InputDatePicker
+              noMarginTop
+              name='import_date'
+              // error={errors?.date_of_birth}
+              label={'Дата импорта'}
+              id='import_date'
+              showYearDropdown
+              placeholder='kk/oo/yyyy'
+            /> */}
+
             <SelectSimple
               fullWidth
               id='categ'
               white
-              name='category_id'
+              name='status'
               minWidth='auto'
-              label={t('input.category.label')}
+              label={'Статус'}
               placeholder={t('input.store.placeholder')}
-              options={categories?.data?.data}
+              options={imports_list_statuses.map((item) => ({ name: get(item, 'name'), value: get(item, 'id') }))}
               getOptionLabel={(el) => el.name}
             />
-            <SelectSimple
-              fullWidth
-              id='produ'
-              name='producer'
-              white
-              minWidth='auto'
-              label={t('input.manufacturer.label')}
-              placeholder={t('input.store.placeholder')}
-              options={producers?.data?.data}
-              getOptionLabel={(el) => el.name}
-            />
+
             <InputRange
               fullWidth
               id='prixwce'
-              label={t('input.supply_price.label')}
-              name1='supply_price_from'
-              name2='supply_price_to'
+              label={'Полученная сумма'}
+              name1='received_amount_from'
+              name2='received_amount_to'
               placeholder1={t('input.price.from')}
               placeholder2={t('input.price.to')}
             />
-            <InputRange
-              fullWidth
-              id='prixwce'
-              label={t('input.retail_price.label')}
-              name1='retail_price_from'
-              name2='retail_price_to'
-              placeholder1={t('input.price.from')}
-              placeholder2={t('input.price.to')}
-            />
+
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
                 sx={{ bgcolor: `${theme.palette.background.gray} !important`, border: '1px solid #ECEDF2' }}
