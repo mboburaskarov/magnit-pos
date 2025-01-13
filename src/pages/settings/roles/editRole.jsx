@@ -23,7 +23,6 @@ export default function RoleEditPage() {
     methods.register('categories')
     return
   }, [])
-  console.log(id)
 
   const { mutate: createRole, isLoading: createRoleLoading } = useMutation(requests.editRole, {
     onSuccess: async ({ data }) => {

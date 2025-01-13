@@ -36,6 +36,8 @@ export default function Navbar() {
   }, [userInfo?.data])
   const currentRoutesMemoized = useMemo(() => currentRoutes || currentRoutesRef?.current, [currentRoutesRef, currentRoutes])
   const routeString = []
+  console.log(user_data)
+
   user_data?.role_actions?.forEach((item) => {
     if (item.route) {
       routeString.push(item.route)

@@ -214,7 +214,6 @@ export default function ImportWithCheckingPage() {
                 </Box>
               </Box>
             </Box>
-            <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
 
             <Box>
               <AgGridTable

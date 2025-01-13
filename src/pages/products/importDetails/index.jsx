@@ -144,6 +144,8 @@ export default function ImportDetailsPage() {
       console.log('err', err)
     },
   })
+
+
   const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.changeimportstatus, {
     onSuccess: () => {
       success('Продукт успешно деактивирован!')

@@ -20,7 +20,7 @@ import productStoresTableHeaderSelector from './productStoresTableHeaderSelector
 import AgGridTable from '../../../components/AgGridTable/AgGridTable'
 import { useSelector } from 'react-redux'
 import { useQueryParams } from '../../hooks/useQueryParams'
-import { get } from 'lodash'
+import { get, method } from 'lodash'
 import InputQuantity from '../../../components/Inputs/InputQuantity'
 
 const filterTwoArrays = (array1, array2) => {
@@ -35,6 +35,7 @@ const filterTwoArrays = (array1, array2) => {
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
+  const [uniType, setUniType] = useState('piece')
   const [hasDiscontPrice, setHasDiscontPrice] = useState(false)
   const { columns, loading } = useSelector((state) => state.storesListTableColumnsForProduct)
   const { values } = useQueryParams()
@@ -137,6 +138,9 @@ export default function ProductBody({ productData = null }) {
     setOffsetCount(offsetsCount || 0)
   }, [appType, values.limit])
   useEffect(() => {
+    setUniType(get(getValues('product_unit'), 'value', 'piece'))
+  }, [watch('product_unit')])
+  useEffect(() => {
     if (!productData) {
       setValue('app_type', 'BUCHET')
     }
@@ -149,6 +153,7 @@ export default function ProductBody({ productData = null }) {
       setValue('barcode', data?.data?.barcode)
     })
   }
+  console.log(uniType)
 
   return (
     <Box
@@ -305,25 +310,29 @@ export default function ProductBody({ productData = null }) {
             placeholder={t('create_new_product.features.manufacturer.placeholder')}
             sx={{ mb: 3 }}
           />
-          <Box width={'20px'} />
-          <Box
-            sx={{
-              '& .MuiFormControl-root': {
-                marginTop: '4px !important',
-              },
-            }}
-          >
-            <InputQuantity
-              label={'Количество зерен'}
-              id={`box_grain_count`}
-              name={`box_grain_count`}
-              fullWidth
-              required
-              type='number'
-              defaultValue={0}
-              disabled={false}
-            />
-          </Box>
+          {uniType === 'pack' && (
+            <>
+              <Box width={'20px'} />
+              <Box
+                sx={{
+                  '& .MuiFormControl-root': {
+                    marginTop: '4px !important',
+                  },
+                }}
+              >
+                <InputQuantity
+                  label={'Количество зерен'}
+                  id={`box_grain_count`}
+                  name={`box_grain_count`}
+                  fullWidth
+                  required
+                  type='number'
+                  defaultValue={0}
+                  disabled={false}
+                />
+              </Box>
+            </>
+          )}
           <Box width={'20px'} />
           <Box
             sx={{
@@ -333,9 +342,10 @@ export default function ProductBody({ productData = null }) {
             }}
           >
             <SelectSimple
-              isMulti
+              // isMulti
               required
               white
+              isClearable={false}
               label={'Unit'}
               placeholder='Unitni tanlang'
               name={'product_unit'}

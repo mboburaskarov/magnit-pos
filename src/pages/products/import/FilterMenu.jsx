@@ -1,40 +1,33 @@
-import { Box, Button, IconButton, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
+import * as qs from 'qs'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { requests } from '../../../../utils/requests'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import InputRange from '../../../../components/Inputs/InputRange'
-import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
-import * as qs from 'qs'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import { theme } from '../../../assets/theme'
-import { useTranslation } from 'react-i18next'
-import { useTheme } from '@mui/styles'
 import InputDateRangePicker from '../../../../components/Inputs/InputDateRangePicker'
+import InputRange from '../../../../components/Inputs/InputRange'
+import SelectSimple from '../../../../components/Select/SelectSimple'
+import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
+import { requests } from '../../../../utils/requests'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
-import { get } from 'lodash'
-import dayjs from 'dayjs'
+import CloseIcon from '../../../assets/icons/CloseIcon'
+import { useQueryParams } from '../../../hooks/useQueryParams'
 
-export default function FilterMenu({ open, setOpen, setRegions }) {
+export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
-  const { formState, reset, control, getValues } = methods
-  const [isExpress, setIsExpress] = useState(false)
+  const { formState, reset, control } = methods
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
-  const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 20, offset: 0 }))
-  const { data: producers } = useQuery('producers', () => requests.getAllProducer({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
-    setRegions(data.regions || [])
-    console.log(data)
-
     const requestBody = {
       received_amount_from: data.received_amount_from || undefined,
       received_amount_to: data.received_amount_to || undefined,
@@ -45,7 +38,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       end_date: dayjs(endDate).format('YYYY-MM-DD') || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
-    console.log(requestParams, requestBody)
 
     setOpen(false)
     navigate(`/products/import${requestParams}`)
@@ -132,15 +124,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               setEndDate={setEndDate}
               control={control}
             />
-            {/* <InputDatePicker
-              noMarginTop
-              name='import_date'
-              // error={errors?.date_of_birth}
-              label={'Дата импорта'}
-              id='import_date'
-              showYearDropdown
-              placeholder='kk/oo/yyyy'
-            /> */}
 
             <SelectSimple
               fullWidth

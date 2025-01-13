@@ -13,6 +13,8 @@ const userData = createSlice({
   },
   reducers: {
     setUserData(state, action) {
+      console.log(state, action)
+
       state.first_name = action.payload.first_name
       state.last_name = action.payload.last_name
       state.photo = action.payload.photo
@@ -20,7 +22,7 @@ const userData = createSlice({
       state.phone = action.payload.phone
       state.id = action.payload.id
       state.store = action.payload.store
-      state.role_actions = action.payload.role_actions
+      state.role_actions = action.payload.permissions
     },
   },
 })

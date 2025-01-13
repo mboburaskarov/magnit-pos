@@ -90,7 +90,6 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
     if (size(get(data, 'phone')) < 14) {
       error('Phone number is less than 14')
     }
-    console.log(data)
 
     const requestBody = {
       birthdate: data?.date_of_birth,

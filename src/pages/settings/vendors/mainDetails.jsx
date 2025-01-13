@@ -36,8 +36,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function MainDetails({ clientData, openDrawer }) {
-  console.log(openDrawer)
-
   const classes = useStyles()
   const { data: employeeInfo, refetch: refetemployeeInfo } = useQuery(['employeeInfo', openDrawer], () => requests.getSingleVendor(get(openDrawer, 'id', 'no')))
   const mode = openDrawer?.mode

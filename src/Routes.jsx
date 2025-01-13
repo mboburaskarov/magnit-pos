@@ -72,6 +72,8 @@ export default function Routes() {
     return <LoadingContainer />
   }
   const filterRoutes = (routes, urls, isChild = null) => {
+    // console.log(urls)
+
     if (user_data?.type === 'SUPER_ADMIN') {
       return routes
     }

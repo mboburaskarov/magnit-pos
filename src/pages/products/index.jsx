@@ -42,7 +42,6 @@ export default function ProductsPage() {
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
-  const [isDrawerOpen, setIsDrawerOpen] = useState(null)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
@@ -51,7 +50,6 @@ export default function ProductsPage() {
     setOpenProductDrawer,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
-    setIsDrawerOpen,
   })
 
   useEffect(() => {
@@ -114,14 +112,12 @@ export default function ProductsPage() {
     onSuccess: () => {
       refetch()
       success('Продукт успешно удален!')
-      setIsDrawerOpen(null)
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
       error('Ошибка при удалении товара!')
       setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
       console.log('err', err)
     },
   })
@@ -130,7 +126,6 @@ export default function ProductsPage() {
     onSuccess: () => {
       refetch()
       success('Продукт успешно отклонен!')
-      setIsDrawerOpen(null)
       setOpenConfirmDialog(null)
       setRejectComment(null)
     },
@@ -138,7 +133,6 @@ export default function ProductsPage() {
       refetch()
       error('Ошибка при удалении отклонен!')
       setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
       console.log('err', err)
     },
   })
@@ -148,14 +142,12 @@ export default function ProductsPage() {
       setTimeout(() => {
         refetch()
       }, 500)
-      setIsDrawerOpen(null)
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       error('Ошибка при активации продукта!')
       refetch()
       setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
       console.log('err', err)
     },
   })
@@ -165,14 +157,12 @@ export default function ProductsPage() {
       setTimeout(() => {
         refetch()
       }, 500)
-      setIsDrawerOpen(null)
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       error('Ошибка при деактивации продукта!')
       refetch()
       setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
       console.log('err', err)
     },
   })
@@ -182,17 +172,7 @@ export default function ProductsPage() {
   }, [productsListFilter])
 
   useEffect(() => {
-    const count =
-      // status === 'ACTIVE'
-      //   ? productsList?.data?.active
-      //   : status === 'INACTIVE'
-      //   ? productsList?.data?.inactive
-      //   : status === 'INACTIVE_BY_VENDOR'
-      //   ? productsList?.data?.inactiveByVendor
-      //   : status === 'BLOCKED'
-      //   ? productsList?.data?.blocked
-      // : productsList?.data.totalCount
-      productsList?.data?.data?._meta?.total_count
+    const count = productsList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)

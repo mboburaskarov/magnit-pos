@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
@@ -28,16 +27,12 @@ export default function ImportPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.importsTableColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
-  const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
-  const [isDrawerOpen, setIsDrawerOpen] = useState(null)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
@@ -45,17 +40,12 @@ export default function ImportPage() {
     values,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
-    setIsDrawerOpen,
   })
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
-        ?.filter(
-          (el) => !el?.is_temporary && el?.colId !== SELECTION_ID
-          // && el.field !== 'category'
-        )
+        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
         ?.map((el) => ({
           ...el,
           label: el.headerName,
@@ -82,7 +72,6 @@ export default function ImportPage() {
       received_amount_from: values?.received_amount_from,
     }
   }, [
-    appType,
     values?.offset,
     values?.limit,
     values?.end_date,
@@ -104,14 +93,12 @@ export default function ImportPage() {
     onSuccess: () => {
       refetch()
       success('Продукт успешно удален!')
-      setIsDrawerOpen(null)
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
       error('Ошибка при удалении товара!')
       setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
       console.log('err', err)
     },
   })
@@ -120,7 +107,6 @@ export default function ImportPage() {
     onSuccess: () => {
       refetch()
       success('Продукт успешно отклонен!')
-      setIsDrawerOpen(null)
       setOpenConfirmDialog(null)
       setRejectComment(null)
     },
@@ -128,7 +114,6 @@ export default function ImportPage() {
       refetch()
       error('Ошибка при удалении отклонен!')
       setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
       console.log('err', err)
     },
   })
@@ -138,31 +123,12 @@ export default function ImportPage() {
       setTimeout(() => {
         refetch()
       }, 500)
-      setIsDrawerOpen(null)
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       error('Ошибка при активации продукта!')
       refetch()
       setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
-      console.log('err', err)
-    },
-  })
-  const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.changeimportstatus, {
-    onSuccess: () => {
-      success('Продукт успешно деактивирован!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
-      setIsDrawerOpen(null)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при деактивации продукта!')
-      refetch()
-      setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
       console.log('err', err)
     },
   })
@@ -172,21 +138,11 @@ export default function ImportPage() {
   }, [importsListFilter])
 
   useEffect(() => {
-    const count =
-      // status === 'ACTIVE'
-      //   ? importsList?.data?.active
-      //   : status === 'INACTIVE'
-      //   ? importsList?.data?.inactive
-      //   : status === 'INACTIVE_BY_VENDOR'
-      //   ? importsList?.data?.inactiveByVendor
-      //   : status === 'BLOCKED'
-      //   ? importsList?.data?.blocked
-      // : importsList?.data.totalCount
-      importsList?.data?.data?._meta?.total_count
+    const count = importsList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [importsList?.data, values?.limit, appType])
+  }, [importsList?.data, values?.limit])
 
   return (
     <LoadingContainer readyState={true}>
@@ -252,7 +208,7 @@ export default function ImportPage() {
             </Box>
           </Box>
         </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='imports-main-table'
@@ -266,7 +222,6 @@ export default function ImportPage() {
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            status={appType}
             isRefreshing={loading || isFetchingimportsList || importsListLoading}
           />
         </Box>
@@ -308,13 +263,7 @@ export default function ImportPage() {
                 variant='contained'
                 type='button'
                 loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                onClick={() =>
-                  openConfirmDialog?.type === 'activate'
-                    ? activateProduct(openConfirmDialog.id)
-                    : openConfirmDialog?.type === 'deactivate'
-                    ? deActivateProduct({ id: openConfirmDialog.id, appType: 'INACTIVE' })
-                    : deleteProduct(openConfirmDialog.id)
-                }
+                onClick={() => (openConfirmDialog?.type === 'activate' ? activateProduct(openConfirmDialog.id) : deleteProduct(openConfirmDialog.id))}
               >
                 Да, удалить
               </LoadingButton>

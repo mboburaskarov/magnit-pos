@@ -1,22 +1,16 @@
-import { memo } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import TimeCell from '../../../components/AgGridTable/Cells/TimeCell'
-import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
-import thousandDivider from '../../../utils/thousandDivider'
-import getImageUrl from '../../../utils/getImageUrl'
-import { products_statuses } from '../../assets/data/products-statuses'
-import ProductImagePlaceholder from '../../assets/icons/ProductImagePlaceholder'
-import EditIcon from '../../assets/icons/EditIcon'
-import DeleteIcon from '../../assets/icons/DeleteIcon'
-import ExpressIcon from '../../assets/icons/ExpressIcon'
-import StyledTooltip from '../../../components/StyledTooltip'
-import CheckAccess from '../../../components/CheckAccess'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { get } from 'lodash'
-import dayjs from 'dayjs'
 import { useTheme } from '@mui/styles'
-import DefaultImgIcon from '../../assets/icons/defaultImgIcon'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
+import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
+import CheckAccess from '../../../components/CheckAccess'
+import thousandDivider from '../../../utils/thousandDivider'
+import { products_statuses } from '../../assets/data/products-statuses'
+import DefaultImgIcon from '../../assets/icons/defaultImgIcon'
+import DeleteIcon from '../../assets/icons/DeleteIcon'
+import EditIcon from '../../assets/icons/EditIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -77,7 +71,7 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setOpenProductDrawer, setIsDrawerOpen }) {
+export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setOpenProductDrawer }) {
   const theme = useTheme()
   const navigate = useNavigate()
   const getDateColor = (date) => {
@@ -85,7 +79,6 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
     if (date > 3 && date < 25) return { color: theme.palette.orange[400] }
     if (date < 3) return { color: theme.palette.red[400] }
   }
-  // const { values } = useQueryParams()
   const columns = productsColumns?.map((el) => {
     if (el.field === 'main_photo') {
       return {

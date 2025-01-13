@@ -5,9 +5,8 @@ import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
 import thousandDivider from '../../../../utils/thousandDivider'
-import { products_statuses } from '../../../assets/data/products-statuses'
-import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
+import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -68,14 +67,7 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
-  const theme = useTheme()
-  const getDateColor = (date) => {
-    if (date > 25) return { color: theme.palette.green[700] }
-    if (date > 3 && date < 25) return { color: theme.palette.orange[400] }
-    if (date < 3) return { color: theme.palette.red[400] }
-  }
-  // const { values } = useQueryParams()
+export default function tableHeaderSelector({ importsColumns, t }) {
   const columns = importsColumns?.map((el) => {
     if (el.field === 'public_id') {
       return {
