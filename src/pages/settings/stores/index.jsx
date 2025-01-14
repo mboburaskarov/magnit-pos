@@ -24,6 +24,7 @@ import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/Column
 import CheckAccess from '../../../../components/CheckAccess'
 import StyledDialog from '../../../../components/Dialogs/StyledDialog'
 import PlusIcon from '../../../assets/icons/PlusIcon'
+import CreateLocationDrawer from './createLocationDrawer'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ProductsPage() {
@@ -41,11 +42,13 @@ export default function ProductsPage() {
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(null)
+  const [openCreateLocationDrawer, setopenCreateLocationDrawer] = useState(false)
 
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
+    setopenCreateLocationDrawer,
     values,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
@@ -113,7 +116,7 @@ export default function ProductsPage() {
     refetch,
   } = useQuery(['storesList', storesListFilter], () => requests.getAllStores(storesListFilter))
 
-  const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteStore, {
+  const { mutate: deleteStore, isLoading: isDeletingProduct } = useMutation(requests.deleteStore, {
     onSuccess: () => {
       refetch()
       success('Продукт успешно удален!')
@@ -236,7 +239,14 @@ export default function ProductsPage() {
             </Box>
             <CheckAccess id={'product-create'}>
               <Box minWidth={156}>
-                <Button sx={{ height: '48px' }} fullWidth startIcon={<PlusIcon color='#fff' />} variant='contained' color='primary'>
+                <Button
+                  sx={{ height: '48px' }}
+                  onClick={() => setopenCreateLocationDrawer({ mode: 'create' })}
+                  fullWidth
+                  startIcon={<PlusIcon color='#fff' />}
+                  variant='contained'
+                  color='primary'
+                >
                   {t('button.add_new.text')}
                 </Button>
               </Box>
@@ -304,7 +314,7 @@ export default function ProductsPage() {
                     ? activateProduct(openConfirmDialog.id)
                     : openConfirmDialog?.type === 'deactivate'
                     ? deActivateProduct({ id: openConfirmDialog.id, status: 'INACTIVE' })
-                    : deleteProduct(openConfirmDialog.id)
+                    : deleteStore(openConfirmDialog.id)
                 }
               >
                 Да, удалить
@@ -338,6 +348,14 @@ export default function ProductsPage() {
           </Box>
         )}
       </StyledDialog>
+      <CreateLocationDrawer
+        refetchVendorList={refetch}
+        setCustomerId={'setCustomerId'}
+        quickCreateClientName={'quickCreateClientName'}
+        openDrawer={openCreateLocationDrawer}
+        closeDrawer={() => setopenCreateLocationDrawer(false)}
+        clientData={'clientDetails'}
+      />
     </LoadingContainer>
   )
 }

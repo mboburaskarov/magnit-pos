@@ -121,48 +121,27 @@ const CashboxShiftTableHeader = (setPayment, t) => [
       <Box display='flex'>
         <EditableCell
           id='shiftDrawer-actually'
-          key={`${props.row.original.product_id}actually_first`}
+          key={`${props.row.original.id}actually_first`}
           name='actually_first'
           adornment={currency()}
           {...props}
           dashed
           gray
-          valuecustom={props?.row.original?.actual}
+          InputId={props.row.original.id}
+          valuecustom={props?.row.original?.net_amount}
           info
         />
       </Box>
     ),
   },
-  currency() !== 'USD' && {
-    Header: ' ',
-    accessor: 'actually_usd',
-    borderRight: true,
-    sticky: 'right',
-    width: 183,
-    Cell: (props) => (
-      <Box display='flex'>
-        <EditableCell
-          id='shiftDrawer-actually_usd'
-          key={`${props.row.original.product_id}actually_usd`}
-          name='actually_usd'
-          adornment={'USD'}
-          marginRight
-          dashed
-          gray
-          {...props}
-          valuecustom={props?.row.original?.actual_usd}
-          info
-        />
-      </Box>
-    ),
-  },
+
   {
     Header: t('table_columns.difference'),
     accessor: 'difference',
     sticky: 'right',
     width: 158,
     Cell: (row) => {
-      const rowOrg = row?.row?.original?.difference
+      const rowOrg = row?.row?.original?.difference_amount
 
       return (
         <Box

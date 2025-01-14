@@ -346,7 +346,7 @@ function NewSale() {
       <Box display={'flex'}>
         <Box width={'70%'} padding={'20px'}>
           <Box position={'relative'}>
-            <CartSearchBar showOverlay={showOverlay} setShowOverlay={setShowOverlay} handleAddProduct={handleAddProduct} />
+            <CartSearchBar cashBoxDetails={cashBoxDetails} showOverlay={showOverlay} setShowOverlay={setShowOverlay} handleAddProduct={handleAddProduct} />
           </Box>
           <Box mt={8} />
           <Box padding={'24px 0'}>

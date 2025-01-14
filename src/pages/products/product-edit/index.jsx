@@ -36,8 +36,6 @@ export default function ProductEditPage() {
     return
   }, [])
   const onSubmit = (data) => {
-    console.log(data)
-
     const requestBody = {
       barcode: get(data, 'barcode'),
       bonus_amount: Number(get(data, 'bonus_amount')),

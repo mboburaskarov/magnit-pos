@@ -111,6 +111,11 @@ export const requests = {
   //shops
   getAllSales: (filter) => request.get(`v1/sale/list${qs.stringify(filter, { addQueryPrefix: true })}`),
 
+  getCloseCashboxPaymentList: (cashBoxId) => request.get(`v1/sale-payment/list/close-cashbox/${cashBoxId}`),
+  changeCloseBoxNetAmout: ({ id, net_amount }) => request.put(`v1/sale-payment/amounts/${id}`, { net_amount }),
+  getCloseCashboxPaymentsInfo: (cashBoxId) => request.get(`v1/sale-payment/total-amount/${cashBoxId}`),
+  closeCashBoxRegister: ({ id, data }) => request.put(`v1/sale-payment/amounts/${id}`, data),
+
   getAllShops: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllRolesWithPermissions: (filter) => request.get(`v1/permission/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   // getAllRoles: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -140,7 +145,9 @@ export const requests = {
   //upload files
   imageUpload: (data) => fileUploadRequest.post('v1/upload/file', data),
   fileUpload: (data) => fileUploadRequest.post('/upload', data),
-
+  //stores
+  createStore: (data) => request.post('v1/store', data),
+  updateStore: ({ id, data }) => request.put(`v1/store/${id}`, data),
   //yandex
   findAddressFromYandex: (filter) => yandexMapsRequest.get(qs.stringify(filter, { addQueryPrefix: true })),
   getYandexDeliveryInfo: (id) => request.post(`api/yandex/check-price`, { orderId: id }),

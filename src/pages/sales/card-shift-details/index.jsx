@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import FeatureRichTable from '../../../../components/Table/FeatureRichTable'
 import { tableHeaders } from './table-headers'
-import { Box, Button } from '@mui/material'
-import CashTypeDrawer from './cashTypeDrawer'
+import { Box, Button, Typography } from '@mui/material'
+import CashTypeDrawer from './CashTypeDrawer'
 import useDeepCompareEffect from '../../../hooks/useDeepCompareEffect'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/styles'
@@ -12,10 +12,19 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import currency from '../../../../utils/currency'
 import colors from '../../../assets/theme/mui.config'
 import SoonPage from '../../../../components/soon'
+import { requests } from '../../../../utils/requests'
+import { useMutation, useQuery } from 'react-query'
+import { error, success } from '../../../../utils/toast'
+import { get } from 'lodash'
+import CashCloseDrawer from './cashCloseDrawer'
+import { useParams } from 'react-router-dom'
+import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 
 function CardShiftDetails() {
   const { t } = useTranslation()
-  const [open, setOpen] = useState()
+  const { id } = useParams()
+  const [open, setOpen] = useState(false)
+  const [closeDrawer, setCloseDrawer] = useState(false)
   const [tableData, setTableData] = useState([])
   const [totalData, setTotalData] = useState({})
   const [currencyValue, setCurrencyValue] = useState(1)
@@ -31,6 +40,25 @@ function CardShiftDetails() {
     webkassa24: [],
     forbiddenRoutes: [],
   })
+
+  const {
+    data: closeCashboxPaymentList,
+    isLoading: closeCashboxPaymentListLoading,
+    isFetching: isFetchingcloseCashboxPaymentList,
+    refetch,
+  } = useQuery('closeCashboxPaymentList', () => requests.getCloseCashboxPaymentList(id))
+
+  const { mutate: changeCloseBoxNetAmout, isLoading: ischangeCloseBoxNetAmout } = useMutation(requests.changeCloseBoxNetAmout, {
+    onSuccess: () => {
+      refetch()
+      success('Продукт успешно удален!')
+    },
+    onError: (err) => {
+      refetch()
+      error('Ошибка при удалении товара!')
+      console.log('err', err)
+    },
+  })
   const data = {
     payment_methods: [
       {
@@ -45,7 +73,7 @@ function CardShiftDetails() {
               cash_amount: 6714101,
               cashless_amount: 0,
               frozen_amount: 0,
-              frozen_cash_amount: 0,
+              frozen_cash_amount: 1,
               frozen_cashless_amount: 0,
             },
             {
@@ -4924,19 +4952,14 @@ function CardShiftDetails() {
   useDeepCompareEffect(() => {
     setTimeout(() => {
       if (data?.payment_methods?.length) {
-        const newData = data?.payment_methods?.map((elm) => {
-          const expected =
-            (elm?.expected?.find((el) => el?.currency_name === 'USD')?.cash_amount +
-              elm?.expected?.find((el) => el?.currency_name === 'USD')?.cashless_amount) *
-              currencyValue +
-            (elm?.expected?.find((el) => el?.currency_name !== 'USD')?.cash_amount + elm?.expected?.find((el) => el?.currency_name !== 'USD')?.cashless_amount)
-
+        const newData = closeCashboxPaymentList?.data?.data?.data.map((elm) => {
+          const expected = elm?.amount
           if (true) {
             //change
             return {
               ...elm,
               actually_usd: '',
-              actually: expected || '',
+              actually: elm?.amount,
               difference: 0,
             }
           }
@@ -4947,21 +4970,22 @@ function CardShiftDetails() {
             difference: 0 - expected,
           }
         })
+
         setTableData(newData)
       }
     }, 100)
-  }, [])
+  }, [closeCashboxPaymentList])
 
   useDeepCompareEffect(() => {
     if (tableData?.length > 0) {
       let sum_actually = 0
       for (let i = 0; i < tableData?.length; i++) {
-        sum_actually += Number(tableData[i]?.actually)
+        sum_actually += Number(tableData[i]?.net_amount)
       }
       setFuctualSum(sum_actually)
       let sum_actually_usd = 0
       for (let i = 0; i < tableData?.length; i++) {
-        sum_actually_usd += Number(tableData[i]?.actually_usd)
+        sum_actually_usd += Number(tableData[i]?.net_amount)
       }
       let sum_difference = 0
       for (let i = 0; i < tableData?.length; i++) {
@@ -4990,7 +5014,7 @@ function CardShiftDetails() {
           init[el.accessor] = {
             value: (
               <Box style={{ whiteSpace: 'nowrap' }} display='flex'>
-                <PriceBox data={data?.amount?.total?.income} id='get' color='white' />
+                <Typography color={'#fff'}>{get(closeCashboxPaymentList, 'data.data.total_data.total_amount')}</Typography>
               </Box>
             ),
             width: el?.width,
@@ -5004,7 +5028,7 @@ function CardShiftDetails() {
           init[el.accessor] = {
             value: (
               <Box style={{ whiteSpace: 'nowrap' }} display='flex'>
-                <PriceBox data={data?.amount?.total?.expense} id='gone' color='white' />
+                <Typography color={'#fff'}>{get(closeCashboxPaymentList, 'data.data.total_data.total_expense_amount')}</Typography>
               </Box>
             ),
             width: el?.width,
@@ -5032,7 +5056,7 @@ function CardShiftDetails() {
           init[el.accessor] = {
             value: (
               <Box display='flex'>
-                <EditableCell id='total-actually' valuecustom={sum_actually} adornment={currency()} marginRight dashed overall />
+                <EditableCell id='total-actually' InputId={el.id} valuecustom={sum_actually} adornment={currency()} marginRight dashed overall />
               </Box>
             ),
             width: el?.width,
@@ -5042,32 +5066,32 @@ function CardShiftDetails() {
               backgroundColor: '#1F78FF',
               position: 'sticky',
               zIndex: 3,
-              bottom: '100vh',
-              right: currency() !== 'USD' ? '341px' : '158px',
-            },
-          }
-          return init
-        }
-        if (el.accessor === 'actually_usd') {
-          init[el.accessor] = {
-            value: (
-              <Box display='flex'>
-                <EditableCell id='total-actually_usd' valuecustom={sum_actually_usd} adornment='USD' dashed overall />
-              </Box>
-            ),
-            width: el?.width,
-            styles: {
-              borderRight: `2px solid #60A5FA`,
-              display: 'inline-block',
-              backgroundColor: '#1F78FF',
-              position: 'sticky',
-              zIndex: 3,
-              bottom: '100vh',
+              bottom: '15px',
               right: '158px',
             },
           }
           return init
         }
+        // if (el.accessor === 'actually_usd') {
+        //   init[el.accessor] = {
+        //     value: (
+        //       <Box display='flex'>
+        //         <EditableCell id='total-actually_usd' InputId={el.id} valuecustom={sum_actually_usd} adornment='USD' dashed overall />
+        //       </Box>
+        //     ),
+        //     width: el?.width,
+        //     styles: {
+        //       borderRight: `2px solid #60A5FA`,
+        //       display: 'inline-block',
+        //       backgroundColor: '#1F78FF',
+        //       position: 'sticky',
+        //       zIndex: 3,
+        //       bottom: '15px',
+        //       right: '158px',
+        //     },
+        //   }
+        //   return init
+        // }
         if (el.accessor === 'difference') {
           init[el.accessor] = {
             value: (
@@ -5103,10 +5127,10 @@ function CardShiftDetails() {
       setTotalData(result)
     }
   }, [columns, tableData])
-  return <SoonPage />
+  // return <SoonPage />
   return (
     <div>
-      <Button onClick={() => setOpen(true)}>open</Button>
+      {/* <Button onClick={() => setOpen(true)}>open</Button> */}
       <FeatureRichTable
         columns={columns?.filter((column) => column)}
         data={tableData}
@@ -5116,9 +5140,17 @@ function CardShiftDetails() {
         pagination={false}
         customTablePadding='8px 14px'
         blueTotalData
-        // updateMyData={updateTableData}
+        updateMyData={({ id, net_amount }) => {
+          changeCloseBoxNetAmout({ id, net_amount })
+        }}
       />
+
+      <Button onClick={() => setCloseDrawer(true)}>
+        Закрыть кассу <ArrowRightIcon color={'#fff'} />
+      </Button>
+
       <CashTypeDrawer open={open} setOpen={setOpen} />
+      <CashCloseDrawer open={closeDrawer} setOpen={setCloseDrawer} />
     </div>
   )
 }

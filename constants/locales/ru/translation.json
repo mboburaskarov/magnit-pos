@@ -23,6 +23,14 @@
   "page.catalog.title": "Каталог",
   "page.role.title": "Роли",
 
+  "table_columns.type": "Тип",
+  "menu.sales.shifts.get": "Попало",
+  "menu.sales.shifts.gone": "Ушло",
+  "menu.sales.shifts.waiting": "Ожидается",
+  "menu.sales.shifts.actually": "Фактически",
+  "table_columns.difference": "Разница",
+  "menu.settings.shops.shop_create.ripped_paper_check_infos.total": "ИТОГО",
+
   "switch.title.all": "Все",
   "switch.title.active": "Активный",
   "switch.title.inactive": "Не активен",

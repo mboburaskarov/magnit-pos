@@ -58,7 +58,7 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
+export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen, setopenCreateLocationDrawer }) {
   const columns = productsColumns?.map((el) => {
     if (el.field === 'name') {
       return {
@@ -71,9 +71,17 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
     if (el.field === 'location') {
       return {
         ...el,
-        headerName: 'Адрес',
+        headerName: 'Локация',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='location' />),
+      }
+    }
+    if (el.field === 'address') {
+      return {
+        ...el,
+        headerName: 'Адрес',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='address' />),
       }
     }
     if (el.field === 'employee_count') {
@@ -87,7 +95,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
     if (el.field === 'cash_box_count') {
       return {
         ...el,
-        headerName: 'Количество коробок',
+        headerName: 'Количество касса',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='cash_box_count' />),
       }
@@ -95,7 +103,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
     if (el.field === 'store_code') {
       return {
         ...el,
-        headerName: 'В магазине увидел',
+        headerName: 'В магазине код',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='store_code' />),
       }
@@ -127,7 +135,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
             <Box display='inline-flex' columnGap={'8px'}>
               <CheckAccess id={'product-edit'}>
-                <IconButton onClick={() => window.open(`/products/edit/${data.id}`, '_blank')} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <IconButton onClick={() => setopenCreateLocationDrawer({ mode: 'edit', data })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />
                 </IconButton>
               </CheckAccess>

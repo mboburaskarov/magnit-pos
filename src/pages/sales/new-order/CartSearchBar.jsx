@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
     // },
   },
 }))
-function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
+function CartSearchBar({ handleAddProduct, cashBoxDetails, showOverlay, setShowOverlay }) {
   const { values } = useQueryParams()
   const [searchTearm, setSearchTerm] = useState('')
   const navigate = useNavigate()
@@ -199,7 +199,11 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
               </Box>
             }
             popperData={[
-              { title: 'Kassa aparatini yopish', icon: <UnlockIcon />, clickHandler: () => navigate('/sales/cash-shift/f') },
+              {
+                title: 'Kassa aparatini yopish',
+                icon: <UnlockIcon />,
+                clickHandler: () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_id')}`),
+              },
               { title: "Kassa aparatini o'zgartirish", icon: <FinanceAndPaymentIcon />, soon: true },
             ]}
           />

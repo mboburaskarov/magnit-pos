@@ -153,7 +153,6 @@ export default function ProductBody({ productData = null }) {
       setValue('barcode', data?.data?.barcode)
     })
   }
-  console.log(uniType)
 
   return (
     <Box

@@ -13,8 +13,9 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
+
   {
-    field: 'location',
+    field: 'address',
     hide: false,
     minWidth: 70,
     width: 192,
@@ -37,7 +38,12 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
-
+  {
+    field: 'location',
+    hide: false,
+    minWidth: 70,
+    width: 192,
+  },
   {
     field: 'actions',
     hide: false,

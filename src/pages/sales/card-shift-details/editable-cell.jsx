@@ -1,7 +1,8 @@
-import React, { memo, useState } from 'react'
-import { Box, TextField, InputAdornment } from '@mui/material'
-import PriceFormattedInput from '../../../../components/Inputs/PhoneNumber'
+import React, { memo, useEffect, useState } from 'react'
+import { Box, InputAdornment } from '@mui/material'
+import PriceFormattedInput from '../../../../components/Inputs/InputQuantity'
 import { makeStyles } from '@mui/styles'
+import TextField from '../../../../components/Inputs/TextField'
 
 const useStyles = makeStyles((theme) => ({
   textfield: {
@@ -12,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
       width: ({ width }) => (width ? '100%' : 158),
     },
 
-    '& .MuiOutlinedInput-root': {
+    '& .MuiOutlinedInput-root, .MuiTextField-root': {
       margin: 0,
       height: 40,
       background: theme.palette.background.default,
@@ -31,13 +32,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   error: {
-    '& .MuiOutlinedInput-root': {
+    '& .MuiOutlinedInput-root, .MuiTextField-root': {
       border: `1px solid ${theme.palette.red[500]}`,
       boxShadow: `0 0 0 2px ${theme.palette.red[500]} !important`,
     },
   },
   active: {
-    '& .MuiOutlinedInput-root': {
+    '& .MuiOutlinedInput-root, .MuiTextField-root': {
       border: `1px solid ${theme.palette.blue[500]} !important`,
       boxShadow: `0 0 0 2px ${theme.palette.blue[500]} !important`,
     },
@@ -58,13 +59,13 @@ const useStyles = makeStyles((theme) => ({
     // Dashed
 
     '& .MuiInputBase-input': {
-      color: ({ overall }) => overall && '#fff !important',
+      color: ({ overall }) => overall && '#fe500e !important',
     },
 
     '& .MuiTypography-root': {
       color: ({ overall }) => overall && '#fff !important',
     },
-    '& .MuiOutlinedInput-root': {
+    '& .MuiOutlinedInput-root, .MuiTextField-root': {
       background: 'transparent',
       border: ({ gray }) => (gray ? `1px dashed ${theme.palette.gray[300]}` : `1px dashed ${theme.palette.blue[400]}`),
     },
@@ -95,11 +96,12 @@ const EditableCell = ({
   overall,
   info,
   isError,
+  InputId,
 }) => {
   const id = column?.id
   const index = row?.index
   const classes = useStyles({ gray, width, adornmentClassName, overall, info })
-  const [value, setValue] = useState(document.getElementById(`${id}-${index}-${name}`)?.value)
+  const [value, setValue] = useState(valuecustom)
 
   const onBlur = (e) => {
     const inputValue = e.target.value
@@ -108,10 +110,12 @@ const EditableCell = ({
     const formatted = typeof inputValue !== 'number' ? Number(inputValue?.replace(/\s/g, '')) : 0
 
     if (updateMyData) {
-      setTimeout(() => updateMyData(index, id, formatted), 10)
+      setTimeout(() => updateMyData({ id: InputId, net_amount: formatted }), 10)
     }
   }
-
+  useEffect(() => {
+    // setValue(1)
+  }, [])
   const onKeyDown = (e) => {
     if (e.code === 'Tab') {
       e.preventDefault()
@@ -139,22 +143,26 @@ const EditableCell = ({
         <TextField
           id={`${id}-${index}-${name}`}
           name={`${id}-${index}-${name}`}
-          type='tel'
+          type='number'
           disabled={!!dashed}
           variant='outlined'
           fullWidth
           placeholder='0'
-          value={valuecustom ?? value}
+          value={value}
+          // defaultValue={valuecustom}
+          setValue={setValue}
           onBlur={onBlur}
           onKeyDown={onKeyDown}
+          uncontrolled
           onFocus={onFocus}
           InputProps={{
+            uncontrolled: true,
             endAdornment: (
               <InputAdornment sx={{ pr: 1 }} className={adornmentClassName} position='end'>
                 {adornment}
               </InputAdornment>
             ),
-            inputComponent: PriceFormattedInput,
+            // inputComponent: PriceFormattedInput,
           }}
         />
       </Box>

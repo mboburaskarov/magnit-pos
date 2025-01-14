@@ -27,7 +27,7 @@ export const tableHeaders = ({ setPayment, setOpenCurrencyValue, currencyValue, 
               minWidth: 130,
             }}
           >
-            {row.original.payment_type_name}
+            {row.original.name}
           </a>
         </Box>
       ),
@@ -39,7 +39,8 @@ export const tableHeaders = ({ setPayment, setOpenCurrencyValue, currencyValue, 
       whiteSpace: 'nowrap',
       Cell: ({ row }) => (
         <Box style={{ whiteSpace: 'nowrap !important' }} display='flex'>
-          <PriceBox data={row.original.income} id={`cash-shift-get-${row.index}`} />
+          {/* <PriceBox data={row.original.amount} id={`cash-shift-get-${row.index}`} /> */}
+          <Typography>{row.original.amount}</Typography>
         </Box>
       ),
     },
@@ -49,20 +50,21 @@ export const tableHeaders = ({ setPayment, setOpenCurrencyValue, currencyValue, 
       width: 254,
       Cell: ({ row }) => (
         <Box style={{ whiteSpace: 'nowrap' }} display='flex'>
-          <PriceBox data={row.original.expense} id={`cash-shift-gone-${row.index}`} />
+          <Typography>{row.original.expense_amount}</Typography>
+          {/* <PriceBox data={row.original.expense_amount} id={`cash-shift-gone-${row.index}`} /> */}
         </Box>
       ),
     },
-    {
-      Header: t('menu.sales.shifts.waiting'),
-      accessor: 'waiting',
-      width: 254,
-      Cell: ({ row }) => (
-        <Box style={{ whiteSpace: 'nowrap' }} display='flex'>
-          <PriceBox data={row.original.expected} id={`cash-shift-waiting-${row.index}`} />
-        </Box>
-      ),
-    },
+    // {
+    //   Header: t('menu.sales.shifts.waiting'),
+    //   accessor: 'waiting',
+    //   width: 254,
+    //   Cell: ({ row }) => (
+    //     <Box style={{ whiteSpace: 'nowrap' }} display='flex'>
+    //       <PriceBox data={row.original.expected} id={`cash-shift-waiting-${row.index}`} />
+    //     </Box>
+    //   ),
+    // },
     {
       Header: t('menu.sales.shifts.actually'),
       accessor: 'actually',
@@ -74,82 +76,27 @@ export const tableHeaders = ({ setPayment, setOpenCurrencyValue, currencyValue, 
           <Box display='flex'>
             <EditableCell
               id='cash-shift-actually'
-              key={`${props.row.original.product_id}actually_first`}
+              InputId={props.row.original.id}
+              key={`${props.row.original.id}actually_first`}
               name='actually_first'
               adornment={currency()}
+              valuecustom={props.row.original.net_amount}
               isError={props.row.original.isError}
-              dashed={editRoute || webkassa24}
+              dashed={false}
               {...props}
             />
           </Box>
         </CustomTooltip>
       ),
     },
-    currency() !== 'USD' && {
-      Header: (
-        <Box
-          borderRadius={12}
-          height={32}
-          onClick={() => !editRoute && setOpenCurrencyValue(true)}
-          sx={(theme) => ({
-            background: systemValue === currencyValue ? theme.palette.gray[100] : theme.palette.blue[600],
-            border: systemValue === currencyValue && `1px solid ${theme.palette.gray[300]}`,
-            marginLeft: 1.5,
-            marginTop: 1.5,
-            maxWidth: 160,
-            cursor: 'pointer',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          })}
-          id='currency-box'
-        >
-          <Typography
-            style={{
-              fontSize: 14,
-              lineHeight: '17px',
-              padding: '6px 12px',
-              whiteSpace: 'nowrap',
-              color: systemValue !== currencyValue && 'white',
-            }}
-            id='currency-text'
-          >
-            1 USD = {thousandDivider(currencyValue)} {currency()}
-          </Typography>
-        </Box>
-      ),
-      accessor: 'actually_usd',
-      borderRight: true,
-      sticky: 'right',
-      width: 183,
-      Cell: (props) => {
-        const dashed = props.row.original.payment_type_name !== 'Наличные' || editRoute || webkassa24
-        return (
-          <CustomTooltip disabled={!webkassa24} title={t('alerts.close_cashbox_twenty_hour_desc')} placement='top'>
-            <Box display='flex'>
-              <EditableCell
-                id='actually_usd'
-                key={`${props.row.original.product_id}actually_usd`}
-                name='actually_usd'
-                adornment='USD'
-                marginRight
-                isError={props.row.original?.isError && !dashed}
-                dashed={dashed}
-                gray={props.row.original.payment_type_name !== 'Наличные'}
-                {...props}
-              />
-            </Box>
-          </CustomTooltip>
-        )
-      },
-    },
+
     {
       Header: t('table_columns.difference'),
       accessor: 'difference',
       sticky: 'right',
       width: 158,
       Cell: (row) => {
-        const rowOrg = row?.row?.original?.difference
+        const rowOrg = row?.row?.original?.difference_amount
 
         return (
           <Box
