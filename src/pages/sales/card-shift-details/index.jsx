@@ -11,7 +11,7 @@ import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import CashCloseDrawer from './cashCloseDrawer'
-import CashTypeDrawer from './CashTypeDrawer'
+import CashTypeDrawer from './cashTypeDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
 
 function CardShiftDetails() {
