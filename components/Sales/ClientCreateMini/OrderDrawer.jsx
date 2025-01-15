@@ -367,7 +367,7 @@ export default function OrderDrawer({
       }))
 
     finishSaleWithoutAppPaymentType({
-      cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
+      // cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
       payment_types: paymentTypes,
       sale_id: id,
       total_amount: get(cartItemsList, 'total_amount'),

@@ -1,22 +1,20 @@
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import React, { useEffect, useState } from 'react'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import { FormProvider, useForm, useFormContext } from 'react-hook-form'
-import TextField from '../../../../components/Inputs/TextField'
-import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
-import CartOutlineIcon from '../../../assets/icons/CartOutline'
-import { useMutation, useQuery } from 'react-query'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import { get } from 'lodash'
-import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
+import React, { useEffect, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { Palette } from '@mui/icons-material'
-import { theme } from '../../../assets/theme'
+import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
+import TextField from '../../../../components/Inputs/TextField'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import SelectSimple from '../../../../components/Select/SelectSimple'
+import { requests } from '../../../../utils/requests'
+import { error } from '../../../../utils/toast'
+import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
+import CartOutlineIcon from '../../../assets/icons/CartOutline'
+import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
 const useStyles = makeStyles((theme) => ({
   box: {
     display: 'flex',
@@ -81,18 +79,18 @@ function NewCashRegister() {
   const { data: registerCashList, refetch: refetchregisterCashList } = useQuery('registerCashList', () =>
     requests.getRegisterCashList({ limit: 20, offset: 0 })
   )
-  const { data: registerCashData, refetch: refetchregisterCashData } = useQuery('registerCashData', () =>
-    requests.getRegisterCashData(methods.watch('registerCash_id')?.id)
-  )
+  const {
+    data: registerCashData,
+    refetch: refetchregisterCashData,
+    isLoading,
+    isFetched,
+  } = useQuery('registerCashData', () => requests.getRegisterCashData(get(methods.getValues('registerCash_id'), 'id', false)))
 
   const { mutate: checkSaleExist, isLoading: isCheckSaleExist } = useMutation(requests.checkSaleExist, {
     onSuccess: ({ data }) => {
-      console.log(data)
-
       if (get(data, 'data.is_open', false)) {
         navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
       }
-      // success('Продукт успешно создан!')
     },
     onError: (err) => {
       error('Ошибка при создании товара!')
@@ -101,7 +99,6 @@ function NewCashRegister() {
   })
   useEffect(() => {
     checkSaleExist(get(userData, 'store.id'))
-    // refetchregisterCashList()
   }, [])
   useEffect(() => {
     if (registerCashData) setCanCreate((a) => ({ ...a, canCreate: true }))
@@ -112,23 +109,10 @@ function NewCashRegister() {
     })
   }, [methods.watch('registerCash_id')])
 
-  const { mutate: handleSaleCreate, isLoading: isCreatingSale } = useMutation(requests.createSale, {
-    onSuccess: ({ data }) => {
-      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
-      // success('Продукт успешно создан!')
-    },
-    onError: (err) => {
-      error('Ошибка при создании товара!')
-      console.log('err', err)
-    },
-  })
   const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashBox, {
-    onSuccess: () => {
-      const requestSaleBody = {
-        cash_box_id: get(registerCashData, 'data.data.cash_box_id', null),
-        employee_id: userData?.id,
-      }
-      handleSaleCreate(requestSaleBody)
+    onSuccess: ({ data }) => {
+      console.log(data)
+      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
     },
     onError: (err) => {
       error('Ошибка при создании товара!')
@@ -136,9 +120,11 @@ function NewCashRegister() {
     },
   })
   const onSubmit = (data) => {
+    console.log(data)
+
     const requestBody = {
       cash_amount: Number(get(data, 'opened_amout')),
-      cash_box_id: get(registerCashData, 'data.data.cash_box_id', null),
+      cash_box_id: get(data, 'registerCash_id.id', null),
       description: get(data, 'description'),
       employee_id: userData?.id,
       is_open: true,
@@ -151,7 +137,7 @@ function NewCashRegister() {
     error('Пожалуйста, заполните все поля!')
   }
   return (
-    <LoadingContainer readyState={!isCheckSaleExist}>
+    <LoadingContainer readyState={!isCheckSaleExist || isLoading || isFetched}>
       <FormProvider {...methods}>
         <Box className={classes.box}>
           <Box className={classes.wrapper}>
@@ -217,7 +203,7 @@ function NewCashRegister() {
                   <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
                   <Box display={'flex'} justifyContent={'end'}>
                     <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
-                      {get(registerCashData, 'data.data.cash_amount', null)}
+                      {get(registerCashData, 'data.data.closed_amount', null)}
                       <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
                         UZS
                       </Typography>
@@ -236,7 +222,7 @@ function NewCashRegister() {
                   <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
                   <Box display={'flex'} justifyContent={'end'}>
                     <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
-                      {get(registerCashData, 'data.data.cashless_amount', null)}
+                      0
                       <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
                         UZS
                       </Typography>
