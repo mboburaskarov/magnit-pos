@@ -114,8 +114,6 @@ function CashCloseDrawer({ open, setOpen }) {
   })
   const { mutate: closeCashBoxRegister, isLoading: iscloseCashBoxRegister } = useMutation(requests.closeCashBoxRegister, {
     onSuccess: () => {
-      // refetch()
-
       setOpen(false)
       navigate(`/sales/create`)
       success('Продукт успешно удален!')
