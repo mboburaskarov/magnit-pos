@@ -109,7 +109,9 @@ function CashCloseDrawer({ open, setOpen }) {
     isLoading: closeCashboxPaymentsInfoLoading,
     isFetching: isFetchingcloseCashboxPaymentsInfo,
     refetch,
-  } = useQuery(['closeCashboxPaymentsInfo', open], () => requests.getCloseCashboxPaymentsInfo(id))
+  } = useQuery(['closeCashboxPaymentsInfo', open], () => requests.getCloseCashboxPaymentsInfo(id), {
+    enabled: open, // The query will only run when open is true
+  })
   const { mutate: closeCashBoxRegister, isLoading: iscloseCashBoxRegister } = useMutation(requests.closeCashBoxRegister, {
     onSuccess: () => {
       // refetch()
