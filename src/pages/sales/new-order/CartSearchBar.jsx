@@ -202,7 +202,7 @@ function CartSearchBar({ handleAddProduct, cashBoxDetails, showOverlay, setShowO
               {
                 title: 'Закрыть кассу',
                 icon: <UnlockIcon />,
-                clickHandler: () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_id')}`),
+                clickHandler: () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}`),
               },
               { title: 'Обмен сменами', icon: <FinanceAndPaymentIcon />, soon: true },
             ]}
