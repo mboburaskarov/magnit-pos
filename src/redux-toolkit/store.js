@@ -14,11 +14,12 @@ import { storesListTableColumnsForProductSlice } from './tableSlices/storesListT
 import { vendorsTableColumnsSlice } from './tableSlices/vendorsTableColumns'
 import { userSlice } from './userSlice'
 import { importWithCheckingTableColumnsSlice } from './tableSlices/importWithCheckingTableColumns'
+import { cardShiftTableColumnsSlice } from './tableSlices/cardShiftTableColumns'
 
 // Define your migration function here
 const migrations = {
   // Example migration
-  71: (state) => {
+  74: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -36,7 +37,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 71, // Current version of the persisted state
+  version: 74, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -47,6 +48,7 @@ const reducer = combineReducers({
   sidebarSettings: sidebarSettingsSlice,
   orderTableColumns: orderTableColumnsSlice,
   productsTableColumns: productsTableColumnsSlice,
+  cardShiftTableColumns: cardShiftTableColumnsSlice,
   importsTableColumns: importsTableColumnsSlice,
   importDetailsColumns: importDetailsTableColumnsSlice,
   importWithCheckingColumns: importWithCheckingTableColumnsSlice,

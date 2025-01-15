@@ -187,3 +187,6 @@ input[type='number'] {
     left: 100%;
   }
 }
+div[role='row'][row-id='ag-grid-footer'] {
+  background-color: #f8f8f9;
+}

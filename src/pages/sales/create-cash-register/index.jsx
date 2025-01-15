@@ -84,10 +84,13 @@ function NewCashRegister() {
   const { data: registerCashData, refetch: refetchregisterCashData } = useQuery('registerCashData', () =>
     requests.getRegisterCashData(methods.watch('registerCash_id')?.id)
   )
+
   const { mutate: checkSaleExist, isLoading: isCheckSaleExist } = useMutation(requests.checkSaleExist, {
     onSuccess: ({ data }) => {
-      if (get(data, 'data')) {
-        navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+      console.log(data)
+
+      if (get(data, 'data.is_open', false)) {
+        navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
       }
       // success('Продукт успешно создан!')
     },
@@ -97,7 +100,7 @@ function NewCashRegister() {
     },
   })
   useEffect(() => {
-    checkSaleExist()
+    checkSaleExist(get(userData, 'store.id'))
     // refetchregisterCashList()
   }, [])
   useEffect(() => {
@@ -134,7 +137,7 @@ function NewCashRegister() {
   })
   const onSubmit = (data) => {
     const requestBody = {
-      cash_amount: Number(get(data, 'open_amout')),
+      cash_amount: Number(get(data, 'opened_amout')),
       cash_box_id: get(registerCashData, 'data.data.cash_box_id', null),
       description: get(data, 'description'),
       employee_id: userData?.id,
@@ -179,7 +182,7 @@ function NewCashRegister() {
                     end
                     type={'number'}
                     fullWidth
-                    name='open_amout'
+                    name='opened_amout'
                     label='Ochilish miqdori'
                     placeholder='Miqdorni kiriting'
                   />

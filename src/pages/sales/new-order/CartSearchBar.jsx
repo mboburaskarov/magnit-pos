@@ -200,11 +200,11 @@ function CartSearchBar({ handleAddProduct, cashBoxDetails, showOverlay, setShowO
             }
             popperData={[
               {
-                title: 'Kassa aparatini yopish',
+                title: 'Закрыть кассу',
                 icon: <UnlockIcon />,
                 clickHandler: () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_id')}`),
               },
-              { title: "Kassa aparatini o'zgartirish", icon: <FinanceAndPaymentIcon />, soon: true },
+              { title: 'Обмен сменами', icon: <FinanceAndPaymentIcon />, soon: true },
             ]}
           />
         </Box>

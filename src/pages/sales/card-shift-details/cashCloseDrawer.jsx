@@ -88,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     fontWeight: 500,
-    fontSize: '18px',
+    fontSize: '16px',
     color: theme.palette.bunker[950],
     lineHeight: '28px',
     backgroundColor: theme.palette.bg[10],
@@ -156,14 +156,7 @@ function CashCloseDrawer({ open, setOpen }) {
                 color={'bunker.950'}
                 p={'24px'}
               >
-                {true ? (
-                  'Kassirni tanlang'
-                ) : (
-                  <>
-                    <span className={classes.closeStoreDot} />
-                    Kassa Yopiq
-                  </>
-                )}
+                Закрыть кассу
               </Typography>
               <Box width={'80vw'} margin={'auto'} display={'flex'} p={'40px'}>
                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -222,7 +215,7 @@ function CashCloseDrawer({ open, setOpen }) {
 
                 <Box sx={{ width: '100%' }}>
                   <Typography fontSize={'16px'} lineHeight={'24px'} fontWeight={'600'} color={'bunker.700'}>
-                    Kassangizda mavjud:
+                    Доступно на кассе:
                   </Typography>
                   <Box className={classes.card_box}>
                     <Box display={'flex'} alignItems={'center'}>
@@ -230,7 +223,7 @@ function CashCloseDrawer({ open, setOpen }) {
                         <MoneyOutlineIcon />
                       </Box>
                       <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.950'}>
-                        Naqd
+                        Наличные
                       </Typography>
                     </Box>
                     <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
@@ -249,7 +242,7 @@ function CashCloseDrawer({ open, setOpen }) {
                         <CartOutlineIcon />
                       </Box>
                       <Typography fontSize={'24px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'}>
-                        Karta
+                        Карта
                       </Typography>
                     </Box>
                     <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
@@ -272,7 +265,7 @@ function CashCloseDrawer({ open, setOpen }) {
             // disabled={!get(canCreate, 'canCreate')}
             sx={{ bottom: 0, margin: '0 24px 24px', '& > svg': { width: 24, height: 24, ml: '12px' } }}
           >
-            Kassani yopish <ArrowRightIcon color={!true ? '#FF6018' : '#fff'} />
+            Закрыть кассу <ArrowRightIcon color={!true ? '#FF6018' : '#fff'} />
           </Button>
         </FormProvider>
       </LoadingContainer>
