@@ -19,6 +19,7 @@ import StyledDialog from '../../Dialogs/StyledeEmptyDialog'
 
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import QrScanIcon from '../../../src/assets/icons/QrScanIcon'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -367,7 +368,6 @@ export default function OrderDrawer({
       }))
 
     finishSaleWithoutAppPaymentType({
-      // cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
       payment_types: paymentTypes,
       sale_id: id,
       total_amount: get(cartItemsList, 'total_amount'),
@@ -380,32 +380,28 @@ export default function OrderDrawer({
     ...Array.from({ length: 8 - paymentsList.length }, (_, index) => ({ id: `placeholder-${index}`, isPlaceholder: true })),
   ]
 
-  useEffect(() => {
-    const handleKeyPress = (e) => {
-      if (!isOpenScanDialog) return
-      if (!isScanning) return
+  const handleKeyPress = (e) => {
+    setScanningText((prev) => {
+      const updatedText = prev + e.key
+      scanningTextRef.current = updatedText
+      return updatedText
+    })
 
+    onSubmit()
+  }
+  useHotkeys(
+    '*',
+    (event) => {
       if (timeout) clearTimeout(timeout)
-
-      setScanningText((prev) => {
-        const updatedText = prev + e.key
-        scanningTextRef.current = updatedText
-        return updatedText
-      })
-
       timeout = setTimeout(() => {
-        onSubmit()
-      }, 300)
+        handleKeyPress(event)
+      }, 400)
+      console.log(`Key pressed: ${event.key}`)
+    },
+    {
+      enabled: isOpenScanDialog, // This enables/disables the key listener
     }
-
-    window.addEventListener('keypress', handleKeyPress)
-
-    return () => {
-      window.removeEventListener('keypress', handleKeyPress)
-      if (timeout) clearTimeout(timeout)
-    }
-  }, [isOpenScanDialog, isScanning, setIsScanning])
-
+  )
   const handleFinish = () => {
     if (paymentsList.find((el) => el.type === 'app')) {
       setOpenScanDialog(true)
