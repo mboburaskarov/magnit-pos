@@ -38,7 +38,7 @@ export default function SerchedItem({ index, handleAddProduct, fakeIndexForCheck
           discount_value: 0,
           employee_id: userData.id,
           sale_id: id,
-          product_id: product?.id,
+          product_id: product?.product_id,
           quantity: 1,
           unit_price: product?.retail_price,
         })
