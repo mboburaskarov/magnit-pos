@@ -105,6 +105,7 @@ export const requests = {
   createCashBox: (data) => request.post(`v1/cash_box_operation`, data),
 
   getRegisterCashData: (cash_box_id) => cash_box_id && request.get(`v1/cash_box_operation/closed-info/${cash_box_id}`),
+  getCashBoxOperationInfo: (cash_box_id) => cash_box_id && request.get(`v1/cash_box_operation/info/${cash_box_id}`),
   getRegisterCashList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getCartItemList: (filter) => request.get(`v1/cart_item/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   //shops
@@ -113,7 +114,7 @@ export const requests = {
   getCloseCashboxPaymentList: (cashBoxId) => request.get(`v1/sale-payment/list/close-cashbox/${cashBoxId}`),
   changeCloseBoxNetAmout: ({ id, net_amount }) => request.put(`v1/sale-payment/amounts/${id}`, { net_amount }),
   getCloseCashboxPaymentsInfo: (cashBoxId) => request.get(`v1/sale-payment/total-amount/${cashBoxId}`),
-  closeCashBoxRegister: ({ id, data }) => request.put(`v1/sale-payment/amounts/${id}`, data),
+  closeCashBoxRegister: ({ id, data }) => request.put(`v1/cash_box_operation/close/${id}`, data),
 
   getAllShops: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllRolesWithPermissions: (filter) => request.get(`v1/permission/list${qs.stringify(filter, { addQueryPrefix: true })}`),

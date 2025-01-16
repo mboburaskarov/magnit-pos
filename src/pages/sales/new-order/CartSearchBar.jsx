@@ -15,7 +15,7 @@ import { useQueryParams } from '../../../hooks/useQueryParams'
 import { useQuery } from 'react-query'
 import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import ArrowDown from '../../../assets/icons/ArrowDown'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { get } from 'lodash'
 const useStyles = makeStyles((theme) => ({
@@ -128,6 +128,7 @@ function CartSearchBar({ handleAddProduct, cashBoxDetails, showOverlay, setShowO
   const [searchTearm, setSearchTerm] = useState('')
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
+  const { id } = useParams()
 
   const productsListFilter = useMemo(() => {
     return {
@@ -202,7 +203,7 @@ function CartSearchBar({ handleAddProduct, cashBoxDetails, showOverlay, setShowO
               {
                 title: 'Закрыть кассу',
                 icon: <UnlockIcon />,
-                clickHandler: () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}`),
+                clickHandler: () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`),
               },
               { title: 'Обмен сменами', icon: <FinanceAndPaymentIcon />, soon: true },
             ]}

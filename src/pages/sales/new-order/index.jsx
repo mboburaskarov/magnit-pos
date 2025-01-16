@@ -291,7 +291,7 @@ function NewSale() {
     refetch: refetchcartItemsList,
     isLoading: isCartItemsLIstLoading,
   } = useQuery('cartItemsList', () => requests.getCartItemList({ sale_id: id, limit: 20, offset: 0 }).catch(() => navigate('/sales/create')))
-  const { data: cashBoxDetails, refetch: refetchCashBoxDetaild } = useQuery('cashBoxDetails', () => requests.getCashBoxDetaildWithSaleId(id))
+  const { data: cashBoxDetails, refetch: refetchCashBoxDetaild } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
 
   useEffect(() => {
     method.setValue('discount', inputDiscount)
