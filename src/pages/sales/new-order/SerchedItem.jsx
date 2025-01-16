@@ -18,8 +18,10 @@ export default function SerchedItem({ index, handleAddProduct, fakeIndexForCheck
   const { id } = useParams()
   const { mutate: getAllSimilarStoreProducts } = useMutation(requests.getAllSimilarStoreProducts, {
     onSuccess: ({ data }) => {
-      setOpenSimilar(true)
-      setSimilarProductList(data)
+      if (data?.length) {
+        setOpenSimilar(true)
+        setSimilarProductList(data)
+      }
     },
     onError: (err) => {
       error('Ошибка при Корзина была очищенаClick to apply')
@@ -69,10 +71,10 @@ export default function SerchedItem({ index, handleAddProduct, fakeIndexForCheck
                   highlightClassName='highlighter'
                   searchWords={[searchTerm]}
                   autoEscape
-                  textToHighlight={`${product?.name} / ${product?.categories?.[0]?.name}`}
+                  textToHighlight={`${product?.name} / ${product?.category_name}`}
                 />
               </Typography>
-              <Typography id='product-barcode'>
+              <Typography display={'flex'} id='product-barcode'>
                 <Highlighter
                   highlightClassName='highlighter'
                   searchWords={searchTerm ? searchTerm?.split(' ') : []}
@@ -80,6 +82,9 @@ export default function SerchedItem({ index, handleAddProduct, fakeIndexForCheck
                   className={classes.itemBarcode}
                   textToHighlight={product?.barcode}
                 />
+                <Typography color={'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
+                  / {get(product, 'expire_day', 0)} kun
+                </Typography>
               </Typography>
             </Box>
           </Box>

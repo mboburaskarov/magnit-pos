@@ -53,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: '24px',
     // marginRight: '8px',
   },
   cart_detail_icon: {
@@ -62,8 +63,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '50%',
     height: 48,
     display: 'flex',
+    marginLeft: '10px',
     alignItems: 'center',
-    marginLeft: '16px',
+    position: 'relative',
     justifyContent: 'center',
     backgroundColor: theme.palette.bg[10],
     cursor: 'pointer',
@@ -171,6 +173,35 @@ const useStyles = makeStyles((theme) => ({
     border: '2px solid',
     borderColor: theme.palette.bunker[100],
     padding: '4px 14px',
+  },
+  hot_key: {
+    borderRadius: '5px',
+    padding: '5px 12px',
+    height: '30px',
+    width: '30px',
+    borderColor: '#ececec',
+    marginLeft: '10px',
+    fontSize: '14px',
+    color: '#000',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: '600',
+  },
+  small_hot_key: {
+    position: 'absolute',
+    bottom: -6,
+    right: -6,
+    backgroundColor: theme.palette.orange[500],
+    width: 25,
+    height: 25,
+    borderRadius: '20px',
+    color: '#fff',
+    fontSize: 12,
+    display: 'flex',
+    border: '1px solid #fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 }))
 function NewSale() {
@@ -351,7 +382,38 @@ function NewSale() {
           </Box>
         </Box>
         <Box className={classes.card_detail}>
-          <Box display={'flex'} alignItems={'center'} mb={'24px'}>
+          {/* <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mb={'24px'}>
+            <Box display={'flex'} borderRadius={'10px'} border={'1px dashed #ccc'} padding={'5px 10px'} mr={'10px'} alignItems={'center'}>
+              <Box
+                onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') })}
+                className={classes.cart_detail_icon}
+              >
+                <FileIcon color='#000' />
+              </Box>
+              <Typography color={'bunker.500'} className={classes.hot_key}>
+                T
+              </Typography>
+            </Box>
+            <Box display={'flex'} borderRadius={'10px'} border={'1px dashed #ccc'} padding={'5px 10px'} mr={'10px'} alignItems={'center'}>
+              <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
+                <TimeAndDate />
+              </Box>
+              <Typography color={'bunker.500'} className={classes.hot_key}>
+                D
+              </Typography>
+            </Box>
+            <Box display={'flex'} borderRadius={'10px'} border={'1px dashed #ccc'} padding={'5px 10px'} alignItems={'center'}>
+              <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
+                <DeleteIcon color='#ccc' width={'24px'} />
+              </Box>
+              <Typography color={'bunker.500'} className={classes.hot_key}>
+                O
+              </Typography>
+            </Box>
+
+      
+          </Box> */}
+          <Box display={'flex'}>
             <Box className={classes.cart_detail_id}>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'orange.500'} lineHeight={'26px'}>
                 #{get(cashBoxDetails, 'data.data.sale_number')}
@@ -362,14 +424,18 @@ function NewSale() {
               className={classes.cart_detail_icon}
             >
               <FileIcon color='#000' />
+              <Typography className={classes.small_hot_key}>T</Typography>
             </Box>
+
             <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
               <TimeAndDate />
+              <Typography className={classes.small_hot_key}>D</Typography>
             </Box>
             <Box className={classes.cart_detail_icon}>
               <DeleteIcon color='#ccc' width={'24px'} />
             </Box>
           </Box>
+
           <Box mb={'24px'}>
             <Box sx={{ display: 'flex', mb: '4px', justifyContent: 'space-between' }}>
               <Label>{t('client')}</Label>
