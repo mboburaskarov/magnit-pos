@@ -1,18 +1,16 @@
-import { Box, Typography } from '@mui/material'
-import CardDrawer from '../../../../components/Drawers/CardDrawer'
-import { FormProvider, useForm } from 'react-hook-form'
-import { error, success } from '../../../../utils/toast'
-import { requests } from '../../../../utils/requests'
-import { useMutation, useQuery } from 'react-query'
 import { LoadingButton } from '@mui/lab'
-import RoleCreateBody from './RoleCreateBody'
-import { useState } from 'react'
-import ActionCreateBody from './ActionCreateBody'
+import { Box, Typography } from '@mui/material'
 import { get } from 'lodash'
+import { useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useMutation } from 'react-query'
+import CardDrawer from '../../../../components/Drawers/CardDrawer'
+import { requests } from '../../../../utils/requests'
+import { error, success } from '../../../../utils/toast'
+import ActionCreateBody from './ActionCreateBody'
 
 export default function RolesCreateDrawer({ isOpen, onClose }) {
   const methods = useForm()
-  const [childrens, setChildrens] = useState([])
 
   const { mutate: createPermission, isLoading: createPermissionLoading } = useMutation(requests.createPermission, {
     onSuccess: () => {

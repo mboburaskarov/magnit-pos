@@ -13,7 +13,6 @@ import { get } from 'lodash'
 export default function RoleEditPage() {
   const { id } = useParams()
 
-  const { t } = useTranslation()
   const [selected, setSelected] = useState([])
   const [disabled, setDisabled] = useState([])
   const methods = useForm()
@@ -34,8 +33,8 @@ export default function RoleEditPage() {
       console.log('err', err)
     },
   })
-  const { data: singleRoleData, refetch: refetchsingleRoleData } = useQuery('singleRoleData', () => requests.getSingleRole(id))
-  const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery(['rolesAndPermissionListForEdit', id], () =>
+  const { data: singleRoleData } = useQuery('singleRoleData', () => requests.getSingleRole(id))
+  const { data: rolesAndPermissionList } = useQuery(['rolesAndPermissionListForEdit', id], () =>
     requests.getAllRolesWithPermissions({ role_id: id, limit: 20, offset: 0 })
   )
   const onSubmit = (data) => {
@@ -57,12 +56,9 @@ export default function RoleEditPage() {
     const requestBody = {
       name: get(data, 'name'),
       description: get(data, 'description'),
-      // data: {
       permissions,
-      // },
     }
     createRole({ id, data: requestBody })
-    // update(requestBody)
   }
   const onError = (err) => {
     console.log(err)
@@ -75,7 +71,6 @@ export default function RoleEditPage() {
           isLoading={createRoleLoading}
           buttonText='Редактировать'
           backIcon
-          // noActions
           backHref='/settings/roles'
           text={'Редактировать роль'}
           checkAccessId={'product-create'}

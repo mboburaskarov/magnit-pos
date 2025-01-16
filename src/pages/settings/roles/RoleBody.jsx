@@ -2,14 +2,11 @@ import { Box, Typography } from '@mui/material'
 import { createContext, useEffect, useRef, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import TextField from '../../../../components/Inputs/TextField'
 import SectionTitle from '../../../../components/SectionTitle'
-import { requests } from '../../../../utils/requests'
 import Section from './Section'
 
-import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
 import CartOutlineIcon from '../../../assets/icons/CartOutline'
 import FinanceIcon from '../../../assets/icons/FInanceIcon'
@@ -19,7 +16,6 @@ import QrScanIcon from '../../../assets/icons/QrScanIcon'
 import UserOutlineIcon from '../../../assets/icons/UserOutlineIcon'
 import UsersIcon from '../../../assets/icons/UsersIcon'
 import useDidUpdate from '../../../hooks/useDidUpdate'
-import ActionCreateBody from './ActionCreateBody'
 
 export const SearchContext = createContext()
 
@@ -73,7 +69,6 @@ const items = [
 export default function RoleBody({ rolesAndPermissionList, productData = null, disabled, setSelected, selected, setDisabled, roleData }) {
   const { setValue, watch } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
-  const [childrens, setChildrens] = useState([])
   useEffect(() => {
     setValue('name', get(roleData, 'name'))
     setValue('description', get(roleData, 'description'))
@@ -97,8 +92,6 @@ export default function RoleBody({ rolesAndPermissionList, productData = null, d
   const { t } = useTranslation()
   const appType = watch('app_type') || 'Pharma'
 
-  // const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories())
-
   useEffect(() => {
     if (productData) {
       setValue('product_name', productData?.name)
@@ -120,20 +113,9 @@ export default function RoleBody({ rolesAndPermissionList, productData = null, d
     }
   }, [productData])
 
-  // useEffect(() => {
-  //   if (!!parentCategories?.data && !!productData) {
-  //     const parentCategory = parentCategories?.data?.find((el) => el._id === productData?.categories?.[0]?.parentId)
-  //     setParentCategory({ ...parentCategory, name: parentCategory.nameRu })
-  //   }
-  // }, [parentCategories, productData])
-
   useEffect(() => {
     if (productCategories.length > 0) setValue('categories', productCategories)
   }, [productCategories])
-  useEffect(() => {
-    // refetchrolesAndPermissionList()
-    // refetchCategories()
-  }, [appType])
 
   const filterPermissions = (sections) => {
     const permissions = sections
@@ -147,8 +129,6 @@ export default function RoleBody({ rolesAndPermissionList, productData = null, d
   useEffect(() => {
     setPermissionList(get(rolesAndPermissionList, 'data.data', []))
     if (get(rolesAndPermissionList, 'data.data', [])) {
-      // const keys = rolePermissions?.data?.sections?.map((el) => el.key)
-      // setDisabled(keys)
       const permissions = []
 
       get(rolesAndPermissionList, 'data.data', [])
@@ -194,15 +174,7 @@ export default function RoleBody({ rolesAndPermissionList, productData = null, d
           {t('create_new_product.main_section.label')}
         </SectionTitle>
         <Box mt={'24px'}>
-          <TextField
-            required
-            fullWidth
-            borderRadius={'40px'}
-            name='name'
-            label={t('role.name')}
-            placeholder={t('role.name.placeholder')}
-            // sx={{ mb: '24px' }}
-          />
+          <TextField required fullWidth borderRadius={'40px'} name='name' label={t('role.name')} placeholder={t('role.name.placeholder')} />
           <Box height={'24px'} />
           <TextField
             required

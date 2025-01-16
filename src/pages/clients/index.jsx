@@ -1,11 +1,14 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, TextField, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../components/ConfirmDialog'
+import StyledDialog from '../../../components/Dialogs/StyledDialog'
 import ImageGallery from '../../../components/ImageGallery'
 import InputSearch from '../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../components/LoadingContainer'
@@ -13,16 +16,12 @@ import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import BigTickIcon from '../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../assets/icons/BigWarningIcon'
+import DeleteIcon from '../../assets/icons/DeleteIcon'
+import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/clientTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-import { useTheme } from '@mui/styles'
-import { useTranslation } from 'react-i18next'
-import ColumnsFilterButtonForAll from '../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import StyledDialog from '../../../components/Dialogs/StyledDialog'
-import DeleteIcon from '../../assets/icons/DeleteIcon'
-import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ClientsPage() {
@@ -31,16 +30,12 @@ export default function ClientsPage() {
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.clientTableColumns)
   const { values } = useQueryParams()
-  const [status, setStatus] = useState('ALL')
   const [regions, setRegions] = useState([])
   const [selectClients, setselectClients] = useState([])
-  const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
-  const [filterTableRowsMenu, setFilterTableRowsMenu] = useState(false)
-  const [isDrawerOpen, setIsDrawerOpen] = useState(null)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const selectClientsFunc = (isChecked, id) => {
     if (isChecked) {
@@ -55,7 +50,6 @@ export default function ClientsPage() {
     values,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
-    setIsDrawerOpen,
     selectClientsFunc,
   })
 
@@ -90,12 +84,8 @@ export default function ClientsPage() {
       supply_price_from: values?.supply_price_from,
       retail_price_from: values?.retail_price_from,
       isExpress: values?.isExpress,
-      ...(status !== 'ALL' && { status }),
-      ...(appType !== 'ALL' && { type: appType }),
     }
   }, [
-    status,
-    appType,
     values?.offset,
     values?.limit,
     values?.search,
@@ -121,65 +111,12 @@ export default function ClientsPage() {
     onSuccess: () => {
       refetch()
       success('Продукт успешно удален!')
-      setIsDrawerOpen(null)
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
       error('Ошибка при удалении товара!')
       setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
-      console.log('err', err)
-    },
-  })
-
-  const { mutate: rejectProduct } = useMutation(requests.rejectProduct, {
-    onSuccess: () => {
-      refetch()
-      success('Продукт успешно отклонен!')
-      setIsDrawerOpen(null)
-      setOpenConfirmDialog(null)
-      setRejectComment(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении отклонен!')
-      setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
-      console.log('err', err)
-    },
-  })
-  const { mutate: activateProduct, isLoading: isActivatingProduct } = useMutation(requests.activateProduct, {
-    onSuccess: () => {
-      success('Продукт успешно активирован!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
-      setIsDrawerOpen(null)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при активации продукта!')
-      refetch()
-      setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
-      console.log('err', err)
-    },
-  })
-  const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.changeclientstatus, {
-    onSuccess: () => {
-      success('Продукт успешно деактивирован!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
-      setIsDrawerOpen(null)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при деактивации продукта!')
-      refetch()
-      setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
       console.log('err', err)
     },
   })
@@ -189,21 +126,11 @@ export default function ClientsPage() {
   }, [clientsListFilter])
 
   useEffect(() => {
-    const count =
-      // status === 'ACTIVE'
-      //   ? clientsList?.data?.active
-      //   : status === 'INACTIVE'
-      //   ? clientsList?.data?.inactive
-      //   : status === 'INACTIVE_BY_VENDOR'
-      //   ? clientsList?.data?.inactiveByVendor
-      //   : status === 'BLOCKED'
-      //   ? clientsList?.data?.blocked
-      // : clientsList?.data.totalCount
-      clientsList?.data?.data?._meta?.total_count
+    const count = clientsList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [clientsList?.data, values?.limit, status])
+  }, [clientsList?.data, values?.limit])
 
   return (
     <LoadingContainer readyState={true}>
@@ -308,7 +235,6 @@ export default function ClientsPage() {
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            status={status}
             isRefreshing={loading || isFetchingclientsList || clientsListLoading}
           />
         </Box>
@@ -320,20 +246,8 @@ export default function ClientsPage() {
           open={!!openConfirmDialog}
           setOpen={setOpenConfirmDialog}
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={
-            openConfirmDialog?.type === 'activate'
-              ? 'Активировать клиента?'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Деактивировать клиента?'
-              : 'Удалить клиента?'
-          }
-          desc={
-            openConfirmDialog?.type === 'activate'
-              ? 'Вы действительно хотите активировать клиента, вы не можете вернуть этот прогресс после активации.'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Вы действительно хотите деактивировать клиента, вы не можете вернуть этот прогресс после деактивации.'
-              : 'Хотите ли вы удалить клиента?'
-          }
+          title={'Удалить клиента?'}
+          desc={'Хотите ли вы удалить клиента?'}
           supDesc={'“Azitromitsin 250 mg”'}
           actions={
             <>
@@ -350,13 +264,7 @@ export default function ClientsPage() {
                 variant='contained'
                 type='button'
                 loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                onClick={() =>
-                  openConfirmDialog?.type === 'activate'
-                    ? activateProduct(openConfirmDialog.id)
-                    : openConfirmDialog?.type === 'deactivate'
-                    ? deActivateProduct({ id: openConfirmDialog.id, status: 'INACTIVE' })
-                    : deleteClient({ data: [openConfirmDialog.id] })
-                }
+                onClick={() => deleteClient({ data: [openConfirmDialog.id] })}
               >
                 Да, удалить
               </LoadingButton>
@@ -364,31 +272,6 @@ export default function ClientsPage() {
           }
         />
       )}
-      <StyledDialog
-        open={!!rejectComment?.id}
-        title={'Причину отклонения'}
-        buttonLabel={'Сохранить'}
-        customOnSubmit={() => {
-          if (rejectComment.comment && rejectComment.id) {
-            rejectProduct({
-              id: rejectComment.id,
-              rejectedComment: rejectComment.comment,
-            })
-          }
-        }}
-        onClose={() => setRejectComment(null)}
-      >
-        {rejectComment && (
-          <Box p={7} pt={5}>
-            <TextField
-              multiline
-              onChange={(e) => setRejectComment((p) => ({ ...p, comment: e.target.value }))}
-              fullWidth
-              placeholder='Введите причину отклонения'
-            />
-          </Box>
-        )}
-      </StyledDialog>
     </LoadingContainer>
   )
 }

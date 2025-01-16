@@ -1,26 +1,24 @@
-import { Box, Button, IconButton, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { Box, Button, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import * as qs from 'qs'
+import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { requests } from '../../../../utils/requests'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import InputRange from '../../../../components/Inputs/InputRange'
-import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
-import * as qs from 'qs'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
+import InputRange from '../../../../components/Inputs/InputRange'
+import SelectSimple from '../../../../components/Select/SelectSimple'
+import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
+import { requests } from '../../../../utils/requests'
 import CloseIcon from '../../../assets/icons/CloseIcon'
-import { theme } from '../../../assets/theme'
-import { useTranslation } from 'react-i18next'
-import { useTheme } from '@mui/styles'
+import { useQueryParams } from '../../../hooks/useQueryParams'
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
   const { formState, reset, control, getValues } = methods
-  const [isExpress, setIsExpress] = useState(false)
 
   const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
   const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 20, offset: 0 }))
@@ -37,7 +35,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       retail_price_to: data.retail_price_to || undefined,
       store_id: data.store_id?.id || undefined,
       producer: data.producer?.name || undefined,
-      isExpress: isExpress || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 

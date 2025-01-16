@@ -62,8 +62,6 @@ export default function tableHeaderSelector({ cardShiftColumns, t, changeCloseBo
                 id={`net_amount_${p?.data?.id}`}
                 name={`net_amount_${p?.data?.id}`}
                 type='number'
-                // uncontrolled
-                // value={get(p, 'data.net_amount')}
               />
             )}
           </>

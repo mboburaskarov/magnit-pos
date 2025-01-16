@@ -1,23 +1,20 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
-import { Box, Button, Typography } from '@mui/material'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import HeadPhonesIcon from '../../../assets/icons/HeadPhonesIcon'
+import { Box, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
+import React, { useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import AssigneMeButton from './AssigneMeButton'
+import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
+import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
+import InputSearch from '../../../../components/Inputs/InputSearch'
+import SelectSimple from '../../../../components/Select/SelectSimple'
+import { requests } from '../../../../utils/requests'
+import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
 import UnlockIcon from '../../../assets/icons/UnlockIcon'
 import UserOutlineIcon from '../../../assets/icons/UserOutlineIcon'
+import AssigneMeButton from './AssigneMeButton'
 import SerchedItem from './SerchedItem'
-import { makeStyles } from '@mui/styles'
-import { requests } from '../../../../utils/requests'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { useQuery } from 'react-query'
-import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
-import ArrowDown from '../../../assets/icons/ArrowDown'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { get } from 'lodash'
 const useStyles = makeStyles((theme) => ({
   overlay: {
     cursor: 'pointer',
@@ -42,10 +39,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
   searchResult: {
-    // padding: 3,
     zIndex: 27,
-    // maxHeight: '83vh',
-    // overflow: 'scroll',
     '&::-webkit-scrollbar': {
       background: 'transparent',
       width: 6,
@@ -110,21 +104,13 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 72,
     flexDirection: 'column',
     marginTop: 16,
-    // backgroundColor: theme.palette.background.default,
     borderRadius: 16,
     position: 'relative',
     zIndex: 100,
     cursor: 'pointer',
-    // '&:focus-visible': {
-    //   transition: 'all 0.01s ease',
-    //   boxShadow: `0 0 0px 3px ${theme.palette.red[500]} !important`,
-    //   outline: 'transparent !important',
-    //   background: theme.palette.gray[101],
-    // },
   },
 }))
 function CartSearchBar({ handleAddProduct, cashBoxDetails, showOverlay, setShowOverlay }) {
-  const { values } = useQueryParams()
   const [searchTearm, setSearchTerm] = useState('')
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
@@ -135,12 +121,9 @@ function CartSearchBar({ handleAddProduct, cashBoxDetails, showOverlay, setShowO
       search: searchTearm,
     }
   }, [searchTearm])
-  const {
-    data: productsList,
-    isLoading: productsListLoading,
-    isFetching: isFetchingproductsList,
-    refetch,
-  } = useQuery(['productsList', productsListFilter], () => requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter))
+  const { data: productsList } = useQuery(['productsList', productsListFilter], () =>
+    requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter)
+  )
   const methods = useForm()
   const classes = useStyles()
   const productsData = productsList?.data?.data
@@ -154,14 +137,11 @@ function CartSearchBar({ handleAddProduct, cashBoxDetails, showOverlay, setShowO
             style={{ zIndex: showOverlay ? 25 : 10 }}
             sx={{ marginRight: '16px !important', height: '48px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
             name='search'
-            // uncontrolled
             placeholder={'Поиск: товар, категория, штрих-код'}
             fullWidth
             onChange={(e) => {
-              // setFakeIndexForCheckSearch(-1)
               setSearchTerm(e.target.value)
               setShowOverlay(true)
-              // setPage(1)
             }}
           />
           <Box position={'relative'} minWidth={'240px'}>
@@ -176,7 +156,6 @@ function CartSearchBar({ handleAddProduct, cashBoxDetails, showOverlay, setShowO
                   Сотрудники
                 </Typography>
               }
-              // options={[]}
               getOptionLabel={(option) => (
                 <Typography maxHeight={48} display='inline-flex' color='gray.600'>
                   <Box px={0.5} width={32}>
@@ -191,7 +170,6 @@ function CartSearchBar({ handleAddProduct, cashBoxDetails, showOverlay, setShowO
             id={'ff'}
             noArrow
             ml={'16px'}
-            // endIcon={<ArrowDown />
             noMarginSvg
             placement='bottom-end'
             buttonLabel={

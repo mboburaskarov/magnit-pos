@@ -1,15 +1,12 @@
-import { memo } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import TimeCell from '../../../../components/AgGridTable/Cells/TimeCell'
-import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { products_statuses } from '../../../assets/data/products-statuses'
-import EditIcon from '../../../assets/icons/EditIcon'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import CheckAccess from '../../../../components/CheckAccess'
 import { get } from 'lodash'
-import StyledTooltip from '../../../../components/StyledTooltip'
+import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import CheckAccess from '../../../../components/CheckAccess'
+import StyledTooltip from '../../../../components/StyledTooltip'
+import thousandDivider from '../../../../utils/thousandDivider'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import EditIcon from '../../../assets/icons/EditIcon'
 
 const SimpleText = ({ data, width = 'auto', rowIndex, type, withDevider, currency }) => {
   return (
@@ -19,53 +16,7 @@ const SimpleText = ({ data, width = 'auto', rowIndex, type, withDevider, currenc
   )
 }
 
-const Image = ({ data, rowIndex, setImages }) => {
-  return (
-    <Box
-      sx={{
-        position: 'relative',
-        width: '40px',
-        height: '40px',
-        borderRadius: 2,
-        '&:hover': {
-          '#overlay_image': {
-            opacity: 0.5,
-          },
-        },
-      }}
-    >
-      <img
-        id={`product-image-${rowIndex}`}
-        src={data?.main_photo || '/default-img.avif'}
-        alt={data?.name}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
-      />
-
-      {data?.files?.[0] && (
-        <Box
-          sx={{
-            transition: 'all 0.2s ease',
-            cursor: 'pointer',
-            opacity: 0,
-            borderRadius: 2,
-            bottom: 0,
-            right: 0,
-            top: 0,
-            left: 0,
-            bgcolor: 'green.600',
-            position: 'absolute',
-            zIndex: 2,
-          }}
-          id='overlay_image'
-          onClick={() => setImages({ data: data?.files })}
-        />
-      )}
-    </Box>
-  )
-}
-
-export default function tableHeaderSelector({ productsColumns, values, setImages, t, selectVendors, setOpenConfirmDialog, setIsDrawerOpen }) {
-  // const { values } = useQueryParams()
+export default function tableHeaderSelector({ productsColumns, t, selectVendors, setOpenConfirmDialog }) {
   const navigate = useNavigate()
   const columns = productsColumns?.map((el) => {
     if (el.field === 'checkbox') {

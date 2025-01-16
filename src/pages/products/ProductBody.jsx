@@ -1,47 +1,32 @@
-import { Box, Button, Grid } from '@mui/material'
+import { Box, Button } from '@mui/material'
+import { get } from 'lodash'
 import { useEffect, useState } from 'react'
-import TextField from '../../../components/Inputs/TextField'
-import TickIcon from '../../assets/icons/TickIcon'
-import SectionTitle from '../../../components/SectionTitle'
-import ImageUpload from '../../../components/ImageUpload'
-import InputSwitch from '../../../components/Inputs/InputSwitch'
-import SelectSimple from '../../../components/Select/SelectSimple'
-import CategoriesTree from '../../../components/CategoriesTree'
-import { useQuery } from 'react-query'
-import { requests } from '../../../utils/requests'
 import { useFormContext } from 'react-hook-form'
-import UploadImage from '../../../components/UploadImage'
-import OutLineTextField from '../../../components/Inputs/OutLineTextField'
-import InputDatePicker from '../../../components/Inputs/InputDatePicker'
 import { useTranslation } from 'react-i18next'
-import InputWithButton from '../../../components/Inputs/InputWithButton'
-import Label from '../../../components/Label'
-import productStoresTableHeaderSelector from './productStoresTableHeaderSelector'
-import AgGridTable from '../../../components/AgGridTable/AgGridTable'
+import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { get, method } from 'lodash'
+import AgGridTable from '../../../components/AgGridTable/AgGridTable'
+import CategoriesTree from '../../../components/CategoriesTree'
+import InputDatePicker from '../../../components/Inputs/InputDatePicker'
 import InputQuantity from '../../../components/Inputs/InputQuantity'
-
-const filterTwoArrays = (array1, array2) => {
-  const arr = array1?.filter((item) => {
-    const onlyIds = array2?.map((el) => el._id)
-
-    return !onlyIds?.includes(item._id)
-  })
-  return arr
-}
+import OutLineTextField from '../../../components/Inputs/OutLineTextField'
+import TextField from '../../../components/Inputs/TextField'
+import Label from '../../../components/Label'
+import SectionTitle from '../../../components/SectionTitle'
+import SelectSimple from '../../../components/Select/SelectSimple'
+import UploadImage from '../../../components/UploadImage'
+import { requests } from '../../../utils/requests'
+import { useQueryParams } from '../../hooks/useQueryParams'
+import productStoresTableHeaderSelector from './productStoresTableHeaderSelector'
 
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
   const [uniType, setUniType] = useState('piece')
-  const [hasDiscontPrice, setHasDiscontPrice] = useState(false)
   const { columns, loading } = useSelector((state) => state.storesListTableColumnsForProduct)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
 
-  const [parentCategory, setParentCategory] = useState(null)
   const { t } = useTranslation()
   const [images, setImages] = useState([])
   const appType = watch('app_type') || 'BUCHET'
@@ -79,7 +64,6 @@ export default function ProductBody({ productData = null }) {
     refetchShopList()
   }, [values.limit, values.offset])
   const { data: unitsList, refetch: refetchUnitList } = useQuery('unitsList', () => requests.getAllUnits({ limit: 20, offset: 0, type: appType }))
-  const { data: parentCategories } = useQuery('parentCategories', () => requests.getAllCategories({ product_id: get(productData, 'id') }))
 
   useEffect(() => {
     if (productData) {
@@ -96,38 +80,14 @@ export default function ProductBody({ productData = null }) {
       setValue('product_unit', productData?.product_units?.map(({ unit_name, ...item }) => ({ ...item, name: unit_name })) || 0)
       setValue('expire_date', new Date(productData?.expire_date) || new Date())
       setValue('barcode', productData?.barcode || 0)
-
-      // setValue('app_type', productData?.type || 'BUCHET')
-      // setValue('product_price', productData?.cost)
-      // setValue('product_price_with_discount', productData?.discountCost)
-      // setValue('description', productData?.description)
-      // setValue('shop', productData?.shop)
-      // setValue(
-      //   'hashtag',
-      //   productData?.hashtag?.map((el) => ({ value: el.nameRu, name: el.nameRu, id: el._id }))
-      // )
-      // setValue('preparation_time', {
-      //   name: `${productData?.preparationTime} ${productData?.preparationTime === 0 ? 'express' : 'минут'}`,
-      //   time: productData?.preparationTime,
-      // })
       setProductCategories(productData?.categories?.map((el, ind) => ({ ...el, name: el.nameRu, quantity: productData?.quantityOfCategories?.[ind] })))
-      setHasDiscontPrice(productData?.isDiscount)
     }
   }, [productData])
   useEffect(() => {
     get(storeList, 'data.data.data', []).map((el) => {
-      // setValue(`store_product.${el.id}.quantity`, 0)
-      // setValue(`store_product.${el.id}.small_quantity`, 0)
       setValue(`store_product.${el.id}.store_id`, el.id)
     })
   }, [storeList])
-  useEffect(() => {
-    if (!!parentCategories?.data && !!productData) {
-      const parentCategory = []
-      // parentCategories?.data?.find((el) => el._id === productData?.categories?.[0]?.parentId)
-      setParentCategory({ ...parentCategory, name: parentCategory.nameRu })
-    }
-  }, [parentCategories, productData])
 
   useEffect(() => {
     if (productCategories?.length > 0) setValue('categories', productCategories)
@@ -145,14 +105,7 @@ export default function ProductBody({ productData = null }) {
       setValue('app_type', 'BUCHET')
     }
   }, [])
-  const addCategoryButton = productCategories?.length > 0 ? !!productCategories?.at(-1)?.name : true
   const { refetch } = useQuery('barcode', () => requests.generateBarcode(), { enabled: false })
-  const generateBarcode = () => {
-    refetch().then(({ data }) => {
-      clearErrors('barcode')
-      setValue('barcode', data?.data?.barcode)
-    })
-  }
 
   return (
     <Box
@@ -283,12 +236,8 @@ export default function ProductBody({ productData = null }) {
             pagination
             isDataLoading={false}
             offsetCount={offsetCount}
-            // updaterAction={(newData) => {
-            //   if (newData) dispatch(updateTableHeader(newData))
-            // }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            // status={status}
             isRefreshing={false}
           />
         </Box>
@@ -303,7 +252,6 @@ export default function ProductBody({ productData = null }) {
             required
             fullWidth
             borderRadius={'40px'}
-            // type={'te'}
             name='manufacturer'
             label={t('create_new_product.features.manufacturer')}
             placeholder={t('create_new_product.features.manufacturer.placeholder')}
@@ -341,7 +289,6 @@ export default function ProductBody({ productData = null }) {
             }}
           >
             <SelectSimple
-              // isMulti
               required
               white
               isClearable={false}

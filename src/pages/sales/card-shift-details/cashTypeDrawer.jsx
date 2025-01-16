@@ -79,9 +79,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 function CashTypeDrawer({ open, setOpen }) {
   const classes = useStyles()
-  const [draftfilter, setDraftFilter] = useState(false)
-
-  const [isOpenChild, setIsOpenChild] = useState(false)
   const theme = useTheme()
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>

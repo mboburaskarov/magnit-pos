@@ -1,32 +1,27 @@
-import { LoadingButton } from '@mui/lab'
-import { Box, Button, Container } from '@mui/material'
+import { Box, Container } from '@mui/material'
+import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
+import Header from '../../../../components/Header'
+import InputQuantity from '../../../../components/Inputs/InputQuantity'
 import InputSearch from '../../../../components/Inputs/InputSearch'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
+import { error } from '../../../../utils/toast'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import overplusAudio from '../../../assets/audio/overplus.mp3'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
-import BigTickIcon from '../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/importWithCheckingTableColumns'
-import FilterMenu from './FilterMenu'
-import { get } from 'lodash'
-import Header from '../../../../components/Header'
-import InputQuantity from '../../../../components/Inputs/InputQuantity'
-import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import tableHeaderSelector from './tableHeaderSelector'
-import { FormProvider, useForm } from 'react-hook-form'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ImportWithCheckingPage() {
@@ -37,10 +32,8 @@ export default function ImportWithCheckingPage() {
   const { t } = useTranslation()
   const { id } = useParams()
 
-  const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.importWithCheckingColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
   const [imports, setImports] = useState([])
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
@@ -48,8 +41,6 @@ export default function ImportWithCheckingPage() {
   const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
-  const [filterMenu, setFilterMenu] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedImportNumber, {
     onSuccess: ({ data }) => {
       refetch()
@@ -112,18 +103,6 @@ export default function ImportWithCheckingPage() {
     refetch,
   } = useQuery(['importWithCheckingDetails', importWithCheckingDetailsFilter], () => requests.getImportDetails(importWithCheckingDetailsFilter))
 
-  const { mutate: finishImportChecking, isLoading: isFinishImportChecking } = useMutation(requests.finishImportChecking, {
-    onSuccess: () => {
-      success('Импорт завершен!')
-      navigate('/products/import')
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при импорт завершен!')
-      setOpenConfirmDialog(null)
-    },
-  })
-
   useEffect(() => {
     refetch()
   }, [importWithCheckingDetailsFilter])
@@ -139,24 +118,13 @@ export default function ImportWithCheckingPage() {
     })
   }, [importWithCheckingDetails?.data, values?.limit])
 
-  useEffect(() => {
-    // setManualNumber(0)
-  }, [appType])
   const sendScannedImport = () => {
     addScan({ barcode, count: Number(manualNumber), import_id: id })
   }
   return (
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
-        <Header
-          isLoading={false}
-          buttonText='Завершить'
-          backIcon
-          backHref='/products/import'
-          text={'Импорт с проверкой'}
-          checkAccessId={'product-create'}
-          onSubmit={() => setOpenConfirmDialog(true)}
-        />
+        <Header isLoading={false} buttonText='Завершить' backIcon backHref='/products/import' text={'Импорт с проверкой'} checkAccessId={'product-create'} />
         <Container>
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -234,33 +202,6 @@ export default function ImportWithCheckingPage() {
             </Box>
           </Box>
         </Container>
-
-        {openConfirmDialog && (
-          <ConfirmDialog
-            open={!!openConfirmDialog}
-            setOpen={setOpenConfirmDialog}
-            icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-            title={'Завершить'}
-            desc={'Вы действительно хотите завершить импорт?'}
-            supDesc={''}
-            actions={
-              <>
-                <Button
-                  sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
-                  fullWidth
-                  color='secondary'
-                  variant='contained'
-                  onClick={() => setOpenConfirmDialog(null)}
-                >
-                  Нет
-                </Button>
-                <LoadingButton variant='contained' loading={isFinishImportChecking} type='button' onClick={() => finishImportChecking(id)}>
-                  Да, завершить
-                </LoadingButton>
-              </>
-            }
-          />
-        )}
       </FormProvider>
     </LoadingContainer>
   )

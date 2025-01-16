@@ -29,27 +29,18 @@ export default function AllSalesPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.salesTableColumns)
   const { values } = useQueryParams()
-  const [status, setStatus] = useState('ALL')
   const [regions, setRegions] = useState([])
-  const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openSaleDrawer, setOpenSaleDrawer] = useState(false)
-  const [filterTableRowsMenu, setFilterTableRowsMenu] = useState(false)
-  const [isDrawerOpen, setIsDrawerOpen] = useState(null)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
     values,
     setImages: setOpenImageGallery,
-    setOpenConfirmDialog,
-    setIsDrawerOpen,
     setOpenSaleDrawer,
   })
 
@@ -81,16 +72,10 @@ export default function AllSalesPage() {
       producer: values?.producer,
       supply_price_to: values?.supply_price_to,
       retail_price_to: values?.retail_price_to,
-      region: values?.region_id,
       supply_price_from: values?.supply_price_from,
       retail_price_from: values?.retail_price_from,
-      isExpress: values?.isExpress,
-      ...(status !== 'ALL' && { status }),
-      ...(appType !== 'ALL' && { type: appType }),
     }
   }, [
-    status,
-    appType,
     values?.offset,
     values?.limit,
     values?.search,
@@ -101,9 +86,6 @@ export default function AllSalesPage() {
     values?.retail_price_to,
     values?.supply_price_from,
     values?.retail_price_from,
-    values?.region_id,
-    values?.isExpress,
-    regions,
   ])
   const {
     data: salesList,
@@ -112,93 +94,16 @@ export default function AllSalesPage() {
     refetch,
   } = useQuery(['salesList', salesListFilter], () => requests.getAllSales(salesListFilter))
 
-  const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
-    onSuccess: () => {
-      refetch()
-      success('Продукт успешно удален!')
-      setIsDrawerOpen(null)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении товара!')
-      setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
-      console.log('err', err)
-    },
-  })
-
-  const { mutate: rejectProduct } = useMutation(requests.rejectProduct, {
-    onSuccess: () => {
-      refetch()
-      success('Продукт успешно отклонен!')
-      setIsDrawerOpen(null)
-      setOpenConfirmDialog(null)
-      setRejectComment(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении отклонен!')
-      setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
-      console.log('err', err)
-    },
-  })
-  const { mutate: activateProduct, isLoading: isActivatingProduct } = useMutation(requests.activateProduct, {
-    onSuccess: () => {
-      success('Продукт успешно активирован!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
-      setIsDrawerOpen(null)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при активации продукта!')
-      refetch()
-      setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
-      console.log('err', err)
-    },
-  })
-  const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.changeProductStatus, {
-    onSuccess: () => {
-      success('Продукт успешно деактивирован!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
-      setIsDrawerOpen(null)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при деактивации продукта!')
-      refetch()
-      setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
-      console.log('err', err)
-    },
-  })
-
   useEffect(() => {
     refetch()
   }, [salesListFilter])
 
   useEffect(() => {
-    const count =
-      // status === 'ACTIVE'
-      //   ? salesList?.data?.active
-      //   : status === 'INACTIVE'
-      //   ? salesList?.data?.inactive
-      //   : status === 'INACTIVE_BY_VENDOR'
-      //   ? salesList?.data?.inactiveByVendor
-      //   : status === 'BLOCKED'
-      //   ? salesList?.data?.blocked
-      // : salesList?.data.totalCount
-      salesList?.data?.data?._meta?.total_count
+    const count = salesList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [salesList?.data, values?.limit, status])
+  }, [salesList?.data, values?.limit])
 
   return (
     <LoadingContainer readyState={true}>
@@ -275,7 +180,6 @@ export default function AllSalesPage() {
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            status={status}
             isRefreshing={loading || isFetchingsalesList || salesListLoading}
           />
         </Box>
@@ -283,80 +187,6 @@ export default function AllSalesPage() {
       <SaleDrawer open={openSaleDrawer} setOpen={setOpenSaleDrawer} />
 
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
-      {openConfirmDialog && (
-        <ConfirmDialog
-          open={!!openConfirmDialog}
-          setOpen={setOpenConfirmDialog}
-          icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={
-            openConfirmDialog?.type === 'activate'
-              ? 'Активировать продукт?'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Деактивировать продукт?'
-              : 'Удалить продукт?'
-          }
-          desc={
-            openConfirmDialog?.type === 'activate'
-              ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-              : 'Вы хотите удалить продукт?'
-          }
-          supDesc={'“Azitromitsin 250 mg”'}
-          actions={
-            <>
-              <Button
-                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
-                fullWidth
-                color='secondary'
-                variant='contained'
-                onClick={() => setOpenConfirmDialog(null)}
-              >
-                Нет
-              </Button>
-              <LoadingButton
-                variant='contained'
-                type='button'
-                loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                onClick={() =>
-                  openConfirmDialog?.type === 'activate'
-                    ? activateProduct(openConfirmDialog.id)
-                    : openConfirmDialog?.type === 'deactivate'
-                    ? deActivateProduct({ id: openConfirmDialog.id, status: 'INACTIVE' })
-                    : deleteProduct(openConfirmDialog.id)
-                }
-              >
-                Да, удалить
-              </LoadingButton>
-            </>
-          }
-        />
-      )}
-      <StyledDialog
-        open={!!rejectComment?.id}
-        title={'Причину отклонения'}
-        buttonLabel={'Сохранить'}
-        customOnSubmit={() => {
-          if (rejectComment.comment && rejectComment.id) {
-            rejectProduct({
-              id: rejectComment.id,
-              rejectedComment: rejectComment.comment,
-            })
-          }
-        }}
-        onClose={() => setRejectComment(null)}
-      >
-        {rejectComment && (
-          <Box p={7} pt={5}>
-            <TextField
-              multiline
-              onChange={(e) => setRejectComment((p) => ({ ...p, comment: e.target.value }))}
-              fullWidth
-              placeholder='Введите причину отклонения'
-            />
-          </Box>
-        )}
-      </StyledDialog>
     </LoadingContainer>
   )
 }

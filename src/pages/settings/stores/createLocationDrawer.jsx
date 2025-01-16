@@ -20,9 +20,6 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: '660px',
       borderRadius: '24px 0 0 24px',
       backgroundColor: theme.palette.background.default,
-      '& form': {
-        // position: 'relative',
-      },
     },
   },
   header: {
@@ -48,7 +45,6 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
   const { t } = useTranslation()
   const classes = useStyles()
   const methods = useForm()
-  const userData = useSelector((state) => state.user)
 
   useEffect(() => {
     methods.register('dial_code')
@@ -63,7 +59,6 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
       closeDrawer(false)
       methods.reset()
       refetchVendorList()
-      // setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance') })
       success('Вендор создан!')
     },
     onError: (err) => {
@@ -77,7 +72,6 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
       closeDrawer(false)
       methods.reset()
       refetchVendorList()
-      // setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance') })
       success('Продукт успешно создан!')
     },
     onError: (err) => {

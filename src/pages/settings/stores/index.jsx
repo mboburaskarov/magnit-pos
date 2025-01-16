@@ -17,7 +17,6 @@ import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/storeTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-// import ProductDrawer from './ProductDrawer'
 import { useTheme } from '@mui/styles'
 import { useTranslation } from 'react-i18next'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
@@ -28,20 +27,15 @@ import CreateLocationDrawer from './createLocationDrawer'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ProductsPage() {
-  const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.storeTableColumns)
   const { values } = useQueryParams()
-  const [status, setStatus] = useState('ALL')
   const [regions, setRegions] = useState([])
-  const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
-  const [isDrawerOpen, setIsDrawerOpen] = useState(null)
   const [openCreateLocationDrawer, setopenCreateLocationDrawer] = useState(false)
 
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
@@ -52,7 +46,6 @@ export default function ProductsPage() {
     values,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
-    setIsDrawerOpen,
   })
 
   /// filter table columns with permission
@@ -89,12 +82,8 @@ export default function ProductsPage() {
       supply_price_from: values?.supply_price_from,
       retail_price_from: values?.retail_price_from,
       isExpress: values?.isExpress,
-      ...(status !== 'ALL' && { status }),
-      ...(appType !== 'ALL' && { type: appType }),
     }
   }, [
-    status,
-    appType,
     values?.offset,
     values?.limit,
     values?.search,
@@ -120,65 +109,12 @@ export default function ProductsPage() {
     onSuccess: () => {
       refetch()
       success('Продукт успешно удален!')
-      setIsDrawerOpen(null)
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
       error('Ошибка при удалении товара!')
       setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
-      console.log('err', err)
-    },
-  })
-
-  const { mutate: rejectProduct } = useMutation(requests.rejectProduct, {
-    onSuccess: () => {
-      refetch()
-      success('Продукт успешно отклонен!')
-      setIsDrawerOpen(null)
-      setOpenConfirmDialog(null)
-      setRejectComment(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении отклонен!')
-      setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
-      console.log('err', err)
-    },
-  })
-  const { mutate: activateProduct, isLoading: isActivatingProduct } = useMutation(requests.activateProduct, {
-    onSuccess: () => {
-      success('Продукт успешно активирован!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
-      setIsDrawerOpen(null)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при активации продукта!')
-      refetch()
-      setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
-      console.log('err', err)
-    },
-  })
-  const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.changeProductStatus, {
-    onSuccess: () => {
-      success('Продукт успешно деактивирован!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
-      setIsDrawerOpen(null)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при деактивации продукта!')
-      refetch()
-      setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
       console.log('err', err)
     },
   })
@@ -188,21 +124,11 @@ export default function ProductsPage() {
   }, [storesListFilter])
 
   useEffect(() => {
-    const count =
-      // status === 'ACTIVE'
-      //   ? storesList?.data?.active
-      //   : status === 'INACTIVE'
-      //   ? storesList?.data?.inactive
-      //   : status === 'INACTIVE_BY_VENDOR'
-      //   ? storesList?.data?.inactiveByVendor
-      //   : status === 'BLOCKED'
-      //   ? storesList?.data?.blocked
-      // : storesList?.data.totalCount
-      storesList?.data?.data?._meta?.total_count
+    const count = storesList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [storesList?.data, values?.limit, status])
+  }, [storesList?.data, values?.limit])
 
   return (
     <LoadingContainer readyState={true}>
@@ -267,7 +193,6 @@ export default function ProductsPage() {
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            status={status}
             isRefreshing={loading || isFetchingstoresList || storesListLoading}
           />
         </Box>
@@ -279,20 +204,8 @@ export default function ProductsPage() {
           open={!!openConfirmDialog}
           setOpen={setOpenConfirmDialog}
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={
-            openConfirmDialog?.type === 'activate'
-              ? 'Активировать магазин?'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Деактивировать магазин?'
-              : 'Удалить магазин?'
-          }
-          desc={
-            openConfirmDialog?.type === 'activate'
-              ? 'Вы действительно хотите активировать магазин, вы не можете вернуть этот прогресс после активации.'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Вы действительно хотите деактивировать магазин, вы не можете вернуть этот прогресс после деактивации.'
-              : 'хотите удалить свой магазин?'
-          }
+          title={'Удалить магазин?'}
+          desc={'хотите удалить свой магазин?'}
           supDesc={openConfirmDialog.name}
           actions={
             <>
@@ -309,13 +222,7 @@ export default function ProductsPage() {
                 variant='contained'
                 type='button'
                 loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                onClick={() =>
-                  openConfirmDialog?.type === 'activate'
-                    ? activateProduct(openConfirmDialog.id)
-                    : openConfirmDialog?.type === 'deactivate'
-                    ? deActivateProduct({ id: openConfirmDialog.id, status: 'INACTIVE' })
-                    : deleteStore(openConfirmDialog.id)
-                }
+                onClick={() => deleteStore(openConfirmDialog.id)}
               >
                 Да, удалить
               </LoadingButton>
@@ -323,20 +230,7 @@ export default function ProductsPage() {
           }
         />
       )}
-      <StyledDialog
-        open={!!rejectComment?.id}
-        title={'Причину отклонения'}
-        buttonLabel={'Сохранить'}
-        customOnSubmit={() => {
-          if (rejectComment.comment && rejectComment.id) {
-            rejectProduct({
-              id: rejectComment.id,
-              rejectedComment: rejectComment.comment,
-            })
-          }
-        }}
-        onClose={() => setRejectComment(null)}
-      >
+      <StyledDialog open={!!rejectComment?.id} title={'Причину отклонения'} buttonLabel={'Сохранить'} onClose={() => setRejectComment(null)}>
         {rejectComment && (
           <Box p={7} pt={5}>
             <TextField

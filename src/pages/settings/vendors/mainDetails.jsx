@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import InputSwitchNew from '../../../../components/Inputs/InputSwitch'
@@ -39,9 +39,8 @@ export default function MainDetails({ clientData, openDrawer }) {
   const classes = useStyles()
   const { data: employeeInfo, refetch: refetemployeeInfo } = useQuery(['employeeInfo', openDrawer], () => requests.getSingleVendor(get(openDrawer, 'id', 'no')))
   const mode = openDrawer?.mode
-  const { control, errors, setValue, register, watch } = useFormContext()
+  const { control, errors, setValue } = useFormContext()
   const { t } = useTranslation()
-  // const cards = watch('cards')
   useEffect(() => {
     refetemployeeInfo
   }, [openDrawer])
@@ -50,43 +49,14 @@ export default function MainDetails({ clientData, openDrawer }) {
       setValue('first_name', get(employeeInfo, 'data.data.first_name'))
       setValue('last_name', get(employeeInfo, 'data.data.last_name'))
       setValue('phone', get(employeeInfo, 'data.data.phone'))
-      // setValue('password', get(employeeInfo, 'data.data.password'))
       get(employeeInfo, 'data.data.birthdate', false) && setValue('date_of_birth', new Date(get(employeeInfo, 'data.data.birthdate')))
       setValue('gender', get(employeeInfo, 'data.data.gender'))
       setValue('store', get(employeeInfo, 'data.data.store'))
       setValue('role', get(employeeInfo, 'data.data.roles'))
     }
-    // register('dial_code')
-    // setValue('dial_code', '+998')
   }, [employeeInfo])
-  const [cardCode, setCardCode] = useState('')
-  const [cardName, setCardName] = useState('')
-  const [openCardDialogProgress, setOpenCardDialogProgress] = useState(false)
-  const [openCardDialogSuccess, setOpenCardDialogSuccess] = useState(false)
-  const [openCardDialogError, setOpenCardDialogError] = useState(false)
-  const [open, setOpen] = useState(false)
-  const { data: storesList, refetch: refetstoresList } = useQuery('storesList', () => requests.getAllShops({ limit: 20, offset: 0 }))
-  const { data: rolesList, refetch: refetrolesList } = useQuery('rolesList', () => requests.getAllRoles({ limit: 20, offset: 0 }))
-
-  const onEnterPress = () => {
-    if (openCardDialogProgress) {
-      if (cardCode) {
-        setOpenCardDialogProgress(false)
-        setOpenCardDialogSuccess(true)
-        setTimeout(() => {
-          setOpenCardDialogSuccess(false)
-          setOpen(true)
-        }, 1000)
-      } else {
-        setOpenCardDialogProgress(false)
-        setOpenCardDialogError(true)
-        setCardCode('')
-        setTimeout(() => {
-          setOpenCardDialogError(false)
-        }, 1000)
-      }
-    }
-  }
+  const { data: storesList } = useQuery('storesList', () => requests.getAllShops({ limit: 20, offset: 0 }))
+  const { data: rolesList } = useQuery('rolesList', () => requests.getAllRoles({ limit: 20, offset: 0 }))
 
   return (
     <Box mt={'24px'}>
@@ -131,7 +101,6 @@ export default function MainDetails({ clientData, openDrawer }) {
             name='phone'
             placeholder={t('menu.settings.shops.shop_create.phone_placeholder')}
             control={control}
-            // defaultValue={clientData ? [clientData.phone][0] : ''}
             fullWidth
             boxStyle={{ marginBottom: '0', marginTop: 'auto' }}
             required
@@ -148,7 +117,6 @@ export default function MainDetails({ clientData, openDrawer }) {
           <TextField
             id='password'
             name='password'
-            // label={t('menu.clients.new.last_name')}
             control={control}
             fullWidth
             required={mode === 'edit' ? false : true}
@@ -189,7 +157,6 @@ export default function MainDetails({ clientData, openDrawer }) {
             isMulti
             isClearable={false}
             options={get(rolesList, 'data.data.data', []).map((el) => ({ value: el.id, name: el.name, id: el.id }))}
-            // options={get(rolesList, 'data.data.data')}
             name='role'
           />
         </Grid>

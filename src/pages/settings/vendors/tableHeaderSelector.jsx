@@ -63,17 +63,7 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({
-  setopenCreateVendorDrawer,
-  vendorsColumns,
-  values,
-  setImages,
-  t,
-  setOpenConfirmDialog,
-  setIsDrawerOpen,
-  selectVendors,
-}) {
-  // const { values } = useQueryParams()
+export default function tableHeaderSelector({ setopenCreateVendorDrawer, vendorsColumns, t, setOpenConfirmDialog, selectVendors }) {
   const columns = vendorsColumns?.map((el) => {
     if (el.field === 'checkbox') {
       return {

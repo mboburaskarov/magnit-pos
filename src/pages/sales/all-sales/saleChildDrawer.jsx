@@ -1,17 +1,13 @@
-import { Box, Button, Grid, Typography } from '@mui/material'
+import { Box, Grid, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import { useReactToPrint } from 'react-to-print'
-import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import LeftArrowIcon from '../../../assets/icons/LeftArrow'
-import WithdrawIcon from '../../../assets/icons/WithdrawIcon'
 import SaleChildItemsBox from './SaleChildItemsBox'
 
 const useStyles = makeStyles((theme) => ({
@@ -48,26 +44,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 function SaleChildDrawer({ open, setOpen }) {
-  const reactToPrintContent = useCallback(() => printContainer.current, [])
-  const printContainer = useRef()
-  const documentName = useRef('Cheque')
-  const navigate = useNavigate()
   const { t } = useTranslation()
-  const handlePrint = useReactToPrint({
-    content: reactToPrintContent, // This should be a function
-    documentTitle: documentName.current,
-    removeAfterPrint: true,
-  })
   const classes = useStyles()
-
-  const { data: saleDetailsList, refetch, issaleDetailsList } = useQuery('saleDetailsList', () => requests.getSaleDetails(get(open, 'id')))
+  const { data: saleDetailsList, refetch } = useQuery('saleDetailsList', () => requests.getSaleDetails(get(open, 'id')))
   useEffect(() => {
     if (get(open, 'id', false)) refetch()
   }, [open])
 
   const theme = useTheme()
   return (
-    // <LoadingContainer readyState={!issaleDetailsList}>
     <Box className={classes.drawer}>
       <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
         <Box display={'flex'} alignItems={'center'}>
@@ -172,7 +157,6 @@ function SaleChildDrawer({ open, setOpen }) {
         </Box>
       </Box>
     </Box>
-    // </LoadingContainer>
   )
 }
 

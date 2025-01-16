@@ -1,34 +1,22 @@
-import { Box, Button, IconButton, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { requests } from '../../../../utils/requests'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import InputRange from '../../../../components/Inputs/InputRange'
-import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
-import * as qs from 'qs'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import { theme } from '../../../assets/theme'
-import { useTranslation } from 'react-i18next'
+import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import * as qs from 'qs'
+import { useEffect } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
+import InputRange from '../../../../components/Inputs/InputRange'
+import CloseIcon from '../../../assets/icons/CloseIcon'
+import { useQueryParams } from '../../../hooks/useQueryParams'
 
-export default function FilterMenu({ open, id, setOpen, setRegions }) {
+export default function FilterMenu({ open, id, setOpen }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
-  const { formState, reset, control, getValues } = methods
-  const [isExpress, setIsExpress] = useState(false)
-
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
-  const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 20, offset: 0 }))
-  const { data: producers } = useQuery('producers', () => requests.getAllProducer({ limit: 20, offset: 0 }))
+  const { formState, reset } = methods
 
   const onSubmit = (data) => {
-    setRegions(data.regions || [])
-
     const requestBody = {
       received_amount_from: data.received_amount_from || undefined,
       received_amount_to: data.received_amount_to || undefined,

@@ -32,8 +32,6 @@ export default function ChangePassWordDialog({ open, setOpen }) {
     onSuccess: () => {
       success('Заказ успешно передан оператору!')
       setOpen(false)
-      // navigate(`/products${requestParams}`)
-      // refetch()
     },
     onError: (err) => {
       error('Ошибка при назначении заказа оператору!')
@@ -57,9 +55,6 @@ export default function ChangePassWordDialog({ open, setOpen }) {
             border: `2px solid`,
             borderColor: 'bunker.100',
             height: '48px',
-          },
-          '& svg': {
-            // stroke: '#868FAA',
           },
         }}
       >

@@ -1,11 +1,14 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, TextField, Typography } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
+import StyledDialog from '../../../../components/Dialogs/StyledDialog'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -13,42 +16,30 @@ import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/vendorsTableColumns'
-import FilterMenu from './FilterMenu'
-import tableHeaderSelector from './tableHeaderSelector'
-// import ProductDrawer from './ProductDrawer'
-import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../components/CheckAccess'
-import StyledDialog from '../../../../components/Dialogs/StyledDialog'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import LockIcon from '../../../assets/icons/LockIcon'
 import PlusIcon from '../../../assets/icons/PlusIcon'
+import { useQueryParams } from '../../../hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/vendorsTableColumns'
 import CreateVendorDrawer from './createVendorDrawer'
+import FilterMenu from './FilterMenu'
+import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function VendorsPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.vendorsTableColumns)
   const { values } = useQueryParams()
-  const [status, setStatus] = useState('ALL')
   const [regions, setRegions] = useState([])
-  const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [openCreateVendorDrawer, setopenCreateVendorDrawer] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
-  const [filterTableRowsMenu, setFilterTableRowsMenu] = useState(false)
-  const [isDrawerOpen, setIsDrawerOpen] = useState(null)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [slectedVendors, setSelectedVendors] = useState([])
-  const methods = useForm()
   const selectVendors = (isChecked, id) => {
     if (isChecked) {
       setSelectedVendors((p) => [...p, id])
@@ -64,7 +55,6 @@ export default function VendorsPage() {
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     selectVendors,
-    setIsDrawerOpen,
     setopenCreateVendorDrawer,
   })
 
@@ -100,12 +90,8 @@ export default function VendorsPage() {
       supply_price_from: values?.supply_price_from,
       retail_price_from: values?.retail_price_from,
       isExpress: values?.isExpress,
-      ...(status !== 'ALL' && { status }),
-      ...(appType !== 'ALL' && { type: appType }),
     }
   }, [
-    status,
-    appType,
     values?.offset,
     values?.limit,
     values?.search,
@@ -131,48 +117,28 @@ export default function VendorsPage() {
     onSuccess: () => {
       refetch()
       success('Продукт успешно удален!')
-      setIsDrawerOpen(null)
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
       error('Ошибка при удалении товара!')
       setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
       console.log('err', err)
     },
   })
 
-  const { mutate: rejectProduct } = useMutation(requests.rejectProduct, {
-    onSuccess: () => {
-      refetch()
-      success('Продукт успешно отклонен!')
-      setIsDrawerOpen(null)
-      setOpenConfirmDialog(null)
-      setRejectComment(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении отклонен!')
-      setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
-      console.log('err', err)
-    },
-  })
   const { mutate: activateProduct, isLoading: isActivatingProduct } = useMutation(requests.activateVendor, {
     onSuccess: () => {
       success('Продукт успешно активирован!')
       setTimeout(() => {
         refetch()
       }, 500)
-      setIsDrawerOpen(null)
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       error('Ошибка при активации продукта!')
       refetch()
       setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
       console.log('err', err)
     },
   })
@@ -182,14 +148,12 @@ export default function VendorsPage() {
       setTimeout(() => {
         refetch()
       }, 500)
-      setIsDrawerOpen(null)
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       error('Ошибка при деактивации продукта!')
       refetch()
       setOpenConfirmDialog(null)
-      setIsDrawerOpen(null)
       console.log('err', err)
     },
   })
@@ -199,21 +163,11 @@ export default function VendorsPage() {
   }, [vendorsListFilter])
 
   useEffect(() => {
-    const count =
-      // status === 'ACTIVE'
-      //   ? vendorsList?.data?.active
-      //   : status === 'INACTIVE'
-      //   ? vendorsList?.data?.inactive
-      //   : status === 'INACTIVE_BY_VENDOR'
-      //   ? vendorsList?.data?.inactiveByVendor
-      //   : status === 'BLOCKED'
-      //   ? vendorsList?.data?.blocked
-      // : vendorsList?.data.totalCount
-      vendorsList?.data?.data?._meta?.total_count
+    const count = vendorsList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [vendorsList?.data, values?.limit, status])
+  }, [vendorsList?.data, values?.limit])
 
   return (
     <LoadingContainer readyState={true}>
@@ -355,7 +309,6 @@ export default function VendorsPage() {
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            status={status}
             isRefreshing={loading || isFetchingvendorsList || vendorsListLoading}
           />
         </Box>
@@ -411,31 +364,7 @@ export default function VendorsPage() {
           }
         />
       )}
-      <StyledDialog
-        open={!!rejectComment?.id}
-        title={'Причину отклонения'}
-        buttonLabel={'Сохранить'}
-        customOnSubmit={() => {
-          if (rejectComment.comment && rejectComment.id) {
-            rejectProduct({
-              id: rejectComment.id,
-              rejectedComment: rejectComment.comment,
-            })
-          }
-        }}
-        onClose={() => setRejectComment(null)}
-      >
-        {rejectComment && (
-          <Box p={7} pt={5}>
-            <TextField
-              multiline
-              onChange={(e) => setRejectComment((p) => ({ ...p, comment: e.target.value }))}
-              fullWidth
-              placeholder='Введите причину отклонения'
-            />
-          </Box>
-        )}
-      </StyledDialog>
+
       <CreateVendorDrawer
         refetchVendorList={refetch}
         setCustomerId={'setCustomerId'}

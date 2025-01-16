@@ -92,16 +92,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
               Редактировать
             </Button>
           </CheckAccess>
-          {/* <CheckAccess id={productData?.data?.data?.status === 'ACTIVE' ? 'product-deactive' : 'product-active'}>
-            <Button
-              color='secondary'
-              onClick={() => setOpenConfirmDialog({ type: productData?.data?.data.status === 'ACTIVE' ? 'deactivate' : 'activate', id })}
-              startIcon={productData?.data?.data?.status !== 'ACTIVE' ? <LockOpenIcon size={21} /> : <LockIcon size={21} />}
-              fullWidth
-            >
-              {productData?.data?.data?.status !== 'ACTIVE' ? 'Активировать' : 'Деактивировать'}
-            </Button>
-          </CheckAccess> */}
+
           {productData?.data?.data?.status !== 'INACTIVE' ? (
             <CheckAccess id={'product-delete'}>
               <Button

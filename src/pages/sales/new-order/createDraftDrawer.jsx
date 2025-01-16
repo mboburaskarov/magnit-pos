@@ -46,7 +46,6 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
   const { id } = useParams()
 
   const methods = useForm()
-  // const { data: darftList, refetch, isDarftList } = useQuery('darftList', () => requests.getDarftList())
   const [eposChecked, setEposChecked] = useState(false)
   const changeExpireDate = (type, date = new Date()) => {
     if (type === 'ertaga') {
@@ -72,7 +71,6 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
       setOpen(false)
       refetchcartItemsList()
-      // refetch()
       success('Черновик создан!')
     },
     onError: (err) => {
@@ -113,12 +111,9 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
             <Box display={'flex'} padding={'24px'} flexDirection={'column'}>
               <Box>
                 <InputDatePicker
-                  // withTime
                   defaultValue={new Date()}
                   name='draft_time'
                   minDate={new Date()}
-                  // minTime={new Date()}
-                  // minT
                   required
                   id='draft_time_id'
                   showYearDropdown
@@ -139,7 +134,6 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
               </Box>
               <Box height={'24px'} />
               <OutLineTextField
-                // endAdornmentText={'UZS'}
                 multiline
                 type='number'
                 fullWidth

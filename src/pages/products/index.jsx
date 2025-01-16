@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -10,7 +10,6 @@ import AgGridTable from '../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../components/CheckAccess'
 import ConfirmDialog from '../../../components/ConfirmDialog'
-import StyledDialog from '../../../components/Dialogs/StyledDialog'
 import ImageGallery from '../../../components/ImageGallery'
 import InputSearch from '../../../components/Inputs/InputSearch'
 import InputSwitch from '../../../components/Inputs/InputSwitch'
@@ -24,8 +23,8 @@ import PlusIcon from '../../assets/icons/PlusIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
 import FilterMenu from './FilterMenu'
-import tableHeaderSelector from './tableHeaderSelector'
 import ProductDrawer from './product-edit/ProductDrawer'
+import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ProductsPage() {
@@ -40,7 +39,6 @@ export default function ProductsPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
-  const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const tableColumns = tableHeaderSelector({
@@ -122,20 +120,6 @@ export default function ProductsPage() {
     },
   })
 
-  const { mutate: rejectProduct } = useMutation(requests.rejectProduct, {
-    onSuccess: () => {
-      refetch()
-      success('Продукт успешно отклонен!')
-      setOpenConfirmDialog(null)
-      setRejectComment(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении отклонен!')
-      setOpenConfirmDialog(null)
-      console.log('err', err)
-    },
-  })
   const { mutate: activateProduct, isLoading: isActivatingProduct } = useMutation(requests.activateProduct, {
     onSuccess: () => {
       success('Продукт успешно активирован!')
@@ -344,31 +328,6 @@ export default function ProductsPage() {
           }
         />
       )}
-      <StyledDialog
-        open={!!rejectComment?.id}
-        title={'Причину отклонения'}
-        buttonLabel={'Сохранить'}
-        customOnSubmit={() => {
-          if (rejectComment.comment && rejectComment.id) {
-            rejectProduct({
-              id: rejectComment.id,
-              rejectedComment: rejectComment.comment,
-            })
-          }
-        }}
-        onClose={() => setRejectComment(null)}
-      >
-        {rejectComment && (
-          <Box p={7} pt={5}>
-            <TextField
-              multiline
-              onChange={(e) => setRejectComment((p) => ({ ...p, comment: e.target.value }))}
-              fullWidth
-              placeholder='Введите причину отклонения'
-            />
-          </Box>
-        )}
-      </StyledDialog>
     </LoadingContainer>
   )
 }

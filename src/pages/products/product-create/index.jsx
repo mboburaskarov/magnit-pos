@@ -82,7 +82,6 @@ export default function ProductCreatePage() {
           isLoading={isCreatingProduct}
           buttonText='Создать'
           backIcon
-          // noActions
           backHref='/products/all'
           text={t('create_new_product.top.new_product')}
           checkAccessId={'product-create'}

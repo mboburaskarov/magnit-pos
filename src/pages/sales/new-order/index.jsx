@@ -1,44 +1,37 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import CartSearchBar from './CartSearchBar'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import CartItem from './CartItem'
+import React, { useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery } from 'react-query'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
-import { useReactToPrint } from 'react-to-print'
+import CartItem from './CartItem'
+import CartSearchBar from './CartSearchBar'
 
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import { FormProvider, useForm, useFormContext } from 'react-hook-form'
-import FileIcon from '../../../assets/icons/FileIcon'
-import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
-import TextField from '../../../../components/Inputs/TextField'
-import InputSwitch from '../../../../components/Inputs/InputSwitch'
-import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
-import SearchInput from '../../../../components/Inputs/SearchInput'
-import { useDebounce } from 'use-debounce'
-import { Palette } from '@mui/icons-material'
-import Label from '../../../../components/Label'
+import { LoadingButton } from '@mui/lab'
 import { get, size } from 'lodash'
 import Highlighter from 'react-highlight-words'
-import ClientVerification from './ClientVerification'
-import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { useTranslation } from 'react-i18next'
+import OutsideClickHandler from 'react-outside-click-handler'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useDebounce } from 'use-debounce'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
+import SearchInput from '../../../../components/Inputs/SearchInput'
+import TextField from '../../../../components/Inputs/TextField'
+import Label from '../../../../components/Label'
+import LoadingContainer from '../../../../components/LoadingContainer'
 import ClientCreateMini from '../../../../components/Sales/ClientCreateMini'
 import OrderDrawer from '../../../../components/Sales/ClientCreateMini/OrderDrawer'
 import DraftDrawer from '../../../../components/Sales/DraftDrawer'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import { LoadingButton } from '@mui/lab'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import FileIcon from '../../../assets/icons/FileIcon'
+import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
 import TimesSmallIcon from '../../../assets/icons/TimesSmallIcon'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import OutsideClickHandler from 'react-outside-click-handler'
+import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
 import CreateDraftDrawer from './createDraftDrawer'
-import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchangeDrawer'
-import RippedPaperCheck from '../../../../components/ChequePaper/RippedPaperCheck'
 
 const useStyles = makeStyles((theme) => ({
   card_detail: {
@@ -181,13 +174,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 function NewSale() {
-  const userData = useSelector((state) => state.user)
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
   const method = useForm()
   const classes = useStyles()
-  const totalPrice = 0
 
   const [showOverlay, setShowOverlay] = useState(false)
   const [isOpenDraft, setIsOpenDraft] = useState(false)
@@ -202,14 +193,8 @@ function NewSale() {
   const [clientDetails, setClientDetails] = useState(null)
   const [quickCreateClientName, setQuickCreateClientName] = useState(null)
   const [inputDiscount, setInputDiscount] = useState(0)
-  const [webkassaOn, setWebkassaOn] = useState(false)
   const [isOrderDrower, setIsOrderDrower] = useState(false)
-  const [singleOrder, setSingleOrder] = useState(null)
-  const clientRef = useRef()
-  // const documentName = useRef('BILLZ CHEQUE')
 
-  const [exchangeOrderDetails, setExchangeOrderDetails] = useState(null)
-  const [isOpenReturnExchange, setIsOpenReturnExchange] = useState(false)
   const printContainer = useRef()
 
   const searchResult = useQuery(
@@ -221,7 +206,7 @@ function NewSale() {
     { enabled: false }
   )
 
-  const { mutate: deleteAll, isLoading: isdeleteAll } = useMutation(requests.deleteAll, {
+  const { mutate: deleteAll } = useMutation(requests.deleteAll, {
     onSuccess: () => {
       setShowOverlay(false)
       refetchcartItemsList()
@@ -234,8 +219,10 @@ function NewSale() {
       console.log('err', err)
     },
   })
-  const { mutate: payForSale, isLoading: ispayForSale } = useMutation(requests.payForSale, {
-    onSuccess: () => {},
+  const { mutate: saleCreate, isLoading: issaleCreate } = useMutation(requests.saleCreate, {
+    onSuccess: ({ data }) => {
+      window.open(`/sales/new-sale/${get(data, 'data.id')}`, '_blank', 'rel=noopener noreferrer')
+    },
     onError: (err) => {
       error('Ошибка при создании товара! #1')
       console.log('err', err)
@@ -254,7 +241,6 @@ function NewSale() {
     onSuccess: () => {
       setShowOverlay(false)
       refetchcartItemsList()
-      // success('Продукт успешно создан!')
     },
     onError: (err) => {
       error('Ошибка при создании товара! #4')
@@ -273,25 +259,13 @@ function NewSale() {
       console.log('err', err)
     },
   })
-  const { mutate: returnExchangeOrder, isLoading: isReturnExchangeOrder } = useMutation(requests.deleteCartItem, {
-    onSuccess: () => {
-      setShowOverlay(false)
-      refetchcartItemsList()
-      setOpenConfirmDialog(null)
-      success('Продукт успешно создан!')
-    },
-    onError: (err) => {
-      error('Ошибка при создании товара! #3')
-      console.log('err', err)
-    },
-  })
 
   const {
     data: cartItemsList,
     refetch: refetchcartItemsList,
     isLoading: isCartItemsLIstLoading,
   } = useQuery('cartItemsList', () => requests.getCartItemList({ sale_id: id, limit: 20, offset: 0 }).catch(() => navigate('/sales/create')))
-  const { data: cashBoxDetails, refetch: refetchCashBoxDetaild } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
+  const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
 
   useEffect(() => {
     method.setValue('discount', inputDiscount)
@@ -323,24 +297,9 @@ function NewSale() {
     }
   }, [debouncedSearchTerm])
 
-  const pay = () => {
-    payForSale({ cash_box_id: 1, employee_id: userData?.id })
-  }
-  const handleCloseReturnAndDraftDrawer = () => {
-    setIsOpenReturnExchange(false)
-    setIsOpenDraft(false)
-    const searchParams = qs.stringify(
-      {
-        ...queryParams?.values,
-        page: 1,
-        returnSearch: '',
-        search: '',
-      },
-      { addQueryPrefix: true }
-    )
-    navigate(`${location.pathname}${searchParams}`)
-  }
-
+  useHotkeys('t', () => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), {
+    enableOnTags: ['INPUT', 'TEXTAREA'],
+  })
   return (
     <FormProvider {...method}>
       <Box display={'flex'}>
@@ -398,8 +357,11 @@ function NewSale() {
                 #{get(cashBoxDetails, 'data.data.sale_number')}
               </Typography>
             </Box>
-            <Box className={classes.cart_detail_icon}>
-              <FileIcon color='#ccc' />
+            <Box
+              onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') })}
+              className={classes.cart_detail_icon}
+            >
+              <FileIcon color='#000' />
             </Box>
             <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
               <TimeAndDate />
@@ -443,10 +405,8 @@ function NewSale() {
                   if (e.keyCode === 13) onEnter()
                 }}
                 value={searchTerm}
-                // inputRef={clientInputRef}
                 setSearchTerm={setSearchTerm}
                 client
-                // disabled={disabled}
                 error={!!searchTerm && searchTerm?.length < 3}
               />
             )}
@@ -538,7 +498,6 @@ function NewSale() {
                 uncontrolled
                 id='app-type'
                 name='app-type'
-                // value={appType}
                 style={{ marginTop: '20px', width: 'auto' }}
                 defaultValue='percent'
                 onChange={setDiscountType}
@@ -616,22 +575,8 @@ function NewSale() {
           open={!!openConfirmDialog}
           setOpen={setOpenConfirmDialog}
           icon={<BigWarningIcon />}
-          title={
-            openConfirmDialog?.type === 'activate'
-              ? 'Активировать продукт?'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Деактивировать продукт?'
-              : 'Удалить продукт?'
-          }
-          desc={
-            openConfirmDialog?.type === 'activate'
-              ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-              : openConfirmDialog.type === 'deleteAll'
-              ? 'Вы хотите удалить все продукты?'
-              : 'Вы хотите удалить продукт?'
-          }
+          title={'Удалить продукт?'}
+          desc={openConfirmDialog.type === 'deleteAll' ? 'Вы хотите удалить все продукты?' : 'Вы хотите удалить продукт?'}
           supDesc={openConfirmDialog.type === 'deleteAll' ? '' : openConfirmDialog?.name}
           actions={
             <>
@@ -664,7 +609,6 @@ function NewSale() {
         cartItemsList={get(cartItemsList, 'data.data')}
         printContainer={printContainer}
         isOrderDrower={isOrderDrower}
-        // handlePrint={handlePrint}
         cashBoxDetails={cashBoxDetails}
         customerId={customerId}
         refetchcartItemsList={refetchcartItemsList}
@@ -687,7 +631,7 @@ function NewSale() {
         clientData={clientDetails}
         afterCreate={(clientId) => setCreatedClientId(clientId)}
       />
-      <ClientVerification isOpen={false} clientInfo={clientDetails} closeDrawer={() => {}} handleAddClient={() => {}} setClientInfo={() => {}} />
+      {/* <ClientVerification isOpen={true} clientInfo={clientDetails} closeDrawer={() => {}} handleAddClient={() => {}} setClientInfo={() => {}} /> */}
     </FormProvider>
   )
 }

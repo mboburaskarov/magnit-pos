@@ -1,9 +1,8 @@
 import { Box, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import { useTranslation } from 'react-i18next'
 import StyledSwitch from '../../../../components/Switch/StyledSwitch'
 import TreeSelectCategory from '../../../../components/TreeSelectCategory/index'
-import { makeStyles } from '@mui/styles'
-import { get } from 'lodash'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,9 +40,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Section({ section, sectionRef, setDisabled, disabled, selected, setSelected, searchTerm, id }) {
   const classes = useStyles()
   const { t } = useTranslation()
-  // const [selected, setSelected] = useState([])
-  // const [disabled, setDisabled] = useState(false)
-
   const sectionArrays =
     section?.permissions?.map((permission) => ({
       id: permission?.id,

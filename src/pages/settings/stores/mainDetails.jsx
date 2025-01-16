@@ -2,32 +2,9 @@ import { Box, Grid } from '@mui/material'
 import React, { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-
-import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
 import TextField from '../../../../components/Inputs/TextField'
 import Label from '../../../../components/Label'
-
-const useStyles = makeStyles((theme) => ({
-  card: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: theme.palette.gray[100],
-    padding: 16,
-    borderRadius: 24,
-    marginTop: 16,
-  },
-  required: {
-    '&::after': {
-      content: '" *"',
-      color: theme.palette.red[500],
-    },
-  },
-  label: {
-    marginRight: 255,
-  },
-}))
 
 export default function MainDetails({ clientData, openDrawer }) {
   const { control, errors, setValue, register, reset, watch } = useFormContext()

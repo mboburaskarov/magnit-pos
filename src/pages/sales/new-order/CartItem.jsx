@@ -1,18 +1,10 @@
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-// import ImageGallery from 'components/ImageGallery/ImageGallery'
-import PencilIcon from '../../../assets/icons/ArrowDown'
-import TrashIconGray from '../../../assets/icons/ArrowDown'
 import React, { memo, useState } from 'react'
-// import { asyncRemoveFromCartAction } from 'store/actions/cartActions/cartActions'
-import event from '../../../../utils/event'
-import { numberToPrice } from '../../../../utils/numberToPrice'
 import InputQuantity from '../../../../components/Inputs/InputQuantity'
-import EditorIcon from '../../../assets/icons/EditorIcon'
-import EditIcon from '../../../assets/icons/EditIcon'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import SelectSimple from '../../../../components/Select/SelectSimple'
 import StyledTooltip from '../../../../components/StyledTooltip'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import EditIcon from '../../../assets/icons/EditIcon'
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -258,15 +250,11 @@ const CartItem = ({
               <StyledTooltip placement='top' title='Кусок'>
                 <InputQuantity
                   id={`inputQuantity${index}`}
-                  // value={quon}
                   name='box'
-                  // onChange={({ target }) => setQuon(target.value)}
-                  // adornment={data?.measurement_unit?.short_name}
                   adornmentPosition='end'
                   adornmentClassName={cls.adornment}
                   max={100}
                   defaultValue={1}
-                  // maxErrorMessage={maxErrorMessage}
                   type='number'
                   disabled={false}
                 />
@@ -275,15 +263,11 @@ const CartItem = ({
                 <StyledTooltip placement='top' title='Пачка'>
                   <InputQuantity
                     id={`inputQuantity${index}`}
-                    // value={quon}
                     name='quantity'
                     defaultValue={1}
-                    // onChange={({ target }) => setQuon(target.value)}
-                    // adornment={data?.measurement_unit?.short_name}
                     adornmentPosition='end'
                     adornmentClassName={cls.adornment}
                     max={100}
-                    // maxErrorMessage={maxErrorMessage}
                     type='number'
                     disabled={false}
                   />
@@ -293,14 +277,7 @@ const CartItem = ({
                 <img src={item?.product?.main_photo || '/default-img.avif'} onClick={() => data.main_image_url && setProductId(data.id)} />
               </Box>
               <Box id='product-details' className={cls.text}>
-                <Typography
-                  sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}
-                  textOverflow={'ellipsis'}
-                  // maxWidth={'calc(100%)'}
-                  // whiteSpace={'nowrap'}
-
-                  overflow={'hidden'}
-                >
+                <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }} textOverflow={'ellipsis'} overflow={'hidden'}>
                   {item?.product?.name}
                 </Typography>
                 <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}> {item?.product?.barcode}</Typography>
@@ -342,8 +319,6 @@ const CartItem = ({
                   },
                 }}
                 onClick={() => setOpenConfirmDialog({ type: 'deleteOne', id: item?.id, name: item?.product?.name })}
-
-                // onClick={() => deleteCartItem(item?.id)}
               >
                 <DeleteIcon width='24px' />
               </Box>

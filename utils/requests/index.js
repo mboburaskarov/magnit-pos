@@ -88,7 +88,6 @@ export const requests = {
   getSingleProductHistory: (filter, id) => request.get(`v1/product/import/${id}`),
   updateProduct: ({ id, data }) => request.put(`v1/product/${id}`, data),
   deleteProduct: (id) => request.delete(`v1/product?id=${id}`),
-  rejectProduct: (data) => request.post(`api/admin/products/reject`, data),
   activateProduct: (id) => request.post(`api/admin/products/update-status-to-active`, { id }),
   changeProductStatus: (data) => request.post(`api/admin/products/update-status`, data),
 
@@ -189,7 +188,7 @@ export const requests = {
   getDashboardVendorMap: (filter) => request.get(`api/dashboard/shops-location${qs.stringify(filter, { addQueryPrefix: true })}`),
   //
 
-  payForSale: (data) => request.post('v1/sale', data),
+  saleCreate: (data) => request.post('v1/sale', data),
 
   // notifications
   getAllNotifications: (filter) => request.get(`api/notifications/notifications-by-group${qs.stringify(filter, { addQueryPrefix: true })}`),

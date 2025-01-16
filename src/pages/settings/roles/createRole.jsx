@@ -53,15 +53,11 @@ export default function RoleCreatePage() {
       })
 
     const requestBody = {
-      // id,
       name: get(data, 'name'),
       description: get(data, 'description'),
-      // data: {
       permissions,
-      // },
     }
     createRole(requestBody)
-    // update(requestBody)
   }
   const onError = (err) => {
     console.log(err)

@@ -20,9 +20,6 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: '660px',
       borderRadius: '24px 0 0 24px',
       backgroundColor: theme.palette.background.default,
-      '& form': {
-        // position: 'relative',
-      },
     },
   },
   header: {
@@ -63,7 +60,6 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
       closeDrawer(false)
       methods.reset()
       refetchVendorList()
-      // setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance') })
       success('Вендор создан!')
     },
     onError: (err) => {
@@ -77,7 +73,6 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
       closeDrawer(false)
       methods.reset()
       refetchVendorList()
-      // setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance') })
       success('Продукт успешно создан!')
     },
     onError: (err) => {
@@ -93,7 +88,6 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
 
     const requestBody = {
       birthdate: data?.date_of_birth,
-      // created_by: userData?.id,
       first_name: data?.first_name,
       gender: data?.gender,
       language: 'ru',

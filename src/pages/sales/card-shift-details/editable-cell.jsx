@@ -1,7 +1,6 @@
-import React, { memo, useEffect, useState } from 'react'
 import { Box, InputAdornment } from '@mui/material'
-import PriceFormattedInput from '../../../../components/Inputs/InputQuantity'
 import { makeStyles } from '@mui/styles'
+import React, { memo, useEffect, useState } from 'react'
 import TextField from '../../../../components/Inputs/TextField'
 
 const useStyles = makeStyles((theme) => ({
@@ -55,8 +54,6 @@ const useStyles = makeStyles((theme) => ({
         },
       },
     },
-
-    // Dashed
 
     '& .MuiInputBase-input': {
       color: ({ overall }) => overall && '#fe500e !important',
@@ -113,9 +110,7 @@ const EditableCell = ({
       setTimeout(() => updateMyData({ id: InputId, net_amount: formatted }), 10)
     }
   }
-  useEffect(() => {
-    // setValue(1)
-  }, [])
+
   const onKeyDown = (e) => {
     if (e.code === 'Tab') {
       e.preventDefault()
@@ -149,7 +144,6 @@ const EditableCell = ({
           fullWidth
           placeholder='0'
           value={value}
-          // defaultValue={valuecustom}
           setValue={setValue}
           onBlur={onBlur}
           onKeyDown={onKeyDown}
@@ -162,7 +156,6 @@ const EditableCell = ({
                 {adornment}
               </InputAdornment>
             ),
-            // inputComponent: PriceFormattedInput,
           }}
         />
       </Box>

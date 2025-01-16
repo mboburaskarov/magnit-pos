@@ -1,43 +1,25 @@
 import { Box, Typography } from '@mui/material'
 import Highlighter from 'react-highlight-words'
-import SearchIcon from '../../../assets/icons/SearchIcon'
-import paletteLight from '../../../assets/theme/paletteLight'
-import ZoomTextIcon from '../../../assets/icons/ZoomTextIcon'
 import CloseIcon from '../../../assets/icons/CloseIcon'
+import ZoomTextIcon from '../../../assets/icons/ZoomTextIcon'
 
-import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
 import { get } from 'lodash'
 import { useState } from 'react'
-import { requests } from '../../../../utils/requests'
 import { useMutation } from 'react-query'
-import { error, success } from '../../../../utils/toast'
-// import currency from '../../../utils/currency'
+import { useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
+import { requests } from '../../../../utils/requests'
+import { error } from '../../../../utils/toast'
 
-export default function SerchedItem({
-  index,
-  handleAddProduct,
-  setSearchTerm,
-  fakeIndexForCheckSearch,
-  item,
-  getShopPrice,
-  isChild = true,
-  classes,
-  searchTerm,
-  wholeSaleEnabled,
-  current_shop_id,
-  lastElementRef,
-  product,
-}) {
+export default function SerchedItem({ index, handleAddProduct, fakeIndexForCheckSearch, item, isChild = true, classes, searchTerm, lastElementRef, product }) {
   const userData = useSelector((state) => state.user)
   const [openSimilar, setOpenSimilar] = useState(false)
   const [similarProductList, setSimilarProductList] = useState([])
   const { id } = useParams()
-  const { mutate: getAllSimilarStoreProducts, isLoading: isgetAllSimilarStoreProducts } = useMutation(requests.getAllSimilarStoreProducts, {
+  const { mutate: getAllSimilarStoreProducts } = useMutation(requests.getAllSimilarStoreProducts, {
     onSuccess: ({ data }) => {
       setOpenSimilar(true)
       setSimilarProductList(data)
-      // success('Корзина была очищенаClick to apply!')
     },
     onError: (err) => {
       error('Ошибка при Корзина была очищенаClick to apply')
@@ -68,16 +50,7 @@ export default function SerchedItem({
       key={index}
       ref={lastElementRef}
     >
-      <Box
-        // p={'12px 16px'}
-        borderRadius={'16px'}
-        // bgcolor={'background.default'}
-        height={'80px'}
-        display={'flex'}
-        width={'100%'}
-        // justifyContent={'end'}
-        alignItems={'center'}
-      >
+      <Box borderRadius={'16px'} height={'80px'} display={'flex'} width={'100%'} alignItems={'center'}>
         <Box className={classes.searchItemBox}>
           <Box flex='1 0 20%' maxWidth={'100%'} overflow={'hidden'} display='flex' alignItems='center'>
             <div className={classes.searchImage}>

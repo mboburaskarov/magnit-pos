@@ -54,7 +54,6 @@ function CardShiftDetails() {
   const { data: getCashBoxOperationInfo } = useQuery('getCashBoxOperationInfo', () => requests.getCashBoxOperationInfo(id))
   useEffect(() => {
     if (closeCashboxPaymentList?.data?.data?.data) {
-      // methods.setValue(`net_amount_222`, get(closeCashboxPaymentList, 'data.data.total_data.total_net_amount'))
       setRowData([
         ...closeCashboxPaymentList?.data?.data?.data,
         {
@@ -102,7 +101,6 @@ function CardShiftDetails() {
           </Box>
         </Box>
 
-        {/* <Button onClick={() => setOpen(true)}>open</Button> */}
         <Box sx={{ display: 'flex', pb: '20px', flexDirection: 'column', minHeight: '100vh', justifyContent: 'space-between' }}>
           <Box padding={'20px'}>
             <AgGridTable

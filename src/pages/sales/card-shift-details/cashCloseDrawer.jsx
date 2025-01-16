@@ -1,23 +1,17 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
-import { makeStyles, useTheme } from '@mui/styles'
-import React, { useState } from 'react'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import WaitingCashAmoutIcon from '../../../assets/icons/WaitingCashAmoutIcon'
-import InComeCashIcon from '../../../assets/icons/InComeCashIcon'
-import ExpenseCashIcon from '../../../assets/icons/ExpenseCashIcon'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { FormProvider, useForm } from 'react-hook-form'
+import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
-import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
-import TextField from '../../../../components/Inputs/TextField'
-import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
-import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
-import CartOutlineIcon from '../../../assets/icons/CartOutline'
-import { requests } from '../../../../utils/requests'
+import React, { useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
-import { error, success } from '../../../../utils/toast'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useQueryParams } from '../../../hooks/useQueryParams'
+import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
+import LoadingContainer from '../../../../components/LoadingContainer'
+import { requests } from '../../../../utils/requests'
+import { error, success } from '../../../../utils/toast'
+import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
+import CartOutlineIcon from '../../../assets/icons/CartOutline'
+import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
 const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
@@ -31,21 +25,15 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: '24px 0 0 24px',
-    // height: '100vh',
     width: '100%',
   },
   wrapper: {
     width: '100vw',
     minHeight: '540px',
-    // border: '1px solid',
-    // borderColor: theme.palette.bunker[100],
-    // borderRadius: '24px',
+
     display: 'flex',
     flexDirection: 'column',
-    // padding: '40px',
-    // boxShadow: '0px 4px 12px 0px #00000014',
     '& h5': {
-      // marginTop: '20px',
       marginBottom: '4px',
     },
     '& .MuiInputBase-root': {
@@ -55,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   card_box: {
-    // height: '160px',
     border: '1px solid',
     borderColor: theme.palette.bunker[100],
     borderRadius: '16px',
@@ -103,14 +90,7 @@ function CashCloseDrawer({ open, setOpen }) {
 
   const [company, setCompany] = useState('1')
   const methods = useForm()
-  const [isOpenChild, setIsOpenChild] = useState(false)
-  const theme = useTheme()
-  const {
-    data: closeCashboxPaymentsInfo,
-    isLoading: closeCashboxPaymentsInfoLoading,
-    isFetching: isFetchingcloseCashboxPaymentsInfo,
-    refetch,
-  } = useQuery(['closeCashboxPaymentsInfo', open], () => requests.getCloseCashboxPaymentsInfo(id), {
+  const { data: closeCashboxPaymentsInfo } = useQuery(['closeCashboxPaymentsInfo', open], () => requests.getCloseCashboxPaymentsInfo(id), {
     enabled: open, // The query will only run when open is true
   })
   const { mutate: closeCashBoxRegister, isLoading: iscloseCashBoxRegister } = useMutation(requests.closeCashBoxRegister, {
@@ -120,7 +100,6 @@ function CashCloseDrawer({ open, setOpen }) {
       success('Продукт успешно удален!')
     },
     onError: (err) => {
-      // refetch()
       error('Ошибка при удалении товара!')
       console.log('err', err)
     },
@@ -162,14 +141,6 @@ function CashCloseDrawer({ open, setOpen }) {
               <Box width={'80vw'} margin={'auto'} display={'flex'} p={'40px'}>
                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                   <Box sx={{ '& div': { backgroundColor: 'transparent' } }}>
-                    {/* <SelectSimple
-                      onChange={() => {}}
-                      options={registerCashList?.data?.data}
-                      required
-                      label={'Kassa'}
-                      placeholder='Kassirni tanlang'
-                      name={'registerCash_id'}
-                    /> */}
                     <Box>
                       <Typography
                         onClick={() => setCompany(1)}
@@ -195,7 +166,6 @@ function CashCloseDrawer({ open, setOpen }) {
                     </Box>
                     {company === 3 && (
                       <>
-                        {/* <Box height={'24px'} /> */}
                         <OutLineTextField
                           endAdornmentText={'UZS'}
                           end
@@ -207,9 +177,6 @@ function CashCloseDrawer({ open, setOpen }) {
                         />
                       </>
                     )}
-                    {/* <Box height={'24px'} /> */}
-
-                    {/* <TextField fullWidth name='description' label='Izoh' placeholder='Fikr kiriting' /> */}
                   </Box>
                 </Box>
                 <Box sx={{ border: '1px solid', mx: '40px', borderColor: 'bunker.100' }} />
@@ -263,7 +230,6 @@ function CashCloseDrawer({ open, setOpen }) {
           <Button
             type='submit'
             onClick={methods.handleSubmit(onSubmit, onError)}
-            // disabled={!get(canCreate, 'canCreate')}
             sx={{ bottom: 0, margin: '0 24px 24px', '& > svg': { width: 24, height: 24, ml: '12px' } }}
           >
             Закрыть кассу <ArrowRightIcon color={!true ? '#FF6018' : '#fff'} />

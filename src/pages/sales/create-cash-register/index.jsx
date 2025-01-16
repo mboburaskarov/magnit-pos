@@ -30,10 +30,8 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '24px',
     display: 'flex',
     flexDirection: 'column',
-    // padding: '40px',
     boxShadow: '0px 4px 12px 0px #00000014',
     '& h5': {
-      // marginTop: '20px',
       marginBottom: '4px',
     },
     '& .MuiInputBase-root': {
@@ -43,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   card_box: {
-    // height: '160px',
     border: '1px solid',
     borderColor: theme.palette.bunker[100],
     borderRadius: '16px',
@@ -111,7 +108,7 @@ function NewCashRegister() {
 
   const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashBox, {
     onSuccess: ({ data }) => {
-      console.log(data)
+      data
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
     },
     onError: (err) => {
@@ -120,8 +117,6 @@ function NewCashRegister() {
     },
   })
   const onSubmit = (data) => {
-    console.log(data)
-
     const requestBody = {
       cash_amount: Number(get(data, 'opened_amout')),
       cash_box_id: get(data, 'registerCash_id.id', null),

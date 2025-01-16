@@ -63,7 +63,6 @@ const Profile = () => {
   const { mutate: changeEmployeeInfo } = useMutation(requests.changeEmployeeInfo, {
     onSuccess: ({ data }) => {
       getUserInfo()
-      // dispatch(setUserData({ ...data?.data }))
       setIsEditMode(false)
       success('Profile updated successfully!')
     },

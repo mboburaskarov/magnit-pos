@@ -17,7 +17,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ clientsColumns, selectClientsFunc, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
+export default function tableHeaderSelector({ clientsColumns, selectClientsFunc, t, setOpenConfirmDialog }) {
   const columns = clientsColumns?.map((el) => {
     if (el.field === 'checkbox') {
       return {

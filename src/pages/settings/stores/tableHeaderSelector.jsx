@@ -58,7 +58,7 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen, setopenCreateLocationDrawer }) {
+export default function tableHeaderSelector({ productsColumns, values, t, setOpenConfirmDialog, setopenCreateLocationDrawer }) {
   const columns = productsColumns?.map((el) => {
     if (el.field === 'name') {
       return {
