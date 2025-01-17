@@ -85,7 +85,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
       navigate(`/sales/new-sale/${get(data, 'data')}`)
     },
     onError: (err) => {
-      error('Ошибка при создании товараa!')
+      error('Ошибка при создании Черновик!')
       console.log('err', err)
     },
   })

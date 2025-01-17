@@ -8,54 +8,35 @@ const columns = [
     width: 45,
   },
   {
-    field: 'public_id',
+    field: 'name',
     hide: false,
     minWidth: 60,
-    width: 120,
+    width: 280,
   },
   {
-    field: 'fish',
+    field: 'store_name',
     hide: false,
     minWidth: 70,
-    width: 250,
+    width: 280,
   },
   {
-    field: 'store',
+    field: 'is_enable',
     hide: false,
     minWidth: 70,
-    width: 260,
-  },
-  {
-    field: 'phone',
-    hide: false,
-    minWidth: 70,
-    width: 160,
-  },
-
-  {
-    field: 'role',
-    hide: false,
-    minWidth: 70,
-    width: 120,
-  },
-  {
-    field: 'status',
-    hide: false,
-    minWidth: 70,
-    width: 140,
+    width: 100,
   },
 
   {
     field: 'actions',
     hide: false,
-    minWidth: 136,
-    width: 136,
+    minWidth: 96,
+    width: 96,
     pinned: 'right',
   },
 ]
 
-const vendorsTableColumns = createSlice({
-  name: 'vendorsTableColumns',
+const cashboxTableColumns = createSlice({
+  name: 'cashboxTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -94,5 +75,5 @@ const vendorsTableColumns = createSlice({
   },
 })
 
-export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } = vendorsTableColumns.actions
-export const vendorsTableColumnsSlice = vendorsTableColumns.reducer
+export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } = cashboxTableColumns.actions
+export const cashboxTableColumnsSlice = cashboxTableColumns.reducer

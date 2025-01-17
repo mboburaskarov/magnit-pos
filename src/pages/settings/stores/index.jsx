@@ -15,9 +15,7 @@ import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/storeTableColumns'
-import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-import { useTheme } from '@mui/styles'
 import { useTranslation } from 'react-i18next'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../../components/CheckAccess'
@@ -31,11 +29,9 @@ export default function ProductsPage() {
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.storeTableColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [rejectComment, setRejectComment] = useState(null)
-  const [filterMenu, setFilterMenu] = useState(false)
   const [openCreateLocationDrawer, setopenCreateLocationDrawer] = useState(false)
 
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
@@ -72,32 +68,8 @@ export default function ProductsPage() {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: values?.search,
-      regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
-      store_id: values?.store_id,
-      category_id: values?.category_id,
-      producer: values?.producer,
-      supply_price_to: values?.supply_price_to,
-      retail_price_to: values?.retail_price_to,
-      region: values?.region_id,
-      supply_price_from: values?.supply_price_from,
-      retail_price_from: values?.retail_price_from,
-      isExpress: values?.isExpress,
     }
-  }, [
-    values?.offset,
-    values?.limit,
-    values?.search,
-    values?.producer,
-    values?.category_id,
-    values?.shop_id,
-    values?.supply_price_to,
-    values?.retail_price_to,
-    values?.supply_price_from,
-    values?.retail_price_from,
-    values?.region_id,
-    values?.isExpress,
-    regions,
-  ])
+  }, [values?.offset, values?.limit, values?.search])
   const {
     data: storesList,
     isLoading: storesListLoading,
@@ -108,12 +80,12 @@ export default function ProductsPage() {
   const { mutate: deleteStore, isLoading: isDeletingProduct } = useMutation(requests.deleteStore, {
     onSuccess: () => {
       refetch()
-      success('Продукт успешно удален!')
+      success('Магазин успешно удален!')
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
-      error('Ошибка при удалении товара!')
+      error('Ошибка при удалении магазин!')
       setOpenConfirmDialog(null)
       console.log('err', err)
     },
@@ -179,7 +151,6 @@ export default function ProductsPage() {
             </CheckAccess>
           </Box>
         </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'

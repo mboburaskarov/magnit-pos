@@ -24,7 +24,7 @@ export default function SerchedItem({ index, handleAddProduct, fakeIndexForCheck
       }
     },
     onError: (err) => {
-      error('Ошибка при Корзина была очищенаClick to apply')
+      error('Ошибка при получении похожих товаров.')
       console.log('err', err)
     },
   })

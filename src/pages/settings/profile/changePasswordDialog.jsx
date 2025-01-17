@@ -30,11 +30,11 @@ export default function ChangePassWordDialog({ open, setOpen }) {
 
   const { mutate: changePassword } = useMutation(requests.changePassword, {
     onSuccess: () => {
-      success('Заказ успешно передан оператору!')
+      success('Пароль изменен!')
       setOpen(false)
     },
     onError: (err) => {
-      error('Ошибка при назначении заказа оператору!')
+      error('Ошибка смены пароля!')
       console.log('err', err)
     },
   })

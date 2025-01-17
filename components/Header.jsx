@@ -223,7 +223,8 @@ function Header({
           </header>
         </Container>
       </Box>
-      <Box mb={4} sx={{ height: headerComponentHeight + 'px', width: '100vw' }} />
+      <Box mb={4} sx={{ height: headerComponentHeight + 'px' }} />
+      {/* <Box mb={4} sx={{ height: headerComponentHeight + 'px', width: '100vw' }} />
 
       {bottomComponent ? (
         <Box
@@ -240,7 +241,7 @@ function Header({
         </Box>
       ) : (
         ''
-      )}
+      )} */}
     </Fragment>
   )
 }

@@ -13,6 +13,9 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import CancelOrderIcon from '../../../assets/icons/CancelOrderIcon'
 import ImagePlaceholder from '../../../assets/icons/ImagePlaceholder'
 import ProductHistory from './ProductHistory'
+import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
+import dayjs from 'dayjs'
+import ProductRemainsHistory from './ProductRemainsHistory'
 
 const Image = ({ data, setImages }) => {
   return (
@@ -27,12 +30,16 @@ const Image = ({ data, setImages }) => {
             opacity: 0.5,
           },
         },
+        '& svg': {
+          width: '72px',
+          height: '72px',
+        },
       }}
     >
       {data?.photos?.[0] ? (
         <img src={getImageUrl(data?.photos?.[0])} alt={data?.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }} />
       ) : (
-        <ImagePlaceholder small />
+        <DefaultImgIcon />
       )}
       {data?.files?.[0] && (
         <Box
@@ -73,7 +80,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
           <Typography mt={0.5} ml={2} fontSize={28} variant='h2'>
             {productData?.data?.data?.name}
             <Typography display='flex' alignItems='center' color='bunker.400' mt={1} fontWeight={'500'}>
-              {get(productData, 'data.data.sum')} сум
+              {get(productData, 'data.data.retail_price')} сум
             </Typography>
           </Typography>
         </Box>
@@ -92,30 +99,15 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
               Редактировать
             </Button>
           </CheckAccess>
-
-          {productData?.data?.data?.status !== 'INACTIVE' ? (
-            <CheckAccess id={'product-delete'}>
-              <Button
-                onClick={() => setOpenConfirmDialog({ type: 'delete', id })}
-                color='red'
-                startIcon={<FontAwesomeIcon width={14} icon={faTrash} />}
-                fullWidth
-              >
-                Удалить
-              </Button>
-            </CheckAccess>
-          ) : (
-            <CheckAccess id={'product-delete'}>
-              <Button onClick={() => setRejectComment({ id: id, comment: undefined })} color='warning' startIcon={<CancelOrderIcon fill={'#FFF'} />} fullWidth>
-                Отклонить
-              </Button>
-            </CheckAccess>
-          )}
         </Box>
       }
     >
+      <Box height={'50px'} />
       <SectionTitle grey>История продукта</SectionTitle>
       <ProductHistory id={id} />
+      <Box height={'50px'} />
+      <SectionTitle grey>Остатки</SectionTitle>
+      <ProductRemainsHistory id={id} />
       {productData?.data?.data?.status === 'REJECTED' && (
         <>
           <SectionTitle grey mt={6}>
@@ -131,18 +123,16 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
       </SectionTitle>
       <DrawerInfoBox
         infoData={[
-          { title: 'Цена', info: thousandDivider(productData?.data?.data?.sum, 'сум') },
-          { title: 'Скидочная цена', info: productData?.data?.data?.discountCost ? thousandDivider(productData?.data?.data?.discountCost, 'сум') : '-' },
-          { title: 'Время подготовки', info: productData?.data?.data?.preparationTime + ' минут' },
-          { title: 'Название магазина', info: productData?.data?.data?.shop?.[0] && productData?.data?.data?.shop?.[0]?.name },
+          { title: 'Код продукта', info: productData?.data?.data?.material_code },
+          { title: 'Баркод', info: thousandDivider(productData?.data?.data?.barcode, '') },
+          { title: 'Цена', info: thousandDivider(productData?.data?.data?.retail_price, 'сум') },
+          { title: 'Производитель', info: productData?.data?.data?.manufacturer },
+          { title: 'Время подготовки', info: dayjs(productData?.data?.data?.created_at).format('DD.MM.YYYY') },
+          { title: 'Единицы измерения', info: productData?.data?.data?.unit_type?.unit_name },
           { title: 'Наименование товара', info: productData?.data?.data?.name },
           { title: 'Тип', info: productData?.data?.data?.type === 'BUCHET' ? 'Buchet' : 'Market' },
           { title: 'Описание', info: productData?.data?.data?.description, fullWidth: true },
-          { title: 'Комментария', info: productData?.data?.data?.description || '-', fullWidth: true },
           { title: 'Категории', info: productData?.data?.data?.categories?.map((el) => `${el?.nameRu}, `), fullWidth: true },
-          { title: 'Название размера', info: productData?.data?.data?.size?.name || '-', fullWidth: true },
-          { title: 'Ширина', info: productData?.data?.data?.size?.width ? thousandDivider(productData?.data?.data?.size?.width, 'см') : '-' },
-          { title: 'Высота', info: productData?.data?.data?.size?.height ? thousandDivider(productData?.data?.data?.size?.height, 'см') : '-' },
         ]}
       />
     </CardDrawer>

@@ -247,7 +247,7 @@ const CartItem = ({
                 },
               }}
             >
-              <StyledTooltip placement='top' title='Кусок'>
+              <StyledTooltip placement='top' title='Штук'>
                 <InputQuantity
                   id={`inputQuantity${index}`}
                   name='box'

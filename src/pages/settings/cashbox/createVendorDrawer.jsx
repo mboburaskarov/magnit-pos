@@ -6,11 +6,11 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
 import { useSelector } from 'react-redux'
-import CloseIcon from '../../../src/assets/icons/CloseIcon'
-import useDidUpdate from '../../../src/hooks/useDidUpdate'
-import { requests } from '../../../utils/requests'
-import { error, success } from '../../../utils/toast'
+import CloseIcon from '../../../assets/icons/CloseIcon'
+import { requests } from '../../../../utils/requests'
+import { error, success } from '../../../../utils/toast'
 import MainDetails from './mainDetails'
+import PlusIcon from '../../../assets/icons/PlusIcon'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -41,54 +41,53 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function ClientCreateMini({ quickCreateClientName, openDrawer, closeDrawer, setCustomerId, clientData }) {
+export default function CreateVendorDrawer({ refetchVendorList, quickCreateClientName, openDrawer, closeDrawer, setCustomerId, clientData }) {
   const { t } = useTranslation()
   const classes = useStyles()
   const methods = useForm()
   const userData = useSelector((state) => state.user)
 
   useEffect(() => {
-    methods.register('dial_code')
-  }, [])
-
-  useDidUpdate(() => {
-    if (clientData) {
-      methods.reset(clientData)
-    }
-  }, [clientData])
-  useEffect(() => {
     methods.reset()
   }, [])
 
-  const { mutate: handleCustomerCreate, isLoading: isCreateCustomer } = useMutation(requests.createCustomer, {
+  const { mutate: createCashBox, isLoading: isCreateCustomer } = useMutation(requests.createCashBox, {
     onSuccess: ({ data }) => {
       closeDrawer(false)
       methods.reset()
-
-      setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance', 0) })
-      success('Клиент создан!')
+      refetchVendorList()
+      success('Кассы создан!')
     },
     onError: (err) => {
-      error('Ошибка при Клиент создан!')
+      error('Ошибка при Кассы создан!')
+      console.log('err', err)
+    },
+  })
+
+  const { mutate: updateCashBox, isLoading: isUpdateVendor } = useMutation(requests.updateCashBox, {
+    onSuccess: ({ data }) => {
+      closeDrawer(false)
+      methods.reset()
+      refetchVendorList()
+      success('Сотруд был отредактирован!')
+    },
+    onError: (err) => {
+      error('Ошибка редактирования сотрудники.!')
       console.log('err', err)
     },
   })
 
   const onSubmit = (data) => {
-    if (size(get(data, 'phone')) < 14) {
-      error('Номер телефона меньше 14')
-    }
     const requestBody = {
-      birthday: data?.date_of_birth,
-      created_by: userData?.id,
-      first_name: data?.first_name,
-      gender: data?.gender,
-      last_name: data?.last_name,
-      store_id: get(userData, 'store.id'),
-      phone: ['998' + data?.phone?.replace(/[()\s]/g, '')],
-      tag_id: data?.tags,
+      name: data?.name,
+      is_enable: data?.is_enable === 'active' ? true : false,
+      store_id: data?.store?.id,
     }
-    handleCustomerCreate(requestBody)
+    if (openDrawer?.mode === 'edit') {
+      updateCashBox({ data: requestBody, id: openDrawer?.id })
+    } else {
+      createCashBox(requestBody)
+    }
   }
 
   const onError = (err) => {
@@ -101,7 +100,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       <Box height={'100%'}>
         <Box className={classes.header}>
           <Typography variant='h4' className={classes.title}>
-            {t('menu.clients.new_client')}
+            Новая касса
           </Typography>
           <CloseIcon color={theme.palette.black} onClick={() => closeDrawer(false)} />
         </Box>
@@ -112,7 +111,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
                 padding: '0 24px',
               }}
             >
-              <MainDetails quickCreateClientName={quickCreateClientName} clientData={clientData} />
+              <MainDetails openDrawer={openDrawer} quickCreateClientName={quickCreateClientName} clientData={clientData} />
             </Box>
             <Box
               width={196}
@@ -125,7 +124,16 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
                 bottom: 0,
               }}
             >
-              <Button primary fullWidth size='small' style={{ borderRadius: 16 }} isLoading={isCreateCustomer} form='create-client-form-mini' type='submit'>
+              <Button
+                primary
+                startIcon={<PlusIcon color='#fff' />}
+                fullWidth
+                size='small'
+                style={{ borderRadius: 16 }}
+                isLoading={isCreateCustomer}
+                form='create-client-form-mini'
+                type='submit'
+              >
                 {t('create')}
               </Button>
             </Box>

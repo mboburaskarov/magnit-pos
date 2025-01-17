@@ -126,7 +126,7 @@ function LazySelect({
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [debouncedSearch] = useDebounce(search, 300)
-  const { data, hasMore, loading, setData } = useVirtualizedData(request, debouncedSearch, page, slug || id, filters)
+  const { data, hasMore, loading, setData, response } = useVirtualizedData(request, debouncedSearch, page, slug || id, filters)
 
   useEffect(() => {
     if (typeof getData === 'function') {
@@ -162,6 +162,7 @@ function LazySelect({
     }
   }
   const LoadingMessage = () => <LoadingBlock mini />
+  console.log(response)
 
   return (
     <Box className={cls.root} {...boxStyle} maxWidth={maxWidth}>
@@ -190,7 +191,7 @@ function LazySelect({
           getOptionLabel={getOptionLabel}
           filterOption={filterOption}
           options={
-            data?.map((el) => ({ ...el, id: el._id })) || [
+            response?.data?.data?.data?.map((el) => ({ ...el })) || [
               {
                 _id: '64960ad8fb82b59680236ffa',
                 fullName: 'Nosirzoda Khasanjon',
@@ -260,7 +261,7 @@ function LazySelect({
                   }
                 }}
                 value={value}
-                options={data?.map((option) => ({
+                options={response?.data?.data?.data?.map((option) => ({
                   label: option?.name,
                   value: option?.id,
                 }))}
@@ -283,7 +284,7 @@ function LazySelect({
                 formatCreateLabel={(inputValue) => 'components.add_inputValue ' + inputValue}
                 onChange={(val) => {
                   if (isMulti) {
-                    onChange(val.map((el) => ({ id: el?._id, ...el })))
+                    onChange(val.map((el) => ({ id: el?.id, ...el })))
                   } else {
                     const formattedValue = customValue ? customValue(val) : val
                     onChange(formattedValue)
@@ -291,7 +292,13 @@ function LazySelect({
                 }}
                 getOptionLabel={getOptionLabel}
                 getOptionValue={(option) => option.id}
-                options={data || []}
+                options={
+                  response?.data?.data?.data?.map((option) => ({
+                    name: option?.name,
+                    value: option?.id,
+                    id: option?.id,
+                  })) || []
+                }
                 defaultValue={defaultValue || ''}
                 value={value}
                 beforeContent={beforeContent}

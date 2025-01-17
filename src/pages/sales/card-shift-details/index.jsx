@@ -31,11 +31,11 @@ function CardShiftDetails() {
   const { mutate: changeCloseBoxNetAmout, isLoading: ischangeCloseBoxNetAmout } = useMutation(requests.changeCloseBoxNetAmout, {
     onSuccess: () => {
       refetch()
-      success('Продукт успешно удален!')
+      // success('Продукт успешно удален!')
     },
     onError: (err) => {
       refetch()
-      error('Ошибка при удалении товара!')
+      error('Ошибка редактирования чистой цены!')
       console.log('err', err)
     },
   })
@@ -99,6 +99,9 @@ function CardShiftDetails() {
               {dayjs(get(getCashBoxOperationInfo, 'data.data.start_time')).format('DD.MM.YYYY HH:mm')}
             </Typography>
           </Box>
+          <Button sx={{ width: '248px', marginLeft: 'auto', mr: '10px' }} onClick={() => setCloseDrawer(true)}>
+            Закрыть кассу <ArrowRightIcon color={'#fff'} />
+          </Button>
         </Box>
 
         <Box sx={{ display: 'flex', pb: '20px', flexDirection: 'column', minHeight: '100vh', justifyContent: 'space-between' }}>
@@ -118,9 +121,6 @@ function CardShiftDetails() {
               isRefreshing={loading || isFetchingcloseCashboxPaymentList || closeCashboxPaymentListLoading}
             />
           </Box>
-          <Button sx={{ width: '248px', marginLeft: 'auto', mr: '20px' }} onClick={() => setCloseDrawer(true)}>
-            Закрыть кассу <ArrowRightIcon color={'#fff'} />
-          </Button>
         </Box>
 
         <CashTypeDrawer open={open} setOpen={setOpen} />

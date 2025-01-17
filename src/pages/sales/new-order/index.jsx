@@ -243,10 +243,10 @@ function NewSale() {
       refetchcartItemsList()
       setOpenConfirmDialog(null)
 
-      success('Корзина была очищенаClick to apply!')
+      success('Корзина была очищена!')
     },
     onError: (err) => {
-      error('Ошибка при Корзина была очищенаClick to apply')
+      error('Ошибка при Корзина была очищена')
       console.log('err', err)
     },
   })
@@ -255,7 +255,7 @@ function NewSale() {
       window.open(`/sales/new-sale/${get(data, 'data.id')}`, '_blank', 'rel=noopener noreferrer')
     },
     onError: (err) => {
-      error('Ошибка при создании товара! #1')
+      error('Ошибка при создании продажи')
       console.log('err', err)
     },
   })
@@ -264,7 +264,7 @@ function NewSale() {
       refetchcartItemsList()
     },
     onError: (err) => {
-      error('Ошибка при создании товара! #5')
+      error('Ошибка при изменении цены со скидкой.')
       console.log('err', err)
     },
   })
@@ -274,7 +274,7 @@ function NewSale() {
       refetchcartItemsList()
     },
     onError: (err) => {
-      error('Ошибка при создании товара! #4')
+      error('Ошибка при создании элемента карты.')
       console.log('err', err)
     },
   })

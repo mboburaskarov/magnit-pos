@@ -73,12 +73,12 @@ export default function RolesPage() {
   const { mutate: deleteRole, isLoading: isDeletingProduct } = useMutation(requests.deleteRole, {
     onSuccess: () => {
       refetch()
-      success('Продукт успешно удален!')
+      success('Роли успешно удален!')
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
-      error('Ошибка при удалении товара!')
+      error('Ошибка при удалении роли!')
       setOpenConfirmDialog(null)
       console.log('err', err)
     },

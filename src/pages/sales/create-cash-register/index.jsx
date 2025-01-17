@@ -90,7 +90,7 @@ function NewCashRegister() {
       }
     },
     onError: (err) => {
-      error('Ошибка при создании товара!')
+      // error('Ошибка при создании товара!')
       console.log('err', err)
     },
   })
@@ -106,13 +106,13 @@ function NewCashRegister() {
     })
   }, [methods.watch('registerCash_id')])
 
-  const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashBox, {
+  const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashOperationBox, {
     onSuccess: ({ data }) => {
       data
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
     },
     onError: (err) => {
-      error('Ошибка при создании товара!')
+      error('Ошибка при создании кассы!')
       console.log('err', err)
     },
   })

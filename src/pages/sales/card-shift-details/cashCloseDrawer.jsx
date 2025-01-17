@@ -97,10 +97,10 @@ function CashCloseDrawer({ open, setOpen }) {
     onSuccess: () => {
       setOpen(false)
       navigate(`/sales/create`)
-      success('Продукт успешно удален!')
+      success('Касса закрыта!')
     },
     onError: (err) => {
-      error('Ошибка при удалении товара!')
+      error('Ошибка закрытия кассы!')
       console.log('err', err)
     },
   })

@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     '& > p': {
-      fontFamily: 'Gilroy-Bold',
+      // fontFamily: 'Gilroy-Bold',
     },
   },
   line: {

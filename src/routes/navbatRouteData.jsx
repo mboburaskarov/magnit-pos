@@ -94,6 +94,12 @@ export const navbatRouteData = [
         id: '94',
         href: '/settings/roles',
       },
+      {
+        label: 'Кассы',
+        active: '/settings/cashbox/*',
+        id: '94',
+        href: '/settings/cashbox',
+      },
     ],
   },
 ]

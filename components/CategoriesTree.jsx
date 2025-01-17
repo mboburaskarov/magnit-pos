@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 24,
     marginTop: 16,
     maxHeight: 708,
-    overflowY: 'scroll',
+    // overflowY: 'scroll',
     '&::-webkit-scrollbar': {
       width: 0,
     },
@@ -173,7 +173,7 @@ export default function FileSystemNavigator({
     <>
       <Box className={showBorder ? classes.roots : null}>
         <Box className={showBorder ? classes.root : null}>
-          <Box display='flex' className={showBorder ? classes.searchBar : ''} mb={showBorder ? 0 : 3}>
+          <Box display='flex' className={showBorder ? classes.searchBar : ''} mb={showBorder ? '30px' : 3}>
             <InputSearch name='search' placeholder={t('placeholders.category_name')} fullWidth uncontrolled />
             {canAdd && (
               <Box className={classes.addCategoryButton} onClick={() => setCreateEdit(true)}>

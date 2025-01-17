@@ -52,7 +52,7 @@ export default function tableHeaderSelector({ cardShiftColumns, t, changeCloseBo
         colId: el.field,
         cellRenderer: memo((p) => (
           <>
-            {p?.data?.id == 'ag-grid-footer' ? (
+            {p?.data?.id == 'ag-grid-footer' || p?.data?.amount == '0' ? (
               <Typography>{get(p, 'data.net_amount')}</Typography>
             ) : (
               <TextField
@@ -79,8 +79,8 @@ export default function tableHeaderSelector({ cardShiftColumns, t, changeCloseBo
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: `${get(p, 'data.difference_amount') > 0 ? 'green.100' : 'red.10'}`,
-              color: `${get(p, 'data.difference_amount') > 0 ? 'green.500' : 'red.500'}`,
+              backgroundColor: `${get(p, 'data.difference_amount') >= 0 ? 'green.100' : 'red.10'}`,
+              color: `${get(p, 'data.difference_amount') >= 0 ? 'green.500' : 'red.500'}`,
               height: '32px',
               padding: '6px 20px',
 

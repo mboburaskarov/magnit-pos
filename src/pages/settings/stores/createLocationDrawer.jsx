@@ -59,10 +59,10 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
       closeDrawer(false)
       methods.reset()
       refetchVendorList()
-      success('Вендор создан!')
+      success('Магазин создан!')
     },
     onError: (err) => {
-      error('Ошибка при Вендор создан!')
+      error('Ошибка при магазин создан!')
       console.log('err', err)
     },
   })
@@ -72,10 +72,10 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
       closeDrawer(false)
       methods.reset()
       refetchVendorList()
-      success('Продукт успешно создан!')
+      success('Магазин был отредактирован!')
     },
     onError: (err) => {
-      error('Ошибка при создании товара!')
+      error('Ошибка редактирования магазина.!')
       console.log('err', err)
     },
   })

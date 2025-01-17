@@ -55,7 +55,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
     methods.reset()
   }, [])
 
-  const { mutate: handleSaleCreate, isLoading: isCreateCustomer } = useMutation(requests.createVendor, {
+  const { mutate: createVendor, isLoading: isCreateCustomer } = useMutation(requests.createVendor, {
     onSuccess: ({ data }) => {
       closeDrawer(false)
       methods.reset()
@@ -73,17 +73,17 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
       closeDrawer(false)
       methods.reset()
       refetchVendorList()
-      success('Продукт успешно создан!')
+      success('Вендор успешно редактирование!')
     },
     onError: (err) => {
-      error('Ошибка при создании товара!')
+      error('Ошибка при редактирование Вендор!')
       console.log('err', err)
     },
   })
 
   const onSubmit = (data) => {
     if (size(get(data, 'phone')) < 14) {
-      error('Phone number is less than 14')
+      error('Номер телефона меньше 14')
     }
 
     const requestBody = {
@@ -100,7 +100,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
     if (openDrawer?.mode === 'edit') {
       handleUpdateVendor({ data: requestBody, id: openDrawer?.id })
     } else {
-      handleSaleCreate(requestBody)
+      createVendor(requestBody)
     }
   }
 

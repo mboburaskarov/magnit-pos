@@ -5,6 +5,7 @@ import Profile from '../../pages/settings/profile'
 import RolesPage from '../../pages/settings/roles'
 import StoresPage from '../../pages/settings/stores'
 import VendorsPage from '../../pages/settings/vendors'
+import CashBoxsPage from '../../pages/settings/cashbox'
 
 const settingsRoutes = {
   path: 'settings',
@@ -31,6 +32,10 @@ const settingsRoutes = {
     {
       path: 'vendors',
       element: <VendorsPage />,
+    },
+    {
+      path: 'cashbox',
+      element: <CashBoxsPage />,
     },
   ],
 }

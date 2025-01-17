@@ -5,6 +5,7 @@ export default function useVirtualizedData(request, search, page = 1, id, filter
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [data, setData] = useState([])
+  const [response, setResponse] = useState([])
   const [hasMore, setHasMore] = useState(false)
   const ref = useRef([])
   const [maxPage, setMaxPage] = useState(1)
@@ -21,9 +22,10 @@ export default function useVirtualizedData(request, search, page = 1, id, filter
         if (maxPageCount !== maxPage && !!maxPageCount) {
           setMaxPage(maxPageCount)
         }
+        setResponse(res)
         const resData = res?.data?.[id] || []
-        const ids = new Set(ref.current.map((d) => d._id))
-        ref.current = [...ref.current, ...resData.filter((d) => !ids.has(d._id))]
+        const ids = new Set(ref.current.map((d) => d.id))
+        ref.current = [...ref.current, ...resData.filter((d) => !ids.has(d.id))]
 
         setData(ref.current)
 
@@ -63,5 +65,5 @@ export default function useVirtualizedData(request, search, page = 1, id, filter
     effect()
   }, [page])
 
-  return { loading, error, data, hasMore, setData }
+  return { loading, error, data, hasMore, setData, response }
 }

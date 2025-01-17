@@ -57,23 +57,23 @@ const Profile = () => {
       setIsEditMode(false)
     },
     onError: () => {
-      error('Error getting profile!')
+      error('Ошибка получения пользовательских данных.!')
     },
   })
   const { mutate: changeEmployeeInfo } = useMutation(requests.changeEmployeeInfo, {
     onSuccess: ({ data }) => {
       getUserInfo()
       setIsEditMode(false)
-      success('Profile updated successfully!')
+      success('Информация о пользователе изменена!')
     },
     onError: () => {
-      error('Error updating profile!')
+      error('Ошибка при изменении пользовательских данных!')
     },
   })
 
   const handleFormSubmit = (data) => {
     if (!size(get(data, 'photo'))) {
-      return error('Please upload an image!')
+      return error('Загрузить изображение!')
     }
 
     // Theme handling
@@ -98,7 +98,7 @@ const Profile = () => {
   }
 
   const handleFormError = () => {
-    error('Please fill all required fields!')
+    error('Пожалуйста, заполните все поля!')
   }
 
   const languageDefaultValue = useMemo(() => getSelectDefaultValue(LANGUAGE_OPTIONS, i18n.language), [i18n.language])

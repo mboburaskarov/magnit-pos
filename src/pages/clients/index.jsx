@@ -110,12 +110,12 @@ export default function ClientsPage() {
   const { mutate: deleteClient, isLoading: isDeletingProduct } = useMutation(requests.deleteClient, {
     onSuccess: () => {
       refetch()
-      success('Продукт успешно удален!')
+      success('Kлиент успешно удален!')
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
-      error('Ошибка при удалении товара!')
+      error('Ошибка при удалении клиент!')
       setOpenConfirmDialog(null)
       console.log('err', err)
     },

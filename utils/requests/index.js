@@ -74,6 +74,9 @@ export const requests = {
   getAllSimilarStoreProducts: (id) => request.get(`v1/product/similar/${id}`),
   deleteStore: (id) => request.delete(`v1/store/${id}`),
 
+  getAllCashBoxList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  deleteCashBox: (ids) => request.delete(`v1/cash_box/soft-delete`, ids),
+
   // getAllVendors: (filter) => request.get(`v1/employee/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllUnits: (filter) => request.get(`v1/unit-types/list${qs.stringify(filter, { addQueryPrefix: true })}`),
 
@@ -86,6 +89,7 @@ export const requests = {
   deleteAll: (ids) => request.post(`v1/cart_item/multiple`, ids),
   getSingleProduct: (id) => request.get(`v1/product/${id}`),
   getSingleProductHistory: (filter, id) => request.get(`v1/product/import/${id}`),
+  getSingleProductRemainsHistory: (filter, id) => request.get(`v1/product/store-product/${id}`),
   updateProduct: ({ id, data }) => request.put(`v1/product/${id}`, data),
   deleteProduct: (id) => request.delete(`v1/product?id=${id}`),
   activateProduct: (id) => request.post(`api/admin/products/update-status-to-active`, { id }),
@@ -101,7 +105,10 @@ export const requests = {
   payCourierOrders: (data) => request.post(`api/admin/courier-transactions`, data),
   refreshCouriers: (filter) => request.get(`api/admin/couriers/refresh${qs.stringify(filter, { addQueryPrefix: true })}`),
   //register cash
-  createCashBox: (data) => request.post(`v1/cash_box_operation`, data),
+  createCashOperationBox: (data) => request.post(`v1/cash_box_operation`, data),
+  createCashBox: (data) => request.post(`v1/cash_box`, data),
+  updateCashBox: ({ id, data }) => request.put(`v1/cash_box/${id}`, data),
+  getSingleCashBox: (id) => request.get(`v1/cash_box/${id}`),
 
   getRegisterCashData: (cash_box_id) => cash_box_id && request.get(`v1/cash_box_operation/closed-info/${cash_box_id}`),
   getCashBoxOperationInfo: (cash_box_id) => cash_box_id && request.get(`v1/cash_box_operation/info/${cash_box_id}`),

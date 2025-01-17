@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Grid, Typography, Button } from '@mui/material'
-import InputSimple from '../../Inputs/InputSearch'
+import { Box, Grid, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import React, { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import InputDatePicker from '../../Inputs/InputDatePicker'
 import InputSwitchNew from '../../Inputs/InputSwitch'
 import InputPhone from '../../Inputs/PhoneNumber'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import GreenCard from '../../../src/assets/icons/GrowIcon'
-import StyledCardDialog from '../../Dialogs/StyledeEmptyDialog'
-import StyledDialog from '../../Dialogs/StyledeEmptyDialog'
-import palette from '../../../src/assets/theme/mui.config'
-import { makeStyles } from '@mui/styles'
-import InputDatePicker from '../../Inputs/InputDatePicker'
 import TextField from '../../Inputs/TextField'
 
 const useStyles = makeStyles((theme) => ({
@@ -43,32 +36,6 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
   useEffect(() => {
     setValue('dial_code', '+998')
   }, [])
-  const [cardCode, setCardCode] = useState('')
-  const [cardName, setCardName] = useState('')
-  const [openCardDialogProgress, setOpenCardDialogProgress] = useState(false)
-  const [openCardDialogSuccess, setOpenCardDialogSuccess] = useState(false)
-  const [openCardDialogError, setOpenCardDialogError] = useState(false)
-  const [open, setOpen] = useState(false)
-
-  const onEnterPress = () => {
-    if (openCardDialogProgress) {
-      if (cardCode) {
-        setOpenCardDialogProgress(false)
-        setOpenCardDialogSuccess(true)
-        setTimeout(() => {
-          setOpenCardDialogSuccess(false)
-          setOpen(true)
-        }, 1000)
-      } else {
-        setOpenCardDialogProgress(false)
-        setOpenCardDialogError(true)
-        setCardCode('')
-        setTimeout(() => {
-          setOpenCardDialogError(false)
-        }, 1000)
-      }
-    }
-  }
 
   return (
     <Box mt={'24px'}>

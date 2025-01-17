@@ -4,6 +4,7 @@ import UserLogOutDrawer from './UserLogOutDrawer'
 import { makeStyles } from '@mui/styles'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight, faBell } from '@fortawesome/free-solid-svg-icons'
+import CloseIcon from '../../assets/icons/CloseIcon'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -101,11 +102,12 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
                     Аккаунт
                   </Typography>
                 </Box>
-                <IconButton onClick={closeDrawer}>
+                <CloseIcon color={'#111217'} onClick={() => closeDrawer} />
+                {/* <IconButton onClick={closeDrawer}>
                   <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                    <path d='M14 2.00005L2 14M1.99995 2L13.9999 14' stroke='#119676' strokeWidth='2.5' strokeLinecap='round' />
+                    <path d='M14 2.00005L2 14M1.99995 2L13.9999 14' stroke='#111217' strokeWidth='2.5' strokeLinecap='round' />
                   </svg>
-                </IconButton>
+                </IconButton> */}
               </Box>
               <Box display='flex' alignItems='center' mt={4}>
                 <Box width={40} height={40} borderRadius={2} overflow='hidden'>
@@ -131,14 +133,14 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
                 </Button>
               </Box>
             </Box>
-            <Box>
+            {/* <Box>
               <Button color='secondary' fullWidth adornmentEnd={<FontAwesomeIcon icon={faArrowRight} />} className={classes.actionBtn}>
                 <FontAwesomeIcon icon={faBell} />
                 <Box width={16} />
                 Уведомления
               </Button>
               <Box pb={2} />
-            </Box>
+            </Box> */}
           </Box>
         </Box>
       </Drawer>

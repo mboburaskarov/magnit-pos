@@ -21,22 +21,21 @@ import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import LockIcon from '../../../assets/icons/LockIcon'
 import PlusIcon from '../../../assets/icons/PlusIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/vendorsTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/cashboxTableColumns'
 import CreateVendorDrawer from './createVendorDrawer'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function VendorsPage() {
+export default function CashBoxsPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { columns, loading } = useSelector((state) => state.vendorsTableColumns)
+  const { columns, loading } = useSelector((state) => state.cashboxTableColumns)
   const { values } = useQueryParams()
   const [regions, setRegions] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [openCreateVendorDrawer, setopenCreateVendorDrawer] = useState(false)
-  const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [slectedVendors, setSelectedVendors] = useState([])
@@ -75,83 +74,60 @@ export default function VendorsPage() {
     }
   }, [])
 
-  const vendorsListFilter = useMemo(() => {
+  const cashboxListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: values?.search,
-      regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
-      category_id: values?.category_id,
-      producer: values?.producer,
-      supply_price_to: values?.supply_price_to,
-      retail_price_to: values?.retail_price_to,
-      region: values?.region_id,
-      supply_price_from: values?.supply_price_from,
-      retail_price_from: values?.retail_price_from,
-      isExpress: values?.isExpress,
     }
-  }, [
-    values?.offset,
-    values?.limit,
-    values?.search,
-    values?.producer,
-    values?.category_id,
-    values?.shop_id,
-    values?.supply_price_to,
-    values?.retail_price_to,
-    values?.supply_price_from,
-    values?.retail_price_from,
-    values?.region_id,
-    values?.isExpress,
-    regions,
-  ])
+  }, [values?.offset, values?.limit, values?.search, values?.store_id])
   const {
-    data: vendorsList,
-    isLoading: vendorsListLoading,
-    isFetching: isFetchingvendorsList,
+    data: cashboxList,
+    isLoading: cashboxListLoading,
+    isFetching: isFetchingcashboxList,
     refetch,
-  } = useQuery(['vendorsList', vendorsListFilter], () => requests.getAllVendors(vendorsListFilter))
+  } = useQuery(['cashboxList', cashboxListFilter], () => requests.getAllCashBoxList(cashboxListFilter))
 
-  const { mutate: deleteVendor, isLoading: isDeletingProduct } = useMutation(requests.deleteVendor, {
+  const { mutate: deleteCashBox, isLoading: isDeletingProduct } = useMutation(requests.deleteCashBox, {
     onSuccess: () => {
       refetch()
-      success('Продавец удален!')
+      success('Продукт успешно удален!')
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
-      error('Ошибка при удалении продавец!')
+      error('Ошибка при удалении товара!')
       setOpenConfirmDialog(null)
       console.log('err', err)
     },
   })
 
-  const { mutate: activateVendor, isLoading: isActivatingProduct } = useMutation(requests.activateVendor, {
+  const { mutate: activateProduct, isLoading: isActivatingProduct } = useMutation(requests.activateVendor, {
     onSuccess: () => {
-      success('продавец успешно активирован!')
+      success('Продукт успешно активирован!')
       setTimeout(() => {
         refetch()
       }, 500)
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
-      error('Ошибка при активации продавеца!')
+      error('Ошибка при активации продукта!')
       refetch()
       setOpenConfirmDialog(null)
       console.log('err', err)
     },
   })
-  const { mutate: deActivateVendor, isLoading: isDeActivatingProduct } = useMutation(requests.deActivateVendor, {
+  const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.deActivateVendor, {
     onSuccess: () => {
-      success('продавец успешно деактивирован!')
+      success('Продукт успешно деактивирован!')
       setTimeout(() => {
         refetch()
       }, 500)
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
-      error('Ошибка при деактивации продавеца!')
+      error('Ошибка при деактивации продукта!')
       refetch()
       setOpenConfirmDialog(null)
       console.log('err', err)
@@ -160,20 +136,20 @@ export default function VendorsPage() {
 
   useEffect(() => {
     refetch()
-  }, [vendorsListFilter])
+  }, [cashboxListFilter])
 
   useEffect(() => {
-    const count = vendorsList?.data?.data?._meta?.total_count
+    const count = cashboxList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [vendorsList?.data, values?.limit])
+  }, [cashboxList?.data, values?.limit])
 
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {t('vendors')}
+          Кассы
         </Typography>
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -238,30 +214,7 @@ export default function VendorsPage() {
                     fullWidth
                     variant='contained'
                     color='secondary'
-                    onClick={() => deActivateVendor(slectedVendors)}
-                  >
-                    <LockIcon color='#111217' />
-                  </Button>
-                </Box>
-                <Box minWidth={48} ml={'16px'}>
-                  <Button
-                    sx={{
-                      height: '48px',
-                      padding: 0,
-                      bgcolor: '#fff',
-                      border: '1px solid #ECEDF2',
-                      color: 'dark.500',
-                      fontWeight: '500',
-                      fontSize: '16px',
-                      lineHeight: '24px',
-                      '& span': {
-                        mr: '12px',
-                      },
-                    }}
-                    fullWidth
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => deleteVendor({ data: slectedVendors })}
+                    onClick={() => deleteCashBox({ data: slectedVendors })}
                   >
                     <DeleteIcon width='24px' />
                   </Button>
@@ -301,15 +254,15 @@ export default function VendorsPage() {
             id='products-main-table'
             tableSettings
             columns={tableColumns}
-            data={vendorsList?.data?.data?.data || []}
-            isDataLoading={isFetchingvendorsList || vendorsListLoading}
+            data={cashboxList?.data?.data || []}
+            isDataLoading={isFetchingcashboxList || cashboxListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingvendorsList || vendorsListLoading}
+            isRefreshing={loading || isFetchingcashboxList || cashboxListLoading}
           />
         </Box>
       </Box>
@@ -352,10 +305,10 @@ export default function VendorsPage() {
                 loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
                 onClick={() =>
                   openConfirmDialog?.type === 'activate'
-                    ? activateVendor([openConfirmDialog.id])
+                    ? activateProduct([openConfirmDialog.id])
                     : openConfirmDialog?.type === 'deactivate'
-                    ? deActivateVendor([openConfirmDialog.id])
-                    : deleteVendor({ data: [openConfirmDialog.id] })
+                    ? deActivateProduct([openConfirmDialog.id])
+                    : deleteCashBox({ data: [openConfirmDialog.id] })
                 }
               >
                 Да, удалить
