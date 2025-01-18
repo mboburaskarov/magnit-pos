@@ -336,7 +336,13 @@ function NewSale() {
       <Box display={'flex'}>
         <Box width={'70%'} padding={'20px'}>
           <Box position={'relative'}>
-            <CartSearchBar cashBoxDetails={cashBoxDetails} showOverlay={showOverlay} setShowOverlay={setShowOverlay} handleAddProduct={handleAddProduct} />
+            <CartSearchBar
+              refetchcartItemsList={refetchcartItemsList}
+              cashBoxDetails={cashBoxDetails}
+              showOverlay={showOverlay}
+              setShowOverlay={setShowOverlay}
+              handleAddProduct={handleAddProduct}
+            />
           </Box>
           <Box mt={8} />
           <Box padding={'24px 0'}>
@@ -352,7 +358,7 @@ function NewSale() {
               <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
                 {t('page.new_sale.label')} (0)
               </Typography>
-              {get(cartItemsList, 'data.data.data', 0).length ? (
+              {get(cartItemsList, 'data.data.data', 0)?.length ? (
                 <Box display={'flex'} sx={{ cursor: 'pointer' }} alignItems={'center'} onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}>
                   <Typography sx={{ mr: '12px', color: 'orange.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>{t('delete_all')}</Typography>
                   <DeleteIcon width={'20px'} />
@@ -374,7 +380,7 @@ function NewSale() {
               ) : (
                 <Box>
                   {get(cartItemsList, 'data.data.data', []).map((el) => (
-                    <CartItem setOpenConfirmDialog={setOpenConfirmDialog} item={el} />
+                    <CartItem setOpenConfirmDialog={setOpenConfirmDialog} item={el} key={el?.id} index={el?.id} />
                   ))}
                 </Box>
               )}

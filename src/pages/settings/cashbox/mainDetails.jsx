@@ -50,8 +50,6 @@ export default function MainDetails({ clientData, openDrawer }) {
   }, [openDrawer])
   useEffect(() => {
     if (mode === 'edit') {
-      console.log('f')
-
       setValue('name', get(employeeInfo, 'data.data.name'))
       setValue('is_enable', get(employeeInfo, 'data.data.is_enable') ? 'active' : 'inactive')
       setValue('store', {
@@ -61,7 +59,6 @@ export default function MainDetails({ clientData, openDrawer }) {
     }
   }, [employeeInfo])
   // const { data: storesList } = useQuery('storesList', () => requests.getAllShops({ limit: 20, offset: 0 }))
-  console.log(get(employeeInfo, 'data.data.is_enable'))
 
   return (
     <Box mt={'24px'}>
@@ -98,8 +95,6 @@ export default function MainDetails({ clientData, openDrawer }) {
             // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
             // uncontrolled
             getOptionLabel={(option) => {
-              console.log(option)
-
               return <Typography color='grey.600'>{option.name}</Typography>
             }}
             filterOption={() => true}

@@ -72,6 +72,8 @@ export const requests = {
   //store
   getAllStores: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllSimilarStoreProducts: (id) => request.get(`v1/product/similar/${id}`),
+  getStoreProductByBarcode: (data) => request.post(`v1/product/store/barcode`, data),
+  changeCartItemQuantity: ({ id, data }) => request.put(`v1/cart_item/${id}`, data),
   deleteStore: (id) => request.delete(`v1/store/${id}`),
 
   getAllCashBoxList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),

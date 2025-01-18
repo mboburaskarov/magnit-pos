@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
 import React, { useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
@@ -15,6 +15,8 @@ import UnlockIcon from '../../../assets/icons/UnlockIcon'
 import UserOutlineIcon from '../../../assets/icons/UserOutlineIcon'
 import AssigneMeButton from './AssigneMeButton'
 import SerchedItem from './SerchedItem'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { error } from '../../../../utils/toast'
 const useStyles = makeStyles((theme) => ({
   overlay: {
     cursor: 'pointer',
@@ -110,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
 }))
-function CartSearchBar({ handleAddProduct, cashBoxDetails, showOverlay, setShowOverlay }) {
+function CartSearchBar({ refetchcartItemsList, handleAddProduct, cashBoxDetails, showOverlay, setShowOverlay }) {
   const [searchTearm, setSearchTerm] = useState('')
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
@@ -127,7 +129,31 @@ function CartSearchBar({ handleAddProduct, cashBoxDetails, showOverlay, setShowO
   const methods = useForm()
   const classes = useStyles()
   const productsData = productsList?.data?.data
-
+  const { mutate: getStoreProductByBarcode } = useMutation(requests.getStoreProductByBarcode, {
+    onSuccess: ({ data }) => {
+      // if (data?.length) {
+      setSearchTerm('')
+      refetchcartItemsList()
+      // }
+      setShowOverlay(false)
+    },
+    onError: (err) => {
+      error('Ошибка при получении похожих товаров.')
+      console.log('err', err)
+      setShowOverlay(false)
+    },
+  })
+  // useHotkeys(
+  //   't',
+  //   () =>
+  //     getStoreProductByBarcode({
+  //       data: {
+  //         sale_id: id,
+  //         barcode: searchTearm,
+  //       },
+  //     }),
+  //   { enabled: true, enableOnTags: ['INPUT', 'TEXTAREA'] }
+  // )
   return (
     <Box className={classes.quick_search} mb={4}>
       <FormProvider {...methods}>
@@ -139,10 +165,18 @@ function CartSearchBar({ handleAddProduct, cashBoxDetails, showOverlay, setShowO
             name='search'
             placeholder={'Поиск: товар, категория, штрих-код'}
             fullWidth
+            value={searchTearm}
             onChange={(e) => {
               setSearchTerm(e.target.value)
               setShowOverlay(true)
             }}
+            onKeyDown={({ key }) =>
+              key == 'Enter' &&
+              getStoreProductByBarcode({
+                sale_id: id,
+                barcode: searchTearm,
+              })
+            }
           />
           <Box position={'relative'} minWidth={'240px'}>
             <SelectSimple

@@ -5,6 +5,11 @@ import InputQuantity from '../../../../components/Inputs/InputQuantity'
 import StyledTooltip from '../../../../components/StyledTooltip'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import EditIcon from '../../../assets/icons/EditIcon'
+import { get } from 'lodash'
+import { requests } from '../../../../utils/requests'
+import { useMutation } from 'react-query'
+import { error } from '../../../../utils/toast'
+import { useParams } from 'react-router-dom'
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -200,42 +205,39 @@ export const useStyles = makeStyles((theme) => ({
 }))
 
 const CartItem = ({
-  data,
-  setCurrentData,
-  addItem,
   index,
-  fakeIndexForCheck,
-  setFakeIndexForCheck,
-  searchInputRef,
-  discountInputRef,
-  clientInputRef,
-  eposOn,
-  refetchLabels,
-  allSellers,
+
   item,
   setOpenConfirmDialog,
 }) => {
   const cls = useStyles()
-  const [quon, setQuon] = useState(1)
+
+  const { mutate: changeCartItemQuantity } = useMutation(requests.changeCartItemQuantity, {
+    onSuccess: ({ data }) => {},
+    onError: (err) => {
+      error('Ошибка при получении похожих товаров.')
+      console.log('err', err)
+    },
+  })
   return (
     <Box display={'flex'} width={'100%'}>
       <Box
         id={`cartItem${index}`}
         tabIndex={index}
         className={cls.root}
-        onKeyDown={(event) => {
-          if (event.code === 'KeyD' && fakeIndexForCheck === index) {
-            addItem(data?.id, 0)
-            dispatch(asyncRemoveFromCartAction(data?.id, 'cartItem'))
-            setFakeIndexForCheck(-1)
-            if (isMarked) {
-              deleteProductLabels()
-            }
-          }
-          if (!data?.wholeSaleEnabled && event.code === 'KeyS' && fakeIndexForCheck === index) {
-            setCurrentData(data)
-          }
-        }}
+        // onKeyDown={(event) => {
+        //   if (event.code === 'KeyD' && fakeIndexForCheck === index) {
+        //     addItem(data?.id, 0)
+        //     dispatch(asyncRemoveFromCartAction(data?.id, 'cartItem'))
+        //     setFakeIndexForCheck(-1)
+        //     if (isMarked) {
+        //       deleteProductLabels()
+        //     }
+        //   }
+        //   if (!data?.wholeSaleEnabled && event.code === 'KeyS' && fakeIndexForCheck === index) {
+        //     setCurrentData(data)
+        //   }
+        // }}
       >
         <Box className={cls.content}>
           <Box className={cls.details}>
@@ -247,40 +249,58 @@ const CartItem = ({
                 },
               }}
             >
-              <StyledTooltip placement='top' title='Штук'>
+              <StyledTooltip placement='top' title='Пачка'>
                 <InputQuantity
                   id={`inputQuantity${index}`}
-                  name='box'
+                  name={`quantity_${item?.id}`}
                   adornmentPosition='end'
                   adornmentClassName={cls.adornment}
                   max={100}
-                  defaultValue={1}
+                  defaultValue={get(item, 'quantity', 0)}
                   type='number'
                   disabled={false}
+                  onBlur={({ target }) => {
+                    changeCartItemQuantity({
+                      id: get(item, 'id'),
+                      data: {
+                        quantity: Number(get(target, 'value')),
+                        store_product_id: get(item, 'store_product_id'),
+                      },
+                    })
+                  }}
                 />
               </StyledTooltip>
               <Box>
-                <StyledTooltip placement='top' title='Пачка'>
+                <StyledTooltip placement='top' title='Штук'>
                   <InputQuantity
-                    id={`inputQuantity${index}`}
-                    name='quantity'
-                    defaultValue={1}
+                    id={`inputQuantitys${index}`}
+                    name={`unit_quantity_${item?.id}`}
+                    defaultValue={get(item, 'unit_quantity', 1)}
                     adornmentPosition='end'
                     adornmentClassName={cls.adornment}
                     max={100}
                     type='number'
                     disabled={false}
+                    onBlur={({ target }) => {
+                      changeCartItemQuantity({
+                        id: get(item, 'id'),
+                        data: {
+                          store_product_id: get(item, 'store_product_id'),
+                          unit_quantity: Number(get(target, 'value')),
+                        },
+                      })
+                    }}
                   />
                 </StyledTooltip>
               </Box>
               <Box className={cls.img_cont}>
-                <img src={item?.product?.main_photo || '/default-img.avif'} onClick={() => data.main_image_url && setProductId(data.id)} />
+                <img src={item?.main_photo || '/default-img.avif'} />
               </Box>
               <Box id='product-details' className={cls.text}>
                 <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }} textOverflow={'ellipsis'} overflow={'hidden'}>
-                  {item?.product?.name}
+                  {item?.name}
                 </Typography>
-                <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}> {item?.product?.barcode}</Typography>
+                <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}> {item?.barcode}</Typography>
               </Box>
             </Box>
 
@@ -294,10 +314,7 @@ const CartItem = ({
                     '& svg': { width: '20px', height: '20px' },
                   }}
                 >
-                  <Typography sx={{ mr: '10px', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
-                    {' '}
-                    {item?.total_price}
-                  </Typography>
+                  <Typography sx={{ mr: '10px', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}> {item?.unit_price}</Typography>
                   <Box sx={{ cursor: 'pointer' }}>
                     <EditIcon />
                   </Box>
@@ -318,7 +335,7 @@ const CartItem = ({
                     backgroundColor: 'red.100',
                   },
                 }}
-                onClick={() => setOpenConfirmDialog({ type: 'deleteOne', id: item?.id, name: item?.product?.name })}
+                onClick={() => setOpenConfirmDialog({ type: 'deleteOne', id: item?.id, name: item?.name })}
               >
                 <DeleteIcon width='24px' />
               </Box>
@@ -329,8 +346,8 @@ const CartItem = ({
       <Box display={'flex'} flexDirection={'column'} padding={'16px'} bgcolor={'bg.10'} ml={'8px'} height={'80px'} borderRadius={'16px'} minWidth={'160px'}>
         <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>Sotuv bonusi</Typography>
         <Box display={'flex'} justifyContent={'space-between'}>
-          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}> {item?.product?.bonus_percent}%</Typography>
-          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>{item?.product?.bonus_amount}</Typography>
+          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}> {item?.bonus_percent}%</Typography>
+          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>{item?.bonus_amount}</Typography>
         </Box>
       </Box>
     </Box>
