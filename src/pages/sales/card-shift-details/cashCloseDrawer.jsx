@@ -110,7 +110,7 @@ function CashCloseDrawer({ open, setOpen }) {
       data: {
         cash_amount: get(closeCashboxPaymentsInfo, 'data.data.cash_amount'),
         cashless_amount: get(closeCashboxPaymentsInfo, 'data.data.cashless_amount'),
-        closed_amount: get(data, 'closed_amount'),
+        closed_amount: Number(get(data, 'closed_amount')),
         is_company: company == 2 ? true : false,
       },
     })

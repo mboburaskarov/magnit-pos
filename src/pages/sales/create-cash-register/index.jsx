@@ -70,7 +70,7 @@ function NewCashRegister() {
   const classes = useStyles()
   const userData = useSelector((state) => state.user)
   const navigate = useNavigate()
-
+  const [isLoading, setIsLoding] = useState(false)
   const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
   const { data: registerCashList, refetch: refetchregisterCashList } = useQuery('registerCashList', () =>
@@ -79,7 +79,7 @@ function NewCashRegister() {
   const {
     data: registerCashData,
     refetch: refetchregisterCashData,
-    isLoading,
+    isLoading: isrRgisterCashDataLoading,
     isFetched,
   } = useQuery('registerCashData', () => requests.getRegisterCashData(get(methods.getValues('registerCash_id'), 'id', false)))
 
@@ -87,9 +87,13 @@ function NewCashRegister() {
     onSuccess: ({ data }) => {
       if (get(data, 'data.is_open', false)) {
         navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
+      } else {
+        setIsLoding(false)
       }
     },
     onError: (err) => {
+      setIsLoding(false)
+
       // error('Ошибка при создании товара!')
       console.log('err', err)
     },
@@ -132,7 +136,7 @@ function NewCashRegister() {
     error('Пожалуйста, заполните все поля!')
   }
   return (
-    <LoadingContainer readyState={!isCheckSaleExist || isLoading || isFetched}>
+    <LoadingContainer readyState={isLoading}>
       <FormProvider {...methods}>
         <Box className={classes.box}>
           <Box className={classes.wrapper}>

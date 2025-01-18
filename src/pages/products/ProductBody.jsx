@@ -18,18 +18,19 @@ import UploadImage from '../../../components/UploadImage'
 import { requests } from '../../../utils/requests'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import productStoresTableHeaderSelector from './productStoresTableHeaderSelector'
+import InputSearch from '../../../components/Inputs/InputSearch'
 
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
   const [uniType, setUniType] = useState('piece')
+  const [storeSearchText, setStoreSearchText] = useState('')
   const { columns, loading } = useSelector((state) => state.storesListTableColumnsForProduct)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
 
   const { t } = useTranslation()
   const [images, setImages] = useState([])
-  const appType = watch('app_type') || 'BUCHET'
   const applyAllFunc = (id, type) => {
     if (type === 'quantity') {
       const quantity = getValues(`store_product.${id}.quantity`)
@@ -53,17 +54,28 @@ export default function ProductBody({ productData = null }) {
     getValues: getValues,
     applyAllFunc: applyAllFunc,
   })
-  const { data: storeList, refetch: refetchShopList } = useQuery('shopList', () =>
+  const { data: storeList, refetch: refetchShopList } = useQuery(['shopList', storeSearchText], () =>
     requests.getAllStores({
       product_id: get(productData, 'id'),
       limit: values?.limit || 5,
       offset: values?.offset || 0,
+      search: storeSearchText || '',
     })
   )
   useEffect(() => {
     refetchShopList()
   }, [values.limit, values.offset])
-  const { data: unitsList, refetch: refetchUnitList } = useQuery('unitsList', () => requests.getAllUnits({ limit: 20, offset: 0, type: appType }))
+
+  useEffect(() => {
+    const supply_price = Number(getValues('supply_price'))
+    const vat = Number(getValues('vat'))
+    if (getValues('supply_price') >= 0 && getValues('vat') >= 0) {
+      setValue('retail_price', (supply_price / 100) * vat + supply_price)
+      setValue('vat_price', (supply_price / 100) * vat)
+    }
+  }, [watch('supply_price'), watch('vat')])
+
+  const { data: unitsList, refetch: refetchUnitList } = useQuery('unitsList', () => requests.getAllUnits({ limit: 20, offset: 0 }))
 
   useEffect(() => {
     if (productData) {
@@ -96,7 +108,7 @@ export default function ProductBody({ productData = null }) {
     refetchShopList()
     const offsetsCount = Math.ceil(get(storeList, 'data.data._meta.total_count') / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [appType, values.limit])
+  }, [storeList?.data, values.limit])
   useEffect(() => {
     setUniType(get(getValues('product_unit'), 'value', 'piece'))
   }, [watch('product_unit')])
@@ -105,6 +117,7 @@ export default function ProductBody({ productData = null }) {
       setValue('app_type', 'BUCHET')
     }
   }, [])
+
   const { refetch } = useQuery('barcode', () => requests.generateBarcode(), { enabled: false })
 
   return (
@@ -227,6 +240,18 @@ export default function ProductBody({ productData = null }) {
         <SectionTitle noWrap withLine>
           {t('create_new_product.amount_section.label')}
         </SectionTitle>
+        <Box mt={'24px'}>
+          <InputSearch
+            // fullWidth
+
+            maxWidth={'500px'}
+            uncontrolled={false}
+            onChange={({ target }) => setStoreSearchText(get(target, 'value'))}
+            id='producrs-search'
+            name='search'
+            placeholder={t('input.search.product.multi')}
+          />
+        </Box>
         <Box mt={'24px'}>
           <AgGridTable
             id='products-main-feftables'
