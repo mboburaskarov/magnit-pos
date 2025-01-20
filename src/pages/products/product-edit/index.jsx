@@ -46,12 +46,8 @@ export default function ProductEditPage() {
       name: get(data, 'name'),
       photos: get(data, 'images', []).map((el) => el.file_url),
       category_ids: methods.getValues('category_ids'),
-      product_unit: get(data, 'product_unit').map(({ id, name, ...rest }) => ({
-        unit_type_id: id,
-        unit_name: name,
-        box_grain_count: Number(get(data, 'box_grain_count')),
-        ...rest,
-      })),
+      unit_type_id: get(data, 'product_unit.id'),
+      unit_per_pack: Number(get(data, 'box_grain_count')),
       quantity: Object.values(get(data, 'store_product')).reduce((total, product) => {
         return Number(total) + Number(product.quantity)
       }, 0),
@@ -60,7 +56,7 @@ export default function ProductEditPage() {
       store_id: get(userData, 'store_id'),
       store_product: Object.values(get(data, 'store_product')).map((item) => ({
         ...item,
-        quantity: Number(item.quantity),
+        pack_quantity: Number(item.quantity),
         small_quantity: Number(item.small_quantity),
       })),
       sum: Number(get(data, 'retail_price')),

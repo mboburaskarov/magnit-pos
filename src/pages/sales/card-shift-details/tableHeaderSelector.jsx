@@ -61,7 +61,7 @@ export default function tableHeaderSelector({ cardShiftColumns, t, setValue, cha
                     setValue(`net_amount_${p?.data?.id}`, '0')
                   }
                   if (get(p, 'data.net_amount') != Number(get(target, 'value')))
-                    changeCloseBoxNetAmout({ id: get(p, 'data.id'), net_amount: Number(get(target, 'value')) })
+                    changeCloseBoxNetAmout({ id: get(p, 'data.id'), data: { net_amount: Number(get(target, 'value')) } })
                 }}
                 onFocus={({ target }) => {
                   if (Number(get(target, 'value')) == 0) {

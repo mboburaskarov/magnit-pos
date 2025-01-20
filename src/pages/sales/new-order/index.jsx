@@ -600,10 +600,10 @@ function NewSale() {
                 </Box>
               ))}
             {discount === 'cash' &&
-              [50, 100, 300, 500].map((el, index) => (
+              [5, 10, 50, 100].map((el, index) => (
                 <Box
                   sx={{ cursor: 'pointer', color: el === inputDiscount ? 'orange.500' : '#000' }}
-                  onClick={() => setInputDiscount(el)}
+                  onClick={() => setInputDiscount(`${el}000`)}
                   className={classes.percent}
                 >
                   {el}k

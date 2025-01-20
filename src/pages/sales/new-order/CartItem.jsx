@@ -306,17 +306,40 @@ const CartItem = ({
 
             <Box display={'flex'}>
               <Box id='product-details' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', justifyContent: 'center' }}>
-                <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>A4</Typography>
                 <Box
                   sx={{
-                    display: 'flex',
+                    // display: 'flex',
                     '& svg > g > path': { stroke: '#FF6018' },
                     '& svg': { width: '20px', height: '20px' },
                   }}
                 >
-                  <Typography sx={{ mr: '10px', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}> {item?.unit_price}</Typography>
-                  <Box sx={{ cursor: 'pointer' }}>
-                    <EditIcon />
+                  <Box display={'flex'}>
+                    {item?.discount_price > 0 && (
+                      <Typography sx={{ mr: '10px', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
+                        {item?.discount_price}
+                      </Typography>
+                    )}
+                    <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>A4</Typography>
+                  </Box>
+                  <Box display={'flex'}>
+                    <Typography
+                      textDecoration='line-through'
+                      // {...(item?.discount_price > 0 && { textDecoration: 'line-through' })}
+                      sx={{
+                        mr: '10px',
+                        color: 'orange.500',
+                        fontSize: '16px',
+                        lineHeight: '24px',
+                        fontWeight: '600',
+                        textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
+                        color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
+                      }}
+                    >
+                      {item?.unit_price}
+                    </Typography>
+                    <Box sx={{ cursor: 'pointer' }}>
+                      <EditIcon />
+                    </Box>
                   </Box>
                 </Box>
               </Box>
