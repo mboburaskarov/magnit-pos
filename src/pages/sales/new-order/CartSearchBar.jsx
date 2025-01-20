@@ -18,6 +18,10 @@ import SerchedItem from './SerchedItem'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { error } from '../../../../utils/toast'
 const useStyles = makeStyles((theme) => ({
+  avatar: {
+    width: 30,
+    borderRadius: '50%',
+  },
   overlay: {
     cursor: 'pointer',
     position: 'fixed',
@@ -126,6 +130,7 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, cashBoxDetails,
   const { data: productsList } = useQuery(['productsList', productsListFilter], () =>
     requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter)
   )
+
   const methods = useForm()
   const classes = useStyles()
   const productsData = productsList?.data?.data
@@ -185,20 +190,22 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, cashBoxDetails,
               minWidth='auto'
               borderNone
               fullWidth
+              disabled
               placeholder={
-                <Typography ml={4} color='#bdbdbd'>
-                  Сотрудники
+                <Typography ml={4} color='bunker.950'>
+                  {get(userData, 'first_name')}
                 </Typography>
               }
               getOptionLabel={(option) => (
                 <Typography maxHeight={48} display='inline-flex' color='gray.600'>
                   <Box px={0.5} width={32}>
                     <UserOutlineIcon />
+                    {/* <img src={userData?.photo} alt={userData?.first_name} className={classes.avatar} /> */}
                   </Box>
                 </Typography>
               )}
             />
-            <AssigneMeButton isSelected={true} />
+            <AssigneMeButton classes={classes} userData={userData} isSelected={true} />
           </Box>
           <ButtonWithPopup
             id={'ff'}

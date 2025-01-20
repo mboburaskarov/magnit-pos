@@ -85,10 +85,10 @@ function NewCashRegister() {
 
   const { mutate: checkSaleExist, isLoading: isCheckSaleExist } = useMutation(requests.checkSaleExist, {
     onSuccess: ({ data }) => {
+      setIsLoding(false)
+
       if (get(data, 'data.is_open', false)) {
         navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
-      } else {
-        setIsLoding(false)
       }
     },
     onError: (err) => {
@@ -136,7 +136,7 @@ function NewCashRegister() {
     error('Пожалуйста, заполните все поля!')
   }
   return (
-    <LoadingContainer readyState={isLoading}>
+    <LoadingContainer readyState={!isLoading}>
       <FormProvider {...methods}>
         <Box className={classes.box}>
           <Box className={classes.wrapper}>

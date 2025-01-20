@@ -1,6 +1,6 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
@@ -68,8 +68,19 @@ export default function RolesPage() {
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
-
-  const { data: storesList, isLoading: storesListLoading, isFetching: isFetchingstoresList, refetch } = useQuery(['storesList'], () => requests.getAllRoles())
+  const rolesListFilter = useMemo(() => {
+    return {
+      limit: values?.limit || 10,
+      offset: values?.offset || 0,
+      search: values?.search,
+    }
+  }, [values?.offset, values?.limit, values?.search])
+  const {
+    data: rolesList,
+    isLoading: rolesListLoading,
+    isFetching: isFetchingrolesList,
+    refetch,
+  } = useQuery(['rolesList', rolesListFilter], () => requests.getAllRoles(rolesListFilter))
   const { mutate: deleteRole, isLoading: isDeletingProduct } = useMutation(requests.deleteRole, {
     onSuccess: () => {
       refetch()
@@ -85,11 +96,11 @@ export default function RolesPage() {
   })
 
   useEffect(() => {
-    const count = storesList?.data?.data?._meta?.total_count
+    const count = rolesList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [storesList?.data, values?.limit])
+  }, [rolesList?.data, values?.limit])
 
   return (
     <LoadingContainer readyState={true}>
@@ -193,18 +204,18 @@ export default function RolesPage() {
         </Box>
         <Box>
           <AgGridTable
-            id='products-main-table'
+            id='roles-main-table'
             tableSettings
             columns={tableColumns}
-            data={storesList?.data?.data?.data || []}
-            isDataLoading={isFetchingstoresList || storesListLoading}
+            data={rolesList?.data?.data?.data || []}
+            isDataLoading={isFetchingrolesList || rolesListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingstoresList || storesListLoading}
+            isRefreshing={loading || isFetchingrolesList || rolesListLoading}
           />
         </Box>
       </Box>
