@@ -305,7 +305,15 @@ function NewSale() {
   useEffect(() => {
     refetchcartItemsList()
   }, [id])
-
+  useEffect(() => {
+    const cartList = cartItemsList?.data?.data?.data
+    if (cartList?.length > 0) {
+      cartList.map((item) => {
+        method.setValue(`unit_quantity_${item.id}`, get(item, 'unit_quantity'))
+        method.setValue(`quantity_${item.id}`, get(item, 'quantity'))
+      })
+    }
+  }, [cartItemsList?.data])
   useEffect(() => {
     changeDiscountValue({
       id: id,
