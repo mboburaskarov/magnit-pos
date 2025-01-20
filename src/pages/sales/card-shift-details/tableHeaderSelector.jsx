@@ -15,7 +15,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ cardShiftColumns, t, changeCloseBoxNetAmout }) {
+export default function tableHeaderSelector({ cardShiftColumns, t, setValue, changeCloseBoxNetAmout }) {
   const columns = cardShiftColumns?.map((el) => {
     if (el.field === 'type') {
       return {
@@ -57,8 +57,18 @@ export default function tableHeaderSelector({ cardShiftColumns, t, changeCloseBo
             ) : (
               <TextField
                 onBlur={({ target }) => {
-                  changeCloseBoxNetAmout({ id: get(p, 'data.id'), net_amount: Number(get(target, 'value')) })
+                  if (Number(get(target, 'value')) == '') {
+                    setValue(`net_amount_${p?.data?.id}`, '0')
+                  }
+                  if (get(p, 'data.net_amount') != Number(get(target, 'value')))
+                    changeCloseBoxNetAmout({ id: get(p, 'data.id'), net_amount: Number(get(target, 'value')) })
                 }}
+                onFocus={({ target }) => {
+                  if (Number(get(target, 'value')) == 0) {
+                    setValue(`net_amount_${p?.data?.id}`, '')
+                  }
+                }}
+                setValue={setValue}
                 id={`net_amount_${p?.data?.id}`}
                 name={`net_amount_${p?.data?.id}`}
                 type='number'

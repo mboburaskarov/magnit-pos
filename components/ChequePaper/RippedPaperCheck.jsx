@@ -139,7 +139,7 @@ function RippedPaperCheck({
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
           </Fragment>
-          {get(cartItemsList, 'data').map((el, index) => (
+          {get(cartItemsList, 'data', [])?.map((el, index) => (
             <Fragment key={'index3'}>
               <Box className={classes.content}>
                 <p id={`return-name-${'index'}`}>
@@ -172,7 +172,7 @@ function RippedPaperCheck({
                   }}
                 />
               )}
-              {paymentsList.map(
+              {paymentsList?.map(
                 (el) =>
                   disableSumsOnGoods() && (
                     <DashedRow

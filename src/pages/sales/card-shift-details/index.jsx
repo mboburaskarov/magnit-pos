@@ -42,6 +42,7 @@ function CardShiftDetails() {
   const tableColumns = tableHeaderSelector({
     cardShiftColumns: columns,
     t,
+    setValue: methods.setValue,
     changeCloseBoxNetAmout,
   })
 
