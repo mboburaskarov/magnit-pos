@@ -6,7 +6,7 @@ export const requests = {
   logIn: (data) => authRequest.post(`v1/login`, data),
   getUserInfo: (id) => request.get(`v1/employee/info`),
   //payment types
-  getPaymentTypesList: (filter) => request.get(`v1/payment_type/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getPaymentTypesList: (filter) => request.get(`v1/payment-type/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   addToOrderPayment: (data) => request.post(`v1/sale/final`, data),
 
   createShift: (data) => request.post(`v1/shift`, data),
