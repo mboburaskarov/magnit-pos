@@ -33,7 +33,7 @@ import TimesSmallIcon from '../../../assets/icons/TimesSmallIcon'
 import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
 import CreateDraftDrawer from './createDraftDrawer'
 import ChangeShift from './ChangeShift'
-
+import ShortcutsDrawer from '../../../../components/Sales/ShortcutsDrawer'
 const useStyles = makeStyles((theme) => ({
   card_detail: {
     width: '30%',
@@ -343,10 +343,26 @@ function NewSale() {
   useHotkeys('t', () => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
+  useHotkeys('d', () => setIsOpenDraft(true), {
+    enableOnTags: ['INPUT', 'TEXTAREA'],
+  })
+  useHotkeys('a', () => setIsOpenChangeShift(true), {
+    enableOnTags: ['INPUT', 'TEXTAREA'],
+  })
+  useHotkeys('o', () => setIsOrderDrower(true), {
+    enableOnTags: ['INPUT', 'TEXTAREA'],
+  })
+  useHotkeys('x', () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`), {
+    enableOnTags: ['INPUT', 'TEXTAREA'],
+  })
+  useHotkeys('q', () => setIsOpenDraft(true), {
+    enableOnTags: ['INPUT', 'TEXTAREA'],
+  })
+
   return (
     <FormProvider {...method}>
       <Box display={'flex'}>
-        <Box width={'70%'} padding={'20px'}>
+        <Box width={'70%'} position={'relative'} padding={'20px'}>
           <Box position={'relative'}>
             <CartSearchBar
               setIsOpenChangeShift={setIsOpenChangeShift}
@@ -399,6 +415,7 @@ function NewSale() {
               )}
             </LoadingContainer>
           </Box>
+          <ShortcutsDrawer />
         </Box>
         <Box className={classes.card_detail}>
           {/* <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mb={'24px'}>
@@ -432,6 +449,7 @@ function NewSale() {
 
       
           </Box> */}
+
           <Box display={'flex'}>
             <Box className={classes.cart_detail_id}>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'orange.500'} lineHeight={'26px'}>
@@ -443,12 +461,12 @@ function NewSale() {
               className={classes.cart_detail_icon}
             >
               <FileIcon color='#000' />
-              <Typography className={classes.small_hot_key}>T</Typography>
+              {/* <Typography className={classes.small_hot_key}>T</Typography> */}
             </Box>
 
             <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
               <TimeAndDate />
-              <Typography className={classes.small_hot_key}>D</Typography>
+              {/* <Typography className={classes.small_hot_key}>D</Typography> */}
             </Box>
             <Box className={classes.cart_detail_icon}>
               <DeleteIcon color='#ccc' width={'24px'} />

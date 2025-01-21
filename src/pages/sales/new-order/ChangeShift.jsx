@@ -13,6 +13,8 @@ import { useSelector } from 'react-redux'
 import { get } from 'lodash'
 import { error, success } from '../../../../utils/toast'
 import InputPassword from '../../../../components/Inputs/InputPasswordNew'
+import { borderRadius } from '@mui/system'
+import { useEffect } from 'react'
 
 export default function ChangeShift({ open, setOpen }) {
   const navigate = useNavigate()
@@ -27,6 +29,9 @@ export default function ChangeShift({ open, setOpen }) {
   const { data: employees } = useQuery('employees', () => requests.getAllVendors({ id: get(userData, 'store.id'), limit: 20, offset: 0 }), {
     enabled: open,
   })
+  useEffect(() => {
+    reset({ password: '' })
+  }, [open])
 
   const { mutate: createShift, isLoading: iscreateShift } = useMutation(requests.createShift, {
     onSuccess: ({ data }) => {
@@ -72,6 +77,9 @@ export default function ChangeShift({ open, setOpen }) {
             fill: '#868FAA',
             // stroke: '#868FAA',
           },
+          '& .MuiInputBase-root.MuiOutlinedInput-root': {
+            borderRadius: '40px !important',
+          },
         }}
       >
         <FormProvider {...methods}>
@@ -82,7 +90,9 @@ export default function ChangeShift({ open, setOpen }) {
               borderNone
               solidBorder
               name='employee_id'
+              required
               white
+              isClearable={false}
               minWidth='auto'
               label={'Сотрудник'}
               placeholder={'Выберите сотрудника'}
@@ -101,13 +111,25 @@ export default function ChangeShift({ open, setOpen }) {
               borderNone
               solidBorder
               name='cash_box_id'
+              required
+              isClearable={false}
               minWidth='auto'
               label={'Касса'}
               placeholder={'Выбрать кассу'}
               getOptionLabel={(el) => el.name}
               options={cashBoxList?.data?.data}
             />
-            <InputPassword id='password' name='password' label={'Password'} autoCompleteoff required fullWidth minLength={8} secondary />
+            <InputPassword
+              boxStyle={{ borderRadius: '40px' }}
+              id='password'
+              name='password'
+              label={'Password'}
+              autoCompleteoff='new-password' // Prevent autofill
+              required
+              fullWidth
+              minLength={8}
+              secondary
+            />
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button fullWidth variant='contained' type='submit'>
                 Изменить

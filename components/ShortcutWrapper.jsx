@@ -1,22 +1,18 @@
 import { Typography } from '@mui/material'
-import {
-  ArrowBackRounded,
-  ArrowDownwardRounded,
-  ArrowForwardRounded,
-  ArrowUpwardRounded,
-} from '@mui/icons-material'
+import { ArrowBackRounded, ArrowDownwardRounded, ArrowForwardRounded, ArrowUpwardRounded } from '@mui/icons-material'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     height: '24px',
-    width: '24px',
+    minWidth: '24px',
     borderRadius: '8px',
     color: theme.palette.gray[400],
     border: `2px solid ${theme.palette.gray[300]}`,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: '2px',
   },
   text: {
     fontSize: 14,

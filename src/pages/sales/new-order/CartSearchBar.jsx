@@ -130,7 +130,6 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChange
   const { data: productsList } = useQuery(['productsList', productsListFilter], () =>
     requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter)
   )
-
   const methods = useForm()
   const classes = useStyles()
   const productsData = productsList?.data?.data
@@ -159,6 +158,9 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChange
   //     }),
   //   { enabled: true, enableOnTags: ['INPUT', 'TEXTAREA'] }
   // )
+  useHotkeys('j', () => methods.setFocus('search'), {
+    enableOnTags: ['INPUT', 'TEXTAREA'],
+  })
   return (
     <Box className={classes.quick_search} mb={4}>
       <FormProvider {...methods}>
