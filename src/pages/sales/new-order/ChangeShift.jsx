@@ -12,6 +12,7 @@ import { useQueryParams } from '../../../hooks/useQueryParams'
 import { useSelector } from 'react-redux'
 import { get } from 'lodash'
 import { error, success } from '../../../../utils/toast'
+import InputPassword from '../../../../components/Inputs/InputPasswordNew'
 
 export default function ChangeShift({ open, setOpen }) {
   const navigate = useNavigate()
@@ -31,10 +32,12 @@ export default function ChangeShift({ open, setOpen }) {
     onSuccess: ({ data }) => {
       localStorage.setItem('access_token', get(data, 'data.access_token'))
       location.reload()
-      success('')
+      setOpen(false)
+
+      success('Cмена изменена')
     },
     onError: (err) => {
-      error('Ошибка при создании продажи')
+      error('Ошибка при смене смены')
       console.log('err', err)
     },
   })
@@ -43,9 +46,9 @@ export default function ChangeShift({ open, setOpen }) {
       cash_box_id: data.cash_box_id?.id || undefined,
       from_employee_id: userData?.id || undefined,
       to_employee_id: data.employee_id?.id || undefined,
+      password: data?.password || undefined,
     }
     createShift(requestBody)
-    setOpen(false)
   }
 
   const onError = (err) => {
@@ -67,7 +70,7 @@ export default function ChangeShift({ open, setOpen }) {
           },
           '& svg': {
             fill: '#868FAA',
-            stroke: '#868FAA',
+            // stroke: '#868FAA',
           },
         }}
       >
@@ -76,6 +79,8 @@ export default function ChangeShift({ open, setOpen }) {
             <SelectSimple
               fullWidth
               id='sto'
+              borderNone
+              solidBorder
               name='employee_id'
               white
               minWidth='auto'
@@ -93,6 +98,8 @@ export default function ChangeShift({ open, setOpen }) {
               fullWidth
               id='categ'
               white
+              borderNone
+              solidBorder
               name='cash_box_id'
               minWidth='auto'
               label={'Касса'}
@@ -100,7 +107,7 @@ export default function ChangeShift({ open, setOpen }) {
               getOptionLabel={(el) => el.name}
               options={cashBoxList?.data?.data}
             />
-
+            <InputPassword id='password' name='password' label={'Password'} autoCompleteoff required fullWidth minLength={8} secondary />
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button fullWidth variant='contained' type='submit'>
                 Изменить
