@@ -14,7 +14,7 @@ const ShortcutsDrawerArray = [
         symbolofshortcut: ['T'],
       },
       {
-        titleofshortcut: 'Изменить смену',
+        titleofshortcut: 'Передать смену',
         symbolofshortcut: ['A'],
       },
       {
