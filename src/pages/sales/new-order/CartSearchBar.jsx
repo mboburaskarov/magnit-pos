@@ -116,7 +116,7 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
 }))
-function CartSearchBar({ refetchcartItemsList, handleAddProduct, cashBoxDetails, showOverlay, setShowOverlay }) {
+function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChangeShift, cashBoxDetails, showOverlay, setShowOverlay }) {
   const [searchTearm, setSearchTerm] = useState('')
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
@@ -224,7 +224,7 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, cashBoxDetails,
                 icon: <UnlockIcon />,
                 clickHandler: () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`),
               },
-              { title: 'Обмен сменами', icon: <FinanceAndPaymentIcon />, soon: true },
+              { title: 'Обмен сменами', icon: <FinanceAndPaymentIcon />, soon: false, clickHandler: () => setIsOpenChangeShift(true) },
             ]}
           />
         </Box>

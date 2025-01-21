@@ -32,6 +32,7 @@ import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
 import TimesSmallIcon from '../../../assets/icons/TimesSmallIcon'
 import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
 import CreateDraftDrawer from './createDraftDrawer'
+import ChangeShift from './ChangeShift'
 
 const useStyles = makeStyles((theme) => ({
   card_detail: {
@@ -214,6 +215,7 @@ function NewSale() {
   const [showOverlay, setShowOverlay] = useState(false)
   const [isOpenDraft, setIsOpenDraft] = useState(false)
   const [isCreateOpenDraft, setIsCreateOpenDraft] = useState(false)
+  const [isOpenChangeShift, setIsOpenChangeShift] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
@@ -345,6 +347,7 @@ function NewSale() {
         <Box width={'70%'} padding={'20px'}>
           <Box position={'relative'}>
             <CartSearchBar
+              setIsOpenChangeShift={setIsOpenChangeShift}
               refetchcartItemsList={refetchcartItemsList}
               cashBoxDetails={cashBoxDetails}
               showOverlay={showOverlay}
@@ -701,7 +704,7 @@ function NewSale() {
         open={isCreateOpenDraft}
         setOpen={setIsCreateOpenDraft}
       />
-
+      <ChangeShift open={isOpenChangeShift} setOpen={setIsOpenChangeShift} />
       <DraftDrawer cashBoxDetails={cashBoxDetails} open={isOpenDraft} setOpen={setIsOpenDraft} />
       <ClientCreateMini
         setCustomerId={setCustomerId}

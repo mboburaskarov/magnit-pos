@@ -9,6 +9,8 @@ export const requests = {
   getPaymentTypesList: (filter) => request.get(`v1/payment_type/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   addToOrderPayment: (data) => request.post(`v1/sale/final`, data),
 
+  createShift: (data) => request.post(`v1/shift`, data),
+
   checkSaleExist: (store_id) => request.get(`v1/cash_box/check?store_id=${store_id}`),
   changeEmployeeInfo: (data) => request.put(`v1/employee/info`, data),
   //category

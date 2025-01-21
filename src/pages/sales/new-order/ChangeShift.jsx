@@ -1,0 +1,114 @@
+import { Box, Button } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import * as qs from 'qs'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useMutation, useQuery } from 'react-query'
+import { useNavigate } from 'react-router-dom'
+import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
+import SelectSimple from '../../../../components/Select/SelectSimple'
+import { requests } from '../../../../utils/requests'
+import CloseIcon from '../../../assets/icons/CloseIcon'
+import { useQueryParams } from '../../../hooks/useQueryParams'
+import { useSelector } from 'react-redux'
+import { get } from 'lodash'
+import { error, success } from '../../../../utils/toast'
+
+export default function ChangeShift({ open, setOpen }) {
+  const navigate = useNavigate()
+  const { values } = useQueryParams()
+  const userData = useSelector((state) => state.user)
+
+  const methods = useForm()
+  const { formState, reset, control } = methods
+  const { data: cashBoxList } = useQuery('cashBoxList', () => requests.getAllCashBoxList({ id: get(userData, 'store.id'), limit: 20, offset: 0 }), {
+    enabled: open,
+  })
+  const { data: employees } = useQuery('employees', () => requests.getAllVendors({ id: get(userData, 'store.id'), limit: 20, offset: 0 }), {
+    enabled: open,
+  })
+
+  const { mutate: createShift, isLoading: iscreateShift } = useMutation(requests.createShift, {
+    onSuccess: ({ data }) => {
+      localStorage.setItem('access_token', get(data, 'data.access_token'))
+      location.reload()
+      success('')
+    },
+    onError: (err) => {
+      error('Ошибка при создании продажи')
+      console.log('err', err)
+    },
+  })
+  const onSubmit = (data) => {
+    const requestBody = {
+      cash_box_id: data.cash_box_id?.id || undefined,
+      from_employee_id: userData?.id || undefined,
+      to_employee_id: data.employee_id?.id || undefined,
+    }
+    createShift(requestBody)
+    setOpen(false)
+  }
+
+  const onError = (err) => {
+    console.log('err', err)
+  }
+
+  const theme = useTheme()
+
+  return (
+    <StyledEmptyDialog open={open} title={'Изменить смену'} customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}>
+      <Box
+        sx={{
+          width: '100%',
+          padding: '24px',
+          '& .MuiInputBase-root': {
+            border: `2px solid`,
+            borderColor: 'bunker.100',
+            height: '48px',
+          },
+          '& svg': {
+            fill: '#868FAA',
+            stroke: '#868FAA',
+          },
+        }}
+      >
+        <FormProvider {...methods}>
+          <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
+            <SelectSimple
+              fullWidth
+              id='sto'
+              name='employee_id'
+              white
+              minWidth='auto'
+              label={'Сотрудник'}
+              placeholder={'Выберите сотрудника'}
+              getOptionLabel={(el) => (
+                <>
+                  {el?.first_name} {el?.last_name}
+                </>
+              )}
+              options={employees?.data?.data?.data}
+            />
+
+            <SelectSimple
+              fullWidth
+              id='categ'
+              white
+              name='cash_box_id'
+              minWidth='auto'
+              label={'Касса'}
+              placeholder={'Выбрать кассу'}
+              getOptionLabel={(el) => el.name}
+              options={cashBoxList?.data?.data}
+            />
+
+            <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
+              <Button fullWidth variant='contained' type='submit'>
+                Изменить
+              </Button>
+            </Box>
+          </Box>
+        </FormProvider>
+      </Box>
+    </StyledEmptyDialog>
+  )
+}
