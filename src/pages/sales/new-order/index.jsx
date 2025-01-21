@@ -355,7 +355,7 @@ function NewSale() {
   useHotkeys('x', () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys('q', () => setIsOpenDraft(true), {
+  useHotkeys('q', () => setIsCreateOpenDraft(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
 
@@ -409,7 +409,14 @@ function NewSale() {
               ) : (
                 <Box>
                   {get(cartItemsList, 'data.data.data', []).map((el) => (
-                    <CartItem setOpenConfirmDialog={setOpenConfirmDialog} item={el} key={el?.id} index={el?.id} />
+                    <CartItem
+                      refetchcartItemsList={refetchcartItemsList}
+                      method={method}
+                      setOpenConfirmDialog={setOpenConfirmDialog}
+                      item={el}
+                      key={el?.id}
+                      index={el?.id}
+                    />
                   ))}
                 </Box>
               )}
@@ -418,38 +425,6 @@ function NewSale() {
           <ShortcutsDrawer />
         </Box>
         <Box className={classes.card_detail}>
-          {/* <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mb={'24px'}>
-            <Box display={'flex'} borderRadius={'10px'} border={'1px dashed #ccc'} padding={'5px 10px'} mr={'10px'} alignItems={'center'}>
-              <Box
-                onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') })}
-                className={classes.cart_detail_icon}
-              >
-                <FileIcon color='#000' />
-              </Box>
-              <Typography color={'bunker.500'} className={classes.hot_key}>
-                T
-              </Typography>
-            </Box>
-            <Box display={'flex'} borderRadius={'10px'} border={'1px dashed #ccc'} padding={'5px 10px'} mr={'10px'} alignItems={'center'}>
-              <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
-                <TimeAndDate />
-              </Box>
-              <Typography color={'bunker.500'} className={classes.hot_key}>
-                D
-              </Typography>
-            </Box>
-            <Box display={'flex'} borderRadius={'10px'} border={'1px dashed #ccc'} padding={'5px 10px'} alignItems={'center'}>
-              <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
-                <DeleteIcon color='#ccc' width={'24px'} />
-              </Box>
-              <Typography color={'bunker.500'} className={classes.hot_key}>
-                O
-              </Typography>
-            </Box>
-
-      
-          </Box> */}
-
           <Box display={'flex'}>
             <Box className={classes.cart_detail_id}>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'orange.500'} lineHeight={'26px'}>
@@ -461,12 +436,10 @@ function NewSale() {
               className={classes.cart_detail_icon}
             >
               <FileIcon color='#000' />
-              {/* <Typography className={classes.small_hot_key}>T</Typography> */}
             </Box>
 
             <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
               <TimeAndDate />
-              {/* <Typography className={classes.small_hot_key}>D</Typography> */}
             </Box>
             <Box className={classes.cart_detail_icon}>
               <DeleteIcon color='#ccc' width={'24px'} />
@@ -734,7 +707,6 @@ function NewSale() {
         clientData={clientDetails}
         afterCreate={(clientId) => setCreatedClientId(clientId)}
       />
-      {/* <ClientVerification isOpen={true} clientInfo={clientDetails} closeDrawer={() => {}} handleAddClient={() => {}} setClientInfo={() => {}} /> */}
     </FormProvider>
   )
 }

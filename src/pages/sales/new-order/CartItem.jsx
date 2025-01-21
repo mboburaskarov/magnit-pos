@@ -10,6 +10,7 @@ import { requests } from '../../../../utils/requests'
 import { useMutation } from 'react-query'
 import { error } from '../../../../utils/toast'
 import { useParams } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -204,16 +205,13 @@ export const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const CartItem = ({
-  index,
-
-  item,
-  setOpenConfirmDialog,
-}) => {
+const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDialog }) => {
   const cls = useStyles()
 
   const { mutate: changeCartItemQuantity } = useMutation(requests.changeCartItemQuantity, {
-    onSuccess: ({ data }) => {},
+    onSuccess: ({ data }) => {
+      refetchcartItemsList()
+    },
     onError: (err) => {
       error('Ошибка при получении похожих товаров.')
       console.log('err', err)
@@ -251,7 +249,7 @@ const CartItem = ({
             >
               <StyledTooltip placement='top' title='Пачка'>
                 <InputQuantity
-                  id={`inputQuantity${index}`}
+                  id={`quantity_${item?.id}`}
                   name={`quantity_${item?.id}`}
                   adornmentPosition='end'
                   adornmentClassName={cls.adornment}
@@ -260,13 +258,24 @@ const CartItem = ({
                   type='number'
                   disabled={false}
                   onBlur={({ target }) => {
-                    changeCartItemQuantity({
-                      id: get(item, 'id'),
-                      data: {
-                        quantity: Number(get(target, 'value')),
-                        store_product_id: get(item, 'store_product_id'),
-                      },
-                    })
+                    if (method.getValues(`unit_quantity_${item?.id}`) <= 0) {
+                      method.setValue(`quantity_${item?.id}`, 1)
+                      changeCartItemQuantity({
+                        id: get(item, 'id'),
+                        data: {
+                          store_product_id: get(item, 'store_product_id'),
+                          quantity: Number(1),
+                        },
+                      })
+                    } else {
+                      changeCartItemQuantity({
+                        id: get(item, 'id'),
+                        data: {
+                          quantity: Number(get(target, 'value')),
+                          store_product_id: get(item, 'store_product_id'),
+                        },
+                      })
+                    }
                   }}
                 />
               </StyledTooltip>
@@ -282,13 +291,24 @@ const CartItem = ({
                     type='number'
                     disabled={false}
                     onBlur={({ target }) => {
-                      changeCartItemQuantity({
-                        id: get(item, 'id'),
-                        data: {
-                          store_product_id: get(item, 'store_product_id'),
-                          unit_quantity: Number(get(target, 'value')),
-                        },
-                      })
+                      if (method.getValues(`quantity_${item?.id}`) <= 0) {
+                        method.setValue(`unit_quantity_${item?.id}`, 1)
+                        changeCartItemQuantity({
+                          id: get(item, 'id'),
+                          data: {
+                            store_product_id: get(item, 'store_product_id'),
+                            unit_quantity: Number(1),
+                          },
+                        })
+                      } else {
+                        changeCartItemQuantity({
+                          id: get(item, 'id'),
+                          data: {
+                            store_product_id: get(item, 'store_product_id'),
+                            unit_quantity: Number(get(target, 'value')),
+                          },
+                        })
+                      }
                     }}
                   />
                 </StyledTooltip>
