@@ -263,7 +263,9 @@ function NewSale() {
   })
   const { mutate: changeDiscountValue, isLoading: ischangeDiscountValue } = useMutation(requests.changeDiscountValue, {
     onSuccess: () => {
-      refetchcartItemsList()
+      setTimeout(() => {
+        refetchcartItemsList()
+      }, 100)
     },
     onError: (err) => {
       error('Ошибка при изменении цены со скидкой.')
