@@ -158,7 +158,7 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChange
   //     }),
   //   { enabled: true, enableOnTags: ['INPUT', 'TEXTAREA'] }
   // )
-  useHotkeys('j', () => methods.setFocus('search'), {
+  useHotkeys('j', () => methods.setFocus('product-search'), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
   return (

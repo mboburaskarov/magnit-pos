@@ -136,7 +136,7 @@ function NewCashRegister() {
     error('Пожалуйста, заполните все поля!')
   }
   return (
-    <LoadingContainer readyState={!isLoading}>
+    <LoadingContainer readyState={!isCheckSaleExist}>
       <FormProvider {...methods}>
         <Box className={classes.box}>
           <Box className={classes.wrapper}>
