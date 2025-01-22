@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import { requests } from '../../../../utils/requests'
@@ -41,12 +41,12 @@ export default function ProductRemainsHistory({ id }) {
       {
         headerName: 'Название',
         colId: 'store_name',
-        minWidth: 185,
-        maxWidth: 185,
-        width: 185,
+        minWidth: 200,
+        maxWidth: 200,
+        width: 200,
         cellRenderer: ({ data, rowIndex }) => (
-          <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{data?.store?.name}</Typography>
+          <Box id={`${'store_name'}-${rowIndex}-${data?.store_id}`}>
+            <Typography id={`${'store_name'}-${rowIndex}-${data?.store_id}`}>{data?.store?.name}</Typography>
           </Box>
         ),
       },
@@ -56,7 +56,7 @@ export default function ProductRemainsHistory({ id }) {
         minWidth: 185,
         maxWidth: 185,
         width: 185,
-        cellRenderer: ({ data, rowIndex }) => <Typography>{get(data, 'quantity')}</Typography>,
+        cellRenderer: ({ data, rowIndex }) => <Typography id={`${'quantity'}-${rowIndex}-${data?.store_id}`}>{get(data, 'quantity')}</Typography>,
       },
       {
         headerName: 'Цена продажи',
@@ -64,7 +64,9 @@ export default function ProductRemainsHistory({ id }) {
         minWidth: 185,
         maxWidth: 185,
         width: 185,
-        cellRenderer: ({ data, rowIndex }) => <Typography>{thousandDivider(get(data, 'retail_price'), 'сум')}</Typography>,
+        cellRenderer: ({ data, rowIndex }) => (
+          <Typography id={`${'retail_price'}-${rowIndex}-${data?.store_id}`}>{thousandDivider(get(data, 'retail_price'), 'сум')}</Typography>
+        ),
       },
     ],
     []
@@ -78,7 +80,7 @@ export default function ProductRemainsHistory({ id }) {
         isDataLoading={isproductDataLoadingHistory || isFetchingproductReaminsDataHistory}
         offsetQuery='offsetHistory'
         limitQuery='limitHistory'
-        id='products-history-table'
+        id='products-history-tableee'
         columns={columns}
         data={formattedData}
         offsetCount={offsetCount}

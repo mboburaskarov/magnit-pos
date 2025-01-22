@@ -81,6 +81,7 @@ export default function ProductBody({ productData = null }) {
       setValue('bonus_percent', (supply_price / 100) * bonus_amount)
     }
   }, [watch('bonus_amount')])
+
   useEffect(() => {
     const supply_price = Number(getValues('supply_price'))
     const bonus_percent = Number(getValues('bonus_percent'))

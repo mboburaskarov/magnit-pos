@@ -276,6 +276,7 @@ function NewSale() {
     onSuccess: () => {
       setShowOverlay(false)
       refetchcartItemsList()
+      method.setValue('search', '')
     },
     onError: (err) => {
       error('Ошибка при создании элемента карты.')

@@ -40,6 +40,7 @@ const Image = ({ data, rowIndex, setImages }) => {
     >
       {data?.photos?.[0] ? (
         <img
+          onClick={() => setImages({ data: data?.photos })}
           id={`product-image-${rowIndex}`}
           src={data?.photos[0] || '/default-img.avif'}
           alt={data?.name}
@@ -47,25 +48,6 @@ const Image = ({ data, rowIndex, setImages }) => {
         />
       ) : (
         <DefaultImgIcon />
-      )}
-      {data?.files?.[0] && (
-        <Box
-          sx={{
-            transition: 'all 0.2s ease',
-            cursor: 'pointer',
-            opacity: 0,
-            borderRadius: 2,
-            bottom: 0,
-            right: 0,
-            top: 0,
-            left: 0,
-            bgcolor: 'green.600',
-            position: 'absolute',
-            zIndex: 2,
-          }}
-          id='overlay_image'
-          onClick={() => setImages({ data: data?.files })}
-        />
       )}
     </Box>
   )

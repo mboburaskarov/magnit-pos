@@ -242,7 +242,15 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChange
           <Box className={classes.searchResult}>
             {productsData?.length ? (
               productsData?.map((product) => (
-                <SerchedItem isChild={false} handleAddProduct={handleAddProduct} item={product} product={product} searchTerm={searchTearm} classes={classes} />
+                <SerchedItem
+                  isChild={false}
+                  handleAddProduct={handleAddProduct}
+                  setSearchTerm={setSearchTerm}
+                  item={product}
+                  product={product}
+                  searchTerm={searchTearm}
+                  classes={classes}
+                />
               ))
             ) : (
               <span>Dori mavjud emas</span>

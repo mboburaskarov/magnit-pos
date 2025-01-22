@@ -114,7 +114,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
       <Box height={'100%'}>
         <Box className={classes.header}>
           <Typography variant='h4' className={classes.title}>
-            {t('menu.clients.new_client')}
+            Новый cотрудники
           </Typography>
           <CloseIcon color={theme.palette.black} onClick={() => closeDrawer(false)} />
         </Box>

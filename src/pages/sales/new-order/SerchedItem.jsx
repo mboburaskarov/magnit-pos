@@ -11,7 +11,18 @@ import { useParams } from 'react-router-dom'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 
-export default function SerchedItem({ index, handleAddProduct, fakeIndexForCheckSearch, item, isChild = true, classes, searchTerm, lastElementRef, product }) {
+export default function SerchedItem({
+  index,
+  handleAddProduct,
+  fakeIndexForCheckSearch,
+  item,
+  isChild = true,
+  classes,
+  setSearchTerm,
+  searchTerm,
+  lastElementRef,
+  product,
+}) {
   const userData = useSelector((state) => state.user)
   const [openSimilar, setOpenSimilar] = useState(false)
   const [similarProductList, setSimilarProductList] = useState([])
@@ -42,6 +53,7 @@ export default function SerchedItem({ index, handleAddProduct, fakeIndexForCheck
           quantity: 1,
           unit_price: product?.retail_price,
         })
+        setSearchTerm('')
       }}
       onKeyDown={(event) => {
         if (event.key === 'Enter' && fakeIndexForCheckSearch === index) {

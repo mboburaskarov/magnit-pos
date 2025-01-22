@@ -145,7 +145,6 @@ export default function CashBoxsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [cashboxList?.data, values?.limit])
-  console.log(cashboxList)
 
   return (
     <LoadingContainer readyState={true}>

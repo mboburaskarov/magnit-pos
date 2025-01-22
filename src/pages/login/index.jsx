@@ -92,37 +92,7 @@ export default function LoginPage() {
   const dispatch = useDispatch()
   const [country, setCountry] = useState(countries[0])
   const [fcmToken, setFcmToken] = useState(null)
-  useEffect(() => {
-    fetch('https://hf-api-gw.humans.uz/ftuz/api/v1/msisdns/retail/available', {
-      headers: {
-        accept: '*/*',
 
-        'accept-language': 'en-US,en;q=0.9',
-        'content-type': 'application/json',
-        priority: 'u=1, i',
-        'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"macOS"',
-        'sec-fetch-dest': 'empty',
-        'sec-fetch-mode': 'cors',
-        'sec-fetch-site': 'same-site',
-        'x-humans-avatar-type': 'WEB',
-        'x-humans-host': 'im',
-        'x-humans-locale': 'en-US',
-        'x-humans-name': 'unknown',
-        'x-humans-session-token':
-          'iLBo2FkfP5Hr9EjLNXhWGzHVLD1T7Q5spBIETnZHsXBGMVd4nYzg9_CzkrLHK8Qgn5MAm_nH_RzH-_lD98B4nIMxZrOrNUBPWPG_qEPgOnh-kjPRAf6JzYv8ih0v-ABvO3WzBK_s159_BiKm3fMVSg7W2E9wkuehtb4PXhXX01G4ibTC2GlcomKBOnTs8AWFEtnyH-fEkJygaDZiZ4mcnEPJ15kxzHhKmbJ5R7nfs5_PlBXNpEZ-nztzcpI077ZWEsJIC67izVW1Cn3v2XyotGxuKrs6ErkK8Kc_-iXOzzIOaL51zctrJP7DhP9yjfQONQ1ErfgYPYkVmTsY4X-VKHrLKJ--XoZCiPDOxdz5C_qb6Z-fxR7JEO2_TLmowmmcEXe8jVjGhtQfCd3F-q5iIgMJ6uW_Lfhouvg73M0gp0BRa_ZtlqskKqGRqjaxLnguV_N7Kx3tCPsxB_EqeigDVOnYndppci6gZyOz3vZYFiTI2mwjrfKpNEhXmQz4wv7ph2DNee80ssbO1pJPezKAXTnsniBTW_Nw-A3K0D8yeqYh0XLfw4Sx59WsLQAXZtuzJlkqTULIxgfO1vEgJTOsudpej2w4cn3Oa5j0LFQh_XriQlMIo42V30pTThiJIlzZu8VWOI5W8WLj7BPOm7xjjectWhMS',
-        'x-humans-trace': 'df73256e7a91842e:df73256e7a91842e:0:1',
-        'x-user-agent': 'net.humans.fintech_uz.web/1.2.525 // wretch/1.7.4',
-        Referer: 'https://humans.uz/',
-        'Referrer-Policy': 'strict-origin-when-cross-origin',
-      },
-      body: '{"salesChannel":"WEB_AUTH","bookingResourceId":"019454d6-13d0-f8ef-ad8b-a51241f27ecc","bookingResourceIdType":"SESSION_ID","poolNumberRegion":"1726","isPhantom":false,"msisdnPattern":"_0_0100","prefix":"99833"}',
-      method: 'POST',
-    })
-    fetchToken(setFcmToken)
-    return
-  }, [])
   const { mutate: logIn, isLoading: logInLoading } = useMutation(requests.logIn, {
     onSuccess: async ({ data }) => {
       const userData = data.data
@@ -148,7 +118,7 @@ export default function LoginPage() {
 
     data.phone_number = country.dial_code + data.phone_number.replace(/[X() ]/g, '')
 
-    logIn({ phone: data.phone_number, password: data.password, fcmToken })
+    logIn({ phone: data.phone_number, password: data.password })
   }
 
   const onError = (err) => {
