@@ -46,8 +46,6 @@ export default function ProductsPage() {
 
   /// filter table columns with permission
   useEffect(() => {
-    console.log(columns)
-
     if (tableColumns) {
       const formattedData = tableColumns
         ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')

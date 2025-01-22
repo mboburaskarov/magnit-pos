@@ -36,6 +36,7 @@ export default function CashBoxsPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [openCreateVendorDrawer, setopenCreateVendorDrawer] = useState(false)
+
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [slectedVendors, setSelectedVendors] = useState([])
@@ -144,6 +145,7 @@ export default function CashBoxsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [cashboxList?.data, values?.limit])
+  console.log(cashboxList)
 
   return (
     <LoadingContainer readyState={true}>
@@ -254,7 +256,7 @@ export default function CashBoxsPage() {
             id='products-main-table'
             tableSettings
             columns={tableColumns}
-            data={cashboxList?.data?.data || []}
+            data={cashboxList?.data?.data?.data || []}
             isDataLoading={isFetchingcashboxList || cashboxListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {

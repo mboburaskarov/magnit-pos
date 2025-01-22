@@ -41,9 +41,10 @@ function InputPassword({
   secondary,
   height = 56,
   minLength,
+  defaultState = false,
 }) {
   const classes = useStyles({ height })
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(defaultState)
   const methods = useFormContext()
 
   return (

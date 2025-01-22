@@ -258,7 +258,7 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                   type='number'
                   disabled={false}
                   onBlur={({ target }) => {
-                    if (method.getValues(`unit_quantity_${item?.id}`) <= 0) {
+                    if (method.getValues(`unit_quantity_${item?.id}`) <= 0 && Number(get(target, 'value') == 0)) {
                       method.setValue(`quantity_${item?.id}`, 1)
                       changeCartItemQuantity({
                         id: get(item, 'id'),
@@ -291,7 +291,7 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                     type='number'
                     disabled={false}
                     onBlur={({ target }) => {
-                      if (method.getValues(`quantity_${item?.id}`) <= 0) {
+                      if (method.getValues(`quantity_${item?.id}`) <= 0 && Number(get(target, 'value') == 0)) {
                         method.setValue(`unit_quantity_${item?.id}`, 1)
                         changeCartItemQuantity({
                           id: get(item, 'id'),

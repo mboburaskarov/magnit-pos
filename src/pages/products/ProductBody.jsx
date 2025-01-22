@@ -69,11 +69,25 @@ export default function ProductBody({ productData = null }) {
   useEffect(() => {
     const supply_price = Number(getValues('supply_price'))
     const vat = Number(getValues('vat'))
-    if (getValues('supply_price') >= 0 && getValues('vat') >= 0) {
+    if (supply_price >= 0 && vat >= 0) {
       setValue('retail_price', (supply_price / 100) * vat + supply_price)
       setValue('vat_price', (supply_price / 100) * vat)
     }
   }, [watch('supply_price'), watch('vat')])
+  useEffect(() => {
+    const supply_price = Number(getValues('supply_price'))
+    const bonus_amount = Number(getValues('bonus_amount'))
+    if (supply_price >= 0) {
+      setValue('bonus_percent', (supply_price / 100) * bonus_amount)
+    }
+  }, [watch('bonus_amount')])
+  useEffect(() => {
+    const supply_price = Number(getValues('supply_price'))
+    const bonus_percent = Number(getValues('bonus_percent'))
+    if (supply_price >= 0) {
+      setValue('bonus_amount', (supply_price / 100) * bonus_percent)
+    }
+  }, [watch('bonus_percent')])
 
   const { data: unitsList, refetch: refetchUnitList } = useQuery('unitsList', () => requests.getAllUnits({ limit: 20, offset: 0 }))
 

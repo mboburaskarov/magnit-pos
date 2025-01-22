@@ -1,7 +1,7 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import { get, size } from 'lodash'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
@@ -46,6 +46,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
   const classes = useStyles()
   const methods = useForm()
   const userData = useSelector((state) => state.user)
+  const [paymentTypes, setPaymentTypes] = useState([])
 
   useEffect(() => {
     methods.reset()
@@ -82,6 +83,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
       name: data?.name,
       is_enable: data?.is_enable === 'active' ? true : false,
       store_id: data?.store?.id,
+      payment_types: paymentTypes.map(({ is_active, id }) => ({ is_active: is_active, payment_type_id: id })),
     }
     if (openDrawer?.mode === 'edit') {
       updateCashBox({ data: requestBody, id: openDrawer?.id })
@@ -111,7 +113,13 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
                 padding: '0 24px',
               }}
             >
-              <MainDetails openDrawer={openDrawer} quickCreateClientName={quickCreateClientName} clientData={clientData} />
+              <MainDetails
+                paymentTypes={paymentTypes}
+                setPaymentTypes={setPaymentTypes}
+                openDrawer={openDrawer}
+                quickCreateClientName={quickCreateClientName}
+                clientData={clientData}
+              />
             </Box>
             <Box
               width={196}

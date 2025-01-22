@@ -25,7 +25,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])
-    console.log(data)
 
     const requestBody = {
       store_id: data.store_id?.id || undefined,

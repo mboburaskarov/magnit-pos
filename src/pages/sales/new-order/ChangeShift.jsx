@@ -126,6 +126,7 @@ export default function ChangeShift({ open, setOpen }) {
               label={'Password'}
               autoCompleteoff='new-password' // Prevent autofill
               required
+              defaultState={true}
               fullWidth
               minLength={8}
               secondary

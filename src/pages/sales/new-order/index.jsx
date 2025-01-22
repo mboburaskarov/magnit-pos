@@ -445,7 +445,6 @@ function NewSale() {
               <DeleteIcon color='#ccc' width={'24px'} />
             </Box>
           </Box>
-
           <Box mb={'24px'}>
             <Box sx={{ display: 'flex', mb: '4px', justifyContent: 'space-between' }}>
               <Label>{t('client')}</Label>
@@ -568,7 +567,7 @@ function NewSale() {
             )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
-            <TextField required type={'number'} fullWidth name='discount' label={t('client')} placeholder='Chegirmani kiritng' />
+            <TextField required type={'number'} fullWidth name='discount' label={'Скидка'} placeholder='Введите скидку' />
             <Box ml={'8px'}>
               <InputSwitch
                 uncontrolled

@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import InputSwitchNew from '../../../../components/Inputs/InputSwitch'
@@ -14,6 +14,8 @@ import { requests } from '../../../../utils/requests'
 import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
 import LazySelect from '../../../../components/Select/LazySelect'
 import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
+import StyledSwitch from '../../../../components/Switch/StyledSwitch'
+import PaymentTypeRow from './paymentTypeRow'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -36,18 +38,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function MainDetails({ clientData, openDrawer }) {
+export default function MainDetails({ clientData, paymentTypes, setPaymentTypes, openDrawer }) {
+  const mode = openDrawer?.mode
+
   const { data: employeeInfo, refetch: refetemployeeInfo } = useQuery(
     ['employeeInfo', openDrawer],
-    () => requests.getSingleCashBox(get(openDrawer, 'id', 'no')),
-    { enabled: Boolean(openDrawer) }
+    () => requests.getSingleCashBox(mode == 'edit' && get(openDrawer, 'id', null)),
+    { enabled: mode == 'edit' }
   )
-  const mode = openDrawer?.mode
-  const { control, errors, setValue } = useFormContext()
+  const { data: employeeInfoForCreate, refetch: refetemployeeInfoForCreate } = useQuery(
+    ['employeeInfo', openDrawer],
+    () => requests.getSingleCashBoxForCreate(mode == 'edit' && get(openDrawer, 'id', null)),
+    { enabled: mode == 'create' }
+  )
+
+  const { data: paymentTypeList, refetch: refetpaymentTypeList } = useQuery(
+    ['paymentTypeList', openDrawer],
+    () => requests.getPaymentTypeList({ cash_box_id: get(openDrawer, 'id', null) }),
+    {
+      enabled: Boolean(openDrawer),
+    }
+  )
+
+  const { control, errors, reset, setValue } = useFormContext()
+
   const { t } = useTranslation()
-  useEffect(() => {
-    refetemployeeInfo
-  }, [openDrawer])
+
   useEffect(() => {
     if (mode === 'edit') {
       setValue('name', get(employeeInfo, 'data.data.name'))
@@ -56,8 +72,17 @@ export default function MainDetails({ clientData, openDrawer }) {
         id: get(employeeInfo, 'data.data.store.id'),
         name: get(employeeInfo, 'data.data.store.name'),
       })
+    } else {
+      reset()
+      setValue('is_enable', 'inactive')
     }
   }, [employeeInfo])
+  useEffect(() => {
+    // if (mode === 'edit') {
+    setPaymentTypes(get(paymentTypeList, 'data.data'))
+    // }
+  }, [paymentTypeList?.data])
+
   // const { data: storesList } = useQuery('storesList', () => requests.getAllShops({ limit: 20, offset: 0 }))
 
   return (
@@ -133,6 +158,12 @@ export default function MainDetails({ clientData, openDrawer }) {
           />
         </Grid>
       </Grid>
+      <Box pt={'32px'}>
+        <Label>Типы оплат</Label>
+        {paymentTypes?.map((type) => (
+          <PaymentTypeRow key={type?.id} setPaymentTypes={setPaymentTypes} type={type} />
+        ))}
+      </Box>
     </Box>
   )
 }

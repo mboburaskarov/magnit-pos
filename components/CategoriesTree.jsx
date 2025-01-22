@@ -128,12 +128,13 @@ export default function FileSystemNavigator({
       company_id,
       limit: pageSize,
       search: values?.search,
-      page: pageIndex + 1,
+      offset: pageIndex + 1,
     })
   )
 
   useEffect(() => {
-    const pages = Math.ceil(categories?.data?.data?.length / pageSize)
+    const pages = Math.ceil(categories?.data?.data?._meta?.total_count / pageSize)
+
     setPageCount(pages ?? 1)
   }, [categories?.data?.data])
   function renameSubRows(obj) {
@@ -150,7 +151,7 @@ export default function FileSystemNavigator({
     refetch()
   }, [values?.search, pageIndex, pageSize])
   useEffect(() => {
-    setSearchedCategories(categories?.data?.data.map((el) => renameSubRows(el)))
+    setSearchedCategories(categories?.data?.data?.data?.map((el) => renameSubRows(el)))
   }, [categories?.data?.data])
   useEffect(() => {
     setValue2('category_ids', selected)

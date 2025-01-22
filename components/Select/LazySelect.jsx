@@ -162,7 +162,6 @@ function LazySelect({
     }
   }
   const LoadingMessage = () => <LoadingBlock mini />
-  console.log(response)
 
   return (
     <Box className={cls.root} {...boxStyle} maxWidth={maxWidth}>
