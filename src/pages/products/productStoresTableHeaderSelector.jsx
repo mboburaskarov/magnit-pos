@@ -46,14 +46,14 @@ export default function productStoresTableHeaderSelector({ productsColumns, valu
         cellRenderer: memo((p) => (
           <InputQuantity
             applyAll
-            aplyAllFunc={() => applyAllFunc(p.data.id, 'quantity')}
-            id={`store_product.${p.data.id}.quantity`}
-            name={`store_product.${p.data.id}.quantity`}
+            aplyAllFunc={() => applyAllFunc(p.data.id, 'pack_quantity')}
+            id={`store_product.${p.data.id}.pack_quantity`}
+            name={`store_product.${p.data.id}.pack_quantity`}
             fullWidth
             adornment={p.data?.measurement_unit?.short_name}
             adornmentPosition='end'
             required
-            defaultValue={get(p, 'data.quantity')}
+            defaultValue={get(p, 'data.pack_quantity')}
             type='number'
             disabled={false}
           />
@@ -68,13 +68,13 @@ export default function productStoresTableHeaderSelector({ productsColumns, valu
         cellRenderer: memo((p) => (
           <InputQuantity
             applyAll
-            aplyAllFunc={() => applyAllFunc(p.data.id, 'small_quantity')}
-            id={`store_product.${p.data.id}.small_quantity`}
-            name={`store_product.${p.data.id}.small_quantity`}
+            aplyAllFunc={() => applyAllFunc(p.data.id, 'unit_quantity')}
+            id={`store_product.${p.data.id}.unit_quantity`}
+            name={`store_product.${p.data.id}.unit_quantity`}
             fullWidth
             required
             type='number'
-            defaultValue={get(p, 'data.small_quantity')}
+            defaultValue={get(p, 'data.unit_quantity')}
             disabled={false}
           />
         )),

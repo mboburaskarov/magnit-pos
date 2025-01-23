@@ -24,6 +24,7 @@ import { error } from '../../../utils/toast'
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
+  const [hasChange, sethasChange] = useState(false)
   const [uniType, setUniType] = useState('piece')
   const [storeSearchText, setStoreSearchText] = useState('')
   const { columns, loading } = useSelector((state) => state.storesListTableColumnsForProduct)
@@ -33,15 +34,15 @@ export default function ProductBody({ productData = null }) {
   const { t } = useTranslation()
   const [images, setImages] = useState([])
   const applyAllFunc = (id, type) => {
-    if (type === 'quantity') {
-      const quantity = getValues(`store_product.${id}.quantity`)
-      get(storeList, 'data.data.data', []).map((el) => {
-        setValue(`store_product.${el.id}.quantity`, quantity)
+    if (type === 'pack_quantity') {
+      const quantity = getValues(`store_product.${id}.pack_quantity`)
+      get(storeList, 'data.data.ids', []).map((id) => {
+        setValue(`store_product.${id}.pack_quantity`, quantity)
       })
     } else {
-      const quantity = getValues(`store_product.${id}.small_quantity`)
-      get(storeList, 'data.data.data', []).map((el) => {
-        setValue(`store_product.${el.id}.small_quantity`, quantity)
+      const quantity = getValues(`store_product.${id}.unit_quantity`)
+      get(storeList, 'data.data.ids', []).map((id) => {
+        setValue(`store_product.${id}.unit_quantity`, quantity)
       })
     }
   }
@@ -63,9 +64,9 @@ export default function ProductBody({ productData = null }) {
       search: storeSearchText || '',
     })
   )
+
   const { mutate: generateBarcode, isLoading: isgenerateBarcode } = useMutation(requests.generateBarcode, {
     onSuccess: ({ data }) => {
-      console.log(data)
       setValue('barcode', get(data, 'data.barcode'))
     },
     onError: (err) => {
@@ -79,26 +80,71 @@ export default function ProductBody({ productData = null }) {
   useEffect(() => {
     const supply_price = Number(getValues('supply_price'))
     const vat = Number(getValues('vat'))
+    const profil_percent = Number(getValues('profil_percent'))
+
     if (supply_price >= 0 && vat >= 0) {
-      setValue('retail_price', (supply_price / 100) * vat + supply_price)
+      setValue('retail_price', (supply_price / 100) * (vat + profil_percent) + supply_price)
       setValue('vat_price', (supply_price / 100) * vat)
     }
   }, [watch('supply_price'), watch('vat')])
+
   useEffect(() => {
+    if (hasChange) return sethasChange(false)
+
+    const supply_price = Number(getValues('supply_price'))
+    const vat = Number(getValues('vat'))
+    const profil_percent = Number(getValues('profil_percent'))
+    if (supply_price >= 0 && vat >= 0) {
+      sethasChange(true)
+      setValue('retail_price', (supply_price / 100) * (vat + profil_percent) + supply_price)
+    }
+  }, [watch('profil_percent')])
+
+  useEffect(() => {
+    if (hasChange) return sethasChange(false)
+
+    const supply_price = Number(getValues('supply_price'))
+    const vat = Number(getValues('vat'))
+    const retail_price = Number(getValues('retail_price'))
+    if ((supply_price / 100) * vat + supply_price > retail_price) {
+      error('Эта сумма очень маленькая')
+      return
+    }
+    if (supply_price >= 0 && vat >= 0) {
+      sethasChange(true)
+      setValue('profil_percent', ((retail_price - supply_price) * 100) / supply_price - vat)
+    }
+  }, [watch('retail_price')])
+
+  useEffect(() => {
+    if (hasChange) return sethasChange(false)
+
     const supply_price = Number(getValues('supply_price'))
     const bonus_amount = Number(getValues('bonus_amount'))
     if (supply_price >= 0) {
       setValue('bonus_percent', (bonus_amount * 100) / supply_price)
+      sethasChange(true)
     }
-  }, [watch('bonus_amount')])
+  }, [watch('bonus_amount'), watch('supply_price')])
+
+  useEffect(
+    () => {
+      if (hasChange) return sethasChange(false)
+
+      const supply_price = Number(getValues('supply_price'))
+      const bonus_percent = Number(getValues('bonus_percent'))
+      if (supply_price >= 0) {
+        setValue('bonus_amount', (supply_price / 100) * bonus_percent)
+        sethasChange(true)
+      }
+    },
+    [watch('bonus_percent')],
+    watch('supply_price')
+  )
 
   useEffect(() => {
-    const supply_price = Number(getValues('supply_price'))
-    const bonus_percent = Number(getValues('bonus_percent'))
-    if (supply_price >= 0) {
-      setValue('bonus_amount', (supply_price / 100) * bonus_percent)
-    }
-  }, [watch('bonus_percent')])
+    setUniType(get(getValues('product_unit'), 'value', 'piece'))
+  }, [watch('product_unit')])
 
   const { data: unitsList, refetch: refetchUnitList } = useQuery('unitsList', () => requests.getAllUnits({ limit: 20, offset: 0 }))
 
@@ -119,11 +165,10 @@ export default function ProductBody({ productData = null }) {
       setValue('barcode', productData?.barcode || 0)
       setProductCategories(productData?.categories?.map((el, ind) => ({ ...el, name: el.nameRu, quantity: productData?.quantityOfCategories?.[ind] })))
     }
-    console.log(productData)
   }, [productData])
   useEffect(() => {
-    get(storeList, 'data.data.data', []).map((el) => {
-      setValue(`store_product.${el.id}.store_id`, el.id)
+    get(storeList, 'data.data.ids', []).map((id) => {
+      setValue(`store_product.${id}.store_id`, id)
     })
   }, [storeList])
 
@@ -135,9 +180,7 @@ export default function ProductBody({ productData = null }) {
     const offsetsCount = Math.ceil(get(storeList, 'data.data._meta.total_count') / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [storeList?.data, values.limit])
-  useEffect(() => {
-    setUniType(get(getValues('product_unit'), 'value', 'piece'))
-  }, [watch('product_unit')])
+
   useEffect(() => {
     if (!productData) {
       setValue('app_type', 'BUCHET')
@@ -179,122 +222,9 @@ export default function ProductBody({ productData = null }) {
         </Box>
         <Box height={'56px'} />
         <SectionTitle noWrap withLine>
-          {t('create_new_product.additional_information.category')}
-        </SectionTitle>
-        <CategoriesTree />
-        <Box height={'56px'} />
-        <SectionTitle noWrap withLine>
-          {t('create_new_product.create_packages.price')}
-        </SectionTitle>
-        <Box alignItems='flex-end' width='100%' columnGap={3} flexDirection={'column'} display='inline-flex' my={3}>
-          <Box display={'flex'} width={'100%'}>
-            <OutLineTextField
-              endAdornmentText={'UZS'}
-              required
-              type='number'
-              fullWidth
-              borderRadius={'40px'}
-              name='supply_price'
-              label={t('create_new_product.supply_price')}
-              placeholder={t('create_new_product.supply_price.placeholder')}
-            />
-            <Box width={'20px'} />
-            <OutLineTextField
-              endAdornmentText={'%'}
-              required
-              type='number'
-              fullWidth
-              borderRadius={'40px'}
-              name='vat'
-              label={t('create_new_product.vat')}
-              placeholder={t('create_new_product.vat.placeholder')}
-            />
-          </Box>
-          <Box mt={'24px'} display={'flex'} width={'100%'}>
-            <OutLineTextField
-              endAdornmentText={'UZS'}
-              required
-              type='number'
-              fullWidth
-              borderRadius={'40px'}
-              name='retail_price'
-              label={t('create_new_product.retail_price')}
-              placeholder={t('create_new_product.retail_price.placeholder')}
-            />
-            <Box width={'20px'} />
-
-            <OutLineTextField
-              endAdornmentText={'UZS'}
-              required
-              type='number'
-              fullWidth
-              borderRadius={'40px'}
-              name='vat_price'
-              label={t('create_new_product.vat_price')}
-              placeholder={t('create_new_product.vat_price.placeholder')}
-            />
-          </Box>
-          <Box mt={'24px'} display={'flex'} width={'100%'}>
-            <OutLineTextField
-              endAdornmentText={'UZS'}
-              required
-              type='number'
-              fullWidth
-              borderRadius={'40px'}
-              name='bonus_amount'
-              label={'Цена бонуса'}
-              placeholder={t('create_new_product.retail_price.placeholder')}
-            />
-            <Box width={'20px'} />
-
-            <OutLineTextField
-              endAdornmentText={'UZS'}
-              required
-              type='number'
-              fullWidth
-              borderRadius={'40px'}
-              name='bonus_percent'
-              label={'Бонусный процент'}
-              placeholder={t('create_new_product.vat_price.placeholder')}
-            />
-          </Box>
-        </Box>
-        <Box height={'56px'} />
-
-        <SectionTitle noWrap withLine>
-          {t('create_new_product.amount_section.label')}
-        </SectionTitle>
-        <Box mt={'24px'}>
-          <InputSearch
-            // fullWidth
-
-            maxWidth={'500px'}
-            uncontrolled={false}
-            onChange={({ target }) => setStoreSearchText(get(target, 'value'))}
-            id='producrs-search'
-            name='search'
-            placeholder={t('input.search.product.multi')}
-          />
-        </Box>
-        <Box mt={'24px'}>
-          <AgGridTable
-            id='products-main-feftables'
-            tableSettings
-            columns={tableColumns}
-            data={get(storeList, 'data.data.data')}
-            pagination
-            isDataLoading={false}
-            offsetCount={offsetCount}
-            fullInfoAboutCurrentPage
-            resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={false}
-          />
-        </Box>
-        <Box height={'56px'} />
-
-        <SectionTitle noWrap withLine>
           {t('create_new_product.features.label')}
         </SectionTitle>
+
         <Box height={'24px'} />
         <Box display={'flex'} width={'100%'} mt={'24px'}>
           <TextField
@@ -368,6 +298,130 @@ export default function ProductBody({ productData = null }) {
             sx={{ mb: 3 }}
           />
         </Box>
+        <Box height={'56px'} />
+        <SectionTitle noWrap withLine>
+          {t('create_new_product.create_packages.price')}
+        </SectionTitle>
+        <Box alignItems='flex-end' width='100%' columnGap={3} flexDirection={'column'} display='inline-flex' my={3}>
+          <Box display={'flex'} width={'100%'}>
+            <OutLineTextField
+              endAdornmentText={'UZS'}
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              name='supply_price'
+              label={t('create_new_product.supply_price')}
+              placeholder={t('create_new_product.supply_price.placeholder')}
+            />
+            <Box width={'20px'} />
+            <OutLineTextField
+              endAdornmentText={'%'}
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              name='profil_percent'
+              label={'Доход'}
+              placeholder={'Доход'}
+            />
+            <Box width={'20px'} />
+            <OutLineTextField
+              endAdornmentText={'UZS'}
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              name='retail_price'
+              label={t('create_new_product.retail_price') + ' с НДС'}
+              placeholder={t('create_new_product.retail_price.placeholder')}
+            />
+          </Box>
+          <Box mt={'24px'} display={'flex'} width={'100%'}>
+            <OutLineTextField
+              endAdornmentText={'%'}
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              name='vat'
+              label={t('create_new_product.vat')}
+              placeholder={t('create_new_product.vat.placeholder')}
+            />
+            <Box width={'20px'} />
+
+            <OutLineTextField
+              endAdornmentText={'UZS'}
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              name='vat_price'
+              label={t('create_new_product.vat_price')}
+              placeholder={t('create_new_product.vat_price.placeholder')}
+            />
+          </Box>
+          <Box mt={'24px'} display={'flex'} width={'100%'}>
+            <OutLineTextField
+              endAdornmentText={'UZS'}
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              name='bonus_amount'
+              label={'Цена бонуса'}
+              placeholder={t('create_new_product.retail_price.placeholder')}
+            />
+            <Box width={'20px'} />
+
+            <OutLineTextField
+              endAdornmentText={'%'}
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              name='bonus_percent'
+              label={'Бонусный процент'}
+              placeholder={t('create_new_product.vat_price.placeholder')}
+            />
+          </Box>
+        </Box>
+        <Box height={'56px'} />
+
+        <SectionTitle noWrap withLine>
+          {t('create_new_product.amount_section.label')}
+        </SectionTitle>
+        <Box mt={'24px'}>
+          <InputSearch
+            // fullWidth
+
+            maxWidth={'500px'}
+            uncontrolled={false}
+            onChange={({ target }) => setStoreSearchText(get(target, 'value'))}
+            id='producrs-search'
+            name='search'
+            placeholder={t('input.search.product.multi')}
+          />
+        </Box>
+        <Box mt={'24px'}>
+          <AgGridTable
+            id='products-main-feftables'
+            tableSettings
+            columns={tableColumns}
+            data={get(storeList, 'data.data.data')}
+            pagination
+            isDataLoading={false}
+            offsetCount={offsetCount}
+            fullInfoAboutCurrentPage
+            resetTable={() => dispatch(resetTableHeader({ refetch }))}
+            isRefreshing={false}
+          />
+        </Box>
+        <Box height={'56px'} />
+        <SectionTitle noWrap withLine>
+          {t('create_new_product.additional_information.category')}
+        </SectionTitle>
+        <CategoriesTree />
       </Box>
     </Box>
   )

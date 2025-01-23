@@ -127,7 +127,7 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChange
       search: searchTearm,
     }
   }, [searchTearm])
-  const { data: productsList } = useQuery(['productsList', productsListFilter], () =>
+  const { data: productsList } = useQuery(['storeProductsList', productsListFilter], () =>
     requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter)
   )
   const methods = useForm()
