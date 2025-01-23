@@ -10,6 +10,7 @@ import { requests } from '../../../../utils/requests'
 import { useEffect } from 'react'
 import { get } from 'lodash'
 import { useSelector } from 'react-redux'
+import ImageGallery from '../../../../components/ImageGallery'
 
 export default function ProductEditPage() {
   const { id } = useParams()

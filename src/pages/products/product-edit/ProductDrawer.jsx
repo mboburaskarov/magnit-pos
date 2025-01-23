@@ -17,6 +17,8 @@ import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 import dayjs from 'dayjs'
 import ProductRemainsHistory from './ProductRemainsHistory'
 import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import ImageGallery from '../../../../components/ImageGallery'
 
 const Image = ({ data, setImages }) => {
   return (
@@ -38,7 +40,12 @@ const Image = ({ data, setImages }) => {
       }}
     >
       {data?.photos?.[0] ? (
-        <img src={getImageUrl(data?.photos?.[0])} alt={data?.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }} />
+        <img
+          onClick={() => setImages({ data: data?.photos })}
+          src={getImageUrl(data?.photos?.[0])}
+          alt={data?.name}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }}
+        />
       ) : (
         <DefaultImgIcon />
       )}
@@ -71,6 +78,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     isLoading: productDataLoading,
     isFetching: isFetchingproductData,
   } = useQuery(['productData', id], () => requests.getSingleProduct(id), { enabled: !!id })
+
   const navigate = useNavigate()
   return (
     <CardDrawer
@@ -108,6 +116,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
       <ProductHistory id={id} />
       <Box height={'50px'} />
       <SectionTitle grey>Остатки</SectionTitle>
+
       <ProductRemainsHistory id={id} />
       {productData?.data?.data?.status === 'REJECTED' && (
         <>

@@ -128,7 +128,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
               name='category_id'
               minWidth='auto'
               label={t('input.category.label')}
-              placeholder={t('input.store.placeholder')}
+              placeholder={t('input.category.placeholder')}
               options={categories?.data?.data}
               getOptionLabel={(el) => el.name}
             />
@@ -139,7 +139,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
               white
               minWidth='auto'
               label={t('input.manufacturer.label')}
-              placeholder={t('input.store.placeholder')}
+              placeholder={t('input.manufacturer.placeholder')}
               options={producers?.data?.data}
               getOptionLabel={(el) => el.name}
             />
