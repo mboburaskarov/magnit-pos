@@ -155,7 +155,7 @@ function NewCashRegister() {
                 <Box sx={{ '& div': { backgroundColor: 'transparent' } }}>
                   <SelectSimple
                     onChange={() => {}}
-                    options={registerCashList?.data?.data}
+                    options={registerCashList?.data?.data?.data}
                     required
                     label={'Kassa'}
                     placeholder='Kassirni tanlang'

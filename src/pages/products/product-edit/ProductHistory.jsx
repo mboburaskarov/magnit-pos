@@ -13,10 +13,10 @@ export default function ProductHistory({ id }) {
 
   const productHistoryFilter = useMemo(() => {
     return {
-      limit: values?.limit || 5,
-      offset: values?.offset || 0,
+      limit: values?.limitHistory || 5,
+      offset: values?.offsetHistory || 0,
     }
-  }, [values?.limit, values?.offset])
+  }, [values?.limitHistory, values?.offsetHistory])
 
   const {
     data: productDataHistory,
@@ -27,9 +27,9 @@ export default function ProductHistory({ id }) {
 
   useEffect(() => {
     const count = productDataHistory?.data?.data?._meta?.total_count
-    const offsetsCount = Math.ceil(count / Number(values?.limit))
+    const offsetsCount = Math.ceil(count / Number(values?.limitHistory))
     setOffsetCount(offsetsCount || 0)
-  }, [productDataHistory?.data, values?.limit])
+  }, [productDataHistory?.data, values?.limitHistory])
 
   useEffect(() => {
     refetch()
@@ -83,8 +83,8 @@ export default function ProductHistory({ id }) {
     <>
       <AgGridTable
         isDataLoading={isproductDataLoadingHistory || isFetchingproductDataHistory}
-        offsetQuery='offset'
-        limitQuery='limit'
+        offsetQuery='offsetHistory'
+        limitQuery='limitHistory'
         id='products-history-table'
         columns={columns}
         data={formattedData}
