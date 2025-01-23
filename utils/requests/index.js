@@ -37,7 +37,7 @@ export const requests = {
   getAllCustomers: (filter) => request.get(`v1/customer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleCustomers: (id) => request.get(`v1/customer/${id}`),
   //barcode
-  generateBarcode: () => request.get(`v1/customer/`),
+  generateBarcode: () => request.post(`v1/product/generate-barcode`),
   //draft
   getDarftList: (filter) => request.get(`v1/draft/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getDarftChildList: (id) => request.get(`v1/draft/${id}`),

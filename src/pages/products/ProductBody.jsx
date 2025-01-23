@@ -3,7 +3,7 @@ import { get } from 'lodash'
 import { useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import AgGridTable from '../../../components/AgGridTable/AgGridTable'
 import CategoriesTree from '../../../components/CategoriesTree'
@@ -19,6 +19,7 @@ import { requests } from '../../../utils/requests'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import productStoresTableHeaderSelector from './productStoresTableHeaderSelector'
 import InputSearch from '../../../components/Inputs/InputSearch'
+import { error } from '../../../utils/toast'
 
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues } = useFormContext()
@@ -62,6 +63,15 @@ export default function ProductBody({ productData = null }) {
       search: storeSearchText || '',
     })
   )
+  const { mutate: generateBarcode, isLoading: isgenerateBarcode } = useMutation(requests.generateBarcode, {
+    onSuccess: ({ data }) => {
+      console.log(data)
+      setValue('barcode', get(data, 'data.barcode'))
+    },
+    onError: (err) => {
+      error('Ошибка при генерировать штрих-код!')
+    },
+  })
   useEffect(() => {
     refetchShopList()
   }, [values.limit, values.offset])
@@ -78,7 +88,7 @@ export default function ProductBody({ productData = null }) {
     const supply_price = Number(getValues('supply_price'))
     const bonus_amount = Number(getValues('bonus_amount'))
     if (supply_price >= 0) {
-      setValue('bonus_percent', (supply_price / 100) * bonus_amount)
+      setValue('bonus_percent', (bonus_amount * 100) / supply_price)
     }
   }, [watch('bonus_amount')])
 
@@ -104,11 +114,12 @@ export default function ProductBody({ productData = null }) {
       setValue('bonus_percent', productData?.bonus_percent || 0)
       setValue('manufacturer', productData?.manufacturer || 0)
       setValue('box_grain_count', productData?.box_grain_count || 0)
-      setValue('product_unit', productData?.product_units?.map(({ unit_name, ...item }) => ({ ...item, name: unit_name })) || 0)
+      setValue('product_unit', { value: productData?.unit_type?.codename, name: productData?.unit_type?.unit_name, id: productData?.unit_type?.id } || 0)
       setValue('expire_date', new Date(productData?.expire_date) || new Date())
       setValue('barcode', productData?.barcode || 0)
       setProductCategories(productData?.categories?.map((el, ind) => ({ ...el, name: el.nameRu, quantity: productData?.quantityOfCategories?.[ind] })))
     }
+    console.log(productData)
   }, [productData])
   useEffect(() => {
     get(storeList, 'data.data.data', []).map((el) => {
@@ -132,8 +143,6 @@ export default function ProductBody({ productData = null }) {
       setValue('app_type', 'BUCHET')
     }
   }, [])
-
-  const { refetch } = useQuery('barcode', () => requests.generateBarcode(), { enabled: false })
 
   return (
     <Box
@@ -346,7 +355,7 @@ export default function ProductBody({ productData = null }) {
             required
             InputProps={{
               endAdornment: (
-                <Button id={'buttonId'} variant='text'>
+                <Button onClick={() => generateBarcode()} id={'buttonId'} variant='text'>
                   {'Создать'}
                 </Button>
               ),

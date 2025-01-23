@@ -16,6 +16,7 @@ import ProductHistory from './ProductHistory'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 import dayjs from 'dayjs'
 import ProductRemainsHistory from './ProductRemainsHistory'
+import { useNavigate } from 'react-router-dom'
 
 const Image = ({ data, setImages }) => {
   return (
@@ -70,7 +71,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     isLoading: productDataLoading,
     isFetching: isFetchingproductData,
   } = useQuery(['productData', id], () => requests.getSingleProduct(id), { enabled: !!id })
-
+  const navigate = useNavigate()
   return (
     <CardDrawer
       closeDrawer={onClose}
@@ -92,7 +93,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
           <CheckAccess id={'product-edit'}>
             <Button
               color='secondary'
-              onClick={() => window.open(`/products/edit/${productData?.data?.data.id}`, '_blank')}
+              onClick={() => navigate(`/products/edit/${productData?.data?.data.id}`)}
               startIcon={<FontAwesomeIcon width={15} icon={faPen} />}
               fullWidth
             >

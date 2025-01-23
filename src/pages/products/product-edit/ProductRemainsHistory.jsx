@@ -14,10 +14,10 @@ export default function ProductRemainsHistory({ id }) {
 
   const productHistoryFilter = useMemo(() => {
     return {
-      limit: values?.limitHistory || 5,
-      offset: values?.offsetHistory || 0,
+      limit: values?.limit || 5,
+      offset: values?.offset || 0,
     }
-  }, [values?.limitHistory, values?.offsetHistory])
+  }, [values?.limit, values?.offset])
 
   const {
     data: productReaminsDataHistory,
@@ -27,10 +27,11 @@ export default function ProductRemainsHistory({ id }) {
   } = useQuery('productReaminsDataHistory', () => requests.getSingleProductRemainsHistory(productHistoryFilter, id))
 
   useEffect(() => {
-    const count = productReaminsDataHistory?.data?.data?.totalCount
-    const offsetsCount = Math.ceil(count / Number(values?.limitHistory))
+    const count = productReaminsDataHistory?.data?.data?._meta?.total_count
+    const offsetsCount = Math.ceil(count / Number(values?.limit))
+
     setOffsetCount(offsetsCount || 0)
-  }, [productReaminsDataHistory?.data, values?.limitHistory])
+  }, [productReaminsDataHistory?.data, values?.limit])
 
   useEffect(() => {
     refetch()
@@ -78,8 +79,8 @@ export default function ProductRemainsHistory({ id }) {
     <>
       <AgGridTable
         isDataLoading={isproductDataLoadingHistory || isFetchingproductReaminsDataHistory}
-        offsetQuery='offsetHistory'
-        limitQuery='limitHistory'
+        offsetQuery='offset'
+        limitQuery='limit'
         id='products-history-tableee'
         columns={columns}
         data={formattedData}
