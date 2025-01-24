@@ -68,13 +68,13 @@ export default function productStoresTableHeaderSelector({ productsColumns, valu
         cellRenderer: memo((p) => (
           <InputQuantity
             applyAll
-            aplyAllFunc={() => applyAllFunc(p.data.id, 'unit_quantity')}
-            id={`store_product.${p.data.id}.unit_quantity`}
-            name={`store_product.${p.data.id}.unit_quantity`}
+            aplyAllFunc={() => applyAllFunc(p.data.id, 'small_quantity')}
+            id={`store_product.${p.data.id}.small_quantity`}
+            name={`store_product.${p.data.id}.small_quantity`}
             fullWidth
             required
             type='number'
-            defaultValue={get(p, 'data.unit_quantity')}
+            defaultValue={get(p, 'data.small_quantity')}
             disabled={false}
           />
         )),

@@ -60,7 +60,7 @@ export default function ProductCreatePage() {
         .map((item) => ({
           ...item,
           pack_quantity: Number(get(item, 'pack_quantity', 0)),
-          unit_quantity: Number(get(item, 'unit_quantity', 0)),
+          small_quantity: Number(get(item, 'small_quantity', 0)),
         })),
       sum: Number(get(data, 'retail_price')),
       supply_price: Number(get(data, 'supply_price')),

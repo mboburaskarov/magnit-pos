@@ -40,9 +40,9 @@ export default function ProductBody({ productData = null }) {
         setValue(`store_product.${id}.pack_quantity`, quantity)
       })
     } else {
-      const quantity = getValues(`store_product.${id}.unit_quantity`)
+      const quantity = getValues(`store_product.${id}.small_quantity`)
       get(storeList, 'data.data.ids', []).map((id) => {
-        setValue(`store_product.${id}.unit_quantity`, quantity)
+        setValue(`store_product.${id}.small_quantity`, quantity)
       })
     }
   }
@@ -59,7 +59,7 @@ export default function ProductBody({ productData = null }) {
   const { data: storeList, refetch: refetchShopList } = useQuery(['shopList', storeSearchText], () =>
     requests.getAllStores({
       product_id: get(productData, 'id'),
-      limit: values?.limit || 5,
+      limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: storeSearchText || '',
     })

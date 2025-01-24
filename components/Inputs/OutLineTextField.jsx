@@ -32,6 +32,23 @@ const OutLineTextField = ({
 }) => {
   const methods = useFormContext()
   const onlyDisplay = dashed && disabled
+
+  // Custom onKeyDown to restrict unwanted characters
+  const handleKeyDown = (event) => {
+    if (type === 'number') {
+      // Prevent unwanted keys
+      const invalidKeys = ['e', 'E', '+', '-', '.']
+      if (invalidKeys.includes(event.key)) {
+        event.preventDefault()
+      }
+    }
+
+    // Execute any additional onKeyDown logic provided by props
+    if (onKeyDown) {
+      onKeyDown(event)
+    }
+  }
+
   return (
     <Box
       onClick={onBoxClick}
@@ -69,7 +86,7 @@ const OutLineTextField = ({
         })}
         multiline={multiline}
         rows={4}
-        onKeyDown={onKeyDown}
+        onKeyDown={handleKeyDown}
         autoFocus={autoFocus}
         fullWidth={fullWidth}
         error={!!methods?.formState?.errors?.[name]}

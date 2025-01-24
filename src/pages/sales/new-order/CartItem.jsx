@@ -11,6 +11,7 @@ import { useMutation } from 'react-query'
 import { error } from '../../../../utils/toast'
 import { useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
+import { getValue } from '@mui/system'
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -213,7 +214,19 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
       refetchcartItemsList()
     },
     onError: (err) => {
-      error('Ошибка при получении похожих товаров.')
+      refetchcartItemsList()
+      console.log(get(err, 'response.data.data'), get(err, 'response.data.data.received_unit_quantity'))
+      method.setValue(`quantity_${item?.id}`, item?.quantity)
+      method.setValue(`unit_quantity_${item?.id}`, item?.unit_quantity)
+      if (get(err, 'response.data.data.received_unit_quantity') > 0) {
+        error(`Описание
+Редактировать
+Введенное количество товара превышает существующее количество. 
+Максимальное количество упаковок на складе - ${get(err, 'response.data.data.pack_quantity')},
+единичное количество на складе - ${get(err, 'response.data.data.unit_quantity')}.`)
+      } else {
+        error('Ошибка при получении похожих товаров.')
+      }
       console.log('err', err)
     },
   })
@@ -265,6 +278,7 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                         data: {
                           store_product_id: get(item, 'store_product_id'),
                           quantity: Number(1),
+                          unit_quantity: Number(item?.unit_quantity),
                         },
                       })
                     } else {
@@ -273,6 +287,8 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                         data: {
                           quantity: Number(get(target, 'value')),
                           store_product_id: get(item, 'store_product_id'),
+
+                          unit_quantity: Number(item?.unit_quantity),
                         },
                       })
                     }
@@ -298,12 +314,14 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                           data: {
                             store_product_id: get(item, 'store_product_id'),
                             unit_quantity: Number(1),
+                            quantity: Number(item?.quantity),
                           },
                         })
                       } else {
                         changeCartItemQuantity({
                           id: get(item, 'id'),
                           data: {
+                            quantity: Number(item?.quantity),
                             store_product_id: get(item, 'store_product_id'),
                             unit_quantity: Number(get(target, 'value')),
                           },

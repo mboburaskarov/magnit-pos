@@ -25,12 +25,12 @@ const columns = [
     minWidth: 70,
     width: 170,
   },
-  {
-    field: 'expire_date',
-    hide: false,
-    minWidth: 70,
-    width: 250,
-  },
+  // {
+  //   field: 'expire_date',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 250,
+  // },
   {
     field: 'supply_price',
     hide: false,

@@ -340,13 +340,30 @@ function InputDatePicker({
         <Controller
           name={name}
           disabled={disabled}
-          render={({ field: { onChange: onFieldChange, value: fieldValue } }) => (
+          rules={{
+            required,
+            ...(!noValidation && {
+              validate: (val) => {
+                if (!val) return 'Date is required'
+                const year = new Date(val).getFullYear()
+                if (year > 2100) return 'Year must be less than or equal to 2100'
+                if (year < 1900) return 'Year must be greater than or equal to 1900'
+                return true
+              },
+            }),
+          }}
+          render={({ field: { onChange: onFieldChange, value: fieldValue }, fieldState: { error } }) => (
             <DatePicker
               id={id}
               dateFormat={withTime ? 'dd.MM.yyyy | HH:mm' : 'dd.MM.yyyy'}
               selected={fieldValue}
               showTimeInput={withTime}
-              onChange={onFieldChange}
+              onChange={(date) => {
+                // Ensure the date is valid before calling onChange
+                if (date && new Date(date).getFullYear() <= 2100) {
+                  onFieldChange(date)
+                }
+              }}
               placeholderText={placeholder}
               popperClassName='datepicker'
               popperPlacement={withTime && 'right-end'}
@@ -355,16 +372,15 @@ function InputDatePicker({
               minDate={minDate}
               maxDate={maxDate}
               customTimeInput={<CustomTimeInput />}
-              renderCustomHeader={({ date, changeYear, changeMonth, decreaseMonth, increaseMonth }) => {
-                return (
-                  <YearMonthFormNew date={date} changeYear={changeYear} changeMonth={changeMonth} decreaseMonth={decreaseMonth} increaseMonth={increaseMonth} />
-                )
-              }}
+              renderCustomHeader={({ date, changeYear, changeMonth, decreaseMonth, increaseMonth }) => (
+                <YearMonthFormNew date={date} changeYear={changeYear} changeMonth={changeMonth} decreaseMonth={decreaseMonth} increaseMonth={increaseMonth} />
+              )}
               customInput={
                 <TextField
                   variant='outlined'
                   fullWidth
                   error={!!error}
+                  helperText={error ? error.message : ''}
                   className={noMarginTop && classes.noMargin}
                   InputProps={{
                     endAdornment: (
@@ -389,15 +405,6 @@ function InputDatePicker({
               }
             />
           )}
-          rules={{
-            required,
-            ...(!noValidation && {
-              validYear: (val) => {
-                const year = new Date(val).getFullYear()
-                return year < 2100
-              },
-            }),
-          }}
           control={methods.control}
           defaultValue={defaultValue ?? ''}
         />

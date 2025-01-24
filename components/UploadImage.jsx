@@ -184,10 +184,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function newFunction() {
-  return `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="10" y2="0" stroke="black" strokeWidth="5" stroke-dasharray="10,5"/></svg>')`
-}
-
 export default function UploadImage({ id, images, onChange, showGuideList = true }) {
   const { t } = useTranslation()
   const classes = useStyles()
@@ -293,7 +289,11 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     onDrop,
-    accept: 'image/jpeg, image/png',
+    maxFiles: 2,
+    maxSize: 5242880,
+    accept: {
+      'image/png': ['.png', '.jpg', '.jpeg'],
+    },
   })
 
   useEffect(() => {
@@ -330,7 +330,14 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
           `,
         })}
       >
-        <input id={id} {...getInputProps()} data-test='upload-photo' />
+        <input
+          {...getInputProps({
+            accept: 'image/jpeg, image/png, image/jpg',
+          })}
+          id={id}
+          // {...getInputProps()}
+          data-test='upload-photo'
+        />
         <Box>
           <div className={classes.previewIcon}>
             <PreviewIcon />
