@@ -112,7 +112,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
       }
     >
       <Box height={'50px'} />
-      <SectionTitle grey>История продукта</SectionTitle>
+      <SectionTitle grey>История импорта</SectionTitle>
       <ProductHistory id={id} />
       <Box height={'50px'} />
       <SectionTitle grey>Остатки</SectionTitle>

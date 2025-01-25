@@ -9,6 +9,7 @@ import { makeStyles } from '@mui/styles'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
 import useDebouncedValue from '../../src/hooks/useDebouncedValue'
 import SearchIcon from '../../src/assets/icons/SearchIcon'
+import { useRef } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -106,9 +107,18 @@ const InputSearch = ({
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const classes = useStyles({ maxWidth, handleClickGiftCards })
+
   const [value, setValue, debouncedValue] = useDebouncedValue(values?.search || '', timeout)
 
+  const hasMounted = useRef(false)
+
   useEffect(() => {
+    if (!hasMounted.current) {
+      // Skip the first render
+      hasMounted.current = true
+      return
+    }
+
     const searchParams = qs.stringify({ ...values, offset: 0, search: debouncedValue || undefined }, { addQueryPrefix: true })
     navigate(`${location.pathname}${searchParams}`)
   }, [debouncedValue])

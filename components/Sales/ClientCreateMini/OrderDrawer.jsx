@@ -267,19 +267,13 @@ export default function OrderDrawer({
   const [paymentsList, setPaymentsList] = useState([])
   const [maxAmount, setMaxAmount] = useState(0)
   const [paymentAmount, setPaymentAmount] = useState(0)
-  const [scanningText, setScanningText] = useState('')
+  const [scannedKeys, setScannedKeys] = useState([])
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
-  const [isScanning, setIsScanning] = useState(false)
-  const scanningTextRef = useRef('')
   const [payme, setPayme] = useState(false)
   const { id } = useParams()
   const theme = useTheme()
   const { t } = useTranslation()
   const navigate = useNavigate()
-
-  useEffect(() => {
-    scanningTextRef.current = scanningText
-  }, [scanningText])
 
   useEffect(() => {
     let amount = 0
@@ -349,22 +343,21 @@ export default function OrderDrawer({
   const reactToPrintContent = useCallback(() => printContainer.current, [])
 
   const handlePrint = useReactToPrint({
-    content: reactToPrintContent, // This should be a function
+    content: reactToPrintContent,
     documentTitle: documentName.current,
     removeAfterPrint: true,
   })
 
   const onSubmit = (data) => {
     setOpenScanDialog(false)
-
-    setScanningText('')
-
-    scanningTextRef.current = ''
     const paymentTypes = mpaddedPaymentsList
       .filter((type) => get(type, 'isPlaceholder', false) == false)
       .map(({ id, ...type }) => ({
         amount: get(type, 'amount'),
         payment_type_id: id,
+        type: get(type, 'type'),
+        ...(data ? { opt_data: data } : {}),
+        app_type: get(type, 'name').toLowerCase(),
       }))
 
     finishSaleWithoutAppPaymentType({
@@ -374,6 +367,7 @@ export default function OrderDrawer({
 
       total_amount: get(cartItemsList, 'total_amount'),
     })
+
     setPaymentsList([])
     return
   }
@@ -382,32 +376,34 @@ export default function OrderDrawer({
     ...Array.from({ length: 8 - paymentsList.length }, (_, index) => ({ id: `placeholder-${index}`, isPlaceholder: true })),
   ]
 
-  const handleKeyPress = (e) => {
-    setScanningText((prev) => {
-      const updatedText = prev + e.key
-      scanningTextRef.current = updatedText
-      return updatedText
-    })
+  let timeoutRef = null
+  const handleKeyPress = (event) => {
+    const key = event.key
+    if (key === 'Enter') {
+      const scannedBarcode = scannedKeys.join('')
+      setScannedKeys([])
+      onSubmit(scannedBarcode)
+      return
+    }
+    setScannedKeys((prev) => [...prev, key])
 
-    onSubmit()
+    if (timeoutRef) clearTimeout(timeoutRef)
+    timeoutRef = setTimeout(() => {
+      setScannedKeys([])
+    }, 300)
   }
   useHotkeys(
     '*',
     (event) => {
-      if (timeout) clearTimeout(timeout)
-      timeout = setTimeout(() => {
-        handleKeyPress(event)
-      }, 400)
-      console.log(`Key pressed: ${event.key}`)
+      handleKeyPress(event)
     },
     {
-      enabled: isOpenScanDialog, // This enables/disables the key listener
+      enabled: isOpenScanDialog,
     }
   )
   const handleFinish = () => {
     if (paymentsList.find((el) => el.type === 'app')) {
       setOpenScanDialog(true)
-      setIsScanning(true)
     } else {
       onSubmit()
     }
@@ -593,7 +589,6 @@ export default function OrderDrawer({
       <StyledDialog
         backbtn={false}
         onClose={() => {
-          setIsScanning(false)
           setOpenScanDialog(false)
         }}
         customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpenScanDialog(false)} />}

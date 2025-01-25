@@ -215,10 +215,9 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
     },
     onError: (err) => {
       refetchcartItemsList()
-      console.log(get(err, 'response.data.data'), get(err, 'response.data.data.received_unit_quantity'))
       method.setValue(`quantity_${item?.id}`, item?.quantity)
       method.setValue(`unit_quantity_${item?.id}`, item?.unit_quantity)
-      if (get(err, 'response.data.data.received_unit_quantity') > 0) {
+      if (get(err, 'response.data.code') === 409) {
         error(`Описание
 Редактировать
 Введенное количество товара превышает существующее количество. 

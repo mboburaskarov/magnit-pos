@@ -53,7 +53,7 @@ export default function productStoresTableHeaderSelector({ productsColumns, valu
             adornment={p.data?.measurement_unit?.short_name}
             adornmentPosition='end'
             required
-            defaultValue={get(p, 'data.pack_quantity')}
+            // defaultValue={get(p, 'data.pack_quantity')}
             type='number'
             disabled={false}
           />
@@ -74,7 +74,7 @@ export default function productStoresTableHeaderSelector({ productsColumns, valu
             fullWidth
             required
             type='number'
-            defaultValue={get(p, 'data.small_quantity')}
+            // defaultValue={get(p, 'data.small_quantity')}
             disabled={false}
           />
         )),

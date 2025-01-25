@@ -69,6 +69,36 @@ export default function ProductRemainsHistory({ id }) {
           <Typography id={`${'retail_price'}-${rowIndex}-${data?.store_id}`}>{thousandDivider(get(data, 'retail_price'), 'сум')}</Typography>
         ),
       },
+      {
+        headerName: 'Цена покупки',
+        colId: 'retail_price',
+        minWidth: 185,
+        maxWidth: 185,
+        width: 185,
+        cellRenderer: ({ data, rowIndex }) => (
+          <Typography id={`${'retail_price'}-${rowIndex}-${data?.store_id}`}>{thousandDivider(get(data, 'supply_price'), 'сум')}</Typography>
+        ),
+      },
+      {
+        headerName: 'Наценка',
+        colId: 'retail_price',
+        minWidth: 185,
+        maxWidth: 185,
+        width: 185,
+        cellRenderer: ({ data, rowIndex }) => (
+          <Typography id={`${'retail_price'}-${rowIndex}-${data?.store_id}`}>{thousandDivider(get(data, 'vat'), '%')}</Typography>
+        ),
+      },
+      {
+        headerName: 'Срок',
+        colId: 'retail_price',
+        minWidth: 185,
+        maxWidth: 185,
+        width: 185,
+        cellRenderer: ({ data, rowIndex }) => (
+          <Typography id={`${'retail_price'}-${rowIndex}-${data?.store_id}`}>{dayjs(get(data, 'expire_date')).format('DD.MM.YYYY')}</Typography>
+        ),
+      },
     ],
     []
   )

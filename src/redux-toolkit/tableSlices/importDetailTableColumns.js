@@ -51,13 +51,14 @@ const columns = [
   },
 
   {
-    field: 'received_count',
+    field: 'count',
     hide: false,
     minWidth: 70,
     width: 170,
   },
+
   {
-    field: 'scanned',
+    field: 'amount',
     hide: false,
     minWidth: 70,
     width: 170,

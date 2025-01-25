@@ -55,11 +55,13 @@ export default function ProductEditPage() {
       retail_price: Number(get(data, 'retail_price')),
       status: 'active',
       store_id: get(userData, 'store_id'),
-      store_product: Object.values(get(data, 'store_product')).map((item) => ({
-        ...item,
-        pack_quantity: Number(get(item, 'pack_quantity', 0)),
-        unit_quantity: Number(get(item, 'unit_quantity', 0)),
-      })),
+      store_product: Object.values(get(data, 'store_product'))
+        .filter((item) => Number(get(item, 'pack_quantity'), 0) > 0)
+        .map((item) => ({
+          ...item,
+          pack_quantity: Number(get(item, 'pack_quantity', 0)),
+          small_quantity: Number(get(item, 'small_quantity', 0)),
+        })),
       sum: Number(get(data, 'retail_price')),
       supply_price: Number(get(data, 'supply_price')),
       vat: Number(get(data, 'vat')),

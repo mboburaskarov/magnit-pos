@@ -6,11 +6,12 @@ import { useQuery } from 'react-query'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import { requests } from '../../../../utils/requests'
 import { useQueryParams } from '../../../hooks/useQueryParams'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function ProductHistory({ id }) {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
-
+  const navigate = useNavigate()
   const productHistoryFilter = useMemo(() => {
     return {
       limit: values?.limitHistory || 5,
@@ -23,7 +24,7 @@ export default function ProductHistory({ id }) {
     isLoading: isproductDataLoadingHistory,
     isFetching: isFetchingproductDataHistory,
     refetch,
-  } = useQuery('productDataHistory', () => requests.getSingleProductHistory(productHistoryFilter, id))
+  } = useQuery(['productDataHistory', productHistoryFilter], () => requests.getSingleProductHistory(productHistoryFilter, id))
 
   useEffect(() => {
     const count = productDataHistory?.data?.data?._meta?.total_count
@@ -51,12 +52,16 @@ export default function ProductHistory({ id }) {
         ),
       },
       {
-        headerName: 'ID',
+        headerName: 'Номер импорта',
         colId: 'document_number',
         minWidth: 185,
         maxWidth: 185,
         width: 185,
-        cellRenderer: ({ data, rowIndex }) => <Typography>{get(data, 'import.document_number')}</Typography>,
+        cellRenderer: ({ data, rowIndex }) => (
+          <Typography color={'orange.500'} onClick={() => navigate(`/products/imports/${get(data, 'import.id')}?tab=details`)}>
+            {get(data, 'import.document_number')}
+          </Typography>
+        ),
       },
       {
         headerName: 'Количество',

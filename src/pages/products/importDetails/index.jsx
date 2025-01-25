@@ -100,6 +100,7 @@ export default function ImportDetailsPage() {
   const loadWithoutChecking = () => {
     loadWithoutCheckingFetch(id)
   }
+
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
@@ -108,7 +109,7 @@ export default function ImportDetailsPage() {
           buttonText='Детали импорта'
           backIcon
           noActions
-          backHref='/products/import'
+          backHref={get(values, 'tab') === 'details' ? '/products/all' : '/products/import'}
           text={'Детали импорта'}
           checkAccessId={'product-create'}
         />

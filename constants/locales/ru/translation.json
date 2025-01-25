@@ -69,7 +69,7 @@
   "table_columns.status": "Статус",
   "table_columns.manufacturer": "Производитель",
   "table_columns.vat_price": "НДС",
-  "table_columns.vat": "НДС",
+  "table_columns.vat": "Цена НДС",
   "table_columns.barcode": "Баркод",
   "table_columns.quantity": "Кол-во",
   "table_columns.actions": "Действия",

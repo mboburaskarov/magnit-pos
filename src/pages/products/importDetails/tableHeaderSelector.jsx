@@ -5,7 +5,9 @@ import { memo } from 'react'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
-
+import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import palette from '../../../../src/assets/theme/mui.config'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography
@@ -100,21 +102,50 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
       }
     }
 
-    if (el.field === 'received_count') {
+    if (el.field === 'count') {
       return {
         ...el,
-        headerName: 'Количество принятых',
+        headerName: 'Количество',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='received_count' />),
+        cellRenderer: memo((p) => (
+          <>
+            <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
+              <Typography mr={'4px'} color={'bunker.500'}>
+                {p.data?.received_count}
+              </Typography>
+              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
+            </Box>
+            <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
+              <Typography mr={'4px'} color={'bunker.500'}>
+                {p.data?.accepted_count}
+              </Typography>
+              <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
+            </Box>
+          </>
+        )),
       }
     }
-
-    if (el.field === 'scanned') {
+    if (el.field === 'amount') {
       return {
         ...el,
-        headerName: 'Сканированиe',
+        headerName: 'Количество',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='scanned' />),
+        cellRenderer: memo((p) => (
+          <>
+            <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
+              <Typography mr={'4px'} color={'bunker.500'}>
+                {p.data?.received_amount}
+              </Typography>
+              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
+            </Box>
+            <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
+              <Typography mr={'4px'} color={'bunker.500'}>
+                {p.data?.accepted_amount}
+              </Typography>
+              <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
+            </Box>
+          </>
+        )),
       }
     }
 

@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material'
 import { get } from 'lodash'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -22,7 +22,7 @@ import InputSearch from '../../../components/Inputs/InputSearch'
 import { error } from '../../../utils/toast'
 
 export default function ProductBody({ productData = null }) {
-  const { setValue, watch, register, getValues } = useFormContext()
+  const { setValue, watch, register, getValues, reset } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
   const [hasChange, sethasChange] = useState(false)
   const [uniType, setUniType] = useState('piece')
@@ -56,14 +56,16 @@ export default function ProductBody({ productData = null }) {
     getValues: getValues,
     applyAllFunc: applyAllFunc,
   })
-  const { data: storeList, refetch: refetchShopList } = useQuery(['shopList', storeSearchText], () =>
-    requests.getAllStores({
+  const storeHistoryFilter = useMemo(() => {
+    return {
       product_id: get(productData, 'id'),
-      limit: values?.limit || 10,
-      offset: values?.offset || 0,
+      limit: values?.limitStore || 10,
+      offset: values?.offsetStore || 0,
       search: storeSearchText || '',
-    })
-  )
+    }
+  }, [values?.limitStore, values?.offset, values?.offsetStore])
+
+  const { data: storeList, refetch: refetchShopList } = useQuery(['shopList', storeHistoryFilter], () => requests.getAllStores(storeHistoryFilter))
 
   const { mutate: generateBarcode, isLoading: isgenerateBarcode } = useMutation(requests.generateBarcode, {
     onSuccess: ({ data }) => {
@@ -74,8 +76,13 @@ export default function ProductBody({ productData = null }) {
     },
   })
   useEffect(() => {
-    refetchShopList()
-  }, [values.limit, values.offset])
+    refetchShopList().then(({ data }) => {
+      get(data, 'data.data.data', []).map((store) => {
+        setValue(`store_product.${get(store, 'id')}.pack_quantity`, get(store, 'pack_quantity', 0))
+        setValue(`store_product.${get(store, 'id')}.small_quantity`, get(store, 'small_quantity', 0))
+      })
+    })
+  }, [values.limitStore, values.offsetStore])
 
   useEffect(() => {
     const supply_price = Number(getValues('supply_price'))
@@ -177,9 +184,9 @@ export default function ProductBody({ productData = null }) {
   }, [productCategories])
   useEffect(() => {
     refetchShopList()
-    const offsetsCount = Math.ceil(get(storeList, 'data.data._meta.total_count') / Number(values?.limit))
+    const offsetsCount = Math.ceil(get(storeList, 'data.data._meta.total_count') / Number(values?.limitStore))
     setOffsetCount(offsetsCount || 0)
-  }, [storeList?.data, values.limit])
+  }, [storeList?.data?.data, values.limitStore])
 
   useEffect(() => {
     if (!productData) {
@@ -322,8 +329,8 @@ export default function ProductBody({ productData = null }) {
               fullWidth
               borderRadius={'40px'}
               name='profil_percent'
-              label={'Доход'}
-              placeholder={'Доход'}
+              label={'Наценка'}
+              placeholder={'Наценка'}
             />
             <Box width={'20px'} />
             <OutLineTextField
@@ -345,6 +352,7 @@ export default function ProductBody({ productData = null }) {
               fullWidth
               borderRadius={'40px'}
               name='vat'
+              defaultValue={12}
               label={t('create_new_product.vat')}
               placeholder={t('create_new_product.vat.placeholder')}
             />
@@ -410,6 +418,8 @@ export default function ProductBody({ productData = null }) {
             columns={tableColumns}
             data={get(storeList, 'data.data.data')}
             pagination
+            offsetQuery='offsetStore'
+            limitQuery='limitStore'
             isDataLoading={false}
             offsetCount={offsetCount}
             fullInfoAboutCurrentPage
