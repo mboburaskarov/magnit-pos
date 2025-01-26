@@ -37,7 +37,15 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
       producer: data.producer?.name || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
-
+    reset(
+      {
+        supply_price_to: null,
+        retail_price_to: null,
+        supply_price_from: null,
+        retail_price_from: null,
+      },
+      { keepDirty: true }
+    )
     setOpen(false)
     navigate(`/products/all${requestParams}`)
   }

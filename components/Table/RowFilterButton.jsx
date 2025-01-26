@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.default,
     border: `1px solid ${theme.palette.gray[300]}`,
     borderRadius: 16,
-    zIndex: '2',
+    zIndex: '20',
     boxShadow: 'none',
     overflow: 'hidden',
   },

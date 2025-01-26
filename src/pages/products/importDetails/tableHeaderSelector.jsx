@@ -110,16 +110,16 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
-              <Typography mr={'4px'} color={'bunker.500'}>
+              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
+              <Typography ml={'4px'} color={'bunker.500'}>
                 {p.data?.received_count}
               </Typography>
-              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
             </Box>
             <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
-              <Typography mr={'4px'} color={'bunker.500'}>
+              <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
+              <Typography ml={'4px'} color={'bunker.500'}>
                 {p.data?.accepted_count}
               </Typography>
-              <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
             </Box>
           </>
         )),
@@ -133,16 +133,16 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
-              <Typography mr={'4px'} color={'bunker.500'}>
+              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
+              <Typography ml={'4px'} color={'bunker.500'}>
                 {p.data?.received_amount}
               </Typography>
-              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
             </Box>
             <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
-              <Typography mr={'4px'} color={'bunker.500'}>
+              <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
+              <Typography ml={'4px'} color={'bunker.500'}>
                 {p.data?.accepted_amount}
               </Typography>
-              <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
             </Box>
           </>
         )),
@@ -156,7 +156,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH.mm.ss')}</Typography>
+            <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
           </Box>
         )),
       }

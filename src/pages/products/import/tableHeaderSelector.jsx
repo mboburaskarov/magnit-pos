@@ -7,6 +7,9 @@ import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import palette from '../../../../src/assets/theme/mui.config'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -91,6 +94,18 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         )),
       }
     }
+    if (el.field === 'store_name') {
+      return {
+        ...el,
+        headerName: t('store'),
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+            {p.data?.store?.name}
+          </Typography>
+        )),
+      }
+    }
     if (el.field === 'status') {
       return {
         ...el,
@@ -122,35 +137,53 @@ export default function tableHeaderSelector({ importsColumns, t }) {
     if (el.field === 'accepted_amount') {
       return {
         ...el,
-        headerName: 'Принятая сумма',
+        headerName: 'Cумма',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='accepted_amount' />),
+        cellRenderer: memo((p) => (
+          <>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
+              <Typography ml={'4px'} color={'bunker.500'}>
+                {p.data?.received_amount}
+              </Typography>
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
+              <Typography ml={'4px'} color={'bunker.500'}>
+                {p.data?.accepted_amount}
+              </Typography>
+            </Box>
+          </>
+        )),
+        // <SimpleText currency='сум' withDevider {...p} type='accepted_amount' />),
       }
     }
-    if (el.field === 'received_amount') {
-      return {
-        ...el,
-        headerName: 'Полученная сумма',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='received_amount' />),
-      }
-    }
+
     if (el.field === 'received_count') {
       return {
         ...el,
-        headerName: 'Количество принятых',
+        headerName: 'Количество',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='received_count' />),
+        cellRenderer: memo((p) => (
+          <>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
+              <Typography ml={'4px'} color={'bunker.500'}>
+                {p.data?.received_count}
+              </Typography>
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
+              <Typography ml={'4px'} color={'bunker.500'}>
+                {p.data?.accepted_count}
+              </Typography>
+            </Box>
+          </>
+        )),
+        // <SimpleText currency='' withDevider {...p} type='received_count' />),
       }
     }
-    if (el.field === 'accepted_count') {
-      return {
-        ...el,
-        headerName: 'Принятый счет',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='accepted_count' />),
-      }
-    }
+
     if (el.field === 'created_at') {
       return {
         ...el,

@@ -40,10 +40,10 @@ export default function ProductRemainsHistory({ id }) {
   const columns = useMemo(
     () => [
       {
-        headerName: 'Название',
+        headerName: 'Магазин',
         colId: 'store_name',
         minWidth: 200,
-        maxWidth: 200,
+        maxWidth: 230,
         width: 200,
         cellRenderer: ({ data, rowIndex }) => (
           <Box id={`${'store_name'}-${rowIndex}-${data?.store_id}`}>

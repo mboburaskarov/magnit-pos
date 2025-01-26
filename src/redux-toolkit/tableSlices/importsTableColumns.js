@@ -15,11 +15,18 @@ const columns = [
     width: 200,
   },
   {
+    field: 'store_name',
+    hide: false,
+    minWidth: 70,
+    width: 220,
+  },
+  {
     field: 'import_date',
     hide: false,
     minWidth: 70,
     width: 370,
   },
+
   {
     field: 'accepted_amount',
     hide: false,
@@ -27,24 +34,12 @@ const columns = [
     width: 170,
   },
   {
-    field: 'accepted_count',
-    hide: false,
-    minWidth: 70,
-    width: 120,
-  },
-  {
-    field: 'received_amount',
-    hide: false,
-    minWidth: 70,
-    width: 250,
-  },
-
-  {
     field: 'received_count',
     hide: false,
     minWidth: 70,
     width: 170,
   },
+
   {
     field: 'status',
     hide: false,

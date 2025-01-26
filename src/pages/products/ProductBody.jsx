@@ -30,6 +30,7 @@ export default function ProductBody({ productData = null }) {
   const { columns, loading } = useSelector((state) => state.storesListTableColumnsForProduct)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
+  console.log(uniType)
 
   const { t } = useTranslation()
   const [images, setImages] = useState([])
@@ -432,6 +433,8 @@ export default function ProductBody({ productData = null }) {
           {t('create_new_product.additional_information.category')}
         </SectionTitle>
         <CategoriesTree />
+        <Box height={'24px'} />
+        <TextField borderRadius={'20px'} required multiline fullWidth name='description' label='Описание' placeholder='Введите описание' />
       </Box>
     </Box>
   )

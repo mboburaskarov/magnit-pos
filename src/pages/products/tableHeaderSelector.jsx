@@ -123,7 +123,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         ...el,
         headerName: t('table_columns.vat_price'),
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='vat_price' />),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='vat_price' />),
       }
     }
     if (el.field === 'supply_price') {

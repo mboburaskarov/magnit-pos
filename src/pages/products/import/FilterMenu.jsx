@@ -23,8 +23,8 @@ export default function FilterMenu({ open, setOpen }) {
   const { values } = useQueryParams()
   const methods = useForm()
   const { formState, reset, control } = methods
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
+  const [startDate, setStartDate] = useState(0)
+  const [endDate, setEndDate] = useState(0)
   const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
@@ -34,8 +34,8 @@ export default function FilterMenu({ open, setOpen }) {
       status: data.status?.value || undefined,
       import_date: data.import_date || undefined,
       store_id: data.store_id?.id || undefined,
-      start_date: dayjs(startDate).format('YYYY-MM-DD') || undefined,
-      end_date: dayjs(endDate).format('YYYY-MM-DD') || undefined,
+      start_date: startDate != 0 ? dayjs(startDate).format('YYYY-MM-DD') : undefined,
+      end_date: endDate != 0 ? dayjs(endDate).format('YYYY-MM-DD') : undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
@@ -132,7 +132,7 @@ export default function FilterMenu({ open, setOpen }) {
               name='status'
               minWidth='auto'
               label={'Статус'}
-              placeholder={t('input.store.placeholder')}
+              placeholder={'Bыберите статус'}
               options={imports_list_statuses.map((item) => ({ name: get(item, 'name'), value: get(item, 'id') }))}
               getOptionLabel={(el) => el.name}
             />
