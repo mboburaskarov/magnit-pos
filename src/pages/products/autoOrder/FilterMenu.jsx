@@ -47,7 +47,7 @@ export default function FilterMenu({ open, setOpen }) {
 
     reset(
       {
-        store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data?.data, 'name')[0] : null,
+        store_id: store_id,
       },
       { keepDirty: true }
     )
