@@ -88,10 +88,10 @@ export default function ProductBody({ productData = null }) {
   useEffect(() => {
     const supply_price = Number(getValues('supply_price'))
     const vat = Number(getValues('vat'))
-    const profil_percent = Number(getValues('profil_percent'))
+    const markup = Number(getValues('markup'))
 
     if (supply_price >= 0 && vat >= 0) {
-      setValue('retail_price', (supply_price / 100) * (vat + profil_percent) + supply_price)
+      setValue('retail_price', (supply_price / 100) * (vat + markup) + supply_price)
       setValue('vat_price', (supply_price / 100) * vat)
     }
   }, [watch('supply_price'), watch('vat')])
@@ -101,12 +101,12 @@ export default function ProductBody({ productData = null }) {
 
     const supply_price = Number(getValues('supply_price'))
     const vat = Number(getValues('vat'))
-    const profil_percent = Number(getValues('profil_percent'))
+    const markup = Number(getValues('markup'))
     if (supply_price >= 0 && vat >= 0) {
       sethasChange(true)
-      setValue('retail_price', (supply_price / 100) * (vat + profil_percent) + supply_price)
+      setValue('retail_price', (supply_price / 100) * (vat + markup) + supply_price)
     }
-  }, [watch('profil_percent')])
+  }, [watch('markup')])
 
   useEffect(() => {
     if (hasChange) return sethasChange(false)
@@ -114,41 +114,47 @@ export default function ProductBody({ productData = null }) {
     const supply_price = Number(getValues('supply_price'))
     const vat = Number(getValues('vat'))
     const retail_price = Number(getValues('retail_price'))
-    if ((supply_price / 100) * vat + supply_price > retail_price) {
-      error('Эта сумма очень маленькая')
-      return
-    }
-    if (supply_price >= 0 && vat >= 0) {
+    console.log('fr')
+    const markup = Number(getValues('markup'))
+
+    // if ((supply_price * vat) / 100 + supply_price > retail_price) {
+    //   error('Эта сумма очень маленькая')
+    //   return
+    // }
+    if (
+      supply_price >= 0 &&
+      vat >= 0
+      // &&((retail_price - supply_price) * 100) / supply_price - vat >= 0
+    ) {
       sethasChange(true)
-      setValue('profil_percent', ((retail_price - supply_price) * 100) / supply_price - vat)
+      setValue('markup', ((retail_price - supply_price) * 100) / supply_price - vat)
     }
+    //  else {
+    //   error('Эта сумма очень маленькая')
+    //   sethasChange(true)
+
+    //   setValue('retail_price', (supply_price / 100) * (vat + markup) + supply_price)
+    // }
   }, [watch('retail_price')])
 
   useEffect(() => {
-    if (hasChange) return sethasChange(false)
-
+    // if (hasChange) return sethasChange(false)
+    console.log('frdd')
     const supply_price = Number(getValues('supply_price'))
-    const bonus_amount = Number(getValues('bonus_amount'))
-    if (supply_price >= 0) {
-      setValue('bonus_percent', (bonus_amount * 100) / supply_price)
-      sethasChange(true)
+    const vat = Number(getValues('vat'))
+
+    const retail_price = Number(getValues('retail_price'))
+    const bonus_percent = Number(getValues('bonus_percent'))
+
+    if (retail_price >= 0) {
+      setValue('bonus_amount', (retail_price * bonus_percent) / 100)
+      console.log((bonus_percent * 100) / retail_price, bonus_percent, retail_price)
+
+      // sethasChange(true)
     }
-  }, [watch('bonus_amount'), watch('supply_price')])
+  }, [watch('bonus_percent'), watch('retail_price')])
 
-  useEffect(
-    () => {
-      if (hasChange) return sethasChange(false)
-
-      const supply_price = Number(getValues('supply_price'))
-      const bonus_percent = Number(getValues('bonus_percent'))
-      if (supply_price >= 0) {
-        setValue('bonus_amount', (supply_price / 100) * bonus_percent)
-        sethasChange(true)
-      }
-    },
-    [watch('bonus_percent')],
-    watch('supply_price')
-  )
+  console.log(getValues('bonus_amount'))
 
   useEffect(() => {
     setUniType(get(getValues('product_unit'), 'value', 'piece'))
@@ -166,6 +172,7 @@ export default function ProductBody({ productData = null }) {
       setValue('vat_price', productData?.vat_price || 0)
       setValue('bonus_amount', productData?.bonus_amount || 0)
       setValue('bonus_percent', productData?.bonus_percent || 0)
+      setValue('description', productData?.description || '')
       setValue('manufacturer', productData?.manufacturer || 0)
       setValue('box_grain_count', productData?.box_grain_count || 0)
       setValue('product_unit', { value: productData?.unit_type?.codename, name: productData?.unit_type?.unit_name, id: productData?.unit_type?.id } || 0)
@@ -318,6 +325,9 @@ export default function ProductBody({ productData = null }) {
               type='number'
               fullWidth
               borderRadius={'40px'}
+              InputProps={{
+                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
+              }}
               name='supply_price'
               label={t('create_new_product.supply_price')}
               placeholder={t('create_new_product.supply_price.placeholder')}
@@ -328,6 +338,9 @@ export default function ProductBody({ productData = null }) {
               required
               type='number'
               fullWidth
+              InputProps={{
+                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
+              }}
               borderRadius={'40px'}
               name='markup'
               label={'Наценка'}
@@ -338,6 +351,10 @@ export default function ProductBody({ productData = null }) {
               endAdornmentText={'UZS'}
               required
               type='number'
+              InputProps={{
+                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
+                onBlur: (e) => console.log(e),
+              }}
               fullWidth
               borderRadius={'40px'}
               name='retail_price'
@@ -352,6 +369,9 @@ export default function ProductBody({ productData = null }) {
               type='number'
               fullWidth
               borderRadius={'40px'}
+              InputProps={{
+                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
+              }}
               name='vat'
               defaultValue={12}
               label={t('create_new_product.vat')}
@@ -365,6 +385,9 @@ export default function ProductBody({ productData = null }) {
               type='number'
               fullWidth
               borderRadius={'40px'}
+              InputProps={{
+                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
+              }}
               name='vat_price'
               label={t('create_new_product.vat_price')}
               placeholder={t('create_new_product.vat_price.placeholder')}
@@ -372,26 +395,32 @@ export default function ProductBody({ productData = null }) {
           </Box>
           <Box mt={'24px'} display={'flex'} width={'100%'}>
             <OutLineTextField
-              endAdornmentText={'UZS'}
-              required
-              type='number'
-              fullWidth
-              borderRadius={'40px'}
-              name='bonus_amount'
-              label={'Цена бонуса'}
-              placeholder={t('create_new_product.retail_price.placeholder')}
-            />
-            <Box width={'20px'} />
-
-            <OutLineTextField
               endAdornmentText={'%'}
               required
               type='number'
               fullWidth
               borderRadius={'40px'}
+              InputProps={{
+                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
+              }}
               name='bonus_percent'
               label={'Бонусный процент'}
               placeholder={t('create_new_product.vat_price.placeholder')}
+            />
+            <Box width={'20px'} />
+
+            <OutLineTextField
+              endAdornmentText={'UZS'}
+              required
+              type='number'
+              fullWidth
+              borderRadius={'40px'}
+              InputProps={{
+                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
+              }}
+              name='bonus_amount'
+              label={'Цена бонуса'}
+              placeholder={t('create_new_product.retail_price.placeholder')}
             />
           </Box>
         </Box>

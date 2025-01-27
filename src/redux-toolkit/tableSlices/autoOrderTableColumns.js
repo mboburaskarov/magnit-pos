@@ -2,113 +2,67 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const columns = [
   {
-    field: 'number',
+    field: 'store_name',
     hide: false,
     minWidth: 60,
-    width: 60,
+    width: 280,
   },
+
   {
-    field: 'main_photo',
+    field: 'product_name',
     hide: false,
     minWidth: 70,
-    width: 90,
+    width: 200,
   },
   {
-    field: 'name',
-    hide: false,
-    minWidth: 70,
-    width: 370,
-  },
-  {
-    field: 'category',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
-  // {
-  //   field: 'expire_date',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 250,
-  // },
-  {
-    field: 'supply_price',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
-  {
-    field: 'vat',
-    hide: false,
-    minWidth: 70,
-    width: 80,
-  },
-  {
-    field: 'markup',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
-  {
-    field: 'markup_price',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
-  {
-    field: 'retail_price',
-    hide: false,
-    minWidth: 70,
-    width: 158,
-  },
-  {
-    field: 'vat_price',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
-  {
-    field: 'quantity',
+    field: 'current_stock',
     hide: false,
     minWidth: 70,
     width: 150,
   },
   {
-    field: 'sum',
+    field: 'monthly_quantity',
+    hide: false,
+    minWidth: 70,
+    width: 150,
+  },
+
+  {
+    field: 'weekly_quantity',
     hide: false,
     minWidth: 70,
     width: 170,
   },
   {
-    field: 'manufacturer',
+    field: 'order_growth',
     hide: false,
     minWidth: 70,
-    width: 290,
+    width: 170,
   },
 
   {
-    field: 'material_code',
+    field: 'order_lead_time',
     hide: false,
     minWidth: 70,
-    width: 176,
+    width: 170,
   },
+
   {
-    field: 'barcode',
+    field: 'suggested_order',
     hide: false,
     minWidth: 70,
-    width: 176,
+    width: 200,
   },
   {
-    field: 'actions',
+    field: 'adjusted_order',
     hide: false,
-    minWidth: 96,
-    width: 96,
-    pinned: 'right',
+    minWidth: 70,
+    width: 200,
   },
 ]
 
-const productsTableColumns = createSlice({
-  name: 'productsTableColumns',
+const autoOrderTableColumns = createSlice({
+  name: 'autoOrderTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -148,5 +102,5 @@ const productsTableColumns = createSlice({
 })
 
 export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
-  productsTableColumns.actions
-export const productsTableColumnsSlice = productsTableColumns.reducer
+  autoOrderTableColumns.actions
+export const autoOrderTableColumnsSlice = autoOrderTableColumns.reducer

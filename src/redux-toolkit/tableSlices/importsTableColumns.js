@@ -18,7 +18,7 @@ const columns = [
     field: 'store_name',
     hide: false,
     minWidth: 70,
-    width: 220,
+    width: 250,
   },
   {
     field: 'import_date',

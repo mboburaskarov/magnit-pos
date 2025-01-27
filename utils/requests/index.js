@@ -10,13 +10,14 @@ export const requests = {
   addToOrderPayment: (data) => request.post(`v1/sale/final`, data),
 
   createShift: (data) => request.post(`v1/shift`, data),
-
   checkSaleExist: (store_id) => request.get(`v1/cash_box/check?store_id=${store_id}`),
   changeEmployeeInfo: (data) => request.put(`v1/employee/info`, data),
   //category
   finishImportChecking: (id) => request.patch(`v1/import-detail/accept-some/${id}`),
 
   // categoryGetAll
+
+  getAutoOrderList: (filter) => request.get(`v1/auto-order/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllCategories: (filter) => request.get(`v1/category/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getCategory: (id) => request.get(`v1/category/${id}`),
   getAllImports: (filter) => request.get(`v1/import/list${qs.stringify(filter, { addQueryPrefix: true })}`),

@@ -59,9 +59,9 @@ export const generateCustomStyles = (props = {}) => {
       display: 'flex',
       minHeight: mini ? 40 : 48,
       fontWeight: 600,
-      backgroundColor: white ? palette.background.default : palette.gray[50],
+      backgroundColor: white ? palette.background.default : palette.white,
       '&:hover': {
-        backgroundColor: white ? palette.background.default : palette.gray[101],
+        backgroundColor: white ? palette.background.default : palette.white,
       },
       boxShadow: state.isFocused
         ? `0 0 0 2px ${palette.orange[500]}`
@@ -175,8 +175,8 @@ export const generateCustomStyles = (props = {}) => {
       backgroundColor: palette.background.default,
       border: 'none',
       boxShadow: theme.boxShadow['16-8'],
-      overflow: 'hidden',
-      zIndex: 100,
+      // overflow: 'hidden',
+      zIndex: 100000,
     }),
     menuList: (base) => ({
       ...base,

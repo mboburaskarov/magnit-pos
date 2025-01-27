@@ -99,11 +99,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: t('store'),
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-            {p.data?.store?.name}
-          </Typography>
-        )),
+        cellRenderer: memo((p) => <Typography>{p.data?.store?.name}</Typography>),
       }
     }
     if (el.field === 'status') {

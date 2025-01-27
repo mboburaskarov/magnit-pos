@@ -41,7 +41,9 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
     <Box mt={'24px'}>
       <Grid container spacing={3}>
         <Grid item xs={6}>
-          <Typography mb='4px'>{t('client_name')}</Typography>
+          <Typography className={classes.required} mb='4px'>
+            {t('client_name')}
+          </Typography>
 
           <TextField
             id='client-name'
@@ -128,15 +130,14 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
         </Grid>
         <Grid item xs={6}>
           <Box mt={'24px'}>
-            <Typography className={classes.required} mb='4px'>
-              {t('tags')}
-            </Typography>
+            <Typography mb='4px'>{t('tags')}</Typography>
           </Box>
           <TextField
             id='tags'
             name='tags'
             control={control}
             fullWidth
+            // required
             error={errors?.tags}
             placeholder={t('tags.placeholder')}
             defaultValue={clientData ? clientData.last_name : ''}

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Box, Typography, TextField, InputAdornment } from '@mui/material'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,6 +19,22 @@ const useStyles = makeStyles((theme) => ({
     '&::after': {
       content: '" *"',
       color: theme.palette.red[500],
+    },
+  },
+  textField: {
+    '& .MuiInputBase-input': {
+      color: theme.palette.gray[600], // Default input text color
+    },
+    '& .MuiInputBase-input::placeholder': {
+      color: theme.palette.gray[500], // Default placeholder color
+    },
+  },
+  errorTextField: {
+    '& .MuiInputBase-input': {
+      color: theme.palette.gray[600], // Default input text color
+    },
+    '& .MuiInputBase-input::placeholder': {
+      color: theme.palette.red[500], // Error placeholder color
     },
   },
 }))
@@ -41,6 +58,7 @@ function InputDateRangePicker({
   noMarginTop,
 }) {
   const classes = useStyles()
+
   const onChange = (dates) => {
     if (onDateChange) {
       onDateChange(dates, id)
@@ -50,6 +68,7 @@ function InputDateRangePicker({
       setEndDate(end)
     }
   }
+
   return (
     <Box width={fullWidth ? '100%' : 320} maxWidth={maxWidth} className={classes.root} mt={!label && !noMarginTop && '21px'} {...boxStyle}>
       <Typography className={`${required && label && asteriks ? classes.required : ''}`} mb={2} variant='h5'>
@@ -73,6 +92,7 @@ function InputDateRangePicker({
         )}
         customInput={
           <TextField
+            className={error ? classes.errorTextField : classes.textField}
             variant='outlined'
             fullWidth
             error={!!error}
