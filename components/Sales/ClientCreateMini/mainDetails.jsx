@@ -73,7 +73,15 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
       <Grid container spacing={4}>
         <Grid item xs={6}>
           <Typography mb='4px'>{t('birthdate')}</Typography>
-          <InputDatePicker noMarginTop name='date_of_birth' error={errors?.date_of_birth} id='birth-Date' showYearDropdown placeholder='kk/oo/yyyy' />
+          <InputDatePicker
+            noValidation
+            noMarginTop
+            name='date_of_birth'
+            error={errors?.date_of_birth}
+            id='birth-Date'
+            showYearDropdown
+            placeholder='kk/oo/yyyy'
+          />
         </Grid>
         <Grid item xs={6}>
           <Typography mb='4px'>{t('gender')}</Typography>

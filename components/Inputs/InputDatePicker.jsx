@@ -123,7 +123,9 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const currentYear = new Date().getFullYear()
-const fromMonth = new Date(currentYear - 3, 11)
+console.log(currentYear)
+
+const fromMonth = new Date(currentYear, 11)
 const toMonth = new Date(currentYear + 5, 0)
 
 const tomorrow = new Date()

@@ -329,7 +329,7 @@ export default function ProductBody({ productData = null }) {
               type='number'
               fullWidth
               borderRadius={'40px'}
-              name='profil_percent'
+              name='markup'
               label={'Наценка'}
               placeholder={'Наценка'}
             />

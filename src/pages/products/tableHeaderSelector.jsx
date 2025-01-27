@@ -118,6 +118,14 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         cellRenderer: memo((p) => <SimpleText currency='%' withDevider {...p} type='vat' />),
       }
     }
+    if (el.field === 'markup') {
+      return {
+        ...el,
+        headerName: 'Наценка',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='%' withDevider {...p} type='markup' />),
+      }
+    }
     if (el.field === 'vat_price') {
       return {
         ...el,

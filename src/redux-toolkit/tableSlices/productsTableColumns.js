@@ -44,6 +44,12 @@ const columns = [
     width: 80,
   },
   {
+    field: 'markup',
+    hide: false,
+    minWidth: 70,
+    width: 80,
+  },
+  {
     field: 'retail_price',
     hide: false,
     minWidth: 70,

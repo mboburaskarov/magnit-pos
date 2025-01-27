@@ -53,6 +53,7 @@ export default function ProductEditPage() {
         return Number(total) + Number(product.quantity)
       }, 0),
       retail_price: Number(get(data, 'retail_price')),
+      markup: Number(get(data, 'markup')),
       status: 'active',
       store_id: get(userData, 'store_id'),
       store_product: Object.values(get(data, 'store_product'))

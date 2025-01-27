@@ -11,6 +11,7 @@ import useDidUpdate from '../../../src/hooks/useDidUpdate'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import MainDetails from './mainDetails'
+import dayjs from 'dayjs'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -79,7 +80,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       error('Номер телефона меньше 14')
     }
     const requestBody = {
-      birthday: data?.date_of_birth,
+      birthday: data?.date_of_birth ? dayjs(get(data, 'date_of_birth')).format('DD.MM.YYYY') : null,
       created_by: userData?.id,
       first_name: data?.first_name,
       gender: data?.gender,

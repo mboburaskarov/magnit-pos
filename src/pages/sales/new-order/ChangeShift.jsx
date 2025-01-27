@@ -96,11 +96,7 @@ export default function ChangeShift({ open, setOpen }) {
               minWidth='auto'
               label={'Сотрудник'}
               placeholder={'Выберите сотрудника'}
-              getOptionLabel={(el) => (
-                <>
-                  {el?.first_name} {el?.last_name}
-                </>
-              )}
+              getOptionLabel={(el) => el.first_name + ' ' + el.last_name}
               options={employees?.data?.data?.data}
             />
 
@@ -117,7 +113,7 @@ export default function ChangeShift({ open, setOpen }) {
               label={'Касса'}
               placeholder={'Выбрать кассу'}
               getOptionLabel={(el) => el.name}
-              options={cashBoxList?.data?.data}
+              options={cashBoxList?.data?.data?.data}
             />
             <InputPassword
               boxStyle={{ borderRadius: '40px' }}

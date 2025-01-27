@@ -137,7 +137,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
               minWidth='auto'
               label={t('input.category.label')}
               placeholder={t('input.category.placeholder')}
-              options={categories?.data?.data}
+              options={categories?.data?.data?.data}
               getOptionLabel={(el) => el.name}
             />
             <SelectSimple

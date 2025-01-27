@@ -7,6 +7,9 @@ import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import { requests } from '../../../../utils/requests'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { Link, useNavigate } from 'react-router-dom'
+import { faArrowCircleDown, faArrowCircleUp } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import palette from '../../../../src/assets/theme/mui.config'
 
 export default function ProductHistory({ id }) {
   const { values } = useQueryParams()
@@ -69,7 +72,23 @@ export default function ProductHistory({ id }) {
         minWidth: 185,
         maxWidth: 185,
         width: 185,
-        cellRenderer: ({ data, rowIndex }) => <Typography>{get(data, 'import.accepted_count')}</Typography>,
+        cellRenderer: ({ data, rowIndex }) => (
+          <>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
+              <Typography ml={'4px'} color={'bunker.500'}>
+                {data?.accepted_count}
+              </Typography>
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
+              <Typography ml={'4px'} color={'bunker.500'}>
+                {data?.accepted_amount}
+              </Typography>
+            </Box>
+          </>
+        ),
+        // <Typography>{get(data, 'import.accepted_count')}</Typography>,
       },
       {
         headerName: 'Магазин',

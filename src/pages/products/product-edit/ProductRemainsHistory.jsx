@@ -24,7 +24,7 @@ export default function ProductRemainsHistory({ id }) {
     isLoading: isproductDataLoadingHistory,
     isFetching: isFetchingproductReaminsDataHistory,
     refetch,
-  } = useQuery('productReaminsDataHistory', () => requests.getSingleProductRemainsHistory(productHistoryFilter, id))
+  } = useQuery(['productReaminsDataHistory', productHistoryFilter], () => requests.getSingleProductRemainsHistory(productHistoryFilter, id))
 
   useEffect(() => {
     const count = productReaminsDataHistory?.data?.data?._meta?.total_count
@@ -81,6 +81,16 @@ export default function ProductRemainsHistory({ id }) {
       },
       {
         headerName: 'Наценка',
+        colId: 'retail_price',
+        minWidth: 185,
+        maxWidth: 185,
+        width: 185,
+        cellRenderer: ({ data, rowIndex }) => (
+          <Typography id={`${'retail_price'}-${rowIndex}-${data?.store_id}`}>{thousandDivider(get(data, 'markup'), '%')}</Typography>
+        ),
+      },
+      {
+        headerName: 'НДС',
         colId: 'retail_price',
         minWidth: 185,
         maxWidth: 185,
