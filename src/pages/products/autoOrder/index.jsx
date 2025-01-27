@@ -17,10 +17,14 @@ import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 import CheckAccess from '../../../../components/CheckAccess'
 import PlusIcon from '../../../assets/icons/PlusIcon'
+import { FormProvider, useForm } from 'react-hook-form'
+import { error } from '../../../../utils/toast'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function AutoOrderPage() {
   const theme = useTheme()
+  const methods = useForm()
+
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.autoOrderTableColumns)
@@ -92,103 +96,115 @@ export default function AutoOrderPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [autoOrderList?.data, values?.limit])
+  const onSubmit = (data) => {
+    console.log(data)
+  }
+  const onError = (err) => {
+    console.log('err', err)
+    error('Пожалуйста, заполните все поля!')
+  }
 
   return (
     <LoadingContainer readyState={true}>
-      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          Авто заказ
-        </Typography>
+      <FormProvider {...methods}>
+        <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
+          <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+            Авто заказ
+          </Typography>
 
-        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-          <Box display={'flex'}>
-            <Box
-              width='100%'
-              sx={{
-                '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                  background: 'transparent',
-                  width: '400px',
-                  height: 48,
-                },
-              }}
-            >
-              <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
-            </Box>
-
-            <Box minWidth={113} ml={'16px'}>
-              <Button
+          <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
+            <Box display={'flex'}>
+              <Box
+                width='100%'
                 sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
+                  '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+                  '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                    background: 'transparent',
+                    width: '400px',
+                    height: 48,
                   },
                 }}
-                fullWidth
-                startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
               >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
-            </Box>
-          </Box>
-          <Box display={'flex'} alignItems={'center'}>
-            <Box>
-              <ColumnsFilterButtonForAll
-                title={t('ag_grid.table_setting.label')}
-                columns={tableColumns}
-                isCatalog={false}
-                resetTableHeader={resetTableHeader}
-                changeColumnSequence={changeColumnSequence}
-              />
-            </Box>
-            <CheckAccess id={'product-create'}>
-              <Box minWidth={156}>
+                <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
+              </Box>
+
+              <Box minWidth={113} ml={'16px'}>
                 <Button
-                  sx={{ height: '48px' }}
-                  onClick={() => navigate('/products/create')}
+                  sx={{
+                    height: '48px',
+                    padding: 0,
+                    bgcolor: '#fff',
+                    border: '1px solid #ECEDF2',
+                    color: 'dark.500',
+                    fontWeight: '500',
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    '& span': {
+                      mr: '12px',
+                    },
+                  }}
                   fullWidth
-                  // startIcon={<PlusIcon color='#fff' />}
+                  startIcon={<FilterMenuIcon color={theme.palette.black} />}
                   variant='contained'
-                  color='primary'
+                  color='secondary'
+                  onClick={() => setFilterMenu((prev) => !prev)}
                 >
-                  Создать заказ
+                  <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
+                    {t('filter_dialog.label')}
+                  </Typography>
                 </Button>
               </Box>
-            </CheckAccess>
+            </Box>
+            <Box display={'flex'} alignItems={'center'}>
+              <Box>
+                <ColumnsFilterButtonForAll
+                  title={t('ag_grid.table_setting.label')}
+                  columns={tableColumns}
+                  isCatalog={false}
+                  resetTableHeader={resetTableHeader}
+                  changeColumnSequence={changeColumnSequence}
+                />
+              </Box>
+              <CheckAccess id={'product-create'}>
+                <Box minWidth={156}>
+                  <Button
+                    sx={{ height: '48px' }}
+                    type='submit'
+                    onClick={() => {
+                      methods.handleSubmit(onSubmit, onError)
+                    }}
+                    fullWidth
+                    // startIcon={<PlusIcon color='#fff' />}
+                    variant='contained'
+                    color='primary'
+                  >
+                    Создать заказ
+                  </Button>
+                </Box>
+              </CheckAccess>
+            </Box>
+          </Box>
+          <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
+          <Box>
+            <AgGridTable
+              id='auto-order-main-table'
+              tableSettings
+              columns={tableColumns}
+              data={autoOrderList?.data?.data?.data || []}
+              isDataLoading={isFetchingautoOrderList || autoOrderListLoading}
+              offsetCount={offsetCount}
+              updaterAction={(newData) => {
+                if (newData) dispatch(updateTableHeader(newData))
+              }}
+              fullInfoAboutCurrentPage
+              resetTable={() => dispatch(resetTableHeader({ refetch }))}
+              isRefreshing={loading || isFetchingautoOrderList || autoOrderListLoading}
+            />
           </Box>
         </Box>
-        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
-        <Box>
-          <AgGridTable
-            id='auto-order-main-table'
-            tableSettings
-            columns={tableColumns}
-            data={autoOrderList?.data?.data?.data || []}
-            isDataLoading={isFetchingautoOrderList || autoOrderListLoading}
-            offsetCount={offsetCount}
-            updaterAction={(newData) => {
-              if (newData) dispatch(updateTableHeader(newData))
-            }}
-            fullInfoAboutCurrentPage
-            resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingautoOrderList || autoOrderListLoading}
-          />
-        </Box>
-      </Box>
 
-      <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
+        <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
+      </FormProvider>
     </LoadingContainer>
   )
 }
