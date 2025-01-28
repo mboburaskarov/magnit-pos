@@ -52,17 +52,17 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Документ',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='document' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='cash_box_name' />),
       }
     }
-    if (el.field === 'organisation') {
-      return {
-        ...el,
-        headerName: 'Организация',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='organisation' />),
-      }
-    }
+    // if (el.field === 'organisation') {
+    //   return {
+    //     ...el,
+    //     headerName: 'Организация',
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText {...p} type='organisation' />),
+    //   }
+    // }
     if (el.field === 'total_amount') {
       return {
         ...el,
@@ -235,7 +235,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         colId: el.field,
         cellRenderer: memo((p) => (
           <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
-            {get(p, 'data.cash_box.store.name', '-')}
+            {get(p, 'data.store_name', '-')}
           </Typography>
         )),
       }

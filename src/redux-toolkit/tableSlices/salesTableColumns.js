@@ -19,12 +19,7 @@ const columns = [
     minWidth: 70,
     width: 180,
   },
-  {
-    field: 'organisation',
-    hide: false,
-    minWidth: 70,
-    width: 180,
-  },
+
   {
     field: 'total_amount',
     hide: false,

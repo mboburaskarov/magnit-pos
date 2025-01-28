@@ -9,6 +9,12 @@ const columns = [
     width: 45,
   },
   {
+    field: 'number',
+    hide: false,
+    minWidth: 60,
+    width: 60,
+  },
+  {
     field: 'public_id',
     hide: false,
     minWidth: 60,

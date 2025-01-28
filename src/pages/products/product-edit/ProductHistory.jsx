@@ -7,7 +7,7 @@ import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import { requests } from '../../../../utils/requests'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { Link, useNavigate } from 'react-router-dom'
-import { faArrowCircleDown, faArrowCircleUp } from '@fortawesome/free-solid-svg-icons'
+import { faArrowCircleDown, faArrowCircleUp, faCheckCircle, faCircleDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import palette from '../../../../src/assets/theme/mui.config'
 
@@ -77,11 +77,36 @@ export default function ProductHistory({ id }) {
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {data?.accepted_count}
+                {data?.received_count}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
+
+              <Typography ml={'4px'} color={'bunker.500'}>
+                {data?.accepted_count}
+              </Typography>
+            </Box>
+          </>
+        ),
+        // <Typography>{get(data, 'import.accepted_count')}</Typography>,
+      },
+      {
+        headerName: 'Цена',
+        colId: 'accepted_count',
+        minWidth: 185,
+        maxWidth: 185,
+        width: 185,
+        cellRenderer: ({ data, rowIndex }) => (
+          <>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
+              <Typography ml={'4px'} color={'bunker.500'}>
+                {data?.received_amount}
+              </Typography>
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
               <Typography ml={'4px'} color={'bunker.500'}>
                 {data?.accepted_amount}
               </Typography>
@@ -96,7 +121,7 @@ export default function ProductHistory({ id }) {
         minWidth: 185,
         maxWidth: 185,
         width: 185,
-        cellRenderer: ({ data, rowIndex }) => <Typography>{get(data, 'import.stores.name')}</Typography>,
+        cellRenderer: ({ data, rowIndex }) => <Typography>{get(data, 'import.store.name')}</Typography>,
       },
     ],
     []

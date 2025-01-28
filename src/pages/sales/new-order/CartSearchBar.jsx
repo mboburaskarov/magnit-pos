@@ -173,7 +173,10 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChange
             placeholder={'Поиск: товар, категория, штрих-код'}
             fullWidth
             value={searchTearm}
+            setSearchTerm={setSearchTerm}
             onChange={(e) => {
+              console.log(e)
+
               setSearchTerm(e.target.value)
               setShowOverlay(true)
             }}
