@@ -58,7 +58,7 @@ export default function AutoOrderPage() {
   const autoOrderListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      offset: values?.offset || 0,
+      offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       store_id: values?.store_id,
       start_date: values?.start_date,
@@ -170,9 +170,7 @@ export default function AutoOrderPage() {
                   <Button
                     sx={{ height: '48px' }}
                     type='submit'
-                    onClick={() => {
-                      methods.handleSubmit(onSubmit, onError)
-                    }}
+                    onClick={methods.handleSubmit(onSubmit, onError)}
                     fullWidth
                     // startIcon={<PlusIcon color='#fff' />}
                     variant='contained'
@@ -195,6 +193,10 @@ export default function AutoOrderPage() {
               offsetCount={offsetCount}
               updaterAction={(newData) => {
                 if (newData) dispatch(updateTableHeader(newData))
+              }}
+              emptyTableText={{
+                title: 'Заказ недоступен',
+                description: 'Если вы не можете найти искомый Заказ, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
               }}
               fullInfoAboutCurrentPage
               resetTable={() => dispatch(resetTableHeader({ refetch }))}

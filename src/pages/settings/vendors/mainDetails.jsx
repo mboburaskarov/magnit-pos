@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import InputSwitchNew from '../../../../components/Inputs/InputSwitch'
 import InputPhone from '../../../../components/Inputs/PhoneNumber'
+import LazySelect from '../../../../components/Select/LazySelect'
 
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
@@ -136,7 +137,25 @@ export default function MainDetails({ clientData, openDrawer }) {
       <Grid container spacing={4}>
         <Grid item xs={6}>
           <Label mb='4px'>{t('branch')}</Label>
-          <SelectSimple
+          <LazySelect
+            slug='users'
+            id='store'
+            name='store'
+            isMulti={false}
+            placeholder={'Выберите клиент'}
+            minWidth='auto'
+            isClearable={false}
+            request={requests.getAllShops}
+            filters={{ limit: 10 }}
+            control={control}
+            // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+            // uncontrolled
+            getOptionLabel={(option) => {
+              return <Typography color='grey.600'>{option.name}</Typography>
+            }}
+            filterOption={() => true}
+          />
+          {/* <SelectSimple
             placeholder={t('store.placeholder')}
             disabled={false}
             white
@@ -144,7 +163,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             isClearable={false}
             options={get(storesList, 'data.data.data')}
             name='store'
-          />
+          /> */}
         </Grid>
         <Grid item xs={6}>
           <Label mb='4px'>{t('role')}</Label>

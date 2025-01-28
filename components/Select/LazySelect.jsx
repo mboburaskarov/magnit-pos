@@ -12,6 +12,7 @@ import useVirtualizedData from '../../src/hooks/useVirtualizedData'
 import DeleteSmallIcon from '../../src/assets/icons/DeleteSmallIcon'
 import DeleteIconBig from '../../src/assets/icons/DeleteIconBig'
 import LoadingBlock from '../LoadingBlock'
+import Label from '../Label'
 
 const SingleValue = ({ children, selectProps, ...props }) => (
   <components.SingleValue selectProps={selectProps} {...props}>
@@ -166,10 +167,9 @@ function LazySelect({
   return (
     <Box className={cls.root} {...boxStyle} maxWidth={maxWidth}>
       {label && (
-        <Typography className={`${!label && cls.noLabel} ${label && required && asteriks ? cls.required : ''}`} mb={2} variant='h5'>
-          {labelOrder && <span className={cls.orderedLabel}>{labelOrder}</span>}
+        <Label mb={1.5} required={required}>
           {label}
-        </Typography>
+        </Label>
       )}
       {uncontrolled ? (
         <Select

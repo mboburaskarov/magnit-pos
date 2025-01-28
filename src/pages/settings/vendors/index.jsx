@@ -78,7 +78,7 @@ export default function VendorsPage() {
   const vendorsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      offset: values?.offset || 0,
+      offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
@@ -304,6 +304,10 @@ export default function VendorsPage() {
             data={vendorsList?.data?.data?.data || []}
             isDataLoading={isFetchingvendorsList || vendorsListLoading}
             offsetCount={offsetCount}
+            emptyTableText={{
+              title: 'Сотрудники недоступен',
+              description: 'Если вы не можете найти искомый Сотрудники, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+            }}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}

@@ -53,7 +53,7 @@ export default function ImportPage() {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
-      search: values?.search,
+      search: values?.search ? 0 : values?.search,
       store_id: values?.store_id,
       start_date: values?.start_date,
       end_date: values?.end_date,
@@ -164,6 +164,10 @@ export default function ImportPage() {
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
+            }}
+            emptyTableText={{
+              title: 'Импорт недоступен',
+              description: 'Если вы не можете найти искомый Импорт, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}

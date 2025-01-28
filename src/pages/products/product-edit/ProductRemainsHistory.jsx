@@ -43,8 +43,8 @@ export default function ProductRemainsHistory({ id }) {
         headerName: 'Магазин',
         colId: 'store_name',
         minWidth: 200,
-        maxWidth: 230,
-        width: 200,
+        maxWidth: 300,
+        width: 250,
         cellRenderer: ({ data, rowIndex }) => (
           <Box id={`${'store_name'}-${rowIndex}-${data?.store_id}`}>
             <Typography id={`${'store_name'}-${rowIndex}-${data?.store_id}`}>{data?.store?.name}</Typography>

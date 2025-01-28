@@ -29,6 +29,7 @@ function RippedPaperCheck({
   const classes = useStyles()
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
+  console.log(cartItemsList)
 
   const disableSumsOnGoods = () => {
     const found = cheque?.information_block?.find((el) => el?.id === '30e14632-dc10-40a1-b97a-1be73a53054a')
@@ -114,7 +115,7 @@ function RippedPaperCheck({
                   id={`return-price-${'index6'}`}
                   rowData={{
                     type: `Sotuvchi:`,
-                    value: `${get(userData, 'fullName')}`,
+                    value: `${get(userData, 'first_name')}`,
                   }}
                 />
               )}
@@ -123,7 +124,7 @@ function RippedPaperCheck({
                   id={`return-price-${'index8'}`}
                   rowData={{
                     type: `Mijoz:`,
-                    value: `${get(customerId, 'name', '')}`,
+                    value: `${get(customerId, 'name', '-')}`,
                   }}
                 />
               )}
@@ -132,7 +133,7 @@ function RippedPaperCheck({
                   id={`return-price-${'index9'}`}
                   rowData={{
                     type: `Kontakt:`,
-                    value: `${get(customerId, 'phone', '')}`,
+                    value: `${get(customerId, 'phone', '-')}`,
                   }}
                 />
               )}
@@ -144,7 +145,7 @@ function RippedPaperCheck({
               <Box className={classes.content}>
                 <p id={`return-name-${'index'}`}>
                   <b className={classes.bold}>
-                    {index + 1}. {get(el, 'product.name')}
+                    {index + 1}. {get(el, 'name')}
                   </b>
                 </p>
                 {disableSumsOnGoods() && (

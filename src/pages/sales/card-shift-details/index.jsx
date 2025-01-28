@@ -117,6 +117,10 @@ function CardShiftDetails() {
               updaterAction={(newData) => {
                 if (newData) dispatch(updateTableHeader(newData))
               }}
+              emptyTableText={{
+                title: 'Оплата недоступен',
+                description: 'Если вы не можете найти искомый Оплата, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+              }}
               fullInfoAboutCurrentPage
               resetTable={() => dispatch(resetTableHeader({ refetch }))}
               isRefreshing={loading || isFetchingcloseCashboxPaymentList || closeCashboxPaymentListLoading}

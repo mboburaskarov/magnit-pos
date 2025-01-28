@@ -63,8 +63,24 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ setopenCreateVendorDrawer, vendorsColumns, t, setOpenConfirmDialog, selectVendors }) {
+export default function tableHeaderSelector({ setopenCreateVendorDrawer, values, vendorsColumns, t, setOpenConfirmDialog, selectVendors }) {
   const columns = vendorsColumns?.map((el) => {
+    if (el.field === 'number') {
+      return {
+        ...el,
+        headerName: '№',
+        colId: el.field,
+        cellRenderer: memo(({ rowIndex, api, ...p }) => {
+          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+
+          return (
+            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+              {absoluteIndex}
+            </Typography>
+          )
+        }),
+      }
+    }
     if (el.field === 'checkbox') {
       return {
         ...el,

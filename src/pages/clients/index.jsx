@@ -72,34 +72,11 @@ export default function ClientsPage() {
   const clientsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      offset: values?.offset || 0,
+      offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
-      category_id: values?.category_id,
-      producer: values?.producer,
-      supply_price_to: values?.supply_price_to,
-      retail_price_to: values?.retail_price_to,
-      region: values?.region_id,
-      supply_price_from: values?.supply_price_from,
-      retail_price_from: values?.retail_price_from,
-      isExpress: values?.isExpress,
     }
-  }, [
-    values?.offset,
-    values?.limit,
-    values?.search,
-    values?.producer,
-    values?.category_id,
-    values?.shop_id,
-    values?.supply_price_to,
-    values?.retail_price_to,
-    values?.supply_price_from,
-    values?.retail_price_from,
-    values?.region_id,
-    values?.isExpress,
-    regions,
-  ])
+  }, [values?.offset, values?.limit, values?.search, values?.shop_id])
   const {
     data: clientsList,
     isLoading: clientsListLoading,
@@ -230,6 +207,10 @@ export default function ClientsPage() {
             data={clientsList?.data?.data?.data || []}
             isDataLoading={isFetchingclientsList || clientsListLoading}
             offsetCount={offsetCount}
+            emptyTableText={{
+              title: 'Клиент не существует',
+              description: 'Если вы не нашли искомого Клиента, нажмите кнопку «Добавить нового» и введите необходимую информацию.',
+            }}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}

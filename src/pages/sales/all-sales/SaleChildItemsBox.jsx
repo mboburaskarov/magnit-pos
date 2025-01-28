@@ -32,10 +32,10 @@ function SaleChildItemsBox({ item }) {
               lineHeight={'24px'}
               color={'bunker.950'}
             >
-              {get(item, 'product.name')}
+              {get(item, 'name')}
             </Typography>
             <Typography mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
-              {get(item, 'product.barcode')}
+              {get(item, 'barcode')}
             </Typography>
           </Box>
         </Box>
@@ -50,15 +50,14 @@ function SaleChildItemsBox({ item }) {
       </Box>
       <Box borderRadius={'16px'} p={'16px'} minWidth={'160px'} bgcolor={'bg.10'}>
         <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'}>
-          Sotuv bonusi
+          Бонус
         </Typography>
         <Box mt={'4px'} display={'flex'} justifyContent={'space-between'} width={'100%'}>
           <Typography fontSize={'14px'} fontWeight={'500'} color={'purple.500'} lineHeight={'20px'}>
-            {get(item, 'discount_value')}
-            {get(item, 'discount_type') === 'percent' ? '%' : "so'm"}
+            {get(item, 'bonus_amount')} %{/* {get(item, 'discount_type') === 'percent' ? '%' : "so'm"} */}
           </Typography>
           <Typography fontSize={'14px'} fontWeight={'500'} color={'purple.500'} lineHeight={'20px'}>
-            {get(item, 'discount_amount')} so'm
+            {get(item, 'bonus_percent')} so'm
           </Typography>
         </Box>
       </Box>

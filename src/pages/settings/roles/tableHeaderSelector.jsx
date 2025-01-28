@@ -16,9 +16,25 @@ const SimpleText = ({ data, width = 'auto', rowIndex, type, withDevider, currenc
   )
 }
 
-export default function tableHeaderSelector({ productsColumns, t, selectVendors, setOpenConfirmDialog }) {
+export default function tableHeaderSelector({ productsColumns, t, selectVendors, values, setOpenConfirmDialog }) {
   const navigate = useNavigate()
   const columns = productsColumns?.map((el) => {
+    if (el.field === 'number') {
+      return {
+        ...el,
+        headerName: '№',
+        colId: el.field,
+        cellRenderer: memo(({ rowIndex, api, ...p }) => {
+          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+
+          return (
+            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+              {absoluteIndex}
+            </Typography>
+          )
+        }),
+      }
+    }
     if (el.field === 'checkbox') {
       return {
         ...el,

@@ -17,6 +17,7 @@ import { requests } from '../../../../utils/requests'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
+import LazySelect from '../../../../components/Select/LazySelect'
 
 export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
@@ -99,7 +100,7 @@ export default function FilterMenu({ open, setOpen }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <SelectSimple
+            {/* <SelectSimple
               fullWidth
               id='sto'
               name='store_id'
@@ -109,6 +110,26 @@ export default function FilterMenu({ open, setOpen }) {
               placeholder={t('input.store.placeholder')}
               getOptionLabel={(el) => el.name}
               options={shopList?.data?.data?.data}
+            /> */}
+            <LazySelect
+              slug='users'
+              boxStyle={{ width: '100%' }}
+              id='store'
+              name='store'
+              isMulti={false}
+              placeholder={'Выберите клиент'}
+              minWidth='auto'
+              isClearable={false}
+              label={t('input.store.label')}
+              request={requests.getAllShops}
+              filters={{ limit: 10 }}
+              control={control}
+              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+              // uncontrolled
+              getOptionLabel={(option) => {
+                return <Typography color='grey.600'>{option.name}</Typography>
+              }}
+              filterOption={() => true}
             />
             <InputDateRangePicker
               id='import-date'

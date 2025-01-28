@@ -71,7 +71,7 @@ export default function RolesPage() {
   const rolesListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      offset: values?.offset || 0,
+      offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
     }
   }, [values?.offset, values?.limit, values?.search])
@@ -212,6 +212,10 @@ export default function RolesPage() {
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
+            }}
+            emptyTableText={{
+              title: 'Роли недоступен',
+              description: 'Если вы не можете найти искомый Роли, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}

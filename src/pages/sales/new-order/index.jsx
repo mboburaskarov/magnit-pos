@@ -344,7 +344,7 @@ function NewSale() {
   useHotkeys('t', () => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys('d', () => setIsOpenDraft(true), {
+  useHotkeys('d', () => size(get(cartItemsList, 'data.data.data')) !== 0 && setIsOpenDraft(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
   useHotkeys('a', () => setIsOpenChangeShift(true), {
@@ -356,7 +356,7 @@ function NewSale() {
   useHotkeys('x', () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys('q', () => setIsCreateOpenDraft(true), {
+  useHotkeys('q', () => size(get(cartItemsList, 'data.data.data')) !== 0 && setIsCreateOpenDraft(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
 

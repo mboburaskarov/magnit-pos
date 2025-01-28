@@ -99,7 +99,7 @@ function SaleChildDrawer({ open, setOpen }) {
           </Box>
         </Box>
         <Box padding={'16px 0'}>
-          {get(saleDetailsList, 'data.data.cart_items', []).map((el) => (
+          {get(saleDetailsList, 'data.data.products', [])?.map((el) => (
             <SaleChildItemsBox key={el.id} item={el} />
           ))}
         </Box>
@@ -110,7 +110,7 @@ function SaleChildDrawer({ open, setOpen }) {
           <Box display={'flex'} justifyContent={'space-between'}>
             <Box width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
               <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                Yaratilgan sana
+                Дата создания
               </Typography>
               <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
                 {dayjs(get(saleDetailsList, 'data.data.created_at')).format('DD.MM.YYYY | HH:mm:ss')}
@@ -128,7 +128,7 @@ function SaleChildDrawer({ open, setOpen }) {
           <Box display={'flex'} justifyContent={'space-between'}>
             <Box width={'50%'} mt={'16px'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
               <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                Yaratilgan sana
+                Дата создания
               </Typography>
               <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
                 {dayjs(get(saleDetailsList, 'data.data.created_at')).format('DD.MM.YYYY | HH:mm:ss')}
@@ -141,7 +141,7 @@ function SaleChildDrawer({ open, setOpen }) {
             {t('pay')}
           </Typography>
           <Grid container display={'flex'} justifyContent={'space-between'}>
-            {get(saleDetailsList, 'data.data.sale_payments', []).map((pays) => (
+            {get(saleDetailsList, 'data.data.sale_payments', [])?.map((pays) => (
               <Grid item xs={12} sm={6} md={4} width={'100%'} padding={'4px'}>
                 <Box bgcolor={'bg.10'} borderRadius={'16px'} padding={'12px 16px'}>
                   <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>

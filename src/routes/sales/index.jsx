@@ -3,10 +3,12 @@ import AllSalesPage from '../../pages/sales/all-sales'
 import CardShiftDetails from '../../pages/sales/card-shift-details'
 import NewCashRegister from '../../pages/sales/create-cash-register'
 import NewSale from '../../pages/sales/new-order'
+import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 
 const salesRoutes = {
   path: 'sales',
-  element: <LayoutWithNavbar />,
+  element: <LayoutWithHeaderNavbar hasHeader={false} />,
+
   children: [
     {
       path: 'create',

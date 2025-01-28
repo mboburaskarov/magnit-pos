@@ -39,12 +39,12 @@ function SaleDrawer({ open, setOpen }) {
           },
         }}
       >
-        <Button fullWidth color='secondary' variant='contained'>
+        {/* <Button fullWidth color='secondary' variant='contained'>
           <WithdrawIcon />
           <Typography fontSize={16} ml={'12px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
             {t('print')}
           </Typography>
-        </Button>
+        </Button> */}
       </Box>
     </Drawer>
   )

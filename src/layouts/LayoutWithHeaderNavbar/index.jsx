@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function DashboardLayout() {
+export default function DashboardLayout({ hasHeader = true }) {
   const classes = useStyles()
 
   return (
@@ -41,7 +41,7 @@ export default function DashboardLayout() {
       <div className={classes.root}>
         <NavBar />
         <div className={classes.headerWrapper}>
-          <LayoutHeader />
+          {hasHeader ? <LayoutHeader /> : <></>}
           <div className={classes.wrapper}>
             <div className={classes.contentContainer}>
               <div className={classes.content}>

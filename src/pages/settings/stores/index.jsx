@@ -64,7 +64,7 @@ export default function ProductsPage() {
   const storesListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      offset: values?.offset || 0,
+      offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
     }
   }, [values?.offset, values?.limit, values?.search])
@@ -154,6 +154,10 @@ export default function ProductsPage() {
             id='products-main-table'
             tableSettings
             columns={tableColumns}
+            emptyTableText={{
+              title: 'Магазины недоступен',
+              description: 'Если вы не можете найти искомый Магазины, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+            }}
             data={storesList?.data?.data?.data || []}
             isDataLoading={isFetchingstoresList || storesListLoading}
             offsetCount={offsetCount}

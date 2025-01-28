@@ -56,7 +56,7 @@ export default function DashboarPage() {
     return {
       orderNumber: values?.search?.replaceAll('/', '\\'),
       limit: values?.limit || 10,
-      offset: values?.offset || 0,
+      offset: values?.search ? 0 : values?.offset || 0,
       shopId: shop,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       userId: client,
@@ -202,6 +202,10 @@ export default function DashboarPage() {
             }}
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             status={status}
+            emptyTableText={{
+              title: 'Информация недоступна',
+              description: 'Если вы не можете найти искомую информацию, нажмите кнопку «Добавить новую» и введите необходимую информацию.',
+            }}
           />
         </Box>
       </Box>

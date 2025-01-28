@@ -79,7 +79,7 @@ export default function CashBoxsPage() {
     return {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
-      search: values?.search,
+      search: values?.search ? 0 : values?.search,
       store_id: values?.store_id,
     }
   }, [values?.offset, values?.limit, values?.search, values?.store_id])
@@ -260,6 +260,10 @@ export default function CashBoxsPage() {
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
+            }}
+            emptyTableText={{
+              title: 'Касса недоступен',
+              description: 'Если вы не можете найти искомый Касса, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}

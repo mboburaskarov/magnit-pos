@@ -102,7 +102,7 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
                     Аккаунт
                   </Typography>
                 </Box>
-                <CloseIcon color={'#111217'} onClick={() => closeDrawer} />
+                <CloseIcon color={'#111217'} onClick={closeDrawer} />
                 {/* <IconButton onClick={closeDrawer}>
                   <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
                     <path d='M14 2.00005L2 14M1.99995 2L13.9999 14' stroke='#111217' strokeWidth='2.5' strokeLinecap='round' />

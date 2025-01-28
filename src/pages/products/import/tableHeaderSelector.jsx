@@ -10,7 +10,8 @@ import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import palette from '../../../../src/assets/theme/mui.config'
-
+import { useQueryParams } from '../../../hooks/useQueryParams'
+import * as qs from 'qs'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography
@@ -71,6 +72,9 @@ const Image = ({ data, rowIndex, setImages }) => {
 }
 
 export default function tableHeaderSelector({ importsColumns, t }) {
+  const { values } = useQueryParams()
+  console.log(values)
+
   const columns = importsColumns?.map((el) => {
     if (el.field === 'public_id') {
       return {
@@ -86,7 +90,13 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         headerName: 'Номер импорта',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Link to={`/products/imports/${p.data.id}`}>
+          <Link
+            to={`/products/imports/${p.data.id}?${qs.stringify({
+              previusLimit: values?.limit,
+              previusOffset: values?.offset,
+            })}
+        `}
+          >
             <Typography fontWeight={'600'} color={'orange.500'} fontSize={'16px'} lineHeight={'24px'}>
               {p.data.document_number}
             </Typography>

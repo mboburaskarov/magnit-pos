@@ -107,7 +107,11 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
           <CloseIcon color={theme.palette.black} onClick={() => closeDrawer(false)} />
         </Box>
         <FormProvider {...methods}>
-          <form id='create-client-form-mini' onSubmit={methods.handleSubmit(onSubmit, onError)}>
+          <form
+            id='create-client-form-mini'
+            style={{ display: 'flex', flexDirection: 'column', height: 'calc(100% - 80px)', justifyContent: 'space-between' }}
+            onSubmit={methods.handleSubmit(onSubmit, onError)}
+          >
             <Box
               sx={{
                 padding: '0 24px',
@@ -128,7 +132,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
                 width: '100%',
                 display: 'flex',
                 justifyContent: 'end',
-                position: 'absolute',
+                // position: 'absolute',
                 bottom: 0,
               }}
             >

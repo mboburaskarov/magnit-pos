@@ -8,6 +8,7 @@ import thousandDivider from '../../../utils/thousandDivider'
 import { products_statuses } from '../../assets/data/products-statuses'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
 import EditIcon from '../../assets/icons/EditIcon'
+import { formatDate } from '../../../utils/validateDate'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -87,7 +88,7 @@ export default function tableHeaderSelector({ clientsColumns, selectClientsFunc,
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['sale_date']).format('DD.MM.YYYY')}</Typography>
+            <Typography>{formatDate(p.data?.sale_date, 'DD.MM.YYYY')}</Typography>
           </Box>
         )),
       }
@@ -99,7 +100,7 @@ export default function tableHeaderSelector({ clientsColumns, selectClientsFunc,
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['birthday']).format('DD.MM.YYYY')}</Typography>
+            <Typography>{formatDate(p.data?.birthday, 'DD.MM.YYYY')}</Typography>
           </Box>
         )),
       }
@@ -109,7 +110,11 @@ export default function tableHeaderSelector({ clientsColumns, selectClientsFunc,
         ...el,
         headerName: 'Дата регистрации',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='created_at' />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{formatDate(p.data?.created_at, 'DD.MM.YYYY')}</Typography>
+          </Box>
+        )),
       }
     }
     if (el.field === 'store') {

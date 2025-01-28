@@ -119,7 +119,7 @@ const InputSearch = ({
       return
     }
 
-    const searchParams = qs.stringify({ ...values, offset: 0, search: debouncedValue || undefined }, { addQueryPrefix: true })
+    const searchParams = qs.stringify({ ...values, search: debouncedValue || undefined }, { addQueryPrefix: true })
     navigate(`${location.pathname}${searchParams}`)
   }, [debouncedValue])
 

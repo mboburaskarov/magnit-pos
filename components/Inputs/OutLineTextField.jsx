@@ -26,6 +26,7 @@ const OutLineTextField = ({
   multiline,
   centerMode,
   onBoxClick = () => {},
+  onBlur = () => {},
   bgcolor,
   autoComplete,
   ...props
@@ -85,6 +86,7 @@ const OutLineTextField = ({
           onChange: (e) => setValue(e.target.value),
         })}
         multiline={multiline}
+        onBlur={onBlur}
         rows={4}
         onKeyDown={handleKeyDown}
         autoFocus={autoFocus}

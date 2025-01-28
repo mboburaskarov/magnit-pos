@@ -10,6 +10,7 @@ import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import palette from '../../../../src/assets/theme/mui.config'
+import InputQuantity from '../../../../components/Inputs/InputQuantity'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -144,12 +145,22 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         headerName: 'Заказ итог',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <TextField
-            id={`net_amount_${p?.data?.store_id + p?.data?.product_id}`}
+          <InputQuantity
+            id={`store_product.${p.data.id}.suggested_order`}
+            name={`store_product.${p.data.id}.suggested_order`}
+            fullWidth
+            required
             defaultValue={p?.data?.suggested_order}
-            name={`adjusted_order_${p?.data?.id}`}
             type='number'
+            // defaultValue={get(p, 'data.small_quantity')}
+            disabled={false}
           />
+          // <TextField
+          //   id={`net_amount_${p?.data?.store_id + p?.data?.product_id}`}
+          //   defaultValue={p?.data?.suggested_order}
+          //   name={`adjusted_order_${p?.data?.id}`}
+          //   type='number'
+          // />
         )),
       }
     }

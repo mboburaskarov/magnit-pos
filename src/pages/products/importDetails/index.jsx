@@ -24,6 +24,7 @@ import ImportWithIcon from '../../../assets/icons/ImportWithIcon'
 import ImportWithoutIcon from '../../../assets/icons/ImportWithoutIcon'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
+import * as qs from 'qs'
 
 export default function ImportDetailsPage() {
   const theme = useTheme()
@@ -63,7 +64,7 @@ export default function ImportDetailsPage() {
     return {
       import_id: id,
       limit: values?.limit || 10,
-      offset: values?.offset || 0,
+      offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       received_amount_to: values?.received_amount_to,
       received_amount_from: values?.received_amount_from,
@@ -109,7 +110,15 @@ export default function ImportDetailsPage() {
           buttonText='Детали импорта'
           backIcon
           noActions
-          backHref={get(values, 'tab') === 'details' ? '/products/all' : '/products/import'}
+          // backButtonClick={() => (get(values, 'tab') === 'details' ? '/products/all' : '/products/import')}
+          backHref={
+            get(values, 'tab') === 'details'
+              ? '/products/all'
+              : `/products/import?${qs.stringify({
+                  limit: values?.previusLimit,
+                  offset: values?.previusOffset,
+                })}`
+          }
           text={'Детали импорта'}
           checkAccessId={'product-create'}
         />
@@ -199,6 +208,10 @@ export default function ImportDetailsPage() {
               offsetCount={offsetCount}
               updaterAction={(newData) => {
                 if (newData) dispatch(updateTableHeader(newData))
+              }}
+              emptyTableText={{
+                title: 'Импорт недоступен',
+                description: 'Если вы не можете найти искомый Импорт, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
               }}
               fullInfoAboutCurrentPage
               resetTable={() => dispatch(resetTableHeader({ refetch }))}

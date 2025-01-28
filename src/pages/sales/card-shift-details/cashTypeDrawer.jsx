@@ -85,7 +85,7 @@ function CashTypeDrawer({ open, setOpen }) {
       <Box>
         <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
           <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
-            Naqt
+            Наличные
           </Typography>
           <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
         </Box>

@@ -24,25 +24,27 @@ import { error } from '../../../utils/toast'
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
-  const [hasChange, sethasChange] = useState(false)
   const [uniType, setUniType] = useState('piece')
   const [storeSearchText, setStoreSearchText] = useState('')
   const { columns, loading } = useSelector((state) => state.storesListTableColumnsForProduct)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
-  console.log(uniType)
 
   const { t } = useTranslation()
   const [images, setImages] = useState([])
+
   const applyAllFunc = (id, type) => {
     if (type === 'pack_quantity') {
       const quantity = getValues(`store_product.${id}.pack_quantity`)
       get(storeList, 'data.data.ids', []).map((id) => {
+        console.log(getValues(`store_product.${id}.small_quantity`))
         setValue(`store_product.${id}.pack_quantity`, quantity)
       })
     } else {
       const quantity = getValues(`store_product.${id}.small_quantity`)
       get(storeList, 'data.data.ids', []).map((id) => {
+        console.log(getValues(`store_product.${id}.pack_quantity`))
+
         setValue(`store_product.${id}.small_quantity`, quantity)
       })
     }
@@ -76,85 +78,55 @@ export default function ProductBody({ productData = null }) {
       error('Ошибка при генерировать штрих-код!')
     },
   })
+
+  const changeAmount = (inputName, value) => {
+    const supply_price = Number(getValues('supply_price'))
+    const vat = Number(getValues('vat'))
+    const markup = Number(getValues('markup'))
+    const retail_price = Number(getValues('retail_price'))
+    const bonus_percent = Number(getValues('bonus_percent'))
+    const bonus_amount = Number(getValues('bonus_amount'))
+    const vat_price = Number(getValues('vat_price'))
+    if (inputName === 'supply_price' || inputName === 'vat') {
+      if (supply_price >= 0 && vat >= 0) {
+        setValue('retail_price', (supply_price / 100) * (vat + markup) + supply_price)
+        setValue('vat_price', (supply_price / 100) * vat)
+      }
+    }
+    if (inputName === 'vat_price') {
+      if (supply_price >= 0 && vat_price >= 0) {
+        setValue('vat', (vat_price * 100) / supply_price)
+      }
+    }
+    if (inputName === 'markup') {
+      if (supply_price >= 0 && vat >= 0) {
+        setValue('retail_price', (supply_price / 100) * (vat + markup) + supply_price)
+      }
+    }
+    if (inputName === 'retail_price' || inputName === 'bonus_percent') {
+      if (supply_price >= 0 && vat >= 0) {
+        setValue('markup', ((retail_price - supply_price) * 100) / supply_price - vat)
+      }
+
+      if (retail_price >= 0) {
+        setValue('bonus_amount', (retail_price * bonus_percent) / 100)
+      }
+    }
+
+    if (inputName === 'bonus_amount') {
+      if (retail_price >= 0) {
+        setValue('bonus_percent', (bonus_amount * 100) / retail_price)
+      }
+    }
+  }
   useEffect(() => {
     refetchShopList().then(({ data }) => {
       get(data, 'data.data.data', []).map((store) => {
-        setValue(`store_product.${get(store, 'id')}.pack_quantity`, get(store, 'pack_quantity', 0))
-        setValue(`store_product.${get(store, 'id')}.small_quantity`, get(store, 'small_quantity', 0))
+        // setValue(`store_product.${get(store, 'id')}.pack_quantity`, get(store, 'pack_quantity', 0))
+        // setValue(`store_product.${get(store, 'id')}.small_quantity`, get(store, 'small_quantity', 0))
       })
     })
   }, [values.limitStore, values.offsetStore])
-
-  useEffect(() => {
-    const supply_price = Number(getValues('supply_price'))
-    const vat = Number(getValues('vat'))
-    const markup = Number(getValues('markup'))
-
-    if (supply_price >= 0 && vat >= 0) {
-      setValue('retail_price', (supply_price / 100) * (vat + markup) + supply_price)
-      setValue('vat_price', (supply_price / 100) * vat)
-    }
-  }, [watch('supply_price'), watch('vat')])
-
-  useEffect(() => {
-    if (hasChange) return sethasChange(false)
-
-    const supply_price = Number(getValues('supply_price'))
-    const vat = Number(getValues('vat'))
-    const markup = Number(getValues('markup'))
-    if (supply_price >= 0 && vat >= 0) {
-      sethasChange(true)
-      setValue('retail_price', (supply_price / 100) * (vat + markup) + supply_price)
-    }
-  }, [watch('markup')])
-
-  useEffect(() => {
-    if (hasChange) return sethasChange(false)
-
-    const supply_price = Number(getValues('supply_price'))
-    const vat = Number(getValues('vat'))
-    const retail_price = Number(getValues('retail_price'))
-    console.log('fr')
-    const markup = Number(getValues('markup'))
-
-    // if ((supply_price * vat) / 100 + supply_price > retail_price) {
-    //   error('Эта сумма очень маленькая')
-    //   return
-    // }
-    if (
-      supply_price >= 0 &&
-      vat >= 0
-      // &&((retail_price - supply_price) * 100) / supply_price - vat >= 0
-    ) {
-      sethasChange(true)
-      setValue('markup', ((retail_price - supply_price) * 100) / supply_price - vat)
-    }
-    //  else {
-    //   error('Эта сумма очень маленькая')
-    //   sethasChange(true)
-
-    //   setValue('retail_price', (supply_price / 100) * (vat + markup) + supply_price)
-    // }
-  }, [watch('retail_price')])
-
-  useEffect(() => {
-    // if (hasChange) return sethasChange(false)
-    console.log('frdd')
-    const supply_price = Number(getValues('supply_price'))
-    const vat = Number(getValues('vat'))
-
-    const retail_price = Number(getValues('retail_price'))
-    const bonus_percent = Number(getValues('bonus_percent'))
-
-    if (retail_price >= 0) {
-      setValue('bonus_amount', (retail_price * bonus_percent) / 100)
-      console.log((bonus_percent * 100) / retail_price, bonus_percent, retail_price)
-
-      // sethasChange(true)
-    }
-  }, [watch('bonus_percent'), watch('retail_price')])
-
-  console.log(getValues('bonus_amount'))
 
   useEffect(() => {
     setUniType(get(getValues('product_unit'), 'value', 'piece'))
@@ -323,6 +295,7 @@ export default function ProductBody({ productData = null }) {
               endAdornmentText={'UZS'}
               required
               type='number'
+              onBlur={(e) => changeAmount('supply_price', e)}
               fullWidth
               borderRadius={'40px'}
               InputProps={{
@@ -336,6 +309,7 @@ export default function ProductBody({ productData = null }) {
             <OutLineTextField
               endAdornmentText={'%'}
               required
+              onBlur={(e) => changeAmount('markup', e)}
               type='number'
               fullWidth
               InputProps={{
@@ -351,6 +325,7 @@ export default function ProductBody({ productData = null }) {
               endAdornmentText={'UZS'}
               required
               type='number'
+              onBlur={(e) => changeAmount('retail_price', e)}
               InputProps={{
                 onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
                 onBlur: (e) => console.log(e),
@@ -369,6 +344,7 @@ export default function ProductBody({ productData = null }) {
               type='number'
               fullWidth
               borderRadius={'40px'}
+              onBlur={(e) => changeAmount('vat', e)}
               InputProps={{
                 onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
               }}
@@ -385,6 +361,7 @@ export default function ProductBody({ productData = null }) {
               type='number'
               fullWidth
               borderRadius={'40px'}
+              onBlur={(e) => changeAmount('vat_price', e)}
               InputProps={{
                 onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
               }}
@@ -403,6 +380,7 @@ export default function ProductBody({ productData = null }) {
               InputProps={{
                 onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
               }}
+              onBlur={(e) => changeAmount('bonus_percent', e)}
               name='bonus_percent'
               label={'Бонусный процент'}
               placeholder={t('create_new_product.vat_price.placeholder')}
@@ -414,6 +392,7 @@ export default function ProductBody({ productData = null }) {
               required
               type='number'
               fullWidth
+              onBlur={(e) => changeAmount('bonus_amount', e)}
               borderRadius={'40px'}
               InputProps={{
                 onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
@@ -438,7 +417,7 @@ export default function ProductBody({ productData = null }) {
             onChange={({ target }) => setStoreSearchText(get(target, 'value'))}
             id='producrs-search'
             name='search'
-            placeholder={t('input.search.product.multi')}
+            placeholder={t('input.search.product')}
           />
         </Box>
         <Box mt={'24px'}>

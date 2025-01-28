@@ -64,7 +64,7 @@ export default function AllSalesPage() {
   const salesListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      offset: values?.offset || 0,
+      offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
@@ -124,7 +124,7 @@ export default function AllSalesPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product')} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>
@@ -179,6 +179,10 @@ export default function AllSalesPage() {
               if (newData) dispatch(updateTableHeader(newData))
             }}
             fullInfoAboutCurrentPage
+            emptyTableText={{
+              title: 'Продажи недоступен',
+              description: 'Если вы не можете найти искомый Продажи, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+            }}
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             isRefreshing={loading || isFetchingsalesList || salesListLoading}
           />
