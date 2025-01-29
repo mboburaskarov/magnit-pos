@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Box, Tooltip, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
 
 const useStyles = makeStyles((theme) => ({
   inner: {
@@ -105,7 +106,7 @@ export default function SwitchSlider({ name, options, onChange, defaultValue, no
                       color={value === option.value ? 'orange.500' : 'dark.500'}
                       id={value + index}
                     >
-                      {option.title}
+                      {option.title} {option.count >= 0 ? `(${get(option, 'count', 0)})` : ''}
                     </Typography>
                   </Box>
                 </label>

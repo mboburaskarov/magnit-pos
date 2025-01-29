@@ -31,8 +31,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   drawerHeader: {
-    height: '88px',
-    padding: '16px 24px',
+    padding: '40px 40px 24px 40px',
     borderBottom: `1px solid ${theme.palette.bunker[100]}`,
   },
   rightArrowIcon: {
@@ -120,8 +119,8 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
           />
         </Box>
 
-        <Box padding={'24px 20px 0'}>
-          <Box alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
+        <Box padding={'0'}>
+          <Box p={'24px 40px 0'} alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
             <Typography fontSize={20} lineHeight={'32px'} fontWeight={600}>
               {t('cart')}
             </Typography>
@@ -136,12 +135,12 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
               </Typography>
             </Box>
           </Box>
-          <Box padding={'16px 0'}>
+          <Box padding={'24px 40px'}>
             {get(darftChildList, 'data.data.cart_items', []).map((el) => (
               <DraftChildItemsBox key={el.id} item={el} />
             ))}
           </Box>
-          <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
+          <Box p={'24px 40px'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
             <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
               {t('features')}
             </Typography>
@@ -171,6 +170,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
               width: 'calc(100wh - 40px)',
               right: '20px',
               left: '20px',
+              padding: '20px 20px',
               '& .MuiButtonBase-root': {
                 height: 48,
               },

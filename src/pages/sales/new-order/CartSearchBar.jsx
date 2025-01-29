@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, ListItem, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
 import React, { useMemo, useState } from 'react'
@@ -17,6 +17,7 @@ import AssigneMeButton from './AssigneMeButton'
 import SerchedItem from './SerchedItem'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { error } from '../../../../utils/toast'
+import ArrowDown from '../../../assets/icons/ArrowDown'
 const useStyles = makeStyles((theme) => ({
   avatar: {
     width: 30,
@@ -115,6 +116,60 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 100,
     cursor: 'pointer',
   },
+  currentUser: {
+    cursor: 'pointer',
+    maxWidth: '200px',
+    marginTop: 'auto !important',
+    padding: '4px 12px 4px 4px !important',
+    justifyContent: 'space-between',
+    backgroundColor: theme.palette.gray[50],
+    borderRadius: '32px !important',
+    '&:hover': {
+      backgroundColor: theme.palette.bunker[100],
+    },
+  },
+  avatarPlaceholder: {
+    position: 'relative',
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    marginRight: 12,
+    fontWeight: 600,
+    fontSize: 16,
+    backgroundColor: theme.palette.green[600],
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    color: '#fff',
+    transition: '0.3s',
+    '& img': {
+      width: '100%',
+    },
+  },
+  shopname: {
+    margin: 0,
+    lineHeight: '20px',
+    fontWeight: 600,
+    fontFamily: "'Gilroy', sans-serif",
+    color: theme.palette.bunker[400],
+    fontSize: 14,
+    transition: 'all .2s',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    textAlign: 'left',
+  },
+  username: {
+    width: '100%',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    fontWeight: '600',
+    lineHeight: '24px',
+    fontSize: '16px',
+    color: theme.palette.bunker[950],
+  },
 }))
 function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChangeShift, cashBoxDetails, showOverlay, setShowOverlay }) {
   const [searchTearm, setSearchTerm] = useState('')
@@ -186,7 +241,26 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChange
               })
             }
           />
-          <Box position={'relative'} minWidth={'240px'}>
+          <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
+            <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
+              <div className={classes.avatarPlaceholder}>
+                <img src={get(userData, 'photo')} />
+              </div>
+
+              <Box maxWidth='73%'>
+                <Typography id='user-username' className={classes.username}>
+                  {get(userData, 'first_name')}
+                </Typography>
+                <p id='user-shopname' className={`${classes.shopname} shopname`}>
+                  {get(userData, 'store.name')}
+                </p>
+              </Box>
+            </Box>
+            {/* <Box display={'flex'} alignItems={'center'}>
+              <ArrowDown />
+            </Box> */}
+          </ListItem>
+          {/* <Box position={'relative'} minWidth={'240px'}>
             <SelectSimple
               id='operator'
               name='operator'
@@ -203,13 +277,12 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChange
                 <Typography maxHeight={48} display='inline-flex' color='gray.600'>
                   <Box px={0.5} width={32}>
                     <UserOutlineIcon />
-                    {/* <img src={userData?.photo} alt={userData?.first_name} className={classes.avatar} /> */}
                   </Box>
                 </Typography>
               )}
             />
             <AssigneMeButton classes={classes} userData={userData} isSelected={true} />
-          </Box>
+          </Box> */}
           <ButtonWithPopup
             id={'ff'}
             noArrow

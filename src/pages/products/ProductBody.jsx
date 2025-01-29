@@ -21,15 +21,17 @@ import productStoresTableHeaderSelector from './productStoresTableHeaderSelector
 import InputSearch from '../../../components/Inputs/InputSearch'
 import { error } from '../../../utils/toast'
 import MeasurementValueDialog from './MeasurementValueDialog'
+import useDebouncedValue from '../../hooks/useDebouncedValue'
 
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
   const [uniType, setUniType] = useState('piece')
   const [openChangeQuantity, setOpenChangeQuantity] = useState(false)
-  const [storeSearchText, setStoreSearchText] = useState('')
+
   const { columns, loading } = useSelector((state) => state.storesListTableColumnsForProduct)
   const { values } = useQueryParams()
+  const [storeSearchText, setStoreSearchText, debouncedValue] = useDebouncedValue(values?.search || '', 200)
   const [offsetCount, setOffsetCount] = useState(0)
 
   const { t } = useTranslation()
@@ -67,7 +69,7 @@ export default function ProductBody({ productData = null }) {
       offset: values?.offsetStore || 0,
       search: storeSearchText || '',
     }
-  }, [values?.limitStore, values?.offset, values?.offsetStore])
+  }, [values?.limitStore, storeSearchText, values?.offset, values?.offsetStore])
 
   const { data: storeList, refetch: refetchShopList } = useQuery(['shopList', storeHistoryFilter], () => requests.getAllStores(storeHistoryFilter))
 

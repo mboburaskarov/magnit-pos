@@ -25,8 +25,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   drawerHeader: {
-    height: '80px',
-    padding: '16px 24px',
+    padding: '40px 40px 24px 40px',
     borderBottom: `1px solid ${theme.palette.bunker[100]}`,
   },
 }))
@@ -65,7 +64,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
             </Typography>
             <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
           </Box>
-          <Box display={'flex'} padding={'24px'}>
+          <Box display={'flex'} py={'24px'} px={'40px'}>
             <InputSearch fullWidth uncontrolled placeholder={'Поиск: ID, Клиент, Продавец'} />
             <Box minWidth={113} ml={'16px'}>
               <Button
@@ -94,7 +93,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
               </Button>
             </Box>
           </Box>
-          <Box padding={'0 20px'}>
+          <Box py={'0px'} px={'40px'}>
             {draftListData.map((item, index) => {
               return <DraftParentItemsBox key={index} item={item} setIsOpenChild={setIsOpenChild} />
             })}

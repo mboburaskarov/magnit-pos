@@ -105,7 +105,18 @@ function CardShiftDetails() {
           </Button>
         </Box>
 
-        <Box sx={{ display: 'flex', pb: '20px', flexDirection: 'column', minHeight: '100vh', justifyContent: 'space-between' }}>
+        <Box
+          sx={{
+            '& .ag-center-cols-container': {
+              width: '100% !important',
+            },
+            display: 'flex',
+            pb: '20px',
+            flexDirection: 'column',
+            minHeight: '100vh',
+            justifyContent: 'space-between',
+          }}
+        >
           <Box padding={'20px'}>
             <AgGridTable
               id='products-main-table'

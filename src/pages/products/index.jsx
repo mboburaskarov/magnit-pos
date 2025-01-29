@@ -178,13 +178,13 @@ export default function ProductsPage() {
             defaultValue='ALL'
             onChange={(e) => setAppType(e)}
             options={[
-              { title: t('switch.title.all'), value: 'ALL' },
-              { title: t('switch.title.active'), value: 'active' },
-              { title: t('switch.title.inactive'), value: 'inactive' },
-              { title: t('switch.title.less_amount'), value: 'low-stock' },
-              { title: t('switch.title.empty'), value: 'zero-stock' },
-              { title: t('switch.title.less_date'), value: 'imminent' },
-              { title: t('switch.title.outofdate'), value: 'expired' },
+              { title: t('switch.title.all'), value: 'ALL', count: 23 },
+              { title: t('switch.title.active'), value: 'active', count: 0 },
+              { title: t('switch.title.inactive'), value: 'inactive', count: 0 },
+              { title: t('switch.title.less_amount'), value: 'low-stock', count: 0 },
+              { title: t('switch.title.empty'), value: 'zero-stock', count: 0 },
+              { title: t('switch.title.less_date'), value: 'imminent', count: 0 },
+              { title: t('switch.title.outofdate'), value: 'expired', count: 0 },
             ]}
           />
         </Box>
