@@ -54,6 +54,8 @@ export default function ImportPage() {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: values?.search ? 0 : values?.search,
+      offset: values?.offset || 0,
+
       store_id: values?.store_id,
       start_date: values?.start_date,
       end_date: values?.end_date,
@@ -86,6 +88,7 @@ export default function ImportPage() {
 
   useEffect(() => {
     const count = importsList?.data?.data?._meta?.total_count
+    console.log(count, values)
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)

@@ -50,7 +50,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
     if (el.field === 'document') {
       return {
         ...el,
-        headerName: 'Документ',
+        headerName: 'Kасса',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='cash_box_name' />),
       }
@@ -223,7 +223,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH.mm.ss')}</Typography>
+            <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
           </Box>
         )),
       }
@@ -285,7 +285,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
                   id={p.data.customer?._id}
                   style={{ whiteSpace: 'pre-line', color: 'bunker.950', marginLeft: '8px', fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}
                 >
-                  {get(p, 'data.customer?.first_name', 'Unknown')}
+                  {get(p, 'data.customer.first_name', 'Unknown')}
                 </Typography>
               </a>
             </Box>

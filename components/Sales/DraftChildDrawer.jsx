@@ -107,7 +107,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
                 {t('draft')} {get(darftChildList, 'data.data.data[0].draft_number')}
               </Typography>
               <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
-                2332 323 so'm
+                {get(darftChildList, 'data.data.totalPrice', 0)} so'm
               </Typography>
             </Box>
           </Box>

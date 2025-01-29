@@ -93,7 +93,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               slug='users'
               boxStyle={{ width: '100%' }}
               id='store'
-              name='store'
+              name='store_id'
               isMulti={false}
               placeholder={'Выберите клиент'}
               minWidth='auto'

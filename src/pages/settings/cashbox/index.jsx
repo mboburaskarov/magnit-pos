@@ -78,8 +78,8 @@ export default function CashBoxsPage() {
   const cashboxListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      offset: values?.offset || 0,
-      search: values?.search ? 0 : values?.search,
+      search: values?.search,
+      offset: values?.search ? 0 : values?.offset || 0,
       store_id: values?.store_id,
     }
   }, [values?.offset, values?.limit, values?.search, values?.store_id])

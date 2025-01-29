@@ -132,6 +132,7 @@ const AgGridSimpleTable = ({
         },
         { addQueryPrefix: true }
       )
+
       navigate(`${baseUrl}${offsetLimitParams}`)
     }
   }, [offsetIndex, offsetSize, data, location.pathname, status])

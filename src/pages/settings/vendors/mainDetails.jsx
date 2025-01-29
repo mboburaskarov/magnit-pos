@@ -140,7 +140,7 @@ export default function MainDetails({ clientData, openDrawer }) {
           <LazySelect
             slug='users'
             id='store'
-            name='store'
+            name='store_id'
             isMulti={false}
             placeholder={'Выберите клиент'}
             minWidth='auto'

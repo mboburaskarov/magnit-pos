@@ -1,5 +1,5 @@
 import { Box, Button } from '@mui/material'
-import { get } from 'lodash'
+import { get, method } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -20,11 +20,13 @@ import { useQueryParams } from '../../hooks/useQueryParams'
 import productStoresTableHeaderSelector from './productStoresTableHeaderSelector'
 import InputSearch from '../../../components/Inputs/InputSearch'
 import { error } from '../../../utils/toast'
+import MeasurementValueDialog from './MeasurementValueDialog'
 
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
   const [uniType, setUniType] = useState('piece')
+  const [openChangeQuantity, setOpenChangeQuantity] = useState(false)
   const [storeSearchText, setStoreSearchText] = useState('')
   const { columns, loading } = useSelector((state) => state.storesListTableColumnsForProduct)
   const { values } = useQueryParams()
@@ -50,7 +52,9 @@ export default function ProductBody({ productData = null }) {
     productsColumns: columns,
     t,
     values,
+    productData: productData,
     register,
+    setOpenChangeQuantity,
     register,
     setValues: setValue,
     getValues: getValues,
@@ -402,7 +406,7 @@ export default function ProductBody({ productData = null }) {
           </Box>
         </Box>
         <Box height={'56px'} />
-
+        <MeasurementValueDialog setValue={setValue} open={openChangeQuantity} setOpen={setOpenChangeQuantity} />
         <SectionTitle noWrap withLine>
           {t('create_new_product.amount_section.label')}
         </SectionTitle>

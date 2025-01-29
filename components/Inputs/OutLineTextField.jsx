@@ -13,6 +13,7 @@ const OutLineTextField = ({
   borderRadius,
   white,
   onKeyDown,
+  defaultValue,
   withShadow,
   autoFocus,
   required = false,
@@ -90,6 +91,7 @@ const OutLineTextField = ({
         rows={4}
         onKeyDown={handleKeyDown}
         autoFocus={autoFocus}
+        defaultValue={defaultValue}
         fullWidth={fullWidth}
         error={!!methods?.formState?.errors?.[name]}
         sx={(theme) => ({

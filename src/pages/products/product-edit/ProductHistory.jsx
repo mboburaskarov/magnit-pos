@@ -55,13 +55,14 @@ export default function ProductHistory({ id }) {
         ),
       },
       {
-        headerName: 'Номер импорта',
+        headerName: 'Действие',
         colId: 'document_number',
-        minWidth: 185,
-        maxWidth: 185,
-        width: 185,
+        minWidth: 250,
+        maxWidth: 250,
+        width: 250,
         cellRenderer: ({ data, rowIndex }) => (
           <Typography color={'orange.500'} onClick={() => navigate(`/products/imports/${get(data, 'import.id')}?tab=details`)}>
+            {get(data, 'import.status') == 'writeoff' ? 'Списание/' : 'Импорт/'}
             {get(data, 'import.document_number')}
           </Typography>
         ),

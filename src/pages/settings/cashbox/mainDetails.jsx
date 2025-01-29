@@ -109,7 +109,7 @@ export default function MainDetails({ clientData, paymentTypes, setPaymentTypes,
           <LazySelect
             slug='users'
             id='store'
-            name='store'
+            name='store_id'
             isMulti={false}
             placeholder={'Выберите клиент'}
             minWidth='auto'

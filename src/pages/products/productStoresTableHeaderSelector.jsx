@@ -12,7 +12,9 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function productStoresTableHeaderSelector({ productsColumns, values, t, applyAllFunc }) {
+export default function productStoresTableHeaderSelector({ productsColumns, setValues, setOpenChangeQuantity, productData, values, t, applyAllFunc }) {
+  console.log(get(productData, 'id', false))
+
   const columns = productsColumns?.map((el) => {
     if (el.field === 'name') {
       return {
@@ -50,8 +52,31 @@ export default function productStoresTableHeaderSelector({ productsColumns, valu
             id={`store_product.${p.data.id}.pack_quantity`}
             name={`store_product.${p.data.id}.pack_quantity`}
             fullWidth
+            canApplyAll={!get(productData, 'id', false)}
             adornment={p.data?.measurement_unit?.short_name}
             adornmentPosition='end'
+            onFocus={({ target }) => {
+              console.log(target?.value)
+
+              if (Number(get(target, 'value')) == 0) {
+                setValues(`store_product.${p.data.id}.pack_quantity`, '')
+                return
+              }
+            }}
+            onBlur={(e) => {
+              if (Number(get(e, 'target.value')) == '') {
+                setValues(`store_product.${p.data.id}.pack_quantity`, '0')
+                return
+              }
+              if (get(e, 'target.value') > get(p, 'data.pack_quantity') && get(productData, 'id', false)) {
+                setOpenChangeQuantity({
+                  supply_price: get(p, 'data.supply_price'),
+                  name: `store_product.${p.data.id}`,
+                  measurement_value: get(e, 'target.value') - get(p, 'data.pack_quantity'),
+                  oldValue: get(p, 'data.pack_quantity'),
+                })
+              }
+            }}
             required
             defaultValue={get(p, 'data.pack_quantity')}
             type='number'
@@ -67,6 +92,18 @@ export default function productStoresTableHeaderSelector({ productsColumns, valu
         colId: el.field,
         cellRenderer: memo((p) => (
           <InputQuantity
+            onFocus={({ target }) => {
+              if (Number(get(target, 'value')) == 0) {
+                setValues(`store_product.${p.data.id}.small_quantity`, '')
+                return
+              }
+            }}
+            onBlur={(e) => {
+              if (Number(get(e, 'target.value')) == '') {
+                setValues(`store_product.${p.data.id}.small_quantity`, '0')
+                return
+              }
+            }}
             applyAll
             aplyAllFunc={() => applyAllFunc(p.data.id, 'small_quantity')}
             id={`store_product.${p.data.id}.small_quantity`}

@@ -90,6 +90,7 @@ function InputQuantity({
   inputStyles,
   inputRef,
   disabled = false,
+  canApplyAll = true,
   onChange,
   value,
   id,
@@ -157,7 +158,7 @@ function InputQuantity({
         placeholder={placeholder}
         fullWidth={fullWidth}
         multiline={multiline}
-        onFocus={(e) => setApplyAll(true)}
+        // onFocus={(e) => setApplyAll(true)}
         autoComplete='off'
         {...(!uncontrolled && methods?.register(name, { required }))}
         {...(uncontrolled && {
@@ -191,7 +192,10 @@ function InputQuantity({
             }, 200)
             onBlur(e)
           },
-          onFocus: onFocus,
+          onFocus: (e) => {
+            canApplyAll && setApplyAll(true)
+            onFocus(e)
+          },
         })}
         rows={rowsMax}
         {...inputProps}

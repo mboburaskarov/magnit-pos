@@ -269,31 +269,17 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                   defaultValue={get(item, 'quantity', 0)}
                   type='number'
                   disabled={false}
-                  onFocus={({ target }) => {
-                    console.log(target)
-
-                    if (Number(get(target, 'value')) == 0) {
-                      method.setValue(`quantity_${item?.id}`, '')
-                    }
-                  }}
                   onBlur={({ target }) => {
-                    if (Number(get(target, 'value')) == '') {
-                      method.setValue(`quantity_${item?.id}`, '0')
-                      return
-                    }
-                    if (Number(get(target, 'value')) == Number(item?.quantity)) {
-                      return
-                    }
-                    if (method.getValues(`unit_quantity_${item?.id}`) <= 0 && Number(get(target, 'value') == 0)) {
-                      method.setValue(`quantity_${item?.id}`, 1)
-                      changeCartItemQuantity({
-                        id: get(item, 'id'),
-                        data: {
-                          store_product_id: get(item, 'store_product_id'),
-                          quantity: Number(1),
-                          unit_quantity: Number(item?.unit_quantity),
-                        },
-                      })
+                    if (method.getValues(`unit_quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
+                      method.setValue(`quantity_${item?.id}`, get(target, 'value'))
+                      // changeCartItemQuantity({
+                      //   id: get(item, 'id'),
+                      //   data: {
+                      //     store_product_id: get(item, 'store_product_id'),
+                      //     quantity: Number(1),
+                      //     unit_quantity: Number(item?.unit_quantity),
+                      //   },
+                      // })
                     } else {
                       changeCartItemQuantity({
                         id: get(item, 'id'),
@@ -301,7 +287,7 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                           quantity: Number(get(target, 'value')),
                           store_product_id: get(item, 'store_product_id'),
 
-                          unit_quantity: Number(item?.unit_quantity),
+                          unit_quantity: Number(method.getValues(`unit_quantity_${item?.id}`)),
                         },
                       })
                     }
@@ -318,44 +304,22 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                     adornmentClassName={cls.adornment}
                     max={100}
                     type='number'
-                    disabled={false}
-                    // onBlur={({ target }) => {
-                    //   if (Number(get(target, 'value')) == '') {
-                    //     setValue(`net_amount_${p?.data?.id}`, '0')
-                    //   }
-                    //   if (get(p, 'data.net_amount') != Number(get(target, 'value')))
-                    //     changeCloseBoxNetAmout({ id: get(p, 'data.id'), data: { net_amount: Number(get(target, 'value')) } })
-                    // }}
-                    onFocus={({ target }) => {
-                      console.log(target)
-
-                      if (Number(get(target, 'value')) == 0) {
-                        method.setValue(`unit_quantity_${item?.id}`, '')
-                      }
-                    }}
                     onBlur={({ target }) => {
-                      if (Number(get(target, 'value')) == '') {
-                        method.setValue(`unit_quantity_${item?.id}`, '0')
-                        return
-                      }
-                      if (Number(get(target, 'value')) == Number(item?.unit_quantity)) {
-                        return
-                      }
-                      if (method.getValues(`quantity_${item?.id}`) <= 0 && Number(get(target, 'value') == 0)) {
-                        method.setValue(`unit_quantity_${item?.id}`, 1)
-                        changeCartItemQuantity({
-                          id: get(item, 'id'),
-                          data: {
-                            store_product_id: get(item, 'store_product_id'),
-                            unit_quantity: Number(1),
-                            quantity: Number(item?.quantity),
-                          },
-                        })
+                      if (method.getValues(`quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
+                        method.setValue(`unit_quantity_${item?.id}`, get(target, 'value'))
+                        // changeCartItemQuantity({
+                        //   id: get(item, 'id'),
+                        //   data: {
+                        //     store_product_id: get(item, 'store_product_id'),
+                        //     unit_quantity: Number(1),
+                        //     quantity: Number(item?.quantity),
+                        //   },
+                        // })
                       } else {
                         changeCartItemQuantity({
                           id: get(item, 'id'),
                           data: {
-                            quantity: Number(item?.quantity),
+                            quantity: Number(method.getValues(`quantity_${item?.id}`)),
                             store_product_id: get(item, 'store_product_id'),
                             unit_quantity: Number(get(target, 'value')),
                           },

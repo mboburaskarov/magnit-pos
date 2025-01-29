@@ -44,7 +44,7 @@ function SaleChildItemsBox({ item }) {
                 {get(item, 'barcode')}
               </Typography>
               <Typography whiteSpace={'pre'} mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-                {get(item, 'quantity')}пч{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}пч` : ''} - {get(item, 'total_price')} so'm
+                {get(item, 'quantity')}пч{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''} - {get(item, 'total_price')} so'm
               </Typography>
             </Box>
           </Box>

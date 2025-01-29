@@ -128,10 +128,10 @@ function SaleChildDrawer({ open, setOpen }) {
           <Box display={'flex'} justifyContent={'space-between'}>
             <Box width={'50%'} mt={'16px'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
               <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                Дата создания
+                Клиент
               </Typography>
               <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                {dayjs(get(saleDetailsList, 'data.data.created_at')).format('DD.MM.YYYY | HH:mm:ss')}
+                {get(saleDetailsList, 'data.data.customer.name', 'Unknown')}
               </Typography>
             </Box>
           </Box>
