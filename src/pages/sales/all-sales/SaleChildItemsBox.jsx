@@ -15,37 +15,39 @@ function SaleChildItemsBox({ item }) {
   return (
     <Box display={'flex'} mb={'10px'} height={'80px'} justifyContent={'space-between'}>
       <Box borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} mr={'8px'} display={'flex'} width={'100%'} justifyContent={'space-between'}>
-        <Box display={'flex'} maxWidth={'70%'}>
+        <Box display={'flex'} width={'100%'}>
           <img className={classes.productImg} src='/default-img.avif' />
-          <Box>
-            <Typography
-              sx={{
-                display: '-webkit-box',
-                overflow: 'hidden',
-                wordWrap: 'break-word',
-                textOverflow: 'ellipsis',
-                '-webkit-box-orient': 'vertical',
-                '-webkit-line-clamp': '1',
-              }}
-              fontSize={'16px'}
-              fontWeight={'600'}
-              lineHeight={'24px'}
-              color={'bunker.950'}
-            >
-              {get(item, 'name')}
-            </Typography>
-            <Typography mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
-              {get(item, 'barcode')}
-            </Typography>
+          <Box display={'flex'} flexDirection={'column'} width={'100%'}>
+            <Box display={'flex'} justifyContent={'space-between'}>
+              <Typography
+                sx={{
+                  display: '-webkit-box',
+                  overflow: 'hidden',
+                  wordWrap: 'break-word',
+                  textOverflow: 'ellipsis',
+                  '-webkit-box-orient': 'vertical',
+                  '-webkit-line-clamp': '1',
+                }}
+                fontSize={'16px'}
+                fontWeight={'600'}
+                lineHeight={'24px'}
+                color={'bunker.950'}
+              >
+                {get(item, 'name')}
+              </Typography>
+              <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
+                C2
+              </Typography>
+            </Box>
+            <Box display={'flex'} justifyContent={'space-between'}>
+              <Typography mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
+                {get(item, 'barcode')}
+              </Typography>
+              <Typography whiteSpace={'pre'} mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
+                {get(item, 'quantity')}пч{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}пч` : ''} - {get(item, 'total_price')} so'm
+              </Typography>
+            </Box>
           </Box>
-        </Box>
-        <Box display={'flex'} flexDirection={'column'} alignItems={'end'}>
-          <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
-            C2
-          </Typography>
-          <Typography mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-            {get(item, 'total_price')} so'm
-          </Typography>
         </Box>
       </Box>
       <Box borderRadius={'16px'} p={'16px'} minWidth={'160px'} bgcolor={'bg.10'}>

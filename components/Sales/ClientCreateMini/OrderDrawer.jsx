@@ -293,6 +293,7 @@ export default function OrderDrawer({
       navigate(`/sales/new-sale/${get(data, 'data', '/')}`)
       setIsOrderDrower(false)
       handlePrint()
+      setPaymentsList([])
 
       success('Продажа завершена!')
     },
@@ -364,11 +365,10 @@ export default function OrderDrawer({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
       payment_types: paymentTypes,
       sale_id: id,
-
+      customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
     })
 
-    setPaymentsList([])
     return
   }
   const mpaddedPaymentsList = [

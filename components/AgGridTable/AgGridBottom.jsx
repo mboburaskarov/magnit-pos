@@ -61,7 +61,6 @@ function AgGridBottom({
   isRefreshing,
 }) {
   const { t } = useTranslation()
-  console.log(offsetIndex, offsetSize, controlledOffsetCount)
 
   return (
     <Box

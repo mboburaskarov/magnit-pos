@@ -29,7 +29,6 @@ function RippedPaperCheck({
   const classes = useStyles()
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
-  console.log(cartItemsList)
 
   const disableSumsOnGoods = () => {
     const found = cheque?.information_block?.find((el) => el?.id === '30e14632-dc10-40a1-b97a-1be73a53054a')
@@ -164,15 +163,6 @@ function RippedPaperCheck({
 
           <Fragment key={'index39'}>
             <Box className={classes.content}>
-              {disableSumsOnGoods() && (
-                <DashedRow
-                  id={`return-price-${'index'}`}
-                  rowData={{
-                    type: `Jami`,
-                    value: `${get(cartItemsList, 'total_amount')}`,
-                  }}
-                />
-              )}
               {paymentsList?.map(
                 (el) =>
                   disableSumsOnGoods() && (
@@ -184,6 +174,15 @@ function RippedPaperCheck({
                       }}
                     />
                   )
+              )}
+              {disableSumsOnGoods() && (
+                <DashedRow
+                  id={`return-price-${'index'}`}
+                  rowData={{
+                    type: `Jami`,
+                    value: `${get(cartItemsList, 'total_amount')}`,
+                  }}
+                />
               )}
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}

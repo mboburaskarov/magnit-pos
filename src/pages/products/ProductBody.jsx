@@ -37,14 +37,11 @@ export default function ProductBody({ productData = null }) {
     if (type === 'pack_quantity') {
       const quantity = getValues(`store_product.${id}.pack_quantity`)
       get(storeList, 'data.data.ids', []).map((id) => {
-        console.log(getValues(`store_product.${id}.small_quantity`))
         setValue(`store_product.${id}.pack_quantity`, quantity)
       })
     } else {
       const quantity = getValues(`store_product.${id}.small_quantity`)
       get(storeList, 'data.data.ids', []).map((id) => {
-        console.log(getValues(`store_product.${id}.pack_quantity`))
-
         setValue(`store_product.${id}.small_quantity`, quantity)
       })
     }
@@ -143,6 +140,7 @@ export default function ProductBody({ productData = null }) {
       setValue('vat', productData?.vat || 0)
       setValue('vat_price', productData?.vat_price || 0)
       setValue('bonus_amount', productData?.bonus_amount || 0)
+      setValue('markup', productData?.bonus_amount || 0)
       setValue('bonus_percent', productData?.bonus_percent || 0)
       setValue('description', productData?.description || '')
       setValue('manufacturer', productData?.manufacturer || 0)
@@ -299,7 +297,7 @@ export default function ProductBody({ productData = null }) {
               fullWidth
               borderRadius={'40px'}
               InputProps={{
-                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
+                onwheel: (e) => e.currentTarget.blur(), // Disable scrolling
               }}
               name='supply_price'
               label={t('create_new_product.supply_price')}

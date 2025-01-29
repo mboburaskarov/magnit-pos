@@ -96,6 +96,7 @@ function InputQuantity({
   max,
   applyAll,
   aplyAllFunc = () => {},
+  onFocus = () => {},
   maxErrorMessage,
   name,
   onBlur = () => {},
@@ -190,6 +191,7 @@ function InputQuantity({
             }, 200)
             onBlur(e)
           },
+          onFocus: onFocus,
         })}
         rows={rowsMax}
         {...inputProps}

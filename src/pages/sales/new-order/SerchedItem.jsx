@@ -75,6 +75,7 @@ export default function SerchedItem({
                 textOverflow={'ellipsis'}
                 maxWidth={'calc(100% - 1px)'}
                 whiteSpace={'nowrap'}
+                style={{ textDecoration: get(product, 'expire_day', 0) <= 0 ? 'line-through' : 'none' }}
                 overflow={'hidden'}
                 id='product-name'
                 className={classes.itemName}

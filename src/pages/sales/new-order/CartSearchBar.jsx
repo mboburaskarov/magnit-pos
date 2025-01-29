@@ -175,8 +175,6 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChange
             value={searchTearm}
             setSearchTerm={setSearchTerm}
             onChange={(e) => {
-              console.log(e)
-
               setSearchTerm(e.target.value)
               setShowOverlay(true)
             }}
@@ -256,7 +254,7 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChange
                 />
               ))
             ) : (
-              <span>Dori mavjud emas</span>
+              <></>
             )}
           </Box>
         )}

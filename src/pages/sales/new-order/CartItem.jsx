@@ -269,7 +269,21 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                   defaultValue={get(item, 'quantity', 0)}
                   type='number'
                   disabled={false}
+                  onFocus={({ target }) => {
+                    console.log(target)
+
+                    if (Number(get(target, 'value')) == 0) {
+                      method.setValue(`quantity_${item?.id}`, '')
+                    }
+                  }}
                   onBlur={({ target }) => {
+                    if (Number(get(target, 'value')) == '') {
+                      method.setValue(`quantity_${item?.id}`, '0')
+                      return
+                    }
+                    if (Number(get(target, 'value')) == Number(item?.quantity)) {
+                      return
+                    }
                     if (method.getValues(`unit_quantity_${item?.id}`) <= 0 && Number(get(target, 'value') == 0)) {
                       method.setValue(`quantity_${item?.id}`, 1)
                       changeCartItemQuantity({
@@ -305,7 +319,28 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                     max={100}
                     type='number'
                     disabled={false}
+                    // onBlur={({ target }) => {
+                    //   if (Number(get(target, 'value')) == '') {
+                    //     setValue(`net_amount_${p?.data?.id}`, '0')
+                    //   }
+                    //   if (get(p, 'data.net_amount') != Number(get(target, 'value')))
+                    //     changeCloseBoxNetAmout({ id: get(p, 'data.id'), data: { net_amount: Number(get(target, 'value')) } })
+                    // }}
+                    onFocus={({ target }) => {
+                      console.log(target)
+
+                      if (Number(get(target, 'value')) == 0) {
+                        method.setValue(`unit_quantity_${item?.id}`, '')
+                      }
+                    }}
                     onBlur={({ target }) => {
+                      if (Number(get(target, 'value')) == '') {
+                        method.setValue(`unit_quantity_${item?.id}`, '0')
+                        return
+                      }
+                      if (Number(get(target, 'value')) == Number(item?.unit_quantity)) {
+                        return
+                      }
                       if (method.getValues(`quantity_${item?.id}`) <= 0 && Number(get(target, 'value') == 0)) {
                         method.setValue(`unit_quantity_${item?.id}`, 1)
                         changeCartItemQuantity({
