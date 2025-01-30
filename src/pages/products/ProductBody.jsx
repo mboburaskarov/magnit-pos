@@ -22,7 +22,6 @@ import InputSearch from '../../../components/Inputs/InputSearch'
 import { error } from '../../../utils/toast'
 import MeasurementValueDialog from './MeasurementValueDialog'
 import useDebouncedValue from '../../hooks/useDebouncedValue'
-import PriceFormattedInput from '../../../components/Inputs/PriceFormattedInput'
 
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
@@ -402,7 +401,7 @@ export default function ProductBody({ productData = null }) {
             />
           </Box>
           <Box mt={'24px'} display={'flex'} width={'100%'}>
-            <PriceFormattedInput
+            <OutLineTextField
               endAdornmentText={'%'}
               required
               type='number'
