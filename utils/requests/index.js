@@ -16,7 +16,7 @@ export const requests = {
   finishImportChecking: (id) => request.patch(`v1/import-detail/accept-some/${id}`),
 
   // categoryGetAll
-
+  getAutoOrderDetailList: (filter) => request.get(`v1/auto-order-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAutoOrderList: (filter) => request.get(`v1/auto-order/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllCategories: (filter) => request.get(`v1/category/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getCategory: (id) => request.get(`v1/category/${id}`),

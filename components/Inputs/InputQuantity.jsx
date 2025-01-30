@@ -103,7 +103,23 @@ function InputQuantity({
   onBlur = () => {},
 }) {
   const methods = useFormContext()
+  // Custom onKeyDown to restrict unwanted characters
+  const handleKeyDown = (event) => {
+    console.log(event)
 
+    if (type === 'number') {
+      // Prevent unwanted keys
+      const invalidKeys = ['e', 'E', '+', '-', '.']
+      if (invalidKeys.includes(event.key)) {
+        event.preventDefault()
+      }
+    }
+
+    // Execute any additional onKeyDown logic provided by props
+    if (onKeyDown) {
+      onKeyDown(event)
+    }
+  }
   const classes = useStyles()
   const [isApplyAll, setApplyAll] = useState(false)
   const adornmentProps = adornment
@@ -155,6 +171,7 @@ function InputQuantity({
         inputRef={inputRef}
         type={type || 'text'}
         variant='outlined'
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
         fullWidth={fullWidth}
         multiline={multiline}

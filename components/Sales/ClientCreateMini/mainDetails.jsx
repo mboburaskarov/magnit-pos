@@ -78,6 +78,7 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
           <InputDatePicker
             noValidation
             noMarginTop
+            fromMonthCustom={new Date(new Date().getFullYear() - (new Date().getFullYear() - 1930))}
             name='date_of_birth'
             error={errors?.date_of_birth}
             id='birth-Date'

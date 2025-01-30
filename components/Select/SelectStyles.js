@@ -176,7 +176,7 @@ export const generateCustomStyles = (props = {}) => {
       border: 'none',
       boxShadow: theme.boxShadow['16-8'],
       // overflow: 'hidden',
-      zIndex: 100000,
+      zIndex: 9999999999999,
     }),
     menuList: (base) => ({
       ...base,

@@ -12,22 +12,24 @@ import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/autoOrderTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/autoOrderDetailTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 import CheckAccess from '../../../../components/CheckAccess'
 import PlusIcon from '../../../assets/icons/PlusIcon'
 import { FormProvider, useForm } from 'react-hook-form'
 import { error } from '../../../../utils/toast'
+import { useParams } from 'react-router-dom'
+import Header from '../../../../components/Header'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function AutoOrderPage() {
+export default function AutoOrderDetailPage() {
   const theme = useTheme()
   const methods = useForm()
-
+  const { id } = useParams()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { columns, loading } = useSelector((state) => state.autoOrderTableColumns)
+  const { columns, loading } = useSelector((state) => state.autoOrderTableDetailColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
@@ -55,8 +57,9 @@ export default function AutoOrderPage() {
     }
   }, [])
 
-  const autoOrderListFilter = useMemo(() => {
+  const autoOrderDetailListFilter = useMemo(() => {
     return {
+      auto_order_id: id,
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search?.replace(/\s+/g, ''),
@@ -80,22 +83,22 @@ export default function AutoOrderPage() {
     values?.received_amount_from,
   ])
   const {
-    data: autoOrderList,
-    isLoading: autoOrderListLoading,
-    isFetching: isFetchingautoOrderList,
+    data: autoOrderDetailList,
+    isLoading: autoOrderDetailListLoading,
+    isFetching: isFetchingautoOrderDetailList,
     refetch,
-  } = useQuery(['autoOrderList', autoOrderListFilter], () => requests.getAutoOrderList(autoOrderListFilter))
+  } = useQuery(['autoOrderDetailList', autoOrderDetailListFilter], () => requests.getAutoOrderDetailList(autoOrderDetailListFilter))
 
   useEffect(() => {
     refetch()
-  }, [autoOrderListFilter])
+  }, [autoOrderDetailListFilter])
 
   useEffect(() => {
-    const count = autoOrderList?.data?.data?._meta?.total_count
+    const count = autoOrderDetailList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [autoOrderList?.data, values?.limit])
+  }, [autoOrderDetailList?.data, values?.limit])
   const onSubmit = (data) => {
     console.log(data)
   }
@@ -108,9 +111,16 @@ export default function AutoOrderPage() {
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-          <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-            Авто заказ
-          </Typography>
+          <Header
+            isLoading={false}
+            buttonText='Детали импорта'
+            backIcon
+            noActions
+            // backButtonClick={() => (get(values, 'tab') === 'details' ? '/products/all' : '/products/import')}
+            backHref={'/products/auto-order'}
+            text={'Детали импорта'}
+            checkAccessId={'product-create'}
+          />
 
           <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
             <Box display={'flex'}>
@@ -165,6 +175,21 @@ export default function AutoOrderPage() {
                   changeColumnSequence={changeColumnSequence}
                 />
               </Box>
+              <CheckAccess id={'product-create'}>
+                <Box minWidth={156}>
+                  <Button
+                    sx={{ height: '48px' }}
+                    type='submit'
+                    onClick={methods.handleSubmit(onSubmit, onError)}
+                    fullWidth
+                    // startIcon={<PlusIcon color='#fff' />}
+                    variant='contained'
+                    color='primary'
+                  >
+                    Создать заказ
+                  </Button>
+                </Box>
+              </CheckAccess>
             </Box>
           </Box>
           <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
@@ -173,8 +198,8 @@ export default function AutoOrderPage() {
               id='auto-order-main-table'
               tableSettings
               columns={tableColumns}
-              data={autoOrderList?.data?.data?.data || []}
-              isDataLoading={isFetchingautoOrderList || autoOrderListLoading}
+              data={autoOrderDetailList?.data?.data?.data || []}
+              isDataLoading={isFetchingautoOrderDetailList || autoOrderDetailListLoading}
               offsetCount={offsetCount}
               updaterAction={(newData) => {
                 if (newData) dispatch(updateTableHeader(newData))
@@ -185,7 +210,7 @@ export default function AutoOrderPage() {
               }}
               fullInfoAboutCurrentPage
               resetTable={() => dispatch(resetTableHeader({ refetch }))}
-              isRefreshing={loading || isFetchingautoOrderList || autoOrderListLoading}
+              isRefreshing={loading || isFetchingautoOrderDetailList || autoOrderDetailListLoading}
             />
           </Box>
         </Box>

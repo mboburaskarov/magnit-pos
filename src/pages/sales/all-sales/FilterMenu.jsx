@@ -40,7 +40,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
     setOpen(false)
-    navigate(`/products${requestParams}`)
+    navigate(`/sales/all${requestParams}`)
   }
 
   const onError = (err) => {
@@ -79,7 +79,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/products?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/sales/all?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
   return (

@@ -76,7 +76,7 @@ export default function ClientsPage() {
       search: values?.search?.replace(/\s+/g, ''),
       store_id: values?.store_id,
     }
-  }, [values?.offset, values?.limit, values?.search, values?.shop_id])
+  }, [values?.offset, values?.limit, values?.search, values?.store_id])
   const {
     data: clientsList,
     isLoading: clientsListLoading,

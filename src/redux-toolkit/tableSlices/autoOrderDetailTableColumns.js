@@ -2,42 +2,67 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const columns = [
   {
-    field: 'public_id',
-    hide: false,
-    minWidth: 60,
-    width: 130,
-  },
-
-  {
     field: 'store_name',
     hide: false,
-    minWidth: 70,
-    width: 250,
-  },
-  {
-    field: 'import_date',
-    hide: false,
-    minWidth: 70,
-    width: 370,
+    minWidth: 60,
+    width: 280,
   },
 
   {
-    field: 'quantity',
+    field: 'product_name',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'current_stock',
+    hide: false,
+    minWidth: 70,
+    width: 150,
+  },
+  {
+    field: 'monthly_quantity',
+    hide: false,
+    minWidth: 70,
+    width: 150,
+  },
+
+  {
+    field: 'weekly_quantity',
+    hide: false,
+    minWidth: 70,
+    width: 170,
+  },
+  {
+    field: 'order_growth',
     hide: false,
     minWidth: 70,
     width: 170,
   },
 
   {
-    field: 'status',
+    field: 'order_lead_time',
     hide: false,
     minWidth: 70,
     width: 170,
+  },
+
+  {
+    field: 'suggested_order',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'adjusted_order',
+    hide: false,
+    minWidth: 70,
+    width: 200,
   },
 ]
 
-const autoOrderTableColumns = createSlice({
-  name: 'autoOrderTableColumns',
+const autoOrderDetail = createSlice({
+  name: 'autoOrderDetail',
   initialState: {
     columns,
     loading: false,
@@ -76,6 +101,5 @@ const autoOrderTableColumns = createSlice({
   },
 })
 
-export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
-  autoOrderTableColumns.actions
-export const autoOrderTableColumnsSlice = autoOrderTableColumns.reducer
+export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } = autoOrderDetail.actions
+export const autoOrderDetailSlice = autoOrderDetail.reducer

@@ -124,7 +124,7 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
                   <Typography>
                     {firstName} {lastName}
                   </Typography>
-                  <Typography className={classes.shopname}>{data?.shops?.find((item) => item.shop_id === data?.current_shop_id)?.shop?.name}</Typography>
+                  {/* <Typography className={classes.shopname}>{data?.shops?.find((item) => item.store_id === data?.current_shop_id)?.shop?.name}</Typography> */}
                 </Box>
               </Box>
               <Box mt={4}>

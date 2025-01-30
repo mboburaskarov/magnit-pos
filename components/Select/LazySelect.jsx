@@ -73,6 +73,7 @@ function LazySelect({
   getOptionLabel = (option) => option.name,
   getOptionValue,
   defaultValue,
+  customLabel = 'name',
   boxStyle,
   label,
   placeholder = 'components.enterAttribute',
@@ -154,6 +155,7 @@ function LazySelect({
     setPage(1)
     setSearch(inputValue)
   }
+  console.log(customLabel)
 
   const handleCreate = (inputValue) => {
     if (!!createOptionRequest) {
@@ -261,7 +263,7 @@ function LazySelect({
                 }}
                 value={value}
                 options={response?.data?.data?.data?.map((option) => ({
-                  label: option?.name,
+                  label: [customLabel],
                   value: option?.id,
                 }))}
                 placeholder={placeholder}
@@ -293,7 +295,7 @@ function LazySelect({
                 getOptionValue={(option) => option.id}
                 options={
                   response?.data?.data?.data?.map((option) => ({
-                    name: option?.name,
+                    name: option?.[customLabel],
                     value: option?.id,
                     id: option?.id,
                   })) || []

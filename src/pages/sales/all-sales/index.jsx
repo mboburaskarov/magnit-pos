@@ -81,7 +81,7 @@ export default function AllSalesPage() {
     values?.search,
     values?.producer,
     values?.category_id,
-    values?.shop_id,
+    values?.store_id,
     values?.supply_price_to,
     values?.retail_price_to,
     values?.supply_price_from,

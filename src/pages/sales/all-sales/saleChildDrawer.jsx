@@ -9,6 +9,7 @@ import { requests } from '../../../../utils/requests'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import LeftArrowIcon from '../../../assets/icons/LeftArrow'
 import SaleChildItemsBox from './SaleChildItemsBox'
+import thousandDivider from '../../../../utils/thousandDivider'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -69,7 +70,7 @@ function SaleChildDrawer({ open, setOpen }) {
               #{get(saleDetailsList, 'data.data.sale_number')}
             </Typography>
             <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
-              {get(saleDetailsList, 'data.data.total_amount')} so'm
+              {thousandDivider(get(saleDetailsList, 'data.data.total_amount'), 'сум')}
             </Typography>
           </Box>
         </Box>

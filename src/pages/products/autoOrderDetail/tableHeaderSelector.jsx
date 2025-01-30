@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { memo } from 'react'
@@ -10,8 +10,8 @@ import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import palette from '../../../../src/assets/theme/mui.config'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import * as qs from 'qs'
+import InputQuantity from '../../../../components/Inputs/InputQuantity'
+
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography
@@ -72,88 +72,95 @@ const Image = ({ data, rowIndex, setImages }) => {
 }
 
 export default function tableHeaderSelector({ importsColumns, t }) {
-  const { values } = useQueryParams()
-
   const columns = importsColumns?.map((el) => {
-    if (el.field === 'public_id') {
-      return {
-        ...el,
-        headerName: '№',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Link
-            to={`/products/auto-order/${p.data.id}?${qs.stringify({
-              previusLimit: values?.limit,
-              previusOffset: values?.offset,
-            })}
-                `}
-          >
-            <Typography fontWeight={'600'} color={'orange.500'} fontSize={'16px'} lineHeight={'24px'}>
-              {p.data.public_id}
-            </Typography>
-          </Link>
-        )),
-      }
-    }
-
     if (el.field === 'store_name') {
       return {
         ...el,
-        headerName: t('store'),
+        headerName: 'Филиал',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{p.data?.store?.name}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),
       }
     }
-    if (el.field === 'status') {
+    if (el.field === 'product_name') {
       return {
         ...el,
-        headerName: t('table_columns.status'),
+        headerName: 'Наименование',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='product_name' />),
+      }
+    }
+
+    if (el.field === 'current_stock') {
+      return {
+        ...el,
+        headerName: 'Остаток',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='current_stock' />),
+      }
+    }
+    if (el.field === 'monthly_quantity') {
+      return {
+        ...el,
+        headerName: 'Продажа месяц средняя',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='monthly_quantity' />),
+      }
+    }
+    if (el.field === 'weekly_quantity') {
+      return {
+        ...el,
+        headerName: '7 дней продажа',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='weekly_quantity' />),
+      }
+    }
+    if (el.field === 'order_growth') {
+      return {
+        ...el,
+        headerName: 'Заказ 7 дней ( +Прирост 10%)',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='order_growth' />),
+      }
+    }
+    if (el.field === 'order_lead_time') {
+      return {
+        ...el,
+        headerName: 'Плечо заказа. 6 раз / в неделю.',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='order_lead_time' />),
+      }
+    }
+
+    if (el.field === 'suggested_order') {
+      return {
+        ...el,
+        headerName: 'Заказ итог',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='suggested_order' />),
+      }
+    }
+    if (el.field === 'adjusted_order') {
+      return {
+        ...el,
+        headerName: 'Заказ итог',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <StatusCell
-            id={`products-status-${p.rowIndex}`}
-            color={imports_list_statuses.find((el) => el.id === p.data.status)?.color}
-            bgcolor={imports_list_statuses.find((el) => el.id === p.data.status)?.bgcolor}
-            title={imports_list_statuses.find((el) => el.id === p.data.status)?.name}
+          <InputQuantity
+            id={`store_product.${p.data.id}.suggested_order`}
+            name={`store_product.${p.data.id}.suggested_order`}
+            fullWidth
+            required
+            defaultValue={p?.data?.suggested_order}
+            type='number'
+            // defaultValue={get(p, 'data.small_quantity')}
+            disabled={false}
           />
-        )),
-      }
-    }
-
-    if (el.field === 'import_date') {
-      return {
-        ...el,
-        headerName: 'Дата импорта',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['import_date']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
-          </Box>
-        )),
-      }
-    }
-
-    if (el.field === 'quantity') {
-      return {
-        ...el,
-        headerName: 'Количество',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
-
-              <Box width={'10px'} />
-
-              <SimpleText {...p} withDevider type={'adjusted_order_quantity'} />
-            </Box>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
-
-              <Box width={'10px'} />
-              <SimpleText {...p} withDevider type={'response_order_quantity'} />
-            </Box>
-          </>
+          // <TextField
+          //   id={`net_amount_${p?.data?.store_id + p?.data?.product_id}`}
+          //   defaultValue={p?.data?.suggested_order}
+          //   name={`adjusted_order_${p?.data?.id}`}
+          //   type='number'
+          // />
         )),
       }
     }

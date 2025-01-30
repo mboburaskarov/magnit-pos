@@ -1,4 +1,5 @@
 import MainLayout from '../../layouts/MainLayout'
+import AutoOrderDetailPage from '../../pages/products/autoOrderDetail'
 import ImportDetailsPage from '../../pages/products/importDetails'
 import ImportWithCheckingPage from '../../pages/products/importWithChecking'
 import ProductCreatePage from '../../pages/products/product-create'
@@ -31,6 +32,15 @@ const productsCreateRoutes = {
         {
           path: '',
           element: <ImportDetailsPage />,
+        },
+      ],
+    },
+    {
+      path: 'auto-order/:id',
+      children: [
+        {
+          path: '',
+          element: <AutoOrderDetailPage />,
         },
       ],
     },

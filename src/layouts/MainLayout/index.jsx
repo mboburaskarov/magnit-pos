@@ -15,7 +15,7 @@ const useStyles = makeStyles(() => ({
   },
   contentContainer: {
     flex: '1 1 auto',
-    paddingLeft: '22px',
+    // paddingLeft: '22px',
   },
   content: {
     display: 'flex',

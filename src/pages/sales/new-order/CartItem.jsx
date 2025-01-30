@@ -1,17 +1,14 @@
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import React, { memo, useState } from 'react'
+import { get } from 'lodash'
+import React, { memo } from 'react'
+import { useMutation } from 'react-query'
 import InputQuantity from '../../../../components/Inputs/InputQuantity'
 import StyledTooltip from '../../../../components/StyledTooltip'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import EditIcon from '../../../assets/icons/EditIcon'
-import { get } from 'lodash'
 import { requests } from '../../../../utils/requests'
-import { useMutation } from 'react-query'
+import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
-import { useParams } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { getValue } from '@mui/system'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,9 +75,8 @@ export const useStyles = makeStyles((theme) => ({
 
   text: {
     minWidth: 0,
-    marginLeft: 8,
     display: 'flex',
-    flexDirection: 'column',
+    // flexDirection: 'column',
     justifyContent: 'space-between',
     '& p': {
       display: '-webkit-box',
@@ -231,24 +227,7 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
   })
   return (
     <Box display={'flex'} width={'100%'}>
-      <Box
-        id={`cartItem${index}`}
-        tabIndex={index}
-        className={cls.root}
-        // onKeyDown={(event) => {
-        //   if (event.code === 'KeyD' && fakeIndexForCheck === index) {
-        //     addItem(data?.id, 0)
-        //     dispatch(asyncRemoveFromCartAction(data?.id, 'cartItem'))
-        //     setFakeIndexForCheck(-1)
-        //     if (isMarked) {
-        //       deleteProductLabels()
-        //     }
-        //   }
-        //   if (!data?.wholeSaleEnabled && event.code === 'KeyS' && fakeIndexForCheck === index) {
-        //     setCurrentData(data)
-        //   }
-        // }}
-      >
+      <Box id={`cartItem${index}`} tabIndex={index} className={cls.root}>
         <Box className={cls.content}>
           <Box className={cls.details}>
             <Box
@@ -272,14 +251,6 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                   onBlur={({ target }) => {
                     if (method.getValues(`unit_quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
                       method.setValue(`quantity_${item?.id}`, get(target, 'value'))
-                      // changeCartItemQuantity({
-                      //   id: get(item, 'id'),
-                      //   data: {
-                      //     store_product_id: get(item, 'store_product_id'),
-                      //     quantity: Number(1),
-                      //     unit_quantity: Number(item?.unit_quantity),
-                      //   },
-                      // })
                     } else {
                       changeCartItemQuantity({
                         id: get(item, 'id'),
@@ -307,14 +278,6 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                     onBlur={({ target }) => {
                       if (method.getValues(`quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
                         method.setValue(`unit_quantity_${item?.id}`, get(target, 'value'))
-                        // changeCartItemQuantity({
-                        //   id: get(item, 'id'),
-                        //   data: {
-                        //     store_product_id: get(item, 'store_product_id'),
-                        //     unit_quantity: Number(1),
-                        //     quantity: Number(item?.quantity),
-                        //   },
-                        // })
                       } else {
                         changeCartItemQuantity({
                           id: get(item, 'id'),
@@ -332,53 +295,51 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
               <Box className={cls.img_cont}>
                 <img src={item?.main_photo || '/default-img.avif'} />
               </Box>
+            </Box>
+            <Box ml={'8px'} display={'flex'} width={'100%'} flexDirection={'column'}>
               <Box id='product-details' className={cls.text}>
                 <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }} textOverflow={'ellipsis'} overflow={'hidden'}>
                   {item?.name}
                 </Typography>
-                <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}> {item?.barcode}</Typography>
+                <Typography sx={{ minWidth: '30px', whiteSpace: 'pre', color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>
+                  A4
+                </Typography>
               </Box>
-            </Box>
-
-            <Box display={'flex'}>
-              <Box id='product-details' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', justifyContent: 'center' }}>
-                <Box
-                  sx={{
-                    // display: 'flex',
-                    '& svg > g > path': { stroke: '#FF6018' },
-                    '& svg': { width: '20px', height: '20px' },
-                  }}
-                >
-                  <Box display={'flex'}>
-                    {item?.discount_price > 0 && (
-                      <Typography sx={{ mr: '10px', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
-                        {item?.discount_price}
-                      </Typography>
-                    )}
-                    <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>A4</Typography>
-                  </Box>
-                  <Box display={'flex'}>
-                    <Typography
-                      textDecoration='line-through'
-                      // {...(item?.discount_price > 0 && { textDecoration: 'line-through' })}
-                      sx={{
-                        mr: '10px',
-                        color: 'orange.500',
-                        fontSize: '16px',
-                        lineHeight: '24px',
-                        fontWeight: '600',
-                        textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
-                        color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
-                      }}
-                    >
-                      {item?.unit_price}
+              <Box
+                sx={{
+                  display: 'flex',
+                  '& svg > g > path': { stroke: '#FF6018' },
+                  '& svg': { width: '20px', height: '20px' },
+                }}
+              >
+                <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
+                  <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}> {item?.barcode}</Typography>
+                  {item?.discount_price > 0 && (
+                    <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
+                      {item?.discount_price}
                     </Typography>
-                    <Box sx={{ cursor: 'pointer' }}>
-                      <EditIcon />
-                    </Box>
-                  </Box>
+                  )}
+                </Box>
+                <Box display={'flex'}>
+                  <Typography
+                    textDecoration='line-through'
+                    sx={{
+                      mr: '10px',
+                      color: 'orange.500',
+                      fontSize: '16px',
+                      lineHeight: '24px',
+                      fontWeight: '600',
+                      textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
+                      color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
+                    }}
+                  >
+                    {thousandDivider(item?.unit_price, 'сум')}
+                  </Typography>
                 </Box>
               </Box>
+            </Box>
+            <Box display={'flex'}>
+              <Box id='product-details' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', justifyContent: 'center' }}></Box>
               <Box
                 sx={{
                   width: 48,

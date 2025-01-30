@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
 import React from 'react'
+import thousandDivider from '../../../../utils/thousandDivider'
 const useStyles = makeStyles((theme) => ({
   productImg: {
     width: '48px',
@@ -44,7 +45,8 @@ function SaleChildItemsBox({ item }) {
                 {get(item, 'barcode')}
               </Typography>
               <Typography whiteSpace={'pre'} mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-                {get(item, 'quantity')}пч{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''} - {get(item, 'total_price')} so'm
+                {get(item, 'quantity')}пч{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''} -{' '}
+                {thousandDivider(get(item, 'total_price'), 'сум')}
               </Typography>
             </Box>
           </Box>

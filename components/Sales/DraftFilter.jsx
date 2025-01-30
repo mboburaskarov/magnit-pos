@@ -14,7 +14,7 @@ import CloseIcon from '../../src/assets/icons/CloseIcon'
 import { useTranslation } from 'react-i18next'
 import InputDatePicker from '../../components/Inputs/InputDatePicker'
 import { useTheme } from '@mui/styles'
-
+import LazySelect from '../../components/Select/LazySelect'
 export default function DraftFilter({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
@@ -61,7 +61,12 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
   }
   const { t } = useTranslation()
   return (
-    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog
+      overflowVisible
+      open={open}
+      title={t('filter_dialog.label')}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+    >
       <Box
         sx={{
           width: '100%',
@@ -95,7 +100,30 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
               label='Дата закрытия'
               placeholder='Дата закрытия'
             />
-            <SelectSimple
+            <LazySelect
+              slug='users'
+              boxStyle={{ width: '100%' }}
+              id='customers'
+              name='customers'
+              isMulti={false}
+              placeholder={'Выберите клиент'}
+              minWidth='auto'
+              isClearable={false}
+              label={t('input.store.label')}
+              request={requests.getAllCustomers}
+              filters={{ limit: 10 }}
+              control={control}
+              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+              // uncontrolled
+              customLabel={'full_name'}
+              getOptionLabel={(option) => {
+                console.log(option)
+
+                return <Typography color='grey.600'>{option.name}</Typography>
+              }}
+              filterOption={() => true}
+            />
+            {/* <SelectSimple
               fullWidth
               id='produ'
               name='customers'
@@ -105,7 +133,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
               placeholder={t('input.client.placeholder')}
               options={customers?.data?.data?.data}
               getOptionLabel={(el) => `${el.first_name} ${el.last_name}`}
-            />
+            /> */}
 
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button

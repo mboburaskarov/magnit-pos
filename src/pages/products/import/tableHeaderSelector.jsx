@@ -86,7 +86,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
     if (el.field === 'document_number') {
       return {
         ...el,
-        headerName: 'Номер импорта',
+        headerName: 'Наименование',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Link
@@ -148,15 +148,17 @@ export default function tableHeaderSelector({ importsColumns, t }) {
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
-              <Typography ml={'4px'} color={'bunker.500'}>
-                {p.data?.received_amount}
-              </Typography>
+
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider type={'received_amount'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
-              <Typography ml={'4px'} color={'bunker.500'}>
-                {p.data?.accepted_amount}
-              </Typography>
+
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider type={'accepted_amount'} />
             </Box>
           </>
         )),
@@ -173,19 +175,19 @@ export default function tableHeaderSelector({ importsColumns, t }) {
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
-              <Typography ml={'4px'} color={'bunker.500'}>
-                {p.data?.received_count}
-              </Typography>
+
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider type={'received_count'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
-              <Typography ml={'4px'} color={'bunker.500'}>
-                {p.data?.accepted_count}
-              </Typography>
+
+              <Box width={'10px'} />
+              <SimpleText {...p} withDevider type={'accepted_count'} />
             </Box>
           </>
         )),
-        // <SimpleText currency='' withDevider {...p} type='received_count' />),
       }
     }
 

@@ -130,15 +130,16 @@ const toMonth = new Date(currentYear + 5, 0)
 const tomorrow = new Date()
 tomorrow.setDate(tomorrow.getDate() + 1)
 
-export const YearMonthFormNew = ({ date, changeYear, changeMonth, decreaseMonth, increaseMonth }) => {
+export const YearMonthFormNew = ({ date, fromMonthCustom, changeYear, changeMonth, decreaseMonth, increaseMonth }) => {
   const classes = useStyles()
   const { palette } = useTheme()
   const [open, setOpen] = useState(false)
   const newMonths = dayjs.months().map((item) => item[0].toUpperCase() + item.slice(1))
-
+  const form_Month = fromMonthCustom || fromMonth
   const years = []
+  console.log(form_Month, fromMonthCustom)
 
-  for (let i = fromMonth.getFullYear(); i <= toMonth.getFullYear(); i += 1) {
+  for (let i = form_Month.getFullYear(); i <= toMonth.getFullYear(); i += 1) {
     years.push(i)
   }
 
@@ -274,6 +275,7 @@ function InputDatePicker({
   onChange,
   noValidation,
   disabled,
+  fromMonthCustom = new Date(),
   noMarginTop,
   isClearable,
   maxDate,
@@ -311,6 +313,7 @@ function InputDatePicker({
             return (
               <YearMonthFormNew
                 date={monthDate}
+                fromMonthCustom={fromMonthCustom}
                 changeYear={changeYear}
                 changeMonth={changeMonth}
                 decreaseMonth={decreaseMonth}
@@ -374,7 +377,14 @@ function InputDatePicker({
               maxDate={maxDate}
               customTimeInput={<CustomTimeInput />}
               renderCustomHeader={({ date, changeYear, changeMonth, decreaseMonth, increaseMonth }) => (
-                <YearMonthFormNew date={date} changeYear={changeYear} changeMonth={changeMonth} decreaseMonth={decreaseMonth} increaseMonth={increaseMonth} />
+                <YearMonthFormNew
+                  fromMonthCustom={fromMonthCustom}
+                  date={date}
+                  changeYear={changeYear}
+                  changeMonth={changeMonth}
+                  decreaseMonth={decreaseMonth}
+                  increaseMonth={increaseMonth}
+                />
               )}
               customInput={
                 <TextField
