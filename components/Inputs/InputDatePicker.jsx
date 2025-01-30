@@ -137,7 +137,6 @@ export const YearMonthFormNew = ({ date, fromMonthCustom, changeYear, changeMont
   const newMonths = dayjs.months().map((item) => item[0].toUpperCase() + item.slice(1))
   const form_Month = fromMonthCustom || fromMonth
   const years = []
-  console.log(form_Month, fromMonthCustom)
 
   for (let i = form_Month.getFullYear(); i <= toMonth.getFullYear(); i += 1) {
     years.push(i)

@@ -105,8 +105,6 @@ function InputQuantity({
   const methods = useFormContext()
   // Custom onKeyDown to restrict unwanted characters
   const handleKeyDown = (event) => {
-    console.log(event)
-
     if (type === 'number') {
       // Prevent unwanted keys
       const invalidKeys = ['e', 'E', '+', '-', '.']

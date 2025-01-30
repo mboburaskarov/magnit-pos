@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import palette from '../../../../src/assets/theme/mui.config'
 import InputQuantity from '../../../../components/Inputs/InputQuantity'
+import { get } from 'lodash'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -71,16 +72,8 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, t }) {
+export default function tableHeaderSelector({ importsColumns, t, setValue, autoOrderChangeQuantity }) {
   const columns = importsColumns?.map((el) => {
-    if (el.field === 'store_name') {
-      return {
-        ...el,
-        headerName: 'Филиал',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),
-      }
-    }
     if (el.field === 'product_name') {
       return {
         ...el,
@@ -103,7 +96,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: 'Продажа месяц средняя',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='monthly_quantity' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='month_sale_stock' />),
       }
     }
     if (el.field === 'weekly_quantity') {
@@ -111,7 +104,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: '7 дней продажа',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='weekly_quantity' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='day_sale_stock' />),
       }
     }
     if (el.field === 'order_growth') {
@@ -136,7 +129,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: 'Заказ итог',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='suggested_order' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='suggested_order_quantity' />),
       }
     }
     if (el.field === 'adjusted_order') {
@@ -150,8 +143,22 @@ export default function tableHeaderSelector({ importsColumns, t }) {
             name={`store_product.${p.data.id}.suggested_order`}
             fullWidth
             required
-            defaultValue={p?.data?.suggested_order}
+            defaultValue={p?.data?.suggested_order_quantity}
             type='number'
+            onFocus={({ target }) => {
+              if (Number(get(target, 'value')) == 0) {
+                setValue(`store_product.${p.data.id}.suggested_order`, '')
+              }
+            }}
+            onBlur={({ target }) => {
+              if (Number(get(target, 'value')) == '') {
+                setValue(`store_product.${p.data.id}.suggested_order`, '0')
+              }
+              autoOrderChangeQuantity({
+                adjusted_order_quantity: Number(get(target, 'value')),
+                id: p?.data?.id,
+              })
+            }}
             // defaultValue={get(p, 'data.small_quantity')}
             disabled={false}
           />

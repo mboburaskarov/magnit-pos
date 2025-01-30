@@ -2,13 +2,6 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const columns = [
   {
-    field: 'store_name',
-    hide: false,
-    minWidth: 60,
-    width: 280,
-  },
-
-  {
     field: 'product_name',
     hide: false,
     minWidth: 70,

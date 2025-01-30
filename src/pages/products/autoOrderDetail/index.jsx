@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
@@ -34,11 +34,20 @@ export default function AutoOrderDetailPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
+  const { mutate: autoOrderChangeQuantity, isLoading: isautoOrderChangeQuantity } = useMutation(requests.autoOrderChangeQuantity, {
+    onSuccess: () => {},
+    onError: (err) => {
+      error('Ошибка изменить количество!')
+      console.log('err', err)
+    },
+  })
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
     values,
+    setValue: methods.setValue,
     setImages: setOpenImageGallery,
+    autoOrderChangeQuantity,
   })
 
   useEffect(() => {
