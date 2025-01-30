@@ -171,7 +171,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
 }))
-function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChangeShift, cashBoxDetails, showOverlay, setShowOverlay }) {
+function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setIsOpenChangeShift, cashBoxDetails, showOverlay, setShowOverlay }) {
   const [searchTearm, setSearchTerm] = useState('')
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
@@ -221,7 +221,9 @@ function CartSearchBar({ refetchcartItemsList, handleAddProduct, setIsOpenChange
       <FormProvider {...methods}>
         <Box display={'flex'}>
           <InputSearch
+            inputRef={searchRef}
             id='product-search'
+            hasShortCut
             style={{ zIndex: showOverlay ? 25 : 10 }}
             sx={{ marginRight: '16px !important', height: '48px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
             name='search'

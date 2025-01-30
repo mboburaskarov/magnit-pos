@@ -13,8 +13,6 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
 }
 
 export default function productStoresTableHeaderSelector({ productsColumns, setValues, setOpenChangeQuantity, productData, values, t, applyAllFunc }) {
-  console.log(get(productData, 'id', false))
-
   const columns = productsColumns?.map((el) => {
     if (el.field === 'name') {
       return {
@@ -56,8 +54,6 @@ export default function productStoresTableHeaderSelector({ productsColumns, setV
             adornment={p.data?.measurement_unit?.short_name}
             adornmentPosition='end'
             onFocus={({ target }) => {
-              console.log(target?.value)
-
               if (Number(get(target, 'value')) == 0) {
                 setValues(`store_product.${p.data.id}.pack_quantity`, '')
                 return

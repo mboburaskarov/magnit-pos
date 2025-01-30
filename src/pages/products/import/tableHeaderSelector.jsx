@@ -73,7 +73,6 @@ const Image = ({ data, rowIndex, setImages }) => {
 
 export default function tableHeaderSelector({ importsColumns, t }) {
   const { values } = useQueryParams()
-  console.log(values)
 
   const columns = importsColumns?.map((el) => {
     if (el.field === 'public_id') {

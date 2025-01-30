@@ -242,6 +242,18 @@ export default function ProductBody({ productData = null }) {
                   id={`box_grain_count`}
                   name={`box_grain_count`}
                   fullWidth
+                  onFocus={({ target }) => {
+                    if (Number(get(target, 'value')) == 0) {
+                      setValue(`box_grain_count`, '')
+                      return
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (Number(get(e, 'target.value')) == '') {
+                      setValue(`box_grain_count`, '0')
+                      return
+                    }
+                  }}
                   required
                   type='number'
                   defaultValue={0}
@@ -262,8 +274,8 @@ export default function ProductBody({ productData = null }) {
               required
               white
               isClearable={false}
-              label={'Unit'}
-              placeholder='Unitni tanlang'
+              label={'Единица измерения'}
+              placeholder='Выберите единицу измерения'
               name={'product_unit'}
               options={get(unitsList, 'data.data', []).map((el) => ({ value: el.codename, name: el.unit_name, id: el.id }))}
             />
@@ -276,7 +288,21 @@ export default function ProductBody({ productData = null }) {
             required
             InputProps={{
               endAdornment: (
-                <Button onClick={() => generateBarcode()} id={'buttonId'} variant='text'>
+                <Button
+                  sx={{
+                    background: 'red',
+                    'margin-right': '4px',
+                    height: '35px',
+                    backgroundColor: 'orange.500',
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: 'orange.400',
+                    },
+                  }}
+                  onClick={() => generateBarcode()}
+                  id={'buttonId'}
+                  variant='text'
+                >
                   {'Создать'}
                 </Button>
               ),
@@ -421,7 +447,7 @@ export default function ProductBody({ productData = null }) {
             onChange={({ target }) => setStoreSearchText(get(target, 'value'))}
             id='producrs-search'
             name='search'
-            placeholder={t('input.search.product')}
+            placeholder={'Поиск филиала'}
           />
         </Box>
         <Box mt={'24px'}>

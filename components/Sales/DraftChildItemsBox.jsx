@@ -16,52 +16,53 @@ const useStyles = makeStyles((theme) => ({
 function DraftChildItemsBox({ item, setIsOpenChild }) {
   const classes = useStyles()
   return (
-    <Box display={'flex'} mb={'10px'} height={'80px'} justifyContent={'space-between'} onClick={setIsOpenChild}>
+    <Box display={'flex'} mb={'10px'} height={'80px'} justifyContent={'space-between'}>
       <Box borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} mr={'8px'} display={'flex'} width={'100%'} justifyContent={'space-between'}>
-        <Box display={'flex'} maxWidth={'70%'}>
+        <Box display={'flex'} width={'100%'}>
           <img className={classes.productImg} src='/default-img.avif' />
-          <Box>
-            <Typography
-              sx={{
-                display: '-webkit-box',
-                overflow: 'hidden',
-                wordWrap: 'break-word',
-                textOverflow: 'ellipsis',
-                '-webkit-box-orient': 'vertical',
-                '-webkit-line-clamp': '1',
-              }}
-              fontSize={'16px'}
-              fontWeight={'600'}
-              lineHeight={'24px'}
-              color={'bunker.950'}
-            >
-              {get(item, 'product.name')}
-            </Typography>
-            <Typography mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
-              {get(item, 'product.barcode')}
-            </Typography>
+          <Box display={'flex'} flexDirection={'column'} width={'100%'}>
+            <Box display={'flex'} justifyContent={'space-between'}>
+              <Typography
+                sx={{
+                  display: '-webkit-box',
+                  overflow: 'hidden',
+                  wordWrap: 'break-word',
+                  textOverflow: 'ellipsis',
+                  '-webkit-box-orient': 'vertical',
+                  '-webkit-line-clamp': '1',
+                }}
+                fontSize={'16px'}
+                fontWeight={'600'}
+                lineHeight={'24px'}
+                color={'bunker.950'}
+              >
+                {get(item, 'name')}
+              </Typography>
+              <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
+                C2
+              </Typography>
+            </Box>
+            <Box display={'flex'} justifyContent={'space-between'}>
+              <Typography mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
+                {get(item, 'barcode')}
+              </Typography>
+              <Typography whiteSpace={'pre'} mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
+                {get(item, 'quantity')}пч{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''} - {get(item, 'total_price')} so'm
+              </Typography>
+            </Box>
           </Box>
-        </Box>
-        <Box display={'flex'} flexDirection={'column'} alignItems={'end'}>
-          <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
-            C2
-          </Typography>
-          <Typography mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-            {get(item, 'total_price')} so'm
-          </Typography>
         </Box>
       </Box>
       <Box borderRadius={'16px'} p={'16px'} minWidth={'160px'} bgcolor={'bg.10'}>
         <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'}>
-          Sotuv bonusi
+          Бонус
         </Typography>
         <Box mt={'4px'} display={'flex'} justifyContent={'space-between'} width={'100%'}>
           <Typography fontSize={'14px'} fontWeight={'500'} color={'purple.500'} lineHeight={'20px'}>
-            {get(item, 'discount_value')}
-            {get(item, 'discount_type') === 'percent' ? '%' : "so'm"}
+            {get(item, 'bonus_amount')} %{/* {get(item, 'discount_type') === 'percent' ? '%' : "so'm"} */}
           </Typography>
           <Typography fontSize={'14px'} fontWeight={'500'} color={'purple.500'} lineHeight={'20px'}>
-            {get(item, 'discount_amount')} so'm
+            {get(item, 'bonus_percent')} so'm
           </Typography>
         </Box>
       </Box>

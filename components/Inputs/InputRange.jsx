@@ -43,7 +43,7 @@ const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandle
             margin: 0,
           },
           '& .MuiInputBase-root:first-child': {
-            borderLeft: right && 'none !important',
+            borderLeft: right && '2px solid transparent',
           },
         }}
         {...rest}

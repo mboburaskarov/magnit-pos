@@ -103,10 +103,10 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
             </Box>
             <Box ml={'16px'}>
               <Typography fontSize={24} lineHeight={'32px'} fontWeight={700}>
-                {t('draft')} {get(darftChildList, 'data.data.data[0].draft_number')}
+                {t('draft')} #{get(darftChildList, 'data.data.draft_number')}
               </Typography>
               <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
-                {get(darftChildList, 'data.data.totalPrice', 0)} so'm
+                {get(darftChildList, 'data.data.total_price', 0)} so'm
               </Typography>
             </Box>
           </Box>
@@ -180,13 +180,6 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
             width='100%'
             mt={4}
           >
-            <Button fullWidth color='secondary' variant='contained'>
-              <WithdrawIcon />
-
-              <Typography fontSize={16} ml={'12px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                {t('print')}
-              </Typography>
-            </Button>
             <LoadingButton loading={isDeleteDraft} onClick={() => deleteDraft(get(open, 'item.id'))} fullWidth color='secondary' variant='contained'>
               <DeleteIcon width='24px' />
 

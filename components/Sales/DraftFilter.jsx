@@ -101,8 +101,8 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
               name='customers'
               white
               minWidth='auto'
-              label={t('input.manufacturer.label')}
-              placeholder={t('input.manufacturer.placeholder')}
+              label={t('input.client.label')}
+              placeholder={t('input.client.placeholder')}
               options={customers?.data?.data?.data}
               getOptionLabel={(el) => `${el.first_name} ${el.last_name}`}
             />

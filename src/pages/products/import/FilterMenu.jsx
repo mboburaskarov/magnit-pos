@@ -117,7 +117,7 @@ export default function FilterMenu({ open, setOpen }) {
               id='store'
               name='store_id'
               isMulti={false}
-              placeholder={'Выберите клиент'}
+              placeholder={t('input.store.placeholder')}
               minWidth='auto'
               isClearable={false}
               label={t('input.store.label')}

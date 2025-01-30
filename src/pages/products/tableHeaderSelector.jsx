@@ -96,7 +96,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         headerName: t('table_columns.category'),
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Typography sx={{ whiteSpace: 'pre-line', color: 'gray.400' }} id={`product-${p.data.categories[0]?.name}-${p.rowIndex}`}>
+          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.data.categories[0]?.name}-${p.rowIndex}`}>
             {get(p, 'data.categories.[0].name', '-')}
           </Typography>
         )),

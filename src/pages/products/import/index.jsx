@@ -25,6 +25,7 @@ export default function ImportPage() {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
+
   const [filterMenu, setFilterMenu] = useState(false)
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
@@ -52,9 +53,8 @@ export default function ImportPage() {
   const importsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      offset: values?.offset || 0,
-      search: values?.search ? 0 : values?.search,
-      offset: values?.offset || 0,
+      offset: values?.search ? 3 : values?.offset || 3,
+      search: values?.search?.replace(/\s+/g, ''),
 
       store_id: values?.store_id,
       start_date: values?.start_date,
@@ -88,7 +88,6 @@ export default function ImportPage() {
 
   useEffect(() => {
     const count = importsList?.data?.data?._meta?.total_count
-    console.log(count, values)
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
@@ -162,6 +161,7 @@ export default function ImportPage() {
             id='imports-main-table'
             tableSettings
             columns={tableColumns}
+            defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
             data={importsList?.data?.data?.data || []}
             isDataLoading={isFetchingimportsList || importsListLoading}
             offsetCount={offsetCount}

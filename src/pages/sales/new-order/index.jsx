@@ -227,7 +227,7 @@ function NewSale() {
   const [quickCreateClientName, setQuickCreateClientName] = useState(null)
   const [inputDiscount, setInputDiscount] = useState(0)
   const [isOrderDrower, setIsOrderDrower] = useState(false)
-
+  const searchRef = useRef('')
   const printContainer = useRef()
 
   const searchResult = useQuery(
@@ -359,6 +359,12 @@ function NewSale() {
   useHotkeys('q', () => size(get(cartItemsList, 'data.data.data')) !== 0 && setIsCreateOpenDraft(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
+  useHotkeys('u', () => setOpenClientCreateMini(true), {
+    enableOnTags: ['INPUT', 'TEXTAREA'],
+  })
+  useHotkeys('Space', () => searchRef.current?.focus(), {
+    enableOnTags: ['INPUT', 'TEXTAREA'],
+  })
 
   return (
     <FormProvider {...method}>
@@ -366,6 +372,7 @@ function NewSale() {
         <Box width={'70%'} position={'relative'} padding={'20px'}>
           <Box position={'relative'}>
             <CartSearchBar
+              searchRef={searchRef}
               setIsOpenChangeShift={setIsOpenChangeShift}
               refetchcartItemsList={refetchcartItemsList}
               cashBoxDetails={cashBoxDetails}

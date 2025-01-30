@@ -56,7 +56,7 @@ export const navbatRouteData = [
         href: '/sales/create',
       },
       {
-        label: 'navbar.sales',
+        label: 'Все продажи',
         active: '/sales*',
         id: '52',
         href: '/sales/all',

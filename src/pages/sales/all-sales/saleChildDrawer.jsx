@@ -131,7 +131,7 @@ function SaleChildDrawer({ open, setOpen }) {
                 Клиент
               </Typography>
               <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                {get(saleDetailsList, 'data.data.customer.name', 'Unknown')}
+                {get(saleDetailsList, 'data.data.customer.first_name', 'Unknown')} {get(saleDetailsList, 'data.data.customer.last_name', '')}
               </Typography>
             </Box>
           </Box>

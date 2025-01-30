@@ -10,11 +10,8 @@ import CloseIcon from '../../assets/icons/CloseIcon'
 
 export default function MeasurementValueDialog({ open, setValue, setOpen }) {
   const [sum, setSum] = useState(0)
-  console.log(open, get(open, 'measurement_value'))
 
   const onSubmit = (data) => {
-    console.log(sum)
-
     if (sum <= 0) return error('Введите цену поставки')
     setValue(`${open?.name}.measurement_value`, open?.measurement_value)
     setValue(`${open?.name}.supply_price`, Number(sum))

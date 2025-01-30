@@ -10,6 +10,10 @@ const ShortcutsDrawerArray = [
     title: 'menu.sales.shortcuts.add_search',
     types: [
       {
+        titleofshortcut: 'Создать клиента',
+        symbolofshortcut: ['U'],
+      },
+      {
         titleofshortcut: 'Открыть новую вкладку',
         symbolofshortcut: ['T'],
       },

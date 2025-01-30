@@ -65,7 +65,7 @@ export default function AllSalesPage() {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
-      search: values?.search,
+      search: values?.search?.replace(/\s+/g, ''),
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
       category_id: values?.category_id,
@@ -124,7 +124,7 @@ export default function AllSalesPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product')} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'ID, Филиал'} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>

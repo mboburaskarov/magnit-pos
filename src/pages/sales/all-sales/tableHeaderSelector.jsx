@@ -68,7 +68,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Общая сумма',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='total_amount' />),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='total_amount' />),
       }
     }
     if (el.field === 'cash') {
@@ -77,15 +77,24 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'Наличные',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>
-              {get(
-                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Naqd'),
-                'amount',
-                0
-              )}
-            </Typography>
-          </Box>
+          <SimpleText
+            currency='сум'
+            withDevider
+            {...p}
+            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Naqd')}
+            type='amount'
+          />
+          // )
+          // <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+          //   <Typography>
+          //     {get(
+          //       get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Naqd'),
+          //       'amount',
+          //       0
+          //     )}
+          //     сум
+          //   </Typography>
+          // </Box>
         )),
       }
     }
@@ -95,15 +104,13 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'Humo',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>
-              {get(
-                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'humo'),
-                'amount',
-                0
-              )}
-            </Typography>
-          </Box>
+          <SimpleText
+            currency='сум'
+            withDevider
+            {...p}
+            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Humo')}
+            type='amount'
+          />
         )),
       }
     }
@@ -113,15 +120,13 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'Uzcard',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>
-              {get(
-                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Uzcard'),
-                'amount',
-                0
-              )}
-            </Typography>
-          </Box>
+          <SimpleText
+            currency='сум'
+            withDevider
+            {...p}
+            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Uzcard')}
+            type='amount'
+          />
         )),
       }
     }
@@ -131,15 +136,13 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'Visa',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>
-              {get(
-                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Visa'),
-                'amount',
-                0
-              )}
-            </Typography>
-          </Box>
+          <SimpleText
+            currency='сум'
+            withDevider
+            {...p}
+            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Visa')}
+            type='amount'
+          />
         )),
       }
     }
@@ -149,15 +152,13 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'Payme',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>
-              {get(
-                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Payme'),
-                'amount',
-                0
-              )}
-            </Typography>
-          </Box>
+          <SimpleText
+            currency='сум'
+            withDevider
+            {...p}
+            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Payme')}
+            type='amount'
+          />
         )),
       }
     }
@@ -167,15 +168,13 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'Click',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>
-              {get(
-                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Click'),
-                'amount',
-                0
-              )}
-            </Typography>
-          </Box>
+          <SimpleText
+            currency='сум'
+            withDevider
+            {...p}
+            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Click')}
+            type='amount'
+          />
         )),
       }
     }
@@ -185,15 +184,13 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'Uzumbank',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>
-              {get(
-                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Uzumbank'),
-                'amount',
-                0
-              )}
-            </Typography>
-          </Box>
+          <SimpleText
+            currency='сум'
+            withDevider
+            {...p}
+            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'UzumBank')}
+            type='amount'
+          />
         )),
       }
     }
@@ -203,15 +200,13 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'Баланс',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>
-              {get(
-                get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Balance'),
-                'amount',
-                0
-              )}
-            </Typography>
-          </Box>
+          <SimpleText
+            currency='сум'
+            withDevider
+            {...p}
+            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Balanc')}
+            type='amount'
+          />
         )),
       }
     }

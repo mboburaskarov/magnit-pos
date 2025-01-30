@@ -59,7 +59,7 @@ export default function AutoOrderPage() {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
-      search: values?.search,
+      search: values?.search?.replace(/\s+/g, ''),
       store_id: values?.store_id,
       start_date: values?.start_date,
       end_date: values?.end_date,

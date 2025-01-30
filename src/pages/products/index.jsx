@@ -25,6 +25,7 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import FilterMenu from './FilterMenu'
 import ProductDrawer from './product-edit/ProductDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
+import { get } from 'lodash'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ProductsPage() {
@@ -69,7 +70,7 @@ export default function ProductsPage() {
   const productsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      search: values?.search,
+      search: values?.search?.replace(/\s+/g, ''),
       offset: values?.search ? 0 : values?.offset || 0,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
@@ -105,6 +106,13 @@ export default function ProductsPage() {
     isFetching: isFetchingproductsList,
     refetch,
   } = useQuery(['productsList', productsListFilter], () => requests.getAllProducts(productsListFilter))
+
+  const {
+    data: statusCountList,
+    isLoading: statusCountListLoading,
+    isFetching: isFetchingstatusCountList,
+    refetch: fetchStatusCountList,
+  } = useQuery(['statusCountList'], () => requests.getAllProductsStatusCount())
 
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
     onSuccess: () => {
@@ -178,13 +186,13 @@ export default function ProductsPage() {
             defaultValue='ALL'
             onChange={(e) => setAppType(e)}
             options={[
-              { title: t('switch.title.all'), value: 'ALL', count: 23 },
-              { title: t('switch.title.active'), value: 'active', count: 0 },
-              { title: t('switch.title.inactive'), value: 'inactive', count: 0 },
-              { title: t('switch.title.less_amount'), value: 'low-stock', count: 0 },
-              { title: t('switch.title.empty'), value: 'zero-stock', count: 0 },
-              { title: t('switch.title.less_date'), value: 'imminent', count: 0 },
-              { title: t('switch.title.outofdate'), value: 'expired', count: 0 },
+              { title: t('switch.title.all'), value: 'ALL', count: get(statusCountList, 'data.data.total_count', 0) },
+              { title: t('switch.title.active'), value: 'active', count: get(statusCountList, 'data.data.active_count', 0) },
+              { title: t('switch.title.inactive'), value: 'inactive', count: get(statusCountList, 'data.data.inactive_count', 0) },
+              { title: t('switch.title.less_amount'), value: 'low-stock', count: get(statusCountList, 'data.data.low_stock_count', 0) },
+              { title: t('switch.title.empty'), value: 'zero-stock', count: get(statusCountList, 'data.data.zero_stock_count', 0) },
+              { title: t('switch.title.less_date'), value: 'imminent', count: get(statusCountList, 'data.data.imminent_count', 0) },
+              { title: t('switch.title.outofdate'), value: 'expired', count: get(statusCountList, 'data.data.expired_count', 0) },
             ]}
           />
         </Box>

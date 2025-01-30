@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from 'react'
-import { InputAdornment, Box, TextField } from '@mui/material'
+import { InputAdornment, Box, TextField, Typography } from '@mui/material'
 import * as qs from 'qs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
@@ -101,6 +101,7 @@ const InputSearch = ({
   timeout = 200,
   handleClickGiftCards,
   onFocus,
+  hasShortCut = false,
   error,
   ...rest
 }) => {
@@ -142,13 +143,35 @@ const InputSearch = ({
             startAdornment: <InputAdornment position='start'>{icon || <SearchIcon />}</InputAdornment>,
             endAdornment: (
               <InputAdornment position='start'>
-                {(value || searchTerm) && (
+                {value || searchTerm ? (
                   <div className={classes.resetIcon}>
                     {adornmentText ? <span>{adornmentText}</span> : ''}
                     <button type='button' onClick={() => (uncontrolled ? setValue('') : setSearchTerm(''))}>
                       <FontAwesomeIcon icon={faTimesCircle} />
                     </button>
                   </div>
+                ) : (
+                  hasShortCut && (
+                    <Typography mr={'10px'} color={'bunker.300'} fontWeight={'600'} fontSize={'16px'} display={'flex'}>
+                      Нажмите
+                      <Box
+                        sx={{
+                          color: '#bdbdbd',
+                          border: '2px solid #cfcfcf',
+                          height: '24px',
+                          display: 'flex',
+                          padding: '2px',
+                          ml: '5px',
+                          minWidth: '24px',
+                          alignItems: 'center',
+                          borderRadius: '8px',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        /
+                      </Box>
+                    </Typography>
+                  )
                 )}
               </InputAdornment>
             ),

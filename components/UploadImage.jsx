@@ -281,7 +281,6 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
       for (const file of files) {
         const formData = new FormData()
         formData.append('file', file)
-        console.log(formData, file, files)
 
         uploadImage(formData)
       }
