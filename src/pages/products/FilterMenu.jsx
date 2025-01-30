@@ -137,7 +137,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
               isMulti={false}
               placeholder={'Выберите клиент'}
               minWidth='auto'
-              isClearable={false}
+              isClearable={true}
               label={t('input.store.label')}
               request={requests.getAllShops}
               filters={{ limit: 10 }}

@@ -113,7 +113,7 @@ export default function ImportPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={'наименование'} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'Наименование'} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>

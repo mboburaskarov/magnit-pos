@@ -22,6 +22,7 @@ import InputSearch from '../../../components/Inputs/InputSearch'
 import { error } from '../../../utils/toast'
 import MeasurementValueDialog from './MeasurementValueDialog'
 import useDebouncedValue from '../../hooks/useDebouncedValue'
+import PriceFormattedInput from '../../../components/Inputs/PriceFormattedInput'
 
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
@@ -401,7 +402,7 @@ export default function ProductBody({ productData = null }) {
             />
           </Box>
           <Box mt={'24px'} display={'flex'} width={'100%'}>
-            <OutLineTextField
+            <PriceFormattedInput
               endAdornmentText={'%'}
               required
               type='number'
@@ -413,7 +414,7 @@ export default function ProductBody({ productData = null }) {
               onBlur={(e) => changeAmount('bonus_percent', e)}
               name='bonus_percent'
               label={'Бонусный процент'}
-              placeholder={t('create_new_product.vat_price.placeholder')}
+              placeholder={'Введите бонусный процент'}
             />
             <Box width={'20px'} />
 

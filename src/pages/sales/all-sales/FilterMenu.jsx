@@ -52,8 +52,8 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
 
     reset(
       {
-        category_id: category_id ? getOptionsFromUrlParam(category_id, categories?.data?.data)[0] : null,
-        producer: producer ? getOptionsFromUrlParam(producer, producers?.data?.data)[0] : null,
+        category_id: category_id ? getOptionsFromUrlParam(category_id, categories?.data?.data?.data)[0] : null,
+        producer: producer ? getOptionsFromUrlParam(producer, producers?.data?.data?.data)[0] : null,
         store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data?.data, 'name')[0] : null,
         supply_price_to: supply_price_to,
         retail_price_to: retail_price_to,
@@ -120,7 +120,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               isMulti={false}
               placeholder={'Выберите клиент'}
               minWidth='auto'
-              isClearable={false}
+              isClearable={true}
               label={t('input.store.label')}
               request={requests.getAllShops}
               filters={{ limit: 10 }}
@@ -132,16 +132,25 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               }}
               filterOption={() => true}
             />
-            <SelectSimple
-              fullWidth
-              id='categ'
-              white
+            <LazySelect
+              slug='users'
+              boxStyle={{ width: '100%' }}
+              id='store'
               name='category_id'
-              minWidth='auto'
+              isMulti={false}
               label={t('input.category.label')}
               placeholder={t('input.category.placeholder')}
-              options={categories?.data?.data}
-              getOptionLabel={(el) => el.name}
+              minWidth='auto'
+              isClearable={true}
+              request={requests.getAllCategories}
+              filters={{ limit: 10 }}
+              control={control}
+              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+              // uncontrolled
+              getOptionLabel={(option) => {
+                return <Typography color='grey.600'>{option.name}</Typography>
+              }}
+              filterOption={() => true}
             />
 
             <SelectSimple

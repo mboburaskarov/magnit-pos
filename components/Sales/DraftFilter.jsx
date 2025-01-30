@@ -108,7 +108,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
               isMulti={false}
               placeholder={'Выберите клиент'}
               minWidth='auto'
-              isClearable={false}
+              isClearable={true}
               label={t('input.store.label')}
               request={requests.getAllCustomers}
               filters={{ limit: 10 }}

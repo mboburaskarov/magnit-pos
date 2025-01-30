@@ -159,6 +159,7 @@ export const generateCustomStyles = (props = {}) => {
     indicatorContainer: (provided) => ({
       ...provided,
       padding: '0 8px',
+      backgroundColor: '#fe5000',
     }),
     dropdownIndicator: (base) => ({
       ...base,

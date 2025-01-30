@@ -113,7 +113,7 @@ export default function MainDetails({ clientData, paymentTypes, setPaymentTypes,
             isMulti={false}
             placeholder={'Выберите клиент'}
             minWidth='auto'
-            isClearable={false}
+            isClearable={true}
             request={requests.getAllShops}
             filters={{ limit: 10 }}
             control={control}

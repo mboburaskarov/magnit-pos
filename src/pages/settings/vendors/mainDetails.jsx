@@ -144,7 +144,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             isMulti={false}
             placeholder={'Выберите клиент'}
             minWidth='auto'
-            isClearable={false}
+            isClearable={true}
             request={requests.getAllShops}
             filters={{ limit: 10 }}
             control={control}

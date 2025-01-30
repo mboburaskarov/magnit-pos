@@ -119,7 +119,7 @@ export default function FilterMenu({ open, setOpen }) {
               isMulti={false}
               placeholder={t('input.store.placeholder')}
               minWidth='auto'
-              isClearable={false}
+              isClearable={true}
               label={t('input.store.label')}
               request={requests.getAllShops}
               filters={{ limit: 10 }}

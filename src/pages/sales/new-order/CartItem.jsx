@@ -248,7 +248,18 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                   defaultValue={get(item, 'quantity', 0)}
                   type='number'
                   disabled={false}
+                  onFocus={({ target }) => {
+                    if (Number(get(target, 'value')) == 0) {
+                      method.setValue(`quantity_${item?.id}`, '')
+                    }
+                  }}
                   onBlur={({ target }) => {
+                    if (Number(get(target, 'value')) == '') {
+                      method.setValue(`quantity_${item?.id}`, '0')
+                    }
+                    if (get(item, 'quantity') == Number(get(target, 'value'))) {
+                      return
+                    }
                     if (method.getValues(`unit_quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
                       method.setValue(`quantity_${item?.id}`, get(target, 'value'))
                     } else {
@@ -275,7 +286,19 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                     adornmentClassName={cls.adornment}
                     max={100}
                     type='number'
+                    onFocus={({ target }) => {
+                      if (Number(get(target, 'value')) == 0) {
+                        method.setValue(`unit_quantity_${item?.id}`, '')
+                      }
+                    }}
                     onBlur={({ target }) => {
+                      if (Number(get(target, 'value')) == '') {
+                        method.setValue(`unit_quantity_${item?.id}`, '0')
+                      }
+                      if (get(item, 'unit_quantity') == Number(get(target, 'value'))) {
+                        return
+                      }
+
                       if (method.getValues(`quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
                         method.setValue(`unit_quantity_${item?.id}`, get(target, 'value'))
                       } else {
@@ -313,28 +336,30 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                 }}
               >
                 <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
-                  <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}> {item?.barcode}</Typography>
-                  {item?.discount_price > 0 && (
-                    <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
-                      {item?.discount_price}
+                  <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>{item?.barcode}</Typography>
+
+                  <Box display={'flex'}>
+                    <Typography
+                      textDecoration='line-through'
+                      sx={{
+                        mr: '10px',
+                        color: 'orange.500',
+                        whiteSpace: 'pre',
+                        fontSize: '16px',
+                        lineHeight: '24px',
+                        fontWeight: '600',
+                        textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
+                        color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
+                      }}
+                    >
+                      {thousandDivider(item?.unit_price, 'сум')}
                     </Typography>
-                  )}
-                </Box>
-                <Box display={'flex'}>
-                  <Typography
-                    textDecoration='line-through'
-                    sx={{
-                      mr: '10px',
-                      color: 'orange.500',
-                      fontSize: '16px',
-                      lineHeight: '24px',
-                      fontWeight: '600',
-                      textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
-                      color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
-                    }}
-                  >
-                    {thousandDivider(item?.unit_price, 'сум')}
-                  </Typography>
+                    {item?.discount_price > 0 && (
+                      <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
+                        {thousandDivider(item?.discount_price, 'сум')}
+                      </Typography>
+                    )}
+                  </Box>
                 </Box>
               </Box>
             </Box>
