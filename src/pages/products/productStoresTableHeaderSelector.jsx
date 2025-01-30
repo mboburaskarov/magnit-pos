@@ -64,7 +64,7 @@ export default function productStoresTableHeaderSelector({ productsColumns, setV
                 setValues(`store_product.${p.data.id}.pack_quantity`, '0')
                 return
               }
-              if (get(e, 'target.value') > get(p, 'data.pack_quantity') && get(productData, 'id', false)) {
+              if (get(e, 'target.value') != get(p, 'data.pack_quantity') && get(productData, 'id', false)) {
                 setOpenChangeQuantity({
                   supply_price: get(p, 'data.supply_price'),
                   name: `store_product.${p.data.id}`,

@@ -23,4 +23,10 @@ export const imports_list_statuses = [
     bgcolor: 'red.10',
     name: 'Отменено',
   },
+  {
+    id: 'writeoff',
+    color: 'red.700',
+    bgcolor: 'red.10',
+    name: 'Списание',
+  },
 ]
