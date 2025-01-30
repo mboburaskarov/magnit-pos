@@ -272,6 +272,7 @@ export default function ProductsPage() {
             tableSettings
             columns={tableColumns}
             data={productsList?.data?.data?.data || []}
+            totalCount={productsList?.data?.data?._meta?.total_count || 0}
             isDataLoading={isFetchingproductsList || productsListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {

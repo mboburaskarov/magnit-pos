@@ -54,6 +54,7 @@ function AgGridBottom({
   isDownloading,
   download,
   offsetSize,
+  totalCount,
   setOffsetSize,
   eventMessages,
   fullInfoAboutCurrentPage,
@@ -78,7 +79,7 @@ function AgGridBottom({
         <RowFilterButton eventMessage={eventMessages?.[1]} offsetSize={offsetSize} setOffsetSize={setOffsetSize} />
         {fullInfoAboutCurrentPage && (
           <Typography fontSize={'16px'} lineHeight={'24px'} color={'bunker.400'} fontWeight={'500'}>
-            {t('ag_grid.bottom.info', { from: controlledOffsetCount, start: offsetIndex * offsetSize - offsetSize + 1, end: offsetIndex * offsetSize })}
+            {t('ag_grid.bottom.info', { from: totalCount, start: offsetIndex * offsetSize - offsetSize + 1, end: offsetIndex * offsetSize })}
           </Typography>
         )}
         <Pagination count={controlledOffsetCount} handleChangeOffset={changeOffset} offset={offsetIndex} offsetQuery={offsetQuery} />

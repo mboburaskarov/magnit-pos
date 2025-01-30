@@ -49,6 +49,7 @@ const AgGridSimpleTable = ({
   resetTable,
   totalData,
   columnGroup,
+  totalCount = 0,
   customDisplayColumnsChangeHandler,
   simpleTable,
   isRefreshing,
@@ -170,6 +171,7 @@ const AgGridSimpleTable = ({
   }, [])
 
   const getRowId = useCallback((params) => params.data.id, [data, columns, totalData])
+  console.log(rowData)
 
   return (
     <Fragment>
@@ -218,6 +220,7 @@ const AgGridSimpleTable = ({
             fullInfoAboutCurrentPage={fullInfoAboutCurrentPage}
             isDownloading={isDownloading}
             download={download}
+            totalCount={totalCount}
             offsetSize={offsetSize}
             setOffsetSize={setOffsetSize}
             eventMessages={eventMessages}
