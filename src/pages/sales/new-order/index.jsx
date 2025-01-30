@@ -362,7 +362,7 @@ function NewSale() {
   useHotkeys('u', () => setOpenClientCreateMini(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys('Space', () => searchRef.current?.focus(), {
+  useHotkeys('/', () => searchRef.current?.focus(), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
 

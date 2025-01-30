@@ -171,7 +171,6 @@ const AgGridSimpleTable = ({
   }, [])
 
   const getRowId = useCallback((params) => params.data.id, [data, columns, totalData])
-  console.log(rowData)
 
   return (
     <Fragment>

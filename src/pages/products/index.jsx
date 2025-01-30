@@ -112,7 +112,7 @@ export default function ProductsPage() {
     isLoading: statusCountListLoading,
     isFetching: isFetchingstatusCountList,
     refetch: fetchStatusCountList,
-  } = useQuery(['statusCountList'], () => requests.getAllProductsStatusCount())
+  } = useQuery(['statusCountList', values?.search], () => requests.getAllProductsStatusCount({ search: values?.search }))
 
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
     onSuccess: () => {

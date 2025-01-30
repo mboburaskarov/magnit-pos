@@ -31,10 +31,11 @@ export default function ProductHistory({ id }) {
 
   useEffect(() => {
     const count = productDataHistory?.data?.data?._meta?.total_count
+
     const offsetsCount = Math.ceil(count / Number(values?.limitHistory || 0))
 
     setOffsetCount(offsetsCount || 0)
-  }, [productDataHistory?.data?.data, values?.limitHistory])
+  }, [productDataHistory?.data, values?.limitHistory])
 
   useEffect(() => {
     refetch()

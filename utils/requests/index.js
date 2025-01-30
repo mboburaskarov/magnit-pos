@@ -87,7 +87,7 @@ export const requests = {
 
   //products
   getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getAllProductsStatusCount: (filter) => request.get(`v1/product/total-status-count`),
+  getAllProductsStatusCount: (filter) => request.get(`v1/product/total-status-count${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllStoreProducts: (data, filter) => request.get(`v1/product/store/${get(data, 'id')}${qs.stringify(filter, { addQueryPrefix: true })}`),
   createProduct: (data) => request.post(`v1/product`, data),
   createCartItem: (data) => request.post(`v1/cart_item`, data),
