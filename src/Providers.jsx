@@ -62,7 +62,7 @@ function Providers({ children }) {
   const muiTheme = useMemo(() => {
     const themeObj = theme({
       palette: themeMode === 'dark' ? paletteLight : paletteLight,
-      // palette: themeMode === 'dark' ? paletteDark : paletteLight,
+      palette: themeMode === 'dark' ? paletteDark : paletteLight,
       mode: themeMode,
     })
     return createTheme(themeObj)
