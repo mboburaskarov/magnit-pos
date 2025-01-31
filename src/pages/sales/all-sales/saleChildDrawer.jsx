@@ -92,6 +92,7 @@ function SaleChildDrawer({ open, setOpen }) {
             <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
               {t('vendor')}:
             </Typography>
+            {/* <DefaultImgIcon /> */}
             <img className={classes.usrImg} src='/default-user-img.png' />
 
             <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
@@ -149,7 +150,7 @@ function SaleChildDrawer({ open, setOpen }) {
                     {get(pays, 'payment_type.name')}
                   </Typography>
                   <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                    {get(pays, 'amount')} so'm
+                    {thousandDivider(get(pays, 'amount'), 'сум')}
                   </Typography>
                 </Box>
               </Grid>

@@ -2,6 +2,12 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const columns = [
   {
+    field: 'number',
+    hide: false,
+    minWidth: 60,
+    width: 60,
+  },
+  {
     field: 'public_id',
     hide: false,
     minWidth: 60,

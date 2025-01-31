@@ -96,7 +96,7 @@ function RippedPaperCheck({
                   id={`return-price-${'index4'}`}
                   rowData={{
                     type: `Sana:`,
-                    value: ` ${dayjs().day(7).format('DD.MM.YYYY, HH:mm:ss')}`,
+                    value: `${dayjs(new Date()).format('DD.MM.YYYY, HH:mm:ss')}`,
                   }}
                 />
               )}

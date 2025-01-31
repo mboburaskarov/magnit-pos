@@ -302,6 +302,7 @@ export default function VendorsPage() {
             tableSettings
             columns={tableColumns}
             data={vendorsList?.data?.data?.data || []}
+            totalCount={vendorsList?.data?.data?._meta?.total_count || 0}
             isDataLoading={isFetchingvendorsList || vendorsListLoading}
             offsetCount={offsetCount}
             emptyTableText={{

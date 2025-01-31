@@ -12,6 +12,7 @@ import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/
 import palette from '../../../../src/assets/theme/mui.config'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import * as qs from 'qs'
+import { get } from 'lodash'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography
@@ -75,10 +76,26 @@ export default function tableHeaderSelector({ importsColumns, t }) {
   const { values } = useQueryParams()
 
   const columns = importsColumns?.map((el) => {
-    if (el.field === 'public_id') {
+    if (el.field === 'number') {
       return {
         ...el,
         headerName: '№',
+        colId: el.field,
+        cellRenderer: memo(({ rowIndex, api, ...p }) => {
+          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+
+          return (
+            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+              {absoluteIndex}
+            </Typography>
+          )
+        }),
+      }
+    }
+    if (el.field === 'public_id') {
+      return {
+        ...el,
+        headerName: 'Импортный номер',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='public_id' />),
       }
@@ -151,14 +168,14 @@ export default function tableHeaderSelector({ importsColumns, t }) {
 
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider type={'received_amount'} />
+              <SimpleText {...p} withDevider currency={'сум'} type={'received_amount'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
 
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider type={'accepted_amount'} />
+              <SimpleText {...p} withDevider currency={'сум'} type={'accepted_amount'} />
             </Box>
           </>
         )),

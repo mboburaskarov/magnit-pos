@@ -59,7 +59,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: t('fish'),
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')}</Typography>),
+        cellRenderer: memo((p) => <Typography whiteSpace={'pre-line'}>{get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')}</Typography>),
       }
     }
     if (el.field === 'phone_number') {
@@ -94,7 +94,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Сумма покупки',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='sale_amount' />),
+        cellRenderer: memo((p) => <SimpleText withDevider currency={'сум'} {...p} type='sale_amount' />),
       }
     }
     if (el.field === 'sale_date') {

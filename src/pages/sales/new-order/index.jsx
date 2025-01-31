@@ -34,6 +34,7 @@ import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
 import CreateDraftDrawer from './createDraftDrawer'
 import ChangeShift from './ChangeShift'
 import ShortcutsDrawer from '../../../../components/Sales/ShortcutsDrawer'
+import thousandDivider from '../../../../utils/thousandDivider'
 const useStyles = makeStyles((theme) => ({
   card_detail: {
     width: '30%',
@@ -362,9 +363,16 @@ function NewSale() {
   useHotkeys('u', () => setOpenClientCreateMini(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys('/', () => searchRef.current?.focus(), {
-    enableOnTags: ['INPUT', 'TEXTAREA'],
-  })
+  useHotkeys(
+    '/',
+    (event) => {
+      event.preventDefault() // Prevent the default behavior of the "/" key
+      searchRef.current?.focus() // Focus the input field
+    },
+    {
+      enableOnTags: ['INPUT', 'TEXTAREA'], // Enable the hotkey even when these elements are focused
+    }
+  )
 
   return (
     <FormProvider {...method}>
@@ -619,7 +627,7 @@ function NewSale() {
                 {t('total_amount')}:
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
-                {get(cartItemsList, 'data.data.total_amount')} so'm
+                {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
@@ -627,7 +635,7 @@ function NewSale() {
                 {t('discount')}:
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
-                {get(cartItemsList, 'data.data.discount_amount')} so'm
+                {thousandDivider(get(cartItemsList, 'data.data.discount_amount'), 'сум')}
               </Typography>
             </Box>
             <Button
@@ -640,7 +648,7 @@ function NewSale() {
                 {t('pay')}
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
-                {get(cartItemsList, 'data.data.total_amount') + get(cartItemsList, 'data.data.discount_amount')} so'm
+                {thousandDivider(get(cartItemsList, 'data.data.total_amount') + get(cartItemsList, 'data.data.discount_amount'), 'сум')}
               </Typography>
             </Button>
             <Button disabled={size(get(cartItemsList, 'data.data.data')) == 0} color='secondary' onClick={() => setIsCreateOpenDraft(true)}>

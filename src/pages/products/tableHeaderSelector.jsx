@@ -97,7 +97,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         colId: el.field,
         cellRenderer: memo((p) => (
           <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.data.categories[0]?.name}-${p.rowIndex}`}>
-            {get(p, 'data.categories.[0].name', '-')}
+            {get(p, 'data.categories', []).map((e) => `${e.name}, `)}
           </Typography>
         )),
       }
@@ -221,7 +221,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         ...el,
         headerName: t('table_columns.quantity'),
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='quantity' />),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='quantity' />),
       }
     }
     if (el.field === 'expire_date') {

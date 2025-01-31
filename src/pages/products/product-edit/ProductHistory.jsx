@@ -138,6 +138,7 @@ export default function ProductHistory({ id }) {
         offsetQuery='offsetHistory'
         limitQuery='limitHistory'
         id='products-history-table'
+        totalCount={productDataHistory?.data?.data?._meta?.total_count || 0}
         columns={columns}
         data={formattedData}
         offsetCount={offsetCount}

@@ -123,6 +123,7 @@ function CardShiftDetails() {
               tableSettings
               columns={tableColumns}
               data={rowData || []}
+              totalCount={closeCashboxPaymentList?.data?.data?.data?._meta?.total_count || 0}
               isDataLoading={isFetchingcloseCashboxPaymentList || closeCashboxPaymentListLoading}
               pagination={false}
               updaterAction={(newData) => {

@@ -20,6 +20,7 @@ import StyledDialog from '../../Dialogs/StyledeEmptyDialog'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import QrScanIcon from '../../../src/assets/icons/QrScanIcon'
 import { useHotkeys } from 'react-hotkeys-hook'
+import thousandDivider from '../../../utils/thousandDivider'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -459,7 +460,7 @@ export default function OrderDrawer({
                       Итого:
                     </Typography>
                     <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={'bunker.950'}>
-                      {get(cartItemsList, 'total_amount')} UZS
+                      {thousandDivider(get(cartItemsList, 'total_amount'), 'сум')}
                     </Typography>
                   </Box>
                   <Box
@@ -474,7 +475,7 @@ export default function OrderDrawer({
                       {maxAmount < 0 ? 'Возврат' : 'Должен платить'}
                     </Typography>
                     <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={maxAmount === 0 ? 'green.700' : 'red.700'}>
-                      {maxAmount} UZS
+                      {thousandDivider(maxAmount, 'сум')}
                     </Typography>
                   </Box>
                 </Box>

@@ -204,6 +204,7 @@ export default function ClientsPage() {
             id='clients-main-table'
             tableSettings
             columns={tableColumns}
+            totalCount={clientsList?.data?.data?._meta?.total_count || 0}
             data={clientsList?.data?.data?.data || []}
             isDataLoading={isFetchingclientsList || clientsListLoading}
             offsetCount={offsetCount}

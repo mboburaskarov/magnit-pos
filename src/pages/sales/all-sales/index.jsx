@@ -173,6 +173,7 @@ export default function AllSalesPage() {
             tableSettings
             columns={tableColumns}
             data={salesList?.data?.data?.data || []}
+            totalCount={salesList?.data?.data?._meta?.total_count || 0}
             isDataLoading={isFetchingsalesList || salesListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {

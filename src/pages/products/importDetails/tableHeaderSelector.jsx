@@ -69,7 +69,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.product?.supply_price}</Typography>
+            <Typography>{thousandDivider(p.data?.product?.supply_price, 'сум')}</Typography>
           </Box>
         )),
       }
@@ -81,7 +81,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.product?.retail_price}</Typography>
+            <Typography>{thousandDivider(p.data?.product?.retail_price, 'сум')}</Typography>
           </Box>
         )),
       }
@@ -112,13 +112,13 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
             <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {p.data?.received_count}
+                {thousandDivider(p.data?.received_count)}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {p.data?.accepted_count}
+                {thousandDivider(p.data?.accepted_count)}
               </Typography>
             </Box>
           </>
@@ -128,20 +128,20 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
     if (el.field === 'amount') {
       return {
         ...el,
-        headerName: 'Количество',
+        headerName: 'Цена',
         colId: el.field,
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {p.data?.received_amount}
+                {thousandDivider(p.data?.received_amount, 'сум')}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {p.data?.accepted_amount}
+                {thousandDivider(p.data?.accepted_amount, 'сум')}
               </Typography>
             </Box>
           </>

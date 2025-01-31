@@ -208,6 +208,7 @@ export default function RolesPage() {
             tableSettings
             columns={tableColumns}
             data={rolesList?.data?.data?.data || []}
+            totalCount={rolesList?.data?.data?._meta?.total_count || 0}
             isDataLoading={isFetchingrolesList || rolesListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {

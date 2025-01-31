@@ -12,6 +12,7 @@ import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/
 import palette from '../../../../src/assets/theme/mui.config'
 import InputQuantity from '../../../../components/Inputs/InputQuantity'
 import { get } from 'lodash'
+import { useQueryParams } from '../../../hooks/useQueryParams'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -73,7 +74,25 @@ const Image = ({ data, rowIndex, setImages }) => {
 }
 
 export default function tableHeaderSelector({ importsColumns, t, setValue, autoOrderChangeQuantity }) {
+  const { values } = useQueryParams()
+
   const columns = importsColumns?.map((el) => {
+    if (el.field === 'number') {
+      return {
+        ...el,
+        headerName: '№',
+        colId: el.field,
+        cellRenderer: memo(({ rowIndex, api, ...p }) => {
+          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+
+          return (
+            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+              {absoluteIndex}
+            </Typography>
+          )
+        }),
+      }
+    }
     if (el.field === 'product_name') {
       return {
         ...el,
@@ -83,12 +102,20 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, autoO
       }
     }
 
+    if (el.field === 'kvant') {
+      return {
+        ...el,
+        headerName: 'Квант',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='kvant' />),
+      }
+    }
     if (el.field === 'current_stock') {
       return {
         ...el,
         headerName: 'Остаток',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='current_stock' />),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='current_stock' />),
       }
     }
     if (el.field === 'monthly_quantity') {
@@ -96,7 +123,7 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, autoO
         ...el,
         headerName: 'Продажа месяц средняя',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='month_sale_stock' />),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='month_sale_stock' />),
       }
     }
     if (el.field === 'weekly_quantity') {
@@ -104,7 +131,7 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, autoO
         ...el,
         headerName: '7 дней продажа',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='day_sale_stock' />),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='day_sale_stock' />),
       }
     }
     if (el.field === 'order_growth') {
@@ -112,7 +139,7 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, autoO
         ...el,
         headerName: 'Заказ 7 дней ( +Прирост 10%)',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='order_growth' />),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='order_growth' />),
       }
     }
     if (el.field === 'order_lead_time') {
@@ -120,7 +147,7 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, autoO
         ...el,
         headerName: 'Плечо заказа. 6 раз / в неделю.',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='order_lead_time' />),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='order_lead_time' />),
       }
     }
 
@@ -129,7 +156,7 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, autoO
         ...el,
         headerName: 'Заказ итог',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='suggested_order_quantity' />),
+        cellRenderer: memo((p) => <SimpleText tho {...p} type='suggested_order_quantity' />),
       }
     }
     if (el.field === 'adjusted_order') {

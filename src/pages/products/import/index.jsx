@@ -53,7 +53,7 @@ export default function ImportPage() {
   const importsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      offset: values?.search ? 3 : values?.offset || 3,
+      offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search?.replace(/\s+/g, ''),
 
       store_id: values?.store_id,
@@ -163,6 +163,7 @@ export default function ImportPage() {
             columns={tableColumns}
             defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
             data={importsList?.data?.data?.data || []}
+            totalCount={importsList?.data?.data?._meta?.total_count || 0}
             isDataLoading={isFetchingimportsList || importsListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {

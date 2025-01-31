@@ -5,6 +5,7 @@ import React from 'react'
 import ArrowRightIcon from '../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../src/assets/icons/BagOutline'
 import { get } from 'lodash'
+import thousandDivider from '../../utils/thousandDivider'
 const useStyles = makeStyles((theme) => ({
   productImg: {
     width: '48px',
@@ -47,7 +48,8 @@ function DraftChildItemsBox({ item, setIsOpenChild }) {
                 {get(item, 'barcode')}
               </Typography>
               <Typography whiteSpace={'pre'} mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-                {get(item, 'quantity')}пч{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''} - {get(item, 'total_price')} so'm
+                {get(item, 'quantity')}пч{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''} -{' '}
+                {thousandDivider(get(item, 'total_price'), 'сум')}
               </Typography>
             </Box>
           </Box>
@@ -62,7 +64,7 @@ function DraftChildItemsBox({ item, setIsOpenChild }) {
             {get(item, 'bonus_amount')} %{/* {get(item, 'discount_type') === 'percent' ? '%' : "so'm"} */}
           </Typography>
           <Typography fontSize={'14px'} fontWeight={'500'} color={'purple.500'} lineHeight={'20px'}>
-            {get(item, 'bonus_percent')} so'm
+            {thousandDivider(get(item, 'bonus_percent'), 'сум')}
           </Typography>
         </Box>
       </Box>

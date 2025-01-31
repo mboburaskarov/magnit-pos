@@ -256,6 +256,7 @@ export default function CashBoxsPage() {
             tableSettings
             columns={tableColumns}
             data={cashboxList?.data?.data?.data || []}
+            totalCount={cashboxList?.data?.data?._meta?.total_count || 0}
             isDataLoading={isFetchingcashboxList || cashboxListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {

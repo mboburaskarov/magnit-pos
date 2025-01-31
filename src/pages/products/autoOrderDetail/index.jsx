@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Container, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -127,101 +127,103 @@ export default function AutoOrderDetailPage() {
             noActions
             // backButtonClick={() => (get(values, 'tab') === 'details' ? '/products/all' : '/products/import')}
             backHref={'/products/auto-order'}
-            text={'Детали импорта'}
+            text={'Детали aвто заказ'}
             checkAccessId={'product-create'}
           />
-
-          <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-            <Box display={'flex'}>
-              <Box
-                width='100%'
-                sx={{
-                  '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                  '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                    background: 'transparent',
-                    width: '400px',
-                    height: 48,
-                  },
-                }}
-              >
-                <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
-              </Box>
-
-              <Box minWidth={113} ml={'16px'}>
-                <Button
+          <Container>
+            <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
+              <Box display={'flex'}>
+                <Box
+                  width='100%'
                   sx={{
-                    height: '48px',
-                    padding: 0,
-                    bgcolor: '#fff',
-                    border: '1px solid #ECEDF2',
-                    color: 'dark.500',
-                    fontWeight: '500',
-                    fontSize: '16px',
-                    lineHeight: '24px',
-                    '& span': {
-                      mr: '12px',
+                    '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+                    '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                      background: 'transparent',
+                      width: '400px',
+                      height: 48,
                     },
                   }}
-                  fullWidth
-                  startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                  variant='contained'
-                  color='secondary'
-                  onClick={() => setFilterMenu((prev) => !prev)}
                 >
-                  <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                    {t('filter_dialog.label')}
-                  </Typography>
-                </Button>
-              </Box>
-            </Box>
-            <Box display={'flex'} alignItems={'center'}>
-              <Box>
-                <ColumnsFilterButtonForAll
-                  title={t('ag_grid.table_setting.label')}
-                  columns={tableColumns}
-                  isCatalog={false}
-                  resetTableHeader={resetTableHeader}
-                  changeColumnSequence={changeColumnSequence}
-                />
-              </Box>
-              <CheckAccess id={'product-create'}>
-                <Box minWidth={156}>
+                  <InputSearch id='producrs-search' name='search' placeholder={'Наименование'} uncontrolled />
+                </Box>
+
+                <Box minWidth={113} ml={'16px'}>
                   <Button
-                    sx={{ height: '48px' }}
-                    type='submit'
-                    onClick={methods.handleSubmit(onSubmit, onError)}
+                    sx={{
+                      height: '48px',
+                      padding: 0,
+                      bgcolor: '#fff',
+                      border: '1px solid #ECEDF2',
+                      color: 'dark.500',
+                      fontWeight: '500',
+                      fontSize: '16px',
+                      lineHeight: '24px',
+                      '& span': {
+                        mr: '12px',
+                      },
+                    }}
                     fullWidth
-                    // startIcon={<PlusIcon color='#fff' />}
+                    startIcon={<FilterMenuIcon color={theme.palette.black} />}
                     variant='contained'
-                    color='primary'
+                    color='secondary'
+                    onClick={() => setFilterMenu((prev) => !prev)}
                   >
-                    Создать заказ
+                    <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
+                      {t('filter_dialog.label')}
+                    </Typography>
                   </Button>
                 </Box>
-              </CheckAccess>
+              </Box>
+              <Box display={'flex'} alignItems={'center'}>
+                <Box>
+                  <ColumnsFilterButtonForAll
+                    title={t('ag_grid.table_setting.label')}
+                    columns={tableColumns}
+                    isCatalog={false}
+                    resetTableHeader={resetTableHeader}
+                    changeColumnSequence={changeColumnSequence}
+                  />
+                </Box>
+                <CheckAccess id={'product-create'}>
+                  <Box minWidth={156}>
+                    <Button
+                      sx={{ height: '48px' }}
+                      type='submit'
+                      onClick={methods.handleSubmit(onSubmit, onError)}
+                      fullWidth
+                      // startIcon={<PlusIcon color='#fff' />}
+                      variant='contained'
+                      color='primary'
+                    >
+                      Создать заказ
+                    </Button>
+                  </Box>
+                </CheckAccess>
+              </Box>
             </Box>
-          </Box>
-          <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
-          <Box>
-            <AgGridTable
-              id='auto-order-main-table'
-              tableSettings
-              columns={tableColumns}
-              data={autoOrderDetailList?.data?.data?.data || []}
-              isDataLoading={isFetchingautoOrderDetailList || autoOrderDetailListLoading}
-              offsetCount={offsetCount}
-              updaterAction={(newData) => {
-                if (newData) dispatch(updateTableHeader(newData))
-              }}
-              emptyTableText={{
-                title: 'Заказ недоступен',
-                description: 'Если вы не можете найти искомый Заказ, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
-              }}
-              fullInfoAboutCurrentPage
-              resetTable={() => dispatch(resetTableHeader({ refetch }))}
-              isRefreshing={loading || isFetchingautoOrderDetailList || autoOrderDetailListLoading}
-            />
-          </Box>
+            <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
+            <Box>
+              <AgGridTable
+                id='auto-order-main-table'
+                tableSettings
+                columns={tableColumns}
+                data={autoOrderDetailList?.data?.data?.data || []}
+                totalCount={autoOrderDetailList?.data?.data?._meta?.total_count || 0}
+                isDataLoading={isFetchingautoOrderDetailList || autoOrderDetailListLoading || isautoOrderChangeQuantity}
+                offsetCount={offsetCount}
+                updaterAction={(newData) => {
+                  if (newData) dispatch(updateTableHeader(newData))
+                }}
+                emptyTableText={{
+                  title: 'Заказ недоступен',
+                  description: 'Если вы не можете найти искомый Заказ, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+                }}
+                fullInfoAboutCurrentPage
+                resetTable={() => dispatch(resetTableHeader({ refetch }))}
+                isRefreshing={loading || isFetchingautoOrderDetailList || autoOrderDetailListLoading || isautoOrderChangeQuantity}
+              />
+            </Box>
+          </Container>
         </Box>
 
         <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />

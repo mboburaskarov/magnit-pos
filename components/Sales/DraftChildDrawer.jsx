@@ -21,6 +21,7 @@ import { useReactToPrint } from 'react-to-print'
 import { useNavigate } from 'react-router-dom'
 import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
+import thousandDivider from '../../utils/thousandDivider'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -106,7 +107,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
                 {t('draft')} #{get(darftChildList, 'data.data.draft_number')}
               </Typography>
               <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
-                {get(darftChildList, 'data.data.total_price', 0)} so'm
+                {thousandDivider(get(darftChildList, 'data.data.total_price', 0), 'сум')}
               </Typography>
             </Box>
           </Box>
@@ -147,10 +148,10 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
             <Box display={'flex'} justifyContent={'space-between'}>
               <Box width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
                 <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                  Yaratilgan sana
+                  Дата создания
                 </Typography>
                 <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                  {dayjs(get(darftChildList, 'data.data.data[0].draft_time')).format('DD.MM.YYYY | HH:mm:ss')}
+                  {dayjs(get(darftChildList, 'data.data.draft_time')).format('DD.MM.YYYY | HH:mm:ss')}
                 </Typography>
               </Box>
               <Box width={'100%'} bgcolor={'bg.10'} borderRadius={'16px'} padding={'16px'}>
@@ -161,6 +162,14 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
                   Pharma Cosmos
                 </Typography>
               </Box>
+            </Box>
+            <Box mt={'20px'} width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
+              <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                Клиент
+              </Typography>
+              <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                {get(darftChildList, 'data.data.customer.full_name')}
+              </Typography>
             </Box>
           </Box>
           <Box

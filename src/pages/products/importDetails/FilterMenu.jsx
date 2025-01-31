@@ -72,7 +72,7 @@ export default function FilterMenu({ open, id, setOpen }) {
             <InputRange
               fullWidth
               id='prixwce'
-              label={'Полученная сумма'}
+              label={t('table_columns.retail_price')}
               name1='received_amount_from'
               name2='received_amount_to'
               placeholder1={t('input.price.from')}

@@ -429,7 +429,7 @@ export default function ProductBody({ productData = null }) {
               }}
               name='bonus_amount'
               label={'Цена бонуса'}
-              placeholder={t('create_new_product.retail_price.placeholder')}
+              placeholder={'Введите бонусный цена'}
             />
           </Box>
         </Box>
@@ -456,6 +456,7 @@ export default function ProductBody({ productData = null }) {
             tableSettings
             columns={tableColumns}
             data={get(storeList, 'data.data.data')}
+            totalCount={storeList?.data?.data?._meta?.total_count || 0}
             pagination
             offsetQuery='offsetStore'
             limitQuery='limitStore'

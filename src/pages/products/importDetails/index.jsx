@@ -136,7 +136,7 @@ export default function ImportDetailsPage() {
                   },
                 }}
               >
-                <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
+                <InputSearch id='producrs-search' name='search' placeholder={'Название'} uncontrolled />
               </Box>
 
               <Box minWidth={113} ml={'16px'}>
@@ -204,6 +204,7 @@ export default function ImportDetailsPage() {
               tableSettings
               columns={tableColumns}
               data={importWithCheckingDetails?.data?.data?.data || []}
+              totalCount={importWithCheckingDetails?.data?.data?._meta?.total_count || 0}
               isDataLoading={isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
               offsetCount={offsetCount}
               updaterAction={(newData) => {

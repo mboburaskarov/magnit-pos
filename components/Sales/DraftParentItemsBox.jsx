@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import { useQuery } from 'react-query'
 import { requests } from '../../utils/requests'
 import { useTranslation } from 'react-i18next'
+import thousandDivider from '../../utils/thousandDivider'
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {
     backgroundColor: '#fff ',
@@ -74,7 +75,7 @@ function DraftParentItemsBox({ setIsOpenChild, item }) {
             </Typography>
           </Box>
           <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-            {get(item, 'total_price')} so'm
+            {thousandDivider(get(item, 'total_price'), 'сум')}
           </Typography>
         </Box>
         <Box className={classes.rightArrowIcon}>

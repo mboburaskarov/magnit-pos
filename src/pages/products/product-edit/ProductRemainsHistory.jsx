@@ -122,6 +122,7 @@ export default function ProductRemainsHistory({ id }) {
         offsetQuery='remainsOffset'
         limitQuery='remainsLimit'
         id='products-history-tableee'
+        totalCount={productReaminsDataHistory?.data?.data?._meta?.total_count || 0}
         columns={columns}
         data={formattedData}
         offsetCount={offsetCount}

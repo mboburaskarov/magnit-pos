@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
+import thousandDivider from '../../../../utils/thousandDivider'
 
 export default function SerchedItem({
   index,
@@ -111,7 +112,7 @@ export default function SerchedItem({
                 </Typography>
               )}
             </Typography>
-            <Typography className={classes.itemPrice}>{product?.retail_price} so'm</Typography>
+            <Typography className={classes.itemPrice}>{thousandDivider(product?.retail_price, 'сум')} </Typography>
           </Box>
           {!isChild && (
             <Box

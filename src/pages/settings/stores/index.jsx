@@ -159,6 +159,7 @@ export default function ProductsPage() {
               description: 'Если вы не можете найти искомый Магазины, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
             }}
             data={storesList?.data?.data?.data || []}
+            totalCount={storesList?.data?.data?._meta?.total_count || 0}
             isDataLoading={isFetchingstoresList || storesListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {

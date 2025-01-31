@@ -2,10 +2,22 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const columns = [
   {
+    field: 'number',
+    hide: false,
+    minWidth: 60,
+    width: 60,
+  },
+  {
     field: 'product_name',
     hide: false,
     minWidth: 70,
     width: 200,
+  },
+  {
+    field: 'kvant',
+    hide: false,
+    minWidth: 70,
+    width: 100,
   },
   {
     field: 'current_stock',

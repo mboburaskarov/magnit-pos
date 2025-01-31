@@ -125,7 +125,7 @@ export default function AutoOrderPage() {
                   },
                 }}
               >
-                <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
+                <InputSearch id='producrs-search' name='search' placeholder={'Наименование, номер'} uncontrolled />
               </Box>
 
               <Box minWidth={113} ml={'16px'}>
@@ -174,6 +174,7 @@ export default function AutoOrderPage() {
               tableSettings
               columns={tableColumns}
               data={autoOrderList?.data?.data?.data || []}
+              totalCount={autoOrderList?.data?.data?._meta?.total_count || 0}
               isDataLoading={isFetchingautoOrderList || autoOrderListLoading}
               offsetCount={offsetCount}
               updaterAction={(newData) => {
