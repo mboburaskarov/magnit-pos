@@ -1,97 +1,115 @@
-import { Box, IconButton, InputAdornment } from '@mui/material'
-import { useFormContext } from 'react-hook-form'
+import Box from '@mui/material/Box'
+import { Controller, useFormContext } from 'react-hook-form'
 import { NumericFormat } from 'react-number-format'
+import InputSimple from './InputSimple'
+import { useTranslation } from 'react-i18next'
 import Label from '../Label'
-import OutLineTextField from './OutLineTextField'
 
-const PriceFormattedInput = ({
-  placeholder,
-  inputRef,
-  InputProps,
-  uncontrolled,
-  value,
-  setValue,
-  sx,
-  borderRadius,
-  white,
-  onKeyDown,
-  defaultValue,
-  withShadow,
-  autoFocus,
-  required = false,
-  name,
-  endAdornmentText,
-  type,
+function InputFormattedPriceWithTextField({
+  id,
+  error,
+  control,
   label,
-  disabled,
-  dashed,
+  noLabel,
+  placeholder,
+  name,
   fullWidth,
-  multiline,
-  centerMode,
-  onBoxClick = () => {},
-  onBlur = () => {},
-  bgcolor,
-  autoComplete,
-  ...props
-}) => {
+  boxStyle,
+  defaultValue,
+  adornment,
+  adornmentPosition = 'start',
+  adornmentClassName = '',
+  required = false,
+  disabled = false,
+  asteriks,
+  autoCompleteOff,
+  inputComponent,
+  allowNegative,
+  setSiblingValues,
+  uncontrolled = false,
+  height,
+  noHover,
+  dashed,
+  transparentAdornment = true,
+  backgroundColor,
+  deleteLabel,
+  deleteLabelClick,
+  max,
+  small,
+  white,
+  width,
+  solidBorder,
+  onlyDisplay,
+  onBlur,
+}) {
+  const { t } = useTranslation()
   const methods = useFormContext()
-  const onlyDisplay = dashed && disabled
-
   return (
     <Box
-      onClick={onBoxClick}
-      width={fullWidth && '100%'}
-      sx={
-        multiline && {
-          '& .MuiOutlinedInput-root': {
-            borderRadius: '20px',
-            height: 'auto',
-            padding: '0',
-          },
-        }
-      }
+      sx={{
+        '& .MuiFormControl-root .MuiOutlinedInput-root': {
+          height: '48px !important',
+        },
+      }}
+      m={'0'}
+      width={'100%'}
     >
       {!onlyDisplay && label && <Label required={required}>{label}</Label>}
+      {/* <Controller
+        // name={name}
+        // control={control}
+        // defaultValue={defaultValue}
+        // render={({ onChange, value, ...rest }) => ( */}
       <NumericFormat
-        disabled={disabled}
-        label={onlyDisplay && label}
+        // {...rest}
+        id={id || name}
+        {...methods?.register(name, { required })}
+        // value={value === 0 ? '' : value}
+        customInput={InputSimple}
+        thousandSeparator=' '
+        variant='outlined'
+        isNumericString
+        error={error}
+        control={control}
+        // label={t(label)}
+        noLabel={noLabel}
+        placeholder={t(placeholder)}
         name={name}
-        id={name}
-        placeholder={placeholder}
-        allowLeadingZeros={false}
-        thousandSeparator=' ' // 1,000,000 format
-        fixedDecimalScale
-        customInput={(props) => <OutLineTextField {...props} />}
-        getInputRef={inputRef}
-        autoComplete={autoComplete ? autoComplete : name === 'shopType' ? 'off' : 'on'}
-        {...(!uncontrolled && methods?.register(name, { required }))}
-        {...(uncontrolled && {
-          value: onlyDisplay && !value ? 'Неопределенный' : value,
-          onValueChange: (values) => setValue(values.floatValue || ''), // Raqam faqat float bo'lib qolsin
-        })}
-        onBlur={onBlur}
-        autoFocus={autoFocus}
-        defaultValue={defaultValue}
         fullWidth={fullWidth}
-        sx={{
-          '& input': {
-            textAlign: centerMode ? 'center' : 'left',
-            padding: '10px',
-            borderRadius: borderRadius || '40px',
-            border: disabled ? '2px dashed gray' : '1px solid gray',
-            backgroundColor: white ? 'white' : '#f5f5f5',
-          },
-          ...sx,
-        }}
-        {...props}
+        boxStyle={boxStyle}
+        noMarginTop
+        defaultValueNF={defaultValue}
+        adornment={adornment}
+        adornmentPosition={adornmentPosition}
+        adornmentClassName={adornmentClassName}
+        required={required}
+        disabled={disabled}
+        asteriks={asteriks}
+        autoCompleteOff={autoCompleteOff}
+        inputComponent={inputComponent}
+        allowNegative={allowNegative}
+        setSiblingValues={setSiblingValues}
+        uncontrolled={uncontrolled}
+        height={height}
+        noHover={noHover}
+        dashed={dashed}
+        transparentAdornment={transparentAdornment}
+        backgroundColor={backgroundColor}
+        deleteLabel={deleteLabel}
+        deleteLabelClick={deleteLabelClick}
+        max={max}
+        small={small}
+        white={white}
+        width={width}
+        solidBorder={solidBorder}
+        onBlur={onBlur}
+        type='text'
       />
-      {endAdornmentText && (
-        <InputAdornment position='end'>
-          <IconButton>{endAdornmentText}</IconButton>
-        </InputAdornment>
-      )}
+      {/* )} */}
+      {/* placeholder={t(placeholder)}
+        variant='outlined'
+      /> */}
     </Box>
   )
 }
-
-export default PriceFormattedInput
+export default InputFormattedPriceWithTextField

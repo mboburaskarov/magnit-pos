@@ -22,7 +22,8 @@ import InputSearch from '../../../components/Inputs/InputSearch'
 import { error } from '../../../utils/toast'
 import MeasurementValueDialog from './MeasurementValueDialog'
 import useDebouncedValue from '../../hooks/useDebouncedValue'
-
+import LazySelect from '../../../components/Select/LazySelect'
+import PriceFormattedInput from '../../../components/Inputs/PriceFormattedInput'
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
@@ -218,7 +219,7 @@ export default function ProductBody({ productData = null }) {
 
         <Box height={'24px'} />
         <Box display={'flex'} width={'100%'} mt={'24px'}>
-          <TextField
+          {/* <TextField
             required
             fullWidth
             borderRadius={'40px'}
@@ -226,7 +227,34 @@ export default function ProductBody({ productData = null }) {
             label={t('create_new_product.features.manufacturer')}
             placeholder={t('create_new_product.features.manufacturer.placeholder')}
             sx={{ mb: 3 }}
+          /> */}
+          <LazySelect
+            isCreatable={true}
+            slug='manufacturer'
+            boxStyle={{ width: '100%' }}
+            id='manufacturer'
+            name='manufacturer'
+            isMulti={false}
+            label={t('create_new_product.features.manufacturer')}
+            placeholder={t('create_new_product.features.manufacturer.placeholder')}
+            minWidth='auto'
+            isClearable={true}
+            request={requests.getAllShops}
+            filters={{ limit: 10 }}
+            // control={control}
+            // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+            // request={requests.brand.getAll}
+            createOptionRequest={requests.brand}
+            getOptionLabel={(option) => {
+              return <Typography color='grey.600'>{option.name}</Typography>
+            }}
+            // filterOption={() => true}
           />
+          <Box width={'20px'} />
+
+          <Box maxWidth={'100px'}>
+            <TextField required fullWidth borderRadius={'40px'} name='shelf' label={'Полка'} placeholder={'А4'} sx={{ mb: 3 }} />
+          </Box>
           {uniType === 'pack' && (
             <>
               <Box width={'20px'} />
@@ -321,8 +349,9 @@ export default function ProductBody({ productData = null }) {
         </SectionTitle>
         <Box alignItems='flex-end' width='100%' columnGap={3} flexDirection={'column'} display='inline-flex' my={3}>
           <Box display={'flex'} width={'100%'}>
-            <OutLineTextField
-              endAdornmentText={'UZS'}
+            <PriceFormattedInput
+              adornment={'UZS'}
+              adornmentPosition='end'
               required
               type='number'
               onBlur={(e) => changeAmount('supply_price', e)}
@@ -335,8 +364,22 @@ export default function ProductBody({ productData = null }) {
               label={t('create_new_product.supply_price')}
               placeholder={t('create_new_product.supply_price.placeholder')}
             />
+            {/* <OutLineTextField
+              endAdornmentText={'UZS'}
+              required
+              type='number'
+              onBlur={(e) => changeAmount('supply_price', e)}
+              fullWidth
+              borderRadius={'40px'}
+              InputProps={{
+                onwheel: (e) => e.currentTarget.blur(), // Disable scrolling
+              }}
+              name='supply_price'
+              label={t('create_new_product.supply_price')}
+              placeholder={t('create_new_product.supply_price.placeholder')}
+            /> */}
             <Box width={'20px'} />
-            <OutLineTextField
+            <PriceFormattedInput
               endAdornmentText={'%'}
               required
               onBlur={(e) => changeAmount('markup', e)}
@@ -351,7 +394,7 @@ export default function ProductBody({ productData = null }) {
               placeholder={'Наценка'}
             />
             <Box width={'20px'} />
-            <OutLineTextField
+            <PriceFormattedInput
               endAdornmentText={'UZS'}
               required
               type='number'
@@ -368,7 +411,7 @@ export default function ProductBody({ productData = null }) {
             />
           </Box>
           <Box mt={'24px'} display={'flex'} width={'100%'}>
-            <OutLineTextField
+            <PriceFormattedInput
               endAdornmentText={'%'}
               required
               type='number'
@@ -385,7 +428,7 @@ export default function ProductBody({ productData = null }) {
             />
             <Box width={'20px'} />
 
-            <OutLineTextField
+            <PriceFormattedInput
               endAdornmentText={'UZS'}
               required
               type='number'
@@ -401,7 +444,7 @@ export default function ProductBody({ productData = null }) {
             />
           </Box>
           <Box mt={'24px'} display={'flex'} width={'100%'}>
-            <OutLineTextField
+            <PriceFormattedInput
               endAdornmentText={'%'}
               required
               type='number'
@@ -417,7 +460,7 @@ export default function ProductBody({ productData = null }) {
             />
             <Box width={'20px'} />
 
-            <OutLineTextField
+            <PriceFormattedInput
               endAdornmentText={'UZS'}
               required
               type='number'

@@ -15,6 +15,7 @@ import { error, success } from '../../utils/toast'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
+import ListWithPagination from '../AgGridTable/ListWithPagination'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -94,9 +95,13 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
             </Box>
           </Box>
           <Box py={'0px'} px={'40px'}>
-            {draftListData.map((item, index) => {
+            <ListWithPagination
+              request={(filter) => requests.getDarftList(filter)}
+              renderItem={(item) => <DraftParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}
+            />
+            {/* {draftListData.map((item, index) => {
               return <DraftParentItemsBox key={index} item={item} setIsOpenChild={setIsOpenChild} />
-            })}
+            })} */}
           </Box>
         </Box>
       ) : (

@@ -16,6 +16,10 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiInputAdornment-root .MuiTypography-root': {
       color: theme.palette.gray[600],
     },
+    '& .MuiInputAdornment-root .MuiTypography-root': {
+      color: theme.palette.bunker[400],
+      marginRight: '8px',
+    },
 
     '& .price': {
       justifyContent: 'center',

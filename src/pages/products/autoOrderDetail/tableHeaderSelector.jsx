@@ -115,7 +115,11 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, autoO
         ...el,
         headerName: 'Остаток',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='current_stock' />),
+        cellRenderer: memo((p) => (
+          <Typography>
+            {p?.data?.current_stock} {p?.data?.unit_name}
+          </Typography>
+        )),
       }
     }
     if (el.field === 'monthly_quantity') {

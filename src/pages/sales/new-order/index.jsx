@@ -6,7 +6,7 @@ import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import CartItem from './CartItem'
 import CartSearchBar from './CartSearchBar'
-
+import InputFormattedPriceWithTextField from '../../../../components/Inputs/PriceFormattedInput'
 import { LoadingButton } from '@mui/lab'
 import { get, size } from 'lodash'
 import Highlighter from 'react-highlight-words'
@@ -401,7 +401,7 @@ function NewSale() {
               }}
             >
               <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
-                {t('page.new_sale.label')} (0)
+                {t('page.new_sale.label')} ({cartItemsList?.data?.data?.item_count})
               </Typography>
               {get(cartItemsList, 'data.data.data', 0)?.length ? (
                 <Box display={'flex'} sx={{ cursor: 'pointer' }} alignItems={'center'} onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}>
@@ -583,7 +583,7 @@ function NewSale() {
             )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
-            <TextField required type={'number'} fullWidth name='discount' label={'Скидка'} placeholder='Введите скидку' />
+            <InputFormattedPriceWithTextField required type={'number'} fullWidth name='discount' label={'Скидка'} placeholder='Введите скидку' />
             <Box ml={'8px'}>
               <InputSwitch
                 uncontrolled
@@ -627,7 +627,7 @@ function NewSale() {
                 {t('total_amount')}:
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
-                {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
+                {thousandDivider(get(cartItemsList, 'data.data.sum'), 'сум')}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
@@ -635,7 +635,7 @@ function NewSale() {
                 {t('discount')}:
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
-                {thousandDivider(get(cartItemsList, 'data.data.discount_amount'), 'сум')}
+                {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
               </Typography>
             </Box>
             <Button

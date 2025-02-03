@@ -194,14 +194,17 @@ export default function tableHeaderSelector({ importsColumns, t }) {
               <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
 
               <Box width={'10px'} />
-
-              <SimpleText {...p} withDevider type={'received_count'} />
+              <Typography>
+                {p?.data?.received_count} {p?.data?.unit_name}
+              </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
 
               <Box width={'10px'} />
-              <SimpleText {...p} withDevider type={'accepted_count'} />
+              <Typography>
+                {p?.data?.accepted_count} {p?.data?.unit_name}
+              </Typography>
             </Box>
           </>
         )),

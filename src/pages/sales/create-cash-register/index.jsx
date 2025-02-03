@@ -15,6 +15,7 @@ import { error } from '../../../../utils/toast'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import CartOutlineIcon from '../../../assets/icons/CartOutline'
 import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
+import InputFormattedPriceWithTextField from '../../../../components/Inputs/PriceFormattedInput'
 const useStyles = makeStyles((theme) => ({
   box: {
     display: 'flex',
@@ -128,8 +129,9 @@ function NewCashRegister() {
       employee_id: userData?.id,
       is_open: true,
     }
+    console.log(requestBody)
 
-    handleCashBoxCreate(requestBody)
+    // handleCashBoxCreate(requestBody)
   }
   const onError = (err) => {
     console.log('err', err)
@@ -162,10 +164,11 @@ function NewCashRegister() {
                     name={'registerCash_id'}
                   />
                   <Box height={'24px'} />
-                  <OutLineTextField
+                  <InputFormattedPriceWithTextField
                     endAdornmentText={'UZS'}
                     end
                     type={'number'}
+                    control={methods.control}
                     fullWidth
                     name='opened_amout'
                     label='Ochilish miqdori'
