@@ -634,7 +634,7 @@ function NewSale() {
                 {t('discount')}:
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
-                {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
+                {thousandDivider(get(cartItemsList, 'data.data.discount_amount'), 'сум')}
               </Typography>
             </Box>
             <Button
@@ -647,7 +647,7 @@ function NewSale() {
                 {t('pay')}
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
-                {thousandDivider(get(cartItemsList, 'data.data.total_amount') + get(cartItemsList, 'data.data.discount_amount'), 'сум')}
+                {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
               </Typography>
             </Button>
             <Button disabled={size(get(cartItemsList, 'data.data.data')) == 0} color='secondary' onClick={() => setIsCreateOpenDraft(true)}>
