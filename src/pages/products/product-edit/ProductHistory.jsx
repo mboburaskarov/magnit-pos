@@ -10,6 +10,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { faArrowCircleDown, faArrowCircleUp, faCheckCircle, faCircleDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import palette from '../../../../src/assets/theme/mui.config'
+import thousandDivider from '../../../../utils/thousandDivider'
 
 export default function ProductHistory({ id }) {
   const { values } = useQueryParams()
@@ -79,14 +80,14 @@ export default function ProductHistory({ id }) {
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {data?.received_count}
+                {thousandDivider(data?.received_count)}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
 
               <Typography ml={'4px'} color={'bunker.500'}>
-                {data?.accepted_count}
+                {thousandDivider(data?.accepted_count)}
               </Typography>
             </Box>
           </>
@@ -104,13 +105,13 @@ export default function ProductHistory({ id }) {
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {data?.received_amount}
+                {thousandDivider(data?.received_amount)}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {data?.accepted_amount}
+                {thousandDivider(data?.accepted_amount)}
               </Typography>
             </Box>
           </>

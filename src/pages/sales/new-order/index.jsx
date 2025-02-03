@@ -6,7 +6,6 @@ import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import CartItem from './CartItem'
 import CartSearchBar from './CartSearchBar'
-import InputFormattedPriceWithTextField from '../../../../components/Inputs/PriceFormattedInput'
 import { LoadingButton } from '@mui/lab'
 import { get, size } from 'lodash'
 import Highlighter from 'react-highlight-words'
@@ -583,7 +582,7 @@ function NewSale() {
             )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
-            <InputFormattedPriceWithTextField required type={'number'} fullWidth name='discount' label={'Скидка'} placeholder='Введите скидку' />
+            <TextField required type={'number'} fullWidth name='discount' label={'Скидка'} placeholder='Введите скидку' />
             <Box ml={'8px'}>
               <InputSwitch
                 uncontrolled

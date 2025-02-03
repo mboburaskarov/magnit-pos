@@ -49,7 +49,7 @@ export default function MainDetails({ clientData, openDrawer }) {
     if (mode === 'edit') {
       setValue('first_name', get(employeeInfo, 'data.data.first_name'))
       setValue('last_name', get(employeeInfo, 'data.data.last_name'))
-      setValue('phone', get(employeeInfo, 'data.data.phone'))
+      setValue('phone', get(employeeInfo, 'data.data.phone', '').replace('998', ''))
       get(employeeInfo, 'data.data.birthdate', false) && setValue('date_of_birth', new Date(get(employeeInfo, 'data.data.birthdate')))
       setValue('gender', get(employeeInfo, 'data.data.gender'))
       setValue('store', get(employeeInfo, 'data.data.store'))

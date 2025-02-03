@@ -80,13 +80,13 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
-  {
-    field: 'actions',
-    hide: false,
-    minWidth: 96,
-    width: 96,
-    pinned: 'right',
-  },
+  // {
+  //   field: 'actions',
+  //   hide: false,
+  //   minWidth: 80,
+  //   width: 80,
+  //   pinned: 'right',
+  // },
 ]
 
 const clientTableColumns = createSlice({

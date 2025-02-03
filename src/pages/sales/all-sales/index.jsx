@@ -23,6 +23,8 @@ import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/Column
 import StyledDialog from '../../../../components/Dialogs/StyledDialog'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import SaleDrawer from './saleDrawer'
+import DateRangeInput from '../../../../components/Inputs/DateRangeInput.jsx/DateRangeInput'
+import dayjs from 'dayjs'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function AllSalesPage() {
@@ -65,27 +67,30 @@ export default function AllSalesPage() {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
-      search: values?.search?.replace(/\s+/g, ''),
+      search: values?.search,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
       category_id: values?.category_id,
       producer: values?.producer,
-      supply_price_to: values?.supply_price_to,
-      retail_price_to: values?.retail_price_to,
-      supply_price_from: values?.supply_price_from,
-      retail_price_from: values?.retail_price_from,
+      employee_id: values?.employee_id,
+
+      total_amount_to: values?.total_amount_to,
+      total_amount_from: values?.total_amount_from,
+      start_date: values?.start_date,
+      end_date: values?.end_date,
     }
   }, [
     values?.offset,
     values?.limit,
     values?.search,
     values?.producer,
+    values?.employee_id,
     values?.category_id,
     values?.store_id,
-    values?.supply_price_to,
-    values?.retail_price_to,
-    values?.supply_price_from,
-    values?.retail_price_from,
+    values?.total_amount_to,
+    values?.total_amount_from,
+    values?.start_date,
+    values?.end_date,
   ])
   const {
     data: salesList,
@@ -153,6 +158,11 @@ export default function AllSalesPage() {
                 </Typography>
               </Button>
             </Box>
+            <Box width={'20px'} />
+            <DateRangeInput
+              defaultFilterData={{ label: 'Это час', start_date: dayjs().tz().startOf('week'), end_date: dayjs().tz() }}
+              id='accounting-report-date-range'
+            />
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box>

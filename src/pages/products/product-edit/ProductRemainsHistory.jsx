@@ -43,8 +43,8 @@ export default function ProductRemainsHistory({ id }) {
         headerName: 'Магазин',
         colId: 'store_name',
         minWidth: 200,
-        maxWidth: 300,
-        width: 250,
+        maxWidth: 350,
+        width: 300,
         cellRenderer: ({ data, rowIndex }) => (
           <Box id={`${'store_name'}-${rowIndex}-${data?.store_id}`}>
             <Typography id={`${'store_name'}-${rowIndex}-${data?.store_id}`}>{data?.store?.name}</Typography>
@@ -57,7 +57,9 @@ export default function ProductRemainsHistory({ id }) {
         minWidth: 185,
         maxWidth: 185,
         width: 185,
-        cellRenderer: ({ data, rowIndex }) => <Typography id={`${'quantity'}-${rowIndex}-${data?.store_id}`}>{get(data, 'quantity')}</Typography>,
+        cellRenderer: ({ data, rowIndex }) => (
+          <Typography id={`${'quantity'}-${rowIndex}-${data?.store_id}`}>{thousandDivider(get(data, 'quantity'))}</Typography>
+        ),
       },
       {
         headerName: 'Цена продажи',

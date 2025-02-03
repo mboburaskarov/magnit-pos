@@ -60,7 +60,12 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
   const { t } = useTranslation()
   return (
-    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog
+      overflowVisible
+      open={open}
+      title={t('filter_dialog.label')}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+    >
       <Box
         sx={{
           width: '100%',
@@ -109,6 +114,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               }}
               filterOption={() => true}
             />
+
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
                 sx={{ bgcolor: `${theme.palette.background.gray} !important`, border: '1px solid #ECEDF2' }}

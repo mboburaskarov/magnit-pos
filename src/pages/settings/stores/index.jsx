@@ -65,7 +65,7 @@ export default function ProductsPage() {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
-      search: values?.search?.replace(/\s+/g, ''),
+      search: values?.search,
     }
   }, [values?.offset, values?.limit, values?.search])
   const {

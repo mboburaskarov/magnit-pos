@@ -54,7 +54,7 @@ export default function ImportPage() {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
-      search: values?.search?.replace(/\s+/g, ''),
+      search: values?.search,
 
       store_id: values?.store_id,
       start_date: values?.start_date,

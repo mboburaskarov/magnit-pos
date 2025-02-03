@@ -89,6 +89,15 @@ const OutLineTextField = ({
         multiline={multiline}
         onBlur={onBlur}
         rows={4}
+        onWheel={(e) => {
+          e.target.blur()
+
+          e.stopPropagation()
+
+          setTimeout(() => {
+            e.target.focus()
+          }, 0)
+        }}
         onKeyDown={handleKeyDown}
         autoFocus={autoFocus}
         defaultValue={defaultValue}

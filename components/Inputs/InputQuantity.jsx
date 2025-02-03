@@ -173,6 +173,15 @@ function InputQuantity({
         placeholder={placeholder}
         fullWidth={fullWidth}
         multiline={multiline}
+        onWheel={(e) => {
+          e.target.blur()
+
+          e.stopPropagation()
+
+          setTimeout(() => {
+            e.target.focus()
+          }, 0)
+        }}
         // onFocus={(e) => setApplyAll(true)}
         autoComplete='off'
         {...(!uncontrolled && methods?.register(name, { required }))}

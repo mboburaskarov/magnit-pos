@@ -60,15 +60,15 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
   useEffect(() => {
     if (values?.start_date && values?.end_date) {
       setDateState({
-        from: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
-        to: dayjs(values?.end_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.end_date, 'YYYY-MM-DD').toDate() : today,
-        enteredTo: dayjs(values?.end_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.end_date, 'YYYY-MM-DD').toDate() : today,
+        from: dayjs(values?.start_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.start_date, 'DD.MM.YYYY').toDate() : today,
+        to: dayjs(values?.end_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.end_date, 'DD.MM.YYYY').toDate() : today,
+        enteredTo: dayjs(values?.end_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.end_date, 'DD.MM.YYYY').toDate() : today,
       })
     } else if (values?.start_date) {
       setDateState({
-        from: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
-        to: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
-        enteredTo: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
+        from: dayjs(values?.start_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.start_date, 'DD.MM.YYYY').toDate() : today,
+        to: dayjs(values?.start_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.start_date, 'DD.MM.YYYY').toDate() : today,
+        enteredTo: dayjs(values?.start_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.start_date, 'DD.MM.YYYY').toDate() : today,
       })
     }
   }, [values?.start_date, values?.end_date])
@@ -97,12 +97,16 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
         noArrow
         endIcon={<ArrowDown />}
         noMarginSvg
+        sx={{
+          border: '1px solid #ECEDF2 !important',
+        }}
         placement='bottom-end'
         buttonLabel={
           <Box
             display='inline-flex'
+            whiteSpace={'pre'}
             sx={{
-              '&  > p': { fontWeight: 500, textAlign: 'left', color: 'dark.500', margin: '0 20px', lineHeight: '28px', fontSize: 20 },
+              '&  > p': { fontWeight: 600, textAlign: 'left', color: 'dark.500', margin: '0 20px', lineHeight: '25px', fontSize: 16 },
               '& > span': { lineHeight: '19px', color: 'gray.600', fontWeight: 600, ml: 1, mr: '2px !important' },
             }}
           >

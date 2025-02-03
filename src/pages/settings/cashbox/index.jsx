@@ -78,7 +78,7 @@ export default function CashBoxsPage() {
   const cashboxListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      search: values?.search?.replace(/\s+/g, ''),
+      search: values?.search,
       offset: values?.search ? 0 : values?.offset || 0,
       store_id: values?.store_id,
     }

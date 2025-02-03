@@ -70,7 +70,7 @@ export default function ProductsPage() {
   const productsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      search: values?.search?.replace(/\s+/g, ''),
+      search: values?.search,
       offset: values?.search ? 0 : values?.offset || 0,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,

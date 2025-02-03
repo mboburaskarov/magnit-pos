@@ -138,7 +138,7 @@ const ButtonWithPopup = ({
         id={id}
         color='secondary'
         buttonRef={ref}
-        fullWidth
+        // fullWidth
         size={size}
         style={{ maxWidth: size, minWidth: size }}
         disabled={disabled}

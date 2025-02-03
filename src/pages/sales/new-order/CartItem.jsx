@@ -234,7 +234,7 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
               display={'flex'}
               sx={{
                 '& .MuiInputBase-root': {
-                  width: get(item, 'unit_quantity') == 0 ? '130px' : '80px',
+                  width: get(item, 'unit_quantity') == 0 ? '100px' : '80px',
                 },
               }}
             >
@@ -331,9 +331,9 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                 <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }} textOverflow={'ellipsis'} overflow={'hidden'}>
                   {item?.name}
                 </Typography>
-                <Typography sx={{ minWidth: '30px', whiteSpace: 'pre', color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>
+                {/* <Typography sx={{ minWidth: '30px', whiteSpace: 'pre', color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>
                   A4
-                </Typography>
+                </Typography> */}
               </Box>
               <Box
                 sx={{
@@ -344,30 +344,51 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
               >
                 <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
                   <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>{item?.barcode}</Typography>
-
-                  <Box display={'flex'}>
-                    <Typography
-                      textDecoration='line-through'
-                      sx={{
-                        mr: '10px',
-                        color: 'orange.500',
-                        whiteSpace: 'pre',
-                        fontSize: '16px',
-                        lineHeight: '24px',
-                        fontWeight: '600',
-                        textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
-                        color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
-                      }}
-                    >
-                      {thousandDivider(item?.unit_price, 'сум')}
-                    </Typography>
-                    {item?.discount_price > 0 && (
-                      <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
-                        {thousandDivider(item?.discount_price, 'сум')}
-                      </Typography>
-                    )}
-                  </Box>
                 </Box>
+              </Box>
+            </Box>
+            <Box display={'flex'} alignItems={'center'}>
+              <Typography
+                whiteSpace={'pre'}
+                sx={{
+                  bgcolor: 'red.500',
+                  color: '#fff',
+                  px: '8px',
+                  mr: '5px',
+                  py: '5px',
+                  borderRadius: '15px',
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  fontWeight: '500',
+                }}
+              >
+                - {item?.discount_value}%
+              </Typography>
+
+              <Box alignItems={'end'} display={'flex'} flexDirection={'column'}>
+                {item?.discount_price > 0 && (
+                  <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
+                    {thousandDivider(item?.unit_price, 'сум')}
+                  </Typography>
+                )}
+                <Typography
+                  textDecoration='line-through'
+                  sx={{
+                    mr: '10px',
+                    color: 'orange.500',
+                    whiteSpace: 'pre',
+                    fontSize: '14px',
+                    lineHeight: '24px',
+                    fontWeight: '600',
+                    textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
+                    color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
+                  }}
+                >
+                  {thousandDivider(item?.discount_price, 'сум')}
+                </Typography>
+                <Typography sx={{ minWidth: '30px', whiteSpace: 'pre', color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>
+                  A4
+                </Typography>
               </Box>
             </Box>
             <Box display={'flex'}>
@@ -375,7 +396,7 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
               <Box
                 sx={{
                   width: 48,
-                  ml: '16px',
+                  ml: '8px',
                   borderRadius: '50%',
                   height: 48,
                   display: 'flex',

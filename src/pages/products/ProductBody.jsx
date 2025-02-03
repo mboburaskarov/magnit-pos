@@ -23,7 +23,6 @@ import { error } from '../../../utils/toast'
 import MeasurementValueDialog from './MeasurementValueDialog'
 import useDebouncedValue from '../../hooks/useDebouncedValue'
 import LazySelect from '../../../components/Select/LazySelect'
-import PriceFormattedInput from '../../../components/Inputs/PriceFormattedInput'
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
@@ -349,7 +348,7 @@ export default function ProductBody({ productData = null }) {
         </SectionTitle>
         <Box alignItems='flex-end' width='100%' columnGap={3} flexDirection={'column'} display='inline-flex' my={3}>
           <Box display={'flex'} width={'100%'}>
-            <PriceFormattedInput
+            <OutLineTextField
               adornment={'UZS'}
               adornmentPosition='end'
               required
@@ -379,7 +378,7 @@ export default function ProductBody({ productData = null }) {
               placeholder={t('create_new_product.supply_price.placeholder')}
             /> */}
             <Box width={'20px'} />
-            <PriceFormattedInput
+            <OutLineTextField
               endAdornmentText={'%'}
               required
               onBlur={(e) => changeAmount('markup', e)}
@@ -394,7 +393,7 @@ export default function ProductBody({ productData = null }) {
               placeholder={'Наценка'}
             />
             <Box width={'20px'} />
-            <PriceFormattedInput
+            <OutLineTextField
               endAdornmentText={'UZS'}
               required
               type='number'
@@ -411,7 +410,7 @@ export default function ProductBody({ productData = null }) {
             />
           </Box>
           <Box mt={'24px'} display={'flex'} width={'100%'}>
-            <PriceFormattedInput
+            <OutLineTextField
               endAdornmentText={'%'}
               required
               type='number'
@@ -428,7 +427,7 @@ export default function ProductBody({ productData = null }) {
             />
             <Box width={'20px'} />
 
-            <PriceFormattedInput
+            <OutLineTextField
               endAdornmentText={'UZS'}
               required
               type='number'
@@ -444,7 +443,7 @@ export default function ProductBody({ productData = null }) {
             />
           </Box>
           <Box mt={'24px'} display={'flex'} width={'100%'}>
-            <PriceFormattedInput
+            <OutLineTextField
               endAdornmentText={'%'}
               required
               type='number'
@@ -460,7 +459,7 @@ export default function ProductBody({ productData = null }) {
             />
             <Box width={'20px'} />
 
-            <PriceFormattedInput
+            <OutLineTextField
               endAdornmentText={'UZS'}
               required
               type='number'

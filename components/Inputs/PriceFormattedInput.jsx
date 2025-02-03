@@ -1,11 +1,146 @@
-import Box from '@mui/material/Box'
-import { Controller, useFormContext } from 'react-hook-form'
+import { Box, TextField, Typography, InputAdornment } from '@mui/material'
+import { Controller } from 'react-hook-form'
 import { NumericFormat } from 'react-number-format'
-import InputSimple from './InputSimple'
+import { error as errorNotify } from '../../utils/toast'
+import thousandDivider from '../../utils/thousandDivider'
+import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import Label from '../Label'
+import { makeStyles } from '@mui/styles'
 
-function InputFormattedPriceWithTextField({
+const useStyles = makeStyles((theme) => ({
+  title: {
+    width: 228,
+    fontWeight: 600,
+  },
+  root: {
+    '& .MuiInputAdornment-root .MuiTypography-root': {
+      color: theme.palette.gray[600],
+    },
+    '& .price': {
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 64,
+      minWidth: 64,
+      height: 48,
+      maxHeight: 48,
+      borderRadius: 12,
+      backgroundColor: theme.palette.gray[200],
+      color: theme.palette.gray[600],
+      cursor: 'default',
+    },
+  },
+  small: {
+    height: 40,
+    '& .MuiInputBase-root': {
+      height: 40,
+    },
+    '& input': {
+      paddingTop: 0,
+      paddingBottom: 0,
+    },
+    '& .Mui-focused': {
+      boxShadow: '0 0 0 3px #4993DD',
+    },
+    '& .Mui-error:not(.Mui-focused)': {
+      boxShadow: '0 0 0 3px red',
+      border: 'none',
+    },
+  },
+  noMargin: {
+    marginTop: 0,
+  },
+  multiline: {
+    height: 'auto',
+  },
+  hasAdornment: {
+    '& .MuiOutlinedInput-adornedEnd': {
+      paddingRight: '0 !important',
+    },
+  },
+  price: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 64,
+    minWidth: 64,
+    height: 32,
+    maxHeight: 32,
+    borderRadius: 8,
+    color: theme.palette.gray[400],
+    cursor: 'default',
+  },
+  dashed_price: {
+    marginRight: 3,
+  },
+  textfield: {
+    '& input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button': {
+      appearance: 'none',
+      margin: 0,
+    },
+  },
+  required: {
+    '&::after': {
+      content: '" *"',
+      color: theme.palette.red[500],
+    },
+  },
+  dashed: {
+    '& .MuiInputBase-root': {
+      border: `1px dashed ${theme.palette.gray[300]}`,
+    },
+  },
+  grayAdornment: {
+    '& .MuiInputAdornment-root': {
+      background: theme.palette.gray[200],
+      width: 64,
+      maxHeight: 48,
+      borderRadius: 12,
+    },
+  },
+  backgroundColor: {
+    '& .MuiOutlinedInput-root': {
+      background: theme.palette.white,
+    },
+  },
+  solidBorder: {
+    '& .MuiInputBase-root': {
+      boxShadow: `0 0 0 1px ${theme.palette.gray[300]} !important`,
+      border: 0,
+    },
+  },
+  white: {
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: theme.palette.background.default,
+      color: theme.palette.gray[600],
+    },
+    '& > div > input': {
+      color: theme.palette.gray[600],
+      '-webkit-text-fill-color': theme.palette.gray[600] + ' !important',
+    },
+  },
+  noHover: {
+    '& > div > input': {
+      color: theme.palette.gray[600],
+    },
+    '& > div > textarea': {
+      color: theme.palette.gray[600],
+    },
+    '& > div:hover': {
+      background: ({ white }) => (white ? '#fff' : theme.palette.gray[100]),
+    },
+  },
+  height: {
+    '& .MuiOutlinedInput-root': {
+      padding: '0px',
+      height: ({ height }) => `${height}px !important`,
+      alignItems: 'center',
+      '& > input': {
+        padding: '10px',
+      },
+    },
+  },
+}))
+
+function InputFormattedPrice({
   id,
   error,
   control,
@@ -16,6 +151,7 @@ function InputFormattedPriceWithTextField({
   fullWidth,
   boxStyle,
   defaultValue,
+  value,
   adornment,
   adornmentPosition = 'start',
   adornmentClassName = '',
@@ -24,9 +160,9 @@ function InputFormattedPriceWithTextField({
   asteriks,
   autoCompleteOff,
   inputComponent,
-  allowNegative,
+  allowNegative = false,
   setSiblingValues,
-  uncontrolled = false,
+  uncontrolled,
   height,
   noHover,
   dashed,
@@ -39,77 +175,179 @@ function InputFormattedPriceWithTextField({
   white,
   width,
   solidBorder,
-  onlyDisplay,
   onBlur,
+  onChange,
+  onKeyDown,
+  inputRef,
+  hint,
 }) {
   const { t } = useTranslation()
-  const methods = useFormContext()
-  return (
-    <Box
-      sx={{
-        '& .MuiFormControl-root .MuiOutlinedInput-root': {
-          height: '48px !important',
+  const classes = useStyles({ white, height })
+  const autoCompleteProps = autoCompleteOff
+    ? {
+        autocomplete: 'new-password',
+        form: {
+          autocomplete: 'off',
         },
-      }}
-      m={'0'}
-      width={'100%'}
-    >
-      {!onlyDisplay && label && <Label required={required}>{label}</Label>}
-      {/* <Controller
-        // name={name}
-        // control={control}
-        // defaultValue={defaultValue}
-        // render={({ onChange, value, ...rest }) => ( */}
-      <NumericFormat
-        // {...rest}
-        id={id || name}
-        {...methods?.register(name, { required })}
-        // value={value === 0 ? '' : value}
-        customInput={InputSimple}
-        thousandSeparator=' '
-        variant='outlined'
-        isNumericString
-        error={error}
-        control={control}
-        // label={t(label)}
-        noLabel={noLabel}
-        placeholder={t(placeholder)}
-        name={name}
-        fullWidth={fullWidth}
-        boxStyle={boxStyle}
-        noMarginTop
-        defaultValueNF={defaultValue}
-        adornment={adornment}
-        adornmentPosition={adornmentPosition}
-        adornmentClassName={adornmentClassName}
-        required={required}
-        disabled={disabled}
-        asteriks={asteriks}
-        autoCompleteOff={autoCompleteOff}
-        inputComponent={inputComponent}
-        allowNegative={allowNegative}
-        setSiblingValues={setSiblingValues}
-        uncontrolled={uncontrolled}
-        height={height}
-        noHover={noHover}
-        dashed={dashed}
-        transparentAdornment={transparentAdornment}
-        backgroundColor={backgroundColor}
-        deleteLabel={deleteLabel}
-        deleteLabelClick={deleteLabelClick}
-        max={max}
-        small={small}
-        white={white}
-        width={width}
-        solidBorder={solidBorder}
-        onBlur={onBlur}
-        type='text'
-      />
-      {/* )} */}
-      {/* placeholder={t(placeholder)}
-        variant='outlined'
-      /> */}
+      }
+    : {}
+  const adornmentProps = adornment
+    ? adornmentPosition === 'start'
+      ? {
+          startAdornment: (
+            <InputAdornment position='start' className={adornmentClassName}>
+              {adornment}
+            </InputAdornment>
+          ),
+        }
+      : {
+          endAdornment: (
+            <InputAdornment
+              position='end'
+              className={`${adornmentClassName} 
+              ${dashed && classes.dashed_price}`}
+            >
+              {adornment}
+            </InputAdornment>
+          ),
+        }
+    : {}
+  const inputProps = {
+    InputProps: {
+      ...adornmentProps,
+      ...autoCompleteProps,
+      inputComponent,
+    },
+  }
+
+  return (
+    <Box width={fullWidth ? '100%' : width || 320} className={classes.root} mt={label ? '0' : noLabel ? '0' : '21px'} {...boxStyle}>
+      <Box display='flex' justifyContent={hint ? 'flex-start' : 'space-between'} alignItems={'center'} sx={{ mb: label ? 2 : 0 }}>
+        <Typography className={`${required && label && asteriks ? classes.required : ''}`} variant='h5'>
+          {t(label)}
+        </Typography>
+        {hint && (
+          <Box ml={1} height={18}>
+            s
+          </Box>
+        )}
+        {deleteLabel && (
+          <Typography onClick={deleteLabelClick} style={{ color: '#EB5757', cursor: 'pointer' }} className={classes.deleteLabel} variant='h5'>
+            {deleteLabel}
+          </Typography>
+        )}
+      </Box>
+      {uncontrolled ? (
+        <NumericFormat
+          id={id || name}
+          value={value === 0 ? '' : value}
+          customInput={TextField}
+          inputRef={inputRef}
+          thousandSeparator=' '
+          variant='outlined'
+          isNumericString
+          placeholder={t(placeholder)}
+          required={required}
+          name={name}
+          max={max}
+          isAllowed={(values) => {
+            const { formattedValue, floatValue } = values
+            if (max) {
+              if (formattedValue === '' || floatValue <= max) return true
+
+              return errorNotify(t('toast.error.error_max_price', { max: thousandDivider(max) }), true)
+            } else {
+              return true
+            }
+          }}
+          error={!!error}
+          defaultValue={defaultValue ?? ''}
+          disabled={disabled}
+          {...inputProps}
+          onValueChange={(v) => onChange(v.value)}
+          fullWidth={fullWidth}
+          className={`${classes.textfield}${solidBorder && classes.solidBorder}  ${height && classes.height} ${white && classes.white}  ${
+            !label && classes.noMargin
+          } ${adornment && classes.hasAdornment} ${dashed && classes.dashed} ${noHover && classes.noHover}${small && classes.small}  ${
+            transparentAdornment ? '' : classes.grayAdornment
+          }${backgroundColor ? classes.backgroundColor : ''} `}
+          onKeyDown={onKeyDown}
+          onBlur={(event) => {
+            if (setSiblingValues) {
+              setSiblingValues(event.target.value)
+            }
+            if (onBlur) {
+              onBlur(event)
+            }
+          }}
+          allowNegative={allowNegative}
+        />
+      ) : (
+        <Controller
+          render={({ onChange, value, ...rest }) => (
+            <NumericFormat
+              {...rest}
+              id={id || name}
+              value={value === 0 ? '' : value}
+              customInput={TextField}
+              thousandSeparator=' '
+              variant='outlined'
+              isNumericString
+              placeholder={t(placeholder)}
+              required={required}
+              name={name}
+              inputRef={inputRef}
+              max={max}
+              isAllowed={(values) => {
+                const { formattedValue, floatValue } = values
+
+                if (max) {
+                  if (formattedValue === '' || floatValue <= max) return true
+
+                  return errorNotify(
+                    t('toast.error.error_max_price', {
+                      max: thousandDivider(max),
+                    }),
+                    true
+                  )
+                } else {
+                  return true
+                }
+              }}
+              onKeyDown={onKeyDown}
+              error={!!error}
+              defaultValue={defaultValue ?? ''}
+              disabled={disabled}
+              {...inputProps}
+              onValueChange={(v) => onChange(v.value)}
+              fullWidth={fullWidth}
+              className={`${classes.textfield}${solidBorder && classes.solidBorder}  ${height && classes.height} ${white && classes.white}  ${
+                !label && classes.noMargin
+              } ${adornment && classes.hasAdornment} ${dashed && classes.dashed} ${noHover && classes.noHover}${small && classes.small}  ${
+                transparentAdornment ? '' : classes.grayAdornment
+              }${backgroundColor ? classes.backgroundColor : ''} `}
+              onBlur={(event) => {
+                if (setSiblingValues) {
+                  setSiblingValues(event.target.value)
+                }
+                if (onBlur) {
+                  onBlur(event)
+                }
+              }}
+              allowNegative={allowNegative}
+            />
+          )}
+          placeholder={t(placeholder)}
+          name={name}
+          variant='outlined'
+          rules={{
+            required,
+          }}
+          control={control}
+          defaultValue={defaultValue ?? ''}
+        />
+      )}
     </Box>
   )
 }
-export default InputFormattedPriceWithTextField
+export default memo(InputFormattedPrice)

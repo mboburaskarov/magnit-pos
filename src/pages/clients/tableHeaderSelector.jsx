@@ -9,6 +9,7 @@ import { products_statuses } from '../../assets/data/products-statuses'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
 import EditIcon from '../../assets/icons/EditIcon'
 import { formatDate } from '../../../utils/validateDate'
+import { formatPhoneNumber } from '../../../utils/formatPhoneNumber'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -69,7 +70,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         colId: el.field,
         cellRenderer: memo((p) => (
           <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
-            {p.data.phone[0]}
+            {formatPhoneNumber(p.data.phone[0])}
           </Typography>
         )),
       }
@@ -170,11 +171,11 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         cellRenderer: memo(({ data }) => (
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
             <Box display='inline-flex' columnGap={'8px'}>
-              <CheckAccess id={'product-edit'}>
+              {/* <CheckAccess id={'product-edit'}>
                 <IconButton onClick={() => window.open(`/products/edit/${data.id}`, '_blank')} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />
                 </IconButton>
-              </CheckAccess>
+              </CheckAccess> */}
               <CheckAccess id={'product-delete'}>
                 <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <DeleteIcon />

@@ -19,7 +19,6 @@ function ListWithPagination({ request, renderItem }) {
   }, [values?.offset, page])
 
   const { data: datList, isLoading: dataLoading, isFetching: isDataList, refetch } = useQuery(['productsList', dataFilter], () => request(dataFilter))
-  console.log(datList, datList?.data?.data?._meta?.total_count)
   return (
     <Box>
       <Box>{datList?.data?.data?.data.map((item) => renderItem(item))}</Box>

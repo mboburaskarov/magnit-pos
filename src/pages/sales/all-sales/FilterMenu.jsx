@@ -22,6 +22,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const { formState, reset, control, getValues } = methods
 
   const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
+  const { data: vendorList } = useQuery('vendorlist', () => requests.getAllVendors({ limit: 20, offset: 0 }))
   const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 20, offset: 0 }))
   const { data: producers } = useQuery('producers', () => requests.getAllProducer({ limit: 20, offset: 0 }))
 
@@ -30,8 +31,9 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
 
     const requestBody = {
       category_id: data.category_id?.id || undefined,
-      supply_price_from: data.supply_price_from || undefined,
-      supply_price_to: data.supply_price_to || undefined,
+      employee_id: data.employee_id?.id || undefined,
+      total_amount_from: data.total_amount_from || undefined,
+      total_amount_to: data.total_amount_to || undefined,
       retail_price_from: data.retail_price_from || undefined,
       retail_price_to: data.retail_price_to || undefined,
       store_id: data.store_id?.id || undefined,
@@ -48,28 +50,26 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { supply_price_to, retail_price_to, supply_price_from, retail_price_from, category_id, store_id, producer } = values
+    const { total_amount_to, retail_price_to, employee_id, total_amount_from, retail_price_from, category_id, store_id, producer } = values
 
     reset(
       {
         category_id: category_id ? getOptionsFromUrlParam(category_id, categories?.data?.data?.data)[0] : null,
         producer: producer ? getOptionsFromUrlParam(producer, producers?.data?.data?.data)[0] : null,
+        employee_id: employee_id ? getOptionsFromUrlParam(employee_id, vendorList?.data?.data?.data, 'full_name')[0] : null,
         store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data?.data, 'name')[0] : null,
-        supply_price_to: supply_price_to,
-        retail_price_to: retail_price_to,
-        supply_price_from: supply_price_from,
-        retail_price_from: retail_price_from,
+        total_amount_to: total_amount_to,
+        total_amount_from: total_amount_from,
       },
       { keepDirty: true }
     )
   }, [
     values?.producer,
+    values?.employee_id,
     values?.category_id,
     values?.store_id,
-    values?.retail_price_to,
-    values?.retail_price_from,
-    values?.supply_price_to,
-    values?.supply_price_from,
+    values?.total_amount_to,
+    values?.total_amount_from,
     categories,
     producers,
     shopList,
@@ -152,7 +152,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               }}
               filterOption={() => true}
             />
-
             <SelectSimple
               fullWidth
               id='produ'
@@ -164,21 +163,33 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               options={producers?.data?.data}
               getOptionLabel={(el) => el.name}
             />
-            <InputRange
-              fullWidth
-              id='prixwce'
-              label={t('input.supply_price.label')}
-              name1='supply_price_from'
-              name2='supply_price_to'
-              placeholder1={t('input.price.from')}
-              placeholder2={t('input.price.to')}
+            <LazySelect
+              slug='employee_id'
+              boxStyle={{ width: '100%' }}
+              id='employee_id'
+              name='employee_id'
+              customLabel='full_name'
+              isMulti={false}
+              placeholder={'Выберите Сотрудники'}
+              minWidth='auto'
+              isClearable={true}
+              label={'Сотрудники'}
+              request={requests.getAllVendors}
+              filters={{ limit: 10 }}
+              control={control}
+              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+              // uncontrolled
+              getOptionLabel={(option) => {
+                return <Typography color='grey.600'>{option.name}</Typography>
+              }}
+              filterOption={() => true}
             />
             <InputRange
               fullWidth
               id='prixwce'
-              label={t('input.retail_price.label')}
-              name1='retail_price_from'
-              name2='retail_price_to'
+              label={'Общая сумма'}
+              name1='total_amount_from'
+              name2='total_amount_to'
               placeholder1={t('input.price.from')}
               placeholder2={t('input.price.to')}
             />

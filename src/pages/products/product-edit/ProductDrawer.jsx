@@ -101,7 +101,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         <Typography mt={0.5} ml={2} fontSize={24} color={'bunker.950'} lineHeight={'32px'} fontWeight={'700'}>
           {productData?.data?.data?.name}
           <Typography display='flex' alignItems='center' color='orange.500' mt={1} fontWeight={'500'}>
-            {get(productData, 'data.data.retail_price')} сум
+            {thousandDivider(get(productData, 'data.data.retail_price'))} сум
           </Typography>
         </Typography>
       </Box>

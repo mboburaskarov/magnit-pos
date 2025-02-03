@@ -3,7 +3,6 @@ import { memo } from 'react'
 import thousandDivider from '../../../../utils/thousandDivider'
 import TextField from '../../../../components/Inputs/TextField'
 import { get } from 'lodash'
-import InputFormattedPriceWithTextField from '../../../../components/Inputs/PriceFormattedInput'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -56,8 +55,7 @@ export default function tableHeaderSelector({ cardShiftColumns, t, setValue, cha
             {p?.data?.id == 'ag-grid-footer' || p?.data?.amount == '0' ? (
               <Typography>{get(p, 'data.net_amount')}</Typography>
             ) : (
-              <InputFormattedPriceWithTextField
-                fullWidth
+              <TextField
                 onBlur={({ target }) => {
                   if (Number(get(target, 'value')) == '') {
                     setValue(`net_amount_${p?.data?.id}`, '0')
@@ -70,8 +68,7 @@ export default function tableHeaderSelector({ cardShiftColumns, t, setValue, cha
                     setValue(`net_amount_${p?.data?.id}`, '')
                   }
                 }}
-                uncontrolled
-                // setValue={setValue}
+                setValue={setValue}
                 id={`net_amount_${p?.data?.id}`}
                 name={`net_amount_${p?.data?.id}`}
                 type='number'
