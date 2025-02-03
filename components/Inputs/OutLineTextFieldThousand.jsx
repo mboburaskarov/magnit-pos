@@ -1,8 +1,9 @@
 import { Box, IconButton, InputAdornment, OutlinedInput as MuiTextField } from '@mui/material'
 import { useFormContext } from 'react-hook-form'
 import Label from '../Label'
+import { NumericFormat } from 'react-number-format'
 
-const OutLineTextField = ({
+const NumberFormatInput = ({
   placeholder,
   inputRef,
   InputProps,
@@ -66,39 +67,43 @@ const OutLineTextField = ({
       }
     >
       {!onlyDisplay && label && <Label required={required}>{label}</Label>}
-      <MuiTextField
+      <NumericFormat
         disabled={disabled}
-        label={onlyDisplay && label}
         name={name}
         id={name}
-        type={type || 'text'}
         placeholder={placeholder}
-        endAdornment={
-          <InputAdornment position='end'>
-            <IconButton>{endAdornmentText}</IconButton>
-          </InputAdornment>
-        }
-        inputRef={inputRef}
+        customInput={MuiTextField} // Use MuiTextField as the custom input component
+        thousandSeparator={' '}
+        allowNegative={false} // Disallow negative numbers
+        decimalScale={2} // Set decimal scale to 2
+        onValueChange={(values) => {
+          const { floatValue } = values // Extract the numeric value
+          if (uncontrolled) {
+            // If uncontrolled, use the provided setValue
+            setValue(floatValue)
+          } else {
+            // If controlled, update the form state using react-hook-form's setValue
+            methods.setValue(name, floatValue, { shouldValidate: true })
+          }
+        }}
+        value={uncontrolled ? value : methods.watch(name)} // Use form state value if controlled
         autoComplete={autoComplete ? autoComplete : name === 'shopType' ? 'off' : 'on'}
         InputProps={{
           ...InputProps,
           inputProps: { min: 0, max: 100 }, // Enforce min/max at input level
+          endAdornment: (
+            <InputAdornment position='end'>
+              <IconButton>{endAdornmentText}</IconButton>
+            </InputAdornment>
+          ),
         }}
-        {...(!uncontrolled && methods?.register(name, { required }))}
-        {...(uncontrolled && {
-          value: onlyDisplay && !value ? 'Неопределенный' : value,
-          onChange: (e) => setValue(e.target.value),
-        })}
+        {...(!uncontrolled && methods.register(name, { required }))}
         multiline={multiline}
-        onBlur={(e) => {
-          onBlur
-        }}
+        onBlur={onBlur}
         rows={4}
         onWheel={(e) => {
           e.target.blur()
-
           e.stopPropagation()
-
           setTimeout(() => {
             e.target.focus()
           }, 0)
@@ -178,4 +183,4 @@ const OutLineTextField = ({
   )
 }
 
-export default OutLineTextField
+export default NumberFormatInput

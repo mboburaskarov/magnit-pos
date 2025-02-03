@@ -114,9 +114,9 @@ function InputQuantity({
     }
 
     // Execute any additional onKeyDown logic provided by props
-    if (onKeyDown) {
-      onKeyDown(event)
-    }
+    // if (onKeyDown) {
+    //   onKeyDown(event)
+    // }
   }
   const classes = useStyles()
   const [isApplyAll, setApplyAll] = useState(false)

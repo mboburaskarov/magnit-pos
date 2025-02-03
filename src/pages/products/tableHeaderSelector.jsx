@@ -97,7 +97,9 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         colId: el.field,
         cellRenderer: memo((p) => (
           <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.data.categories[0]?.name}-${p.rowIndex}`}>
-            {get(p, 'data.categories', []).map((e) => `${e.name}, `)}
+            {get(p, 'data.categories', [])
+              .map((e) => `${e.name}`)
+              .join(',')}
           </Typography>
         )),
       }
@@ -223,7 +225,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         colId: el.field,
         cellRenderer: memo((p) => (
           <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-            {p?.data?.quantity} {p?.data?.unit_name}
+            {thousandDivider(p?.data?.quantity)} {p?.data?.unit_name}
           </Typography>
         )),
         // <SimpleText withDevider {...p} type='quantity' />),

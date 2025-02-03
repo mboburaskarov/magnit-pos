@@ -15,6 +15,7 @@ import { error } from '../../../../utils/toast'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import CartOutlineIcon from '../../../assets/icons/CartOutline'
 import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
+import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 const useStyles = makeStyles((theme) => ({
   box: {
     display: 'flex',
@@ -162,7 +163,7 @@ function NewCashRegister() {
                     name={'registerCash_id'}
                   />
                   <Box height={'24px'} />
-                  <OutLineTextField
+                  <NumberFormatInput
                     endAdornmentText={'UZS'}
                     end
                     type='number'

@@ -117,8 +117,6 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
               // uncontrolled
               customLabel={'full_name'}
               getOptionLabel={(option) => {
-                console.log(option)
-
                 return <Typography color='grey.600'>{option.name}</Typography>
               }}
               filterOption={() => true}

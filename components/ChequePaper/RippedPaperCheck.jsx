@@ -12,6 +12,7 @@ import palette from '../../src/assets/theme/mui.config'
 import { get } from 'lodash'
 import ChequeBarcode from './ChequeBarcode'
 import dayjs from 'dayjs'
+import thousandDivider from '../../utils/thousandDivider.js'
 
 function RippedPaperCheck({
   data,
@@ -152,7 +153,7 @@ function RippedPaperCheck({
                     id={`return-price-${'index'}`}
                     rowData={{
                       type: `${get(el, 'quantity')} dona`,
-                      value: `${get(el, 'total_price')} so'm`,
+                      value: `${thousandDivider(get(el, 'total_price'))} so'm`,
                     }}
                   />
                 )}
@@ -170,7 +171,7 @@ function RippedPaperCheck({
                       id={`return-price-${'index'}`}
                       rowData={{
                         type: `${el.name}:`,
-                        value: `${el.amount}`,
+                        value: `${thousandDivider(el.amount)}`,
                       }}
                     />
                   )
@@ -179,8 +180,27 @@ function RippedPaperCheck({
                 <DashedRow
                   id={`return-price-${'index'}`}
                   rowData={{
-                    type: `Jami`,
-                    value: `${get(cartItemsList, 'total_amount')}`,
+                    type: `Umumiy narx`,
+                    value: `${thousandDivider(get(cartItemsList, 'sum'))} so'm`,
+                  }}
+                />
+              )}
+
+              {disableSumsOnGoods() && get(cartItemsList, 'discount_amount', 0) > 0 && (
+                <DashedRow
+                  id={`return-price-${'index'}`}
+                  rowData={{
+                    type: `Chegirma`,
+                    value: `${thousandDivider(get(cartItemsList, 'discount_amount'))} so'm`,
+                  }}
+                />
+              )}
+              {disableSumsOnGoods() && (
+                <DashedRow
+                  id={`return-price-${'index'}`}
+                  rowData={{
+                    type: `Yakuniy narx`,
+                    value: `${thousandDivider(get(cartItemsList, 'total_amount'))} so'm`,
                   }}
                 />
               )}

@@ -9,6 +9,7 @@ import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import EditIcon from '../../../assets/icons/EditIcon'
 import LockIcon from '../../../assets/icons/LockIcon'
 import UnLockIcon from '../../../assets/icons/UnLock'
+import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -120,7 +121,11 @@ export default function tableHeaderSelector({ setopenCreateVendorDrawer, values,
         ...el,
         headerName: t('phone'),
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='phone' />),
+        cellRenderer: memo((p) => (
+          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
+            {formatPhoneNumber(p.data.phone)}
+          </Typography>
+        )),
       }
     }
     if (el.field === 'role') {

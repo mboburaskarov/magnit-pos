@@ -112,13 +112,13 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
             <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(p.data?.received_count)}
+                {thousandDivider(p.data?.received_count)} {p?.data?.unit_name}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(p.data?.accepted_count)}
+                {thousandDivider(p.data?.accepted_count)} {p?.data?.unit_name}
               </Typography>
             </Box>
           </>

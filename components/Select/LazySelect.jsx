@@ -13,6 +13,7 @@ import DeleteSmallIcon from '../../src/assets/icons/DeleteSmallIcon'
 import DeleteIconBig from '../../src/assets/icons/DeleteIconBig'
 import LoadingBlock from '../LoadingBlock'
 import Label from '../Label'
+import { get } from 'lodash'
 
 const SingleValue = ({ children, selectProps, ...props }) => (
   <components.SingleValue selectProps={selectProps} {...props}>
@@ -155,11 +156,16 @@ function LazySelect({
     setPage(1)
     setSearch(inputValue)
   }
-  console.log(customLabel)
 
-  const handleCreate = (inputValue) => {
+  const handleCreate = async (inputValue, onChange) => {
     if (!!createOptionRequest) {
-      create({ name: inputValue })
+      const response = await createOptionRequest({ name: inputValue })
+
+      const newOption = response?.data?.data // Adjust this based on your API response structure
+      onChange({
+        value: get(newOption, 'id'),
+        label: get(newOption, 'name'),
+      })
     } else {
       control.setValue(name, { label: inputValue })
     }
@@ -252,7 +258,7 @@ function LazySelect({
                   Option: CustomOption,
                   ClearIndicator,
                 }}
-                onCreateOption={handleCreate}
+                onCreateOption={(a) => handleCreate(a, onChange)}
                 onChange={(val) => {
                   if (isMulti) {
                     onChange(val.map((el) => el))
@@ -263,7 +269,7 @@ function LazySelect({
                 }}
                 value={value}
                 options={response?.data?.data?.data?.map((option) => ({
-                  label: [customLabel],
+                  label: option?.name,
                   value: option?.id,
                 }))}
                 placeholder={placeholder}

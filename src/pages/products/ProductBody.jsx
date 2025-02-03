@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { get, method } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
@@ -23,6 +23,9 @@ import { error } from '../../../utils/toast'
 import MeasurementValueDialog from './MeasurementValueDialog'
 import useDebouncedValue from '../../hooks/useDebouncedValue'
 import LazySelect from '../../../components/Select/LazySelect'
+import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
+import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
+import getOptionsSchema from '../../../utils/getOptionsSchema'
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
@@ -72,7 +75,12 @@ export default function ProductBody({ productData = null }) {
   }, [values?.limitStore, storeSearchText, values?.offset, values?.offsetStore])
 
   const { data: storeList, refetch: refetchShopList } = useQuery(['shopList', storeHistoryFilter], () => requests.getAllStores(storeHistoryFilter))
-
+  const { data: producerValue, refetch: refetchproducerValue } = useQuery(['producerValue'], () => requests.getProducer({ id: productData?.manufacturer }), {
+    enabled: Boolean(get(productData, 'manufacturer', false)),
+  })
+  const { data: shelfValue, refetch: refetchshelfValue } = useQuery(['shelfValue'], () => requests.getShelf({ id: productData?.shelf_id }), {
+    enabled: Boolean(get(productData, 'shelf_id', false)),
+  })
   const { mutate: generateBarcode, isLoading: isgenerateBarcode } = useMutation(requests.generateBarcode, {
     onSuccess: ({ data }) => {
       setValue('barcode', get(data, 'data.barcode'))
@@ -146,17 +154,18 @@ export default function ProductBody({ productData = null }) {
       setValue('vat', productData?.vat || 0)
       setValue('vat_price', productData?.vat_price || 0)
       setValue('bonus_amount', productData?.bonus_amount || 0)
-      setValue('markup', productData?.bonus_amount || 0)
+      setValue('markup', productData?.markup || 0)
       setValue('bonus_percent', productData?.bonus_percent || 0)
       setValue('description', productData?.description || '')
-      setValue('manufacturer', productData?.manufacturer || 0)
+      setValue('manufacturer', getOptionsSchema(get(producerValue, 'data.data.data', []))[0])
+      setValue('shelf_id', getOptionsSchema(get(shelfValue, 'data.data.data', []))[0])
       setValue('box_grain_count', productData?.box_grain_count || 0)
       setValue('product_unit', { value: productData?.unit_type?.codename, name: productData?.unit_type?.unit_name, id: productData?.unit_type?.id } || 0)
       setValue('expire_date', new Date(productData?.expire_date) || new Date())
       setValue('barcode', productData?.barcode || 0)
       setProductCategories(productData?.categories?.map((el, ind) => ({ ...el, name: el.nameRu, quantity: productData?.quantityOfCategories?.[ind] })))
     }
-  }, [productData])
+  }, [productData, producerValue, shelfValue])
   useEffect(() => {
     get(storeList, 'data.data.ids', []).map((id) => {
       setValue(`store_product.${id}.store_id`, id)
@@ -238,12 +247,12 @@ export default function ProductBody({ productData = null }) {
             placeholder={t('create_new_product.features.manufacturer.placeholder')}
             minWidth='auto'
             isClearable={true}
-            request={requests.getAllShops}
+            request={requests.getProducer}
             filters={{ limit: 10 }}
             // control={control}
             // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
             // request={requests.brand.getAll}
-            createOptionRequest={requests.brand}
+            createOptionRequest={requests.createProducer}
             getOptionLabel={(option) => {
               return <Typography color='grey.600'>{option.name}</Typography>
             }}
@@ -305,11 +314,33 @@ export default function ProductBody({ productData = null }) {
           </Box>
         </Box>
         <Box display={'flex'} width={'100%'} mt={'24px'}>
-          <InputDatePicker defaultValue={new Date()} name='expire_date' required id='expire_date' label='Дата закрытия' placeholder='Дата закрытия' />
+          <InputDatePicker defaultValue={new Date()} name='expire_date' required id='expire_date' label='Дата срока' placeholder='Дата срока' />
           <Box width={'20px'} />
-          <Box maxWidth={'100px'}>
-            <TextField required fullWidth borderRadius={'40px'} name='shelf' label={'Полка'} placeholder={'А4'} sx={{ mb: 3 }} />
-          </Box>
+          {/* <Box maxWidth={'200px'}> */}
+          <LazySelect
+            isCreatable={true}
+            slug='shelf_id'
+            boxStyle={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
+            id='shelf_id'
+            name='shelf_id'
+            isMulti={false}
+            label={'Полка'}
+            placeholder={'A4'}
+            minWidth='auto'
+            isClearable={true}
+            request={requests.getShelf}
+            filters={{ limit: 10 }}
+            // control={control}
+            // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+            // request={requests.brand.getAll}
+            createOptionRequest={requests.createShelf}
+            getOptionLabel={(option) => {
+              return <Typography color='grey.600'>{option.name}</Typography>
+            }}
+            // filterOption={() => true}
+          />
+          {/* <TextField required fullWidth borderRadius={'40px'} name='shelf' label={'Полка'} placeholder={'А4'} sx={{ mb: 3 }} /> */}
+          {/* </Box> */}
           <Box width={'20px'} />
 
           <TextField
@@ -349,7 +380,7 @@ export default function ProductBody({ productData = null }) {
         </SectionTitle>
         <Box alignItems='flex-end' width='100%' columnGap={3} flexDirection={'column'} display='inline-flex' my={3}>
           <Box display={'flex'} width={'100%'}>
-            <OutLineTextField
+            <NumberFormatInput
               adornment={'UZS'}
               adornmentPosition='end'
               required
@@ -379,7 +410,7 @@ export default function ProductBody({ productData = null }) {
               placeholder={t('create_new_product.supply_price.placeholder')}
             /> */}
             <Box width={'20px'} />
-            <OutLineTextField
+            <NumberFormatInput
               endAdornmentText={'%'}
               required
               onBlur={(e) => changeAmount('markup', e)}
@@ -394,7 +425,7 @@ export default function ProductBody({ productData = null }) {
               placeholder={'Наценка'}
             />
             <Box width={'20px'} />
-            <OutLineTextField
+            <NumberFormatInput
               endAdornmentText={'UZS'}
               required
               type='number'
@@ -411,7 +442,7 @@ export default function ProductBody({ productData = null }) {
             />
           </Box>
           <Box mt={'24px'} display={'flex'} width={'100%'}>
-            <OutLineTextField
+            <NumberFormatInput
               endAdornmentText={'%'}
               required
               type='number'
@@ -428,7 +459,7 @@ export default function ProductBody({ productData = null }) {
             />
             <Box width={'20px'} />
 
-            <OutLineTextField
+            <NumberFormatInput
               endAdornmentText={'UZS'}
               required
               type='number'
@@ -444,7 +475,7 @@ export default function ProductBody({ productData = null }) {
             />
           </Box>
           <Box mt={'24px'} display={'flex'} width={'100%'}>
-            <OutLineTextField
+            <NumberFormatInput
               endAdornmentText={'%'}
               required
               type='number'
@@ -460,7 +491,7 @@ export default function ProductBody({ productData = null }) {
             />
             <Box width={'20px'} />
 
-            <OutLineTextField
+            <NumberFormatInput
               endAdornmentText={'UZS'}
               required
               type='number'

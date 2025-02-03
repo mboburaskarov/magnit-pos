@@ -348,27 +348,29 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
               </Box>
             </Box>
             <Box display={'flex'} alignItems={'center'}>
-              <Typography
-                whiteSpace={'pre'}
-                sx={{
-                  bgcolor: 'red.500',
-                  color: '#fff',
-                  px: '8px',
-                  mr: '5px',
-                  py: '5px',
-                  borderRadius: '15px',
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  fontWeight: '500',
-                }}
-              >
-                - {item?.discount_value}%
-              </Typography>
+              {item?.discount_value > 0 && (
+                <Typography
+                  whiteSpace={'pre'}
+                  sx={{
+                    bgcolor: 'red.500',
+                    color: '#fff',
+                    px: '8px',
+                    mr: '5px',
+                    py: '5px',
+                    borderRadius: '15px',
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    fontWeight: '500',
+                  }}
+                >
+                  - {item?.discount_value}%
+                </Typography>
+              )}
 
               <Box alignItems={'end'} display={'flex'} flexDirection={'column'}>
                 {item?.discount_price > 0 && (
                   <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
-                    {thousandDivider(item?.unit_price, 'сум')}
+                    {thousandDivider(item?.discount_price, 'сум')}
                   </Typography>
                 )}
                 <Typography
@@ -384,7 +386,7 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                     color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
                   }}
                 >
-                  {thousandDivider(item?.discount_price, 'сум')}
+                  {thousandDivider(item?.total_price, 'сум')}
                 </Typography>
                 <Typography sx={{ minWidth: '30px', whiteSpace: 'pre', color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>
                   A4

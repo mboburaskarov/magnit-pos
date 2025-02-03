@@ -35,7 +35,7 @@ const columns = [
     field: 'phone',
     hide: false,
     minWidth: 70,
-    width: 160,
+    width: 200,
   },
 
   {

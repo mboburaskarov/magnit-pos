@@ -34,6 +34,8 @@ import CreateDraftDrawer from './createDraftDrawer'
 import ChangeShift from './ChangeShift'
 import ShortcutsDrawer from '../../../../components/Sales/ShortcutsDrawer'
 import thousandDivider from '../../../../utils/thousandDivider'
+import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
+import OutLineTextFieldThousand from '../../../../components/Inputs/OutLineTextFieldThousand'
 const useStyles = makeStyles((theme) => ({
   card_detail: {
     width: '30%',
@@ -582,7 +584,7 @@ function NewSale() {
             )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
-            <TextField required type={'number'} fullWidth name='discount' label={'Скидка'} placeholder='Введите скидку' />
+            <OutLineTextFieldThousand required type={'number'} fullWidth name='discount' label={'Скидка'} placeholder='Введите скидку' />
             <Box ml={'8px'}>
               <InputSwitch
                 uncontrolled

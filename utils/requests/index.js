@@ -8,6 +8,10 @@ export const requests = {
   //payment types
   getPaymentTypesList: (filter) => request.get(`v1/payment-type/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   addToOrderPayment: (data) => request.post(`v1/sale/final`, data),
+  createProducer: (data) => request.post(`v1/producer`, data),
+  createShelf: (data) => request.post(`v1/shelf`, data),
+  getShelf: (filter) => request.get(`v1/shelf/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getProducer: (filter) => request.get(`v1/producer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   createShift: (data) => request.post(`v1/shift`, data),
   checkSaleExist: (store_id) => request.get(`v1/cash_box/check?store_id=${store_id}`),

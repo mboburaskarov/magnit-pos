@@ -3,6 +3,7 @@ import { memo } from 'react'
 import thousandDivider from '../../../../utils/thousandDivider'
 import TextField from '../../../../components/Inputs/TextField'
 import { get } from 'lodash'
+import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -53,15 +54,15 @@ export default function tableHeaderSelector({ cardShiftColumns, t, setValue, cha
         cellRenderer: memo((p) => (
           <>
             {p?.data?.id == 'ag-grid-footer' || p?.data?.amount == '0' ? (
-              <Typography>{get(p, 'data.net_amount')}</Typography>
+              <Typography>{thousandDivider(get(p, 'data.net_amount'))}</Typography>
             ) : (
-              <TextField
+              <NumberFormatInput
                 onBlur={({ target }) => {
                   if (Number(get(target, 'value')) == '') {
                     setValue(`net_amount_${p?.data?.id}`, '0')
                   }
                   if (get(p, 'data.net_amount') != Number(get(target, 'value')))
-                    changeCloseBoxNetAmout({ id: get(p, 'data.id'), data: { net_amount: Number(get(target, 'value')) } })
+                    changeCloseBoxNetAmout({ id: get(p, 'data.id'), data: { net_amount: Number(get(target, 'value', '')?.replace(/\s+/g, '')) } })
                 }}
                 onFocus={({ target }) => {
                   if (Number(get(target, 'value')) == 0) {
@@ -98,7 +99,7 @@ export default function tableHeaderSelector({ cardShiftColumns, t, setValue, cha
               borderRadius: '24px',
             }}
           >
-            {get(p, 'data.difference_amount')}
+            {thousandDivider(get(p, 'data.difference_amount'))}
           </Box>
         )),
       }

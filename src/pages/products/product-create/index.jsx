@@ -42,11 +42,14 @@ export default function ProductCreatePage() {
       bonus_percent: Number(get(data, 'bonus_percent')),
       description: get(data, 'description'),
       expire_date: get(data, 'expire_date'),
-      manufacturer: get(data, 'manufacturer'),
+      manufacturer: get(data, 'manufacturer.value'),
+      shelf_id: get(data, 'shelf_id.value'),
+
       name: get(data, 'name'),
       photos: get(data, 'images', []).map((el) => el.file_url),
       category_ids: methods.getValues('category_ids'),
       unit_type_id: get(data, 'product_unit.id'),
+
       unit_per_pack: Number(get(data, 'box_grain_count')),
 
       quantity: Object.values(get(data, 'store_product')).reduce((total, product) => {
