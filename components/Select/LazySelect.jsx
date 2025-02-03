@@ -73,6 +73,7 @@ function LazySelect({
   getOptionLabel = (option) => option.name,
   getOptionValue,
   defaultValue,
+  customLabel = 'name',
   boxStyle,
   label,
   placeholder = 'components.enterAttribute',
@@ -154,6 +155,7 @@ function LazySelect({
     setPage(1)
     setSearch(inputValue)
   }
+  console.log(customLabel)
 
   const handleCreate = (inputValue) => {
     if (!!createOptionRequest) {
