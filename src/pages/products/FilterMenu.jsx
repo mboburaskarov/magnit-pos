@@ -135,7 +135,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
               id='store'
               name='store_id'
               isMulti={false}
-              placeholder={'Выберите клиент'}
+              placeholder={t('Выберите Магазин')}
               minWidth='auto'
               isClearable={true}
               label={t('input.store.label')}

@@ -234,57 +234,61 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
               display={'flex'}
               sx={{
                 '& .MuiInputBase-root': {
-                  width: '80px',
+                  width: get(item, 'unit_quantity') == 0 ? '130px' : '80px',
                 },
               }}
             >
-              <StyledTooltip placement='top' title='Пачка'>
-                <InputQuantity
-                  id={`quantity_${item?.id}`}
-                  name={`quantity_${item?.id}`}
-                  adornmentPosition='end'
-                  adornmentClassName={cls.adornment}
-                  max={100}
-                  defaultValue={get(item, 'quantity', 0)}
-                  type='number'
-                  disabled={false}
-                  onFocus={({ target }) => {
-                    if (Number(get(target, 'value')) == 0) {
-                      method.setValue(`quantity_${item?.id}`, '')
-                    }
-                  }}
-                  onBlur={({ target }) => {
-                    if (Number(get(target, 'value')) == '') {
-                      method.setValue(`quantity_${item?.id}`, '0')
-                    }
-                    if (get(item, 'quantity') == Number(get(target, 'value'))) {
-                      return
-                    }
-                    if (method.getValues(`unit_quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
-                      method.setValue(`quantity_${item?.id}`, get(target, 'value'))
-                    } else {
-                      changeCartItemQuantity({
-                        id: get(item, 'id'),
-                        data: {
-                          quantity: Number(get(target, 'value')),
-                          store_product_id: get(item, 'store_product_id'),
+              <InputQuantity
+                id={`quantity_${item?.id}`}
+                name={`quantity_${item?.id}`}
+                adornmentPosition='end'
+                fullWidth
+                adornmentClassName={cls.adornment}
+                max={100}
+                adornment='пч'
+                defaultValue={get(item, 'quantity', 0)}
+                type='number'
+                disabled={false}
+                onFocus={({ target }) => {
+                  if (Number(get(target, 'value')) == 0) {
+                    method.setValue(`quantity_${item?.id}`, '')
+                  }
+                }}
+                onBlur={({ target }) => {
+                  if (Number(get(target, 'value')) == '') {
+                    method.setValue(`quantity_${item?.id}`, '0')
+                  }
+                  if (get(item, 'quantity') == Number(get(target, 'value'))) {
+                    return
+                  }
+                  if (method.getValues(`unit_quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
+                    method.setValue(`quantity_${item?.id}`, get(target, 'value'))
+                  } else {
+                    changeCartItemQuantity({
+                      id: get(item, 'id'),
+                      data: {
+                        quantity: Number(get(target, 'value')),
+                        store_product_id: get(item, 'store_product_id'),
 
-                          unit_quantity: Number(method.getValues(`unit_quantity_${item?.id}`)),
-                        },
-                      })
-                    }
-                  }}
-                />
-              </StyledTooltip>
-              <Box>
-                <StyledTooltip placement='top' title='Штук'>
+                        unit_quantity: Number(method.getValues(`unit_quantity_${item?.id}`)),
+                      },
+                    })
+                  }
+                }}
+              />
+              <Box width={'5px'} />
+
+              {get(item, 'unit_quantity') > 0 ? (
+                <Box>
                   <InputQuantity
                     id={`inputQuantitys${index}`}
                     name={`unit_quantity_${item?.id}`}
                     defaultValue={get(item, 'unit_quantity', 1)}
                     adornmentPosition='end'
+                    adornment='шт'
                     adornmentClassName={cls.adornment}
                     max={100}
+                    fullWidth
                     type='number'
                     onFocus={({ target }) => {
                       if (Number(get(target, 'value')) == 0) {
@@ -313,8 +317,11 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                       }
                     }}
                   />
-                </StyledTooltip>
-              </Box>
+                </Box>
+              ) : (
+                <></>
+              )}
+              <Box width={'10px'} />
               <Box className={cls.img_cont}>
                 <img src={item?.main_photo || '/default-img.avif'} />
               </Box>

@@ -25,9 +25,7 @@ export default function DrawerInfoBox({ infoData, columnGap = 2, mb = 4, mt = 2 
             <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
               {el.title}
             </Typography>
-            <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-              {el.info}
-            </Typography>
+            <Typography dangerouslySetInnerHTML={{ __html: el.info }} fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600} />
           </Box>
         </Box>
         // <Box

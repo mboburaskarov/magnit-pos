@@ -90,7 +90,7 @@ export default function FilterMenu({ open, setOpen }) {
               id='store_id'
               name='store_id'
               isMulti={false}
-              placeholder={'Выберите клиент'}
+              placeholder={t('Выберите Магазин')}
               minWidth='auto'
               isClearable={true}
               request={requests.getAllShops}

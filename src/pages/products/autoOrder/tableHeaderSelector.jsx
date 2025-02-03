@@ -95,7 +95,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
     if (el.field === 'public_id') {
       return {
         ...el,
-        headerName: '№',
+        headerName: 'Номер автозаказа',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Link

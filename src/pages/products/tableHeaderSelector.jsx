@@ -221,7 +221,12 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         ...el,
         headerName: t('table_columns.quantity'),
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='quantity' />),
+        cellRenderer: memo((p) => (
+          <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+            {p?.data?.quantity} {p?.data?.unit_name}
+          </Typography>
+        )),
+        // <SimpleText withDevider {...p} type='quantity' />),
       }
     }
     if (el.field === 'expire_date') {

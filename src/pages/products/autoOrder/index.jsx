@@ -125,7 +125,7 @@ export default function AutoOrderPage() {
                   },
                 }}
               >
-                <InputSearch id='producrs-search' name='search' placeholder={'Наименование, номер'} uncontrolled />
+                <InputSearch id='producrs-search' name='search' placeholder={'Номер автозаказа, магазин'} uncontrolled />
               </Box>
 
               <Box minWidth={113} ml={'16px'}>

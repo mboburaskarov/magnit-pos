@@ -142,7 +142,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             id='store'
             name='store_id'
             isMulti={false}
-            placeholder={'Выберите клиент'}
+            placeholder={t('Выберите Магазин')}
             minWidth='auto'
             isClearable={true}
             request={requests.getAllShops}
