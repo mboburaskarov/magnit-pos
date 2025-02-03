@@ -230,7 +230,7 @@ export default function ProductBody({ productData = null }) {
           <LazySelect
             isCreatable={true}
             slug='manufacturer'
-            boxStyle={{ width: '100%' }}
+            boxStyle={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
             id='manufacturer'
             name='manufacturer'
             isMulti={false}
@@ -249,11 +249,7 @@ export default function ProductBody({ productData = null }) {
             }}
             // filterOption={() => true}
           />
-          <Box width={'20px'} />
 
-          <Box maxWidth={'100px'}>
-            <TextField required fullWidth borderRadius={'40px'} name='shelf' label={'Полка'} placeholder={'А4'} sx={{ mb: 3 }} />
-          </Box>
           {uniType === 'pack' && (
             <>
               <Box width={'20px'} />
@@ -311,6 +307,11 @@ export default function ProductBody({ productData = null }) {
         <Box display={'flex'} width={'100%'} mt={'24px'}>
           <InputDatePicker defaultValue={new Date()} name='expire_date' required id='expire_date' label='Дата закрытия' placeholder='Дата закрытия' />
           <Box width={'20px'} />
+          <Box maxWidth={'100px'}>
+            <TextField required fullWidth borderRadius={'40px'} name='shelf' label={'Полка'} placeholder={'А4'} sx={{ mb: 3 }} />
+          </Box>
+          <Box width={'20px'} />
+
           <TextField
             required
             InputProps={{

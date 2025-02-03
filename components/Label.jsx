@@ -9,6 +9,7 @@ export default function Label({ children, required, ...props }) {
       fontSize={16}
       fontWeight={600}
       variant='h5'
+      whiteSpace={'pre'}
       lineHeight={'24px'}
       display='flex'
       type='label'
