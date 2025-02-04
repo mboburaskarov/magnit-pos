@@ -171,7 +171,7 @@ function RippedPaperCheck({
                       id={`return-price-${'index'}`}
                       rowData={{
                         type: `${el.name}:`,
-                        value: `${thousandDivider(el.amount)}`,
+                        value: `${thousandDivider(el.amount)} so'm`,
                       }}
                     />
                   )

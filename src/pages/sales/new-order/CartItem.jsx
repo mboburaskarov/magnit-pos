@@ -386,7 +386,7 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                     color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
                   }}
                 >
-                  {thousandDivider(item?.total_price, 'сум')}
+                  {thousandDivider(item?.unit_price, 'сум')}
                 </Typography>
                 <Typography sx={{ minWidth: '30px', whiteSpace: 'pre', color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>
                   A4

@@ -105,13 +105,13 @@ export default function ProductHistory({ id }) {
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(data?.received_amount)}
+                {thousandDivider(data?.received_amount, 'сум')}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(data?.accepted_amount)}
+                {thousandDivider(data?.accepted_amount, 'сум')}
               </Typography>
             </Box>
           </>
