@@ -385,7 +385,7 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                     mr: '10px',
                     color: 'orange.500',
                     whiteSpace: 'pre',
-                    fontSize: '14px',
+                    fontSize: item?.discount_price > 0 ? '14px' : '16px',
                     lineHeight: '24px',
                     fontWeight: '600',
                     textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',

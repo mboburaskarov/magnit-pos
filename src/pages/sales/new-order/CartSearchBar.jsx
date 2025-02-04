@@ -197,8 +197,16 @@ function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setI
       setShowOverlay(false)
     },
     onError: (err) => {
-      error('Ошибка при получении похожих товаров.')
-      console.log('err', err)
+      if (get(err, 'response.data.code') === 409) {
+        error(`Описание
+Редактировать
+Введенное количество товара превышает существующее количество. 
+Максимальное количество упаковок на складе - ${get(err, 'response.data.data.pack_quantity')},
+единичное количество на складе - ${get(err, 'response.data.data.unit_quantity')}.`)
+      } else {
+        error('Ошибка при получении похожих товаров.')
+        console.log('err', err)
+      }
       setShowOverlay(false)
     },
   })

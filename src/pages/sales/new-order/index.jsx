@@ -286,8 +286,16 @@ function NewSale() {
       method.setValue('search', '')
     },
     onError: (err) => {
-      error('Ошибка при создании элемента карты.')
-      console.log('err', err)
+      if (get(err, 'response.data.code') === 409) {
+        error(`Описание
+      Редактировать
+      Введенное количество товара превышает существующее количество. 
+      Максимальное количество упаковок на складе - ${get(err, 'response.data.data.pack_quantity')},
+      единичное количество на складе - ${get(err, 'response.data.data.unit_quantity')}.`)
+      } else {
+        error('Ошибка при создании элемента карты.')
+        console.log('err', err)
+      }
     },
   })
   const { mutate: deleteCartItem, isLoading: isdeleteCartItem } = useMutation(requests.deleteCartItem, {
