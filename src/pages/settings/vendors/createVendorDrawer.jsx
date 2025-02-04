@@ -73,6 +73,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
       closeDrawer(false)
       methods.reset()
       refetchVendorList()
+
       success('Вендор успешно редактирование!')
     },
     onError: (err) => {

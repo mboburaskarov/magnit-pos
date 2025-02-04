@@ -76,8 +76,8 @@ export default function AllSalesPage() {
 
       total_amount_to: values?.total_amount_to,
       total_amount_from: values?.total_amount_from,
-      start_date: values?.start_date,
-      end_date: values?.end_date,
+      start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
+      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
     }
   }, [
     values?.offset,
@@ -159,10 +159,7 @@ export default function AllSalesPage() {
               </Button>
             </Box>
             <Box width={'20px'} />
-            <DateRangeInput
-              defaultFilterData={{ label: 'Это час', start_date: dayjs().tz().startOf('week'), end_date: dayjs().tz() }}
-              id='accounting-report-date-range'
-            />
+            <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('DD.MM.YYYY') }} id='accounting-report-date-range' />
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box>

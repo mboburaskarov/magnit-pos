@@ -13,6 +13,11 @@ import ArrowDown from '../../../src/assets/icons/ArrowDown'
 
 const customDateRanges = () => [
   {
+    id: 'yesterday',
+    label: 'Вчера',
+    values: [dayjs().subtract(1, 'day').format('DD.MM.YYYY'), dayjs().subtract(1, 'day').format('DD.MM.YYYY')],
+  },
+  {
     id: 'today',
     label: 'Сегодня',
     values: [dayjs().format('DD.MM.YYYY'), dayjs().format('DD.MM.YYYY')],

@@ -92,6 +92,7 @@ export default function ProductBody({ productData = null }) {
 
   const changeAmount = (inputName, value) => {
     const supply_price = Number(getValues('supply_price'))
+
     const vat = Number(getValues('vat'))
     const markup = Number(getValues('markup'))
     const retail_price = Number(getValues('retail_price'))
@@ -164,6 +165,8 @@ export default function ProductBody({ productData = null }) {
       setValue('expire_date', new Date(productData?.expire_date) || new Date())
       setValue('barcode', productData?.barcode || 0)
       setProductCategories(productData?.categories?.map((el, ind) => ({ ...el, name: el.nameRu, quantity: productData?.quantityOfCategories?.[ind] })))
+    } else {
+      setValue('vat', 12)
     }
   }, [productData, producerValue, shelfValue])
   useEffect(() => {
@@ -432,7 +435,6 @@ export default function ProductBody({ productData = null }) {
               onBlur={(e) => changeAmount('retail_price', e)}
               InputProps={{
                 onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
-                onBlur: (e) => console.log(e),
               }}
               fullWidth
               borderRadius={'40px'}

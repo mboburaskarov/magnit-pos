@@ -198,6 +198,7 @@ function RippedPaperCheck({
               {disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index'}`}
+                  main
                   rowData={{
                     type: `Yakuniy narx`,
                     value: `${thousandDivider(get(cartItemsList, 'total_amount'))} so'm`,

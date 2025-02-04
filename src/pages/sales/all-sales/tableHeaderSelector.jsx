@@ -218,7 +218,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
+            <Typography>{dayjs(p.data?.['completed_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
           </Box>
         )),
       }
@@ -254,7 +254,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
                   id={p.data.employee?._id}
                   style={{ whiteSpace: 'pre-line', color: 'bunker.950', fontSize: '16px', lineHeight: '24px', marginLeft: '8px', fontWeight: 600 }}
                 >
-                  {p.data.employee?.first_name}
+                  {p.data.employee?.full_name}
                 </Typography>
               </a>
             </Box>

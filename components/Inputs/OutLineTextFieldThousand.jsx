@@ -26,9 +26,11 @@ const NumberFormatInput = ({
   dashed,
   fullWidth,
   multiline,
+
   centerMode,
   onBoxClick = () => {},
   onBlur = () => {},
+  onFocus = () => {},
   bgcolor,
   autoComplete,
   ...props
@@ -100,6 +102,7 @@ const NumberFormatInput = ({
         {...(!uncontrolled && methods.register(name, { required }))}
         multiline={multiline}
         onBlur={onBlur}
+        onFocus={onFocus}
         rows={4}
         onWheel={(e) => {
           e.target.blur()

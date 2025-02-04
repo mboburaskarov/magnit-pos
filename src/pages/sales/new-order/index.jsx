@@ -36,6 +36,7 @@ import ShortcutsDrawer from '../../../../components/Sales/ShortcutsDrawer'
 import thousandDivider from '../../../../utils/thousandDivider'
 import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
 import OutLineTextFieldThousand from '../../../../components/Inputs/OutLineTextFieldThousand'
+import LoadingOverflow from '../../../../components/LoadingOverflow'
 const useStyles = makeStyles((theme) => ({
   card_detail: {
     width: '30%',
@@ -215,6 +216,7 @@ function NewSale() {
   const classes = useStyles()
 
   const [showOverlay, setShowOverlay] = useState(false)
+  const [hasChange, setHasChange] = useState(false)
   const [isOpenDraft, setIsOpenDraft] = useState(false)
   const [isCreateOpenDraft, setIsCreateOpenDraft] = useState(false)
   const [isOpenChangeShift, setIsOpenChangeShift] = useState(false)
@@ -266,10 +268,13 @@ function NewSale() {
   const { mutate: changeDiscountValue, isLoading: ischangeDiscountValue } = useMutation(requests.changeDiscountValue, {
     onSuccess: () => {
       setTimeout(() => {
+        setHasChange(false)
         refetchcartItemsList()
       }, 100)
     },
     onError: (err) => {
+      setHasChange(false)
+
       error('Ошибка при изменении цены со скидкой.')
       console.log('err', err)
     },
@@ -307,7 +312,8 @@ function NewSale() {
 
   useEffect(() => {
     method.setValue('discount', inputDiscount)
-  }, [inputDiscount, method.setValue])
+    changeDiscount(inputDiscount)
+  }, [inputDiscount])
 
   useEffect(() => {
     refetchcartItemsList()
@@ -321,15 +327,18 @@ function NewSale() {
       })
     }
   }, [cartItemsList?.data])
-  useEffect(() => {
+  const changeDiscount = (value) => {
+    if (!value && value != 0) return
+
+    setHasChange(true)
     changeDiscountValue({
       id: id,
       body: {
         discount_type: discount,
-        discount_value: Number(method.getValues('discount')),
+        discount_value: Number(value),
       },
     })
-  }, [method.watch('discount')])
+  }
 
   useEffect(() => {
     if (debouncedSearchTerm?.length > 2) {
@@ -377,6 +386,8 @@ function NewSale() {
 
   return (
     <FormProvider {...method}>
+      <LoadingOverflow fullHeight readyState={!hasChange} />
+
       <Box display={'flex'}>
         <Box width={'70%'} position={'relative'} padding={'20px'}>
           <Box position={'relative'}>
@@ -584,7 +595,17 @@ function NewSale() {
             )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
-            <OutLineTextFieldThousand required type={'number'} fullWidth name='discount' label={'Скидка'} placeholder='Введите скидку' />
+            <OutLineTextFieldThousand
+              setValue={(e) => changeDiscount(e)}
+              required
+              value={inputDiscount}
+              type={'number'}
+              fullWidth
+              name='discount'
+              label={'Скидка'}
+              uncontrolled
+              placeholder='Введите скидку'
+            />
             <Box ml={'8px'}>
               <InputSwitch
                 uncontrolled

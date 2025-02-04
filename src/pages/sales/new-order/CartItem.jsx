@@ -234,7 +234,7 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
               display={'flex'}
               sx={{
                 '& .MuiInputBase-root': {
-                  width: get(item, 'unit_quantity') == 0 ? '100px' : '80px',
+                  width: get(item, 'unit_per_pack') == 0 ? '100px' : '100px',
                 },
               }}
             >
@@ -278,8 +278,14 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
               />
               <Box width={'5px'} />
 
-              {get(item, 'unit_quantity') > 0 ? (
-                <Box>
+              {get(item, 'unit_per_pack') > 0 ? (
+                <Box
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      width: get(item, 'unit_per_pack') == 0 ? '100px' : '100px',
+                    },
+                  }}
+                >
                   <InputQuantity
                     id={`inputQuantitys${index}`}
                     name={`unit_quantity_${item?.id}`}
@@ -354,11 +360,11 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                   sx={{
                     bgcolor: 'red.500',
                     color: '#fff',
-                    px: '8px',
+                    px: '6px',
                     mr: '5px',
-                    py: '5px',
+                    py: '3px',
                     borderRadius: '15px',
-                    fontSize: '14px',
+                    fontSize: '12px',
                     lineHeight: '20px',
                     fontWeight: '500',
                   }}
