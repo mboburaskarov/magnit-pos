@@ -42,7 +42,7 @@ export default function ProductCreatePage() {
       bonus_percent: Number(get(data, 'bonus_percent')),
       description: get(data, 'description'),
       expire_date: get(data, 'expire_date'),
-      manufacturer: get(data, 'manufacturer.value'),
+      producer_id: get(data, 'manufacturer.value'),
       shelf_id: get(data, 'shelf_id.value'),
 
       name: get(data, 'name'),
