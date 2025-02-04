@@ -96,13 +96,6 @@ export default function AutoOrderPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [autoOrderList?.data, values?.limit])
-  const onSubmit = (data) => {
-    console.log(data)
-  }
-  const onError = (err) => {
-    console.log('err', err)
-    error('Пожалуйста, заполните все поля!')
-  }
 
   return (
     <LoadingContainer readyState={true}>

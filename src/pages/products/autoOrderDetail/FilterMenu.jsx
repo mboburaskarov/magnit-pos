@@ -31,6 +31,7 @@ export default function FilterMenu({ open, setOpen }) {
   const onSubmit = (data) => {
     const requestBody = {
       store_id: data.store_id?.id || undefined,
+      store_name: data.store_id?.name || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
@@ -47,7 +48,7 @@ export default function FilterMenu({ open, setOpen }) {
 
     reset(
       {
-        store_id: store_id,
+        store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
       },
       { keepDirty: true }
     )

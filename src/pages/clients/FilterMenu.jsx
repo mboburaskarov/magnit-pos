@@ -30,11 +30,12 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
 
     const requestBody = {
       store_id: data.store_id?.id || undefined,
+      store_name: data.store_id?.name || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
     setOpen(false)
-    navigate(`/products${requestParams}`)
+    navigate(`/clients/all${requestParams}`)
   }
 
   const onError = (err) => {
@@ -46,7 +47,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
 
     reset(
       {
-        store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data?.data, 'name')[0] : null,
+        store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
       },
       { keepDirty: true }
     )
@@ -56,7 +57,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/products?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/clients/all?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
   return (

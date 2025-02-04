@@ -35,6 +35,7 @@ export default function FilterMenu({ open, setOpen }) {
       status: data.status?.value || undefined,
       import_date: data.import_date || undefined,
       store_id: data.store_id?.id || undefined,
+      store_name: data.store_id?.name || undefined,
       start_date: startDate != 0 ? dayjs(startDate).format('YYYY-MM-DD') : undefined,
       end_date: endDate != 0 ? dayjs(endDate).format('YYYY-MM-DD') : undefined,
     }
@@ -53,7 +54,7 @@ export default function FilterMenu({ open, setOpen }) {
 
     reset(
       {
-        store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data?.data, 'name')[0] : null,
+        store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
         received_amount_to: received_amount_to,
         received_amount_from: received_amount_from,
         status: status ? getOptionsFromUrlParam(status, imports_list_statuses, 'name')[0] : null,

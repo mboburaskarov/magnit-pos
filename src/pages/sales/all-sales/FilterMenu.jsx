@@ -19,25 +19,21 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
-  const { formState, reset, control, getValues } = methods
+  const { formState, reset, control } = methods
 
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
-  const { data: vendorList } = useQuery('vendorlist', () => requests.getAllVendors({ limit: 20, offset: 0 }))
-  const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 20, offset: 0 }))
-  const { data: producers } = useQuery('producers', () => requests.getAllProducer({ limit: 20, offset: 0 }))
+  const { data: paymentTypeList } = useQuery('paymentTypeList', () => requests.getPaymentTypesList({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])
 
     const requestBody = {
-      category_id: data.category_id?.id || undefined,
-      employee_id: data.employee_id?.id || undefined,
       total_amount_from: data.total_amount_from || undefined,
       total_amount_to: data.total_amount_to || undefined,
-      retail_price_from: data.retail_price_from || undefined,
-      retail_price_to: data.retail_price_to || undefined,
-      store_id: data.store_id?.id || undefined,
-      producer: data.producer?.name || undefined,
+      store_id: data.store_id?.value || undefined,
+      store_name: data.store_id?.name || undefined,
+      vendor_id: data.vendor_id?.value || undefined,
+      vendor_name: data.vendor_id?.name || undefined,
+      payment_type_id: data.payment_type_id?.id || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
@@ -50,30 +46,19 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { total_amount_to, retail_price_to, employee_id, total_amount_from, retail_price_from, category_id, store_id, producer } = values
+    const { total_amount_to, total_amount_from, store_id, payment_type_id, vendor_id } = values
 
     reset(
       {
-        category_id: category_id ? getOptionsFromUrlParam(category_id, categories?.data?.data?.data)[0] : null,
-        producer: producer ? getOptionsFromUrlParam(producer, producers?.data?.data?.data)[0] : null,
-        employee_id: employee_id ? getOptionsFromUrlParam(employee_id, vendorList?.data?.data?.data, 'full_name')[0] : null,
-        store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data?.data, 'name')[0] : null,
+        payment_type_id: payment_type_id ? getOptionsFromUrlParam(payment_type_id, paymentTypeList?.data?.data, 'name')[0] : null,
+        vendor_id: vendor_id ? { name: values?.vendor_name, value: values?.vendor_id } : null,
+        store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
         total_amount_to: total_amount_to,
         total_amount_from: total_amount_from,
       },
       { keepDirty: true }
     )
-  }, [
-    values?.producer,
-    values?.employee_id,
-    values?.category_id,
-    values?.store_id,
-    values?.total_amount_to,
-    values?.total_amount_from,
-    categories,
-    producers,
-    shopList,
-  ])
+  }, [values?.payment_type_id, values?.vendor_id, values?.category_id, values?.store_id, values?.total_amount_to, values?.total_amount_from])
   const theme = useTheme()
 
   const resetFilter = () => {
@@ -83,7 +68,12 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
   const { t } = useTranslation()
   return (
-    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog
+      overflowVisible
+      open={open}
+      title={t('filter_dialog.label')}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+    >
       <Box
         sx={{
           width: '100%',
@@ -101,17 +91,17 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            {/* <SelectSimple
+            <SelectSimple
               fullWidth
               id='sto'
-              name='store_id'
+              name='payment_type_id'
               white
               minWidth='auto'
               label={t('input.store.label')}
               placeholder={t('input.store.placeholder')}
               getOptionLabel={(el) => el.name}
-              options={shopList?.data?.data?.data}
-            /> */}
+              options={paymentTypeList?.data?.data}
+            />
             <LazySelect
               slug='users'
               boxStyle={{ width: '100%' }}
@@ -132,42 +122,12 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               }}
               filterOption={() => true}
             />
+
             <LazySelect
-              slug='users'
+              slug='vendor_id'
               boxStyle={{ width: '100%' }}
-              id='store'
-              name='category_id'
-              isMulti={false}
-              label={t('input.category.label')}
-              placeholder={t('input.category.placeholder')}
-              minWidth='auto'
-              isClearable={true}
-              request={requests.getAllCategories}
-              filters={{ limit: 10 }}
-              control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
-              getOptionLabel={(option) => {
-                return <Typography color='grey.600'>{option.name}</Typography>
-              }}
-              filterOption={() => true}
-            />
-            <SelectSimple
-              fullWidth
-              id='produ'
-              name='producer'
-              white
-              minWidth='auto'
-              label={t('input.manufacturer.label')}
-              placeholder={t('input.manufacturer.placeholder')}
-              options={producers?.data?.data}
-              getOptionLabel={(el) => el.name}
-            />
-            <LazySelect
-              slug='employee_id'
-              boxStyle={{ width: '100%' }}
-              id='employee_id'
-              name='employee_id'
+              id='vendor_id'
+              name='vendor_id'
               customLabel='full_name'
               isMulti={false}
               placeholder={'Выберите Сотрудники'}

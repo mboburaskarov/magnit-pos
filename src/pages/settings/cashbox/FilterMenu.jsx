@@ -29,6 +29,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
 
     const requestBody = {
       store_id: data.store_id?.id || undefined,
+      store_name: data.store_id?.name || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
@@ -45,7 +46,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
 
     reset(
       {
-        store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data?.data, 'name')[0] : null,
+        store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
       },
       { keepDirty: true }
     )
@@ -59,7 +60,12 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const theme = useTheme()
   const { t } = useTranslation()
   return (
-    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog
+      overflowVisible
+      open={open}
+      title={t('filter_dialog.label')}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+    >
       <Box
         sx={{
           width: '100%',
