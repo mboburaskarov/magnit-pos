@@ -328,8 +328,16 @@ function NewSale() {
     }
   }, [cartItemsList?.data])
   const changeDiscount = (value) => {
-    if (!value && value != 0) return
-
+    if (!value && value != 0) {
+      changeDiscountValue({
+        id: id,
+        body: {
+          discount_type: discount,
+          discount_value: Number(0),
+        },
+      })
+      return
+    }
     setHasChange(true)
     changeDiscountValue({
       id: id,

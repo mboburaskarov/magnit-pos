@@ -561,7 +561,7 @@ export const theme = ({ mode, palette }) => {
               paddingTop: '10px !important',
               fontWeight: '400 !important',
 
-              paddingBottom: 8,
+              paddingBottom: '9px !important',
               border: 'none !important',
               backgroundColor: 'transparent !important',
               '-webkit-box-shadow': '0 0 0 1000px white inset !important',

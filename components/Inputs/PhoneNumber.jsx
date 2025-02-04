@@ -16,6 +16,8 @@ const PhoneNumber = ({ login = true, name, disabled = false, required, country =
     lazy: true,
     placeholderChar: 'x',
   })
+  console.log(value)
+
   return (
     <>
       <Box position='relative'>
@@ -103,7 +105,7 @@ const PhoneNumber = ({ login = true, name, disabled = false, required, country =
         <TextField
           fullWidth={fullWidth}
           required={required}
-          inputRef={ref}
+          // inputRef={ref}
           name={name}
           value={value}
           type='tel'

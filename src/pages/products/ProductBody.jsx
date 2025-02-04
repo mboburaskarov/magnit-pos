@@ -160,7 +160,7 @@ export default function ProductBody({ productData = null }) {
       setValue('description', productData?.description || '')
       setValue('manufacturer', getOptionsSchema(get(productData, 'producer', []), Object))
       setValue('shelf_id', getOptionsSchema(get(productData, 'shelf', []), Object))
-      setValue('box_grain_count', productData?.box_grain_count || 0)
+      setValue('box_grain_count', productData?.unit_per_pack || 0)
       setValue('product_unit', { value: productData?.unit_type?.codename, name: productData?.unit_type?.unit_name, id: productData?.unit_type?.id } || 0)
       setValue('expire_date', new Date(productData?.expire_date) || new Date())
       setValue('barcode', productData?.barcode || 0)

@@ -108,8 +108,8 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               name='payment_type_id'
               white
               minWidth='auto'
-              label={t('input.store.label')}
-              placeholder={t('input.store.placeholder')}
+              label={'Тип оплаты'}
+              placeholder={t('Выберите тип оплаты')}
               getOptionLabel={(el) => el.name}
               options={paymentTypeList?.data?.data}
             />

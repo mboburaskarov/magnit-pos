@@ -107,6 +107,25 @@ function SaleChildDrawer({ open, setOpen }) {
         </Box>
         <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
           <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
+            {t('pay')}
+          </Typography>
+          <Grid container display={'flex'} justifyContent={'space-between'}>
+            {get(saleDetailsList, 'data.data.sale_payments', [])?.map((pays) => (
+              <Grid item xs={12} sm={6} md={4} width={'100%'} padding={'4px'}>
+                <Box bgcolor={'bg.10'} borderRadius={'16px'} padding={'12px 16px'}>
+                  <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                    {get(pays, 'payment_type.name')}
+                  </Typography>
+                  <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                    {thousandDivider(get(pays, 'amount'), 'сум')}
+                  </Typography>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+        <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
+          <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
             {t('features')}
           </Typography>
           <Box display={'flex'} justifyContent={'space-between'}>
@@ -137,25 +156,6 @@ function SaleChildDrawer({ open, setOpen }) {
               </Typography>
             </Box>
           </Box>
-        </Box>
-        <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
-          <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
-            {t('pay')}
-          </Typography>
-          <Grid container display={'flex'} justifyContent={'space-between'}>
-            {get(saleDetailsList, 'data.data.sale_payments', [])?.map((pays) => (
-              <Grid item xs={12} sm={6} md={4} width={'100%'} padding={'4px'}>
-                <Box bgcolor={'bg.10'} borderRadius={'16px'} padding={'12px 16px'}>
-                  <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                    {get(pays, 'payment_type.name')}
-                  </Typography>
-                  <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                    {thousandDivider(get(pays, 'amount'), 'сум')}
-                  </Typography>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
         </Box>
       </Box>
     </Box>
