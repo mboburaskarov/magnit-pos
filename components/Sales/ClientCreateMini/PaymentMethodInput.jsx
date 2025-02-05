@@ -21,10 +21,10 @@ export default function PaymentMethodInput({
 }) {
   const { t } = useTranslation()
 
-  const [value, setValue] = useState(item?.amount || 0)
+  const [value, setValue] = useState(item?.amount)
 
   useEffect(() => {
-    setValue(item?.amount || 0)
+    setValue(item?.amount)
   }, [item])
 
   const handleChange = (e) => {

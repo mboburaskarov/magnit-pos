@@ -26,6 +26,7 @@ import LazySelect from '../../../components/Select/LazySelect'
 import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
 import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
 import getOptionsSchema from '../../../utils/getOptionsSchema'
+import dayjs from 'dayjs'
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
@@ -162,7 +163,7 @@ export default function ProductBody({ productData = null }) {
       setValue('shelf_id', getOptionsSchema(get(productData, 'shelf', []), Object))
       setValue('box_grain_count', productData?.unit_per_pack || 0)
       setValue('product_unit', { value: productData?.unit_type?.codename, name: productData?.unit_type?.unit_name, id: productData?.unit_type?.id } || 0)
-      setValue('expire_date', new Date(productData?.expire_date) || new Date())
+      setValue('expire_date', get(productData, 'expire_date', false) ? new Date(get(productData, 'expire_date', new Date())) : null)
       setValue('barcode', productData?.barcode || 0)
       setProductCategories(productData?.categories?.map((el, ind) => ({ ...el, name: el.nameRu, quantity: productData?.quantityOfCategories?.[ind] })))
     } else {

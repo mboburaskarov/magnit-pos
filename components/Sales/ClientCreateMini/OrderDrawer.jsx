@@ -282,9 +282,16 @@ export default function OrderDrawer({
     paymentsList.map((el) => {
       amount += Number(el.amount)
     })
+    console.log(amount, isNaN(amount))
 
-    setMaxAmount(Number(get(cartItemsList, 'total_amount')) - amount)
-    setPaymentAmount(amount)
+    if (isNaN(amount)) {
+      setMaxAmount(Number(get(cartItemsList, 'total_amount')))
+      setPaymentAmount(0)
+    } else {
+      setMaxAmount(Number(get(cartItemsList, 'total_amount')) - amount)
+
+      setPaymentAmount(amount)
+    }
   }, [paymentsList, cartItemsList])
 
   const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())

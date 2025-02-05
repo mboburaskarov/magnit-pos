@@ -75,6 +75,7 @@ export default function AllSalesPage() {
       payment_type_id: values?.payment_type_id,
       vendor_id: values?.vendor_id,
       employee_id: values?.employee_id,
+      cashbox_id: values?.cashbox_id,
 
       total_amount_to: values?.total_amount_to,
       total_amount_from: values?.total_amount_from,
@@ -88,6 +89,8 @@ export default function AllSalesPage() {
     values?.payment_type_id,
     values?.producer,
     values?.employee_id,
+    values?.cashbox_id,
+
     values?.category_id,
     values?.vendor_id,
     values?.store_id,

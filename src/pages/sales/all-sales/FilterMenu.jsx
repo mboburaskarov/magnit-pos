@@ -33,8 +33,8 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       store_name: data.store_id?.name || undefined,
       vendor_id: data.vendor_id?.value || undefined,
       vendor_name: data.vendor_id?.name || undefined,
-      customer_id: data.customer_id?.value || undefined,
-      customer_name: data.customer_id?.name || undefined,
+      cashbox_id: data.cashbox_id?.value || undefined,
+      cashbox_name: data.cashbox_id?.name || undefined,
       payment_type_id: data.payment_type_id?.id || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
@@ -48,13 +48,13 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { total_amount_to, total_amount_from, store_id, payment_type_id, customer_id, vendor_id } = values
+    const { total_amount_to, total_amount_from, store_id, payment_type_id, cashbox_id, vendor_id } = values
 
     reset(
       {
         payment_type_id: payment_type_id ? getOptionsFromUrlParam(payment_type_id, paymentTypeList?.data?.data, 'name')[0] : null,
         vendor_id: vendor_id ? { name: values?.vendor_name, value: values?.vendor_id } : null,
-        customer_id: customer_id ? { name: values?.customer_name, value: values?.customer_id } : null,
+        cashbox_id: cashbox_id ? { name: values?.cashbox_name, value: values?.cashbox_id } : null,
         store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
         total_amount_to: total_amount_to,
         total_amount_from: total_amount_from,
@@ -64,7 +64,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }, [
     values?.payment_type_id,
     values?.vendor_id,
-    values?.customer_id,
+    values?.cashbox_id,
     values?.category_id,
     values?.store_id,
     values?.total_amount_to,
@@ -133,7 +133,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               }}
               filterOption={() => true}
             />
-
             <LazySelect
               slug='vendor_id'
               boxStyle={{ width: '100%' }}
@@ -155,18 +154,19 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               }}
               filterOption={() => true}
             />
+            r
             <LazySelect
-              slug='customer_id'
+              slug='cashbox_id'
               boxStyle={{ width: '100%' }}
-              id='customer_id'
-              name='customer_id'
-              customLabel='full_name'
+              id='cashbox_id'
+              name='cashbox_id'
+              customLabel='name'
               isMulti={false}
               placeholder={'Выберите Клиенти'}
               minWidth='auto'
               isClearable={true}
               label={'Клиенти'}
-              request={requests.getAllCustomers}
+              request={requests.getAllCashBoxList}
               filters={{ limit: 10 }}
               control={control}
               // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
