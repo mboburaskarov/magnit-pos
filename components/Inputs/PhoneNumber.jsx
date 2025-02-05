@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useIMask } from 'react-imask'
 import { Box, ClickAwayListener, Typography } from '@mui/material'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -8,7 +8,19 @@ import Drawer from '../Drawers/Drawer'
 import { countries } from '../../src/assets/data/countries'
 import Label from '../Label'
 
-const PhoneNumber = ({ login = true, name, disabled = false, required, country = countries[0], setCountry, setValue, label, fullWidth, uncontrolled }) => {
+const PhoneNumber = ({
+  login = true,
+  name,
+  disabled = false,
+  required,
+  country = countries[0],
+  setCountry,
+  setValue = () => {},
+  label,
+  fullWidth,
+  defaultValue = '',
+  uncontrolled,
+}) => {
   const [open, setOpen] = useState(false)
   const [openDrawer, setOpenDrawer] = useState(false)
   const { ref, setUnmaskedValue, value } = useIMask({
@@ -16,7 +28,11 @@ const PhoneNumber = ({ login = true, name, disabled = false, required, country =
     lazy: true,
     placeholderChar: 'x',
   })
-
+  useEffect(() => {
+    if (ref.current) {
+      setUnmaskedValue(defaultValue)
+    }
+  }, [defaultValue])
   return (
     <>
       <Box position='relative'>
@@ -104,13 +120,13 @@ const PhoneNumber = ({ login = true, name, disabled = false, required, country =
         <TextField
           fullWidth={fullWidth}
           required={required}
-          // inputRef={ref}
+          inputRef={ref}
           name={name}
           value={value}
           type='tel'
           setValue={(e) => {
-            setUnmaskedValue(e)
-            setValue(e)
+            setUnmaskedValue(e.target?.value)
+            setValue(e.target?.value)
           }}
           uncontrolled={uncontrolled}
           placeholder={country?.mask}

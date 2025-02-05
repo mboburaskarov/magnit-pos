@@ -68,7 +68,7 @@ export default function MainDetails({ clientData, paymentTypes, setPaymentTypes,
     if (mode === 'edit') {
       setValue('name', get(employeeInfo, 'data.data.name'))
       setValue('is_enable', get(employeeInfo, 'data.data.is_enable') ? 'active' : 'inactive')
-      setValue('store', {
+      setValue('store_id', {
         id: get(employeeInfo, 'data.data.store.id'),
         name: get(employeeInfo, 'data.data.store.name'),
       })

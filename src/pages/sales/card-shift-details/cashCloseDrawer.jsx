@@ -12,6 +12,7 @@ import { error, success } from '../../../../utils/toast'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import CartOutlineIcon from '../../../assets/icons/CartOutline'
 import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
+import thousandDivider from '../../../../utils/thousandDivider'
 const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
@@ -197,7 +198,7 @@ function CashCloseDrawer({ open, setOpen }) {
                     <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
                     <Box display={'flex'} justifyContent={'end'}>
                       <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
-                        {get(closeCashboxPaymentsInfo, 'data.data.cash_amount', null)}
+                        {thousandDivider(get(closeCashboxPaymentsInfo, 'data.data.cash_amount', null))}
                         <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
                           UZS
                         </Typography>
@@ -216,7 +217,7 @@ function CashCloseDrawer({ open, setOpen }) {
                     <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
                     <Box display={'flex'} justifyContent={'end'}>
                       <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
-                        {get(closeCashboxPaymentsInfo, 'data.data.cashless_amount', null)}
+                        {thousandDivider(get(closeCashboxPaymentsInfo, 'data.data.cashless_amount', null))}
                         <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
                           UZS
                         </Typography>

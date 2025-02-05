@@ -82,7 +82,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
     const requestBody = {
       name: data?.name,
       is_enable: data?.is_enable === 'active' ? true : false,
-      store_id: data?.store?.id,
+      store_id: data?.store_id?.id,
       payment_types: paymentTypes.map(({ is_active, id }) => ({ is_active: is_active, payment_type_id: id })),
     }
     if (openDrawer?.mode === 'edit') {

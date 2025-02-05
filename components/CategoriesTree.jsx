@@ -128,7 +128,7 @@ export default function FileSystemNavigator({
       company_id,
       limit: pageSize,
       search: values?.search,
-      offset: pageIndex + 1,
+      offset: pageIndex,
     })
   )
 

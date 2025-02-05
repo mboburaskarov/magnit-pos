@@ -100,6 +100,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             disabled
             id='phone'
             name='phone'
+            defaultValue={get(employeeInfo, 'data.data.phone', '').replace('998', '')}
             placeholder={t('menu.settings.shops.shop_create.phone_placeholder')}
             control={control}
             fullWidth

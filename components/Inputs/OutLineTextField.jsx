@@ -8,7 +8,7 @@ const OutLineTextField = ({
   InputProps,
   uncontrolled,
   value,
-  setValue,
+  setValue = () => {},
   sx,
   borderRadius,
   white,

@@ -68,8 +68,8 @@ export default function MeasurementValueDialog({ open, setValue, setOpen }) {
               endAdornmentText={'сум'}
               required
               uncontrolled
-              onBlur={({ target }) => {
-                setSum(get(target, 'value'))
+              setValue={(e) => {
+                setSum(e)
               }}
               type='number'
               fullWidth

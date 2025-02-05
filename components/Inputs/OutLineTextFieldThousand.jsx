@@ -81,6 +81,8 @@ const NumberFormatInput = ({
         decimalScale={2} // Set decimal scale to 2
         onValueChange={(values) => {
           const { floatValue } = values // Extract the numeric value
+          console.log(floatValue)
+
           if (uncontrolled) {
             // If uncontrolled, use the provided setValue
             setValue(floatValue)

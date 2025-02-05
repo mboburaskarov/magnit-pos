@@ -134,8 +134,8 @@ export default function ProductBody({ productData = null }) {
   useEffect(() => {
     refetchShopList().then(({ data }) => {
       get(data, 'data.data.data', []).map((store) => {
-        // setValue(`store_product.${get(store, 'id')}.pack_quantity`, get(store, 'pack_quantity', 0))
-        // setValue(`store_product.${get(store, 'id')}.small_quantity`, get(store, 'small_quantity', 0))
+        setValue(`store_product.${get(store, 'id')}.pack_quantity`, get(store, 'pack_quantity', 0))
+        setValue(`store_product.${get(store, 'id')}.small_quantity`, get(store, 'small_quantity', 0))
       })
     })
   }, [values.limitStore, values.offsetStore])
