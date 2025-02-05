@@ -202,7 +202,7 @@ export const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDialog }) => {
+const CartItem = ({ index, packRef = () => {}, unitRef, onKeyDown, refetchcartItemsList, method, item, setOpenConfirmDialog }) => {
   const cls = useStyles()
 
   const { mutate: changeCartItemQuantity } = useMutation(requests.changeCartItemQuantity, {
@@ -246,6 +246,8 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                 adornmentClassName={cls.adornment}
                 max={100}
                 adornment='пч'
+                inputRef={(e) => packRef(e, index)}
+                onKeyDown={onKeyDown}
                 defaultValue={get(item, 'quantity', 0)}
                 type='number'
                 disabled={false}
@@ -292,6 +294,7 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                     defaultValue={get(item, 'unit_quantity', 1)}
                     adornmentPosition='end'
                     adornment='шт'
+                    inputRef={(e) => unitRef(e)}
                     adornmentClassName={cls.adornment}
                     max={100}
                     fullWidth
@@ -328,9 +331,9 @@ const CartItem = ({ index, refetchcartItemsList, method, item, setOpenConfirmDia
                 <></>
               )}
               <Box width={'10px'} />
-              <Box className={cls.img_cont}>
+              {/* <Box className={cls.img_cont}>
                 <img src={item?.main_photo || '/default-img.avif'} />
-              </Box>
+              </Box> */}
             </Box>
             <Box ml={'8px'} display={'flex'} width={'100%'} flexDirection={'column'}>
               <Box id='product-details' className={cls.text}>

@@ -15,6 +15,7 @@ import thousandDivider from '../../../../utils/thousandDivider'
 export default function SerchedItem({
   index,
   handleAddProduct,
+  itemRef,
   fakeIndexForCheckSearch,
   item,
   isChild = true,
@@ -41,8 +42,8 @@ export default function SerchedItem({
     },
   })
   return (
-    <div
-      id={`cartSearchResult${index}`}
+    <Box
+      id={item?.id}
       className={classes.searchItem}
       onClick={() => {
         handleAddProduct({
@@ -56,6 +57,12 @@ export default function SerchedItem({
         })
         setSearchTerm('')
       }}
+      sx={{
+        outline: 'none',
+        '&:focus': {
+          border: '2px solid #fe5000',
+        },
+      }}
       onKeyDown={(event) => {
         if (event.key === 'Enter' && fakeIndexForCheckSearch === index) {
           handleAddProduct(product)
@@ -63,7 +70,7 @@ export default function SerchedItem({
       }}
       tabIndex={index}
       key={index}
-      ref={lastElementRef}
+      ref={itemRef}
     >
       <Box borderRadius={'16px'} height={'80px'} display={'flex'} width={'100%'} alignItems={'center'}>
         <Box className={classes.searchItemBox}>
@@ -147,6 +154,6 @@ export default function SerchedItem({
             <SerchedItem classes={classes} item={item} searchTerm={searchTerm} product={get(item, 'product')} key={item?.id} />
           ))}
       </Box>
-    </div>
+    </Box>
   )
 }

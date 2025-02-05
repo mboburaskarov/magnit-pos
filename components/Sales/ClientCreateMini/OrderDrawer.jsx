@@ -275,6 +275,7 @@ export default function OrderDrawer({
   const theme = useTheme()
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const lastPaymentInput = useRef()
 
   useEffect(() => {
     let amount = 0
@@ -308,6 +309,8 @@ export default function OrderDrawer({
     },
   })
   const handleAddPaymentType = (type) => {
+    if (!type) return
+
     if (!isVisiblePaymentType(type)) return
 
     const isThereType = paymentsList.some((item) => item.id == type.id)
@@ -320,10 +323,18 @@ export default function OrderDrawer({
       }
     })
   }
+  useEffect(() => {
+    if (!paymentTypesList || !lastPaymentInput?.current) return
+    lastPaymentInput.current.focus()
+  }, [paymentsList])
   const removePaymentType = (id) => {
     const removedItem = paymentsList.filter((el) => el.id != id)
 
     setPaymentsList(removedItem)
+  }
+  const removeLastPaymentType = () => {
+    paymentsList.pop()
+    setPaymentsList([...paymentsList])
   }
 
   const isVisiblePaymentType = useCallback(
@@ -380,10 +391,48 @@ export default function OrderDrawer({
     ...paymentsList,
     ...Array.from({ length: 8 - paymentsList.length }, (_, index) => ({ id: `placeholder-${index}`, isPlaceholder: true })),
   ]
+  const findTypeWithName = (name) => {
+    const list = get(paymentTypesList, 'data.data')
 
+    return list.find((el) => el?.name?.toLowerCase() == name)
+  }
   let timeoutRef = null
-  const handleKeyPress = (event) => {
+  const handleFinish = () => {
+    debugger
+    if (paymentsList.find((el) => el.type === 'app')) {
+      setOpenScanDialog(true)
+    } else {
+      onSubmit()
+    }
+  }
+  const paymentHotKeys = {
+    naqd: 'F1',
+    humo: 'F2',
+    uzcard: 'F3',
+    visa: 'F4',
+    click: 'F5',
+    uzum: 'F6',
+    payme: 'F7',
+  }
+
+  const getPaymentTypeHotKeyLabel = (name) => paymentHotKeys[name?.toLowerCase().trim()] || 'no'
+
+  const handleFKeys = (event) => {
     const key = event.key
+    if (key === 'F12') {
+      event.preventDefault()
+      handleFinish()
+      return
+    }
+
+    const paymentType = Object.keys(paymentHotKeys).find((type) => paymentHotKeys[type] === key)
+
+    if (paymentType) {
+      handleAddPaymentType(findTypeWithName(paymentType))
+    }
+  }
+
+  const handleKeyPress = (event) => {
     if (key === 'Enter') {
       const scannedBarcode = scannedKeys.join('')
       setScannedKeys([])
@@ -406,13 +455,21 @@ export default function OrderDrawer({
       enabled: isOpenScanDialog,
     }
   )
-  const handleFinish = () => {
-    if (paymentsList.find((el) => el.type === 'app')) {
-      setOpenScanDialog(true)
-    } else {
-      onSubmit()
+  // useHotkeys('*', (event) => {
+  //   if (event?.key == 'Backspace') {
+  //     removeLastPaymentType()
+  //   }
+  // })
+  useHotkeys(
+    '*',
+    (event) => {
+      handleFKeys(event)
+    },
+    {
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+      enableOnFormTags: true,
     }
-  }
+  )
 
   return (
     <Box hidden>
@@ -506,7 +563,25 @@ export default function OrderDrawer({
                           <Typography fontSize={18} fontWeight={'600'} lineHeight={'40px'}>
                             {get(item, 'name')}
                           </Typography>
-                          <AddPaumentTypeIcon color={isVisiblePaymentType(item) ? '#2558FF' : '#AFD5FF'} />
+                          <Typography alignItems={'center'} justifyContent={'center'} display={'flex'}>
+                            <Box
+                              sx={{
+                                color: '#bdbdbd',
+                                border: '2px solid #cfcfcf',
+                                height: '34px',
+                                display: 'flex',
+                                padding: '2px',
+                                ml: '5px',
+                                minWidth: '34px',
+                                alignItems: 'center',
+                                borderRadius: '8px',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              {getPaymentTypeHotKeyLabel(get(item, 'name'))}
+                            </Box>
+                          </Typography>
+                          {/* <AddPaumentTypeIcon color={isVisiblePaymentType(item) ? '#2558FF' : '#AFD5FF'} /> */}
                         </Box>
                       </Grid>
                     ))}
@@ -514,9 +589,9 @@ export default function OrderDrawer({
                 </Box>
                 <Box>
                   <Grid container width={'100%'} display={'flex'}>
-                    {mpaddedPaymentsList?.map((el) => (
+                    {mpaddedPaymentsList?.map((el, index) => (
                       <Grid item sx='3' sm='3' lg='3' xl='3' xs='3' m={'3'} key={el.id}>
-                        {el?.amount ? (
+                        {el?.name ? (
                           <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.box}>
                             <div className={classes.boxHeader}>
                               <Typography lineHeight={'24px'} fontSize={'16px'} fontWeight={'600'} color={'bunker.950'} id='payment-type'>
@@ -540,6 +615,8 @@ export default function OrderDrawer({
                                 id={el.id}
                                 index={el.id}
                                 classes={classes}
+                                isLast={mpaddedPaymentsList.filter((el) => el.name)?.length - 1 == index}
+                                lastPaymentInput={(el) => (lastPaymentInput.current = el)}
                                 item={el}
                                 isReturnDrawer={true}
                                 removePaymentType={removePaymentType}
@@ -564,10 +641,17 @@ export default function OrderDrawer({
                   </Grid>
                 </Box>
               </Box>
-              <Box maxWidth='400px'>
+              <Box
+                maxWidth='400px'
+                sx={{
+                  display: 'flex',
+                  overflowY: 'scroll',
+                  maxHeight: '75vh',
+                }}
+              >
                 <Box
                   mx={-2}
-                  mt={-4}
+                  mt={'-3px'}
                   style={{
                     padding: '20px',
                   }}
@@ -587,6 +671,23 @@ export default function OrderDrawer({
             </Box>
             <LoadingButton sx={{ minHeight: '48px !important ', display: 'flex' }} variant='contained' disabled={maxAmount > 0} onClick={() => handleFinish()}>
               Оплатить
+              <Box
+                sx={{
+                  color: '#fff',
+                  border: '2px solid #fff',
+                  height: '34px',
+                  display: 'flex',
+                  padding: '2px',
+                  ml: '15px',
+                  minWidth: '34px',
+                  fontSize: '12px',
+                  alignItems: 'center',
+                  borderRadius: '8px',
+                  justifyContent: 'center',
+                }}
+              >
+                F12
+              </Box>
             </LoadingButton>
           </FormProvider>
         </Drawer>

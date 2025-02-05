@@ -15,6 +15,9 @@ export default function PaymentMethodInput({
   totalAmount,
   paymentAmount,
   max,
+
+  lastPaymentInput,
+  isLast = false,
 }) {
   const { t } = useTranslation()
 
@@ -26,7 +29,7 @@ export default function PaymentMethodInput({
 
   const handleChange = (e) => {
     const inputValue = Number(e)
-    if (inputValue <= 0 || !e) return removePaymentType(item.id)
+    // if (inputValue <= 0 || !e) return removePaymentType(item.id)
     const updatedPaymentList = paymentsList.map((payment) => (payment.id === id ? { ...payment, amount: inputValue } : payment))
     setPaymentsList(updatedPaymentList)
     setValue(inputValue)
@@ -36,6 +39,10 @@ export default function PaymentMethodInput({
     <Box
       sx={{
         '& .MuiOutlinedInput-root': {
+          border: '2px solid transparent !important',
+          borderColor: 'transparent !important',
+        },
+        '& .MuiOutlinedInput-root.Mui-focused': {
           border: '2px solid transparent !important',
           borderColor: 'transparent !important',
         },
@@ -51,6 +58,7 @@ export default function PaymentMethodInput({
         disabled={disabled}
         fullWidth
         value={value}
+        inputRef={(el) => isLast && lastPaymentInput(el)}
         onFocus={() => {
           const box = document.getElementById(`payment-box${index}`)
           box.classList.add(classes?.outline)

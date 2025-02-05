@@ -214,7 +214,7 @@ function NewSale() {
   const navigate = useNavigate()
   const method = useForm()
   const classes = useStyles()
-
+  const cartItemRef = useRef([])
   const [showOverlay, setShowOverlay] = useState(false)
   const [hasChange, setHasChange] = useState(false)
   const [isOpenDraft, setIsOpenDraft] = useState(false)
@@ -233,6 +233,46 @@ function NewSale() {
   const [isOrderDrower, setIsOrderDrower] = useState(false)
   const searchRef = useRef('')
   const printContainer = useRef()
+  let a = -1
+  const focusPackInput = (event, id) => {
+    if (event.key === 'Tab' && !event.shiftKey) {
+      event.preventDefault()
+      const nextInput = cartItemRef.current[a + 1]
+      if (a == cartItemRef.current.length - 2) {
+        a = -1
+      } else {
+        a++
+      }
+      if (nextInput) {
+        nextInput.focus()
+      }
+    }
+  }
+  const focusUnitInput = (event) => {
+    if (event.key === 'ArrowRight' && !event.shiftKey) {
+      const activeInput = document.activeElement
+      if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
+        let unitId = activeInput.name.split('_')
+        const nextInput = cartItemRef.current[unitId[1] + 'unit']
+
+        if (nextInput) {
+          nextInput.focus()
+        }
+      }
+    }
+    // if (event.key === 'ArrowLeft' && !event.shiftKey) {
+    //   const activeInput = document.activeElement
+    //   if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
+    //     console.log('Active inputss name:', activeInput.name.split('quantity_'), cartItemRef)
+    //     let unitId = activeInput.name.split('unit_')
+    //     const nextInput = cartItemRef.current[unitId[1]]
+
+    //     if (nextInput) {
+    //       nextInput.focus()
+    //     }
+    //   }
+    // }
+  }
 
   const searchResult = useQuery(
     ['searchCustomers', debouncedSearchTerm],
@@ -368,6 +408,8 @@ function NewSale() {
     }
   }, [debouncedSearchTerm])
 
+  useHotkeys('tab', (event) => focusPackInput(event), { enableOnFormTags: true })
+  useHotkeys('ArrowRight', (event) => focusUnitInput(event), { enableOnFormTags: true })
   useHotkeys('t', () => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
@@ -377,7 +419,7 @@ function NewSale() {
   useHotkeys('a', () => setIsOpenChangeShift(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys('o', () => setIsOrderDrower(true), {
+  useHotkeys('F10', () => setIsOrderDrower(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
   useHotkeys('x', () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`), {
@@ -452,12 +494,15 @@ function NewSale() {
                 </Box>
               ) : (
                 <Box>
-                  {get(cartItemsList, 'data.data.data', []).map((el) => (
+                  {get(cartItemsList, 'data.data.data', []).map((el, index) => (
                     <CartItem
+                      // onKeyDown={(e) => handleTabSwitch(e, el?.id)}
                       refetchcartItemsList={refetchcartItemsList}
                       method={method}
                       setOpenConfirmDialog={setOpenConfirmDialog}
                       item={el}
+                      packRef={(els) => (cartItemRef.current[index] = els)}
+                      unitRef={(els) => (cartItemRef.current[el?.id + 'unit'] = els)}
                       key={el?.id}
                       index={el?.id}
                     />
@@ -682,8 +727,25 @@ function NewSale() {
               color='primary'
               sx={{ mb: '16px', display: 'flex', justifyContent: 'space-between' }}
             >
-              <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
+              <Typography display={'flex'} alignItems={'center'} fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
                 {t('pay')}
+                <Box
+                  sx={{
+                    color: '#fff',
+                    border: '2px solid #fff',
+                    height: '34px',
+                    display: 'flex',
+                    padding: '2px',
+                    ml: '15px',
+                    fontSize: '12px',
+                    minWidth: '34px',
+                    alignItems: 'center',
+                    borderRadius: '8px',
+                    justifyContent: 'center',
+                  }}
+                >
+                  F10
+                </Box>
               </Typography>
               <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
                 {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}

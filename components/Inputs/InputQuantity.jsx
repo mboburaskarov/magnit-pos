@@ -96,7 +96,9 @@ function InputQuantity({
   id,
   max,
   applyAll,
+
   aplyAllFunc = () => {},
+  onKeyDown = () => {},
   onFocus = () => {},
   maxErrorMessage,
   name,
@@ -105,6 +107,7 @@ function InputQuantity({
   const methods = useFormContext()
   // Custom onKeyDown to restrict unwanted characters
   const handleKeyDown = (event) => {
+    onKeyDown(event)
     if (type === 'number') {
       // Prevent unwanted keys
       const invalidKeys = ['e', 'E', '+', '-', '.']

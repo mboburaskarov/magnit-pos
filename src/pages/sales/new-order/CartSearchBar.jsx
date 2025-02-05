@@ -1,7 +1,7 @@
 import { Box, ListItem, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
@@ -174,6 +174,7 @@ const useStyles = makeStyles((theme) => ({
 function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setIsOpenChangeShift, cashBoxDetails, showOverlay, setShowOverlay }) {
   const [searchTearm, setSearchTerm] = useState('')
   const navigate = useNavigate()
+  const searchItemRef = useRef([])
   const userData = useSelector((state) => state.user)
   const { id } = useParams()
 
@@ -221,9 +222,41 @@ function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setI
   //     }),
   //   { enabled: true, enableOnTags: ['INPUT', 'TEXTAREA'] }
   // )
+  let a = -1
+  const selectDownItems = () => {
+    if (a == searchItemRef.current.length - 1) {
+      a = 0
+    } else {
+      a = a + 1
+    }
+
+    const nextInput = searchItemRef.current[a]
+    if (nextInput) {
+      nextInput.focus()
+    }
+  }
+  const selectUpItems = () => {
+    if (a == 0) {
+      a = searchItemRef.current.length - 1
+    } else {
+      a = a - 1
+    }
+    const nextInput = searchItemRef.current[a]
+
+    if (nextInput) {
+      nextInput.focus()
+    }
+  }
   useHotkeys('j', () => methods.setFocus('product-search'), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
+
+  useHotkeys('ArrowDown', (event) => selectDownItems(event), { enableOnFormTags: true })
+  useHotkeys('Enter', (event) => document.activeElement.id != 'product-search' && getStoreProductByBarcode({ id: document.activeElement.id, sale_id: id }), {
+    enableOnFormTags: true,
+    enableOnTags: ['INPUT', 'TEXTAREA'],
+  })
+  useHotkeys('ArrowUp', (event) => selectUpItems(event), { enableOnFormTags: true })
   return (
     <Box className={classes.quick_search} mb={4}>
       <FormProvider {...methods}>
@@ -243,13 +276,13 @@ function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setI
               setSearchTerm(e.target.value)
               setShowOverlay(true)
             }}
-            onKeyDown={({ key }) =>
+            onKeyDown={({ key }) => {
               key == 'Enter' &&
-              getStoreProductByBarcode({
-                sale_id: id,
-                barcode: searchTearm,
-              })
-            }
+                getStoreProductByBarcode({
+                  sale_id: id,
+                  id: productsData?.[0]?.id,
+                })
+            }}
           />
           <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
             <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
@@ -325,12 +358,14 @@ function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setI
         {showOverlay && searchTearm && (
           <Box className={classes.searchResult}>
             {productsData?.length ? (
-              productsData?.map((product) => (
+              productsData?.map((product, index) => (
                 <SerchedItem
                   isChild={false}
+                  index={index}
                   handleAddProduct={handleAddProduct}
                   setSearchTerm={setSearchTerm}
                   item={product}
+                  itemRef={(el) => (searchItemRef.current[index] = el)}
                   product={product}
                   searchTerm={searchTearm}
                   classes={classes}

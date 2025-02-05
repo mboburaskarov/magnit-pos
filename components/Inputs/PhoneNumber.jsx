@@ -16,7 +16,6 @@ const PhoneNumber = ({ login = true, name, disabled = false, required, country =
     lazy: true,
     placeholderChar: 'x',
   })
-  console.log(value)
 
   return (
     <>

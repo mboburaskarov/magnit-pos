@@ -73,6 +73,7 @@ const NumberFormatInput = ({
         disabled={disabled}
         name={name}
         id={name}
+        inputRef={inputRef}
         placeholder={placeholder}
         customInput={MuiTextField} // Use MuiTextField as the custom input component
         thousandSeparator={' '}

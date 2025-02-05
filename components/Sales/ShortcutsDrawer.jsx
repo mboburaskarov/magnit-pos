@@ -87,7 +87,7 @@ const ShortcutsDrawerArray = [
     types: [
       {
         titleofshortcut: 'Оплата',
-        symbolofshortcut: ['O'],
+        symbolofshortcut: ['F10'],
       },
       {
         titleofshortcut: 'Закрыть кассу',
