@@ -189,7 +189,7 @@ export default function MainDetails({ clientData, openDrawer }) {
       <Grid container spacing={4}>
         <Grid item xs={6}>
           <Label mb='4px'>{t('birthdate')}</Label>
-          <InputDatePicker noMarginTop name='date_of_birth' error={errors?.date_of_birth} required id='birth-Date' showYearDropdown placeholder='kk/oo/yyyy' />
+          <InputDatePicker noMarginTop name='date_of_birth' error={errors?.date_of_birth} required id='birth-Date' showYearDropdown placeholder='yyyy/oo/kk' />
         </Grid>
         <Grid item xs={6}>
           <Label mb='4px'>{t('gender')}</Label>

@@ -80,7 +80,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       error('Номер телефона меньше 14')
     }
     const requestBody = {
-      birthday: data?.date_of_birth ? dayjs(get(data, 'date_of_birth')).format('DD.MM.YYYY') : null,
+      birthday: data?.date_of_birth ? dayjs(get(data, 'date_of_birth')).format('YYYY.MM.DD') : null,
       created_by: userData?.id,
       first_name: data?.first_name,
       gender: data?.gender,

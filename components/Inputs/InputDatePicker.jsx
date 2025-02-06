@@ -297,7 +297,7 @@ function InputDatePicker({
       {uncontrolled ? (
         <DatePicker
           id={id}
-          dateFormat={withTime ? 'dd.MM.yyyy | HH:mm' : 'dd.MM.yyyy'}
+          dateFormat={withTime ? 'yyyy.MM.dd | HH:mm' : 'yyyy.MM.dd'}
           selected={value}
           showTimeInput={withTime}
           onChange={onChange}
@@ -358,7 +358,7 @@ function InputDatePicker({
           render={({ field: { onChange: onFieldChange, value: fieldValue }, fieldState: { error } }) => (
             <DatePicker
               id={id}
-              dateFormat={withTime ? 'dd.MM.yyyy | HH:mm' : 'dd.MM.yyyy'}
+              dateFormat={withTime ? 'yyyy.MM.dd | HH:mm' : 'yyyy.MM.dd'}
               selected={fieldValue}
               showTimeInput={withTime}
               onChange={(date) => {

@@ -83,7 +83,7 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
             error={errors?.date_of_birth}
             id='birth-Date'
             showYearDropdown
-            placeholder='kk/oo/yyyy'
+            placeholder='yyyy/oo/kk'
           />
         </Grid>
         <Grid item xs={6}>
