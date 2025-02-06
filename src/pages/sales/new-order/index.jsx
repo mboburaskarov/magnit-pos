@@ -565,9 +565,9 @@ function NewSale() {
                 placeholder={t('client.placeholder')}
                 fullWidth
                 onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.keyCode === 13) onEnter()
-                }}
+                // onKeyDown={(e) => {
+                //   if (e.keyCode === 13) onEnter()
+                // }}
                 value={searchTerm}
                 setSearchTerm={setSearchTerm}
                 client

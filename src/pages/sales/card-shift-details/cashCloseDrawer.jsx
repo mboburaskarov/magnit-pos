@@ -13,6 +13,7 @@ import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import CartOutlineIcon from '../../../assets/icons/CartOutline'
 import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
 import thousandDivider from '../../../../utils/thousandDivider'
+import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
@@ -167,7 +168,7 @@ function CashCloseDrawer({ open, setOpen }) {
                     </Box>
                     {company === 3 && (
                       <>
-                        <OutLineTextField
+                        <NumberFormatInput
                           endAdornmentText={'UZS'}
                           end
                           type={'number'}

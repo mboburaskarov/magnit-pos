@@ -252,10 +252,15 @@ function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setI
   })
 
   useHotkeys('ArrowDown', (event) => selectDownItems(event), { enableOnFormTags: true })
-  useHotkeys('Enter', (event) => document.activeElement.id != 'product-search' && getStoreProductByBarcode({ id: document.activeElement.id, sale_id: id }), {
-    enableOnFormTags: true,
-    enableOnTags: ['INPUT', 'TEXTAREA'],
-  })
+  useHotkeys(
+    'Enter',
+    (event) =>
+      !['client-search-bar', 'product-search'].includes(document.activeElement.id) && getStoreProductByBarcode({ id: document.activeElement.id, sale_id: id }),
+    {
+      enableOnFormTags: true,
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+    }
+  )
   useHotkeys('ArrowUp', (event) => selectUpItems(event), { enableOnFormTags: true })
   return (
     <Box className={classes.quick_search} mb={4}>
