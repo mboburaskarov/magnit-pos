@@ -1,6 +1,7 @@
 import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import ProductsPage from '../../pages/products'
 import AutoOrderPage from '../../pages/products/autoOrder'
+import CatalogManagement from '../../pages/products/categories'
 import ImportPage from '../../pages/products/import'
 import ImportDetailsPage from '../../pages/products/importDetails'
 import ImportWithCheckingPage from '../../pages/products/importWithChecking'
@@ -17,6 +18,10 @@ const productsRoutes = {
     {
       path: 'import',
       element: <ImportPage />,
+    },
+    {
+      path: 'categories',
+      element: <CatalogManagement />,
     },
     {
       path: 'auto-order',

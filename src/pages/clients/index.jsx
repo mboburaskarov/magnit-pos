@@ -104,7 +104,7 @@ export default function ClientsPage() {
 
   useEffect(() => {
     const count = clientsList?.data?.data?._meta?.total_count
-
+    setselectClients([])
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [clientsList?.data, values?.limit])
