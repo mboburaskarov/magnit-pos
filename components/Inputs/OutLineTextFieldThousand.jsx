@@ -40,11 +40,18 @@ const NumberFormatInput = ({
 
   // Custom onKeyDown to restrict unwanted characters
   const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.target.blur()
+    }
     if (type === 'number') {
-      // Prevent unwanted keys
-      const invalidKeys = ['e', 'E', '+', '-', '.']
-      if (invalidKeys.includes(event.key)) {
-        event.preventDefault()
+      const allowedKeys = ['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete', 'Tab']
+
+      if (type === 'number') {
+        // Prevent unwanted keys except allowed keys
+        const invalidKeys = ['e', 'E', '+', '-', '.']
+        if (invalidKeys.includes(event.key) && !allowedKeys.includes(event.key)) {
+          event.preventDefault()
+        }
       }
     }
 
@@ -107,11 +114,11 @@ const NumberFormatInput = ({
         onFocus={onFocus}
         rows={4}
         onWheel={(e) => {
-          e.target.blur()
-          e.stopPropagation()
-          setTimeout(() => {
-            e.target.focus()
-          }, 0)
+          // e.target.blur()
+          // e.stopPropagation()
+          // setTimeout(() => {
+          //   e.target.focus()
+          // }, 0)
         }}
         onKeyDown={handleKeyDown}
         autoFocus={autoFocus}

@@ -124,7 +124,8 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            {/* <SelectSimple
+            <Box maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'scroll'}>
+              {/* <SelectSimple
               fullWidth
               id='sto'
               name='store_id'
@@ -135,27 +136,29 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
               getOptionLabel={(el) => el.name}
               options={shopList?.data?.data?.data}
             /> */}
-            <LazySelect
-              slug='users'
-              boxStyle={{ width: '100%' }}
-              id='store'
-              name='store_id'
-              isMulti={false}
-              placeholder={t('Выберите Магазин')}
-              minWidth='auto'
-              isClearable={true}
-              label={t('input.store.label')}
-              request={requests.getAllShops}
-              filters={{ limit: 10 }}
-              control={methods.control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
-              getOptionLabel={(option) => {
-                return <Typography color='grey.600'>{option.name}</Typography>
-              }}
-              filterOption={() => true}
-            />
-            {/* <SelectSimple
+              <LazySelect
+                slug='users'
+                boxStyle={{ width: '100%' }}
+                id='store'
+                name='store_id'
+                isMulti={false}
+                placeholder={t('Выберите Магазин')}
+                minWidth='auto'
+                isClearable={true}
+                label={t('input.store.label')}
+                request={requests.getAllShops}
+                filters={{ limit: 10 }}
+                control={methods.control}
+                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+                // uncontrolled
+                getOptionLabel={(option) => {
+                  return <Typography color='grey.600'>{option.name}</Typography>
+                }}
+                filterOption={() => true}
+              />
+              <Box height={'20px'} />
+
+              {/* <SelectSimple
               fullWidth
               id='categ'
               white
@@ -166,64 +169,72 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
               options={categories?.data?.data?.data}
               getOptionLabel={(el) => el.name}
             /> */}
-            <LazySelect
-              slug='users'
-              boxStyle={{ width: '100%' }}
-              id='category_id'
-              name='category_id'
-              isMulti={false}
-              label={t('input.category.label')}
-              placeholder={t('input.category.placeholder')}
-              minWidth='auto'
-              isClearable={true}
-              request={requests.getAllCategories}
-              filters={{ limit: 10 }}
-              control={methods.control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
-              getOptionLabel={(option) => {
-                return <Typography color='grey.600'>{option.name}</Typography>
-              }}
-              filterOption={() => true}
-            />
-            <LazySelect
-              slug='users'
-              boxStyle={{ width: '100%' }}
-              id='producer'
-              name='producer_id'
-              isMulti={false}
-              label={t('input.manufacturer.label')}
-              placeholder={t('input.manufacturer.placeholder')}
-              minWidth='auto'
-              isClearable={true}
-              request={requests.getProducer}
-              filters={{ limit: 10 }}
-              control={methods.control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
-              getOptionLabel={(option) => {
-                return <Typography color='grey.600'>{option.name}</Typography>
-              }}
-              filterOption={() => true}
-            />
-            <InputRange
-              fullWidth
-              id='prixwce'
-              label={t('input.supply_price.label')}
-              name1='supply_price_from'
-              name2='supply_price_to'
-              placeholder1={t('input.price.from')}
-              placeholder2={t('input.price.to')}
-            />
-            <InputRange
-              fullWidth
-              id='prixwce'
-              label={t('input.retail_price.label')}
-              name1='retail_price_from'
-              name2='retail_price_to'
-              placeholder1={t('input.price.from')}
-              placeholder2={t('input.price.to')}
-            />
+              <LazySelect
+                slug='users'
+                boxStyle={{ width: '100%' }}
+                id='category_id'
+                name='category_id'
+                isMulti={false}
+                label={t('input.category.label')}
+                placeholder={t('input.category.placeholder')}
+                minWidth='auto'
+                isClearable={true}
+                request={requests.getAllCategories}
+                filters={{ limit: 10 }}
+                control={methods.control}
+                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+                // uncontrolled
+                getOptionLabel={(option) => {
+                  return <Typography color='grey.600'>{option.name}</Typography>
+                }}
+                filterOption={() => true}
+              />
+              <Box height={'20px'} />
+
+              <LazySelect
+                slug='users'
+                boxStyle={{ width: '100%' }}
+                id='producer'
+                name='producer_id'
+                isMulti={false}
+                label={t('input.manufacturer.label')}
+                placeholder={t('input.manufacturer.placeholder')}
+                minWidth='auto'
+                isClearable={true}
+                request={requests.getProducer}
+                filters={{ limit: 10 }}
+                control={methods.control}
+                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+                // uncontrolled
+                getOptionLabel={(option) => {
+                  return <Typography color='grey.600'>{option.name}</Typography>
+                }}
+                filterOption={() => true}
+              />
+              <Box height={'20px'} />
+
+              <InputRange
+                fullWidth
+                id='prixwce'
+                label={t('input.supply_price.label')}
+                name1='supply_price_from'
+                name2='supply_price_to'
+                placeholder1={t('input.price.from')}
+                placeholder2={t('input.price.to')}
+              />
+              <Box height={'20px'} />
+
+              <InputRange
+                fullWidth
+                id='prixwce'
+                label={t('input.retail_price.label')}
+                name1='retail_price_from'
+                name2='retail_price_to'
+                placeholder1={t('input.price.from')}
+                placeholder2={t('input.price.to')}
+              />
+              <Box height={'20px'} />
+            </Box>
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
                 sx={{ bgcolor: `${theme.palette.background.gray} !important`, border: '1px solid #ECEDF2' }}

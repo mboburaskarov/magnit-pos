@@ -60,7 +60,10 @@ export default function SerchedItem({
       sx={{
         outline: 'none',
         '&:focus': {
-          border: '2px solid #fe5000',
+          '& .main-Box': {
+            border: '2px solid #fe5000',
+            bgcolor: '#ccc !important',
+          },
         },
       }}
       onKeyDown={(event) => {
@@ -72,8 +75,8 @@ export default function SerchedItem({
       key={index}
       ref={itemRef}
     >
-      <Box borderRadius={'16px'} height={'80px'} display={'flex'} width={'100%'} alignItems={'center'}>
-        <Box className={classes.searchItemBox}>
+      <Box borderRadius={'16px'} display={'flex'} width={'100%'} alignItems={'center'}>
+        <Box className={classes.searchItemBox + ' main-Box'}>
           <Box flex='1 0 20%' maxWidth={'100%'} overflow={'hidden'} display='flex' alignItems='center'>
             <div className={classes.searchImage}>
               <img src={product?.main_photo || '/default-img.avif'} />{' '}
@@ -110,7 +113,7 @@ export default function SerchedItem({
             </Box>
           </Box>
           <Box flex='0 0 22%' pr={2} textAlign='right'>
-            <Typography className={classes.itemQuantity}>
+            <Typography whiteSpace={'pre'} className={classes.itemQuantity}>
               {product?.quantity > 0 ? (
                 <span>Miqdor: {item?.quantity}</span>
               ) : (
@@ -119,7 +122,9 @@ export default function SerchedItem({
                 </Typography>
               )}
             </Typography>
-            <Typography className={classes.itemPrice}>{thousandDivider(product?.retail_price, 'сум')} </Typography>
+            <Typography whiteSpace={'pre'} className={classes.itemPrice}>
+              {thousandDivider(product?.retail_price, 'сум')}{' '}
+            </Typography>
           </Box>
           {!isChild && (
             <Box

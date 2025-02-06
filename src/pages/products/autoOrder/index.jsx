@@ -19,6 +19,7 @@ import CheckAccess from '../../../../components/CheckAccess'
 import PlusIcon from '../../../assets/icons/PlusIcon'
 import { FormProvider, useForm } from 'react-hook-form'
 import { error } from '../../../../utils/toast'
+import CreateAutoOrder from './createAutoOrder'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function AutoOrderPage() {
@@ -32,6 +33,7 @@ export default function AutoOrderPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
+  const [orderModel, setOrderModel] = useState(false)
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
@@ -158,9 +160,25 @@ export default function AutoOrderPage() {
                   changeColumnSequence={changeColumnSequence}
                 />
               </Box>
+              <CheckAccess id={'product-create'}>
+                <Box minWidth={156}>
+                  <Button
+                    sx={{ height: '48px' }}
+                    type='submit'
+                    onClick={() => setOrderModel(true)}
+                    fullWidth
+                    // startIcon={<PlusIcon color='#fff' />}
+                    variant='contained'
+                    color='primary'
+                  >
+                    Создать заказ
+                  </Button>
+                </Box>
+              </CheckAccess>
             </Box>
           </Box>
           <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
+          <CreateAutoOrder refetch={refetch} open={orderModel} setOpen={setOrderModel} />
           <Box>
             <AgGridTable
               id='auto-order-main-table'

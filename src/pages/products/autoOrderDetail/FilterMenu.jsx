@@ -95,6 +95,7 @@ export default function FilterMenu({ open, setOpen }) {
               minWidth='auto'
               isClearable={true}
               request={requests.getAllShops}
+              label={t('input.store.label')}
               filters={{ limit: 10 }}
               control={control}
               // value='823f9458-2e67-4ed7-b001-ca8271b1269c'

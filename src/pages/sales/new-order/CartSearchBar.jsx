@@ -99,6 +99,7 @@ const useStyles = makeStyles((theme) => ({
   searchItemBox: {
     width: 'calc(100% - 168px)',
     display: 'flex',
+    maxHeight: '90px',
     backgroundColor: '#fff',
     padding: '12px 16px',
     borderRadius: 16,

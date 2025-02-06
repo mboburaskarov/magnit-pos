@@ -268,6 +268,7 @@ export default function OrderDrawer({
   const [paymentsList, setPaymentsList] = useState([])
   const [maxAmount, setMaxAmount] = useState(0)
   const [paymentAmount, setPaymentAmount] = useState(0)
+  const [hasChange, setHasChange] = useState(false)
   const [scannedKeys, setScannedKeys] = useState([])
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
   const [payme, setPayme] = useState(false)
@@ -332,6 +333,8 @@ export default function OrderDrawer({
   }
   useEffect(() => {
     if (!paymentTypesList || !lastPaymentInput?.current) return
+    if (hasChange) return setHasChange(false)
+
     lastPaymentInput.current.focus()
   }, [paymentsList])
   const removePaymentType = (id) => {
@@ -629,7 +632,9 @@ export default function OrderDrawer({
                                 removePaymentType={removePaymentType}
                                 cashbackPaymentPercentage={1}
                                 paymentsList={paymentsList}
-                                setPaymentsList={setPaymentsList}
+                                setPaymentsList={(el) => {
+                                  setPaymentsList(el), setHasChange(true)
+                                }}
                                 totalPrice={1}
                                 clientInfo={'clientInfo'}
                                 max={maxAmount}

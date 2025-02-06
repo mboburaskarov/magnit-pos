@@ -11,6 +11,7 @@ export default function Label({ children, required, ...props }) {
       variant='h5'
       whiteSpace={'pre'}
       lineHeight={'24px'}
+      mb={'12px'}
       display='flex'
       type='label'
       {...props}

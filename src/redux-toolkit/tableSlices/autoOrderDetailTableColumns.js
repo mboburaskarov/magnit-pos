@@ -13,17 +13,30 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
+
   {
     field: 'kvant',
     hide: false,
     minWidth: 70,
-    width: 100,
+    width: 200,
   },
   {
     field: 'current_stock',
     hide: false,
     minWidth: 70,
     width: 150,
+  },
+  {
+    field: 'min_stock',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'max_stock',
+    hide: false,
+    minWidth: 70,
+    width: 200,
   },
   {
     field: 'monthly_quantity',
@@ -60,6 +73,12 @@ const columns = [
   },
   {
     field: 'adjusted_order',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'response_order_quantity',
     hide: false,
     minWidth: 70,
     width: 200,

@@ -102,89 +102,98 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <SelectSimple
-              fullWidth
-              id='sto'
-              name='payment_type_id'
-              white
-              minWidth='auto'
-              label={'Тип оплаты'}
-              placeholder={t('Выберите тип оплаты')}
-              getOptionLabel={(el) => el.name}
-              options={paymentTypeList?.data?.data}
-            />
-            <LazySelect
-              slug='users'
-              boxStyle={{ width: '100%' }}
-              id='store'
-              name='store_id'
-              isMulti={false}
-              placeholder={t('Выберите Магазин')}
-              minWidth='auto'
-              isClearable={true}
-              label={t('input.store.label')}
-              request={requests.getAllShops}
-              filters={{ limit: 10 }}
-              control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
-              getOptionLabel={(option) => {
-                return <Typography color='grey.600'>{option.name}</Typography>
-              }}
-              filterOption={() => true}
-            />
-            <LazySelect
-              slug='vendor_id'
-              boxStyle={{ width: '100%' }}
-              id='vendor_id'
-              name='vendor_id'
-              customLabel='full_name'
-              isMulti={false}
-              placeholder={'Выберите Сотрудники'}
-              minWidth='auto'
-              isClearable={true}
-              label={'Сотрудники'}
-              request={requests.getAllVendors}
-              filters={{ limit: 10 }}
-              control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
-              getOptionLabel={(option) => {
-                return <Typography color='grey.600'>{option.name}</Typography>
-              }}
-              filterOption={() => true}
-            />
-            r
-            <LazySelect
-              slug='cashbox_id'
-              boxStyle={{ width: '100%' }}
-              id='cashbox_id'
-              name='cashbox_id'
-              customLabel='name'
-              isMulti={false}
-              placeholder={'Выберите Клиенти'}
-              minWidth='auto'
-              isClearable={true}
-              label={'Клиенти'}
-              request={requests.getAllCashBoxList}
-              filters={{ limit: 10 }}
-              control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
-              getOptionLabel={(option) => {
-                return <Typography color='grey.600'>{option.name}</Typography>
-              }}
-              filterOption={() => true}
-            />
-            <InputRange
-              fullWidth
-              id='prixwce'
-              label={'Общая сумма'}
-              name1='total_amount_from'
-              name2='total_amount_to'
-              placeholder1={t('input.price.from')}
-              placeholder2={t('input.price.to')}
-            />
+            <Box maxHeight={'calc(100vh - 280px)'} px={'5px'} width={'100%'} overflow={'scroll'}>
+              <SelectSimple
+                fullWidth
+                id='sto'
+                name='payment_type_id'
+                white
+                minWidth='auto'
+                label={'Тип оплаты'}
+                placeholder={t('Выберите тип оплаты')}
+                getOptionLabel={(el) => el.name}
+                options={paymentTypeList?.data?.data}
+              />
+              <Box height={'20px'} />
+              <LazySelect
+                slug='users'
+                boxStyle={{ width: '100%' }}
+                id='store'
+                name='store_id'
+                isMulti={false}
+                placeholder={t('Выберите Магазин')}
+                minWidth='auto'
+                isClearable={true}
+                label={t('input.store.label')}
+                request={requests.getAllShops}
+                filters={{ limit: 10 }}
+                control={control}
+                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+                // uncontrolled
+                getOptionLabel={(option) => {
+                  return <Typography color='grey.600'>{option.name}</Typography>
+                }}
+                filterOption={() => true}
+              />
+              <Box height={'20px'} />
+
+              <LazySelect
+                slug='vendor_id'
+                boxStyle={{ width: '100%' }}
+                id='vendor_id'
+                name='vendor_id'
+                customLabel='full_name'
+                isMulti={false}
+                placeholder={'Выберите Сотрудники'}
+                minWidth='auto'
+                isClearable={true}
+                label={'Сотрудники'}
+                request={requests.getAllVendors}
+                filters={{ limit: 10 }}
+                control={control}
+                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+                // uncontrolled
+                getOptionLabel={(option) => {
+                  return <Typography color='grey.600'>{option.name}</Typography>
+                }}
+                filterOption={() => true}
+              />
+              <Box height={'20px'} />
+
+              <LazySelect
+                slug='cashbox_id'
+                boxStyle={{ width: '100%' }}
+                id='cashbox_id'
+                name='cashbox_id'
+                customLabel='name'
+                isMulti={false}
+                placeholder={'Выберите Касса'}
+                minWidth='auto'
+                isClearable={true}
+                label={'Касса'}
+                request={requests.getAllCashBoxList}
+                filters={{ limit: 10 }}
+                control={control}
+                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+                // uncontrolled
+                getOptionLabel={(option) => {
+                  return <Typography color='grey.600'>{option.name}</Typography>
+                }}
+                filterOption={() => true}
+              />
+              <Box height={'20px'} />
+
+              <InputRange
+                fullWidth
+                id='prixwce'
+                label={'Общая сумма'}
+                name1='total_amount_from'
+                name2='total_amount_to'
+                placeholder1={t('input.price.from')}
+                placeholder2={t('input.price.to')}
+              />
+              <Box height={'20px'} />
+            </Box>
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
                 sx={{ bgcolor: `${theme.palette.background.gray} !important`, border: '1px solid #ECEDF2' }}

@@ -18,8 +18,8 @@ import tableHeaderSelector from './tableHeaderSelector'
 import CheckAccess from '../../../../components/CheckAccess'
 import PlusIcon from '../../../assets/icons/PlusIcon'
 import { FormProvider, useForm } from 'react-hook-form'
-import { error } from '../../../../utils/toast'
-import { useParams } from 'react-router-dom'
+import { error, success } from '../../../../utils/toast'
+import { useNavigate, useParams } from 'react-router-dom'
 import Header from '../../../../components/Header'
 const SELECTION_ID = 'checkboxSelectionField'
 
@@ -29,6 +29,7 @@ export default function AutoOrderDetailPage() {
   const { id } = useParams()
   const dispatch = useDispatch()
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.autoOrderTableDetailColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
@@ -41,10 +42,21 @@ export default function AutoOrderDetailPage() {
       console.log('err', err)
     },
   })
+  const { mutate: finalAutoOrder, isLoading: isfinalAutoOrder } = useMutation(requests.finalAutoOrder, {
+    onSuccess: () => {
+      navigate('/products/auto-order?limit=10&offset=0')
+      success('Авто заказ подтвержден')
+    },
+    onError: (err) => {
+      error('Ошибка изменить количество!')
+      console.log('err', err)
+    },
+  })
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
     values,
+    getValue: methods.getValues,
     setValue: methods.setValue,
     setImages: setOpenImageGallery,
     autoOrderChangeQuantity,
@@ -117,7 +129,7 @@ export default function AutoOrderDetailPage() {
   }
 
   return (
-    <LoadingContainer readyState={true}>
+    <LoadingContainer readyState={!isfinalAutoOrder}>
       <FormProvider {...methods}>
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
           <Header
@@ -189,13 +201,13 @@ export default function AutoOrderDetailPage() {
                     <Button
                       sx={{ height: '48px' }}
                       type='submit'
-                      onClick={methods.handleSubmit(onSubmit, onError)}
+                      onClick={() => finalAutoOrder(id)}
                       fullWidth
                       // startIcon={<PlusIcon color='#fff' />}
                       variant='contained'
                       color='primary'
                     >
-                      Создать заказ
+                      Отправить заказ
                     </Button>
                   </Box>
                 </CheckAccess>

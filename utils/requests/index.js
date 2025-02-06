@@ -20,7 +20,9 @@ export const requests = {
   finishImportChecking: (id) => request.patch(`v1/import-detail/accept-some/${id}`),
 
   // categoryGetAll
-  autoOrderChangeQuantity: ({ id, adjusted_order_quantity }) => request.put(`v1/auto-order-detail/change-quantity/${id}`, { adjusted_order_quantity }),
+  createAutoOrder: (data) => request.post(`v1/auto-order`, data),
+  finalAutoOrder: (id) => request.post(`v1/auto-order/send/${id}`),
+  autoOrderChangeQuantity: ({ id, ...adjusted_order_quantity }) => request.put(`v1/auto-order-detail/change-quantity/${id}`, { ...adjusted_order_quantity }),
   getAutoOrderDetailList: (filter) => request.get(`v1/auto-order-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAutoOrderList: (filter) => request.get(`v1/auto-order/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllCategories: (filter) => request.get(`v1/category/list${qs.stringify(filter, { addQueryPrefix: true })}`),

@@ -229,7 +229,7 @@ function NewSale() {
   const [customerId, setCustomerId] = useState('')
   const [clientDetails, setClientDetails] = useState(null)
   const [quickCreateClientName, setQuickCreateClientName] = useState(null)
-  const [inputDiscount, setInputDiscount] = useState(0)
+  const [inputDiscount, setInputDiscount] = useState(NaN)
   const [isOrderDrower, setIsOrderDrower] = useState(false)
   const searchRef = useRef('')
   const printContainer = useRef()
@@ -359,6 +359,7 @@ function NewSale() {
   const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
 
   useEffect(() => {
+    if (isNaN(inputDiscount)) return
     method.setValue('discount', inputDiscount)
     changeDiscount(inputDiscount)
   }, [inputDiscount])
@@ -368,7 +369,13 @@ function NewSale() {
   }, [id])
   useEffect(() => {
     const cartList = cartItemsList?.data?.data?.data
+    console.log(cartList)
+
     if (cartList?.length > 0) {
+      if (isNaN(inputDiscount)) {
+        setDiscountType(cartList[0]?.discount_type)
+        setInputDiscount(cartList[0]?.discount_value)
+      }
       cartList.map((item) => {
         method.setValue(`unit_quantity_${item.id}`, get(item, 'unit_quantity'))
         method.setValue(`quantity_${item.id}`, get(item, 'quantity'))
@@ -387,6 +394,16 @@ function NewSale() {
       return
     }
     setHasChange(true)
+    if (value > 100 && discount == 'percent') {
+      changeDiscountValue({
+        id: id,
+        body: {
+          discount_type: discount,
+          discount_value: 100,
+        },
+      })
+      return
+    }
     changeDiscountValue({
       id: id,
       body: {
@@ -673,7 +690,7 @@ function NewSale() {
                 id='app-type'
                 name='app-type'
                 style={{ marginTop: '20px', width: 'auto' }}
-                defaultValue='percent'
+                defaultValue={discount}
                 onChange={setDiscountType}
                 options={[
                   { title: '%', value: 'percent' },

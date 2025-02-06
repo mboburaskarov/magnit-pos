@@ -92,36 +92,41 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
             component='form'
             onSubmit={methods.handleSubmit(onSubmit, onError)}
           >
-            <InputDatePicker
-              defaultValue={new Date()}
-              name='expired_date'
-              id='expired_date'
-              showYearDropdown
-              label='Дата закрытия'
-              placeholder='Дата закрытия'
-            />
-            <LazySelect
-              slug='users'
-              boxStyle={{ width: '100%' }}
-              id='customers'
-              name='customers'
-              isMulti={false}
-              placeholder={'Выберите клиент'}
-              minWidth='auto'
-              isClearable={true}
-              label={t('input.client.label')}
-              request={requests.getAllCustomers}
-              filters={{ limit: 10 }}
-              control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
-              customLabel={'full_name'}
-              getOptionLabel={(option) => {
-                return <Typography color='grey.600'>{option.name}</Typography>
-              }}
-              filterOption={() => true}
-            />
-            {/* <SelectSimple
+            <Box maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'scroll'}>
+              <InputDatePicker
+                defaultValue={new Date()}
+                name='expired_date'
+                id='expired_date'
+                showYearDropdown
+                label='Дата закрытия'
+                placeholder='Дата закрытия'
+              />
+              <Box height={'20px'} />
+
+              <LazySelect
+                slug='users'
+                boxStyle={{ width: '100%' }}
+                id='customers'
+                name='customers'
+                isMulti={false}
+                placeholder={'Выберите клиент'}
+                minWidth='auto'
+                isClearable={true}
+                label={t('input.client.label')}
+                request={requests.getAllCustomers}
+                filters={{ limit: 10 }}
+                control={control}
+                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+                // uncontrolled
+                customLabel={'full_name'}
+                getOptionLabel={(option) => {
+                  return <Typography color='grey.600'>{option.name}</Typography>
+                }}
+                filterOption={() => true}
+              />
+              <Box height={'20px'} />
+
+              {/* <SelectSimple
               fullWidth
               id='produ'
               name='customers'
@@ -132,7 +137,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
               options={customers?.data?.data?.data}
               getOptionLabel={(el) => `${el.first_name} ${el.last_name}`}
             /> */}
-
+            </Box>
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
                 sx={{ bgcolor: '#fff !important', border: '1px solid #ECEDF2' }}
