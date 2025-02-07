@@ -408,7 +408,6 @@ export default function OrderDrawer({
   }
   let timeoutRef = null
   const handleFinish = () => {
-    debugger
     if (paymentsList.find((el) => el.type === 'app')) {
       setOpenScanDialog(true)
     } else {
@@ -456,6 +455,7 @@ export default function OrderDrawer({
       setScannedKeys([])
     }, 300)
   }
+
   useHotkeys(
     '*',
     (event) => {
@@ -471,7 +471,7 @@ export default function OrderDrawer({
   //   }
   // })
   useHotkeys(
-    '*',
+    Object.values(paymentHotKeys),
     (event) => {
       handleFKeys(event)
     },

@@ -369,10 +369,12 @@ function NewSale() {
   }, [id])
   useEffect(() => {
     const cartList = cartItemsList?.data?.data?.data
-    console.log(cartList)
+    console.log(cartList, inputDiscount)
 
     if (cartList?.length > 0) {
       if (isNaN(inputDiscount)) {
+        console.log(get(cartList[0], 'discount_type', 'percent'))
+
         setDiscountType(get(cartList[0], 'discount_type', 'percent'))
         setInputDiscount(cartList[0]?.discount_value)
       }
@@ -383,6 +385,9 @@ function NewSale() {
     }
   }, [cartItemsList?.data])
   const changeDiscount = (value) => {
+    if (discount != 'percent' && discount != 'cash') {
+      return
+    }
     if (!value && value != 0) {
       changeDiscountValue({
         id: id,
@@ -674,7 +679,7 @@ function NewSale() {
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <OutLineTextFieldThousand
-              setValue={(e) => changeDiscount(e)}
+              // setValue={(e) => changeDiscount(e)}
               required
               value={inputDiscount}
               type={'number'}
