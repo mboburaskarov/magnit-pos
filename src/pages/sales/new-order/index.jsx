@@ -7,7 +7,7 @@ import { error, success } from '../../../../utils/toast'
 import CartItem from './CartItem'
 import CartSearchBar from './CartSearchBar'
 import { LoadingButton } from '@mui/lab'
-import { get, size } from 'lodash'
+import { get, head, size } from 'lodash'
 import Highlighter from 'react-highlight-words'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -373,9 +373,7 @@ function NewSale() {
 
     if (cartList?.length > 0) {
       if (isNaN(inputDiscount)) {
-        console.log(get(cartList[0], 'discount_type', 'percent'))
-
-        setDiscountType(get(cartList[0], 'discount_type', 'percent'))
+        setDiscountType(get(head(cartList), 'discount_type', 'percent'))
         setInputDiscount(cartList[0]?.discount_value)
       }
       cartList.map((item) => {
@@ -463,6 +461,22 @@ function NewSale() {
       enableOnTags: ['INPUT', 'TEXTAREA'], // Enable the hotkey even when these elements are focused
     }
   )
+
+  const [debouncedDiscount, setDebouncedDiscount] = useState('')
+
+  // Function to handle input changes
+  const changeDiscountDebounce = (value) => {
+    setDebouncedDiscount(value)
+  }
+
+  // Debounce logic: Apply a delay before updating the debounced value
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      changeDiscount(debouncedDiscount)
+    }, 200)
+
+    return () => clearTimeout(handler) // Cleanup the timeout on re-renders
+  }, [debouncedDiscount])
 
   return (
     <FormProvider {...method}>
@@ -679,7 +693,7 @@ function NewSale() {
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <OutLineTextFieldThousand
-              // setValue={(e) => changeDiscount(e)}
+              setValue={(e) => changeDiscountDebounce(e)}
               required
               value={inputDiscount}
               type={'number'}
