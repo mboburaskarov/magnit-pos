@@ -239,7 +239,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
     if (el.field === 'employee') {
       return {
         ...el,
-        headerName: 'Сотрудник',
+        headerName: 'Продавец',
         colId: el.field,
         cellRenderer: memo((p) => (
           <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + p.data?.employee?.phone)}>

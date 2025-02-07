@@ -307,7 +307,9 @@ export default function OrderDrawer({
       success('Продажа завершена!')
     },
     onError: (err) => {
-      if (get(err, 'response.status')) {
+      console.log(err)
+
+      if (get(err, 'response.status') == 409) {
         error('Эта продажа уже закрыта.')
         return
       }

@@ -10,7 +10,19 @@ import * as qs from 'qs'
 import { useQueryParams } from '../../../src/hooks/useQueryParams'
 import { calculateDateDifference } from '../../../utils/calculateDateDifference'
 import ArrowDown from '../../../src/assets/icons/ArrowDown'
+import isBetween from 'dayjs/plugin/isBetween'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+import localeData from 'dayjs/plugin/localeData'
+import 'dayjs/locale/ru' // Russian locale for correct week start
 
+dayjs.extend(isBetween)
+dayjs.extend(isSameOrAfter)
+dayjs.extend(isSameOrBefore)
+dayjs.extend(weekOfYear)
+dayjs.extend(localeData)
+dayjs.locale('ru')
 const customDateRanges = () => [
   {
     id: 'yesterday',
@@ -25,7 +37,7 @@ const customDateRanges = () => [
   {
     id: 'week',
     label: 'На этой неделе',
-    values: [dayjs().startOf('week').format('DD.MM.YYYY'), dayjs().format('DD.MM.YYYY')],
+    values: [dayjs().startOf('week').format('DD.MM.YYYY'), dayjs().endOf('week').format('DD.MM.YYYY')],
   },
   {
     id: 'month',
@@ -51,7 +63,6 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
   }
   const location = useLocation()
   const navigate = useNavigate()
-  const [customDateRangeSelected, setCustomDateRangeSelected] = useState(defaultFilterData?.label || 'Bugun')
   const { values } = useQueryParams()
   const [dateState, setDateState] = useState(defaultState)
 
@@ -89,6 +100,41 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
     },
     [dateState, location.pathname, navigate, startDateQuery, endDateQuery, values]
   )
+  const getLabelForDateRange = (startDate, endDate) => {
+    const today = dayjs()
+    const yesterday = today.subtract(1, 'day')
+    const start = dayjs(startDate)
+    const end = dayjs(endDate)
+
+    // **Today**
+    if (start.isSame(today, 'day') && end.isSame(today, 'day')) return 'Сегодня'
+
+    // **Yesterday**
+    if (start.isSame(yesterday, 'day') && end.isSame(yesterday, 'day')) return 'Вчера'
+
+    // **This week (Monday - Sunday)**
+    const startOfWeek = today.startOf('week') // Monday start
+    const endOfWeek = today.endOf('week') // Sunday end
+    if (start.isSameOrAfter(startOfWeek, 'day')) {
+      return 'На этой неделе'
+    }
+
+    // **This month**
+    const startOfMonth = today.startOf('month')
+    if (start.isSameOrAfter(startOfMonth, 'day') && end.isSameOrBefore(today, 'day')) {
+      return 'Это месяц'
+    }
+
+    // **This year**
+    const startOfYear = today.startOf('year')
+    if (start.isSameOrAfter(startOfYear, 'day') && end.isSameOrBefore(today, 'day')) {
+      return 'В этом году'
+    }
+
+    return `${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
+  }
+
+  const [customDateRangeSelected, setCustomDateRangeSelected] = useState(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
 
   return (
     <Box minWidth={163}>

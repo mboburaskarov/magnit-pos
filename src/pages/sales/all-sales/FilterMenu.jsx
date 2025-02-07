@@ -144,10 +144,10 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 name='vendor_id'
                 customLabel='full_name'
                 isMulti={false}
-                placeholder={'Выберите Сотрудники'}
+                placeholder={'Выберите Продавец'}
                 minWidth='auto'
                 isClearable={true}
-                label={'Сотрудники'}
+                label={'Продавец'}
                 request={requests.getAllVendors}
                 filters={{ limit: 10 }}
                 control={control}
