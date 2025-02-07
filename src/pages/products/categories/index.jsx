@@ -68,18 +68,12 @@ export default function CatalogManagement() {
     refetch: categoriesRefetch,
     isLoading: categoriesLoading,
     isFetching: categoriesFetching,
-  } = useQuery(
-    ['categories', debouncedSearchTerm],
-    () =>
-      requests.category.getAll({
-        limit: queryParams?.values?.limit || 10,
-        page: queryParams?.values?.page || 1,
-        search: debouncedSearchTerm,
-        is_deleted: status === 'deleted',
-      }),
-    {
-      enabled: type === 'categories',
-    }
+  } = useQuery(['categories', debouncedSearchTerm], () =>
+    requests.getAllCategories({
+      limit: queryParams?.values?.limit || 10,
+      offset: queryParams?.values?.page || 1,
+      search: debouncedSearchTerm,
+    })
   )
 
   const {
@@ -118,7 +112,7 @@ export default function CatalogManagement() {
     }
   )
 
-  const { mutate: deleteCategory, isLoading: isDeletingCat } = useWebsocketMutation(requests.category.delete, {
+  const { mutate: deleteCategory, isLoading: isDeletingCat } = useWebsocketMutation(requests.category?.delete, {
     onWebsocketSuccess: () => {
       success('menu.finance.categories.toasts.delete_success')
       categoriesRefetch()
@@ -129,7 +123,7 @@ export default function CatalogManagement() {
       error('menu.finance.categories.toasts.delete_error')
     },
   })
-  const { mutate: recoverCategory, isLoading: isRecoveringCat } = useWebsocketMutation(requests.category.recover, {
+  const { mutate: recoverCategory, isLoading: isRecoveringCat } = useWebsocketMutation(requests.category?.recover, {
     onWebsocketSuccess: () => {
       success('menu.finance.categories.toasts.recover_success')
 
@@ -141,7 +135,7 @@ export default function CatalogManagement() {
       error('menu.finance.categories.toasts.restore_error')
     },
   })
-  const { mutate: deleteCharacteristics, isLoading: isDeletingChar } = useWebsocketMutation(requests.productCharacteristic.delete, {
+  const { mutate: deleteCharacteristics, isLoading: isDeletingChar } = useWebsocketMutation(requests.productCharacteristic?.delete, {
     onWebsocketSuccess: () => {
       success('menu.products.catalog.management.del_char_success_toast')
       dispatch(removeCustomColumn(openConfirm?.id))
@@ -154,7 +148,7 @@ export default function CatalogManagement() {
       error('menu.products.catalog.management.del_char_error_toast')
     },
   })
-  const { mutate: recoverCharacteristics, isLoading: isRecoveringChar } = useWebsocketMutation(requests.productCharacteristic.recover, {
+  const { mutate: recoverCharacteristics, isLoading: isRecoveringChar } = useWebsocketMutation(requests.productCharacteristic?.recover, {
     onWebsocketSuccess: () => {
       success('menu.products.catalog.management.recover_char_success_toast')
       characteristicsRefetch()
@@ -211,7 +205,7 @@ export default function CatalogManagement() {
       },
       { addQueryPrefix: true }
     )
-    navigate(`/products/catalog/management${searchParams}`)
+    // navigate(`/products/catalog/management${searchParams}`)
   }, [status])
 
   useEffect(() => {
@@ -223,7 +217,7 @@ export default function CatalogManagement() {
       },
       { addQueryPrefix: true }
     )
-    navigate(`/products/catalog/management${searchParams}`)
+    // navigate(`/products/catalog/management${searchParams}`)
   }, [])
 
   const columnsCategories = tableHeadersCategories(searchTerm, setCategoryDrawer, setCreateEdit, status, type, setOpenConfirm, t)
@@ -267,12 +261,8 @@ export default function CatalogManagement() {
     }
   }
 
-  const tableData =
-    type === 'attributes'
-      ? attributes?.data?.attributes
-      : type === 'characteristics'
-      ? characteristics?.data?.product_characteristics
-      : categories?.data?.categories
+  const tableData = categories?.data?.data?.data
+  console.log(categories, tableData)
 
   const tableLoading =
     type === 'attributes'

@@ -118,7 +118,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: t('store'),
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{p.data?.store?.name}</Typography>),
+        cellRenderer: memo((p) => <Typography whiteSpace='pre-wrap'>{p.data?.store?.name}</Typography>),
       }
     }
     if (el.field === 'status') {

@@ -512,6 +512,7 @@ function PaginationTable({
       )
     }
   )
+  console.log(page)
 
   const [paginatedSelectedRows, setPaginatedSelectedRows] = useState({})
 
@@ -630,7 +631,7 @@ function PaginationTable({
                 </tr>
               ))}
             </thead>
-
+            tr
             <tbody {...getTableBodyProps()} className={classes.tbody}>
               {blueTotalData ? '' : <tr />}
               <>
@@ -667,6 +668,7 @@ function PaginationTable({
                               width: tableContainer.current?.offsetWidth || '100%',
                             }}
                           >
+                            grg
                             <Box display='flex' alignItems='center'>
                               <button
                                 type='button'
@@ -706,6 +708,7 @@ function PaginationTable({
                   ''
                 )}
               </>
+              fr
               {!data?.length && noDataTitle ? (
                 <tr>
                   <td colSpan={allColumns?.length}>
@@ -746,6 +749,7 @@ function PaginationTable({
                 })
               )}
               <>
+                frf
                 {data?.length && totalData ? (
                   <tr
                     style={{

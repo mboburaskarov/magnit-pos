@@ -373,7 +373,7 @@ function NewSale() {
 
     if (cartList?.length > 0) {
       if (isNaN(inputDiscount)) {
-        setDiscountType(cartList[0]?.discount_type)
+        setDiscountType(get(cartList[0], 'discount_type', 'percent'))
         setInputDiscount(cartList[0]?.discount_value)
       }
       cartList.map((item) => {

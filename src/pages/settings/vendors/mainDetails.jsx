@@ -14,6 +14,7 @@ import TextField from '../../../../components/Inputs/TextField'
 import Label from '../../../../components/Label'
 import SelectSimple from '../../../../components/Select/SelectSimple'
 import { requests } from '../../../../utils/requests'
+import getOptionsSchema from '../../../../utils/getOptionsSchema'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -52,8 +53,9 @@ export default function MainDetails({ clientData, openDrawer }) {
       setValue('phone', get(employeeInfo, 'data.data.phone', '').replace('998', ''))
       get(employeeInfo, 'data.data.birthdate', false) && setValue('date_of_birth', new Date(get(employeeInfo, 'data.data.birthdate')))
       setValue('gender', get(employeeInfo, 'data.data.gender'))
-      setValue('store', get(employeeInfo, 'data.data.store'))
-      setValue('role', get(employeeInfo, 'data.data.roles'))
+      setValue('role', getOptionsSchema(get(employeeInfo, 'data.data.roles', []), Object))
+      setValue('store_id', getOptionsSchema(get(employeeInfo, 'data.data.store', []), Object))
+      console.log(getOptionsSchema(get(employeeInfo, 'data.data.store', []), Object))
     }
   }, [employeeInfo])
   const { data: storesList } = useQuery('storesList', () => requests.getAllShops({ limit: 20, offset: 0 }))
@@ -152,7 +154,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
             // uncontrolled
             getOptionLabel={(option) => {
-              return <Typography color='grey.600'>{option.name}</Typography>
+              return <Typography color='grey.600'>{option.label}</Typography>
             }}
             filterOption={() => true}
           />
@@ -168,8 +170,25 @@ export default function MainDetails({ clientData, openDrawer }) {
         </Grid>
         <Grid item xs={6}>
           <Label mb='4px'>{t('role')}</Label>
-
-          <SelectSimple
+          <LazySelect
+            slug='role'
+            id='role'
+            name='role'
+            isMulti={true}
+            placeholder={t('role.placeholder')}
+            minWidth='auto'
+            isClearable={true}
+            request={requests.getAllRoles}
+            filters={{ limit: 10 }}
+            control={control}
+            // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+            // uncontrolled
+            getOptionLabel={(option) => {
+              return <Typography color='grey.600'>{option.label}</Typography>
+            }}
+            filterOption={() => true}
+          />
+          {/* <SelectSimple
             required
             placeholder={t('role.placeholder')}
             disabled={false}
@@ -178,7 +197,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             isClearable={false}
             options={get(rolesList, 'data.data.data', []).map((el) => ({ value: el.id, name: el.name, id: el.id }))}
             name='role'
-          />
+          /> */}
         </Grid>
       </Grid>
 
