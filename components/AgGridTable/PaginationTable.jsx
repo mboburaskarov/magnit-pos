@@ -512,7 +512,6 @@ function PaginationTable({
       )
     }
   )
-  console.log(page)
 
   const [paginatedSelectedRows, setPaginatedSelectedRows] = useState({})
 

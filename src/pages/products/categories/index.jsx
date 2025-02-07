@@ -262,7 +262,6 @@ export default function CatalogManagement() {
   }
 
   const tableData = categories?.data?.data?.data
-  console.log(categories, tableData)
 
   const tableLoading =
     type === 'attributes'

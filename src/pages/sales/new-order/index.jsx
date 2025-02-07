@@ -369,7 +369,6 @@ function NewSale() {
   }, [id])
   useEffect(() => {
     const cartList = cartItemsList?.data?.data?.data
-    console.log(cartList, inputDiscount)
 
     if (cartList?.length > 0) {
       if (isNaN(inputDiscount)) {

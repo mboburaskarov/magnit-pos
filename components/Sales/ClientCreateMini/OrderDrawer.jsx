@@ -283,7 +283,6 @@ export default function OrderDrawer({
     paymentsList.map((el) => {
       amount += Number(el.amount)
     })
-    console.log(amount, isNaN(amount))
 
     if (isNaN(amount)) {
       setMaxAmount(Number(get(cartItemsList, 'total_amount')))
@@ -316,6 +315,9 @@ export default function OrderDrawer({
       console.log('err', err)
     },
   })
+  useEffect(() => {
+    setPaymentsList([])
+  }, [isOrderDrower])
   const handleAddPaymentType = (type) => {
     if (!type) return
 

@@ -55,7 +55,6 @@ export default function MainDetails({ clientData, openDrawer }) {
       setValue('gender', get(employeeInfo, 'data.data.gender'))
       setValue('role', getOptionsSchema(get(employeeInfo, 'data.data.roles', []), Object))
       setValue('store_id', getOptionsSchema(get(employeeInfo, 'data.data.store', []), Object))
-      console.log(getOptionsSchema(get(employeeInfo, 'data.data.store', []), Object))
     }
   }, [employeeInfo])
   const { data: storesList } = useQuery('storesList', () => requests.getAllShops({ limit: 20, offset: 0 }))
