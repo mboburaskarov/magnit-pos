@@ -352,7 +352,9 @@ const CartItem = ({ index, packRef = () => {}, unitRef, onKeyDown, refetchcartIt
                 }}
               >
                 <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
-                  <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>{item?.barcode} / 3(3/3)</Typography>
+                  <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>
+                    {item?.barcode} / {item.current_stock}
+                  </Typography>
                 </Box>
               </Box>
             </Box>
