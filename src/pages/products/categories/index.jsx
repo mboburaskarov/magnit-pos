@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 // import InputSearch from 'components/Input/InputSearch'
 // import PaginationTable from 'components/Table/PaginationTable'
@@ -6,9 +6,9 @@ import { makeStyles } from '@mui/styles'
 // import { useQueryParams } from 'hooks/useQueryParams'
 import useWebsocketMutation from '../../../hooks/useDebouncedValue'
 import qs from 'qs'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 // import { requests } from 'services/requests'
@@ -21,6 +21,10 @@ import useDebouncedValue from '../../../hooks/useDebouncedValue'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import PaginationTable from '../../../../components/AgGridTable/PaginationTable'
 import { requests } from '../../../../utils/requests'
+import CreateEditCategories from '../../../../components/CreateEditCategories'
+import PlusIcon from '../../../assets/icons/PlusIcon'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
+import BigWarningCircleIcon from '../../../assets/icons/BigWarningCircleIcon'
 
 const useStyles = makeStyles((theme) => ({
   backButton: {
@@ -50,6 +54,7 @@ export default function CatalogManagement() {
   const queryParams = useQueryParams()
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const { values } = useQueryParams()
   const dispatch = useDispatch()
   const [type, setType] = useState('categories')
   const [status, setStatus] = useState('')
@@ -58,111 +63,47 @@ export default function CatalogManagement() {
   const [createEdit, setCreateEdit] = useState(null)
   const [openConfirm, setOpenConfirm] = useState(null)
   const [searchTerm, setSearchTerm, debouncedSearchTerm] = useDebouncedValue('', 300)
-
+  const [confirmToDelete, setConfirmToDelete] = useState(false)
+  const [offsetCount, setOffsetCount] = useState(0)
   const closeDrawer = useCallback(() => {
     setCreateEdit(null)
   }, [])
 
+  const categoryFilter = useMemo(() => {
+    return {
+      limit: values?.limit || 10,
+      search: values?.search,
+      offset: values?.search ? 0 : values?.offset || 0,
+    }
+  }, [values?.offset, values?.limit, values?.search])
   const {
     data: categories,
     refetch: categoriesRefetch,
     isLoading: categoriesLoading,
     isFetching: categoriesFetching,
-  } = useQuery(['categories'], () =>
-    requests.getAllCategories({
-      limit: queryParams?.values?.limit || 10,
-      offset: queryParams?.values?.page || 1,
-      // search: debouncedSearchTerm,
-    })
-  )
+  } = useQuery(['categories', categoryFilter], () => requests.getAllCategories(categoryFilter))
 
-  const { mutate: deleteCategory, isLoading: isDeletingCat } = useWebsocketMutation(requests.category?.delete, {
-    onWebsocketSuccess: () => {
-      success('menu.finance.categories.toasts.delete_success')
+  const { mutate: deleteCategory, isLoading: isdeleteCategory } = useMutation(requests.deleteCategory, {
+    onSuccess: () => {
       categoriesRefetch()
-      setOpenConfirm(false)
+      success('Категори успешно создан!')
     },
-    onWebsocketError: () => {
-      setOpenConfirm(false)
-      error('menu.finance.categories.toasts.delete_error')
-    },
-  })
-  const { mutate: recoverCategory, isLoading: isRecoveringCat } = useWebsocketMutation(requests.category?.recover, {
-    onWebsocketSuccess: () => {
-      success('menu.finance.categories.toasts.recover_success')
-
-      categoriesRefetch()
-      setOpenConfirm(false)
-    },
-    onWebsocketError: () => {
-      setOpenConfirm(false)
-      error('menu.finance.categories.toasts.restore_error')
+    onError: (err) => {
+      error('Ошибка при создании Категори!')
+      console.log('err', err)
     },
   })
-  const { mutate: deleteCharacteristics, isLoading: isDeletingChar } = useWebsocketMutation(requests.productCharacteristic?.delete, {
-    onWebsocketSuccess: () => {
-      success('menu.products.catalog.management.del_char_success_toast')
-      dispatch(removeCustomColumn(openConfirm?.id))
-      dispatch(asyncRemoveCustomColumns(openConfirm?.id))
-      // characteristicsRefetch()
-      setOpenConfirm(false)
-    },
-    onWebsocketError: () => {
-      setOpenConfirm(false)
-      error('menu.products.catalog.management.del_char_error_toast')
-    },
-  })
-  const { mutate: recoverCharacteristics, isLoading: isRecoveringChar } = useWebsocketMutation(requests.productCharacteristic?.recover, {
-    onWebsocketSuccess: () => {
-      success('menu.products.catalog.management.recover_char_success_toast')
-      // characteristicsRefetch()
-      setOpenConfirm(false)
-    },
-    onWebsocketError: () => {
-      setOpenConfirm(false)
-      error('menu.products.catalog.management.recover_char_error_toast')
-    },
-  })
-
-  const refetchAll = () => {
-    if (type === 'categories') {
-      categoriesRefetch()
-    }
-  }
 
   useEffect(() => {
-    const totalCount = categories?.data?.count
-    const pages = Math.ceil(totalCount / queryParams?.values?.limit)
+    const count = categories?.data?.data?._meta?.total_count
 
-    setPageCount(pages || 1)
+    const offsetsCount = Math.ceil(count / Number(values?.limit))
+    setOffsetCount(offsetsCount || 0)
 
     // refetchAll()
   }, [categories?.data, queryParams?.values?.search, queryParams?.values?.limit, queryParams?.values?.page])
 
-  useEffect(() => {
-    const searchParams = qs.stringify(
-      {
-        ...queryParams?.values,
-        page: 1,
-      },
-      { addQueryPrefix: true }
-    )
-    // navigate(`/products/catalog/management${searchParams}`)
-  }, [status])
-
-  useEffect(() => {
-    const searchParams = qs.stringify(
-      {
-        ...queryParams?.values,
-        page: 1,
-        limit: 10,
-      },
-      { addQueryPrefix: true }
-    )
-    // navigate(`/products/catalog/management${searchParams}`)
-  }, [])
-
-  const columnsCategories = tableHeadersCategories(searchTerm, setCategoryDrawer, setCreateEdit, status, type, setOpenConfirm, t)
+  const columnsCategories = tableHeadersCategories(searchTerm, setCategoryDrawer, setCreateEdit, status, type, setOpenConfirm, t, setConfirmToDelete)
 
   const columns = columnsCategories
 
@@ -183,27 +124,6 @@ export default function CatalogManagement() {
   return (
     <>
       <Box pt={6} px={4} pb={3}>
-        {/* <Box display='inline-flex'>
-          <Box onClick={() => navigate('/products/catalog?page=1&limit=10&search=')} className={classes.backButton}>
-            <BackArrowIcon style={{ fill: '#4993DD' }} />
-          </Box>
-          <Typography variant='h1' className={classes.title}>
-            {t('titles.catalog_management')}
-          </Typography>
-        </Box>
-        <Box mt={3.5} width='100%'>
-          <InputSwitchNew name='incomeOrExpense' onChange={(value) => setType(value)} noMarginTop uncontrolled defaultValue={type} options={switchData} />
-        </Box>
-        {type !== 'attributes' && (
-          <Box display='flex' mt={4}>
-            <TabContainer
-              tabs={tabs}
-              selected={status}
-              setSelected={setStatus}
-              counts={type === 'characteristics' && [characteristics?.data?.active_count, characteristics?.data?.deleted_count]}
-            />
-          </Box>
-        )} */}
         <Box display='flex' width='100%' mb={3} mt={4}>
           <Box flex='1 0 30%' mr={1}>
             <InputSearch
@@ -221,11 +141,11 @@ export default function CatalogManagement() {
               setSearchTerm={setSearchTerm}
             />
           </Box>
-          {/* <Box flex='0 0 10%' minWidth={256}>
+          <Box flex='0 0 10%' minWidth={256}>
             <Button id='create' adornmentStart={<PlusIcon fill='#fff' />} primary onClick={() => setCreateEdit({ type })} style={{ minWidth: 256 }}>
-              {type === 'attributes' ? t('buttons.new_attribute') : type === 'characteristics' ? t('buttons.new_field') : t('menu.finance.categories.new')}
+              {t('menu.finance.categories.new')}
             </Button>
-          </Box> */}
+          </Box>
         </Box>
         <PaginationTable
           isExpendable
@@ -234,49 +154,45 @@ export default function CatalogManagement() {
           columns={columns}
           isDataLoading={tableLoading}
           data={tableData}
-          pageCount={pageCount}
-          navigateUrl='/products/catalog/management'
+          pageCount={offsetCount}
+          navigateUrl='/products/categories'
           noDataTitle={t('titles.data_not_found')}
           withHover
         />
       </Box>
-      {/* <CategoriesProductViewDrawer
-        openDrawer={categoryDrawer}
-        closeDrawer={() => setCategoryDrawer(null)}
-      /> */}
-      {/* <CreateEditCategories refetch={refetchAll} open={createEdit?.type === 'categories'} editId={createEdit?.id} closeDrawer={closeDrawer} /> */}
-      {/* <CreateEditAttributes
-        refetch={refetchAll}
-        open={createEdit?.type === 'attributes'}
-        editId={createEdit?.id}
-        closeDrawer={closeDrawer}
+      <CreateEditCategories
+        withoutNavigate
+        refetch={categoriesRefetch}
+        open={!!createEdit}
+        editId={createEdit?.parentId}
+        focusId={createEdit?.id}
+        closeDrawer={() => setCreateEdit(false)}
       />
-      <CreateEditCharacteristics
-        refetch={refetchAll}
-        editId={createEdit?.id}
-        open={createEdit?.type === 'characteristics'}
-        closeDrawer={closeDrawer}
-      /> */}
-      {/* {!!openConfirm && (
-        <ConfirmDialog
-          open={!!openConfirm}
-          setOpen={setOpenConfirm}
-          icon={openConfirm?.isDelete ? <BigWarningCircleIcon /> : <BigWarningIcon />}
-          title={confirmDialogTitle}
-          desc={confirmDialogDesc}
-          descWidth={descWidth}
-          actions={
-            <>
-              <Button secondary id='stop' onClick={() => setOpenConfirm(false)}>
-                {t('buttons.cancel')}
-              </Button>
-              <Button onClick={ConfirmDialogFunction} size='medium' variant='contained' isLoading={confirmLoading}>
-                {openConfirm?.isDelete ? t('buttons.delete') : t('buttons.restore')}
-              </Button>
-            </>
-          }
-        />
-      )} */}
+
+      <ConfirmDialog
+        open={!!confirmToDelete}
+        setOpen={setConfirmToDelete}
+        icon={<BigWarningCircleIcon />}
+        title={t('menu.finance.categories.delete_subcattegory.title')}
+        desc={t('menu.finance.categories.delete_subcattegory.desc')}
+        actions={
+          <>
+            <Button variant='contained' id='stop' onClick={() => setConfirmToDelete(false)}>
+              {t('buttons.cancel')}
+            </Button>
+            <Button
+              onClick={() => {
+                setConfirmToDelete(false)
+                deleteCategory({ data: [confirmToDelete] })
+              }}
+              size='medium'
+              variant='contained'
+            >
+              {t('buttons.delete')}
+            </Button>
+          </>
+        }
+      />
     </>
   )
 }

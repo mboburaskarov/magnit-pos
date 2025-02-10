@@ -316,7 +316,7 @@ function PaginationTable({
   selectedRowActionTwo,
   isDataLoading,
   onTableSettingsChange,
-  pageQuery = 'page',
+  pageQuery = 'offset',
   limitQuery = 'limit',
   noRedirect,
   noDataTitle,
@@ -528,11 +528,12 @@ function PaginationTable({
       const pageParams = qs.stringify(
         {
           ...queryParams?.values,
-          [pageQuery]: pageIndex + 1,
+          [pageQuery]: pageIndex * pageSize,
           [limitQuery]: pageSize,
         },
         { addQueryPrefix: true }
       )
+
       navigate(`${baseUrl}${pageParams}`)
     }
 
@@ -798,7 +799,7 @@ function PaginationTable({
                   eventMessage={eventMessages?.[0]}
                 />
               )}
-              <RowFilterButton eventMessage={eventMessages?.[1]} pageSize={pageSize} setPageSize={setPageSize} />
+              <RowFilterButton eventMessage={eventMessages?.[1]} offsetSize={pageSize} setOffsetSize={setPageSize} />
             </Box>
           </div>
         )}

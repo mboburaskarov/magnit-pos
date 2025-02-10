@@ -358,11 +358,11 @@ function NewSale() {
   } = useQuery('cartItemsList', () => requests.getCartItemList({ sale_id: id, limit: 20, offset: 0 }).catch(() => navigate('/sales/create')))
   const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
 
-  useEffect(() => {
-    if (isNaN(inputDiscount)) return
-    method.setValue('discount', inputDiscount)
-    changeDiscount(inputDiscount)
-  }, [inputDiscount])
+  // useEffect(() => {
+  //   if (isNaN(inputDiscount)) return
+  //   method.setValue('discount', inputDiscount)
+  //   changeDiscount(inputDiscount)
+  // }, [inputDiscount])
 
   useEffect(() => {
     refetchcartItemsList()

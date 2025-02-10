@@ -41,6 +41,12 @@ export const navbatRouteData = [
         id: '32',
         href: '/products/auto-order',
       },
+      {
+        label: 'Категории',
+        active: '/products/categories/*',
+        id: '327',
+        href: '/products/categories',
+      },
     ],
   },
   {

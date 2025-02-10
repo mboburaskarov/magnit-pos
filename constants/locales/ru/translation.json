@@ -13,6 +13,7 @@
   "input.store.placeholder": "Выберите Магазин",
   "input.manufacturer.label": "Производитель",
   "table_columns.action": "Действие",
+  "menu.finance.categories.searchplaceholder": "Наименование категории",
   "buttons.edit": "Редактировать",
   "table_columns.amount": "Кол-во продуктов",
   "input.client.label": "Kлиент",

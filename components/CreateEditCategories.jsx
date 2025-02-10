@@ -215,6 +215,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
     onSuccess: () => {
       closeDrawer()
       refetch()
+      setInputTree({ name: '' })
       success('Создать категорию!')
     },
     onError: (err) => {
@@ -288,8 +289,8 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
         nextButtonLabel={editId ? t('buttons.apply') : t('create')}
         onNextButtonClick={onSubmit}
         title={editId ? t('menu.finance.categories.edit') : t('menu.finance.categories.new')}
-        isLoading={isLoading}
-        disabled={!inputTree.name}
+        isLoading={isLoading || isupdateCategory || iscreateCategory}
+        disabled={!inputTree?.name}
         {...rest}
       >
         <LoadingContainer style={{ minHeight: 'calc(80vh - 112px)' }} readyState={editId ? !editLoading : true}>

@@ -35,7 +35,7 @@ export const requests = {
   getCategoryBillz: (filter) => request.get(`api/billz/categories${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateCategory: ({ id, data }) => request.put(`v1/category/${id}`, data),
   getSingleCategory: (id) => request.get(`api/categories/${id}`),
-  deleteCategory: (id) => request.delete(`api/categories/${id}`),
+  deleteCategory: (id) => request.delete(`v1/category`, id),
   //hashtag
   getAllProducer: (filter) => request.get(`v1/product/producer${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllClients: (filter) => request.get(`api/users${qs.stringify(filter, { addQueryPrefix: true })}`),

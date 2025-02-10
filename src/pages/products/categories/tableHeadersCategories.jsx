@@ -7,6 +7,7 @@ import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import DeleteMiddleIcon from '../../../assets/icons/DeleteMiddleIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import EditIcon from '../../../assets/icons/EditIcon'
+import { get } from 'lodash'
 
 const list = [
   { accessor: 'name', is_active: true },
@@ -14,7 +15,7 @@ const list = [
   { accessor: 'action', is_active: true },
 ]
 
-const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, status, type, setOpenConfirm, t) => {
+const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, status, type, setOpenConfirm, t, setConfirmToDelete) => {
   return list?.map((item) => {
     switch (item.accessor) {
       case 'name':
@@ -88,6 +89,7 @@ const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, st
               {status === 'deleted' ? (
                 <Tooltip title={t('buttons.restore')} placement='top'>
                   <Button
+                    variant=''
                     onClick={(e) => {
                       e.stopPropagation()
                       setOpenConfirm({
@@ -104,19 +106,34 @@ const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, st
                 <>
                   <Tooltip title={t('buttons.edit')} placement='top'>
                     <Button
+                      sx={{ borderRadius: '15px', width: '50px', height: '50px' }}
+                      // variant=''
                       onClick={(e) => {
                         e.stopPropagation()
-                        setCreateEdit({ type, id: row?.original?.id })
+                        setCreateEdit({ type, id: row?.original?.id, parentId: get(row, 'original.parent_id') || get(row, 'original.id') })
                       }}
                     >
-                      <IconButton onClick={() => navigate(`/products/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-                        <EditIcon />
+                      <IconButton
+                        // onClick={() => navigate(`/products/edit/${data.id}`)}
+                        sx={{
+                          width: 32,
+                          height: 32,
+                          backgroundColor: 'transparent',
+                          borderRadius: 3,
+                          p: '8px',
+                          '&:hover': {
+                            backgroundColor: 'transparent',
+                          },
+                        }}
+                      >
+                        <EditIcon color='#fff' />
                       </IconButton>
                     </Button>
                   </Tooltip>
                   <Box width={16} />
                   <Tooltip title={t('buttons.delete')} placement='top'>
                     <Button
+                      sx={{ borderRadius: '15px', width: '50px', height: '50px' }}
                       onClick={(e) => {
                         e.stopPropagation()
                         setOpenConfirm({
@@ -130,10 +147,19 @@ const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, st
                     >
                       <IconButton
                         backgroundColor='#fe5000'
-                        onClick={() => navigate(`/products/edit/${data.id}`)}
-                        sx={{ width: 32, backgroundColor: '#fe5000', height: 32, borderRadius: 3, p: '8px' }}
+                        onClick={() => setConfirmToDelete(row?.original?.id)}
+                        sx={{
+                          width: 32,
+                          height: 32,
+                          backgroundColor: 'transparent',
+                          borderRadius: 3,
+                          p: '8px',
+                          '&:hover': {
+                            backgroundColor: 'transparent',
+                          },
+                        }}
                       >
-                        <DeleteIcon />
+                        <DeleteIcon color='#fff' />
                       </IconButton>
                       {/* <Delete /> */}
                     </Button>
