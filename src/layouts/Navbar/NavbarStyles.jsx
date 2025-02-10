@@ -1,5 +1,5 @@
 import makeStyles from '@mui/styles/makeStyles'
-import { width } from '@mui/system'
+import { borderRadius, width } from '@mui/system'
 
 const drawerWidth = '296px'
 
@@ -310,6 +310,9 @@ export const navbarStyles = makeStyles((theme) => {
       alignItems: 'center',
       color: '#fff',
       transition: '0.3s',
+      '& img': {
+        borderRadius: '50%',
+      },
     },
     shopname: {
       width: 130,

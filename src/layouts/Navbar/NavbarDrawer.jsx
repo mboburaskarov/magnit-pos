@@ -11,7 +11,7 @@ import isEqual from '../../../utils/isEqual'
 import BackArrowIcon from '../../assets/icons/BackArrow'
 import { useTranslation } from 'react-i18next'
 import { get, size } from 'lodash'
-
+import { useQueryParams } from '../../hooks/useQueryParams'
 function NavbarDrawer({
   classes,
   isOpen,
@@ -26,9 +26,12 @@ function NavbarDrawer({
 }) {
   const { t } = useTranslation()
   const location = useLocation()
+  const { values } = useQueryParams()
+  const isNewSalePage = location?.pathname?.split('new-sale/')[0] == '/sales/'
   const userData = useSelector((state) => state.user)
   const firstName = userData?.fullName?.split(' ')?.[0]
   const lastName = userData?.fullName?.split(' ')?.[1]
+
   return (
     <div id='navbar' className={classes.container}>
       <div className={classes.logo}>
@@ -122,27 +125,29 @@ function NavbarDrawer({
           )}
         </Box>
       </List>
-      <ListItem width={'100% !important'} className={`${classes.currentNavBarUser} drawer_user_avatar`} id='avatar'>
-        <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
-          <Box className={classes.avatarPlaceholder}>
-            <img src={get(userData, 'photo')} />
-          </Box>
-
-          {isOpen && (
-            <Box maxWidth='73%'>
-              <Typography id='user-username' className={classes.username}>
-                {get(userData, 'store.name')}
-              </Typography>
-              <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                {get(userData, 'store.store_code')}
-              </p>
+      {isNewSalePage && (
+        <ListItem width={'100% !important'} className={`${classes.currentNavBarUser} drawer_user_avatar`} id='avatar'>
+          <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
+            <Box className={classes.avatarPlaceholder}>
+              <img src={get(userData, 'photo')} />
             </Box>
-          )}
-        </Box>
-        {/* <Box display={'flex'} alignItems={'center'}>
+
+            {isOpen && (
+              <Box maxWidth='73%'>
+                <Typography id='user-username' className={classes.username}>
+                  {get(userData, 'store.name')}
+                </Typography>
+                <p id='user-shopname' className={`${classes.shopname} shopname`}>
+                  {get(userData, 'store.store_code')}
+                </p>
+              </Box>
+            )}
+          </Box>
+          {/* <Box display={'flex'} alignItems={'center'}>
               <ArrowDown />
             </Box> */}
-      </ListItem>
+        </ListItem>
+      )}
     </div>
   )
 }
