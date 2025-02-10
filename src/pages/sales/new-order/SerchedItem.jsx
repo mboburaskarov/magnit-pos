@@ -117,13 +117,7 @@ export default function SerchedItem({
           </Box>
           <Box flex='0 0 22%' pr={2} textAlign='right'>
             <Typography whiteSpace={'pre'} className={classes.itemQuantity}>
-              {product?.quantity > 0 ? (
-                <span>Miqdor: {item?.quantity}</span>
-              ) : (
-                <Typography color={'orange.500'} fontWeight={'500'} fontSize={'14px'} lineHeight={'20px'}>
-                  Sotuvda yo'q
-                </Typography>
-              )}
+              <span>Miqdor: {item?.quantity}</span>
             </Typography>
             <Typography whiteSpace={'pre'} className={classes.itemPrice}>
               {thousandDivider(product?.retail_price, 'сум')}{' '}
