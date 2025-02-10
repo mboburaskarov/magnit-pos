@@ -10,7 +10,7 @@ import NavItemMini from './NavItemMini'
 import isEqual from '../../../utils/isEqual'
 import BackArrowIcon from '../../assets/icons/BackArrow'
 import { useTranslation } from 'react-i18next'
-import { size } from 'lodash'
+import { get, size } from 'lodash'
 
 function NavbarDrawer({
   classes,
@@ -122,6 +122,27 @@ function NavbarDrawer({
           )}
         </Box>
       </List>
+      <ListItem width={'100% !important'} className={`${classes.currentNavBarUser} drawer_user_avatar`} id='avatar'>
+        <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
+          <Box className={classes.avatarPlaceholder}>
+            <img src={get(userData, 'photo')} />
+          </Box>
+
+          {isOpen && (
+            <Box maxWidth='73%'>
+              <Typography id='user-username' className={classes.username}>
+                {get(userData, 'store.name')}
+              </Typography>
+              <p id='user-shopname' className={`${classes.shopname} shopname`}>
+                {get(userData, 'store.store_code')}
+              </p>
+            </Box>
+          )}
+        </Box>
+        {/* <Box display={'flex'} alignItems={'center'}>
+              <ArrowDown />
+            </Box> */}
+      </ListItem>
     </div>
   )
 }

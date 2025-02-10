@@ -166,7 +166,7 @@ export default function AllSalesPage() {
               </Button>
             </Box>
             <Box width={'20px'} />
-            <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('DD.MM.YYYY') }} id='accounting-report-date-range' />
+            <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box>

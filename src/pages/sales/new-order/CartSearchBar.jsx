@@ -148,6 +148,20 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
     },
   },
+  bonus_amount: {
+    width: 130,
+    margin: 0,
+    lineHeight: '19px',
+    fontWeight: 600,
+    fontFamily: "'Gilroy', sans-serif",
+    color: theme.palette.orange[500],
+    fontSize: 16,
+    transition: 'all .2s',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    textAlign: 'left',
+  },
   shopname: {
     margin: 0,
     lineHeight: '20px',
@@ -300,8 +314,8 @@ function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setI
                 <Typography id='user-username' className={classes.username}>
                   {get(userData, 'first_name')}
                 </Typography>
-                <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                  {get(userData, 'store.name')}
+                <p id='user-shopname' className={`${classes.bonus_amount} `}>
+                  +2 500 so'm
                 </p>
               </Box>
             </Box>

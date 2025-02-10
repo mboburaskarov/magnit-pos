@@ -1,5 +1,6 @@
 import createStyles from '@mui/styles/createStyles'
 import { makeStyles } from '@mui/styles'
+import { bgcolor } from '@mui/system'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -254,6 +255,9 @@ const useStyles = makeStyles((theme) =>
       },
       '.ag-row-hover': {
         color: 'red !important',
+      },
+      '.ag-row:hover': {
+        backgroundColor: `${theme.palette.orange[150]} !important`,
       },
 
       '.ag-theme-alpine .ag-header-cell:hover': {

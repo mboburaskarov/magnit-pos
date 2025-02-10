@@ -133,6 +133,7 @@
   "buttons.download": "Скачать",
   "buttons.download_with_errors": "Скачать файл с ошибками",
   "buttons.edit": "Редактировать",
+  "table_columns.amount": "Кол-во продуктов",
   "buttons.edit_attribute": "Редактирование атрибута",
   "buttons.exit": "Выйти",
   "buttons.free": "Бесплатно",

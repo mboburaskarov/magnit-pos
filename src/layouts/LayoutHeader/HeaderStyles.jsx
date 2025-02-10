@@ -265,7 +265,7 @@ export const headerStyles = makeStyles((theme) => {
       marginRight: 12,
       fontWeight: 600,
       fontSize: 16,
-      backgroundColor: theme.palette.green[600],
+      backgroundColor: theme.palette.orange[600],
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
@@ -361,7 +361,7 @@ export const headerStyles = makeStyles((theme) => {
     hr: {
       height: 2,
 
-      border: `1px dashed ${theme.palette.green[200]}`,
+      border: `1px dashed ${theme.palette.orange[200]}`,
     },
     activeChild: {
       transform: 'translateX(0) !important',
@@ -396,7 +396,7 @@ export const headerStyles = makeStyles((theme) => {
       marginRight: 12,
       fontWeight: 600,
       fontSize: 16,
-      backgroundColor: theme.palette.green[600],
+      backgroundColor: theme.palette.orange[600],
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',

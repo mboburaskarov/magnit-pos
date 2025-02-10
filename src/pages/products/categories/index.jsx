@@ -68,48 +68,12 @@ export default function CatalogManagement() {
     refetch: categoriesRefetch,
     isLoading: categoriesLoading,
     isFetching: categoriesFetching,
-  } = useQuery(['categories', debouncedSearchTerm], () =>
+  } = useQuery(['categories'], () =>
     requests.getAllCategories({
       limit: queryParams?.values?.limit || 10,
       offset: queryParams?.values?.page || 1,
-      search: debouncedSearchTerm,
+      // search: debouncedSearchTerm,
     })
-  )
-
-  const {
-    data: attributes,
-    refetch: attributesRefetch,
-    isLoading: attributesLoading,
-    isFetching: attributesFetching,
-  } = useQuery(
-    ['attributes', debouncedSearchTerm],
-    () =>
-      requests.attribute.getAll({
-        limit: queryParams?.values?.limit || 10,
-        page: queryParams?.values?.page || 1,
-        search: debouncedSearchTerm,
-      }),
-    {
-      enabled: type === 'attributes',
-    }
-  )
-  const {
-    data: characteristics,
-    refetch: characteristicsRefetch,
-    isLoading: characteristicsLoading,
-    isFetching: characteristicsFetching,
-  } = useQuery(
-    ['characteristics', debouncedSearchTerm],
-    () =>
-      requests.productCharacteristic.getAll({
-        limit: queryParams?.values?.limit || 10,
-        page: queryParams?.values?.page || 1,
-        search: debouncedSearchTerm,
-        is_deleted: status === 'deleted',
-      }),
-    {
-      enabled: type === 'characteristics',
-    }
   )
 
   const { mutate: deleteCategory, isLoading: isDeletingCat } = useWebsocketMutation(requests.category?.delete, {
@@ -140,7 +104,7 @@ export default function CatalogManagement() {
       success('menu.products.catalog.management.del_char_success_toast')
       dispatch(removeCustomColumn(openConfirm?.id))
       dispatch(asyncRemoveCustomColumns(openConfirm?.id))
-      characteristicsRefetch()
+      // characteristicsRefetch()
       setOpenConfirm(false)
     },
     onWebsocketError: () => {
@@ -151,7 +115,7 @@ export default function CatalogManagement() {
   const { mutate: recoverCharacteristics, isLoading: isRecoveringChar } = useWebsocketMutation(requests.productCharacteristic?.recover, {
     onWebsocketSuccess: () => {
       success('menu.products.catalog.management.recover_char_success_toast')
-      characteristicsRefetch()
+      // characteristicsRefetch()
       setOpenConfirm(false)
     },
     onWebsocketError: () => {
@@ -164,38 +128,16 @@ export default function CatalogManagement() {
     if (type === 'categories') {
       categoriesRefetch()
     }
-    if (type === 'attributes') {
-      attributesRefetch()
-    }
-    if (type === 'characteristics') {
-      characteristicsRefetch()
-    }
   }
 
   useEffect(() => {
-    const totalCount =
-      type === 'attributes'
-        ? attributes?.data?.count
-        : type === 'characteristics'
-        ? status === 'deleted'
-          ? characteristics?.data?.deleted_count
-          : characteristics?.data?.active_count
-        : categories?.data?.count
+    const totalCount = categories?.data?.count
     const pages = Math.ceil(totalCount / queryParams?.values?.limit)
 
     setPageCount(pages || 1)
 
-    refetchAll()
-  }, [
-    categories?.data,
-    queryParams?.values?.search,
-    queryParams?.values?.limit,
-    queryParams?.values?.page,
-    characteristics?.data,
-    attributes?.data,
-    status,
-    type,
-  ])
+    // refetchAll()
+  }, [categories?.data, queryParams?.values?.search, queryParams?.values?.limit, queryParams?.values?.page])
 
   useEffect(() => {
     const searchParams = qs.stringify(
@@ -224,53 +166,19 @@ export default function CatalogManagement() {
 
   const columns = columnsCategories
 
-  const confirmDialogTitle =
-    openConfirm?.type === 'categories'
-      ? openConfirm?.isDelete
-        ? t('alerts.delete_category')
-        : t('alerts.restore_category')
-      : openConfirm?.isDelete
-      ? t('alerts.delete_characteristic')
-      : t('alerts.restore_characteristic')
+  function renameSubRows(obj) {
+    if (obj.sub_category || obj.sub_category === 'null') {
+      obj.subRows = obj.sub_category
+      delete obj.sub_category
 
-  const confirmDialogDesc =
-    openConfirm?.type === 'categories'
-      ? openConfirm?.isDelete
-        ? t('alerts.warning_delete_category')
-        : t('alerts.warning_restore_category')
-      : openConfirm?.isDelete
-      ? t('alerts.warning_delete_characteristic')
-      : t('alerts.warning_restore_characteristic')
-
-  const descWidth = openConfirm?.type === 'categories' ? (openConfirm?.isDelete ? 522 : 410) : openConfirm?.isDelete ? 432 : 458
-
-  const ConfirmDialogFunction = () => {
-    if (openConfirm?.type === 'categories') {
-      if (openConfirm?.isDelete) {
-        deleteCategory(openConfirm?.id)
-      } else {
-        recoverCategory(openConfirm?.id)
-      }
+      obj.subRows.forEach(renameSubRows) // Recurse through sub_category if exists
     }
-    if (openConfirm?.type === 'characteristics') {
-      if (openConfirm?.isDelete) {
-        deleteCharacteristics(openConfirm?.id)
-      } else {
-        recoverCharacteristics(openConfirm?.id)
-      }
-    }
+    return obj
   }
 
-  const tableData = categories?.data?.data?.data
+  const tableData = categories?.data?.data?.data.map((e) => renameSubRows(e))
 
-  const tableLoading =
-    type === 'attributes'
-      ? attributesLoading || attributesFetching
-      : type === 'characteristics'
-      ? characteristicsLoading || characteristicsFetching
-      : categoriesLoading || categoriesFetching
-
-  const confirmLoading = isDeletingCat || isDeletingChar || isRecoveringCat || isRecoveringChar
+  const tableLoading = categoriesLoading || categoriesFetching
 
   return (
     <>
@@ -335,14 +243,9 @@ export default function CatalogManagement() {
       {/* <CategoriesProductViewDrawer
         openDrawer={categoryDrawer}
         closeDrawer={() => setCategoryDrawer(null)}
-      />
-      <CreateEditCategories
-        refetch={refetchAll}
-        open={createEdit?.type === 'categories'}
-        editId={createEdit?.id}
-        closeDrawer={closeDrawer}
-      />
-      <CreateEditAttributes
+      /> */}
+      {/* <CreateEditCategories refetch={refetchAll} open={createEdit?.type === 'categories'} editId={createEdit?.id} closeDrawer={closeDrawer} /> */}
+      {/* <CreateEditAttributes
         refetch={refetchAll}
         open={createEdit?.type === 'attributes'}
         editId={createEdit?.id}

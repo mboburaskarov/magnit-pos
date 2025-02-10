@@ -139,7 +139,6 @@ export default function FileSystemNavigator({
     setPageCount(pages ?? 1)
   }, [categories?.data?.data])
   function renameSubRows(obj) {
-    // debugger
     if (obj.sub_category || obj.sub_category === 'null') {
       obj.subRows = obj.sub_category
       delete obj.sub_category

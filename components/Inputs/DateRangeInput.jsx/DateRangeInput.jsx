@@ -156,7 +156,7 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
               '& > span': { lineHeight: '19px', color: 'gray.600', fontWeight: 600, ml: 1, mr: '2px !important' },
             }}
           >
-            <p>{customDateRangeSelected || 'Vaqt tanlang'}</p>
+            <p>{customDateRangeSelected || 'Выберите дату'}</p>
           </Box>
         }
         popperContentProps={{

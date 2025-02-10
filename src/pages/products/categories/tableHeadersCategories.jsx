@@ -1,9 +1,12 @@
 import Highlighter from 'react-highlight-words'
-import { Box, Button, Tooltip, Typography } from '@mui/material'
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
 // import Button from 'components/Buttons/Button'
 // import Tooltip from 'components/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import DeleteMiddleIcon from '../../../assets/icons/DeleteMiddleIcon'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import EditIcon from '../../../assets/icons/EditIcon'
 
 const list = [
   { accessor: 'name', is_active: true },
@@ -105,9 +108,11 @@ const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, st
                         e.stopPropagation()
                         setCreateEdit({ type, id: row?.original?.id })
                       }}
-                      square
-                      edit
-                    />
+                    >
+                      <IconButton onClick={() => navigate(`/products/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                        <EditIcon />
+                      </IconButton>
+                    </Button>
                   </Tooltip>
                   <Box width={16} />
                   <Tooltip title={t('buttons.delete')} placement='top'>
@@ -122,7 +127,16 @@ const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, st
                       }}
                       square
                       trash
-                    />
+                    >
+                      <IconButton
+                        backgroundColor='#fe5000'
+                        onClick={() => navigate(`/products/edit/${data.id}`)}
+                        sx={{ width: 32, backgroundColor: '#fe5000', height: 32, borderRadius: 3, p: '8px' }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                      {/* <Delete /> */}
+                    </Button>
                   </Tooltip>
                 </>
               )}

@@ -1,4 +1,5 @@
 import makeStyles from '@mui/styles/makeStyles'
+import { width } from '@mui/system'
 
 const drawerWidth = '296px'
 
@@ -254,7 +255,30 @@ export const navbarStyles = makeStyles((theme) => {
       flexGrow: 1,
       padding: theme.spacing(3),
     },
+    currentNavBarUser: {
+      backgroundColor: '#aaa3',
+      cursor: 'pointer',
+      width: ({ isOpen }) => (isOpen ? '100%' : '55px'),
+      margin: ({ isOpen }) => (isOpen ? 'auto' : 'auto 20px 0'),
+      // marginTop: 'auto !important',
+      padding: ({ isOpen }) => (isOpen ? '12px 16px !important' : '12px !important'),
+      borderRadius: '32px !important',
+      '& img': {
+        width: '35px',
+      },
+      '&:hover': {
+        backgroundColor: theme.palette.orange[100],
+        '& p': {
+          color: theme.palette.orange[500],
+        },
+        '& .shopname': {
+          color: theme.palette.gray[600],
+        },
+      },
+      marginBottom: '24px !important',
+    },
     currentUser: {
+      backgroundColor: '#aaa3',
       cursor: 'pointer',
       width: 'calc(100% - 32px) !important',
       marginTop: 'auto !important',
@@ -262,9 +286,9 @@ export const navbarStyles = makeStyles((theme) => {
       padding: '12px 16px !important',
       borderRadius: '32px !important',
       '&:hover': {
-        backgroundColor: theme.palette.green[200],
+        backgroundColor: theme.palette.orange[100],
         '& p': {
-          color: theme.palette.green[500],
+          color: theme.palette.orange[500],
         },
         '& .shopname': {
           color: theme.palette.gray[600],
@@ -280,7 +304,7 @@ export const navbarStyles = makeStyles((theme) => {
       marginRight: 12,
       fontWeight: 600,
       fontSize: 16,
-      backgroundColor: theme.palette.green[600],
+      backgroundColor: theme.palette.orange[600],
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
@@ -301,6 +325,7 @@ export const navbarStyles = makeStyles((theme) => {
       textOverflow: 'ellipsis',
       textAlign: 'left',
     },
+
     username: {
       width: '100%',
       whiteSpace: 'nowrap',
@@ -407,7 +432,7 @@ export const navbarStyles = makeStyles((theme) => {
       marginRight: 12,
       fontWeight: 600,
       fontSize: 16,
-      backgroundColor: theme.palette.green[600],
+      backgroundColor: theme.palette.orange[600],
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
