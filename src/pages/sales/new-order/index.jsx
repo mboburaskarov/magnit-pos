@@ -374,7 +374,7 @@ function NewSale() {
       if (isNaN(inputDiscount)) {
         const defaultType = get(head(cartList), 'discount_type', 'percent')
         setDiscountType(defaultType?.length > 0 ? defaultType : 'percent')
-        setInputDiscount(cartList[0]?.discount_amount)
+        setInputDiscount(get(head(cartList), 'discount_amount', 0))
       }
       cartList.map((item) => {
         method.setValue(`unit_quantity_${item.id}`, get(item, 'unit_quantity'))
@@ -472,6 +472,7 @@ function NewSale() {
   // Debounce logic: Apply a delay before updating the debounced value
   useEffect(() => {
     const handler = setTimeout(() => {
+      setInputDiscount(debouncedDiscount)
       changeDiscount(debouncedDiscount)
     }, 200)
 
