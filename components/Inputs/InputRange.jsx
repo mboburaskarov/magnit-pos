@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Box, TextField, Typography } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
-import { NumberFormatBase } from 'react-number-format'
+// import { NumberFormatBase } from 'react-number-format'
+import { NumericFormat } from 'react-number-format'
 import Label from '../Label'
 import { useTheme } from '@mui/styles'
 
@@ -16,7 +17,7 @@ const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandle
         width: '100%',
       }}
     >
-      <NumberFormatBase
+      <NumericFormat
         name={name}
         id={id}
         value={value}

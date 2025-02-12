@@ -372,7 +372,8 @@ function NewSale() {
 
     if (cartList?.length > 0) {
       if (isNaN(inputDiscount)) {
-        setDiscountType(get(head(cartList), 'discount_type', 'percent'))
+        const defaultType = get(head(cartList), 'discount_type', 'percent')
+        setDiscountType(defaultType?.length > 0 ? defaultType : 'percent')
         setInputDiscount(cartList[0]?.discount_value)
       }
       cartList.map((item) => {
@@ -485,6 +486,7 @@ function NewSale() {
         <Box width={'70%'} position={'relative'} padding={'20px'}>
           <Box position={'relative'}>
             <CartSearchBar
+              discount={{ type: discount, amount: inputDiscount }}
               searchRef={searchRef}
               setIsOpenChangeShift={setIsOpenChangeShift}
               refetchcartItemsList={refetchcartItemsList}
@@ -506,7 +508,7 @@ function NewSale() {
               }}
             >
               <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
-                {t('page.new_sale.label')} ({cartItemsList?.data?.data?.item_count})
+                {t('page.new_sale.label')} ({get(cartItemsList, 'data.data.item_count', 0)})
               </Typography>
               {get(cartItemsList, 'data.data.data', 0)?.length ? (
                 <Box display={'flex'} sx={{ cursor: 'pointer' }} alignItems={'center'} onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}>
@@ -835,6 +837,7 @@ function NewSale() {
         cartItemsList={get(cartItemsList, 'data.data')}
         printContainer={printContainer}
         isOrderDrower={isOrderDrower}
+        setInputDiscount={setInputDiscount}
         cashBoxDetails={cashBoxDetails}
         customerId={customerId}
         refetchcartItemsList={refetchcartItemsList}

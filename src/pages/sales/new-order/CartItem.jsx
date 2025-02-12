@@ -238,49 +238,52 @@ const CartItem = ({ index, packRef = () => {}, unitRef, onKeyDown, refetchcartIt
                 },
               }}
             >
-              <InputQuantity
-                id={`quantity_${item?.id}`}
-                name={`quantity_${item?.id}`}
-                adornmentPosition='end'
-                fullWidth
-                adornmentClassName={cls.adornment}
-                max={100}
-                adornment='пч'
-                inputRef={(e) => packRef(e, index)}
-                onKeyDown={onKeyDown}
-                defaultValue={get(item, 'quantity', 0)}
-                type='number'
-                disabled={false}
-                onFocus={({ target }) => {
-                  if (Number(get(target, 'value')) == 0) {
-                    method.setValue(`quantity_${item?.id}`, '')
-                  }
-                }}
-                onBlur={({ target }) => {
-                  if (Number(get(target, 'value')) == '') {
-                    method.setValue(`quantity_${item?.id}`, '0')
-                  }
-                  if (get(item, 'quantity') == Number(get(target, 'value'))) {
-                    return
-                  }
-                  if (method.getValues(`unit_quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
-                    method.setValue(`quantity_${item?.id}`, get(target, 'value'))
-                  } else {
-                    changeCartItemQuantity({
-                      id: get(item, 'id'),
-                      data: {
-                        quantity: Number(get(target, 'value')),
-                        store_product_id: get(item, 'store_product_id'),
+              {get(item, 'unit_per_pack') >= 0 && (
+                <>
+                  <InputQuantity
+                    id={`quantity_${item?.id}`}
+                    name={`quantity_${item?.id}`}
+                    adornmentPosition='end'
+                    fullWidth
+                    adornmentClassName={cls.adornment}
+                    max={100}
+                    adornment='пч'
+                    inputRef={(e) => packRef(e, index)}
+                    onKeyDown={onKeyDown}
+                    defaultValue={get(item, 'quantity', 0)}
+                    type='number'
+                    disabled={false}
+                    onFocus={({ target }) => {
+                      if (Number(get(target, 'value')) == 0) {
+                        method.setValue(`quantity_${item?.id}`, '')
+                      }
+                    }}
+                    onBlur={({ target }) => {
+                      if (Number(get(target, 'value')) == '') {
+                        method.setValue(`quantity_${item?.id}`, '0')
+                      }
+                      if (get(item, 'quantity') == Number(get(target, 'value'))) {
+                        return
+                      }
+                      if (method.getValues(`unit_quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
+                        method.setValue(`quantity_${item?.id}`, get(target, 'value'))
+                      } else {
+                        changeCartItemQuantity({
+                          id: get(item, 'id'),
+                          data: {
+                            quantity: Number(get(target, 'value')),
+                            store_product_id: get(item, 'store_product_id'),
 
-                        unit_quantity: Number(method.getValues(`unit_quantity_${item?.id}`)),
-                      },
-                    })
-                  }
-                }}
-              />
-              <Box width={'5px'} />
-
-              {get(item, 'unit_per_pack') > 0 ? (
+                            unit_quantity: Number(method.getValues(`unit_quantity_${item?.id}`)),
+                          },
+                        })
+                      }
+                    }}
+                  />
+                  <Box width={'5px'} />
+                </>
+              )}
+              {get(item, 'unit_per_pack') == -1 || get(item, 'unit_per_pack') == 0 ? (
                 <Box
                   sx={{
                     '& .MuiInputBase-root': {

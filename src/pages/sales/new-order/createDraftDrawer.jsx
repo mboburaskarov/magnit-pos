@@ -135,7 +135,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
               <Box height={'24px'} />
               <OutLineTextField
                 multiline
-                type='number'
+                // type='number'
                 fullWidth
                 borderRadius={'20px'}
                 name='description'

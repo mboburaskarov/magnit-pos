@@ -15,6 +15,7 @@ import thousandDivider from '../../../../utils/thousandDivider'
 export default function SerchedItem({
   index,
   handleAddProduct,
+  discount,
   itemRef,
   fakeIndexForCheckSearch,
   item,
@@ -31,7 +32,7 @@ export default function SerchedItem({
   const { id } = useParams()
   const { mutate: getAllSimilarStoreProducts } = useMutation(requests.getAllSimilarStoreProducts, {
     onSuccess: ({ data }) => {
-      if (data?.length) {
+      if (data?.data?.length) {
         setOpenSimilar(true)
         setSimilarProductList(data)
       }
@@ -41,14 +42,15 @@ export default function SerchedItem({
       console.log('err', err)
     },
   })
+
   return (
     <Box
       id={item?.id}
       className={classes.searchItem}
       onClick={() => {
         handleAddProduct({
-          discount_type: 'percent',
-          discount_value: 0,
+          discount_type: get(discount, 'type', 'percent'),
+          discount_value: get(discount, 'amount', 0),
           employee_id: userData.id,
           sale_id: id,
           store_product_id: product?.id,
@@ -106,9 +108,9 @@ export default function SerchedItem({
                   className={classes.itemBarcode}
                   textToHighlight={product?.barcode}
                 />
-                <Typography color={'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
+                {/* <Typography color={'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
                   / {get(product, 'quantity ', 0)}
-                </Typography>
+                </Typography> */}
                 <Typography color={get(product, 'expire_day', 0) < 0 ? 'red.500' : 'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
                   / {get(product, 'expire_day', 0)} kun
                 </Typography>
@@ -134,7 +136,7 @@ export default function SerchedItem({
               borderRadius={'50%'}
               bgcolor={'#F8F8F9'}
               onClick={(e) => {
-                e.stopPropagation(), !openSimilar ? getAllSimilarStoreProducts(get(product, 'id')) : setOpenSimilar(false)
+                e.stopPropagation(), !openSimilar ? getAllSimilarStoreProducts(get(product, 'product_id')) : setOpenSimilar(false)
               }}
             >
               {!openSimilar ? <ZoomTextIcon /> : <CloseIcon color='#000' />}
@@ -154,7 +156,7 @@ export default function SerchedItem({
       <Box sx={{ paddingLeft: '40px', width: '100%' }}>
         {openSimilar &&
           get(similarProductList, 'data', []).map((item) => (
-            <SerchedItem classes={classes} item={item} searchTerm={searchTerm} product={get(item, 'product')} key={item?.id} />
+            <SerchedItem classes={classes} item={item} searchTerm={searchTerm} product={item} key={item?.id} />
           ))}
       </Box>
     </Box>

@@ -250,6 +250,7 @@ export default function OrderDrawer({
   setIsOrderDrower,
   isOrderDrower,
   closeDrawer,
+  setInputDiscount,
   printContainer,
   cartItemsList,
   customerId,
@@ -294,11 +295,22 @@ export default function OrderDrawer({
     }
   }, [paymentsList, cartItemsList])
 
+  const { mutate: saleCreate, isLoading: issaleCreate } = useMutation(requests.saleCreate, {
+    onSuccess: ({ data }) => {
+      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+      window.location.reload()
+    },
+    onError: (err) => {
+      error('Ошибка при создании продажи')
+      console.log('err', err)
+    },
+  })
   const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
   const { mutate: finishSaleWithoutAppPaymentType, isLoading: isfinishSaleWithoutAppPaymentType } = useMutation(requests.finishSaleWithoutAppPaymentType, {
     onSuccess: ({ data }) => {
       // refetchcartItemsList()
       ///
+      setInputDiscount(NaN)
       navigate(`/sales/new-sale/${get(data, 'data', '/')}`)
       setIsOrderDrower(false)
       handlePrint()
@@ -310,7 +322,7 @@ export default function OrderDrawer({
       console.log(err)
 
       if (get(err, 'response.status') == 409) {
-        error('Эта продажа уже закрыта.')
+        saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), error('Эта sпродажа уже закрыта.')
         return
       }
       error('Ошибка при Продажа завершена')
@@ -685,7 +697,13 @@ export default function OrderDrawer({
                 </Box>
               </Box>
             </Box>
-            <LoadingButton sx={{ minHeight: '48px !important ', display: 'flex' }} variant='contained' disabled={maxAmount > 0} onClick={() => handleFinish()}>
+            <LoadingButton
+              sx={{ minHeight: '48px !important ', display: 'flex' }}
+              variant='contained'
+              loading={isfinishSaleWithoutAppPaymentType}
+              disabled={maxAmount > 0}
+              onClick={() => handleFinish()}
+            >
               Оплатить
               <Box
                 sx={{

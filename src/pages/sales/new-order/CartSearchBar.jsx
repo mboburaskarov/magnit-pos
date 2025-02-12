@@ -186,7 +186,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
 }))
-function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setIsOpenChangeShift, cashBoxDetails, showOverlay, setShowOverlay }) {
+function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddProduct, setIsOpenChangeShift, cashBoxDetails, showOverlay, setShowOverlay }) {
   const [searchTearm, setSearchTerm] = useState('')
   const navigate = useNavigate()
   const searchItemRef = useRef([])
@@ -201,6 +201,12 @@ function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setI
   const { data: productsList } = useQuery(['storeProductsList', productsListFilter], () =>
     requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter)
   )
+  const { data: sellerBonusInOneSale } = useQuery(
+    ['sellerBonusInOneSale'],
+    () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
+    { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
+  )
+
   const methods = useForm()
   const classes = useStyles()
   const productsData = productsList?.data?.data
@@ -270,7 +276,13 @@ function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setI
   useHotkeys(
     'Enter',
     (event) =>
-      !['client-search-bar', 'product-search'].includes(document.activeElement.id) && getStoreProductByBarcode({ id: document.activeElement.id, sale_id: id }),
+      !['client-search-bar', 'product-search'].includes(document.activeElement.id) &&
+      getStoreProductByBarcode({
+        discount_type: get(discount, 'type', 'percent'),
+        discount_value: get(discount, 'amount', 0),
+        id: document.activeElement.id,
+        sale_id: id,
+      }),
     {
       enableOnFormTags: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
@@ -299,6 +311,8 @@ function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setI
             onKeyDown={({ key }) => {
               key == 'Enter' &&
                 getStoreProductByBarcode({
+                  discount_type: get(discount, 'type', 'percent'),
+                  discount_value: get(discount, 'amount', 0),
                   sale_id: id,
                   id: productsData?.[0]?.id,
                 })
@@ -315,7 +329,7 @@ function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setI
                   {get(userData, 'first_name')}
                 </Typography>
                 <p id='user-shopname' className={`${classes.bonus_amount} `}>
-                  +2 500 so'm
+                  +{get(sellerBonusInOneSale, 'data.data.bonus', 0)} so'm
                 </p>
               </Box>
             </Box>
@@ -381,6 +395,7 @@ function CartSearchBar({ refetchcartItemsList, searchRef, handleAddProduct, setI
               productsData?.map((product, index) => (
                 <SerchedItem
                   isChild={false}
+                  discount={discount}
                   index={index}
                   handleAddProduct={handleAddProduct}
                   setSearchTerm={setSearchTerm}

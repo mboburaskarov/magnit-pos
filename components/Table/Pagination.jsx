@@ -102,7 +102,7 @@ export default function Pagination({ count, handleChangePage, page, pageQuery })
           <PaginationItem id={`pageCount-${pageValue}`} {...props} />
         )
       }
-      page={pageValue}
+      page={page}
       siblingCount={1}
       boundaryCount={1}
       className={classes.root}

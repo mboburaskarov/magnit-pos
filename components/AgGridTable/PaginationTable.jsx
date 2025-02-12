@@ -522,7 +522,7 @@ function PaginationTable({
     // }
   }, [])
 
-  useDidUpdate(() => {
+  useEffect(() => {
     const baseUrl = navigateUrl || location.pathname
     if (baseUrl && !noRedirect) {
       const pageParams = qs.stringify(
@@ -799,6 +799,7 @@ function PaginationTable({
                   eventMessage={eventMessages?.[0]}
                 />
               )}
+
               <RowFilterButton eventMessage={eventMessages?.[1]} offsetSize={pageSize} setOffsetSize={setPageSize} />
             </Box>
           </div>

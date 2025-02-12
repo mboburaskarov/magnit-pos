@@ -91,7 +91,7 @@ export const requests = {
 
   // getAllVendors: (filter) => request.get(`v1/employee/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllUnits: (filter) => request.get(`v1/unit-types/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-
+  getSellerBonusInOneSale: (filter) => request.get(`v1/employee/bonus${qs.stringify(filter, { addQueryPrefix: true })}`),
   //products
   getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllProductsStatusCount: (filter) => request.get(`v1/product/total-status-count${qs.stringify(filter, { addQueryPrefix: true })}`),
