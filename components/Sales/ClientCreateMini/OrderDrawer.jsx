@@ -21,6 +21,7 @@ import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import QrScanIcon from '../../../src/assets/icons/QrScanIcon'
 import { useHotkeys } from 'react-hotkeys-hook'
 import thousandDivider from '../../../utils/thousandDivider'
+import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -382,7 +383,7 @@ export default function OrderDrawer({
   )
 
   const documentName = useRef('Pharma CHEQUE')
-
+  const userData = useSelector((state) => state.user)
   const reactToPrintContent = useCallback(() => printContainer.current, [])
 
   const handlePrint = useReactToPrint({
@@ -407,6 +408,7 @@ export default function OrderDrawer({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
       payment_types: paymentTypes,
       sale_id: id,
+      store_id: get(userData, 'store.id'),
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
     })
