@@ -50,7 +50,7 @@ export default function SerchedItem({
       onClick={() => {
         handleAddProduct({
           discount_type: get(discount, 'type', 'percent'),
-          discount_value: get(discount, 'amount', 0),
+          discount_value: Number(get(discount, 'amount', 0)),
           employee_id: userData.id,
           sale_id: id,
           store_product_id: product?.id,

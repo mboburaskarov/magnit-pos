@@ -312,7 +312,7 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
               key == 'Enter' &&
                 getStoreProductByBarcode({
                   discount_type: get(discount, 'type', 'percent'),
-                  discount_value: get(discount, 'amount', 0),
+                  discount_value: Number(get(discount, 'amount', 0)),
                   sale_id: id,
                   id: productsData?.[0]?.id,
                 })
