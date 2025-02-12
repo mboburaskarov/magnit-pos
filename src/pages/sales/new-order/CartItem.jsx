@@ -247,7 +247,7 @@ const CartItem = ({ index, packRef = () => {}, unitRef, onKeyDown, refetchcartIt
                     fullWidth
                     adornmentClassName={cls.adornment}
                     max={100}
-                    adornment='пч'
+                    adornment={item?.short_name}
                     inputRef={(e) => packRef(e, index)}
                     onKeyDown={onKeyDown}
                     defaultValue={get(item, 'quantity', 0)}
@@ -283,7 +283,7 @@ const CartItem = ({ index, packRef = () => {}, unitRef, onKeyDown, refetchcartIt
                   <Box width={'5px'} />
                 </>
               )}
-              {get(item, 'unit_per_pack') == -1 || get(item, 'unit_per_pack') == 0 ? (
+              {get(item, 'unit_per_pack') > 0 ? (
                 <Box
                   sx={{
                     '& .MuiInputBase-root': {

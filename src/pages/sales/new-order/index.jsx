@@ -374,7 +374,7 @@ function NewSale() {
       if (isNaN(inputDiscount)) {
         const defaultType = get(head(cartList), 'discount_type', 'percent')
         setDiscountType(defaultType?.length > 0 ? defaultType : 'percent')
-        setInputDiscount(cartList[0]?.discount_value)
+        setInputDiscount(cartList[0]?.discount_amount)
       }
       cartList.map((item) => {
         method.setValue(`unit_quantity_${item.id}`, get(item, 'unit_quantity'))
