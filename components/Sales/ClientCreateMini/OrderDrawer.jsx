@@ -440,6 +440,7 @@ export default function OrderDrawer({
     click: 'F5',
     uzum: 'F6',
     payme: 'F7',
+    pay: 'F12',
   }
 
   const getPaymentTypeHotKeyLabel = (name) => paymentHotKeys[name?.toLowerCase().trim()] || 'no'

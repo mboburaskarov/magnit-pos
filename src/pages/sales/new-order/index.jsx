@@ -440,6 +440,7 @@ function NewSale() {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
   useHotkeys('F10', () => setIsOrderDrower(true), {
+    enableOnFormTags: true,
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
   useHotkeys('x', () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`), {
@@ -696,7 +697,6 @@ function NewSale() {
           <Box display={'flex'} alignItems={'center'}>
             <OutLineTextFieldThousand
               setValue={(e) => changeDiscountDebounce(e)}
-              required
               value={inputDiscount}
               type={'number'}
               fullWidth

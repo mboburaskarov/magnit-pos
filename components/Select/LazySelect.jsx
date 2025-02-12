@@ -14,6 +14,7 @@ import DeleteIconBig from '../../src/assets/icons/DeleteIconBig'
 import LoadingBlock from '../LoadingBlock'
 import Label from '../Label'
 import { get } from 'lodash'
+import { t } from 'i18next'
 
 const SingleValue = ({ children, selectProps, ...props }) => (
   <components.SingleValue selectProps={selectProps} {...props}>
@@ -189,7 +190,7 @@ function LazySelect({
           isSearchable={isSearchable}
           placeholder={placeholder}
           noOptionsMessage={() => 'no options'}
-          formatCreateLabel={(inputValue) => 'components.add_inputValue ' + inputValue}
+          formatCreateLabel={(inputValue) => t('components.add_inputValue', { inputValue })}
           onChange={(val) => onChange(val)}
           value={value}
           isDisabled={disabled}
@@ -249,7 +250,7 @@ function LazySelect({
                 formatCreateLabel={(inputValue) => (
                   <>
                     <FontAwesomeIcon icon={faPlusCircle} color={'#119676'} />
-                    <span style={{ marginLeft: 8 }}>{'components.add_inputValue ' + inputValue}</span>
+                    <span style={{ marginLeft: 8 }}>{t('components.add_inputValue', { inputValue })}</span>
                   </>
                 )}
                 noOptionsMessage={() => 'no_options'}
@@ -288,7 +289,7 @@ function LazySelect({
                 filterOption={filterOption}
                 noOptionsMessage={() => 'no_options'}
                 isMulti={isMulti}
-                formatCreateLabel={(inputValue) => 'components.add_inputValue ' + inputValue}
+                formatCreateLabel={(inputValue) => t('components.add_inputValue', { inputValue })}
                 onChange={(val) => {
                   if (isMulti) {
                     onChange(val.map((el) => ({ id: el?.id, ...el })))

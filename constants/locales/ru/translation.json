@@ -101,7 +101,7 @@
   "menu.finance.categories.new": "Новая категория",
   "alerts.enter_category_data": "Введите данные категории",
   "placeholders.enter_category_name": "Введите название категории",
-
+  "components.add_inputValue": "Добавить \"{{inputValue}}\"",
   "menu.clients.new_client": "Новый клиент",
   "menu.clients.new.date_of_birth": "День рождения",
   "menu.clients.new.MM": "ММ",
