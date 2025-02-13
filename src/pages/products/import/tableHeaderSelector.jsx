@@ -147,11 +147,11 @@ export default function tableHeaderSelector({ importsColumns, t }) {
     if (el.field === 'import_date') {
       return {
         ...el,
-        headerName: 'Дата импорта',
+        headerName: 'Дата закрытия',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['import_date']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
+            <Typography>{dayjs(p.data?.['update_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
           </Box>
         )),
       }

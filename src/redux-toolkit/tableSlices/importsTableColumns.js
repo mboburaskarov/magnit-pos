@@ -27,6 +27,12 @@ const columns = [
     width: 250,
   },
   {
+    field: 'created_at',
+    hide: false,
+    minWidth: 70,
+    width: 350,
+  },
+  {
     field: 'import_date',
     hide: false,
     minWidth: 70,
@@ -51,13 +57,6 @@ const columns = [
     hide: false,
     minWidth: 70,
     width: 170,
-  },
-
-  {
-    field: 'created_at',
-    hide: false,
-    minWidth: 70,
-    width: 350,
   },
 ]
 
