@@ -318,7 +318,15 @@ export default function ProductBody({ productData = null }) {
           </Box>
         </Box>
         <Box display={'flex'} width={'100%'} mt={'24px'}>
-          <InputDatePicker defaultValue={new Date()} name='expire_date' required id='expire_date' label='Дата срока' placeholder='Дата срока' />
+          <InputDatePicker
+            defaultValue={new Date()}
+            name='expire_date'
+            minDate={new Date()}
+            required
+            id='expire_date'
+            label='Дата срока'
+            placeholder='Дата срока'
+          />
           <Box width={'20px'} />
           {/* <Box maxWidth={'200px'}> */}
           <LazySelect
@@ -389,6 +397,7 @@ export default function ProductBody({ productData = null }) {
               adornmentPosition='end'
               required
               type='number'
+              minNumber={1}
               onBlur={(e) => changeAmount('supply_price', e)}
               fullWidth
               borderRadius={'40px'}
@@ -420,6 +429,7 @@ export default function ProductBody({ productData = null }) {
               onBlur={(e) => changeAmount('markup', e)}
               type='number'
               fullWidth
+              minNumber={1}
               InputProps={{
                 onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
               }}
@@ -433,6 +443,7 @@ export default function ProductBody({ productData = null }) {
               endAdornmentText={'UZS'}
               required
               type='number'
+              minNumber={1}
               onBlur={(e) => changeAmount('retail_price', e)}
               InputProps={{
                 onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
@@ -447,6 +458,7 @@ export default function ProductBody({ productData = null }) {
           <Box mt={'24px'} display={'flex'} width={'100%'}>
             <NumberFormatInput
               endAdornmentText={'%'}
+              minNumber={1}
               required
               type='number'
               fullWidth
@@ -466,6 +478,7 @@ export default function ProductBody({ productData = null }) {
               endAdornmentText={'UZS'}
               required
               type='number'
+              minNumber={1}
               fullWidth
               borderRadius={'40px'}
               onBlur={(e) => changeAmount('vat_price', e)}
@@ -487,6 +500,7 @@ export default function ProductBody({ productData = null }) {
               InputProps={{
                 onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
               }}
+              minNumber={1}
               onBlur={(e) => changeAmount('bonus_percent', e)}
               name='bonus_percent'
               label={'Бонусный процент'}
@@ -499,6 +513,7 @@ export default function ProductBody({ productData = null }) {
               required
               type='number'
               fullWidth
+              minNumber={1}
               onBlur={(e) => changeAmount('bonus_amount', e)}
               borderRadius={'40px'}
               InputProps={{

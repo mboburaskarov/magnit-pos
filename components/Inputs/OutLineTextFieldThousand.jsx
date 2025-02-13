@@ -13,6 +13,7 @@ const NumberFormatInput = ({
   sx,
   borderRadius,
   white,
+  minNumber = 0,
   onKeyDown,
   defaultValue,
   withShadow,
@@ -88,20 +89,19 @@ const NumberFormatInput = ({
         decimalScale={2} // Set decimal scale to 2
         onValueChange={(values) => {
           const { floatValue } = values // Extract the numeric value
-
+          const newValue = floatValue < 1 ? minNumber : floatValue
           if (uncontrolled) {
             // If uncontrolled, use the provided setValue
-            setValue(floatValue)
+            setValue(newValue)
           } else {
             // If controlled, update the form state using react-hook-form's setValue
-            methods.setValue(name, floatValue, { shouldValidate: true })
+            methods.setValue(name, newValue, { shouldValidate: true })
           }
         }}
         value={uncontrolled ? value : methods.watch(name)} // Use form state value if controlled
         autoComplete={autoComplete ? autoComplete : name === 'shopType' ? 'off' : 'on'}
         InputProps={{
           ...InputProps,
-          inputProps: { min: 0, max: 100 }, // Enforce min/max at input level
           endAdornment: (
             <InputAdornment position='end'>
               <IconButton>{endAdornmentText}</IconButton>
