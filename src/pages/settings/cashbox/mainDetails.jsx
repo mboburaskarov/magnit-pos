@@ -46,15 +46,10 @@ export default function MainDetails({ clientData, paymentTypes, setPaymentTypes,
     () => requests.getSingleCashBox(mode == 'edit' && get(openDrawer, 'id', null)),
     { enabled: mode == 'edit' }
   )
-  const { data: employeeInfoForCreate, refetch: refetemployeeInfoForCreate } = useQuery(
-    ['employeeInfo', openDrawer],
-    () => requests.getSingleCashBoxForCreate(mode == 'edit' && get(openDrawer, 'id', null)),
-    { enabled: mode == 'create' }
-  )
 
   const { data: paymentTypeList, refetch: refetpaymentTypeList } = useQuery(
     ['paymentTypeList', openDrawer],
-    () => requests.getPaymentTypeList({ cash_box_id: get(openDrawer, 'id', null) }),
+    () => requests.getPaymentTypesList({ cash_box_id: get(openDrawer, 'id', null) }),
     {
       enabled: Boolean(openDrawer),
     }
@@ -114,7 +109,7 @@ export default function MainDetails({ clientData, paymentTypes, setPaymentTypes,
             placeholder={t('Выберите Магазин')}
             minWidth='auto'
             isClearable={true}
-            request={requests.getAllShops}
+            request={requests.getAllStores}
             filters={{ limit: 10 }}
             control={control}
             // value='823f9458-2e67-4ed7-b001-ca8271b1269c'

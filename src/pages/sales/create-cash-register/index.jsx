@@ -75,7 +75,7 @@ function NewCashRegister() {
   const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
   const { data: registerCashList, refetch: refetchregisterCashList } = useQuery('registerCashList', () =>
-    requests.getRegisterCashList({ store_id: get(userData, 'store.id'), limit: 20, offset: 0 })
+    requests.getAllCashBoxList({ store_id: get(userData, 'store.id'), limit: 20, offset: 0 })
   )
   const {
     data: registerCashData,

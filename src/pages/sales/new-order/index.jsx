@@ -322,6 +322,7 @@ function NewSale() {
   const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createCartItem, {
     onSuccess: () => {
       setShowOverlay(false)
+      setSearchTerm('')
       refetchcartItemsList()
       method.setValue('search', '')
     },

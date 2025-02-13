@@ -307,7 +307,7 @@ export default function OrderDrawer({
     },
   })
   const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
-  const { mutate: finishSaleWithoutAppPaymentType, isLoading: isfinishSaleWithoutAppPaymentType } = useMutation(requests.finishSaleWithoutAppPaymentType, {
+  const { mutate: finishSaleWithoutAppPaymentType, isLoading: isfinishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
       // refetchcartItemsList()
       ///

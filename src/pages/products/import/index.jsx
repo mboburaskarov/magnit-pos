@@ -171,7 +171,7 @@ export default function ImportPage() {
             }}
             emptyTableText={{
               title: 'Импорт недоступен',
-              description: 'Если вы не можете найти искомый Импорт, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+              description: 'Если вы не можете найти искомый Импорт',
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}

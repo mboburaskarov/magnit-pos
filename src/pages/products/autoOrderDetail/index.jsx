@@ -120,13 +120,6 @@ export default function AutoOrderDetailPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [autoOrderDetailList?.data, values?.limit])
-  const onSubmit = (data) => {
-    console.log(data)
-  }
-  const onError = (err) => {
-    console.log('err', err)
-    error('Пожалуйста, заполните все поля!')
-  }
 
   return (
     <LoadingContainer readyState={!isfinalAutoOrder}>
@@ -137,7 +130,6 @@ export default function AutoOrderDetailPage() {
             buttonText='Детали импорта'
             backIcon
             noActions
-            // backButtonClick={() => (get(values, 'tab') === 'details' ? '/products/all' : '/products/import')}
             backHref={'/products/auto-order'}
             text={'Детали aвто заказ'}
             checkAccessId={'product-create'}

@@ -51,11 +51,8 @@ export default function SerchedItem({
         handleAddProduct({
           discount_type: get(discount, 'type', 'percent'),
           discount_value: Number(get(discount, 'amount', 0)),
-          employee_id: userData.id,
           sale_id: id,
           store_product_id: product?.id,
-          quantity: 1,
-          unit_price: product?.retail_price,
         })
         setSearchTerm('')
       }}
@@ -68,11 +65,11 @@ export default function SerchedItem({
           },
         },
       }}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' && fakeIndexForCheckSearch === index) {
-          handleAddProduct(product)
-        }
-      }}
+      // onKeyDown={(event) => {
+      //   if (event.key === 'Enter' && fakeIndexForCheckSearch === index) {
+      //     handleAddProduct(product)
+      //   }
+      // }}
       tabIndex={index}
       key={index}
       ref={itemRef}

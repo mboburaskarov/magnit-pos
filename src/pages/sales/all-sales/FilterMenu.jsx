@@ -56,8 +56,8 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
         vendor_id: vendor_id ? { name: values?.vendor_name, value: values?.vendor_id } : null,
         cashbox_id: cashbox_id ? { name: values?.cashbox_name, value: values?.cashbox_id } : null,
         store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
-        total_amount_to: total_amount_to,
-        total_amount_from: total_amount_from,
+        total_amount_to: total_amount_to || null,
+        total_amount_from: total_amount_from || null,
       },
       { keepDirty: true }
     )
@@ -125,7 +125,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 minWidth='auto'
                 isClearable={true}
                 label={t('input.store.label')}
-                request={requests.getAllShops}
+                request={requests.getAllStores}
                 filters={{ limit: 10 }}
                 control={control}
                 // value='823f9458-2e67-4ed7-b001-ca8271b1269c'

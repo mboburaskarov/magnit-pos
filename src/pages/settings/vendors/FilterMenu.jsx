@@ -18,7 +18,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const methods = useForm()
   const { formState, reset, control, getValues } = methods
 
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])
@@ -100,7 +100,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               minWidth='auto'
               isClearable={true}
               label={t('input.store.label')}
-              request={requests.getAllShops}
+              request={requests.getAllStores}
               filters={{ limit: 10 }}
               control={control}
               // value='823f9458-2e67-4ed7-b001-ca8271b1269c'

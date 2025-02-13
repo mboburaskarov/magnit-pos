@@ -57,7 +57,7 @@ export default function MainDetails({ clientData, openDrawer }) {
       setValue('store_id', getOptionsSchema(get(employeeInfo, 'data.data.store', []), Object))
     }
   }, [employeeInfo])
-  const { data: storesList } = useQuery('storesList', () => requests.getAllShops({ limit: 20, offset: 0 }))
+  const { data: storesList } = useQuery('storesList', () => requests.getAllStores({ limit: 20, offset: 0 }))
   const { data: rolesList } = useQuery('rolesList', () => requests.getAllRoles({ limit: 20, offset: 0 }))
 
   return (
@@ -147,7 +147,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             placeholder={t('Выберите Магазин')}
             minWidth='auto'
             isClearable={true}
-            request={requests.getAllShops}
+            request={requests.getAllStores}
             filters={{ limit: 10 }}
             control={control}
             // value='823f9458-2e67-4ed7-b001-ca8271b1269c'

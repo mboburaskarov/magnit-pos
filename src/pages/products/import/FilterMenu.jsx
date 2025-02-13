@@ -26,7 +26,7 @@ export default function FilterMenu({ open, setOpen }) {
   const { formState, reset, control } = methods
   const [startDate, setStartDate] = useState(0)
   const [endDate, setEndDate] = useState(0)
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
     const requestBody = {
@@ -55,8 +55,8 @@ export default function FilterMenu({ open, setOpen }) {
     reset(
       {
         store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
-        received_amount_to: received_amount_to,
-        received_amount_from: received_amount_from,
+        received_amount_to: received_amount_to || null,
+        received_amount_from: received_amount_from || null,
         status: status ? getOptionsFromUrlParam(status, imports_list_statuses, 'name')[0] : null,
         import_date: import_date,
         start_date: start_date,
@@ -122,7 +122,7 @@ export default function FilterMenu({ open, setOpen }) {
               minWidth='auto'
               isClearable={true}
               label={t('input.store.label')}
-              request={requests.getAllShops}
+              request={requests.getAllStores}
               filters={{ limit: 10 }}
               control={control}
               // value='823f9458-2e67-4ed7-b001-ca8271b1269c'

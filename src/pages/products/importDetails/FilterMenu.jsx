@@ -36,8 +36,8 @@ export default function FilterMenu({ open, id, setOpen }) {
 
     reset(
       {
-        received_amount_to: received_amount_to,
-        received_amount_from: received_amount_from,
+        received_amount_to: received_amount_to || null,
+        received_amount_from: received_amount_from || null,
       },
       { keepDirty: true }
     )

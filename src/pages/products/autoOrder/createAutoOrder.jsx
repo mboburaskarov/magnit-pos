@@ -79,7 +79,7 @@ export default function CreateAutoOrder({ open, refetch, setOpen }) {
               placeholder={t('Выберите Магазин')}
               minWidth='auto'
               isClearable={true}
-              request={requests.getAllShops}
+              request={requests.getAllStores}
               filters={{ limit: 10 }}
               control={control}
               // value='823f9458-2e67-4ed7-b001-ca8271b1269c'

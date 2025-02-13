@@ -210,28 +210,7 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
   const methods = useForm()
   const classes = useStyles()
   const productsData = productsList?.data?.data
-  const { mutate: getStoreProductByBarcode } = useMutation(requests.getStoreProductByBarcode, {
-    onSuccess: ({ data }) => {
-      // if (data?.length) {
-      setSearchTerm('')
-      refetchcartItemsList()
-      // }
-      setShowOverlay(false)
-    },
-    onError: (err) => {
-      if (get(err, 'response.data.code') === 409) {
-        error(`Описание
-Редактировать
-Введенное количество товара превышает существующее количество. 
-Максимальное количество упаковок на складе - ${get(err, 'response.data.data.pack_quantity')},
-единичное количество на складе - ${get(err, 'response.data.data.unit_quantity')}.`)
-      } else {
-        error('Ошибка при получении похожих товаров.')
-        console.log('err', err)
-      }
-      setShowOverlay(false)
-    },
-  })
+
   // useHotkeys(
   //   't',
   //   () =>
@@ -277,10 +256,10 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
     'Enter',
     (event) =>
       !['client-search-bar', 'product-search'].includes(document.activeElement.id) &&
-      getStoreProductByBarcode({
+      handleAddProduct({
         discount_type: get(discount, 'type', 'percent'),
         discount_value: get(discount, 'amount', 0),
-        id: document.activeElement.id,
+        store_product_id: document.activeElement.id,
         sale_id: id,
       }),
     {
@@ -310,11 +289,11 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
             }}
             onKeyDown={({ key }) => {
               key == 'Enter' &&
-                getStoreProductByBarcode({
+                handleAddProduct({
                   discount_type: get(discount, 'type', 'percent'),
                   discount_value: Number(get(discount, 'amount', 0)),
                   sale_id: id,
-                  id: productsData?.[0]?.id,
+                  store_product_id: productsData?.[0]?.id,
                 })
             }}
           />

@@ -26,7 +26,7 @@ export default function FilterMenu({ open, setOpen }) {
   const { formState, reset, control } = methods
   const [startDate, setStartDate] = useState(0)
   const [endDate, setEndDate] = useState(0)
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 20, offset: 0 }))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
     const requestBody = {
@@ -94,7 +94,7 @@ export default function FilterMenu({ open, setOpen }) {
               placeholder={t('Выберите Магазин')}
               minWidth='auto'
               isClearable={true}
-              request={requests.getAllShops}
+              request={requests.getAllStores}
               label={t('input.store.label')}
               filters={{ limit: 10 }}
               control={control}

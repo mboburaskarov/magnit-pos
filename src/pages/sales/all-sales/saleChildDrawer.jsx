@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 function SaleChildDrawer({ open, setOpen }) {
   const { t } = useTranslation()
   const classes = useStyles()
-  const { data: saleDetailsList, refetch } = useQuery('saleDetailsList', () => requests.getSaleDetails(get(open, 'id')))
+  const { data: saleDetailsList, refetch } = useQuery('saleDetailsList', () => requests.getCashBoxDetaildWithSaleId(get(open, 'id')))
   useEffect(() => {
     if (get(open, 'id', false)) refetch()
   }, [open])
