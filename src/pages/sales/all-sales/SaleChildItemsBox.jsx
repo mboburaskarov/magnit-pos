@@ -6,9 +6,11 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 const useStyles = makeStyles((theme) => ({
   productImg: {
-    width: '48px',
-    height: '48px',
+    width: '75px',
+    height: '75px',
     borderRadius: '6px',
+    flexShrink: 0,
+    objectFit: 'cover',
     marginRight: '8px',
   },
 }))
@@ -16,7 +18,7 @@ function SaleChildItemsBox({ item }) {
   const classes = useStyles()
 
   return (
-    <Box display={'flex'} mb={'10px'} height={'80px'} justifyContent={'space-between'}>
+    <Box display={'flex'} mb={'10px'} height={'100px'} justifyContent={'space-between'}>
       <Box borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} mr={'8px'} display={'flex'} width={'100%'} justifyContent={'space-between'}>
         <Box display={'flex'} width={'100%'} alignItems={'center'}>
           {size(get(item, 'photos[0]', [])) <= 0 ? <DefaultImgIcon /> : <img className={classes.productImg} src={get(item, 'photos[0]')} />}
@@ -39,22 +41,52 @@ function SaleChildItemsBox({ item }) {
                 {get(item, 'name')}
               </Typography>
               <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
-                C2
+                {get(item, 'quantity')}пч{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'space-between'}>
               <Typography mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
                 {get(item, 'barcode')}
               </Typography>
-              <Typography whiteSpace={'pre'} mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-                {get(item, 'quantity')}пч{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''} -{' '}
-                {thousandDivider(get(item, 'total_price'), 'сум')}
-              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'end',
+                }}
+              >
+                {true && (
+                  <Typography
+                    whiteSpace={'pre'}
+                    sx={{ textDecoration: 'line-through' }}
+                    mt={'4px'}
+                    fontSize={'14px'}
+                    fontWeight={'600'}
+                    lineHeight={'24px'}
+                    color={'bunker.500'}
+                  >
+                    {thousandDivider(get(item, 'total_price'), 'сум')}
+                  </Typography>
+                )}
+                <Typography whiteSpace={'pre'} fontSize={'16px'} fontWeight={'600'} lineHeight={'20px'} color={'orange.500'}>
+                  {thousandDivider(get(item, 'total_price'), 'сум')}
+                </Typography>
+              </Box>
             </Box>
           </Box>
         </Box>
       </Box>
-      <Box borderRadius={'16px'} p={'16px'} minWidth={'160px'} bgcolor={'bg.10'}>
+      <Box
+        borderRadius={'16px'}
+        p={'16px'}
+        minWidth={'160px'}
+        bgcolor={'bg.10'}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          flexDirection: 'column',
+        }}
+      >
         <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'}>
           Бонус
         </Typography>

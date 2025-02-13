@@ -25,6 +25,7 @@ import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import SaleDrawer from './saleDrawer'
 import DateRangeInput from '../../../../components/Inputs/DateRangeInput.jsx/DateRangeInput'
 import dayjs from 'dayjs'
+import SaleMiniDashboardHeader from './saleMiniDashboardHeader'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function AllSalesPage() {
@@ -123,6 +124,7 @@ export default function AllSalesPage() {
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           {t('sales')}
         </Typography>
+        <SaleMiniDashboardHeader />
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box
