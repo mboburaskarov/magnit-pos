@@ -196,6 +196,9 @@ export default function ProductBody({ productData = null }) {
       pb={10}
       width='100%'
       sx={{
+        '.ag-row:hover': {
+          backgroundColor: '#fff !important',
+        },
         margin: 'auto',
         '& .MuiInputBase-root': {
           border: '2px solid',
