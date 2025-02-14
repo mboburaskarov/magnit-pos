@@ -12,6 +12,8 @@ const useStyles = makeStyles((theme) => ({
 
     '& .MuiDrawer-paper': {
       width: '100%',
+      height: '50vh',
+
       borderRadius: '24px 24px 0 0',
       boxShadow: '4px -5px 20px 0px #ccc !important',
 

@@ -55,7 +55,7 @@ function SaleChildItemsBox({ item }) {
                   alignItems: 'end',
                 }}
               >
-                {true && (
+                {get(item, 'total_discount') > 0 && (
                   <Typography
                     whiteSpace={'pre'}
                     sx={{ textDecoration: 'line-through' }}
@@ -69,7 +69,7 @@ function SaleChildItemsBox({ item }) {
                   </Typography>
                 )}
                 <Typography whiteSpace={'pre'} fontSize={'16px'} fontWeight={'600'} lineHeight={'20px'} color={'orange.500'}>
-                  {thousandDivider(get(item, 'total_price'), 'сум')}
+                  {get(item, 'total_discount') > 0 ? thousandDivider(get(item, 'total_discount'), 'сум') : thousandDivider(get(item, 'total_price'), 'сум')}
                 </Typography>
               </Box>
             </Box>

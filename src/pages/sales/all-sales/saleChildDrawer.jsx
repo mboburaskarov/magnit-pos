@@ -11,6 +11,7 @@ import LeftArrowIcon from '../../../assets/icons/LeftArrow'
 import SaleChildItemsBox from './SaleChildItemsBox'
 import thousandDivider from '../../../../utils/thousandDivider'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import { height } from '@mui/system'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
