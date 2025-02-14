@@ -14,7 +14,7 @@ import LoadingContainer from '../../../../components/LoadingContainer'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
-    height: 'calc(100vh - 80px)',
+    maxHeight: '50vh',
     overflowY: 'auto',
     '& .MuiDrawer-paper': {
       width: '660px',
@@ -24,7 +24,8 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerHeader: {
     height: '88px',
-    padding: '16px 24px',
+    padding: '16px 80px',
+
     borderBottom: `1px solid ${theme.palette.bunker[100]}`,
   },
   rightArrowIcon: {
@@ -59,18 +60,18 @@ function SaleChildDrawer({ open, setOpen }) {
 
   const theme = useTheme()
   return (
-    <LoadingContainer readyState={!isLoading}>
+    <LoadingContainer noHeight readyState={!isLoading}>
       <Box className={classes.drawer}>
         <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
           <Box display={'flex'} alignItems={'center'}>
-            <Box
+            {/* <Box
               onClick={() => {
                 setOpen(false), setOpen(false)
               }}
               className={classes.rightArrowIcon}
             >
               <LeftArrowIcon />
-            </Box>
+            </Box> */}
             <Box ml={'16px'}>
               <Typography fontSize={24} lineHeight={'32px'} fontWeight={700}>
                 #{get(saleDetailsList, 'data.data.sale_number')}
@@ -89,7 +90,7 @@ function SaleChildDrawer({ open, setOpen }) {
           />
         </Box>
 
-        <Box padding={'24px 20px 0'}>
+        <Box padding={'24px 20px 0'} paddingX={'80px'}>
           <Box alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
             <Typography fontSize={20} lineHeight={'32px'} fontWeight={600}>
               {t('cart')}

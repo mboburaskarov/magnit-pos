@@ -11,8 +11,8 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative !important',
 
     '& .MuiDrawer-paper': {
-      width: '660px',
-      borderRadius: '24px 0 0 24px',
+      width: '100%',
+      borderRadius: '24px 24px 0 0',
       backgroundColor: theme.palette.background.default,
     },
   },
@@ -27,7 +27,7 @@ function SaleDrawer({ open, setOpen }) {
   const classes = useStyles()
 
   return (
-    <Drawer sx={{ height: '100vh !important' }} open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
+    <Drawer sx={{ height: '50vh !important' }} open={open} onClose={() => setOpen(false)} anchor='bottom' elevation={1} className={classes.drawer}>
       <SaleChildDrawer open={open} setOpen={setOpen} />
       <Box
         sx={{
