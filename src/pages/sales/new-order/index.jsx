@@ -356,7 +356,7 @@ function NewSale() {
     data: cartItemsList,
     refetch: refetchcartItemsList,
     isLoading: isCartItemsLIstLoading,
-  } = useQuery('cartItemsList', () => requests.getCartItemList({ sale_id: id, limit: 20, offset: 0 }).catch(() => navigate('/sales/create')))
+  } = useQuery(['cartItemsList', id], () => requests.getCartItemList({ sale_id: id, limit: 20, offset: 0 }).catch(() => navigate('/sales/create')))
   const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
 
   // useEffect(() => {
@@ -533,7 +533,16 @@ function NewSale() {
                   </Typography>
                 </Box>
               ) : (
-                <Box>
+                <Box
+                  sx={{
+                    overflowY: 'auto',
+                    maxHeight: '75vh',
+                    paddingBottom: '80px',
+                    '&::-webkit-scrollbar': {
+                      display: 'none',
+                    },
+                  }}
+                >
                   {get(cartItemsList, 'data.data.data', []).map((el, index) => (
                     <CartItem
                       // onKeyDown={(e) => handleTabSwitch(e, el?.id)}

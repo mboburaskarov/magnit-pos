@@ -70,7 +70,6 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
     onSuccess: ({ data }) => {
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
       setOpen(false)
-      refetchcartItemsList()
       success('Черновик создан!')
     },
     onError: (err) => {
