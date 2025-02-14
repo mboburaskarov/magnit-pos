@@ -1,7 +1,9 @@
 import { Box, Typography } from '@mui/material'
 import React from 'react'
+import thousandDivider from '../../../../utils/thousandDivider'
+import { get } from 'lodash'
 
-function SaleMiniDashboardHeader() {
+function SaleMiniDashboardHeader({ saleStatsData }) {
   return (
     <Box
       display={'flex'}
@@ -39,7 +41,7 @@ function SaleMiniDashboardHeader() {
             fontWeight: '700',
           }}
         >
-          7 638 281.15 UZS
+          {thousandDivider(get(saleStatsData, 'total_transactions_sum'), 'сум')}
         </Typography>
       </Box>
       <Box
@@ -51,7 +53,7 @@ function SaleMiniDashboardHeader() {
           },
         }}
       >
-        {['Uzcard', 'Click', 'Uzum', 'Naqt', 'Visa', 'Humo', 'Payme', 'Bonus'].map((name) => (
+        {get(saleStatsData, 'payment_type_stats', []).map((type) => (
           <Box
             sx={{
               flexShrink: 0,
@@ -70,7 +72,7 @@ function SaleMiniDashboardHeader() {
                 mb: '5px',
               }}
             >
-              {name}
+              {get(type, 'name')}
             </Typography>
             <Typography
               sx={{
@@ -79,7 +81,7 @@ function SaleMiniDashboardHeader() {
                 fontWeight: '700',
               }}
             >
-              38 281.15 UZS
+              {thousandDivider(get(type, 'sum'), 'сум')}
             </Typography>
           </Box>
         ))}

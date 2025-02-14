@@ -14,6 +14,7 @@ export const requests = {
 
   //sale
   getAllSales: (filter) => request.get(`v1/sale/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllSaleStats: (filter) => request.get(`v1/sale/stats${qs.stringify(filter, { addQueryPrefix: true })}`),
   saleCreate: (data) => request.post('v1/sale', data),
   getCloseCashboxPaymentList: (cashBoxId) => request.get(`v1/sale-payment/list/close-cashbox/${cashBoxId}`),
   changeCloseBoxNetAmout: ({ id, data }) => request.put(`v1/sale-payment/amounts/${id}`, data),
