@@ -280,7 +280,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
                   id={p.data?._id}
                   style={{ whiteSpace: 'pre-line', color: 'bunker.950', marginLeft: '8px', fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}
                 >
-                  {get(p, 'data.customer_name', 'Unknown')}
+                  {get(p, 'data.customer_name') || 'Unknown'}
                 </Typography>
               </a>
             </Box>
