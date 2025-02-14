@@ -13,6 +13,8 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiDrawer-paper': {
       width: '100%',
       borderRadius: '24px 24px 0 0',
+      boxShadow: '4px -5px 20px 0px #ccc !important',
+
       backgroundColor: theme.palette.background.default,
     },
   },
@@ -27,7 +29,20 @@ function SaleDrawer({ open, setOpen }) {
   const classes = useStyles()
 
   return (
-    <Drawer sx={{ height: '50vh !important' }} open={open} onClose={() => setOpen(false)} anchor='bottom' elevation={1} className={classes.drawer}>
+    <Drawer
+      ModalProps={{
+        hideBackdrop: true, // Optional: Removes the overlay
+        keepMounted: true, // Keeps drawer in the DOM for better performance
+        'aria-hidden': false, // ✅ Prevents MUI from blocking other elements
+        disableScrollLock: true, // Prevents MUI from adding `overflow: hidden` to `body`
+      }}
+      sx={{ height: '50vh !important' }}
+      open={open}
+      onClose={() => setOpen(false)}
+      anchor='bottom'
+      elevation={1}
+      className={classes.drawer}
+    >
       <SaleChildDrawer open={open} setOpen={setOpen} />
       <Box
         sx={{

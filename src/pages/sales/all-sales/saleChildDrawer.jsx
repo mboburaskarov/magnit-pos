@@ -14,7 +14,7 @@ import LoadingContainer from '../../../../components/LoadingContainer'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
-    maxHeight: '50vh',
+    height: '50vh',
     overflowY: 'auto',
     '& .MuiDrawer-paper': {
       width: '660px',
@@ -25,7 +25,11 @@ const useStyles = makeStyles((theme) => ({
   drawerHeader: {
     height: '88px',
     padding: '16px 80px',
+    position: 'absolute',
+    backgroundColor: theme.palette.background.default,
 
+    display: 'flex',
+    width: '100%',
     borderBottom: `1px solid ${theme.palette.bunker[100]}`,
   },
   rightArrowIcon: {
@@ -90,7 +94,7 @@ function SaleChildDrawer({ open, setOpen }) {
           />
         </Box>
 
-        <Box padding={'24px 20px 0'} paddingX={'80px'}>
+        <Box padding={'104px 20px 0'} paddingX={'80px'}>
           <Box alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
             <Typography fontSize={20} lineHeight={'32px'} fontWeight={600}>
               {t('cart')}
