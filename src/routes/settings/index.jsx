@@ -6,6 +6,7 @@ import RolesPage from '../../pages/settings/roles'
 import StoresPage from '../../pages/settings/stores'
 import VendorsPage from '../../pages/settings/vendors'
 import CashBoxsPage from '../../pages/settings/cashbox'
+import ActionListPage from '../../pages/settings/roles/actions'
 
 const settingsRoutes = {
   path: 'settings',
@@ -27,6 +28,10 @@ const settingsRoutes = {
     {
       path: 'roles',
       element: <RolesPage />,
+    },
+    {
+      path: 'actions',
+      element: <ActionListPage />,
     },
 
     {

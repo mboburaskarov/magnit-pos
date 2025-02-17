@@ -61,7 +61,7 @@ export default function Section({ section, sectionRef, setDisabled, disabled, se
         <Typography variant='h3' className={classes.title}>
           {t(`navbar.${section?.key}`)}
         </Typography>
-        <StyledSwitch
+        {/* <StyledSwitch
           checked={!disabled?.includes(section.key)}
           onChange={() => {
             if (setDisabled) {
@@ -73,7 +73,7 @@ export default function Section({ section, sectionRef, setDisabled, disabled, se
             }
           }}
           name={section?.key}
-        />
+        /> */}
       </Box>
       <Box>
         {!!sectionArrays?.length && (

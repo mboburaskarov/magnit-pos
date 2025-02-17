@@ -151,7 +151,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['update_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
+            <Typography>{dayjs(p.data?.['updated_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
           </Box>
         )),
       }
