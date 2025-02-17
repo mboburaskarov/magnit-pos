@@ -81,7 +81,6 @@ export default function ImagePreview({
           <CircularProgress fill='#fff' />
         </Box>
       )}
-
       {uploadedImages?.key && withoutTextBox ? (
         <Box display={'flex'} width={'100%'} alignItems={'center'}>
           <Box
@@ -195,7 +194,69 @@ export default function ImagePreview({
               <input id={id} {...getInputProps()} data-test='upload-photo' />
               <ImagePlaceholder />
             </Box>
-            <Button
+            {isEditMode ? (
+              <>
+                <Button
+                  sx={{
+                    width: '156',
+                    height: '32px',
+                    bgcolor: 'white',
+                    border: '1px solid',
+                    borderColor: 'bunker.100',
+                    mr: '16px',
+                    ml: '24px',
+                  }}
+                  variant='secondary'
+                  {...getRootProps()}
+                >
+                  <Typography fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'orange.500'}>
+                    Обновить изображение
+                  </Typography>
+                </Button>
+
+                <Button
+                  variant='secondary'
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    deleteImage()
+                  }}
+                  id='countBox'
+                  sx={{
+                    width: '123px',
+                    height: '32px',
+                    bgcolor: 'red.10',
+                    color: 'green.600',
+                    display: 'flex',
+                    padding: '5px',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: '40px',
+                    fontWeight: 600,
+                    zIndex: 7,
+                    transition: 'all 0.2s ease-in-out',
+                  }}
+                >
+                  <DeleteIcon />{' '}
+                  <Typography ml={'12px'} fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'red.700'}>
+                    Удалить
+                  </Typography>
+                </Button>
+              </>
+            ) : (
+              <Box
+                onClick={() => setIsEditMode(true)}
+                sx={{
+                  ml: '20px',
+                  '& svg': {
+                    width: '20px',
+                    height: '20px',
+                  },
+                }}
+              >
+                <EditIcon color='rgb(255, 96, 24)' />
+              </Box>
+            )}
+            {/* <Button
               sx={{
                 width: '156',
                 height: '32px',
@@ -211,11 +272,10 @@ export default function ImagePreview({
               <Typography fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'orange.500'}>
                 Обновить изображение
               </Typography>
-            </Button>
+            </Button> */}
           </Box>
         )
       )}
-
       {uploadedImages?.key && !withoutTextBox ? (
         <Box
           sx={{
