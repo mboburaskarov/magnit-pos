@@ -28,7 +28,7 @@ export default function productStoresTableHeaderSelector({ productsColumns, setV
         headerName: '№',
         colId: el.field,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
-          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+          const absoluteIndex = Number(get(values, 'offsetStore', 0)) + 1 + rowIndex
 
           return (
             <Typography id={`product-${'number'}-${rowIndex}`} fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
@@ -50,31 +50,35 @@ export default function productStoresTableHeaderSelector({ productsColumns, setV
             id={`store_product.${p.data.id}.pack_quantity`}
             name={`store_product.${p.data.id}.pack_quantity`}
             fullWidth
-            canApplyAll={true}
+            canApplyAll={!get(productData, 'id', false)}
             adornment={p.data?.measurement_unit?.short_name}
             adornmentPosition='end'
             onFocus={({ target }) => {
+              console.log('focus')
+
               if (Number(get(target, 'value')) == 0) {
                 setValues(`store_product.${p.data.id}.pack_quantity`, '')
                 return
               }
             }}
             onBlur={(e) => {
+              console.log('bluuer')
+
               if (Number(get(e, 'target.value')) == '') {
                 setValues(`store_product.${p.data.id}.pack_quantity`, '0')
                 return
               }
-              // if (get(e, 'target.value') != get(p, 'data.pack_quantity') && get(productData, 'id', false)) {
-              //   setOpenChangeQuantity({
-              //     supply_price: get(p, 'data.supply_price'),
-              //     name: `store_product.${p.data.id}`,
-              //     measurement_value: get(e, 'target.value') - get(p, 'data.pack_quantity'),
-              //     oldValue: get(p, 'data.pack_quantity'),
-              //   })
-              // }
+              if (get(e, 'target.value') != get(p, 'data.pack_quantity') && get(productData, 'id', false)) {
+                setOpenChangeQuantity({
+                  supply_price: get(p, 'data.supply_price'),
+                  name: `store_product.${p.data.id}`,
+                  measurement_value: get(e, 'target.value') - get(p, 'data.pack_quantity'),
+                  oldValue: get(p, 'data.pack_quantity'),
+                })
+              }
             }}
             required
-            defaultValue={get(p, 'data.pack_quantity')}
+            // defaultValue={get(p, 'data.pack_quantity')}
             type='number'
             disabled={false}
           />
@@ -107,7 +111,7 @@ export default function productStoresTableHeaderSelector({ productsColumns, setV
             fullWidth
             required
             type='number'
-            defaultValue={get(p, 'data.small_quantity')}
+            // defaultValue={get(p, 'data.small_quantity')}
             disabled={false}
           />
         )),

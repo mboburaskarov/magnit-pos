@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material'
 import { get, method } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -135,11 +135,17 @@ export default function ProductBody({ productData = null }) {
   useEffect(() => {
     refetchShopList().then(({ data }) => {
       get(data, 'data.data.data', []).map((store) => {
-        setValue(`store_product.${get(store, 'id')}.pack_quantity`, get(store, 'pack_quantity', 0))
-        setValue(`store_product.${get(store, 'id')}.small_quantity`, get(store, 'small_quantity', 0))
+        setValue(
+          `store_product.${get(store, 'id')}.pack_quantity`,
+          getValues(`store_product.${get(store, 'id')}.pack_quantity`) || get(store, 'pack_quantity', 0)
+        )
+        setValue(
+          `store_product.${get(store, 'id')}.small_quantity`,
+          getValues(`store_product.${get(store, 'id')}.small_quantity`) || get(store, 'small_quantity', 0)
+        )
       })
     })
-  }, [values.limitStore, values.offsetStore])
+  }, [storeList?.data?.data?.data])
 
   useEffect(() => {
     setUniType(get(getValues('product_unit'), 'value', 'piece'))
