@@ -3,21 +3,17 @@ import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
 import React, { useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useMutation, useQuery } from 'react-query'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import InputSearch from '../../../../components/Inputs/InputSearch'
-import SelectSimple from '../../../../components/Select/SelectSimple'
 import { requests } from '../../../../utils/requests'
+import thousandDivider from '../../../../utils/thousandDivider'
 import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
 import UnlockIcon from '../../../assets/icons/UnlockIcon'
-import UserOutlineIcon from '../../../assets/icons/UserOutlineIcon'
-import AssigneMeButton from './AssigneMeButton'
 import SerchedItem from './SerchedItem'
-import { useHotkeys } from 'react-hotkeys-hook'
-import { error } from '../../../../utils/toast'
-import ArrowDown from '../../../assets/icons/ArrowDown'
 const useStyles = makeStyles((theme) => ({
   avatar: {
     width: 30,
@@ -308,7 +304,7 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
                   {get(userData, 'first_name')}
                 </Typography>
                 <p id='user-shopname' className={`${classes.bonus_amount} `}>
-                  +{get(sellerBonusInOneSale, 'data.data.bonus', 0)} so'm
+                  +{thousandDivider(get(sellerBonusInOneSale, 'data.data.bonus', 0), 'сум')}
                 </p>
               </Box>
             </Box>
