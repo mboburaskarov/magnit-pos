@@ -496,14 +496,13 @@ export default function ProductBody({ productData = null }) {
           <Box mt={'24px'} display={'flex'} width={'100%'}>
             <NumberFormatInput
               endAdornmentText={'%'}
-              required
               type='number'
               fullWidth
               borderRadius={'40px'}
               InputProps={{
                 onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
               }}
-              minNumber={1}
+              minNumber={0}
               onBlur={(e) => changeAmount('bonus_percent', e)}
               name='bonus_percent'
               label={'Бонусный процент'}
@@ -513,10 +512,9 @@ export default function ProductBody({ productData = null }) {
 
             <NumberFormatInput
               endAdornmentText={'UZS'}
-              required
               type='number'
               fullWidth
-              minNumber={1}
+              minNumber={0}
               onBlur={(e) => changeAmount('bonus_amount', e)}
               borderRadius={'40px'}
               InputProps={{

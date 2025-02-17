@@ -254,7 +254,7 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
       !['client-search-bar', 'product-search'].includes(document.activeElement.id) &&
       handleAddProduct({
         discount_type: get(discount, 'type', 'percent'),
-        discount_value: get(discount, 'amount', 0),
+        discount_value: Number(get(discount, 'amount', 0)),
         store_product_id: document.activeElement.id,
         sale_id: id,
       }),
