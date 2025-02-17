@@ -58,7 +58,7 @@ function SaleChildDrawer({ open, setOpen }) {
     data: saleDetailsList,
     refetch,
     isLoading,
-  } = useQuery(['saleDetailsList', get(open, 'id')], () => requests.getCashBoxDetaildWithSaleId(get(open, 'id')))
+  } = useQuery(['saleDetailsList', get(open, 'id')], () => requests.getCashBoxDetaildWithSaleId(get(open, 'id')), { enabled: Boolean(get(open, 'id')) })
   useEffect(() => {
     if (get(open, 'id', false)) refetch()
   }, [open])

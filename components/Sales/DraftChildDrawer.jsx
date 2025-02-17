@@ -121,7 +121,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
         </Box>
 
         <Box padding={'0'}>
-          <Box p={'24px 40px 0'} alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
+          <Box p={'24px 40px 24px'} alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
             <Typography fontSize={20} lineHeight={'32px'} fontWeight={600}>
               {t('cart')}
             </Typography>
@@ -136,8 +136,8 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
               </Typography>
             </Box>
           </Box>
-          <Box padding={'24px 40px'}>
-            {get(darftChildList, 'data.data.cart_items', []).map((el) => (
+          <Box maxHeight={'calc(100vh - 485px)'} sx={{ overflowY: 'auto' }} padding={'0px 40px'}>
+            {[get(darftChildList, 'data.data.cart_items', [])].map((el) => (
               <DraftChildItemsBox key={el.id} item={el} />
             ))}
           </Box>

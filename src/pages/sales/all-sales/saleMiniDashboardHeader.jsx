@@ -53,7 +53,7 @@ function SaleMiniDashboardHeader({ saleStatsData }) {
           },
         }}
       >
-        {get(saleStatsData, 'payment_type_stats', []).map((type) => (
+        {get(saleStatsData, 'payment_type_stats', [])?.map((type) => (
           <Box
             sx={{
               flexShrink: 0,
