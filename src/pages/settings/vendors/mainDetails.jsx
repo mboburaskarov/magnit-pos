@@ -54,11 +54,9 @@ export default function MainDetails({ clientData, openDrawer }) {
       get(employeeInfo, 'data.data.birthdate', false) && setValue('date_of_birth', new Date(get(employeeInfo, 'data.data.birthdate')))
       setValue('gender', get(employeeInfo, 'data.data.gender'))
       setValue('role', getOptionsSchema(get(employeeInfo, 'data.data.roles', []), Object))
-      setValue('store_id', getOptionsSchema(get(employeeInfo, 'data.data.store', []), Object))
+      setValue('store_id', getOptionsSchema(get(employeeInfo, 'data.data.store', []), Object, 'name'))
     }
   }, [employeeInfo])
-  const { data: storesList } = useQuery('storesList', () => requests.getAllStores({ limit: 20, offset: 0 }))
-  const { data: rolesList } = useQuery('rolesList', () => requests.getAllRoles({ limit: 20, offset: 0 }))
 
   return (
     <Box mt={'24px'}>
@@ -153,7 +151,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
             // uncontrolled
             getOptionLabel={(option) => {
-              return <Typography color='grey.600'>{option.label}</Typography>
+              return <Typography color='grey.600'>{option.name}</Typography>
             }}
             filterOption={() => true}
           />
