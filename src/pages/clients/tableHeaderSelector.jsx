@@ -70,7 +70,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         colId: el.field,
         cellRenderer: memo((p) => (
           <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
-            {formatPhoneNumber(p.data.phone[0])}
+            {formatPhoneNumber(p.data.phone)}
           </Typography>
         )),
       }
