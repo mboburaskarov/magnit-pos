@@ -50,7 +50,7 @@ export default function productStoresTableHeaderSelector({ productsColumns, setV
             id={`store_product.${p.data.id}.pack_quantity`}
             name={`store_product.${p.data.id}.pack_quantity`}
             fullWidth
-            canApplyAll={!get(productData, 'id', false)}
+            canApplyAll={true}
             adornment={p.data?.measurement_unit?.short_name}
             adornmentPosition='end'
             onFocus={({ target }) => {
@@ -64,14 +64,14 @@ export default function productStoresTableHeaderSelector({ productsColumns, setV
                 setValues(`store_product.${p.data.id}.pack_quantity`, '0')
                 return
               }
-              if (get(e, 'target.value') != get(p, 'data.pack_quantity') && get(productData, 'id', false)) {
-                setOpenChangeQuantity({
-                  supply_price: get(p, 'data.supply_price'),
-                  name: `store_product.${p.data.id}`,
-                  measurement_value: get(e, 'target.value') - get(p, 'data.pack_quantity'),
-                  oldValue: get(p, 'data.pack_quantity'),
-                })
-              }
+              // if (get(e, 'target.value') != get(p, 'data.pack_quantity') && get(productData, 'id', false)) {
+              //   setOpenChangeQuantity({
+              //     supply_price: get(p, 'data.supply_price'),
+              //     name: `store_product.${p.data.id}`,
+              //     measurement_value: get(e, 'target.value') - get(p, 'data.pack_quantity'),
+              //     oldValue: get(p, 'data.pack_quantity'),
+              //   })
+              // }
             }}
             required
             defaultValue={get(p, 'data.pack_quantity')}
