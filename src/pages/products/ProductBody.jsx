@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material'
-import { get, method } from 'lodash'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { get } from 'lodash'
+import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -9,24 +9,23 @@ import AgGridTable from '../../../components/AgGridTable/AgGridTable'
 import CategoriesTree from '../../../components/CategoriesTree'
 import InputDatePicker from '../../../components/Inputs/InputDatePicker'
 import InputQuantity from '../../../components/Inputs/InputQuantity'
-import OutLineTextField from '../../../components/Inputs/OutLineTextField'
+import InputSearch from '../../../components/Inputs/InputSearch'
+import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
 import TextField from '../../../components/Inputs/TextField'
 import Label from '../../../components/Label'
 import SectionTitle from '../../../components/SectionTitle'
+import LazySelect from '../../../components/Select/LazySelect'
 import SelectSimple from '../../../components/Select/SelectSimple'
 import UploadImage from '../../../components/UploadImage'
-import { requests } from '../../../utils/requests'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import productStoresTableHeaderSelector from './productStoresTableHeaderSelector'
-import InputSearch from '../../../components/Inputs/InputSearch'
-import { error } from '../../../utils/toast'
-import MeasurementValueDialog from './MeasurementValueDialog'
-import useDebouncedValue from '../../hooks/useDebouncedValue'
-import LazySelect from '../../../components/Select/LazySelect'
-import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
-import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
 import getOptionsSchema from '../../../utils/getOptionsSchema'
-import dayjs from 'dayjs'
+import { requests } from '../../../utils/requests'
+import { error } from '../../../utils/toast'
+import useDebouncedValue from '../../hooks/useDebouncedValue'
+import { useQueryParams } from '../../hooks/useQueryParams'
+import MeasurementValueDialog from './MeasurementValueDialog'
+import productPriceTableHeaderSelector from './productPriceTableHeaderSelector'
+import productStoresTableHeaderSelector from './productStoresTableHeaderSelector'
+
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
@@ -34,6 +33,8 @@ export default function ProductBody({ productData = null }) {
   const [openChangeQuantity, setOpenChangeQuantity] = useState(false)
 
   const { columns, loading } = useSelector((state) => state.storesListTableColumnsForProduct)
+  const { columns: priceColumns, priceLoading } = useSelector((state) => state.productPriceListTableColumnsForProduct)
+
   const { values } = useQueryParams()
   const [storeSearchText, setStoreSearchText, debouncedValue] = useDebouncedValue(values?.search || '', 200)
   const [offsetCount, setOffsetCount] = useState(0)
@@ -54,6 +55,70 @@ export default function ProductBody({ productData = null }) {
       })
     }
   }
+  const applyAllPriceFunc = (id, type) => {
+    const supply_price_one = getValues(`store_product.${id}.supply_price`)
+    const retail_price_one = getValues(`store_product.${id}.retail_price`)
+    const vat_one = getValues(`store_product.${id}.vat`)
+    const expire_date_one = getValues(`store_product.${id}.expire_date`)
+    const markup_one = getValues(`store_product.${id}.markup`)
+    const bonus_percent_one = getValues(`store_product.${id}.bonus_percent`)
+    get(storeList, 'data.data.ids', []).map((id) => {
+      const supply_price = Number(getValues(`store_product.${id}.supply_price`))
+      const vat = Number(getValues(`store_product.${id}.vat`))
+      const markup = Number(getValues(`store_product.${id}.markup`))
+      const retail_price = Number(getValues(`store_product.${id}.retail_price`))
+
+      if (type === 'expire_date') {
+        setValue(`store_product.${id}.expire_date`, expire_date_one)
+      }
+      if (type === 'supply_price') {
+        setValue(`store_product.${id}.supply_price`, Number(supply_price_one))
+      }
+      if (type === 'retail_price') {
+        setValue(`store_product.${id}.retail_price`, Number(retail_price_one))
+      }
+      if (type === 'vat') {
+        setValue(`store_product.${id}.vat`, Number(vat_one))
+      }
+      if (type === 'markup') {
+        setValue(`store_product.${id}.markup`, Number(markup_one))
+      }
+      if (type === 'bonus_percent') {
+        setValue(`store_product.${id}.bonus_percent`, Number(bonus_percent_one))
+      }
+
+      if (type === 'supply_price' || type === 'vat' || type === 'markup') {
+        if (supply_price >= 0 && vat >= 0) {
+          setValue(`store_product.${id}.retail_price`, (supply_price / 100) * (vat + markup) + supply_price)
+        }
+      }
+      if (type === 'retail_price') {
+        if (supply_price >= 0 && vat >= 0) {
+          setValue(`store_product.${id}.markup`, ((retail_price - supply_price) * 100) / supply_price - vat)
+        }
+      }
+    })
+  }
+
+  const changeAmount = (inputName, id, value) => {
+    const supply_price = Number(getValues(`store_product.${id}.supply_price`))
+
+    const vat = Number(getValues(`store_product.${id}.vat`))
+    const markup = Number(getValues(`store_product.${id}.markup`))
+    const retail_price = Number(getValues(`store_product.${id}.retail_price`))
+
+    if (inputName === 'supply_price' || inputName === 'vat' || inputName === 'markup') {
+      if (supply_price >= 0 && vat >= 0) {
+        setValue(`store_product.${id}.retail_price`, (supply_price / 100) * (vat + markup) + supply_price)
+      }
+    }
+
+    if (inputName === 'retail_price') {
+      if (supply_price >= 0 && vat >= 0) {
+        setValue(`store_product.${id}.markup`, ((retail_price - supply_price) * 100) / supply_price - vat)
+      }
+    }
+  }
   const tableColumns = productStoresTableHeaderSelector({
     productsColumns: columns,
     t,
@@ -65,7 +130,22 @@ export default function ProductBody({ productData = null }) {
     setValues: setValue,
     getValues: getValues,
     applyAllFunc: applyAllFunc,
+    applyAllDateFunc: applyAllPriceFunc,
   })
+  const priceTableColumns = productPriceTableHeaderSelector({
+    productsColumns: priceColumns,
+    t,
+    values,
+    productData: productData,
+    register,
+    setOpenChangeQuantity,
+    register,
+    setValues: setValue,
+    getValues: getValues,
+    applyAllPriceFunc: applyAllPriceFunc,
+    changeAmount: changeAmount,
+  })
+
   const storeHistoryFilter = useMemo(() => {
     return {
       product_id: get(productData, 'id'),
@@ -91,47 +171,6 @@ export default function ProductBody({ productData = null }) {
     },
   })
 
-  const changeAmount = (inputName, value) => {
-    const supply_price = Number(getValues('supply_price'))
-
-    const vat = Number(getValues('vat'))
-    const markup = Number(getValues('markup'))
-    const retail_price = Number(getValues('retail_price'))
-    const bonus_percent = Number(getValues('bonus_percent'))
-    const bonus_amount = Number(getValues('bonus_amount'))
-    const vat_price = Number(getValues('vat_price'))
-    if (inputName === 'supply_price' || inputName === 'vat') {
-      if (supply_price >= 0 && vat >= 0) {
-        setValue('retail_price', (supply_price / 100) * (vat + markup) + supply_price)
-        setValue('vat_price', (supply_price / 100) * vat)
-      }
-    }
-    if (inputName === 'vat_price') {
-      if (supply_price >= 0 && vat_price >= 0) {
-        setValue('vat', (vat_price * 100) / supply_price)
-      }
-    }
-    if (inputName === 'markup') {
-      if (supply_price >= 0 && vat >= 0) {
-        setValue('retail_price', (supply_price / 100) * (vat + markup) + supply_price)
-      }
-    }
-    if (inputName === 'retail_price' || inputName === 'bonus_percent') {
-      if (supply_price >= 0 && vat >= 0) {
-        setValue('markup', ((retail_price - supply_price) * 100) / supply_price - vat)
-      }
-
-      if (retail_price >= 0) {
-        setValue('bonus_amount', (retail_price * bonus_percent) / 100)
-      }
-    }
-
-    if (inputName === 'bonus_amount') {
-      if (retail_price >= 0) {
-        setValue('bonus_percent', (bonus_amount * 100) / retail_price)
-      }
-    }
-  }
   useEffect(() => {
     refetchShopList().then(({ data }) => {
       get(data, 'data.data.data', []).map((store) => {
@@ -157,13 +196,15 @@ export default function ProductBody({ productData = null }) {
     if (productData) {
       setValue('name', productData?.name)
       setImages(productData?.photos?.map((item) => ({ file_name: item, file_url: item })))
-      setValue('supply_price', productData?.supply_price || 0)
-      setValue('retail_price', productData?.retail_price || 0)
-      setValue('vat', productData?.vat || 0)
-      setValue('vat_price', productData?.vat_price || 0)
-      setValue('bonus_amount', productData?.bonus_amount || 0)
-      setValue('markup', productData?.markup || 0)
-      setValue('bonus_percent', productData?.bonus_percent || 0)
+
+      // setValue('supply_price', productData?.supply_price || 0)
+      // setValue('retail_price', productData?.retail_price || 0)
+      // setValue('vat', productData?.vat || 0)
+      // setValue('vat_price', productData?.vat_price || 0)
+      // setValue('bonus_amount', productData?.bonus_amount || 0)
+      // setValue('markup', productData?.markup || 0)
+      // setValue('bonus_percent', productData?.bonus_percent || 0)
+
       setValue('description', productData?.description || '')
       setValue('manufacturer', getOptionsSchema(get(productData, 'producer', []), Object))
       setValue('shelf_id', getOptionsSchema(get(productData, 'shelf', []), Object))
@@ -327,7 +368,7 @@ export default function ProductBody({ productData = null }) {
           </Box>
         </Box>
         <Box display={'flex'} width={'100%'} mt={'24px'}>
-          <InputDatePicker
+          {/* <InputDatePicker
             defaultValue={new Date()}
             name='expire_date'
             minDate={new Date()}
@@ -335,7 +376,7 @@ export default function ProductBody({ productData = null }) {
             id='expire_date'
             label='Дата срока'
             placeholder='Дата срока'
-          />
+          /> */}
           <Box width={'20px'} />
           {/* <Box maxWidth={'200px'}> */}
           <LazySelect
@@ -395,143 +436,7 @@ export default function ProductBody({ productData = null }) {
             sx={{ mb: 3 }}
           />
         </Box>
-        <Box height={'56px'} />
-        <SectionTitle noWrap withLine>
-          {t('create_new_product.create_packages.price')}
-        </SectionTitle>
-        <Box alignItems='flex-end' width='100%' columnGap={3} flexDirection={'column'} display='inline-flex' my={3}>
-          <Box display={'flex'} width={'100%'}>
-            <NumberFormatInput
-              adornment={'UZS'}
-              adornmentPosition='end'
-              required
-              type='number'
-              minNumber={1}
-              onBlur={(e) => changeAmount('supply_price', e)}
-              fullWidth
-              borderRadius={'40px'}
-              InputProps={{
-                onwheel: (e) => e.currentTarget.blur(), // Disable scrolling
-              }}
-              name='supply_price'
-              label={t('create_new_product.supply_price')}
-              placeholder={t('create_new_product.supply_price.placeholder')}
-            />
-            {/* <OutLineTextField
-              endAdornmentText={'UZS'}
-              required
-              type='number'
-              onBlur={(e) => changeAmount('supply_price', e)}
-              fullWidth
-              borderRadius={'40px'}
-              InputProps={{
-                onwheel: (e) => e.currentTarget.blur(), // Disable scrolling
-              }}
-              name='supply_price'
-              label={t('create_new_product.supply_price')}
-              placeholder={t('create_new_product.supply_price.placeholder')}
-            /> */}
-            <Box width={'20px'} />
-            <NumberFormatInput
-              endAdornmentText={'%'}
-              required
-              onBlur={(e) => changeAmount('markup', e)}
-              type='number'
-              fullWidth
-              minNumber={1}
-              InputProps={{
-                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
-              }}
-              borderRadius={'40px'}
-              name='markup'
-              label={'Наценка'}
-              placeholder={'Наценка'}
-            />
-            <Box width={'20px'} />
-            <NumberFormatInput
-              endAdornmentText={'UZS'}
-              required
-              type='number'
-              minNumber={1}
-              onBlur={(e) => changeAmount('retail_price', e)}
-              InputProps={{
-                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
-              }}
-              fullWidth
-              borderRadius={'40px'}
-              name='retail_price'
-              label={t('create_new_product.retail_price') + ' с НДС'}
-              placeholder={t('create_new_product.retail_price.placeholder')}
-            />
-          </Box>
-          <Box mt={'24px'} display={'flex'} width={'100%'}>
-            <NumberFormatInput
-              endAdornmentText={'%'}
-              minNumber={1}
-              required
-              type='number'
-              fullWidth
-              borderRadius={'40px'}
-              onBlur={(e) => changeAmount('vat', e)}
-              InputProps={{
-                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
-              }}
-              name='vat'
-              defaultValue={12}
-              label={t('create_new_product.vat')}
-              placeholder={t('create_new_product.vat.placeholder')}
-            />
-            <Box width={'20px'} />
 
-            <NumberFormatInput
-              endAdornmentText={'UZS'}
-              required
-              type='number'
-              minNumber={1}
-              fullWidth
-              borderRadius={'40px'}
-              onBlur={(e) => changeAmount('vat_price', e)}
-              InputProps={{
-                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
-              }}
-              name='vat_price'
-              label={t('create_new_product.vat_price')}
-              placeholder={t('create_new_product.vat_price.placeholder')}
-            />
-          </Box>
-          <Box mt={'24px'} display={'flex'} width={'100%'}>
-            <NumberFormatInput
-              endAdornmentText={'%'}
-              type='number'
-              fullWidth
-              borderRadius={'40px'}
-              InputProps={{
-                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
-              }}
-              minNumber={0}
-              onBlur={(e) => changeAmount('bonus_percent', e)}
-              name='bonus_percent'
-              label={'Бонусный процент'}
-              placeholder={'Введите бонусный процент'}
-            />
-            <Box width={'20px'} />
-
-            <NumberFormatInput
-              endAdornmentText={'UZS'}
-              type='number'
-              fullWidth
-              minNumber={0}
-              onBlur={(e) => changeAmount('bonus_amount', e)}
-              borderRadius={'40px'}
-              InputProps={{
-                onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
-              }}
-              name='bonus_amount'
-              label={'Цена бонуса'}
-              placeholder={'Введите бонусный цена'}
-            />
-          </Box>
-        </Box>
         <Box height={'56px'} />
         <MeasurementValueDialog setValue={setValue} open={openChangeQuantity} setOpen={setOpenChangeQuantity} />
         <SectionTitle noWrap withLine>
@@ -566,12 +471,70 @@ export default function ProductBody({ productData = null }) {
             isRefreshing={false}
           />
         </Box>
+        <Box height={'50px'} />
+        <Box mt={'24px'}>
+          <AgGridTable
+            id='products-main-feftables'
+            tableSettings
+            columns={priceTableColumns}
+            data={get(storeList, 'data.data.data')}
+            totalCount={storeList?.data?.data?._meta?.total_count || 0}
+            pagination
+            offsetQuery='offsetStore'
+            limitQuery='limitStore'
+            isDataLoading={false}
+            offsetCount={offsetCount}
+            fullInfoAboutCurrentPage
+            resetTable={() => dispatch(resetTableHeader({ refetch }))}
+            isRefreshing={false}
+          />
+        </Box>
+        {/* <Box height={'50px'} />
+
+        <Box mt={'24px'}>
+          <AgGridTable
+            id='products-main-feftables'
+            tableSettings
+            columns={bonusPriceTableColumns}
+            data={get(storeList, 'data.data.data')}
+            totalCount={storeList?.data?.data?._meta?.total_count || 0}
+            pagination
+            offsetQuery='offsetStore'
+            limitQuery='limitStore'
+            isDataLoading={false}
+            offsetCount={offsetCount}
+            fullInfoAboutCurrentPage
+            resetTable={() => dispatch(resetTableHeader({ refetch }))}
+            isRefreshing={false}
+          />
+        </Box>
+        <Box height={'50px'} />
+
+        <Box mt={'24px'}>
+          <AgGridTable
+            id='products-main-feftables'
+            tableSettings
+            columns={vatPriceTableColumns}
+            data={get(storeList, 'data.data.data')}
+            totalCount={storeList?.data?.data?._meta?.total_count || 0}
+            pagination
+            offsetQuery='offsetStore'
+            limitQuery='limitStore'
+            isDataLoading={false}
+            offsetCount={offsetCount}
+            fullInfoAboutCurrentPage
+            resetTable={() => dispatch(resetTableHeader({ refetch }))}
+            isRefreshing={false}
+          />
+        </Box> */}
+
         <Box height={'56px'} />
         <SectionTitle noWrap withLine>
           {t('create_new_product.additional_information.category')}
         </SectionTitle>
         <CategoriesTree />
-        <Box height={'24px'} />
+
+        <Box height={'30px'} />
         <TextField borderRadius={'20px'} required multiline fullWidth name='description' label='Описание' placeholder='Введите описание' />
       </Box>
     </Box>

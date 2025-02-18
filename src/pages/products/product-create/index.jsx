@@ -41,7 +41,7 @@ export default function ProductCreatePage() {
       bonus_amount: Number(get(data, 'bonus_amount')),
       bonus_percent: Number(get(data, 'bonus_percent')),
       description: get(data, 'description'),
-      expire_date: get(data, 'expire_date'),
+      // expire_date: get(data, 'expire_date'),
       producer_id: get(data, 'manufacturer.value'),
       shelf_id: get(data, 'shelf_id.value'),
 
@@ -61,16 +61,21 @@ export default function ProductCreatePage() {
       status: 'active',
       store_id: get(userData, 'store_id'),
       store_product: Object.values(get(data, 'store_product'))
-        .filter((item) => Number(get(item, 'pack_quantity'), 0) > 0)
+        .filter((item) => Number(get(item, 'pack_quantity'), 0) > 0 && Number(get(item, 'retail_price'), 0) > 0 && Number(get(item, 'markup'), 0) > 0)
         .map((item) => ({
-          ...item,
+          // ...item,
+          sum: Number(get(item, 'retail_price', 0)),
+          supply_price: Number(get(item, 'supply_price', 0)),
+          vat: Number(get(item, 'vat', 0)),
+          bonus_percent: Number(get(item, 'bonus_percent', 0)),
+          markup: Number(get(item, 'markup', 0)),
           pack_quantity: Number(get(item, 'pack_quantity', 0)),
           small_quantity: Number(get(item, 'small_quantity', 0)),
         })),
-      sum: Number(get(data, 'retail_price')),
-      supply_price: Number(get(data, 'supply_price')),
-      vat: Number(get(data, 'vat')),
-      vat_price: Number(get(data, 'vat_price')),
+      // sum: Number(get(data, 'retail_price')),
+      // supply_price: Number(get(data, 'supply_price')),
+      // vat: Number(get(data, 'vat')),
+      // vat_price: Number(get(data, 'vat_price')),
     }
 
     createProduct(requestBody)

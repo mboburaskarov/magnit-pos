@@ -19,7 +19,17 @@ import { toFlot } from '../../../../utils/parseFormatNumberToFloat'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
+      sx={{
+        display: '-webkit-box',
+        overflow: 'hidden',
+        wordWrap: 'break-word',
+        textOverflow: 'ellipsis',
+        '-webkit-box-orient': 'vertical',
+        '-webkit-line-clamp': '3',
+        whiteSpace: 'pre-line',
+        color: !data?.[type] && 'gray.400',
+        textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through',
+      }}
       id={`product-${type}-${rowIndex}`}
     >
       {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}

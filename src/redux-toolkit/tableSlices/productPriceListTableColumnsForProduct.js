@@ -14,28 +14,40 @@ const columns = [
     width: 194,
   },
   {
-    field: 'amount',
+    field: 'supply_price',
     hide: false,
     minWidth: 70,
     width: 220,
   },
 
   {
-    field: 'min_amount',
+    field: 'markup',
+    hide: false,
+    minWidth: 70,
+    width: 150,
+  },
+  {
+    field: 'vat',
+    hide: false,
+    minWidth: 70,
+    width: 150,
+  },
+  {
+    field: 'retail_price',
     hide: false,
     minWidth: 70,
     width: 220,
   },
   {
-    field: 'expire_date',
+    field: 'bonus_percent',
     hide: false,
     minWidth: 70,
-    width: 220,
+    width: 150,
   },
 ]
 
-const storesListTableColumnsForProduct = createSlice({
-  name: 'storesListTableColumnsForProduct',
+const productPriceListTableColumnsForProduct = createSlice({
+  name: 'productPriceListTableColumnsForProduct',
   initialState: {
     columns,
     loading: false,
@@ -75,5 +87,5 @@ const storesListTableColumnsForProduct = createSlice({
 })
 
 export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
-  storesListTableColumnsForProduct.actions
-export const storesListTableColumnsForProductSlice = storesListTableColumnsForProduct.reducer
+  productPriceListTableColumnsForProduct.actions
+export const productPriceListTableColumnsForProductSlice = productPriceListTableColumnsForProduct.reducer

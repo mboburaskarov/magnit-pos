@@ -234,6 +234,10 @@
 /*  Rows */
 .ag-theme-alpine .ag-row {
   border-color: #a4a5ab1a;
+  z-index: 9;
+}
+.ag-theme-alpine .ag-row-no-focus {
+  z-index: 8;
 }
 
 .ag-row::before {
@@ -269,6 +273,7 @@
 .ag-theme-alpine .ag-cell,
 .ag-theme-alpine .ag-full-width-row .ag-cell-wrapper.ag-row-group {
   line-height: unset;
+  z-index: 9;
 }
 
 .ag-theme-alpine .ag-cell-highlight {

@@ -178,12 +178,10 @@ function InputQuantity({
         multiline={multiline}
         onWheel={(e) => {
           e.target.blur()
-
           e.stopPropagation()
-
-          setTimeout(() => {
-            e.target.focus()
-          }, 0)
+          //   setTimeout(() => {
+          //     e.target.focus()
+          //   }, 0)
         }}
         // onFocus={(e) => setApplyAll(true)}
         autoComplete='off'

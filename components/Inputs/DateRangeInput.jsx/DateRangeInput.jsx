@@ -75,12 +75,17 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
         to: dayjs(values?.end_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.end_date, 'DD.MM.YYYY').toDate() : today,
         enteredTo: dayjs(values?.end_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.end_date, 'DD.MM.YYYY').toDate() : today,
       })
+
+      setCustomDateRangeSelected(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
+      setselectedId(customDateRanges().find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today')
     } else if (values?.start_date) {
       setDateState({
         from: dayjs(values?.start_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.start_date, 'DD.MM.YYYY').toDate() : today,
         to: dayjs(values?.start_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.start_date, 'DD.MM.YYYY').toDate() : today,
         enteredTo: dayjs(values?.start_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.start_date, 'DD.MM.YYYY').toDate() : today,
       })
+      setCustomDateRangeSelected(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
+      setselectedId(customDateRanges().find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today')
     }
   }, [values?.start_date, values?.end_date])
 
@@ -135,7 +140,9 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
   }
 
   const [customDateRangeSelected, setCustomDateRangeSelected] = useState(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
-
+  const [selectedId, setselectedId] = useState(
+    customDateRanges().find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today'
+  )
   return (
     <Box minWidth={163}>
       <ButtonWithPopup
@@ -161,7 +168,10 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
         }
         popperContentProps={{
           customDateRanges: customDateRanges(),
-          onCustomRangeSelect: (name) => setCustomDateRangeSelected(name),
+          onCustomRangeSelect: (name) => {
+            setselectedId(name)
+          },
+          selectedRange: selectedId, // ✅ Pass selected range
           isFilter: true,
           dateState: {
             from: dateState.from,

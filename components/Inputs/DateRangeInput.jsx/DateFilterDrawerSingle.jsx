@@ -225,6 +225,7 @@ export default function DateFilterDrawerSingle({
   onCustomRangeSelect,
   dayDifference,
   handleChangeDate,
+  selectedRange,
   setDateState,
   dateState,
   onClose,
@@ -368,7 +369,7 @@ export default function DateFilterDrawerSingle({
                   onClick={() => {
                     if (handleChangeDate) handleChangeDate(item?.id)
                     if (onCustomRangeSelect) label.current = item.label
-
+                    onCustomRangeSelect(item?.id)
                     setDateState({
                       from: new Date(item?.values?.[0]?.split('.')?.reverse()?.join('-')),
                       to: item?.values?.[1] ? new Date(item?.values?.[1]?.split('.')?.reverse()?.join('-')) : null,
@@ -378,11 +379,20 @@ export default function DateFilterDrawerSingle({
                   key={index}
                   fullWidth
                   secondary
-                  sx={{ borderRadius: 4, marginBottom: 2, height: '54px', justifyContent: 'flex-start' }}
+                  sx={{
+                    borderRadius: 4,
+                    backgroundColor: selectedRange == item?.id ? '#fe5000 !important' : '#fff',
+                    marginBottom: 2,
+                    color: selectedRange == item?.id ? '#fff !important' : '#000',
+                    height: '54px',
+                    justifyContent: 'flex-start',
+                  }}
                 >
                   <Box pl={1} display='flex' flexDirection='column' alignItems='flex-start'>
                     <b>{item.label}</b>
-                    <Typography>{item.values[0] === item.values[1] ? item.values[0] : item.values?.join(' - ')}</Typography>
+                    <Typography color={selectedRange == item?.id ? '#fff !important' : '#000'}>
+                      {item.values[0] === item.values[1] ? item.values[0] : item.values?.join(' - ')}
+                    </Typography>
                   </Box>
                 </Button>
               ))}

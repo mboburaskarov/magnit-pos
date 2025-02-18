@@ -268,7 +268,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'Клиент',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + p.data?.phone)}>
+          <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + get(p, 'data.customer.phone', 'xxx xx xxx xx xx'))}>
             <Box display={'flex'} alignItems={'center'}>
               {p.data?.image ? (
                 <img style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data?.image)} />

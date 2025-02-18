@@ -250,14 +250,18 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
   useHotkeys('ArrowDown', (event) => selectDownItems(event), { enableOnFormTags: true })
   useHotkeys(
     'Enter',
-    (event) =>
-      !['client-search-bar', 'product-search'].includes(document.activeElement.id) &&
-      handleAddProduct({
-        discount_type: get(discount, 'type', 'percent'),
-        discount_value: Number(get(discount, 'amount', 0)),
-        store_product_id: document.activeElement.id,
-        sale_id: id,
-      }),
+    (event) => {
+      if (!['client-search-bar', 'product-search'].includes(document.activeElement.id)) {
+        setSearchTerm('')
+        setShowOverlay(false)
+        handleAddProduct({
+          discount_type: get(discount, 'type', 'percent'),
+          discount_value: Number(get(discount, 'amount', 0)),
+          store_product_id: document.activeElement.id,
+          sale_id: id,
+        })
+      }
+    },
     {
       enableOnFormTags: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
@@ -284,13 +288,16 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
               setShowOverlay(true)
             }}
             onKeyDown={({ key }) => {
-              key == 'Enter' &&
+              if (key == 'Enter') {
+                setSearchTerm('')
+                setShowOverlay(false)
                 handleAddProduct({
                   discount_type: get(discount, 'type', 'percent'),
                   discount_value: Number(get(discount, 'amount', 0)),
                   sale_id: id,
                   store_product_id: productsData?.[0]?.id,
                 })
+              }
             }}
           />
           <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>

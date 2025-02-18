@@ -73,7 +73,7 @@ export default function Navbar() {
         </nav>
       </div>
 
-      <UserDrawer isOpen={isUserOpen} closeDrawer={() => setIsUserOpen(null)} />
+      <UserDrawer isOpen={isUserOpen} userData={user_data} closeDrawer={() => setIsUserOpen(null)} />
     </>
   )
 }

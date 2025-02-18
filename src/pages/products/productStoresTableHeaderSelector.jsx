@@ -3,6 +3,7 @@ import { get } from 'lodash'
 import { memo } from 'react'
 import InputQuantity from '../../../components/Inputs/InputQuantity'
 import thousandDivider from '../../../utils/thousandDivider'
+import InputDatePicker from '../../../components/Inputs/InputDatePicker'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -12,7 +13,16 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function productStoresTableHeaderSelector({ productsColumns, setValues, setOpenChangeQuantity, productData, values, t, applyAllFunc }) {
+export default function productStoresTableHeaderSelector({
+  productsColumns,
+  setValues,
+  setOpenChangeQuantity,
+  productData,
+  values,
+  t,
+  applyAllFunc,
+  applyAllDateFunc,
+}) {
   const columns = productsColumns?.map((el) => {
     if (el.field === 'name') {
       return {
@@ -54,16 +64,12 @@ export default function productStoresTableHeaderSelector({ productsColumns, setV
             adornment={p.data?.measurement_unit?.short_name}
             adornmentPosition='end'
             onFocus={({ target }) => {
-              console.log('focus')
-
               if (Number(get(target, 'value')) == 0) {
                 setValues(`store_product.${p.data.id}.pack_quantity`, '')
                 return
               }
             }}
             onBlur={(e) => {
-              console.log('bluuer')
-
               if (Number(get(e, 'target.value')) == '') {
                 setValues(`store_product.${p.data.id}.pack_quantity`, '0')
                 return
@@ -111,8 +117,29 @@ export default function productStoresTableHeaderSelector({ productsColumns, setV
             fullWidth
             required
             type='number'
-            // defaultValue={get(p, 'data.small_quantity')}
             disabled={false}
+          />
+        )),
+      }
+    }
+    if (el.field === 'expire_date') {
+      return {
+        ...el,
+        headerName: 'Небольшое количество',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <InputDatePicker
+            noMarginTop
+            // defaultValue={new Date()}
+            name={`store_product.${p.data.id}.expire_date`}
+            minDate={new Date()}
+            aplyAllFunc={() => applyAllDateFunc(p.data.id, 'expire_date')}
+            required
+            applyAll={true}
+            canApplyAll={true}
+            id={`store_product.${p.data.id}.expire_date`}
+            // label='Дата срока'
+            placeholder='Дата срока'
           />
         )),
       }

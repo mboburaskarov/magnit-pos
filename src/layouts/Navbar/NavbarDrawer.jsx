@@ -126,7 +126,7 @@ function NavbarDrawer({
         </Box>
       </List>
       {isNewSalePage && (
-        <ListItem width={'100% !important'} className={`${classes.currentNavBarUser} drawer_user_avatar`} id='avatar'>
+        <ListItem onClick={() => setIsUserOpen(true)} width={'100% !important'} className={`${classes.currentNavBarUser} drawer_user_avatar`} id='avatar'>
           <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
             <Box className={classes.avatarPlaceholder}>
               <img src={get(userData, 'photo')} />

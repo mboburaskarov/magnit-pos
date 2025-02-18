@@ -120,6 +120,17 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.gray[100],
     },
   },
+  applyAll: {
+    position: 'absolute',
+    top: 0,
+    right: 15,
+    zIndex: 9,
+    backgroundColor: theme.palette.orange[500],
+    color: theme.palette.white,
+    padding: '2px 8px',
+
+    borderRadius: 10,
+  },
 }))
 
 const currentYear = new Date().getFullYear()
@@ -282,9 +293,14 @@ function InputDatePicker({
   customRadius,
   withTime,
   dashed,
+
+  canApplyAll = true,
+  aplyAllFunc,
+  applyAll,
 }) {
   const classes = useStyles({ disabled, customRadius, dashed })
   const methods = useFormContext()
+  const [isApplyAll, setApplyAll] = useState(false)
   const { palette } = useTheme()
 
   return (
@@ -356,64 +372,86 @@ function InputDatePicker({
             }),
           }}
           render={({ field: { onChange: onFieldChange, value: fieldValue }, fieldState: { error } }) => (
-            <DatePicker
-              id={id}
-              dateFormat={withTime ? 'yyyy.MM.dd | HH:mm' : 'yyyy.MM.dd'}
-              selected={fieldValue}
-              showTimeInput={withTime}
-              onChange={(date) => {
-                // Ensure the date is valid before calling onChange
-                if (date && new Date(date).getFullYear() <= 2100) {
-                  onFieldChange(date)
-                }
-              }}
-              placeholderText={placeholder}
-              popperClassName='datepicker'
-              popperPlacement={withTime && 'right-end'}
-              calendarStartDay={1}
-              disabled={disabled}
-              minDate={minDate}
-              maxDate={maxDate}
-              customTimeInput={<CustomTimeInput />}
-              renderCustomHeader={({ date, changeYear, changeMonth, decreaseMonth, increaseMonth }) => (
-                <YearMonthFormNew
-                  fromMonthCustom={fromMonthCustom}
-                  date={date}
-                  changeYear={changeYear}
-                  changeMonth={changeMonth}
-                  decreaseMonth={decreaseMonth}
-                  increaseMonth={increaseMonth}
-                />
-              )}
-              customInput={
-                <TextField
-                  variant='outlined'
-                  fullWidth
-                  error={!!error}
-                  helperText={error ? error.message : ''}
-                  className={noMarginTop && classes.noMargin}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment sx={{ paddingRight: 1 }} position='start'>
-                        {fieldValue && isClearable ? (
-                          <button
-                            className={classes.clearButton}
-                            onClick={() => {
-                              onFieldChange(null)
-                            }}
-                            type='button'
-                          >
-                            <DeleteSmallIcon />
-                          </button>
-                        ) : (
-                          <CalendarIcon />
-                        )}
-                      </InputAdornment>
-                    ),
+            <>
+              {applyAll && isApplyAll && (
+                <Box
+                  onClick={() => {
+                    aplyAllFunc(), setApplyAll(false)
                   }}
-                />
-              }
-            />
+                  className={classes.applyAll}
+                >
+                  Применить ко всем
+                </Box>
+              )}
+              <DatePicker
+                id={id}
+                dateFormat={withTime ? 'yyyy.MM.dd | HH:mm' : 'yyyy.MM.dd'}
+                selected={fieldValue}
+                showTimeInput={withTime}
+                onChange={(date) => {
+                  // Ensure the date is valid before calling onChange
+                  if (date && new Date(date).getFullYear() <= 2100) {
+                    onFieldChange(date)
+                  }
+                }}
+                placeholderText={placeholder}
+                popperClassName='datepicker'
+                popperPlacement={withTime && 'right-end'}
+                calendarStartDay={1}
+                disabled={disabled}
+                minDate={minDate}
+                maxDate={maxDate}
+                customTimeInput={<CustomTimeInput />}
+                renderCustomHeader={({ date, changeYear, changeMonth, decreaseMonth, increaseMonth }) => (
+                  <YearMonthFormNew
+                    fromMonthCustom={fromMonthCustom}
+                    date={date}
+                    changeYear={changeYear}
+                    changeMonth={changeMonth}
+                    decreaseMonth={decreaseMonth}
+                    increaseMonth={increaseMonth}
+                  />
+                )}
+                customInput={
+                  <TextField
+                    variant='outlined'
+                    fullWidth
+                    error={!!error}
+                    helperText={error ? error.message : ''}
+                    className={noMarginTop && classes.noMargin}
+                    InputProps={{
+                      onBlur: (e) => {
+                        setTimeout(() => {
+                          setApplyAll(false)
+                        }, 200)
+                        // onBlur(e)
+                      },
+                      onFocus: (e) => {
+                        canApplyAll && setApplyAll(true)
+                        // onFocus(e)
+                      },
+                      endAdornment: (
+                        <InputAdornment sx={{ paddingRight: 1 }} position='start'>
+                          {fieldValue && isClearable ? (
+                            <button
+                              className={classes.clearButton}
+                              onClick={() => {
+                                onFieldChange(null)
+                              }}
+                              type='button'
+                            >
+                              <DeleteSmallIcon />
+                            </button>
+                          ) : (
+                            <CalendarIcon />
+                          )}
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                }
+              />
+            </>
           )}
           control={methods.control}
           defaultValue={defaultValue ?? ''}
