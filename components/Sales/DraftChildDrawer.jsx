@@ -93,7 +93,6 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   useEffect(() => {
     refetch()
   }, [open])
-  console.log(darftChildList)
 
   const theme = useTheme()
   return (

@@ -101,16 +101,6 @@ export default function CreateAutoOrder({ open, refetch, setOpen }) {
                 InputProps={{
                   onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
                 }}
-                onFocus={({ target }) => {
-                  if (Number(get(target, 'value')) == 0) {
-                    setValue(`interval_day`, '')
-                  }
-                }}
-                onBlur={({ target }) => {
-                  if (Number(get(target, 'value')) == '') {
-                    setValue(`interval_day`, '0')
-                  }
-                }}
                 // defaultValue={get(p, 'data.small_quantity')}
                 disabled={false}
               />

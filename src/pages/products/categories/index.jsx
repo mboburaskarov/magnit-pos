@@ -1,73 +1,35 @@
 import { Box, Button } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-// import InputSearch from 'components/Input/InputSearch'
-// import PaginationTable from 'components/Table/PaginationTable'
-// import useDebouncedValue from 'hooks/useDebouncedValue'
-// import { useQueryParams } from 'hooks/useQueryParams'
-import useWebsocketMutation from '../../../hooks/useDebouncedValue'
-import qs from 'qs'
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-// import { requests } from 'services/requests'
-import asyncRemoveCustomColumns from './index'
-import removeCustomColumn from './index'
-import { error, success } from '../../../../utils/toast'
-import tableHeadersCategories from './tableHeadersCategories'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import useDebouncedValue from '../../../hooks/useDebouncedValue'
-import InputSearch from '../../../../components/Inputs/InputSearch'
 import PaginationTable from '../../../../components/AgGridTable/PaginationTable'
-import { requests } from '../../../../utils/requests'
-import CreateEditCategories from '../../../../components/CreateEditCategories'
-import PlusIcon from '../../../assets/icons/PlusIcon'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
+import CreateEditCategories from '../../../../components/CreateEditCategories'
+import InputSearch from '../../../../components/Inputs/InputSearch'
+import { requests } from '../../../../utils/requests'
+import { error, success } from '../../../../utils/toast'
 import BigWarningCircleIcon from '../../../assets/icons/BigWarningCircleIcon'
-
-const useStyles = makeStyles((theme) => ({
-  backButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    display: 'flex',
-    width: 48,
-    height: 48,
-    background: theme.palette.gray[100],
-    borderRadius: 32,
-    transition: 'background 0.2s',
-    cursor: 'pointer',
-    '&:hover': {
-      background: theme.palette.gray[101],
-    },
-  },
-  title: {
-    fontSize: 36,
-    lineHeight: '56px',
-    color: theme.palette.black,
-    marginLeft: 16,
-  },
-}))
+import PlusIcon from '../../../assets/icons/PlusIcon'
+import useDebouncedValue from '../../../hooks/useDebouncedValue'
+import { useQueryParams } from '../../../hooks/useQueryParams'
+import tableHeadersCategories from './tableHeadersCategories'
 
 export default function CatalogManagement() {
-  const classes = useStyles()
   const queryParams = useQueryParams()
-  const navigate = useNavigate()
   const { t } = useTranslation()
   const { values } = useQueryParams()
-  const dispatch = useDispatch()
   const [type, setType] = useState('categories')
   const [status, setStatus] = useState('')
-  const [pageCount, setPageCount] = useState(1)
   const [categoryDrawer, setCategoryDrawer] = useState(false)
   const [createEdit, setCreateEdit] = useState(null)
   const [openConfirm, setOpenConfirm] = useState(null)
   const [searchTerm, setSearchTerm, debouncedSearchTerm] = useDebouncedValue('', 300)
   const [confirmToDelete, setConfirmToDelete] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
-  const closeDrawer = useCallback(() => {
-    setCreateEdit(null)
-  }, [])
 
   const categoryFilter = useMemo(() => {
     return {

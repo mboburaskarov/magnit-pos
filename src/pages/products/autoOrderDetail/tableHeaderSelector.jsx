@@ -127,15 +127,7 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
             required
             defaultValue={p?.data?.kvant}
             type='number'
-            onFocus={({ target }) => {
-              if (Number(get(target, 'value')) == 0) {
-                setValue(`store_product.${p.data.id}.kvant`, '')
-              }
-            }}
             onBlur={({ target }) => {
-              if (Number(get(target, 'value')) == '') {
-                setValue(`store_product.${p.data.id}.kvant`, '0')
-              }
               if (Number(toFlot(get(target, 'value'))) == p?.data?.kvant) {
                 return
               }
@@ -197,16 +189,7 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
             required
             defaultValue={p?.data?.max_stock}
             type='number'
-            onFocus={({ target }) => {
-              if (Number(get(target, 'value')) == 0) {
-                setValue(`store_product.${p.data.id}.max_stock`, '')
-              }
-            }}
             onBlur={({ target }) => {
-              if (Number(get(target, 'value')) == '') {
-                setValue(`store_product.${p.data.id}.max_stock`, '0')
-              }
-
               if (Number(toFlot(get(target, 'value'))) == p?.data?.max_stock) {
                 return
               }
@@ -295,15 +278,7 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
             required
             defaultValue={p?.data?.suggested_order_quantity}
             type='number'
-            onFocus={({ target }) => {
-              if (Number(get(target, 'value')) == 0) {
-                setValue(`store_product.${p.data.id}.suggested_order`, '')
-              }
-            }}
             onBlur={({ target }) => {
-              if (Number(get(target, 'value')) == '') {
-                setValue(`store_product.${p.data.id}.suggested_order`, '0')
-              }
               if (Number(toFlot(get(target, 'value'))) == p?.data?.suggested_order_quantity) {
                 return
               }

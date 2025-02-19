@@ -15,8 +15,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 function DraftChildItemsBox({ item, setIsOpenChild }) {
-  console.log(item)
-
   const classes = useStyles()
   return (
     <Box display={'flex'} mb={'10px'} height={'80px'} justifyContent={'space-between'}>

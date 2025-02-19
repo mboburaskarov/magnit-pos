@@ -250,6 +250,9 @@ function NewSale() {
       }
     }
   }
+  useEffect(() => {
+    setInputDiscount(0)
+  }, [discount])
   const focusUnitInput = (event) => {
     if (event.key === 'ArrowRight' && !event.shiftKey) {
       const activeInput = document.activeElement
@@ -262,18 +265,27 @@ function NewSale() {
         }
       }
     }
-    // if (event.key === 'ArrowLeft' && !event.shiftKey) {
-    //   const activeInput = document.activeElement
-    //   if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
-    //     console.log('Active inputss name:', activeInput.name.split('quantity_'), cartItemRef)
-    //     let unitId = activeInput.name.split('unit_')
-    //     const nextInput = cartItemRef.current[unitId[1]]
+    if (event.key === 'ArrowLeft' && !event.shiftKey) {
+      const activeInput = document.activeElement
+      if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
+        let unitId = activeInput.name.split('unit_quantity_')
 
-    //     if (nextInput) {
-    //       nextInput.focus()
-    //     }
-    //   }
-    // }
+        const nextInput = cartItemRef.current.find((el) => el.name == `quantity_${unitId[1]}`)
+        if (nextInput) {
+          nextInput.focus()
+        }
+      }
+    }
+  }
+  const focusedItemDetailDrawerOpen = (event) => {
+    if (event.key === 'Shift') {
+      const activeInput = document.activeElement
+      if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
+        let unitId = activeInput.name.split('quantity_')
+
+        setOpenProductDrawer(get(cartItemsList, 'data.data.data', []).find((el) => el.id == unitId[1]))
+      }
+    }
   }
 
   const searchResult = useQuery(
@@ -434,7 +446,8 @@ function NewSale() {
   }, [debouncedSearchTerm])
 
   useHotkeys('tab', (event) => focusPackInput(event), { enableOnFormTags: true })
-  useHotkeys('ArrowRight', (event) => focusUnitInput(event), { enableOnFormTags: true })
+  useHotkeys(['ArrowRight', 'ArrowLeft'], (event) => focusUnitInput(event), { enableOnFormTags: true })
+  useHotkeys('Shift', (event) => focusedItemDetailDrawerOpen(event), { enableOnFormTags: true })
   useHotkeys('t', () => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
@@ -749,7 +762,7 @@ function NewSale() {
             {discount === 'cash' &&
               [5, 10, 50, 100].map((el, index) => (
                 <Box
-                  sx={{ cursor: 'pointer', color: el === inputDiscount ? 'orange.500' : '#000' }}
+                  sx={{ cursor: 'pointer', color: el === inputDiscount / 1000 ? 'orange.500' : '#000' }}
                   onClick={() => setInputDiscount(`${el}000`)}
                   className={classes.percent}
                 >

@@ -14,6 +14,7 @@ const NumberFormatInput = ({
   borderRadius,
   white,
   minNumber = 0,
+  maxNumber = Infinity,
   onKeyDown,
   defaultValue,
   withShadow,
@@ -110,8 +111,25 @@ const NumberFormatInput = ({
         }}
         {...(!uncontrolled && methods.register(name, { required }))}
         multiline={multiline}
-        onBlur={onBlur}
-        onFocus={onFocus}
+        onBlur={(e) => {
+          const currentValue = Number(e.target.value.replace(/\s+/g, ''))
+          if (currentValue > maxNumber) {
+            methods.setValue(name, maxNumber)
+          }
+          if (currentValue == '') {
+            methods.setValue(name, 0)
+            return
+          }
+          onBlur(e)
+        }}
+        onFocus={(e) => {
+          const currentValue = Number(e.target.value.replace(/\s+/g, ''))
+          if (currentValue == 0) {
+            methods.setValue(name, '')
+            return
+          }
+          onFocus(e)
+        }}
         rows={4}
         onWheel={(e) => {
           // e.target.blur()

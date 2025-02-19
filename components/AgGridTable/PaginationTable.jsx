@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 16,
     fontWeight: 600,
     lineHeight: '19px',
-    color: theme.palette.gray[400],
+    color: theme.palette.gray[800],
     fontFamily: theme.fontFamily.inter,
     textAlign: 'left',
   },

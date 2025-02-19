@@ -1,10 +1,8 @@
 import { Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
-import InputQuantity from '../../../components/Inputs/InputQuantity'
-import thousandDivider from '../../../utils/thousandDivider'
-import { maxWidth } from '@mui/system'
 import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
+import thousandDivider from '../../../utils/thousandDivider'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -61,29 +59,9 @@ export default function productPriceTableHeaderSelector({
             id={`store_product.${p.data.id}.supply_price`}
             name={`store_product.${p.data.id}.supply_price`}
             fullWidth
-            // adornment={'sum'}
-            // adornmentPosition='end'
             placeholder={'0'}
-            onFocus={({ target }) => {
-              if (Number(get(target, 'value')) == 0) {
-                setValues(`store_product.${p.data.id}.supply_price`, '')
-                return
-              }
-            }}
             onBlur={(e) => {
-              if (Number(get(e, 'target.value')) == '') {
-                setValues(`store_product.${p.data.id}.supply_price`, 0)
-                return
-              }
               changeAmount('supply_price', p.data.id, Number(get(e, 'target.value')))
-              // if (get(e, 'target.value') != get(p, 'data.supply_price') && get(productData, 'id', false)) {
-              //   setOpenChangeQuantity({
-              //     supply_price: get(p, 'data.supply_price'),
-              //     name: `store_product.${p.data.id}`,
-              //     measurement_value: get(e, 'target.value') - get(p, 'data.supply_price'),
-              //     oldValue: get(p, 'data.supply_price'),
-              //   })
-              // }
             }}
             required
             defaultValue={0}
@@ -100,17 +78,7 @@ export default function productPriceTableHeaderSelector({
         colId: el.field,
         cellRenderer: memo((p) => (
           <NumberFormatInput
-            onFocus={({ target }) => {
-              if (Number(get(target, 'value')) == 0) {
-                setValues(`store_product.${p.data.id}.retail_price`, '')
-                return
-              }
-            }}
             onBlur={(e) => {
-              if (Number(get(e, 'target.value')) == '') {
-                setValues(`store_product.${p.data.id}.retail_price`, 0)
-                return
-              }
               changeAmount('retail_price', p.data.id, Number(get(e, 'target.value')))
             }}
             applyAll
@@ -133,21 +101,8 @@ export default function productPriceTableHeaderSelector({
         colId: el.field,
         cellRenderer: memo((p) => (
           <NumberFormatInput
-            onFocus={({ target }) => {
-              if (Number(get(target, 'value')) == 0) {
-                setValues(`store_product.${p.data.id}.vat`, '')
-                return
-              }
-            }}
+            maxNumber={100}
             onBlur={(e) => {
-              if (Number(get(e, 'target.value')) == '') {
-                setValues(`store_product.${p.data.id}.vat`, 0)
-                return
-              }
-              if (Number(get(e, 'target.value')) > 100) {
-                setValues(`store_product.${p.data.id}.vat`, 100)
-                return
-              }
               changeAmount('vat', p.data.id, Number(get(e, 'target.value')))
             }}
             applyAll
@@ -170,17 +125,7 @@ export default function productPriceTableHeaderSelector({
         colId: el.field,
         cellRenderer: memo((p) => (
           <NumberFormatInput
-            onFocus={({ target }) => {
-              if (Number(get(target, 'value')) == 0) {
-                setValues(`store_product.${p.data.id}.markup`, '')
-                return
-              }
-            }}
             onBlur={(e) => {
-              if (Number(get(e, 'target.value')) == '') {
-                setValues(`store_product.${p.data.id}.markup`, 0)
-                return
-              }
               changeAmount('markup', p.data.id, Number(get(e, 'target.value')))
             }}
             applyAll
@@ -203,22 +148,7 @@ export default function productPriceTableHeaderSelector({
         colId: el.field,
         cellRenderer: memo((p) => (
           <NumberFormatInput
-            onFocus={({ target }) => {
-              if (Number(get(target, 'value')) == 0) {
-                setValues(`store_product.${p.data.id}.bonus_percent`, '')
-                return
-              }
-            }}
-            onBlur={(e) => {
-              if (Number(get(e, 'target.value')) == '') {
-                setValues(`store_product.${p.data.id}.bonus_percent`, 0)
-                return
-              }
-              if (Number(get(e, 'target.value')) > 100) {
-                setValues(`store_product.${p.data.id}.bonus_percent`, 100)
-                return
-              }
-            }}
+            maxNumber={100}
             applyAll
             aplyAllFunc={() => applyAllPriceFunc(p.data.id, 'bonus_percent')}
             id={`store_product.${p.data.id}.bonus_percent`}

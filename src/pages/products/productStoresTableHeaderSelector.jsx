@@ -64,17 +64,7 @@ export default function productStoresTableHeaderSelector({
             canApplyAll={!get(productData, 'id', false)}
             adornment={p.data?.measurement_unit?.short_name}
             adornmentPosition='end'
-            onFocus={({ target }) => {
-              if (Number(get(target, 'value')) == 0) {
-                setValues(`store_product.${p.data.id}.pack_quantity`, '')
-                return
-              }
-            }}
             onBlur={(e) => {
-              if (Number(get(e, 'target.value')) == '') {
-                setValues(`store_product.${p.data.id}.pack_quantity`, '0')
-                return
-              }
               if (get(e, 'target.value') != get(p, 'data.pack_quantity') && get(productData, 'id', false)) {
                 setOpenChangeQuantity({
                   supply_price: get(p, 'data.supply_price'),
@@ -99,18 +89,6 @@ export default function productStoresTableHeaderSelector({
         colId: el.field,
         cellRenderer: memo((p) => (
           <NumberFormatInput
-            onFocus={({ target }) => {
-              if (Number(get(target, 'value')) == 0) {
-                setValues(`store_product.${p.data.id}.small_quantity`, '')
-                return
-              }
-            }}
-            onBlur={(e) => {
-              if (Number(get(e, 'target.value')) == '') {
-                setValues(`store_product.${p.data.id}.small_quantity`, '0')
-                return
-              }
-            }}
             applyAll
             aplyAllFunc={() => applyAllFunc(p.data.id, 'small_quantity')}
             id={`store_product.${p.data.id}.small_quantity`}

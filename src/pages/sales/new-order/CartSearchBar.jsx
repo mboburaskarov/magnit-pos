@@ -248,7 +248,7 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
   useHotkeys(
     'Enter',
     (event) => {
-      if (!['client-search-bar', 'product-search'].includes(document.activeElement.id)) {
+      if (document.activeElement.id?.length === 36) {
         setSearchTerm('')
         setShowOverlay(false)
         handleAddProduct({
