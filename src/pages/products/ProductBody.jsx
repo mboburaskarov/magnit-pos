@@ -182,6 +182,27 @@ export default function ProductBody({ productData = null }) {
           `store_product.${get(store, 'id')}.small_quantity`,
           getValues(`store_product.${get(store, 'id')}.small_quantity`) || get(store, 'small_quantity', 0)
         )
+
+        setValue(
+          `store_product.${get(store, 'id')}.bonus_percent`,
+          getValues(`store_product.${get(store, 'id')}.bonus_percent`) || get(store, 'bonus_percent', 0)
+        )
+        setValue(
+          `store_product.${get(store, 'id')}.expire_date`,
+          getValues(`store_product.${get(store, 'id')}.expire_date`) || new Date(get(store, 'expire_date', new Date()))
+        )
+        setValue(`store_product.${get(store, 'id')}.markup`, getValues(`store_product.${get(store, 'id')}.markup`) || get(store, 'markup', 0))
+        setValue(`store_product.${get(store, 'id')}.vat`, getValues(`store_product.${get(store, 'id')}.vat`) || get(store, 'vat', 0))
+        setValue(`store_product.${get(store, 'id')}.retail_price`, getValues(`store_product.${get(store, 'id')}.retail_price`) || get(store, 'retail_price', 0))
+        setValue(`store_product.${get(store, 'id')}.supply_price`, getValues(`store_product.${get(store, 'id')}.supply_price`) || get(store, 'supply_price', 0))
+        setValue(
+          `store_product.${get(store, 'id')}.pack_quantity`,
+          getValues(`store_product.${get(store, 'id')}.pack_quantity`) || get(store, 'pack_quantity', 0)
+        )
+        setValue(
+          `store_product.${get(store, 'id')}.unit_quantity`,
+          getValues(`store_product.${get(store, 'id')}.unit_quantity`) || get(store, 'unit_quantity', 0)
+        )
       })
     })
   }, [storeList?.data?.data?.data])
@@ -210,7 +231,7 @@ export default function ProductBody({ productData = null }) {
       setValue('shelf_id', getOptionsSchema(get(productData, 'shelf', []), Object))
       setValue('box_grain_count', productData?.unit_per_pack || 0)
       setValue('product_unit', { value: productData?.unit_type?.codename, name: productData?.unit_type?.unit_name, id: productData?.unit_type?.id } || 0)
-      setValue('expire_date', get(productData, 'expire_date', false) ? new Date(get(productData, 'expire_date', new Date())) : null)
+      // setValue('expire_date', get(productData, 'expire_date', false) ? new Date(get(productData, 'expire_date', new Date())) : null)
       setValue('barcode', productData?.barcode || 0)
       setProductCategories(productData?.categories?.map((el, ind) => ({ ...el, name: el.nameRu, quantity: productData?.quantityOfCategories?.[ind] })))
     } else {
