@@ -114,16 +114,12 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   currentUser: {
-    cursor: 'pointer',
     maxWidth: '200px',
     marginTop: 'auto !important',
     padding: '4px 12px 4px 4px !important',
     justifyContent: 'space-between',
     backgroundColor: theme.palette.gray[50],
     borderRadius: '32px !important',
-    '&:hover': {
-      backgroundColor: theme.palette.bunker[100],
-    },
   },
   avatarPlaceholder: {
     position: 'relative',

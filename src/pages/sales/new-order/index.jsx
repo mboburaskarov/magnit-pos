@@ -37,6 +37,7 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
 import OutLineTextFieldThousand from '../../../../components/Inputs/OutLineTextFieldThousand'
 import LoadingOverflow from '../../../../components/LoadingOverflow'
+import ProductDrawer from './ProductDrawer'
 const useStyles = makeStyles((theme) => ({
   card_detail: {
     width: '30%',
@@ -219,6 +220,7 @@ function NewSale() {
   const [hasChange, setHasChange] = useState(false)
   const [isOpenDraft, setIsOpenDraft] = useState(false)
   const [isCreateOpenDraft, setIsCreateOpenDraft] = useState(false)
+  const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [isOpenChangeShift, setIsOpenChangeShift] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
@@ -356,7 +358,9 @@ function NewSale() {
     data: cartItemsList,
     refetch: refetchcartItemsList,
     isLoading: isCartItemsLIstLoading,
-  } = useQuery(['cartItemsList', id], () => requests.getCartItemList({ sale_id: id, limit: 20, offset: 0 }).catch(() => navigate('/sales/create')))
+  } = useQuery(['cartItemsList', id], () =>
+    requests.getCartItemList({ sale_id: id, limit: 20, offset: 0 }).catch((e) => get(e, 'response.data.code') == '409' && navigate('/sales/create'))
+  )
   const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
 
   // useEffect(() => {
@@ -545,6 +549,7 @@ function NewSale() {
                 >
                   {get(cartItemsList, 'data.data.data', []).map((el, index) => (
                     <CartItem
+                      setOpenProductDrawer={setOpenProductDrawer}
                       // onKeyDown={(e) => handleTabSwitch(e, el?.id)}
                       refetchcartItemsList={refetchcartItemsList}
                       method={method}
@@ -861,6 +866,8 @@ function NewSale() {
         open={isCreateOpenDraft}
         setOpen={setIsCreateOpenDraft}
       />
+      <ProductDrawer open={openProductDrawer} onClose={setOpenProductDrawer} />
+
       <ChangeShift open={isOpenChangeShift} setOpen={setIsOpenChangeShift} />
       <DraftDrawer cashBoxDetails={cashBoxDetails} open={isOpenDraft} setOpen={setIsOpenDraft} />
       <ClientCreateMini

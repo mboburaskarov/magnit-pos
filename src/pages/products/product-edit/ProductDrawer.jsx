@@ -135,7 +135,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
             { title: 'Код продукта', info: productData?.data?.data?.material_code },
             { title: 'Баркод', info: thousandDivider(productData?.data?.data?.barcode, '') },
             { title: 'Цена', info: thousandDivider(productData?.data?.data?.retail_price, 'сум') },
-            { title: 'Производитель', info: productData?.data?.data?.manufacturer },
+            { title: 'Производитель', info: productData?.data?.data?.producer?.name },
             { title: 'Сумма бонуса', info: thousandDivider(productData?.data?.data?.bonus_amount, 'сум') },
             { title: 'Бонусный процент', info: thousandDivider(productData?.data?.data?.bonus_percent, '%') },
             { title: 'Время подготовки', info: dayjs(productData?.data?.data?.created_at).format('DD.MM.YYYY') },

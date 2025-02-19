@@ -60,8 +60,8 @@ export default function ProductEditPage() {
       store_product: Object.values(get(data, 'store_product'))
         .filter((item) => Number(get(item, 'pack_quantity'), 0) > 0 && Number(get(item, 'retail_price'), 0) > 0 && Number(get(item, 'markup'), 0) > 0)
         .map((item) => ({
-          // ...item,
-          sum: Number(get(item, 'retail_price', 0)),
+          ...item,
+          retail_price: Number(get(item, 'retail_price', 0)),
           supply_price: Number(get(item, 'supply_price', 0)),
           vat: Number(get(item, 'vat', 0)),
           bonus_percent: Number(get(item, 'bonus_percent', 0)),

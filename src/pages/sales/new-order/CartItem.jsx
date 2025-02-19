@@ -14,6 +14,8 @@ export const useStyles = makeStyles((theme) => ({
   root: {
     padding: 16,
     borderRadius: 16,
+    overflow: 'hidden',
+    paddingRight: '20px',
     display: 'flex',
     width: '100%',
     alignItems: 'center',
@@ -58,6 +60,7 @@ export const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     minWidth: '60%',
+    position: 'relative',
   },
   img_cont: {
     height: 48,
@@ -72,12 +75,19 @@ export const useStyles = makeStyles((theme) => ({
       objectFit: 'cover',
     },
   },
+  pName: {
+    cursor: 'pointer',
+    '&:hover': {
+      color: `${theme.palette.bunker[400]} !important`,
+    },
+  },
 
   text: {
     minWidth: 0,
     display: 'flex',
     // flexDirection: 'column',
     justifyContent: 'space-between',
+
     '& p': {
       display: '-webkit-box',
       '-webkit-line-clamp': 1,
@@ -202,7 +212,7 @@ export const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const CartItem = ({ index, packRef = () => {}, unitRef, onKeyDown, refetchcartItemsList, method, item, setOpenConfirmDialog }) => {
+const CartItem = ({ index, packRef = () => {}, setOpenProductDrawer, unitRef, onKeyDown, refetchcartItemsList, method, item, setOpenConfirmDialog }) => {
   const cls = useStyles()
 
   const { mutate: changeCartItemQuantity } = useMutation(requests.changeCartItemQuantity, {
@@ -339,8 +349,13 @@ const CartItem = ({ index, packRef = () => {}, unitRef, onKeyDown, refetchcartIt
               </Box> */}
             </Box>
             <Box ml={'8px'} display={'flex'} width={'100%'} flexDirection={'column'}>
-              <Box id='product-details' className={cls.text}>
-                <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }} textOverflow={'ellipsis'} overflow={'hidden'}>
+              <Box onClick={() => setOpenProductDrawer(item)} id='product-details' className={cls.text}>
+                <Typography
+                  className={cls.pName}
+                  sx={{ fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}
+                  textOverflow={'ellipsis'}
+                  overflow={'hidden'}
+                >
                   {item?.name}
                 </Typography>
                 {/* <Typography sx={{ minWidth: '30px', whiteSpace: 'pre', color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>
@@ -407,8 +422,26 @@ const CartItem = ({ index, packRef = () => {}, unitRef, onKeyDown, refetchcartIt
                 </Typography>
               </Box>
             </Box>
-            <Box display={'flex'}>
-              <Box id='product-details' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', justifyContent: 'center' }}></Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              {item?.bonus_amount > 0 && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: get(item, 'discount_price', 0) > 0 ? -3 : -14,
+                    right: -35,
+                    backgroundColor: '#fe5000',
+                    color: '#fff',
+                    // width: '100px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    padding: '2px 15px 2px 25px',
+                    transform: 'rotate(35deg)',
+                  }}
+                  id='product-details'
+                >
+                  Bonus
+                </Box>
+              )}
               <Box
                 sx={{
                   width: 48,
@@ -432,14 +465,14 @@ const CartItem = ({ index, packRef = () => {}, unitRef, onKeyDown, refetchcartIt
           </Box>
         </Box>
       </Box>
-      <Box display={'flex'} flexDirection={'column'} padding={'16px'} bgcolor={'bg.10'} ml={'8px'} height={'80px'} borderRadius={'16px'} minWidth={'120px'}>
+      {/* <Box display={'flex'} flexDirection={'column'} padding={'16px'} bgcolor={'bg.10'} ml={'8px'} height={'80px'} borderRadius={'16px'} minWidth={'120px'}>
         <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>Bonus</Typography>
         <Box display={'flex'} justifyContent={'space-between'}>
           <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>
             {thousandDivider(item?.bonus_amount, 'сум')}
           </Typography>
         </Box>
-      </Box>
+      </Box> */}
     </Box>
   )
 }
