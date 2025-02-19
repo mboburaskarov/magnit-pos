@@ -7,6 +7,12 @@ import { requests } from '../../utils/requests'
 import { error } from '../../utils/toast'
 import ImagePreview from './ImageProfilePreview'
 import Label from '../Label'
+import { get } from 'lodash'
+const errotTypes = {
+  400: 'Не удалось привязать файл или Размер файла превышает максимальный предел 5, МБ',
+  422: 'Недопустимый тип файла. Разрешены только .jpg, .jpeg и .png',
+  500: 'Не удалось сохранить файл',
+}
 
 export default function ImageUpload({ id, images, setEditingImage, setIsEditMode, onChange, isEditMode, label, width, height, type, withoutTextBox }) {
   const [uploadedImages, setUploadedImages] = useState(images || [])
@@ -23,7 +29,7 @@ export default function ImageUpload({ id, images, setEditingImage, setIsEditMode
       filterAndSetImages(data)
     },
     onError: (err) => {
-      error(get(err, 'response.data.data', 'Ошибка при добавлении изображения!'))
+      error(errotTypes[get(err, 'response.data.code', 400)])
       console.error(err)
     },
   })
