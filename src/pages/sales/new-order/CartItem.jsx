@@ -85,6 +85,7 @@ export const useStyles = makeStyles((theme) => ({
   text: {
     minWidth: 0,
     display: 'flex',
+    marginBottom: '3px',
     // flexDirection: 'column',
     justifyContent: 'space-between',
 
@@ -371,7 +372,7 @@ const CartItem = ({ index, packRef = () => {}, setOpenProductDrawer, unitRef, on
               >
                 <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
                   <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>
-                    {item?.barcode} / {item.current_stock}
+                    {item?.barcode} / {item.current_stock} {get(item, 'shelf', '').length > 0 ? `/ Полка: ${get(item, 'shelf', 'X')}` : ''}
                   </Typography>
                 </Box>
               </Box>
@@ -417,9 +418,6 @@ const CartItem = ({ index, packRef = () => {}, setOpenProductDrawer, unitRef, on
                 >
                   {thousandDivider(item?.unit_price, 'сум')}
                 </Typography>
-                <Typography sx={{ minWidth: '30px', whiteSpace: 'pre', color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>
-                  {item?.shelf}
-                </Typography>
               </Box>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -427,7 +425,7 @@ const CartItem = ({ index, packRef = () => {}, setOpenProductDrawer, unitRef, on
                 <Box
                   sx={{
                     position: 'absolute',
-                    top: get(item, 'discount_price', 0) > 0 ? -3 : -14,
+                    top: get(item, 'discount_price', 0) > 0 ? -13 : -14,
                     right: -35,
                     backgroundColor: '#fe5000',
                     color: '#fff',

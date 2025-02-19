@@ -113,7 +113,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
             })}
         `}
           >
-            <Typography fontWeight={'600'} color={'orange.500'} fontSize={'16px'} lineHeight={'24px'}>
+            <Typography whiteSpace={'pre-wrap'} fontWeight={'600'} color={'orange.500'} fontSize={'16px'} lineHeight={'24px'}>
               {p.data.document_number}
             </Typography>
           </Link>
@@ -125,7 +125,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: t('store'),
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{p.data?.store?.name}</Typography>),
+        cellRenderer: memo((p) => <Typography whiteSpace={'pre-wrap'}>{p.data?.store?.name}</Typography>),
       }
     }
     if (el.field === 'status') {

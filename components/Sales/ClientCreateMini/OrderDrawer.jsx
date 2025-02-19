@@ -446,6 +446,7 @@ export default function OrderDrawer({
   const getPaymentTypeHotKeyLabel = (name) => paymentHotKeys[name?.toLowerCase().trim()] || 'no'
 
   const handleFKeys = (event) => {
+    event.preventDefault()
     const key = event.key
     if (key === 'F12') {
       event.preventDefault()

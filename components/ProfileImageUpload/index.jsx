@@ -23,6 +23,8 @@ export default function ImageUpload({ id, images, setEditingImage, setIsEditMode
       filterAndSetImages(data)
     },
     onError: (err) => {
+      console.log(err)
+
       error('Ошибка при добавлении изображения!')
       console.error(err)
     },

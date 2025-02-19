@@ -93,6 +93,8 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   useEffect(() => {
     refetch()
   }, [open])
+  console.log(darftChildList)
+
   const theme = useTheme()
   return (
     <LoadingContainer readyState={!isDarftChildList}>
@@ -137,7 +139,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
             </Box>
           </Box>
           <Box maxHeight={'calc(100vh - 485px)'} sx={{ overflowY: 'auto' }} padding={'0px 40px'}>
-            {[get(darftChildList, 'data.data.cart_items', [])].map((el) => (
+            {get(darftChildList, 'data.data.cart_items', []).map((el) => (
               <DraftChildItemsBox key={el.id} item={el} />
             ))}
           </Box>

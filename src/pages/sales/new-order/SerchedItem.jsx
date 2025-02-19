@@ -57,6 +57,9 @@ export default function SerchedItem({
         setSearchTerm('')
       }}
       sx={{
+        position: 'relative',
+        overflow: 'hidden',
+        width: '100%',
         outline: 'none',
         '&:focus': {
           '& .main-Box': {
@@ -140,15 +143,6 @@ export default function SerchedItem({
             </Box>
           )}
         </Box>
-
-        <Box display={'flex'} flexDirection={'column'} padding={'16px'} bgcolor={'bg.10'} ml={'8px'} height={'80px'} borderRadius={'16px'} minWidth={'120px'}>
-          <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>Bonus</Typography>
-          <Box display={'flex'} justifyContent={'space-between'}>
-            <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>
-              {thousandDivider(product?.bonus_amount)}
-            </Typography>
-          </Box>
-        </Box>
       </Box>
       <Box sx={{ paddingLeft: '40px', width: '100%' }}>
         {openSimilar &&
@@ -156,6 +150,24 @@ export default function SerchedItem({
             <SerchedItem classes={classes} item={item} searchTerm={searchTerm} product={item} key={item?.id} />
           ))}
       </Box>
+      {item?.bonus_amount > 0 && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 3,
+            right: -16,
+            backgroundColor: '#fe5000',
+            color: '#fff',
+            fontSize: '14px',
+            fontWeight: '600',
+            padding: '2px 15px 2px 30px',
+            transform: 'rotate(35deg)',
+          }}
+          id='product-details'
+        >
+          Bonus
+        </Box>
+      )}
     </Box>
   )
 }

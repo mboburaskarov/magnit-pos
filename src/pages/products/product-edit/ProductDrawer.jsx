@@ -155,7 +155,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         bgcolor={'#fff'}
         position={'fixed'}
         bottom={'0'}
-        p={'20px'}
+        p={'20px 40px'}
         columnGap={2}
         width='660px'
         display='inline-flex'

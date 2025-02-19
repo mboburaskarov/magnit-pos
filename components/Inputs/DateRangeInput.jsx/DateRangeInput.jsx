@@ -151,6 +151,7 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
         endIcon={<ArrowDown />}
         noMarginSvg
         sx={{
+          height: '48px',
           border: '1px solid #ECEDF2 !important',
         }}
         placement='bottom-end'

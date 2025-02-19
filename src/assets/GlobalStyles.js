@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) =>
         backgroundColor: theme.palette.orange[600],
       },
       '.datepicker .react-datepicker__day--outside-month': {
-        color: theme.palette.gray[400],
+        color: theme.palette.bunker[900],
       },
       '.datepicker .react-datepicker__day--selected': {
         backgroundColor: theme.palette.orange[600],
@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) =>
         color: theme.palette.common.white,
       },
       '.react-datepicker__day--disabled': {
-        color: `${theme.palette.gray[100]} !important`,
+        color: `${theme.palette.gray[400]} !important`,
       },
 
       '.datepicker .react-datepicker__navigation-icon::before, .react-datepicker__year-read-view--down-arrow, .react-datepicker__month-read-view--down-arrow, .react-datepicker__month-year-read-view--down-arrow':

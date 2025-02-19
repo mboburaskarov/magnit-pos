@@ -725,7 +725,7 @@ function NewSale() {
                 uncontrolled
                 id='app-type'
                 name='app-type'
-                style={{ marginTop: '20px', width: 'auto' }}
+                style={{ marginTop: '32px', width: 'auto' }}
                 defaultValue={discount}
                 onChange={setDiscountType}
                 options={[

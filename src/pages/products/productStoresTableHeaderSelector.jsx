@@ -4,6 +4,7 @@ import { memo } from 'react'
 import InputQuantity from '../../../components/Inputs/InputQuantity'
 import thousandDivider from '../../../utils/thousandDivider'
 import InputDatePicker from '../../../components/Inputs/InputDatePicker'
+import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -54,7 +55,7 @@ export default function productStoresTableHeaderSelector({
         headerName: 'Количество',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <InputQuantity
+          <NumberFormatInput
             applyAll
             aplyAllFunc={() => applyAllFunc(p.data.id, 'pack_quantity')}
             id={`store_product.${p.data.id}.pack_quantity`}
@@ -97,7 +98,7 @@ export default function productStoresTableHeaderSelector({
         headerName: 'Небольшое количество',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <InputQuantity
+          <NumberFormatInput
             onFocus={({ target }) => {
               if (Number(get(target, 'value')) == 0) {
                 setValues(`store_product.${p.data.id}.small_quantity`, '')
@@ -125,7 +126,7 @@ export default function productStoresTableHeaderSelector({
     if (el.field === 'expire_date') {
       return {
         ...el,
-        headerName: 'Небольшое количество',
+        headerName: 'Срок действия',
         colId: el.field,
         cellRenderer: memo((p) => (
           <InputDatePicker
@@ -134,7 +135,6 @@ export default function productStoresTableHeaderSelector({
             name={`store_product.${p.data.id}.expire_date`}
             minDate={new Date()}
             aplyAllFunc={() => applyAllDateFunc(p.data.id, 'expire_date')}
-            required
             applyAll={true}
             canApplyAll={true}
             id={`store_product.${p.data.id}.expire_date`}

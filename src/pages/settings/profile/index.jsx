@@ -110,7 +110,7 @@ const Profile = () => {
         <Box width='calc(100% - 60px)'>
           <Box height={'24px'} />
 
-          <Typography variant='h4' fontWeight={700} mb={3}>
+          <Typography variant='h4' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} mb={'10px'}>
             Профиль
           </Typography>
 
@@ -148,7 +148,7 @@ const Profile = () => {
 
           <Button
             fullWidth
-            disabled={!isEditMode}
+            // disabled={!isEditMode}
             onClick={() => setOpen(true)}
             sx={{
               width: '100%',

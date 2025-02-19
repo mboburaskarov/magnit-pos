@@ -93,11 +93,12 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[500],
   },
   searchItemBox: {
-    width: 'calc(100% - 168px)',
+    width: '100%',
+    position: 'relative',
     display: 'flex',
     maxHeight: '90px',
     backgroundColor: '#fff',
-    padding: '12px 16px',
+    padding: '12px 30px 12px 16px',
     borderRadius: 16,
   },
   searchItem: {
@@ -115,7 +116,7 @@ const useStyles = makeStyles((theme) => ({
   },
   currentUser: {
     maxWidth: '200px',
-    marginTop: 'auto !important',
+    height: '48px',
     padding: '4px 12px 4px 4px !important',
     justifyContent: 'space-between',
     backgroundColor: theme.palette.gray[50],
@@ -342,10 +343,11 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
             id={'ff'}
             noArrow
             ml={'16px'}
+            sx={{ height: '48px' }}
             noMarginSvg
             placement='bottom-end'
             buttonLabel={
-              <Box className='cash_register_icon_wrapper' bgcolor={'#F8F8F9'} padding={'12px'} width={'48px'} height={'48px'} borderRadius={'50%'}>
+              <Box className='cash_register_icon_wrapper' bgcolor={'#F8F8F9'} padding={'10px'} width={'44px'} height={'44px'} borderRadius={'50%'}>
                 <FinanceAndPaymentIcon />
               </Box>
             }

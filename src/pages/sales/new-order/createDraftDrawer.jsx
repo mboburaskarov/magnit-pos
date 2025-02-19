@@ -138,7 +138,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
                 fullWidth
                 borderRadius={'20px'}
                 name='description'
-                label='ЗаметкаClick to apply'
+                label='Заметка'
                 placeholder='Например, товар забирает и оплачивает водитель.'
               />
               <Box height={'8px'} />

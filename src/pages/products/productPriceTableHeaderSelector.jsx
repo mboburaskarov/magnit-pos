@@ -4,6 +4,7 @@ import { memo } from 'react'
 import InputQuantity from '../../../components/Inputs/InputQuantity'
 import thousandDivider from '../../../utils/thousandDivider'
 import { maxWidth } from '@mui/system'
+import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -54,13 +55,12 @@ export default function productPriceTableHeaderSelector({
         headerName: 'Цена покупки',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <InputQuantity
+          <NumberFormatInput
             applyAll
             aplyAllFunc={() => applyAllPriceFunc(p.data.id, 'supply_price')}
             id={`store_product.${p.data.id}.supply_price`}
             name={`store_product.${p.data.id}.supply_price`}
             fullWidth
-            canApplyAll={!get(productData, 'id', false)}
             // adornment={'sum'}
             // adornmentPosition='end'
             placeholder={'0'}
@@ -99,7 +99,7 @@ export default function productPriceTableHeaderSelector({
         headerName: 'Цена продажи с НДС',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <InputQuantity
+          <NumberFormatInput
             onFocus={({ target }) => {
               if (Number(get(target, 'value')) == 0) {
                 setValues(`store_product.${p.data.id}.retail_price`, '')
@@ -132,7 +132,7 @@ export default function productPriceTableHeaderSelector({
         headerName: `${t('create_new_product.vat')} %`,
         colId: el.field,
         cellRenderer: memo((p) => (
-          <InputQuantity
+          <NumberFormatInput
             onFocus={({ target }) => {
               if (Number(get(target, 'value')) == 0) {
                 setValues(`store_product.${p.data.id}.vat`, '')
@@ -142,6 +142,10 @@ export default function productPriceTableHeaderSelector({
             onBlur={(e) => {
               if (Number(get(e, 'target.value')) == '') {
                 setValues(`store_product.${p.data.id}.vat`, 0)
+                return
+              }
+              if (Number(get(e, 'target.value')) > 100) {
+                setValues(`store_product.${p.data.id}.vat`, 100)
                 return
               }
               changeAmount('vat', p.data.id, Number(get(e, 'target.value')))
@@ -165,7 +169,7 @@ export default function productPriceTableHeaderSelector({
         headerName: 'Наценка',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <InputQuantity
+          <NumberFormatInput
             onFocus={({ target }) => {
               if (Number(get(target, 'value')) == 0) {
                 setValues(`store_product.${p.data.id}.markup`, '')
@@ -198,7 +202,7 @@ export default function productPriceTableHeaderSelector({
         headerName: 'Бонус %',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <InputQuantity
+          <NumberFormatInput
             onFocus={({ target }) => {
               if (Number(get(target, 'value')) == 0) {
                 setValues(`store_product.${p.data.id}.bonus_percent`, '')
@@ -208,6 +212,10 @@ export default function productPriceTableHeaderSelector({
             onBlur={(e) => {
               if (Number(get(e, 'target.value')) == '') {
                 setValues(`store_product.${p.data.id}.bonus_percent`, 0)
+                return
+              }
+              if (Number(get(e, 'target.value')) > 100) {
+                setValues(`store_product.${p.data.id}.bonus_percent`, 100)
                 return
               }
             }}

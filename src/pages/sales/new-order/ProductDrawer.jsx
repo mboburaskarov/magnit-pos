@@ -95,7 +95,6 @@ export default function ProductDrawer({ open: item, onClose, setImages, productD
           </Typography>
         </Typography>
       </Box>
-      <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
 
       {item.status === 'REJECTED' && (
         <>
@@ -107,7 +106,7 @@ export default function ProductDrawer({ open: item, onClose, setImages, productD
           </Box>
         </>
       )}
-      <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
+      <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'10px'} />
       <Box px={'40px'} my={'20px'} mb={'80px'}>
         <SectionTitle grey>Доп. информация</SectionTitle>
         <DrawerInfoBox

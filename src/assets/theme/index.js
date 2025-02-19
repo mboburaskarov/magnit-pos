@@ -119,9 +119,10 @@ export const theme = ({ mode, palette }) => {
             '&.MuiButton-containedSecondary.Mui-disabled': {
               backgroundColor: palette.background.gray,
               '& p': {
-                color: `${palette.bunker[300]} !important`,
+                color: `${palette.bunker[900]} !important`,
               },
             },
+
             '&.Mui-disabled': {
               backgroundColor: `${palette.orange[50]} !important`,
               color: `${palette.orange[200]} !important`,
@@ -146,7 +147,7 @@ export const theme = ({ mode, palette }) => {
             backgroundColor: `${palette.background.gray} !important`,
             color: '#000',
             '&:hover': {
-              background: '#00000020',
+              backgroundColor: `${palette.bunker[100]} !important`,
             },
             border: `2px solid ${palette.bunker[100]}`,
           },

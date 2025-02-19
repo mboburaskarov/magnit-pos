@@ -256,13 +256,13 @@ export const navbarStyles = makeStyles((theme) => {
       padding: theme.spacing(3),
     },
     currentNavBarUser: {
-      backgroundColor: '#aaa3',
+      backgroundColor: theme.palette.bunker[100],
       cursor: 'pointer',
       width: ({ isOpen }) => (isOpen ? '100%' : '55px'),
       margin: ({ isOpen }) => (isOpen ? 'auto' : 'auto 20px 0'),
       // marginTop: 'auto !important',
       padding: ({ isOpen }) => (isOpen ? '12px 16px !important' : '12px !important'),
-      borderRadius: '32px !important',
+      borderRadius: '20px !important',
       '& img': {
         width: '35px',
       },
@@ -275,7 +275,7 @@ export const navbarStyles = makeStyles((theme) => {
           color: theme.palette.gray[600],
         },
       },
-      marginBottom: '24px !important',
+      marginBottom: '0px !important',
     },
     currentUser: {
       backgroundColor: '#aaa3',

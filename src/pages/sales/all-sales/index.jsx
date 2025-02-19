@@ -128,7 +128,6 @@ export default function AllSalesPage() {
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box
-              width='100%'
               sx={{
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
@@ -138,7 +137,7 @@ export default function AllSalesPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={'ID, Филиал'} uncontrolled />
+              <InputSearch fullWidth id='producrs-search' name='search' placeholder={'ID, Филиал'} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>

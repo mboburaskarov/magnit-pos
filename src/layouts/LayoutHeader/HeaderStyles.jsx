@@ -249,6 +249,7 @@ export const headerStyles = makeStyles((theme) => {
     currentUser: {
       cursor: 'pointer',
       marginTop: 'auto !important',
+      height: '48px',
       padding: '4px 12px 4px 4px !important',
       justifyContent: 'space-between',
       backgroundColor: theme.palette.gray[50],

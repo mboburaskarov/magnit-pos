@@ -7,6 +7,7 @@ import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
 import OutLineTextField from '../../../components/Inputs/OutLineTextField'
 import { error } from '../../../utils/toast'
 import CloseIcon from '../../assets/icons/CloseIcon'
+import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
 
 export default function MeasurementValueDialog({ open, setValue, setOpen }) {
   const [sum, setSum] = useState(0)
@@ -64,7 +65,7 @@ export default function MeasurementValueDialog({ open, setValue, setOpen }) {
               placeholder={'0'}
             />
             <Box width={'40px'} />
-            <OutLineTextField
+            <NumberFormatInput
               endAdornmentText={'сум'}
               required
               uncontrolled
