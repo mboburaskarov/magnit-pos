@@ -100,11 +100,11 @@ export default function ActionCreateBody() {
             id={'parent_id'}
             isMulti
             options={[
-              { name: 'GET', value: 'GET' },
-              { name: 'POST', value: 'POST' },
-              { name: 'PATCH', value: 'PATCH' },
-              { name: 'PUT', value: 'PUT' },
-              { name: 'DELETE', value: 'DELETE' },
+              { name: 'Чтение', value: 'GET' },
+              { name: 'Запись', value: 'POST' },
+              { name: 'Частичное обновление', value: 'PATCH' },
+              { name: 'Полное обновление', value: 'PUT' },
+              { name: 'Удаление', value: 'DELETE' },
             ]}
             required
             menuPlacement='top'
@@ -130,7 +130,7 @@ export default function ActionCreateBody() {
           {type_page === 'CHILD' ? (
             <SelectSimple
               id={'parent_id'}
-              options={actions?.data?.data?.flatMap((item) => ({ name: item?.entity_name, value: item?.id }))}
+              options={actions?.data?.data?.flatMap((item) => ({ name: item?.name, value: item?.id }))}
               required
               menuPlacement='top'
               fullWidth

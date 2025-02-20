@@ -120,7 +120,7 @@ export default function RoleBody({ rolesAndPermissionList, productData = null, d
   const filterPermissions = (sections) => {
     const permissions = sections
       ?.map((section) => {
-        const foundPermissions = section.permissions?.filter((permission) => permission?.entity_name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+        const foundPermissions = section.permissions?.filter((permission) => permission?.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
         return foundPermissions?.length ? { ...section, permissions: foundPermissions } : null
       })
       .filter((item) => item)

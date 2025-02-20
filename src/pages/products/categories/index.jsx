@@ -79,7 +79,8 @@ export default function CatalogManagement() {
     return obj
   }
 
-  const tableData = categories?.data?.data?.data.map((e) => renameSubRows(e))
+  const tableData = categories?.data?.data?.data?.map((e) => renameSubRows(e))
+  console.log(tableData)
 
   const tableLoading = categoriesLoading || categoriesFetching
 

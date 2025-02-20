@@ -130,6 +130,7 @@ export const requests = {
 
   //permission
   getAllRolesWithPermissions: (filter) => request.get(`v1/permission/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllRolesWithPermissionsLikeCategorySchema: (filter) => request.get(`v1/permission/filter${qs.stringify(filter, { addQueryPrefix: true })}`),
   createPermission: (data) => request.post(`v1/permission`, data),
   getAllActions: () => request.get(`v1/permission/list-parents`),
 

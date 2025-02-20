@@ -41,7 +41,9 @@ function SaleChildItemsBox({ item }) {
                 {get(item, 'name')}
               </Typography>
               <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
-                {get(item, 'quantity')}пч{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''}
+                {get(item, 'quantity')}
+                {get(item, 'short_name')}
+                {get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'space-between'}>

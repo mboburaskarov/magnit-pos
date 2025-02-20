@@ -42,7 +42,7 @@ export default function ActionListPage() {
     refetch: categoriesRefetch,
     isLoading: categoriesLoading,
     isFetching: categoriesFetching,
-  } = useQuery(['categories', categoryFilter], () => requests.getAllRolesWithPermissions(categoryFilter))
+  } = useQuery(['categories', categoryFilter], () => requests.getAllRolesWithPermissionsLikeCategorySchema(categoryFilter))
 
   const { mutate: deleteCategory, isLoading: isdeleteCategory } = useMutation(requests.deleteCategory, {
     onSuccess: () => {
@@ -78,7 +78,8 @@ export default function ActionListPage() {
     return obj
   }
 
-  const tableData = categories?.data?.data?.map((e) => renameSubRows(e))
+  const tableData = categories?.data?.map((e) => renameSubRows(e))
+  console.log(categories)
 
   const tableLoading = categoriesLoading || categoriesFetching
 

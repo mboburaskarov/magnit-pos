@@ -26,7 +26,7 @@ export default function RolesCreateDrawer({ isOpen, onClose }) {
   const onSubmit = (data) => {
     createPermission({
       description: get(data, 'description'),
-      entity_name: get(data, 'name'),
+      name: get(data, 'name'),
       method: get(data, 'method', 'GET').map((item) => get(item, 'value')),
       ...(get(data, 'type_page') !== 'PARENT' && { parent_id: get(data, 'parent_id.value') }),
       ...(get(data, 'type_action') === 'MODULE' ? { key: get(data, 'key') } : { route: get(data, 'route') }),

@@ -43,13 +43,13 @@ export default function Section({ section, sectionRef, setDisabled, disabled, se
   const sectionArrays =
     section?.permissions?.map((permission) => ({
       id: permission?.id,
-      name: permission?.entity_name,
+      name: permission?.name,
       description: permission?.description,
       is_active: permission?.is_active,
       children:
         permission?.children?.map((child) => ({
           id: child?.id,
-          name: child?.entity_name,
+          name: child?.name,
           description: child?.description,
 
           is_active: child?.is_active,
