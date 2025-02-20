@@ -12,17 +12,17 @@ export default function MainDetails({ clientData, openDrawer }) {
 
   useEffect(() => {
     if (get(openDrawer, 'mode') === 'edit') {
-      setValue('name', get(openDrawer, 'data.name'))
-      setValue('detailed_name', get(openDrawer, 'data.detailed_name'))
-      setValue('location', get(openDrawer, 'data.location'))
-      setValue('employee_count', get(openDrawer, 'data.employee_count'))
-      setValue('cash_box_count', get(openDrawer, 'data.cash_box_count'))
-      setValue('store_code', get(openDrawer, 'data.store_code'))
-      setValue('address', get(openDrawer, 'data.address'))
+      setValue('name', get(clientData, 'name'))
+      setValue('detailed_name', get(clientData, 'detailed_name'))
+      setValue('location', get(clientData, 'location'))
+      setValue('employee_count', get(clientData, 'employee_count'))
+      setValue('cash_box_count', get(clientData, 'cash_box_count'))
+      setValue('store_code', get(clientData, 'store_code'))
+      setValue('address', get(clientData, 'address'))
     } else {
       reset()
     }
-  }, [openDrawer])
+  }, [clientData, openDrawer])
   return (
     <Box mt={'24px'}>
       <Grid container mb={'20px'} spacing={3}>
@@ -37,7 +37,6 @@ export default function MainDetails({ clientData, openDrawer }) {
             error={errors?.detailed_name}
             placeholder={'Наименование полное'}
             required
-            defaultValue={clientData?.detailed_name || ''}
             asteriks
           />
         </Grid>
@@ -46,16 +45,7 @@ export default function MainDetails({ clientData, openDrawer }) {
         <Grid item xs={6}>
           <Label mb='4px'>{t('Название')}</Label>
 
-          <TextField
-            id='client-name'
-            name='name'
-            control={control}
-            fullWidth
-            error={errors?.name}
-            placeholder={'Название'}
-            defaultValue={clientData?.name || ''}
-            asteriks
-          />
+          <TextField id='client-name' name='name' control={control} fullWidth error={errors?.name} placeholder={'Название'} asteriks />
         </Grid>
         <Grid item xs={6}>
           <Label mb='4px'>{'Адрес'}</Label>
@@ -76,7 +66,6 @@ export default function MainDetails({ clientData, openDrawer }) {
             error={errors?.employee_count}
             placeholder={'Количество сотрудников'}
             type={'number'}
-            defaultValue={clientData?.name || ''}
             asteriks
           />
         </Grid>
@@ -109,7 +98,6 @@ export default function MainDetails({ clientData, openDrawer }) {
             error={errors?.store_code}
             placeholder={'В магазине код'}
             type={'number'}
-            defaultValue={clientData?.name || ''}
             asteriks
           />
         </Grid>

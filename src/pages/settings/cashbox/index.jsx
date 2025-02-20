@@ -22,7 +22,7 @@ import LockIcon from '../../../assets/icons/LockIcon'
 import PlusIcon from '../../../assets/icons/PlusIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/cashboxTableColumns'
-import CreateVendorDrawer from './createVendorDrawer'
+import CreateCashBoxDrawer from './CreateCashBoxDrawer'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -324,7 +324,7 @@ export default function CashBoxsPage() {
         />
       )}
 
-      <CreateVendorDrawer
+      <CreateCashBoxDrawer
         refetchVendorList={refetch}
         setCustomerId={'setCustomerId'}
         quickCreateClientName={'quickCreateClientName'}

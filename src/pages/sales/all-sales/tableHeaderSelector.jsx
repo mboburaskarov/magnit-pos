@@ -7,6 +7,7 @@ import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 import getImageUrl from '../../../../utils/getImageUrl'
 import thousandDivider from '../../../../utils/thousandDivider'
 import DefaultUserImgIcon from '../../../assets/icons/defaultUserImgIcon'
+import StyledSwitch from '../../../../components/Switch/StyledSwitch'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -69,6 +70,32 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'Общая сумма',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='total_amount' />),
+      }
+    }
+    if (el.field === 'type') {
+      return {
+        ...el,
+        headerName: 'Продажа тип',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' {...p} type='type' />),
+      }
+    }
+    if (el.field === 'is_delivered') {
+      return {
+        ...el,
+        headerName: 'Доставлено',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <StyledSwitch
+              checked={false}
+              onChange={() => {
+                console.log('gg')
+              }}
+              name={'is_delivered'}
+            />
+          </Box>
+        )),
       }
     }
     if (el.field === 'cash') {

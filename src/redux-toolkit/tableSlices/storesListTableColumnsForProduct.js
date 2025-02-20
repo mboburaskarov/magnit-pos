@@ -13,12 +13,7 @@ const columns = [
     minWidth: 70,
     width: 194,
   },
-  {
-    field: 'detailedName',
-    hide: false,
-    minWidth: 70,
-    width: 194,
-  },
+
   {
     field: 'amount',
     hide: false,

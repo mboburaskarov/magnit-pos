@@ -1,11 +1,15 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, TextField, Typography } from '@mui/material'
+import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
+import StyledDialog from '../../../../components/Dialogs/StyledDialog'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -13,15 +17,11 @@ import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
+import PlusIcon from '../../../assets/icons/PlusIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/storeTableColumns'
-import tableHeaderSelector from './tableHeaderSelector'
-import { useTranslation } from 'react-i18next'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../components/CheckAccess'
-import StyledDialog from '../../../../components/Dialogs/StyledDialog'
-import PlusIcon from '../../../assets/icons/PlusIcon'
 import CreateLocationDrawer from './createLocationDrawer'
+import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ProductsPage() {
@@ -192,12 +192,7 @@ export default function ProductsPage() {
               >
                 Нет
               </Button>
-              <LoadingButton
-                variant='contained'
-                type='button'
-                loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                onClick={() => deleteStore(openConfirmDialog.id)}
-              >
+              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteStore(openConfirmDialog.id)}>
                 Да, удалить
               </LoadingButton>
             </>
@@ -222,7 +217,7 @@ export default function ProductsPage() {
         quickCreateClientName={'quickCreateClientName'}
         openDrawer={openCreateLocationDrawer}
         closeDrawer={() => setopenCreateLocationDrawer(false)}
-        clientData={'clientDetails'}
+        clientData={storesList?.data?.data?.data?.find((el) => el.id == get(openCreateLocationDrawer, 'data.id'))}
       />
     </LoadingContainer>
   )

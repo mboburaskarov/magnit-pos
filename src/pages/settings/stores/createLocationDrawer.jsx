@@ -107,7 +107,7 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
       <Box height={'100%'}>
         <Box className={classes.header}>
           <Typography variant='h4' className={classes.title}>
-            Новый филиал
+            {openDrawer?.mode === 'edit' ? 'Редактировать филиал' : 'Новый филиал'}
           </Typography>
           <CloseIcon color={theme.palette.black} onClick={() => closeDrawer(false)} />
         </Box>

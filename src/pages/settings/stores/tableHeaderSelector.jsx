@@ -68,12 +68,12 @@ export default function tableHeaderSelector({ productsColumns, values, t, setOpe
         cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
       }
     }
-    if (el.field === 'detailedName') {
+    if (el.field === 'detailed_name') {
       return {
         ...el,
         headerName: 'Наименование полное',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='detailedName' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='detailed_name' />),
       }
     }
     if (el.field === 'location') {

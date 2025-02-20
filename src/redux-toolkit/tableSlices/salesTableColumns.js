@@ -26,6 +26,19 @@ const columns = [
     minWidth: 70,
     width: 160,
   },
+
+  {
+    field: 'type',
+    hide: false,
+    minWidth: 70,
+    width: 160,
+  },
+  {
+    field: 'is_delivered',
+    hide: false,
+    minWidth: 70,
+    width: 160,
+  },
   {
     field: 'cash',
     hide: false,

@@ -109,7 +109,7 @@ export default function productStoresTableHeaderSelector({
         cellRenderer: memo((p) => (
           <InputDatePicker
             noMarginTop
-            // defaultValue={new Date()}
+            defaultValue={new Date()}
             name={`store_product.${p.data.id}.expire_date`}
             minDate={new Date()}
             aplyAllFunc={() => applyAllDateFunc(p.data.id, 'expire_date')}

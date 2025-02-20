@@ -475,6 +475,7 @@ export default function ProductBody({ productData = null }) {
             placeholder={'Поиск филиала'}
           />
         </Box>
+
         <Box mt={'24px'}>
           <AgGridTable
             id='products-main-feftables'
@@ -492,7 +493,23 @@ export default function ProductBody({ productData = null }) {
             isRefreshing={false}
           />
         </Box>
-        <Box height={'50px'} />
+        <Box height={'56px'} />
+        <MeasurementValueDialog setValue={setValue} open={openChangeQuantity} setOpen={setOpenChangeQuantity} />
+        <SectionTitle noWrap withLine>
+          {t('create_new_product.amount_section.label')}
+        </SectionTitle>
+        <Box mt={'24px'}>
+          <InputSearch
+            // fullWidth
+
+            maxWidth={'500px'}
+            uncontrolled={false}
+            onChange={({ target }) => setStoreSearchText(get(target, 'value'))}
+            id='producrs-search'
+            name='search'
+            placeholder={'Поиск филиала'}
+          />
+        </Box>
         <Box mt={'24px'}>
           <AgGridTable
             id='products-main-feftables'
