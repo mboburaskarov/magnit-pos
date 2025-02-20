@@ -34,7 +34,6 @@ import CreateDraftDrawer from './createDraftDrawer'
 import ChangeShift from './ChangeShift'
 import ShortcutsDrawer from '../../../../components/Sales/ShortcutsDrawer'
 import thousandDivider from '../../../../utils/thousandDivider'
-import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
 import OutLineTextFieldThousand from '../../../../components/Inputs/OutLineTextFieldThousand'
 import LoadingOverflow from '../../../../components/LoadingOverflow'
 import ProductDrawer from './ProductDrawer'
@@ -280,6 +279,8 @@ function NewSale() {
   const focusedItemDetailDrawerOpen = (event) => {
     if (event.key === 'Shift') {
       const activeInput = document.activeElement
+      if (activeInput?.name?.split('quantity_').length <= 1) return
+
       if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
         let unitId = activeInput.name.split('quantity_')
 

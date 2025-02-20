@@ -83,6 +83,7 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
   const onSubmit = (data) => {
     const requestBody = {
       name: get(data, 'name'),
+      detailed_name: get(data, 'detailed_name'),
       location: get(data, 'location'),
       address: get(data, 'address'),
       employee_count: Number(get(data, 'employee_count')),
