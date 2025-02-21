@@ -207,7 +207,8 @@ function RippedPaperCheck({
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-              <QRCodeCanvas value='pending' />,<p>Xaridingiz uchun rahmat</p>
+              <QRCodeCanvas value='pending' />
+              <Typography mt={'10px'}>Xaridingiz uchun rahmat</Typography>
             </Box>
           </Fragment>
         </Box>

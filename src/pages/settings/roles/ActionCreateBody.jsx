@@ -24,7 +24,7 @@ export default function ActionCreateBody({ isOpen }) {
     refetch: onePermissionRefetch,
     isLoading: onePermissionLoading,
     isFetching: onePermissionFetching,
-  } = useQuery(['onePermission', isOpen], () => requests.getPermissionById(get(isOpen, 'id')))
+  } = useQuery(['onePermission', isOpen], () => requests.getPermissionById(get(isOpen, 'id')), { enabled: Boolean(get(isOpen, 'id')) })
   useEffect(() => {
     setTimeout(() => {
       setValue('type_action', get(onePermission, 'data.data.type'))
