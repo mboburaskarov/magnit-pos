@@ -134,7 +134,7 @@ export const requests = {
   createPermission: (data) => request.post(`v1/permission`, data),
   editPermission: ({ id, data }) => request.put(`v1/permission/${id}`, data),
   getAllActions: () => request.get(`v1/permission/list-parents`),
-  deletePermission: (id) => request.delete(`v1/permission`, id),
+  deletePermission: (id) => request.delete(`v1/permission/delete`, id),
   getPermissionById: (id) => request.get(`v1/permission/${id}`),
 
   //upload files

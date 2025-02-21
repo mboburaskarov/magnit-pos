@@ -23,7 +23,7 @@ import DownloadIcon from '../../src/assets/icons/DownloadIcon'
 import useDeepCompareEffect from '../../src/hooks/useDeepCompareEffect'
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: (props) => (props?.width ? '100%' : !props.isHasNavbarInDOM ? 'calc(100vw - 288px)' : props.isOpen ? 'calc(100vw - 320px)' : 'calc(100vw - 160px)'),
+    width: (props) => (props?.width ? '100%' : !props.isHasNavbarInDOM ? 'calc(100vw - 288px)' : props.isOpen ? 'calc(100vw - 380px)' : 'calc(100vw - 160px)'),
 
     position: 'relative',
   },
