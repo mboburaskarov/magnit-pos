@@ -5,13 +5,43 @@ import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import TextField from '../../../../components/Inputs/TextField'
 import SelectSimple from '../../../../components/Select/SelectSimple'
 import { requests } from '../../../../utils/requests'
-
-export default function ActionCreateBody() {
+import { useEffect } from 'react'
+import { get } from 'lodash'
+const METHOD_OPETIONS = [
+  { name: 'Чтение', value: 'GET' },
+  { name: 'Запись', value: 'POST' },
+  { name: 'Частичное обновление', value: 'PATCH' },
+  { name: 'Полное обновление', value: 'PUT' },
+  { name: 'Удаление', value: 'DELETE' },
+]
+export default function ActionCreateBody({ isOpen }) {
   const { setValue, watch } = useFormContext()
   const type_action = watch('type_action')
   const type_page = watch('type_page')
   const { data: actions } = useQuery('actions', () => requests.getAllActions())
-
+  const {
+    data: onePermission,
+    refetch: onePermissionRefetch,
+    isLoading: onePermissionLoading,
+    isFetching: onePermissionFetching,
+  } = useQuery(['onePermission', isOpen], () => requests.getPermissionById(get(isOpen, 'id')))
+  useEffect(() => {
+    setTimeout(() => {
+      setValue('type_action', get(onePermission, 'data.data.type'))
+      setValue('type_page', get(onePermission, 'data.data.parent_id')?.length > 1 ? 'CHILD' : 'PARENT')
+      setValue(
+        'parent_id',
+        actions?.data?.data?.filter((e) => e.id == get(onePermission, 'data.data.parent_id')).flatMap((item) => ({ name: item?.name, value: item?.id }))[0]
+      )
+      setValue('name', get(onePermission, 'data.data.name'))
+      setValue('route', get(onePermission, 'data.data.route'))
+      setValue('description', get(onePermission, 'data.data.description'))
+      setValue(
+        'method',
+        METHOD_OPETIONS.filter((e) => get(onePermission, 'data.data.method').includes(e.value))
+      )
+    }, 200)
+  }, [onePermission?.data])
   return (
     <Box>
       <Box gap={3} display={'flex'} flexDirection={'column'}>
@@ -20,7 +50,6 @@ export default function ActionCreateBody() {
             id='type_action'
             name='type_action'
             defaultValue={'PAGE'}
-            uncontrolled
             onChange={(e) => setValue('type_action', e)}
             options={[
               { title: 'Модуль', value: 'MODULE' },
@@ -99,13 +128,7 @@ export default function ActionCreateBody() {
           <SelectSimple
             id={'parent_id'}
             isMulti
-            options={[
-              { name: 'Чтение', value: 'GET' },
-              { name: 'Запись', value: 'POST' },
-              { name: 'Частичное обновление', value: 'PATCH' },
-              { name: 'Полное обновление', value: 'PUT' },
-              { name: 'Удаление', value: 'DELETE' },
-            ]}
+            options={METHOD_OPETIONS}
             required
             menuPlacement='top'
             fullWidth

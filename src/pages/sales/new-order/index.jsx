@@ -449,30 +449,30 @@ function NewSale() {
   useHotkeys('tab', (event) => focusPackInput(event), { enableOnFormTags: true })
   useHotkeys(['ArrowRight', 'ArrowLeft'], (event) => focusUnitInput(event), { enableOnFormTags: true })
   useHotkeys('Shift', (event) => focusedItemDetailDrawerOpen(event), { enableOnFormTags: true })
-  useHotkeys('t', () => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), {
+  useHotkeys(['T', 't'], () => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys('d', () => size(get(cartItemsList, 'data.data.data')) !== 0 && setIsOpenDraft(true), {
+  useHotkeys(['D', 'd'], () => size(get(cartItemsList, 'data.data.data')) !== 0 && setIsOpenDraft(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys('a', () => setIsOpenChangeShift(true), {
+  useHotkeys(['A', 'a'], () => setIsOpenChangeShift(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
   useHotkeys('F10', () => setIsOrderDrower(true), {
     enableOnFormTags: true,
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys('x', () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`), {
+  useHotkeys(['X', 'x'], () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys('q', () => size(get(cartItemsList, 'data.data.data')) !== 0 && setIsCreateOpenDraft(true), {
+  useHotkeys(['Q', 'q'], () => size(get(cartItemsList, 'data.data.data')) !== 0 && setIsCreateOpenDraft(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys('u', () => setOpenClientCreateMini(true), {
+  useHotkeys(['U', 'u'], () => setOpenClientCreateMini(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
   useHotkeys(
-    '/',
+    ['/', '.'],
     (event) => {
       event.preventDefault() // Prevent the default behavior of the "/" key
       searchRef.current?.focus() // Focus the input field

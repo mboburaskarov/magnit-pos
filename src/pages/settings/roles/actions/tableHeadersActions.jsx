@@ -107,7 +107,7 @@ const tableHeadersActions = (searchTerm, setCategoryDrawer, setCreateEdit, statu
                       // variant=''
                       onClick={(e) => {
                         e.stopPropagation()
-                        setCreateEdit({ type, id: row?.original?.id, parentId: get(row, 'original.parent_id') || get(row, 'original.id') })
+                        setCreateEdit({ mode: 'edit', type, id: row?.original?.id, parentId: get(row, 'original.parent_id') || get(row, 'original.id') })
                       }}
                     >
                       <IconButton

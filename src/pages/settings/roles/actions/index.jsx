@@ -34,9 +34,10 @@ export default function ActionListPage() {
     return {
       limit: values?.limit || 10,
       search: values?.search,
+      search: searchTerm,
       offset: values?.search ? 0 : values?.offset || 0,
     }
-  }, [values?.offset, values?.limit, values?.search])
+  }, [values?.offset, searchTerm, values?.limit, values?.search])
   const {
     data: categories,
     refetch: categoriesRefetch,
@@ -44,7 +45,7 @@ export default function ActionListPage() {
     isFetching: categoriesFetching,
   } = useQuery(['categories', categoryFilter], () => requests.getAllRolesWithPermissionsLikeCategorySchema(categoryFilter))
 
-  const { mutate: deleteCategory, isLoading: isdeleteCategory } = useMutation(requests.deleteCategory, {
+  const { mutate: deleteCategory, isLoading: isdeleteCategory } = useMutation(requests.deletePermission, {
     onSuccess: () => {
       categoriesRefetch()
       success('Категори успешно создан!')
@@ -64,7 +65,7 @@ export default function ActionListPage() {
     // refetchAll()
   }, [categories?.data, queryParams?.values?.search, queryParams?.values?.limit, queryParams?.values?.page])
 
-  const columnsCategories = tableHeadersActions(searchTerm, setCategoryDrawer, setCreateEdit, status, type, setOpenConfirm, t, setConfirmToDelete)
+  const columnsCategories = tableHeadersActions(searchTerm, setCategoryDrawer, setOpenCreatePermission, status, type, setOpenConfirm, t, setConfirmToDelete)
 
   const columns = columnsCategories
 
@@ -90,13 +91,7 @@ export default function ActionListPage() {
           <Box flex='1 0 30%' mr={1}>
             <InputSearch
               name='search'
-              placeholder={
-                type === 'attributes'
-                  ? t('placeholders.attribute_name')
-                  : type === 'characteristics'
-                  ? t('placeholders.characteristics_name')
-                  : t('menu.finance.categories.searchplaceholder')
-              }
+              placeholder={t('input.search.product')}
               fullWidth
               onChange={(e) => setSearchTerm(e.target.value)}
               value={searchTerm}
@@ -122,16 +117,16 @@ export default function ActionListPage() {
           withHover
         />
       </Box>
-      <CreateEditCategories
+      {/* <CreateEditCategories
         withoutNavigate
         refetch={categoriesRefetch}
         open={!!createEdit}
         editId={createEdit?.parentId}
         focusId={createEdit?.id}
         closeDrawer={() => setCreateEdit(false)}
-      />
+      /> */}
 
-      <RolesCreateDrawer isOpen={openCreatePermission} onClose={() => setOpenCreatePermission(null)} />
+      <RolesCreateDrawer categoriesRefetch={categoriesRefetch} isOpen={openCreatePermission} onClose={() => setOpenCreatePermission(null)} />
 
       <ConfirmDialog
         open={!!confirmToDelete}

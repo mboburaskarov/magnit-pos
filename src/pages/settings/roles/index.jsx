@@ -106,10 +106,14 @@ export default function RolesPage() {
     <LoadingContainer readyState={true}>
       <RolesCreateDrawer isOpen={openCreatePermission} onClose={() => setOpenCreatePermission(null)} />
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <Typography variant='h1' onClick={() => setOpenCreatePermission(true)} fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {t('page.role.title')}
-        </Typography>
-
+        <Box display={'flex'}>
+          <Typography variant='h1' onClick={() => setOpenCreatePermission(true)} fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+            {t('page.role.title')},
+          </Typography>
+          <Typography variant='h1' onClick={() => navigate('/settings/actions')} fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+            Действия
+          </Typography>
+        </Box>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box

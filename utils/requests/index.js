@@ -132,7 +132,10 @@ export const requests = {
   getAllRolesWithPermissions: (filter) => request.get(`v1/permission/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllRolesWithPermissionsLikeCategorySchema: (filter) => request.get(`v1/permission/filter${qs.stringify(filter, { addQueryPrefix: true })}`),
   createPermission: (data) => request.post(`v1/permission`, data),
+  editPermission: ({ id, data }) => request.put(`v1/permission/${id}`, data),
   getAllActions: () => request.get(`v1/permission/list-parents`),
+  deletePermission: (id) => request.delete(`v1/permission`, id),
+  getPermissionById: (id) => request.get(`v1/permission/${id}`),
 
   //upload files
   imageUpload: (data) => fileUploadRequest.post('v1/upload/file', data),
