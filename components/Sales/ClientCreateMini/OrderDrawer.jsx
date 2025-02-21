@@ -22,6 +22,7 @@ import QrScanIcon from '../../../src/assets/icons/QrScanIcon'
 import { useHotkeys } from 'react-hotkeys-hook'
 import thousandDivider from '../../../utils/thousandDivider'
 import { useSelector } from 'react-redux'
+import { eposRequest } from '../../../utils/axios'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -330,6 +331,22 @@ export default function OrderDrawer({
       console.log('err', err)
     },
   })
+  const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
+    onSuccess: ({ data }) => {
+      if (get(data, 'error', true)) {
+        error(get(data, 'message'))
+        return
+      } else {
+      }
+      console.log(data)
+
+      success('Продажа завершена!')
+    },
+    onError: (err) => {
+      error('Ошибка при Продажа завершена')
+      console.log('err', err)
+    },
+  })
   useEffect(() => {
     setPaymentsList([])
   }, [isOrderDrower])
@@ -393,6 +410,22 @@ export default function OrderDrawer({
   })
 
   const onSubmit = (data) => {
+    const mockData = get(cartItemsList, 'data', []).map((el) => ({
+      barcode: el.barcode,
+      amount: el.quantity,
+      price: el.total_price,
+      discount: el.discount_amount,
+      vatPercent: 0,
+      vat: 0,
+      label: '010478010116439421XzmjQbgliy5Xd91UZF092VVFVeDFM9cVd5zuu8avME8HQne9gxKQ8OH5ccczHLAg',
+      name: el.name,
+      classCode: '02202003001002001',
+      packageCode: '100',
+      commissionTIN: '200523321',
+      other: 100000,
+      ownerType: 0,
+    }))
+
     setOpenScanDialog(false)
     const paymentTypes = mpaddedPaymentsList
       .filter((type) => get(type, 'isPlaceholder', false) == false)
@@ -403,15 +436,60 @@ export default function OrderDrawer({
         ...(data ? { opt_data: data } : {}),
         app_type: get(type, 'name').toLowerCase(),
       }))
-
-    finishSaleWithoutAppPaymentType({
-      cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
-      payment_types: paymentTypes,
-      sale_id: id,
-      store_id: get(userData, 'store.id'),
-      customer_id: get(customerId, 'id'),
-      total_amount: get(cartItemsList, 'total_amount'),
+    sendToEPOS({
+      token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+      method: 'sale', // Название метода, Обязательное поле, String
+      companyName: 'E-POS Systems MCHJ', // Поле для ввода названия компании, будет напечатано на чеке, Обязательное поле, String
+      companyAddress: 'Toshkent Sh., Yangi Olmazor, 51', // Поле для ввода адреса компании, убедитесь в верности, будет напечатано на чеке, Обязательное поле, String
+      companyINN: '123456789', // Поле для ввода ИНН компании, будет напечатано на чеке, Обязательное поле, String
+      staffName: 'Abdulazizov Shakhboz', // Поле для ввода имени кассира , Необязательное поле, String
+      printerSize: 58, // Ширина ленты в чековом принтере, будет учитываться при формировании pdf чека, Integer
+      phoneNumber: '+998331234567', // Поле для ввода контакного номера, будет напечатано на чеке, Необязательное поле, String
+      companyPhoneNumber: '+998711234567', // Поле для ввода номера компании, будет напечатано на чеке, Необязательное поле, String
+      params: {
+        // Объект с данными о чеке
+        paycheckNumber: 'A9/00000447', //Номер чека для вывода в чеке. Если не указать номер чека, номер присваивается со стороны фискального модуля, String
+        paymentNumber: 'OTA00004534 от 10.10.2022', // Поле “Shartnoma #” в чеке для печати, Необязательное поле, String
+        note: 'За ноябрь', // Коментарий к чеку, Необязательное поле
+        stateDuty: '16500000', //Поле “Davlat boji” в чеке для печати. Значение указывается в тийинах (100 сум = 10000 тийин)
+        fineAmount: '5600000', //Поле “Shtraf summasi” в чеке для печати. Значение указывается в сумах.
+        contractSum: '5000000', //Поле “Shartnoma summasi” в чеке для печати. Значение указывается в сумах.
+        clientName: 'Khamidov Iskander', //ФИО Клиента
+        discountCard: {
+          // Объект для указания данных о дисконтных картах и их статусе, печатется на чеке,
+          available: '1500000', //Значение указывается в тийинах (100 сум = 10000 тийин)
+          addition: '30000', //Значение указывается в тийинах (100 сум = 10000 тийин)
+          subtraction: '0', //Значение указывается в тийинах (100 сум = 10000 тийин)
+          remainder: '1530000', //Значение указывается в тийинах (100 сум = 10000 тийин)
+        },
+        items: mockData,
+        receivedCash: 150000, // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
+        receivedCard: 650000, // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
+        extraInfos: {
+          // Объект с данными о Центре Обслуживания
+          ЦОТУ: 'E-POS Systems LLC',
+          'Модель виртуальной кассы': 'E-POS',
+        },
+      },
+      extraInfo: {
+        // Объект с дополнительными данными о чеке
+        tin: '123456789', // ИНН Компании
+        pinfl: '12345678901234', // ПИНФЛ
+        phoneNumber: '998991234567', //
+        carNumber: '01A123BC', // Государственный номер автомобиля. Используется для мобильных (разъездных) касс.
+        cashedOutFromCard: 200000, // Сумма обналиченных денег с карты. Значение указывается в тийинах (100 сум = 10000 тийин)
+        cardType: 2, // Тип банкоской карты клиента. 1 - Корпоративная, 2 - Физическая
+        pptid: 'sdadasdasdasd', // Номер транзакции (rrn) проведенной с терминала/пинпада.
+      },
     })
+    // finishSaleWithoutAppPaymentType({
+    //   cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
+    //   payment_types: paymentTypes,
+    //   sale_id: id,
+    //   store_id: get(userData, 'store.id'),
+    //   customer_id: get(customerId, 'id'),
+    //   total_amount: get(cartItemsList, 'total_amount'),
+    // })
 
     return
   }
@@ -690,6 +768,7 @@ export default function OrderDrawer({
                   ref={printContainer}
                 >
                   <RippedPaperItem
+                    qrcode='pending'
                     paymentsList={paymentsList}
                     cartItemsList={cartItemsList}
                     id='cheque_of_orders'

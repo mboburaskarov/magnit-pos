@@ -28,6 +28,16 @@ export const request = axios.create({
   ],
 })
 
+export const eposRequest = axios.create({
+  baseURL: import.meta.env.VITE_EPOS_BASE_API_URL,
+
+  transformRequest: [
+    (data) => {
+      return JSON.stringify(data)
+    },
+  ],
+})
+
 export const fileUploadRequest = axios.create({
   baseURL: import.meta.env.VITE_FILE_API_URL,
   headers: {

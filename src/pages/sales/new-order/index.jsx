@@ -449,26 +449,26 @@ function NewSale() {
   useHotkeys('tab', (event) => focusPackInput(event), { enableOnFormTags: true })
   useHotkeys(['ArrowRight', 'ArrowLeft'], (event) => focusUnitInput(event), { enableOnFormTags: true })
   useHotkeys('Shift', (event) => focusedItemDetailDrawerOpen(event), { enableOnFormTags: true })
-  useHotkeys(['T', 't'], () => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), {
+  useHotkeys(['T', 't', 'е'], () => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys(['D', 'd'], () => size(get(cartItemsList, 'data.data.data')) !== 0 && setIsOpenDraft(true), {
+  useHotkeys(['D', 'd', 'в'], () => size(get(cartItemsList, 'data.data.data')) !== 0 && setIsOpenDraft(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys(['A', 'a'], () => setIsOpenChangeShift(true), {
+  useHotkeys(['A', 'a', 'ф'], () => setIsOpenChangeShift(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
   useHotkeys('F10', () => setIsOrderDrower(true), {
     enableOnFormTags: true,
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys(['X', 'x'], () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`), {
+  useHotkeys(['X', 'x', 'ч'], () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys(['Q', 'q'], () => size(get(cartItemsList, 'data.data.data')) !== 0 && setIsCreateOpenDraft(true), {
+  useHotkeys(['Q', 'q', 'й'], () => size(get(cartItemsList, 'data.data.data')) !== 0 && setIsCreateOpenDraft(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys(['U', 'u'], () => setOpenClientCreateMini(true), {
+  useHotkeys(['U', 'u', 'г'], () => setOpenClientCreateMini(true), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
   useHotkeys(

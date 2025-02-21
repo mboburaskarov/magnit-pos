@@ -4,13 +4,12 @@ import TickOutlinedIcon from '../../src/assets/icons/BigTickIcon'
 
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-
+import { QRCodeCanvas } from 'qrcode.react'
 import DashedRow from './DashedRow.jsx'
 import useStyles from './useStyles'
 
 import palette from '../../src/assets/theme/mui.config'
 import { get } from 'lodash'
-import ChequeBarcode from './ChequeBarcode'
 import dayjs from 'dayjs'
 import thousandDivider from '../../utils/thousandDivider.js'
 
@@ -207,8 +206,9 @@ function RippedPaperCheck({
               )}
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
-            <ChequeBarcode orderNumber={'323232323'} />
-            <p>Xaridingiz uchun rahmat</p>
+            <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
+              <QRCodeCanvas value='pending' />,<p>Xaridingiz uchun rahmat</p>
+            </Box>
           </Fragment>
         </Box>
       </Box>

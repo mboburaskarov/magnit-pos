@@ -1,8 +1,11 @@
 import { get } from 'lodash'
-import { authRequest, fileUploadRequest, request, yandexMapsRequest } from '../axios'
+import { authRequest, eposRequest, fileUploadRequest, request, yandexMapsRequest } from '../axios'
 import * as qs from 'qs'
 
 export const requests = {
+  //auth
+  sendToEpos: (data) => eposRequest.post(`/uzpos`, data),
+
   //auth
   logIn: (data) => authRequest.post(`v1/login`, data),
 
