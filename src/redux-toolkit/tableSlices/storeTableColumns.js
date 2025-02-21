@@ -14,7 +14,7 @@ const columns = [
     width: 200,
   },
   {
-    field: 'detailed_ame',
+    field: 'detailed_name',
     hide: false,
     minWidth: 70,
     width: 194,
