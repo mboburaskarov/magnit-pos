@@ -30,7 +30,11 @@ export const request = axios.create({
 
 export const eposRequest = axios.create({
   baseURL: import.meta.env.VITE_EPOS_BASE_API_URL,
-
+  headers: {
+    Accept: 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json; charset=utf-8',
+  },
   transformRequest: [
     (data) => {
       return JSON.stringify(data)

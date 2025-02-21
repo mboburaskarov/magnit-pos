@@ -3,8 +3,9 @@ import { authRequest, eposRequest, fileUploadRequest, request, yandexMapsRequest
 import * as qs from 'qs'
 
 export const requests = {
-  //auth
+  //epos
   sendToEpos: (data) => eposRequest.post(`/uzpos`, data),
+  sendEPOSresponseToBackend: (data) => request.post(`v1/sale/epos-result`, data),
 
   //auth
   logIn: (data) => authRequest.post(`v1/login`, data),

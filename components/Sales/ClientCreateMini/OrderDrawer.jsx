@@ -297,6 +297,14 @@ export default function OrderDrawer({
     }
   }, [paymentsList, cartItemsList])
 
+  const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
+    onSuccess: ({ data }) => {
+      console.log(data)
+    },
+    onError: (err) => {
+      error('Ошибка при епосе')
+    },
+  })
   const { mutate: saleCreate, isLoading: issaleCreate } = useMutation(requests.saleCreate, {
     onSuccess: ({ data }) => {
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
@@ -337,6 +345,7 @@ export default function OrderDrawer({
         error(get(data, 'message'))
         return
       } else {
+        sendEPOSresponseToBackend({ respose_data: JSON.stringify(data), sale_id: id })
       }
       console.log(data)
 
@@ -412,17 +421,17 @@ export default function OrderDrawer({
   const onSubmit = (data) => {
     const mockData = get(cartItemsList, 'data', []).map((el) => ({
       barcode: el.barcode,
-      amount: el.quantity,
+      amount: el.quantity * 1000,
       price: el.total_price,
       discount: el.discount_amount,
       vatPercent: 0,
       vat: 0,
       label: '010478010116439421XzmjQbgliy5Xd91UZF092VVFVeDFM9cVd5zuu8avME8HQne9gxKQ8OH5ccczHLAg',
       name: el.name,
-      classCode: '02202003001002001',
-      packageCode: '100',
+      classCode: '03401001001000000',
+      packageCode: '1520726',
       commissionTIN: '200523321',
-      other: 100000,
+      other: 0,
       ownerType: 0,
     }))
 
@@ -463,23 +472,13 @@ export default function OrderDrawer({
           remainder: '1530000', //Значение указывается в тийинах (100 сум = 10000 тийин)
         },
         items: mockData,
-        receivedCash: 150000, // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
-        receivedCard: 650000, // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
+        receivedCash: 11300, // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
+        receivedCard: 0, // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
         extraInfos: {
           // Объект с данными о Центре Обслуживания
           ЦОТУ: 'E-POS Systems LLC',
           'Модель виртуальной кассы': 'E-POS',
         },
-      },
-      extraInfo: {
-        // Объект с дополнительными данными о чеке
-        tin: '123456789', // ИНН Компании
-        pinfl: '12345678901234', // ПИНФЛ
-        phoneNumber: '998991234567', //
-        carNumber: '01A123BC', // Государственный номер автомобиля. Используется для мобильных (разъездных) касс.
-        cashedOutFromCard: 200000, // Сумма обналиченных денег с карты. Значение указывается в тийинах (100 сум = 10000 тийин)
-        cardType: 2, // Тип банкоской карты клиента. 1 - Корпоративная, 2 - Физическая
-        pptid: 'sdadasdasdasd', // Номер транзакции (rrn) проведенной с терминала/пинпада.
       },
     })
     // finishSaleWithoutAppPaymentType({
