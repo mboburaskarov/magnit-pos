@@ -39,18 +39,20 @@ export default function RoleEditPage() {
   )
   const onSubmit = (data) => {
     const permissions = []
-    console.log(selected, rolesAndPermissionList, get(rolesAndPermissionList, 'data.data', []), permissions)
+    console.log(selected, rolesAndPermissionList, disabled, get(rolesAndPermissionList, 'data.data', []), permissions)
     get(rolesAndPermissionList, 'data.data', [])
       .filter((section) => section.permissions?.length && !disabled.includes(section.key))
       .forEach((section) => {
         section?.permissions?.forEach((permission) => {
-          permissions.push({
-            parent_id: permission?.id || '',
-            children_ids: selected?.includes(permission?.id)
-              ? [...new Set(permission.children.map((el) => el.id))]
-              : [...new Set(selected.filter((el) => permission.children.find((child) => child.id === el)))] || [],
-            is_active: !!selected?.includes(permission?.id),
-          })
+          !selected?.includes(permission?.id)
+            ? {}
+            : permissions.push({
+                parent_id: permission?.id || '',
+                children_ids: selected?.includes(permission?.id)
+                  ? [...new Set(permission.children.map((el) => el.id))]
+                  : [...new Set(selected.filter((el) => permission.children.find((child) => child.id === el)))] || [],
+                is_active: !!selected?.includes(permission?.id),
+              })
         })
       })
     console.log(permissions)

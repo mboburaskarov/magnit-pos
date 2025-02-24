@@ -257,12 +257,7 @@ export default function RolesPage() {
               >
                 Нет
               </Button>
-              <LoadingButton
-                variant='contained'
-                type='button'
-                loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                onClick={() => deleteRole({ data: [openConfirmDialog.id] })}
-              >
+              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteRole({ data: [openConfirmDialog.id] })}>
                 Да, удалить
               </LoadingButton>
             </>
