@@ -160,19 +160,19 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         width='660px'
         display='inline-flex'
       >
-        <CheckAccess id={'product-edit'}>
-          <Button
-            sx={{
-              height: '48px',
-            }}
-            color='secondary'
-            onClick={() => navigate(`/products/edit/${productData?.data?.data.id}`)}
-            startIcon={<FontAwesomeIcon width={15} icon={faPen} />}
-            fullWidth
-          >
-            Редактировать
-          </Button>
-        </CheckAccess>
+        {/* <CheckAccess id={'product-edit'}> */}
+        <Button
+          sx={{
+            height: '48px',
+          }}
+          color='secondary'
+          onClick={() => navigate(`/products/edit/${productData?.data?.data.id}`)}
+          startIcon={<FontAwesomeIcon width={15} icon={faPen} />}
+          fullWidth
+        >
+          Редактировать
+        </Button>
+        {/* </CheckAccess> */}
       </Box>
     </Drawer>
   )

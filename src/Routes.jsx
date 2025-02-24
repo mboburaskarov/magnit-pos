@@ -12,7 +12,7 @@ const token =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDc0NmMzMDM1ZTQ1ODFkNzQ0MGNiOTIiLCJmdWxsTmFtZSI6Ik11aGFtbWFkcW9kaXIgUGFycGl5ZXYiLCJwaG9uZSI6OTk4OTM0ODIwMDExLCJkYklkIjoiNjQ2ZmM0NTM5NDA5YWY0ZGZhYjk3YWJkIiwidHlwZSI6IkJPU1MiLCJzdGF0dXMiOiJBQ1RJVkUiLCJpc0RlbGV0ZWQiOmZhbHNlLCJjcmVhdGVkQXQiOiIyMDIzLTA1LTI5VDA5OjExOjEyLjk4OVoiLCJ1cGRhdGVkQXQiOiIyMDIzLTA2LTE5VDExOjM4OjU1LjAzNloiLCJfX3YiOjAsIlR5cGUiOiJWRU5ET1IiLCJzZXNzaW9uSWQiOiI2NTAwM2UwNWEzMzVkYTE3Y2MyMDRmOTAiLCJpYXQiOjE2OTU3OTM2NDR9.D5ZSoryUnTczQh5HUY3eBHWO6Ws_hRN2Xw0AJTvRvpk'
 
 export const filterNavData = (routes, urls, user_data) => {
-  if (user_data?.type === 'SUPER_ADMIN') {
+  if (user_data?.type === 'SUPERADMIN') {
     return routes
   }
 
@@ -74,7 +74,7 @@ export default function Routes() {
   const filterRoutes = (routes, urls, isChild = null) => {
     // console.log(urls)
 
-    if (user_data?.type === 'SUPER_ADMIN') {
+    if (user_data?.type === 'SUPERADMIN') {
       return routes
     }
 
@@ -117,6 +117,7 @@ export default function Routes() {
   }
 
   const filteredRoutes = filterRoutes(routes, routeString)
+  console.log(filteredRoutes)
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const formattedRoutes = useRoutes([

@@ -366,56 +366,56 @@ export default function tableHeaderSelector({
         headerName: 'Оператор',
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          <CheckAccess id={'order-operator'}>
-            <Box ml={-3} sx={{ transform: 'scale(0.8)' }} position='relative' minWidth={280}>
-              <SelectSimple
-                isClearable={false}
-                id='operator'
-                name='operator'
-                minWidth='auto'
-                placeholder={
-                  <Typography ml={4} color='#bdbdbd'>
-                    Назначить оператора
-                  </Typography>
+          // <CheckAccess id={'order-operator'}>
+          <Box ml={-3} sx={{ transform: 'scale(0.8)' }} position='relative' minWidth={280}>
+            <SelectSimple
+              isClearable={false}
+              id='operator'
+              name='operator'
+              minWidth='auto'
+              placeholder={
+                <Typography ml={4} color='#bdbdbd'>
+                  Назначить оператора
+                </Typography>
+              }
+              uncontrolled
+              options={operatorsList}
+              value={data.moderator}
+              onChange={(operator) =>
+                assigneOperator({
+                  orderId: data._id,
+                  moderatorId: operator._id,
+                })
+              }
+              getOptionLabel={(option) => (
+                <Typography fontSize={14} maxHeight={32} display='inline-flex' color='gray.600'>
+                  <Box px={0.1} width={32}>
+                    <HeadPhonesIcon size={14} />
+                  </Box>
+                  {option.fullName}
+                </Typography>
+              )}
+              filterOption={(candidate, input) => {
+                const formatText = (text) => {
+                  const newText = String(text)?.toLowerCase()?.replaceAll(' ', '')
+                  return newText
                 }
-                uncontrolled
-                options={operatorsList}
-                value={data.moderator}
-                onChange={(operator) =>
-                  assigneOperator({
-                    orderId: data._id,
-                    moderatorId: operator._id,
-                  })
-                }
-                getOptionLabel={(option) => (
-                  <Typography fontSize={14} maxHeight={32} display='inline-flex' color='gray.600'>
-                    <Box px={0.1} width={32}>
-                      <HeadPhonesIcon size={14} />
-                    </Box>
-                    {option.fullName}
-                  </Typography>
-                )}
-                filterOption={(candidate, input) => {
-                  const formatText = (text) => {
-                    const newText = String(text)?.toLowerCase()?.replaceAll(' ', '')
-                    return newText
-                  }
-                  const inputFrmttd = formatText(input)
-                  return formatText(candidate?.data?.fullName)?.includes(inputFrmttd) || formatText(candidate?.data?.phone)?.includes(inputFrmttd)
-                }}
-              />
-              <AssigneMeButton
-                title='Назначить себя'
-                isSelected={false}
-                onClick={() =>
-                  assigneOperator({
-                    orderId: data._id,
-                    moderatorId: userData.id,
-                  })
-                }
-              />
-            </Box>
-          </CheckAccess>
+                const inputFrmttd = formatText(input)
+                return formatText(candidate?.data?.fullName)?.includes(inputFrmttd) || formatText(candidate?.data?.phone)?.includes(inputFrmttd)
+              }}
+            />
+            <AssigneMeButton
+              title='Назначить себя'
+              isSelected={false}
+              onClick={() =>
+                assigneOperator({
+                  orderId: data._id,
+                  moderatorId: userData.id,
+                })
+              }
+            />
+          </Box>
+          // </CheckAccess>
         )),
       }
     }
@@ -438,73 +438,72 @@ export default function tableHeaderSelector({
         colId: el.field,
         cellRenderer: memo(({ data }) => (
           <Box display='flex' columnGap={1.5}>
-            <CheckAccess id={'order-note'}>
-              <StyledTooltip title='Добавить заметку'>
-                <IconButton
-                  sx={{ borderRadius: 3, padding: '14px' }}
-                  onClick={() => {
-                    setIsOrderCreateNote(true)
-                    setOrderIdForNote(data._id)
-                  }}
-                >
-                  <OrderNoteIcon />
-                </IconButton>
-              </StyledTooltip>
-            </CheckAccess>
-            <CheckAccess id={'order-re-order'}>
-              <StyledTooltip title='Заказать курьера повторно'>
-                <IconButton
-                  sx={{ borderRadius: 3, padding: '14px' }}
-                  onClick={() => {
-                    setOpenConfirmDialog({ type: 're-order', id: data._id, orderNumber: data.orderNumber })
-                  }}
-                >
-                  <ReOrderCourierIcon />
-                </IconButton>
-              </StyledTooltip>
-            </CheckAccess>
-            <CheckAccess id={'order-cancel-kuryer'}>
-              <StyledTooltip title={!!data.claimId ? 'Отменить курьера' : 'В этом заказе нет курьера'}>
+            {/* <CheckAccess id={'order-note'}> */}
+            <StyledTooltip title='Добавить заметку'>
+              <IconButton
+                sx={{ borderRadius: 3, padding: '14px' }}
+                onClick={() => {
+                  setIsOrderCreateNote(true)
+                  setOrderIdForNote(data._id)
+                }}
+              >
+                <OrderNoteIcon />
+              </IconButton>
+            </StyledTooltip>
+            {/* </CheckAccess> */}
+            {/* <CheckAccess id={'order-re-order'}> */}
+            <StyledTooltip title='Заказать курьера повторно'>
+              <IconButton
+                sx={{ borderRadius: 3, padding: '14px' }}
+                onClick={() => {
+                  setOpenConfirmDialog({ type: 're-order', id: data._id, orderNumber: data.orderNumber })
+                }}
+              >
+                <ReOrderCourierIcon />
+              </IconButton>
+            </StyledTooltip>
+            {/* </CheckAccess> */}
+            {/* <CheckAccess id={'order-cancel-kuryer'}> */}
+            <StyledTooltip title={!!data.claimId ? 'Отменить курьера' : 'В этом заказе нет курьера'}>
+              <IconButton
+                sx={{ borderRadius: 3, padding: '14px', opacity: !data?.claimId && 0.5 }}
+                onClick={() => {
+                  !!data?.claimId && setOpenConfirmDialog({ type: 'cancel', id: data?.claimId, orderNumber: data.orderNumber })
+                }}
+              >
+                <CancelCourierIcon />
+              </IconButton>
+            </StyledTooltip>
+            {/* </CheckAccess> */}
+            {data.status !== 'INACTIVE' && data.status !== 'PENDING' && data.status !== 'CANCELED' && data.status !== 'DONE' && (
+              // <CheckAccess id={'order-cancel'}>
+              <StyledTooltip title={'Отменить заказ'}>
                 <IconButton
                   sx={{ borderRadius: 3, padding: '14px', opacity: !data?.claimId && 0.5 }}
                   onClick={() => {
-                    !!data?.claimId && setOpenConfirmDialog({ type: 'cancel', id: data?.claimId, orderNumber: data.orderNumber })
+                    setOpenConfirmDialog({ type: 'cancel-order', id: data?._id, orderNumber: data?.orderNumber })
                   }}
                 >
-                  <CancelCourierIcon />
+                  <CancelOrderIcon />
                 </IconButton>
               </StyledTooltip>
-            </CheckAccess>
-            {data.status !== 'INACTIVE' && data.status !== 'PENDING' && data.status !== 'CANCELED' && data.status !== 'DONE' && (
-              <CheckAccess id={'order-cancel'}>
-                <StyledTooltip title={'Отменить заказ'}>
-                  <IconButton
-                    sx={{ borderRadius: 3, padding: '14px', opacity: !data?.claimId && 0.5 }}
-                    onClick={() => {
-                      setOpenConfirmDialog({ type: 'cancel-order', id: data?._id, orderNumber: data?.orderNumber })
-                    }}
-                  >
-                    <CancelOrderIcon />
-                  </IconButton>
-                </StyledTooltip>
-              </CheckAccess>
             )}
-            <CheckAccess id={'shop-problem'}>
-              <StyledTooltip title={'Дать предупреждение магазину'}>
-                <IconButton
-                  sx={{ borderRadius: 3, padding: '14px' }}
-                  onClick={() =>
-                    setIsShopWarning(() => ({
-                      orderId: data?._id,
-                      orderNumber: data?.orderNumber,
-                      shopId: data?.shop?._id,
-                    }))
-                  }
-                >
-                  <WarningIcon />
-                </IconButton>
-              </StyledTooltip>
-            </CheckAccess>
+            {/* <CheckAccess id={'shop-problem'}> */}
+            <StyledTooltip title={'Дать предупреждение магазину'}>
+              <IconButton
+                sx={{ borderRadius: 3, padding: '14px' }}
+                onClick={() =>
+                  setIsShopWarning(() => ({
+                    orderId: data?._id,
+                    orderNumber: data?.orderNumber,
+                    shopId: data?.shop?._id,
+                  }))
+                }
+              >
+                <WarningIcon />
+              </IconButton>
+            </StyledTooltip>
+            {/* </CheckAccess> */}
           </Box>
         )),
       }

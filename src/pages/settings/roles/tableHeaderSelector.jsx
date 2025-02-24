@@ -88,23 +88,23 @@ export default function tableHeaderSelector({ productsColumns, t, selectVendors,
         headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
-            <Box display='inline-flex' columnGap={'8px'}>
-              <CheckAccess id={'product-edit'}>
-                <IconButton onClick={() => navigate(`/roles/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-                  <EditIcon />
-                </IconButton>
-              </CheckAccess>
-              <CheckAccess id={'product-delete'}>
-                <IconButton
-                  onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
-                  sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </CheckAccess>
-            </Box>
-          </CheckAccess>
+          // <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
+          <Box display='inline-flex' columnGap={'8px'}>
+            {/* <CheckAccess id={'product-edit'}> */}
+            <IconButton onClick={() => navigate(`/roles/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+              <EditIcon />
+            </IconButton>
+            {/* </CheckAccess> */}
+            {/* <CheckAccess id={'product-delete'}> */}
+            <IconButton
+              onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
+              sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+            >
+              <DeleteIcon />
+            </IconButton>
+            {/* </CheckAccess> */}
+          </Box>
+          // </CheckAccess>
         )),
       }
     }

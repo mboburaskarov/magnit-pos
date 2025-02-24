@@ -76,15 +76,15 @@ export default function TotalOrdersByCity() {
       </Box>
 
       {/* RadialBarChart */}
-      <Box display='flex' px={'37px'} width={'100%'} justifyContent='center' alignItems='center' position='relative'>
-        <RadialBarChart width={340} height={340} innerRadius='40%' outerRadius='100%' barSize={15} data={radialChartData} startAngle={90} endAngle={450}>
-          {/* <PolarAngleAxis type='number' domain={[0, 20000]} angleAxisId={0} tick={false} /> */}
-          <RadialBar minAngle={15} background clockWise dataKey='value' />
+      {/* <Box display='flex' px={'37px'} width={'100%'} justifyContent='center' alignItems='center' position='relative'>
+        <RadialBarChart width={340} height={340} innerRadius='40%' outerRadius='100%' barSize={15} data={radialChartData} startAngle={90} endAngle={450}> */}
+      {/* <PolarAngleAxis type='number' domain={[0, 20000]} angleAxisId={0} tick={false} /> */}
+      {/* <RadialBar minAngle={15} background clockWise dataKey='value' />
           <Tooltip />
-        </RadialBarChart>
+        </RadialBarChart> */}
 
-        {/* Total Revenue Display */}
-        <Box
+      {/* Total Revenue Display */}
+      {/* <Box
           position='absolute'
           top='50%'
           left='50%'
@@ -97,7 +97,7 @@ export default function TotalOrdersByCity() {
             ${totalRevenue.toLocaleString()}
           </Typography>
         </Box>
-      </Box>
+      </Box> */}
 
       {/* Top Cities Table */}
       <Box mt={3}>

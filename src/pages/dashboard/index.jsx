@@ -40,7 +40,7 @@ export default function DashboarPage() {
   const [detailing, setDetaling] = useState('week')
 
   const [detalization, setDetalization] = useState({ name: 'Сегодня', value: 'day' })
-  const check = type === 'SUPER_ADMIN' || type === 'ACCOUNTANT'
+  const check = type === 'SUPERADMIN' || type === 'ACCOUNTANT'
   const [sortBy, setSortBy] = useState(check ? 'SUM' : 'COUNT')
   const { columns, loading } = useSelector((state) => state.orderTableColumns)
   const [regions, setRegions] = useState([])

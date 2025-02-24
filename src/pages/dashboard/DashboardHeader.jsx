@@ -10,7 +10,7 @@ import { get } from 'lodash'
 export default function DashboardHeader({ setSortBy }) {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
   const { type } = useSelector((state) => state.user)
-  const check = type === 'SUPER_ADMIN' || type === 'ACCOUNTANT'
+  const check = type === 'SUPERADMIN' || type === 'ACCOUNTANT'
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
 
@@ -29,13 +29,13 @@ export default function DashboardHeader({ setSortBy }) {
           defaultFilterData={{ label: 'Это час', start_date: dayjs().tz().startOf('week'), end_date: dayjs().tz() }}
           id='accounting-report-date-range'
         />
-        <CheckAccess id='shop-create'>
-          <Box>
-            <Button onClick={() => navigate('/shops/create')} fullWidth variant='contained' color='primary'>
-              {t('all_reports')}
-            </Button>
-          </Box>
-        </CheckAccess>
+        {/* <CheckAccess id='shop-create'> */}
+        <Box>
+          <Button onClick={() => navigate('/shops/create')} fullWidth variant='contained' color='primary'>
+            {t('all_reports')}
+          </Button>
+        </Box>
+        {/* </CheckAccess> */}
       </Box>
     </Box>
   )

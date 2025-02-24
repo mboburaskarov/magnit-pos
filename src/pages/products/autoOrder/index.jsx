@@ -160,7 +160,7 @@ export default function AutoOrderPage() {
                   changeColumnSequence={changeColumnSequence}
                 />
               </Box>
-              <CheckAccess id={'product-create'}>
+              <CheckAccess id={'create-auto-order'}>
                 <Box minWidth={156}>
                   <Button
                     sx={{ height: '48px' }}

@@ -184,23 +184,23 @@ function Header({
                   )}
                   {!noPrimaryBtn &&
                     (checkAccessId && typeof checkAccessId === 'string' ? (
-                      <CheckAccess id={checkAccessId}>
-                        <Button
-                          id={buttonId}
-                          variant='contained'
-                          className={classes.largeButton}
-                          type='submit'
-                          size='small'
-                          form={formId}
-                          disabled={disabled}
-                          isLoading={isLoading}
-                          onClick={onSubmit}
-                          sx={{ ml: 1.5 }}
-                        >
-                          {buttonText}
-                        </Button>
-                      </CheckAccess>
+                      // <CheckAccess id={checkAccessId}>
+                      <Button
+                        id={buttonId}
+                        variant='contained'
+                        className={classes.largeButton}
+                        type='submit'
+                        size='small'
+                        form={formId}
+                        disabled={disabled}
+                        isLoading={isLoading}
+                        onClick={onSubmit}
+                        sx={{ ml: 1.5 }}
+                      >
+                        {buttonText}
+                      </Button>
                     ) : (
+                      // </CheckAccess>
                       <Button
                         id={buttonId}
                         variant='contained'

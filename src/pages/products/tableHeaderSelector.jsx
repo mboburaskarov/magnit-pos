@@ -11,6 +11,7 @@ import { products_statuses } from '../../assets/data/products-statuses'
 import DefaultImgIcon from '../../assets/icons/defaultImgIcon'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
 import EditIcon from '../../assets/icons/EditIcon'
+import { checkPermission } from '../../../utils/checkPermission'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -252,12 +253,12 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         cellRenderer: memo(({ data }) => (
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
             <Box display='inline-flex' columnGap={'8px'}>
-              <CheckAccess id={'product-edit'}>
+              <CheckAccess id={'edit-product'}>
                 <IconButton onClick={() => navigate(`/products/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />
                 </IconButton>
               </CheckAccess>
-              <CheckAccess id={'product-delete'}>
+              <CheckAccess id={'delete-product'}>
                 <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <DeleteIcon />
                 </IconButton>

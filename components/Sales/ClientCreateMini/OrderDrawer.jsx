@@ -23,6 +23,8 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import thousandDivider from '../../../utils/thousandDivider'
 import { useSelector } from 'react-redux'
 import { eposRequest } from '../../../utils/axios'
+import LoadingContainer from '../../LoadingContainer'
+import LoadingBlock from '../../LoadingBlock'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -272,6 +274,7 @@ export default function OrderDrawer({
   const [maxAmount, setMaxAmount] = useState(0)
   const [paymentAmount, setPaymentAmount] = useState(0)
   const [hasChange, setHasChange] = useState(false)
+  const [qrcodeUrl, setQrcodeUrl] = useState('pending')
   const [scannedKeys, setScannedKeys] = useState([])
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
   const [payme, setPayme] = useState(false)
@@ -316,14 +319,71 @@ export default function OrderDrawer({
     },
   })
   const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
-  const { mutate: finishSaleWithoutAppPaymentType, isLoading: isfinishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
+  const {
+    mutate: finishSaleWithoutAppPaymentType,
+    isSuccess: saleFinishSuccess,
+    isLoading: isfinishSaleWithoutAppPaymentType,
+  } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
       // refetchcartItemsList()
       ///
+      //send to epos
+      const mockData = get(cartItemsList, 'data', []).map((el) => ({
+        barcode: el.barcode,
+        amount: el.quantity * 1000,
+        price: el.total_price,
+        discount: el.discount_amount,
+        vatPercent: 0,
+        vat: 0,
+        label: '010478010116439421XzmjQbgliy5Xd91UZF092VVFVeDFM9cVd5zuu8avME8HQne9gxKQ8OH5ccczHLAg',
+        name: el.name,
+        classCode: '03401001001000000',
+        packageCode: '1520726',
+        commissionTIN: '200523321',
+        other: 0,
+        ownerType: 0,
+      }))
+      sendToEPOS({
+        token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+        method: 'sale', // Название метода, Обязательное поле, String
+        companyName: 'E-POS Systems MCHJ', // Поле для ввода названия компании, будет напечатано на чеке, Обязательное поле, String
+        companyAddress: 'Toshkent Sh., Yangi Olmazor, 51', // Поле для ввода адреса компании, убедитесь в верности, будет напечатано на чеке, Обязательное поле, String
+        companyINN: '123456789', // Поле для ввода ИНН компании, будет напечатано на чеке, Обязательное поле, String
+        staffName: 'Abdulazizov Shakhboz', // Поле для ввода имени кассира , Необязательное поле, String
+        printerSize: 58, // Ширина ленты в чековом принтере, будет учитываться при формировании pdf чека, Integer
+        phoneNumber: '+998331234567', // Поле для ввода контакного номера, будет напечатано на чеке, Необязательное поле, String
+        companyPhoneNumber: '+998711234567', // Поле для ввода номера компании, будет напечатано на чеке, Необязательное поле, String
+        params: {
+          // Объект с данными о чеке
+          paycheckNumber: 'A9/00000447', //Номер чека для вывода в чеке. Если не указать номер чека, номер присваивается со стороны фискального модуля, String
+          paymentNumber: 'OTA00004534 от 10.10.2022', // Поле “Shartnoma #” в чеке для печати, Необязательное поле, String
+          note: 'За ноябрь', // Коментарий к чеку, Необязательное поле
+          stateDuty: '16500000', //Поле “Davlat boji” в чеке для печати. Значение указывается в тийинах (100 сум = 10000 тийин)
+          fineAmount: '5600000', //Поле “Shtraf summasi” в чеке для печати. Значение указывается в сумах.
+          contractSum: '5000000', //Поле “Shartnoma summasi” в чеке для печати. Значение указывается в сумах.
+          clientName: 'Khamidov Iskander', //ФИО Клиента
+          discountCard: {
+            // Объект для указания данных о дисконтных картах и их статусе, печатется на чеке,
+            available: '1500000', //Значение указывается в тийинах (100 сум = 10000 тийин)
+            addition: '30000', //Значение указывается в тийинах (100 сум = 10000 тийин)
+            subtraction: '0', //Значение указывается в тийинах (100 сум = 10000 тийин)
+            remainder: '1530000', //Значение указывается в тийинах (100 сум = 10000 тийин)
+          },
+          items: mockData,
+          receivedCash: 11300, // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
+          receivedCard: 0, // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
+          extraInfos: {
+            // Объект с данными о Центре Обслуживания
+            ЦОТУ: 'E-POS Systems LLC',
+            'Модель виртуальной кассы': 'E-POS',
+          },
+        },
+      })
+      //
+
       setInputDiscount(NaN)
       navigate(`/sales/new-sale/${get(data, 'data', '/')}`)
-      setIsOrderDrower(false)
-      handlePrint()
+
       setPaymentsList([])
 
       success('Продажа завершена!')
@@ -345,10 +405,12 @@ export default function OrderDrawer({
         error(get(data, 'message'))
         return
       } else {
-        sendEPOSresponseToBackend({ respose_data: JSON.stringify(data), sale_id: id })
+        setQrcodeUrl(get(data, 'info.qrCodeURL', 'pending'))
+        sendEPOSresponseToBackend({ response_data: JSON.stringify(data), sale_id: id })
       }
       console.log(data)
-
+      setIsOrderDrower(false)
+      handlePrint()
       success('Продажа завершена!')
     },
     onError: (err) => {
@@ -418,23 +480,7 @@ export default function OrderDrawer({
     removeAfterPrint: true,
   })
 
-  const onSubmit = (data) => {
-    const mockData = get(cartItemsList, 'data', []).map((el) => ({
-      barcode: el.barcode,
-      amount: el.quantity * 1000,
-      price: el.total_price,
-      discount: el.discount_amount,
-      vatPercent: 0,
-      vat: 0,
-      label: '010478010116439421XzmjQbgliy5Xd91UZF092VVFVeDFM9cVd5zuu8avME8HQne9gxKQ8OH5ccczHLAg',
-      name: el.name,
-      classCode: '03401001001000000',
-      packageCode: '1520726',
-      commissionTIN: '200523321',
-      other: 0,
-      ownerType: 0,
-    }))
-
+  const onSubmit = async (data) => {
     setOpenScanDialog(false)
     const paymentTypes = mpaddedPaymentsList
       .filter((type) => get(type, 'isPlaceholder', false) == false)
@@ -445,50 +491,15 @@ export default function OrderDrawer({
         ...(data ? { opt_data: data } : {}),
         app_type: get(type, 'name').toLowerCase(),
       }))
-    sendToEPOS({
-      token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
-      method: 'sale', // Название метода, Обязательное поле, String
-      companyName: 'E-POS Systems MCHJ', // Поле для ввода названия компании, будет напечатано на чеке, Обязательное поле, String
-      companyAddress: 'Toshkent Sh., Yangi Olmazor, 51', // Поле для ввода адреса компании, убедитесь в верности, будет напечатано на чеке, Обязательное поле, String
-      companyINN: '123456789', // Поле для ввода ИНН компании, будет напечатано на чеке, Обязательное поле, String
-      staffName: 'Abdulazizov Shakhboz', // Поле для ввода имени кассира , Необязательное поле, String
-      printerSize: 58, // Ширина ленты в чековом принтере, будет учитываться при формировании pdf чека, Integer
-      phoneNumber: '+998331234567', // Поле для ввода контакного номера, будет напечатано на чеке, Необязательное поле, String
-      companyPhoneNumber: '+998711234567', // Поле для ввода номера компании, будет напечатано на чеке, Необязательное поле, String
-      params: {
-        // Объект с данными о чеке
-        paycheckNumber: 'A9/00000447', //Номер чека для вывода в чеке. Если не указать номер чека, номер присваивается со стороны фискального модуля, String
-        paymentNumber: 'OTA00004534 от 10.10.2022', // Поле “Shartnoma #” в чеке для печати, Необязательное поле, String
-        note: 'За ноябрь', // Коментарий к чеку, Необязательное поле
-        stateDuty: '16500000', //Поле “Davlat boji” в чеке для печати. Значение указывается в тийинах (100 сум = 10000 тийин)
-        fineAmount: '5600000', //Поле “Shtraf summasi” в чеке для печати. Значение указывается в сумах.
-        contractSum: '5000000', //Поле “Shartnoma summasi” в чеке для печати. Значение указывается в сумах.
-        clientName: 'Khamidov Iskander', //ФИО Клиента
-        discountCard: {
-          // Объект для указания данных о дисконтных картах и их статусе, печатется на чеке,
-          available: '1500000', //Значение указывается в тийинах (100 сум = 10000 тийин)
-          addition: '30000', //Значение указывается в тийинах (100 сум = 10000 тийин)
-          subtraction: '0', //Значение указывается в тийинах (100 сум = 10000 тийин)
-          remainder: '1530000', //Значение указывается в тийинах (100 сум = 10000 тийин)
-        },
-        items: mockData,
-        receivedCash: 11300, // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
-        receivedCard: 0, // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
-        extraInfos: {
-          // Объект с данными о Центре Обслуживания
-          ЦОТУ: 'E-POS Systems LLC',
-          'Модель виртуальной кассы': 'E-POS',
-        },
-      },
+
+    finishSaleWithoutAppPaymentType({
+      cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
+      payment_types: paymentTypes,
+      sale_id: id,
+      store_id: get(userData, 'store.id'),
+      customer_id: get(customerId, 'id'),
+      total_amount: get(cartItemsList, 'total_amount'),
     })
-    // finishSaleWithoutAppPaymentType({
-    //   cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
-    //   payment_types: paymentTypes,
-    //   sale_id: id,
-    //   store_id: get(userData, 'store.id'),
-    //   customer_id: get(customerId, 'id'),
-    //   total_amount: get(cartItemsList, 'total_amount'),
-    // })
 
     return
   }
@@ -612,6 +623,7 @@ export default function OrderDrawer({
           className={`${classes.drawer} ${half ? classes.half : ''}`}
         >
           <FormProvider {...methods}>
+            {isSendToEPOS && <LoadingBlock position={'absolute'} bgColor={'#ffffff99'} width={'100%'} left='0' />}
             <Box className={classes.wrapper}>
               <Box width='calc(75% - 64px)' padding={'0 40px 0 0'}>
                 <Box mb={'40px'} display='flex' width={'100%'} justifyContent={'space-between'}>
@@ -767,6 +779,7 @@ export default function OrderDrawer({
                   ref={printContainer}
                 >
                   <RippedPaperItem
+                    qrcodeUrl={qrcodeUrl}
                     qrcode='pending'
                     paymentsList={paymentsList}
                     cartItemsList={cartItemsList}

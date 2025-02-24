@@ -133,20 +133,20 @@ export default function ProductsPage() {
                 resetTableHeader={resetTableHeader}
               />
             </Box>
-            <CheckAccess id={'product-create'}>
-              <Box minWidth={156}>
-                <Button
-                  sx={{ height: '48px' }}
-                  onClick={() => setopenCreateLocationDrawer({ mode: 'create' })}
-                  fullWidth
-                  startIcon={<PlusIcon color='#fff' />}
-                  variant='contained'
-                  color='primary'
-                >
-                  {t('button.add_new.text')}
-                </Button>
-              </Box>
-            </CheckAccess>
+            {/* <CheckAccess id={'product-create'}> */}
+            <Box minWidth={156}>
+              <Button
+                sx={{ height: '48px' }}
+                onClick={() => setopenCreateLocationDrawer({ mode: 'create' })}
+                fullWidth
+                startIcon={<PlusIcon color='#fff' />}
+                variant='contained'
+                color='primary'
+              >
+                {t('button.add_new.text')}
+              </Button>
+            </Box>
+            {/* </CheckAccess> */}
           </Box>
         </Box>
         <Box>

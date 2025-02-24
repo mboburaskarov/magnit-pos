@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 
-const CheckAccess = ({ id, children }) => {
+export const checkPermission = (id) => {
   const user_data = useSelector((state) => state.user)
   const idsArray = id.split(' ')
 
@@ -9,9 +9,7 @@ const CheckAccess = ({ id, children }) => {
       ? user_data?.role_actions?.some((item) => item.route === id)
       : idsArray.some((id) => user_data?.role_actions?.some((item) => item.route === id))
   if (user_data?.type === 'SUPERADMIN') {
-    return children
+    return true
   }
-  return hasAccess ? children : <></>
+  return hasAccess ? true : false
 }
-
-export default CheckAccess

@@ -83,12 +83,18 @@ export default function RippedPaperList({
   )
 }
 
-export function RippedPaperItem({ printContainer, cashBoxDetails, customerId, paymentsList, cartItemsList }) {
+export function RippedPaperItem({ qrcodeUrl, printContainer, cashBoxDetails, customerId, paymentsList, cartItemsList }) {
   const classes = useStyles()
 
   return (
     <Box px={2} className={classes.wrapper}>
-      <RippedPaperCheck customerId={customerId} cashBoxDetails={cashBoxDetails} cartItemsList={cartItemsList} paymentsList={paymentsList} />
+      <RippedPaperCheck
+        qrcodeUrl={qrcodeUrl}
+        customerId={customerId}
+        cashBoxDetails={cashBoxDetails}
+        cartItemsList={cartItemsList}
+        paymentsList={paymentsList}
+      />
     </Box>
   )
 }

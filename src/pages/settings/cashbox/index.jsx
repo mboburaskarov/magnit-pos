@@ -233,20 +233,20 @@ export default function CashBoxsPage() {
                 resetTableHeader={resetTableHeader}
               />
             </Box>
-            <CheckAccess id={'product-create'}>
-              <Box minWidth={156}>
-                <Button
-                  sx={{ height: '48px' }}
-                  onClick={() => setopenCreateVendorDrawer({ mode: 'add' })}
-                  fullWidth
-                  startIcon={<PlusIcon color='#fff' />}
-                  variant='contained'
-                  color='primary'
-                >
-                  {t('button.add_new.text')}
-                </Button>
-              </Box>
-            </CheckAccess>
+            {/* <CheckAccess id={'product-create'}> */}
+            <Box minWidth={156}>
+              <Button
+                sx={{ height: '48px' }}
+                onClick={() => setopenCreateVendorDrawer({ mode: 'add' })}
+                fullWidth
+                startIcon={<PlusIcon color='#fff' />}
+                variant='contained'
+                color='primary'
+              >
+                {t('button.add_new.text')}
+              </Button>
+            </Box>
+            {/* </CheckAccess> */}
           </Box>
         </Box>
         <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />

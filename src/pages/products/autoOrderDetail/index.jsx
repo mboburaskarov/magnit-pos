@@ -188,21 +188,21 @@ export default function AutoOrderDetailPage() {
                     changeColumnSequence={changeColumnSequence}
                   />
                 </Box>
-                <CheckAccess id={'product-create'}>
-                  <Box minWidth={156}>
-                    <Button
-                      sx={{ height: '48px' }}
-                      type='submit'
-                      onClick={() => finalAutoOrder(id)}
-                      fullWidth
-                      // startIcon={<PlusIcon color='#fff' />}
-                      variant='contained'
-                      color='primary'
-                    >
-                      Отправить заказ
-                    </Button>
-                  </Box>
-                </CheckAccess>
+                {/* <CheckAccess id={'product-create'}> */}
+                <Box minWidth={156}>
+                  <Button
+                    sx={{ height: '48px' }}
+                    type='submit'
+                    onClick={() => finalAutoOrder(id)}
+                    fullWidth
+                    // startIcon={<PlusIcon color='#fff' />}
+                    variant='contained'
+                    color='primary'
+                  >
+                    Отправить заказ
+                  </Button>
+                </Box>
+                {/* </CheckAccess> */}
               </Box>
             </Box>
             <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
