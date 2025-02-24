@@ -38,6 +38,8 @@ export default function RoleCreatePage() {
 
   const onSubmit = (data) => {
     const permissions = []
+    console.log(selected)
+
     get(rolesAndPermissionList, 'data.data', [])
       ?.filter((section) => section.permissions?.length && !disabled.includes(section.key))
       ?.forEach((section) => {

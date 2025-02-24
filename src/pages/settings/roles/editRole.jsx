@@ -39,9 +39,10 @@ export default function RoleEditPage() {
   )
   const onSubmit = (data) => {
     const permissions = []
+    console.log(selected, rolesAndPermissionList, get(rolesAndPermissionList, 'data.data', []), permissions)
     get(rolesAndPermissionList, 'data.data', [])
-      ?.filter((section) => section.permissions?.length && !disabled.includes(section.key))
-      ?.forEach((section) => {
+      .filter((section) => section.permissions?.length && !disabled.includes(section.key))
+      .forEach((section) => {
         section?.permissions?.forEach((permission) => {
           permissions.push({
             parent_id: permission?.id || '',
@@ -52,11 +53,12 @@ export default function RoleEditPage() {
           })
         })
       })
+    console.log(permissions)
 
     const requestBody = {
       name: get(data, 'name'),
       description: get(data, 'description'),
-      permissions,
+      permissions: permissions,
     }
     createRole({ id, data: requestBody })
   }

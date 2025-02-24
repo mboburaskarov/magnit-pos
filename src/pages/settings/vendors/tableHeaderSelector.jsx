@@ -189,14 +189,14 @@ export default function tableHeaderSelector({ setopenCreateVendorDrawer, values,
               <EditIcon />
             </IconButton>
             {/* </CheckAccess> */}
-            // {/* <CheckAccess id={'product-delete'}> */}
+            {/* <CheckAccess id={'product-delete'}> */}
             <IconButton
               onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
               sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
             >
               <DeleteIcon />
             </IconButton>
-            // {/* </CheckAccess> */}
+            {/* </CheckAccess> */}
           </Box>
           // </CheckAccess>
         )),
