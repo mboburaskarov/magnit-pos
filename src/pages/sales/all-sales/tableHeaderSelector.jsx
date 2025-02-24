@@ -88,7 +88,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         cellRenderer: memo((p) => (
           <Box sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <StyledSwitch
-              checked={false}
+              checked={get(p, 'data.is_delivered', false)}
               onChange={() => {
                 console.log('gg')
               }}

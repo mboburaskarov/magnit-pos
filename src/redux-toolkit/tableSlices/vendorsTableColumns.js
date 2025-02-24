@@ -41,8 +41,8 @@ const columns = [
   {
     field: 'role',
     hide: false,
-    minWidth: 70,
-    width: 120,
+    minWidth: 120,
+    width: 150,
   },
   {
     field: 'status',

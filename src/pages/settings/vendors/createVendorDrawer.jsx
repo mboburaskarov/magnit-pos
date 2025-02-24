@@ -83,6 +83,8 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
   })
 
   const onSubmit = (data) => {
+    console.log(data)
+
     const requestBody = {
       birthdate: data?.date_of_birth,
       first_name: data?.first_name,
@@ -90,7 +92,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
       language: 'ru',
       password: data?.password,
       last_name: data?.last_name,
-      role_ids: data?.role?.map((role) => get(role, 'id')),
+      role_ids: data?.role?.map((role) => get(role, 'value')),
       store_id: data?.store_id?.id,
       phone: '998' + data?.phone?.replace(/[()\s]/g, ''),
     }

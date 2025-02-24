@@ -242,12 +242,7 @@ export default function ClientsPage() {
               >
                 Нет
               </Button>
-              <LoadingButton
-                variant='contained'
-                type='button'
-                loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                onClick={() => deleteClient({ data: [openConfirmDialog.id] })}
-              >
+              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteClient({ data: [openConfirmDialog.id] })}>
                 Да, удалить
               </LoadingButton>
             </>

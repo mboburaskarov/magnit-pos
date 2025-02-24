@@ -53,7 +53,7 @@ export default function MainDetails({ clientData, openDrawer }) {
       setValue('phone', get(employeeInfo, 'data.data.phone', '').replace('998', ''))
       get(employeeInfo, 'data.data.birthdate', false) && setValue('date_of_birth', new Date(get(employeeInfo, 'data.data.birthdate')))
       setValue('gender', get(employeeInfo, 'data.data.gender'))
-      setValue('role', getOptionsSchema(get(employeeInfo, 'data.data.roles', []), Object))
+      setValue('role', getOptionsSchema(get(employeeInfo, 'data.data.roles', []), false, 'name'))
       setValue('store_id', getOptionsSchema(get(employeeInfo, 'data.data.store', []), Object, 'name'))
     }
   }, [employeeInfo])

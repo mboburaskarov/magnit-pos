@@ -386,7 +386,7 @@ export default function OrderDrawer({
 
       setPaymentsList([])
 
-      success('Продажа завершена!')
+      // success('Продажа завершена!')
     },
     onError: (err) => {
       console.log(err)
@@ -414,7 +414,7 @@ export default function OrderDrawer({
       success('Продажа завершена!')
     },
     onError: (err) => {
-      error('Ошибка при Продажа завершена')
+      error('Ошибка при EPOS')
       console.log('err', err)
     },
   })
@@ -766,6 +766,7 @@ export default function OrderDrawer({
                 maxWidth='400px'
                 sx={{
                   display: 'flex',
+                  width: '355px',
                   overflowY: 'scroll',
                   maxHeight: '75vh',
                 }}

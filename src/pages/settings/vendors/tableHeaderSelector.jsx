@@ -133,7 +133,13 @@ export default function tableHeaderSelector({ setopenCreateVendorDrawer, values,
         ...el,
         headerName: t('role'),
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{get(p, 'data.[role].name')}</Typography>),
+        cellRenderer: memo((p) => (
+          <Typography whiteSpace={'pre-line'}>
+            {get(p, 'data.roles', [])
+              .map((e) => e?.name)
+              .join(',')}
+          </Typography>
+        )),
       }
     }
 
