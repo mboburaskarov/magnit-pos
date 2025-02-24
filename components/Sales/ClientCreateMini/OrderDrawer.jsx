@@ -408,7 +408,6 @@ export default function OrderDrawer({
         setQrcodeUrl(get(data, 'info.qrCodeURL', 'pending'))
         sendEPOSresponseToBackend({ response_data: JSON.stringify(data), sale_id: id })
       }
-      console.log(data)
       setIsOrderDrower(false)
       handlePrint()
       success('Продажа завершена!')

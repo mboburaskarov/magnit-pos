@@ -73,7 +73,6 @@ export default function RoleBody({ rolesAndPermissionList, productData = null, d
     setValue('name', get(roleData, 'name'))
     setValue('description', get(roleData, 'description'))
   }, [roleData])
-  console.log(selected)
 
   const sectionRefs = [
     useRef(null),

@@ -3,6 +3,9 @@ import { authRequest, eposRequest, fileUploadRequest, request, yandexMapsRequest
 import * as qs from 'qs'
 
 export const requests = {
+  //
+  dashboradChart: (filter) => request.get(`v1/dashboard/chart${qs.stringify(filter, { addQueryPrefix: true })}`),
+  dashboradCountStats: (filter) => request.get(`v1/dashboard/count-stats${qs.stringify(filter, { addQueryPrefix: true })}`),
   //epos
   sendToEpos: (data) => eposRequest.post(`/uzpos`, data),
   sendEPOSresponseToBackend: (data) => request.post(`v1/sale/epos-result`, data),

@@ -30,6 +30,7 @@ import AgGridTable from '../../../components/AgGridTable/AgGridTable'
 import tableHeaderSelector from './tableHeaderSelector'
 import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
+import { get } from 'lodash'
 
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
@@ -58,7 +59,7 @@ export default function DashboarPage() {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       shopId: shop,
-      regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
+      regions: regions?.length ? regions?.map((item) => item?.id) : undefined,
       userId: client,
       moderatorId: operator,
       fromDate: values?.start_date,
@@ -83,49 +84,38 @@ export default function DashboarPage() {
     const dateDifference = dayjs(dashboardFilter.toDate).diff(dashboardFilter.fromDate, 'day')
     setDetaling(getDetaling(dateDifference))
   }, [dashboardFilter, DataTypeFilter])
-  const toFixData = useMemo(
-    () =>
-      chartInfo?.data?.map((item) => ({
-        all_orders: item.totalAmount,
-        start_date: dayjs(item?.createdAt)
-          ?.set('hour', item?._id?.hour || `00`)
-          ?.set('minutes', item?._id?.minute || `00`)
-          ?.add(item?._id?.hour ? 5 : 0, 'hour')
-          .format('DD.MM.YYYY | HH:mm'),
-        count: item.count,
-        _id: item?._id,
-      })),
-    [chartInfo, DataTypeFilter]
-  )
+
   const totalSum = chartInfo?.data?.reduce((acc, item) => acc + item?.totalAmount, 0)
   const totalCount = chartInfo?.data?.reduce((acc, item) => acc + item?.count, 0)
-  const OrdersStatistics = [
-    {
-      title: t('all_sales'),
-      icon: <RevenueIcon />,
-      count: 0,
-      percent: 10,
-    },
-    {
-      title: t('all_medicien'),
-      icon: <ProductsIcon />,
-      count: 0,
-      endText: '$',
-      percent: -5,
-    },
-    {
-      title: t('sales'),
-      icon: <OrdersIcon />,
-      count: 0,
-      percent: 8,
-    },
-    {
-      title: t('branches'),
-      icon: <VendorsIcon />,
-      count: 0,
-      percent: 20,
-    },
-  ]
+  const OrdersStatistics = ({ total_sale_amount, total_product_count, total_sale_count, total_store_count }) => {
+    return [
+      {
+        title: t('all_sales'),
+        icon: <RevenueIcon />,
+        count: total_sale_amount,
+        percent: 10,
+      },
+      {
+        title: t('all_medicien'),
+        icon: <ProductsIcon />,
+        count: total_product_count,
+        endText: '$',
+        percent: -5,
+      },
+      {
+        title: t('sales'),
+        icon: <OrdersIcon />,
+        count: total_sale_count,
+        percent: 8,
+      },
+      {
+        title: t('branches'),
+        icon: <VendorsIcon />,
+        count: total_store_count,
+        percent: 20,
+      },
+    ]
+  }
   const tableColumns = tableHeaderSelector({
     orderColumns: columns,
     searchTerm: values?.search,
@@ -139,6 +129,39 @@ export default function DashboarPage() {
     setTrackingWebview,
   })
 
+  const dashboard_filter = useMemo(() => {
+    return {
+      limit: values?.limit || 10,
+      search: values?.search,
+      start_date: values?.start_date,
+      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
+      offset: values?.search ? 0 : values?.offset || 0,
+    }
+  }, [values?.offset, values?.start_date, values?.end_date, values?.limit, values?.search])
+  const { data: chartData, isLoading: isGetChartData, refetch } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
+  const {
+    data: countStats,
+    isLoading: isCountStats,
+    refetch: fetchCountStats,
+  } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
+  console.log(countStats)
+
+  const toFixData = useMemo(
+    () =>
+      chartData?.data?.data?.map((item) => ({
+        all_orders: item.total_amount,
+        start_date: dayjs(item?.created_at)
+          ?.set('hour', item?.id?.hour || `00`)
+          ?.set('minutes', item?.id?.minute || `00`)
+          ?.add(item?.id?.hour ? 5 : 0, 'hour')
+          .format('DD.MM.YYYY | HH:mm'),
+        count: item.count,
+        id: item?.id,
+      })),
+    [chartData, dashboard_filter]
+  )
+  console.log(toFixData)
+
   return (
     <LoadingContainer readyState={true}>
       <DashboardHeader setSortBy={setSortBy} />
@@ -146,11 +169,13 @@ export default function DashboarPage() {
         <Grid container>
           <Grid item xs={8}>
             <Grid container gap={'0'}>
-              {OrdersStatistics?.filter((el) => (check ? el : el.title !== 'Общая сумма заказов'))?.map((el, ind) => (
-                <Grid item xs={12} xl={6} sm={6} md={6} lg={6} gap={0} pr={'20px'} pb={'20px'} spacing={2}>
-                  <DashboardInfoBox key={ind} {...el} />
-                </Grid>
-              ))}
+              {OrdersStatistics(get(countStats, 'data.data', {}))
+                ?.filter((el) => (check ? el : el.title !== 'Общая сумма заказов'))
+                ?.map((el, ind) => (
+                  <Grid item xs={12} xl={6} sm={6} md={6} lg={6} gap={0} pr={'20px'} pb={'20px'} spacing={2}>
+                    <DashboardInfoBox key={ind} {...el} />
+                  </Grid>
+                ))}
             </Grid>
             <Box display='inline-flex' columnGap={3} pr={'20px'} width='100%'>
               <SingleLineChart

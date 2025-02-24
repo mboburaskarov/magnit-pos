@@ -21,8 +21,11 @@ export const filterNavData = (routes, urls, user_data) => {
     const matchingChildren =
       route.children?.filter((child) => {
         const childHref = child.href.replace(route.href, '')
+        console.log(childHref, urls)
+
         return urls.includes(childHref) || urls.some((url) => url.startsWith(childHref + '/'))
       }) || []
+    console.log(matchingChildren, route)
 
     if (parentMatches || matchingChildren.length > 0) {
       acc.push({
@@ -79,6 +82,8 @@ export default function Routes() {
     }
 
     return routes.reduce((acc, route) => {
+      console.log(route, acc, urls)
+
       let parentMatches = urls.includes(`/${route.path}`)
 
       if (route.path === 'login' || route.path === 'dashboard') {
@@ -96,6 +101,8 @@ export default function Routes() {
 
       let childrenMatches = []
       if (route.children && parentMatches) {
+        console.log(parentMatches, route.path)
+
         childrenMatches = filterRoutes(route.children, urls, `/${route.path}`)
       }
 

@@ -80,7 +80,6 @@ export default function ActionListPage() {
   }
 
   const tableData = categories?.data?.map((e) => renameSubRows(e))
-  console.log(categories)
 
   const tableLoading = categoriesLoading || categoriesFetching
 

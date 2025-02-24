@@ -9,7 +9,7 @@ import LoadingContainer from '../../../../components/LoadingContainer'
 import RoleBody from './RoleBody'
 import Header from '../../../../components/Header'
 import { useTranslation } from 'react-i18next'
-import { get } from 'lodash'
+import { get, size } from 'lodash'
 export default function RoleEditPage() {
   const { id } = useParams()
 
@@ -39,23 +39,21 @@ export default function RoleEditPage() {
   )
   const onSubmit = (data) => {
     const permissions = []
-    console.log(selected, rolesAndPermissionList, disabled, get(rolesAndPermissionList, 'data.data', []), permissions)
     get(rolesAndPermissionList, 'data.data', [])
       .filter((section) => section.permissions?.length && !disabled.includes(section.key))
       .forEach((section) => {
         section?.permissions?.forEach((permission) => {
-          !selected?.includes(permission?.id)
+          !selected?.includes(permission?.id) && size(selected.filter((el) => permission.children.find((child) => child.id === el))) == 0
             ? {}
             : permissions.push({
                 parent_id: permission?.id || '',
                 children_ids: selected?.includes(permission?.id)
                   ? [...new Set(permission.children.map((el) => el.id))]
                   : [...new Set(selected.filter((el) => permission.children.find((child) => child.id === el)))] || [],
-                is_active: !!selected?.includes(permission?.id),
+                is_active: !!selected?.includes(permission?.id) || size(selected.filter((el) => permission.children.find((child) => child.id === el))) > 0,
               })
         })
       })
-    console.log(permissions)
 
     const requestBody = {
       name: get(data, 'name'),
