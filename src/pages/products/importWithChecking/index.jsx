@@ -130,7 +130,7 @@ export default function ImportWithCheckingPage() {
     addScan({ barcode, count: Number(manualNumber), import_id: id })
   }
   return (
-    <LoadingContainer readyState={true}>
+    <LoadingContainer readyState={!isfinishImportChecking}>
       <FormProvider {...methods}>
         <Header
           onSubmit={() => finishImportChecking(id)}
