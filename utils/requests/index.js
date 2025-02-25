@@ -6,6 +6,7 @@ export const requests = {
   //
   dashboradChart: (filter) => request.get(`v1/dashboard/chart${qs.stringify(filter, { addQueryPrefix: true })}`),
   dashboradCountStats: (filter) => request.get(`v1/dashboard/count-stats${qs.stringify(filter, { addQueryPrefix: true })}`),
+  dashboradTopStores: (filter) => request.get(`v1/dashboard/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`),
   //epos
   sendToEpos: (data) => eposRequest.post(`/uzpos`, data),
   sendEPOSresponseToBackend: (data) => request.post(`v1/sale/epos-result`, data),
@@ -68,6 +69,7 @@ export const requests = {
 
   //import
   getAllImports: (filter) => request.get(`v1/import/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getImportsExcelReport: (filter) => request.get(`v1/import/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //import-details
   getImportDetails: (filter) => request.get(`v1/import-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),

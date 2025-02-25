@@ -41,7 +41,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, perce
           <Box mt={icon ? '10px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
             <Box>
               <Typography color='dark.500' fontSize={'32px'} lineHeight={'40px'} fontWeight='600' variant='h1'>
-                {endText || ''} {withoutDivider ? count : thousandDivider(count)}
+                {withoutDivider ? count : thousandDivider(count, endText)}
               </Typography>
             </Box>
             <Box

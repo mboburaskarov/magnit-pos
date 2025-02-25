@@ -64,19 +64,26 @@ export default function DashboarPage() {
       moderatorId: operator,
       fromDate: values?.start_date,
       toDate: values?.end_date,
+      detalization: detalization,
       source: values?.source,
       ...(status !== 'ALL' && { status }),
     }
-  }, [status, values?.offset, values?.limit, values?.source, values?.search, shop, client, values?.start_date, values?.end_date, operator, regions])
+  }, [
+    status,
+    values?.offset,
+    values?.limit,
+    detalization,
+    values?.source,
+    values?.search,
+    shop,
+    client,
+    values?.start_date,
+    values?.end_date,
+    operator,
+    regions,
+  ])
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(null)
-  const [isOrderCreateNote, setIsOrderCreateNote] = useState(false)
-  const [orderIdForNote, setOrderIdForNote] = useState(null)
-  const [openAllNotes, setOpenAllNotes] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const DataTypeFilter = useMemo(() => dataTypeFilter(detalization), [values?.start_date, values?.end_date, detalization])
-  const [isShopWarning, setIsShopWarning] = useState(false)
-  const [trackingWebview, setTrackingWebview] = useState(null)
   const userData = useSelector((state) => state.user)
 
   const chartInfo = []
@@ -94,12 +101,13 @@ export default function DashboarPage() {
         icon: <RevenueIcon />,
         count: total_sale_amount,
         percent: 10,
+        endText: 'сум',
       },
       {
         title: t('all_medicien'),
         icon: <ProductsIcon />,
         count: total_product_count,
-        endText: '$',
+        endText: 'сум',
         percent: -5,
       },
       {
@@ -119,14 +127,7 @@ export default function DashboarPage() {
   const tableColumns = tableHeaderSelector({
     orderColumns: columns,
     searchTerm: values?.search,
-    setIsDrawerOpen,
-    setIsOrderCreateNote,
-    setOrderIdForNote,
-    setOpenAllNotes,
-    setOpenConfirmDialog,
     userData,
-    setIsShopWarning,
-    setTrackingWebview,
   })
 
   const dashboard_filter = useMemo(() => {
@@ -134,50 +135,69 @@ export default function DashboarPage() {
       limit: values?.limit || 10,
       search: values?.search,
       start_date: values?.start_date,
+      type: dataTypeFilter(detalization),
       end_date: values?.start_date == values?.end_date ? null : values?.end_date,
       offset: values?.search ? 0 : values?.offset || 0,
     }
-  }, [values?.offset, values?.start_date, values?.end_date, values?.limit, values?.search])
+  }, [values?.offset, detalization, values?.start_date, values?.end_date, values?.limit, values?.search])
   const { data: chartData, isLoading: isGetChartData, refetch } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
-  const {
-    data: countStats,
-    isLoading: isCountStats,
-    refetch: fetchCountStats,
-  } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
-  console.log(countStats)
+  const { data: countStats, isLoading: isCountStats } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
+  const { data: topStores, isLoading: isTopStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
 
   const toFixData = useMemo(
     () =>
-      chartData?.data?.data?.map((item) => ({
+      [
+        {
+          id: {
+            year: 2025,
+            month: 2,
+            day: 20,
+            hour: 11,
+          },
+          count: 1,
+          total_amount: 1500,
+          created_at: '2025-02-20',
+        },
+        {
+          id: {
+            year: 2025,
+            month: 2,
+            day: 20,
+            hour: 13,
+          },
+          count: 2,
+          total_amount: 3000,
+          created_at: '2025-02-20',
+        },
+      ]?.map((item) => ({
         all_orders: item.total_amount,
-        start_date: dayjs(item?.created_at)
-          ?.set('hour', item?.id?.hour || `00`)
-          ?.set('minutes', item?.id?.minute || `00`)
-          ?.add(item?.id?.hour ? 5 : 0, 'hour')
+        start_date: dayjs('2025-02-18T11:00:00Z')
+          // ?.set('hour', item?.id?.hour || `00`)
+          // ?.set('minutes', item?.id?.minute || `00`)
+          // ?.add(item?.id?.hour ? 5 : 0, 'hour')
           .format('DD.MM.YYYY | HH:mm'),
         count: item.count,
         id: item?.id,
       })),
     [chartData, dashboard_filter]
   )
-  console.log(toFixData)
 
   return (
     <LoadingContainer readyState={true}>
       <DashboardHeader setSortBy={setSortBy} />
       <Box display='flex' flexDirection='column' position='relative' pt={0} px={'30px'} pb={3} width={'100%'}>
-        <Grid container>
-          <Grid item xs={8}>
-            <Grid container gap={'0'}>
+        <Grid width={'100%'} container>
+          <Grid width={'100%'} item>
+            <Grid container spacing={2}>
               {OrdersStatistics(get(countStats, 'data.data', {}))
                 ?.filter((el) => (check ? el : el.title !== 'Общая сумма заказов'))
                 ?.map((el, ind) => (
-                  <Grid item xs={12} xl={6} sm={6} md={6} lg={6} gap={0} pr={'20px'} pb={'20px'} spacing={2}>
+                  <Grid item xs={12} xl={3} sm={6} md={6} lg={6} gap={0} pb={'20px'} spacing={2}>
                     <DashboardInfoBox key={ind} {...el} />
                   </Grid>
                 ))}
             </Grid>
-            <Box display='inline-flex' columnGap={3} pr={'20px'} width='100%'>
+            <Box display='inline-flex' columnGap={3} width='100%'>
               <SingleLineChart
                 width='100%'
                 id='dashboard-chart'
@@ -194,25 +214,12 @@ export default function DashboarPage() {
               />
             </Box>
           </Grid>
-
-          <Grid item xs={4}>
-            <TotalOrdersByCity
-              width='100%'
-              id='dashboard-chart'
-              period={detailing}
-              detalization={detalization}
-              setDetalization={setDetalization}
-              sortBy={sortBy}
-              dataKey={sortBy === 'SUM' ? 'all_orders' : 'count'}
-              data={{
-                values: toFixData,
-                total: sortBy === 'SUM' ? totalSum : totalCount,
-              }}
-              measurmentUnit={sortBy === 'SUM' ? ' сум' : ' шт'}
-            />
-          </Grid>
         </Grid>
-
+        <Box mt={4} columnGap={3} display='inline-flex'>
+          <DashboardTopClients sortBy={sortBy} data={get(topStores, 'data.data')} />
+          <DashboardTopProducts sortBy={sortBy} data={get(topStores, 'data.data')} />
+          <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
+        </Box>
         <Box sx={{ border: '1px solid #A4A5AB33', borderRadius: '32px', mt: '32px', p: '20px' }}>
           <Typography fontWeight={600} fontSize={'26px'} pl={'6px'} pb={'20px'} py={'24px'} lineHeight={'32px'}>
             {t('orders')}

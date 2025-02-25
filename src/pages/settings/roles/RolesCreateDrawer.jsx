@@ -11,7 +11,6 @@ import ActionCreateBody from './ActionCreateBody'
 
 export default function RolesCreateDrawer({ isOpen, onClose, categoriesRefetch }) {
   const methods = useForm()
-  console.log(isOpen)
 
   const { mutate: createPermission, isLoading: createPermissionLoading } = useMutation(requests.createPermission, {
     onSuccess: () => {

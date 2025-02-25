@@ -39,7 +39,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MainDetails({ clientData, openDrawer }) {
   const classes = useStyles()
-  const { data: employeeInfo, refetch: refetemployeeInfo } = useQuery(['employeeInfo', openDrawer], () => requests.getSingleVendor(get(openDrawer, 'id', 'no')))
+  const { data: employeeInfo, refetch: refetemployeeInfo } = useQuery(
+    ['employeeInfo', openDrawer],
+    () => requests.getSingleVendor(get(openDrawer, 'id', 'no')),
+    { enabled: !!get(openDrawer, 'id', false) }
+  )
   const mode = openDrawer?.mode
   const { control, errors, setValue } = useFormContext()
   const { t } = useTranslation()

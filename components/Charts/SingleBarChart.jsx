@@ -1,9 +1,6 @@
-import { useState } from 'react'
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableRow, Button, Select, MenuItem, TableHead } from '@mui/material'
-import { RadialBarChart, RadialBar, Tooltip, PolarAngleAxis } from 'recharts'
-import SelectSimple from '../Select/SelectSimple'
-import { t } from 'i18next'
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
+import thousandDivider from '../../utils/thousandDivider'
 
 const data = [
   { name: 'OQTEPA', orders: 30, revenue: 5690, fill: '#FE5000' },
@@ -13,42 +10,24 @@ const data = [
   { name: 'UCHTEPA', orders: 80, revenue: 15870, fill: '#FF8042' },
 ]
 
-const radialChartData = data.map((item) => ({
-  name: item.name,
-  value: item.revenue,
-  fill: item.fill,
-}))
-
-export default function TotalOrdersByCity() {
-  const [period, setPeriod] = useState('This Month')
-  const [detalization, setDetalization] = useState()
-  const handlePeriodChange = (event) => setPeriod(event.target.value)
+export default function TotalOrdersByCity({ data }) {
   const { t } = useTranslation()
-  const totalRevenue = data.reduce((sum, item) => sum + item.revenue, 0)
-  const detailingOptions = [
-    { name: 'Это 30 минут', value: '30min' },
-    { name: 'Это час', value: 'hour' },
-    { name: 'Сегодня', value: 'day' },
-    { name: 'На этой неделе', value: 'week' },
-    { name: 'Это месяц', value: 'month' },
-    { name: 'В этом году', value: 'year' },
-  ]
-
   return (
     <Box
       sx={{
         border: '1px solid #A4A5AB33',
-        borderRadius: '32px',
-        padding: '16px 4px',
+        borderRadius: '24px',
+        padding: '20px 8px',
         backgroundColor: '#fff',
         height: '100%',
+        minWidth: '500px',
       }}
     >
-      <Box display='flex' justifyContent='space-between' alignItems='center' px={'16px'} mb={2}>
-        <Typography variant='h6' sx={{ fontWeight: 700, fontSize: 26, lineHeight: '32px' }}>
+      <Box mx={'16px'} borderBottom='1px solid' borderColor='gray.200' display='flex' justifyContent='space-between' alignItems='center' mb={2}>
+        <Typography mt={'8px'} pb={2.5} fontSize={24}>
           По филиалам
         </Typography>
-        <SelectSimple
+        {/* <SelectSimple
           id={'detailing'}
           name={'detailing'}
           placeholder='Tanlang'
@@ -72,52 +51,28 @@ export default function TotalOrdersByCity() {
           }
           getOptionLabel={(option) => option.name}
           beforeContent=''
-        />
+        /> */}
       </Box>
 
-      {/* RadialBarChart */}
-      {/* <Box display='flex' px={'37px'} width={'100%'} justifyContent='center' alignItems='center' position='relative'>
-        <RadialBarChart width={340} height={340} innerRadius='40%' outerRadius='100%' barSize={15} data={radialChartData} startAngle={90} endAngle={450}> */}
-      {/* <PolarAngleAxis type='number' domain={[0, 20000]} angleAxisId={0} tick={false} /> */}
-      {/* <RadialBar minAngle={15} background clockWise dataKey='value' />
-          <Tooltip />
-        </RadialBarChart> */}
-
-      {/* Total Revenue Display */}
-      {/* <Box
-          position='absolute'
-          top='50%'
-          left='50%'
-          sx={{
-            transform: 'translate(-50%, -50%)',
-            textAlign: 'center',
-          }}
-        >
-          <Typography variant='h4' sx={{ fontWeight: 600, fontSize: 25, lineHeight: '40px' }}>
-            ${totalRevenue.toLocaleString()}
-          </Typography>
-        </Box>
-      </Box> */}
-
-      {/* Top Cities Table */}
-      <Box mt={3}>
-        <Typography variant='subtitle1' sx={{ fontWeight: 700, padding: '6px 16px', fontSize: 26, lineHeight: '32px' }}>
+      <Box>
+        {/* <Typography px={'16px'} variant='subtitle1' sx={{ fontWeight: 700, fontSize: 26, lineHeight: '32px' }}>
           Верхние ветки
-        </Typography>
-        <TableContainer>
+        </Typography> */}
+        <TableContainer px={'20px'}>
           <Table size='small'>
-            <TableHead sx={{ mb: '25px' }}>
-              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Филиал</TableCell>
-              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Заказ</TableCell>
-              <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Продажи</TableCell>
+            <TableHead sx={{ mb: '25px', padding: '0' }}>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 700, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Филиал</TableCell>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 700, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Заказ</TableCell>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 700, lineHeight: '28px', border: 'none', color: 'dark.500' }}>Продажи</TableCell>
             </TableHead>
             <TableBody>
-              {data.map((item) => (
+              {data?.map((item) => (
                 <TableRow key={item.name}>
                   <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>{item.name}</TableCell>
-                  <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>{item.orders}</TableCell>
+                  <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>{item.count}</TableCell>
                   <TableCell sx={{ fontSize: '20px', fontWeight: 500, lineHeight: '28px', border: 'none', color: 'dark.500' }}>
-                    ${item.revenue.toLocaleString()}
+                    {/* ${item.revenue.toLocaleString()} */}
+                    {thousandDivider(item.total_amount, 'сум')}
                   </TableCell>
                 </TableRow>
               ))}
@@ -127,7 +82,7 @@ export default function TotalOrdersByCity() {
       </Box>
 
       {/* View All Button */}
-      <Box display='flex' justifyContent='center' mt={2} px={'16px'}>
+      {/* <Box display='flex' justifyContent='center' mt={2}>
         <Button
           variant='outlined'
           sx={{
@@ -143,7 +98,7 @@ export default function TotalOrdersByCity() {
         >
           {t('all')}
         </Button>
-      </Box>
+      </Box> */}
     </Box>
   )
 }

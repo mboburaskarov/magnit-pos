@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
@@ -15,6 +15,7 @@ import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/importsTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
+import { error } from '../../../../utils/toast'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ImportPage() {
@@ -92,7 +93,30 @@ export default function ImportPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [importsList?.data, values?.limit])
+  const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
+    onSuccess: ({ data }) => {
+      const url = window.URL.createObjectURL(new Blob([data]))
+      const a = document.createElement('a')
 
+      a.href = url
+      a.download = 'data.xlsx' // Set the desired file name
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      window.URL.revokeObjectURL(url)
+
+      // const link = document.createElement('a')
+      // link.href = data?.[0]?.url
+      // document.body.appendChild(link)
+      // link.click()
+      // document.body.removeChild(link)
+    },
+    onError: (err) => {
+      console.log(err)
+
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
@@ -159,6 +183,8 @@ export default function ImportPage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
+            // download={() => importsExcelReport(importsListFilter)}
+            // isDownloading={isimportsExcelReport}
             tableSettings
             columns={tableColumns}
             defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
