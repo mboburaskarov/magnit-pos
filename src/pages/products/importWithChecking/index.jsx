@@ -5,7 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import Header from '../../../../components/Header'
@@ -31,7 +31,7 @@ export default function ImportWithCheckingPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
-
+  const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.importWithCheckingColumns)
   const { values } = useQueryParams()
   const [imports, setImports] = useState([])
@@ -61,6 +61,14 @@ export default function ImportWithCheckingPage() {
     onError: (err) => {
       errorScanAudio.play()
       error('Ошибка при сканирование!')
+    },
+  })
+  const { mutate: finishImportChecking, isLoading: isfinishImportChecking } = useMutation(requests.finishImportChecking, {
+    onSuccess: ({ data }) => {
+      navigate('/products/import')
+    },
+    onError: (err) => {
+      error('Ошибка при завершение импорта!')
     },
   })
   const tableColumns = tableHeaderSelector({
@@ -124,7 +132,15 @@ export default function ImportWithCheckingPage() {
   return (
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
-        <Header isLoading={false} buttonText='Завершить' backIcon backHref='/products/import' text={'Импорт с проверкой'} checkAccessId={'product-create'} />
+        <Header
+          onSubmit={() => finishImportChecking(id)}
+          isLoading={false}
+          buttonText='Завершить'
+          backIcon
+          backHref='/products/import'
+          text={'Импорт с проверкой'}
+          checkAccessId={'product-create'}
+        />
         <Container>
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
