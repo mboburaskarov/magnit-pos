@@ -146,35 +146,12 @@ export default function DashboarPage() {
 
   const toFixData = useMemo(
     () =>
-      [
-        {
-          id: {
-            year: 2025,
-            month: 2,
-            day: 20,
-            hour: 11,
-          },
-          count: 1,
-          total_amount: 1500,
-          created_at: '2025-02-20',
-        },
-        {
-          id: {
-            year: 2025,
-            month: 2,
-            day: 20,
-            hour: 13,
-          },
-          count: 2,
-          total_amount: 3000,
-          created_at: '2025-02-20',
-        },
-      ]?.map((item) => ({
+      chartData?.data?.data?.map((item) => ({
         all_orders: item.total_amount,
-        start_date: dayjs('2025-02-18T11:00:00Z')
-          // ?.set('hour', item?.id?.hour || `00`)
-          // ?.set('minutes', item?.id?.minute || `00`)
-          // ?.add(item?.id?.hour ? 5 : 0, 'hour')
+        start_date: dayjs(item?.created_at)
+          ?.set('hour', item?.id?.hour || `00`)
+          ?.set('minutes', item?.id?.minute || `00`)
+          ?.add(item?.id?.hour ? 5 : 0, 'hour')
           .format('DD.MM.YYYY | HH:mm'),
         count: item.count,
         id: item?.id,

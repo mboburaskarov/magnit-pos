@@ -52,6 +52,7 @@ export default function ImportWithCheckingPage() {
   const { mutate: addScan, isLoading: isAddScan } = useMutation(requests.sendScannedImport, {
     onSuccess: ({ data }) => {
       refetch()
+      methods.setValue('search', null)
       if (get(data, 'data.surplus')) {
         overplusScanAudio.play()
       } else {
