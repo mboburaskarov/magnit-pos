@@ -23,7 +23,7 @@ import { productPriceListTableColumnsForProductSlice } from './tableSlices/produ
 // Define your migration function here
 const migrations = {
   // Example migration
-  131: (state) => {
+  132: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -41,7 +41,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 131, // Current version of the persisted state
+  version: 132, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)

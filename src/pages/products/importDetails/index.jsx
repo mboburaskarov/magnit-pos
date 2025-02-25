@@ -25,6 +25,7 @@ import ImportWithoutIcon from '../../../assets/icons/ImportWithoutIcon'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 import * as qs from 'qs'
+import { downloadExcel } from '../../../../utils/downloadEXCEL'
 
 export default function ImportDetailsPage() {
   const theme = useTheme()
@@ -101,7 +102,16 @@ export default function ImportDetailsPage() {
   const loadWithoutChecking = () => {
     loadWithoutCheckingFetch(id)
   }
+  const { mutate: importDetailsExcelReport, isLoading: isimportDetailsExcelReport } = useMutation(requests.getImportDetailsExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadExcel(data)
+    },
+    onError: (err) => {
+      console.log(err)
 
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
@@ -203,6 +213,8 @@ export default function ImportDetailsPage() {
               id='imports-main-table'
               tableSettings
               columns={tableColumns}
+              download={() => importDetailsExcelReport(importWithCheckingDetailsFilter)}
+              isDownloading={isimportDetailsExcelReport}
               data={importWithCheckingDetails?.data?.data?.data || []}
               totalCount={importWithCheckingDetails?.data?.data?._meta?.total_count || 0}
               isDataLoading={isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}

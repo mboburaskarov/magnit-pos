@@ -16,6 +16,8 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 import { error } from '../../../../utils/toast'
+import xmlToExcel from '../../../../utils/xmlToExcel'
+import { downloadExcel } from '../../../../utils/downloadEXCEL'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ImportPage() {
@@ -95,21 +97,7 @@ export default function ImportPage() {
   }, [importsList?.data, values?.limit])
   const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
     onSuccess: ({ data }) => {
-      const url = window.URL.createObjectURL(new Blob([data]))
-      const a = document.createElement('a')
-
-      a.href = url
-      a.download = 'data.xlsx' // Set the desired file name
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      window.URL.revokeObjectURL(url)
-
-      // const link = document.createElement('a')
-      // link.href = data?.[0]?.url
-      // document.body.appendChild(link)
-      // link.click()
-      // document.body.removeChild(link)
+      downloadExcel(data)
     },
     onError: (err) => {
       console.log(err)
@@ -183,8 +171,8 @@ export default function ImportPage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
-            // download={() => importsExcelReport(importsListFilter)}
-            // isDownloading={isimportsExcelReport}
+            download={() => importsExcelReport(importsListFilter)}
+            isDownloading={isimportsExcelReport}
             tableSettings
             columns={tableColumns}
             defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}

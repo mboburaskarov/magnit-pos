@@ -67,16 +67,17 @@ function AgGridBottom({
     <Box
       sx={(theme) => ({
         display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        // justifyContent: 'space-between',
+        // alignItems: 'center',
         width: '100%',
         paddingTop: 2,
       })}
     >
       <Box width={'100%'} display='flex' justifyContent={'space-between'} alignItems='center'>
-        {download && <DownloadButton isDownloading={isDownloading} download={download} />}
-
-        <RowFilterButton eventMessage={eventMessages?.[1]} offsetSize={offsetSize} setOffsetSize={setOffsetSize} />
+        <Box display={'flex'}>
+          <RowFilterButton eventMessage={eventMessages?.[1]} offsetSize={offsetSize} setOffsetSize={setOffsetSize} />
+          {download && <DownloadButton isDownloading={isDownloading} download={download} />}
+        </Box>
         {fullInfoAboutCurrentPage && (
           <Typography fontSize={'16px'} lineHeight={'24px'} color={'bunker.400'} fontWeight={'500'}>
             {t('ag_grid.bottom.info', { from: totalCount, start: offsetIndex * offsetSize - offsetSize + 1, end: offsetIndex * offsetSize })}

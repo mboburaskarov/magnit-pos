@@ -128,7 +128,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
     if (el.field === 'amount') {
       return {
         ...el,
-        headerName: 'Цена',
+        headerName: 'Cумма',
         colId: el.field,
         cellRenderer: memo((p) => (
           <>

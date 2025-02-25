@@ -1,5 +1,5 @@
 import { get } from 'lodash'
-import { authRequest, eposRequest, fileUploadRequest, request, yandexMapsRequest } from '../axios'
+import { authRequest, eposRequest, fileUploadRequest, request, requestEXCEL, yandexMapsRequest } from '../axios'
 import * as qs from 'qs'
 
 export const requests = {
@@ -52,7 +52,7 @@ export const requests = {
   activateVendor: (ids) => request.put(`v1/employee/unblock`, ids),
   deActivateVendor: (ids) => request.put(`v1/employee/block`, ids),
   getSellerBonusInOneSale: (filter) => request.get(`v1/employee/bonus${qs.stringify(filter, { addQueryPrefix: true })}`),
-
+  getVendorsExcelReport: (filter) => requestEXCEL.get(`v1/employee/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   //cashbox
   getAllCashBoxList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   deleteCashBox: (ids) => request.delete(`v1/cash_box/soft-delete`, ids),
@@ -69,7 +69,7 @@ export const requests = {
 
   //import
   getAllImports: (filter) => request.get(`v1/import/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getImportsExcelReport: (filter) => request.get(`v1/import/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getImportsExcelReport: (filter) => requestEXCEL.get(`v1/import/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //import-details
   getImportDetails: (filter) => request.get(`v1/import-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -77,6 +77,7 @@ export const requests = {
   loadWithoutChecking: (id) => request.patch(`v1/import-detail/accept-all/${id}`),
   sendScannedImport: (data) => request.patch(`v1/import-detail/add-scan`, data),
   sendScannedImportNumber: ({ id, scanned_count }) => request.put(`v1/import-detail/${id}`, { scanned_count }),
+  getImportDetailsExcelReport: (filter) => requestEXCEL.get(`v1/import-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   // autoOrder
   createAutoOrder: (data) => request.post(`v1/auto-order`, data),

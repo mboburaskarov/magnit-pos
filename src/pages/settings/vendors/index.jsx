@@ -25,6 +25,7 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import CreateVendorDrawer from './createVendorDrawer'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
+import { downloadExcel } from '../../../../utils/downloadEXCEL'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function VendorsPage() {
@@ -168,7 +169,16 @@ export default function VendorsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [vendorsList?.data, values?.limit])
+  const { mutate: vendorsExcelReport, isLoading: isvendorsExcelReport } = useMutation(requests.getVendorsExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadExcel(data)
+    },
+    onError: (err) => {
+      console.log(err)
 
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
@@ -301,6 +311,8 @@ export default function VendorsPage() {
             id='products-main-table'
             tableSettings
             columns={tableColumns}
+            download={() => vendorsExcelReport(vendorsListFilter)}
+            isDownloading={isvendorsExcelReport}
             data={vendorsList?.data?.data?.data || []}
             totalCount={vendorsList?.data?.data?._meta?.total_count || 0}
             isDataLoading={isFetchingvendorsList || vendorsListLoading}
