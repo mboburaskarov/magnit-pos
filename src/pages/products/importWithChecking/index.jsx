@@ -52,7 +52,7 @@ export default function ImportWithCheckingPage() {
   const { mutate: addScan, isLoading: isAddScan } = useMutation(requests.sendScannedImport, {
     onSuccess: ({ data }) => {
       refetch()
-      methods.setValue('search', null)
+      setBarcode('')
       if (get(data, 'data.surplus')) {
         overplusScanAudio.play()
       } else {
@@ -163,6 +163,8 @@ export default function ImportWithCheckingPage() {
                     onChange={({ target }) => setBarcode(get(target, 'value'))}
                     id='producrs-search'
                     name='search'
+                    value={barcode}
+                    setSearchTerm={setBarcode}
                     placeholder={t('input.search.product.multi')}
                   />
                 </Box>
