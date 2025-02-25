@@ -69,7 +69,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{thousandDivider(p.data?.product?.supply_price, 'сум')}</Typography>
+            <Typography>{thousandDivider(p.data?.supply_price, 'сум')}</Typography>
           </Box>
         )),
       }
@@ -81,7 +81,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{thousandDivider(p.data?.product?.retail_price, 'сум')}</Typography>
+            <Typography>{thousandDivider(p.data?.retail_price, 'сум')}</Typography>
           </Box>
         )),
       }
