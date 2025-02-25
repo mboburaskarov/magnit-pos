@@ -171,7 +171,7 @@ export default function VendorsPage() {
   }, [vendorsList?.data, values?.limit])
   const { mutate: vendorsExcelReport, isLoading: isvendorsExcelReport } = useMutation(requests.getVendorsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data)
+      downloadExcel(data, 'Сотрудники')
     },
     onError: (err) => {
       console.log(err)
