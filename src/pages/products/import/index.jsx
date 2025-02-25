@@ -16,7 +16,7 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 import { error } from '../../../../utils/toast'
-import xmlToExcel from '../../../../utils/xmlToExcel'
+
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 const SELECTION_ID = 'checkboxSelectionField'
 
