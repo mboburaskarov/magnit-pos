@@ -104,7 +104,7 @@ export default function ImportDetailsPage() {
   }
   const { mutate: importDetailsExcelReport, isLoading: isimportDetailsExcelReport } = useMutation(requests.getImportDetailsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Импорт')
+      downloadExcel(data, 'Детали_импорта')
     },
     onError: (err) => {
       console.log(err)

@@ -97,7 +97,7 @@ export default function ImportPage() {
   }, [importsList?.data, values?.limit])
   const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Детали_импорта')
+      downloadExcel(data, 'Импорт')
     },
     onError: (err) => {
       console.log(err)
