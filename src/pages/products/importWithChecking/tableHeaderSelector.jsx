@@ -68,6 +68,7 @@ export default function tableHeaderSelector({ importsColumns, setImports, t, set
 
                 setScanedNumber({ id: get(p, 'data.id'), scanned_count: Number(get(target, 'value')) })
               }}
+              placeholder={'0'}
               disabled={p?.data?.product?.barcode?.length > 0}
               id={`scanned_quantity_${p?.data?.id}`}
               name={`scanned_quantity_${p?.data?.id}`}

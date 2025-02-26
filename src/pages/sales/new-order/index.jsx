@@ -499,7 +499,7 @@ function NewSale() {
       if (typeof debouncedDiscount !== 'number' || size(get(cartItemsList, 'data.data.data', [])) <= 0) {
         return
       }
-
+      setInputDiscount(0)
       setInputDiscount(debouncedDiscount)
       changeDiscount(debouncedDiscount)
     }, 200)

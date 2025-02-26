@@ -171,7 +171,7 @@ export default function ImportWithCheckingPage() {
                 </Box>
                 {appType === 'manual' && (
                   <Box sx={{ ml: '16px' }}>
-                    <InputQuantity uncontrolled defaultValue={1} onChange={({ target }) => setManualNumber(target.value)} />
+                    <InputQuantity placeholder={'0'} uncontrolled defaultValue={1} onChange={({ target }) => setManualNumber(target.value)} />
                   </Box>
                 )}
                 <Box sx={{ ml: '16px' }}>

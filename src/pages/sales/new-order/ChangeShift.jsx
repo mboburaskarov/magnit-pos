@@ -23,9 +23,13 @@ export default function ChangeShift({ open, setOpen }) {
 
   const methods = useForm()
   const { formState, reset, control } = methods
-  const { data: cashBoxList } = useQuery('cashBoxList', () => requests.getAllCashBoxList({ id: get(userData, 'store.id'), limit: 20, offset: 0 }), {
-    enabled: open,
-  })
+  const { data: cashBoxList } = useQuery(
+    'cashBoxList',
+    () => requests.getAllCashBoxList({ srore_id: get(userData, 'store.id'), id: get(userData, 'store.id'), limit: 20, offset: 0 }),
+    {
+      enabled: open,
+    }
+  )
   const { data: employees } = useQuery('employees', () => requests.getAllVendors({ id: get(userData, 'store.id'), limit: 20, offset: 0 }), {
     enabled: open,
   })

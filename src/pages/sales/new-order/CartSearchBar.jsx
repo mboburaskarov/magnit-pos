@@ -130,7 +130,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 12,
     fontWeight: 600,
     fontSize: 16,
-    backgroundColor: theme.palette.green[600],
+    backgroundColor: theme.palette.orange[500],
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -312,33 +312,8 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
                 </p>
               </Box>
             </Box>
-            {/* <Box display={'flex'} alignItems={'center'}>
-              <ArrowDown />
-            </Box> */}
           </ListItem>
-          {/* <Box position={'relative'} minWidth={'240px'}>
-            <SelectSimple
-              id='operator'
-              name='operator'
-              minWidth='auto'
-              borderNone
-              fullWidth
-              disabled
-              placeholder={
-                <Typography ml={4} color='bunker.950'>
-                  {get(userData, 'first_name')}
-                </Typography>
-              }
-              getOptionLabel={(option) => (
-                <Typography maxHeight={48} display='inline-flex' color='gray.600'>
-                  <Box px={0.5} width={32}>
-                    <UserOutlineIcon />
-                  </Box>
-                </Typography>
-              )}
-            />
-            <AssigneMeButton classes={classes} userData={userData} isSelected={true} />
-          </Box> */}
+
           <ButtonWithPopup
             id={'ff'}
             noArrow
