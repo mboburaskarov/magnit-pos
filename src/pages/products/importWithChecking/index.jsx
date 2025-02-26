@@ -128,6 +128,7 @@ export default function ImportWithCheckingPage() {
   }, [importWithCheckingDetails?.data, values?.limit])
 
   const sendScannedImport = () => {
+    if (barcode === '') return
     addScan({ barcode, count: Number(manualNumber), import_id: id })
   }
   return (
