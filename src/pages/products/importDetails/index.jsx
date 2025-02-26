@@ -178,12 +178,21 @@ export default function ImportDetailsPage() {
               {get(importWithCheckingDetails, 'data.data.data[0].import.status') === 'new' && (
                 <ButtonWithPopup
                   id={'ff'}
+                  sx={{ height: '48px' }}
                   noArrow
                   ml={'16px'}
                   noMarginSvg
+                  boxStyles={{ height: '48px' }}
                   placement='bottom-end'
                   buttonLabel={
-                    <Box className='cash_register_icon_wrapper' bgcolor={'#F8F8F9'} padding={'12px'} width={'48px'} height={'48px'} borderRadius={'50%'}>
+                    <Box
+                      className='cash_register_icon_wrapper'
+                      sx={{ '&:hover': { bgcolor: 'transparent !important' } }}
+                      padding={'12px'}
+                      width={'48px'}
+                      height={'44px'}
+                      borderRadius={'50%'}
+                    >
                       <ImportIcon />
                     </Box>
                   }

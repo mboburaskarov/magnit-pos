@@ -22,6 +22,7 @@ import { useQueryParams } from '../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/clientTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
+import { downloadExcel } from '../../../utils/downloadEXCEL'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ClientsPage() {
@@ -108,7 +109,16 @@ export default function ClientsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [clientsList?.data, values?.limit])
+  const { mutate: clientsExcelReport, isLoading: isclientsExcelReport } = useMutation(requests.getClientsExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadExcel(data, 'Клиенти')
+    },
+    onError: (err) => {
+      console.log(err)
 
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
@@ -203,6 +213,8 @@ export default function ClientsPage() {
           <AgGridTable
             id='clients-main-table'
             tableSettings
+            download={() => clientsExcelReport(clientsListFilter)}
+            isDownloading={isclientsExcelReport}
             columns={tableColumns}
             totalCount={clientsList?.data?.data?._meta?.total_count || 0}
             data={clientsList?.data?.data?.data || []}

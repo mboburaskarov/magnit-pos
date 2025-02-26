@@ -113,7 +113,7 @@ export const requests = {
   getAllCustomers: (filter) => request.get(`v1/customer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleCustomers: (id) => request.get(`v1/customer/${id}`),
   deleteClient: (id) => request.delete(`v1/customer/soft-delete`, id),
-
+  getClientsExcelReport: (filter) => requestEXCEL.get(`v1/customer/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   //draft
   getDarftList: (filter) => request.get(`v1/draft/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getDarftChildList: (id) => request.get(`v1/draft/${id}`),
