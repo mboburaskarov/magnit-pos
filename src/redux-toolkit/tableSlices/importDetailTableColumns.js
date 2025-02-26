@@ -19,18 +19,18 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
-  {
-    field: 'supply_price_vat',
-    hide: false,
-    minWidth: 70,
-    width: 200,
-  },
 
   {
     field: 'supply_price',
     hide: false,
     minWidth: 70,
     width: 170,
+  },
+  {
+    field: 'supply_price_vat',
+    hide: false,
+    minWidth: 70,
+    width: 200,
   },
   {
     field: 'retail_price',
