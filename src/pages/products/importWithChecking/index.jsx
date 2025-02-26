@@ -203,7 +203,7 @@ export default function ImportWithCheckingPage() {
               </Box>
             </Box>
 
-            <Box>
+            <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' } }}>
               <AgGridTable
                 id='imports-main-table'
                 tableSettings

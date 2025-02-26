@@ -2,12 +2,6 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const columns = [
   {
-    field: 'checkbox',
-    hide: false,
-    minWidth: 45,
-    width: 45,
-  },
-  {
     field: 'name',
     hide: false,
     minWidth: 150,
