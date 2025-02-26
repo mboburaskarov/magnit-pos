@@ -6,12 +6,15 @@ const columns = [
     hide: false,
     minWidth: 60,
     width: 60,
+    pinned: 'left',
   },
   {
     field: 'name',
     hide: false,
     minWidth: 70,
     width: 200,
+    resizable: true,
+    pinned: 'left',
   },
   {
     field: 'barcode',

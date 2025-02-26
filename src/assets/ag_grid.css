@@ -400,7 +400,7 @@
   border-left: 2px solid !important;
 }
 .ag-theme-alpine .ag-cell.ag-cell-last-left-pinned:not(.ag-cell-range-right):not(.ag-cell-range-single-cell) {
-  border-right: 2px solid !important;
+  border-right: 2px solid #eaeaea !important;
   border-radius: 0;
 }
 .ag-theme-alpine .ag-cell.ag-cell-first-right-pinned:not(.ag-cell-range-left):not(.ag-cell-range-single-cell) {

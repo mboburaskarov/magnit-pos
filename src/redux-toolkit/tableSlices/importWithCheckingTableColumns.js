@@ -5,7 +5,7 @@ const columns = [
     field: 'name',
     hide: false,
     minWidth: 150,
-    width: 200,
+    width: 400,
   },
 
   {
@@ -27,10 +27,16 @@ const columns = [
     width: 170,
   },
   {
-    field: 'product_activities',
+    field: 'series_number',
     hide: false,
     minWidth: 70,
-    width: 420,
+    width: 210,
+  },
+  {
+    field: 'expire_date',
+    hide: false,
+    minWidth: 70,
+    width: 210,
   },
 ]
 

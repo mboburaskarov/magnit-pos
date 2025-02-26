@@ -3,6 +3,7 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import { get } from 'lodash'
 import TextField from '../../../../components/Inputs/TextField'
 import { Typography } from '@mui/material'
+import dayjs from 'dayjs'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -72,12 +73,20 @@ export default function tableHeaderSelector({ importsColumns, setImports, t, set
         }),
       }
     }
-    if (el.field === 'product_activities') {
+    if (el.field === 'series_number') {
       return {
         ...el,
-        headerName: 'Продуктовая деятельность',
+        headerName: 'Cерия Номер',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='public_id' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='series_number' />),
+      }
+    }
+    if (el.field === 'expire_date') {
+      return {
+        ...el,
+        headerName: 'Срок годности',
+        colId: el.field,
+        cellRenderer: memo((p) => <Typography>{dayjs(new Date(p?.data?.expire_date)).format('DD.MM.YYYY')}</Typography>),
       }
     }
   })

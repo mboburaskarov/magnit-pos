@@ -178,11 +178,15 @@ export default function ImportDetailsPage() {
               {get(importWithCheckingDetails, 'data.data.data[0].import.status') === 'new' && (
                 <ButtonWithPopup
                   id={'ff'}
-                  sx={{ height: '48px' }}
+                  sx={{
+                    height: '48px',
+                  }}
                   noArrow
                   ml={'16px'}
                   noMarginSvg
-                  boxStyles={{ height: '48px' }}
+                  boxStyles={{
+                    height: '48px',
+                  }}
                   placement='bottom-end'
                   buttonLabel={
                     <Box
