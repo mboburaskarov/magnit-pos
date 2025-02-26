@@ -74,6 +74,18 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         )),
       }
     }
+    if (el.field === 'supply_price_vat') {
+      return {
+        ...el,
+        headerName: t('table_columns.supply_price_vat'),
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{thousandDivider(p.data?.supply_price_vat, 'сум')}</Typography>
+          </Box>
+        )),
+      }
+    }
     if (el.field === 'retail_price') {
       return {
         ...el,
@@ -82,6 +94,18 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <Typography>{thousandDivider(p.data?.retail_price, 'сум')}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'retail_price_vat') {
+      return {
+        ...el,
+        headerName: t('table_columns.retail_price_vat'),
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{thousandDivider(p.data?.retail_price_vat, 'сум')}</Typography>
           </Box>
         )),
       }
@@ -142,6 +166,30 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
               <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
               <Typography ml={'4px'} color={'bunker.500'}>
                 {thousandDivider(p.data?.accepted_amount, 'сум')}
+              </Typography>
+            </Box>
+          </>
+        )),
+      }
+    }
+
+    if (el.field === 'amount_vat') {
+      return {
+        ...el,
+        headerName: 'Сумма СНДС',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <>
+            <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
+              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
+              <Typography ml={'4px'} color={'bunker.500'}>
+                {thousandDivider(p.data?.received_amount_vat, 'сум')}
+              </Typography>
+            </Box>
+            <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
+              <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
+              <Typography ml={'4px'} color={'bunker.500'}>
+                {thousandDivider(p.data?.accepted_amount_vat, 'сум')}
               </Typography>
             </Box>
           </>

@@ -20,6 +20,13 @@ const columns = [
     width: 200,
   },
   {
+    field: 'supply_price_vat',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+
+  {
     field: 'supply_price',
     hide: false,
     minWidth: 70,
@@ -27,6 +34,12 @@ const columns = [
   },
   {
     field: 'retail_price',
+    hide: false,
+    minWidth: 70,
+    width: 158,
+  },
+  {
+    field: 'retail_price_vat',
     hide: false,
     minWidth: 70,
     width: 158,
@@ -59,6 +72,13 @@ const columns = [
 
   {
     field: 'amount',
+    hide: false,
+    minWidth: 70,
+    width: 170,
+  },
+
+  {
+    field: 'amount_vat',
     hide: false,
     minWidth: 70,
     width: 170,
