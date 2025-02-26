@@ -4,6 +4,7 @@ import { get } from 'lodash'
 import TextField from '../../../../components/Inputs/TextField'
 import { Typography } from '@mui/material'
 import dayjs from 'dayjs'
+import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -60,10 +61,14 @@ export default function tableHeaderSelector({ importsColumns, setImports, t, set
         colId: el.field,
         cellRenderer: memo((p) => {
           return (
-            <TextField
+            <NumberFormatInput
               onBlur={({ target }) => {
+                console.log('target', target, p?.data?.accepted_count, get(target, 'value'))
+                if (p?.data?.accepted_count == get(target, 'value')) return
+
                 setScanedNumber({ id: get(p, 'data.id'), scanned_count: Number(get(target, 'value')) })
               }}
+              disabled={p?.data?.product?.barcode?.length > 0}
               id={`scanned_quantity_${p?.data?.id}`}
               name={`scanned_quantity_${p?.data?.id}`}
               type='number'
