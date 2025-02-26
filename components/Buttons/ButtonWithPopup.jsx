@@ -52,6 +52,9 @@ const useStyles = makeStyles((theme) => ({
       lineHeight: '28px',
       color: theme.palette.bunker[950],
     },
+    '& > .soon > span > b': {
+      color: '#0000006e',
+    },
   },
   backdrop: {
     zIndex: 2000,
