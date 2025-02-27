@@ -46,14 +46,10 @@ const NumberFormatInput = ({
       event.target.blur()
     }
     if (type === 'number') {
-      const allowedKeys = ['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete', 'Tab']
-
-      if (type === 'number') {
-        // Prevent unwanted keys except allowed keys
-        const invalidKeys = ['e', 'E', '+', '-', '.']
-        if (invalidKeys.includes(event.key) && !allowedKeys.includes(event.key)) {
-          event.preventDefault()
-        }
+      // Prevent unwanted keys except allowed keys
+      const invalidKeys = ['e', 'E', '+', '-', '.']
+      if (invalidKeys.includes(event.key)) {
+        event.preventDefault()
       }
     }
 

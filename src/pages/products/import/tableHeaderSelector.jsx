@@ -182,6 +182,32 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         // <SimpleText currency='сум' withDevider {...p} type='accepted_amount' />),
       }
     }
+    if (el.field === 'accepted_amount_vat') {
+      return {
+        ...el,
+        headerName: 'Cумма',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
+
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={'сум'} type={'received_amount_vat'} />
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
+
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={'сум'} type={'accepted_amount_vat'} />
+            </Box>
+          </>
+        )),
+        // <SimpleText currency='сум' withDevider {...p} type='accepted_amount' />),
+      }
+    }
 
     if (el.field === 'received_count') {
       return {

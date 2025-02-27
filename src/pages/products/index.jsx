@@ -35,6 +35,7 @@ export default function ProductsPage() {
   const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.productsTableColumns)
   const { values } = useQueryParams()
+  const user_data = useSelector((state) => state.user)
   const [regions, setRegions] = useState([])
   const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
@@ -50,6 +51,13 @@ export default function ProductsPage() {
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
   })
+  const routeString = []
+
+  user_data?.role_actions?.forEach((item) => {
+    if (item.type == 'TABLE') {
+      routeString.push(item.route)
+    }
+  })
 
   useEffect(() => {
     if (tableColumns) {
@@ -60,6 +68,7 @@ export default function ProductsPage() {
           label: el.headerName,
           desc: el.desc,
           name: el.colId,
+          // hide: !routeString.includes(el?.colId),
           always_active: el?.always_active ?? el?.always_active,
         }))
 

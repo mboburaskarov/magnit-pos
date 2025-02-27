@@ -6,18 +6,21 @@ const columns = [
     hide: false,
     minWidth: 60,
     width: 60,
+    pinned: 'left',
+  },
+
+  {
+    field: 'name',
+    hide: false,
+    minWidth: 70,
+    width: 370,
+    pinned: 'left',
   },
   {
     field: 'main_photo',
     hide: false,
     minWidth: 70,
     width: 90,
-  },
-  {
-    field: 'name',
-    hide: false,
-    minWidth: 70,
-    width: 370,
   },
   {
     field: 'category',

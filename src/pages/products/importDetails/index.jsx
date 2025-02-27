@@ -146,7 +146,7 @@ export default function ImportDetailsPage() {
                   },
                 }}
               >
-                <InputSearch id='producrs-search' name='search' placeholder={'Название'} uncontrolled />
+                <InputSearch id='producrs-search' name='search' placeholder={'Штрих-код'} uncontrolled />
               </Box>
 
               <Box minWidth={113} ml={'16px'}>

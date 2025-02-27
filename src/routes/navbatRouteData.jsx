@@ -35,6 +35,7 @@ export const navbatRouteData = [
         id: '32',
         href: '/products/import',
       },
+
       {
         label: 'Авто заказ',
         active: '/products/auto-order/*',

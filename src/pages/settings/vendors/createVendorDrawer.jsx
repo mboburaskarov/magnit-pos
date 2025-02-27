@@ -116,23 +116,23 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
           <CloseIcon color={theme.palette.black} onClick={() => closeDrawer(false)} />
         </Box>
         <FormProvider {...methods}>
-          <form id='create-client-form-mini' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <Box
-              sx={{
-                padding: '0 24px',
-              }}
-            >
-              <MainDetails openDrawer={openDrawer} quickCreateClientName={quickCreateClientName} clientData={clientData} />
-            </Box>
+          <Box maxHeight={'100vh'} position={'relative'} overflow={'auto'}>
+            <form id='create-client-form-mini' onSubmit={methods.handleSubmit(onSubmit, onError)}>
+              <Box
+                sx={{
+                  padding: '0 24px',
+                }}
+              >
+                <MainDetails openDrawer={openDrawer} quickCreateClientName={quickCreateClientName} clientData={clientData} />
+              </Box>
+            </form>
             <Box
               width={196}
               sx={{
                 padding: '24px',
                 width: '100%',
+                left: 0,
                 display: 'flex',
-                justifyContent: 'end',
-                position: 'absolute',
-                bottom: 0,
               }}
             >
               <Button
@@ -148,7 +148,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
                 {t('create')}
               </Button>
             </Box>
-          </form>
+          </Box>
         </FormProvider>
       </Box>
     </Drawer>

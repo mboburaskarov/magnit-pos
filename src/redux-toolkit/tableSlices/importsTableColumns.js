@@ -46,6 +46,12 @@ const columns = [
     width: 170,
   },
   {
+    field: 'accepted_amount_vat',
+    hide: false,
+    minWidth: 70,
+    width: 170,
+  },
+  {
     field: 'received_count',
     hide: false,
     minWidth: 70,

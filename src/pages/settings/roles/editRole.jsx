@@ -37,6 +37,7 @@ export default function RoleEditPage() {
   const { data: rolesAndPermissionList } = useQuery(['rolesAndPermissionListForEdit', id], () =>
     requests.getAllRolesWithPermissions({ role_id: id, limit: 20, offset: 0 })
   )
+
   const onSubmit = (data) => {
     const permissions = []
     get(rolesAndPermissionList, 'data.data', [])

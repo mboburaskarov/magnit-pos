@@ -37,7 +37,7 @@ export default function ImportWithCheckingPage() {
   const [imports, setImports] = useState([])
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
-
+  const [hasTableChange, setHasTableChange] = useState(false)
   const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
@@ -80,6 +80,21 @@ export default function ImportWithCheckingPage() {
     id,
     setScanedNumber,
   })
+  const importWithCheckingDetailsFilter = useMemo(() => {
+    return {
+      import_id: id,
+      limit: values?.limit || 10,
+      offset: values?.offset || 0,
+      search: barcode,
+    }
+  }, [values?.offset, values?.limit, id, barcode])
+
+  const {
+    data: importWithCheckingDetails,
+    isLoading: importWithCheckingDetailsLoading,
+    isFetching: isFetchingimportWithCheckingDetails,
+    refetch,
+  } = useQuery(['importWithCheckingDetails', importWithCheckingDetailsFilter], () => requests.getImportScanDetails(importWithCheckingDetailsFilter))
 
   /// filter table columns with permission
   useEffect(() => {
@@ -95,22 +110,7 @@ export default function ImportWithCheckingPage() {
         }))
       dispatch(changeColumnSequence(formattedData))
     }
-  }, [])
-
-  const importWithCheckingDetailsFilter = useMemo(() => {
-    return {
-      import_id: id,
-      limit: values?.limit || 10,
-      offset: values?.offset || 0,
-    }
-  }, [values?.offset, values?.limit, id])
-
-  const {
-    data: importWithCheckingDetails,
-    isLoading: importWithCheckingDetailsLoading,
-    isFetching: isFetchingimportWithCheckingDetails,
-    refetch,
-  } = useQuery(['importWithCheckingDetails', importWithCheckingDetailsFilter], () => requests.getImportDetails(importWithCheckingDetailsFilter))
+  }, [importWithCheckingDetails])
 
   useEffect(() => {
     refetch()
@@ -222,7 +222,7 @@ export default function ImportWithCheckingPage() {
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
                 status={appType}
-                isRefreshing={loading || isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
+                isRefreshing={loading || hasTableChange || isAddScan || isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
