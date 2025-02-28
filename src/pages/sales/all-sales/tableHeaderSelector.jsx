@@ -295,14 +295,14 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'Клиент',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + get(p, 'data.customer.phone', 'xxx xx xxx xx xx'))}>
+          <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + get(p, 'data.customer_phone', 'xxx xx xxx xx xx'))}>
             <Box display={'flex'} alignItems={'center'}>
               {p.data?.image ? (
                 <img style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data?.image)} />
               ) : (
                 <DefaultUserImgIcon />
               )}
-              <a href={`tel:${'+' + p.data?.phone}`}>
+              <a href={`tel:${'+' + p.data?.customer_phone}`}>
                 <Typography
                   id={p.data?._id}
                   style={{ whiteSpace: 'pre-line', color: 'bunker.950', marginLeft: '8px', fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}
