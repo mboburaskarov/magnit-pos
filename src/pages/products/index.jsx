@@ -58,7 +58,6 @@ export default function ProductsPage() {
       routeString.push(item.route)
     }
   })
-
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns

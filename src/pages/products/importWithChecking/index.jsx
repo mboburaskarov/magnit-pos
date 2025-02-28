@@ -39,6 +39,7 @@ export default function ImportWithCheckingPage() {
   const methods = useForm()
   const [hasTableChange, setHasTableChange] = useState(false)
   const [appType, setAppType] = useState('ALL')
+  const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedImportNumber, {
@@ -141,6 +142,8 @@ export default function ImportWithCheckingPage() {
     if (barcode === '') return
     // addScan({ barcode, count: Number(manualNumber), import_id: id })
   }
+  console.log(appType)
+
   return (
     <LoadingContainer readyState={!isfinishImportChecking}>
       <FormProvider {...methods}>
@@ -157,11 +160,11 @@ export default function ImportWithCheckingPage() {
           <Box minWidth={320}>
             <InputSwitch
               uncontrolled
-              id='app-type'
-              name='app-type'
-              value={appType}
+              id='status'
+              name='status'
+              value={status}
               defaultValue='ALL'
-              onChange={(e) => setAppType(e)}
+              onChange={(e) => setStatus(e)}
               options={[
                 { title: t('switch.title.all'), value: 'ALL', count: get(statusCountList, 'data.data.total_count', 0) },
                 { title: t('switch.title.scanned_count'), value: 'scanned', count: get(statusCountList, 'data.data.scanned_count', 0) },
