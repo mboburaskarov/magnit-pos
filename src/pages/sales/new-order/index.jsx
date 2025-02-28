@@ -37,6 +37,7 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import OutLineTextFieldThousand from '../../../../components/Inputs/OutLineTextFieldThousand'
 import LoadingOverflow from '../../../../components/LoadingOverflow'
 import ProductDrawer from './ProductDrawer'
+import CheckAccess from '../../../../components/CheckAccess'
 const useStyles = makeStyles((theme) => ({
   card_detail: {
     width: '30%',
@@ -731,54 +732,56 @@ function NewSale() {
               </OutsideClickHandler>
             )}
           </Box>
-          <Box display={'flex'} alignItems={'center'}>
-            <OutLineTextFieldThousand
-              setValue={(e) => changeDiscountDebounce(e)}
-              value={inputDiscount}
-              type={'number'}
-              fullWidth
-              name='discount'
-              label={'Скидка'}
-              uncontrolled
-              placeholder='Введите скидку'
-            />
-            <Box ml={'8px'}>
-              <InputSwitch
+          <CheckAccess id={'new-sale-discount'}>
+            <Box display={'flex'} alignItems={'center'}>
+              <OutLineTextFieldThousand
+                setValue={(e) => changeDiscountDebounce(e)}
+                value={inputDiscount}
+                type={'number'}
+                fullWidth
+                name='discount'
+                label={'Скидка'}
                 uncontrolled
-                id='app-type'
-                name='app-type'
-                style={{ marginTop: '32px', width: 'auto' }}
-                defaultValue={discount}
-                onChange={setDiscountType}
-                options={[
-                  { title: '%', value: 'percent' },
-                  { title: 'UZS', value: 'cash' },
-                ]}
+                placeholder='Введите скидку'
               />
+              <Box ml={'8px'}>
+                <InputSwitch
+                  uncontrolled
+                  id='app-type'
+                  name='app-type'
+                  style={{ marginTop: '32px', width: 'auto' }}
+                  defaultValue={discount}
+                  onChange={setDiscountType}
+                  options={[
+                    { title: '%', value: 'percent' },
+                    { title: 'UZS', value: 'cash' },
+                  ]}
+                />
+              </Box>
             </Box>
-          </Box>
-          <Box mt='8px' display={'flex'}>
-            {discount === 'percent' &&
-              [15, 30, 50, 75].map((el, index) => (
-                <Box
-                  sx={{ cursor: 'pointer', color: el === inputDiscount ? 'orange.500' : '#000' }}
-                  onClick={() => setInputDiscount(el)}
-                  className={classes.percent}
-                >
-                  {el}%
-                </Box>
-              ))}
-            {discount === 'cash' &&
-              [5, 10, 50, 100].map((el, index) => (
-                <Box
-                  sx={{ cursor: 'pointer', color: el === inputDiscount / 1000 ? 'orange.500' : '#000' }}
-                  onClick={() => setInputDiscount(`${el}000`)}
-                  className={classes.percent}
-                >
-                  {el}k
-                </Box>
-              ))}
-          </Box>
+            <Box mt='8px' display={'flex'}>
+              {discount === 'percent' &&
+                [15, 30, 50, 75].map((el, index) => (
+                  <Box
+                    sx={{ cursor: 'pointer', color: el === inputDiscount ? 'orange.500' : '#000' }}
+                    onClick={() => setInputDiscount(el)}
+                    className={classes.percent}
+                  >
+                    {el}%
+                  </Box>
+                ))}
+              {discount === 'cash' &&
+                [5, 10, 50, 100].map((el, index) => (
+                  <Box
+                    sx={{ cursor: 'pointer', color: el === inputDiscount / 1000 ? 'orange.500' : '#000' }}
+                    onClick={() => setInputDiscount(`${el}000`)}
+                    className={classes.percent}
+                  >
+                    {el}k
+                  </Box>
+                ))}
+            </Box>
+          </CheckAccess>
           <Box className={classes.priceDetails}>
             <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
               <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>

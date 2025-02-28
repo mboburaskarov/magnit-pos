@@ -364,7 +364,11 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
                 />
               ))
             ) : (
-              <Typography>yoo</Typography>
+              <Box sx={{ zIndex: 999999, display: 'flex', justifyContent: 'center', paddingTop: '75px', height: '100vh' }}>
+                <Typography zIndex={'9999999'} fontSize={'25px'} fontWeight={'600'} color={'#fff'}>
+                  Продукт не найден
+                </Typography>
+              </Box>
             )}
           </Box>
         )}

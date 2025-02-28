@@ -18,6 +18,7 @@ import { requests } from '../../../../utils/requests'
 import { setUserData } from '../../../redux-toolkit/userSlice'
 import i18n from '../../../i18n'
 import LockIcon from '../../../assets/icons/LockIcon'
+import CheckAccess from '../../../../components/CheckAccess'
 
 // Constants for options
 const LANGUAGE_OPTIONS = [
@@ -141,26 +142,27 @@ const Profile = () => {
               <TextField disabled={!isEditMode} required fullWidth name='last_name' placeholder='Enter last name' />
             </Box>
           </Box>
+          <CheckAccess id={'profile-update-password'}>
+            <Typography variant='h5' fontWeight={700} mb={3}>
+              Безопасность
+            </Typography>
 
-          <Typography variant='h5' fontWeight={700} mb={3}>
-            Безопасность
-          </Typography>
-
-          <Button
-            fullWidth
-            // disabled={!isEditMode}
-            onClick={() => setOpen(true)}
-            sx={{
-              width: '100%',
-              border: '2px solid',
-              borderColor: 'bunker.100',
-              height: '48px',
-            }}
-            variant='primary'
-            startIcon={<LockIcon color={!isEditMode && '#ccc'} />}
-          >
-            Изменить пароль
-          </Button>
+            <Button
+              fullWidth
+              // disabled={!isEditMode}
+              onClick={() => setOpen(true)}
+              sx={{
+                width: '100%',
+                border: '2px solid',
+                borderColor: 'bunker.100',
+                height: '48px',
+              }}
+              variant='primary'
+              startIcon={<LockIcon color={!isEditMode && '#ccc'} />}
+            >
+              Изменить пароль
+            </Button>
+          </CheckAccess>
 
           <Typography variant='h5' fontWeight={700} mt={7} mb={3}>
             Интерфейс

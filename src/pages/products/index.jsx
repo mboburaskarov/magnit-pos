@@ -68,7 +68,7 @@ export default function ProductsPage() {
           label: el.headerName,
           desc: el.desc,
           name: el.colId,
-          // hide: !routeString.includes(el?.colId),
+          hide: !routeString.includes(el?.colId),
           always_active: el?.always_active ?? el?.always_active,
         }))
 
