@@ -493,11 +493,11 @@ function NewSale() {
   // Debounce logic: Apply a delay before updating the debounced value
   useEffect(() => {
     const handler = setTimeout(() => {
-      if (typeof debouncedDiscount !== 'number') {
-        changeDiscount(0)
+      if (typeof debouncedDiscount !== 'number' || size(get(cartItemsList, 'data.data.data', [])) <= 0) {
         return
       }
-      if (typeof debouncedDiscount !== 'number' || size(get(cartItemsList, 'data.data.data', [])) <= 0) {
+      if (typeof debouncedDiscount !== 'number') {
+        changeDiscount(0)
         return
       }
       setInputDiscount(0)
