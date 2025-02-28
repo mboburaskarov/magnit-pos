@@ -72,11 +72,14 @@ export const requests = {
   getImportsExcelReport: (filter) => requestEXCEL.get(`v1/import/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //import-details
+  getAllImportsDetailStatusCount: ({ id, filter }) =>
+    request.get(`v1/import-detail/get-stock-status-counts/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   getImportDetails: (filter) => request.get(`v1/import-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getImportScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
   finishImportChecking: (id) => request.patch(`v1/import-detail/accept-some/${id}`),
   loadWithoutChecking: (id) => request.patch(`v1/import-detail/accept-all/${id}`),
   sendScannedImport: (data) => request.patch(`v1/import-detail/add-scan`, data),
+  sendScannedImportById: (data) => request.post(`v1/import-detail/add-scan-by-id`, data),
   sendScannedImportNumber: ({ id, scanned_count }) => request.put(`v1/import-detail/${id}`, { scanned_count }),
   getImportDetailsExcelReport: (filter) => requestEXCEL.get(`v1/import-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 

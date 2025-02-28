@@ -49,21 +49,25 @@ export default function ImportWithCheckingPage() {
       error('Ошибка при сканирование!')
     },
   })
-  const { mutate: addScan, isLoading: isAddScan } = useMutation(requests.sendScannedImport, {
-    onSuccess: ({ data }) => {
-      refetch()
-      setBarcode('')
-      if (get(data, 'data.surplus')) {
-        overplusScanAudio.play()
-      } else {
-        successScanAudio.play()
-      }
-    },
-    onError: (err) => {
-      errorScanAudio.play()
-      error('Ошибка при сканирование!')
-    },
-  })
+  // const { mutate: addScan, isLoading: isAddScan } = useMutation(requests.sendScannedImport, {
+  //   onSuccess: ({ data }) => {
+  //     refetch()
+  //     console.log(data)
+
+  //     setBarcode('')
+  //     if (get(data, 'data.surplus')) {
+  //       overplusScanAudio.play()
+  //     } else {
+  //       successScanAudio.play()
+  //     }
+  //   },
+  //   onError: (err) => {
+  //     console.log(err)
+
+  //     errorScanAudio.play()
+  //     error('Ошибка при сканирование!')
+  //   },
+  // })
   const { mutate: finishImportChecking, isLoading: isfinishImportChecking } = useMutation(requests.finishImportChecking, {
     onSuccess: ({ data }) => {
       navigate('/products/import')
@@ -86,8 +90,9 @@ export default function ImportWithCheckingPage() {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: barcode,
+      type: appType,
     }
-  }, [values?.offset, values?.limit, id, barcode])
+  }, [values?.offset, appType, values?.limit, id, barcode])
 
   const {
     data: importWithCheckingDetails,
@@ -95,7 +100,12 @@ export default function ImportWithCheckingPage() {
     isFetching: isFetchingimportWithCheckingDetails,
     refetch,
   } = useQuery(['importWithCheckingDetails', importWithCheckingDetailsFilter], () => requests.getImportScanDetails(importWithCheckingDetailsFilter))
-
+  const {
+    data: statusCountList,
+    isLoading: statusCountListLoading,
+    isFetching: isFetchingstatusCountList,
+    refetch: fetchStatusCountList,
+  } = useQuery(['statusCountList', values?.search], () => requests.getAllImportsDetailStatusCount({ id: id, filter: { search: values?.search } }))
   /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
@@ -110,7 +120,7 @@ export default function ImportWithCheckingPage() {
         }))
       dispatch(changeColumnSequence(formattedData))
     }
-  }, [importWithCheckingDetails])
+  }, [])
 
   useEffect(() => {
     refetch()
@@ -129,7 +139,7 @@ export default function ImportWithCheckingPage() {
 
   const sendScannedImport = () => {
     if (barcode === '') return
-    addScan({ barcode, count: Number(manualNumber), import_id: id })
+    // addScan({ barcode, count: Number(manualNumber), import_id: id })
   }
   return (
     <LoadingContainer readyState={!isfinishImportChecking}>
@@ -144,6 +154,22 @@ export default function ImportWithCheckingPage() {
           checkAccessId={'product-create'}
         />
         <Container>
+          <Box minWidth={320}>
+            <InputSwitch
+              uncontrolled
+              id='app-type'
+              name='app-type'
+              value={appType}
+              defaultValue='ALL'
+              onChange={(e) => setAppType(e)}
+              options={[
+                { title: t('switch.title.all'), value: 'ALL', count: get(statusCountList, 'data.data.total_count', 0) },
+                { title: t('switch.title.scanned_count'), value: 'scanned', count: get(statusCountList, 'data.data.scanned_count', 0) },
+                { title: t('switch.title.shortage_count'), value: 'shortage', count: get(statusCountList, 'data.data.shortage_count', 0) },
+                { title: t('switch.title.surplus_count'), value: 'surplus', count: get(statusCountList, 'data.data.surplus_count', 0) },
+              ]}
+            />
+          </Box>
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
               <Box display={'flex'}>
@@ -222,11 +248,21 @@ export default function ImportWithCheckingPage() {
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
                 status={appType}
-                isRefreshing={loading || hasTableChange || isAddScan || isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
+                isRefreshing={loading || hasTableChange || isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
         </Container>
+        {/* <ConflictDialog
+          refetch={refetch}
+          setBarcode={setBarcode}
+          manualNumber={manualNumber}
+          conflictList={conflictList}
+          open={conflictOpen}
+          setOpen={() => {
+            setConflictOpen(false), setConflictList([])
+          }}
+        /> */}
       </FormProvider>
     </LoadingContainer>
   )

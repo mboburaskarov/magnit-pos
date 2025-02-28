@@ -111,12 +111,20 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
       <Box height={'100%'}>
         <Box className={classes.header}>
           <Typography variant='h4' className={classes.title}>
-            Новый cотрудники
+            {openDrawer?.mode === 'edit' ? 'Редактировать сотрудника' : 'Новый cотрудники'}
           </Typography>
           <CloseIcon color={theme.palette.black} onClick={() => closeDrawer(false)} />
         </Box>
         <FormProvider {...methods}>
-          <Box maxHeight={'100vh'} position={'relative'} overflow={'auto'}>
+          <Box
+            minHeight={'calc(100vh - 80px)'}
+            maxHeight={'100vh'}
+            display={'flex'}
+            justifyContent={'space-between'}
+            flexDirection={'column'}
+            position={'relative'}
+            overflow={'auto'}
+          >
             <form id='create-client-form-mini' onSubmit={methods.handleSubmit(onSubmit, onError)}>
               <Box
                 sx={{
@@ -145,7 +153,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
                 form='create-client-form-mini'
                 type='submit'
               >
-                {t('create')}
+                {openDrawer?.mode === 'edit' ? t('edit') : t('create')}
               </Button>
             </Box>
           </Box>

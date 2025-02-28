@@ -121,13 +121,15 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
 
     onSelect([
       ...newSelect,
-      // , ...children?.filter((child) => child?.id !== 'create')?.map((el) => el?.id)
+      // ...children?.filter((child) => child?.id !== 'create')?.map((el) => el?.id)
     ])
   }
   const renderTreeItem = ({ nodes, parents = [], level = 0 }) =>
     nodes?.map((node) => {
       const { id: value, name: label, description, children } = node
-      const checked = selected.includes(value) || parents.some((parent) => selected.includes(parent))
+      const checked = selected.includes(value)
+      // || parents.some((parent) => selected.includes(parent))
+      // console.log(checked, selected, value, label)
 
       if (children && children.length > 0) {
         const indeterminate = isIndeterminate({ tree, selected, node: value })

@@ -62,8 +62,10 @@
   "switch.title.empty": "Недоступные",
   "switch.title.less_date": "Срок короткий",
   "switch.title.outofdate": "Истекший",
-
-  "button.add_new.text": "Добавить новый",
+  "switch.title.scanned_count": "Сканированный",
+  "switch.title.shortage_count": "Мало товара",
+  "switch.title.surplus_count": "Излишек",
+  "switch.title.total_count": "Общий",
 
   "table_columns.photo": "Фото",
   "table_columns.name": "Наименование",
@@ -167,6 +169,7 @@
   "client.placeholder": "Введите имя клиента",
   "create": "Создавать",
   "balans": "Баланс",
+  "edit": "Редактировать",
   "total_amount": "Общая стоимость",
   "discount": "Скидка",
   "delete": "Удалит",

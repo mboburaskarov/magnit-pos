@@ -48,9 +48,7 @@ export default function RoleEditPage() {
             ? {}
             : permissions.push({
                 parent_id: permission?.id || '',
-                children_ids: selected?.includes(permission?.id)
-                  ? [...new Set(permission.children.map((el) => el.id))]
-                  : [...new Set(selected.filter((el) => permission.children.find((child) => child.id === el)))] || [],
+                children_ids: selected.filter((el) => permission.children.find((child) => child.id === el)),
                 is_active: !!selected?.includes(permission?.id) || size(selected.filter((el) => permission.children.find((child) => child.id === el))) > 0,
               })
         })

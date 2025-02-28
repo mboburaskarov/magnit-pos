@@ -15,6 +15,7 @@ import Label from '../../../../components/Label'
 import SelectSimple from '../../../../components/Select/SelectSimple'
 import { requests } from '../../../../utils/requests'
 import getOptionsSchema from '../../../../utils/getOptionsSchema'
+import dayjs from 'dayjs'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -61,6 +62,7 @@ export default function MainDetails({ clientData, openDrawer }) {
       setValue('store_id', getOptionsSchema(get(employeeInfo, 'data.data.store', []), Object, 'name'))
     }
   }, [employeeInfo])
+  console.log(dayjs('1960.01.01').format(''))
 
   return (
     <Box mt={'24px'}>
@@ -209,7 +211,16 @@ export default function MainDetails({ clientData, openDrawer }) {
       <Grid container spacing={4}>
         <Grid item xs={6}>
           <Label mb='4px'>{t('birthdate')}</Label>
-          <InputDatePicker noMarginTop name='date_of_birth' error={errors?.date_of_birth} required id='birth-Date' showYearDropdown placeholder='yyyy/oo/kk' />
+          <InputDatePicker
+            fromMonthCustom={new Date(dayjs('1900.01.01').format(''))}
+            noMarginTop
+            name='date_of_birth'
+            error={errors?.date_of_birth}
+            required
+            id='birth-Date'
+            showYearDropdown
+            placeholder='yyyy/oo/kk'
+          />
         </Grid>
         <Grid item xs={6}>
           <Label mb='4px'>{t('gender')}</Label>

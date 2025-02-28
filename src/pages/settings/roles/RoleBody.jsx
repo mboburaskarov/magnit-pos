@@ -127,6 +127,7 @@ export default function RoleBody({ rolesAndPermissionList, productData = null, d
       .filter((item) => item)
     return permissions
   }
+
   useEffect(() => {
     setPermissionList(get(rolesAndPermissionList, 'data.data', []))
     if (get(rolesAndPermissionList, 'data.data', [])) {
@@ -138,8 +139,9 @@ export default function RoleBody({ rolesAndPermissionList, productData = null, d
           section?.permissions?.forEach((permission) => {
             if (permission?.is_active) {
               permissions.push(permission.id)
-              return
+              // return
             }
+
             permission.children.forEach((el) => {
               if (el.is_active) {
                 permissions.push(el.id)

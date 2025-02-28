@@ -9,6 +9,7 @@ import { makeStyles } from '@mui/styles'
 import DeleteSmallIcon from '../../src/assets/icons/DeleteSmallIcon'
 import Label from '../Label'
 import CalendarIcon from '../../src/assets/icons/CalendarIcon'
+import ReactInputMask from 'react-input-mask'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -413,42 +414,47 @@ function InputDatePicker({
                   />
                 )}
                 customInput={
-                  <TextField
-                    variant='outlined'
-                    fullWidth
-                    error={!!error}
-                    helperText={error ? error.message : ''}
-                    className={noMarginTop && classes.noMargin}
-                    InputProps={{
-                      onBlur: (e) => {
-                        setTimeout(() => {
-                          setApplyAll(false)
-                        }, 200)
-                        // onBlur(e)
-                      },
-                      onFocus: (e) => {
-                        canApplyAll && setApplyAll(true)
-                        // onFocus(e)
-                      },
-                      endAdornment: (
-                        <InputAdornment sx={{ paddingRight: 1 }} position='start'>
-                          {fieldValue && isClearable ? (
-                            <button
-                              className={classes.clearButton}
-                              onClick={() => {
-                                onFieldChange(null)
-                              }}
-                              type='button'
-                            >
-                              <DeleteSmallIcon />
-                            </button>
-                          ) : (
-                            <CalendarIcon />
-                          )}
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
+                  <ReactInputMask mask='9999.99.99' maskChar={null} value={fieldValue ? dayjs(fieldValue).format('YYYY.MM.DD') : ''}>
+                    {(inputProps) => (
+                      <TextField
+                        {...inputProps}
+                        variant='outlined'
+                        fullWidth
+                        error={!!error}
+                        helperText={error ? error.message : ''}
+                        className={noMarginTop && classes.noMargin}
+                        InputProps={{
+                          onBlur: (e) => {
+                            setTimeout(() => {
+                              setApplyAll(false)
+                            }, 200)
+                            // onBlur(e)
+                          },
+                          // onFocus: (e) => {
+                          //   // canApplyAll && setApplyAll(true)
+                          //   // onFocus(e)
+                          // },
+                          endAdornment: (
+                            <InputAdornment sx={{ paddingRight: 1 }} position='start'>
+                              {fieldValue && isClearable ? (
+                                <button
+                                  className={classes.clearButton}
+                                  onClick={() => {
+                                    onFieldChange(null)
+                                  }}
+                                  type='button'
+                                >
+                                  <DeleteSmallIcon />
+                                </button>
+                              ) : (
+                                <CalendarIcon />
+                              )}
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    )}
+                  </ReactInputMask>
                 }
               />
             </>

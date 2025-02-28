@@ -16,9 +16,12 @@ export default function SerchedItem({
   index,
   handleAddProduct,
   discount,
+
   itemRef,
   fakeIndexForCheckSearch,
   item,
+  conflictItem = false,
+  isSimilar = false,
   isChild = true,
   classes,
   setSearchTerm,
@@ -46,7 +49,7 @@ export default function SerchedItem({
   return (
     <Box
       id={item?.id}
-      className={classes.searchItem}
+      className={classes.searchItem + ' search-item'}
       onClick={() => {
         handleAddProduct({
           discount_type: get(discount, 'type', 'percent'),
@@ -61,12 +64,14 @@ export default function SerchedItem({
         overflow: 'hidden',
         width: '100%',
         outline: 'none',
-        '&:focus': {
-          '& .main-Box': {
-            border: '2px solid #fe5000',
-            bgcolor: '#ccc !important',
-          },
-        },
+        '&:focus': isSimilar
+          ? {}
+          : {
+              '& .main-Box': {
+                border: '2px solid #fe5000',
+                bgcolor: '#ccc !important',
+              },
+            },
       }}
       // onKeyDown={(event) => {
       //   if (event.key === 'Enter' && fakeIndexForCheckSearch === index) {
@@ -117,14 +122,16 @@ export default function SerchedItem({
               </Typography>
             </Box>
           </Box>
-          <Box flex='0 0 22%' pr={2} textAlign='right'>
-            <Typography whiteSpace={'pre'} className={classes.itemQuantity}>
-              <span>Miqdor: {item?.quantity}</span>
-            </Typography>
-            <Typography whiteSpace={'pre'} className={classes.itemPrice}>
-              {thousandDivider(product?.retail_price, 'сум')}{' '}
-            </Typography>
-          </Box>
+          {!conflictItem && (
+            <Box flex='0 0 22%' pr={2} textAlign='right'>
+              <Typography whiteSpace={'pre'} className={classes.itemQuantity}>
+                <span>Miqdor: {item?.quantity}</span>
+              </Typography>
+              <Typography whiteSpace={'pre'} className={classes.itemPrice}>
+                {thousandDivider(product?.retail_price, 'сум')}{' '}
+              </Typography>
+            </Box>
+          )}
           {!isChild && (
             <Box
               width={'48px'}
@@ -147,9 +154,21 @@ export default function SerchedItem({
       <Box sx={{ paddingLeft: '40px', width: '100%' }}>
         {openSimilar &&
           get(similarProductList, 'data', []).map((item) => (
-            <SerchedItem classes={classes} item={item} searchTerm={searchTerm} product={item} key={item?.id} />
+            <Box
+              sx={{
+                '& .search-item': {
+                  '.main-Box': {
+                    border: '2px solid #fff !important',
+                    bgcolor: '#fff !important',
+                  },
+                },
+              }}
+            >
+              <SerchedItem isSimilar={true} classes={classes} item={item} searchTerm={searchTerm} product={item} key={item?.id} />
+            </Box>
           ))}
       </Box>
+
       {item?.bonus_amount > 0 && (
         <Box
           sx={{

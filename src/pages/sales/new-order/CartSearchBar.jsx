@@ -42,6 +42,8 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
   searchResult: {
+    height: '100vh',
+    overflowY: 'auto',
     zIndex: 27,
     '&::-webkit-scrollbar': {
       background: 'transparent',
@@ -362,7 +364,7 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
                 />
               ))
             ) : (
-              <></>
+              <Typography>yoo</Typography>
             )}
           </Box>
         )}
