@@ -94,6 +94,14 @@ export default function tableHeaderSelector({ importsColumns, setImports, t, set
         cellRenderer: memo((p) => <Typography>{dayjs(new Date(p?.data?.expire_date)).format('DD.MM.YYYY')}</Typography>),
       }
     }
+    if (el.field === 'producer_name') {
+      return {
+        ...el,
+        headerName: t('create_new_product.features.manufacturer'),
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='producer_name' />),
+      }
+    }
   })
 
   return columns

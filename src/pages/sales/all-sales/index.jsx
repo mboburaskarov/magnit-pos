@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
@@ -20,6 +20,8 @@ import FilterMenu from './FilterMenu'
 import SaleDrawer from './saleDrawer'
 import SaleMiniDashboardHeader from './saleMiniDashboardHeader'
 import tableHeaderSelector from './tableHeaderSelector'
+import { error } from '../../../../utils/toast'
+import { downloadExcel } from '../../../../utils/downloadEXCEL'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function AllSalesPage() {
@@ -117,7 +119,16 @@ export default function AllSalesPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [salesList?.data, values?.limit])
+  const { mutate: allSalesExcelReport, isLoading: isallSalesExcelReport } = useMutation(requests.getAllSalesExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadExcel(data, 'Продажи')
+    },
+    onError: (err) => {
+      console.log(err)
 
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
@@ -185,6 +196,8 @@ export default function AllSalesPage() {
         <Box>
           <AgGridTable
             id='products-main-table'
+            download={() => allSalesExcelReport(salesListFilter)}
+            isDownloading={isallSalesExcelReport}
             tableSettings
             columns={tableColumns}
             data={salesList?.data?.data?.data || []}

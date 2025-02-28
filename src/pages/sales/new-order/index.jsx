@@ -487,6 +487,7 @@ function NewSale() {
 
   // Function to handle input changes
   const changeDiscountDebounce = (value) => {
+    if (inputDiscount !== value) setInputDiscount(0)
     setDebouncedDiscount(value)
   }
 

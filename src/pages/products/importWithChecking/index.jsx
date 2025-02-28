@@ -45,6 +45,7 @@ export default function ImportWithCheckingPage() {
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedImportNumber, {
     onSuccess: ({ data }) => {
       refetch()
+      fetchStatusCountList()
     },
     onError: (err) => {
       error('Ошибка при сканирование!')

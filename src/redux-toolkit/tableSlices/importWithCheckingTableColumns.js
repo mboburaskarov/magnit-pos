@@ -38,6 +38,12 @@ const columns = [
     minWidth: 70,
     width: 210,
   },
+  {
+    field: 'producer_name',
+    hide: false,
+    minWidth: 70,
+    width: 210,
+  },
 ]
 
 const importWithCheckingTableColumns = createSlice({
