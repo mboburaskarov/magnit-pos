@@ -91,9 +91,9 @@ export default function ImportWithCheckingPage() {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: barcode,
-      type: appType,
+      type: status,
     }
-  }, [values?.offset, appType, values?.limit, id, barcode])
+  }, [values?.offset, status, values?.limit, id, barcode])
 
   const {
     data: importWithCheckingDetails,

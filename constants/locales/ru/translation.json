@@ -62,8 +62,8 @@
   "switch.title.empty": "Недоступные",
   "switch.title.less_date": "Срок короткий",
   "switch.title.outofdate": "Истекший",
-  "switch.title.scanned_count": "Сканированный",
-  "switch.title.shortage_count": "Мало товара",
+  "switch.title.scanned_count": "Сканированные",
+  "switch.title.shortage_count": "Недостача",
   "switch.title.surplus_count": "Излишек",
   "switch.title.total_count": "Общий",
 
