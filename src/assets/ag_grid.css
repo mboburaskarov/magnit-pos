@@ -305,7 +305,8 @@
   /* border: none; */
 }
 .ag-body-horizontal-scroll {
-  display: none !important;
+  display: block !important;
+  opacity: 1 !important;
 }
 .no-rows-container {
   width: 100%;
@@ -381,10 +382,6 @@
   opacity: 0;
   pointer-events: auto !important;
   bottom: 0 !important;
-}
-
-.ag-center-cols-viewport::-webkit-scrollbar {
-  display: none;
 }
 
 /* Status Bar */

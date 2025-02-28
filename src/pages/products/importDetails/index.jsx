@@ -201,8 +201,8 @@ export default function ImportDetailsPage() {
                     </Box>
                   }
                   popperData={[
-                    { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => {}, soon: true },
-                    // { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => loadWithoutChecking() },
+                    // { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => {}, soon: true },
+                    { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => loadWithoutChecking() },
                     { title: 'Импорт с проверкой', icon: <ImportWithIcon />, clickHandler: () => navigate(`/products/import-with-checking/${id}`) },
                   ]}
                 />
