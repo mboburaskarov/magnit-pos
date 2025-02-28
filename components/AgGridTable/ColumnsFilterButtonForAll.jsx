@@ -11,6 +11,7 @@ import CloseIcon from '../../src/assets/icons/CloseIcon'
 import EditorIcon from '../../src/assets/icons/EditorIcon'
 import ButtonWithWrapper from '../Buttons/ButtonWithWrapper'
 import { useTranslation } from 'react-i18next'
+import CheckAccess from '../CheckAccess'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SELECTION_ID = 'checkboxSelectionField'
 
-function ColumnsFilterButtonForAll({ columns, title, changeColumnSequence, resetTableHeader }) {
+function ColumnsFilterButtonForAll({ routeString = false, columns, title, changeColumnSequence, resetTableHeader }) {
   const classes = useStyles()
   const [open, setOpen] = useState(false)
   const [data, setData] = useState([])
@@ -93,6 +94,7 @@ function ColumnsFilterButtonForAll({ columns, title, changeColumnSequence, reset
             <CheckboxWithDragDrop
               data={data?.filter((item) => {
                 if (item?.colId === 'actfion' || item?.colId === 'supply_price_usd') return false
+                if (routeString && !routeString.includes(item?.colId)) return false
                 return true
               })}
               checkAllField
@@ -109,17 +111,19 @@ function ColumnsFilterButtonForAll({ columns, title, changeColumnSequence, reset
               position={'absolute'}
               mt={'24px'}
             >
-              <Button
-                sx={{ bgcolor: `${theme.palette.background.gray} !important`, height: 48, border: '1px solid #ECEDF2' }}
-                fullWidth
-                color='secondary'
-                variant='contained'
-                onClick={resetTableHeaders}
-              >
-                <Typography fontWeight={600} lineHeight={'24px'} fontSize={'16px'}>
-                  {t('filter_dialog.reset.label')}
-                </Typography>
-              </Button>
+              <CheckAccess id={'products-all-table'}>
+                <Button
+                  sx={{ bgcolor: `${theme.palette.background.gray} !important`, height: 48, border: '1px solid #ECEDF2' }}
+                  fullWidth
+                  color='secondary'
+                  variant='contained'
+                  onClick={resetTableHeaders}
+                >
+                  <Typography fontWeight={600} lineHeight={'24px'} fontSize={'16px'}>
+                    {t('filter_dialog.reset.label')}
+                  </Typography>
+                </Button>
+              </CheckAccess>
               <Button sx={{ height: 48 }} onClick={() => handleApply()} fullWidth variant='contained' type='submit'>
                 {t('filter_dialog.save.label')}
               </Button>

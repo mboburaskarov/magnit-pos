@@ -251,15 +251,18 @@ export default function ProductsPage() {
             </CheckAccess>
           </Box>
           <Box display={'flex'} alignItems={'center'}>
-            <Box>
-              <ColumnsFilterButtonForAll
-                title={t('ag_grid.table_setting.label')}
-                columns={tableColumns}
-                isCatalog={false}
-                resetTableHeader={resetTableHeader}
-                changeColumnSequence={changeColumnSequence}
-              />
-            </Box>
+            <CheckAccess id={'products-all-table'}>
+              <Box>
+                <ColumnsFilterButtonForAll
+                  title={t('ag_grid.table_setting.label')}
+                  columns={tableColumns}
+                  isCatalog={false}
+                  routeString={routeString}
+                  resetTableHeader={resetTableHeader}
+                  changeColumnSequence={changeColumnSequence}
+                />
+              </Box>
+            </CheckAccess>
             <CheckAccess id={'product-create'}>
               <Box minWidth={156}>
                 <Button
@@ -280,6 +283,7 @@ export default function ProductsPage() {
         <Box>
           <AgGridTable
             id='products-main-table'
+            alwaysShowHorizontalScroll={true}
             tableSettings
             columns={tableColumns}
             data={productsList?.data?.data?.data || []}
