@@ -90,6 +90,12 @@ export const navbatRouteData = [
         href: '/settings/profile',
       },
       {
+        label: 'Компания',
+        active: '/settings/company/*',
+        id: '91',
+        href: '/settings/company',
+      },
+      {
         label: 'navbar.vendors',
         id: '92',
         active: '/settings/vendors/*',

@@ -196,7 +196,8 @@ export default function AllSalesPage() {
         <Box>
           <AgGridTable
             id='products-main-table'
-            download={() => allSalesExcelReport(salesListFilter)}
+            downloadByFilter={() => allSalesExcelReport(salesListFilter)}
+            fullDownload={() => allSalesExcelReport({ ...salesListFilter, limit: 1000000 })}
             isDownloading={isallSalesExcelReport}
             tableSettings
             columns={tableColumns}

@@ -122,6 +122,18 @@ export default function DashboarPage() {
         count: total_store_count,
         percent: 20,
       },
+      {
+        title: t('branches'),
+        icon: <VendorsIcon />,
+        count: total_store_count,
+        percent: 20,
+      },
+      {
+        title: t('branches'),
+        icon: <VendorsIcon />,
+        count: total_store_count,
+        percent: 20,
+      },
     ]
   }
   const tableColumns = tableHeaderSelector({
@@ -169,7 +181,7 @@ export default function DashboarPage() {
               {OrdersStatistics(get(countStats, 'data.data', {}))
                 ?.filter((el) => (check ? el : el.title !== 'Общая сумма заказов'))
                 ?.map((el, ind) => (
-                  <Grid item xs={12} xl={3} sm={6} md={6} lg={6} gap={0} pb={'20px'} spacing={2}>
+                  <Grid item xs={12} xl={4} sm={6} md={6} lg={6} gap={0} pb={'20px'} spacing={2}>
                     <DashboardInfoBox key={ind} {...el} />
                   </Grid>
                 ))}
@@ -193,8 +205,7 @@ export default function DashboarPage() {
           </Grid>
         </Grid>
         <Box mt={4} columnGap={3} display='inline-flex'>
-          <DashboardTopClients sortBy={sortBy} data={get(topStores, 'data.data')} />
-          <DashboardTopProducts sortBy={sortBy} data={get(topStores, 'data.data')} />
+          <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
           <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
         </Box>
         <Box sx={{ border: '1px solid #A4A5AB33', borderRadius: '32px', mt: '32px', p: '20px' }}>

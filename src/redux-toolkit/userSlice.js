@@ -7,6 +7,7 @@ const userData = createSlice({
     last_name: 'Unknown',
     type: 'SUPER_ADMIN',
     phone: '',
+    companyID: '',
     id: 'undefined',
     role_actions: [],
     store: [],
@@ -18,6 +19,7 @@ const userData = createSlice({
       state.photo = action.payload.photo
       state.type = action.payload.role_type
       state.phone = action.payload.phone
+      state.companyID = action.payload.companyID
       state.id = action.payload.id
       state.store = action.payload.store
       state.role_actions = action.payload.permissions

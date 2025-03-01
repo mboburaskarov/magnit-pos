@@ -255,7 +255,6 @@ function ConflictDialog({ open, setOpen, conflictList, setBarcode, refetch, manu
     'Enter',
     (event) => {
       if (document.activeElement.id?.length === 36) {
-        console.log(document.activeElement.id)
         addScanById({ id: document.activeElement.id, import_id: id, count: manualNumber })
       }
     },

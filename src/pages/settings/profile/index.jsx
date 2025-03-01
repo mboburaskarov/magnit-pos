@@ -108,7 +108,7 @@ const Profile = () => {
   return (
     <FormProvider {...methods}>
       <Box display='flex' alignItems='center' justifyContent='center'>
-        <Box width='calc(100% - 60px)'>
+        <Box width='calc(100% - 360px)'>
           <Box height={'24px'} />
 
           <Typography variant='h4' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} mb={'10px'}>
@@ -142,6 +142,7 @@ const Profile = () => {
               <TextField disabled={!isEditMode} required fullWidth name='last_name' placeholder='Enter last name' />
             </Box>
           </Box>
+
           <CheckAccess id={'profile-update-password'}>
             <Typography variant='h5' fontWeight={700} mb={3}>
               Безопасность

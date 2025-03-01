@@ -3,6 +3,9 @@ import { authRequest, eposRequest, fileUploadRequest, request, requestEXCEL, yan
 import * as qs from 'qs'
 
 export const requests = {
+  /// company
+  changeComanyInfo: ({ id, data }) => request.put(`v1/company/${id}`, data),
+  getComanyInfo: () => request.get(`v1/company/info`),
   //
   dashboradChart: (filter) => request.get(`v1/dashboard/chart${qs.stringify(filter, { addQueryPrefix: true })}`),
   dashboradCountStats: (filter) => request.get(`v1/dashboard/count-stats${qs.stringify(filter, { addQueryPrefix: true })}`),

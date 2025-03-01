@@ -324,7 +324,15 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
             noMarginSvg
             placement='bottom-end'
             buttonLabel={
-              <Box className='cash_register_icon_wrapper' bgcolor={'#F8F8F9'} padding={'10px'} width={'44px'} height={'44px'} borderRadius={'50%'}>
+              <Box
+                sx={{ '&:hover': { bgcolor: 'transparent !important' } }}
+                className='cash_register_icon_wrapper'
+                bgcolor={'#F8F8F9'}
+                padding={'10px'}
+                width={'44px'}
+                height={'44px'}
+                borderRadius={'50%'}
+              >
                 <FinanceAndPaymentIcon />
               </Box>
             }

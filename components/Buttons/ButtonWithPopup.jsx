@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles'
 import { useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { LoadingButton } from '@mui/lab'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,6 +70,7 @@ const ButtonWithPopup = ({
   popperData,
   buttonLabel,
   noArrow,
+  popperStyle,
   size,
   PopperContent,
   popperContentProps,
@@ -114,7 +116,7 @@ const ButtonWithPopup = ({
       <Backdrop className={classes.backdrop} open={!!anchorEl} onClick={handleClose} />
 
       {/* Popper Content */}
-      <Popper id={id} open={!!anchorEl} anchorEl={anchorEl} className={classes.popper} placement={placement || 'bottom-end'}>
+      <Popper sx={popperStyle} id={id} open={!!anchorEl} anchorEl={anchorEl} className={classes.popper} placement={placement || 'bottom-end'}>
         <ClickAwayListener onClickAway={handleClose}>
           <Box>
             {PopperContent ? (

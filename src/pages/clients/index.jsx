@@ -213,7 +213,8 @@ export default function ClientsPage() {
           <AgGridTable
             id='clients-main-table'
             tableSettings
-            download={() => clientsExcelReport(clientsListFilter)}
+            fullDownload={() => clientsExcelReport({ ...clientsListFilter, limit: 1000000 })}
+            downloadByFilter={() => clientsExcelReport(clientsListFilter)}
             isDownloading={isclientsExcelReport}
             columns={tableColumns}
             totalCount={clientsList?.data?.data?._meta?.total_count || 0}

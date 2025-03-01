@@ -62,7 +62,6 @@ export default function MainDetails({ clientData, openDrawer }) {
       setValue('store_id', getOptionsSchema(get(employeeInfo, 'data.data.store', []), Object, 'name'))
     }
   }, [employeeInfo])
-  console.log(dayjs('1960.01.01').format(''))
 
   return (
     <Box mt={'24px'}>

@@ -34,7 +34,8 @@ const AgGridSimpleTable = ({
   offsetCount: controlledOffsetCount,
   pagination = true,
   eventMessages,
-  download,
+  fullDownload,
+  downloadByFilter,
   isDownloading,
   isDataLoading,
   fullInfoAboutCurrentPage = false,
@@ -214,11 +215,12 @@ const AgGridSimpleTable = ({
             changeOffset={changeOffset}
             offsetIndex={offsetIndex}
             offsetQuery={offsetQuery}
+            fullDownload={fullDownload}
+            downloadByFilter={downloadByFilter}
             resetTable={resetTable}
             isRefreshing={isRefreshing}
             fullInfoAboutCurrentPage={fullInfoAboutCurrentPage}
             isDownloading={isDownloading}
-            download={download}
             totalCount={totalCount}
             offsetSize={offsetSize}
             setOffsetSize={setOffsetSize}

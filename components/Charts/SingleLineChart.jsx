@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
 import { Skeleton } from '@mui/material'
-import { XAxis, YAxis, CartesianGrid, Tooltip, Bar, BarChart, ResponsiveContainer } from 'recharts'
+import { XAxis, YAxis, CartesianGrid, Tooltip, Bar, BarChart, ResponsiveContainer, AreaChart, Area } from 'recharts'
 import CustomizedAxisTick from './ChartAxisTick'
 import ChartPlaceholder from './ChartPlaceholder'
 import ChartSlider from './ChartSlider'
@@ -26,7 +26,7 @@ const detailingOptions = [
 const purpleColor = '#a811d6'
 const blueColor = '#0F6FD7'
 const newColor = '#FE5000' // The color you want to use
-
+const orangeColor = '#FE5000'
 const Body = ({ children, isLoading, isEmpty }) => (
   <Box
     position='relative'
@@ -141,37 +141,43 @@ export default function SingleBarChart({
             beforeContent=''
           />
         </Box>
-        <Body id={id + 'body'} isLoading={isLoading} isEmpty={data?.values < 1}>
-          <ResponsiveContainer id={id} width='100%' height={350}>
-            <BarChart height={300} data={chartData.slice(sliderValue[0], sliderValue[1])}>
-              <CartesianGrid strokeDasharray='0' vertical={false} strokeWidth={2} stroke={paletteLight.gray[100]} strokeLinecap='round' />
+        <Body isLoading={isLoading} isEmpty={!chartData.length}>
+          <ResponsiveContainer width='100%' height={350}>
+            <AreaChart data={chartData.slice(sliderValue[0], sliderValue[1])}>
+              <defs>
+                <linearGradient id='gradient-fill' x1='0' y1='0' x2='0' y2='1'>
+                  <stop offset='0%' stopColor={orangeColor} stopOpacity={0.3} />
+                  <stop offset='100%' stopColor={orangeColor} stopOpacity={0.1} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray='3 3' vertical={false} />
               <XAxis
                 dataKey='start_date'
                 tickLine={false}
                 axisLine={false}
                 tick={<CustomizedAxisTick detalization={detalization} />}
-                tickFormatter={(value) =>
-                  detalization?.value === 'hour' || detalization?.value === '30min' ? getTimeFromDateTime(value) : getDateFromDateTime(value)
-                }
+                tickFormatter={(value) => getDateFromDateTime(value)}
               />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                tickCount={sortBy === 'COUNT' ? maxValue + 1 : 5}
-                tickFormatter={(value) => getShorterNumber(value, 0)}
-              />
+              <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => getShorterNumber(value, 0)} />
               <Tooltip
                 content={<DashboardTooltip measurmentUnit={measurmentUnit} detalization={detalization} />}
-                position={{ x: 100, y: -150 }}
+                // position={{ x: 100, y: -150 }}
                 wrapperStyle={{ zIndex: 11 }}
               />
-              <Bar
+              <Area
+                type='monotone'
                 dataKey={dataKey || 'value'}
-                fill={newColor} // Set the color of the bars to #FE5000
-                radius={[30, 30, 30, 30]} // Rounded bars
-                maxBarSize={30} // Max bar width
+                stroke={orangeColor}
+                fill='url(#gradient-fill)'
+                strokeWidth={3}
+                activeDot={{
+                  r: 6,
+                  stroke: orangeColor,
+                  strokeWidth: 2,
+                  fill: '#fff',
+                }}
               />
-            </BarChart>
+            </AreaChart>
           </ResponsiveContainer>
           <ChartSlider value={sliderValue} onChange={handleSliderChange} min={0} max={chartData?.length} />
         </Body>

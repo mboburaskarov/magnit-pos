@@ -143,7 +143,6 @@ export default function ImportWithCheckingPage() {
     if (barcode === '') return
     // addScan({ barcode, count: Number(manualNumber), import_id: id })
   }
-  console.log(appType)
 
   return (
     <LoadingContainer readyState={!isfinishImportChecking}>

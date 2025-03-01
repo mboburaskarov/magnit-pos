@@ -311,7 +311,8 @@ export default function VendorsPage() {
             id='products-main-table'
             tableSettings
             columns={tableColumns}
-            download={() => vendorsExcelReport(vendorsListFilter)}
+            downloadByFilter={() => vendorsExcelReport(vendorsListFilter)}
+            fullDownload={() => vendorsExcelReport({ ...vendorsListFilter, limit: 1000000 })}
             isDownloading={isvendorsExcelReport}
             data={vendorsList?.data?.data?.data || []}
             totalCount={vendorsList?.data?.data?._meta?.total_count || 0}

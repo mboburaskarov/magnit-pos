@@ -57,11 +57,11 @@ export default function DashboardTooltip({ active, payload, label, isMultiLine, 
       <div className={classes.root}>
         <div className={classes.label}>
           <Typography>
-            {detalization.value === 'hour' || detalization.value === '30min'
+            {detalization?.value === 'hour' || detalization?.value === '30min'
               ? label
-              : detalization.value === 'week'
+              : detalization?.value === 'week'
               ? `${dayjs(label, 'DD.MM.YYYY | HH:mm').format('DD.MM.YYYY')} - ${dayjs(label, 'DD.MM.YYYY | HH:mm').day(7).format('DD.MM.YYYY')}`
-              : detalization.value === 'month'
+              : detalization?.value === 'month'
               ? `${dayjs(label, 'DD.MM.YYYY | HH:mm').format('DD.MM.YYYY')} - ${dayjs(label, 'DD.MM.YYYY | HH:mm').endOf('month').format('DD.MM.YYYY')}`
               : dayjs(label, 'DD.MM.YYYY | HH:mm').format('DD.MM.YYYY')}
           </Typography>
