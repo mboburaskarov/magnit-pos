@@ -38,7 +38,7 @@ const CompanyPage = () => {
     methods.setValue('name', get(companyInfo, 'data.data.name'))
     // methods.setValue('country', get(companyInfo, 'data.data.country'))
     methods.setValue('email', get(companyInfo, 'data.data.email'))
-    methods.setValue('phone', get(companyInfo, 'data.data.phone').replace('998', ''))
+    methods.setValue('phone', get(companyInfo, 'data.data.phone')?.replace('998', ''))
     methods.setValue('legal_name', get(companyInfo, 'data.data.legal_name'))
     methods.setValue('legal_address', get(companyInfo, 'data.data.legal_address'))
     methods.setValue('postal_code', get(companyInfo, 'data.data.postal_code'))
