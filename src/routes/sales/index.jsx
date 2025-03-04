@@ -23,10 +23,7 @@ const salesRoutes = {
       path: 'cash-shift-detail',
       children: [{ path: ':id', element: <CardShiftDetails /> }],
     },
-    {
-      path: 'cash-shifts',
-      children: [{ path: '', element: <CasShiftsPage /> }],
-    },
+
     {
       path: 'all-sales',
       children: [

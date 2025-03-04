@@ -1,21 +1,19 @@
-import ButtonWithPopup from '../../Buttons/ButtonWithPopup'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarDays } from '@fortawesome/free-solid-svg-icons'
 import { Box } from '@mui/material'
-import DateFilterDrawerSingle from './DateFilterDrawerSingle'
-import { useEffect, useState, useCallback } from 'react'
 import dayjs from 'dayjs'
-import { useLocation, useNavigate } from 'react-router-dom'
-import * as qs from 'qs'
-import { useQueryParams } from '../../../src/hooks/useQueryParams'
-import { calculateDateDifference } from '../../../utils/calculateDateDifference'
-import ArrowDown from '../../../src/assets/icons/ArrowDown'
+import 'dayjs/locale/ru' // Russian locale for correct week start
 import isBetween from 'dayjs/plugin/isBetween'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
-import weekOfYear from 'dayjs/plugin/weekOfYear'
 import localeData from 'dayjs/plugin/localeData'
-import 'dayjs/locale/ru' // Russian locale for correct week start
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+import * as qs from 'qs'
+import { useCallback, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import ArrowDown from '../../../src/assets/icons/ArrowDown'
+import { useQueryParams } from '../../../src/hooks/useQueryParams'
+import { calculateDateDifference } from '../../../utils/calculateDateDifference'
+import ButtonWithPopup from '../../Buttons/ButtonWithPopup'
+import DateFilterDrawerSingle from './DateFilterDrawerSingle'
 
 dayjs.extend(isBetween)
 dayjs.extend(isSameOrAfter)
@@ -71,18 +69,17 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
   useEffect(() => {
     if (values?.start_date && values?.end_date) {
       setDateState({
-        from: dayjs(values?.start_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.start_date, 'DD.MM.YYYY').toDate() : today,
-        to: dayjs(values?.end_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.end_date, 'DD.MM.YYYY').toDate() : today,
-        enteredTo: dayjs(values?.end_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.end_date, 'DD.MM.YYYY').toDate() : today,
+        from: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
+        to: dayjs(values?.end_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.end_date, 'YYYY-MM-DD').toDate() : today,
+        enteredTo: dayjs(values?.end_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.end_date, 'YYYY-MM-DD').toDate() : today,
       })
-
       setCustomDateRangeSelected(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
       setselectedId(customDateRanges().find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today')
     } else if (values?.start_date) {
       setDateState({
-        from: dayjs(values?.start_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.start_date, 'DD.MM.YYYY').toDate() : today,
-        to: dayjs(values?.start_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.start_date, 'DD.MM.YYYY').toDate() : today,
-        enteredTo: dayjs(values?.start_date, 'DD.MM.YYYY').isValid() ? dayjs(values?.start_date, 'DD.MM.YYYY').toDate() : today,
+        from: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
+        to: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
+        enteredTo: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
       })
       setCustomDateRangeSelected(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
       setselectedId(customDateRanges().find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today')
@@ -106,6 +103,8 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
     [dateState, location.pathname, navigate, startDateQuery, endDateQuery, values]
   )
   const getLabelForDateRange = (startDate, endDate) => {
+    console.log(startDate, endDate)
+
     const today = dayjs()
     const yesterday = today.subtract(1, 'day')
     const start = dayjs(startDate)

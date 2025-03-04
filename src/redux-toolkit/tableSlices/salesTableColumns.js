@@ -17,7 +17,7 @@ const columns = [
     field: 'document',
     hide: false,
     minWidth: 70,
-    width: 180,
+    flex: 1,
   },
 
   {

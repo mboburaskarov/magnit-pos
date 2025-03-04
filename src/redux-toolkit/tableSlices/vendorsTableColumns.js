@@ -11,7 +11,7 @@ const columns = [
     field: 'checkbox',
     hide: false,
     minWidth: 45,
-    width: 45,
+    flex: 1,
   },
   {
     field: 'public_id',

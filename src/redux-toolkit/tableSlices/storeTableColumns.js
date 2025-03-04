@@ -10,8 +10,8 @@ const columns = [
   {
     field: 'name',
     hide: false,
-    minWidth: 70,
-    width: 200,
+    minWidth: 380,
+    flex: 1,
   },
   {
     field: 'detailed_name',

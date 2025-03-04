@@ -4,8 +4,8 @@ const columns = [
   {
     field: 'name',
     hide: false,
-    minWidth: 150,
-    width: 400,
+    minWidth: 400,
+    flex: 1,
   },
 
   {

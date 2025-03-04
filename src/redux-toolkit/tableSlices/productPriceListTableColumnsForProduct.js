@@ -10,8 +10,8 @@ const columns = [
   {
     field: 'name',
     hide: false,
-    minWidth: 70,
-    width: 194,
+    minWidth: 194,
+    flex: 1,
   },
   {
     field: 'supply_price',

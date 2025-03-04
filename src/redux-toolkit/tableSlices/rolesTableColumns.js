@@ -23,8 +23,8 @@ const columns = [
   {
     field: 'name',
     hide: false,
-    minWidth: 70,
-    width: 250,
+    minWidth: 250,
+    flex: 1,
   },
   {
     field: 'permission_count',

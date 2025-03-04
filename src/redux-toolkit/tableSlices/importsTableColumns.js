@@ -17,8 +17,8 @@ const columns = [
   {
     field: 'document_number',
     hide: false,
-    minWidth: 70,
-    width: 200,
+    minWidth: 200,
+    flex: 1,
   },
   {
     field: 'store_name',

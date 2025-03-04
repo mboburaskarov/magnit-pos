@@ -10,8 +10,8 @@ const columns = [
   {
     field: 'public_id',
     hide: false,
-    minWidth: 60,
-    width: 130,
+    minWidth: 130,
+    flex: 1,
   },
 
   {

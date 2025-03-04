@@ -23,8 +23,8 @@ const columns = [
   {
     field: 'fish',
     hide: false,
-    minWidth: 70,
-    width: 200,
+    minWidth: 180,
+    flex: 1,
   },
   {
     field: 'phone_number',

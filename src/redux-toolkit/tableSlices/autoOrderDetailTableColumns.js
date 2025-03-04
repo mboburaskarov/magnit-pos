@@ -10,8 +10,8 @@ const columns = [
   {
     field: 'product_name',
     hide: false,
-    minWidth: 70,
-    width: 200,
+    minWidth: 200,
+    flex: 1,
   },
 
   {

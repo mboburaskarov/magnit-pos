@@ -31,11 +31,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
         ...el,
         headerName: 'ID',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box sx={{ '& p': { color: 'orange.500' }, cursor: 'pointer' }} onClick={() => setOpenSaleDrawer({ id: p.data.id })}>
-            <SimpleText {...p} type='operation_id' />
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='operation_id' />),
       }
     }
     if (el.field === 'cashbox_name') {
@@ -55,6 +51,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
         ...el,
         headerName: 'Магазин',
         colId: el.field,
+
         cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),
       }
     }

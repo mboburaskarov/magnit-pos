@@ -16,8 +16,8 @@ const columns = [
   {
     field: 'name',
     hide: false,
-    minWidth: 60,
-    width: 280,
+    minWidth: 280,
+    flex: 1,
   },
   {
     field: 'store_name',

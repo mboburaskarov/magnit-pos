@@ -10,8 +10,8 @@ const columns = [
   {
     field: 'amount',
     hide: false,
-    minWidth: 70,
-    width: 180,
+    minWidth: 180,
+    flex: 1,
   },
   {
     field: 'expense_amount',

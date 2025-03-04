@@ -3,6 +3,7 @@ import dashboardRoutes from './dashboard'
 import productsRoutes from './products'
 import productsCreateRoutes from './products/product-create'
 import salesRoutes from './sales'
+import salesWithHeaderRoutes from './sales/withHeader'
 import settingsRoutes from './settings'
 import rolesCreateRoutes from './settings/role-create'
 import userRoutes from './users'
@@ -11,6 +12,7 @@ const routes = [
   { ...dashboardRoutes },
   { ...authRoutes },
   { ...salesRoutes },
+  { ...salesWithHeaderRoutes },
   { ...productsRoutes },
   { ...productsCreateRoutes },
   { ...rolesCreateRoutes },

@@ -10,8 +10,8 @@ const columns = [
   {
     field: 'cashbox_name',
     hide: false,
-    minWidth: 60,
-    width: 250,
+    minWidth: 250,
+    flex: 1,
   },
   {
     field: 'store_name',

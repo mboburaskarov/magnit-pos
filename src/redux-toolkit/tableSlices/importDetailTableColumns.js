@@ -11,8 +11,8 @@ const columns = [
   {
     field: 'name',
     hide: false,
-    minWidth: 70,
-    width: 200,
+    minWidth: 200,
+    flex: 1,
     resizable: true,
     pinned: 'left',
   },

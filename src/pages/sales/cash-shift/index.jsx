@@ -17,6 +17,7 @@ import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/cashBoxShiftsTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
+import MiniDashboard from './miniDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function CasShiftsPage() {
@@ -93,12 +94,6 @@ export default function CasShiftsPage() {
     isFetching: isFetchingcashShiftsList,
     refetch,
   } = useQuery(['cashShiftsList', cashShiftsListFilter], () => requests.getCashBoxShiftsList(cashShiftsListFilter))
-  const {
-    data: saleStatsData,
-    isLoading: saleStatsDataLoading,
-    isFetching: isFetchingsaleStatsData,
-    refetch: refetchSaleStats,
-  } = useQuery(['saleStatsData', cashShiftsListFilter], () => requests.getAllSaleStats(cashShiftsListFilter))
 
   useEffect(() => {
     refetch()
@@ -126,6 +121,7 @@ export default function CasShiftsPage() {
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           Кассовые смены
         </Typography>
+        <MiniDashboard />
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box
