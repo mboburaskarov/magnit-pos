@@ -571,7 +571,6 @@ export default function ProductBody({ productData = null }) {
           {t('create_new_product.additional_information.category')}
         </SectionTitle>
         <CategoriesTree />
-
         <Box height={'30px'} />
         <TextField borderRadius={'20px'} required multiline fullWidth name='description' label='Описание' placeholder='Введите описание' />
       </Box>

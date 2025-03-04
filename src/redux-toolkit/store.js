@@ -15,6 +15,7 @@ import { vendorsTableColumnsSlice } from './tableSlices/vendorsTableColumns'
 import { userSlice } from './userSlice'
 import { importWithCheckingTableColumnsSlice } from './tableSlices/importWithCheckingTableColumns'
 import { cardShiftTableColumnsSlice } from './tableSlices/cardShiftTableColumns'
+import { cashBoxShiftsTableColumnsSlice } from './tableSlices/cashBoxShiftsTableColumns'
 import { cashboxTableColumnsSlice } from './tableSlices/cashboxTableColumns'
 import { autoOrderTableColumnsSlice } from './tableSlices/autoOrderTableColumns'
 import { autoOrderDetailSlice } from './tableSlices/autoOrderDetailTableColumns'
@@ -23,7 +24,7 @@ import { productPriceListTableColumnsForProductSlice } from './tableSlices/produ
 // Define your migration function here
 const migrations = {
   // Example migration
-  150: (state) => {
+  153: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -41,7 +42,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 150, // Current version of the persisted state
+  version: 153, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -59,6 +60,7 @@ const reducer = combineReducers({
   importDetailsColumns: importDetailsTableColumnsSlice,
   importWithCheckingColumns: importWithCheckingTableColumnsSlice,
   salesTableColumns: salesTableColumnsSlice,
+  cashBoxShiftsTableColumns: cashBoxShiftsTableColumnsSlice,
   vendorsTableColumns: vendorsTableColumnsSlice,
   cashboxTableColumns: cashboxTableColumnsSlice,
   clientTableColumns: clientTableColumnsSlice,

@@ -128,9 +128,6 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
     nodes?.map((node) => {
       const { id: value, name: label, description, children } = node
       const checked = selected.includes(value)
-      // || parents.some((parent) => selected.includes(parent))
-      // console.log(checked, selected, value, label)
-
       if (children && children.length > 0) {
         const indeterminate = isIndeterminate({ tree, selected, node: value })
         const treeItemLabel = createTreeItemLabel({

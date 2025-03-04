@@ -17,15 +17,13 @@ export const filterNavData = (routes, urls, user_data) => {
   }
 
   return routes.reduce((acc, route) => {
-    const parentMatches = urls.includes(route.href)
+    const parentMatches = urls.includes(route.href) || route.href === '/dashboard'
     const matchingChildren =
       route.children?.filter((child) => {
         const childHref = child.href.replace(route.href, '')
-        // console.log(childHref, urls)
 
         return urls.includes(childHref) || urls.some((url) => url.startsWith(childHref + '/'))
       }) || []
-    // console.log(matchingChildren, route)
 
     if (parentMatches || matchingChildren.length > 0) {
       acc.push({
@@ -75,8 +73,6 @@ export default function Routes() {
     return <LoadingContainer />
   }
   const filterRoutes = (routes, urls, isChild = null) => {
-    // console.log(urls)
-
     if (user_data?.type === 'SUPERADMIN') {
       return routes
     }

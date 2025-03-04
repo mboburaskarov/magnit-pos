@@ -340,7 +340,7 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
               {
                 title: 'Закрыть кассу',
                 icon: <UnlockIcon />,
-                clickHandler: () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`),
+                clickHandler: () => navigate(`/sales/cash-shift-detail/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`),
               },
               { title: 'Обмен сменами', icon: <FinanceAndPaymentIcon />, soon: false, clickHandler: () => setIsOpenChangeShift(true) },
             ]}

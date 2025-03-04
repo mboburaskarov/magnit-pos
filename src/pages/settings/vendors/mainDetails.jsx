@@ -7,15 +7,14 @@ import InputPhone from '../../../../components/Inputs/PhoneNumber'
 import LazySelect from '../../../../components/Select/LazySelect'
 
 import { makeStyles } from '@mui/styles'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useQuery } from 'react-query'
 import InputDatePicker from '../../../../components/Inputs/InputDatePicker'
 import TextField from '../../../../components/Inputs/TextField'
 import Label from '../../../../components/Label'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import { requests } from '../../../../utils/requests'
 import getOptionsSchema from '../../../../utils/getOptionsSchema'
-import dayjs from 'dayjs'
+import { requests } from '../../../../utils/requests'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -153,22 +152,11 @@ export default function MainDetails({ clientData, openDrawer }) {
             request={requests.getAllStores}
             filters={{ limit: 10 }}
             control={control}
-            // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-            // uncontrolled
             getOptionLabel={(option) => {
               return <Typography color='grey.600'>{option.name}</Typography>
             }}
             filterOption={() => true}
           />
-          {/* <SelectSimple
-            placeholder={t('store.placeholder')}
-            disabled={false}
-            white
-            required
-            isClearable={false}
-            options={get(storesList, 'data.data.data')}
-            name='store'
-          /> */}
         </Grid>
         <Grid item xs={6}>
           <Label mb='4px'>{t('role')}</Label>
@@ -183,23 +171,11 @@ export default function MainDetails({ clientData, openDrawer }) {
             request={requests.getAllRoles}
             filters={{ limit: 10 }}
             control={control}
-            // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-            // uncontrolled
             getOptionLabel={(option) => {
               return <Typography color='grey.600'>{option.name}</Typography>
             }}
             filterOption={() => true}
           />
-          {/* <SelectSimple
-            required
-            placeholder={t('role.placeholder')}
-            disabled={false}
-            white
-            isMulti
-            isClearable={false}
-            options={get(rolesList, 'data.data.data', []).map((el) => ({ value: el.id, name: el.name, id: el.id }))}
-            name='role'
-          /> */}
         </Grid>
       </Grid>
 

@@ -251,6 +251,8 @@ function NewSale() {
     }
   }
   useEffect(() => {
+    console.log(discount)
+
     setInputDiscount(0)
   }, [discount])
   const focusUnitInput = (event) => {
@@ -463,7 +465,7 @@ function NewSale() {
     enableOnFormTags: true,
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-  useHotkeys(['X', 'x', 'ч'], () => navigate(`/sales/cash-shift/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`), {
+  useHotkeys(['X', 'x', 'ч'], () => navigate(`/sales/cash-shift-detail/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
   useHotkeys(['Q', 'q', 'й'], () => size(get(cartItemsList, 'data.data.data')) !== 0 && setIsCreateOpenDraft(true), {
@@ -487,7 +489,7 @@ function NewSale() {
 
   // Function to handle input changes
   const changeDiscountDebounce = (value) => {
-    if (inputDiscount !== value) setInputDiscount(0)
+    // if (inputDiscount !== value) setInputDiscount(0)
     setDebouncedDiscount(value)
   }
 

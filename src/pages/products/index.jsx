@@ -206,49 +206,45 @@ export default function ProductsPage() {
         </Box>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
-            <CheckAccess id={'all-products-search'}>
-              <Box
-                width='100%'
+            <Box
+              width='100%'
+              sx={{
+                '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+                '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                  background: 'transparent',
+                  width: '400px',
+                  height: 48,
+                },
+              }}
+            >
+              <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
+            </Box>
+            <Box minWidth={113} ml={'16px'}>
+              <Button
                 sx={{
-                  '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                  '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                    background: 'transparent',
-                    width: '400px',
-                    height: 48,
+                  height: '48px',
+                  padding: 0,
+                  bgcolor: '#fff',
+                  border: '1px solid #ECEDF2',
+                  color: 'dark.500',
+                  fontWeight: '500',
+                  fontSize: '16px',
+                  lineHeight: '24px',
+                  '& span': {
+                    mr: '12px',
                   },
                 }}
+                fullWidth
+                startIcon={<FilterMenuIcon color={theme.palette.black} />}
+                variant='contained'
+                color='secondary'
+                onClick={() => setFilterMenu((prev) => !prev)}
               >
-                <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
-              </Box>
-            </CheckAccess>
-            <CheckAccess id={'all-products-filter'}>
-              <Box minWidth={113} ml={'16px'}>
-                <Button
-                  sx={{
-                    height: '48px',
-                    padding: 0,
-                    bgcolor: '#fff',
-                    border: '1px solid #ECEDF2',
-                    color: 'dark.500',
-                    fontWeight: '500',
-                    fontSize: '16px',
-                    lineHeight: '24px',
-                    '& span': {
-                      mr: '12px',
-                    },
-                  }}
-                  fullWidth
-                  startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                  variant='contained'
-                  color='secondary'
-                  onClick={() => setFilterMenu((prev) => !prev)}
-                >
-                  <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                    {t('filter_dialog.label')}
-                  </Typography>
-                </Button>
-              </Box>
-            </CheckAccess>
+                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
+                  {t('filter_dialog.label')}
+                </Typography>
+              </Button>
+            </Box>
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <CheckAccess id={'products-all-table'}>

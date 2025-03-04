@@ -1,36 +1,25 @@
-import { useMutation, useQuery } from 'react-query'
-import { requests } from '../../../utils/requests'
-import { Box, Grid, Typography } from '@mui/material'
-import LoadingContainer from '../../../components/LoadingContainer'
-import OrderNewIcon from '../../assets/icons/OrderNewIcon'
-import DashboardInfoBox from './DashboardInfoBox'
-import SingleLineChart from '../../../components/Charts/SingleLineChart'
-import { useEffect, useMemo, useState } from 'react'
-import DashboardTopSales from './DashboardTopSales'
-import DashboardTopClients from './DashboardTopClients'
-import DashboardTopProducts from './DashboardTopProducts'
-import DashboardVendorsMap from './DashboardVendorsMap'
-import DashboardTopCategories from './DashboardTopCategories'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { calculatePercentage } from '../../../utils/calculatePercentage'
-import getPriceShorterNumber from '../../../utils/getShorterPriceNumber'
-import { getDetaling } from '../../../utils/getDetaling'
-import DashboardHeader from './DashboardHeader'
+import { Box, Grid } from '@mui/material'
 import dayjs from 'dayjs'
 import isoWeek from 'dayjs/plugin/isoWeek'
-import dataTypeFilter from '../../../utils/dataTypeFilter'
-import { useSelector } from 'react-redux'
-import RevenueIcon from '../../assets/icons/RevenueIcon'
-import ProductsIcon from '../../assets/icons/ProductsIcon'
-import OrdersIcon from '../../assets/icons/OrdersIcon'
-import VendorsIcon from '../../assets/icons/VendorsIcon'
-import SingleBarChart from '../../../components/Charts/SingleLineChart'
-import TotalOrdersByCity from '../../../components/Charts/SingleBarChart'
-import AgGridTable from '../../../components/AgGridTable/AgGridTable'
-import tableHeaderSelector from './tableHeaderSelector'
-import { t } from 'i18next'
-import { useTranslation } from 'react-i18next'
 import { get } from 'lodash'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import TotalOrdersByCity from '../../../components/Charts/SingleBarChart'
+import SingleLineChart from '../../../components/Charts/SingleLineChart'
+import LoadingContainer from '../../../components/LoadingContainer'
+import dataTypeFilter from '../../../utils/dataTypeFilter'
+import { getDetaling } from '../../../utils/getDetaling'
+import { requests } from '../../../utils/requests'
+import OrdersIcon from '../../assets/icons/OrdersIcon'
+import ProductsIcon from '../../assets/icons/ProductsIcon'
+import RevenueIcon from '../../assets/icons/RevenueIcon'
+import VendorsIcon from '../../assets/icons/VendorsIcon'
+import { useQueryParams } from '../../hooks/useQueryParams'
+import DashboardHeader from './DashboardHeader'
+import DashboardInfoBox from './DashboardInfoBox'
+import tableHeaderSelector from './tableHeaderSelector'
 
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
@@ -181,7 +170,7 @@ export default function DashboarPage() {
               {OrdersStatistics(get(countStats, 'data.data', {}))
                 ?.filter((el) => (check ? el : el.title !== 'Общая сумма заказов'))
                 ?.map((el, ind) => (
-                  <Grid item xs={12} xl={4} sm={6} md={6} lg={6} gap={0} pb={'20px'} spacing={2}>
+                  <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'20px'} spacing={2}>
                     <DashboardInfoBox key={ind} {...el} />
                   </Grid>
                 ))}
@@ -207,26 +196,6 @@ export default function DashboarPage() {
         <Box mt={4} columnGap={3} display='inline-flex'>
           <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
           <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
-        </Box>
-        <Box sx={{ border: '1px solid #A4A5AB33', borderRadius: '32px', mt: '32px', p: '20px' }}>
-          <Typography fontWeight={600} fontSize={'26px'} pl={'6px'} pb={'20px'} py={'24px'} lineHeight={'32px'}>
-            {t('orders')}
-          </Typography>
-          <AgGridTable
-            id='orders-main-table'
-            tableSettings
-            columns={tableColumns}
-            offsetCount={offsetCount}
-            updaterAction={(newData) => {
-              if (newData) dispatch(updateTableHeader(newData))
-            }}
-            resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            status={status}
-            emptyTableText={{
-              title: 'Информация недоступна',
-              description: 'Если вы не можете найти искомую информацию, нажмите кнопку «Добавить новую» и введите необходимую информацию.',
-            }}
-          />
         </Box>
       </Box>
     </LoadingContainer>

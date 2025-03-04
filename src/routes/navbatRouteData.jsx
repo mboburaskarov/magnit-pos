@@ -64,9 +64,15 @@ export const navbatRouteData = [
       },
       {
         label: 'Все продажи',
-        active: '/sales*',
+        active: '/sales/all-sales*',
         id: '52',
         href: '/sales/all-sales',
+      },
+      {
+        label: 'Кассовые смены',
+        active: '/sales/cash-shifts*',
+        id: '55',
+        href: '/sales/cash-shifts',
       },
     ],
   },
