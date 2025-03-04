@@ -73,7 +73,7 @@ const CompanyPage = () => {
   return (
     <FormProvider {...methods}>
       <Box display='flex' alignItems='center' justifyContent='center'>
-        <Box width='calc(100% - 360px)'>
+        <Box width='calc(100% - 360px)' mb={'25px'}>
           <Box height={'24px'} />
 
           <Typography variant='h4' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} mb={'10px'}>

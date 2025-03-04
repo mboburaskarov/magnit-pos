@@ -143,7 +143,13 @@ export default function SerchedItem({
               borderRadius={'50%'}
               bgcolor={'#F8F8F9'}
               onClick={(e) => {
-                e.stopPropagation(), !openSimilar ? getAllSimilarStoreProducts(get(product, 'product_id')) : setOpenSimilar(false)
+                e.stopPropagation()
+                if (openSimilar) {
+                  setOpenSimilar(false)
+                } else {
+                  getAllSimilarStoreProducts(get(product, 'product_id'))
+                  setOpenSimilar(true)
+                }
               }}
             >
               {!openSimilar ? <ZoomTextIcon /> : <CloseIcon color='#000' />}
