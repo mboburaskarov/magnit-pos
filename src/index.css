@@ -196,6 +196,11 @@ div[role='row'][row-id='ag-grid-footer'] {
   width: 20px !important;
 }
 
+/* horizontal scroll */
+.ag-root .ag-body-horizontal-scroll {
+  display: none !important;
+}
+
 /* Track */
 .ag-root.ag-layout-normal,
 .ag-root.ag-layout-auto-height::-webkit-scrollbar-track {

@@ -313,6 +313,7 @@ const useStyles = makeStyles((theme) =>
         background: theme.palette.background.default,
         boxShadow: theme.boxShadow['16-8'],
       },
+
       '.ag-theme-alpine .ag-paging-panel': {
         borderColor: theme.palette.gray[200],
       },
