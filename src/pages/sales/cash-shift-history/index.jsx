@@ -18,14 +18,11 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 import MiniDashboard from './miniDashboard'
-import CheckAccess from '../../../../components/CheckAccess'
-import { useNavigate } from 'react-router-dom'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function CasShiftsPage() {
+export default function CashShiftHistoryPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
-  const navigate = useNavigate()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.cashBoxShiftsTableColumns)
   const { values } = useQueryParams()
@@ -55,7 +52,7 @@ export default function CasShiftsPage() {
     }
   }, [])
 
-  const cashShiftsListFilter = useMemo(() => {
+  const cashShiftHistoryListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
@@ -92,22 +89,22 @@ export default function CasShiftsPage() {
     values?.end_date,
   ])
   const {
-    data: cashShiftsList,
-    isLoading: cashShiftsListLoading,
-    isFetching: isFetchingcashShiftsList,
+    data: cashShiftHistoryList,
+    isLoading: cashShiftHistoryListLoading,
+    isFetching: isFetchingcashShiftHistoryList,
     refetch,
-  } = useQuery(['cashShiftsList', cashShiftsListFilter], () => requests.getCashBoxShiftsList(cashShiftsListFilter))
+  } = useQuery(['cashShiftHistoryList', cashShiftHistoryListFilter], () => requests.getCashBoxShiftsList(cashShiftHistoryListFilter))
 
   useEffect(() => {
     refetch()
-  }, [cashShiftsListFilter])
+  }, [cashShiftHistoryListFilter])
 
   useEffect(() => {
-    const count = cashShiftsList?.data?.data?._meta?.total_count
+    const count = cashShiftHistoryList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [cashShiftsList?.data, values?.limit])
+  }, [cashShiftHistoryList?.data, values?.limit])
   const { mutate: allSalesExcelReport, isLoading: isallSalesExcelReport } = useMutation(requests.getAllSalesExcelReport, {
     onSuccess: ({ data }) => {
       downloadExcel(data, 'Продажи')
@@ -122,9 +119,8 @@ export default function CasShiftsPage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          Кассовые смены
+          Kassa amaliyotlari tarixi
         </Typography>
-        <MiniDashboard />
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box
@@ -178,27 +174,20 @@ export default function CasShiftsPage() {
                 changeColumnSequence={changeColumnSequence}
               />
             </Box>
-            <CheckAccess id={'product-create'}>
-              <Box minWidth={156}>
-                <Button sx={{ height: '48px' }} onClick={() => navigate('/sales/cash-shift-history')} fullWidth variant='contained' color='primary'>
-                  Shiftlar tarixi
-                </Button>
-              </Box>
-            </CheckAccess>
           </Box>
         </Box>
         <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'
-            downloadByFilter={() => allSalesExcelReport(cashShiftsListFilter)}
-            fullDownload={() => allSalesExcelReport({ ...cashShiftsListFilter, limit: 1000000 })}
+            downloadByFilter={() => allSalesExcelReport(cashShiftHistoryListFilter)}
+            fullDownload={() => allSalesExcelReport({ ...cashShiftHistoryListFilter, limit: 1000000 })}
             isDownloading={isallSalesExcelReport}
             tableSettings
             columns={tableColumns}
-            data={cashShiftsList?.data?.data?.data || []}
-            totalCount={cashShiftsList?.data?.data?._meta?.total_count || 0}
-            isDataLoading={isFetchingcashShiftsList || cashShiftsListLoading}
+            data={cashShiftHistoryList?.data?.data?.data || []}
+            totalCount={cashShiftHistoryList?.data?.data?._meta?.total_count || 0}
+            isDataLoading={isFetchingcashShiftHistoryList || cashShiftHistoryListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
@@ -209,7 +198,7 @@ export default function CasShiftsPage() {
               description: 'Если вы не можете найти искомый Продажи, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
             }}
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingcashShiftsList || cashShiftsListLoading}
+            isRefreshing={loading || isFetchingcashShiftHistoryList || cashShiftHistoryListLoading}
           />
         </Box>
       </Box>

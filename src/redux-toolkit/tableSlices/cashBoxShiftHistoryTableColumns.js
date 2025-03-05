@@ -2,122 +2,47 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const columns = [
   {
-    field: 'number',
+    field: 'operation_id',
     hide: false,
     minWidth: 60,
     width: 60,
   },
   {
-    field: 'sale_number',
-    hide: false,
-    minWidth: 60,
-    width: 120,
-  },
-  {
-    field: 'document',
+    field: 'cashbox_name',
     hide: false,
     minWidth: 250,
     flex: 1,
   },
-
   {
-    field: 'total_amount',
+    field: 'store_name',
     hide: false,
     minWidth: 70,
-    width: 160,
+    width: 300,
   },
 
   {
-    field: 'type',
-    hide: false,
-    minWidth: 70,
-    width: 160,
-  },
-  {
-    field: 'is_delivered',
-    hide: false,
-    minWidth: 70,
-    width: 160,
-  },
-  {
-    field: 'cash',
-    hide: false,
-    minWidth: 70,
-    width: 160,
-  },
-  {
-    field: 'humo',
-    hide: false,
-    minWidth: 70,
-    width: 160,
-  },
-  {
-    field: 'uzcard',
-    hide: false,
-    minWidth: 70,
-    width: 160,
-  },
-  {
-    field: 'visa',
-    hide: false,
-    minWidth: 70,
-    width: 160,
-  },
-  {
-    field: 'payme',
-    hide: false,
-    minWidth: 70,
-    width: 160,
-  },
-  {
-    field: 'click',
-    hide: false,
-    minWidth: 70,
-    width: 160,
-  },
-  {
-    field: 'uzumbank',
-    hide: false,
-    minWidth: 70,
-    width: 160,
-  },
-  {
-    field: 'balance',
-    hide: false,
-    minWidth: 70,
-    width: 160,
-  },
-
-  {
-    field: 'created_at',
-    hide: false,
-    minWidth: 70,
-    width: 200,
-  },
-
-  {
-    field: 'store',
-    hide: false,
-    minWidth: 70,
-    width: 200,
-  },
-
-  {
-    field: 'employee',
+    field: 'open',
     hide: false,
     minWidth: 70,
     width: 250,
   },
+
   {
-    field: 'customer',
+    field: 'close',
     hide: false,
     minWidth: 70,
-    width: 250,
+    width: 200,
+  },
+  {
+    field: 'differ',
+    hide: false,
+    minWidth: 70,
+    width: 200,
   },
 ]
 
-const salesTableColumns = createSlice({
-  name: 'salesTableColumns',
+const cashBoxShiftsTableColumns = createSlice({
+  name: 'cashBoxShiftsTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -156,5 +81,6 @@ const salesTableColumns = createSlice({
   },
 })
 
-export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } = salesTableColumns.actions
-export const salesTableColumnsSlice = salesTableColumns.reducer
+export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
+  cashBoxShiftsTableColumns.actions
+export const cashBoxShiftsTableColumnsSlice = cashBoxShiftsTableColumns.reducer
