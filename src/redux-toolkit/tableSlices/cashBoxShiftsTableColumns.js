@@ -28,7 +28,13 @@ const columns = [
   },
 
   {
-    field: 'cash_amount',
+    field: 'opened_amount',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'current_amount',
     hide: false,
     minWidth: 70,
     width: 200,

@@ -15,7 +15,26 @@ import EditIcon from '../../../assets/icons/EditIcon'
 import palette from '../../../assets/theme/mui.config'
 import { faArrowCircleDown, faArrowCircleUp } from '@fortawesome/free-solid-svg-icons'
 import LockIcon from '../../../assets/icons/LockIcon'
-
+import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
+import CartOutlineIcon from '../../../assets/icons/CartOutline'
+const IconWrapper = ({ children, color }) => {
+  return (
+    <Box
+      sx={(theme) => ({
+        bgcolor: color,
+        height: '22px',
+        borderRadius: '5px',
+        padding: '3px',
+        '& svg': {
+          width: '15px',
+          height: '15px',
+        },
+      })}
+    >
+      {children}
+    </Box>
+  )
+}
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
@@ -29,11 +48,20 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'operation_id') {
       return {
         ...el,
-        headerName: 'ID',
+        headerName: '№',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='operation_id' />),
+        cellRenderer: memo(({ rowIndex, api, ...p }) => {
+          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+
+          return (
+            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+              {absoluteIndex}
+            </Typography>
+          )
+        }),
       }
     }
+
     if (el.field === 'cashbox_name') {
       return {
         ...el,
@@ -78,21 +106,52 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
         )),
       }
     }
-    if (el.field === 'cash_amount') {
+    if (el.field === 'opened_amount') {
       return {
         ...el,
-        headerName: 'Cумма',
+        headerName: 'Сумма открытия',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box width='100%'>
             <Box display={'flex'} justifyContent={'start'} alignItems={'start'}>
-              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
+              <IconWrapper color={'#2558FF'}>
+                <MoneyOutlineIcon />
+              </IconWrapper>
+              <Typography ml={'4px'} color={'bunker.500'}>
+                {thousandDivider(p.data?.opened_amount, 'сум')}
+              </Typography>
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'start'}>
+              <IconWrapper color={'#8b5cf6'}>
+                <CartOutlineIcon />
+              </IconWrapper>
+              <Typography ml={'4px'} color={'bunker.500'}>
+                {thousandDivider(p.data?.opened_cashless_amount, 'сум')}
+              </Typography>
+            </Box>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'current_amount') {
+      return {
+        ...el,
+        headerName: 'Текущая касса',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box width='100%'>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'start'}>
+              <IconWrapper color={'#2558FF'}>
+                <MoneyOutlineIcon />
+              </IconWrapper>
               <Typography ml={'4px'} color={'bunker.500'}>
                 {thousandDivider(p.data?.cash_amount, 'сум')}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'start'}>
-              <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
+              <IconWrapper color={'#8b5cf6'}>
+                <CartOutlineIcon />
+              </IconWrapper>
               <Typography ml={'4px'} color={'bunker.500'}>
                 {thousandDivider(p.data?.cashless_amount, 'сум')}
               </Typography>
@@ -108,17 +167,17 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
         colId: el.field,
         cellRenderer: memo(({ data }) => (
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
-            <Box display='inline-flex' columnGap={'8px'}>
+            <Box width={'76px'} justifyContent={'center'} display='inline-flex' columnGap={'8px'}>
               <CheckAccess id={'edit-product'}>
                 <IconButton onClick={() => navigate(`/products/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <LockIcon color='#111217' />
                 </IconButton>
               </CheckAccess>
-              <CheckAccess id={'delete-product'}>
+              {/* <CheckAccess id={'delete-product'}>
                 <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <DeleteIcon />
                 </IconButton>
-              </CheckAccess>
+              </CheckAccess> */}
             </Box>
           </CheckAccess>
         )),
