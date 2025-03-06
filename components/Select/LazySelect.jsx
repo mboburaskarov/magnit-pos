@@ -137,6 +137,7 @@ function LazySelect({
       getData(data)
     }
   }, [data])
+
   const cls = useStyles()
   const observer = useRef()
   const lastElementRef = useCallback(

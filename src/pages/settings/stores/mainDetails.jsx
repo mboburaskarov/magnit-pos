@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { get } from 'lodash'
 import TextField from '../../../../components/Inputs/TextField'
 import Label from '../../../../components/Label'
-
+import InputPhone from '../../../../components/Inputs/PhoneNumber'
 export default function MainDetails({ clientData, openDrawer }) {
   const { control, errors, setValue, register, reset, watch } = useFormContext()
   const { t } = useTranslation()
@@ -26,7 +26,7 @@ export default function MainDetails({ clientData, openDrawer }) {
   return (
     <Box mt={'24px'}>
       <Grid container mb={'20px'} spacing={3}>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Label mb='4px'>{t('Наименование полное')}</Label>
 
           <TextField
@@ -38,6 +38,22 @@ export default function MainDetails({ clientData, openDrawer }) {
             placeholder={'Наименование полное'}
             required
             asteriks
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Label mb='4px'>{t('phone_number')}</Label>
+
+          <InputPhone
+            login={false}
+            id='phone'
+            disabled
+            name='phone'
+            control={control}
+            fullWidth
+            boxStyle={{ marginBottom: '0', marginTop: 'auto' }}
+            required
+            setCountry={({ dial_code }) => setValue('dial_code', dial_code)}
+            error={errors?.phone}
           />
         </Grid>
       </Grid>

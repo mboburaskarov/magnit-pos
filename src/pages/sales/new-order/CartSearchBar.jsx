@@ -1,6 +1,6 @@
-import { Box, ListItem, Typography } from '@mui/material'
+import { Box, Button, ListItem, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { get } from 'lodash'
+import { get, size } from 'lodash'
 import React, { useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -14,6 +14,9 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
 import UnlockIcon from '../../../assets/icons/UnlockIcon'
 import SerchedItem from './SerchedItem'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
+import { LoadingButton } from '@mui/lab'
 const useStyles = makeStyles((theme) => ({
   avatar: {
     width: 30,
@@ -181,9 +184,20 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
 }))
-function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddProduct, setIsOpenChangeShift, cashBoxDetails, showOverlay, setShowOverlay }) {
+function CartSearchBar({
+  refetchcartItemsList,
+  openDraft,
+  discount,
+  searchRef,
+  handleAddProduct,
+  setIsOpenChangeShift,
+  cashBoxDetails,
+  showOverlay,
+  setShowOverlay,
+}) {
   const [searchTearm, setSearchTerm] = useState('')
   const navigate = useNavigate()
+  const [closeCashBox, setCloseCashBox] = useState(false)
   const searchItemRef = useRef([])
   const userData = useSelector((state) => state.user)
   const { id } = useParams()
@@ -201,6 +215,8 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
     () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
     { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
   )
+  const { data: darftList, refetch, isDarftList } = useQuery(['darftList'], () => requests.getDarftList())
+  console.log(darftList)
 
   const methods = useForm()
   const classes = useStyles()
@@ -323,6 +339,7 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
             sx={{ height: '48px' }}
             noMarginSvg
             placement='bottom-end'
+            onClick={() => refetch()}
             buttonLabel={
               <Box
                 sx={{ '&:hover': { bgcolor: 'transparent !important' } }}
@@ -340,7 +357,13 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
               {
                 title: 'Закрыть кассу',
                 icon: <UnlockIcon />,
-                clickHandler: () => navigate(`/sales/cash-shift-detail/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`),
+                clickHandler: () => {
+                  if (size(get(darftList, 'data.data.data')) > 0) {
+                    setCloseCashBox(true)
+                  } else {
+                    navigate(`/sales/cash-shift-detail/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`)
+                  }
+                },
               },
               { title: 'Обмен сменами', icon: <FinanceAndPaymentIcon />, soon: false, clickHandler: () => setIsOpenChangeShift(true) },
             ]}
@@ -379,6 +402,42 @@ function CartSearchBar({ refetchcartItemsList, discount, searchRef, handleAddPro
               </Box>
             )}
           </Box>
+        )}
+        {closeCashBox && (
+          <ConfirmDialog
+            open={closeCashBox}
+            // setOpen={setOpenConfirmDialog}
+            icon={<BigWarningIcon />}
+            title={'Закрыть кассу?'}
+            desc={'Сначала очистите черновики, а затем закройте кассу или нажмите «Продолжить», чтобы оставить черновики без изменений.'}
+            supDesc={'Есть черновики.'}
+            actions={
+              <>
+                <Button
+                  sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                  fullWidth
+                  color='secondary'
+                  variant='contained'
+                  onClick={() => {
+                    openDraft()
+                    setCloseCashBox(false)
+                  }}
+                >
+                  Просмотреть черновики
+                </Button>
+                <LoadingButton
+                  variant='contained'
+                  type='button'
+                  // loading={isdeleteCartItem}
+                  onClick={() => {
+                    navigate(`/sales/cash-shift-detail/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`)
+                  }}
+                >
+                  Продолжить
+                </LoadingButton>
+              </>
+            }
+          />
         )}
       </FormProvider>
     </Box>

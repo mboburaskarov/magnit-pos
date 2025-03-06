@@ -7,8 +7,6 @@ import dayjs from 'dayjs'
 import TextField from '../TextField'
 
 export default function DateRangeInputsBox({ dateState }) {
-  console.log(dateState)
-
   const { ref: DD_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
   const { ref: MM_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
   const { ref: YYYY_number_ref } = useIMask({ mask: '0000', lazy: true, placeholderChar: '' })

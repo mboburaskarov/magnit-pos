@@ -3,6 +3,10 @@ import { authRequest, eposRequest, fileUploadRequest, request, requestEXCEL, yan
 import * as qs from 'qs'
 
 export const requests = {
+  //tags
+  getAllTags: (filter) => request.get(`v1/tag/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  createTag: (data) => request.post(`v1/tag`, data),
+
   /// company
   changeComanyInfo: ({ id, data }) => request.put(`v1/company/${id}`, data),
   getComanyInfo: () => request.get(`v1/company/info`),

@@ -8,6 +8,9 @@ import InputSwitchNew from '../../Inputs/InputSwitch'
 import InputPhone from '../../Inputs/PhoneNumber'
 import TextField from '../../Inputs/TextField'
 import dayjs from 'dayjs'
+import { useQuery } from 'react-query'
+import { requests } from '../../../utils/requests'
+import LazySelect from '../../Select/LazySelect'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -134,7 +137,7 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
           <Box mt={'24px'}>
             <Typography mb='4px'>{t('tags')}</Typography>
           </Box>
-          <TextField
+          {/* <TextField
             id='tags'
             name='tags'
             control={control}
@@ -144,6 +147,28 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
             placeholder={t('tags.placeholder')}
             defaultValue={clientData ? clientData.last_name : ''}
             asteriks
+          /> */}
+          <LazySelect
+            isCreatable={true}
+            slug='tags'
+            boxStyle={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
+            id='tags'
+            name='tags'
+            isMulti={false}
+            // label={t('create_new_product.features.manufacturer')}
+            // placeholder={t('create_new_product.features.manufacturer.placeholder')}
+            minWidth='auto'
+            isClearable={true}
+            request={requests.getAllTags}
+            filters={{ limit: 10 }}
+            // control={control}
+            // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+            // request={requests.brand.getAll}
+            createOptionRequest={requests.createTag}
+            getOptionLabel={(option) => {
+              return <Typography color='grey.600'>{option.name}</Typography>
+            }}
+            // filterOption={() => true}
           />
         </Grid>
       </Grid>

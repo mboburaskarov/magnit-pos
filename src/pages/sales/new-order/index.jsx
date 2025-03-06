@@ -521,6 +521,7 @@ function NewSale() {
             <CartSearchBar
               discount={{ type: discount, amount: inputDiscount }}
               searchRef={searchRef}
+              openDraft={() => setIsOpenDraft(true)}
               setIsOpenChangeShift={setIsOpenChangeShift}
               refetchcartItemsList={refetchcartItemsList}
               cashBoxDetails={cashBoxDetails}

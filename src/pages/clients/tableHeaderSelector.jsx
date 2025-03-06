@@ -80,13 +80,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: t('tags'),
         colId: el.field,
-        cellRenderer: memo(({ data, rowIndex }) => (
-          <StatusCell
-            id={`products-status-${rowIndex}`}
-            bgcolor={products_statuses.find((el) => el.id === data.teg)?.color}
-            title={products_statuses.find((el) => el.id === data.teg)?.name}
-          />
-        )),
+        cellRenderer: memo(({ data, rowIndex }) => <SimpleText {...data} data={data?.tag} type='name' />),
       }
     }
 

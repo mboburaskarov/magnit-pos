@@ -68,7 +68,7 @@ export default function tableHeaderSelector({ importsColumns, setImports, t, set
                 setScanedNumber({ id: get(p, 'data.id'), scanned_count: Number(get(target, 'value').replace(/\s+/g, '')) })
               }}
               placeholder={'0'}
-              defaultValue={p?.data?.accepted_count}
+              defaultValue={p?.data?.scanned_count}
               id={`scanned_quantity_${p?.data?.id}`}
               name={`scanned_quantity_${p?.data?.id}`}
               type='number'

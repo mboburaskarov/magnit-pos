@@ -5,6 +5,7 @@ import CheckAccess from '../../../../components/CheckAccess'
 import thousandDivider from '../../../../utils/thousandDivider'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import EditIcon from '../../../assets/icons/EditIcon'
+import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -90,6 +91,18 @@ export default function tableHeaderSelector({ productsColumns, values, t, setOpe
         headerName: 'Адрес',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='address' />),
+      }
+    }
+    if (el.field === 'phone') {
+      return {
+        ...el,
+        headerName: 'Адрес',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
+            {p.data.phone?.length > 1 ? formatPhoneNumber(p.data.phone) : '-'}
+          </Typography>
+        )),
       }
     }
     if (el.field === 'employee_count') {

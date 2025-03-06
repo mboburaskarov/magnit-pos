@@ -26,6 +26,12 @@ const columns = [
     width: 192,
   },
   {
+    field: 'phone',
+    hide: false,
+    minWidth: 70,
+    width: 192,
+  },
+  {
     field: 'employee_count',
     hide: false,
     minWidth: 70,

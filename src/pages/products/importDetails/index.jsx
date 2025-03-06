@@ -113,7 +113,7 @@ export default function ImportDetailsPage() {
     },
   })
   return (
-    <LoadingContainer readyState={true}>
+    <LoadingContainer readyState={!isLoadWithoutChecking}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
         <Header
           isLoading={false}

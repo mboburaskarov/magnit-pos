@@ -103,8 +103,6 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
     [dateState, location.pathname, navigate, startDateQuery, endDateQuery, values]
   )
   const getLabelForDateRange = (startDate, endDate) => {
-    console.log(startDate, endDate)
-
     const today = dayjs()
     const yesterday = today.subtract(1, 'day')
     const start = dayjs(startDate)
