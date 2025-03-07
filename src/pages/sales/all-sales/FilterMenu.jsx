@@ -75,7 +75,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/sales/all-salesv?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/sales/all-sales?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
   return (

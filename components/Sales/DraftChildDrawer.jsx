@@ -69,7 +69,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
     onSuccess: ({ data }) => {
       refetchDraftList()
       setChildOpen(false)
-      setOpen(false)
+      // setOpen(false)
       success('Черновик удален!')
     },
     onError: (err) => {

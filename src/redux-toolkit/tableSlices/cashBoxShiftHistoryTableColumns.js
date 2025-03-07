@@ -19,30 +19,29 @@ const columns = [
     minWidth: 70,
     width: 300,
   },
-
   {
-    field: 'open',
+    field: 'start_time',
     hide: false,
     minWidth: 70,
-    width: 250,
+    width: 300,
+  },
+  {
+    field: 'end_time',
+    hide: false,
+    minWidth: 70,
+    width: 300,
   },
 
   {
-    field: 'close',
-    hide: false,
-    minWidth: 70,
-    width: 200,
-  },
-  {
-    field: 'differ',
+    field: 'total_expense_amount',
     hide: false,
     minWidth: 70,
     width: 200,
   },
 ]
 
-const cashBoxShiftsTableColumns = createSlice({
-  name: 'cashBoxShiftsTableColumns',
+const cashBoxShiftHistoryTableColumns = createSlice({
+  name: 'cashBoxShiftHistoryTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -82,5 +81,5 @@ const cashBoxShiftsTableColumns = createSlice({
 })
 
 export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
-  cashBoxShiftsTableColumns.actions
-export const cashBoxShiftsTableColumnsSlice = cashBoxShiftsTableColumns.reducer
+  cashBoxShiftHistoryTableColumns.actions
+export const cashBoxShiftHistoryTableColumnsSlice = cashBoxShiftHistoryTableColumns.reducer

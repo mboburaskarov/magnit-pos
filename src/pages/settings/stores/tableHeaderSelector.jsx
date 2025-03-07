@@ -96,7 +96,7 @@ export default function tableHeaderSelector({ productsColumns, values, t, setOpe
     if (el.field === 'phone') {
       return {
         ...el,
-        headerName: 'Адрес',
+        headerName: 'Телефон',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>

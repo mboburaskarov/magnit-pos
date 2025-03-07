@@ -34,6 +34,7 @@ export default function AllSalesPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
+  const [hasFilter, setHasFilter] = useState(Object.keys(values).length > 2)
   const [openSaleDrawer, setOpenSaleDrawer] = useState(false)
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
@@ -61,6 +62,7 @@ export default function AllSalesPage() {
   }, [])
 
   const salesListFilter = useMemo(() => {
+    setHasFilter(Object.keys(values).length > 2)
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
@@ -108,6 +110,7 @@ export default function AllSalesPage() {
     isFetching: isFetchingsaleStatsData,
     refetch: refetchSaleStats,
   } = useQuery(['saleStatsData', salesListFilter], () => requests.getAllSaleStats(salesListFilter))
+  console.log(Object.keys(values))
 
   useEffect(() => {
     refetch()
@@ -137,7 +140,7 @@ export default function AllSalesPage() {
         </Typography>
         <SaleMiniDashboardHeader saleStatsData={get(saleStatsData, 'data.data')} />
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-          <Box display={'flex'}>
+          <Box width='100%' display={'flex'}>
             <Box
               sx={{
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
@@ -167,12 +170,12 @@ export default function AllSalesPage() {
                   },
                 }}
                 fullWidth
-                startIcon={<FilterMenuIcon color={theme.palette.black} />}
+                startIcon={<FilterMenuIcon color={!hasFilter ? theme.palette.black : theme.palette.orange[500]} />}
                 variant='contained'
                 color='secondary'
                 onClick={() => setFilterMenu((prev) => !prev)}
               >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
+                <Typography color={!hasFilter ? theme.palette.black : theme.palette.orange[500]} fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
                   {t('filter_dialog.label')}
                 </Typography>
               </Button>

@@ -14,7 +14,7 @@ import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/cashBoxShiftsTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/cashBoxShiftHistoryTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 import MiniDashboard from './miniDashboard'
@@ -24,7 +24,7 @@ export default function CashShiftHistoryPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { columns, loading } = useSelector((state) => state.cashBoxShiftsTableColumns)
+  const { columns, loading } = useSelector((state) => state.cashBoxShiftHistoryTableColumns)
   const { values } = useQueryParams()
   const [regions, setRegions] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
@@ -93,7 +93,7 @@ export default function CashShiftHistoryPage() {
     isLoading: cashShiftHistoryListLoading,
     isFetching: isFetchingcashShiftHistoryList,
     refetch,
-  } = useQuery(['cashShiftHistoryList', cashShiftHistoryListFilter], () => requests.getCashBoxShiftsList(cashShiftHistoryListFilter))
+  } = useQuery(['cashShiftHistoryList', cashShiftHistoryListFilter], () => requests.getCashBoxShiftsHistoryList(cashShiftHistoryListFilter))
 
   useEffect(() => {
     refetch()

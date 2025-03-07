@@ -55,72 +55,65 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
         cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),
       }
     }
-
-    if (el.field === 'is_open') {
+    if (el.field === 'start_time') {
       return {
         ...el,
-        headerName: 'Состояние',
+        headerName: 'Открыть',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box>
-            {get(p, 'data.is_open', false) ? (
-              <Box>
-                <Typography sx={(theme) => ({ fontWeight: '600', color: theme.palette.green[500] })}>Открыта с</Typography>
-                <Typography>{dayjs(get(p, 'data.start_time')).format('DD.MM.YYYY HH:MM:ss')}</Typography>
-              </Box>
-            ) : (
-              <Box>
-                <Typography sx={(theme) => ({ fontWeight: '600', color: theme.palette.red[500] })}>Закрыта с</Typography>
-                <Typography>{dayjs(get(p, 'data.end_time')).format('DD.MM.YYYY HH:MM:ss')}</Typography>
-              </Box>
-            )}
+            <Box display={'flex'}>
+              <Typography>{dayjs(get(p, 'data.start_time')).format('DD.MM.YYYY HH:MM:ss')}</Typography>
+              <Typography sx={(theme) => ({ ml: '10px' })}>({get(p, 'data.opened_by')})</Typography>
+            </Box>
           </Box>
         )),
       }
     }
-    if (el.field === 'cash_amount') {
+    if (el.field === 'end_time') {
       return {
         ...el,
-        headerName: 'Cумма',
+        headerName: 'Закрывать',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box width='100%'>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'start'}>
-              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
-              <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(p.data?.cash_amount, 'сум')}
-              </Typography>
-            </Box>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'start'}>
-              <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
-              <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(p.data?.cashless_amount, 'сум')}
-              </Typography>
+          <Box>
+            <Box display={'flex'}>
+              <Typography>{dayjs(get(p, 'data.end_time')).format('DD.MM.YYYY HH:MM:ss')}</Typography>
+              <Typography sx={{ ml: '10px' }}>({get(p, 'data.closed_by')})</Typography>
             </Box>
           </Box>
         )),
       }
     }
-    if (el.field === 'actions') {
+    if (el.field === 'total_expense_amount') {
       return {
         ...el,
-        headerName: t('table_columns.actions'),
+        headerName: 'Разница',
         colId: el.field,
-        cellRenderer: memo(({ data }) => (
-          <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
-            <Box display='inline-flex' columnGap={'8px'}>
-              <CheckAccess id={'edit-product'}>
-                <IconButton onClick={() => navigate(`/products/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-                  <LockIcon color='#111217' />
-                </IconButton>
-              </CheckAccess>
-              <CheckAccess id={'delete-product'}>
-                <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-                  <DeleteIcon />
-                </IconButton>
-              </CheckAccess>
+
+        cellRenderer: memo((p) => (
+          <Box>
+            <Box
+              sx={{
+                bgcolor: '#E7F3FF',
+                minWidth: '115px',
+                minHeight: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '24px',
+              }}
+            >
+              <Typography
+                sx={{
+                  backgrounf: '#E7F3FF',
+                  color: '#2558FF',
+                }}
+              >
+                {thousandDivider(get(p, 'data.total_expense_amount'), 'сум')}
+              </Typography>
             </Box>
-          </CheckAccess>
+          </Box>
         )),
       }
     }

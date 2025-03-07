@@ -205,19 +205,18 @@ export default function ProductsPage() {
           />
         </Box>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-          <Box display={'flex'}>
+          <Box width='100%' display={'flex'}>
             <Box
               width='100%'
               sx={{
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                   background: 'transparent',
-                  width: '400px',
                   height: 48,
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
+              <InputSearch fullWidth id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
             </Box>
             <Box minWidth={113} ml={'16px'}>
               <Button
