@@ -118,13 +118,21 @@ export default function CasShiftsPage() {
       error('Ошибка при скачать excel!')
     },
   })
+    const {
+    data: cashShiftStat,
+    isLoading: cashShiftStatLoading,
+    isFetching: isFetchingcashShiftStat,
+    refetch:cashStatFtech,
+  } = useQuery(['cashShiftStat', cashShiftsListFilter], () => requests.getCashBoxShiftsStat(cashShiftsListFilter))
+  console.log('gg');
+  
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           Кассовые смены
         </Typography>
-        <MiniDashboard />
+        <MiniDashboard cashShiftStat={cashShiftStat} />
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box
