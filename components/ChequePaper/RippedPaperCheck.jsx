@@ -89,7 +89,25 @@ function RippedPaperCheck({
                   id={`return-price-${'index3'}`}
                   rowData={{
                     type: `Do'kon:`,
-                    value: `Pharma Cosmos`,
+                    value: `${get(userData, 'store.name')}`,
+                  }}
+                />
+              )}
+              {disableSumsOnGoods() && (
+                <DashedRow
+                  id={`return-price-${'index3'}`}
+                  rowData={{
+                    type: `Manzil:`,
+                    value: `${get(userData, 'store.address')}`,
+                  }}
+                />
+              )}
+              {disableSumsOnGoods() && (
+                <DashedRow
+                  id={`return-price-${'index9'}`}
+                  rowData={{
+                    type: `Kontakt:`,
+                    value: `+${get(userData, 'store.phone', '-')}`,
                   }}
                 />
               )}
@@ -120,21 +138,13 @@ function RippedPaperCheck({
                   }}
                 />
               )}
+
               {disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index8'}`}
                   rowData={{
                     type: `Mijoz:`,
                     value: `${get(customerId, 'name', '-')}`,
-                  }}
-                />
-              )}
-              {disableSumsOnGoods() && (
-                <DashedRow
-                  id={`return-price-${'index9'}`}
-                  rowData={{
-                    type: `Kontakt:`,
-                    value: `${get(customerId, 'phone', '-')}`,
                   }}
                 />
               )}
@@ -163,6 +173,13 @@ function RippedPaperCheck({
                   <Typography>MXIK: {get(el, 'class_code', '-')}</Typography>
                   <Typography>ShtKod: {get(el, 'barcode', '-')}</Typography>
                 </Box>
+                <DashedRow
+                  id={`return-price-${'index'}`}
+                  rowData={{
+                    type: `QQS: ${get(el, 'vat_percent')}%`,
+                    value: `${thousandDivider(get(el, 'vat'))} so'm`,
+                  }}
+                />
               </Box>
               {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             </Fragment>
@@ -201,6 +218,13 @@ function RippedPaperCheck({
                   }}
                 />
               )}
+              <DashedRow
+                id={`return-price-${'index'}`}
+                rowData={{
+                  type: `Umumiy QQS`,
+                  value: `${thousandDivider(get(cartItemsList, 'vat_sum'))} so'm`,
+                }}
+              />
               {disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index'}`}
@@ -212,9 +236,7 @@ function RippedPaperCheck({
                 />
               )}
               <Box>
-                <Typography>Chek turi: </Typography>
-                <Typography>MXIK: </Typography>
-                <Typography>ShtKod: </Typography>
+                <Typography>Chek turi: Sotuv</Typography>
               </Box>
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}

@@ -267,6 +267,7 @@ export default function OrderDrawer({
 }) {
   const methods = useForm()
   let timeout
+  console.log(customerId, 'f')
 
   const classes = useStyles()
   const [payments, setPayments] = useState([])
@@ -303,6 +304,7 @@ export default function OrderDrawer({
   const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
     onSuccess: ({ data }) => {
       console.log(data)
+      navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
     },
     onError: (err) => {
       error('Ошибка при епосе')
@@ -333,50 +335,34 @@ export default function OrderDrawer({
         amount: el.quantity * 1000,
         price: el.total_price,
         discount: el.discount_amount,
-        vatPercent: 0,
-        vat: 0,
-        label: '010478010116439421XzmjQbgliy5Xd91UZF092VVFVeDFM9cVd5zuu8avME8HQne9gxKQ8OH5ccczHLAg',
+        vatPercent: get(el, 'vat_percent'),
+        vat: get(el, 'vat'),
+        label: get(el, 'label'),
         name: el.name,
-        classCode: '03401001001000000',
-        packageCode: '1520726',
-        commissionTIN: '200523321',
+        classCode: get(el, 'class_code'),
+        packageCode: get(el, 'package_code'),
+        commissionTIN: '',
         other: 0,
         ownerType: 0,
       }))
       sendToEPOS({
         token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
         method: 'sale', // Название метода, Обязательное поле, String
-        companyName: 'E-POS Systems MCHJ', // Поле для ввода названия компании, будет напечатано на чеке, Обязательное поле, String
-        companyAddress: 'Toshkent Sh., Yangi Olmazor, 51', // Поле для ввода адреса компании, убедитесь в верности, будет напечатано на чеке, Обязательное поле, String
-        companyINN: '123456789', // Поле для ввода ИНН компании, будет напечатано на чеке, Обязательное поле, String
-        staffName: 'Abdulazizov Shakhboz', // Поле для ввода имени кассира , Необязательное поле, String
+        companyName: 'Pharma Cosmos OOO', // Поле для ввода названия компании, будет напечатано на чеке, Обязательное поле, String
+        companyAddress: get(userData, 'store.address'), // Поле для ввода адреса компании, убедитесь в верности, будет напечатано на чеке, Обязательное поле, String
+        companyINN: '303970073', // Поле для ввода ИНН компании, будет напечатано на чеке, Обязательное поле, String
+        staffName: get(userData, 'full_name'), // Поле для ввода имени кассира , Необязательное поле, String
         printerSize: 58, // Ширина ленты в чековом принтере, будет учитываться при формировании pdf чека, Integer
-        phoneNumber: '+998331234567', // Поле для ввода контакного номера, будет напечатано на чеке, Необязательное поле, String
-        companyPhoneNumber: '+998711234567', // Поле для ввода номера компании, будет напечатано на чеке, Необязательное поле, String
+        phoneNumber: get(userData, 'store.phone'), // Поле для ввода контакного номера, будет напечатано на чеке, Необязательное поле, String
+        companyPhoneNumber: '+998772770333', // Поле для ввода номера компании, будет напечатано на чеке, Необязательное поле, String
         params: {
           // Объект с данными о чеке
-          paycheckNumber: 'A9/00000447', //Номер чека для вывода в чеке. Если не указать номер чека, номер присваивается со стороны фискального модуля, String
-          paymentNumber: 'OTA00004534 от 10.10.2022', // Поле “Shartnoma #” в чеке для печати, Необязательное поле, String
-          note: 'За ноябрь', // Коментарий к чеку, Необязательное поле
-          stateDuty: '16500000', //Поле “Davlat boji” в чеке для печати. Значение указывается в тийинах (100 сум = 10000 тийин)
-          fineAmount: '5600000', //Поле “Shtraf summasi” в чеке для печати. Значение указывается в сумах.
-          contractSum: '5000000', //Поле “Shartnoma summasi” в чеке для печати. Значение указывается в сумах.
-          clientName: 'Khamidov Iskander', //ФИО Клиента
-          discountCard: {
-            // Объект для указания данных о дисконтных картах и их статусе, печатется на чеке,
-            available: '1500000', //Значение указывается в тийинах (100 сум = 10000 тийин)
-            addition: '30000', //Значение указывается в тийинах (100 сум = 10000 тийин)
-            subtraction: '0', //Значение указывается в тийинах (100 сум = 10000 тийин)
-            remainder: '1530000', //Значение указывается в тийинах (100 сум = 10000 тийин)
-          },
+
+          clientName: get(customerId, 'name'), //ФИО Клиента
+
           items: mockData,
-          receivedCash: 11300, // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
-          receivedCard: 0, // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
-          extraInfos: {
-            // Объект с данными о Центре Обслуживания
-            ЦОТУ: 'E-POS Systems LLC',
-            'Модель виртуальной кассы': 'E-POS',
-          },
+          receivedCash: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
+          receivedCard: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
         },
       })
 
@@ -402,12 +388,13 @@ export default function OrderDrawer({
   })
   const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
+      sendEPOSresponseToBackend({ response_data: JSON.stringify(data), sale_id: id })
+
       if (get(data, 'error', true)) {
-        error(get(data, 'message'))
+        error(`EPOS: ${get(data, 'message')}`)
         return
       } else {
         setQrcodeUrl(get(data, 'info.qrCodeURL', 'pending'))
-        sendEPOSresponseToBackend({ response_data: JSON.stringify(data), sale_id: id })
       }
       setIsOrderDrower(false)
       handlePrint()
@@ -418,6 +405,7 @@ export default function OrderDrawer({
       console.log('err', err)
     },
   })
+
   useEffect(() => {
     setPaymentsList([])
   }, [isOrderDrower])
@@ -530,6 +518,7 @@ export default function OrderDrawer({
     payme: 'F7',
     pay: 'F12',
   }
+  console.log(mpaddedPaymentsList)
 
   const getPaymentTypeHotKeyLabel = (name) => paymentHotKeys[name?.toLowerCase().trim()] || 'no'
 
