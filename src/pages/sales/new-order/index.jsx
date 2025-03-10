@@ -546,7 +546,7 @@ function NewSale() {
               }}
             >
               <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
-                {get(cartItemsList, 'data.data.sale_type', 'RETURN') == 'RETURN' ? 'Возврат' : t('page.new_sale.label')} (
+                {get(cashBoxDetails, 'data.data.sale_type', 'SALE') == 'RETURN' ? 'Возврат' : t('page.new_sale.label')} (
                 {get(cartItemsList, 'data.data.item_count', 0)})
               </Typography>
               {get(cartItemsList, 'data.data.data', 0)?.length ? (

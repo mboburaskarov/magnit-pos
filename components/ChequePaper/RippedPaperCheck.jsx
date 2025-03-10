@@ -48,6 +48,7 @@ function RippedPaperCheck({
 
     return !!found ? found?.is_active === true : true
   }
+  console.log(cartItemsList)
 
   return (
     <Box className={`${classes.root} ${noSticky ? classes.noSticky : ''}`}>
@@ -157,6 +158,11 @@ function RippedPaperCheck({
                     }}
                   />
                 )}
+                <Box>
+                  <Typography>O'lchiv birligi: {get(el, 'package_name', '-')}</Typography>
+                  <Typography>MXIK: {get(el, 'class_code', '-')}</Typography>
+                  <Typography>ShtKod: {get(el, 'barcode', '-')}</Typography>
+                </Box>
               </Box>
               {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             </Fragment>
@@ -176,6 +182,7 @@ function RippedPaperCheck({
                     />
                   )
               )}
+
               {disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index'}`}
@@ -185,7 +192,6 @@ function RippedPaperCheck({
                   }}
                 />
               )}
-
               {disableSumsOnGoods() && get(cartItemsList, 'discount_amount', 0) > 0 && (
                 <DashedRow
                   id={`return-price-${'index'}`}
@@ -205,11 +211,28 @@ function RippedPaperCheck({
                   }}
                 />
               )}
+              <Box>
+                <Typography>Chek turi: </Typography>
+                <Typography>MXIK: </Typography>
+                <Typography>ShtKod: </Typography>
+              </Box>
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
+              <Typography mb={'10px'} textAlign={'center'} mt={'10px'}>
+                Sizning xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
+              </Typography>
+
               <QRCodeCanvas value={qrcodeUrl} />
-              <Typography mt={'10px'}>Xaridingiz uchun rahmat</Typography>
+              <Typography fontSize={'14px'} mt={'10px'}>
+                CHEK NUSXASI
+              </Typography>
+              <Typography textAlign={'center'} fontSize={'14px'} mt={'10px'}>
+                SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
+              </Typography>
+              <Typography fontSize={'14px'} mt={'10px'}>
+                XARIDINGIZ UCHUN RAXMAT!!!
+              </Typography>
             </Box>
           </Fragment>
         </Box>
