@@ -126,6 +126,7 @@ function NewCashRegister() {
       cash_amount: Number(get(data, 'opened_amout')),
       cash_box_id: get(data, 'registerCash_id.id', null),
       description: get(data, 'description'),
+      store_id: get(userData, 'store.id'),
       employee_id: userData?.id,
       is_open: true,
     }
