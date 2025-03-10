@@ -38,6 +38,9 @@ import OutLineTextFieldThousand from '../../../../components/Inputs/OutLineTextF
 import LoadingOverflow from '../../../../components/LoadingOverflow'
 import ProductDrawer from './ProductDrawer'
 import CheckAccess from '../../../../components/CheckAccess'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
+import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchange/ReturnExchangeDrawer'
 const useStyles = makeStyles((theme) => ({
   card_detail: {
     width: '30%',
@@ -219,6 +222,7 @@ function NewSale() {
   const [showOverlay, setShowOverlay] = useState(false)
   const [hasChange, setHasChange] = useState(false)
   const [isOpenDraft, setIsOpenDraft] = useState(false)
+  const [isOpenReturnExchange, setIsOpenReturnExchange] = useState(false)
   const [isCreateOpenDraft, setIsCreateOpenDraft] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [isOpenChangeShift, setIsOpenChangeShift] = useState(false)
@@ -542,7 +546,8 @@ function NewSale() {
               }}
             >
               <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
-                {t('page.new_sale.label')} ({get(cartItemsList, 'data.data.item_count', 0)})
+                {get(cartItemsList, 'data.data.sale_type', 'RETURN') == 'RETURN' ? 'Возврат' : t('page.new_sale.label')} (
+                {get(cartItemsList, 'data.data.item_count', 0)})
               </Typography>
               {get(cartItemsList, 'data.data.data', 0)?.length ? (
                 <Box display={'flex'} sx={{ cursor: 'pointer' }} alignItems={'center'} onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}>
@@ -611,8 +616,8 @@ function NewSale() {
             <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
               <TimeAndDate />
             </Box>
-            <Box className={classes.cart_detail_icon}>
-              <DeleteIcon color='#ccc' width={'24px'} />
+            <Box onClick={() => setIsOpenReturnExchange(true)} className={classes.cart_detail_icon}>
+              <FontAwesomeIcon icon={faExchangeAlt} />
             </Box>
           </Box>
           <Box mb={'24px'}>
@@ -899,6 +904,7 @@ function NewSale() {
 
       <ChangeShift open={isOpenChangeShift} setOpen={setIsOpenChangeShift} />
       <DraftDrawer cashBoxDetails={cashBoxDetails} open={isOpenDraft} setOpen={setIsOpenDraft} />
+      <ReturnExchangeDrawer cashBoxDetails={cashBoxDetails} open={isOpenReturnExchange} setOpen={setIsOpenReturnExchange} />
       <ClientCreateMini
         setCustomerId={setCustomerId}
         quickCreateClientName={quickCreateClientName}

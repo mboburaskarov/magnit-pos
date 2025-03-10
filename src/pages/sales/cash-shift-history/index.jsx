@@ -180,8 +180,8 @@ export default function CashShiftHistoryPage() {
         <Box>
           <AgGridTable
             id='products-main-table'
-            downloadByFilter={() => allSalesExcelReport(cashShiftHistoryListFilter)}
-            fullDownload={() => allSalesExcelReport({ ...cashShiftHistoryListFilter, limit: 1000000 })}
+            downloadByFilter={() => {}}
+            fullDownload={() => {}}
             isDownloading={isallSalesExcelReport}
             tableSettings
             columns={tableColumns}
