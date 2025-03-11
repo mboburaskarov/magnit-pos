@@ -20,7 +20,6 @@ import { useQueryParams } from '../../hooks/useQueryParams'
 import DashboardHeader from './DashboardHeader'
 import DashboardInfoBox from './DashboardInfoBox'
 import tableHeaderSelector from './tableHeaderSelector'
-import { faArrowCircleDown } from '@fortawesome/free-solid-svg-icons'
 
 export default function DashboarPage() {
   dayjs.extend(isoWeek)

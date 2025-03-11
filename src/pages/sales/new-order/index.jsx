@@ -518,11 +518,6 @@ function NewSale() {
     return () => clearTimeout(handler) // Cleanup the timeout on re-renders
   }, [debouncedDiscount])
 
-  useEffect(() => {
-    console.log(debouncedValue)
-    console.log('searchTerm')
-    console.log(searchTerm)
-  }, [debouncedValue])
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />

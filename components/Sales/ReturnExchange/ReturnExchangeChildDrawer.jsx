@@ -84,7 +84,6 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, refetchDraftLis
     const itemsLength = get(darftChildList, 'data.data.products', [])?.length
     return itemsLength === selectedReturnItems.length
   }
-  console.log(selectedReturnItems)
 
   const handlePrint = useReactToPrint({
     content: reactToPrintContent, // This should be a function

@@ -14,6 +14,7 @@ const NumberFormatInput = ({
   borderRadius,
   white,
   minNumber = 0,
+  thousandSeparator = ' ',
   maxNumber = Infinity,
   onKeyDown,
   defaultValue,
@@ -81,7 +82,7 @@ const NumberFormatInput = ({
         inputRef={inputRef}
         placeholder={placeholder}
         customInput={MuiTextField} // Use MuiTextField as the custom input component
-        thousandSeparator={' '}
+        thousandSeparator={thousandSeparator}
         allowNegative={false} // Disallow negative numbers
         decimalScale={2} // Set decimal scale to 2
         onValueChange={(values) => {

@@ -12,6 +12,7 @@ import DefaultImgIcon from '../../assets/icons/defaultImgIcon'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
 import EditIcon from '../../assets/icons/EditIcon'
 import { checkPermission } from '../../../utils/checkPermission'
+import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -54,7 +55,16 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setOpenProductDrawer }) {
+export default function tableHeaderSelector({
+  productsColumns,
+  values,
+  setImages,
+  canChangebarcode,
+  t,
+  setOpenConfirmDialog,
+  setOpenProductDrawer,
+  changeBarcode,
+}) {
   const theme = useTheme()
   const navigate = useNavigate()
   const getDateColor = (date) => {
@@ -199,7 +209,28 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         ...el,
         headerName: t('table_columns.barcode'),
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' {...p} type='barcode' />),
+        cellRenderer: memo((p) => {
+          if (!canChangebarcode) {
+            return <SimpleText currency='' {...p} type='barcode' />
+          } else {
+            return (
+              <NumberFormatInput
+                onBlur={({ target }) => {
+                  if (p?.data?.barcode == get(target, 'value')) return
+
+                  changeBarcode({ id: get(p, 'data.id'), barcode: get(target, 'value') })
+                }}
+                placeholder={'0'}
+                thousandSeparator={''}
+                defaultValue={p?.data?.barcode}
+                id={`editable_barcode_${p?.data?.id}`}
+                name={`editable_barcode_${p?.data?.id}`}
+                type='number'
+                fullWidth
+              />
+            )
+          }
+        }),
       }
     }
     if (el.field === 'material_code') {

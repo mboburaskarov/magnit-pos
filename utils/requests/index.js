@@ -118,6 +118,7 @@ export const requests = {
   getAllProductsStatusCount: (filter) => request.get(`v1/product/total-status-count${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllStoreProducts: (data, filter) => request.get(`v1/product/store/${get(data, 'id')}${qs.stringify(filter, { addQueryPrefix: true })}`),
   createProduct: (data) => request.post(`v1/product`, data),
+  changeBarcode: ({ id, barcode }) => request.put(`v1/product/update-barcode/${id}`, { id, barcode }),
 
   getSingleProduct: (id) => request.get(`v1/product/${id}`),
   getSingleProductHistory: (filter, id) => request.get(`v1/product/import/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),

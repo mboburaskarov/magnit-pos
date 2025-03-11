@@ -76,8 +76,9 @@ export default function ImportDetailsPage() {
       search: values?.search,
       received_amount_to: values?.received_amount_to,
       received_amount_from: values?.received_amount_from,
+      no_barcode: values?.no_barcode,
     }
-  }, [values?.received_amount_to, values?.received_amount_from, values?.offset, values?.limit, values?.search])
+  }, [values?.received_amount_to, values?.no_barcode, values?.received_amount_from, values?.offset, values?.limit, values?.search])
   const {
     data: importWithCheckingDetails,
     isLoading: importWithCheckingDetailsLoading,

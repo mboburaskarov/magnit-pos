@@ -26,10 +26,12 @@ import FilterMenu from './FilterMenu'
 import ProductDrawer from './product-edit/ProductDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
 import { get } from 'lodash'
+import { FormProvider, useForm } from 'react-hook-form'
+import BarcodeIcon from '../../assets/icons/BarcodeIcon'
 const SELECTION_ID = 'checkboxSelectionField'
-
 export default function ProductsPage() {
   const theme = useTheme()
+  const methods = useForm()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -40,9 +42,19 @@ export default function ProductsPage() {
   const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
+  const [canChangebarcode, setCanChangebarcode] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const { mutate: changeBarcode, isLoading: isChangeBarcode } = useMutation(requests.changeBarcode, {
+    onSuccess: ({ data }) => {
+      refetch()
+      fetchStatusCountList()
+    },
+    onError: (err) => {
+      error('Ошибка при сканирование!')
+    },
+  })
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
@@ -50,6 +62,8 @@ export default function ProductsPage() {
     setOpenProductDrawer,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
+    changeBarcode,
+    canChangebarcode,
   })
   const routeString = []
 
@@ -176,177 +190,216 @@ export default function ProductsPage() {
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
+
+    get(productsList, 'data.data.data', []).map((productData) => {
+      methods.setValue(`editable_barcode_${get(productData, 'id')}`, get(productData, 'barcode'))
+    })
   }, [productsList?.data, values?.limit, appType])
 
   return (
     <LoadingContainer readyState={true}>
-      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {t('page.catalog.title')}
-        </Typography>
+      <FormProvider {...methods}>
+        <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
+          <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+            {t('page.catalog.title')}
+          </Typography>
 
-        <Box minWidth={320}>
-          <InputSwitch
-            uncontrolled
-            id='app-type'
-            name='app-type'
-            value={appType}
-            defaultValue='ALL'
-            onChange={(e) => setAppType(e)}
-            options={[
-              { title: t('switch.title.all'), value: 'ALL', count: get(statusCountList, 'data.data.total_count', 0) },
-              { title: t('switch.title.active'), value: 'active', count: get(statusCountList, 'data.data.active_count', 0) },
-              { title: t('switch.title.inactive'), value: 'inactive', count: get(statusCountList, 'data.data.inactive_count', 0) },
-              { title: t('switch.title.less_amount'), value: 'low-stock', count: get(statusCountList, 'data.data.low_stock_count', 0) },
-              { title: t('switch.title.empty'), value: 'zero-stock', count: get(statusCountList, 'data.data.zero_stock_count', 0) },
-              { title: t('switch.title.less_date'), value: 'imminent', count: get(statusCountList, 'data.data.imminent_count', 0) },
-              { title: t('switch.title.outofdate'), value: 'expired', count: get(statusCountList, 'data.data.expired_count', 0) },
-            ]}
-          />
-        </Box>
-        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-          <Box width='100%' display={'flex'}>
-            <Box
-              width='100%'
-              sx={{
-                '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                  background: 'transparent',
-                  height: 48,
-                },
-              }}
-            >
-              <InputSearch fullWidth id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
-            </Box>
-            <Box minWidth={113} ml={'16px'}>
-              <Button
+          <Box minWidth={320}>
+            <InputSwitch
+              uncontrolled
+              id='app-type'
+              name='app-type'
+              value={appType}
+              defaultValue='ALL'
+              onChange={(e) => setAppType(e)}
+              options={[
+                { title: t('switch.title.all'), value: 'ALL', count: get(statusCountList, 'data.data.total_count', 0) },
+                { title: t('switch.title.active'), value: 'active', count: get(statusCountList, 'data.data.active_count', 0) },
+                { title: t('switch.title.inactive'), value: 'inactive', count: get(statusCountList, 'data.data.inactive_count', 0) },
+                { title: t('switch.title.less_amount'), value: 'low-stock', count: get(statusCountList, 'data.data.low_stock_count', 0) },
+                { title: t('switch.title.empty'), value: 'zero-stock', count: get(statusCountList, 'data.data.zero_stock_count', 0) },
+                { title: t('switch.title.less_date'), value: 'imminent', count: get(statusCountList, 'data.data.imminent_count', 0) },
+                { title: t('switch.title.outofdate'), value: 'expired', count: get(statusCountList, 'data.data.expired_count', 0) },
+              ]}
+            />
+          </Box>
+          <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
+            <Box width='100%' display={'flex'}>
+              <Box
+                width='100%'
                 sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
+                  '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+                  '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                    background: 'transparent',
+                    height: 48,
                   },
                 }}
-                fullWidth
-                startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
               >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
-            </Box>
-          </Box>
-          <Box display={'flex'} alignItems={'center'}>
-            <CheckAccess id={'products-all-table'}>
-              <Box>
-                <ColumnsFilterButtonForAll
-                  title={t('ag_grid.table_setting.label')}
-                  columns={tableColumns}
-                  isCatalog={false}
-                  routeString={routeString}
-                  resetTableHeader={resetTableHeader}
-                  changeColumnSequence={changeColumnSequence}
-                />
+                <InputSearch fullWidth id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
               </Box>
-            </CheckAccess>
-            <CheckAccess id={'product-create'}>
-              <Box minWidth={156}>
+              <Box minWidth={113} ml={'16px'}>
                 <Button
-                  sx={{ height: '48px' }}
-                  onClick={() => navigate('/products/create')}
+                  sx={{
+                    height: '48px',
+                    padding: 0,
+                    bgcolor: '#fff',
+                    border: '1px solid #ECEDF2',
+                    color: 'dark.500',
+                    fontWeight: '500',
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    '& span': {
+                      mr: '12px',
+                    },
+                  }}
                   fullWidth
-                  startIcon={<PlusIcon color='#fff' />}
+                  startIcon={<FilterMenuIcon color={theme.palette.black} />}
                   variant='contained'
-                  color='primary'
+                  color='secondary'
+                  onClick={() => setFilterMenu((prev) => !prev)}
                 >
-                  {t('button.add_new.text')}
+                  <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
+                    {t('filter_dialog.label')}
+                  </Typography>
                 </Button>
               </Box>
-            </CheckAccess>
+            </Box>
+            <Box>
+              <CheckAccess id={'can-change-barcode'}>
+                <Button
+                  sx={{
+                    height: '48px',
+                    width: '48px',
+                    padding: 0,
+                    bgcolor: '#fff',
+                    border: '1px solid #ECEDF2',
+                    color: 'dark.500',
+                    fontWeight: '500',
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    '& span': {
+                      mr: '12px',
+                    },
+                  }}
+                  fullWidth
+                  // startIcon={<BarcodeIcon color={theme.palette.black} />}
+                  variant='contained'
+                  color='secondary'
+                  onClick={() => setCanChangebarcode((prev) => !prev)}
+                >
+                  {canChangebarcode ? (
+                    <Typography fontSize='24px' fontWeight={'500'} mt={'6px'}>
+                      T
+                    </Typography>
+                  ) : (
+                    <BarcodeIcon />
+                  )}
+                </Button>
+              </CheckAccess>
+            </Box>
+            <Box display={'flex'} alignItems={'center'}>
+              <CheckAccess id={'products-all-table'}>
+                <Box>
+                  <ColumnsFilterButtonForAll
+                    title={t('ag_grid.table_setting.label')}
+                    columns={tableColumns}
+                    isCatalog={false}
+                    routeString={routeString}
+                    resetTableHeader={resetTableHeader}
+                    changeColumnSequence={changeColumnSequence}
+                  />
+                </Box>
+              </CheckAccess>
+              <CheckAccess id={'product-create'}>
+                <Box minWidth={156}>
+                  <Button
+                    sx={{ height: '48px' }}
+                    onClick={() => navigate('/products/create')}
+                    fullWidth
+                    startIcon={<PlusIcon color='#fff' />}
+                    variant='contained'
+                    color='primary'
+                  >
+                    {t('button.add_new.text')}
+                  </Button>
+                </Box>
+              </CheckAccess>
+            </Box>
+          </Box>
+          <FilterMenu refetch={refetch} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+          <Box>
+            <AgGridTable
+              id='products-main-table'
+              alwaysShowHorizontalScroll={true}
+              tableSettings
+              columns={tableColumns}
+              data={productsList?.data?.data?.data || []}
+              totalCount={productsList?.data?.data?._meta?.total_count || 0}
+              isDataLoading={isFetchingproductsList || productsListLoading}
+              offsetCount={offsetCount}
+              updaterAction={(newData) => {
+                if (newData) dispatch(updateTableHeader(newData))
+              }}
+              fullInfoAboutCurrentPage
+              resetTable={() => dispatch(resetTableHeader({ refetch }))}
+              status={appType}
+              isRefreshing={loading || canChangebarcode || isFetchingproductsList || productsListLoading}
+            />
           </Box>
         </Box>
-        <FilterMenu refetch={refetch} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
-        <Box>
-          <AgGridTable
-            id='products-main-table'
-            alwaysShowHorizontalScroll={true}
-            tableSettings
-            columns={tableColumns}
-            data={productsList?.data?.data?.data || []}
-            totalCount={productsList?.data?.data?._meta?.total_count || 0}
-            isDataLoading={isFetchingproductsList || productsListLoading}
-            offsetCount={offsetCount}
-            updaterAction={(newData) => {
-              if (newData) dispatch(updateTableHeader(newData))
-            }}
-            fullInfoAboutCurrentPage
-            resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            status={appType}
-            isRefreshing={loading || isFetchingproductsList || productsListLoading}
-          />
-        </Box>
-      </Box>
-      <ProductDrawer open={openProductDrawer} setImages={setOpenImageGallery} onClose={setOpenProductDrawer} />
+        <ProductDrawer open={openProductDrawer} setImages={setOpenImageGallery} onClose={setOpenProductDrawer} />
 
-      <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
-      {openConfirmDialog && (
-        <ConfirmDialog
-          open={!!openConfirmDialog}
-          setOpen={setOpenConfirmDialog}
-          icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={
-            openConfirmDialog?.type === 'activate'
-              ? 'Активировать продукт?'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Деактивировать продукт?'
-              : 'Удалить продукт?'
-          }
-          desc={
-            openConfirmDialog?.type === 'activate'
-              ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-              : 'Вы хотите удалить продукт?'
-          }
-          supDesc={'“Azitromitsin 250 mg”'}
-          actions={
-            <>
-              <Button
-                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
-                fullWidth
-                color='secondary'
-                variant='contained'
-                onClick={() => setOpenConfirmDialog(null)}
-              >
-                Нет
-              </Button>
-              <LoadingButton
-                variant='contained'
-                type='button'
-                loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                onClick={() =>
-                  openConfirmDialog?.type === 'activate'
-                    ? activateProduct(openConfirmDialog.id)
-                    : openConfirmDialog?.type === 'deactivate'
-                    ? deActivateProduct({ id: openConfirmDialog.id, appType: 'INACTIVE' })
-                    : deleteProduct(openConfirmDialog.id)
-                }
-              >
-                Да, удалить
-              </LoadingButton>
-            </>
-          }
-        />
-      )}
+        <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
+        {openConfirmDialog && (
+          <ConfirmDialog
+            open={!!openConfirmDialog}
+            setOpen={setOpenConfirmDialog}
+            icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
+            title={
+              openConfirmDialog?.type === 'activate'
+                ? 'Активировать продукт?'
+                : openConfirmDialog?.type === 'deactivate'
+                ? 'Деактивировать продукт?'
+                : 'Удалить продукт?'
+            }
+            desc={
+              openConfirmDialog?.type === 'activate'
+                ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
+                : openConfirmDialog?.type === 'deactivate'
+                ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
+                : 'Вы хотите удалить продукт?'
+            }
+            supDesc={'“Azitromitsin 250 mg”'}
+            actions={
+              <>
+                <Button
+                  sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                  fullWidth
+                  color='secondary'
+                  variant='contained'
+                  onClick={() => setOpenConfirmDialog(null)}
+                >
+                  Нет
+                </Button>
+                <LoadingButton
+                  variant='contained'
+                  type='button'
+                  loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
+                  onClick={() =>
+                    openConfirmDialog?.type === 'activate'
+                      ? activateProduct(openConfirmDialog.id)
+                      : openConfirmDialog?.type === 'deactivate'
+                      ? deActivateProduct({ id: openConfirmDialog.id, appType: 'INACTIVE' })
+                      : deleteProduct(openConfirmDialog.id)
+                  }
+                >
+                  Да, удалить
+                </LoadingButton>
+              </>
+            }
+          />
+        )}
+      </FormProvider>
     </LoadingContainer>
   )
 }

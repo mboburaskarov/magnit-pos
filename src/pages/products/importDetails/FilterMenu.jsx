@@ -9,7 +9,12 @@ import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog
 import InputRange from '../../../../components/Inputs/InputRange'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-
+import SelectSimple from '../../../../components/Select/SelectSimple'
+import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
+const barcodeFilterList = [
+  { name: 'Без штрих-кода', value: true },
+  { name: 'Со штрих-кодом', value: false },
+]
 export default function FilterMenu({ open, id, setOpen }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
@@ -18,6 +23,7 @@ export default function FilterMenu({ open, id, setOpen }) {
 
   const onSubmit = (data) => {
     const requestBody = {
+      no_barcode: data.no_barcode.value || undefined,
       received_amount_from: data.received_amount_from || undefined,
       received_amount_to: data.received_amount_to || undefined,
     }
@@ -32,16 +38,18 @@ export default function FilterMenu({ open, id, setOpen }) {
   }
 
   useEffect(() => {
-    const { received_amount_to, received_amount_from } = values
+    const { received_amount_to, no_barcode, received_amount_from } = values
+    // console.log(getOptionsFromUrlParam(no_barcode, barcodeFilterList, 'name')[0])
 
     reset(
       {
         received_amount_to: received_amount_to || null,
         received_amount_from: received_amount_from || null,
+        // no_barcode: getOptionsFromUrlParam(no_barcode, barcodeFilterList, 'name') || null,
       },
       { keepDirty: true }
     )
-  }, [values?.received_amount_to, values?.received_amount_from])
+  }, [values?.received_amount_to, values?.received_amount_from, values?.no_barcode])
   const theme = useTheme()
 
   const resetFilter = () => {
@@ -77,6 +85,17 @@ export default function FilterMenu({ open, id, setOpen }) {
               name2='received_amount_to'
               placeholder1={t('input.price.from')}
               placeholder2={t('input.price.to')}
+            />
+            <SelectSimple
+              fullWidth
+              id='nobarcode'
+              white
+              name='no_barcode'
+              minWidth='auto'
+              label={'Штрих-код'}
+              placeholder={'Bыберите статус'}
+              options={barcodeFilterList}
+              getOptionLabel={(el) => el.name}
             />
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button

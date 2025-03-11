@@ -99,7 +99,7 @@ const columns = [
     field: 'barcode',
     hide: false,
     minWidth: 70,
-    width: 176,
+    width: 236,
   },
   {
     field: 'actions',

@@ -117,7 +117,7 @@ export default function ImportWithCheckingPage() {
     setOffsetCount(offsetsCount || 0)
 
     get(importWithCheckingDetails, 'data.data.data', []).map((importData) => {
-      methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'accepted_count'))
+      methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
     })
   }, [importWithCheckingDetails?.data, values?.limit])
 
