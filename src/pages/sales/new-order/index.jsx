@@ -41,6 +41,7 @@ import CheckAccess from '../../../../components/CheckAccess'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchange/ReturnExchangeDrawer'
+import useDebouncedValue from '../../../hooks/useDebouncedValue'
 const useStyles = makeStyles((theme) => ({
   card_detail: {
     width: '30%',
@@ -226,12 +227,15 @@ function NewSale() {
   const [isCreateOpenDraft, setIsCreateOpenDraft] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [isOpenChangeShift, setIsOpenChangeShift] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
+  // const [searchTerm, setSearchTerm] = useState('')
+
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [customers, setCustomers] = useState([])
   const [discount, setDiscountType] = useState('percent')
+  const [searchTerm, setSearchTerm, debouncedValue] = useDebouncedValue('', 200)
   const [debouncedSearchTerm] = useDebounce(searchTerm, 200)
+
   const [customerId, setCustomerId] = useState('')
   const [clientDetails, setClientDetails] = useState(null)
   const [quickCreateClientName, setQuickCreateClientName] = useState(null)
@@ -254,6 +258,7 @@ function NewSale() {
       }
     }
   }
+
   useEffect(() => {
     setInputDiscount(0)
   }, [discount])
@@ -513,6 +518,11 @@ function NewSale() {
     return () => clearTimeout(handler) // Cleanup the timeout on re-renders
   }, [debouncedDiscount])
 
+  useEffect(() => {
+    console.log(debouncedValue)
+    console.log('searchTerm')
+    console.log(searchTerm)
+  }, [debouncedValue])
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />

@@ -1,7 +1,7 @@
 import { Box, Button, ListItem, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get, head, size } from 'lodash'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useQuery } from 'react-query'
@@ -17,6 +17,7 @@ import SerchedItem from './SerchedItem'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import { LoadingButton } from '@mui/lab'
+import useDebouncedValue from '../../../hooks/useDebouncedValue'
 const useStyles = makeStyles((theme) => ({
   avatar: {
     width: 30,
@@ -195,7 +196,8 @@ function CartSearchBar({
   showOverlay,
   setShowOverlay,
 }) {
-  const [searchTearm, setSearchTerm] = useState('')
+  // const [searchTearm, setSearchTerm] = useState('')
+  const [searchTearm, setSearchTerm, debouncedValue] = useDebouncedValue('', 200)
   const navigate = useNavigate()
   const [closeCashBox, setCloseCashBox] = useState(false)
   const searchItemRef = useRef([])
@@ -204,9 +206,9 @@ function CartSearchBar({
 
   const productsListFilter = useMemo(() => {
     return {
-      search: searchTearm,
+      search: debouncedValue,
     }
-  }, [searchTearm])
+  }, [debouncedValue])
   const { data: productsList } = useQuery(['storeProductsList', productsListFilter], () =>
     requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter)
   )
@@ -298,7 +300,8 @@ function CartSearchBar({
                   discount_type: get(discount, 'type', 'percent'),
                   discount_value: Number(get(discount, 'amount', 0)),
                   sale_id: id,
-                  store_product_id: get(head(productsData, 'err #7'), 'id', 'err #2'),
+                  barcode: searchTearm,
+                  // store_product_id: get(head(productsData, 'err #7'), 'id', 'err #2'),
                 })
               }
             }}
