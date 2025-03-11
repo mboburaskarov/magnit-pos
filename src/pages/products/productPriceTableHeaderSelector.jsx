@@ -144,15 +144,15 @@ export default function productPriceTableHeaderSelector({
     if (el.field === 'bonus_percent') {
       return {
         ...el,
-        headerName: 'Бонус %',
+        headerName: 'Бонус',
         colId: el.field,
         cellRenderer: memo((p) => (
           <NumberFormatInput
             maxNumber={100}
             applyAll
-            aplyAllFunc={() => applyAllPriceFunc(p.data.id, 'bonus_percent')}
-            id={`store_product.${p.data.id}.bonus_percent`}
-            name={`store_product.${p.data.id}.bonus_percent`}
+            aplyAllFunc={() => applyAllPriceFunc(p.data.id, 'bonus_amount')}
+            id={`store_product.${p.data.id}.bonus_amount`}
+            name={`store_product.${p.data.id}.bonus_amount`}
             fullWidth
             required
             type='number'

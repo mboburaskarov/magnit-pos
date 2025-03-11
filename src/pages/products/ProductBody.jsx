@@ -61,7 +61,7 @@ export default function ProductBody({ productData = null }) {
     const vat_one = getValues(`store_product.${id}.vat`)
     const expire_date_one = getValues(`store_product.${id}.expire_date`)
     const markup_one = getValues(`store_product.${id}.markup`)
-    const bonus_percent_one = getValues(`store_product.${id}.bonus_percent`)
+    const bonus_amount_one = getValues(`store_product.${id}.bonus_amount`)
     get(storeList, 'data.data.ids', []).map((id) => {
       const supply_price = Number(getValues(`store_product.${id}.supply_price`))
       const vat = Number(getValues(`store_product.${id}.vat`))
@@ -83,8 +83,8 @@ export default function ProductBody({ productData = null }) {
       if (type === 'markup') {
         setValue(`store_product.${id}.markup`, Number(markup_one))
       }
-      if (type === 'bonus_percent') {
-        setValue(`store_product.${id}.bonus_percent`, Number(bonus_percent_one))
+      if (type === 'bonus_amount') {
+        setValue(`store_product.${id}.bonus_amount`, Number(bonus_amount_one))
       }
 
       if (type === 'supply_price' || type === 'vat' || type === 'markup') {

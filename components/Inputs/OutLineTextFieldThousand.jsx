@@ -2,7 +2,20 @@ import { Box, IconButton, InputAdornment, OutlinedInput as MuiTextField } from '
 import { useFormContext } from 'react-hook-form'
 import Label from '../Label'
 import { NumericFormat } from 'react-number-format'
-
+import { useState } from 'react'
+import { makeStyles } from '@mui/styles'
+const useStyles = makeStyles((theme) => ({
+  applyAll: {
+    position: 'absolute',
+    top: 0,
+    right: 15,
+    zIndex: 9,
+    backgroundColor: theme.palette.orange[500],
+    color: theme.palette.white,
+    padding: '2px 8px',
+    borderRadius: 10,
+  },
+}))
 const NumberFormatInput = ({
   placeholder,
   inputRef,
@@ -36,11 +49,14 @@ const NumberFormatInput = ({
   onFocus = () => {},
   bgcolor,
   autoComplete,
+  applyAll,
+  aplyAllFunc = () => {},
   ...props
 }) => {
+  const classes = useStyles()
   const methods = useFormContext()
   const onlyDisplay = dashed && disabled
-
+  const [isApplyAll, setApplyAll] = useState(false)
   // Custom onKeyDown to restrict unwanted characters
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -75,6 +91,18 @@ const NumberFormatInput = ({
       }
     >
       {!onlyDisplay && label && <Label required={required}>{label}</Label>}
+      {applyAll && isApplyAll && (
+        <Box
+          onClick={() => {
+            console.log('l')
+
+            aplyAllFunc(), setApplyAll(false)
+          }}
+          className={classes.applyAll}
+        >
+          Применить ко всем
+        </Box>
+      )}
       <NumericFormat
         disabled={disabled}
         name={name}
@@ -109,6 +137,9 @@ const NumberFormatInput = ({
         {...(!uncontrolled && methods.register(name, { required }))}
         multiline={multiline}
         onBlur={(e) => {
+          setTimeout(() => {
+            setApplyAll(false)
+          }, 100)
           const currentValue = Number(e.target.value.replace(/\s+/g, ''))
           if (currentValue > maxNumber) {
             methods.setValue(name, maxNumber)
@@ -120,6 +151,8 @@ const NumberFormatInput = ({
           onBlur(e)
         }}
         onFocus={(e) => {
+          setApplyAll(true)
+
           const currentValue = Number(e.target.value.replace(/\s+/g, ''))
           if (currentValue == 0) {
             methods.setValue(name, '')
