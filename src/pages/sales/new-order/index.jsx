@@ -255,8 +255,6 @@ function NewSale() {
     }
   }
   useEffect(() => {
-    console.log(discount)
-
     setInputDiscount(0)
   }, [discount])
   const focusUnitInput = (event) => {

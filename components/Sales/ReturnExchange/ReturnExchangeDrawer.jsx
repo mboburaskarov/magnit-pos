@@ -35,7 +35,6 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
   const [draftfilter, setDraftFilter] = useState(false)
   const userData = useSelector((state) => state.user)
   const { values } = useQueryParams()
-  console.log(cashBoxDetails)
 
   const [isOpenChild, setIsOpenChild] = useState(false)
   const returnExchangeListFilter = useMemo(() => {

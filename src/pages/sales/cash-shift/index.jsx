@@ -118,14 +118,13 @@ export default function CasShiftsPage() {
       error('Ошибка при скачать excel!')
     },
   })
-    const {
+  const {
     data: cashShiftStat,
     isLoading: cashShiftStatLoading,
     isFetching: isFetchingcashShiftStat,
-    refetch:cashStatFtech,
+    refetch: cashStatFtech,
   } = useQuery(['cashShiftStat', cashShiftsListFilter], () => requests.getCashBoxShiftsStat(cashShiftsListFilter))
-  console.log('gg');
-  
+
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>

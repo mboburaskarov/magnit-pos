@@ -110,7 +110,6 @@ export default function AllSalesPage() {
     isFetching: isFetchingsaleStatsData,
     refetch: refetchSaleStats,
   } = useQuery(['saleStatsData', salesListFilter], () => requests.getAllSaleStats(salesListFilter))
-  console.log(Object.keys(values))
 
   useEffect(() => {
     refetch()

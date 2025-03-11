@@ -106,8 +106,6 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, refetchDraftLis
   })
   const { mutate: returnSaleItem, isLoading: isreturnSaleItem } = useMutation(requests.returnSaleItem, {
     onSuccess: ({ data }) => {
-      console.log(data)
-
       refetchDraftList()
       setChildOpen(false)
       setOpen(false)

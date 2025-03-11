@@ -51,25 +51,7 @@ export default function ImportWithCheckingPage() {
       error('Ошибка при сканирование!')
     },
   })
-  // const { mutate: addScan, isLoading: isAddScan } = useMutation(requests.sendScannedImport, {
-  //   onSuccess: ({ data }) => {
-  //     refetch()
-  //     console.log(data)
 
-  //     setBarcode('')
-  //     if (get(data, 'data.surplus')) {
-  //       overplusScanAudio.play()
-  //     } else {
-  //       successScanAudio.play()
-  //     }
-  //   },
-  //   onError: (err) => {
-  //     console.log(err)
-
-  //     errorScanAudio.play()
-  //     error('Ошибка при сканирование!')
-  //   },
-  // })
   const { mutate: finishImportChecking, isLoading: isfinishImportChecking } = useMutation(requests.finishImportChecking, {
     onSuccess: ({ data }) => {
       navigate('/products/import')

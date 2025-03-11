@@ -267,7 +267,6 @@ export default function OrderDrawer({
 }) {
   const methods = useForm()
   let timeout
-  console.log(customerId, 'f')
 
   const classes = useStyles()
   const [payments, setPayments] = useState([])
@@ -303,7 +302,6 @@ export default function OrderDrawer({
 
   const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
     onSuccess: ({ data }) => {
-      console.log(data)
       navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
     },
     onError: (err) => {
@@ -521,7 +519,6 @@ export default function OrderDrawer({
     payme: 'F7',
     pay: 'F12',
   }
-  console.log(mpaddedPaymentsList)
 
   const getPaymentTypeHotKeyLabel = (name) => paymentHotKeys[name?.toLowerCase().trim()] || 'no'
 

@@ -216,23 +216,11 @@ function CartSearchBar({
     { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
   )
   const { data: darftList, refetch, isDarftList } = useQuery(['darftList'], () => requests.getDarftList())
-  console.log(darftList)
 
   const methods = useForm()
   const classes = useStyles()
   const productsData = productsList?.data?.data
 
-  // useHotkeys(
-  //   't',
-  //   () =>
-  //     getStoreProductByBarcode({
-  //       data: {
-  //         sale_id: id,
-  //         barcode: searchTearm,
-  //       },
-  //     }),
-  //   { enabled: true, enableOnTags: ['INPUT', 'TEXTAREA'] }
-  // )
   let a = -1
   const selectDownItems = () => {
     if (a == searchItemRef.current.length - 1) {
