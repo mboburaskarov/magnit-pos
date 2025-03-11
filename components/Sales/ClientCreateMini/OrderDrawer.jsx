@@ -401,6 +401,8 @@ export default function OrderDrawer({
       success('Продажа завершена!')
     },
     onError: (err) => {
+      sendEPOSresponseToBackend({ response_data: JSON.stringify(err), sale_id: id })
+
       error('Ошибка при EPOS')
       console.log('err', err)
     },
