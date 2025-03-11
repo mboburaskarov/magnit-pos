@@ -388,12 +388,13 @@ export default function OrderDrawer({
   })
   const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
-      sendEPOSresponseToBackend({ response_data: JSON.stringify(data), sale_id: id })
-
       if (get(data, 'error', true)) {
+        sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
         error(`EPOS: ${get(data, 'message')}`)
         return
       } else {
+        sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
+
         setQrcodeUrl(get(data, 'info.qrCodeURL', 'pending'))
       }
       setIsOrderDrower(false)
@@ -401,7 +402,7 @@ export default function OrderDrawer({
       success('Продажа завершена!')
     },
     onError: (err) => {
-      sendEPOSresponseToBackend({ response_data: JSON.stringify(err), sale_id: id })
+      sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
 
       error('Ошибка при EPOS')
       console.log('err', err)
