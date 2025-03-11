@@ -20,7 +20,6 @@ import { useQueryParams } from '../../hooks/useQueryParams'
 import DashboardHeader from './DashboardHeader'
 import DashboardInfoBox from './DashboardInfoBox'
 import tableHeaderSelector from './tableHeaderSelector'
-import Matn from '../../../components/Matn'
 import { faArrowCircleDown } from '@fortawesome/free-solid-svg-icons'
 
 export default function DashboarPage() {
@@ -165,28 +164,7 @@ export default function DashboarPage() {
   return (
     <LoadingContainer readyState={true}>
       <DashboardHeader setSortBy={setSortBy} />
-      <Matn
-        children='Hello https://example.com 1234567'
-        highlight={['hello']}
-        highlightColor='yellow'
-        formatNumber={true}
-        separator=',' // Formats "1234567" as "1,234,567"
-        animateNumber={true} // Animates from 0 to 1234567
-        duration={2000}
-        font='bold'
-        color='blue'
-        lineCount={2}
-        copyable={true}
-        mask={/\d{3}/g} // Masks first 3 digits: "***4567"
-        html={false} // Set to true if you want raw HTML
-        tooltip='Hover me!'
-        letterSpacing={2}
-        gradient='to right, red, blue'
-        marquee={true}
-        responsiveFont={true}
-        typewriter={false} // Disable if animateNumber is true
-        autoLink={true} // Links "https://example.com"
-      />
+
       <Box display='flex' flexDirection='column' position='relative' pt={0} px={'30px'} pb={3} width={'100%'}>
         <Grid width={'100%'} container>
           <Grid width={'100%'} item>
