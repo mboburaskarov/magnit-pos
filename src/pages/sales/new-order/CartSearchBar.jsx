@@ -1,6 +1,6 @@
 import { Box, Button, ListItem, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { get, size } from 'lodash'
+import { get, head, size } from 'lodash'
 import React, { useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -260,7 +260,7 @@ function CartSearchBar({
         handleAddProduct({
           discount_type: get(discount, 'type', 'percent'),
           discount_value: Number(get(discount, 'amount', 0)),
-          store_product_id: document.activeElement.id,
+          store_product_id: get(document, 'activeElement.id', 'err #3'),
           sale_id: id,
         })
       }
@@ -298,7 +298,7 @@ function CartSearchBar({
                   discount_type: get(discount, 'type', 'percent'),
                   discount_value: Number(get(discount, 'amount', 0)),
                   sale_id: id,
-                  store_product_id: productsData?.[0]?.id,
+                  store_product_id: get(head(productsData), 'id', 'err #2'),
                 })
               }
             }}
