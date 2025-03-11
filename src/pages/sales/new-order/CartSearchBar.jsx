@@ -300,7 +300,7 @@ function CartSearchBar({
                   discount_type: get(discount, 'type', 'percent'),
                   discount_value: Number(get(discount, 'amount', 0)),
                   sale_id: id,
-                  barcode: searchTearm,
+                  barcode: searchTearm.split(' ')[0],
                   // store_product_id: get(head(productsData, 'err #7'), 'id', 'err #2'),
                 })
               }
