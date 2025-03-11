@@ -554,8 +554,9 @@ function NewSale() {
               }}
             >
               <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
-                {get(cashBoxDetails, 'data.data.sale_type', 'SALE') == 'RETURN' ? 'Возврат' : t('page.new_sale.label')} (
-                {get(cartItemsList, 'data.data.item_count', 0)})
+                {/* {get(cashBoxDetails, 'data.data.sale_type', 'SALE') == 'RETURN' ? 'Возврат' : t('page.new_sale.label')} (
+                {get(cartItemsList, 'data.data.item_count', 0)}) */}
+                {t('page.new_sale.label')}
               </Typography>
               {get(cartItemsList, 'data.data.data', 0)?.length ? (
                 <Box display={'flex'} sx={{ cursor: 'pointer' }} alignItems={'center'} onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}>
