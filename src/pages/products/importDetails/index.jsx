@@ -32,7 +32,7 @@ export default function ImportDetailsPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
-
+  const user_data = useSelector((state) => state.user)
   const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.importDetailsColumns)
   const { values } = useQueryParams()
@@ -45,7 +45,13 @@ export default function ImportDetailsPage() {
     values,
     setImages: setOpenImageGallery,
   })
+  const routeString = []
 
+  user_data?.role_actions?.forEach((item) => {
+    if (item.type == 'TABLE') {
+      routeString.push(item.route)
+    }
+  })
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
@@ -54,6 +60,7 @@ export default function ImportDetailsPage() {
           ...el,
           label: el.headerName,
           desc: el.desc,
+          hide: !routeString.includes(`import-detail-${el?.colId}`),
           name: el.colId,
           always_active: el?.always_active ?? el?.always_active,
         }))
