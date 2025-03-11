@@ -44,7 +44,7 @@ export const theme = ({ mode, palette }) => {
             maxWidth: '1440px',
           },
           maxWidthLg: {
-            maxWidth: '1280px !important',
+            maxWidth: 'calc(100vw - 96px) !important',
           },
         },
       },
