@@ -162,7 +162,7 @@ function RippedPaperCheck({
                   <DashedRow
                     id={`return-price-${'index'}`}
                     rowData={{
-                      type: `${get(el, 'quantity')} dona`,
+                      type: `${get(el, 'quantity')},${get(el, 'unit_quantity')} dona`,
                       value: `${thousandDivider(get(el, 'total_price'))} so'm`,
                     }}
                   />
@@ -235,7 +235,7 @@ function RippedPaperCheck({
                 />
               )}
               <Box>
-                <Typography>Chek turi: Sotuv</Typography>
+                <Typography>Chek turi: {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}</Typography>
               </Box>
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
