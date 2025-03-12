@@ -485,7 +485,7 @@ function NewSale() {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
   useHotkeys(
-    ['/', '.'],
+    ['Slash', 'Period'],
     (event) => {
       event.preventDefault() // Prevent the default behavior of the "/" key
       searchRef.current?.focus() // Focus the input field
