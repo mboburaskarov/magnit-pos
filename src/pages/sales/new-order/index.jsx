@@ -491,6 +491,7 @@ function NewSale() {
       searchRef.current?.focus() // Focus the input field
     },
     {
+      preventDefault: true,
       enableOnTags: ['INPUT', 'TEXTAREA'], // Enable the hotkey even when these elements are focused
     }
   )
