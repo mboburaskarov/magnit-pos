@@ -459,6 +459,7 @@ function NewSale() {
   }, [debouncedSearchTerm])
 
   useHotkeys('tab', (event) => focusPackInput(event), { enableOnFormTags: true })
+  useHotkeys('*', (event) => console.log(event))
   useHotkeys(['ArrowRight', 'ArrowLeft'], (event) => focusUnitInput(event), { enableOnFormTags: true })
   useHotkeys('Shift', (event) => focusedItemDetailDrawerOpen(event), { enableOnFormTags: true })
   useHotkeys(['T', 't', 'е'], () => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), {
