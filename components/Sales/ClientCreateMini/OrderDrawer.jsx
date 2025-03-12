@@ -570,6 +570,7 @@ export default function OrderDrawer({
   useHotkeys(
     Object.values(paymentHotKeys),
     (event) => {
+      event.preventDefault()
       handleFKeys(event)
     },
     {

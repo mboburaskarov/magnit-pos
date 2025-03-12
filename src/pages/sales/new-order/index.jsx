@@ -42,6 +42,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchange/ReturnExchangeDrawer'
 import useDebouncedValue from '../../../hooks/useDebouncedValue'
+import { useSelector } from 'react-redux'
 const useStyles = makeStyles((theme) => ({
   card_detail: {
     width: '30%',
@@ -217,6 +218,7 @@ function NewSale() {
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
+  const userData = useSelector((state) => state.user)
   const method = useForm()
   const classes = useStyles()
   const cartItemRef = useRef([])
@@ -611,7 +613,7 @@ function NewSale() {
               </Typography>
             </Box>
             <Box
-              onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') })}
+              onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })}
               className={classes.cart_detail_icon}
             >
               <FileIcon color='#000' />
