@@ -103,6 +103,7 @@ export default function ProductsPage() {
       region: values?.region_id,
       supply_price_from: values?.supply_price_from,
       retail_price_from: values?.retail_price_from,
+      no_barcode: values?.no_barcode,
       isExpress: values?.isExpress,
       ...(appType !== 'ALL' && { status: appType }),
     }
@@ -114,6 +115,7 @@ export default function ProductsPage() {
     values?.producer_id,
     values?.category_id,
     values?.store_id,
+    values?.no_barcode,
     values?.supply_price_to,
     values?.retail_price_to,
     values?.supply_price_from,

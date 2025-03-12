@@ -13,6 +13,7 @@ import LazySelect from '../../../components/Select/LazySelect'
 import { requests } from '../../../utils/requests'
 import CloseIcon from '../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
+import SelectSimple from '../../../components/Select/SelectSimple'
 
 export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -42,6 +43,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
       store_name: data.store_id?.name || undefined,
       producer_id: data.producer_id?.value || undefined,
       producer_name: data.producer_id?.name || undefined,
+      no_barcode: data.no_barcode.value || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
@@ -77,6 +79,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   }, [
     values?.producer_id,
     values?.category_id,
+    values?.no_barcode,
     values?.store_id,
     values?.retail_price_to,
     values?.retail_price_from,
@@ -105,6 +108,10 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
     navigate(`/products/all?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
+  const barcodeFilterList = [
+    { name: 'Без штрих-кода', value: true },
+    { name: 'Со штрих-кодом', value: false },
+  ]
   return (
     <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}>
       <Box
@@ -136,6 +143,19 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
               getOptionLabel={(el) => el.name}
               options={shopList?.data?.data?.data}
             /> */}
+              <SelectSimple
+                fullWidth
+                id='nobarcode'
+                white
+                name='no_barcode'
+                minWidth='auto'
+                label={'Штрих-код'}
+                placeholder={'Bыберите статус'}
+                options={barcodeFilterList}
+                getOptionLabel={(el) => el.name}
+              />
+              <Box height={'20px'} />
+
               <LazySelect
                 slug='users'
                 boxStyle={{ width: '100%' }}
