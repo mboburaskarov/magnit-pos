@@ -120,6 +120,9 @@ export const requests = {
   createProduct: (data) => request.post(`v1/product`, data),
   changeBarcode: ({ id, barcode }) => request.put(`v1/product/update-barcode/${id}`, { id, barcode }),
   getProductBonusList: (filter) => request.get(`v1/product-bonus/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  createBonusProduct: (data) => request.post(`v1/product-bonus`, data),
+  getProductListForSelect: (filter) => request.get(`v1/product/product-list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  deleteBonusProduct: (id) => request.delete(`v1/product-bonus`, id),
 
   getSingleProduct: (id) => request.get(`v1/product/${id}`),
   getSingleProductHistory: (filter, id) => request.get(`v1/product/import/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),

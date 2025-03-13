@@ -459,6 +459,7 @@ function NewSale() {
   }, [debouncedSearchTerm])
 
   useHotkeys('tab', (event) => focusPackInput(event), { enableOnFormTags: true })
+  useHotkeys('*', (event) => console.log(event))
   useHotkeys(
     'Backspace',
     (event) => {

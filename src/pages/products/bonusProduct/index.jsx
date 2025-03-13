@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
@@ -18,16 +18,22 @@ import tableHeaderSelector from './tableHeaderSelector'
 import CheckAccess from '../../../../components/CheckAccess'
 import PlusIcon from '../../../assets/icons/PlusIcon'
 import { FormProvider, useForm } from 'react-hook-form'
-import { error } from '../../../../utils/toast'
+import { error, success } from '../../../../utils/toast'
 import CreateAutoOrder from './createAutoOrder'
 import DateRangeInput from '../../../../components/Inputs/DateRangeInput.jsx/DateRangeInput'
 import dayjs from 'dayjs'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
+import BigTickIcon from '../../../assets/icons/BigTickIcon'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
+import { LoadingButton } from '@mui/lab'
 const SELECTION_ID = 'checkboxSelectionField'
+import * as qs from 'qs'
+import { useNavigate } from 'react-router-dom'
 
 export default function BonusProductPage() {
   const theme = useTheme()
   const methods = useForm()
-
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.bonusProductTableColumns)
@@ -35,14 +41,32 @@ export default function BonusProductPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+
   const [orderModel, setOrderModel] = useState(false)
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
     values,
     setImages: setOpenImageGallery,
+    setOpenConfirmDialog: setOpenConfirmDialog,
   })
-
+  const { mutate: deleteBonusProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteBonusProduct, {
+    onSuccess: () => {
+      refetch().then(() => {
+        const requestParams = qs.stringify({ ...values, offset: 0 }, { addQueryPrefix: true })
+        navigate(`/products/bonus-product${requestParams}`)
+      })
+      success('Продукт успешно удален!')
+      setOpenConfirmDialog(null)
+    },
+    onError: (err) => {
+      refetch()
+      error('Ошибка при удалении товара!')
+      setOpenConfirmDialog(null)
+      console.log('err', err)
+    },
+  })
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
@@ -106,7 +130,7 @@ export default function BonusProductPage() {
       <FormProvider {...methods}>
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
           <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-            Продукт с бонусом
+            Бонусный продукт
           </Typography>
 
           <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -148,7 +172,7 @@ export default function BonusProductPage() {
                     variant='contained'
                     color='primary'
                   >
-                    Создать заказ
+                    Создать
                   </Button>
                 </Box>
               </CheckAccess>
@@ -181,6 +205,36 @@ export default function BonusProductPage() {
 
         <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       </FormProvider>
+      {openConfirmDialog && (
+        <ConfirmDialog
+          open={!!openConfirmDialog}
+          setOpen={setOpenConfirmDialog}
+          icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
+          title={'Удалить бонусный продукт?'}
+          desc={'Вы хотите Удалить бонусный продукт?'}
+          actions={
+            <>
+              <Button
+                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                fullWidth
+                color='secondary'
+                variant='contained'
+                onClick={() => setOpenConfirmDialog(null)}
+              >
+                Нет
+              </Button>
+              <LoadingButton
+                variant='contained'
+                type='button'
+                // loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
+                onClick={() => deleteBonusProduct({ data: [openConfirmDialog.id] })}
+              >
+                Да, удалить
+              </LoadingButton>
+            </>
+          }
+        />
+      )}
     </LoadingContainer>
   )
 }

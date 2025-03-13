@@ -33,7 +33,13 @@ const columns = [
     minWidth: 70,
     width: 270,
   },
-
+  {
+    field: 'actions',
+    hide: false,
+    minWidth: 96,
+    width: 96,
+    pinned: 'right',
+  },
   // {
   //   field: 'status',
   //   hide: false,

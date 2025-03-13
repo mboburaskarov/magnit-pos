@@ -94,8 +94,6 @@ const NumberFormatInput = ({
       {applyAll && isApplyAll && (
         <Box
           onClick={() => {
-            console.log('l')
-
             aplyAllFunc(), setApplyAll(false)
           }}
           className={classes.applyAll}
