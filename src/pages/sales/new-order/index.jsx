@@ -309,7 +309,9 @@ function NewSale() {
       }),
     { enabled: false }
   )
-
+  useEffect(() => {
+    searchRef.current?.focus()
+  }, [])
   const { mutate: deleteAll } = useMutation(requests.deleteAll, {
     onSuccess: () => {
       setShowOverlay(false)
@@ -461,7 +463,7 @@ function NewSale() {
   useHotkeys('tab', (event) => focusPackInput(event), { enableOnFormTags: true })
   useHotkeys('*', (event) => console.log(event))
   useHotkeys(
-    'Backspace',
+    'Delete',
     (event) => {
       if (document.activeElement?.id?.includes('quantity_')) {
         deleteCartItem(document?.activeElement?.id?.split('quantity_')[1])
