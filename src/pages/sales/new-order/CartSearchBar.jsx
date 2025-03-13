@@ -197,7 +197,7 @@ function CartSearchBar({
   setShowOverlay,
 }) {
   // const [searchTearm, setSearchTerm] = useState('')
-  const [searchTearm, setSearchTerm, debouncedValue] = useDebouncedValue('', 200)
+  const [searchTearm, setSearchTerm, debouncedValue] = useDebouncedValue('', 50)
   const navigate = useNavigate()
   const [closeCashBox, setCloseCashBox] = useState(false)
   const searchItemRef = useRef([])
