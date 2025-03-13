@@ -99,9 +99,9 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
               id='import-date'
               name='date'
               noValidation
-              label={'Дата импорта'}
+              label={'Дата бонус'}
               minWidth='auto'
-              placeholder={'Дата импорта'}
+              placeholder={'Дата бонус'}
               fullWidth
               startDate={startDate}
               endDate={endDate}
