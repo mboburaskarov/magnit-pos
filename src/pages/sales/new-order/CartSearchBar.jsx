@@ -18,6 +18,7 @@ import ConfirmDialog from '../../../../components/ConfirmDialog'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import { LoadingButton } from '@mui/lab'
 import useDebouncedValue from '../../../hooks/useDebouncedValue'
+import { useDebounce } from 'use-debounce'
 const useStyles = makeStyles((theme) => ({
   avatar: {
     width: 30,
@@ -197,18 +198,19 @@ function CartSearchBar({
   setShowOverlay,
 }) {
   // const [searchTearm, setSearchTerm] = useState('')
-  const [searchTearm, setSearchTerm, debouncedValue] = useDebouncedValue('', 50)
+  const [searchTearm, setSearchTerm] = useState('')
   const navigate = useNavigate()
   const [closeCashBox, setCloseCashBox] = useState(false)
+  const [debouncedSearchTerm] = useDebounce(searchTearm, 200)
   const searchItemRef = useRef([])
   const userData = useSelector((state) => state.user)
   const { id } = useParams()
 
   const productsListFilter = useMemo(() => {
     return {
-      search: debouncedValue,
+      search: searchTearm,
     }
-  }, [debouncedValue])
+  }, [debouncedSearchTerm])
   const { data: productsList } = useQuery(['storeProductsList', productsListFilter], () =>
     requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter)
   )
@@ -285,11 +287,13 @@ function CartSearchBar({
             name='search'
             placeholder={'Поиск: товар, категория, штрих-код'}
             fullWidth
+            onFocus={() => {
+              setShowOverlay(true)
+            }}
             value={searchTearm}
             setSearchTerm={setSearchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value)
-              setShowOverlay(true)
             }}
             onKeyDown={(e) => {
               if (e.key == 'Escape') {
@@ -394,7 +398,7 @@ function CartSearchBar({
                   item={product}
                   itemRef={(el) => (searchItemRef.current[index] = el)}
                   product={product}
-                  searchTerm={searchTearm}
+                  searchTerm={'searchTearm'}
                   classes={classes}
                 />
               ))

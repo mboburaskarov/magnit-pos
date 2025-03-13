@@ -73,11 +73,11 @@ export default function SerchedItem({
               },
             },
       }}
-      // onKeyDown={(event) => {
-      //   if (event.key === 'Enter' && fakeIndexForCheckSearch === index) {
-      //     handleAddProduct(product)
-      //   }
-      // }}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' && fakeIndexForCheckSearch === index) {
+          handleAddProduct(product)
+        }
+      }}
       tabIndex={index}
       key={index}
       ref={itemRef}
@@ -86,7 +86,7 @@ export default function SerchedItem({
         <Box className={classes.searchItemBox + ' main-Box'}>
           <Box flex='1 0 20%' maxWidth={'100%'} overflow={'hidden'} display='flex' alignItems='center'>
             <div className={classes.searchImage}>
-              <img src={product?.main_photo || '/default-img.avif'} />{' '}
+              <img src={product?.main_photo || '/default-img.avif'} />
             </div>
             <Box ml={2} width={'100%'} overflow={'hidden'}>
               <Typography
@@ -113,9 +113,9 @@ export default function SerchedItem({
                   className={classes.itemBarcode}
                   textToHighlight={product?.barcode}
                 />
-                {/* <Typography color={'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
+                <Typography color={'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
                   / {get(product, 'quantity ', 0)}
-                </Typography> */}
+                </Typography>
                 <Typography color={get(product, 'expire_day', 0) < 0 ? 'red.500' : 'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
                   / {get(product, 'expire_day', 0)} kun
                 </Typography>
