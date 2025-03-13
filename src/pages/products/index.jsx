@@ -28,6 +28,7 @@ import tableHeaderSelector from './tableHeaderSelector'
 import { get } from 'lodash'
 import { FormProvider, useForm } from 'react-hook-form'
 import BarcodeIcon from '../../assets/icons/BarcodeIcon'
+import dayjs from 'dayjs'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function ProductsPage() {
   const theme = useTheme()
