@@ -459,7 +459,16 @@ function NewSale() {
   }, [debouncedSearchTerm])
 
   useHotkeys('tab', (event) => focusPackInput(event), { enableOnFormTags: true })
-  useHotkeys('*', (event) => console.log(event))
+  useHotkeys(
+    'Backspace',
+    (event) => {
+      if (document.activeElement?.id?.includes('quantity_')) {
+        deleteCartItem(document?.activeElement?.id?.split('quantity_')[1])
+      }
+    },
+    { enableOnFormTags: true }
+  )
+
   useHotkeys(['ArrowRight', 'ArrowLeft'], (event) => focusUnitInput(event), { enableOnFormTags: true })
   useHotkeys('Shift', (event) => focusedItemDetailDrawerOpen(event), { enableOnFormTags: true })
   useHotkeys(['T', 't', 'е'], () => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), {

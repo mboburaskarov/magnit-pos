@@ -105,6 +105,8 @@ export default function ProductsPage() {
       retail_price_from: values?.retail_price_from,
       no_barcode: values?.no_barcode,
       isExpress: values?.isExpress,
+      start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
+      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
       ...(appType !== 'ALL' && { status: appType }),
     }
   }, [
@@ -122,6 +124,8 @@ export default function ProductsPage() {
     values?.retail_price_from,
     values?.region_id,
     values?.isExpress,
+    values?.start_date,
+    values?.end_date,
     regions,
   ])
   const {

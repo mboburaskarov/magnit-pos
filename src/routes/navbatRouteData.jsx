@@ -48,6 +48,12 @@ export const navbatRouteData = [
         id: '327',
         href: '/products/categories',
       },
+      {
+        label: 'Продукт с бонусом',
+        active: '/products/bonus-product/*',
+        id: '327',
+        href: '/products/bonus-product',
+      },
     ],
   },
   {

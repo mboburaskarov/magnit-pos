@@ -5,7 +5,7 @@ import CatalogManagement from '../../pages/products/categories'
 import ImportPage from '../../pages/products/import'
 import ImportDetailsPage from '../../pages/products/importDetails'
 import ImportWithCheckingPage from '../../pages/products/importWithChecking'
-
+import BonusProductPage from '../../pages/products/bonusProduct/index'
 const productsRoutes = {
   path: 'products',
   element: <LayoutWithHeaderNavbar />,
@@ -26,6 +26,10 @@ const productsRoutes = {
     {
       path: 'auto-order',
       element: <AutoOrderPage />,
+    },
+    {
+      path: 'bonus-product',
+      element: <BonusProductPage />,
     },
   ],
 }

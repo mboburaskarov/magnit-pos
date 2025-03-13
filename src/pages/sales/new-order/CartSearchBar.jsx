@@ -251,7 +251,6 @@ function CartSearchBar({
   useHotkeys('j', () => methods.setFocus('product-search'), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
-
   useHotkeys('ArrowDown', (event) => selectDownItems(event), { enableOnFormTags: true })
   useHotkeys(
     'Enter',
@@ -292,17 +291,33 @@ function CartSearchBar({
               setSearchTerm(e.target.value)
               setShowOverlay(true)
             }}
-            onKeyDown={({ key }) => {
-              if (key == 'Enter') {
+            onKeyDown={(e) => {
+              if (e.key == 'Escape') {
+                setSearchTerm('')
+                e.preventDefault()
+              }
+              if (e.key == 'Enter') {
                 setSearchTerm('')
                 setShowOverlay(false)
-                handleAddProduct({
-                  discount_type: get(discount, 'type', 'percent'),
-                  discount_value: Number(get(discount, 'amount', 0)),
-                  sale_id: id,
-                  barcode: searchTearm.slice(0, 31),
-                  // store_product_id: get(head(productsData, 'err #7'), 'id', 'err #2'),
-                })
+                if (productsData.length === 1) {
+                  console.log(productsData)
+
+                  handleAddProduct({
+                    discount_type: get(discount, 'type', 'percent'),
+                    discount_value: Number(get(discount, 'amount', 0)),
+                    sale_id: id,
+                    barcode: get(head(productsData), 'barcode'),
+                    // store_product_id: get(head(productsData, 'err #7'), 'id', 'err #2'),
+                  })
+                } else {
+                  handleAddProduct({
+                    discount_type: get(discount, 'type', 'percent'),
+                    discount_value: Number(get(discount, 'amount', 0)),
+                    sale_id: id,
+                    barcode: searchTearm.slice(0, 31),
+                    // store_product_id: get(head(productsData, 'err #7'), 'id', 'err #2'),
+                  })
+                }
               }
             }}
           />
