@@ -14,6 +14,7 @@ export default function Label({ children, required, ...props }) {
       mb={'12px'}
       display='flex'
       type='label'
+      className='input-label'
       {...props}
     >
       {children}

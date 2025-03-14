@@ -19,6 +19,7 @@ const TextField = ({
   required = false,
   name,
   type,
+  defaultValue,
   label,
   disabled,
   dashed,
@@ -51,6 +52,7 @@ const TextField = ({
           onChange: (e) => setValue(e.target.value),
         })}
         multiline={multiline}
+        defaultValue={defaultValue}
         rows={4}
         onKeyDown={onKeyDown}
         autoFocus={autoFocus}

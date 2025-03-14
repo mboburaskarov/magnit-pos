@@ -43,6 +43,8 @@ import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchange/ReturnExchangeDrawer'
 import useDebouncedValue from '../../../hooks/useDebouncedValue'
 import { useSelector } from 'react-redux'
+import ImplementMarkingDialog from './ImplementMarkingDialog'
+import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck'
 const useStyles = makeStyles((theme) => ({
   card_detail: {
     width: '30%',
@@ -229,10 +231,12 @@ function NewSale() {
   const [isCreateOpenDraft, setIsCreateOpenDraft] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [isOpenChangeShift, setIsOpenChangeShift] = useState(false)
+  const [isOpenImplementMarkingDialog, setIsOpenImplementMarkingDialog] = useState(false)
   // const [searchTerm, setSearchTerm] = useState('')
-
+  const [markingsList, setMarkingList] = useState({})
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const [markingCount, setMarkingCount] = useState({})
   const [customers, setCustomers] = useState([])
   const [discount, setDiscountType] = useState('percent')
   const [searchTerm, setSearchTerm, debouncedValue] = useDebouncedValue('', 200)
@@ -243,7 +247,9 @@ function NewSale() {
   const [quickCreateClientName, setQuickCreateClientName] = useState(null)
   const [inputDiscount, setInputDiscount] = useState(NaN)
   const [isOrderDrower, setIsOrderDrower] = useState(false)
+  const [isOpenRemoveMarkingDialog, setIsOpenRemoveMarkingDialog] = useState(false)
   const searchRef = useRef('')
+  const searchResetRef = useRef('')
   const printContainer = useRef()
   let a = -1
   const focusPackInput = (event, id) => {
@@ -310,8 +316,8 @@ function NewSale() {
     { enabled: false }
   )
   useEffect(() => {
-    searchRef.current?.focus()
-  }, [])
+    searchRef?.current?.focus()
+  }, [searchRef.current])
   const { mutate: deleteAll } = useMutation(requests.deleteAll, {
     onSuccess: () => {
       setShowOverlay(false)
@@ -349,11 +355,17 @@ function NewSale() {
     },
   })
   const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createCartItem, {
-    onSuccess: () => {
+    onSuccess: ({ data }) => {
+      const searchValue = searchRef.current.value
+      if (searchValue.length > 30) {
+        //save to marking
+        addNewMarking(data?.data?.id, searchValue)
+      }
+      searchResetRef.current.clearValue()
+      console.log('gg')
+
       setShowOverlay(false)
-      setSearchTerm('')
       refetchcartItemsList()
-      method.setValue('search', '')
     },
     onError: (err) => {
       if (get(err, 'response.data.code') === 409) {
@@ -399,6 +411,40 @@ function NewSale() {
   useEffect(() => {
     refetchcartItemsList()
   }, [id])
+  function safeFloorDivide(a, b) {
+    return b === 0 ? 0 : a === 0 ? 0 : Math.ceil(a / b)
+  }
+  const calculate = (quantity, unitQuantity, quantityPerPeck) => {
+    if (unitQuantity > quantityPerPeck) {
+      return safeFloorDivide(unitQuantity, quantityPerPeck) + quantity
+    } else {
+      if (unitQuantity === 0) {
+        return quantity
+      } else {
+        return safeFloorDivide(unitQuantity, quantityPerPeck) + quantity
+      }
+    }
+  }
+  const { mutate: changeCartItemQuantity } = useMutation(requests.changeCartItemQuantity, {
+    onSuccess: ({ data }) => {
+      refetchcartItemsList()
+    },
+    onError: (err) => {
+      refetchcartItemsList()
+      method.setValue(`quantity_${item?.id}`, item?.quantity)
+      method.setValue(`unit_quantity_${item?.id}`, item?.unit_quantity)
+      if (get(err, 'response.data.code') === 409) {
+        error(`Описание
+Редактировать
+Введенное количество товара превышает существующее количество. 
+Максимальное количество упаковок на складе - ${get(err, 'response.data.data.pack_quantity')},
+единичное количество на складе - ${get(err, 'response.data.data.unit_quantity')}.`)
+      } else {
+        error('Ошибка при получении похожих товаров.')
+      }
+      console.log('err', err)
+    },
+  })
   useEffect(() => {
     const cartList = cartItemsList?.data?.data?.data
 
@@ -409,6 +455,7 @@ function NewSale() {
         setInputDiscount(get(head(cartList), 'discount_amount', 0))
       }
       cartList.map((item) => {
+        setMarkingCount((p) => ({ ...p, [item.id]: calculate(item.quantity, item.unit_quantity, item.unit_per_pack) }))
         method.setValue(`unit_quantity_${item.id}`, get(item, 'unit_quantity'))
         method.setValue(`quantity_${item.id}`, get(item, 'quantity'))
       })
@@ -532,6 +579,47 @@ function NewSale() {
 
     return () => clearTimeout(handler) // Cleanup the timeout on re-renders
   }, [debouncedDiscount])
+  const implementMarkingList = (marking, id, index) => {
+    setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
+  }
+  const addNewMarking = (id, marking) => {
+    setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [prev[id] ? Object.keys(prev[id]).pop() + 1 : 0]: marking } }))
+  }
+  const removeMarking = ({ quantity, unit_per_pack, unit_quantity, id, request }) => {
+    const currentCount = calculate(quantity, unit_quantity, unit_per_pack)
+    const previusCount = Object.values(markingsList[id] || {}).length
+    const userIsFilledMarkingCount = Object.values(markingsList[id] || {})?.filter((a) => a?.length).length
+    console.log(userIsFilledMarkingCount, currentCount)
+
+    if (userIsFilledMarkingCount > currentCount) {
+      setIsOpenRemoveMarkingDialog({ diff: previusCount - currentCount, id, request, available: Object.values(markingsList[id] || {}) })
+    } else {
+      changeCartItemQuantity(request)
+    }
+  }
+  const isAllMarkingFill = () => {
+    const cartsMarkingCount = Object.values(markingCount)?.reduce((acc, i) => acc + i, 0)
+    const userIsFilledMarkingCount = Object.values(markingsList)
+      ?.map((e) => Object.keys(e).length)
+      ?.reduce((acc, i) => acc + i, 0)
+
+    return cartsMarkingCount === userIsFilledMarkingCount
+  }
+  const isAllMarkingFillById = (id) => {
+    const cartsMarkingCount = markingCount[id]
+    const userIsFilledMarkingCount = Object.values(markingsList[id] || {})?.filter((a) => a?.length).length
+    return cartsMarkingCount === userIsFilledMarkingCount
+  }
+  const removeOneMarking = (data, targetId) => {
+    // Create a new object to store the result
+    const result = { ...data }
+
+    // Remove the specified ID
+    delete result[targetId]
+
+    return result
+  }
+  console.log(markingsList, markingCount)
 
   return (
     <FormProvider {...method}>
@@ -548,6 +636,8 @@ function NewSale() {
               refetchcartItemsList={refetchcartItemsList}
               cashBoxDetails={cashBoxDetails}
               showOverlay={showOverlay}
+              searchResetRef={searchResetRef}
+              addNewMarking={addNewMarking}
               setShowOverlay={setShowOverlay}
               handleAddProduct={handleAddProduct}
             />
@@ -600,6 +690,10 @@ function NewSale() {
                 >
                   {get(cartItemsList, 'data.data.data', []).map((el, index) => (
                     <CartItem
+                      implementMarkingList={implementMarkingList}
+                      markingsList={markingsList}
+                      removeMarking={removeMarking}
+                      setMarkingList={setMarkingList}
                       setOpenProductDrawer={setOpenProductDrawer}
                       // onKeyDown={(e) => handleTabSwitch(e, el?.id)}
                       refetchcartItemsList={refetchcartItemsList}
@@ -830,7 +924,14 @@ function NewSale() {
             </Box>
             <Button
               disabled={size(get(cartItemsList, 'data.data.data')) === 0}
-              onClick={() => setIsOrderDrower(true)}
+              // onClick={() => setIsOrderDrower(true)}
+              onClick={() => {
+                if (isAllMarkingFill()) {
+                  setIsOrderDrower(true)
+                } else {
+                  setIsOpenImplementMarkingDialog(true)
+                }
+              }}
               color='primary'
               sx={{ mb: '16px', display: 'flex', justifyContent: 'space-between' }}
             >
@@ -892,9 +993,20 @@ function NewSale() {
                 type='button'
                 loading={isdeleteCartItem}
                 onClick={() => {
-                  openConfirmDialog.type === 'deleteOne'
-                    ? deleteCartItem(openConfirmDialog.id)
-                    : deleteAll({ ids: get(cartItemsList, 'data.data.data', []).map((el) => el.id) })
+                  if (openConfirmDialog.type === 'deleteOne') {
+                    console.log(markingsList[openConfirmDialog.id], markingCount)
+                    // return
+                    setMarkingCount((p) => ({
+                      ...p,
+                      [openConfirmDialog.id]: markingCount[openConfirmDialog.id] - Object.values(markingsList[openConfirmDialog.id]).length,
+                    }))
+                    setMarkingList((p) => removeOneMarking(p, openConfirmDialog.id))
+                    deleteCartItem(openConfirmDialog.id)
+                  } else {
+                    setMarkingList({})
+                    setMarkingCount(0)
+                    deleteAll({ ids: get(cartItemsList, 'data.data.data', []).map((el) => el.id) })
+                  }
                 }}
               >
                 Да, Удалить
@@ -911,6 +1023,7 @@ function NewSale() {
         cashBoxDetails={cashBoxDetails}
         customerId={customerId}
         refetchcartItemsList={refetchcartItemsList}
+        markingsList={markingsList}
         setIsOrderDrower={setIsOrderDrower}
       />
       <CreateDraftDrawer
@@ -921,7 +1034,27 @@ function NewSale() {
         setOpen={setIsCreateOpenDraft}
       />
       <ProductDrawer open={openProductDrawer} onClose={setOpenProductDrawer} />
-
+      <ImplementMarkingDialog
+        markingCount={markingCount}
+        isAllMarkingFill={isAllMarkingFill}
+        cartItems={get(cartItemsList, 'data.data.data', [])}
+        markingsList={markingsList}
+        setMarkingList={setMarkingList}
+        open={isOpenImplementMarkingDialog}
+        implementMarkingList={implementMarkingList}
+        handleClose={() => setIsOpenImplementMarkingDialog(false)}
+      />
+      <DecreasedCartItemMarkingCheck
+        markingCount={markingCount}
+        isAllMarkingFillById={isAllMarkingFillById}
+        refetchcartItemsList={refetchcartItemsList}
+        cartItems={get(cartItemsList, 'data.data.data', [])}
+        markingsList={markingsList}
+        setMarkingList={setMarkingList}
+        open={isOpenRemoveMarkingDialog}
+        implementMarkingList={implementMarkingList}
+        handleClose={() => setIsOpenRemoveMarkingDialog(false)}
+      />
       <ChangeShift open={isOpenChangeShift} setOpen={setIsOpenChangeShift} />
       <DraftDrawer cashBoxDetails={cashBoxDetails} open={isOpenDraft} setOpen={setIsOpenDraft} />
       <ReturnExchangeDrawer cashBoxDetails={cashBoxDetails} open={isOpenReturnExchange} setOpen={setIsOpenReturnExchange} />

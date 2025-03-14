@@ -1,7 +1,7 @@
 import { Box, Button, ListItem, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get, head, size } from 'lodash'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useQuery } from 'react-query'
@@ -190,7 +190,10 @@ function CartSearchBar({
   refetchcartItemsList,
   openDraft,
   discount,
+  addNewMarking,
+  searchResetRef,
   searchRef,
+
   handleAddProduct,
   setIsOpenChangeShift,
   cashBoxDetails,
@@ -205,10 +208,12 @@ function CartSearchBar({
   const searchItemRef = useRef([])
   const userData = useSelector((state) => state.user)
   const { id } = useParams()
-
+  useImperativeHandle(searchResetRef, () => ({
+    clearValue: () => setSearchTerm(''),
+  }))
   const productsListFilter = useMemo(() => {
     return {
-      search: searchTearm,
+      search: searchTearm.slice(0, 31),
     }
   }, [debouncedSearchTerm])
   const { data: productsList } = useQuery(['storeProductsList', productsListFilter], () =>
@@ -258,8 +263,9 @@ function CartSearchBar({
     'Enter',
     (event) => {
       if (document.activeElement.id?.length === 36) {
-        setSearchTerm('')
+        // setSearchTerm('')
         setShowOverlay(false)
+
         handleAddProduct({
           discount_type: get(discount, 'type', 'percent'),
           discount_value: Number(get(discount, 'amount', 0)),
@@ -297,13 +303,17 @@ function CartSearchBar({
             }}
             onKeyDown={(e) => {
               if (e.key == 'Escape') {
-                setSearchTerm('')
+                // setSearchTerm('')
                 e.preventDefault()
               }
               if (e.key == 'Enter') {
-                setSearchTerm('')
+                // setSearchTerm('')
                 setShowOverlay(false)
                 if (productsData.length === 1) {
+                  // if (searchTearm.length > 30) {
+                  //   //save to marking
+                  //   addNewMarking(productsData?.[0]?.id, searchTearm)
+                  // }
                   handleAddProduct({
                     discount_type: get(discount, 'type', 'percent'),
                     discount_value: Number(get(discount, 'amount', 0)),
@@ -312,6 +322,10 @@ function CartSearchBar({
                     // store_product_id: get(head(productsData, 'err #7'), 'id', 'err #2'),
                   })
                 } else {
+                  // if (searchTearm.length > 30) {
+                  //   //save to marking
+                  //   addNewMarking(productsData?.[0]?.id, searchTearm)
+                  // }
                   handleAddProduct({
                     discount_type: get(discount, 'type', 'percent'),
                     discount_value: Number(get(discount, 'amount', 0)),

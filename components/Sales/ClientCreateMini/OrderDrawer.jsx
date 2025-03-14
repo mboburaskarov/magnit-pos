@@ -254,6 +254,7 @@ export default function OrderDrawer({
   setIsOrderDrower,
   isOrderDrower,
   closeDrawer,
+  markingsList,
   setInputDiscount,
   printContainer,
   cartItemsList,
@@ -328,21 +329,24 @@ export default function OrderDrawer({
       // refetchcartItemsList()
       ///
       //send to epos
-      const mockData = get(cartItemsList, 'data', []).map((el) => ({
-        barcode: el.barcode,
-        amount: el.quantity * 1000,
-        price: el.total_price,
-        discount: el.discount_amount,
-        vatPercent: get(el, 'vat_percent'),
-        vat: get(el, 'vat'),
-        label: get(el, 'label'),
-        name: el.name,
-        classCode: get(el, 'class_code'),
-        packageCode: get(el, 'package_code'),
-        // commissionTIN: '',
-        other: 0,
-        ownerType: 0,
-      }))
+      const mockData = get(cartItemsList, 'data', []).map((el) => {
+        return Object.values(markingsList[el.id]).map((marking, index) => ({
+          barcode: el.barcode,
+          amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : (el.unit_quantity / el.unit_per_pack) * 1000,
+          price: el.total_price,
+          discount: el.discount_amount,
+          vatPercent: get(el, 'vat_percent'),
+          vat: get(el, 'vat'),
+          label: marking,
+          name: el.name,
+          classCode: get(el, 'class_code'),
+          packageCode: get(el, 'package_code'),
+          // commissionTIN: '',
+          other: 0,
+          ownerType: 0,
+        }))
+      })
+
       sendToEPOS({
         token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
         method: 'sale', // Название метода, Обязательное поле, String
@@ -358,7 +362,7 @@ export default function OrderDrawer({
 
           clientName: get(customerId, 'name'), //ФИО Клиента
 
-          items: mockData,
+          items: mockData.flat(),
           receivedCash: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
           receivedCard: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
         },
@@ -480,7 +484,26 @@ export default function OrderDrawer({
         ...(data ? { opt_data: data } : {}),
         app_type: get(type, 'name').toLowerCase(),
       }))
+    // const mockData = get(cartItemsList, 'data', []).map((el) => {
+    //   console.log(el)
 
+    //   return Object.values(markingsList[el.id]).map((marking, index) => ({
+    //     barcode: el.barcode,
+    //     amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : (el.unit_quantity / el.unit_per_pack) * 1000,
+    //     price: el.total_price,
+    //     discount: el.discount_amount,
+    //     vatPercent: get(el, 'vat_percent'),
+    //     vat: get(el, 'vat'),
+    //     label: marking,
+    //     name: el.name,
+    //     classCode: get(el, 'class_code'),
+    //     packageCode: get(el, 'package_code'),
+    //     // commissionTIN: '',
+    //     other: 0,
+    //     ownerType: 0,
+    //   }))
+    // })
+    // console.log(mockData.flat(), [...mockData], Object.values(markingsList), markingsList)
     finishSaleWithoutAppPaymentType({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
       payment_types: paymentTypes,

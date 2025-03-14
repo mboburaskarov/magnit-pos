@@ -45,7 +45,6 @@ export default function FilterMenu({ open, setOpen }) {
 
   useEffect(() => {
     const { store_id } = values
-    console.log(values)
 
     reset(
       {

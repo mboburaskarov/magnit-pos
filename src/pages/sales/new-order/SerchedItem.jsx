@@ -57,7 +57,7 @@ export default function SerchedItem({
           sale_id: id,
           store_product_id: get(product, 'id', 'err #1'),
         })
-        setSearchTerm('')
+        // setSearchTerm('')
       }}
       sx={{
         position: 'relative',
@@ -73,11 +73,11 @@ export default function SerchedItem({
               },
             },
       }}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' && fakeIndexForCheckSearch === index) {
-          handleAddProduct(product)
-        }
-      }}
+      // onKeyDown={(event) => {
+      //   if (event.key === 'Enter' && fakeIndexForCheckSearch === index) {
+      //     handleAddProduct(product)
+      //   }
+      // }}
       tabIndex={index}
       key={index}
       ref={itemRef}

@@ -213,11 +213,28 @@ export const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const CartItem = ({ index, packRef = () => {}, setOpenProductDrawer, unitRef, onKeyDown, refetchcartItemsList, method, item, setOpenConfirmDialog }) => {
+const CartItem = ({
+  implementMarkingList,
+  markingsList,
+  setMarkingList,
+  index,
+  packRef = () => {},
+  setOpenProductDrawer,
+  unitRef,
+  onKeyDown,
+  refetchcartItemsList,
+  method,
+  item,
+  setOpenConfirmDialog,
+  removeMarking,
+}) => {
   const cls = useStyles()
 
   const { mutate: changeCartItemQuantity } = useMutation(requests.changeCartItemQuantity, {
     onSuccess: ({ data }) => {
+      if (!get(data, 'data.increase')) {
+        removeMarking(get(data, 'data'))
+      }
       refetchcartItemsList()
     },
     onError: (err) => {
@@ -279,15 +296,35 @@ const CartItem = ({ index, packRef = () => {}, setOpenProductDrawer, unitRef, on
                       if (method.getValues(`unit_quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
                         method.setValue(`quantity_${item?.id}`, get(target, 'value'))
                       } else {
-                        changeCartItemQuantity({
-                          id: get(item, 'id'),
-                          data: {
+                        if (get(item, 'quantity') > Number(get(target, 'value'))) {
+                          removeMarking({
                             quantity: Number(get(target, 'value')),
-                            store_product_id: get(item, 'store_product_id'),
-
+                            unit_per_pack: get(item, 'unit_per_pack'),
                             unit_quantity: Number(method.getValues(`unit_quantity_${item?.id}`)),
-                          },
-                        })
+                            id: get(item, 'id'),
+                            request: {
+                              id: get(item, 'id'),
+                              data: {
+                                quantity: Number(get(target, 'value')),
+                                store_product_id: get(item, 'store_product_id'),
+
+                                unit_quantity: Number(method.getValues(`unit_quantity_${item?.id}`)),
+                              },
+                            },
+                          })
+                          method.setValue(`quantity_${item?.id}`, item?.quantity)
+                          method.setValue(`unit_quantity_${item?.id}`, item?.unit_quantity)
+                        } else {
+                          changeCartItemQuantity({
+                            id: get(item, 'id'),
+                            data: {
+                              quantity: Number(get(target, 'value')),
+                              store_product_id: get(item, 'store_product_id'),
+
+                              unit_quantity: Number(method.getValues(`unit_quantity_${item?.id}`)),
+                            },
+                          })
+                        }
                       }
                     }}
                   />
@@ -329,14 +366,33 @@ const CartItem = ({ index, packRef = () => {}, setOpenProductDrawer, unitRef, on
                       if (method.getValues(`quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
                         method.setValue(`unit_quantity_${item?.id}`, get(target, 'value'))
                       } else {
-                        changeCartItemQuantity({
-                          id: get(item, 'id'),
-                          data: {
+                        if (get(item, 'unit_quantity') > Number(get(target, 'value'))) {
+                          removeMarking({
                             quantity: Number(method.getValues(`quantity_${item?.id}`)),
-                            store_product_id: get(item, 'store_product_id'),
+                            unit_per_pack: get(item, 'unit_per_pack'),
                             unit_quantity: Number(get(target, 'value')),
-                          },
-                        })
+                            id: get(item, 'id'),
+                            request: {
+                              id: get(item, 'id'),
+                              data: {
+                                quantity: Number(method.getValues(`quantity_${item?.id}`)),
+                                store_product_id: get(item, 'store_product_id'),
+                                unit_quantity: Number(get(target, 'value')),
+                              },
+                            },
+                          })
+                          method.setValue(`quantity_${item?.id}`, item?.quantity)
+                          method.setValue(`unit_quantity_${item?.id}`, item?.unit_quantity)
+                        } else {
+                          changeCartItemQuantity({
+                            id: get(item, 'id'),
+                            data: {
+                              quantity: Number(method.getValues(`quantity_${item?.id}`)),
+                              store_product_id: get(item, 'store_product_id'),
+                              unit_quantity: Number(get(target, 'value')),
+                            },
+                          })
+                        }
                       }
                     }}
                   />

@@ -39,7 +39,6 @@ export default function FilterMenu({ open, id, setOpen }) {
 
   useEffect(() => {
     const { received_amount_to, no_barcode, received_amount_from } = values
-    // console.log(getOptionsFromUrlParam(no_barcode, barcodeFilterList, 'name')[0])
 
     reset(
       {
