@@ -994,11 +994,10 @@ function NewSale() {
                 loading={isdeleteCartItem}
                 onClick={() => {
                   if (openConfirmDialog.type === 'deleteOne') {
-                    console.log(markingsList[openConfirmDialog.id], markingCount)
                     // return
                     setMarkingCount((p) => ({
                       ...p,
-                      [openConfirmDialog.id]: markingCount[openConfirmDialog.id] - Object.values(markingsList[openConfirmDialog.id]).length,
+                      [openConfirmDialog.id]: markingCount[openConfirmDialog.id] - Object.values(markingsList[openConfirmDialog.id] || {}).length,
                     }))
                     setMarkingList((p) => removeOneMarking(p, openConfirmDialog.id))
                     deleteCartItem(openConfirmDialog.id)
