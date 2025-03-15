@@ -530,7 +530,7 @@ function NewSale() {
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      if (typeof debouncedDiscount !== 'number' && size(get(cartItemsList, 'data.data.data', [])) >= 0) {
+      if (typeof debouncedDiscount !== 'number' && size(get(cartItemsList, 'data.data.data', [])) > 0) {
         changeDiscount(0)
         setInputDiscount(0)
 
