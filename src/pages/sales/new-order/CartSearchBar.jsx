@@ -1,24 +1,23 @@
+import { LoadingButton } from '@mui/lab'
 import { Box, Button, ListItem, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get, head, size } from 'lodash'
-import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import React, { useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useDebounce } from 'use-debounce'
 import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
 import UnlockIcon from '../../../assets/icons/UnlockIcon'
 import SerchedItem from './SerchedItem'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import { LoadingButton } from '@mui/lab'
-import useDebouncedValue from '../../../hooks/useDebouncedValue'
-import { useDebounce } from 'use-debounce'
 const useStyles = makeStyles((theme) => ({
   avatar: {
     width: 30,
@@ -200,7 +199,6 @@ function CartSearchBar({
   showOverlay,
   setShowOverlay,
 }) {
-  // const [searchTearm, setSearchTerm] = useState('')
   const [searchTearm, setSearchTerm] = useState('')
   const navigate = useNavigate()
   const [closeCashBox, setCloseCashBox] = useState(false)
@@ -303,35 +301,23 @@ function CartSearchBar({
             }}
             onKeyDown={(e) => {
               if (e.key == 'Escape') {
-                // setSearchTerm('')
                 e.preventDefault()
               }
               if (e.key == 'Enter') {
-                // setSearchTerm('')
                 setShowOverlay(false)
                 if (productsData.length === 1) {
-                  // if (searchTearm.length > 30) {
-                  //   //save to marking
-                  //   addNewMarking(productsData?.[0]?.id, searchTearm)
-                  // }
                   handleAddProduct({
                     discount_type: get(discount, 'type', 'percent'),
                     discount_value: Number(get(discount, 'amount', 0)),
                     sale_id: id,
                     barcode: get(head(productsData), 'barcode'),
-                    // store_product_id: get(head(productsData, 'err #7'), 'id', 'err #2'),
                   })
                 } else {
-                  // if (searchTearm.length > 30) {
-                  //   //save to marking
-                  //   addNewMarking(productsData?.[0]?.id, searchTearm)
-                  // }
                   handleAddProduct({
                     discount_type: get(discount, 'type', 'percent'),
                     discount_value: Number(get(discount, 'amount', 0)),
                     sale_id: id,
                     barcode: searchTearm.slice(0, 31),
-                    // store_product_id: get(head(productsData, 'err #7'), 'id', 'err #2'),
                   })
                 }
               }
@@ -428,7 +414,6 @@ function CartSearchBar({
         {closeCashBox && (
           <ConfirmDialog
             open={closeCashBox}
-            // setOpen={setOpenConfirmDialog}
             icon={<BigWarningIcon />}
             title={'Закрыть кассу?'}
             desc={'Сначала очистите черновики, а затем закройте кассу или нажмите «Продолжить», чтобы оставить черновики без изменений.'}
