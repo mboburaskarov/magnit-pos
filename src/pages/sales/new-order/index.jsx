@@ -510,18 +510,6 @@ function NewSale() {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
 
-  useHotkeys(
-    ['Slash', 'Period'],
-    (event) => {
-      event.preventDefault() // Prevent the default behavior of the "/" key
-      searchRef.current?.focus() // Focus the input field
-    },
-    {
-      preventDefault: true,
-      enableOnTags: ['INPUT', 'TEXTAREA'], // Enable the hotkey even when these elements are focused
-    }
-  )
-
   const [debouncedDiscount, setDebouncedDiscount] = useState('')
 
   const changeDiscountDebounce = (value) => {
@@ -598,8 +586,9 @@ function NewSale() {
     const timeDiff = currentTime - lastKeyPressTime.current
     lastKeyPressTime.current = currentTime
 
-    if (timeDiff < 30) {
+    if (timeDiff < 1000) {
       setInput((prev) => prev + event.key)
+      return
     } else {
       setInput(event.key)
     }
@@ -627,6 +616,10 @@ function NewSale() {
     if (['A', 'a', 'ф'].includes(event.key)) {
       setIsOpenChangeShift(true)
       setInput('') // Reset after detection
+    }
+    if (['Slash', 'Period'].includes(event.code)) {
+      event.preventDefault() // Prevent the default behavior of the "/" key
+      searchRef.current?.focus() // Focus the input field
     }
   })
 
