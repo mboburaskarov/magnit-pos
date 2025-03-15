@@ -261,7 +261,6 @@ function CartSearchBar({
   useHotkeys(
     'Enter',
     (event) => {
-      console.log('ff', document.activeElement.id)
       if (!shouldWorkEnter) {
         return
       }
@@ -306,6 +305,8 @@ function CartSearchBar({
               setSearchTerm(e.target.value)
             }}
             onKeyDown={(e) => {
+              setShowOverlay(true)
+
               if (e.key == 'Escape') {
                 e.preventDefault()
               }

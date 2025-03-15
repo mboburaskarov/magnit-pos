@@ -629,6 +629,7 @@ function NewSale() {
       setInput('') // Reset after detection
     }
   })
+
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />

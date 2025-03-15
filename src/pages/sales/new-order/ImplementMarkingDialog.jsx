@@ -17,6 +17,25 @@ function ImplementMarkingDialog({
   setMarkingList,
 }) {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const addEmptyStringMarkToMarkinglessProduct = (markings, shouldHaveMarkings) => {
+    let newMarkingList = { ...markings }
+
+    for (const key in shouldHaveMarkings) {
+      const count = shouldHaveMarkings[key]
+      const existingValues = markings[key] || {}
+      const mergedValues = {}
+
+      for (let i = 0; i < count; i++) {
+        mergedValues[i] = existingValues[i] || ''
+      }
+
+      newMarkingList[key] = mergedValues
+    }
+    setMarkingList(newMarkingList)
+    setIsOrderDrower(true)
+    handleClose()
+    setOpenConfirmDialog(null)
+  }
 
   return (
     <Dialog
@@ -119,8 +138,10 @@ function ImplementMarkingDialog({
           onClick={() => {
             if (!isAllMarkingFill()) {
               setOpenConfirmDialog(true)
+
               return
             }
+
             setIsOrderDrower(true)
             handleClose()
           }}
@@ -153,9 +174,7 @@ function ImplementMarkingDialog({
               variant='contained'
               type='button'
               onClick={() => {
-                setIsOrderDrower(true)
-                handleClose()
-                setOpenConfirmDialog(null)
+                addEmptyStringMarkToMarkinglessProduct(markingsList, markingCount)
               }}
             >
               Продолжить

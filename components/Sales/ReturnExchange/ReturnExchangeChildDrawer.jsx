@@ -52,7 +52,6 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, refetchDraftLis
   const reactToPrintContent = useCallback(() => printContainer.current, [])
   const printContainer = useRef()
   const [selectedReturnItems, setSelectedReturnItems] = useState([])
-  console.log(selectedReturnItems)
 
   const documentName = useRef('Cheque')
   const navigate = useNavigate()

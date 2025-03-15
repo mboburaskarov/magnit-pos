@@ -340,7 +340,7 @@ export default function OrderDrawer({
         ///
         //send to epos
         const mockData = get(cartItemsList, 'data', []).map((el) => {
-          return Object.values(markingsList[el.id]).map((marking, index) => ({
+          return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
             barcode: el.barcode,
             amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : (el.unit_quantity / el.unit_per_pack) * 1000,
             price: el.total_price,

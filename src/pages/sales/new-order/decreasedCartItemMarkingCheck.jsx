@@ -35,6 +35,7 @@ function DecreasedCartItemMarkingCheck({
 
     return result
   }
+
   const [removedMark, setRemovedMark] = useState({})
   const { mutate: changeCartItemQuantity } = useMutation(requests.changeCartItemQuantity, {
     onSuccess: ({ data }) => {
@@ -56,7 +57,17 @@ function DecreasedCartItemMarkingCheck({
       console.log('err', err)
     },
   })
+  const isValidInput = (evialable, input) => {
+    if (!open || !evialable) {
+      return
+    }
 
+    const inputSet = new Set(input) // Remove duplicates
+    const evialableSet = new Set(evialable)
+
+    // Ensure all elements in inputSet exist in evialableSet
+    return inputSet.size === input.length && [...inputSet].every((el) => evialableSet.has(el))
+  }
   return (
     <Dialog
       sx={{
@@ -159,7 +170,8 @@ function DecreasedCartItemMarkingCheck({
         </Button>
         <Box width={'20px'} />
         <Button
-          disabled={!Object.values(removedMark).every((el) => get(open, 'available')?.includes(el))}
+          disabled={!isValidInput(get(open, 'available'), Object.values(removedMark))}
+          // !Object.values(removedMark).every((el) => get(open, 'available')?.includes(el))}
           onClick={() => {
             if (!Object.values(removedMark).every((el) => get(open, 'available').includes(el))) {
               return
