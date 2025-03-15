@@ -39,21 +39,23 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
   const [isOpenChild, setIsOpenChild] = useState(false)
   const returnExchangeListFilter = useMemo(() => {
     return {
-      limit: values?.limit || 10,
-      offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search || null,
       store_id: get(userData, 'store.id'),
-      cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
       customer_id: values?.customer_id,
       draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : '',
     }
-  }, [values?.customer_id, values?.draft_date, values?.search])
-  const { data: darftList, refetch, isDarftList } = useQuery(['darftList', returnExchangeListFilter], () => requests.getAllSales(returnExchangeListFilter))
+  }, [values?.customer_id, values?.draft_date, values?.page, values?.search])
+
+  const {
+    data: returnsSaleList,
+    refetch,
+    isreturnsSaleList,
+  } = useQuery(['returnsSaleList', returnExchangeListFilter], () => requests.getAllSales(returnExchangeListFilter))
   useEffect(() => {
     refetch()
   }, [open])
   const theme = useTheme()
-  const draftListData = get(darftList, 'data.data.data', [])
+  const draftListData = get(returnsSaleList, 'data.data.data', [])
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
       {!isOpenChild ? (
@@ -96,6 +98,7 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
           <Box py={'0px'} px={'40px'}>
             <ListWithPagination
               request={(filter) => requests.getAllSales(filter)}
+              customFilter={returnExchangeListFilter}
               renderItem={(item) => <ReturnExchangeParentItemBox item={item} setIsOpenChild={setIsOpenChild} />}
             />
             {/* {draftListData.map((item, index) => {

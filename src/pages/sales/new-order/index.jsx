@@ -351,7 +351,6 @@ function NewSale() {
         addNewMarking(data?.data?.id, searchValue)
       }
       searchResetRef.current.clearValue()
-      console.log('gg')
 
       setShowOverlay(false)
       refetchcartItemsList()

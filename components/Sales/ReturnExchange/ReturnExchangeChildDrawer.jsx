@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 4px',
   },
 }))
-function ReturnExchangeItemDrawer({ open, cash_box_operation_id, refetchDraftList, setChildOpen, setOpen }) {
+function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, setOpen }) {
   const reactToPrintContent = useCallback(() => printContainer.current, [])
   const printContainer = useRef()
   const [selectedReturnItems, setSelectedReturnItems] = useState([])
@@ -94,7 +94,6 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, refetchDraftLis
   const classes = useStyles()
   const { mutate: deleteDraft, isLoading: isDeleteDraft } = useMutation(requests.deleteDraft, {
     onSuccess: ({ data }) => {
-      refetchDraftList()
       setChildOpen(false)
       // setOpen(false)
       success('Черновик удален!')
@@ -106,7 +105,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, refetchDraftLis
   })
   const { mutate: returnSaleItem, isLoading: isreturnSaleItem } = useMutation(requests.returnSaleItem, {
     onSuccess: ({ data }) => {
-      refetchDraftList()
+      // ()
       setChildOpen(false)
       setOpen(false)
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)

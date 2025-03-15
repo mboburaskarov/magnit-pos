@@ -56,7 +56,8 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
         </Box>
         <Box>
           <Typography mb={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
-            Продажа #{get(item, 'sale_number')}
+            {get(item, 'sale_type') === 'RETURN' ? `Возврат #` : `Продажа #`}
+            {get(item, 'sale_number')}
           </Typography>
           <Typography fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'} color={'bunker.500'}>
             {dayjs(get(item, 'completed_at')).format('DD.MM.YYYY | HH:mm:ss')}
