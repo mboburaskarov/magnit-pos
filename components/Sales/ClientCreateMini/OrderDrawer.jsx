@@ -326,56 +326,62 @@ export default function OrderDrawer({
     isLoading: isfinishSaleWithoutAppPaymentType,
   } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
-      // refetchcartItemsList()
-      ///
-      //send to epos
-      const mockData = get(cartItemsList, 'data', []).map((el) => {
-        return Object.values(markingsList[el.id]).map((marking, index) => ({
-          barcode: el.barcode,
-          amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : (el.unit_quantity / el.unit_per_pack) * 1000,
-          price: el.total_price,
-          discount: el.discount_amount,
-          vatPercent: get(el, 'vat_percent'),
-          vat: get(el, 'vat'),
-          label: marking,
-          name: el.name,
-          classCode: get(el, 'class_code'),
-          packageCode: get(el, 'package_code'),
-          // commissionTIN: '',
-          other: 0,
-          ownerType: 0,
-        }))
-      })
+      if (true) {
+        setIsOrderDrower(false)
+        handlePrint()
+        success('Продажа завершена!')
+      } else {
+        // refetchcartItemsList()
+        ///
+        //send to epos
+        const mockData = get(cartItemsList, 'data', []).map((el) => {
+          return Object.values(markingsList[el.id]).map((marking, index) => ({
+            barcode: el.barcode,
+            amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : (el.unit_quantity / el.unit_per_pack) * 1000,
+            price: el.total_price,
+            discount: el.discount_amount,
+            vatPercent: get(el, 'vat_percent'),
+            vat: get(el, 'vat'),
+            label: marking,
+            name: el.name,
+            classCode: get(el, 'class_code'),
+            packageCode: get(el, 'package_code'),
+            // commissionTIN: '',
+            other: 0,
+            ownerType: 0,
+          }))
+        })
 
-      sendToEPOS({
-        token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
-        method: 'sale', // Название метода, Обязательное поле, String
-        companyName: 'Pharma Cosmos OOO', // Поле для ввода названия компании, будет напечатано на чеке, Обязательное поле, String
-        companyAddress: get(userData, 'store.address'), // Поле для ввода адреса компании, убедитесь в верности, будет напечатано на чеке, Обязательное поле, String
-        companyINN: '303970073', // Поле для ввода ИНН компании, будет напечатано на чеке, Обязательное поле, String
-        staffName: get(userData, 'full_name'), // Поле для ввода имени кассира , Необязательное поле, String
-        printerSize: 58, // Ширина ленты в чековом принтере, будет учитываться при формировании pdf чека, Integer
-        phoneNumber: get(userData, 'store.phone'), // Поле для ввода контакного номера, будет напечатано на чеке, Необязательное поле, String
-        companyPhoneNumber: '+998772770333', // Поле для ввода номера компании, будет напечатано на чеке, Необязательное поле, String
-        params: {
-          // Объект с данными о чеке
+        sendToEPOS({
+          token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+          method: 'sale', // Название метода, Обязательное поле, String
+          companyName: 'Pharma Cosmos OOO', // Поле для ввода названия компании, будет напечатано на чеке, Обязательное поле, String
+          companyAddress: get(userData, 'store.address'), // Поле для ввода адреса компании, убедитесь в верности, будет напечатано на чеке, Обязательное поле, String
+          companyINN: '303970073', // Поле для ввода ИНН компании, будет напечатано на чеке, Обязательное поле, String
+          staffName: get(userData, 'full_name'), // Поле для ввода имени кассира , Необязательное поле, String
+          printerSize: 58, // Ширина ленты в чековом принтере, будет учитываться при формировании pdf чека, Integer
+          phoneNumber: get(userData, 'store.phone'), // Поле для ввода контакного номера, будет напечатано на чеке, Необязательное поле, String
+          companyPhoneNumber: '+998772770333', // Поле для ввода номера компании, будет напечатано на чеке, Необязательное поле, String
+          params: {
+            // Объект с данными о чеке
 
-          clientName: get(customerId, 'name'), //ФИО Клиента
+            clientName: get(customerId, 'name'), //ФИО Клиента
 
-          items: mockData.flat(),
-          receivedCash: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
-          receivedCard: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
-        },
-      })
+            items: mockData.flat(),
+            receivedCash: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
+            receivedCard: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
+          },
+        })
 
-      setInputDiscount(NaN)
-      // navigate(`/sales/new-sale/${get(data, 'data', '/')}`)
-      // setIsOrderDrower(false)
-      // handlePrint()
-      // success('Продажа завершена!')
-      setPaymentsList([])
+        setInputDiscount(NaN)
+        // navigate(`/sales/new-sale/${get(data, 'data', '/')}`)
+        // setIsOrderDrower(false)
+        // handlePrint()
+        // success('Продажа завершена!')
+        setPaymentsList([])
 
-      // success('Продажа завершена!')
+        // success('Продажа завершена!')
+      }
     },
     onError: (err) => {
       console.log(err)
