@@ -197,6 +197,7 @@ function CartSearchBar({
   setIsOpenChangeShift,
   cashBoxDetails,
   showOverlay,
+  shouldWorkEnter,
   setShowOverlay,
 }) {
   const [searchTearm, setSearchTerm] = useState('')
@@ -260,6 +261,10 @@ function CartSearchBar({
   useHotkeys(
     'Enter',
     (event) => {
+      console.log('ff', document.activeElement.id)
+      if (!shouldWorkEnter) {
+        return
+      }
       if (document.activeElement.id?.length === 36) {
         // setSearchTerm('')
         setShowOverlay(false)
@@ -286,6 +291,7 @@ function CartSearchBar({
             inputRef={searchRef}
             id='product-search'
             hasShortCut
+            disabled={get(cashBoxDetails, 'data.data.sale_type') == 'RETURN'}
             style={{ zIndex: showOverlay ? 25 : 10 }}
             sx={{ marginRight: '16px !important', height: '48px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
             name='search'

@@ -1,8 +1,23 @@
 import { Box, Button, Dialog, Typography } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import TextField from '../../../../components/Inputs/TextField'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
+import { LoadingButton } from '@mui/lab'
 
-function ImplementMarkingDialog({ open, isAllMarkingFill, markingCount, handleClose, cartItems, implementMarkingList, markingsList, setMarkingList }) {
+function ImplementMarkingDialog({
+  open,
+  setIsOrderDrower,
+  isAllMarkingFill,
+  markingCount,
+  handleClose,
+  cartItems,
+  implementMarkingList,
+  markingsList,
+  setMarkingList,
+}) {
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+
   return (
     <Dialog
       sx={{
@@ -99,10 +114,55 @@ function ImplementMarkingDialog({ open, isAllMarkingFill, markingCount, handleCl
           Отмена
         </Button>
         <Box width={'20px'} />
-        <Button disabled={!isAllMarkingFill()} onClick={handleClose} fullWidth>
+        <Button
+          // disabled={!isAllMarkingFill()}
+          onClick={() => {
+            if (!isAllMarkingFill()) {
+              setOpenConfirmDialog(true)
+              return
+            }
+            setIsOrderDrower(true)
+            handleClose()
+          }}
+          fullWidth
+        >
           Продолжать
         </Button>
       </Box>
+      <ConfirmDialog
+        open={!!openConfirmDialog}
+        setOpen={setOpenConfirmDialog}
+        icon={<BigWarningIcon />}
+        title={'Без маркировки'}
+        desc={
+          'Вы не ввели наценку для всех товаров. Продажа без маркировки юридически невозможна. Нажимая «Продолжить», вы принимаете на себя всю ответственность.'
+        }
+        // supDesc={openConfirmDialog.type === 'deleteAll' ? '' : openConfirmDialog?.name}
+        actions={
+          <>
+            <Button
+              sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+              fullWidth
+              color='secondary'
+              variant='contained'
+              onClick={() => setOpenConfirmDialog(null)}
+            >
+              Нет
+            </Button>
+            <LoadingButton
+              variant='contained'
+              type='button'
+              onClick={() => {
+                setIsOrderDrower(true)
+                handleClose()
+                setOpenConfirmDialog(null)
+              }}
+            >
+              Продолжить
+            </LoadingButton>
+          </>
+        }
+      />
     </Dialog>
   )
 }

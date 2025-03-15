@@ -262,6 +262,8 @@ export default function OrderDrawer({
   cashBoxDetails,
   refetchcartItemsList,
   noCheck,
+  setMarkingList,
+  setMarkingCount,
   half,
 
   setOpenDebt,
@@ -327,9 +329,12 @@ export default function OrderDrawer({
   } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
       if (true) {
+        navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
         setIsOrderDrower(false)
         handlePrint()
         success('Продажа завершена!')
+        setMarkingList({})
+        setMarkingCount({})
       } else {
         // refetchcartItemsList()
         ///
@@ -490,26 +495,7 @@ export default function OrderDrawer({
         ...(data ? { opt_data: data } : {}),
         app_type: get(type, 'name').toLowerCase(),
       }))
-    // const mockData = get(cartItemsList, 'data', []).map((el) => {
-    //   console.log(el)
 
-    //   return Object.values(markingsList[el.id]).map((marking, index) => ({
-    //     barcode: el.barcode,
-    //     amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : (el.unit_quantity / el.unit_per_pack) * 1000,
-    //     price: el.total_price,
-    //     discount: el.discount_amount,
-    //     vatPercent: get(el, 'vat_percent'),
-    //     vat: get(el, 'vat'),
-    //     label: marking,
-    //     name: el.name,
-    //     classCode: get(el, 'class_code'),
-    //     packageCode: get(el, 'package_code'),
-    //     // commissionTIN: '',
-    //     other: 0,
-    //     ownerType: 0,
-    //   }))
-    // })
-    // console.log(mockData.flat(), [...mockData], Object.values(markingsList), markingsList)
     finishSaleWithoutAppPaymentType({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
       payment_types: paymentTypes,

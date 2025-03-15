@@ -524,20 +524,19 @@ function NewSale() {
 
   const [debouncedDiscount, setDebouncedDiscount] = useState('')
 
-  // Function to handle input changes
   const changeDiscountDebounce = (value) => {
-    // if (inputDiscount !== value) setInputDiscount(0)
     setDebouncedDiscount(value)
   }
 
-  // Debounce logic: Apply a delay before updating the debounced value
   useEffect(() => {
     const handler = setTimeout(() => {
-      // setDiscountType()
-      if (typeof debouncedDiscount !== 'number' || size(get(cartItemsList, 'data.data.data', [])) <= 0) {
+      if (typeof debouncedDiscount !== 'number' && size(get(cartItemsList, 'data.data.data', [])) >= 0) {
         changeDiscount(0)
         setInputDiscount(0)
 
+        return
+      }
+      if (typeof debouncedDiscount !== 'number' || size(get(cartItemsList, 'data.data.data', [])) <= 0) {
         return
       }
       if (typeof debouncedDiscount !== 'number') {
@@ -551,7 +550,7 @@ function NewSale() {
       changeDiscount(debouncedDiscount)
     }, 200)
 
-    return () => clearTimeout(handler) // Cleanup the timeout on re-renders
+    return () => clearTimeout(handler)
   }, [debouncedDiscount])
   const implementMarkingList = (marking, id, index) => {
     setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
@@ -648,6 +647,7 @@ function NewSale() {
               searchResetRef={searchResetRef}
               addNewMarking={addNewMarking}
               setShowOverlay={setShowOverlay}
+              shouldWorkEnter={!isOpenRemoveMarkingDialog && !isOpenImplementMarkingDialog}
               handleAddProduct={handleAddProduct}
             />
           </Box>
@@ -725,6 +725,7 @@ function NewSale() {
           saleCreate={saleCreate}
           userData={userData}
           classes={classes}
+          setIsOpenReturnExchange={setIsOpenReturnExchange}
           setOpenClientCreateMini={setOpenClientCreateMini}
           customerId={customerId}
           setCustomerId={setCustomerId}
@@ -800,6 +801,8 @@ function NewSale() {
         customerId={customerId}
         refetchcartItemsList={refetchcartItemsList}
         markingsList={markingsList}
+        setMarkingList={setMarkingList}
+        setMarkingCount={setMarkingCount}
         setIsOrderDrower={setIsOrderDrower}
       />
       <CreateDraftDrawer
@@ -816,6 +819,7 @@ function NewSale() {
         cartItems={get(cartItemsList, 'data.data.data', [])}
         markingsList={markingsList}
         setMarkingList={setMarkingList}
+        setIsOrderDrower={setIsOrderDrower}
         open={isOpenImplementMarkingDialog}
         implementMarkingList={implementMarkingList}
         handleClose={() => setIsOpenImplementMarkingDialog(false)}
