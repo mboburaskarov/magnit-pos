@@ -46,16 +46,7 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
     }
   }, [values?.customer_id, values?.draft_date, values?.page, values?.search])
 
-  const {
-    data: returnsSaleList,
-    refetch,
-    isreturnsSaleList,
-  } = useQuery(['returnsSaleList', returnExchangeListFilter], () => requests.getAllSales(returnExchangeListFilter))
-  useEffect(() => {
-    refetch()
-  }, [open])
   const theme = useTheme()
-  const draftListData = get(returnsSaleList, 'data.data.data', [])
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
       {!isOpenChild ? (
@@ -109,7 +100,7 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
       ) : (
         <ReturnExchangeChildDrawer
           cash_box_operation_id={get(cashBoxDetails, 'data.data.cash_box_operation_id')}
-          refetchDraftList={refetch}
+          refetchDraftList={() => {}}
           setChildOpen={setIsOpenChild}
           open={isOpenChild}
           setOpen={setOpen}
