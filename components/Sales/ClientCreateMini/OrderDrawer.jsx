@@ -328,7 +328,7 @@ export default function OrderDrawer({
     isLoading: isfinishSaleWithoutAppPaymentType,
   } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
-      if (true) {
+      if (false) {
         navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
         setIsOrderDrower(false)
         handlePrint()
