@@ -564,9 +564,10 @@ export default function OrderDrawer({
   }
 
   const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      const scannedBarcode = scannedKeys.join('')
-      onSubmit(scannedBarcode)
+    const scannedBarcode = scannedKeys.join('')
+    if (scannedBarcode.length > 17) {
+      // if (event.key === 'Enter') {
+      onSubmit(scannedBarcode.replace('Enter', ''))
       setScannedKeys([])
       return
     }
@@ -581,6 +582,8 @@ export default function OrderDrawer({
   useHotkeys(
     '*',
     (event) => {
+      console.log(event)
+
       handleKeyPress(event)
     },
     {
