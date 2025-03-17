@@ -396,10 +396,6 @@ export default function OrderDrawer({
       }
     },
     onError: (err) => {
-      console.log(
-        Object.values(markingsList[el.id] || {}).map((marking, index) => `${marking} ${index}`),
-        markingsList
-      )
       if (get(err, 'response.status') == 409) {
         saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), error('Эта sпродажа уже закрыта.')
         return
@@ -430,7 +426,6 @@ export default function OrderDrawer({
       console.log('err', err)
     },
   })
-  console.log(isfinishSaleWithoutAppPaymentType)
 
   useEffect(() => {
     setPaymentsList([])
@@ -582,8 +577,6 @@ export default function OrderDrawer({
   useHotkeys(
     '*',
     (event) => {
-      console.log(event)
-
       handleKeyPress(event)
     },
     {
