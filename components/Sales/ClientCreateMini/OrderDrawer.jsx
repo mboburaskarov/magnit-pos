@@ -340,6 +340,7 @@ export default function OrderDrawer({
         // refetchcartItemsList()
         ///
         //send to epos
+
         const mockData = get(cartItemsList, 'data', []).map((el) => {
           return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
             barcode: el.barcode,
@@ -395,6 +396,10 @@ export default function OrderDrawer({
       }
     },
     onError: (err) => {
+      console.log(
+        Object.values(markingsList[el.id] || {}).map((marking, index) => `${marking} ${index}`),
+        markingsList
+      )
       if (get(err, 'response.status') == 409) {
         saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), error('Эта sпродажа уже закрыта.')
         return
@@ -425,6 +430,7 @@ export default function OrderDrawer({
       console.log('err', err)
     },
   })
+  console.log(isfinishSaleWithoutAppPaymentType)
 
   useEffect(() => {
     setPaymentsList([])
@@ -805,7 +811,7 @@ export default function OrderDrawer({
             <LoadingButton
               sx={{ minHeight: '48px !important ', display: 'flex' }}
               variant='contained'
-              loading={isfinishSaleWithoutAppPaymentType}
+              loading={isSendToEPOS}
               disabled={maxAmount > 0}
               onClick={() => handleFinish()}
             >
