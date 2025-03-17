@@ -342,9 +342,10 @@ export default function OrderDrawer({
         ///
         //send to epos
         const mockData = get(cartItemsList, 'data', []).map((el) => {
+          console.log(markingsList[el.id])
           return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
             barcode: el.barcode,
-            amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : (el.unit_quantity / el.unit_per_pack) * 1000,
+            amount: el.quantity > index ? ((el.quantity / el.quantity) * 1000).toFixed(4) : ((el.unit_quantity / el.unit_per_pack) * 1000).toFixed(4),
             price: el.quantity > index ? el.unit_price : (el.unit_price / el.unit_per_pack) * el.unit_quantity,
             discount: el.discount_amount,
             vatPercent: get(el, 'vat_percent'),
@@ -492,6 +493,8 @@ export default function OrderDrawer({
   })
 
   const onSubmit = async (data) => {
+    console.log(data)
+
     setOpenScanDialog(false)
     const paymentTypes = mpaddedPaymentsList
       .filter((type) => get(type, 'isPlaceholder', false) == false)
@@ -499,7 +502,7 @@ export default function OrderDrawer({
         amount: get(type, 'amount'),
         payment_type_id: id,
         type: get(type, 'type'),
-        ...(data ? { opt_data: data } : {}),
+        ...(data ? { otp_data: data } : {}),
         app_type: get(type, 'name').toLowerCase(),
       }))
 
@@ -561,23 +564,34 @@ export default function OrderDrawer({
   }
 
   const handleKeyPress = (event) => {
-    if (key === 'Enter') {
+    console.log('click scan 1', event, markingsList)
+    console.log(scannedKeys)
+
+    if (event.key === 'Enter') {
+      console.log('click scan enter')
+
       const scannedBarcode = scannedKeys.join('')
-      setScannedKeys([])
       onSubmit(scannedBarcode)
+      console.log(scannedBarcode, scannedKeys)
+      setScannedKeys([])
       return
     }
-    setScannedKeys((prev) => [...prev, key])
+    setScannedKeys((prev) => [...prev, event.key])
 
     if (timeoutRef) clearTimeout(timeoutRef)
     timeoutRef = setTimeout(() => {
-      setScannedKeys([])
+      console.log('click scan time')
+
+      // setScannedKeys([])
     }, 300)
   }
+  console.log(isOpenScanDialog)
 
   useHotkeys(
     '*',
     (event) => {
+      console.log(event)
+
       handleKeyPress(event)
     },
     {
