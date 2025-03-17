@@ -348,7 +348,7 @@ export default function OrderDrawer({
             price: el.quantity > index ? el.unit_price : (el.unit_price / el.unit_per_pack) * el.unit_quantity,
             discount: el.discount_amount,
             vatPercent: get(el, 'vat_percent'),
-            vat: get(el, 'vat'),
+            vat: el.quantity > index ? get(el, 'vat_price') : (get(el, 'vat_price') / el.unit_per_pack) * el.unit_quantity,
             label: marking,
             name: el.name,
             classCode: get(el, 'class_code'),
