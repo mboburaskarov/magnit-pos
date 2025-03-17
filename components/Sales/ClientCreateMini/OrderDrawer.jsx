@@ -1,4 +1,4 @@
-import { Box, Drawer, Grid, Button as MuiButton, TextField, Typography, useTheme } from '@mui/material'
+import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -25,6 +25,7 @@ import { useSelector } from 'react-redux'
 import { eposRequest } from '../../../utils/axios'
 import LoadingContainer from '../../LoadingContainer'
 import LoadingBlock from '../../LoadingBlock'
+import TextField from '../../Inputs/TextField'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -287,6 +288,7 @@ export default function OrderDrawer({
   const { t } = useTranslation()
   const navigate = useNavigate()
   const lastPaymentInput = useRef()
+  const scannedBarcodeRef = useRef()
 
   useEffect(() => {
     let amount = 0
@@ -451,6 +453,14 @@ export default function OrderDrawer({
 
     lastPaymentInput.current.focus()
   }, [paymentsList])
+  useEffect(() => {
+    if (isOpenScanDialog) {
+      console.log('f', scannedBarcodeRef)
+      setTimeout(() => {
+        scannedBarcodeRef.current.focus()
+      }, 100)
+    }
+  }, [isOpenScanDialog, scannedBarcodeRef])
   const removePaymentType = (id) => {
     const removedItem = paymentsList.filter((el) => el.id != id)
 
@@ -558,33 +568,33 @@ export default function OrderDrawer({
     }
   }
 
-  const handleKeyPress = (event) => {
-    const scannedBarcode = scannedKeys.join('')
-    console.log(event)
+  // const handleKeyPress = (event) => {
+  //   const scannedBarcode = scannedKeys.join('')
+  //   console.log(event)
 
-    if (scannedBarcode.length >= 18) {
-      // if (event.key === 'Enter') {
-      onSubmit(scannedBarcode.replace('Enter', ''))
-      setScannedKeys([])
-      return
-    }
-    setScannedKeys((prev) => [...prev, event.key])
+  //   if (scannedBarcode.length >= 18) {
+  //     // if (event.key === 'Enter') {
+  //     onSubmit(scannedBarcode.replace('Enter', ''))
+  //     setScannedKeys([])
+  //     return
+  //   }
+  //   setScannedKeys((prev) => [...prev, event.key])
 
-    if (timeoutRef) clearTimeout(timeoutRef)
-    timeoutRef = setTimeout(() => {
-      // setScannedKeys([])
-    }, 300)
-  }
+  //   if (timeoutRef) clearTimeout(timeoutRef)
+  //   timeoutRef = setTimeout(() => {
+  //     // setScannedKeys([])
+  //   }, 300)
+  // }
 
-  useHotkeys(
-    '*',
-    (event) => {
-      handleKeyPress(event)
-    },
-    {
-      enabled: isOpenScanDialog,
-    }
-  )
+  // useHotkeys(
+  //   '*',
+  //   (event) => {
+  //     // handleKeyPress(event)
+  //   },
+  //   {
+  //     enabled: isOpenScanDialog,
+  //   }
+  // )
   // useHotkeys('*', (event) => {
   //   if (event?.key == 'Backspace') {
   //     removeLastPaymentType()
@@ -854,8 +864,22 @@ export default function OrderDrawer({
           <Typography mb={'16px'} justifyContent={'center'} textAlign={'center'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.950'}>
             Отсканируйте QR-код клиента, чтобы завершить платеж.
           </Typography>
-
-          <Box sx={{ display: 'flex' }}>
+          <TextField
+            required
+            inputRef={(el) => (scannedBarcodeRef.current = el)}
+            fullWidth
+            borderRadius={'40px'}
+            name='barcode-click'
+            onKeyDown={(e) => {
+              if (e.code == 'Enter') {
+                onSubmit(e.target.value)
+              }
+            }}
+            // label={'t('create_new_product.product_name')'}
+            placeholder={'сканированный код'}
+            sx={{ mb: 3 }}
+          />
+          <Box sx={{ display: 'flex', mt: '10px' }}>
             <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.500'}>
               Тип оплаты:
             </Typography>
