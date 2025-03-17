@@ -271,7 +271,6 @@ export default function OrderDrawer({
   const methods = useForm()
   let timeout
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
-  console.log(get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND'))
 
   const classes = useStyles()
   const [payments, setPayments] = useState([])
@@ -342,10 +341,9 @@ export default function OrderDrawer({
         ///
         //send to epos
         const mockData = get(cartItemsList, 'data', []).map((el) => {
-          console.log(markingsList[el.id])
           return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
             barcode: el.barcode,
-            amount: el.quantity > index ? ((el.quantity / el.quantity) * 1000).toFixed(4) : ((el.unit_quantity / el.unit_per_pack) * 1000).toFixed(4),
+            amount: el.quantity > index ? ((el.quantity / el.quantity) * 1000).toFixed(4) : (el.unit_quantity / el.unit_per_pack) * 1000,
             price: el.quantity > index ? el.unit_price : (el.unit_price / el.unit_per_pack) * el.unit_quantity,
             discount: el.discount_amount,
             vatPercent: get(el, 'vat_percent'),
@@ -397,8 +395,6 @@ export default function OrderDrawer({
       }
     },
     onError: (err) => {
-      console.log(err)
-
       if (get(err, 'response.status') == 409) {
         saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), error('Эта sпродажа уже закрыта.')
         return
@@ -493,8 +489,6 @@ export default function OrderDrawer({
   })
 
   const onSubmit = async (data) => {
-    console.log(data)
-
     setOpenScanDialog(false)
     const paymentTypes = mpaddedPaymentsList
       .filter((type) => get(type, 'isPlaceholder', false) == false)
@@ -564,15 +558,9 @@ export default function OrderDrawer({
   }
 
   const handleKeyPress = (event) => {
-    console.log('click scan 1', event, markingsList)
-    console.log(scannedKeys)
-
     if (event.key === 'Enter') {
-      console.log('click scan enter')
-
       const scannedBarcode = scannedKeys.join('')
       onSubmit(scannedBarcode)
-      console.log(scannedBarcode, scannedKeys)
       setScannedKeys([])
       return
     }
@@ -580,18 +568,13 @@ export default function OrderDrawer({
 
     if (timeoutRef) clearTimeout(timeoutRef)
     timeoutRef = setTimeout(() => {
-      console.log('click scan time')
-
       // setScannedKeys([])
     }, 300)
   }
-  console.log(isOpenScanDialog)
 
   useHotkeys(
     '*',
     (event) => {
-      console.log(event)
-
       handleKeyPress(event)
     },
     {
