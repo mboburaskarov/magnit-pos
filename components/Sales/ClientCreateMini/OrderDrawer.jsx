@@ -345,7 +345,7 @@ export default function OrderDrawer({
           return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
             barcode: el.barcode,
             amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : (el.unit_quantity / el.unit_per_pack) * 1000,
-            price: el.total_price,
+            price: el.quantity > index ? el.unit_price : (el.unit_price / el.unit_per_pack) * el.unit_quantity,
             discount: el.discount_amount,
             vatPercent: get(el, 'vat_percent'),
             vat: get(el, 'vat'),
@@ -379,11 +379,7 @@ export default function OrderDrawer({
           },
           ...(SALE_TYPE === 'RETURN' && {
             refundInfo: {
-              terminalId: 'VG343420000976',
-              receiptSeq: '13',
-              fiscalSign: '204575050105',
-              // qrCodeURL: 'https://ofd.soliq.uz/check?t=VG343420000976&r=13&c=20250317122302&s=204575050105',
-              dateTime: '20250317122302',
+              ...get(cashBoxDetails, 'data.data.epos_response.response'),
             },
           }),
           // ...(SALE_TYPE === 'RETURN' && { refundInfo: {} }),
