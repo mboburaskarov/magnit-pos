@@ -560,7 +560,9 @@ export default function OrderDrawer({
 
   const handleKeyPress = (event) => {
     const scannedBarcode = scannedKeys.join('')
-    if (scannedBarcode.length > 17) {
+    console.log(event)
+
+    if (scannedBarcode.length >= 18) {
       // if (event.key === 'Enter') {
       onSubmit(scannedBarcode.replace('Enter', ''))
       setScannedKeys([])
