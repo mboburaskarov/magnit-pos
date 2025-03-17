@@ -382,7 +382,7 @@ export default function OrderDrawer({
               terminalId: 'VG343420000976',
               receiptSeq: '13',
               fiscalSign: '204575050105',
-              qrCodeURL: 'https://ofd.soliq.uz/check?t=VG343420000976&r=13&c=20250317122302&s=204575050105',
+              // qrCodeURL: 'https://ofd.soliq.uz/check?t=VG343420000976&r=13&c=20250317122302&s=204575050105',
               dateTime: '20250317122302',
             },
           }),
