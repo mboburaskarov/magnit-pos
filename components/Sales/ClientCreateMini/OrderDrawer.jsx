@@ -270,6 +270,8 @@ export default function OrderDrawer({
 }) {
   const methods = useForm()
   let timeout
+  const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
+  console.log(get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND'))
 
   const classes = useStyles()
   const [payments, setPayments] = useState([])
@@ -359,7 +361,7 @@ export default function OrderDrawer({
 
         sendToEPOS({
           token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
-          method: 'sale', // Название метода, Обязательное поле, String
+          method: SALE_TYPE === 'SALE' ? 'sale' : 'refund', // Название метода, Обязательное поле, String
           companyName: 'Pharma Cosmos OOO', // Поле для ввода названия компании, будет напечатано на чеке, Обязательное поле, String
           companyAddress: get(userData, 'store.address'), // Поле для ввода адреса компании, убедитесь в верности, будет напечатано на чеке, Обязательное поле, String
           companyINN: '303970073', // Поле для ввода ИНН компании, будет напечатано на чеке, Обязательное поле, String
@@ -369,13 +371,22 @@ export default function OrderDrawer({
           companyPhoneNumber: '+998772770333', // Поле для ввода номера компании, будет напечатано на чеке, Необязательное поле, String
           params: {
             // Объект с данными о чеке
-
             clientName: get(customerId, 'name'), //ФИО Клиента
 
             items: mockData.flat(),
             receivedCash: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
             receivedCard: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
           },
+          ...(SALE_TYPE === 'RETURN' && {
+            refundInfo: {
+              terminalId: 'VG343420000976',
+              receiptSeq: '13',
+              fiscalSign: '204575050105',
+              qrCodeURL: 'https://ofd.soliq.uz/check?t=VG343420000976&r=13&c=20250317122302&s=204575050105',
+              dateTime: '20250317122302',
+            },
+          }),
+          // ...(SALE_TYPE === 'RETURN' && { refundInfo: {} }),
         })
 
         setInputDiscount(NaN)
