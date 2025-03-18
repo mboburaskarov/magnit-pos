@@ -324,6 +324,7 @@ export default function OrderDrawer({
       console.log('err', err)
     },
   })
+
   const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
   const {
     mutate: finishSaleWithoutAppPaymentType,
@@ -346,11 +347,11 @@ export default function OrderDrawer({
         const mockData = get(cartItemsList, 'data', []).map((el) => {
           return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
             barcode: el.barcode,
-            amount: el.quantity > index ? ((el.quantity / el.quantity) * 1000).toFixed(4) : (el.unit_quantity / el.unit_per_pack) * 1000,
-            price: el.quantity > index ? el.unit_price : (el.unit_price / el.unit_per_pack) * el.unit_quantity,
+            amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
+            price: el.quantity > index ? el.unit_price : el.unit_quantity_price * el.unit_quantity,
             discount: el.discount_amount,
             vatPercent: get(el, 'vat_percent'),
-            vat: el.quantity > index ? get(el, 'vat_price') : (get(el, 'vat_price') / el.unit_per_pack) * el.unit_quantity,
+            vat: el.quantity > index ? get(el, 'vat_price') : el.unit_vat_price * el.unit_quantity,
             label: marking,
             name: el.name,
             classCode: get(el, 'class_code'),
@@ -455,7 +456,6 @@ export default function OrderDrawer({
   }, [paymentsList])
   useEffect(() => {
     if (isOpenScanDialog) {
-      console.log('f', scannedBarcodeRef)
       setTimeout(() => {
         scannedBarcodeRef.current.focus()
       }, 100)

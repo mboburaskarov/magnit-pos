@@ -390,6 +390,7 @@ function NewSale() {
     requests.getCartItemList({ sale_id: id, limit: 20, offset: 0 }).catch((e) => get(e, 'response.data.code') == '409' && navigate('/sales/create'))
   )
   const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
+  console.log(cashBoxDetails)
 
   useEffect(() => {
     refetchcartItemsList()
@@ -766,10 +767,12 @@ function NewSale() {
                 onClick={() => {
                   if (openConfirmDialog.type === 'deleteOne') {
                     // return
-                    setMarkingCount((p) => ({
-                      ...p,
-                      [openConfirmDialog.id]: markingCount[openConfirmDialog.id] - Object.values(markingsList[openConfirmDialog.id] || {}).length,
-                    }))
+
+                    setMarkingCount((p) => {
+                      const newState = { ...p }
+                      delete newState[openConfirmDialog.id] // Remove the key completely
+                      return newState
+                    })
                     setMarkingList((p) => removeOneMarking(p, openConfirmDialog.id))
                     deleteCartItem(openConfirmDialog.id)
                   } else {
