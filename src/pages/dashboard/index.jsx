@@ -164,7 +164,6 @@ export default function DashboarPage() {
   return (
     <LoadingContainer readyState={true}>
       <DashboardHeader setSortBy={setSortBy} />
-      <RippedPaperCheck />
       <Box display='flex' flexDirection='column' position='relative' pt={0} px={'30px'} pb={3} width={'100%'}>
         <Grid width={'100%'} container>
           <Grid width={'100%'} item>
