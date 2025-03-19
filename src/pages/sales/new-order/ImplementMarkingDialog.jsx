@@ -4,6 +4,7 @@ import TextField from '../../../../components/Inputs/TextField'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import { LoadingButton } from '@mui/lab'
+import { useTranslation } from 'react-i18next'
 
 function ImplementMarkingDialog({
   open,
@@ -18,6 +19,7 @@ function ImplementMarkingDialog({
 }) {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const inputsRef = useRef([])
+  const { t } = useTranslation()
   useEffect(() => {
     if (open) {
       setTimeout(() => {
@@ -93,7 +95,7 @@ function ImplementMarkingDialog({
           }}
         >
           <Typography color={'#fe5000'} fontWeight={'500'}>
-            Не все добавленные продукты содержат маркер. Введите все теги для торговли.
+            {t('new_order.marking_dialog_info')}
           </Typography>
         </Box>
 
@@ -140,8 +142,8 @@ function ImplementMarkingDialog({
                       borderRadius={'40px'}
                       name={`${item.id}-${childIndex}`}
                       id={`${item.id}-${childIndex}`}
-                      label={'Маркировка'}
-                      placeholder={'Введите маркировку'}
+                      label={t('marking')}
+                      placeholder={t('marking.placeholder')}
                       sx={{ mb: 0 }}
                     />
                   </Box>
@@ -165,7 +167,7 @@ function ImplementMarkingDialog({
         }}
       >
         <Button onClick={handleClose} color='secondary' variant='contained' fullWidth>
-          Отмена
+          {t('cancel')}
         </Button>
         <Box width={'20px'} />
         <Button

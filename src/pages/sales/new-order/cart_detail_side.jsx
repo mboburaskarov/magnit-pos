@@ -195,7 +195,7 @@ function CartDetailSide({
             type={'number'}
             fullWidth
             name='discount'
-            label={'Скидка'}
+            label={t('discount')}
             uncontrolled
             placeholder='Введите скидку'
           />

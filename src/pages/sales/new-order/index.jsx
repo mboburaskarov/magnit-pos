@@ -666,7 +666,7 @@ function NewSale() {
               }}
             >
               <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
-                {t('page.new_sale.label')}
+                {t('menu.orders.new_order.heading')}
               </Typography>
               {get(cartItemsList, 'data.data.data', 0)?.length ? (
                 <Box display={'flex'} sx={{ cursor: 'pointer' }} alignItems={'center'} onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}>

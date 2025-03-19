@@ -172,7 +172,20 @@ const Profile = () => {
           <Box display='flex' gap={3}>
             <Box flex={1}>
               <Label>Язык</Label>
-              <SelectSimple disabled={true} white isClearable={false} defaultValue={languageDefaultValue} options={LANGUAGE_OPTIONS} name='language' />
+              <SelectSimple
+                uncontrolled
+                onChange={(e) => {
+                  if (get(e, 'value', 'ru') && i18n.language !== get(e, 'value', 'ru')) {
+                    i18n.changeLanguage(get(e, 'value', 'ru'))
+                  }
+                }}
+                disabled={true}
+                white
+                isClearable={false}
+                defaultValue={languageDefaultValue}
+                options={LANGUAGE_OPTIONS}
+                name='language'
+              />
             </Box>
 
             <Box flex={1}>

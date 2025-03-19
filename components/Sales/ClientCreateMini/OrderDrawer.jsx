@@ -403,6 +403,11 @@ export default function OrderDrawer({
         saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), error('Эта sпродажа уже закрыта.')
         return
       }
+
+      if (get(err, 'response.data.data') == 'failed payment with click') {
+        error('На вашем счете Click недостаточно средств.')
+        return
+      }
       error('Ошибка при Продажа завершена')
       console.log('err', err)
     },

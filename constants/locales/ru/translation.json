@@ -164,9 +164,12 @@
   "print": "Распечатать",
   "vendor": "Продавец",
   "vendors": "Сотрудники",
+  "cancel": "Отмена",
   "client": "Клиент",
   "clients": "Клиенти",
   "filter": "Фильтр",
+  "marking": "Маркировка",
+  "marking.placeholder": "Введите маркировку",
   "client.placeholder": "Введите имя клиента",
   "create": "Создавать",
   "balans": "Баланс",
@@ -290,5 +293,7 @@
   "menu.orders.new_order.placeholder": "Артикул, баркод, наименование",
   "menu.orders.new_order.seller_filter.add_seller": "Добавить продавца",
   "menu.orders.new_order.seller_filter.all_sellers": "Все продавцы",
-  "menu.orders.new_order.seller_filter.seller_name_placeholder": "Введите имя продавца"
+  "menu.orders.new_order.seller_filter.seller_name_placeholder": "Введите имя продавца",
+
+  "new_order.marking_dialog_info": "Не все добавленные продукты содержат маркер. Введите все теги для торговли."
 }
