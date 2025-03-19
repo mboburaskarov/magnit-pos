@@ -151,7 +151,7 @@ const CompanyPage = () => {
 
             <Box flex={1}>
               <Label>МФО</Label>
-              <TextField required fullWidth name='company_mfo' placeholder='МФО' />
+              <TextField fullWidth name='company_mfo' placeholder='МФО' />
             </Box>
           </Box>
 

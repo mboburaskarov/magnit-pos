@@ -390,7 +390,6 @@ function NewSale() {
     requests.getCartItemList({ sale_id: id, limit: 20, offset: 0 }).catch((e) => get(e, 'response.data.code') == '409' && navigate('/sales/create'))
   )
   const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
-  console.log(cashBoxDetails)
 
   useEffect(() => {
     refetchcartItemsList()
@@ -505,10 +504,20 @@ function NewSale() {
   useHotkeys(['ArrowRight', 'ArrowLeft'], (event) => focusUnitInput(event), { enableOnFormTags: true })
   useHotkeys('Shift', (event) => focusedItemDetailDrawerOpen(event), { enableOnFormTags: true })
 
-  useHotkeys('F10', () => setIsOrderDrower(true), {
-    enableOnFormTags: true,
-    enableOnTags: ['INPUT', 'TEXTAREA'],
-  })
+  useHotkeys(
+    'F10',
+    () => {
+      if (isAllMarkingFill()) {
+        setIsOrderDrower(true)
+      } else {
+        setIsOpenImplementMarkingDialog(true)
+      }
+    },
+    {
+      enableOnFormTags: true,
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+    }
+  )
 
   const [debouncedDiscount, setDebouncedDiscount] = useState('')
 
@@ -606,11 +615,11 @@ function NewSale() {
       setInput('') // Reset after detection
     }
     if (['D', 'd', 'в'].includes(event.key)) {
-      size(get(cartItemsList, 'data.data.data')) !== 0 && setIsOpenDraft(true)
+      setIsOpenDraft(true)
       setInput('') // Reset after detection
     }
     if (['T', 't', 'е'].includes(event.key)) {
-      saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') })
+      saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })
       setInput('') // Reset after detection
     }
     if (['A', 'a', 'ф'].includes(event.key)) {

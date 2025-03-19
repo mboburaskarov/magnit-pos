@@ -1,5 +1,5 @@
 import makeStyles from '@mui/styles/makeStyles'
-import { borderRadius, width } from '@mui/system'
+import { borderRadius, maxWidth, width } from '@mui/system'
 
 const drawerWidth = '296px'
 
@@ -335,6 +335,7 @@ export const navbarStyles = makeStyles((theme) => {
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       color: theme.palette.gray[600],
+      maxWidth: '200px',
     },
     itemIcon: {
       flex: '0 0 17%',

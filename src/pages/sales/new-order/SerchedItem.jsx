@@ -125,7 +125,7 @@ export default function SerchedItem({
           {!conflictItem && (
             <Box flex='0 0 22%' pr={2} textAlign='right'>
               <Typography whiteSpace={'pre'} className={classes.itemQuantity}>
-                <span>Miqdor: {item?.quantity}</span>
+                <span>Кол: {item?.quantity}</span>
               </Typography>
               <Typography whiteSpace={'pre'} className={classes.itemPrice}>
                 {thousandDivider(product?.retail_price, 'сум')}{' '}

@@ -555,7 +555,7 @@ export default function OrderDrawer({
   const handleFKeys = (event) => {
     event.preventDefault()
     const key = event.key
-    if (key === 'F12') {
+    if (key === 'F12' && !(maxAmount > 0)) {
       event.preventDefault()
       handleFinish()
       return

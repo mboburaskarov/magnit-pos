@@ -118,7 +118,7 @@ export default function ProductDrawer({ open: item, onClose, setImages, productD
             { title: 'Производитель', info: get(item, 'producer.name', '-') },
             { title: 'Сумма бонуса', info: thousandDivider(item.bonus_amount, 'сум') },
             { title: 'Бонусный процент', info: thousandDivider(item.bonus_percent, '%') },
-            { title: 'Время подготовки', info: dayjs(item.created_at).format('DD.MM.YYYY') },
+            { title: 'Время подготовки', info: dayjs(item.expire_date).format('DD.MM.YYYY') },
             { title: 'Единицы измерения', info: item?.unit_name },
 
             { title: 'Тип', info: item.type === 'BUCHET' ? 'Buchet' : 'Market' },

@@ -185,6 +185,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
 }))
+let a = -1
 function CartSearchBar({
   refetchcartItemsList,
   openDraft,
@@ -229,7 +230,6 @@ function CartSearchBar({
   const classes = useStyles()
   const productsData = productsList?.data?.data
 
-  let a = -1
   const selectDownItems = () => {
     if (a == searchItemRef.current.length - 1) {
       a = 0

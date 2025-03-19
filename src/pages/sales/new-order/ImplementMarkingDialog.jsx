@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import TextField from '../../../../components/Inputs/TextField'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
@@ -17,24 +17,57 @@ function ImplementMarkingDialog({
   setMarkingList,
 }) {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const inputsRef = useRef([])
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => {
+        inputsRef.current[0]?.focus()
+      }, 100)
+    }
+  }, [open])
   const addEmptyStringMarkToMarkinglessProduct = (markings, shouldHaveMarkings) => {
     let newMarkingList = { ...markings }
-
     for (const key in shouldHaveMarkings) {
       const count = shouldHaveMarkings[key]
       const existingValues = markings[key] || {}
       const mergedValues = {}
-
       for (let i = 0; i < count; i++) {
         mergedValues[i] = existingValues[i] || ''
       }
-
       newMarkingList[key] = mergedValues
     }
     setMarkingList(newMarkingList)
     setIsOrderDrower(true)
     handleClose()
     setOpenConfirmDialog(null)
+  }
+
+  const handleKeyDown = (e, flatIndex) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      if (inputsRef.current.length - 1 == flatIndex) {
+        if (!isAllMarkingFill()) {
+          setOpenConfirmDialog(true)
+          return
+        }
+        setIsOrderDrower(true)
+        handleClose()
+        return
+      }
+      const nextInput = inputsRef.current[flatIndex + 1]
+      if (nextInput) {
+        nextInput.focus()
+      }
+    }
+  }
+
+  // Calculate flat index from parent and child indexes
+  const getFlatIndex = (parentIndex, childIndex, markingCounts) => {
+    let flatIndex = 0
+    for (let i = 0; i < parentIndex; i++) {
+      flatIndex += markingCounts[cartItems[i].id] || 0
+    }
+    return flatIndex + childIndex
   }
 
   return (
@@ -50,12 +83,7 @@ function ImplementMarkingDialog({
       open={open}
       disableScrollLock
     >
-      <Box
-        sx={{
-          minWidth: '600px',
-          padding: '20px',
-        }}
-      >
+      <Box sx={{ minWidth: '600px', padding: '20px' }}>
         <Box
           sx={{
             padding: '20px',
@@ -68,58 +96,65 @@ function ImplementMarkingDialog({
             Не все добавленные продукты содержат маркер. Введите все теги для торговли.
           </Typography>
         </Box>
-        {cartItems.map((item) => {
-          return (
-            <Box
-              sx={{
-                padding: '5px 10px',
-                backgroundColor: '#f3f3f3',
-                m: '10px 0px',
-                borderRadius: '20px',
-              }}
-            >
-              <Typography fontWeight={'600'} my={'10px'}>
-                {item.name}
-              </Typography>
-              {Array(markingCount[item.id])
-                .fill(1)
-                .map((unit_item, index) => {
-                  return (
-                    <Box
-                      sx={{
-                        mb: '5px',
-                        mt: '10px',
-                        '.MuiFormControl-root': {
-                          backgroundColor: 'transparent !important',
-                        },
-                        '.input-label': {
-                          mb: '0px !important',
-                        },
-                      }}
-                    >
-                      <TextField
-                        uncontrolled
-                        setValue={(e) => implementMarkingList(e, item?.id, index)}
-                        defaultValue={markingsList?.[item.id]?.[index]}
-                        required
-                        fullWidth
-                        borderRadius={'40px'}
-                        name={`${item.id}`}
-                        label={'Маркировка'}
-                        placeholder={'Введите маркировку'}
-                        sx={{ mb: 0 }}
-                      />
-                    </Box>
-                  )
-                })}
-            </Box>
-          )
-        })}
+
+        {cartItems.map((item, parentIndex) => (
+          <Box
+            key={item.id}
+            sx={{
+              padding: '5px 10px',
+              backgroundColor: '#f3f3f3',
+              m: '10px 0px',
+              borderRadius: '20px',
+            }}
+          >
+            <Typography fontWeight={'600'} my={'10px'}>
+              {item.name}
+            </Typography>
+            {Array(markingCount[item.id])
+              .fill(1)
+              .map((_, childIndex) => {
+                const flatIndex = getFlatIndex(parentIndex, childIndex, markingCount)
+
+                return (
+                  <Box
+                    key={`${item.id}-${childIndex}`}
+                    sx={{
+                      mb: '5px',
+                      mt: '10px',
+                      '.MuiFormControl-root': {
+                        backgroundColor: 'transparent !important',
+                      },
+                      '.input-label': {
+                        mb: '0px !important',
+                      },
+                    }}
+                  >
+                    <TextField
+                      uncontrolled
+                      setValue={(e) => implementMarkingList(e, item?.id, childIndex)}
+                      defaultValue={markingsList?.[item.id]?.[childIndex]}
+                      required
+                      onKeyDown={(e) => handleKeyDown(e, flatIndex)}
+                      fullWidth
+                      inputRef={(el) => (inputsRef.current[flatIndex] = el)}
+                      borderRadius={'40px'}
+                      name={`${item.id}-${childIndex}`}
+                      id={`${item.id}-${childIndex}`}
+                      label={'Маркировка'}
+                      placeholder={'Введите маркировку'}
+                      sx={{ mb: 0 }}
+                    />
+                  </Box>
+                )
+              })}
+          </Box>
+        ))}
       </Box>
+
+      {/* Rest of your dialog footer remains the same */}
       <Box
         display={'flex'}
         sx={{
-          //   position: 'fixed',
           bottom: 0,
           right: 0,
           backgroundColor: '#fff',
@@ -134,14 +169,11 @@ function ImplementMarkingDialog({
         </Button>
         <Box width={'20px'} />
         <Button
-          // disabled={!isAllMarkingFill()}
           onClick={() => {
             if (!isAllMarkingFill()) {
               setOpenConfirmDialog(true)
-
               return
             }
-
             setIsOrderDrower(true)
             handleClose()
           }}
@@ -150,6 +182,7 @@ function ImplementMarkingDialog({
           Продолжать
         </Button>
       </Box>
+
       <ConfirmDialog
         open={!!openConfirmDialog}
         setOpen={setOpenConfirmDialog}
@@ -158,7 +191,6 @@ function ImplementMarkingDialog({
         desc={
           'Вы не ввели наценку для всех товаров. Продажа без маркировки юридически невозможна. Нажимая «Продолжить», вы принимаете на себя всю ответственность.'
         }
-        // supDesc={openConfirmDialog.type === 'deleteAll' ? '' : openConfirmDialog?.name}
         actions={
           <>
             <Button
