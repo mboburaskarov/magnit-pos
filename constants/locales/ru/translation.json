@@ -183,8 +183,10 @@
   "all": "Все",
   "fish": "ФИО",
   "all_reports": "Все отчеты",
+  "navbar.cash_shifts": "Кассовые смены",
   "all_sales": "Все продажи",
   "role": "Роль",
+  "continue": "Продолжать",
   "role.placeholder": "Выберите роль",
   "profile": "Профиль",
   "all_medicien": "Все препараты",
@@ -294,6 +296,12 @@
   "menu.orders.new_order.seller_filter.add_seller": "Добавить продавца",
   "menu.orders.new_order.seller_filter.all_sellers": "Все продавцы",
   "menu.orders.new_order.seller_filter.seller_name_placeholder": "Введите имя продавца",
-
-  "new_order.marking_dialog_info": "Не все добавленные продукты содержат маркер. Введите все теги для торговли."
+  "no_marking": "Без маркировки",
+  "total": "Итого",
+  "ruturn": "Возврат",
+  "scanner": "Сканер",
+  "scanned_code.placeholder": "сканированный код",
+  "new_order.app.pass_scan": "Отсканируйте QR-код клиента, чтобы завершить платеж.",
+  "new_order.marking_dialog_info": "Не все добавленные продукты содержат маркер. Введите все теги для торговли.",
+  "new_order.empty_marking.dialog_info": "Вы не ввели наценку для всех товаров. Продажа без маркировки юридически невозможна. Нажимая «Продолжить», вы принимаете на себя всю ответственность."
 }

@@ -184,6 +184,8 @@
   "fish": "F.I.SH.",
   "all_reports": "Barcha hisobotlar",
   "all_sales": "Barcha sotuvlar",
+  "continue": "Davom etish",
+  "navbar.cash_shifts": "Kassani almashtirish",
   "role": "Rol",
   "role.placeholder": "Rolni tanlang",
   "profile": "Profil",
@@ -294,6 +296,15 @@
   "menu.orders.new_order.seller_filter.add_seller": "Sotuvchi qo‘shish",
   "menu.orders.new_order.seller_filter.all_sellers": "Barcha sotuvchilar",
   "menu.orders.new_order.seller_filter.seller_name_placeholder": "Sotuvchi ismini kiriting",
+  "no_marking": "Markirovkasiz mahsulot",
+  "total": "Umumiy",
+  "should_pay": "To'lash kerak",
+  "ruturn": "Qaytish",
+  "scanner": "Skaner",
+  "scanned_code.placeholder": "skanner qilingan ko'd",
 
-  "new_order.marking_dialog_info": "Barcha qo'shilgan mahsulotlarda marker mavjud emas. Savdo uchun barcha teglarni kiriting."
+  "new_order.app.pass_scan": "Toʻlovni yakunlash uchun mijozning QR kodini skanerlang.",
+  "payment_type": "To'lov turi",
+  "new_order.marking_dialog_info": "Barcha qo'shilgan mahsulotlarda marker mavjud emas. Savdo uchun barcha teglarni kiriting.",
+  "new_order.empty_marking.dialog_info": "Siz barcha mahsulotlar uchun belgi kiritmagansiz. Yorliqsiz sotish qonuniy ravishda mumkin emas. \"Davom etish\" tugmasini bosish orqali siz to'liq javobgarlikni qabul qilasiz."
 }

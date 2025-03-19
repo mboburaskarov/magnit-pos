@@ -260,10 +260,13 @@ function NewSale() {
     setInputDiscount(0)
   }, [discount])
   const focusUnitInput = (event) => {
-    if (event.key === 'ArrowRight' && !event.shiftKey) {
+    if (event.key === '=' && !event.shiftKey) {
       const activeInput = document.activeElement
       if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
         let unitId = activeInput.name.split('_')
+        if (unitId[0] === 'quantity') {
+          cartItemRef.current.find((el) => el.name == `quantity_${unitId[1]}`).value = 0
+        }
         const nextInput = cartItemRef.current[unitId[1] + 'unit']
 
         if (nextInput) {
@@ -271,7 +274,8 @@ function NewSale() {
         }
       }
     }
-    if (event.key === 'ArrowLeft' && !event.shiftKey) {
+    console.log(event)
+    if (event.key === '-' && !event.shiftKey) {
       const activeInput = document.activeElement
       if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
         let unitId = activeInput.name.split('unit_quantity_')
@@ -501,7 +505,7 @@ function NewSale() {
     { enableOnFormTags: true }
   )
 
-  useHotkeys(['ArrowRight', 'ArrowLeft'], (event) => focusUnitInput(event), { enableOnFormTags: true })
+  useHotkeys(['='], (event) => focusUnitInput(event), { enableOnFormTags: true, preventDefault: true })
   useHotkeys('Shift', (event) => focusedItemDetailDrawerOpen(event), { enableOnFormTags: true })
 
   useHotkeys(

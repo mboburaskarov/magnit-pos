@@ -665,7 +665,7 @@ export default function OrderDrawer({
                     mr={'24px'}
                   >
                     <Typography fontSize={24} fontWeight={'700'} lineHeight={'32px'} color={'bunker.500'}>
-                      Итого:
+                      {t('total')}:
                     </Typography>
                     <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={'bunker.950'}>
                       {thousandDivider(get(cartItemsList, 'total_amount'), 'сум')}
@@ -680,7 +680,7 @@ export default function OrderDrawer({
                     width={'100%'}
                   >
                     <Typography fontSize={24} fontWeight={'700'} lineHeight={'32px'} color={'bunker.500'}>
-                      {maxAmount < 0 ? 'Возврат' : 'Должен платить'}
+                      {maxAmount < 0 ? t('ruturn') : t('should_pay')}
                     </Typography>
                     <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={maxAmount === 0 ? 'green.700' : 'red.700'}>
                       {thousandDivider(maxAmount, 'сум')}
@@ -828,7 +828,7 @@ export default function OrderDrawer({
               disabled={maxAmount > 0}
               onClick={() => handleFinish()}
             >
-              Оплатить
+              {t('menu.orders.new_order.cart_container.pay')}
               <Box
                 sx={{
                   color: '#fff',
@@ -859,7 +859,7 @@ export default function OrderDrawer({
         buttonLabel={'ff'}
         title={
           <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.500'}>
-            Сканер
+            {t('scanner')}
           </Typography>
         }
         open={isOpenScanDialog}
@@ -867,7 +867,7 @@ export default function OrderDrawer({
         <Box sx={{ padding: '40px', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
           <QrScanIcon width='64' />
           <Typography mb={'16px'} justifyContent={'center'} textAlign={'center'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.950'}>
-            Отсканируйте QR-код клиента, чтобы завершить платеж.
+            {t('new_order.app.pass_scan')}
           </Typography>
           <TextField
             required
@@ -884,12 +884,12 @@ export default function OrderDrawer({
               }
             }}
             // label={'t('create_new_product.product_name')'}
-            placeholder={'сканированный код'}
+            placeholder={t('scanned_code.placeholder')}
             sx={{ mb: 3 }}
           />
           <Box sx={{ display: 'flex', mt: '10px' }}>
             <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.500'}>
-              Тип оплаты:
+              {t('payment_type')}:
             </Typography>
             <Typography ml={'5px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'purple.500'}>
               {paymentsList.find((el) => el.type === 'app')?.name}

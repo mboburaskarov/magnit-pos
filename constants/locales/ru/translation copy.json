@@ -2716,9 +2716,9 @@
   "navbar.cashbox_operations": "Кассовые операции",
   "navbar.cashbox_state": "Состояние счетов",
   "navbar.cashboxes": "Кассы",
-
+  "should_pay": "Должен платить",
   "navbar.catalog": "Каталог",
-
+  "payment_type": "Тип оплаты",
   "navbar.certificates": "Сертификаты",
   "navbar.cheques": "Чеки",
   "navbar.clients": "Клиенты",

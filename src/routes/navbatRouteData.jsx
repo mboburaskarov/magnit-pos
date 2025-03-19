@@ -69,13 +69,13 @@ export const navbatRouteData = [
         href: '/sales/create',
       },
       {
-        label: 'Все продажи',
+        label: 'all_sales',
         active: '/sales/all-sales*',
         id: '52',
         href: '/sales/all-sales',
       },
       {
-        label: 'Кассовые смены',
+        label: 'navbar.cash_shifts',
         active: '/sales/cash-shifts*',
         id: '55',
         href: '/sales/cash-shifts',

@@ -181,7 +181,7 @@ function ImplementMarkingDialog({
           }}
           fullWidth
         >
-          Продолжать
+          {t('continue')}
         </Button>
       </Box>
 
@@ -189,10 +189,8 @@ function ImplementMarkingDialog({
         open={!!openConfirmDialog}
         setOpen={setOpenConfirmDialog}
         icon={<BigWarningIcon />}
-        title={'Без маркировки'}
-        desc={
-          'Вы не ввели наценку для всех товаров. Продажа без маркировки юридически невозможна. Нажимая «Продолжить», вы принимаете на себя всю ответственность.'
-        }
+        title={t('no_marking')}
+        desc={t('new_order.empty_marking.dialog_info')}
         actions={
           <>
             <Button
@@ -202,7 +200,7 @@ function ImplementMarkingDialog({
               variant='contained'
               onClick={() => setOpenConfirmDialog(null)}
             >
-              Нет
+              {t('cancel')}
             </Button>
             <LoadingButton
               variant='contained'
@@ -211,7 +209,7 @@ function ImplementMarkingDialog({
                 addEmptyStringMarkToMarkinglessProduct(markingsList, markingCount)
               }}
             >
-              Продолжить
+              {t('continue')}
             </LoadingButton>
           </>
         }

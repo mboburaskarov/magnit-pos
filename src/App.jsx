@@ -15,7 +15,7 @@ function App() {
         {/* <ShortcutProvider> */}
         <Routes />
         <GlobalStyles />
-        <ToastContainer limit={3} position='top-center' autoClose={1000} hideProgressBar closeOnClick pauseOnHover draggable closeButton={false} />
+        <ToastContainer limit={3} position='top-center' autoClose={3000} hideProgressBar closeOnClick pauseOnHover draggable closeButton={false} />
         {/* </ShortcutProvider> */}
       </SocketProvider>
     </Providers>

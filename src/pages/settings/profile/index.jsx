@@ -44,6 +44,7 @@ const Profile = () => {
   const navigate = useNavigate()
 
   const [open, setOpen] = useState(false)
+  const [lang, setlang] = useState('uz')
   const [isEditMode, setIsEditMode] = useState(false)
   const methods = useForm({
     defaultValues: {
@@ -178,7 +179,9 @@ const Profile = () => {
                   if (get(e, 'value', 'ru') && i18n.language !== get(e, 'value', 'ru')) {
                     i18n.changeLanguage(get(e, 'value', 'ru'))
                   }
+                  setlang(get(e, 'value', 'ru'))
                 }}
+                value={getSelectDefaultValue(LANGUAGE_OPTIONS, lang)}
                 disabled={true}
                 white
                 isClearable={false}

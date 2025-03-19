@@ -211,6 +211,7 @@ function CartSearchBar({
   useImperativeHandle(searchResetRef, () => ({
     clearValue: () => setSearchTerm(''),
   }))
+
   const productsListFilter = useMemo(() => {
     return {
       search: searchTearm.slice(0, 31),
