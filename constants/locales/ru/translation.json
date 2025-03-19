@@ -298,7 +298,7 @@
   "menu.orders.new_order.seller_filter.seller_name_placeholder": "Введите имя продавца",
   "no_marking": "Без маркировки",
   "total": "Итого",
-  "ruturn": "Возврат",
+  "return": "Сдача",
   "scanner": "Сканер",
   "scanned_code.placeholder": "сканированный код",
   "new_order.app.pass_scan": "Отсканируйте QR-код клиента, чтобы завершить платеж.",

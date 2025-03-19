@@ -523,6 +523,7 @@ export default function OrderDrawer({
       store_id: get(userData, 'store.id'),
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
+      return_amount: Math.abs(maxAmount),
     })
 
     return
@@ -680,10 +681,10 @@ export default function OrderDrawer({
                     width={'100%'}
                   >
                     <Typography fontSize={24} fontWeight={'700'} lineHeight={'32px'} color={'bunker.500'}>
-                      {maxAmount < 0 ? t('ruturn') : t('should_pay')}
+                      {maxAmount < 0 ? t('return') : t('should_pay')}
                     </Typography>
                     <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={maxAmount === 0 ? 'green.700' : 'red.700'}>
-                      {thousandDivider(maxAmount, 'сум')}
+                      {thousandDivider(Math.abs(maxAmount), 'сум')}
                     </Typography>
                   </Box>
                 </Box>
