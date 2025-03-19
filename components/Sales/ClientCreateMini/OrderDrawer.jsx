@@ -869,10 +869,13 @@ export default function OrderDrawer({
             inputRef={(el) => (scannedBarcodeRef.current = el)}
             fullWidth
             borderRadius={'40px'}
+            setValue={() => {}}
+            uncontrolled
             name='barcode-click'
             onKeyDown={(e) => {
               if (e.code == 'Enter') {
                 onSubmit(e.target.value)
+                scannedBarcodeRef.current.value = ''
               }
             }}
             // label={'t('create_new_product.product_name')'}
