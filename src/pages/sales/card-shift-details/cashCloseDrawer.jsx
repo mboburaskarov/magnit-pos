@@ -1,7 +1,7 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -14,6 +14,8 @@ import CartOutlineIcon from '../../../assets/icons/CartOutline'
 import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
 import thousandDivider from '../../../../utils/thousandDivider'
 import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
+import RippedPaperZReportCheck from '../../../../components/ChequePaper/ZReportCheck'
+import { useReactToPrint } from 'react-to-print'
 const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
@@ -89,23 +91,68 @@ function CashCloseDrawer({ open, setOpen }) {
   const classes = useStyles()
   const { id } = useParams()
   const navigate = useNavigate()
-
+  const printContainer = useRef()
   const [company, setCompany] = useState('1')
+  const [checkdata, setcheckdata] = useState()
   const methods = useForm()
+  const reactToPrintContent = useCallback(() => printContainer.current, [])
+  const documentName = useRef('Pharma CHEQUE')
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: documentName.current,
+    removeAfterPrint: true,
+  })
+
   const { data: closeCashboxPaymentsInfo } = useQuery(['closeCashboxPaymentsInfo', open], () => requests.getCloseCashboxPaymentsInfo(id), {
     enabled: open, // The query will only run when open is true
   })
+  const { mutate: closeCheckZReport, isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
+    onSuccess: ({ data }) => {
+      console.log(data)
+      setcheckdata(get(data, 'message'))
+      setOpen(false)
+      // navigate(`/sales/create`)
+      success('Касса закрыта! (cose z info report)')
+    },
+    onError: (err) => {
+      error('Ошибка закрытия кассы! (close Z info Report)')
+      console.log('err', err)
+    },
+  })
+  useEffect(() => {
+    if (checkdata) {
+      handlePrint()
+      navigate(`/sales/create`)
+    }
+  }, [checkdata])
+  const { mutate: closeZReport, isLoading: iscloseZReport } = useMutation(requests.closeZReport, {
+    onSuccess: () => {
+      closeCheckZReport({
+        token: 'DXJFX32CN1296678504F2',
+        method: 'getZreportInfo',
+        printerSize: 80,
+        zReportId: 0,
+      })
+      success('Касса закрыта! (cose z report)')
+    },
+    onError: (err) => {
+      error('Ошибка закрытия кассы! (close Z Report)')
+      console.log('err', err)
+    },
+  })
   const { mutate: closeCashBoxRegister, isLoading: iscloseCashBoxRegister } = useMutation(requests.closeCashBoxRegister, {
     onSuccess: () => {
-      setOpen(false)
-      navigate(`/sales/create`)
-      success('Касса закрыта!')
+      closeZReport({
+        token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+        method: 'closeZreport', // Название метода, Обязательное поле, String
+      })
     },
     onError: (err) => {
       error('Ошибка закрытия кассы!')
       console.log('err', err)
     },
   })
+
   const onSubmit = (data) => {
     closeCashBoxRegister({
       id,
@@ -238,6 +285,26 @@ function CashCloseDrawer({ open, setOpen }) {
           </Button>
         </FormProvider>
       </LoadingContainer>
+      <Box
+        maxWidth='400px'
+        sx={{
+          display: 'none',
+          width: '355px',
+          overflowY: 'scroll',
+          maxHeight: '75vh',
+        }}
+      >
+        <Box
+          mx={-2}
+          mt={'-3px'}
+          style={{
+            padding: '20px',
+          }}
+          ref={printContainer}
+        >
+          <RippedPaperZReportCheck zrepo={checkdata} />
+        </Box>
+      </Box>
     </Drawer>
   )
 }

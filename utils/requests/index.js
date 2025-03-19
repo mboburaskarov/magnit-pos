@@ -3,6 +3,13 @@ import { authRequest, eposRequest, fileUploadRequest, request, requestEXCEL, yan
 import * as qs from 'qs'
 
 export const requests = {
+  //epos
+  sendToEpos: (data) => eposRequest.post(`/uzpos`, data),
+  closeZReport: (data) => eposRequest.post(`/uzpos`, data),
+  closeCheckZReport: (data) => eposRequest.post(`/uzpos`, data),
+  openZReport: (data) => eposRequest.post(`/uzpos`, data),
+  sendEPOSresponseToBackend: (data) => request.post(`v1/sale/epos-result`, data),
+
   //tags
   getAllTags: (filter) => request.get(`v1/tag/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createTag: (data) => request.post(`v1/tag`, data),
@@ -14,9 +21,6 @@ export const requests = {
   dashboradChart: (filter) => request.get(`v1/dashboard/chart${qs.stringify(filter, { addQueryPrefix: true })}`),
   dashboradCountStats: (filter) => request.get(`v1/dashboard/count-stats${qs.stringify(filter, { addQueryPrefix: true })}`),
   dashboradTopStores: (filter) => request.get(`v1/dashboard/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`),
-  //epos
-  sendToEpos: (data) => eposRequest.post(`/uzpos`, data),
-  sendEPOSresponseToBackend: (data) => request.post(`v1/sale/epos-result`, data),
 
   //auth
   logIn: (data) => authRequest.post(`v1/login`, data),

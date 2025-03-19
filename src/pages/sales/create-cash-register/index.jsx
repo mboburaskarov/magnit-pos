@@ -72,6 +72,7 @@ function NewCashRegister() {
   const userData = useSelector((state) => state.user)
   const navigate = useNavigate()
   const [isLoading, setIsLoding] = useState(false)
+  const [newSaleId, setNewSaleId] = useState(false)
   const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
   const { data: registerCashList, refetch: refetchregisterCashList } = useQuery('registerCashList', () =>
@@ -110,11 +111,29 @@ function NewCashRegister() {
       setCanCreate({ canCreate: true, is_open: get(methods.watch('registerCash_id'), 'is_open') })
     })
   }, [methods.watch('registerCash_id')])
-
+  const { mutate: openZReport, isLoading: isopenZReport } = useMutation(requests.openZReport, {
+    onSuccess: () => {
+      console.log(newSaleId)
+    },
+    onError: (err) => {
+      error('Ошибка при создании кассы! (open z report)')
+      console.log('err', err)
+    },
+  })
+  useEffect(() => {
+    if (newSaleId) {
+      newSaleId ? navigate(`/sales/new-sale/${newSaleId}`) : error('Ошибка при создании кассы! (open z report)')
+    }
+  }, [newSaleId])
   const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashOperationBox, {
     onSuccess: ({ data }) => {
-      data
-      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+      openZReport({
+        token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+        method: 'openZreport', // Название метода, Обязательное поле, String
+      })
+      console.log(data, get(data, 'data.id'))
+
+      setNewSaleId(get(data, 'data.id'))
     },
     onError: (err) => {
       error('Ошибка при создании кассы!')
