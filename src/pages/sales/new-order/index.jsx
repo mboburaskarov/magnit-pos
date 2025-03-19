@@ -505,7 +505,8 @@ function NewSale() {
     { enableOnFormTags: true }
   )
 
-  useHotkeys(['+'], (event) => focusUnitInput(event), { enableOnFormTags: true, preventDefault: true })
+  useHotkeys('Plus', (event) => focusUnitInput(event), { enableOnFormTags: true, preventDefault: true })
+
   useHotkeys('Shift', (event) => focusedItemDetailDrawerOpen(event), { enableOnFormTags: true })
 
   useHotkeys(
