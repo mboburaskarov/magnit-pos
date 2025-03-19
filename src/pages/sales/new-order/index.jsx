@@ -260,7 +260,7 @@ function NewSale() {
     setInputDiscount(0)
   }, [discount])
   const focusUnitInput = (event) => {
-    if (event.key === '=' && !event.shiftKey) {
+    if (event.key === '+' && !event.shiftKey) {
       const activeInput = document.activeElement
       if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
         let unitId = activeInput.name.split('_')
@@ -505,7 +505,7 @@ function NewSale() {
     { enableOnFormTags: true }
   )
 
-  useHotkeys(['='], (event) => focusUnitInput(event), { enableOnFormTags: true, preventDefault: true })
+  useHotkeys(['+'], (event) => focusUnitInput(event), { enableOnFormTags: true, preventDefault: true })
   useHotkeys('Shift', (event) => focusedItemDetailDrawerOpen(event), { enableOnFormTags: true })
 
   useHotkeys(
