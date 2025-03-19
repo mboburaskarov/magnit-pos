@@ -289,7 +289,7 @@ function CashCloseDrawer({ open, setOpen }) {
         maxWidth='400px'
         sx={{
           display: 'none',
-          width: '355px',
+          width: '255px',
           overflowY: 'scroll',
           maxHeight: '75vh',
         }}
