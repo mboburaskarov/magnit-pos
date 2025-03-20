@@ -189,6 +189,11 @@ function ImplementMarkingDialog({
         open={!!openConfirmDialog}
         setOpen={setOpenConfirmDialog}
         icon={<BigWarningIcon />}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            addEmptyStringMarkToMarkinglessProduct(markingsList, markingCount)
+          }
+        }}
         title={t('no_marking')}
         desc={t('new_order.empty_marking.dialog_info')}
         actions={

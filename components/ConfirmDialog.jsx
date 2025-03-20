@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }))
-const ConfirmDialog = ({ open, setOpen, actions, title = '', icon, desc, descWidth, supDesc, noCloseIcon, setDisableSubmit }) => {
+const ConfirmDialog = ({ open, setOpen, onKeyDown = () => {}, actions, title = '', icon, desc, descWidth, supDesc, noCloseIcon, setDisableSubmit }) => {
   const handleClose = () => {
     setOpen(false)
     if (setDisableSubmit) {
@@ -79,7 +79,7 @@ const ConfirmDialog = ({ open, setOpen, actions, title = '', icon, desc, descWid
   const classes = useStyles()
   return (
     <>
-      <Dialog onClose={handleClose} open={open} className={classes.root} disableScrollLock>
+      <Dialog onKeyDown={onKeyDown} onClose={handleClose} open={open} className={classes.root} disableScrollLock>
         {!noCloseIcon && (
           <Box onClick={() => setOpen(false)} className={classes.dialogHeader}>
             <Typography variant='h2' fontWeight={'700'} fontSize={'24px'} lineHeight={'32px'}>

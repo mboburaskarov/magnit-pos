@@ -357,7 +357,7 @@ function NewSale() {
         addNewMarking(data?.data?.id, searchValue)
       }
       searchResetRef.current.clearValue()
-
+      searchRef?.current?.focus()
       setShowOverlay(false)
       refetchcartItemsList()
     },
