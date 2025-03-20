@@ -298,6 +298,7 @@ function CartSearchBar({
             placeholder={'Поиск: товар, категория, штрих-код'}
             fullWidth
             onFocus={() => {
+              a = 0
               setShowOverlay(true)
             }}
             value={searchTearm}

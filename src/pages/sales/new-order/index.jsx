@@ -202,6 +202,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
 }))
+let a = -1
 function NewSale() {
   const { t } = useTranslation()
   const { id } = useParams()
@@ -240,12 +241,12 @@ function NewSale() {
   const searchRef = useRef('')
   const searchResetRef = useRef('')
   const printContainer = useRef()
-  let a = -1
+  const cartRef = cartItemRef.current.filter((a) => a)
   const focusPackInput = (event, id) => {
     if (event.key === 'Tab' && !event.shiftKey) {
       event.preventDefault()
-      const nextInput = cartItemRef.current[a + 1]
-      if (a == cartItemRef.current.length - 2) {
+      const nextInput = cartRef[a + 1]
+      if (a == cartRef.length - 2) {
         a = -1
       } else {
         a++
@@ -267,9 +268,9 @@ function NewSale() {
       if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
         let unitId = activeInput.name.split('_')
         if (unitId[0] === 'quantity') {
-          cartItemRef.current.find((el) => el.name == `quantity_${unitId[1]}`).value = 0
+          cartRef.find((el) => el.name == `quantity_${unitId[1]}`).value = 0
         }
-        const nextInput = cartItemRef.current[unitId[1] + 'unit']
+        const nextInput = cartRef[unitId[1] + 'unit']
 
         if (nextInput) {
           nextInput.focus()
@@ -282,7 +283,7 @@ function NewSale() {
       if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
         let unitId = activeInput.name.split('unit_quantity_')
 
-        const nextInput = cartItemRef.current.find((el) => el.name == `quantity_${unitId[1]}`)
+        const nextInput = cartRef.find((el) => el.name == `quantity_${unitId[1]}`)
         if (nextInput) {
           nextInput.focus()
         }
@@ -501,6 +502,17 @@ function NewSale() {
     'Delete',
     (event) => {
       if (document.activeElement?.id?.includes('quantity_')) {
+        if (cartRef.findIndex((el) => el.id == document?.activeElement?.id) == cartRef.length - 1) {
+          setTimeout(() => {
+            cartRef[0].focus()
+          }, 200)
+        } else {
+          a = cartRef.findIndex((el) => el.id == document?.activeElement?.id)
+
+          setTimeout(() => {
+            cartRef[a + 1].focus()
+          }, 200)
+        }
         deleteCartItem(document?.activeElement?.id?.split('quantity_')[1])
       }
     },
