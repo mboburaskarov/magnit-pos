@@ -36,7 +36,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
     <Box className={`${classes.root} ${noSticky ? classes.noSticky : ''}`}>
       <Box className={classes.inner} mx={margin && 4}>
         <Box px={2} py={4}>
-          <div className={classes.border} />
+          {/* <div className={classes.border} /> */}
           <Fragment key={'index39'}>
             <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
               <Typography mb={'10px'} textAlign={'center'} mt={'10px'}>
@@ -69,7 +69,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
               )}
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index3'}`}
+                  id={`return-price-${'index4'}`}
                   rowData={{
                     type: `ВРЕМЯ ЗАКРЫТИЯ:`,
                     value: `${get(zrepo, 'closeTime')}`,
@@ -78,7 +78,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
               )}
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index9'}`}
+                  id={`return-price-${'index5'}`}
                   rowData={{
                     type: `НОМЕР:`,
                     value: `+${get(zrepo, 'number', '-')}`,
@@ -87,7 +87,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
               )}
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index4'}`}
+                  id={`return-price-${'index6'}`}
                   rowData={{
                     type: `КОЛ-ВО:`,
                     value: `${get(zrepo, 'count')}`,
@@ -96,7 +96,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
               )}
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index5'}`}
+                  id={`return-price-${'index7'}`}
                   rowData={{
                     type: `ИТОГО ЧЕКОВ:`,
                     value: `${get(zrepo, 'totalSaleCount')}`,
@@ -105,7 +105,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
               )}
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index6'}`}
+                  id={`return-price-${'index8'}`}
                   rowData={{
                     type: `ИТОГО КАРТЫ:`,
                     value: `${get(zrepo, 'totalSaleCard')}`,
@@ -115,7 +115,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
 
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index8'}`}
+                  id={`return-price-${'index9'}`}
                   rowData={{
                     type: `ИТОГО НАЛИЧНЫЕ:`,
                     value: `${get(zrepo, 'totalSaleCash', '-')}`,
@@ -124,7 +124,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
               )}
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index8'}`}
+                  id={`return-price-${'index10'}`}
                   rowData={{
                     type: `ИТОГО НДС:`,
                     value: `${get(zrepo, 'totalSaleVAT', '-')}`,
@@ -133,7 +133,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
               )}
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index8'}`}
+                  id={`return-price-${'index11'}`}
                   rowData={{
                     type: `ИТОГО ВОЗВРАТОВ:`,
                     value: `${get(zrepo, 'totalRefundCount', '-')}`,
@@ -142,7 +142,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
               )}
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index8'}`}
+                  id={`return-price-${'index12'}`}
                   rowData={{
                     type: `ИТОГО ВОЗВРАТА НАЛИЧНЫЕ:`,
                     value: `${get(zrepo, 'totalRefundCash', '-')}`,
@@ -151,7 +151,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
               )}
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index8'}`}
+                  id={`return-price-${'index13'}`}
                   rowData={{
                     type: `ИТОГО ВОЗВРАТА КАРТЫ:`,
                     value: `${get(zrepo, 'totalRefundCard', '-')}`,
@@ -160,7 +160,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
               )}
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index8'}`}
+                  id={`return-price-${'index14'}`}
                   rowData={{
                     type: `ИТОГО ВОЗВРАТА НДС:`,
                     value: `${get(zrepo, 'totalRefundVAT', '-')}`,
@@ -169,7 +169,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
               )}
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index8'}`}
+                  id={`return-price-${'index15'}`}
                   rowData={{
                     type: `LastReceiptsed:`,
                     value: `${get(zrepo, 'lastReceiptSeq', '-')}`,
@@ -178,7 +178,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
               )}
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index8'}`}
+                  id={`return-price-${'index16'}`}
                   rowData={{
                     type: `FirstReceiptSeq:`,
                     value: `${get(zrepo, 'firstReceiptSeq', '-')}`,
@@ -187,7 +187,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
               )}
               {disableSumsOnGoods() && (
                 <DashedRow
-                  id={`return-price-${'index8'}`}
+                  id={`return-price-${'index17'}`}
                   rowData={{
                     type: `AppletVersion:`,
                     value: `${get(zrepo, 'appletVersion', '-')}`,

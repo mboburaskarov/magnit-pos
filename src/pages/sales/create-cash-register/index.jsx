@@ -139,8 +139,8 @@ function NewCashRegister() {
 
   const { mutate: openZReport, isLoading: isopenZReport } = useMutation(requests.openZReport, {
     onSuccess: ({ data }) => {
-      if (get(data, 'error', true)) {
-        error(`EPOS: Open Z report`)
+      if (!get(data, 'error', true)) {
+        error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
         return
       } else {
         methods.handleSubmit(onSubmit, onError)()

@@ -101,6 +101,9 @@ function CashCloseDrawer({ open, setOpen }) {
     content: reactToPrintContent,
     documentTitle: documentName.current,
     removeAfterPrint: true,
+    onAfterPrint: () => {
+      navigate(`/sales/create`)
+    },
   })
 
   const { data: closeCashboxPaymentsInfo } = useQuery(['closeCashboxPaymentsInfo', open], () => requests.getCloseCashboxPaymentsInfo(id), {
@@ -109,7 +112,7 @@ function CashCloseDrawer({ open, setOpen }) {
   const { mutate: closeCheckZReport, isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true)) {
-        error(`EPOS: close Z report check`)
+        error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
         return
       } else {
         setcheckdata(get(data, 'message'))
@@ -125,13 +128,12 @@ function CashCloseDrawer({ open, setOpen }) {
   useEffect(() => {
     if (checkdata) {
       handlePrint()
-      navigate(`/sales/create`)
     }
   }, [checkdata])
   const { mutate: closeZReport, isLoading: iscloseZReport } = useMutation(requests.closeZReport, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true)) {
-        error(`EPOS: close Z report`)
+        error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
         return
       } else {
         closeCheckZReport({
@@ -173,6 +175,8 @@ function CashCloseDrawer({ open, setOpen }) {
     console.log('err', err)
     error('Пожалуйста, заполните все поля!')
   }
+  console.log(reactToPrintContent)
+
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='bottom' elevation={1} className={classes.drawer}>
       <LoadingContainer noHeight readyState={!false}>
@@ -301,18 +305,9 @@ function CashCloseDrawer({ open, setOpen }) {
         sx={{
           display: 'none',
           width: '255px',
-          overflowY: 'scroll',
-          maxHeight: '75vh',
         }}
       >
-        <Box
-          mx={-2}
-          mt={'-3px'}
-          style={{
-            padding: '20px',
-          }}
-          ref={printContainer}
-        >
+        <Box ref={printContainer}>
           <RippedPaperZReportCheck zrepo={checkdata} />
         </Box>
       </Box>

@@ -21,6 +21,7 @@ import DashboardHeader from './DashboardHeader'
 import DashboardInfoBox from './DashboardInfoBox'
 import tableHeaderSelector from './tableHeaderSelector'
 import RippedPaperCheck from '../../../components/ChequePaper/ZReportCheck'
+import RippedPaperZReportCheck from '../../../components/ChequePaper/ZReportCheck'
 
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
