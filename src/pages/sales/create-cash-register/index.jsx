@@ -139,7 +139,7 @@ function NewCashRegister() {
 
   const { mutate: openZReport, isLoading: isopenZReport } = useMutation(requests.openZReport, {
     onSuccess: ({ data }) => {
-      if (!get(data, 'error', true)) {
+      if (get(data, 'error', true)) {
         error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
         return
       } else {
