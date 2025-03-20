@@ -64,13 +64,13 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, perce
         )}
       </Box>
 
-      <Box key={ind} sx={(theme) => ({ pt: '10px', pb: '8px', px: '16px', m: 0, borderTop: 1, borderColor: '#A4A5AB33' })}>
+      {/* <Box key={ind} sx={(theme) => ({ pt: '10px', pb: '8px', px: '16px', m: 0, borderTop: 1, borderColor: '#A4A5AB33' })}>
         <Box>
           <Typography color='gray.500' fontSize={'16px'} lineHeight={'20px'} fontWeight='500' variant='h1'>
             Update: September 17, 2023
           </Typography>
         </Box>
-      </Box>
+      </Box> */}
     </Box>
   )
 }
