@@ -61,8 +61,8 @@ function CartDetailSide({
         <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
           <TimeAndDate />
         </Box>
-        <Box onClick={() => {}} className={classes.cart_detail_icon}>
-          {/* <Box onClick={() => setIsOpenReturnExchange(true)} className={classes.cart_detail_icon}> */}
+        {/* <Box onClick={() => {}} className={classes.cart_detail_icon}> */}
+        <Box onClick={() => setIsOpenReturnExchange(true)} className={classes.cart_detail_icon}>
           <FontAwesomeIcon icon={faExchangeAlt} />
         </Box>
       </Box>
