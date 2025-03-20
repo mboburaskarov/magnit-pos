@@ -205,7 +205,7 @@ export default function DashboarPage() {
           <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
         </Box>
       </Box>
-      <Button
+      {/* <Button
         sx={{
           width: '200px',
         }}
@@ -219,7 +219,7 @@ export default function DashboarPage() {
         }}
       >
         check
-      </Button>
+      </Button> */}
     </LoadingContainer>
   )
 }
