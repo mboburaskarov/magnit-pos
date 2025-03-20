@@ -8,6 +8,7 @@ export const requests = {
   closeZReport: (data) => eposRequest.post(`/uzpos`, data),
   closeCheckZReport: (data) => eposRequest.post(`/uzpos`, data),
   openZReport: (data) => eposRequest.post(`/uzpos`, data),
+  getZReportByDate: (data) => eposRequest.post(`/uzpos`, data),
   sendEPOSresponseToBackend: (data) => request.post(`v1/sale/epos-result`, data),
 
   //tags

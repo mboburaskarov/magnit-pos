@@ -1,10 +1,10 @@
-import { Box, Grid } from '@mui/material'
+import { Box, Button, Grid } from '@mui/material'
 import dayjs from 'dayjs'
 import isoWeek from 'dayjs/plugin/isoWeek'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import TotalOrdersByCity from '../../../components/Charts/SingleBarChart'
 import SingleLineChart from '../../../components/Charts/SingleLineChart'
@@ -162,9 +162,14 @@ export default function DashboarPage() {
     [chartData, dashboard_filter]
   )
 
+  const { mutate: getZReportByDate, isLoading: isgetZReportByDate } = useMutation(requests.getZReportByDate, {
+    onSuccess: ({ data }) => {},
+    onError: (err) => {},
+  })
   return (
     <LoadingContainer readyState={true}>
       <DashboardHeader setSortBy={setSortBy} />
+
       <Box display='flex' flexDirection='column' position='relative' pt={0} px={'30px'} pb={3} width={'100%'}>
         <Grid width={'100%'} container>
           <Grid width={'100%'} item>
@@ -200,6 +205,21 @@ export default function DashboarPage() {
           <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
         </Box>
       </Box>
+      <Button
+        sx={{
+          width: '200px',
+        }}
+        onClick={() => {
+          getZReportByDate({
+            token: 'DXJFX32CN1296678504F2',
+            method: 'getReceiptsInfoByDate',
+            startDate: '20250318000000',
+            endDate: '20250321000000',
+          })
+        }}
+      >
+        check
+      </Button>
     </LoadingContainer>
   )
 }
