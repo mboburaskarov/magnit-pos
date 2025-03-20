@@ -1,10 +1,10 @@
-import { Box, Grid } from '@mui/material'
+import { Box, Button, Grid } from '@mui/material'
 import dayjs from 'dayjs'
 import isoWeek from 'dayjs/plugin/isoWeek'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import TotalOrdersByCity from '../../../components/Charts/SingleBarChart'
 import SingleLineChart from '../../../components/Charts/SingleLineChart'
@@ -161,8 +161,27 @@ export default function DashboarPage() {
     [chartData, dashboard_filter]
   )
 
+  const { mutate: openZReport, isLoading: isopenZReport } = useMutation(requests.openZReport, {
+    onSuccess: ({ data }) => {},
+    onError: (err) => {
+      console.log('err', err)
+    },
+  })
   return (
     <LoadingContainer readyState={true}>
+      <Button
+        sx={{
+          width: 100,
+        }}
+        onClick={() =>
+          openZReport({
+            token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+            method: 'openZreport', // Название метода, Обязательное поле, String
+          })
+        }
+      >
+        check
+      </Button>
       <DashboardHeader setSortBy={setSortBy} />
       <Box display='flex' flexDirection='column' position='relative' pt={0} px={'30px'} pb={3} width={'100%'}>
         <Grid width={'100%'} container>

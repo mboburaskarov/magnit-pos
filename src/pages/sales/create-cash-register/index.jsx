@@ -72,7 +72,6 @@ function NewCashRegister() {
   const userData = useSelector((state) => state.user)
   const navigate = useNavigate()
   const [isLoading, setIsLoding] = useState(false)
-  const [newSaleId, setNewSaleId] = useState(false)
   const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
   const { data: registerCashList, refetch: refetchregisterCashList } = useQuery('registerCashList', () =>
@@ -111,29 +110,10 @@ function NewCashRegister() {
       setCanCreate({ canCreate: true, is_open: get(methods.watch('registerCash_id'), 'is_open') })
     })
   }, [methods.watch('registerCash_id')])
-  const { mutate: openZReport, isLoading: isopenZReport } = useMutation(requests.openZReport, {
-    onSuccess: () => {
-      console.log(newSaleId)
-    },
-    onError: (err) => {
-      error('Ошибка при создании кассы! (open z report)')
-      console.log('err', err)
-    },
-  })
-  useEffect(() => {
-    if (newSaleId) {
-      newSaleId ? navigate(`/sales/new-sale/${newSaleId}`) : error('Ошибка при создании кассы! (open z report)')
-    }
-  }, [newSaleId])
+
   const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashOperationBox, {
     onSuccess: ({ data }) => {
-      openZReport({
-        token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
-        method: 'openZreport', // Название метода, Обязательное поле, String
-      })
-      console.log(data, get(data, 'data.id'))
-
-      setNewSaleId(get(data, 'data.id'))
+      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
     },
     onError: (err) => {
       error('Ошибка при создании кассы!')
@@ -156,12 +136,36 @@ function NewCashRegister() {
     console.log('err', err)
     error('Пожалуйста, заполните все поля!')
   }
+
+  const { mutate: openZReport, isLoading: isopenZReport } = useMutation(requests.openZReport, {
+    onSuccess: ({ data }) => {
+      if (get(data, 'error', true)) {
+        error(`EPOS: Open Z report`)
+        return
+      } else {
+        methods.handleSubmit(onSubmit, onError)()
+      }
+    },
+    onError: (err) => {
+      error('Ошибка при создании кассы! (open z report)')
+      console.log('err', err)
+    },
+  })
   return (
     <LoadingContainer readyState={!isCheckSaleExist}>
       <FormProvider {...methods}>
         <Box className={classes.box}>
           <Box className={classes.wrapper}>
-            <Typography display={'flex'} alignItems={'center'} fontSize={'32px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'} p={'24px'}>
+            <Typography
+              onClick={() => console.log(methods.getValues())}
+              display={'flex'}
+              alignItems={'center'}
+              fontSize={'32px'}
+              lineHeight={'48px'}
+              fontWeight={'700'}
+              color={'bunker.950'}
+              p={'24px'}
+            >
               {get(canCreate, 'is_open') ? (
                 'Kassirni tanlang'
               ) : (
@@ -198,7 +202,12 @@ function NewCashRegister() {
                 </Box>
                 <Button
                   type='submit'
-                  onClick={methods.handleSubmit(onSubmit, onError)}
+                  onClick={() =>
+                    openZReport({
+                      token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+                      method: 'openZreport', // Название метода, Обязательное поле, String
+                    })
+                  }
                   disabled={!get(canCreate, 'canCreate')}
                   sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}
                 >

@@ -108,11 +108,14 @@ function CashCloseDrawer({ open, setOpen }) {
   })
   const { mutate: closeCheckZReport, isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
-      console.log(data)
-      setcheckdata(get(data, 'message'))
-      setOpen(false)
-      // navigate(`/sales/create`)
-      success('Касса закрыта! (cose z info report)')
+      if (get(data, 'error', true)) {
+        error(`EPOS: close Z report check`)
+        return
+      } else {
+        setcheckdata(get(data, 'message'))
+        methods.handleSubmit(onSubmit, onError)()
+        success('Касса закрыта! (cose z info report)')
+      }
     },
     onError: (err) => {
       error('Ошибка закрытия кассы! (close Z info Report)')
@@ -126,14 +129,19 @@ function CashCloseDrawer({ open, setOpen }) {
     }
   }, [checkdata])
   const { mutate: closeZReport, isLoading: iscloseZReport } = useMutation(requests.closeZReport, {
-    onSuccess: () => {
-      closeCheckZReport({
-        token: 'DXJFX32CN1296678504F2',
-        method: 'getZreportInfo',
-        printerSize: 80,
-        zReportId: 0,
-      })
-      success('Касса закрыта! (cose z report)')
+    onSuccess: ({ data }) => {
+      if (get(data, 'error', true)) {
+        error(`EPOS: close Z report`)
+        return
+      } else {
+        closeCheckZReport({
+          token: 'DXJFX32CN1296678504F2',
+          method: 'getZreportInfo',
+          printerSize: 80,
+          zReportId: 1,
+        })
+        success('Касса закрыта! (cose z report)')
+      }
     },
     onError: (err) => {
       error('Ошибка закрытия кассы! (close Z Report)')
@@ -142,10 +150,7 @@ function CashCloseDrawer({ open, setOpen }) {
   })
   const { mutate: closeCashBoxRegister, isLoading: iscloseCashBoxRegister } = useMutation(requests.closeCashBoxRegister, {
     onSuccess: () => {
-      closeZReport({
-        token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
-        method: 'closeZreport', // Название метода, Обязательное поле, String
-      })
+      setOpen(false)
     },
     onError: (err) => {
       error('Ошибка закрытия кассы!')
@@ -184,6 +189,7 @@ function CashCloseDrawer({ open, setOpen }) {
                 fontWeight={'700'}
                 color={'bunker.950'}
                 p={'24px'}
+                onClick={() => console.log(methods.getValues())}
               >
                 Закрыть кассу
               </Typography>
@@ -278,7 +284,12 @@ function CashCloseDrawer({ open, setOpen }) {
           </Box>
           <Button
             type='submit'
-            onClick={methods.handleSubmit(onSubmit, onError)}
+            onClick={() =>
+              closeZReport({
+                token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+                method: 'closeZreport', // Название метода, Обязательное поле, String
+              })
+            }
             sx={{ bottom: 0, margin: '0 24px 24px', '& > svg': { width: 24, height: 24, ml: '12px' } }}
           >
             Закрыть кассу <ArrowRightIcon color={!true ? '#FF6018' : '#fff'} />
