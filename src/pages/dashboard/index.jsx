@@ -205,6 +205,16 @@ export default function DashboarPage() {
           <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
         </Box>
       </Box>
+      <Button
+        onClick={() => {
+          getZReportByDate({
+            token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+            method: 'openZreport', // Название метода, Обязательное поле, String
+          })
+        }}
+      >
+        open
+      </Button>
       {/* <Button
         sx={{
           width: '200px',
