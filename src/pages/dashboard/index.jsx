@@ -138,12 +138,13 @@ export default function DashboarPage() {
     return {
       limit: values?.limit || 10,
       search: values?.search,
-      start_date: values?.start_date,
+      start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
+      store_id: values?.store_id || null,
       type: dataTypeFilter(detalization),
       end_date: values?.start_date == values?.end_date ? null : values?.end_date,
       offset: values?.search ? 0 : values?.offset || 0,
     }
-  }, [values?.offset, detalization, values?.start_date, values?.end_date, values?.limit, values?.search])
+  }, [values?.offset, detalization, values?.store_id, values?.start_date, values?.end_date, values?.limit, values?.search])
   const { data: chartData, isLoading: isGetChartData, refetch } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
   const { data: countStats, isLoading: isCountStats } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
   const { data: topStores, isLoading: isTopStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))

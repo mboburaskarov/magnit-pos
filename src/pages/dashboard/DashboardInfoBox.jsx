@@ -44,7 +44,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, perce
                 {withoutDivider ? count : thousandDivider(count, endText)}
               </Typography>
             </Box>
-            <Box
+            {/* <Box
               display='inline-flex'
               sx={{
                 borderRadius: '5px',
@@ -59,7 +59,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, perce
               <Typography color={isFall ? '#F45B69' : '#30BE82'} fontWeight='500' mr={0.5} fontSize={14} lineHeight={'18px'}>
                 {percent}%
               </Typography>
-            </Box>
+            </Box> */}
           </Box>
         )}
       </Box>
