@@ -22,6 +22,7 @@ import DashboardInfoBox from './DashboardInfoBox'
 import tableHeaderSelector from './tableHeaderSelector'
 import RippedPaperCheck from '../../../components/ChequePaper/ZReportCheck'
 import RippedPaperZReportCheck from '../../../components/ChequePaper/ZReportCheck'
+import TopProducts from '../../../components/Charts/TopProducts'
 
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
@@ -98,7 +99,7 @@ export default function DashboarPage() {
         title: t('all_medicien'),
         icon: <ProductsIcon />,
         count: total_product_count,
-        endText: 'сум',
+        endText: '',
         percent: -5,
       },
       {
@@ -151,6 +152,7 @@ export default function DashboarPage() {
     () =>
       chartData?.data?.data?.map((item) => ({
         all_orders: item.total_amount,
+        all_orders2: item.total_amount * 2,
         start_date: dayjs(item?.created_at)
           ?.set('hour', item?.id?.hour || `00`)
           ?.set('minutes', item?.id?.minute || `00`)
@@ -202,10 +204,10 @@ export default function DashboarPage() {
         </Grid>
         <Box mt={4} columnGap={3} display='inline-flex'>
           <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
-          <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
+          <TopProducts id='dashboard-chart' data={get(topStores, 'data.data')} />
         </Box>
       </Box>
-      <Button
+      {/* <Button
         onClick={() => {
           getZReportByDate({
             token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
@@ -214,7 +216,7 @@ export default function DashboarPage() {
         }}
       >
         open
-      </Button>
+      </Button> */}
       {/* <Button
         sx={{
           width: '200px',

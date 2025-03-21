@@ -26,7 +26,7 @@ const detailingOptions = [
 const purpleColor = '#a811d6'
 const blueColor = '#0F6FD7'
 const newColor = '#FE5000' // The color you want to use
-const orangeColor = '#FE5000'
+const orangeColor = '#ffb18e'
 const Body = ({ children, isLoading, isEmpty }) => (
   <Box
     position='relative'
@@ -78,6 +78,8 @@ export default function SingleBarChart({
     }
   }, [data, detalization])
   const maxValue = Math.max(...chartData.slice(sliderValue[0], sliderValue[1]).map((item) => item?.count))
+  console.log(dataKey, chartData)
+
   return (
     <Box
       sx={(theme) => ({
@@ -149,7 +151,12 @@ export default function SingleBarChart({
                   <stop offset='0%' stopColor={orangeColor} stopOpacity={0.3} />
                   <stop offset='100%' stopColor={orangeColor} stopOpacity={0.1} />
                 </linearGradient>
+                {/* <linearGradient id='ikki' x1='0' y1='0' x2='0' y2='1'>
+                  <stop offset='0%' stopColor={orangeColor} stopOpacity={0.3} />
+                  <stop offset='100%' stopColor={orangeColor} stopOpacity={0.1} />
+                </linearGradient> */}
               </defs>
+
               <CartesianGrid strokeDasharray='3 3' vertical={false} />
               <XAxis
                 dataKey='start_date'
@@ -167,7 +174,7 @@ export default function SingleBarChart({
               <Area
                 type='monotone'
                 dataKey={dataKey || 'value'}
-                stroke={orangeColor}
+                stroke={'#fe5000'}
                 fill='url(#gradient-fill)'
                 strokeWidth={3}
                 activeDot={{
@@ -177,6 +184,19 @@ export default function SingleBarChart({
                   fill: '#fff',
                 }}
               />
+              {/* <Area
+                type='monotone'
+                dataKey={'all_orders2' || 'value'}
+                stroke={'#fe5000'}
+                fill='url(#ikki)'
+                strokeWidth={3}
+                activeDot={{
+                  r: 6,
+                  stroke: orangeColor,
+                  strokeWidth: 2,
+                  fill: '#fff',
+                }}
+              /> */}
             </AreaChart>
           </ResponsiveContainer>
           <ChartSlider value={sliderValue} onChange={handleSliderChange} min={0} max={chartData?.length} />
