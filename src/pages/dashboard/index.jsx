@@ -208,7 +208,7 @@ export default function DashboarPage() {
           <TopProducts id='dashboard-chart' data={get(topStores, 'data.data')} />
         </Box>
       </Box>
-      <Button
+      {/* <Button
         onClick={() => {
           getZReportByDate({
             token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
@@ -217,7 +217,7 @@ export default function DashboarPage() {
         }}
       >
         open
-      </Button>
+      </Button> */}
       {/* <Button
         sx={{
           width: '200px',
