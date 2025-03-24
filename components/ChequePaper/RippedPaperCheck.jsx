@@ -53,24 +53,26 @@ function RippedPaperCheck({
     <Box className={`${classes.root} ${noSticky ? classes.noSticky : ''}`}>
       <Box className={classes.inner} mx={margin && 4}>
         <Box px={2} py={4}>
-          <div className={classes.canvasContainer}>
-            <img
-              src={'/brand_cheque.png'}
-              alt=''
-              style={{
-                position: 'relative',
-                top: logo?.y,
-                left: logo?.x,
-                transformOrigin: 'left top',
-                transform: `rotate(${logo?.rotation}deg)`,
-                color: palette.black,
-                width: `${logo?.width}px`,
-                height: `${logo?.height}px`,
-                verticalAlign: 'middle',
-                lineHeight: `${logo?.height}px`,
-              }}
-            />
-          </div>
+          <Fragment key={'index0'}>
+            <div className={classes.canvasContainer}>
+              <img
+                src={'/brand_cheque.png'}
+                alt=''
+                style={{
+                  position: 'relative',
+                  top: logo?.y,
+                  left: logo?.x,
+                  transformOrigin: 'left top',
+                  transform: `rotate(${logo?.rotation}deg)`,
+                  color: palette.black,
+                  width: `${logo?.width}px`,
+                  height: `${logo?.height}px`,
+                  verticalAlign: 'middle',
+                  lineHeight: `${logo?.height}px`,
+                }}
+              />
+            </div>
+          </Fragment>
           <div className={classes.border} />
           <Fragment key={'index'}>
             <Box className={classes.content}>

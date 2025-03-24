@@ -766,6 +766,7 @@ function NewSale() {
           discount={discount}
           cartItemsList={cartItemsList}
           setInputDiscount={setInputDiscount}
+          setIsOpenDraft={setIsOpenDraft}
         />
       </Box>
 

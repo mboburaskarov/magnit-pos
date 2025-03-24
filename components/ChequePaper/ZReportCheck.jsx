@@ -37,10 +37,12 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
       <Box className={classes.inner} mx={margin && 4}>
         <Box px={2} py={4}>
           {/* <div className={classes.border} /> */}
-          <Fragment key={'index39'}>
+          <Fragment key={'index69'}>
             <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-              <p style={{ marginBottom: '10px', textAlign: 'center', marginTop: '10px' }}>"PHARMA COSMOS" MChJ</p>
-              <p style={{ marginBottom: '10px', textAlign: 'center', marginTop: '10px' }}>{get(userData, 'store.address')}</p>
+              <p style={{ marginBottom: '10px', fontWeight: 'bold', fontSize: '16px', textAlign: 'center', marginTop: '10px' }}>"PHARMA COSMOS" MChJ</p>
+              <p style={{ marginBottom: '10px', fontWeight: 'bold', fontSize: '16px', textAlign: 'center', marginTop: '10px' }}>
+                {get(userData, 'store.address')}
+              </p>
             </Box>
           </Fragment>
           <Fragment key={'index'}>

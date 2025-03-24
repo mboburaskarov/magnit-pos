@@ -41,6 +41,7 @@ function CartDetailSide({
   setIsOpenReturnExchange,
   setIsCreateOpenDraft,
   setInputDiscount,
+  setIsOpenDraft,
 }) {
   const { t } = useTranslation()
   return (
