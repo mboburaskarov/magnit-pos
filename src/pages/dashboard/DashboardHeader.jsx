@@ -13,6 +13,7 @@ import { requests } from '../../../utils/requests'
 import * as qs from 'qs'
 import { useNavigate } from 'react-router-dom'
 import { useQueryParams } from '../../hooks/useQueryParams'
+import { minWidth } from '@mui/system'
 export default function DashboardHeader({ setSortBy }) {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
   const { type } = useSelector((state) => state.user)
@@ -60,7 +61,7 @@ export default function DashboardHeader({ setSortBy }) {
         >
           <LazySelect
             slug='users'
-            boxStyle={{ width: '100%' }}
+            boxStyle={{ minWidth: '200px', width: '100%' }}
             id='store'
             name='store_id'
             isMulti={false}
@@ -83,8 +84,8 @@ export default function DashboardHeader({ setSortBy }) {
                     name: values?.store_name,
                   }
                 : {
-                    id: '1f900e8e-5b61-465c-a693-c37ecfec81cf',
-                    name: 'Pharma Cosmos С-54 Хокимият',
+                    id: 'all',
+                    name: 'Все',
                   }
             }
             uncontrolled
