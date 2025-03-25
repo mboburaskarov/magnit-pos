@@ -42,11 +42,11 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
         {!!percent && (
           <Box mt={icon ? '30px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
             <Box>
-              <Typography alignItems={'center'} display={'flex'} color='dark.500' fontSize={'32px'} lineHeight={'40px'} fontWeight='600' variant='h1'>
+              <Typography alignItems={'end'} display={'flex'} color='dark.500' fontSize={'32px'} lineHeight={'32px'} fontWeight='600' variant='h1'>
                 {id === 'expiring_soon_amount' ? (
                   <>
                     {amount} сум{' '}
-                    <Typography color='dark.500' fontSize={'20px'} lineHeight={'40px'} fontWeight='500' ml={'10px'}>
+                    <Typography color='dark.500' fontSize={'20px'} lineHeight={'25px'} fontWeight='500' ml={'10px'}>
                       ({withoutDivider ? count : thousandDivider(count, '')}ta)
                     </Typography>
                   </>
