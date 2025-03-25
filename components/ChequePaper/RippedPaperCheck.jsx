@@ -55,7 +55,17 @@ function RippedPaperCheck({
         <Box px={'10px'} py={4}>
           <Fragment key={'index0'}>
             <div className={classes.canvasContainer}>
-              <img
+              <p
+                style={{
+                  fontSize: '20px',
+                  fontWeight: '600',
+                  color: palette.black,
+                  textAlign: 'center',
+                }}
+              >
+                "PHARMA COSMOS" MCHJ
+              </p>
+              {/* <img
                 src={'/brand_cheque.png'}
                 alt=''
                 style={{
@@ -70,8 +80,19 @@ function RippedPaperCheck({
                   verticalAlign: 'middle',
                   lineHeight: `${logo?.height}px`,
                 }}
-              />
+              /> */}
             </div>
+            <div className={classes.border} />
+            <p
+              style={{
+                fontSize: '18px',
+                fontWeight: '600',
+                color: palette.black,
+                textAlign: 'center',
+              }}
+            >
+              {get(userData, 'store.address')}
+            </p>
           </Fragment>
           <div className={classes.border} />
           <Fragment key={'index'}>
@@ -91,15 +112,6 @@ function RippedPaperCheck({
                   rowData={{
                     type: `Do'kon:`,
                     value: `${get(userData, 'store.name')}`,
-                  }}
-                />
-              )}
-              {disableSumsOnGoods() && (
-                <DashedRow
-                  id={`return-price-${'index3'}`}
-                  rowData={{
-                    type: `Manzil:`,
-                    value: `${get(userData, 'store.address')}`,
                   }}
                 />
               )}
@@ -156,7 +168,7 @@ function RippedPaperCheck({
             <Fragment key={'index3'}>
               <Box className={classes.content}>
                 <p id={`return-name-${'index'}`}>
-                  <b className={classes.bold}>
+                  <b style={{ fontSize: '17px' }} className={classes.bold}>
                     {index + 1}. {get(el, 'name')}
                   </b>
                 </p>
