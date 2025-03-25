@@ -126,7 +126,7 @@ function RippedPaperCheck({
                   id={`return-price-${'index5'}`}
                   rowData={{
                     type: `Ish tartibi:`,
-                    value: `09:00 - 18:00`,
+                    value: `08:00 - 23:00`,
                   }}
                 />
               )}
@@ -169,7 +169,14 @@ function RippedPaperCheck({
                     }}
                   />
                 )}
-                <Box>
+                <Box
+                  sx={{
+                    '& > p': {
+                      fontWeight: '600 !important',
+                      fontSize: '14px !important',
+                    },
+                  }}
+                >
                   <Typography>O'lchiv birligi: {get(el, 'package_name', '-')}</Typography>
                   <Typography>MXIK: {get(el, 'class_code', '-')}</Typography>
                   <Typography>ShtKod: {get(el, 'barcode', '-')}</Typography>
@@ -236,7 +243,14 @@ function RippedPaperCheck({
                   }}
                 />
               )}
-              <Box>
+              <Box
+                sx={{
+                  '& > p': {
+                    fontWeight: '800 !important',
+                    fontSize: '14px !important',
+                  },
+                }}
+              >
                 <Typography>Chek turi: {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}</Typography>
               </Box>
             </Box>
