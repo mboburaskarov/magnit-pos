@@ -47,7 +47,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
                   <>
                     {amount} сум{' '}
                     <Typography color='dark.500' fontSize={'20px'} lineHeight={'25px'} fontWeight='500' ml={'10px'}>
-                      ({withoutDivider ? count : thousandDivider(count, '')}ta)
+                      ({withoutDivider ? count : thousandDivider(count, '')}шт)
                     </Typography>
                   </>
                 ) : withoutDivider ? (
