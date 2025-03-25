@@ -98,7 +98,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
     if (el.field === 'product_name') {
       return {
         ...el,
-        headerName: 'Номер автозаказа',
+        headerName: t('table_columns.name'),
         colId: el.field,
         cellRenderer: memo((p) => (
           <Link

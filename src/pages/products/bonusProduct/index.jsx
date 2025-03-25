@@ -146,7 +146,7 @@ export default function BonusProductPage() {
                   },
                 }}
               >
-                <InputSearch id='producrs-search' name='search' placeholder={'Mагазин'} uncontrolled />
+                <InputSearch id='producrs-search' name='search' placeholder={t('table_columns.name')} uncontrolled />
               </Box>
               <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
             </Box>
