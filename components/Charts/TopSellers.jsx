@@ -17,7 +17,7 @@ export default function TopSellers({ data }) {
     >
       <Box display='flex' justifyContent='space-between' alignItems='center' mb={'8px'}>
         <Typography lineHeight={'30px'} fontWeight={'600'} fontSize={'20px'}>
-          По продавцы
+          Топ продавцы
         </Typography>
       </Box>
       <Box>

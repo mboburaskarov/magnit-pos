@@ -17,7 +17,7 @@ export default function TotalOrdersByCity({ data }) {
     >
       <Box display='flex' justifyContent='space-between' alignItems='center' mb={'8px'}>
         <Typography lineHeight={'30px'} fontWeight={'600'} fontSize={'20px'}>
-          По филиалам
+          Топ филиалам
         </Typography>
       </Box>
       <Box>
