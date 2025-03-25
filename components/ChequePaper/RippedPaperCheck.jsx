@@ -51,8 +51,8 @@ function RippedPaperCheck({
 
   return (
     <Box className={`${classes.root} ${noSticky ? classes.noSticky : ''}`}>
-      <Box className={classes.inner} mx={margin && 4}>
-        <Box px={2} py={4}>
+      <Box className={classes.inner}>
+        <Box px={'10px'} py={4}>
           <Fragment key={'index0'}>
             <div className={classes.canvasContainer}>
               <img

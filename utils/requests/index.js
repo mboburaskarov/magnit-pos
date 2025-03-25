@@ -79,6 +79,7 @@ export const requests = {
   //cash_box_operation
   createCashOperationBox: (data) => request.post(`v1/cash_box_operation`, data),
   getCashBoxShiftsList: (filter) => request.get(`v1/cash_box_operation/shift${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getCashBoxShiftsHistoryList: (filter) => request.get(`v1/cash_box_operation/history${qs.stringify(filter, { addQueryPrefix: true })}`),
   getCashBoxShiftsStat: (filter) => request.get(`v1/cash_box_operation/stats${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getRegisterCashData: (cash_box_id) => cash_box_id && request.get(`v1/cash_box_operation/closed-info/${cash_box_id}`),

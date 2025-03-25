@@ -10,7 +10,9 @@ export default function DashedRow({ rowData, main, discount, crossed, id, italic
             {rowData.type}
           </b>
         ) : (
-          rowData.type
+          <b style={{ fontSize: 16 }} className={classes.bold}>
+            {rowData.type}
+          </b>
         )}
       </p>
       <div />
@@ -20,11 +22,11 @@ export default function DashedRow({ rowData, main, discount, crossed, id, italic
     <div className={classes.dashedRow}>
       <p>
         {main ? (
-          <b style={{ fontSize: 16 }} className={classes.bold}>
+          <b style={{ fontSize: 16, fontWeight: 900 }} className={classes.bold}>
             {rowData.type}
           </b>
         ) : (
-          <span className={italic ? classes.italic : classes.value}>{rowData.type}</span>
+          <b style={{ fontSize: 14, fontWeight: 700 }}>{rowData.type}</b>
         )}
       </p>
       <div />

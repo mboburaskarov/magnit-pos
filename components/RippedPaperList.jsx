@@ -87,7 +87,7 @@ export function RippedPaperItem({ qrcodeUrl, printContainer, cashBoxDetails, cus
   const classes = useStyles()
 
   return (
-    <Box px={2} className={classes.wrapper}>
+    <Box className={classes.wrapper}>
       <RippedPaperCheck
         qrcodeUrl={qrcodeUrl}
         customerId={customerId}
