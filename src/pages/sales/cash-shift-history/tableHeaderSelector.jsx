@@ -78,7 +78,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
         cellRenderer: memo((p) => (
           <Box>
             <Box display={'flex'} sx={{ whiteSpace: 'pre-line' }}>
-              <Typography>{dayjs(get(p, 'data.end_time')).format('DD.MM.YYYY HH:MM:ss')}</Typography>
+              <Typography>{get(p, 'data.end_time') ? dayjs(get(p, 'data.end_time')).format('DD.MM.YYYY HH:MM:ss') : 'Открыть'}</Typography>
               <Typography sx={{ ml: '10px' }}>({get(p, 'data.closed_by')})</Typography>
             </Box>
           </Box>
