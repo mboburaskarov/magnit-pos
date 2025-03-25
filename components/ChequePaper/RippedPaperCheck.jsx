@@ -65,22 +65,6 @@ function RippedPaperCheck({
               >
                 "PHARMA COSMOS" MCHJ
               </p>
-              {/* <img
-                src={'/brand_cheque.png'}
-                alt=''
-                style={{
-                  position: 'relative',
-                  top: logo?.y,
-                  left: logo?.x,
-                  transformOrigin: 'left top',
-                  transform: `rotate(${logo?.rotation}deg)`,
-                  color: palette.black,
-                  width: `${logo?.width}px`,
-                  height: `${logo?.height}px`,
-                  verticalAlign: 'middle',
-                  lineHeight: `${logo?.height}px`,
-                }}
-              /> */}
             </div>
             <div className={classes.border} />
             <p
