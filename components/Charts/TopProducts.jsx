@@ -35,10 +35,10 @@ export default function TopProducts({ data }) {
               </TableCell>
             </TableHead>
             <TableBody>
-              {data?.map((item) => (
+              {data?.map((item, index) => (
                 <TableRow key={item.name}>
                   <TableCell sx={{ fontSize: '20px', fontWeight: 300, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}>
-                    {item.name}
+                    {index + 1}. {item.name}
                   </TableCell>
                   <TableCell sx={{ fontSize: '20px', fontWeight: 300, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}>
                     {item.count}

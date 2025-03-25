@@ -22,6 +22,9 @@ export const requests = {
   dashboradChart: (filter) => request.get(`v1/dashboard/chart${qs.stringify(filter, { addQueryPrefix: true })}`),
   dashboradCountStats: (filter) => request.get(`v1/dashboard/count-stats${qs.stringify(filter, { addQueryPrefix: true })}`),
   dashboradTopStores: (filter) => request.get(`v1/dashboard/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`),
+  dashboradTopProducts: (filter) => request.get(`v1/dashboard/top-products${qs.stringify(filter, { addQueryPrefix: true })}`),
+  dashboradTopSellers: (filter) => request.get(`v1/dashboard/top-seller${qs.stringify(filter, { addQueryPrefix: true })}`),
+  dashboradTopBonusProducts: (filter) => request.get(`v1/dashboard/bonus-products${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //auth
   logIn: (data) => authRequest.post(`v1/login`, data),

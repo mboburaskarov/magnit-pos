@@ -4,7 +4,9 @@ import GrowIcon from '../../assets/icons/GrowIcon'
 import FallIcon from '../../assets/icons/FallIcon'
 import { theme } from '../../assets/theme'
 
-export default function DashboardInfoBox({ noDot, ind, title, icon, count, percent, endText, withoutDivider }) {
+export default function DashboardInfoBox({ noDot, ind, title, icon, count, amount, percent, id, endText, withoutDivider, ...l }) {
+  console.log(l, title)
+
   const isFall = percent < 0
   return (
     <Box sx={(theme) => ({ border: 1, borderRadius: '16px', borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' })}>
@@ -40,8 +42,19 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, perce
         {!!percent && (
           <Box mt={icon ? '30px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
             <Box>
-              <Typography color='dark.500' fontSize={'32px'} lineHeight={'40px'} fontWeight='600' variant='h1'>
-                {withoutDivider ? count : thousandDivider(count, endText)}
+              <Typography alignItems={'center'} display={'flex'} color='dark.500' fontSize={'32px'} lineHeight={'40px'} fontWeight='600' variant='h1'>
+                {id === 'expiring_soon_amount' ? (
+                  <>
+                    {amount} сум{' '}
+                    <Typography color='dark.500' fontSize={'20px'} lineHeight={'40px'} fontWeight='500' ml={'10px'}>
+                      ({withoutDivider ? count : thousandDivider(count, '')}ta)
+                    </Typography>
+                  </>
+                ) : withoutDivider ? (
+                  count
+                ) : (
+                  thousandDivider(count, endText)
+                )}
               </Typography>
             </Box>
             {/* <Box

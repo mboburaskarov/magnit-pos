@@ -2,7 +2,7 @@ import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
 import { useTranslation } from 'react-i18next'
 import thousandDivider from '../../utils/thousandDivider'
 
-export default function TotalOrdersByCity({ data }) {
+export default function TopBonusProducts({ data }) {
   const { t } = useTranslation()
   return (
     <Box
@@ -17,7 +17,7 @@ export default function TotalOrdersByCity({ data }) {
     >
       <Box display='flex' justifyContent='space-between' alignItems='center' mb={'8px'}>
         <Typography lineHeight={'30px'} fontWeight={'600'} fontSize={'20px'}>
-          По филиалам
+          Бонусные продукты
         </Typography>
       </Box>
       <Box>
@@ -25,7 +25,7 @@ export default function TotalOrdersByCity({ data }) {
           <Table size='small'>
             <TableHead sx={{ borderBottom: '1px solid', borderColor: 'gray.200', padding: '0' }}>
               <TableCell sx={{ fontSize: '20px', fontWeight: 300, lineHeight: '28px', p: '16px 16px 16px 0', border: 'none', color: 'dark.500' }}>
-                Филиал
+                Продукт
               </TableCell>
               <TableCell sx={{ fontSize: '20px', fontWeight: 300, lineHeight: '28px', p: '16px 16px 16px 0', border: 'none', color: 'dark.500' }}>
                 Заказ

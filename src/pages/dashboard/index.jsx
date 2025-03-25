@@ -23,6 +23,9 @@ import tableHeaderSelector from './tableHeaderSelector'
 import RippedPaperCheck from '../../../components/ChequePaper/ZReportCheck'
 import RippedPaperZReportCheck from '../../../components/ChequePaper/ZReportCheck'
 import TopProducts from '../../../components/Charts/TopProducts'
+import TopSellers from '../../../components/Charts/TopSellers'
+import TopBonusProducts from '../../../components/Charts/TopBonusProducts'
+import CheckAccess from '../../../components/CheckAccess'
 
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
@@ -86,45 +89,74 @@ export default function DashboarPage() {
 
   const totalSum = chartInfo?.data?.reduce((acc, item) => acc + item?.totalAmount, 0)
   const totalCount = chartInfo?.data?.reduce((acc, item) => acc + item?.count, 0)
-  const OrdersStatistics = ({ total_sale_amount, total_product_count, total_sale_count, total_store_count }) => {
+  const OrdersStatistics = ({
+    total_sale_amount,
+    total_product_count,
+    total_sale_count,
+    total_store_count,
+    expiring_soon_amount,
+    total_net_income,
+    stock_total_amount,
+    bonus_amount,
+    expiring_soon_count,
+  }) => {
     return [
       {
-        title: t('all_sales'),
+        title: t('Общая сумма продаж'),
         icon: <RevenueIcon />,
         count: total_sale_amount,
         percent: 10,
+        id: 'total_sale_amount',
         endText: 'сум',
       },
       {
-        title: t('all_medicien'),
-        icon: <ProductsIcon />,
-        count: total_product_count,
-        endText: '',
+        title: t('Общая сумма баланса'),
+        icon: <RevenueIcon />,
+
+        count: stock_total_amount,
+        endText: 'сум',
+        id: 'stock_total_amount',
         percent: -5,
       },
       {
-        title: t('sales'),
+        title: t('Чистая прибыль'),
+        icon: <VendorsIcon />,
+        count: total_net_income,
+        endText: 'сум',
+        percent: 20,
+        id: 'total_net_income',
+      },
+      {
+        title: t('Общее количество продаж'),
         icon: <OrdersIcon />,
         count: total_sale_count,
+        id: 'total_sale_count',
         percent: 8,
       },
       {
-        title: t('branches'),
-        icon: <VendorsIcon />,
-        count: total_store_count,
+        title: t('Общее количество остатков'),
+        icon: <ProductsIcon />,
+        count: total_product_count,
+        endText: 'сум',
         percent: 20,
+        id: 'total_product_count',
       },
       {
-        title: t('branches'),
+        title: t('Просроченные продукты'),
         icon: <VendorsIcon />,
-        count: total_store_count,
+        count: expiring_soon_count,
+        amount: expiring_soon_amount,
+        id: 'expiring_soon_amount',
         percent: 20,
       },
+
       {
-        title: t('branches'),
+        title: t('Ваш бонус'),
         icon: <VendorsIcon />,
-        count: total_store_count,
+        count: bonus_amount,
+        id: 'bonus_amount',
         percent: 20,
+        endText: 'сум',
       },
     ]
   }
@@ -136,7 +168,7 @@ export default function DashboarPage() {
 
   const dashboard_filter = useMemo(() => {
     return {
-      limit: values?.limit || 10,
+      limit: values?.limit || 5,
       search: values?.search,
       start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
       store_id: values?.store_id || null,
@@ -148,6 +180,11 @@ export default function DashboarPage() {
   const { data: chartData, isLoading: isGetChartData, refetch } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
   const { data: countStats, isLoading: isCountStats } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
   const { data: topStores, isLoading: isTopStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
+  const { data: topProducts, isLoading: isTopProducts } = useQuery(['TopProducts', dashboard_filter], () => requests.dashboradTopProducts(dashboard_filter))
+  const { data: topBonusProducts, isLoading: isTopBonusProducts } = useQuery(['TopBonusProducts', dashboard_filter], () =>
+    requests.dashboradTopBonusProducts(dashboard_filter)
+  )
+  const { data: topSellers, isLoading: isTopSellers } = useQuery(['TopSellers', dashboard_filter], () => requests.dashboradTopSellers(dashboard_filter))
 
   const toFixData = useMemo(
     () =>
@@ -180,33 +217,45 @@ export default function DashboarPage() {
               {OrdersStatistics(get(countStats, 'data.data', {}))
                 ?.filter((el) => (check ? el : el.title !== 'Общая сумма заказов'))
                 ?.map((el, ind) => (
-                  <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'20px'} spacing={2}>
-                    <DashboardInfoBox key={ind} {...el} />
-                  </Grid>
+                  <CheckAccess id={`dashboard-box-${el.id}`}>
+                    <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'20px'} spacing={2}>
+                      <DashboardInfoBox key={ind} {...el} />
+                    </Grid>
+                  </CheckAccess>
                 ))}
             </Grid>
-            <Box display='inline-flex' columnGap={3} width='100%'>
-              <SingleLineChart
-                width='100%'
-                id='dashboard-chart'
-                period={detailing}
-                detalization={detalization}
-                setDetalization={setDetalization}
-                sortBy={sortBy}
-                dataKey={sortBy === 'SUM' ? 'all_orders' : 'count'}
-                data={{
-                  values: toFixData,
-                  total: sortBy === 'SUM' ? totalSum : totalCount,
-                }}
-                measurmentUnit={sortBy === 'SUM' ? ' сум' : ' шт'}
-              />
-            </Box>
+            <CheckAccess id={'dashboard-chart'}>
+              <Box display='inline-flex' columnGap={3} width='100%'>
+                <SingleLineChart
+                  width='100%'
+                  id='dashboard-chart'
+                  period={detailing}
+                  detalization={detalization}
+                  setDetalization={setDetalization}
+                  sortBy={sortBy}
+                  dataKey={sortBy === 'SUM' ? 'all_orders' : 'count'}
+                  data={{
+                    values: toFixData,
+                    total: sortBy === 'SUM' ? totalSum : totalCount,
+                  }}
+                  measurmentUnit={sortBy === 'SUM' ? ' сум' : ' шт'}
+                />
+              </Box>
+            </CheckAccess>
           </Grid>
         </Grid>
-        <Box mt={4} columnGap={3} display='inline-flex'>
-          <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
-          <TopProducts id='dashboard-chart' data={get(topStores, 'data.data')} />
-        </Box>
+        <CheckAccess id={'dashboard-vendor'}>
+          <Box mt={4} columnGap={3} display='inline-flex'>
+            <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
+            <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} />
+          </Box>
+        </CheckAccess>
+        <CheckAccess id={'dashboard-seller'}>
+          <Box mt={4} columnGap={3} display='inline-flex'>
+            <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} />
+            <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} />
+          </Box>
+        </CheckAccess>
       </Box>
       {/* <Button
         onClick={() => {
