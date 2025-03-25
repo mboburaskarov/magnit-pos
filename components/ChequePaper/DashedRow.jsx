@@ -6,11 +6,11 @@ export default function DashedRow({ rowData, main, discount, crossed, id, italic
     <div className={classes.dashedRow}>
       <p className={classes.discount}>
         {main ? (
-          <b style={{ fontSize: 16 }} className={classes.bold}>
+          <b style={{ fontSize: 18 }} className={classes.bold}>
             {rowData.type}
           </b>
         ) : (
-          <b style={{ fontSize: 16 }} className={classes.bold}>
+          <b style={{ fontSize: 18 }} className={classes.bold}>
             {rowData.type}
           </b>
         )}
@@ -22,18 +22,18 @@ export default function DashedRow({ rowData, main, discount, crossed, id, italic
     <div className={classes.dashedRow}>
       <p>
         {main ? (
-          <b style={{ fontSize: 16, fontWeight: 900 }} className={classes.bold}>
+          <b style={{ fontSize: 18, fontWeight: 900 }} className={classes.bold}>
             {rowData.type}
           </b>
         ) : (
-          <b style={{ fontSize: 14, fontWeight: 700 }}>{rowData.type}</b>
+          <b style={{ fontSize: 16, fontWeight: 700 }}>{rowData.type}</b>
         )}
       </p>
       <div />
       <p id={id} className={`${crossed ? classes.crossed : ''}`}>
-        <b style={main ? { fontSize: 16 } : { fontSize: 12, textAlign: 'end' }} className={italic ? classes.italic : classes.bold}>
+        <b style={main ? { fontSize: 18 } : { fontSize: 16, textAlign: 'end' }} className={italic ? classes.italic : classes.bold}>
           {rowData.value.split(',').map((e) => (
-            <b style={main ? { fontSize: 16 } : { fontSize: 12, textAlign: 'end', display: 'block' }} className={italic ? classes.italic : classes.bold}>
+            <b style={main ? { fontSize: 18 } : { fontSize: 16, textAlign: 'end', display: 'block' }} className={italic ? classes.italic : classes.bold}>
               {e}
             </b>
           ))}

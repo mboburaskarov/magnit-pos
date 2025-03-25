@@ -96,7 +96,7 @@ export default function CasShiftsPage() {
     isLoading: cashShiftsListLoading,
     isFetching: isFetchingcashShiftsList,
     refetch,
-  } = useQuery(['cashShiftsList', cashShiftsListFilter], () => requests.getCashBoxShiftsHistoryList(cashShiftsListFilter))
+  } = useQuery(['cashShiftsList', cashShiftsListFilter], () => requests.getCashBoxShiftsList(cashShiftsListFilter))
 
   useEffect(() => {
     refetch()

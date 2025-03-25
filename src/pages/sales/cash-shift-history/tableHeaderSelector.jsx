@@ -62,7 +62,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box>
-            <Box display={'flex'}>
+            <Box sx={{ whiteSpace: 'pre-line' }} display={'flex'}>
               <Typography>{dayjs(get(p, 'data.start_time')).format('DD.MM.YYYY HH:MM:ss')}</Typography>
               <Typography sx={(theme) => ({ ml: '10px' })}>({get(p, 'data.opened_by')})</Typography>
             </Box>
@@ -77,7 +77,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box>
-            <Box display={'flex'}>
+            <Box display={'flex'} sx={{ whiteSpace: 'pre-line' }}>
               <Typography>{dayjs(get(p, 'data.end_time')).format('DD.MM.YYYY HH:MM:ss')}</Typography>
               <Typography sx={{ ml: '10px' }}>({get(p, 'data.closed_by')})</Typography>
             </Box>
@@ -108,6 +108,9 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
                 sx={{
                   backgrounf: '#E7F3FF',
                   color: '#2558FF',
+                  padding: '0 10px',
+                  minWidth: '150px',
+                  textAlign: 'center',
                 }}
               >
                 {thousandDivider(get(p, 'data.total_expense_amount'), 'сум')}

@@ -23,13 +23,13 @@ const columns = [
     field: 'start_time',
     hide: false,
     minWidth: 70,
-    width: 300,
+    width: 500,
   },
   {
     field: 'end_time',
     hide: false,
     minWidth: 70,
-    width: 300,
+    width: 500,
   },
 
   {
