@@ -15,6 +15,7 @@ import { error, success } from '../../../../utils/toast'
 import InputPassword from '../../../../components/Inputs/InputPasswordNew'
 import { borderRadius } from '@mui/system'
 import { useEffect } from 'react'
+import LazySelect from '../../../../components/Select/LazySelect'
 
 export default function ChangeShift({ open, setOpen }) {
   const navigate = useNavigate()
@@ -25,7 +26,7 @@ export default function ChangeShift({ open, setOpen }) {
   const { formState, reset, control } = methods
   const { data: cashBoxList } = useQuery(
     'cashBoxList',
-    () => requests.getAllCashBoxList({ store_id: get(userData, 'store.id'), id: get(userData, 'store.id'), limit: 20, offset: 0 }),
+    () => requests.getOpenCashBoxList({ store_id: get(userData, 'store.id'), id: get(userData, 'store.id'), limit: 20, offset: 0 }),
     {
       enabled: open,
     }
@@ -103,7 +104,26 @@ export default function ChangeShift({ open, setOpen }) {
               getOptionLabel={(el) => el.first_name + ' ' + el.last_name}
               options={employees?.data?.data?.data}
             />
-
+            {/* <LazySelect
+              slug='cash_box_id'
+              boxStyle={{ width: '100%' }}
+              id='cash_box_id'
+              name='cash_box_id'
+              isMulti={false}
+              placeholder={'Выбрать кассу'}
+              minWidth='auto'
+              isClearable={true}
+              label={'Касса'}
+              request={requests.getOpenCashBoxList}
+              filters={{ limit: 10 }}
+              control={control}
+              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+              // uncontrolled
+              getOptionLabel={(option) => {
+                return <Typography color='grey.600'>{option.name}</Typography>
+              }}
+              filterOption={() => true}
+            /> */}
             <SelectSimple
               fullWidth
               id='categ'
@@ -117,7 +137,7 @@ export default function ChangeShift({ open, setOpen }) {
               label={'Касса'}
               placeholder={'Выбрать кассу'}
               getOptionLabel={(el) => el.name}
-              options={cashBoxList?.data?.data?.data}
+              options={cashBoxList?.data?.data}
             />
             <InputPassword
               boxStyle={{ borderRadius: '40px' }}

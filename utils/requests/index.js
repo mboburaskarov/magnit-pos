@@ -78,6 +78,7 @@ export const requests = {
   createCashBox: (data) => request.post(`v1/cash_box`, data),
   updateCashBox: ({ id, data }) => request.put(`v1/cash_box/${id}`, data),
   getSingleCashBox: (id) => request.get(`v1/cash_box/${id}`),
+  getOpenCashBoxList: (filter) => request.get(`v1/cash_box/open-list${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //cash_box_operation
   createCashOperationBox: (data) => request.post(`v1/cash_box_operation`, data),
