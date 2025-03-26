@@ -137,7 +137,7 @@ export default function DashboarPage() {
         title: t('Общее количество остатков'),
         icon: <ProductsIcon />,
         count: total_product_count,
-        endText: 'сум',
+        endText: '',
         percent: 20,
         id: 'total_product_count',
       },

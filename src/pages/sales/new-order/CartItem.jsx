@@ -229,6 +229,7 @@ const CartItem = ({
   removeMarking,
 }) => {
   const cls = useStyles()
+  console.log(markingsList)
 
   const { mutate: changeCartItemQuantity } = useMutation(requests.changeCartItemQuantity, {
     onSuccess: ({ data }) => {
