@@ -27,15 +27,10 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
     setRegions(data.regions || [])
 
     const requestBody = {
-      total_amount_from: data.total_amount_from || undefined,
-      total_amount_to: data.total_amount_to || undefined,
       store_id: data.store_id?.value || undefined,
       store_name: data.store_id?.name || undefined,
-      vendor_id: data.vendor_id?.value || undefined,
-      vendor_name: data.vendor_id?.name || undefined,
       cashbox_id: data.cashbox_id?.value || undefined,
       cashbox_name: data.cashbox_id?.name || undefined,
-      payment_type_id: data.payment_type_id?.id || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
@@ -52,24 +47,12 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
 
     reset(
       {
-        payment_type_id: payment_type_id ? getOptionsFromUrlParam(payment_type_id, paymentTypeList?.data?.data, 'name')[0] : null,
-        vendor_id: vendor_id ? { name: values?.vendor_name, value: values?.vendor_id } : null,
         cashbox_id: cashbox_id ? { name: values?.cashbox_name, value: values?.cashbox_id } : null,
         store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
-        total_amount_to: total_amount_to || null,
-        total_amount_from: total_amount_from || null,
       },
       { keepDirty: true }
     )
-  }, [
-    values?.payment_type_id,
-    values?.vendor_id,
-    values?.cashbox_id,
-    values?.category_id,
-    values?.store_id,
-    values?.total_amount_to,
-    values?.total_amount_from,
-  ])
+  }, [values?.cashbox_id, values?.store_id])
   const theme = useTheme()
 
   const resetFilter = () => {
@@ -102,19 +85,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <Box maxHeight={'calc(100vh - 280px)'} px={'5px'} width={'100%'} overflow={'scroll'}>
-              <SelectSimple
-                fullWidth
-                id='sto'
-                name='payment_type_id'
-                white
-                minWidth='auto'
-                label={'Тип оплаты'}
-                placeholder={t('Выберите тип оплаты')}
-                getOptionLabel={(el) => el.name}
-                options={paymentTypeList?.data?.data}
-              />
-              <Box height={'20px'} />
+            <Box maxHeight={'calc(100vh - 280px)'} px={'5px'} width={'100%'} overflow={'visible'}>
               <LazySelect
                 slug='users'
                 boxStyle={{ width: '100%' }}
@@ -138,33 +109,11 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               <Box height={'20px'} />
 
               <LazySelect
-                slug='vendor_id'
-                boxStyle={{ width: '100%' }}
-                id='vendor_id'
-                name='vendor_id'
-                customLabel='full_name'
-                isMulti={false}
-                placeholder={'Выберите Продавец'}
-                minWidth='auto'
-                isClearable={true}
-                label={'Продавец'}
-                request={requests.getAllVendors}
-                filters={{ limit: 10 }}
-                control={control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
-                getOptionLabel={(option) => {
-                  return <Typography color='grey.600'>{option.name}</Typography>
-                }}
-                filterOption={() => true}
-              />
-              <Box height={'20px'} />
-
-              <LazySelect
                 slug='cashbox_id'
                 boxStyle={{ width: '100%' }}
                 id='cashbox_id'
                 name='cashbox_id'
+                fullWidth
                 customLabel='name'
                 isMulti={false}
                 placeholder={'Выберите Касса'}
@@ -180,17 +129,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                   return <Typography color='grey.600'>{option.name}</Typography>
                 }}
                 filterOption={() => true}
-              />
-              <Box height={'20px'} />
-
-              <InputRange
-                fullWidth
-                id='prixwce'
-                label={'Общая сумма'}
-                name1='total_amount_from'
-                name2='total_amount_to'
-                placeholder1={t('input.price.from')}
-                placeholder2={t('input.price.to')}
               />
               <Box height={'20px'} />
             </Box>

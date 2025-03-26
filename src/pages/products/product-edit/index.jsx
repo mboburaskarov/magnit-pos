@@ -39,7 +39,6 @@ export default function ProductEditPage() {
   const onSubmit = (data) => {
     const requestBody = {
       barcode: get(data, 'barcode'),
-      bonus_amount: Number(get(data, 'bonus_amount')),
       bonus_percent: Number(get(data, 'bonus_percent')),
       description: get(data, 'description'),
       // expire_date: get(data, 'expire_date'),
@@ -64,7 +63,7 @@ export default function ProductEditPage() {
           retail_price: Number(get(item, 'retail_price', 0)),
           supply_price: Number(get(item, 'supply_price', 0)),
           vat: Number(get(item, 'vat', 0)),
-          bonus_percent: Number(get(item, 'bonus_percent', 0)),
+          bonus_amount: Number(get(item, 'bonus_amount', 0)),
           markup: Number(get(item, 'markup', 0)),
           pack_quantity: Number(get(item, 'pack_quantity', 0)),
           small_quantity: Number(get(item, 'small_quantity', 0)),

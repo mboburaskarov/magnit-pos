@@ -63,7 +63,7 @@ export default function productPriceTableHeaderSelector({
             onBlur={(e) => {
               changeAmount('supply_price', p.data.id, Number(get(e, 'target.value')))
             }}
-            required
+            // required
             defaultValue={0}
             type='number'
             disabled={false}
@@ -86,7 +86,7 @@ export default function productPriceTableHeaderSelector({
             id={`store_product.${p.data.id}.retail_price`}
             name={`store_product.${p.data.id}.retail_price`}
             fullWidth
-            required
+            // required
             type='number'
             defaultValue={0}
             disabled={false}
@@ -110,7 +110,7 @@ export default function productPriceTableHeaderSelector({
             id={`store_product.${p.data.id}.vat`}
             name={`store_product.${p.data.id}.vat`}
             fullWidth
-            required
+            // required
             type='number'
             defaultValue={0}
             disabled={false}
@@ -133,7 +133,7 @@ export default function productPriceTableHeaderSelector({
             id={`store_product.${p.data.id}.markup`}
             name={`store_product.${p.data.id}.markup`}
             fullWidth
-            required
+            // required
             type='number'
             defaultValue={0}
             disabled={false}
@@ -154,7 +154,7 @@ export default function productPriceTableHeaderSelector({
             id={`store_product.${p.data.id}.bonus_amount`}
             name={`store_product.${p.data.id}.bonus_amount`}
             fullWidth
-            required
+            required={undefined}
             type='number'
             defaultValue={0}
             disabled={false}

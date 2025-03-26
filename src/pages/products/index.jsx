@@ -397,7 +397,7 @@ export default function ProductsPage() {
                       ? activateProduct(openConfirmDialog.id)
                       : openConfirmDialog?.type === 'deactivate'
                       ? deActivateProduct({ id: openConfirmDialog.id, appType: 'INACTIVE' })
-                      : deleteProduct(openConfirmDialog.id)
+                      : deleteProduct({ data: [openConfirmDialog.id] })
                   }
                 >
                   Да, удалить

@@ -183,10 +183,7 @@ export default function ProductBody({ productData = null }) {
           getValues(`store_product.${get(store, 'id')}.small_quantity`) || get(store, 'small_quantity', 0)
         )
 
-        setValue(
-          `store_product.${get(store, 'id')}.bonus_percent`,
-          getValues(`store_product.${get(store, 'id')}.bonus_percent`) || get(store, 'bonus_percent', 0)
-        )
+        setValue(`store_product.${get(store, 'id')}.bonus_amount`, getValues(`store_product.${get(store, 'id')}.bonus_amount`) || get(store, 'bonus_amount', 0))
         setValue(
           `store_product.${get(store, 'id')}.expire_date`,
           getValues(`store_product.${get(store, 'id')}.expire_date`) || new Date(get(store, 'expire_date', new Date()))

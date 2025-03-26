@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
@@ -86,6 +86,9 @@ export default function CatalogManagement() {
   return (
     <>
       <Box pt={6} px={4} pb={3}>
+        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+          Категории
+        </Typography>
         <Box display='flex' width='100%' mb={3} mt={4}>
           <Box flex='1 0 30%' mr={1}>
             <InputSearch

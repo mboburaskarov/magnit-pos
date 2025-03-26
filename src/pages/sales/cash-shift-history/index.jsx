@@ -59,35 +59,9 @@ export default function CashShiftHistoryPage() {
       search: values?.search,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
-      category_id: values?.category_id,
-      producer: values?.producer,
-      payment_type_id: values?.payment_type_id,
-      vendor_id: values?.vendor_id,
-      employee_id: values?.employee_id,
       cashbox_id: values?.cashbox_id,
-
-      total_amount_to: values?.total_amount_to,
-      total_amount_from: values?.total_amount_from,
-      start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
-      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
     }
-  }, [
-    values?.offset,
-    values?.limit,
-    values?.search,
-    values?.payment_type_id,
-    values?.producer,
-    values?.employee_id,
-    values?.cashbox_id,
-
-    values?.category_id,
-    values?.vendor_id,
-    values?.store_id,
-    values?.total_amount_to,
-    values?.total_amount_from,
-    values?.start_date,
-    values?.end_date,
-  ])
+  }, [values?.offset, values?.limit, values?.search, values?.cashbox_id, values?.store_id])
   const {
     data: cashShiftHistoryList,
     isLoading: cashShiftHistoryListLoading,
