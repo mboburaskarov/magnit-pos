@@ -102,7 +102,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <Box maxHeight={'calc(100vh - 280px)'} px={'5px'} width={'100%'} overflow={'scroll'}>
+            <Box maxHeight={'calc(100vh - 280px)'} px={'5px'} width={'100%'} overflow={'visible'}>
               <SelectSimple
                 fullWidth
                 id='sto'

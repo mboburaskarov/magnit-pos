@@ -43,7 +43,10 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box sx={{ '& p': { color: 'orange.500' }, cursor: 'pointer' }} onClick={() => setOpenSaleDrawer({ id: p.data.id })}>
-            <SimpleText {...p} type='sale_number' />
+            {/* <SimpleText {...p} type='sale_number' /> */}
+            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+              {get(p, 'data.sale_type', 'SALE') === 'SALE' ? 'Продажа' : 'Возврат'} #{get(p, 'data.sale_number', '-')}
+            </Typography>
           </Box>
         )),
       }

@@ -48,6 +48,7 @@ function RippedPaperCheck({
 
     return !!found ? found?.is_active === true : true
   }
+  console.log(qrcodeUrl)
 
   return (
     <Box className={`${classes.root} ${noSticky ? classes.noSticky : ''}`}>

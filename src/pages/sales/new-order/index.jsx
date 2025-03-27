@@ -519,7 +519,7 @@ function NewSale() {
     { enableOnFormTags: true }
   )
 
-  useHotkeys(['NumpadAdd', 'NumpadSubtract'], (event) => focusUnitInput(event), { enableOnFormTags: true })
+  useHotkeys(['NumpadAdd', 'NumpadSubtract'], (event) => focusUnitInput(event), { enableOnFormTags: true, preventDefault: true })
 
   useHotkeys('Shift', (event) => focusedItemDetailDrawerOpen(event), { enableOnFormTags: true })
 
