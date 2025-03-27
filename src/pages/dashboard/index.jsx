@@ -119,7 +119,7 @@ export default function DashboarPage() {
       },
     ]
   }
-  console.log(selectedStore, selectedStore.length)
+  // console.log(selectedStore, selectedStore.length)
 
   const dashboard_filter = useMemo(() => {
     return {
