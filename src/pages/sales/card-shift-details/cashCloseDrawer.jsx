@@ -289,9 +289,15 @@ function CashCloseDrawer({ open, setOpen }) {
           <Button
             type='submit'
             onClick={() =>
-              closeZReport({
-                token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
-                method: 'closeZreport', // Название метода, Обязательное поле, String
+              // closeZReport({
+              //   token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+              //   method: 'closeZreport', // Название метода, Обязательное поле, String
+              // })
+              closeCheckZReport({
+                token: 'DXJFX32CN1296678504F2',
+                method: 'getZreportInfo',
+                printerSize: 80,
+                zReportId: 1,
               })
             }
             sx={{ bottom: 0, margin: '0 24px 24px', '& > svg': { width: 24, height: 24, ml: '12px' } }}
