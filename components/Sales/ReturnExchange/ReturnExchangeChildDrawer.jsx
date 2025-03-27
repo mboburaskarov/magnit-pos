@@ -233,7 +233,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
               onClick={() =>
                 returnSaleItem({
                   cash_box_operation_id,
-                  sale_id,
+                  sale_id: get(open, 'item.id'),
                   sale_items: selectedReturnItems.map(({ id, ...others }) => ({ ...others })),
                 })
               }

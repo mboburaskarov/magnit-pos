@@ -381,9 +381,11 @@ export default function OrderDrawer({
             receivedCard: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
           },
           ...(SALE_TYPE === 'RETURN' && {
-            refundInfo: {
-              ...get(cashBoxDetails, 'data.data.epos_response.response'),
-            },
+            refundInfo: (() => {
+              const info = JSON.parse(get(cashBoxDetails, 'data.data.epos_response.response', '{}'))?.info
+              const { qrCodeURL, ...rest } = info // Exclude qrCodeURL
+              return rest
+            })(),
           }),
           // ...(SALE_TYPE === 'RETURN' && { refundInfo: {} }),
         })
