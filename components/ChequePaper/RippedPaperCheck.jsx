@@ -252,20 +252,25 @@ function RippedPaperCheck({
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-              <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
-                Sizning xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
-              </Typography>
-
-              <QRCodeCanvas value={qrcodeUrl} />
-              <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
-                CHEK NUSXASI
-              </Typography>
-              <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
-                SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
-              </Typography>
-              <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
-                XARIDINGIZ UCHUN RAXMAT!!!
-              </Typography>
+              {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? (
+                <>
+                  <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
+                    Sizning xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
+                  </Typography>
+                  <QRCodeCanvas value={qrcodeUrl} />
+                  <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
+                    CHEK NUSXASI
+                  </Typography>
+                  <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
+                    SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
+                  </Typography>
+                  <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
+                    XARIDINGIZ UCHUN RAXMAT!!!
+                  </Typography>
+                </>
+              ) : (
+                <></>
+              )}
             </Box>
           </Fragment>
         </Box>
