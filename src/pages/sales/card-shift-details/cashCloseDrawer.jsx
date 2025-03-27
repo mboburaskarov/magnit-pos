@@ -174,7 +174,6 @@ function CashCloseDrawer({ open, setOpen }) {
     console.log('err', err)
     error('Пожалуйста, заполните все поля!')
   }
-  console.log(reactToPrintContent)
 
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='bottom' elevation={1} className={classes.drawer}>
