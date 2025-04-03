@@ -11,6 +11,7 @@ import { useDropzone } from 'react-dropzone'
 import useDidUpdate from '../src/hooks/useDidUpdate'
 import { makeStyles } from '@mui/styles'
 import { requests } from '../utils/requests'
+import DeleteIcon from '../src/assets/icons/DeleteIcon'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '100%',
     height: '100%',
     minHeight: 48,
-    marginTop: 16,
+    marginTop: 4,
   },
   button: {
     display: 'flex',
@@ -66,20 +67,24 @@ const useStyles = makeStyles((theme) => ({
   },
   img_box: {
     position: 'relative',
-    height: 96,
-    width: 96,
+    height: 120,
+    width: 120,
     marginRight: 16,
     border: `1px solid ${theme.palette.gray[200]}`,
     borderRadius: 16,
+    '&:hover': {
+      background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3))',
+    },
   },
   icon_box: {
     width: 24,
     height: 24,
-    backgroundColor: theme.palette.blue[600],
+    backgroundColor: theme.palette.white,
     position: 'absolute',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+
     top: 4,
     right: 4,
     borderRadius: 10,
@@ -97,6 +102,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '8px 16px',
     border: `1px dashed ${theme.palette.gray[300]}`,
     borderRadius: 32,
+
     width: '100%',
     color: theme.palette.gray[600],
     fontWeight: 600,
@@ -112,18 +118,16 @@ const useStyles = makeStyles((theme) => ({
   },
   preview_actions: {
     position: 'absolute',
-    top: 0,
+    bottom: 0,
     left: 0,
     display: 'none',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    flexDirection: 'row',
+    justifyContent: 'end',
     alignItems: 'center',
     width: '100%',
-    height: '100%',
-    padding: 4,
+    padding: '8px',
     borderRadius: 16,
     color: theme.palette.common.white,
-    background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3))',
     cursor: 'move',
     '&.visible:hover': {
       display: 'flex',
@@ -134,9 +138,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'flex-end',
-    width: 24,
-    height: 24,
-    border: `1px solid #FFF`,
+    width: 32,
+    height: 32,
+    backgroundColor: `#FFF`,
     borderRadius: 10,
     cursor: 'pointer',
   },
@@ -152,19 +156,19 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   preview_btn: {
-    minWidth: 80,
-    maxWidth: 80,
-    height: 24,
-    padding: '4px 10px',
+    marginLeft: '8px',
+    maxWidth: 32,
+    height: 32,
+    padding: '8px',
     borderRadius: 8,
-    backgroundColor: theme.palette.red[500],
+    backgroundColor: theme.palette.white,
     color: theme.palette.common.white,
     fontSize: 14,
     lineHeight: '17px',
     fontWeight: 600,
     pointerEvents: 'all',
     '&:hover': {
-      backgroundColor: theme.palette.red[501],
+      backgroundColor: theme.palette.bunker[100],
     },
   },
   previewText: {
@@ -184,6 +188,7 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
   const { t } = useTranslation()
   const classes = useStyles()
   const [uploadedImages, setUploadedImages] = useState(images || [])
+
   const [editingImage, setEditingImage] = useState(null)
   const setActiveImage = (file_name) => {
     const newImages = uploadedImages.map((el) => {
@@ -208,23 +213,21 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
       <div className={`${classes.preview_actions} visible`}>
         {item.is_main ? (
           <div className={classes.preview_icon} key={i}>
-            <StarFilledIcon fill='#fff' />
+            <StarFilledIcon fill='#2558FF' />
           </div>
         ) : (
           <div key={i} className={classes.preview_icon} onClick={() => setActiveImage(item.file_name)}>
             <StarOutlinedIcon />
           </div>
         )}
-        <label onClick={() => setEditingImage(item.file_name)} className={classes.preview_text} htmlFor={id}>
-          {t('buttons.replace')}
-        </label>
+
         <Button onClick={() => deleteImage(item)} className={classes.preview_btn}>
-          {t('buttons.delete')}
+          <DeleteIcon width='24px' />
         </Button>
       </div>
       {item.is_main && (
         <div className={classes.icon_box} key={i}>
-          <StarFilledIcon fill='#fff' />
+          <StarFilledIcon fill='#2558FF' />
         </div>
       )}
     </div>
@@ -278,6 +281,7 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
       for (const file of files) {
         const formData = new FormData()
         formData.append('file', file)
+
         uploadImage(formData)
       }
     },
@@ -286,7 +290,11 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     onDrop,
-    accept: 'image/jpeg, image/png',
+    maxFiles: 2,
+    maxSize: 5242880,
+    accept: {
+      'image/png': ['.png', '.jpg', '.jpeg'],
+    },
   })
 
   useEffect(() => {
@@ -308,18 +316,6 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
               ?.sort((a, b) => a?.sequence_number - b?.sequence_number)
               ?.map((item, i) => i < 10 && <SortablePhoto index={i} item={item} key={i} i={i} />)}
           </SortableGallery>
-          {showGuideList && (
-            <Box className={classes.guide_list}>
-              <Box className={classes.guide_list_item}>
-                <StarFilledIcon />
-                <span>{t('components.main_photo')}</span>
-              </Box>
-              <Box className={classes.guide_list_item}>
-                <MoveIcon />
-                <span>{t('components.drag_to_change_sequence')}</span>
-              </Box>
-            </Box>
-          )}
         </>
       ) : isLoading ? (
         <CircularProgress />
@@ -335,17 +331,24 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
           `,
         })}
       >
-        <input id={id} {...getInputProps()} data-test='upload-photo' />
+        <input
+          {...getInputProps({
+            accept: 'image/jpeg, image/png, image/jpg',
+          })}
+          id={id}
+          // {...getInputProps()}
+          data-test='upload-photo'
+        />
         <Box>
           <div className={classes.previewIcon}>
             <PreviewIcon />
           </div>
-          <Typography className={classes.previewText}>{t('create_new_product.main_section.choose_file')}</Typography>
+          <Typography className={classes.previewText}>{t('create_new_product.products_set_section.photo_first')}</Typography>
         </Box>
         <Typography color='textSecondary' className={classes.previewText}>
-          {t('create_new_product.main_section.or')}
+          {t('create_new_product.products_set_section.photo_second')}
         </Typography>
-        <Typography className={classes.uploadPhotoText}>{t('create_new_product.main_section.click_for_look')}</Typography>
+        <Typography className={classes.uploadPhotoText}>{t('create_new_product.products_set_section.photo_third')}</Typography>
       </div>
     </div>
   )

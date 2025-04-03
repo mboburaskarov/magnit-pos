@@ -1,4 +1,5 @@
 import { makeStyles } from '@mui/styles'
+import { useDispatch } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 
 const useStyles = makeStyles(() => ({
@@ -14,7 +15,7 @@ const useStyles = makeStyles(() => ({
   },
   contentContainer: {
     flex: '1 1 auto',
-    paddingLeft: '22px',
+    // paddingLeft: '22px',
   },
   content: {
     display: 'flex',

@@ -128,6 +128,7 @@ function Header({
           alignItems: 'center',
           width: '100%',
           height: '88px',
+          padding: '20px',
           borderBottom: '2px solid',
           borderColor: 'bunker.100',
           position: 'fixed',
@@ -143,7 +144,7 @@ function Header({
             <Box display='flex' width='100%' alignItems='center' justifyContent='space-between'>
               <Typography variant='h1' display='inline-flex' alignItems='center'>
                 {backIcon && (
-                  <IconButton color='primary' id={backButtonId} onClick={backButtonClickHandler} sx={{ mr: 2, p: '0' }}>
+                  <IconButton color='primary' id={backButtonId} onClick={backButtonClickHandler} sx={{ mr: 2, p: '0', backgroundColor: '#fff' }}>
                     <Box
                       sx={{
                         width: '48px',
@@ -152,7 +153,6 @@ function Header({
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        padding: 'block',
                         borderRadius: '50%',
                         backgroundColor: 'bunker.100',
                       }}
@@ -184,23 +184,23 @@ function Header({
                   )}
                   {!noPrimaryBtn &&
                     (checkAccessId && typeof checkAccessId === 'string' ? (
-                      <CheckAccess id={checkAccessId}>
-                        <Button
-                          id={buttonId}
-                          variant='contained'
-                          className={classes.largeButton}
-                          type='submit'
-                          size='small'
-                          form={formId}
-                          disabled={disabled}
-                          isLoading={isLoading}
-                          onClick={onSubmit}
-                          sx={{ ml: 1.5 }}
-                        >
-                          {buttonText}
-                        </Button>
-                      </CheckAccess>
+                      // <CheckAccess id={checkAccessId}>
+                      <Button
+                        id={buttonId}
+                        variant='contained'
+                        className={classes.largeButton}
+                        type='submit'
+                        size='small'
+                        form={formId}
+                        disabled={disabled}
+                        isLoading={isLoading}
+                        onClick={onSubmit}
+                        sx={{ ml: 1.5 }}
+                      >
+                        {buttonText}
+                      </Button>
                     ) : (
+                      // </CheckAccess>
                       <Button
                         id={buttonId}
                         variant='contained'
@@ -223,7 +223,8 @@ function Header({
           </header>
         </Container>
       </Box>
-      <Box mb={4} sx={{ height: headerComponentHeight + 'px', width: '100vw' }} />
+      <Box mb={4} sx={{ height: headerComponentHeight + 'px' }} />
+      {/* <Box mb={4} sx={{ height: headerComponentHeight + 'px', width: '100vw' }} />
 
       {bottomComponent ? (
         <Box
@@ -240,7 +241,7 @@ function Header({
         </Box>
       ) : (
         ''
-      )}
+      )} */}
     </Fragment>
   )
 }

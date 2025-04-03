@@ -36,7 +36,7 @@ const ClientsIcon = () => (
   </svg>
 )
 
-export default function DashboardTopClients({ data, sortBy }) {
+export default function DashboardTopStore({ data, sortBy }) {
   const formattedData = data?.slice(0, 7)
 
   return (
@@ -45,11 +45,11 @@ export default function DashboardTopClients({ data, sortBy }) {
       flexDirection='column'
       alignItems='flex-start'
       width='100%'
-      sx={(theme) => ({ px: 3, py: 2.5, border: 0.5, borderRadius: 4, borderColor: '#A4A5AB33', borderRadius: 6 })}
+      sx={(theme) => ({ px: 3, py: 2.5, border: 0.5, borderColor: '#A4A5AB33', borderRadius: 6 })}
     >
       <Box justifyContent='space-between' width='100%' display='inline-flex'>
         <Box pb={2.5} borderBottom='1px solid' borderColor='gray.200' width='100%' mt={1} justifyContent='space-between' display='inline-flex'>
-          <Typography fontSize={24}>Топ клиентов</Typography>
+          <Typography fontSize={24}>Топ магазины</Typography>
           <ClientsIcon />
         </Box>
       </Box>

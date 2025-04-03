@@ -3,35 +3,22 @@ import { makeStyles } from '@mui/styles'
 import { useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { LoadingButton } from '@mui/lab'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    '& .cash_register_icon_wrapper': {
-      '&:hover': {
-        backgroundColor: theme.palette.gray[100],
-      },
-    },
     position: 'relative',
+    '& .MuiButton-endIcon': {
+      marginRight: '10px !important',
+    },
+    '& .cash_register_icon_wrapper:hover': {
+      backgroundColor: theme.palette.gray[100],
+    },
     '& > button span span span svg': {
-      marginLeft: ({ noMarginSvg }) => !noMarginSvg && 10,
-    },
-    '& > button': {
-      // borderRadius: ({ borderRadius }) => (borderRadius ? borderRadius : null),
-    },
-
-    '& .MuiButtonBase-root': {
-      border: 0,
-      height: 48,
-      padding: 0,
-      backgroundColor: 'transparent',
-
-      '&:hover': {
-        backgroundColor: 'transparent',
-      },
+      marginLeft: ({ noMarginSvg }) => (!noMarginSvg ? 10 : 0),
     },
   },
   above: {
-    position: 'relative',
     zIndex: 2001,
   },
   options: {
@@ -43,42 +30,15 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 300,
     flexDirection: 'column',
     overflow: 'hidden',
-    // padding: ' 8px 16px',
-    position: 'relative',
     borderRadius: 12,
-    '& > .soon > svg > path': {
-      stroke: theme.palette.gray[400],
-
-      // borderRadius: ({ borderRadius }) => (borderRadius ? borderRadius : null),
-    },
-    '& > .soon > span > b': {
-      color: theme.palette.gray[400],
-
-      // borderRadius: ({ borderRadius }) => (borderRadius ? borderRadius : null),
-    },
-    // '& .soon-icon': {
-    //   // position: 'absolute',
-    //   // backgroundColor: theme.palette.orange[500],
-    //   color: '#fff',
-    //   padding: '0 5px',
-    //   borderRadius: '10px',
-    //   right: 10,
-    //   fontSize: '10px',
-    //   top: 5,
-    // },
     '& > button': {
       backgroundColor: 'transparent',
       border: 0,
       display: 'flex',
       alignItems: 'center',
-      // height: 48,
       padding: '10px 16px',
       cursor: 'pointer',
       position: 'relative',
-      '& > svg': {
-        width: 20,
-        height: 20,
-      },
       '&:hover': {
         backgroundColor: theme.palette.gray[100],
       },
@@ -89,31 +49,19 @@ const useStyles = makeStyles((theme) => ({
       alignItems: 'flex-start',
       marginLeft: 16,
       fontWeight: 500,
-      fontFamily: 'Gilroy',
       fontSize: 18,
       lineHeight: '28px',
       color: theme.palette.bunker[950],
     },
-    '& > button b': {
-      fontFamily: 'Gilroy',
-      fontSize: 18,
-      fontWeight: 500,
-
-      lineHeight: '28px',
-      color: theme.palette.bunker[950],
-    },
-    '& > button > span span': {
-      fontWeight: 500,
-      fontSize: 18,
-      lineHeight: '28px',
-      color: theme.palette.bunker[950],
+    '& > .soon > span > b': {
+      color: '#0000006e',
     },
   },
   backdrop: {
-    zIndex: 2000 + '! important',
+    zIndex: 2000,
   },
   popper: {
-    zIndex: 2001 + '! important',
+    zIndex: 2001,
   },
 }))
 
@@ -122,6 +70,7 @@ const ButtonWithPopup = ({
   popperData,
   buttonLabel,
   noArrow,
+  popperStyle,
   size,
   PopperContent,
   popperContentProps,
@@ -138,9 +87,7 @@ const ButtonWithPopup = ({
   ...rest
 }) => {
   const [anchorEl, setAnchorEl] = useState(null)
-
   const classes = useStyles({ noMarginSvg, borderRadius })
-  const ref = useRef(null)
 
   const handleClose = () => {
     setAnchorEl(null)
@@ -151,51 +98,45 @@ const ButtonWithPopup = ({
       <Button
         id={id}
         color='secondary'
-        buttonRef={ref}
-        fullWidth
         size={size}
-        style={{ maxWidth: size, minWidth: size }}
         disabled={disabled}
         onClick={(e) => {
           setAnchorEl(anchorEl ? null : e.currentTarget)
           if (onClick) onClick(e)
         }}
-        className={!!anchorEl && classes.above}
-        adornmentEnd={!noArrow && <FontAwesomeIcon icon={faChevronDown} />}
-        {...buttonProps}
-        isLoading={isLoading}
-        endIcon={endIcon}
+        className={anchorEl ? classes.above : ''}
+        endIcon={endIcon || (!noArrow && <FontAwesomeIcon icon={faChevronDown} />)}
         sx={sx}
+        {...buttonProps}
       >
         {buttonLabel}
       </Button>
 
+      {/* Backdrop for popper */}
       <Backdrop className={classes.backdrop} open={!!anchorEl} onClick={handleClose} />
-      <Popper id={id} open={!!anchorEl} anchorEl={anchorEl} className={classes.popper} placement={placement || 'bottom-end'}>
-        <ClickAwayListener onClickAway={() => setAnchorEl(false)}>
+
+      {/* Popper Content */}
+      <Popper sx={popperStyle} id={id} open={!!anchorEl} anchorEl={anchorEl} className={classes.popper} placement={placement || 'bottom-end'}>
+        <ClickAwayListener onClickAway={handleClose}>
           <Box>
             {PopperContent ? (
-              <PopperContent {...popperContentProps} close={() => setAnchorEl(false)} />
+              <PopperContent {...popperContentProps} close={handleClose} />
             ) : (
               <Box className={classes.options}>
                 {popperData?.map(
                   (el, index) =>
                     el && (
                       <button
+                        key={index}
                         className={el?.soon ? 'soon' : ''}
                         id={el?.id}
                         type='button'
-                        key={index}
                         onClick={() => {
                           if (el?.soon) return
-
-                          if (el.clickHandler) {
-                            el.clickHandler()
-                          }
+                          if (el.clickHandler) el.clickHandler()
                           handleClose()
                         }}
                       >
-                        {/* {el?.soon && <span className='soon-icon'>Soon</span>} */}
                         {el.icon}
                         <span>
                           <b>{el.title}</b>

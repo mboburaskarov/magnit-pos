@@ -5,16 +5,19 @@ import 'react-toastify/dist/ReactToastify.css'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 import GlobalStyles from './assets/GlobalStyles'
-import { SocketProvider } from '../utils/SocketContext'
+// import { SocketProvider } from '../utils/SocketContext'
+// import { ShortcutProvider } from './ShortcutProvider'
 
 function App() {
   return (
     <Providers>
-      <SocketProvider>
-        <Routes />
-        <GlobalStyles />
-        <ToastContainer position='top-center' autoClose={3000} hideProgressBar closeOnClick pauseOnHover draggable closeButton={false} />
-      </SocketProvider>
+      {/* <SocketProvider> */}
+      {/* <ShortcutProvider> */}
+      <Routes />
+      <GlobalStyles />
+      <ToastContainer limit={3} position='top-center' autoClose={3000} hideProgressBar closeOnClick pauseOnHover draggable closeButton={false} />
+      {/* </ShortcutProvider> */}
+      {/* </SocketProvider> */}
     </Providers>
   )
 }

@@ -3,16 +3,28 @@ import arrayMove from '../../../utils/arrayMove'
 
 const columns = [
   {
-    field: 'photo',
+    field: 'checkbox',
     hide: false,
-    minWidth: 70,
-    width: 80,
+    minWidth: 45,
+    width: 45,
   },
   {
-    field: 'name',
+    field: 'number',
     hide: false,
-    minWidth: 70,
-    width: 200,
+    minWidth: 60,
+    width: 60,
+  },
+  {
+    field: 'public_id',
+    hide: false,
+    minWidth: 60,
+    width: 120,
+  },
+  {
+    field: 'fish',
+    hide: false,
+    minWidth: 180,
+    flex: 1,
   },
   {
     field: 'phone_number',
@@ -21,47 +33,60 @@ const columns = [
     width: 200,
   },
   {
-    field: 'status',
+    field: 'tags',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'sale_amount',
     hide: false,
     minWidth: 70,
     width: 158,
   },
   {
-    field: 'created_date',
+    field: 'sale_date',
+    hide: false,
+    minWidth: 70,
+    width: 158,
+  },
+  {
+    field: 'birthday',
     hide: false,
     minWidth: 70,
     width: 198,
   },
   {
-    field: 'registration_source',
+    field: 'created_at',
     hide: false,
     minWidth: 70,
     width: 200,
   },
   {
-    field: 'last_order_date',
+    field: 'store',
     hide: false,
     minWidth: 70,
     width: 198,
   },
   {
-    field: 'average_cheque',
+    field: 'balance',
     hide: false,
     minWidth: 70,
     width: 200,
   },
   {
-    field: 'orders_count',
+    field: 'debt_amount',
     hide: false,
     minWidth: 70,
     width: 200,
   },
-  {
-    field: 'actions',
-    hide: false,
-    minWidth: 70,
-    width: 220,
-  },
+  // {
+  //   field: 'actions',
+  //   hide: false,
+  //   minWidth: 80,
+  //   width: 80,
+  //   pinned: 'right',
+  // },
 ]
 
 const clientTableColumns = createSlice({
@@ -72,8 +97,7 @@ const clientTableColumns = createSlice({
   },
   reducers: {
     changeColumnSequence(state, payload) {
-      const newColumns = arrayMove(payload?.tableColumns || state.columns, payload.oldIndex, payload.newIndex, 'sequence_number')
-      state.columns = newColumns
+      state.columns = payload.payload
     },
     resetColumnsWidth(state, payload) {
       const newColumns = state.columns.map((el) => ({
@@ -100,33 +124,7 @@ const clientTableColumns = createSlice({
       state.columns = action.payload
     },
     resetTableHeader(state, action) {
-      state.loading = true
-
-      const existingColumns = state.columns
-      const newColumns = columns
-      const existingColumnsMap = new Map(existingColumns.map((col) => [col.field, col]))
-      const processData = new Promise((resolve) => {
-        newColumns.forEach((newCol) => {
-          const existingCol = existingColumnsMap.get(newCol.field)
-
-          if (existingCol) {
-            existingCol.width = newCol.width
-            existingCol.hide = newCol.hide
-            existingColumnsMap.delete(newCol.field)
-          } else {
-            state.columns.push(newCol)
-          }
-        })
-        state.columns = state.columns.filter((col) => !existingColumnsMap.has(col.field))
-        resolve()
-      })
-
-      const minimumLoadingTime = new Promise((resolve) => setTimeout(resolve, 1000))
-
-      Promise.all([processData, minimumLoadingTime]).then(() => {
-        state.loading = false
-      })
-      if (typeof action.payload?.refetch === 'function') action.payload?.refetch() 
+      state.columns = columns
     },
   },
 })

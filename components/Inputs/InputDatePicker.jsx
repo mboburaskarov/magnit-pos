@@ -8,6 +8,8 @@ import { faCalendarAlt, faChevronDown, faChevronUp } from '@fortawesome/free-sol
 import { makeStyles } from '@mui/styles'
 import DeleteSmallIcon from '../../src/assets/icons/DeleteSmallIcon'
 import Label from '../Label'
+import CalendarIcon from '../../src/assets/icons/CalendarIcon'
+import ReactInputMask from 'react-input-mask'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -119,24 +121,36 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.gray[100],
     },
   },
+  applyAll: {
+    position: 'absolute',
+    top: 0,
+    right: 15,
+    zIndex: 9,
+    backgroundColor: theme.palette.orange[500],
+    color: theme.palette.white,
+    padding: '2px 8px',
+
+    borderRadius: 10,
+  },
 }))
 
 const currentYear = new Date().getFullYear()
-const fromMonth = new Date(currentYear - 3, 11)
+
+const fromMonth = new Date(currentYear, 11)
 const toMonth = new Date(currentYear + 5, 0)
 
 const tomorrow = new Date()
 tomorrow.setDate(tomorrow.getDate() + 1)
 
-export const YearMonthFormNew = ({ date, changeYear, changeMonth, decreaseMonth, increaseMonth }) => {
+export const YearMonthFormNew = ({ date, fromMonthCustom, changeYear, changeMonth, decreaseMonth, increaseMonth }) => {
   const classes = useStyles()
   const { palette } = useTheme()
   const [open, setOpen] = useState(false)
   const newMonths = dayjs.months().map((item) => item[0].toUpperCase() + item.slice(1))
-
+  const form_Month = fromMonthCustom || fromMonth
   const years = []
 
-  for (let i = fromMonth.getFullYear(); i <= toMonth.getFullYear(); i += 1) {
+  for (let i = form_Month.getFullYear(); i <= toMonth.getFullYear(); i += 1) {
     years.push(i)
   }
 
@@ -212,18 +226,7 @@ const CustomTimeInput = ({ date, onChange }) => {
   const classes = useStyles()
   const diff = (+dayjs().format('HH') - +dayjs().tz().format('HH')) * 3600000
   const isFuture = dayjs(date).startOf('minute').diff(dayjs().tz().startOf('minute')) + diff > 0
-  const value =
-    date instanceof Date && !isNaN(date)
-      ? // Getting time from Date because `value` comes here without seconds
-        date.toLocaleTimeString('it-IT')
-      : ''
-
-  // useEffect(() => {
-  //   if (isFuture) {
-  //     error('toast.error.future_time')
-  //     onChange(`${dayjs().tz().hour()}:${dayjs().tz().minute()}`)
-  //   }
-  // }, [isFuture])
+  const value = date instanceof Date && !isNaN(date) ? date.toLocaleTimeString('it-IT') : ''
 
   const [hh, mm, ss] = value.split(':')
 
@@ -283,6 +286,7 @@ function InputDatePicker({
   onChange,
   noValidation,
   disabled,
+  fromMonthCustom = new Date(),
   noMarginTop,
   isClearable,
   maxDate,
@@ -290,22 +294,27 @@ function InputDatePicker({
   customRadius,
   withTime,
   dashed,
+
+  canApplyAll = true,
+  aplyAllFunc,
+  applyAll,
 }) {
   const classes = useStyles({ disabled, customRadius, dashed })
   const methods = useFormContext()
+  const [isApplyAll, setApplyAll] = useState(false)
   const { palette } = useTheme()
 
   return (
     <Box width={fullWidth ? '100%' : 320} maxWidth={maxWidth} className={classes.root} mt={!label && !noMarginTop && '21px'} {...boxStyle}>
       {label && (
-        <Label required={required} mb={1.5}>
+        <Label required={required} mb={'4px'}>
           {label}
         </Label>
       )}
       {uncontrolled ? (
         <DatePicker
           id={id}
-          dateFormat={withTime ? 'dd.MM.yyyy | HH:mm' : 'dd.MM.yyyy'}
+          dateFormat={withTime ? 'yyyy.MM.dd | HH:mm' : 'yyyy.MM.dd'}
           selected={value}
           showTimeInput={withTime}
           onChange={onChange}
@@ -320,6 +329,7 @@ function InputDatePicker({
             return (
               <YearMonthFormNew
                 date={monthDate}
+                fromMonthCustom={fromMonthCustom}
                 changeYear={changeYear}
                 changeMonth={changeMonth}
                 decreaseMonth={decreaseMonth}
@@ -339,7 +349,7 @@ function InputDatePicker({
               InputProps={{
                 endAdornment: (
                   <InputAdornment sx={{ paddingRight: 1 }} position='start'>
-                    <FontAwesomeIcon icon={faCalendarAlt} color={palette.orange[500]} />
+                    <CalendarIcon />
                   </InputAdornment>
                 ),
               }}
@@ -350,64 +360,105 @@ function InputDatePicker({
         <Controller
           name={name}
           disabled={disabled}
-          render={({ field: { onChange: onFieldChange, value: fieldValue } }) => (
-            <DatePicker
-              id={id}
-              dateFormat={withTime ? 'dd.MM.yyyy | HH:mm' : 'dd.MM.yyyy'}
-              selected={fieldValue}
-              showTimeInput={withTime}
-              onChange={onFieldChange}
-              placeholderText={placeholder}
-              popperClassName='datepicker'
-              popperPlacement={withTime && 'right-end'}
-              calendarStartDay={1}
-              disabled={disabled}
-              minDate={minDate}
-              maxDate={maxDate}
-              customTimeInput={<CustomTimeInput />}
-              renderCustomHeader={({ date, changeYear, changeMonth, decreaseMonth, increaseMonth }) => {
-                return (
-                  <YearMonthFormNew date={date} changeYear={changeYear} changeMonth={changeMonth} decreaseMonth={decreaseMonth} increaseMonth={increaseMonth} />
-                )
-              }}
-              customInput={
-                <TextField
-                  variant='outlined'
-                  fullWidth
-                  error={!!error}
-                  className={noMarginTop && classes.noMargin}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment sx={{ paddingRight: 1 }} position='start'>
-                        {fieldValue && isClearable ? (
-                          <button
-                            className={classes.clearButton}
-                            onClick={() => {
-                              onFieldChange(null)
-                            }}
-                            type='button'
-                          >
-                            <DeleteSmallIcon />
-                          </button>
-                        ) : (
-                          <FontAwesomeIcon icon={faCalendarAlt} color={disabled ? palette.gray[400] : palette.orange[500]} />
-                        )}
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              }
-            />
-          )}
           rules={{
             required,
             ...(!noValidation && {
-              validYear: (val) => {
+              validate: (val) => {
+                if (!val) return 'Date is required'
                 const year = new Date(val).getFullYear()
-                return year < 2100
+                if (year > 2100) return 'Year must be less than or equal to 2100'
+                if (year < 1900) return 'Year must be greater than or equal to 1900'
+                return true
               },
             }),
           }}
+          render={({ field: { onChange: onFieldChange, value: fieldValue }, fieldState: { error } }) => (
+            <>
+              {applyAll && isApplyAll && (
+                <Box
+                  onClick={() => {
+                    aplyAllFunc(), setApplyAll(false)
+                  }}
+                  className={classes.applyAll}
+                >
+                  Применить ко всем
+                </Box>
+              )}
+              <DatePicker
+                id={id}
+                dateFormat={withTime ? 'yyyy.MM.dd | HH:mm' : 'yyyy.MM.dd'}
+                selected={fieldValue}
+                showTimeInput={withTime}
+                onChange={(date) => {
+                  // Ensure the date is valid before calling onChange
+                  if (date && new Date(date).getFullYear() <= 2100) {
+                    onFieldChange(date)
+                  }
+                }}
+                placeholderText={placeholder}
+                popperClassName='datepicker'
+                popperPlacement={withTime && 'right-end'}
+                calendarStartDay={1}
+                disabled={disabled}
+                minDate={minDate}
+                maxDate={maxDate}
+                customTimeInput={<CustomTimeInput />}
+                renderCustomHeader={({ date, changeYear, changeMonth, decreaseMonth, increaseMonth }) => (
+                  <YearMonthFormNew
+                    fromMonthCustom={fromMonthCustom}
+                    date={date}
+                    changeYear={changeYear}
+                    changeMonth={changeMonth}
+                    decreaseMonth={decreaseMonth}
+                    increaseMonth={increaseMonth}
+                  />
+                )}
+                customInput={
+                  <ReactInputMask mask='9999.99.99' maskChar={null} value={fieldValue ? dayjs(fieldValue).format('YYYY.MM.DD') : ''}>
+                    {(inputProps) => (
+                      <TextField
+                        {...inputProps}
+                        variant='outlined'
+                        fullWidth
+                        error={!!error}
+                        helperText={error ? error.message : ''}
+                        className={noMarginTop && classes.noMargin}
+                        InputProps={{
+                          onBlur: (e) => {
+                            setTimeout(() => {
+                              setApplyAll(false)
+                            }, 200)
+                            // onBlur(e)
+                          },
+                          // onFocus: (e) => {
+                          //   // canApplyAll && setApplyAll(true)
+                          //   // onFocus(e)
+                          // },
+                          endAdornment: (
+                            <InputAdornment sx={{ paddingRight: 1 }} position='start'>
+                              {fieldValue && isClearable ? (
+                                <button
+                                  className={classes.clearButton}
+                                  onClick={() => {
+                                    onFieldChange(null)
+                                  }}
+                                  type='button'
+                                >
+                                  <DeleteSmallIcon />
+                                </button>
+                              ) : (
+                                <CalendarIcon />
+                              )}
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    )}
+                  </ReactInputMask>
+                }
+              />
+            </>
+          )}
           control={methods.control}
           defaultValue={defaultValue ?? ''}
         />

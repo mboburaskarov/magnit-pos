@@ -11,19 +11,39 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 56,
   },
   list: {
+    // minHeight: '200px',
     '& .MuiTreeItem-root': {
       width: '100%',
-      background: theme.palette.gray[100],
+      background: theme.palette.bg[10],
       borderRadius: 16,
       marginTop: 8,
     },
-    '& .MuiTreeItem-root.Mui-selected > .MuiTreeItem-content .MuiTreeItem-label':
-      {
-        background: 'none',
+    '& .MuiTreeItem-iconContainer': {
+      width: '56px',
+    },
+    '& .MuiTreeItem-content': {
+      padding: 0,
+      '& .MuiCheckbox-root': {
+        marginRight: '8px',
       },
+      '& span': {
+        fontWeight: '600 !important',
+        fontSize: '16px !important',
+        lineHeight: '24px',
+        color: `${theme.palette.bunker[950]} !important`,
+        '& div': {
+          color: `${theme.palette.bunker[950]} !important`,
+        },
+      },
+    },
+    '& .MuiTreeItem-root.Mui-selected > .MuiTreeItem-content .MuiTreeItem-label': {
+      background: 'none',
+    },
   },
+
   content: {
     borderRadius: 8,
+    padding: 0,
   },
   svg: {
     width: 24,
@@ -39,23 +59,13 @@ const useStyles = makeStyles((theme) => ({
     borderTop: `1px solid #CFCFCF`,
   },
   listItem: {
-    '& .MuiTreeItem-root.Mui-selected > .MuiTreeItem-content .MuiTreeItem-label':
-      {
-        background: 'transparent !important',
-      },
+    '& .MuiTreeItem-root.Mui-selected > .MuiTreeItem-content .MuiTreeItem-label': {
+      background: 'transparent !important',
+    },
   },
 }))
-export default function TreeSelect({
-  selected,
-  setSelected,
-  categories,
-  disabled,
-  handleCreate,
-  searchTerm,
-  highlight,
-  roles,
-}) {
-  const classes = useStyles()
+export default function TreeSelect({ selected, setSelected, categories, disabled, handleCreate, searchTerm, highlight, roles }) {
+  const classes = useStyles({})
   return (
     <StyledTreeView
       classes={classes}

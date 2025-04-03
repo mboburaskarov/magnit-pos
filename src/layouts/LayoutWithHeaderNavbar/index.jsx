@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import NavBar from '../Navbar'
 import { makeStyles } from '@mui/styles'
 import LayoutHeader from '../LayoutHeader'
+import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
   },
   headerWrapper: {
     width: '100%',
-
     padding: '0px 0 0 20px',
   },
   wrapper: {
@@ -22,27 +22,27 @@ const useStyles = makeStyles((theme) => ({
   },
   contentContainer: {
     flex: '1 1 auto',
-    // paddingLeft: '22px',
   },
   content: {
     display: 'flex',
     flex: '1 1 auto',
     height: '100%',
+    maxWidth: ({ isOpen }) => (isOpen ? 'calc(100vw - 315px)' : 'calc(100vw - 20px)'),
   },
   main: {
     flex: '1 1 100%',
   },
 }))
 
-export default function DashboardLayout() {
-  const classes = useStyles()
-
+export default function DashboardLayout({ hasHeader = true }) {
+  const { isOpen } = useSelector((state) => state.sidebarSettings)
+  const classes = useStyles({ isOpen })
   return (
     <Box display='flex' width='100%' minHeight='100%'>
       <div className={classes.root}>
         <NavBar />
         <div className={classes.headerWrapper}>
-          <LayoutHeader />
+          {hasHeader ? <LayoutHeader /> : <></>}
           <div className={classes.wrapper}>
             <div className={classes.contentContainer}>
               <div className={classes.content}>

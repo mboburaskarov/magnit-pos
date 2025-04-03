@@ -8,15 +8,16 @@ import { headerStyles } from './HeaderStyles'
 import ArrowDown from '../../assets/icons/ArrowDown'
 import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
-
+import { get } from 'lodash'
+import img from '../../../public/default-user-img.png'
 function LayoutHeader() {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
   const [isUserOpen, setIsUserOpen] = useState(null)
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
 
-  const firstName = userData?.fullName?.split(' ')?.[0]
-  const lastName = userData?.fullName?.split(' ')?.[1]
+  const firstName = userData?.first_name
+  const lastName = userData?.last_name
   const classes = headerStyles({ isOpen })
 
   return (
@@ -25,7 +26,6 @@ function LayoutHeader() {
       zIndex={12}
       backgroundColor='white'
       position='sticky'
-      // boxShadow='0px 12px 24px 0px rgba(0, 0, 0, 0.02)'
       display={'flex'}
       justifyContent={'space-between'}
       padding={'20px 20px 0px 20px'}
@@ -43,7 +43,7 @@ function LayoutHeader() {
       </Box>
       <Box display={'flex'} height={'48px'}>
         <Box mr={'17px'} width={'240px'}>
-          {!userData?.fullName ? (
+          {!userData?.first_name ? (
             <Box position='relative' marginTop={'auto'}>
               <Box className={classes.fakeImage} />
               <Skeleton className={classes.skeleton} />
@@ -52,9 +52,7 @@ function LayoutHeader() {
             <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
               <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
                 <div className={classes.avatarPlaceholder}>
-                  {/* {firstName.charAt(0)}
-                  {lastName.charAt(0)} */}
-                  <img src='/default-user-img.png' />
+                  <img src={get(userData, 'photo')} />
                 </div>
 
                 <Box maxWidth='73%'>
@@ -62,8 +60,7 @@ function LayoutHeader() {
                     {`${firstName}`}
                   </Typography>
                   <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                    {/* {userData.type.toLowerCase()} */}
-                    Mirzo Ulugbek filial
+                    {get(userData, 'store.name')}
                   </p>
                 </Box>
               </Box>

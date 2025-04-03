@@ -1,5 +1,5 @@
-import { faWeight } from '@fortawesome/free-solid-svg-icons'
 import makeStyles from '@mui/styles/makeStyles'
+import { borderRadius, maxWidth, width } from '@mui/system'
 
 const drawerWidth = '296px'
 
@@ -8,7 +8,6 @@ export const navbarStyles = makeStyles((theme) => {
     root: {
       zIndex: 15,
       display: 'flex',
-      // width: '400px',
       '& .MuiPaper-root': {
         border: 0,
         overflowX: 'hidden',
@@ -19,9 +18,7 @@ export const navbarStyles = makeStyles((theme) => {
         borderRadius: 20,
         backgroundColor: theme.palette.background.gray,
       },
-      '& nav': {
-        // width: '330px',
-      },
+
       position: 'relative',
     },
     list: {
@@ -36,9 +33,12 @@ export const navbarStyles = makeStyles((theme) => {
       },
     },
     popper: {
-      backgroundColor: theme.palette.background.gray,
       borderRadius: '16px',
-      width: 256,
+      width: 280,
+      backgroundColor: '#fff',
+      boxShadow: '0px 4px 12px 0px #00000014',
+      border: '1px solid',
+      borderColor: theme.palette.bunker[100],
       outline: '0',
       minHeight: 402,
       '& > a': {
@@ -55,19 +55,11 @@ export const navbarStyles = makeStyles((theme) => {
       display: 'none',
     },
     close_icon: {
-      // position: 'absolute',
       right: ({ isOpen }) => (isOpen ? 20 : 0),
-      top: 40,
-      '& > span > svg > path': {
-        // fill: theme.palette.gray[400],
-      },
       zIndex: 9999999,
       width: 32,
       height: 32,
       backgroundColor: 'transparent',
-      // display: 'flex',
-      // alignItems: 'center',
-      // justifyContent: 'center',
       outline: '0',
       border: '0',
       top: 0,
@@ -143,6 +135,12 @@ export const navbarStyles = makeStyles((theme) => {
       height: 48,
       fontSize: 18,
       padding: '10px 20px',
+      '&.active': {
+        backgroundColor: theme.palette.orange[500],
+        '& .itemLabel': {
+          color: '#fff',
+        },
+      },
       '&:first-child': {
         margin: '0 0 8px',
       },
@@ -151,8 +149,6 @@ export const navbarStyles = makeStyles((theme) => {
       },
       margin: '8px 0',
       borderRadius: 50,
-      // paddingLeft: '32px !important',
-      // paddingRight: '32px !important',
       fontWeight: 600,
       lineHeight: '28px',
       color: theme.palette.dark[500],
@@ -179,7 +175,6 @@ export const navbarStyles = makeStyles((theme) => {
       },
       '& svg': {
         marginRight: 10,
-        // height: 20,
         transition: '0.3s',
       },
       '&:hover > div': {
@@ -215,16 +210,17 @@ export const navbarStyles = makeStyles((theme) => {
     listItemPopper: {
       cursor: 'pointer',
       height: 56,
-      fontSize: 16,
-      paddingLeft: 32,
-      paddingRight: 32,
-      fontWeight: 900,
+      fontSize: 18,
+      padding: '16px 20px',
+      fontWeight: 600,
+      lineHeight: '28px',
       color: theme.palette.dark[500],
       fontFamily: theme.fontFamily.Gilroy,
       transition: '0.3s',
       '& svg': {
         marginRight: 10,
-        height: 20,
+        height: 24,
+        width: 24,
         transition: '0.3s',
       },
     },
@@ -239,9 +235,6 @@ export const navbarStyles = makeStyles((theme) => {
       height: 50,
       display: 'flex',
       alignItems: 'center',
-      '& > svg > path': {
-        fill: theme.mode === 'dark' && 'white',
-      },
     },
     logo_letter_main: {
       marginTop: '3px',
@@ -249,11 +242,8 @@ export const navbarStyles = makeStyles((theme) => {
     logo_main: {
       marginRight: 0,
       display: 'flex',
-      // width: '50px',
       alignItems: 'center',
-      '& > svg > path': {
-        fill: theme.mode === 'dark' && 'white',
-      },
+
       '& > svg > path:nth-child(2)': {
         fill: theme.mode === 'dark' && '#1D1D1B',
       },
@@ -265,18 +255,40 @@ export const navbarStyles = makeStyles((theme) => {
       flexGrow: 1,
       padding: theme.spacing(3),
     },
+    currentNavBarUser: {
+      backgroundColor: theme.palette.bunker[100],
+      cursor: 'pointer',
+      width: ({ isOpen }) => (isOpen ? '100%' : '55px'),
+      margin: ({ isOpen }) => (isOpen ? 'auto' : 'auto 20px 0'),
+      // marginTop: 'auto !important',
+      padding: ({ isOpen }) => (isOpen ? '12px 16px !important' : '12px !important'),
+      borderRadius: '20px !important',
+      '& img': {
+        width: '35px',
+      },
+      '&:hover': {
+        backgroundColor: theme.palette.orange[100],
+        '& p': {
+          color: theme.palette.orange[500],
+        },
+        '& .shopname': {
+          color: theme.palette.gray[600],
+        },
+      },
+      marginBottom: '0px !important',
+    },
     currentUser: {
+      backgroundColor: '#aaa3',
       cursor: 'pointer',
       width: 'calc(100% - 32px) !important',
       marginTop: 'auto !important',
-      // marginBottom: ({ isOpen }) => (isOpen ? 20 : 0) + 'px !important',
       marginLeft: '16px !important',
       padding: '12px 16px !important',
       borderRadius: '32px !important',
       '&:hover': {
-        backgroundColor: theme.palette.green[200],
+        backgroundColor: theme.palette.orange[100],
         '& p': {
-          color: theme.palette.green[500],
+          color: theme.palette.orange[500],
         },
         '& .shopname': {
           color: theme.palette.gray[600],
@@ -292,12 +304,15 @@ export const navbarStyles = makeStyles((theme) => {
       marginRight: 12,
       fontWeight: 600,
       fontSize: 16,
-      backgroundColor: theme.palette.green[600],
+      backgroundColor: theme.palette.orange[600],
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       color: '#fff',
       transition: '0.3s',
+      '& img': {
+        borderRadius: '50%',
+      },
     },
     shopname: {
       width: 130,
@@ -313,12 +328,14 @@ export const navbarStyles = makeStyles((theme) => {
       textOverflow: 'ellipsis',
       textAlign: 'left',
     },
+
     username: {
       width: '100%',
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       color: theme.palette.gray[600],
+      maxWidth: '200px',
     },
     itemIcon: {
       flex: '0 0 17%',
@@ -338,6 +355,7 @@ export const navbarStyles = makeStyles((theme) => {
       lineHeight: '28px',
       fontSize: 18,
       fontWeight: 600,
+
       color: theme.palette.dark[500],
     },
     itemArrow: {
@@ -380,9 +398,9 @@ export const navbarStyles = makeStyles((theme) => {
       },
     },
     hr: {
-      height: 2,
+      height: 1,
 
-      border: `1px dashed ${theme.palette.green[200]}`,
+      border: `1px solid ${theme.palette.bunker[100]}`,
     },
     activeChild: {
       transform: 'translateX(0) !important',
@@ -397,9 +415,9 @@ export const navbarStyles = makeStyles((theme) => {
     },
     child: {
       minHeight: '370px',
+
       backgroundColor: 'tramsparent',
       transform: 'translateX(100%)',
-      // transition: 'transform .4s cubic-bezier(.4, .0, .2, 1)',
     },
     skeleton: {
       width: 'calc(100% - 32px)',
@@ -418,7 +436,7 @@ export const navbarStyles = makeStyles((theme) => {
       marginRight: 12,
       fontWeight: 600,
       fontSize: 16,
-      backgroundColor: theme.palette.green[600],
+      backgroundColor: theme.palette.orange[600],
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',

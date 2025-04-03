@@ -252,6 +252,7 @@ function SelectSimple({
           onBlur={onBlur}
           openMenu={openMenu}
           filterOption={filterOption}
+          className='select'
         />
       ) : (
         <Controller

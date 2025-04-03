@@ -1,24 +1,32 @@
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { persistReducer, persistStore } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { sidebarSettingsSlice } from './sidebarSettingsSlice'
-import { userSlice } from './userSlice'
+import { clientTableColumnsSlice } from './tableSlices/clientTableColumns'
+import { importDetailsTableColumnsSlice } from './tableSlices/importDetailTableColumns'
+import { importsTableColumnsSlice } from './tableSlices/importsTableColumns'
 import { orderTableColumnsSlice } from './tableSlices/orderTableColumns'
 import { productsTableColumnsSlice } from './tableSlices/productsTableColumns'
-import { shopTableColumnsSlice } from './tableSlices/shopTableColumns'
-import { notificationsTableColumnsSlice } from './tableSlices/notificationsTableColumns'
-import { notificationCustomTableColumnsSlice } from './tableSlices/notificationsCustomTableColumns'
 import { rolesTableColumnsSlice } from './tableSlices/rolesTableColumns'
-import { clientTableColumnsSlice } from './tableSlices/clientTableColumns'
-import { usersTableColumnsSlice } from './tableSlices/userTableColumns'
-import { transactionsTableColumnsSlice } from './tableSlices/transactionsTableColumns'
-import { couriersColumns } from './tableSlices/couriers'
-import { qrSaleTableColumnsSlice } from './tableSlices/qrSaleTableColumns'
+import { salesTableColumnsSlice } from './tableSlices/salesTableColumns'
+import { storeTableColumnsSlice } from './tableSlices/storeTableColumns'
+import { storesListTableColumnsForProductSlice } from './tableSlices/storesListTableColumnsForProduct'
+import { vendorsTableColumnsSlice } from './tableSlices/vendorsTableColumns'
+import { userSlice } from './userSlice'
+import { importWithCheckingTableColumnsSlice } from './tableSlices/importWithCheckingTableColumns'
+import { cardShiftTableColumnsSlice } from './tableSlices/cardShiftTableColumns'
+import { cashBoxShiftsTableColumnsSlice } from './tableSlices/cashBoxShiftsTableColumns'
+import { cashboxTableColumnsSlice } from './tableSlices/cashboxTableColumns'
+import { autoOrderTableColumnsSlice } from './tableSlices/autoOrderTableColumns'
+import { autoOrderDetailSlice } from './tableSlices/autoOrderDetailTableColumns'
+import { productPriceListTableColumnsForProductSlice } from './tableSlices/productPriceListTableColumnsForProduct'
+import { cashBoxShiftHistoryTableColumnsSlice } from './tableSlices/cashBoxShiftHistoryTableColumns'
+import { bonusProductTableColumnsSlice } from './tableSlices/bonusProductTableColumns'
 
 // Define your migration function here
 const migrations = {
   // Example migration
-  9: (state) => {
+  177: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -36,7 +44,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 9, // Current version of the persisted state
+  version: 177, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -46,17 +54,25 @@ const persistConfig = {
 const reducer = combineReducers({
   sidebarSettings: sidebarSettingsSlice,
   orderTableColumns: orderTableColumnsSlice,
-  transactionsTableColumns: transactionsTableColumnsSlice,
-  qrSaleTableColumns: qrSaleTableColumnsSlice,
-  shopTableColumns: shopTableColumnsSlice,
   productsTableColumns: productsTableColumnsSlice,
+  cardShiftTableColumns: cardShiftTableColumnsSlice,
+  importsTableColumns: importsTableColumnsSlice,
+  autoOrderTableColumns: autoOrderTableColumnsSlice,
+  bonusProductTableColumns: bonusProductTableColumnsSlice,
+  autoOrderTableDetailColumns: autoOrderDetailSlice,
+  importDetailsColumns: importDetailsTableColumnsSlice,
+  importWithCheckingColumns: importWithCheckingTableColumnsSlice,
+  salesTableColumns: salesTableColumnsSlice,
+  cashBoxShiftsTableColumns: cashBoxShiftsTableColumnsSlice,
+  cashBoxShiftHistoryTableColumns: cashBoxShiftHistoryTableColumnsSlice,
+  vendorsTableColumns: vendorsTableColumnsSlice,
+  cashboxTableColumns: cashboxTableColumnsSlice,
   clientTableColumns: clientTableColumnsSlice,
   user: userSlice,
-  notificationsTableColumns: notificationsTableColumnsSlice,
-  notificationCustomCreate: notificationCustomTableColumnsSlice,
+  productPriceListTableColumnsForProduct: productPriceListTableColumnsForProductSlice,
+  storesListTableColumnsForProduct: storesListTableColumnsForProductSlice,
+  storeTableColumns: storeTableColumnsSlice,
   rolesTableColumns: rolesTableColumnsSlice,
-  usersTableColumns: usersTableColumnsSlice,
-  courierstableColumns: couriersColumns,
 })
 
 const persistedReducer = persistReducer(persistConfig, reducer)

@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.default,
     border: `1px solid ${theme.palette.gray[300]}`,
     borderRadius: 16,
-    zIndex: '2',
+    zIndex: '20',
     boxShadow: 'none',
     overflow: 'hidden',
   },
@@ -54,7 +54,7 @@ function RowFilterButton({ pageSize, setPageSize, setPageIndex, eventMessage, id
 
   return (
     <Box minWidth={196} position='relative'>
-      <Button variant='outlined' size='small' startIcon={<SortIcon />} fullWidth onClick={() => setOpen(!open)} id={id ? id : 'rowFilterButton'}>
+      <Button variant='contained' size='small' startIcon={<SortIcon />} fullWidth onClick={() => setOpen(!open)} id={id ? id : 'rowFilterButton'}>
         {t('menu.products.import.nav.show_by')} {pageSize}
       </Button>
       {open && (

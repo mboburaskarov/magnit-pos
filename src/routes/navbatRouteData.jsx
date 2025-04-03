@@ -25,9 +25,34 @@ export const navbatRouteData = [
     children: [
       {
         label: 'navbar.products',
-        active: '/products/*',
-        id: '3.1',
-        href: '/products',
+        active: '/products*',
+        id: '31',
+        href: '/products/all',
+      },
+      {
+        label: 'navbar.import',
+        active: '/products/import/*',
+        id: '32',
+        href: '/products/import',
+      },
+
+      {
+        label: 'Авто заказ',
+        active: '/products/auto-order/*',
+        id: '32',
+        href: '/products/auto-order',
+      },
+      {
+        label: 'Категории',
+        active: '/products/categories/*',
+        id: '327',
+        href: '/products/categories',
+      },
+      {
+        label: 'Бонусный продукт',
+        active: '/products/bonus-product/*',
+        id: '327',
+        href: '/products/bonus-product',
       },
     ],
   },
@@ -38,16 +63,22 @@ export const navbatRouteData = [
     href: '/sales',
     children: [
       {
-        label: 'navbar.sales',
-        active: '/sales*',
-        id: '5.1',
-        href: '/sales/all',
-      },
-      {
         label: 'navbar.new.sales',
         active: '/sales/create*',
-        id: '5.2',
+        id: '51',
         href: '/sales/create',
+      },
+      {
+        label: 'all_sales',
+        active: '/sales/all-sales*',
+        id: '52',
+        href: '/sales/all-sales',
+      },
+      {
+        label: 'navbar.cash_shifts',
+        active: '/sales/cash-shifts*',
+        id: '55',
+        href: '/sales/cash-shifts',
       },
     ],
   },
@@ -55,104 +86,9 @@ export const navbatRouteData = [
     label: 'navbar.clients',
     id: '1',
     icon: <UsersIcon />,
-    href: '/clients/all/',
-    children: [
-      {
-        label: 'navbar.clients',
-        active: '/clients/all/*',
-        id: '1.1',
-        href: '/clients/all',
-      },
-    ],
+    href: '/clients/all',
   },
-  {
-    label: 'navbar.vendors',
-    id: '1',
-    icon: <UserOutlineIcon />,
-    href: '/vendors',
-    children: [
-      {
-        label: 'navbar.vendors',
-        active: '/vendors/all/*',
-        id: '1.1',
-        href: '/vendors/all',
-      },
-    ],
-  },
-  {
-    label: 'navbar.payments',
-    id: '1',
-    icon: <FinanceIcon />,
-    href: '/reports',
-    children: [
-      {
-        label: 'navbar.payments',
-        active: '/reports/main/*',
-        id: '1.1',
-        href: '/reports/main',
-      },
-    ],
-  },
-  // {
-  //   label: 'Маркетинг',
-  //   id: '10',
-  //   icon: <MarketingIcon />,
-  //   href: '/marketing',
-  //   children: [
-  //     {
-  //       label: 'Уведомления',
-  //       active: '/marketing/*',
-  //       id: '10.1',
-  //       href: '/marketing/notifications',
-  //     },
-  //   ],
-  // },
 
-  // {
-  //   label: 'Отчеты',
-  //   id: '8',
-  //   icon: <ReportsIcon />,
-  //   href: '/reports',
-  //   children: [
-  //     {
-  //       label: 'Отчет клиентов',
-  //       active: '/reports/main/*',
-  //       id: '8.1',
-  //       href: '/reports/main',
-  //     },
-  //     {
-  //       label: 'Отчет о доставке',
-  //       active: '/reports/delivery/*',
-  //       id: '8.4',
-  //       href: '/reports/delivery',
-  //     },
-  //     {
-  //       label: 'Отчет трафика',
-  //       active: '/reports/trafic/*',
-  //       id: '8.3',
-  //       href: '/reports/trafic',
-  //     },
-  //     {
-  //       label: 'Отчет о приложении',
-  //       active: '/reports/app/*',
-  //       id: '8.5',
-  //       href: '/reports/app',
-  //     },
-
-  //     {
-  //       label: 'Бухгалтерский отчет',
-  //       active: '/reports/accounting/*',
-  //       id: '8.2',
-  //       href: '/reports/accounting',
-  //     },
-  //     {
-  //       label: 'Отчет транзакции',
-  //       active: '/reports/transactions/*',
-  //       id: '8.3',
-  //       href: '/reports/transactions',
-  //     },
-  //   ],
-  // },
   {
     label: 'navbar.settings',
     id: '9',
@@ -160,17 +96,41 @@ export const navbatRouteData = [
     href: '/settings',
     children: [
       {
-        label: 'navbar.settings',
-        active: '/settings/users/*',
-        id: '9.5',
-        href: '/settings/users',
+        label: 'Профиль',
+        active: '/settings/profile/*',
+        id: '91',
+        href: '/settings/profile',
+      },
+      {
+        label: 'Компания',
+        active: '/settings/company/*',
+        id: '91',
+        href: '/settings/company',
+      },
+      {
+        label: 'navbar.vendors',
+        id: '92',
+        active: '/settings/vendors/*',
+        href: '/settings/vendors',
+      },
+      {
+        label: 'Филиалы',
+        active: '/settings/stores/*',
+        id: '93',
+        href: '/settings/stores',
+      },
+      {
+        label: 'Роли',
+        active: '/settings/roles/*',
+        id: '94',
+        href: '/settings/roles',
+      },
+      {
+        label: 'Кассы',
+        active: '/settings/cashbox/*',
+        id: '94',
+        href: '/settings/cashbox',
       },
     ],
   },
-  // {
-  //   label: 'Курьеры',
-  //   id: '11',
-  //   icon: <CourierIcon />,
-  //   href: '/couriers',
-  // },
 ]

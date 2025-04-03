@@ -1,10 +1,17 @@
 import { memo, useCallback, useMemo } from 'react'
-import MuiTreeItem from '@mui/lab/TreeItem'
+// import MuiTreeItem from '@mui/lab/TreeItem'
+// import { TreeItem as MuiTreeItem } from '@mui/lab'
+// import { TreeItem as MuiTreeItem } from '@mui/lab'
+
+import { TreeItem as MuiTreeItem } from '@mui/x-tree-view/TreeItem'
+
 import Checkbox from '@mui/material/Checkbox'
+
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Highlighter from 'react-highlight-words'
 import { Box } from '@mui/material'
-import PencilIcon from '../../src/assets/icons/BackArrow'
+import PencilIcon from '../../src/assets/icons/EditIcon'
+import { get } from 'lodash'
 
 const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, searchTerm, highlight }) => {
   const tree = useMemo(() => flattenTree(items), [items])
@@ -31,6 +38,7 @@ const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, s
       } else {
         newSelect = [...newSelect?.filter((select) => !childIds?.includes(select))]
       }
+
       onSelect([...newSelect])
     },
     [selected, tree, onSelect]
@@ -44,6 +52,7 @@ const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, s
         const firstParentId = getParentIds(value, items)[0]
 
         const foundRow = tree.find((el) => el.id === value)
+
         const childIds = getChildIds(foundRow)
 
         const checked = selected.includes(value) || childIds?.every((elem) => selected?.includes(elem))
@@ -94,7 +103,7 @@ const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, s
           })
 
           return (
-            <MuiTreeItem key={value} nodeId={value} label={treeItemLabel}>
+            <MuiTreeItem itemId={value} key={value} nodeId={value} label={treeItemLabel}>
               {renderTreeItem({
                 nodes: children,
                 parents: [value],
@@ -146,7 +155,7 @@ const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, s
           parents,
         })
 
-        return <MuiTreeItem key={value} nodeId={value} label={treeItemLabel} />
+        return <MuiTreeItem itemId={value} key={value} nodeId={value} label={treeItemLabel} />
       }) || null,
     [tree, selected, items, searchTerm, highlight, disabled, handleCreate, handleChange]
   )
@@ -205,7 +214,7 @@ const getParentIds = (target, children, parents = []) => {
     if (node.id === target) {
       return parents.concat(node.id)
     }
-    const found = getParentIds(target, node.subRows, parents.concat(node.id))
+    const found = getParentIds(target, get(node, 'subRows', []), parents.concat(node.id))
     if (found) {
       return found
     }

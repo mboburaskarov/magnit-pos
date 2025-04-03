@@ -1,6 +1,7 @@
 import { Box, Drawer, Typography } from '@mui/material'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import LoadingContainer from '../LoadingContainer'
+import { useTheme } from '@mui/styles'
 
 const DRAWER_WIDTH = 768
 
@@ -8,7 +9,7 @@ export default function CardDrawer({ isOpen, closeDrawer, actions, children, tit
   const onClose = () => {
     closeDrawer()
   }
-
+  const theme = useTheme()
   return (
     <Drawer
       open={!!isOpen}
@@ -39,7 +40,7 @@ export default function CardDrawer({ isOpen, closeDrawer, actions, children, tit
                 display='flex'
                 alignItems='center'
                 justifyContent='space-between'
-                mb={4}
+                // mb={4}
                 sx={{
                   zIndex: 20,
                   pb: 3,
@@ -50,7 +51,7 @@ export default function CardDrawer({ isOpen, closeDrawer, actions, children, tit
                   backgroundColor: 'background.default',
                   transform: `translateY(64px)`,
                   overflow: 'hidden',
-                  boxShadow: '0px 12px 24px 0px rgba(0, 0, 0, 0.03)',
+                  // boxShadow: '0px 12px 24px 0px rgba(0, 0, 0, 0.03)',
                   clipPath: 'inset(0px 0px -24px 0px)',
                 }}
               >
@@ -58,10 +59,10 @@ export default function CardDrawer({ isOpen, closeDrawer, actions, children, tit
                   <Typography>{title}</Typography>
                 </Box>
                 <Box onClick={onClose}>
-                  <CloseIcon />
+                  <CloseIcon color={theme.palette.black} />
                 </Box>
               </Box>
-              <Box height={96} />
+              <Box height={46} />
             </>
           )}
           {children}
@@ -77,7 +78,7 @@ export default function CardDrawer({ isOpen, closeDrawer, actions, children, tit
                   backgroundColor: 'background.default',
                   transform: `translateY(64px)`,
                   overflow: 'hidden',
-                  boxShadow: '0px -12px 24px 0px rgba(0, 0, 0, 0.03)',
+                  // boxShadow: '0px -12px 24px 0px rgba(0, 0, 0, 0.03)',
                   clipPath: 'inset(-24px 0px 0px 0px)',
                   zIndex: 10,
                 }}

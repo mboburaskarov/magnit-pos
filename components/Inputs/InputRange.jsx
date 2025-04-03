@@ -1,13 +1,23 @@
 import { useState, useEffect } from 'react'
 import { Box, TextField, Typography } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
-import { NumberFormatBase } from 'react-number-format'
+// import { NumberFormatBase } from 'react-number-format'
+import { NumericFormat } from 'react-number-format'
 import Label from '../Label'
+import { useTheme } from '@mui/styles'
 
 const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandler, name, onChange, right, ...rest }) => {
+  const theme = useTheme()
+
   return (
-    <Box sx={{ position: 'relative', display: 'flex', width: '100%' }}>
-      <NumberFormatBase
+    <Box
+      sx={{
+        position: 'relative',
+        display: 'flex',
+        width: '100%',
+      }}
+    >
+      <NumericFormat
         name={name}
         id={id}
         value={value}
@@ -22,6 +32,7 @@ const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandle
         onBlur={blurHandler}
         sx={{
           margin: 0,
+          backgroundColor: `${theme.palette.white} !important`,
           '& .MuiInputBase-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
             border: 0,
           },
@@ -31,6 +42,9 @@ const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandle
           '& input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button': {
             appearance: 'none',
             margin: 0,
+          },
+          '& .MuiInputBase-root:first-child': {
+            borderLeft: right && '2px solid transparent',
           },
         }}
         {...rest}
@@ -65,7 +79,7 @@ function InputRange({
 
   return (
     <Box width={fullWidth && '100%'} {...boxStyle}>
-      <Box flexDirection='column' display='flex' justifyContent='space-between'>
+      <Box flexDirection='column' display='flex' justifyContent='space-between' sx={{}}>
         <Label mb={1} required={required}>
           {label}
         </Label>
@@ -75,7 +89,16 @@ function InputRange({
           </Typography>
         )}
         {uncontrolled ? (
-          <Box sx={{ position: 'relative', display: 'flex', width: '100%' }}>
+          <Box
+            sx={{
+              position: 'relative',
+              display: 'flex',
+              width: '100%',
+              '& .MuiInputBase-root:first-child': {
+                borderRight: 'none !important',
+              },
+            }}
+          >
             <InputRangeComponent
               value={value?.min_price === 0 ? '' : value?.min_price}
               id={`${id}-0`}
@@ -100,7 +123,13 @@ function InputRange({
             />
           </Box>
         ) : (
-          <Box sx={{ position: 'relative', display: 'flex', width: '100%' }}>
+          <Box
+            sx={{
+              position: 'relative',
+              display: 'flex',
+              width: '100%',
+            }}
+          >
             <Controller
               render={({ field: { onChange: onControllerChange, value }, ...rest }) => (
                 <InputRangeComponent
@@ -120,7 +149,6 @@ function InputRange({
               defaultValue=''
               required={required}
             />
-            {/* <Box sx={{ width: 2, background: 'gray.200' }} /> */}
             <Controller
               render={({ field: { onChange: onControllerChange, value }, ...rest }) => (
                 <InputRangeComponent

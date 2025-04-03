@@ -2,7 +2,7 @@ import { Box, Button, IconButton, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
 import { requests } from '../../utils/requests'
 import SelectSimple from '../../components/Select/SelectSimple'
@@ -13,35 +13,29 @@ import StyledEmptyDialog from '../../components/Dialogs/StyledeEmptyDialog'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import { useTranslation } from 'react-i18next'
 import InputDatePicker from '../../components/Inputs/InputDatePicker'
-
+import { useTheme } from '@mui/styles'
+import LazySelect from '../../components/Select/LazySelect'
 export default function DraftFilter({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
+  const { id } = useParams()
+  const theme = useTheme()
   const methods = useForm()
   const { formState, reset, control, getValues } = methods
-  const [isExpress, setIsExpress] = useState(false)
 
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 1000, offset: 0 }))
-  const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 1000, offset: 0 }))
-  const { data: producers } = useQuery('producers', () => requests.getAllProducer({ limit: 1000, offset: 0 }))
+  const { data: customers } = useQuery('customers', () => requests.getAllCustomers({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])
 
     const requestBody = {
-      category_id: data.category_id?.id || undefined,
-      supply_price_from: data.supply_price_from || undefined,
-      supply_price_to: data.supply_price_to || undefined,
-      retail_price_from: data.retail_price_from || undefined,
-      retail_price_to: data.retail_price_to || undefined,
-      store_id: data.store_id?.id || undefined,
-      producer: data.producer?.name || undefined,
-      isExpress: isExpress || undefined,
+      customer_id: data.customers?.id || undefined,
+      draft_date: data.expired_date || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
     setOpen(false)
-    navigate(`/products${requestParams}`)
+    navigate(`/sales/new-sale/${id}${requestParams}`)
   }
 
   const onError = (err) => {
@@ -49,41 +43,30 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { supply_price_to, retail_price_to, supply_price_from, retail_price_from, category_id, store_id, producer } = values
+    const { customer_id, draft_date } = values
 
     reset(
       {
-        category_id: category_id ? getOptionsFromUrlParam(category_id, categories?.data?.data)[0] : null,
-        producer: producer ? getOptionsFromUrlParam(producer, producers?.data?.data)[0] : null,
-        store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data, 'name')[0] : null,
-        supply_price_to: supply_price_to,
-        retail_price_to: retail_price_to,
-        supply_price_from: supply_price_from,
-        retail_price_from: retail_price_from,
+        customer_id: customer_id ? getOptionsFromUrlParam(customer_id, customers?.data?.data?.data)[0] : null,
+        expired_date: draft_date ? new Date(draft_date) : new Date(),
       },
       { keepDirty: true }
     )
-  }, [
-    values?.producer,
-    values?.category_id,
-    values?.store_id,
-    values?.retail_price_to,
-    values?.retail_price_from,
-    values?.supply_price_to,
-    values?.supply_price_from,
-    categories,
-    producers,
-    shopList,
-  ])
+  }, [values?.category_id, values?.store_id])
 
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/products?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/sales/new-sale/${id}?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
   return (
-    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog
+      overflowVisible
+      open={open}
+      title={t('filter_dialog.label')}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+    >
       <Box
         sx={{
           width: '100%',
@@ -94,7 +77,6 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
             height: '48px',
           },
           '& svg': {
-            fill: '#868FAA',
             stroke: '#868FAA',
           },
         }}
@@ -102,9 +84,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
         <FormProvider {...methods}>
           <Box
             sx={{
-              '& .react-datepicker-popper': {
-                transform: 'translate(596px, 530px) !important',
-              },
+              '& .react-datepicker-popper': {},
             }}
             rowGap={3}
             flexWrap='wrap'
@@ -112,30 +92,52 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
             component='form'
             onSubmit={methods.handleSubmit(onSubmit, onError)}
           >
-            <InputDatePicker
-              // withTime
-              defaultValue={new Date()}
-              name='expired_date'
-              minDate={new Date()}
-              // minTime={new Date()}
-              // minT
-              required
-              id='expired_date'
-              label='Дата закрытия'
-              placeholder='Дата закрытия'
-            />
-            <SelectSimple
+            <Box maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'scroll'}>
+              <InputDatePicker
+                defaultValue={new Date()}
+                name='expired_date'
+                id='expired_date'
+                showYearDropdown
+                label='Дата закрытия'
+                placeholder='Дата закрытия'
+              />
+              <Box height={'20px'} />
+
+              <LazySelect
+                slug='users'
+                boxStyle={{ width: '100%' }}
+                id='customers'
+                name='customers'
+                isMulti={false}
+                placeholder={'Выберите клиент'}
+                minWidth='auto'
+                isClearable={true}
+                label={t('input.client.label')}
+                request={requests.getAllCustomers}
+                filters={{ limit: 10 }}
+                control={control}
+                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+                // uncontrolled
+                customLabel={'full_name'}
+                getOptionLabel={(option) => {
+                  return <Typography color='grey.600'>{option.name}</Typography>
+                }}
+                filterOption={() => true}
+              />
+              <Box height={'20px'} />
+
+              {/* <SelectSimple
               fullWidth
               id='produ'
-              name='producer'
+              name='customers'
               white
               minWidth='auto'
-              label={t('input.manufacturer.label')}
-              placeholder={t('input.store.placeholder')}
-              options={producers?.data?.data}
-              getOptionLabel={(el) => el.name}
-            />
-
+              label={t('input.client.label')}
+              placeholder={t('input.client.placeholder')}
+              options={customers?.data?.data?.data}
+              getOptionLabel={(el) => `${el.first_name} ${el.last_name}`}
+            /> */}
+            </Box>
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
                 sx={{ bgcolor: '#fff !important', border: '1px solid #ECEDF2' }}

@@ -1,5 +1,9 @@
 /* Wrapper  */
 
+.ag-theme-alpine {
+  /* border-radius: 16px; */
+  /* border: 1px solid red; */
+}
 .ag-theme-alpine .ag-root-wrapper {
   border: none;
 }
@@ -230,6 +234,10 @@
 /*  Rows */
 .ag-theme-alpine .ag-row {
   border-color: #a4a5ab1a;
+  z-index: 9;
+}
+.ag-theme-alpine .ag-row-no-focus {
+  z-index: 8;
 }
 
 .ag-row::before {
@@ -265,6 +273,7 @@
 .ag-theme-alpine .ag-cell,
 .ag-theme-alpine .ag-full-width-row .ag-cell-wrapper.ag-row-group {
   line-height: unset;
+  z-index: 9;
 }
 
 .ag-theme-alpine .ag-cell-highlight {
@@ -291,19 +300,30 @@
   padding-top: 70px;
   padding-bottom: 17px;
 }
-
+.ag-root[aria-rowcount='1'] .ag-body {
+  height: 0 !important;
+  /* border: none; */
+}
+.ag-body-horizontal-scroll {
+  display: block !important;
+  opacity: 1 !important;
+}
 .no-rows-container {
   width: 100%;
-  height: 256px;
+  /* height: 256px; */
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 24px;
-  border: 1px dashed;
+  border-bottom-right-radius: 24px;
+  border-bottom-left-radius: 24px;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+  border-right: 1px solid;
   text-align: center;
   margin-bottom: 40px;
-  margin-top: 16px;
+  /* margin-top: 16px; */
 }
+
 .no-rows-root {
   height: 100%;
   max-width: 70%;
@@ -312,7 +332,9 @@
   justify-content: center;
   flex-direction: column;
 }
-
+.no-rows-root svg {
+  /* margin-top: 196px; */
+}
 .no-rows-root h3 {
   text-align: center;
   font-weight: 600;
@@ -325,7 +347,7 @@
   letter-spacing: 0.00938em;
 }
 
-.no-rows-root p {
+/* .no-rows-root p {
   font-size: 16px;
   font-family: 'Gilroy';
 
@@ -333,7 +355,7 @@
   line-height: 19px;
   letter-spacing: 0.00938em;
   margin-top: 8px;
-}
+} */
 
 /* Loading Overlay */
 
@@ -356,15 +378,11 @@
 
 /* Scrollbar */
 
-.ag-body-horizontal-scroll {
+/* .ag-body-horizontal-scroll {
   opacity: 0;
   pointer-events: auto !important;
   bottom: 0 !important;
-}
-
-.ag-center-cols-viewport::-webkit-scrollbar {
-  display: none;
-}
+} */
 
 /* Status Bar */
 .ag-theme-alpine .ag-status-bar {
@@ -379,7 +397,7 @@
   border-left: 2px solid !important;
 }
 .ag-theme-alpine .ag-cell.ag-cell-last-left-pinned:not(.ag-cell-range-right):not(.ag-cell-range-single-cell) {
-  border-right: 2px solid !important;
+  border-right: 2px solid #eaeaea !important;
   border-radius: 0;
 }
 .ag-theme-alpine .ag-cell.ag-cell-first-right-pinned:not(.ag-cell-range-left):not(.ag-cell-range-single-cell) {
@@ -509,4 +527,7 @@
 .ag-cell-value,
 .ag-group-value {
   overflow: visible;
+}
+.ag-center-cols-container {
+  /* width: 100% !important; */
 }

@@ -4,23 +4,23 @@ export const vendor_statuses = [
     name: 'Все',
   },
   {
-    id: 'ACTIVE',
-    color: 'green.500',
+    id: 'active',
+    color: 'green.700',
+    bgcolor: 'green.10',
     name: 'Активный',
   },
+
   {
-    id: 'INACTIVE',
-    color: 'red.400',
-    name: 'Неактивный',
+    id: 'deleted',
+    color: 'red.700',
+    bgcolor: 'red.10',
+    name: 'Удалено',
   },
+
   {
-    id: 'CREATED_BY_ADMIN',
-    color: 'yellow.400',
-    name: 'Aдмином',
-  },
-  {
-    id: 'BLOCKED',
-    color: 'red.600',
+    id: 'blocked',
+    color: 'bunker.500',
+    bgcolor: 'bunker.100',
     name: 'Заблокирован',
   },
 ]

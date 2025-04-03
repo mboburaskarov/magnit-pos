@@ -4,7 +4,7 @@ export default function Redirect() {
   useEffect(() => {
     if (localStorage.getItem('access_token')) {
       setTimeout(() => {
-        window.location.replace('/products') //change
+        window.location.replace('/dashboard') //change
       }, 400)
     } else {
       window.location.replace(`/login`)

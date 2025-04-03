@@ -1,31 +1,28 @@
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-// import ImageGallery from 'components/ImageGallery/ImageGallery'
-import PencilIcon from '../../../assets/icons/ArrowDown'
-import TrashIconGray from '../../../assets/icons/ArrowDown'
-import React, { memo, useState } from 'react'
-// import { asyncRemoveFromCartAction } from 'store/actions/cartActions/cartActions'
-import event from '../../../../utils/event'
-import { numberToPrice } from '../../../../utils/numberToPrice'
+import { get } from 'lodash'
+import React, { memo } from 'react'
+import { useMutation } from 'react-query'
 import InputQuantity from '../../../../components/Inputs/InputQuantity'
-import EditorIcon from '../../../assets/icons/EditorIcon'
-import EditIcon from '../../../assets/icons/EditIcon'
+import StyledTooltip from '../../../../components/StyledTooltip'
+import { requests } from '../../../../utils/requests'
+import thousandDivider from '../../../../utils/thousandDivider'
+import { error } from '../../../../utils/toast'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import SelectSimple from '../../../../components/Select/SelectSimple'
 
 export const useStyles = makeStyles((theme) => ({
   root: {
     padding: 16,
     borderRadius: 16,
+    overflow: 'hidden',
+    paddingRight: '20px',
     display: 'flex',
     width: '100%',
     alignItems: 'center',
     background: theme.palette.bg[10],
     marginBottom: 8,
     height: '80px',
-    '& .MuiFormControl-root': {
-      backgroundColor: 'transparent',
-    },
+
     '& .MuiInputBase-root': {
       '& input[type=number]': {
         padding: '10px 0px 10px 10px !important',
@@ -35,6 +32,9 @@ export const useStyles = makeStyles((theme) => ({
       },
       borderRadius: '12px',
       // border: 'none',
+    },
+    '& .MuiFormControl-root': {
+      backgroundColor: 'transparent !important',
     },
     '& select': {},
     '& button': {
@@ -60,6 +60,7 @@ export const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     minWidth: '60%',
+    position: 'relative',
   },
   img_cont: {
     height: 48,
@@ -74,13 +75,20 @@ export const useStyles = makeStyles((theme) => ({
       objectFit: 'cover',
     },
   },
+  pName: {
+    cursor: 'pointer',
+    '&:hover': {
+      color: `${theme.palette.bunker[400]} !important`,
+    },
+  },
 
   text: {
     minWidth: 0,
-    marginLeft: 8,
     display: 'flex',
-    flexDirection: 'column',
+    marginBottom: '3px',
+    // flexDirection: 'column',
     justifyContent: 'space-between',
+
     '& p': {
       display: '-webkit-box',
       '-webkit-line-clamp': 1,
@@ -206,184 +214,320 @@ export const useStyles = makeStyles((theme) => ({
 }))
 
 const CartItem = ({
-  data,
-  setCurrentData,
-  addItem,
+  implementMarkingList,
+  markingsList,
+  setMarkingList,
   index,
-  fakeIndexForCheck,
-  setFakeIndexForCheck,
-  searchInputRef,
-  discountInputRef,
-  clientInputRef,
-  eposOn,
-  refetchLabels,
-  allSellers,
+  packRef = () => {},
+  setOpenProductDrawer,
+  unitRef,
+  onKeyDown,
+  refetchcartItemsList,
+  method,
   item,
   setOpenConfirmDialog,
+  removeMarking,
 }) => {
   const cls = useStyles()
-  const [quon, setQuon] = useState(0)
+  console.log(markingsList)
+
+  const { mutate: changeCartItemQuantity } = useMutation(requests.changeCartItemQuantity, {
+    onSuccess: ({ data }) => {
+      if (!get(data, 'data.increase')) {
+        removeMarking(get(data, 'data'))
+      }
+      refetchcartItemsList()
+    },
+    onError: (err) => {
+      refetchcartItemsList()
+      method.setValue(`quantity_${item?.id}`, item?.quantity)
+      method.setValue(`unit_quantity_${item?.id}`, item?.unit_quantity)
+      if (get(err, 'response.data.code') === 409) {
+        error(`Описание
+Редактировать
+Введенное количество товара превышает существующее количество. 
+Максимальное количество упаковок на складе - ${get(err, 'response.data.data.pack_quantity')},
+единичное количество на складе - ${get(err, 'response.data.data.unit_quantity')}.`)
+      } else {
+        error('Ошибка при получении похожих товаров.')
+      }
+      console.log('err', err)
+    },
+  })
   return (
     <Box display={'flex'} width={'100%'}>
-      <Box
-        id={`cartItem${index}`}
-        tabIndex={index}
-        className={cls.root}
-        onKeyDown={(event) => {
-          if (event.code === 'KeyD' && fakeIndexForCheck === index) {
-            addItem(data?.id, 0)
-            dispatch(asyncRemoveFromCartAction(data?.id, 'cartItem'))
-            setFakeIndexForCheck(-1)
-            if (isMarked) {
-              deleteProductLabels()
-            }
-          }
-          if (!data?.wholeSaleEnabled && event.code === 'KeyS' && fakeIndexForCheck === index) {
-            setCurrentData(data)
-          }
-        }}
-      >
+      <Box id={`cartItem${index}`} tabIndex={index} className={cls.root}>
         <Box className={cls.content}>
           <Box className={cls.details}>
             <Box
               display={'flex'}
               sx={{
                 '& .MuiInputBase-root': {
-                  width: '80px',
+                  width: get(item, 'unit_per_pack') == 0 ? '100px' : '100px',
                 },
               }}
             >
-              <InputQuantity
-                id={`inputQuantity${index}`}
-                value={quon}
-                name='quantity'
-                onChange={({ target }) => setQuon(target.value)}
-                // adornment={data?.measurement_unit?.short_name}
-                adornmentPosition='end'
-                adornmentClassName={cls.adornment}
-                max={100}
-                // maxErrorMessage={maxErrorMessage}
-                type='number'
-                disabled={false}
-              />
-              <Box>
-                <SelectSimple
-                  white
-                  isClearable={false}
-                  boxStyle={{ margin: '0 8px' }}
-                  minWidth={'84px'}
-                  options={[{ id: 1, name: 'Dona' }]}
-                  borderRadius='12px'
-                  placeholder=''
-                  inicatoorRight={true}
-                  name={'dd'}
-                />
-              </Box>
-              <Box className={cls.img_cont}>
-                <img
-                  src={
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ5Tq8i6RC-Bm15tgZljQIp-TZjTv2qgnuLpvMmvnHwb4vOFpBMaio8MSQ9raE9kof5OU&usqp=CAU' ||
-                    '/default-img.avif'
-                  }
-                  onClick={() => data.main_image_url && setProductId(data.id)}
-                />
-              </Box>
-              <Box id='product-details' className={cls.text}>
-                <Typography
-                  sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}
-                  textOverflow={'ellipsis'}
-                  // maxWidth={'calc(100%)'}
-                  // whiteSpace={'nowrap'}
+              {get(item, 'unit_per_pack') >= 0 && (
+                <>
+                  <InputQuantity
+                    id={`quantity_${item?.id}`}
+                    name={`quantity_${item?.id}`}
+                    adornmentPosition='end'
+                    fullWidth
+                    adornmentClassName={cls.adornment}
+                    max={100}
+                    adornment={item?.short_name}
+                    inputRef={(e) => packRef(e, index)}
+                    onKeyDown={onKeyDown}
+                    defaultValue={get(item, 'quantity', 0)}
+                    type='number'
+                    disabled={false}
+                    onFocus={({ target }) => {
+                      if (Number(get(target, 'value')) == 0) {
+                        method.setValue(`quantity_${item?.id}`, '')
+                      }
+                    }}
+                    onBlur={({ target }) => {
+                      if (Number(get(target, 'value')) == '') {
+                        method.setValue(`quantity_${item?.id}`, '0')
+                      }
+                      if (get(item, 'quantity') == Number(get(target, 'value'))) {
+                        return
+                      }
+                      if (method.getValues(`unit_quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
+                        method.setValue(`quantity_${item?.id}`, get(target, 'value'))
+                      } else {
+                        if (get(item, 'quantity') > Number(get(target, 'value'))) {
+                          removeMarking({
+                            quantity: Number(get(target, 'value')),
+                            unit_per_pack: get(item, 'unit_per_pack'),
+                            unit_quantity: Number(method.getValues(`unit_quantity_${item?.id}`)),
+                            id: get(item, 'id'),
+                            request: {
+                              id: get(item, 'id'),
+                              data: {
+                                quantity: Number(get(target, 'value')),
+                                store_product_id: get(item, 'store_product_id'),
 
+                                unit_quantity: Number(method.getValues(`unit_quantity_${item?.id}`)),
+                              },
+                            },
+                          })
+                          method.setValue(`quantity_${item?.id}`, item?.quantity)
+                          method.setValue(`unit_quantity_${item?.id}`, item?.unit_quantity)
+                        } else {
+                          changeCartItemQuantity({
+                            id: get(item, 'id'),
+                            data: {
+                              quantity: Number(get(target, 'value')),
+                              store_product_id: get(item, 'store_product_id'),
+
+                              unit_quantity: Number(method.getValues(`unit_quantity_${item?.id}`)),
+                            },
+                          })
+                        }
+                      }
+                    }}
+                  />
+                  <Box width={'5px'} />
+                </>
+              )}
+              {get(item, 'unit_per_pack') > 0 ? (
+                <Box
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      width: get(item, 'unit_per_pack') == 0 ? '100px' : '100px',
+                    },
+                  }}
+                >
+                  <InputQuantity
+                    id={`inputQuantitys${index}`}
+                    name={`unit_quantity_${item?.id}`}
+                    defaultValue={get(item, 'unit_quantity', 1)}
+                    adornmentPosition='end'
+                    adornment='шт'
+                    inputRef={(e) => unitRef(e)}
+                    adornmentClassName={cls.adornment}
+                    max={100}
+                    fullWidth
+                    type='number'
+                    onFocus={({ target }) => {
+                      if (Number(get(target, 'value')) == 0) {
+                        method.setValue(`unit_quantity_${item?.id}`, '')
+                      }
+                    }}
+                    onBlur={({ target }) => {
+                      if (Number(get(target, 'value')) == '') {
+                        method.setValue(`unit_quantity_${item?.id}`, '0')
+                      }
+                      if (get(item, 'unit_quantity') == Number(get(target, 'value'))) {
+                        return
+                      }
+
+                      if (method.getValues(`quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
+                        method.setValue(`unit_quantity_${item?.id}`, get(target, 'value'))
+                      } else {
+                        if (get(item, 'unit_quantity') > Number(get(target, 'value'))) {
+                          removeMarking({
+                            quantity: Number(method.getValues(`quantity_${item?.id}`)),
+                            unit_per_pack: get(item, 'unit_per_pack'),
+                            unit_quantity: Number(get(target, 'value')),
+                            id: get(item, 'id'),
+                            request: {
+                              id: get(item, 'id'),
+                              data: {
+                                quantity: Number(method.getValues(`quantity_${item?.id}`)),
+                                store_product_id: get(item, 'store_product_id'),
+                                unit_quantity: Number(get(target, 'value')),
+                              },
+                            },
+                          })
+                          method.setValue(`quantity_${item?.id}`, item?.quantity)
+                          method.setValue(`unit_quantity_${item?.id}`, item?.unit_quantity)
+                        } else {
+                          changeCartItemQuantity({
+                            id: get(item, 'id'),
+                            data: {
+                              quantity: Number(method.getValues(`quantity_${item?.id}`)),
+                              store_product_id: get(item, 'store_product_id'),
+                              unit_quantity: Number(get(target, 'value')),
+                            },
+                          })
+                        }
+                      }
+                    }}
+                  />
+                </Box>
+              ) : (
+                <></>
+              )}
+              <Box width={'10px'} />
+              {/* <Box className={cls.img_cont}>
+                <img src={item?.main_photo || '/default-img.avif'} />
+              </Box> */}
+            </Box>
+            <Box ml={'8px'} display={'flex'} width={'100%'} flexDirection={'column'}>
+              <Box onClick={() => setOpenProductDrawer(item)} id='product-details' className={cls.text}>
+                <Typography
+                  className={cls.pName}
+                  sx={{ fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}
+                  textOverflow={'ellipsis'}
                   overflow={'hidden'}
                 >
-                  {item?.product?.name}
+                  {item?.name}
                 </Typography>
-                <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}> {item?.product?.barcode}</Typography>
-              </Box>
-            </Box>
-
-            <Box display={'flex'}>
-              <Box id='product-details' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', justifyContent: 'center' }}>
-                <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>A4</Typography>
-                <Box sx={{ display: 'flex', '& svg > g > path': { stroke: '#FF6018' }, '& svg': { width: '20px', height: '20px' } }}>
-                  <Typography sx={{ mr: '10px', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
-                    {' '}
-                    {item?.total_price}
-                  </Typography>
-                  <EditIcon />
-                </Box>
+                {/* <Typography sx={{ minWidth: '30px', whiteSpace: 'pre', color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>
+                  A4
+                </Typography> */}
               </Box>
               <Box
                 sx={{
+                  display: 'flex',
+                  '& svg > g > path': { stroke: '#FF6018' },
+                  '& svg': { width: '20px', height: '20px' },
+                }}
+              >
+                <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
+                  <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>
+                    {item?.barcode} / {item.current_stock} {get(item, 'shelf', '').length > 0 ? `/ Полка: ${get(item, 'shelf', 'X')}` : ''}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+            <Box display={'flex'} alignItems={'center'}>
+              {item?.discount_value > 0 && (
+                <Typography
+                  whiteSpace={'pre'}
+                  sx={{
+                    bgcolor: 'red.500',
+                    color: '#fff',
+                    px: '6px',
+                    mr: '5px',
+                    py: '3px',
+                    borderRadius: '15px',
+                    fontSize: '12px',
+                    lineHeight: '20px',
+                    fontWeight: '500',
+                  }}
+                >
+                  - {item?.discount_value}%
+                </Typography>
+              )}
+
+              <Box alignItems={'end'} display={'flex'} flexDirection={'column'}>
+                {item?.discount_price > 0 && (
+                  <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
+                    {thousandDivider(item?.discount_price, 'сум')}
+                  </Typography>
+                )}
+                <Typography
+                  textDecoration='line-through'
+                  sx={{
+                    mr: '10px',
+                    color: 'orange.500',
+                    whiteSpace: 'pre',
+                    fontSize: item?.discount_price > 0 ? '14px' : '16px',
+                    lineHeight: '24px',
+                    fontWeight: '600',
+                    textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
+                    color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
+                  }}
+                >
+                  {thousandDivider(item?.unit_price, 'сум')}
+                </Typography>
+              </Box>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              {item?.bonus_amount > 0 && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: get(item, 'discount_price', 0) > 0 ? -13 : -14,
+                    right: -35,
+                    backgroundColor: '#fe5000',
+                    color: '#fff',
+                    // width: '100px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    padding: '2px 15px 2px 25px',
+                    transform: 'rotate(35deg)',
+                  }}
+                  id='product-details'
+                >
+                  Bonus
+                </Box>
+              )}
+              <Box
+                sx={{
                   width: 48,
-                  ml: '16px',
+                  ml: '8px',
                   borderRadius: '50%',
                   height: 48,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   backgroundColor: 'red.10',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'red.100',
+                  },
                 }}
-                onClick={() => setOpenConfirmDialog({ type: 'deleteOne', id: item?.id, name: item?.product?.name })}
-
-                // onClick={() => deleteCartItem(item?.id)}
+                onClick={() => setOpenConfirmDialog({ type: 'deleteOne', id: item?.id, name: item?.name })}
               >
                 <DeleteIcon width='24px' />
               </Box>
             </Box>
           </Box>
-
-          <Box className={cls.actions}>
-            <Box className={cls.left}>
-              {/* <Box className={cls.price}>
-                {data?.discount_percent ? (
-                  <span id='product-discount-percent' className={cls.discountPercent}>
-                    {Math.round(data?.discount_percent * 100) / 100}%
-                  </span>
-                ) : null}
-                <Box style={{ cursor: !data?.wholeSaleEnabled && 'pointer' }} onClick={() => !discountRoute && setCurrentData(data)}>
-                  {(data.discount_value || data?.hasCommonDiscount || data?.discount_unit === 'CURRENCY') && (
-                    <span id='discount-product-price' className={cls.newPrice}>
-                      {numberToPrice(+(data.total_price / data.measurement_value).toFixed(2))}
-                    </span>
-                  )}
-                  <span
-                    id='product-price'
-                    style={{ color: data?.wholeSaleEnabled && '#8B5CF6' }}
-                    className={data.discount_value || data?.hasCommonDiscount || data?.discount_unit === 'CURRENCY' ? cls.oldPrice : ''}
-                  >
-                    {numberToPrice(data?.price)}
-                  </span>
-                </Box>
-                {!discountRoute && (
-                  <button onClick={() => setCurrentData(data)} type='button'>
-                    <PencilIcon style={{ fill: data?.wholeSaleEnabled && '#8B5CF6' }} />
-                  </button>
-                )}
-              </Box> */}
-              {/* {!!data.sellers?.length &&
-                data.sellers.map((item) => (
-                  <Box className={cls.seller}>
-                    <span
-                      style={{
-                        background: item?.color ? item?.color : allSellers?.find((el) => el?.seller_id === item?.seller_id)?.color,
-                      }}
-                    />
-                    <Typography component='h5'>{item?.seller_name}</Typography>
-                  </Box>
-                ))} */}
-            </Box>
-          </Box>
         </Box>
       </Box>
-      <Box display={'flex'} flexDirection={'column'} padding={'16px'} bgcolor={'bg.10'} ml={'8px'} height={'80px'} borderRadius={'16px'} minWidth={'160px'}>
-        <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>Sotuv bonusi</Typography>
+      {/* <Box display={'flex'} flexDirection={'column'} padding={'16px'} bgcolor={'bg.10'} ml={'8px'} height={'80px'} borderRadius={'16px'} minWidth={'120px'}>
+        <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>Bonus</Typography>
         <Box display={'flex'} justifyContent={'space-between'}>
-          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}> {item?.product?.bonus_percent}%</Typography>
-          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>{item?.product?.bonus_amount}</Typography>
+          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>
+            {thousandDivider(item?.bonus_amount, 'сум')}
+          </Typography>
         </Box>
-      </Box>
+      </Box> */}
     </Box>
   )
 }

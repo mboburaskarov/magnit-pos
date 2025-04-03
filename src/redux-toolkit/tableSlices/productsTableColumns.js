@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import arrayMove from '../../../utils/arrayMove'
 
 const columns = [
   {
@@ -7,6 +6,15 @@ const columns = [
     hide: false,
     minWidth: 60,
     width: 60,
+    pinned: 'left',
+  },
+
+  {
+    field: 'name',
+    hide: false,
+    minWidth: 370,
+    flex: 1,
+    pinned: 'left',
   },
   {
     field: 'main_photo',
@@ -15,18 +23,17 @@ const columns = [
     width: 90,
   },
   {
-    field: 'name',
-    hide: false,
-    minWidth: 70,
-    width: 370,
-  },
-  {
     field: 'category',
     hide: false,
     minWidth: 70,
     width: 170,
   },
-
+  // {
+  //   field: 'expire_date',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 250,
+  // },
   {
     field: 'supply_price',
     hide: false,
@@ -38,6 +45,18 @@ const columns = [
     hide: false,
     minWidth: 70,
     width: 80,
+  },
+  {
+    field: 'markup',
+    hide: false,
+    minWidth: 70,
+    width: 170,
+  },
+  {
+    field: 'markup_price',
+    hide: false,
+    minWidth: 70,
+    width: 170,
   },
   {
     field: 'retail_price',
@@ -69,32 +88,19 @@ const columns = [
     minWidth: 70,
     width: 290,
   },
-  // {
-  //   field: 'status',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 158,
-  // },
-  {
-    field: 'expire_date',
-    hide: false,
-    minWidth: 70,
-    width: 250,
-  },
 
   {
-    field: 'barcode',
+    field: 'material_code',
     hide: false,
     minWidth: 70,
     width: 176,
   },
-
-  // {
-  //   field: 'product_variability',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 200,
-  // },
+  {
+    field: 'barcode',
+    hide: false,
+    minWidth: 70,
+    width: 236,
+  },
   {
     field: 'actions',
     hide: false,
@@ -139,25 +145,6 @@ const productsTableColumns = createSlice({
       state.columns = action.payload
     },
     resetTableHeader(state, action) {
-      // if (typeof action.payload?.refetch === 'function') action.payload?.refetch()
-      // state.loading = true
-
-      // const existingColumns = state.columns
-      // const newColumns = columns
-      // const existingColumnsMap = new Map(existingColumns.map((col) => [col.field, col]))
-      // newColumns.forEach((newCol) => {
-      //   const existingCol = existingColumnsMap.get(newCol.field)
-
-      //   if (existingCol) {
-      //     existingCol.width = newCol.width
-      //     existingCol.hide = newCol.hide
-      //     existingColumnsMap.delete(newCol.field)
-      //   } else {
-      //     state.columns.push(newCol)
-      //   }
-      // })
-      // state.columns = state.columns.filter((col) => !existingColumnsMap.has(col.field))
-      // state.loading = false
       state.columns = columns
     },
   },

@@ -8,7 +8,7 @@ const CheckAccess = ({ id, children }) => {
     idsArray.length === 1
       ? user_data?.role_actions?.some((item) => item.route === id)
       : idsArray.some((id) => user_data?.role_actions?.some((item) => item.route === id))
-  if (user_data?.type === 'SUPER_ADMIN') {
+  if (user_data?.type === 'SUPERADMIN') {
     return children
   }
   return hasAccess ? children : <></>

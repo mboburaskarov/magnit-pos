@@ -8,7 +8,6 @@ export const headerStyles = makeStyles((theme) => {
     root: {
       zIndex: 15,
       display: 'flex',
-      // width: '400px',
       '& .MuiPaper-root': {
         border: 0,
         overflowX: 'hidden',
@@ -19,17 +18,16 @@ export const headerStyles = makeStyles((theme) => {
         borderRadius: 20,
         backgroundColor: theme.palette.background.gray,
       },
-      '& nav': {
-        // width: '330px',
-      },
+
       position: 'relative',
     },
     searchInput: {
+      '&.MuiFormControl-root': {
+        backgroundColor: `${theme.palette.white} !important`,
+      },
       '&  .MuiInputBase-root': {
-        backgroundColor: '#F8F8F9',
+        backgroundColor: theme.palette.background.gray,
         border: '2px solid transparent',
-
-        // border: 'none !important',
       },
     },
     list: {
@@ -250,24 +248,15 @@ export const headerStyles = makeStyles((theme) => {
     },
     currentUser: {
       cursor: 'pointer',
-      // width: 'calc(100% - 32px) !important',
       marginTop: 'auto !important',
-      // marginBottom: ({ isOpen }) => (isOpen ? 20 : 0) + 'px !important',
-      // marginLeft: '16px !important',
+      height: '48px',
       padding: '4px 12px 4px 4px !important',
       justifyContent: 'space-between',
       backgroundColor: theme.palette.gray[50],
       borderRadius: '32px !important',
       '&:hover': {
         backgroundColor: theme.palette.bunker[100],
-        // '& p': {
-        //   color: theme.palette.orange[500],
-        // },
-        // '& .shopname': {
-        //   color: theme.palette.gray[600],
-        // },
       },
-      // marginBottom: '24px !important',
     },
     avatarPlaceholder: {
       position: 'relative',
@@ -277,7 +266,7 @@ export const headerStyles = makeStyles((theme) => {
       marginRight: 12,
       fontWeight: 600,
       fontSize: 16,
-      backgroundColor: theme.palette.green[600],
+      backgroundColor: theme.palette.orange[600],
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
@@ -289,18 +278,18 @@ export const headerStyles = makeStyles((theme) => {
       },
     },
     shopname: {
-      // width: 130,
       margin: 0,
-      lineHeight: '16px',
+      lineHeight: '20px',
       fontWeight: 600,
       fontFamily: "'Gilroy', sans-serif",
       color: theme.palette.bunker[400],
-      fontSize: 12,
+      fontSize: 14,
       transition: 'all .2s',
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       textAlign: 'left',
+      maxWidth: '120px',
     },
     username: {
       width: '100%',
@@ -374,7 +363,7 @@ export const headerStyles = makeStyles((theme) => {
     hr: {
       height: 2,
 
-      border: `1px dashed ${theme.palette.green[200]}`,
+      border: `1px dashed ${theme.palette.orange[200]}`,
     },
     activeChild: {
       transform: 'translateX(0) !important',
@@ -391,7 +380,6 @@ export const headerStyles = makeStyles((theme) => {
       minHeight: '370px',
       backgroundColor: 'tramsparent',
       transform: 'translateX(100%)',
-      // transition: 'transform .4s cubic-bezier(.4, .0, .2, 1)',
     },
     skeleton: {
       width: 'calc(100% - 32px)',
@@ -410,7 +398,7 @@ export const headerStyles = makeStyles((theme) => {
       marginRight: 12,
       fontWeight: 600,
       fontSize: 16,
-      backgroundColor: theme.palette.green[600],
+      backgroundColor: theme.palette.orange[600],
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',

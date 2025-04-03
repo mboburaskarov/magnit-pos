@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from 'react'
-import { InputAdornment, Box, TextField } from '@mui/material'
+import { InputAdornment, Box, TextField, Typography } from '@mui/material'
 import * as qs from 'qs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
@@ -9,6 +9,7 @@ import { makeStyles } from '@mui/styles'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
 import useDebouncedValue from '../../src/hooks/useDebouncedValue'
 import SearchIcon from '../../src/assets/icons/SearchIcon'
+import { useRef } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -26,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.gray[101],
     },
     '& .MuiOutlinedInput-root': {
-      // padding: '15.5px 5px',
       border: `2px solid transparent`,
     },
     '& .MuiInputBase-input::placeholder': {
@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   },
   gray: {
     '& .MuiOutlinedInput-root': {
-      backgroundColor: '#F8F8F9',
+      backgroundColor: theme.palette.background.gray,
     },
   },
   inputEndText: {
@@ -101,16 +101,26 @@ const InputSearch = ({
   timeout = 200,
   handleClickGiftCards,
   onFocus,
+  hasShortCut = false,
   error,
   ...rest
 }) => {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const classes = useStyles({ maxWidth, handleClickGiftCards })
+
   const [value, setValue, debouncedValue] = useDebouncedValue(values?.search || '', timeout)
 
+  const hasMounted = useRef(false)
+
   useEffect(() => {
-    const searchParams = qs.stringify({ ...values, offset: 0, search: debouncedValue || undefined }, { addQueryPrefix: true })
+    if (!hasMounted.current) {
+      // Skip the first render
+      hasMounted.current = true
+      return
+    }
+
+    const searchParams = qs.stringify({ ...values, search: debouncedValue || undefined }, { addQueryPrefix: true })
     navigate(`${location.pathname}${searchParams}`)
   }, [debouncedValue])
 
@@ -132,14 +142,36 @@ const InputSearch = ({
           InputProps: {
             startAdornment: <InputAdornment position='start'>{icon || <SearchIcon />}</InputAdornment>,
             endAdornment: (
-              <InputAdornment position='absolute'>
-                {(value || searchTerm) && (
+              <InputAdornment position='start'>
+                {value || searchTerm ? (
                   <div className={classes.resetIcon}>
                     {adornmentText ? <span>{adornmentText}</span> : ''}
                     <button type='button' onClick={() => (uncontrolled ? setValue('') : setSearchTerm(''))}>
                       <FontAwesomeIcon icon={faTimesCircle} />
                     </button>
                   </div>
+                ) : (
+                  hasShortCut && (
+                    <Typography mr={'10px'} color={'bunker.300'} fontWeight={'600'} fontSize={'16px'} display={'flex'}>
+                      Нажмите
+                      <Box
+                        sx={{
+                          color: '#bdbdbd',
+                          border: '2px solid #cfcfcf',
+                          height: '24px',
+                          display: 'flex',
+                          padding: '2px',
+                          ml: '5px',
+                          minWidth: '24px',
+                          alignItems: 'center',
+                          borderRadius: '8px',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        /
+                      </Box>
+                    </Typography>
+                  )
                 )}
               </InputAdornment>
             ),

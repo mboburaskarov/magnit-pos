@@ -52,7 +52,6 @@ export const useScrollListener = (agGridTableArea, agGridTableScroll) => {
 }
 
 export const getMainMenuItems = (params) => {
-  //   const dispatch = useDispatch()
   const columnId = params.column.getId()
   const columnPin = params.column.pinned
   const columnName = params.column.getColDef().headerName
@@ -102,72 +101,17 @@ export const getMainMenuItems = (params) => {
     },
   })
   customMenuItems.push('separator')
-  //   if (columnRowGroupStatus) {
-  //     if (!columnActiveRowGroupStatus) {
-  //       customMenuItems.push({
-  //         icon: `<i class="fas fa-align-left fa-lg"  style="padding-right: 12px; color: #119676;"></i>`,
-  //         name: `${'ag_grid.column_menu.group_by'} "${columnName}"`,
-  //         action: () => {
-  //           dispatch(
-  //             updateTableColumnProperty(columnId, {
-  //               grouped: true,
-  //               suppressMovable: true,
-  //             })
-  //           )
-  //           setTimeout(() => {
-  //             params.columnApi.moveColumn(columnId, 1)
-  //           }, 500)
-  //         },
-  //       })
-  //     } else {
-  //       customMenuItems.push({
-  //         icon: `<i class="fas fa-align-left fa-lg"  style="padding-right: 12px; color: #119676;"></i>`,
-  //         name: `${'ag_grid.column_menu.ungroup_by'} "${columnName}"`,
-  //         action: () => {
-  //           // params.columnApi.removeRowGroupColumn(columnId)
-  //           // dispatch(
-  //           //   updateTableColumnProperty(columnId, {
-  //           //     grouped: false,
-  //           //     suppressMovable: false,
-  //           //   })
-  //           // )
-  //           setTimeout(() => {
-  //             params.columnApi.moveColumn(columnId, 4)
-  //           }, 500)
-  //         },
-  //       })
-  //     }
-  //   }
+
   customMenuItems.push('separator')
-  //   customMenuItems.push({
-  //     name: 'ag_grid.column_menu.reset_columns',
-  //     action: () => {
-  //       resetTable()
-  //       params.columnApi.resetColumnState()
-  //     },
-  //   })
+
   if (columnRowGroupStatus) {
     customMenuItems.push({
       name: 'ag_grid.column_menu.expand_all',
-      action: () => {
-        // params.api.expandAll()
-        // dispatch(
-        //   updateTableColumnProperty(columnId, {
-        //     expendeAll: true,
-        //   })
-        // )
-      },
+      action: () => {},
     })
     customMenuItems.push({
       name: 'ag_grid.column_menu.collapse_all',
-      action: () => {
-        // params.api.collapseAll()
-        // dispatch(
-        //   updateTableColumnProperty(columnId, {
-        //     collapseAll: true,
-        //   })
-        // )
-      },
+      action: () => {},
     })
   }
   return customMenuItems

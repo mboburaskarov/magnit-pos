@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
       overflow: ({ overflowVisible }) => (overflowVisible ? 'visible' : 'hidden'),
       boxShadow: 'none !important',
       borderRadius: 20,
+      // overflowY: 'scroll !important',
       transition: open ? 'padding 0.3s ease-out' : 'padding 0.1s ease-in',
       zIndex: 15,
     },

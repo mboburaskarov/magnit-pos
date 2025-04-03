@@ -117,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
       transition: 'all 0s ease',
       cursor: 'pointer',
       '&:not(.DayPicker-Day--outside):hover': {
-        backgroundColor: `${theme.palette.green[600]} !important`,
+        backgroundColor: `${theme.palette.orange[600]} !important`,
         color: '#fff !important',
         borderRadius: '12px !important',
         zIndex: 1,
@@ -145,7 +145,7 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: 3,
     },
     '& .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside)': {
-      backgroundColor: theme.palette.type === 'dark' ? theme.palette.green[200] : theme.palette.green[50],
+      backgroundColor: theme.palette.type === 'dark' ? theme.palette.orange[200] : theme.palette.orange[50],
       color: theme.palette.type === 'dark' ? theme.palette.gray[700] : theme.palette.gray[600],
       '&:last-child': {
         borderRadius: '0 12px 12px 0',
@@ -158,18 +158,18 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     '& .DayPicker-Day--start.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside)': {
-      backgroundColor: theme.palette.green[600],
+      backgroundColor: theme.palette.orange[600],
       color: '#fff',
       borderRadius: '12px !important',
       boxShadow: ({ isOneDayDifference }) =>
-        !isOneDayDifference && `9px 0 0px 0px ${theme.palette.type === 'dark' ? theme.palette.green[200] : theme.palette.green[50]}`,
+        !isOneDayDifference && `9px 0 0px 0px ${theme.palette.type === 'dark' ? theme.palette.orange[200] : theme.palette.orange[50]}`,
     },
     '& .DayPicker-Day--end.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside)': {
-      backgroundColor: theme.palette.green[600],
+      backgroundColor: theme.palette.orange[600],
       borderRadius: '12px !important',
       color: '#fff',
       boxShadow: ({ isOneDayDifference }) =>
-        !isOneDayDifference && `-9px 0 0px 0px ${theme.palette.type === 'dark' ? theme.palette.green[200] : theme.palette.green[50]}`,
+        !isOneDayDifference && `-9px 0 0px 0px ${theme.palette.type === 'dark' ? theme.palette.orange[200] : theme.palette.orange[50]}`,
     },
     '& .DayPicker-Day.DayPicker-Day--disabled': {
       color: `${theme.palette.gray[400]} !important`,
@@ -190,7 +190,7 @@ const useStyles = makeStyles((theme) => ({
       right: 'auto',
       left: 'auto',
       marginTop: 0,
-      color: theme.palette.green[500],
+      color: theme.palette.orange[500],
     },
     '& .DayPicker-NavButton--prev': {
       left: 15,
@@ -225,6 +225,7 @@ export default function DateFilterDrawerSingle({
   onCustomRangeSelect,
   dayDifference,
   handleChangeDate,
+  selectedRange,
   setDateState,
   dateState,
   onClose,
@@ -236,7 +237,7 @@ export default function DateFilterDrawerSingle({
   const weekDays = useMemo(() => localeData.weekdays().map((item) => item[0].toUpperCase() + item.slice(1)), [localeData])
   const weekdaysMin = useMemo(() => localeData.weekdaysMin().map((item) => item[0].toUpperCase() + item.slice(1)), [localeData])
 
-  const classes = useStyles({ isOneDayDifference: dateState.from - dateState.to === -86000000 || dateState.from - dateState.to === 0 })
+  const classes = useStyles({ isOneDayDifference: dateState?.from - dateState?.to === -86000000 || dateState?.from - dateState?.to === 0 })
 
   function isSelectingFirstDay(from, to, day) {
     const isBeforeFirstDay = from && DateUtils.isDayBefore(day, from)
@@ -341,10 +342,10 @@ export default function DateFilterDrawerSingle({
                 firstDayOfWeek={1}
                 weekdaysLong={weekDays}
                 weekdaysShort={weekdaysMin}
-                selectedDays={[dateState.from, { from: dateState.from, to: dateState.to }]}
+                selectedDays={[dateState?.from, { from: dateState?.from, to: dateState?.to }]}
                 fromMonth={fromMonth}
                 month={dateState?.from ? dateState?.from : dateState?.month ? dateState?.month : new Date()}
-                modifiers={{ start: dateState.from, end: dateState.to }}
+                modifiers={{ start: dateState?.from, end: dateState?.to }}
                 onDayClick={handleDayClick}
                 onDayMouseEnter={handleDayMouseEnter}
                 showOutsideDays
@@ -355,7 +356,6 @@ export default function DateFilterDrawerSingle({
 
             <Box
               sx={(theme) => ({
-                width: '320px',
                 display: 'flex',
                 flexDirection: 'column',
                 borderLeft: `2px solid ${theme.palette.gray[200]}`,
@@ -369,7 +369,7 @@ export default function DateFilterDrawerSingle({
                   onClick={() => {
                     if (handleChangeDate) handleChangeDate(item?.id)
                     if (onCustomRangeSelect) label.current = item.label
-
+                    onCustomRangeSelect(item?.id)
                     setDateState({
                       from: new Date(item?.values?.[0]?.split('.')?.reverse()?.join('-')),
                       to: item?.values?.[1] ? new Date(item?.values?.[1]?.split('.')?.reverse()?.join('-')) : null,
@@ -379,11 +379,20 @@ export default function DateFilterDrawerSingle({
                   key={index}
                   fullWidth
                   secondary
-                  sx={{ borderRadius: 4, marginBottom: 2, height: '54px', justifyContent: 'flex-start' }}
+                  sx={{
+                    borderRadius: 4,
+                    backgroundColor: selectedRange == item?.id ? '#fe5000 !important' : '#fff',
+                    marginBottom: 2,
+                    color: selectedRange == item?.id ? '#fff !important' : '#000',
+                    height: '54px',
+                    justifyContent: 'flex-start',
+                  }}
                 >
                   <Box pl={1} display='flex' flexDirection='column' alignItems='flex-start'>
                     <b>{item.label}</b>
-                    <Typography>{item.values[0] === item.values[1] ? item.values[0] : item.values?.join(' - ')}</Typography>
+                    <Typography color={selectedRange == item?.id ? '#fff !important' : '#000'}>
+                      {item.values[0] === item.values[1] ? item.values[0] : item.values?.join(' - ')}
+                    </Typography>
                   </Box>
                 </Button>
               ))}
