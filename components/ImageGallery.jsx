@@ -99,7 +99,7 @@ const ImageGallery = ({ open, setOpen, imagesArr, name }) => {
             })
           }
         >
-          <BackArrowIcon fill='#119676' width={12} height={12} />
+          <BackArrowIcon style={{ fill: '#000' }} width={12} height={12} />
         </IconButton>
         <IconButton
           sx={{
@@ -124,7 +124,7 @@ const ImageGallery = ({ open, setOpen, imagesArr, name }) => {
             })
           }
         >
-          <BackArrowIcon fill='#119676' width={12} height={12} />
+          <BackArrowIcon style={{ fill: '#000' }} fill='#000' width={12} height={12} />
         </IconButton>
 
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, userSelect: 'none', mt: 3 }}>
@@ -153,7 +153,7 @@ const ImageGallery = ({ open, setOpen, imagesArr, name }) => {
       <Box sx={{ position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, bottom: 40, right: 32 }}>
         <StyledTooltip placement='top' title='Скачать фото'>
           <IconButton onClick={() => downloadImage(imagesArr[count])}>
-            <ArrowDown width={18} height={18} />
+            <ArrowDown style={{ fill: '#000' }} width={18} height={18} />
           </IconButton>
         </StyledTooltip>
         {imagesArr?.length > 1 && (

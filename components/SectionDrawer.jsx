@@ -1,8 +1,9 @@
-import { makeStyles } from '@mui/styles'
+import { makeStyles, useTheme } from '@mui/styles'
 import { Box, Drawer, Typography, Button } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import CloseIcon from '../src/assets/icons/CloseIcon'
 import BackArrowIcon from '../src/assets/icons/BackArrow'
+import { LoadingButton } from '@mui/lab'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -135,7 +136,7 @@ function SectionDrawer({
     headerBorderBottom,
   })
   const { t } = useTranslation()
-
+  const theme = useTheme()
   return (
     <Drawer
       open={open}
@@ -189,12 +190,14 @@ function SectionDrawer({
           {customButton ||
             (!noNextButton && (
               <Box>
-                <Button
+                <LoadingButton
                   id={id && `create-${id}`}
                   adornmentEnd={nextButtonEndAdornment}
                   disabled={disabled}
                   primary={!closeIcon}
+                  variant='contained'
                   icon={closeIcon}
+                  loading={isLoading}
                   type={formId ? 'submit' : ''}
                   form={formId}
                   isLoading={isLoading}
@@ -212,8 +215,8 @@ function SectionDrawer({
                     backgroundColor: closeIcon && 'transparent',
                   }}
                 >
-                  {closeIcon ? <CloseIcon /> : t(nextButtonLabel)}
-                </Button>
+                  {closeIcon ? <CloseIcon color={theme.palette.black} /> : t(nextButtonLabel)}
+                </LoadingButton>
               </Box>
             ))}
         </Box>

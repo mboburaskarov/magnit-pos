@@ -16,7 +16,38 @@ export const authRequest = axios.create({
 export const request = axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL,
   headers: {
-    Authorization: localStorage.getItem('access_token'),
+    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    Accept: 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json; charset=utf-8',
+  },
+
+  transformRequest: [
+    (data) => {
+      return JSON.stringify(data)
+    },
+  ],
+})
+
+export const requestEXCEL = axios.create({
+  baseURL: import.meta.env.VITE_BASE_API_URL,
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    Accept: 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json; charset=utf-8',
+  },
+  responseType: 'blob',
+  transformRequest: [
+    (data) => {
+      return JSON.stringify(data)
+    },
+  ],
+})
+
+export const eposRequest = axios.create({
+  baseURL: import.meta.env.VITE_EPOS_BASE_API_URL,
+  headers: {
     Accept: 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json; charset=utf-8',
@@ -47,42 +78,20 @@ export const yandexMapsRequest = axios.create({
   ],
 })
 
-// Get new access token when it is expired
 request.interceptors.response.use(
   (response) => {
     return response
   },
   (err) => {
-    // show notification if user has no internet connection
-    // it is not perfect solution though
     if (err?.toJSON()?.message === 'Network Error') {
       debouncedShowNotification()
     }
 
     if (err.response.status === 401 || err.response.status === 403) {
-      // localStorage.clear()
-      // window.location.replace('/login')
+      localStorage.clear()
+      window.location.replace('/login')
     }
 
     return Promise.reject(err)
   }
 )
-// fileUploadRequest.interceptors.response.use(
-//   (response) => {
-//     return response
-//   },
-//   (err) => {
-//     // show notification if user has no internet connection
-//     // it is not perfect solution though
-//     if (err?.toJSON()?.message === 'Network Error') {
-//       debouncedShowNotification()
-//     }
-
-//     if (err.response.status === 401 || err.response.status === 403) {
-//       localStorage.clear()
-//       window.location.replace('/login')
-//     }
-
-//     return Promise.reject(err)
-//   }
-// )

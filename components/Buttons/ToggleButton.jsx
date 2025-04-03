@@ -1,20 +1,7 @@
 import { Button } from '@mui/material'
 
 export default function ToggleButton({ children, value, values, setValues, selectedbgColor, selectedTextColor, textColor, bgColor }) {
-  // if (!Array.isArray(values)) {
-  //   return null
-  // }
   const handleClick = () => {
-    // if (values.includes(value)) {
-    //   setValues((prevState) => {
-    //     return prevState.filter((el) => el !== value)
-    //   })
-    // }
-    //  else {
-    // setValues((pstate) => {
-    //   return [...pstate, value]
-    // })
-    // }
     setValues(value)
   }
 

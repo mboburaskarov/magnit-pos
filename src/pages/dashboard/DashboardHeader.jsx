@@ -1,66 +1,92 @@
-import { Box, Button, Typography } from '@mui/material'
-import InputSwitch from '../../../components/Inputs/InputSwitch'
-import DateRangeInput from '../../../components/Inputs/DateRangeInput.jsx/DateRangeInput'
-import { useSelector } from 'react-redux'
+import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
-import CheckAccess from '../../../components/CheckAccess'
+import { get } from 'lodash'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import DateRangeInput from '../../../components/Inputs/DateRangeInput.jsx/DateRangeInput'
+import PopUpSelect from '../../../components/Inputs/PopUpSelect/PopUpSelect'
+export default function DashboardHeader({ selectedStore, setselectedStore }) {
+  const { t } = useTranslation()
+  const userData = useSelector((state) => state.user)
 
-export default function DashboardHeader({ setSortBy }) {
-  const { isOpen } = useSelector((state) => state.sidebarSettings)
-  const { type } = useSelector((state) => state.user)
-  const check = type === 'SUPER_ADMIN' || type === 'ACCOUNTANT'
   return (
-    <Box
-      p={'30px 30px 50px 30px'}
-      // zIndex={isOpen ? 12 : 3}
-      bgcolor='background.default'
-      top={0}
-      // position='sticky'
-      display='inline-flex'
-      justifyContent='space-between'
-    >
+    <Box p={'24px 20px 13px 20px'} bgcolor='background.default' top={0} display='inline-flex' justifyContent='space-between'>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <Typography variant='h1' fontWeight={600} mb={'5px'} fontSize={'40px'} lineHeight={'50px'} color={'dark.500'}>
-          Hayrli kun, Mr. Oybek!
+          {t('greeting')}, {get(userData, 'first_name')}!
         </Typography>
         <Typography variant='h1' fontWeight={300} fontSize={'16px'} lineHeight={'24px'} color={'gray.500'}>
-          Welcome to Store, Manage your shop with store
+          Добро пожаловать в магазин. Управляйте своим магазином с помощью магазина
         </Typography>
       </Box>
-      <Box display='inline-flex' columnGap={3}>
-        {/* <Box width={180}>
-          {check && (
-            <InputSwitch
-              uncontrolled
-              noMarginTop
-              name='activity_type'
-              required={true}
-              defaultValue='SUM'
-              onChange={(val) => setSortBy(val)}
-              options={[
-                { title: 'сум', value: 'SUM' },
-                { title: 'шт', value: 'COUNT' },
-              ]}
-            />
-          )}
-        </Box> */}
+      <Box display='inline-flex' padding={'11px 0'} columnGap={3}>
         <DateRangeInput
-          defaultFilterData={{ label: 'Shu hafta', start_date: dayjs().tz().startOf('week'), end_date: dayjs().tz() }}
+          minHeight={'56px'}
+          defaultFilterData={{ label: 'Это час', start_date: dayjs().tz().startOf('week'), end_date: dayjs().tz() }}
           id='accounting-report-date-range'
         />
-        <CheckAccess id='shop-create'>
-          <Box>
-            <Button
-              onClick={() => navigate('/shops/create')}
-              fullWidth
-              // startIcon={<FontAwesomeIcon width={14} icon={faPlus} />}
-              variant='contained'
-              color='primary'
-            >
-              Barcha hisobotlar
-            </Button>
-          </Box>
-        </CheckAccess>
+        {/* <CheckAccess id='shop-create'> */}
+        {/* <Box>
+          <Button onClick={() => navigate('/shops/create')} fullWidth variant='contained' color='primary'>
+            {t('all_reports')}
+          </Button>
+        </Box> */}
+        <Box
+          sx={{
+            maxWidth: 200,
+          }}
+        >
+          <PopUpSelect selectedStore={selectedStore} setselectedStore={setselectedStore} id='1' name='f' />
+          {/* <LazySelect
+            slug='users'
+            boxStyle={{ minWidth: '200px', width: '100%' }}
+            id='store'
+            minHeight={'56px'}
+            name='store_id'
+            isMulti={false}
+            placeholder={t('input.store.placeholder')}
+            minWidth='auto'
+            isClearable={false}
+            // label={t('input.store.label')}
+            request={requests.getAllStores}
+            filters={{ limit: 10 }}
+            // control={control}
+            onChange={(e) => {
+              navigate(
+                `/dashboard${qs.stringify({ ...values, ...{ store_name: get(e, 'name'), store_id: get(e, 'id') }, offset: 0 }, { addQueryPrefix: true })}`
+              )
+            }}
+            value={
+              values?.store_id
+                ? {
+                    id: values?.store_id,
+                    name: values?.store_name,
+                  }
+                : {
+                    id: 'all',
+                    name: 'Все',
+                  }
+            }
+            uncontrolled
+            getOptionLabel={(option) => {
+              return <Typography color='grey.600'>{option.name}</Typography>
+            }}
+            filterOption={() => true}
+          /> */}
+          {/* <SelectSimple
+            maxWidth={'150px'}
+            minWidth={'100px'}
+            onChange={() => {}}
+            value=''
+            uncontrolled
+            disabled={false}
+            white
+            isClearable={false}
+            options={THEME_OPTIONS}
+            name='thdeme'
+          /> */}
+        </Box>
+        {/* </CheckAccess> */}
       </Box>
     </Box>
   )

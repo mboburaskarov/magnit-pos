@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useIMask } from 'react-imask'
 import { Box, ClickAwayListener, Typography } from '@mui/material'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -8,7 +8,19 @@ import Drawer from '../Drawers/Drawer'
 import { countries } from '../../src/assets/data/countries'
 import Label from '../Label'
 
-const PhoneNumber = ({ login = true, name, required, country = countries[0], setCountry, setValue, label, fullWidth, uncontrolled }) => {
+const PhoneNumber = ({
+  login = true,
+  name,
+  disabled = false,
+  required,
+  country = countries[0],
+  setCountry,
+  setValue = () => {},
+  label,
+  fullWidth,
+  defaultValue = '',
+  uncontrolled,
+}) => {
   const [open, setOpen] = useState(false)
   const [openDrawer, setOpenDrawer] = useState(false)
   const { ref, setUnmaskedValue, value } = useIMask({
@@ -16,6 +28,11 @@ const PhoneNumber = ({ login = true, name, required, country = countries[0], set
     lazy: true,
     placeholderChar: 'x',
   })
+  useEffect(() => {
+    if (ref.current) {
+      setUnmaskedValue(defaultValue)
+    }
+  }, [defaultValue])
   return (
     <>
       <Box position='relative'>
@@ -41,7 +58,7 @@ const PhoneNumber = ({ login = true, name, required, country = countries[0], set
               fontSize={18}
               lineHeight='26px'
               color='dark.500'
-              onClick={() => setOpen(!open)}
+              onClick={() => !disabled && setOpen(!open)}
               sx={(theme) => ({
                 width: 120,
                 height: login ? 56 : 48,
@@ -54,9 +71,6 @@ const PhoneNumber = ({ login = true, name, required, country = countries[0], set
                   ml: 1,
                   color: 'gray.300',
                   fontSize: 16,
-                },
-                '&:hover': {
-                  // bgcolor: 'gray.200',
                 },
               })}
             >
@@ -111,8 +125,8 @@ const PhoneNumber = ({ login = true, name, required, country = countries[0], set
           value={value}
           type='tel'
           setValue={(e) => {
-            setUnmaskedValue(e)
-            setValue(e)
+            setUnmaskedValue(e.target?.value)
+            setValue(e.target?.value)
           }}
           uncontrolled={uncontrolled}
           placeholder={country?.mask}

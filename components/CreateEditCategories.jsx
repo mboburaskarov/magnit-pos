@@ -1,26 +1,27 @@
 import { Box, Tooltip, Typography, Button } from '@mui/material'
-import InputSimple from '../components/Inputs/InputSearch'
+import InputSimple from '../components/Inputs/InputSimple'
 import LoadingContainer from '../components/LoadingContainer'
 import SectionDrawer from '../components/SectionDrawer'
 import useDeepCompareEffect from '../src/hooks/useDeepCompareEffect'
 import { useQueryParams } from '../src/hooks/useQueryParams'
-import useWebsocketMutation from '../src/hooks/useDebounce'
+// import useWebsocketMutation from '../src/hooks/useDebounce'
 import PlusIconBlue from '../src/assets/icons/PlusIcon'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import requests from './CategoriesTree'
 import { error, success } from '../utils/toast'
 import ConfirmDialog from '../components/ConfirmDialog'
 import BigWarningCircleIcon from '../src/assets/icons/BigWarningCircleIcon'
 import { makeStyles } from '@mui/styles'
+import { requests } from '../utils/requests'
 
 const DeleteIcon = (
   <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
     <path
       d='M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.7812 10.0625C11.9375 10.1875 11.9375 10.4375 11.7812 10.5938L10.5625 11.8125C10.4062 11.9688 10.1562 11.9688 10.0312 11.8125L8 9.75L5.9375 11.8125C5.8125 11.9688 5.5625 11.9688 5.40625 11.8125L4.1875 10.5625C4.03125 10.4375 4.03125 10.1875 4.1875 10.0312L6.25 8L4.1875 5.96875C4.03125 5.84375 4.03125 5.59375 4.1875 5.4375L5.4375 4.21875C5.5625 4.0625 5.8125 4.0625 5.96875 4.21875L8 6.25L10.0312 4.21875C10.1562 4.0625 10.4062 4.0625 10.5625 4.21875L11.7812 5.4375C11.9375 5.59375 11.9375 5.84375 11.7812 5.96875L9.75 8L11.7812 10.0625Z'
-      fill='#EB5757'
+      fill='#fe5000'
+      stroke='transparent'
     />
   </svg>
 )
@@ -53,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     '& > p': {
-      fontFamily: 'Gilroy-Bold',
+      // fontFamily: 'Gilroy-Bold',
     },
   },
   line: {
@@ -119,12 +120,12 @@ const InputCustom = ({
         adornment={
           topInput ? (
             inputTree?.name && (
-              <Box style={{ cursor: 'pointer' }} onClick={() => setConfirmToDelete(true)}>
+              <Box style={{ cursor: 'pointer', display: 'flex' }} onClick={() => setConfirmToDelete(true)}>
                 {DeleteIcon}
               </Box>
             )
           ) : (
-            <Box style={{ cursor: 'pointer' }} onClick={() => setConfirmToDelete(true)}>
+            <Box style={{ cursor: 'pointer', display: 'flex' }} onClick={() => setConfirmToDelete(true)}>
               {DeleteIcon}
             </Box>
           )
@@ -146,11 +147,11 @@ const InputCustom = ({
         open={!!confirmToDelete}
         setOpen={setConfirmToDelete}
         icon={<BigWarningCircleIcon />}
-        title={'menu.finance.categories.delete_subcattegory.title'}
-        desc='menu.finance.categories.delete_subcattegory.desc'
+        title={t('menu.finance.categories.delete_subcattegory.title')}
+        desc={t('menu.finance.categories.delete_subcattegory.desc')}
         actions={
           <>
-            <Button secondary id='stop' onClick={() => setConfirmToDelete(false)}>
+            <Button variant='contained' id='stop' onClick={() => setConfirmToDelete(false)}>
               {t('buttons.cancel')}
             </Button>
             <Button
@@ -175,9 +176,9 @@ const AddCustomButtom = ({ customStyle, addFunction }) => {
   return (
     <Box width='100%' height='100%' display='flex' alignItems='center' justifyContent='space-between' flexDirection='row'>
       <Box style={customStyle} className={useStyles().lineSecond} />
-      <Button sx={{ width: '96%', marginTop: 2 }} onClick={() => addFunction()} secondary>
-        <PlusIconBlue />
-        <Typography sx={{ color: '#4993DD', ml: 2 }}>{t('buttons.add_subcategory')}</Typography>
+      <Button sx={{ width: '96%', color: '#fff', marginTop: 2 }} onClick={() => addFunction()} secondary>
+        <PlusIconBlue color='#fff' />
+        <Typography sx={{ color: '#fff', ml: 2 }}>{t('buttons.add_subcategory')}</Typography>
       </Button>
     </Box>
   )
@@ -190,6 +191,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
     subRows: [],
   }
   const [inputTree, setInputTree] = useState(subRowObj)
+
   const [duplicateName, setDuplicateName] = useState(false)
   const { t } = useTranslation()
   const cls = useStyles()
@@ -209,54 +211,66 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
       navigate(`/products/catalog/management?limit=${values?.limit}&page=1`)
     }
   }
-
-  const { mutate: createCategory } =
-    (requests?.category?.create,
-    {
-      onWebsocketSuccess: () => {
-        success(t('menu.finance.categories.toasts.create_success').replace('REPLACEMENT_TEXT', inputTree?.name), true)
-        refetch()
-        onClose()
-      },
-      onWebsocketError: (err) => {
-        if (err?.error?.message === 'duplicate_name') {
-          setDuplicateName(true)
-        } else {
-          error(t('menu.finance.categories.toasts.create_error'), true)
-          onClose()
-        }
-      },
-    })
-  const { mutate: updateCategory } =
-    (requests?.category?.update,
-    {
-      onWebsocketSuccess: () => {
-        success(t('menu.finance.categories.toasts.update_success'), true)
-        refetch()
-        onClose()
-      },
-      onWebsocketError: (err) => {
-        if (err?.error.message === 'duplicate_name') {
-          setDuplicateName(true)
-        } else {
-          error(t('menu.finance.categories.toasts.update_error'), true)
-          onClose()
-        }
-      },
-    })
-
-  const { data: editData, isLoading: editLoading } = useQuery('financeCategoriySingle', () => requests.category.getSingle(editId), {
-    enabled: !!editId && open,
+  const { mutate: createCategory, isLoading: iscreateCategory } = useMutation(requests.createCategory, {
+    onSuccess: () => {
+      closeDrawer()
+      refetch()
+      setInputTree({ name: '' })
+      success('Создать категорию!')
+    },
+    onError: (err) => {
+      error('Ошибка при Создать категорию!')
+      console.log('err', err)
+    },
+  })
+  const { mutate: updateCategory, isLoading: isupdateCategory } = useMutation(requests.updateCategory, {
+    onSuccess: () => {
+      closeDrawer()
+      refetch()
+      success('Изменить категорию!')
+    },
+    onError: (err) => {
+      error('Ошибка при Изменить категорию!')
+      console.log('err', err)
+    },
   })
 
+  // const { data: editData, isLoading: editLoading } = useQuery('financeCategoriySingle', () => requests.category.getSingle(editId), {
+  //   enabled: !!editId && open,
+  // })
+
+  const { data: editData, refetch: editDataFetch, editLoading } = useQuery('editData', () => editId && requests.getCategory(editId))
+  // const[ editData, setEditData] = useState([])
   useEffect(() => {
-    if (editData?.data) {
-      setInputTree(editData?.data)
+    if (editId) editDataFetch()
+  }, [editId])
+  function renameSubRows(obj) {
+    if (obj.subRows) {
+      obj.sub_category = obj.subRows
+      delete obj.subRows
+
+      obj.sub_category.forEach(renameSubRows) // Recurse through sub_category if exists
+    }
+    return obj
+  }
+  function renameSubCats(obj) {
+    if (obj.sub_category) {
+      obj.subRows = obj.sub_category
+      delete obj.sub_category
+
+      obj.subRows.forEach(renameSubCats) // Recurse through sub_category if exists
+    }
+    return obj
+  }
+  useEffect(() => {
+    if (editData?.data?.data) {
+      setInputTree(renameSubCats(editData?.data?.data))
     }
   }, [editData])
 
   const onSubmit = () => {
-    const data = { ...inputTree }
+    const data = { ...renameSubRows(inputTree) }
+
     if (editId) {
       updateCategory({ id: editId, data })
     } else {
@@ -272,11 +286,11 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
         fullWidth
         anchor='bottom'
         topOffset='64px'
-        nextButtonLabel={editId ? t('buttons.apply') : t('buttons?.create')}
+        nextButtonLabel={editId ? t('buttons.apply') : t('create')}
         onNextButtonClick={onSubmit}
         title={editId ? t('menu.finance.categories.edit') : t('menu.finance.categories.new')}
-        isLoading={isLoading}
-        disabled={!inputTree.name}
+        isLoading={isLoading || isupdateCategory || iscreateCategory}
+        disabled={!inputTree?.name}
         {...rest}
       >
         <LoadingContainer style={{ minHeight: 'calc(80vh - 112px)' }} readyState={editId ? !editLoading : true}>
@@ -307,6 +321,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                       required
                       inputTree={inputTree}
                       noMarginTop
+                      uncontrolled
                       addValue={(e) =>
                         setInputTree({
                           ...inputTree,

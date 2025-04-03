@@ -1,45 +1,36 @@
-import { useEffect, useState, useMemo, useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
-import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import { useQuery } from 'react-query'
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import { faCircle } from '@fortawesome/free-solid-svg-icons'
-import { getGiftCardTitle } from '../../../utils/getGiftCardTitle'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Box, Drawer, Button, Typography, Button as MuiButton, Checkbox, useTheme } from '@mui/material'
+import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import BackArrowIcon from '../../../src/assets/icons/ArrowRightIcon'
-import CashIcon from '../../../src/assets/icons/ArrowRightIcon'
-import PlusIcon from '../../../src/assets/icons/ArrowRightIcon'
-import UserFilledIcon from '../../../src/assets/icons/ArrowRightIcon'
-import PencilIcon from '../../../src/assets/icons/ArrowRightIcon'
-import addToOrderPayment from './PaymentMethodInput'
-import removeFromOrderPayment from './PaymentMethodInput'
-import balanceAmountSelector from './PaymentMethodInput'
-import cartTotalPriceWithoutDiscountSelector from './PaymentMethodInput'
-import { numberToPrice } from '../../../utils/numberToPrice'
-import { v4 as uuidv4 } from 'uuid'
-import requests from './index'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useNavigate, useParams } from 'react-router-dom'
 import { RippedPaperItem } from '../../RippedPaperList'
-import ShortcutWrapper from '../../ShortcutWrapper'
 import PaymentMethodInput from './PaymentMethodInput'
-// import DebtDrawer from './DebtDrawer'
-import GiftCardIcon from '../../../src/assets/icons/ArrowRightIcon'
-import GiftCardDrawer from '../../../src/assets/icons/ArrowRightIcon'
-import GiftCardInfo from '../../../src/assets/icons/ArrowRightIcon'
-import RemovePaymentIcon from '../../../src/assets/icons/ArrowRightIcon'
-import CertificateCardDrawer from '../../../src/assets/icons/BigWarningIcon'
-import { giftCardPaymentIds } from '../../../constants/giftCardPaymentIds'
-import ButtonWithSwitch from './ButtonWithSwitch'
-import PaymeGo from '../../../src/assets/icons/BigWarningCircleIcon'
+import { LoadingButton } from '@mui/lab'
+import { get, size } from 'lodash'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useReactToPrint } from 'react-to-print'
 import { paymeGoId } from '../../../constants/paymeGoId'
-import PaymeSmallIcon from '../../../src/assets/icons/ArrowRightIcon'
+import AddPaumentTypeIcon from '../../../src/assets/icons/AddPaymentTypeIcon'
+import RemovePaymentIcon from '../../../src/assets/icons/CloseIcon'
+import { requests } from '../../../utils/requests'
+import { error, success } from '../../../utils/toast'
+import StyledDialog from '../../Dialogs/StyledeEmptyDialog'
+
+import CloseIcon from '../../../src/assets/icons/CloseIcon'
+import QrScanIcon from '../../../src/assets/icons/QrScanIcon'
+import { useHotkeys } from 'react-hotkeys-hook'
+import thousandDivider from '../../../utils/thousandDivider'
+import { useSelector } from 'react-redux'
+import { eposRequest } from '../../../utils/axios'
+import LoadingContainer from '../../LoadingContainer'
+import LoadingBlock from '../../LoadingBlock'
+import TextField from '../../Inputs/TextField'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
-      width: 'calc(100% - 128px)',
+      width: 'calc(100% - 64px)',
       padding: 64,
       borderRadius: '64px 0 0 64px',
       backgroundColor: theme.palette.background.default,
@@ -57,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'flex-start',
     width: '100%',
-    height: 'auto',
+    height: '-webkit-fill-available',
   },
   body: {
     flex: '1 0 50%',
@@ -138,7 +129,7 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.gray[300]}`,
   },
   placeholder: {
-    height: 128,
+    height: 110,
     border: `1px dashed ${theme.palette.gray[200]}`,
     borderRadius: 16,
     flex: '0 0 32.3%',
@@ -149,33 +140,56 @@ const useStyles = makeStyles((theme) => ({
   box: {
     flex: '0 0 32.3%',
     borderRadius: 16,
-    marginRight: 8,
     marginBottom: 16,
-    border: `1px solid ${theme.palette.gray[300]}`,
+    border: `2px solid ${theme.palette.gray[300]}`,
     overflow: 'hidden',
   },
   outline: {
     transition: 'all 0.4s ease',
-    boxShadow: `0 0 0 3px ${theme.palette.blue[500]}`,
+    border: `2px solid ${theme.palette.orange[500]}`,
   },
   boxHeader: {
     backgroundColor: theme.palette.gray[100],
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 56,
-    padding: '18px 16px',
+    height: 48,
+    padding: '8px 5px 8px 12px',
     borderBottom: `1px solid ${theme.palette.gray[300]}`,
+    '& .MuiButtonBase-root': {
+      padding: 0,
+      width: '32px !important',
+      height: '32px !important',
+      '&:hover': {
+        backgroundColor: theme.palette.red[10],
+        '& .icon-wrapper': {
+          backgroundColor: theme.palette.red[10],
+          '& svg path': {
+            fill: theme.palette.red[700],
+          },
+        },
+      },
+      '& .icon-wrapper': {
+        height: '32px !important',
+        width: '32px !important',
+        minWidth: '32px !important',
+      },
+    },
   },
 
   input: {
     height: 56,
     cursor: 'pointer',
+
     backgroundColor: theme.palette.background.default,
     '& input': {
       textAlign: 'center',
       cursor: 'pointer',
       backgroundColor: theme.palette.background.default,
+      fontSize: '16px',
+      lineHeight: '24px',
+      fontWeight: '500',
+      color: theme.palette.bunker[950],
     },
     '& input::-webkit-inner-spin-button, input::-webkit-outer-spin-button': {
       appearance: 'none',
@@ -199,7 +213,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     position: 'relative',
     width: '100%',
-    height: 72,
+    padding: '12px',
+    '& > .MuiFormControl-root': {
+      height: 34,
+    },
   },
   change: {
     color: theme.palette.red[500],
@@ -235,684 +252,655 @@ const intitalDebtInfo = {
 const MAX_F_BUTTONS_QUANTITY = 10
 
 export default function OrderDrawer({
-  isOpen,
+  setIsOrderDrower,
+  isOrderDrower,
   closeDrawer,
+  markingsList,
+  setInputDiscount,
   printContainer,
-  orderNumber,
-  cashbackPaymentPercentage,
-  cheque,
-  paymentTypes,
-  isLoading,
-  onSubmit,
-  accessToPrint,
-  shop,
+  cartItemsList,
+  customerId,
+  cashBoxDetails,
+  refetchcartItemsList,
   noCheck,
+  setMarkingList,
+  setMarkingCount,
   half,
-  user,
-  clientInfo,
-  setOpenClientCreateMini,
-  setOpenClientCard,
-  setClientInfo,
-  setQuickCreateClientName,
-  clientInputRef,
-  createdClientId,
-  setCreatedClientId,
-  openDebt,
+
   setOpenDebt,
-  eposTransaction,
-  webkassaTransaction,
-  eposOn,
-  webkassaOn,
-  sellers,
-  deleteDebt,
-  eposChecked,
-  setEposChecked,
-  control,
-  cashbackPercent,
-  loyaltyProgramType,
-  isAutoIncome,
-  setOpenAutoIncome,
 }) {
+  const methods = useForm()
+  let timeout
+  const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
+
   const classes = useStyles()
   const [payments, setPayments] = useState([])
+  const [paymentsList, setPaymentsList] = useState([])
+  const [maxAmount, setMaxAmount] = useState(0)
+  const [paymentAmount, setPaymentAmount] = useState(0)
+  const [hasChange, setHasChange] = useState(false)
+  const [qrcodeUrl, setQrcodeUrl] = useState('pending')
+  const [scannedKeys, setScannedKeys] = useState([])
+  const [isOpenScanDialog, setOpenScanDialog] = useState(false)
   const [payme, setPayme] = useState(false)
   const { id } = useParams()
   const theme = useTheme()
   const { t } = useTranslation()
-  const forbiddenRoutes = useSelector((state) => state?.permissionRoutes)
-  const [giftCardOpen, setGiftCardOpen] = useState(false)
-  const [giftCardId, setGiftCardId] = useState(0)
-  const smsAuthRole = forbiddenRoutes?.find((el) => el?.slug === 'order-assign-client-sms-auth')
-  const debtRoute = forbiddenRoutes.find((el) => el.slug === 'order-debt')
-  const orderNewRoute = forbiddenRoutes.find((el) => el.slug === 'order-new')
-  const giftCardsRoute = forbiddenRoutes.find((el) => el?.slug === 'gift-cards')
-  const giftCardPayment = forbiddenRoutes.find((el) => el?.slug === 'pay-gift-card')
-  const totalPrice = useSelector((state) => state.cart.totalPrice, shallowEqual)
-  const { cartItems, orderPayments, returnItems, discount, returnPayments } = useSelector((state) => state.cart)
-  const isReturnDrawer = returnItems?.length > 0 ? (returnItems?.length > 0 && cartItems?.length > 0 ? totalPrice < 0 : true) : false
-  const { data: orderDetails, refetch } = useQuery(['orderDetails', id], () => requests.order.getSingle(id))
+  const navigate = useNavigate()
+  const lastPaymentInput = useRef()
+  const scannedBarcodeRef = useRef()
 
-  const { refetch: refetchParent, isFetching: isLoadingParent } = useQuery('orderDetails', () => requests.order.getSingle(orderDetails?.data?.parent_id), {
-    enabled: false,
-    cacheTime: 5000,
+  useEffect(() => {
+    let amount = 0
+    paymentsList.map((el) => {
+      amount += Number(el.amount)
+    })
+
+    if (isNaN(amount)) {
+      setMaxAmount(Number(get(cartItemsList, 'total_amount')))
+      setPaymentAmount(0)
+    } else {
+      setMaxAmount(Number(get(cartItemsList, 'total_amount')) - amount)
+
+      setPaymentAmount(amount)
+    }
+  }, [paymentsList, cartItemsList])
+
+  const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
+    onSuccess: ({ data }) => {
+      navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
+    },
+    onError: (err) => {
+      error('Ошибка при епосе')
+    },
+  })
+  const { mutate: saleCreate, isLoading: issaleCreate } = useMutation(requests.saleCreate, {
+    onSuccess: ({ data }) => {
+      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+      window.location.reload()
+    },
+    onError: (err) => {
+      error('Ошибка при создании продажи')
+      console.log('err', err)
+    },
+  })
+
+  const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
+  const {
+    mutate: finishSaleWithoutAppPaymentType,
+    isSuccess: saleFinishSuccess,
+    isLoading: isfinishSaleWithoutAppPaymentType,
+  } = useMutation(requests.addToOrderPayment, {
+    onSuccess: ({ data }) => {
+      if (false) {
+        navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
+        setIsOrderDrower(false)
+        handlePrint()
+        success('Продажа завершена!')
+        setMarkingList({})
+        setMarkingCount({})
+      } else {
+        // refetchcartItemsList()
+        ///
+        //send to epos
+
+        const mockData = get(cartItemsList, 'data', []).map((el) => {
+          return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
+            barcode: el.barcode,
+            amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
+            price: el.quantity > index ? el.unit_price : el.unit_quantity_price * el.unit_quantity,
+            discount: el.discount_amount,
+            vatPercent: get(el, 'vat_percent'),
+            vat: el.quantity > index ? get(el, 'vat_price') : el.unit_vat_price * el.unit_quantity,
+            label: marking,
+            name: el.name,
+            classCode: get(el, 'class_code'),
+            packageCode: get(el, 'package_code'),
+            // commissionTIN: '',
+            other: 0,
+            ownerType: 0,
+          }))
+        })
+
+        sendToEPOS({
+          token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+          method: SALE_TYPE === 'SALE' ? 'sale' : 'refund', // Название метода, Обязательное поле, String
+          companyName: 'Pharma Cosmos OOO', // Поле для ввода названия компании, будет напечатано на чеке, Обязательное поле, String
+          companyAddress: get(userData, 'store.address'), // Поле для ввода адреса компании, убедитесь в верности, будет напечатано на чеке, Обязательное поле, String
+          companyINN: '303970073', // Поле для ввода ИНН компании, будет напечатано на чеке, Обязательное поле, String
+          staffName: get(userData, 'full_name'), // Поле для ввода имени кассира , Необязательное поле, String
+          printerSize: 58, // Ширина ленты в чековом принтере, будет учитываться при формировании pdf чека, Integer
+          phoneNumber: get(userData, 'store.phone'), // Поле для ввода контакного номера, будет напечатано на чеке, Необязательное поле, String
+          companyPhoneNumber: '+998772770333', // Поле для ввода номера компании, будет напечатано на чеке, Необязательное поле, String
+          params: {
+            // Объект с данными о чеке
+            clientName: get(customerId, 'name'), //ФИО Клиента
+
+            items: mockData.flat(),
+            receivedCash: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
+            receivedCard: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
+          },
+          ...(SALE_TYPE === 'RETURN' && {
+            refundInfo: (() => {
+              const info = JSON.parse(get(cashBoxDetails, 'data.data.epos_response.response', '{}'))?.info
+              const { qrCodeURL, ...rest } = info // Exclude qrCodeURL
+              return rest
+            })(),
+          }),
+          // ...(SALE_TYPE === 'RETURN' && { refundInfo: {} }),
+        })
+
+        setInputDiscount(NaN)
+        // navigate(`/sales/new-sale/${get(data, 'data', '/')}`)
+        // setIsOrderDrower(false)
+        // handlePrint()
+        // success('Продажа завершена!')
+        setPaymentsList([])
+
+        // success('Продажа завершена!')
+      }
+    },
+    onError: (err) => {
+      if (get(err, 'response.status') == 409) {
+        saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), error('Эта sпродажа уже закрыта.')
+        return
+      }
+
+      if (get(err, 'response.data.data') == 'failed payment with click') {
+        error('На вашем счете Click недостаточно средств.')
+        return
+      }
+      error('Ошибка при Продажа завершена')
+      console.log('err', err)
+    },
+  })
+  const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
+    onSuccess: ({ data }) => {
+      if (get(data, 'error', true)) {
+        sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
+        error(`EPOS: ${get(data, 'message')}`)
+        return
+      } else {
+        sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
+
+        setQrcodeUrl(get(data, 'info.qrCodeURL', 'pending'))
+      }
+      setIsOrderDrower(false)
+      handlePrint()
+      success('Продажа завершена!')
+    },
+    onError: (err) => {
+      sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
+
+      error('Ошибка при EPOS')
+      console.log('err', err)
+    },
   })
 
   useEffect(() => {
-    if (isOpen) refetch()
-  }, [isOpen])
+    setPaymentsList([])
+  }, [isOrderDrower])
+  const handleAddPaymentType = (type) => {
+    if (!type) return
 
-  const { loyalty_payment, not_loyalty_payment } = orderDetails?.data?.order_detail || {}
+    if (!isVisiblePaymentType(type)) return
 
-  const exchangeItemsTotalPrice = cartItems?.reduce((a, b) => a + b?.total_price, 0)
+    const isThereType = paymentsList.some((item) => item.id == type.id)
 
-  const debtAmount = orderDetails?.data?.parent_order_debt?.amount || 0
-  const debtPaidAmount = orderDetails?.data?.parent_order_debt?.paid_amount || 0
-  const maxDebt = debtAmount - debtPaidAmount
-  const minDebt = maxDebt - (maxDebt - returnItems.reduce((total, returnItem) => (total += Math.abs(Number(returnItem.total_price))), 0))
-  const totalOrderDebt = maxDebt > minDebt ? minDebt : maxDebt
-  const debtRepayedAmount = debtAmount === debtPaidAmount ? 0 : debtPaidAmount
-
-  const [shopDetails, setShopDetails] = useState(null)
-  const dispatch = useDispatch()
-  const totalPriceWithoutDiscount = useSelector((state) => cartTotalPriceWithoutDiscountSelector(state), shallowEqual)
-
-  const balanceAmount = useSelector((state) => balanceAmountSelector(state), shallowEqual)
-  const returnAmount = Number((balanceAmount + totalOrderDebt).toFixed(2))
-  const overallAmount = isReturnDrawer ? returnAmount : Number(balanceAmount)
-  const [editDebt, setEditDebt] = useState(intitalDebtInfo)
-  const [maxKeys, setMaxKeys] = useState(0)
-
-  const calculateClientBalance = () => {
-    const paidAmount = orderPayments?.filter((el) => el.company_payment_type_id === 'cashback')?.reduce((init, el) => (init += el?.paid_amount), 0) || 0
-    return clientInfo?.balance - paidAmount
-  }
-
-  const notLoyaltyPaidAmount = useMemo(
-    () =>
-      orderPayments
-        ?.filter((payment) => payment?.company_payment_type_id !== 'cashback' && payment?.type !== 'gift-card')
-        ?.reduce((a, b) => a + Math.abs(b?.paid_amount), 0),
-    [orderPayments]
-  )
-  const loyaltyPaidAmount = useMemo(
-    () => orderPayments?.filter((payment) => payment?.company_payment_type_id === 'cashback')?.reduce((a, b) => a + Math.abs(b?.paid_amount), 0),
-    [orderPayments]
-  )
-
-  const addOrderPaymentReturn = (item) => {
-    let payload
-    let maxAmount
-    if (item?.balance) {
-      maxAmount = Math.abs(loyalty_payment) > Math.abs(totalPrice) ? overallAmount : -Math.abs(loyalty_payment - loyaltyPaidAmount)
-      payload = {
-        company_payment_type_id: 'cashback',
-        id: uuidv4(),
-        paid_amount: maxAmount,
-        returned_amount: 0,
-        name: t('menu.sales.all.balance'),
-        max_amount: -maxAmount,
-      }
-    } else {
-      maxAmount =
-        Math.abs(not_loyalty_payment) > Math.abs(totalPrice) - totalOrderDebt || !not_loyalty_payment
-          ? overallAmount
-          : -Math.abs(not_loyalty_payment + debtRepayedAmount - exchangeItemsTotalPrice - notLoyaltyPaidAmount)
-      payload = {
-        company_payment_type_id: item.id,
-        id: uuidv4(),
-        paid_amount: maxAmount,
-        returned_amount: 0,
-        name: item.name,
-        max_amount: -maxAmount,
-      }
-    }
-
-    if (payload?.paid_amount && !!overallAmount) dispatch(addToOrderPayment(payload))
-  }
-  useEffect(() => {
-    const cashbackPayment = orderPayments?.find((payment) => payment.company_payment_type_id === 'cashback')
-    if (!clientInfo && !!cashbackPayment) {
-      dispatch(removeFromOrderPayment(cashbackPayment))
-    }
-  }, [clientInfo])
-
-  const addOrderPayment = (item) => {
-    if (overallAmount > 0 || returnItems.length > 0) {
-      if (item?.balance) {
-        const alreadyPaidAmount = orderPayments?.filter((el) => el.name === t('menu.sales.all.balance'))?.reduce((i, el) => (i += el.paid_amount || 0), 0) || 0
-        const calculatePaidAmount = () => {
-          const limitPercentage = (cashbackPaymentPercentage ?? 100) / 100
-          const payableAmount = totalPrice * limitPercentage - alreadyPaidAmount
-          return item?.balance >= overallAmount
-            ? overallAmount > payableAmount
-              ? payableAmount
-              : overallAmount
-            : item?.balance > payableAmount
-            ? payableAmount
-            : item?.balance - alreadyPaidAmount
-        }
-        const payload = {
-          company_payment_type_id: 'cashback',
-          id: uuidv4(),
-          paid_amount: calculatePaidAmount(),
-          returned_amount: 0,
-          name: t('menu.sales.all.balance'),
-        }
-        if ((payload?.returned_amount || payload?.paid_amount) && alreadyPaidAmount < item.balance) {
-          dispatch(addToOrderPayment(payload))
-        }
-      } else if (overallAmount !== 0) {
-        const payload = {
-          company_payment_type_id: item.id,
-          id: uuidv4(),
-          paid_amount: overallAmount,
-          returned_amount: 0,
-          name: item.name,
-          max_amount: item?.max_amount,
-        }
-        if (payload?.returned_amount || payload?.paid_amount) {
-          dispatch(addToOrderPayment(payload))
-        }
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (shop) {
-      requests.shop
-        .getSingle(shop.id)
-        .then(({ data }) => setShopDetails(data))
-        .catch((err) => console.error(err))
-    }
-  }, [shop])
-
-  useEffect(() => {
-    if (!!paymentTypes?.data?.company_payment_types?.length)
-      if (!debtRoute) {
-        let modPayments = [
-          ...paymentTypes?.data?.company_payment_types?.filter((type) => !giftCardPaymentIds.includes(type?.payment_type?.id)),
-          {
-            id: 'debt',
-            name: t('menu.sales.all.debt'),
-          },
-        ]?.map((item, index) => ({
-          ...item,
-          shortcut: `F${index + 1}`,
-        }))
-        if (webkassaOn) {
-          modPayments.pop()
-          if (isReturnDrawer) {
-            modPayments = modPayments.map((item) => {
-              const match = returnPayments.find((i) => i.company_payment_type_id === item.id)
-              return match
-                ? {
-                    ...item,
-                    max_amount: match?.paid_amount - match?.returned_amount,
-                    disabled: false,
-                  }
-                : { ...item, disabled: true }
-            })
-          }
-        }
-        setPayments(modPayments)
-        setMaxKeys(modPayments?.length)
+    setPaymentsList((prev) => {
+      if (prev?.length < size(get(paymentTypesList, 'data.data', [])) && !isThereType) {
+        return [...prev, { ...type, amount: get(cartItemsList, 'total_amount') - paymentAmount }]
       } else {
-        let modPaymentsElse = [...paymentTypes?.data?.company_payment_types]?.map((item, index) => ({
-          ...item,
-          shortcut: `F${index + 1}`,
-        }))
-        if (webkassaOn && isReturnDrawer) {
-          modPaymentsElse = modPaymentsElse.map((item) => {
-            const match = returnPayments.find((i) => i.company_payment_type_id === item.id)
-            return match
-              ? {
-                  ...item,
-                  max_amount: match?.paid_amount - match?.returned_amount,
-                  disabled: false,
-                }
-              : { ...item, disabled: true }
-          })
-        }
-        setPayments(modPaymentsElse)
-        setMaxKeys(modPaymentsElse?.length)
-      }
-  }, [paymentTypes?.data, webkassaOn, returnPayments])
-
-  useEffect(() => {
-    if (!clientInfo) {
-      dispatch(removeFromOrderPayment(orderPayments.filter((item) => item.company_payment_type_id === 'debt')[0]))
-    }
-  }, [clientInfo])
-
-  const isCashbackDisabled = isReturnDrawer ? loyaltyPaidAmount === loyalty_payment : !overallAmount || calculateClientBalance() === 0
-
-  const handleClickGiftCard = useCallback(() => {
-    setGiftCardOpen((prev) => !prev)
-  }, [])
-
-  const handleReturnGiftCard = () => {
-    refetchParent().then(({ data }) => {
-      const giftCard = data?.data?.order_detail?.order_payments?.find((el) => el?.is_certificate || el?.is_voucher)
-      const payload = {
-        company_payment_type_id: giftCard?.company_payment_type?.name.toUpperCase(),
-        id: uuidv4(),
-        paid_amount: Math.abs(overallAmount) < giftCard?.paid_amount ? overallAmount : -giftCard?.paid_amount,
-        returned_amount: 0,
-        gift_card_id: giftCard?.gift_card_id,
-        name: t(getGiftCardTitle(giftCard?.company_payment_type?.name)),
-        max_amount: giftCard?.paid_amount,
-        type: 'gift-card',
-      }
-      if (payload?.paid_amount && !orderPayments?.find((el) => el?.gift_card_id === giftCard?.gift_card_id)) {
-        dispatch(addToOrderPayment(payload))
+        return prev
       }
     })
   }
+  useEffect(() => {
+    if (!paymentTypesList || !lastPaymentInput?.current) return
+    if (hasChange) return setHasChange(false)
+
+    lastPaymentInput.current.focus()
+  }, [paymentsList])
+  useEffect(() => {
+    if (isOpenScanDialog) {
+      setTimeout(() => {
+        scannedBarcodeRef.current.focus()
+      }, 100)
+    }
+  }, [isOpenScanDialog, scannedBarcodeRef])
+  const removePaymentType = (id) => {
+    const removedItem = paymentsList.filter((el) => el.id != id)
+
+    setPaymentsList(removedItem)
+  }
+  const removeLastPaymentType = () => {
+    paymentsList.pop()
+    setPaymentsList([...paymentsList])
+  }
+
+  const isVisiblePaymentType = useCallback(
+    (type) => {
+      const totalEnteredMoney = paymentsList.reduce((sum, item) => sum + item.amount, 0)
+      const totalAmount = get(cartItemsList, 'total_amount')
+      const isThereType = type === 'overAll' ? false : paymentsList.some((item) => item.id == type.id)
+
+      if (type?.type == 'app' && totalAmount - totalEnteredMoney > 0 && paymentsList.length !== 0) {
+        return !paymentsList.find((item) => item.type === 'app')
+      }
+      if (paymentsList.length == 0) return true
+
+      if (totalEnteredMoney >= totalAmount || isThereType) return false
+
+      return true
+    },
+    [paymentsList]
+  )
+
+  const documentName = useRef('Pharma CHEQUE')
+  const userData = useSelector((state) => state.user)
+  const reactToPrintContent = useCallback(() => printContainer.current, [])
+
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: documentName.current,
+    removeAfterPrint: true,
+  })
+
+  const onSubmit = async (data) => {
+    setOpenScanDialog(false)
+    const paymentTypes = mpaddedPaymentsList
+      .filter((type) => get(type, 'isPlaceholder', false) == false)
+      .map(({ id, ...type }) => ({
+        amount: get(type, 'amount'),
+        payment_type_id: id,
+        type: get(type, 'type'),
+        ...(data ? { otp_data: data } : {}),
+        app_type: get(type, 'name').toLowerCase(),
+      }))
+
+    finishSaleWithoutAppPaymentType({
+      cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
+      payment_types: paymentTypes,
+      sale_id: id,
+      store_id: get(userData, 'store.id'),
+      customer_id: get(customerId, 'id'),
+      total_amount: get(cartItemsList, 'total_amount'),
+      return_amount: Math.abs(maxAmount),
+    })
+
+    return
+  }
+  const mpaddedPaymentsList = [
+    ...paymentsList,
+    ...Array.from({ length: 8 - paymentsList.length }, (_, index) => ({ id: `placeholder-${index}`, isPlaceholder: true })),
+  ]
+  const findTypeWithName = (name) => {
+    const list = get(paymentTypesList, 'data.data')
+
+    return list.find((el) => el?.name?.toLowerCase() == name)
+  }
+  let timeoutRef = null
+  const handleFinish = () => {
+    if (paymentsList.find((el) => el.type === 'app')) {
+      setOpenScanDialog(true)
+    } else {
+      onSubmit()
+    }
+  }
+  const paymentHotKeys = {
+    naqd: 'F1',
+    humo: 'F2',
+    uzcard: 'F3',
+    visa: 'F4',
+    click: 'F5',
+    uzum: 'F6',
+    payme: 'F7',
+    pay: 'F12',
+  }
+
+  const getPaymentTypeHotKeyLabel = (name) => paymentHotKeys[name?.toLowerCase().trim()] || 'no'
+
+  const handleFKeys = (event) => {
+    event.preventDefault()
+    const key = event.key
+    if (key === 'F12' && !(maxAmount > 0)) {
+      event.preventDefault()
+      handleFinish()
+      return
+    }
+
+    const paymentType = Object.keys(paymentHotKeys).find((type) => paymentHotKeys[type] === key)
+
+    if (paymentType) {
+      handleAddPaymentType(findTypeWithName(paymentType))
+    }
+  }
+
+  // const handleKeyPress = (event) => {
+  //   const scannedBarcode = scannedKeys.join('')
+  //   console.log(event)
+
+  //   if (scannedBarcode.length >= 18) {
+  //     // if (event.key === 'Enter') {
+  //     onSubmit(scannedBarcode.replace('Enter', ''))
+  //     setScannedKeys([])
+  //     return
+  //   }
+  //   setScannedKeys((prev) => [...prev, event.key])
+
+  //   if (timeoutRef) clearTimeout(timeoutRef)
+  //   timeoutRef = setTimeout(() => {
+  //     // setScannedKeys([])
+  //   }, 300)
+  // }
+
+  // useHotkeys(
+  //   '*',
+  //   (event) => {
+  //     // handleKeyPress(event)
+  //   },
+  //   {
+  //     enabled: isOpenScanDialog,
+  //   }
+  // )
+  // useHotkeys('*', (event) => {
+  //   if (event?.key == 'Backspace') {
+  //     removeLastPaymentType()
+  //   }
+  // })
+  useHotkeys(
+    Object.values(paymentHotKeys),
+    (event) => {
+      event.preventDefault()
+      handleFKeys(event)
+    },
+    {
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+      enableOnFormTags: true,
+    }
+  )
 
   return (
-    <>
-      <Box hidden>
-        {!noCheck && (
-          <Box
-            width='calc(100% + 32px)'
-            mx={-2}
-            mt={-4}
-            // style={{ transform: 'rotateX(180deg)' }}
-            ref={printContainer}
-          >
-            <RippedPaperItem
-              id='cheque_of_orders'
-              data={cheque}
-              noFormControl
-              discount={discount}
-              orderItems={cartItems}
-              totalPriceWithoutDiscount={totalPriceWithoutDiscount}
-              totalPrice={totalPrice}
-              shop={shopDetails}
-              user={user}
-              clientName={`${clientInfo?.first_name || ''} ${clientInfo?.last_name || ''}`}
-              sellers={sellers}
-              returnItems={returnItems}
-              orderNumber={orderNumber}
-              eposTransaction={eposTransaction}
-              webkassaTransaction={webkassaTransaction}
-              eposOn={eposOn && eposChecked}
-              webkassaOn={webkassaOn}
-            />
-          </Box>
-        )}
-      </Box>
-      <Drawer
-        open={isOpen}
-        onClose={closeDrawer}
-        onKeyDown={(e) => {
-          if (e.code === 'KeyL') {
-            onSubmit()
-          }
-          if (payments?.find((payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.id === 'debt' && maxKeys <= MAX_F_BUTTONS_QUANTITY)) {
-            setOpenDebt(true)
-          }
-          if (
-            payments?.find(
-              (payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.payment_type?.id === paymeGoId && maxKeys <= MAX_F_BUTTONS_QUANTITY
-            )
-          ) {
-            if (!orderPayments?.length) setPayme(true)
-            return
-          }
-          if (!giftCardsRoute && !giftCardPayment && `F${payments?.length + 1}` === e.code) {
-            if (!isReturnDrawer) handleClickGiftCard()
-            else !isLoadingParent && handleReturnGiftCard()
-          }
-          if (payments?.find((payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.id !== 'debt' && maxKeys <= MAX_F_BUTTONS_QUANTITY)) {
-            const payment = payments?.find((payment) => payment?.shortcut === e.code)
-            isReturnDrawer ? addOrderPaymentReturn(payment) : addOrderPayment(payment)
-          }
-        }}
-        anchor='right'
-        elevation={1}
-        className={`${classes.drawer} ${half ? classes.half : ''}`}
-      >
-        <Box className={classes.wrapper}>
-          {!noCheck && (
-            <Box maxWidth='25%'>
+    <Box hidden>
+      <Box width='calc(100% + 32px)' mx={-2} mt={-4}>
+        <Drawer
+          open={isOrderDrower}
+          onClose={() => setIsOrderDrower(false)}
+          onKeyDown={(e) => {
+            if (e.code === 'KeyL') {
+            }
+            if (
+              payments?.find((payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.id === 'debt' && maxKeys <= MAX_F_BUTTONS_QUANTITY)
+            ) {
+              setOpenDebt(true)
+            }
+            if (
+              payments?.find(
+                (payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.payment_type?.id === paymeGoId && maxKeys <= MAX_F_BUTTONS_QUANTITY
+              )
+            ) {
+              if (!orderPayments?.length) setPayme(true)
+              return
+            }
+            if (
+              payments?.find((payment) => payment?.shortcut === e.code && !payment?.disabled && payment?.id !== 'debt' && maxKeys <= MAX_F_BUTTONS_QUANTITY)
+            ) {
+              const payment = payments?.find((payment) => payment?.shortcut === e.code)
+              isReturnDrawer ? addOrderPaymentReturn(payment) : addOrderPayment(payment)
+            }
+          }}
+          anchor='right'
+          elevation={1}
+          className={`${classes.drawer} ${half ? classes.half : ''}`}
+        >
+          <FormProvider {...methods}>
+            {isSendToEPOS && <LoadingBlock position={'absolute'} bgColor={'#ffffff99'} width={'100%'} left='0' />}
+            <Box className={classes.wrapper}>
+              <Box width='calc(75% - 64px)' padding={'0 40px 0 0'}>
+                <Box mb={'40px'} display='flex' width={'100%'} justifyContent={'space-between'}>
+                  <Box
+                    width={'100%'}
+                    borderRadius={'16px'}
+                    boxShadow='0px 2px 8px 0px #0000000A'
+                    border={'1px solid'}
+                    padding={'24px'}
+                    borderColor={'bunker.100'}
+                    mr={'24px'}
+                  >
+                    <Typography fontSize={24} fontWeight={'700'} lineHeight={'32px'} color={'bunker.500'}>
+                      {t('total')}:
+                    </Typography>
+                    <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={'bunker.950'}>
+                      {thousandDivider(get(cartItemsList, 'total_amount'), 'сум')}
+                    </Typography>
+                  </Box>
+                  <Box
+                    borderRadius={'16px'}
+                    boxShadow='0px 2px 8px 0px #0000000A'
+                    border={'1px solid'}
+                    padding={'24px'}
+                    borderColor={'bunker.100'}
+                    width={'100%'}
+                  >
+                    <Typography fontSize={24} fontWeight={'700'} lineHeight={'32px'} color={'bunker.500'}>
+                      {maxAmount < 0 ? t('return') : t('should_pay')}
+                    </Typography>
+                    <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={maxAmount === 0 ? 'green.700' : 'red.700'}>
+                      {thousandDivider(Math.abs(maxAmount), 'сум')}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box>
+                  <Typography fontSize={16} fontWeight={'600'} lineHeight={'24px'} color={'bunker.700'}>
+                    To'lov turi:
+                  </Typography>
+                  <Grid container display={'flex'}>
+                    {get(paymentTypesList, 'data.data', []).map((item) => (
+                      <Grid item sx='3' sm='3' lg='3' xl='3' xs='3' p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
+                        <Box
+                          display={'flex'}
+                          p={'20px'}
+                          sx={{
+                            '& p': {
+                              color: isVisiblePaymentType(item) ? 'bunker.600' : 'bunker.400',
+                            },
+                          }}
+                          height={'80px'}
+                          bgcolor={'bg.10'}
+                          justifyContent={'space-between'}
+                          borderRadius={'24px'}
+                        >
+                          <Typography fontSize={18} fontWeight={'600'} lineHeight={'40px'}>
+                            {get(item, 'name')}
+                          </Typography>
+                          <Typography alignItems={'center'} justifyContent={'center'} display={'flex'}>
+                            <Box
+                              sx={{
+                                color: '#bdbdbd',
+                                border: '2px solid #cfcfcf',
+                                height: '34px',
+                                display: 'flex',
+                                padding: '2px',
+                                ml: '5px',
+                                minWidth: '34px',
+                                alignItems: 'center',
+                                borderRadius: '8px',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              {getPaymentTypeHotKeyLabel(get(item, 'name'))}
+                            </Box>
+                          </Typography>
+                          {/* <AddPaumentTypeIcon color={isVisiblePaymentType(item) ? '#2558FF' : '#AFD5FF'} /> */}
+                        </Box>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+                <Box>
+                  <Grid container width={'100%'} display={'flex'}>
+                    {mpaddedPaymentsList?.map((el, index) => (
+                      <Grid item sx='3' sm='3' lg='3' xl='3' xs='3' m={'3'} key={el.id}>
+                        {el?.name ? (
+                          <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.box}>
+                            <div className={classes.boxHeader}>
+                              <Typography lineHeight={'24px'} fontSize={'16px'} fontWeight={'600'} color={'bunker.950'} id='payment-type'>
+                                {el.name}
+                              </Typography>
+                              <Box display='flex' alignItems='center'>
+                                <MuiButton
+                                  variant='primary'
+                                  onClick={() => removePaymentType(el.id)}
+                                  sx={() => ({
+                                    paddingRight: 0,
+                                    paddingLeft: 1,
+                                  })}
+                                >
+                                  <RemovePaymentIcon color={theme.palette.black} />
+                                </MuiButton>
+                              </Box>
+                            </div>
+                            <div className={classes.boxBody}>
+                              <PaymentMethodInput
+                                id={el.id}
+                                index={el.id}
+                                classes={classes}
+                                isLast={mpaddedPaymentsList.filter((el) => el.name)?.length - 1 == index}
+                                lastPaymentInput={(el) => (lastPaymentInput.current = el)}
+                                item={el}
+                                isReturnDrawer={true}
+                                removePaymentType={removePaymentType}
+                                cashbackPaymentPercentage={1}
+                                paymentsList={paymentsList}
+                                setPaymentsList={(el) => {
+                                  setPaymentsList(el), setHasChange(true)
+                                }}
+                                totalPrice={1}
+                                clientInfo={'clientInfo'}
+                                max={maxAmount}
+                                totalAmount={get(cartItemsList, 'total_amount')}
+                                paymentAmount={paymentAmount}
+                                disabled={false}
+                                webkassaOn={true}
+                              />
+                            </div>
+                          </Box>
+                        ) : (
+                          <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.placeholder}></Box>
+                        )}
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+              </Box>
               <Box
-                mx={-2}
-                mt={-4}
-                style={{
-                  // transform: 'rotateX(180deg)',
-                  width: 320,
+                maxWidth='400px'
+                sx={{
+                  display: 'flex',
+                  width: '355px',
+                  overflowY: 'scroll',
+                  maxHeight: '75vh',
                 }}
               >
-                <RippedPaperItem
-                  id='cheque_of_orders'
-                  data={cheque}
-                  noFormControl
-                  discount={discount}
-                  orderItems={cartItems}
-                  totalPriceWithoutDiscount={totalPriceWithoutDiscount}
-                  totalPrice={totalPrice}
-                  shop={shopDetails}
-                  user={user}
-                  clientName={`${clientInfo?.first_name || ''} ${clientInfo?.last_name || ''}`}
-                  sellers={sellers}
-                  returnItems={returnItems}
-                  orderNumber={orderNumber}
-                  eposTransaction={eposTransaction}
-                  webkassaTransaction={webkassaTransaction}
-                  eposOn={eposOn && eposChecked}
-                  webkassaOn={webkassaOn}
-                />
-              </Box>
-            </Box>
-          )}
-          <Box ml={half ? 0 : 10} className={classes.body}>
-            <Box width='100%' display='flex' justifyContent='space-between'>
-              <Button id='cancel-button' secondary adornmentStart={<BackArrowIcon />} className={classes.backBtn} onClick={closeDrawer}>
-                {t('buttons.back')}
-                <ShortcutWrapper color='#BDBDBD' margin='0 0 0 8px' shortcut='B' />
-              </Button>
-
-              <Box display='flex'>
-                {!!clientInfo && loyaltyProgramType === 'CASHBACK' && !!cashbackPercent && (
-                  <ButtonWithSwitch control={control} title={`${t('loyalty_program.cashback')} ${cashbackPercent}%`} defaultValue={true} name='with_cashback' />
-                )}
-                {eposOn && (
-                  <Box className={classes.checkboxContainer}>
-                    <Checkbox
-                      checked={eposChecked}
-                      onChange={() => setEposChecked((prev) => !prev)}
-                      className={classes.checkbox}
-                      icon={<FontAwesomeIcon icon={faCircle} style={{ color: theme.palette.blue[500] }} />}
-                      checkedIcon={<FontAwesomeIcon icon={faCheckCircle} style={{ color: theme.palette.blue[500] }} />}
-                    />
-                  </Box>
-                )}
-                <Box style={{ display: 'flex', flexDirection: 'row' }} width={196}>
-                  <button
-                    id='BUTTON_WITHOUT_HANDLEPRINT'
-                    type='submit'
-                    onClick={() => {
-                      accessToPrint.current = false
-                      onSubmit()
-                    }}
-                    disabled={returnItems.length ? overallAmount !== 0 : overallAmount > 0 || isLoading}
-                    style={{
-                      position: 'absolute',
-                      right: '500px',
-                      width: '1px',
-                      height: '1px',
-                      opacity: '0',
-                    }}
-                  >
-                    .
-                  </button>
-                  {!orderNewRoute && (
-                    <Button
-                      id='pay-button'
-                      primary
-                      fullWidth
-                      type='submit'
-                      onClick={() => {
-                        if (isAutoIncome) {
-                          setOpenAutoIncome(true)
-                          return
-                        }
-                        onSubmit()
-                      }}
-                      disabled={returnItems.length ? (overallAmount || 0) !== 0 : overallAmount > 0 || isLoading}
-                      isLoading={isLoading}
-                    >
-                      {t('buttons.pay')}
-                      <ShortcutWrapper color={orderPayments?.length ? '#ffffff' : '#BDBDBD'} margin='0 0 0 8px' shortcut='L' />
-                    </Button>
-                  )}
+                <Box
+                  mx={-2}
+                  mt={'-3px'}
+                  style={{
+                    padding: '20px',
+                  }}
+                  ref={printContainer}
+                >
+                  <RippedPaperItem
+                    qrcodeUrl={qrcodeUrl}
+                    qrcode='pending'
+                    paymentsList={paymentsList}
+                    cartItemsList={cartItemsList}
+                    id='cheque_of_orders'
+                    cashBoxDetails={cashBoxDetails}
+                    customerId={customerId}
+                    noFormControl
+                    printContainer={printContainer}
+                  />
                 </Box>
               </Box>
             </Box>
-            <Box display='flex' mt={4.5}>
-              <Box flex='0 0 50%'>
-                <h3 className={classes.priceTitle}>{t('menu.sales.new.overall')}:</h3>
-                <span id='total-price' className={classes.price}>
-                  {numberToPrice(totalPrice)}
-                </span>
+
+            <LoadingButton
+              sx={{ minHeight: '48px !important ', display: 'flex' }}
+              variant='contained'
+              loading={isSendToEPOS}
+              disabled={maxAmount > 0}
+              onClick={() => handleFinish()}
+            >
+              {t('menu.orders.new_order.cart_container.pay')}
+              <Box
+                sx={{
+                  color: '#fff',
+                  border: '2px solid #fff',
+                  height: '34px',
+                  display: 'flex',
+                  padding: '2px',
+                  ml: '15px',
+                  minWidth: '34px',
+                  fontSize: '12px',
+                  alignItems: 'center',
+                  borderRadius: '8px',
+                  justifyContent: 'center',
+                }}
+              >
+                F12
               </Box>
-              {overallAmount < 0 ? (
-                returnItems.length > 0 ? (
-                  <Box flex='0 0 50%'>
-                    <h3 className={classes.priceTitle}>{t('menu.sales.new.to_pay')}:</h3>
-                    <span id='for-payment' className={classes.price}>
-                      {numberToPrice(overallAmount)}
-                    </span>
-                  </Box>
-                ) : (
-                  <Box flex='0 0 50%'>
-                    <h3 className={`${classes.priceTitle} ${classes.paid} ${classes.change}`}>{t('menu.sales.new.surrender')}:</h3>
-                    <span id='cashback' className={`${classes.price} ${classes.paid} ${classes.change}`}>
-                      {numberToPrice(Math.abs(overallAmount))}
-                    </span>
-                  </Box>
-                )
-              ) : (
-                <Box flex='0 0 50%'>
-                  <h3 className={`${classes.priceTitle} ${classes.paid}`}>{t('menu.sales.new.to_pay')}:</h3>
-                  <span className={`${classes.price} ${classes.paid}`}>{numberToPrice(overallAmount)}</span>
-                </Box>
-              )}
-            </Box>
-            <Box mt={4} display='flex' flexWrap='wrap'>
-              {payments?.map((item, index) => {
-                const disabled =
-                  overallAmount === 0 ||
-                  (orderPayments.some((res) => res.company_payment_type_id === 'debt') && item?.id === 'debt') ||
-                  (isReturnDrawer && item?.id === 'debt')
-
-                const webkassaReturnDisable =
-                  Math.abs(orderPayments?.find((el) => el.company_payment_type_id === item.id)?.paid_amount) === item.max_amount && webkassaOn
-
-                const canPayWithGo = !!!orderPayments?.length
-
-                return (
-                  <Box key={index} flex='0 0 32.3%' mr={1} mb={1}>
-                    <MuiButton
-                      fullWidth
-                      className={`${classes.paymentBtn} ${
-                        disabled || item?.disabled || webkassaReturnDisable || (!canPayWithGo && item?.name === 'Payme Go') ? classes.disabledPaymentBtn : ''
-                      }`}
-                      id='add-payment-button'
-                      disabled={disabled || item?.disabled || webkassaReturnDisable || (!canPayWithGo && item?.name === 'Payme Go')}
-                      onClick={() => {
-                        if (item?.payment_type?.id === paymeGoId) {
-                          setPayme(true)
-                          return
-                        }
-                        if (item?.id === 'debt') {
-                          setEditDebt({
-                            ...editDebt,
-                            amount: editDebt?.amount ? editDebt?.amount : overallAmount.toString(),
-                          })
-                          setOpenDebt(true)
-                        } else {
-                          isReturnDrawer ? addOrderPaymentReturn(item) : addOrderPayment(item)
-                        }
-                      }}
-                    >
-                      <div className={`${classes.cashIcon} ${disabled || (!canPayWithGo && item?.name === 'Payme Go') ? classes.disabledCashIcon : ''}`}>
-                        {item?.payment_type?.id === paymeGoId ? <PaymeSmallIcon /> : <CashIcon />}
-                      </div>
-                      <span id='payment-name' className={`${classes.paymentName} ${disabled ? classes.disabledPaymentName : ''}`}>
-                        {item.name}
-                        {index <= 10 && <ShortcutWrapper color='#BDBDBD' margin='0 0 0 8px' shortcut={item?.shortcut} />}
-                      </span>
-                      <PlusIcon className={disabled ? classes.disabledCashIcon : ''} />
-                    </MuiButton>
-                  </Box>
-                )
-              })}
-              {!giftCardsRoute && !giftCardPayment && (
-                <Box flex='0 0 32.3%' mr={1} mb={1}>
-                  <MuiButton
-                    id='gift-card'
-                    fullWidth
-                    className={`${classes.paymentBtn} ${!overallAmount && classes.disabledPaymentBtn}`}
-                    disabled={!overallAmount || isLoadingParent}
-                    onClick={() => {
-                      if (!isReturnDrawer) handleClickGiftCard()
-                      else handleReturnGiftCard()
-                    }}
-                  >
-                    <div className={`${classes.cashIcon}`}>
-                      <GiftCardIcon />
-                    </div>
-                    <span id='payment-name' className={`${classes.paymentName}`}>
-                      {t('menu.marketing.card')}
-                      {payments.length <= 10 && <ShortcutWrapper color='#BDBDBD' margin='0 0 0 8px' shortcut={`F${payments.length + 1}`} />}
-                    </span>
-                    <PlusIcon />
-                  </MuiButton>
-                </Box>
-              )}
-              {!!clientInfo && (
-                <Box flex='0 0 32.3%' mr={1} mb={1}>
-                  <MuiButton
-                    id='client-balance'
-                    fullWidth
-                    className={`${classes.paymentBtn} ${
-                      isCashbackDisabled || (!orderDetails?.data?.order_detail?.is_authorized && smsAuthRole) ? classes.disabledPaymentBtn : ''
-                    }`}
-                    disabled={isCashbackDisabled || (!orderDetails?.data?.order_detail?.is_authorized && smsAuthRole)}
-                    onClick={() => (isReturnDrawer ? addOrderPaymentReturn(clientInfo) : addOrderPayment(clientInfo))}
-                  >
-                    <div className={`${classes.cashIcon}`}>
-                      <UserFilledIcon />
-                    </div>
-                    <span className={`${classes.paymentName} ${classes.clientBalance}`}>
-                      <span>{t('menu.sales.all.balance')}</span>
-                      <span id='balance-amount' className={classes.balanceAmount}>
-                        {numberToPrice(calculateClientBalance())}
-                      </span>
-                    </span>
-                    <PlusIcon />
-                  </MuiButton>
-                </Box>
-              )}
-            </Box>
-            <Box display='flex' flexWrap='wrap' mt={4}>
-              {!!isReturnDrawer && !!totalOrderDebt && (
-                <Box className={classes.box}>
-                  <div className={classes.boxHeader}>
-                    <Typography id='payment-type'>{t('menu.sales.all.debt')}</Typography>
-                  </div>
-                  <div className={classes.boxBody}>
-                    <PaymentMethodInput
-                      classes={classes}
-                      item={{
-                        company_payment_type_id: 'debt',
-                        id: uuidv4(),
-                        paid_amount: -totalOrderDebt,
-                        returned_amount: 0,
-                        name: t('menu.sales.all.debt'),
-                      }}
-                      disabled
-                      minusMark
-                    />
-                  </div>
-                </Box>
-              )}
-              {orderPayments?.map((item, index) => (
-                <Box id={`payment-box${index}`} className={classes.box} key={index}>
-                  <div className={classes.boxHeader}>
-                    <Typography id='payment-type'>{item.name}</Typography>
-                    <Box display='flex' alignItems='center'>
-                      {item.company_payment_type_id === 'debt' && (
-                        <MuiButton
-                          onClick={() => {
-                            setOpenDebt(true)
-                            setEditDebt({
-                              ...editDebt,
-                              active: true,
-                            })
-                          }}
-                          sx={{ padding: 0 }}
-                        >
-                          <PencilIcon />
-                        </MuiButton>
-                      )}
-                      {item?.type === 'gift-card' && (
-                        <MuiButton onClick={() => setGiftCardId(item?.code)} sx={{ padding: 0 }}>
-                          <GiftCardInfo />
-                        </MuiButton>
-                      )}
-                      <MuiButton
-                        sx={() => ({
-                          paddingRight: 0,
-                          paddingLeft: 1,
-                        })}
-                        onClick={() => {
-                          dispatch(removeFromOrderPayment(item))
-                          if (item.company_payment_type_id === 'debt') {
-                            setEditDebt(intitalDebtInfo)
-                            deleteDebt(id)
-                          }
-                        }}
-                      >
-                        <RemovePaymentIcon />
-                      </MuiButton>
-                    </Box>
-                  </div>
-                  <div className={classes.boxBody}>
-                    <PaymentMethodInput
-                      id={item.company_payment_type_id === 'cashback' ? 'balance-payment-input' : 'payment-input'}
-                      index={index}
-                      classes={classes}
-                      item={item}
-                      isReturnDrawer={isReturnDrawer}
-                      cashbackPaymentPercentage={cashbackPaymentPercentage}
-                      orderPayments={orderPayments}
-                      totalPrice={isReturnDrawer ? -totalPrice : totalPrice}
-                      clientInfo={clientInfo}
-                      max={item?.type === 'gift-card' ? item?.max_amount : item.company_payment_type_id === 'cashback' ? loyalty_payment : not_loyalty_payment}
-                      disabled={item.company_payment_type_id === 'debt'}
-                      webkassaOn={webkassaOn}
-                    />
-                    {item?.type === 'gift-card' && (
-                      <Typography
-                        sx={(theme) => ({
-                          fontSize: '14px',
-                          color: theme.palette.gray[400],
-                          position: 'absolute',
-                          bottom: '12px',
-                        })}
-                      >
-                        {t('titles.from')} {numberToPrice(item?.max_amount)}
-                      </Typography>
-                    )}
-                  </div>
-                </Box>
-              ))}
-            </Box>
+            </LoadingButton>
+          </FormProvider>
+        </Drawer>
+      </Box>
+      <StyledDialog
+        backbtn={false}
+        onClose={() => {
+          setOpenScanDialog(false)
+        }}
+        customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpenScanDialog(false)} />}
+        buttonLabel={'ff'}
+        title={
+          <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.500'}>
+            {t('scanner')}
+          </Typography>
+        }
+        open={isOpenScanDialog}
+      >
+        <Box sx={{ padding: '40px', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+          <QrScanIcon width='64' />
+          <Typography mb={'16px'} justifyContent={'center'} textAlign={'center'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.950'}>
+            {t('new_order.app.pass_scan')}
+          </Typography>
+          <TextField
+            required
+            inputRef={(el) => (scannedBarcodeRef.current = el)}
+            fullWidth
+            borderRadius={'40px'}
+            setValue={() => {}}
+            uncontrolled
+            name='barcode-click'
+            onKeyDown={(e) => {
+              if (e.code == 'Enter') {
+                onSubmit(e.target.value)
+                scannedBarcodeRef.current.value = ''
+              }
+            }}
+            // label={'t('create_new_product.product_name')'}
+            placeholder={t('scanned_code.placeholder')}
+            sx={{ mb: 3 }}
+          />
+          <Box sx={{ display: 'flex', mt: '10px' }}>
+            <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.500'}>
+              {t('payment_type')}:
+            </Typography>
+            <Typography ml={'5px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'purple.500'}>
+              {paymentsList.find((el) => el.type === 'app')?.name}
+            </Typography>
           </Box>
         </Box>
-      </Drawer>
-      {/* <DebtDrawer
-        orderPayments={orderPayments}
-        open={openDebt}
-        setOpen={setOpenDebt}
-        clientInfo={clientInfo}
-        setClientInfo={setClientInfo}
-        setOpenClientCreateMini={setOpenClientCreateMini}
-        setOpenClientCard={setOpenClientCard}
-        setQuickCreateClientName={setQuickCreateClientName}
-        clientInputRef={clientInputRef}
-        createdClientId={createdClientId}
-        setCreatedClientId={setCreatedClientId}
-        overallAmount={overallAmount}
-        editDebt={editDebt}
-        setEditDebt={setEditDebt}
-      /> */}
-      <GiftCardDrawer isOpen={giftCardOpen} closeDrawer={handleClickGiftCard} modal />
-      <CertificateCardDrawer id={giftCardId} closeDrawer={() => setGiftCardId(null)} />
-      <PaymeGo open={payme} setOpen={setPayme} totalPrice={totalPrice} onSubmit={onSubmit} />
-    </>
+      </StyledDialog>
+    </Box>
   )
 }

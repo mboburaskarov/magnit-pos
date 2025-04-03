@@ -1,12 +1,12 @@
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { memo } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import Select, { components } from 'react-select'
-import { generateCustomStyles } from './SelectStyles'
 import DeleteIconBig from '../../src/assets/icons/DeleteIconBig'
 import DeleteSmallIcon from '../../src/assets/icons/DeleteSmallIcon'
-import { memo, useEffect } from 'react'
 import Label from '../Label'
+import { generateCustomStyles } from './SelectStyles'
 
 const SingleValue = ({ children, selectProps, ...props }) => {
   return (
@@ -73,6 +73,7 @@ export const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     display: 'flex',
     fontFamily: 'Gilroy',
+    overflow: 'hidden',
     alignItems: 'center',
     userSelect: 'none',
     fontWeight: 600,
@@ -80,6 +81,7 @@ export const useStyles = makeStyles((theme) => ({
 
     '&:hover': {
       backgroundColor: theme.palette.gray[101],
+      borderRadius: '10px',
     },
   },
 }))
@@ -252,6 +254,7 @@ function SelectSimple({
           onBlur={onBlur}
           openMenu={openMenu}
           filterOption={filterOption}
+          className='select'
         />
       ) : (
         <Controller

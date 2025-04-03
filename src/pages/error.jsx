@@ -1,5 +1,4 @@
 import { Box, Button, Typography } from '@mui/material'
-// import Button from 'stories/Button/Button'
 import { useState } from 'react'
 
 export default function ErrorPage({ errorData }) {
@@ -19,11 +18,7 @@ export default function ErrorPage({ errorData }) {
         sx={{ position: 'fixed', top: 0, left: 0, zIndex: 9999 }}
       >
         <Box>
-          <Typography
-            variant='h1'
-            color='primary'
-            style={{ fontSize: 48, lineHeight: '56px' }}
-          >
+          <Typography variant='h1' color='primary' style={{ fontSize: 48, lineHeight: '56px' }}>
             Something went wrong
           </Typography>
         </Box>
@@ -38,12 +33,7 @@ export default function ErrorPage({ errorData }) {
       </Box>
 
       <Box style={{ opacity: 0 }} zIndex={99991} position='fixed' bottom={0}>
-        <Button
-          setIsVIsible
-          fullWidth
-          onClick={() => setIsVIsible(!isVIsible)}
-          primary
-        >
+        <Button setIsVIsible fullWidth onClick={() => setIsVIsible(!isVIsible)} primary>
           Reload
         </Button>
       </Box>
@@ -51,35 +41,19 @@ export default function ErrorPage({ errorData }) {
         <Box>
           <Box>
             <Box marginTop='10vh' marginLeft='10vw'>
-              <Box
-                width={'80vw'}
-                display={'flex'}
-                alignItems={'center'}
-                justifyContent={'space-between'}
-              >
-                <Typography
-                  variant='h1'
-                  color='primary'
-                  style={{ fontSize: 48, lineHeight: '56px' }}
-                >
-                  Error message Buchet
+              <Box width={'80vw'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
+                <Typography variant='h1' color='primary' style={{ fontSize: 48, lineHeight: '56px' }}>
+                  Error message Pharma Cosmos
                 </Typography>
                 <Button onClick={() => window.location.reload()} primary>
                   Reload
                 </Button>
               </Box>
               <br />
-              <Typography
-                style={{ fontSize: 25, lineHeight: '26px', color: '#000' }}
-              >
-                {errorData?.error?.message}
-              </Typography>
+              <Typography style={{ fontSize: 25, lineHeight: '26px', color: '#000' }}>{errorData?.error?.message}</Typography>
               <br />
               {error.map((el, ind) => (
-                <Typography
-                  key={ind}
-                  style={{ lineHeight: '22px', color: '#000' }}
-                >
+                <Typography key={ind} style={{ lineHeight: '22px', color: '#000' }}>
                   {ind !== 0 ? '> at ' + el : el}
                 </Typography>
               ))}

@@ -2,21 +2,19 @@ name: Pharma-Frontend CI/CD
 
 on:
   push:
-    branches: [ dev ]
+    branches: [dev]
   pull_request:
-    branches: [ dev ]
-
+    branches: [dev]
 
 env:
   REPO_NAME: ${{ github.repository }}
   CONTAINER_NAME: pharma-frontend
   REGISTRY: ghcr.io
-  SSH_HOST: ${{ secrets.SSH_HOST_DEV }}
-  SSH_USER: ${{ secrets.SSH_USER_DEV }}
-  SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  SSH_PASS: ${{ secrets.SSH_PASS_DEV }}
+  SSH_HOST: ${{ secrets.DEV_SSH_HOST_DEV }}
+  SSH_USER: ${{ secrets.DEV_SSH_USER_DEV }}
+  SSH_KEY: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+  SSH_PASS: ${{ secrets.DEV_SSH_PASS_DEV }}
   PORT: 3000:3000
-
 
 jobs:
   build_and_push:
@@ -43,27 +41,26 @@ jobs:
         with:
           context: .
           push: true
-          tags: "${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ github.sha }}"
+          tags: '${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ github.sha }}'
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_NAME }}:buildcache,mode=max
-
 
   deploy:
     needs: build_and_push
     runs-on: ubuntu-latest
     permissions:
-        contents: read
-        packages: write
+      contents: read
+      packages: write
     steps:
       - name: Executing remote SSH commands to deploy
         uses: appleboy/ssh-action@master
         with:
-            host: "${{ env.SSH_HOST }}"
-            username: "${{ env.SSH_USER }}"
-            key: "${{ env.SSH_KEY }}"
-            script: |
-                echo ${{ secrets.GITHUB_TOKEN }} | docker login -u ${{ github.actor }} --password-stdin ${{ env.REGISTRY }}
-                docker pull "${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ github.sha }}"
-                docker stop "${{ env.CONTAINER_NAME }}" || true
-                docker rm "${{ env.CONTAINER_NAME }}" || true
-                docker run -d --name "${{ env.CONTAINER_NAME }}" -p "${{ env.PORT }}"  "${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ github.sha }}"
+          host: '${{ env.SSH_HOST }}'
+          username: '${{ env.SSH_USER }}'
+          key: '${{ env.SSH_KEY }}'
+          script: |
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login -u ${{ github.actor }} --password-stdin ${{ env.REGISTRY }}
+            docker pull "${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ github.sha }}"
+            docker stop "${{ env.CONTAINER_NAME }}" || true
+            docker rm "${{ env.CONTAINER_NAME }}" || true
+            docker run -d --name "${{ env.CONTAINER_NAME }}" -p "${{ env.PORT }}"  "${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ github.sha }}"

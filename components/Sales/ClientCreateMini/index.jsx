@@ -1,6 +1,6 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { get } from 'lodash'
+import { makeStyles, useTheme } from '@mui/styles'
+import { get, size } from 'lodash'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -11,6 +11,7 @@ import useDidUpdate from '../../../src/hooks/useDidUpdate'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import MainDetails from './mainDetails'
+import dayjs from 'dayjs'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -20,9 +21,6 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: '660px',
       borderRadius: '24px 0 0 24px',
       backgroundColor: theme.palette.background.default,
-      '& form': {
-        // position: 'relative',
-      },
     },
   },
   header: {
@@ -59,36 +57,46 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       methods.reset(clientData)
     }
   }, [clientData])
-  const { mutate: handleSaleCreate, isLoading: isCreateCustomer } = useMutation(requests.createCustomer, {
+  useEffect(() => {
+    methods.reset()
+  }, [])
+
+  const { mutate: handleCustomerCreate, isLoading: isCreateCustomer } = useMutation(requests.createCustomer, {
     onSuccess: ({ data }) => {
       closeDrawer(false)
-      setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance') })
-      success('Продукт успешно создан!')
+      methods.reset()
+
+      setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance', 0) })
+      success('Клиент создан!')
     },
     onError: (err) => {
-      error('Ошибка при создании товара!')
+      error('Ошибка при Клиент создан!')
       console.log('err', err)
     },
   })
 
   const onSubmit = (data) => {
+    if (size(get(data, 'phone')) < 14) {
+      error('Номер телефона меньше 14')
+    }
     const requestBody = {
-      birthday: data?.date_of_birth,
+      birthday: data?.date_of_birth ? dayjs(get(data, 'date_of_birth')).format('YYYY.MM.DD') : null,
       created_by: userData?.id,
       first_name: data?.first_name,
       gender: data?.gender,
       last_name: data?.last_name,
-      phone: [data?.dial_code + data?.phone?.replace(/[()\s]/g, '')],
-      tag_id: data?.tags,
+      store_id: get(userData, 'store.id'),
+      phone: '998' + data?.phone?.replace(/[()\s]/g, ''),
+      tag_id: data?.tags?.value,
     }
-    handleSaleCreate(requestBody)
+    handleCustomerCreate(requestBody)
   }
 
   const onError = (err) => {
     error('alerts.enter_all_required_fields')
     console.log('err', err)
   }
-
+  const theme = useTheme()
   return (
     <Drawer className={classes.drawer} open={openDrawer} onClose={closeDrawer} anchor='right' elevation={1}>
       <Box height={'100%'}>
@@ -96,7 +104,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
           <Typography variant='h4' className={classes.title}>
             {t('menu.clients.new_client')}
           </Typography>
-          <CloseIcon onClick={() => closeDrawer(false)} />
+          <CloseIcon color={theme.palette.black} onClick={() => closeDrawer(false)} />
         </Box>
         <FormProvider {...methods}>
           <form id='create-client-form-mini' onSubmit={methods.handleSubmit(onSubmit, onError)}>
@@ -119,7 +127,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
               }}
             >
               <Button primary fullWidth size='small' style={{ borderRadius: 16 }} isLoading={isCreateCustomer} form='create-client-form-mini' type='submit'>
-                {t('menu.clients.create')}
+                {t('create')}
               </Button>
             </Box>
           </form>

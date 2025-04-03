@@ -1,6 +1,7 @@
 import { Box, TextField as MuiTextField } from '@mui/material'
 import { useFormContext } from 'react-hook-form'
 import Label from '../Label'
+import { get } from 'lodash'
 
 const TextField = ({
   placeholder,
@@ -18,6 +19,7 @@ const TextField = ({
   required = false,
   name,
   type,
+  defaultValue,
   label,
   disabled,
   dashed,
@@ -50,6 +52,7 @@ const TextField = ({
           onChange: (e) => setValue(e.target.value),
         })}
         multiline={multiline}
+        defaultValue={defaultValue}
         rows={4}
         onKeyDown={onKeyDown}
         autoFocus={autoFocus}
@@ -84,7 +87,7 @@ const TextField = ({
               zIndex: name === 'phone' ? 2 : 0,
             },
             '&.Mui-focused': {
-              bgcolor: bgcolor ? '#' + bgcolor : !white ? 'background.default' : 'white',
+              bgcolor: bgcolor ? '#' + bgcolor : !white ? 'background.gray' : 'background.gray',
             },
           },
           '& .MuiOutlinedInput-input': {

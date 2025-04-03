@@ -3,7 +3,7 @@ export const countries = [
     name: '🇺🇿 Узбекистан (+998)',
     flag: '🇺🇿',
     code: 'UZ',
-    dial_code: '+998',
+    dial_code: '998',
     mask: `(00) 000 00 00`,
   },
   {

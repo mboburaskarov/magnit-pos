@@ -8,11 +8,12 @@ const OutLineTextField = ({
   InputProps,
   uncontrolled,
   value,
-  setValue,
+  setValue = () => {},
   sx,
   borderRadius,
   white,
   onKeyDown,
+  defaultValue,
   withShadow,
   autoFocus,
   required = false,
@@ -26,14 +27,47 @@ const OutLineTextField = ({
   multiline,
   centerMode,
   onBoxClick = () => {},
+  onBlur = () => {},
   bgcolor,
   autoComplete,
   ...props
 }) => {
   const methods = useFormContext()
   const onlyDisplay = dashed && disabled
+
+  // Custom onKeyDown to restrict unwanted characters
+  const handleKeyDown = (event) => {
+    if (type === 'number') {
+      // Prevent unwanted keys
+      const invalidKeys = ['e', 'E', '+', '-', '.']
+      if (invalidKeys.includes(event.key)) {
+        event.preventDefault()
+      }
+    }
+
+    // Execute any additional onKeyDown logic provided by props
+    if (onKeyDown) {
+      onKeyDown(event)
+    }
+  }
+
   return (
-    <Box onClick={onBoxClick} width={fullWidth && '100%'}>
+    <Box
+      onClick={onBoxClick}
+      width={fullWidth && '100%'}
+      sx={
+        multiline && {
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '20px',
+            height: 'auto',
+            padding: '0',
+            '&:hover': {
+              backgroundColor: 'gray.100',
+            },
+          },
+        }
+      }
+    >
       {!onlyDisplay && label && <Label required={required}>{label}</Label>}
       <MuiTextField
         disabled={disabled}
@@ -44,31 +78,37 @@ const OutLineTextField = ({
         placeholder={placeholder}
         endAdornment={
           <InputAdornment position='end'>
-            <IconButton
-            // aria-label={
-            //   // showPassword ? 'hide the password' : 'display the password'
-            // }
-            // onClick={handleClickShowPassword}
-            // onMouseDown={handleMouseDownPassword}
-            // onMouseUp={handleMouseUpPassword}
-            >
-              {endAdornmentText}
-              {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
-            </IconButton>
+            <IconButton>{endAdornmentText}</IconButton>
           </InputAdornment>
         }
         inputRef={inputRef}
         autoComplete={autoComplete ? autoComplete : name === 'shopType' ? 'off' : 'on'}
-        InputProps={InputProps}
+        InputProps={{
+          ...InputProps,
+          inputProps: { min: 0, max: 100 }, // Enforce min/max at input level
+        }}
         {...(!uncontrolled && methods?.register(name, { required }))}
         {...(uncontrolled && {
           value: onlyDisplay && !value ? 'Неопределенный' : value,
           onChange: (e) => setValue(e.target.value),
         })}
         multiline={multiline}
+        onBlur={(e) => {
+          onBlur
+        }}
         rows={4}
-        onKeyDown={onKeyDown}
+        onWheel={(e) => {
+          e.target.blur()
+
+          e.stopPropagation()
+
+          setTimeout(() => {
+            e.target.focus()
+          }, 0)
+        }}
+        onKeyDown={handleKeyDown}
         autoFocus={autoFocus}
+        defaultValue={defaultValue}
         fullWidth={fullWidth}
         error={!!methods?.formState?.errors?.[name]}
         sx={(theme) => ({

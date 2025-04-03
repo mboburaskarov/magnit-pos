@@ -1,41 +1,52 @@
-import LayoutWithNavbar from '../../layouts/LayoutWithNavbar'
+import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import SettingsPage from '../../pages/settings'
-import BannersPage from '../../pages/settings/banners'
-import CategoriesPage from '../../pages/settings/categories'
-import HashtagsPage from '../../pages/settings/hashtags'
-import RegionsPage from '../../pages/settings/regions'
+
+import Profile from '../../pages/settings/profile'
 import RolesPage from '../../pages/settings/roles'
-import UsersPage from '../../pages/settings/users'
+import StoresPage from '../../pages/settings/stores'
+import VendorsPage from '../../pages/settings/vendors'
+import CashBoxsPage from '../../pages/settings/cashbox'
+import ActionListPage from '../../pages/settings/roles/actions'
+import CompanyPage from '../../pages/settings/company'
 
 const settingsRoutes = {
   path: 'settings',
-  element: <LayoutWithNavbar />,
+  element: <LayoutWithHeaderNavbar />,
+
   children: [
     {
       path: '',
       element: <SettingsPage />,
     },
     {
-      path: 'banners',
-      element: <BannersPage />,
+      path: 'profile',
+      element: <Profile />,
+    },
+    {
+      path: 'company',
+      element: <CompanyPage />,
+    },
+    {
+      path: 'stores',
+      element: <StoresPage />,
     },
     {
       path: 'roles',
       element: <RolesPage />,
     },
     {
-      path: 'regions',
-      element: <RegionsPage />,
+      path: 'actions',
+      element: <ActionListPage />,
+    },
+
+    {
+      path: 'vendors',
+      element: <VendorsPage />,
     },
     {
-      path: 'categories',
-      element: <CategoriesPage />,
+      path: 'cashbox',
+      element: <CashBoxsPage />,
     },
-    {
-      path: 'hashtags',
-      element: <HashtagsPage />,
-    },
-    { path: 'users', element: <UsersPage /> },
   ],
 }
 

@@ -88,7 +88,7 @@
   margin-bottom: 0;
 }
 .datepicker .react-datepicker__day--outside-month {
-  color: #bdbdbd;
+  color: #fe5;
 }
 .datepicker .react-datepicker__day--selected {
   background-color: #1f78ff;

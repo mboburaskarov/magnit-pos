@@ -55,6 +55,16 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.red[500],
     fontSize: 36,
   },
+  avatar: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    objectPosition: 'center top',
+  },
+  shopname: {
+    marginTop: 2,
+    color: theme.palette.gray[400],
+  },
 }))
 
 export default function UserLogOutDrawer({ isOpen, closeDrawer, goBack }) {

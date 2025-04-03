@@ -1,5 +1,5 @@
-import { makeStyles } from '@mui/styles'
 import { useTheme } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import paletteDark from '../../src/assets/theme/paletteDark'
 import paletteLight from '../../src/assets/theme/paletteLight'
 
@@ -36,6 +36,7 @@ export const generateCustomStyles = (props = {}) => {
     inicatoorRight = false,
     solidBorder,
     mini,
+    minHeight = '48px',
     placeholderWrap = true,
   } = props
 
@@ -47,9 +48,8 @@ export const generateCustomStyles = (props = {}) => {
     valueContainer: (provided) => ({
       ...provided,
       width: '100%',
-      minHeight: mini ? 40 : 46,
+      minHeight: mini ? 40 : 44,
       padding: 1,
-      // backgroundColor: 'inherit',
       borderRadius: '40px',
     }),
     control: (provided, state) => ({
@@ -58,19 +58,20 @@ export const generateCustomStyles = (props = {}) => {
       minWidth: minWidth || 296,
       width: '100%',
       display: 'flex',
-      minHeight: mini ? 40 : 48,
+      minHeight: mini ? 40 : minHeight,
       fontWeight: 600,
-      backgroundColor: white ? palette.background.default : palette.gray[50],
+      overflow: 'hidden',
+      backgroundColor: white ? palette.background.default : palette.white,
       '&:hover': {
-        backgroundColor: white ? palette.background.default : palette.gray[101],
+        backgroundColor: white ? palette.gray[10] : palette.gray[10],
       },
       boxShadow: state.isFocused
         ? `0 0 0 2px ${palette.orange[500]}`
         : error
         ? `0 0 0 2px red`
-        : `0 0 0 ${solidBorder ? 1 : 0}px ${dashed ? 'transparent' : palette.gray[300]}`,
-      border: dashed ? `1px dashed ${palette.gray[300]}` : `1px solid ${palette.bunker[100]}`,
-      border: borderNone ? 'none' : `1px solid ${palette.bunker[100]}`,
+        : `0 0 0 ${solidBorder ? 2 : 0}px ${dashed ? 'transparent' : palette.bunker[100]}`,
+      border: dashed ? `1px dashed ${palette.gray[300]}` : `2px solid ${palette.bunker[100]}`,
+      border: borderNone ? 'none' : `2px solid ${palette.bunker[100]}`,
       fontFamily: 'Gilroy',
       cursor: state.isMulti ? 'text' : 'pointer',
     }),
@@ -99,10 +100,8 @@ export const generateCustomStyles = (props = {}) => {
     }),
     singleValue: (provided) => ({
       ...provided,
-      // paddingLeft: 16,
       paddingLeft: 8,
       fontSize: 17,
-      // fontSize: 20,
       fontWeight: 500,
       fontFamily: 'Gilroy',
       color: palette.dark[500],
@@ -116,8 +115,8 @@ export const generateCustomStyles = (props = {}) => {
       lineHeight: '19px',
       fontWeight: 600,
       color: palette.gray[600],
-      height: 40,
-      borderRadius: 12,
+      height: 34,
+      borderRadius: '20px',
       backgroundColor: white ? palette.gray[100] : palette.background.default,
       fontFamily: 'Gilroy',
       cursor: 'pointer',
@@ -148,9 +147,8 @@ export const generateCustomStyles = (props = {}) => {
     indicatorsContainer: (provided, state) => ({
       ...provided,
       display: state?.isDisabled ? 'none' : 'flex',
-      // backgroundColor: 'inherit',
       borderTopRightRadius: '50px',
-
+      marginRight: '5px',
       borderBottomRightRadius: '50px',
       '& > div:nth-last-of-type(1)': {
         display: state.isMulti ? 'none !important' : 'flex',
@@ -163,6 +161,7 @@ export const generateCustomStyles = (props = {}) => {
     indicatorContainer: (provided) => ({
       ...provided,
       padding: '0 8px',
+      backgroundColor: '#fe5000',
     }),
     dropdownIndicator: (base) => ({
       ...base,
@@ -179,8 +178,8 @@ export const generateCustomStyles = (props = {}) => {
       backgroundColor: palette.background.default,
       border: 'none',
       boxShadow: theme.boxShadow['16-8'],
-      overflow: 'hidden',
-      zIndex: 100,
+      // overflow: 'hidden',
+      zIndex: 9999999999999,
     }),
     menuList: (base) => ({
       ...base,

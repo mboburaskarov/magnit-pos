@@ -4,6 +4,7 @@ import React from 'react'
 const useStyles = makeStyles((theme) => ({
   btn: {
     cursor: 'pointer',
+    backgroundColor: theme.palette.background.gray,
 
     '&:hover': {
       background: `${theme.palette.bunker[100]} !important`,

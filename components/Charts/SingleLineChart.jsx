@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
 import { Skeleton } from '@mui/material'
-import { XAxis, YAxis, CartesianGrid, Tooltip, Bar, BarChart, ResponsiveContainer } from 'recharts'
+import { XAxis, YAxis, CartesianGrid, Tooltip, Bar, BarChart, ResponsiveContainer, AreaChart, Area } from 'recharts'
 import CustomizedAxisTick from './ChartAxisTick'
 import ChartPlaceholder from './ChartPlaceholder'
 import ChartSlider from './ChartSlider'
@@ -12,20 +12,21 @@ import getShorterNumber from '../../utils/getShorterNumber'
 import { getDateFromDateTime, getTimeFromDateTime } from '../../utils/parseDateTime'
 import LoadingBlurry from '../LoadingBlurry'
 import thousandDivider from '../../utils/thousandDivider'
+import { useTranslation } from 'react-i18next'
 
 const detailingOptions = [
-  { name: 'By 30min', value: '30min' },
-  { name: 'By hour', value: 'hour' },
-  { name: 'By day', value: 'day' },
-  { name: 'By week', value: 'week' },
-  { name: 'By month', value: 'month' },
-  { name: 'By year', value: 'year' },
+  { name: 'Это 30 минут', value: '30min' },
+  { name: 'Это час', value: 'hour' },
+  { name: 'Сегодня', value: 'day' },
+  { name: 'На этой неделе', value: 'week' },
+  { name: 'Это месяц', value: 'month' },
+  { name: 'В этом году', value: 'year' },
 ]
 
 const purpleColor = '#a811d6'
 const blueColor = '#0F6FD7'
 const newColor = '#FE5000' // The color you want to use
-
+const orangeColor = '#ffb18e'
 const Body = ({ children, isLoading, isEmpty }) => (
   <Box
     position='relative'
@@ -49,7 +50,7 @@ const Body = ({ children, isLoading, isEmpty }) => (
 )
 
 export default function SingleBarChart({
-  title = 'Barcha sotuvlar',
+  title,
   measurmentUnit = '',
   colorCode,
   data,
@@ -62,6 +63,7 @@ export default function SingleBarChart({
   sortBy,
   id,
 }) {
+  const { t } = useTranslation()
   const [chartData, setChartData] = useState([])
   const [sliderValue, setSliderValue] = useState([0, 100])
 
@@ -76,11 +78,12 @@ export default function SingleBarChart({
     }
   }, [data, detalization])
   const maxValue = Math.max(...chartData.slice(sliderValue[0], sliderValue[1]).map((item) => item?.count))
+  console.log(dataKey, chartData)
+
   return (
     <Box
       sx={(theme) => ({
         border: 1,
-        borderRadius: 4,
         borderColor: '#A4A5AB33',
         width: boxWidth,
         minHeight: 432,
@@ -110,20 +113,8 @@ export default function SingleBarChart({
                   color: theme.palette.dark[500],
                 })}
               >
-                {title}
+                {t('all_sales')}
               </Typography>
-              {/* {!!data?.total && (
-                <Typography
-                  sx={(theme) => ({
-                    fontSize: 24,
-                    lineHeight: '28px',
-                    color: 'green.500',
-                    marginLeft: 2,
-                  })}
-                >
-                  {thousandDivider(data?.total || 0)} {measurmentUnit}
-                </Typography>
-              )} */}
             </Box>
           )}
           <SelectSimple
@@ -131,6 +122,7 @@ export default function SingleBarChart({
             name={id + 'detailing'}
             placeholder='Детализация'
             uncontrolled
+            isSearchable={false}
             onChange={setDetalization}
             minWidth={130}
             value={detalization}
@@ -152,37 +144,61 @@ export default function SingleBarChart({
             beforeContent=''
           />
         </Box>
-        <Body id={id + 'body'} isLoading={isLoading} isEmpty={data?.values < 1}>
-          <ResponsiveContainer id={id} width='100%' height={350}>
-            <BarChart height={300} data={chartData.slice(sliderValue[0], sliderValue[1])}>
-              <CartesianGrid strokeDasharray='0' vertical={false} strokeWidth={2} stroke={paletteLight.gray[100]} strokeLinecap='round' />
+        <Body isLoading={isLoading} isEmpty={!chartData.length}>
+          <ResponsiveContainer width='100%' height={350}>
+            <AreaChart data={chartData.slice(sliderValue[0], sliderValue[1])}>
+              <defs>
+                <linearGradient id='gradient-fill' x1='0' y1='0' x2='0' y2='1'>
+                  <stop offset='0%' stopColor={orangeColor} stopOpacity={0.3} />
+                  <stop offset='100%' stopColor={orangeColor} stopOpacity={0.1} />
+                </linearGradient>
+                {/* <linearGradient id='ikki' x1='0' y1='0' x2='0' y2='1'>
+                  <stop offset='0%' stopColor={orangeColor} stopOpacity={0.3} />
+                  <stop offset='100%' stopColor={orangeColor} stopOpacity={0.1} />
+                </linearGradient> */}
+              </defs>
+
+              <CartesianGrid strokeDasharray='3 3' vertical={false} />
               <XAxis
                 dataKey='start_date'
                 tickLine={false}
                 axisLine={false}
                 tick={<CustomizedAxisTick detalization={detalization} />}
-                tickFormatter={(value) =>
-                  detalization?.value === 'hour' || detalization?.value === '30min' ? getTimeFromDateTime(value) : getDateFromDateTime(value)
-                }
+                tickFormatter={(value) => getDateFromDateTime(value)}
               />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                tickCount={sortBy === 'COUNT' ? maxValue + 1 : 5}
-                tickFormatter={(value) => getShorterNumber(value, 0)}
-              />
+              <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => getShorterNumber(value, 0)} />
               <Tooltip
                 content={<DashboardTooltip measurmentUnit={measurmentUnit} detalization={detalization} />}
-                position={{ x: 100, y: -150 }}
+                // position={{ x: 100, y: -150 }}
                 wrapperStyle={{ zIndex: 11 }}
               />
-              <Bar
+              <Area
+                type='monotone'
                 dataKey={dataKey || 'value'}
-                fill={newColor} // Set the color of the bars to #FE5000
-                radius={[30, 30, 30, 30]} // Rounded bars
-                maxBarSize={30} // Max bar width
+                stroke={'#fe5000'}
+                fill='url(#gradient-fill)'
+                strokeWidth={3}
+                activeDot={{
+                  r: 6,
+                  stroke: orangeColor,
+                  strokeWidth: 2,
+                  fill: '#fff',
+                }}
               />
-            </BarChart>
+              {/* <Area
+                type='monotone'
+                dataKey={'all_orders2' || 'value'}
+                stroke={'#fe5000'}
+                fill='url(#ikki)'
+                strokeWidth={3}
+                activeDot={{
+                  r: 6,
+                  stroke: orangeColor,
+                  strokeWidth: 2,
+                  fill: '#fff',
+                }}
+              /> */}
+            </AreaChart>
           </ResponsiveContainer>
           <ChartSlider value={sliderValue} onChange={handleSliderChange} min={0} max={chartData?.length} />
         </Body>

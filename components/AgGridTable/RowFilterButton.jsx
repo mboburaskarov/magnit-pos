@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.default,
     border: `1px solid ${theme.palette.gray[300]}`,
     borderRadius: 16,
-    zIndex: '2',
+    zIndex: '20',
     boxShadow: 'none',
     overflow: 'hidden',
   },
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }))
-function RowFilterButton({ offsetSize, setOffsetSize, setOffsetIndex, eventMessage, id }) {
+function RowFilterButton({ totalCount, offsetIndex, offsetQuery, offsetSize, setOffsetSize, setOffsetIndex, eventMessage, id }) {
   const { t } = useTranslation()
   const classes = useStyles()
   const [open, setOpen] = useState(false)
@@ -73,12 +73,14 @@ function RowFilterButton({ offsetSize, setOffsetSize, setOffsetIndex, eventMessa
         <Paper className={classes.lineSortContainer}>
           <ClickAwayListener onClickAway={() => setOpen(false)}>
             <List className={classes.lineSortList}>
-              {[5, 10, 20, 30, 40, 50].map((opt) => (
-                <ListItem key={opt} component='button' className={classes.lineSortItem} onClick={() => changeOffsetSize(opt)}>
-                  <Typography>{opt} строк</Typography>
-                  {opt === offsetSize && <TickIcon />}
-                </ListItem>
-              ))}
+              {[5, 10, 20, 30, 40, 50]
+                .filter((n) => n < totalCount - (offsetIndex - 1) * offsetSize)
+                .map((opt) => (
+                  <ListItem key={opt} component='button' className={classes.lineSortItem} onClick={() => changeOffsetSize(opt)}>
+                    <Typography>{opt} строк</Typography>
+                    {opt === offsetSize && <TickIcon />}
+                  </ListItem>
+                ))}
             </List>
           </ClickAwayListener>
         </Paper>

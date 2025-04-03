@@ -5,7 +5,6 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    // minWidth: 600,
     backgroundColor: theme.palette.background.default,
     padding: '12px 12px 12px 16px',
     boxShadow: theme.boxShadow['32-12'],
@@ -22,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.gray[500],
     height: 48,
     marginBottom: 4,
-    // backgroundColor: theme.palette.gray[100],
     borderRadius: 32,
   },
   total_price: {
@@ -59,11 +57,11 @@ export default function DashboardTooltip({ active, payload, label, isMultiLine, 
       <div className={classes.root}>
         <div className={classes.label}>
           <Typography>
-            {detalization.value === 'hour' || detalization.value === '30min'
+            {detalization?.value === 'hour' || detalization?.value === '30min'
               ? label
-              : detalization.value === 'week'
+              : detalization?.value === 'week'
               ? `${dayjs(label, 'DD.MM.YYYY | HH:mm').format('DD.MM.YYYY')} - ${dayjs(label, 'DD.MM.YYYY | HH:mm').day(7).format('DD.MM.YYYY')}`
-              : detalization.value === 'month'
+              : detalization?.value === 'month'
               ? `${dayjs(label, 'DD.MM.YYYY | HH:mm').format('DD.MM.YYYY')} - ${dayjs(label, 'DD.MM.YYYY | HH:mm').endOf('month').format('DD.MM.YYYY')}`
               : dayjs(label, 'DD.MM.YYYY | HH:mm').format('DD.MM.YYYY')}
           </Typography>
@@ -80,7 +78,6 @@ export default function DashboardTooltip({ active, payload, label, isMultiLine, 
                 if (aSize > bSize) {
                   return -1
                 }
-                // a должно быть равным b
                 return 0
               })
               .map((item, index) => (

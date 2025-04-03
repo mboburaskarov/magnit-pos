@@ -1,62 +1,110 @@
-import { memo } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import EditIcon from '../../../assets/icons/EditIcon'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import { get } from 'lodash'
+import { memo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import CheckAccess from '../../../../components/CheckAccess'
+import StyledTooltip from '../../../../components/StyledTooltip'
+import thousandDivider from '../../../../utils/thousandDivider'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import EditIcon from '../../../assets/icons/EditIcon'
 
-export default function tableHeaderSelector({ rolesColumns, setOpenConfirmDialog, setIsDrawerOpen }) {
-  const columns = rolesColumns?.map((el) => {
-    if (el.field === 'name') {
+const SimpleText = ({ data, width = 'auto', rowIndex, type, withDevider, currency }) => {
+  return (
+    <Typography sx={{ maxWidth: width, textOverflow: 'ellipsis', overflow: 'hidden', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
+      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
+    </Typography>
+  )
+}
+
+export default function tableHeaderSelector({ productsColumns, t, selectVendors, values, setOpenConfirmDialog }) {
+  const navigate = useNavigate()
+  const columns = productsColumns?.map((el) => {
+    if (el.field === 'number') {
       return {
         ...el,
-        headerName: 'Наименования',
+        headerName: '№',
         colId: el.field,
-        cellRenderer: memo(({ data }) => {
+        cellRenderer: memo(({ rowIndex, api, ...p }) => {
+          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+
           return (
-            <Box sx={{ bgcolor: 'transparent', py: 1, px: 1.5, borderRadius: 3 }} columnGap={0.5} display='inline-flex' alignItems='center'>
-              <Typography sx={{ cursor: 'pointer', whiteSpace: 'pre-line' }} color='green.500'>
-                {data?.name}
-              </Typography>
-            </Box>
+            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+              {absoluteIndex}
+            </Typography>
           )
         }),
       }
     }
-
-    if (el.field === 'description') {
+    if (el.field === 'checkbox') {
       return {
         ...el,
-        headerName: 'Описание',
+        headerName: '',
         colId: el.field,
-        cellRenderer: memo(({ data }) => (
-          <Box sx={{ bgcolor: 'transparent', py: 1, px: 1.5, borderRadius: 3 }} columnGap={0.5} display='inline-flex' alignItems='center'>
-            <Typography sx={{ cursor: 'pointer', whiteSpace: 'pre-line' }} color='gray.500'>
-              {data?.description || data?.name}
-            </Typography>
-          </Box>
+        cellRenderer: memo((p) => (
+          <input onChange={(e) => selectVendors(e.target.checked, p.data.id)} name='checkbox_zero' className='customCheckbox' type='checkbox' />
         )),
       }
     }
+    if (el.field === 'public_id') {
+      return {
+        ...el,
+        headerName: 'ID',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='public_id' />),
+      }
+    }
+    if (el.field === 'name') {
+      return {
+        ...el,
+        headerName: t('name'),
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
+      }
+    }
+    if (el.field === 'permission_count') {
+      return {
+        ...el,
+        headerName: t('permissions'),
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='permission_count' />),
+      }
+    }
+    if (el.field === 'description') {
+      return {
+        ...el,
+        headerName: t('description'),
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <StyledTooltip title={p.data.description}>
+            <SimpleText width={el.width} {...p} type='description' />
+          </StyledTooltip>
+        )),
+      }
+    }
+
     if (el.field === 'actions') {
       return {
         ...el,
-        headerName: 'Действия',
+        headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          <CheckAccess id={'role-edit role-delete'}>
-            <Box display='inline-flex' columnGap={2}>
-              <CheckAccess id={'role-edit'}>
-                <IconButton onClick={() => setIsDrawerOpen({ type: 'role_edit', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                  <EditIcon />
-                </IconButton>
-              </CheckAccess>
-              <CheckAccess id={'role-delete'}>
-                <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                  <DeleteIcon />
-                </IconButton>
-              </CheckAccess>
-            </Box>
-          </CheckAccess>
+          // <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
+          <Box display='inline-flex' columnGap={'8px'}>
+            {/* <CheckAccess id={'product-edit'}> */}
+            <IconButton onClick={() => navigate(`/roles/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+              <EditIcon />
+            </IconButton>
+            {/* </CheckAccess> */}
+            {/* <CheckAccess id={'product-delete'}> */}
+            <IconButton
+              onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
+              sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+            >
+              <DeleteIcon />
+            </IconButton>
+            {/* </CheckAccess> */}
+          </Box>
+          // </CheckAccess>
         )),
       }
     }

@@ -1,12 +1,9 @@
-import { Fragment, memo, useLayoutEffect, useRef, useState } from 'react'
-import { Typography, Box, Button, Container, IconButton } from '@mui/material'
-import { createBrowserHistory } from 'history'
-import { useSelector } from 'react-redux'
-import BackArrowIcon from '../src/assets/icons/BackArrow'
+import { Box, Button, Container, IconButton, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { createBrowserHistory } from 'history'
+import { Fragment, memo, useLayoutEffect, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import CheckAccess from './CheckAccess'
-import RightArrowSmallIcon from '../src/assets/icons/RightArrowSmallIcon'
 import LeftArrowIcon from '../src/assets/icons/LeftArrow'
 
 const useStyles = makeStyles((theme) => ({
@@ -128,6 +125,7 @@ function Header({
           alignItems: 'center',
           width: '100%',
           height: '88px',
+          padding: '20px',
           borderBottom: '2px solid',
           borderColor: 'bunker.100',
           position: 'fixed',
@@ -143,7 +141,16 @@ function Header({
             <Box display='flex' width='100%' alignItems='center' justifyContent='space-between'>
               <Typography variant='h1' display='inline-flex' alignItems='center'>
                 {backIcon && (
-                  <IconButton color='primary' id={backButtonId} onClick={backButtonClickHandler} sx={{ mr: 2, p: '0', backgroundColor: '#fff' }}>
+                  <IconButton
+                    color='primary'
+                    id={backButtonId}
+                    onClick={backButtonClickHandler}
+                    sx={{
+                      mr: 2,
+                      p: '0',
+                      backgroundColor: '#fff',
+                    }}
+                  >
                     <Box
                       sx={{
                         width: '48px',
@@ -152,9 +159,11 @@ function Header({
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        padding: 'block',
                         borderRadius: '50%',
                         backgroundColor: 'bunker.100',
+                        '&:hover': {
+                          backgroundColor: 'gray.10',
+                        },
                       }}
                     >
                       <LeftArrowIcon />
@@ -184,23 +193,23 @@ function Header({
                   )}
                   {!noPrimaryBtn &&
                     (checkAccessId && typeof checkAccessId === 'string' ? (
-                      <CheckAccess id={checkAccessId}>
-                        <Button
-                          id={buttonId}
-                          variant='contained'
-                          className={classes.largeButton}
-                          type='submit'
-                          size='small'
-                          form={formId}
-                          disabled={disabled}
-                          isLoading={isLoading}
-                          onClick={onSubmit}
-                          sx={{ ml: 1.5 }}
-                        >
-                          {buttonText}
-                        </Button>
-                      </CheckAccess>
+                      // <CheckAccess id={checkAccessId}>
+                      <Button
+                        id={buttonId}
+                        variant='contained'
+                        className={classes.largeButton}
+                        type='submit'
+                        size='small'
+                        form={formId}
+                        disabled={disabled}
+                        isLoading={isLoading}
+                        onClick={onSubmit}
+                        sx={{ ml: 1.5 }}
+                      >
+                        {buttonText}
+                      </Button>
                     ) : (
+                      // </CheckAccess>
                       <Button
                         id={buttonId}
                         variant='contained'
@@ -223,7 +232,8 @@ function Header({
           </header>
         </Container>
       </Box>
-      <Box mb={4} sx={{ height: headerComponentHeight + 'px', width: '100vw' }} />
+      <Box mb={4} sx={{ height: headerComponentHeight + 'px' }} />
+      {/* <Box mb={4} sx={{ height: headerComponentHeight + 'px', width: '100vw' }} />
 
       {bottomComponent ? (
         <Box
@@ -240,7 +250,7 @@ function Header({
         </Box>
       ) : (
         ''
-      )}
+      )} */}
     </Fragment>
   )
 }

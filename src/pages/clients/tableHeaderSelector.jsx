@@ -1,14 +1,16 @@
-import { memo } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import TimeCell from '../../../components/AgGridTable/Cells/TimeCell'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
+import { memo } from 'react'
 import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
-import { formatPhoneNumber } from '../../../utils/formatPhoneNumber'
-import { shop_statuses } from '../../assets/data/shop-statuses'
-import ImageCell from '../../../components/AgGridTable/Cells/ImageCell'
-import LockIcon from '../../assets/icons/LockIcon'
-import LockOpenIcon from '../../assets/icons/LockOpenIcon'
 import CheckAccess from '../../../components/CheckAccess'
 import thousandDivider from '../../../utils/thousandDivider'
+import { products_statuses } from '../../assets/data/products-statuses'
+import DeleteIcon from '../../assets/icons/DeleteIcon'
+import EditIcon from '../../assets/icons/EditIcon'
+import { formatDate } from '../../../utils/validateDate'
+import { formatPhoneNumber } from '../../../utils/formatPhoneNumber'
+
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
@@ -16,126 +18,165 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
     </Typography>
   )
 }
-export default function tableHeaderSelector({ userColumns, setIsDrawerOpen, setOpenConfirmDialog }) {
-  const columns = userColumns?.map((el) => {
-    if (el.field === 'photo') {
+
+export default function tableHeaderSelector({ clientsColumns, values, selectClientsFunc, t, setOpenConfirmDialog }) {
+  const columns = clientsColumns?.map((el) => {
+    if (el.field === 'number') {
       return {
         ...el,
-        headerName: 'Фото',
+        headerName: '№',
         colId: el.field,
-        cellRenderer: memo(({ data }) => {
-          return <ImageCell imageArr={[data?.avatar]} />
+        cellRenderer: memo(({ rowIndex, api, ...p }) => {
+          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+
+          return (
+            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+              {absoluteIndex}
+            </Typography>
+          )
         }),
       }
     }
-    if (el.field === 'name') {
+    if (el.field === 'checkbox') {
       return {
         ...el,
-        headerName: 'Имя',
+        headerName: '',
         colId: el.field,
-        cellRenderer: memo(({ data }) => (
-          <Box onClick={() => setIsDrawerOpen(data._id)}>
-            <Typography sx={{ cursor: 'pointer', whiteSpace: 'pre-line' }} color='green.500'>
-              {data?.fullName}
-            </Typography>
-          </Box>
+        cellRenderer: memo((p) => (
+          <input onChange={(e) => selectClientsFunc(e.target.checked, p.data.id)} name='checkbox_zero' className='customCheckbox' type='checkbox' />
         )),
+      }
+    }
+    if (el.field === 'public_id') {
+      return {
+        ...el,
+        headerName: 'ID',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='public_id' />),
+      }
+    }
+    if (el.field === 'fish') {
+      return {
+        ...el,
+        headerName: t('fish'),
+        colId: el.field,
+        cellRenderer: memo((p) => <Typography whiteSpace={'pre-line'}>{get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')}</Typography>),
       }
     }
     if (el.field === 'phone_number') {
       return {
         ...el,
-        headerName: 'Номер телефона',
+        headerName: t('phone_number'),
         colId: el.field,
-        cellRenderer: memo(({ type, rowIndex, data }) => (
-          <Typography style={{ whiteSpace: 'pre-line' }} id={`shop-${type}-${rowIndex}`}>
-            {formatPhoneNumber('+' + data?.phone)}
+        cellRenderer: memo((p) => (
+          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
+            {formatPhoneNumber(p.data.phone)}
           </Typography>
         )),
       }
     }
-    if (el.field === 'registration_source') {
+    if (el.field === 'tags') {
       return {
         ...el,
-        headerName: 'Источник регистрации',
+        headerName: t('tags'),
         colId: el.field,
-        cellRenderer: memo(({ data }) => <Typography style={{ whiteSpace: 'pre-line' }}>{data?.registeredBy}</Typography>),
-      }
-    }
-    if (el.field === 'created_date') {
-      return {
-        ...el,
-        headerName: 'Дата создания',
-        colId: el.field,
-        cellRenderer: memo(({ data, rowIndex }) => <TimeCell data={data} rowIndex={rowIndex} type='createdAt' format='DD.MM.YYYY HH:mm' />),
+        cellRenderer: memo(({ data, rowIndex }) => <SimpleText {...data} data={data?.tag} type='name' />),
       }
     }
 
-    if (el.field === 'status') {
+    if (el.field === 'sale_amount') {
       return {
         ...el,
-        headerName: 'Статус',
+        headerName: 'Сумма покупки',
         colId: el.field,
-        cellRenderer: memo(({ data, rowIndex }) => (
-          <StatusCell
-            id={`shop-status-${rowIndex}`}
-            bgcolor={shop_statuses.find((el) => el.id === data.status)?.color}
-            title={shop_statuses.find((el) => el.id === data.status)?.name}
-          />
+        cellRenderer: memo((p) => <SimpleText withDevider currency={'сум'} {...p} type='sale_amount' />),
+      }
+    }
+    if (el.field === 'sale_date') {
+      return {
+        ...el,
+        headerName: 'Последняя покупка',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{formatDate(p.data?.sale_date, 'DD.MM.YYYY')}</Typography>
+          </Box>
         )),
       }
     }
-    if (el.field === 'last_order_date') {
+    if (el.field === 'birthday') {
       return {
         ...el,
-        headerName: 'Дата последнего заказа',
+        headerName: 'Дата рождения',
         colId: el.field,
-        cellRenderer: memo(({ data, rowIndex }) => <TimeCell data={data} rowIndex={rowIndex} type='lastOrderTime' format='DD.MM.YYYY HH:mm' />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{formatDate(p.data?.birthday, 'DD.MM.YYYY')}</Typography>
+          </Box>
+        )),
       }
     }
-    if (el.field === 'average_cheque') {
+    if (el.field === 'created_at') {
       return {
         ...el,
-        headerName: 'Средний чек',
+        headerName: 'Дата регистрации',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='averageCheque' />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{formatDate(p.data?.created_at, 'DD.MM.YYYY')}</Typography>
+          </Box>
+        )),
       }
     }
-    if (el.field === 'orders_count') {
+    if (el.field === 'store') {
       return {
         ...el,
-        headerName: 'Кол-во заказов',
+        headerName: 'Зарегистрируйтесь в филиале',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='шт' withDevider {...p} type='ordersCount' />),
+        cellRenderer: memo((p) => (
+          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
+            {get(p, 'data.store.name', '-')}
+          </Typography>
+        )),
       }
     }
+    if (el.field === 'balance') {
+      return {
+        ...el,
+        headerName: 'Баланс',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='balance' />),
+      }
+    }
+    if (el.field === 'debt_amount') {
+      return {
+        ...el,
+        headerName: 'Текущий долг',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='debt_amount' />),
+      }
+    }
+
     if (el.field === 'actions') {
       return {
         ...el,
-        headerName: 'Действия',
+        headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          <Box display='inline-flex' columnGap={2}>
-            {/* <IconButton onClick={() => navigate(`/shops/edit/${data._id}`)} sx={{ borderRadius: 3, p: '14px' }}>
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
+          // <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
+          <Box display='inline-flex' columnGap={'8px'}>
+            {/* <CheckAccess id={'product-edit'}>
+                <IconButton onClick={() => window.open(`/products/edit/${data.id}`, '_blank')} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                  <EditIcon />
+                </IconButton>
+              </CheckAccess> */}
+            {/* <CheckAccess id={'product-delete'}> */}
+            <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
               <DeleteIcon />
-            </IconButton> */}
-            {data?.status === 'ACTIVE' ? (
-              <CheckAccess id={'client-deactive'}>
-                <IconButton onClick={() => setOpenConfirmDialog({ type: 'blocked', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                  <LockIcon color='#FA004B' />
-                </IconButton>
-              </CheckAccess>
-            ) : (
-              <CheckAccess id={'client-active'}>
-                <IconButton onClick={() => setOpenConfirmDialog({ type: 'activate', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                  <LockOpenIcon />
-                </IconButton>
-              </CheckAccess>
-            )}
+            </IconButton>
+            {/* </CheckAccess> */}
           </Box>
+          // </CheckAccess>
         )),
       }
     }

@@ -16,13 +16,26 @@ import { makeStyles } from '@mui/styles'
 import { requests } from '../utils/requests'
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  roots: {
     padding: '24px 24px 0 24px',
     border: `1px solid ${theme.palette.bunker[100]}`,
     paddingTop: 0,
     borderRadius: 24,
     marginTop: 16,
     maxHeight: 808,
+    // overflowY: 'scroll',
+    '&::-webkit-scrollbar': {
+      width: 0,
+    },
+  },
+  root: {
+    // padding: '24px 24px 0 24px',
+    // border: `1px solid ${theme.palette.bunker[100]}`,
+    paddingTop: 0,
+    borderRadius: 24,
+    marginTop: 16,
+    maxHeight: 708,
+
     overflowY: 'scroll',
     '&::-webkit-scrollbar': {
       width: 0,
@@ -50,7 +63,6 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
   },
   addCategoryButton: {
-    // position: 'sticky',
     height: '48px',
     width: '48px',
     minWidth: '48px',
@@ -117,20 +129,30 @@ export default function FileSystemNavigator({
       company_id,
       limit: pageSize,
       search: values?.search,
-      page: pageIndex + 1,
+      offset: pageIndex,
     })
   )
 
   useEffect(() => {
-    const pages = Math.ceil(categories?.data.count / pageSize)
-    setPageCount(pages ?? 1)
-  }, [categories?.data])
+    const pages = Math.ceil(categories?.data?.data?._meta?.total_count / pageSize)
 
+    setPageCount(pages ?? 1)
+  }, [categories?.data?.data])
+  function renameSubRows(obj) {
+    if (obj.sub_category || obj.sub_category === 'null') {
+      obj.subRows = obj.sub_category
+      delete obj.sub_category
+
+      obj.subRows.forEach(renameSubRows) // Recurse through sub_category if exists
+    }
+    return obj
+  }
   useEffect(() => {
     refetch()
-    setSearchedCategories(categories?.data?.categories)
-  }, [values?.search, categories?.data?.categories, pageIndex, pageSize])
-
+  }, [values?.search, pageIndex, pageSize])
+  useEffect(() => {
+    setSearchedCategories(categories?.data?.data?.data?.map((el) => renameSubRows(el)))
+  }, [categories?.data?.data])
   useEffect(() => {
     setValue2('category_ids', selected)
   }, [selected, setValue2])
@@ -140,47 +162,46 @@ export default function FileSystemNavigator({
   }, [values?.search])
 
   useEffect(() => {
-    if (getValues('category_ids')) setSelected(getValues('category_ids'))
+    // if (getValues('category_ids')) setSelected(getValues('category_ids'))
   }, [getValues('category_ids')])
 
   const handleCreateButtonClick = (data) => {
+    refetch()
     setCreateEdit(data)
   }
 
   return (
     <>
-      <Box className={showBorder ? classes.root : null}>
-        <Box display='flex' className={showBorder ? classes.searchBar : ''} mb={showBorder ? 0 : 3}>
-          <InputSearch name='search' placeholder={t('placeholders.category_name')} fullWidth uncontrolled />
-          {canAdd && (
-            <Box className={classes.addCategoryButton}>
-              {/* <Button id='add-category' onClick={() => setCreateEdit(true)} secondary fullWidth disabled={disabled}> */}
-              <PlusIcon style={{ marginRight: 8 }} />
-              {/* {t('buttons.new_category')} */}
-              {/* </Button> */}
-            </Box>
+      <Box className={showBorder ? classes.roots : null}>
+        <Box className={showBorder ? classes.root : null}>
+          <Box display='flex' className={showBorder ? classes.searchBar : ''} mb={showBorder ? '30px' : 3}>
+            <InputSearch name='search' placeholder={t('placeholders.category_name')} fullWidth uncontrolled />
+            {canAdd && (
+              <Box className={classes.addCategoryButton} onClick={() => setCreateEdit(true)}>
+                <PlusIcon style={{ marginRight: 8 }} />
+              </Box>
+            )}
+          </Box>
+
+          {isLoading ? (
+            <LoadingBlock />
+          ) : (
+            searchedCategories?.length !== 0 && (
+              <TreeSelectCategory
+                selected={selected}
+                disabled={disabled}
+                setSelected={setSelected}
+                handleCreate={handleCreateButtonClick}
+                categories={createTreeAdd(searchedCategories)}
+              />
+            )
           )}
         </Box>
-
-        {isLoading ? (
-          <LoadingBlock />
-        ) : (
-          searchedCategories?.length !== 0 && (
-            <TreeSelectCategory
-              selected={selected}
-              disabled={disabled}
-              setSelected={setSelected}
-              handleCreate={handleCreateButtonClick}
-              categories={createTreeAdd(searchedCategories)}
-            />
-          )
-        )}
-
-        {/* <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' my={3}>
+        <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' my={3}>
           <Pagination count={pageCount} handleChangePage={changePage} page={pageIndex + 1} pageQuery='page' />
 
           <RowFilterButton id='row-filter' pageSize={pageSize} setPageSize={setPageSize} setPageIndex={setPageIndex} />
-        </Box> */}
+        </Box>
       </Box>
 
       <CreateEditCategories

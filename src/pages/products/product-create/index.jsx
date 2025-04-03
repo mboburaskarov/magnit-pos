@@ -9,19 +9,24 @@ import LoadingContainer from '../../../../components/LoadingContainer'
 import ProductBody from '../ProductBody'
 import Header from '../../../../components/Header'
 import { useTranslation } from 'react-i18next'
+import { get } from 'lodash'
+import { useSelector } from 'react-redux'
 export default function ProductCreatePage() {
   const { t } = useTranslation()
   const methods = useForm()
   const navigate = useNavigate()
+  const userData = useSelector((state) => state.user)
 
   useEffect(() => {
     methods.register('categories')
+    methods.register('category_ids')
+
     return
   }, [])
 
   const { mutate: createProduct, isLoading: isCreatingProduct } = useMutation(requests.createProduct, {
     onSuccess: () => {
-      navigate('/products')
+      navigate('/products/all')
       success('Продукт успешно создан!')
     },
     onError: (err) => {
@@ -32,23 +37,44 @@ export default function ProductCreatePage() {
 
   const onSubmit = (data) => {
     const requestBody = {
-      name: data?.product_name,
-      dbId: data?.shop?._id,
-      categories: data?.categories?.map((el) => el._id),
-      quantityOfCategories: data?.categories?.map((el) => Number(el.quantity)).filter((elm) => !!elm),
-      description: data?.description,
-      cost: Number(data?.product_price),
-      isDiscount: Boolean(data?.product_price_with_discount),
-      discountCost: Number(data?.product_price_with_discount),
-      isFastDelivery: Boolean(data?.is_fast_delivery),
-      is_new: Boolean(data?.is_new),
-      preparationTime: data?.preparation_time?.time || 0,
-      sellDate: '2023-08-01T11:36:45.660Z',
-      status: 'ACTIVE',
-      files: data?.images?.map((el) => el.key) || [],
-      hashtag: data?.hashtag !== '' ? data?.hashtag?.map((el) => el.id) : [],
-      type: data?.app_type,
-      size: { name: data?.size_name?.value, height: Number(data?.height), width: Number(data?.width) },
+      barcode: get(data, 'barcode'),
+      bonus_percent: Number(get(data, 'bonus_percent')),
+      description: get(data, 'description'),
+      // expire_date: get(data, 'expire_date'),
+      producer_id: get(data, 'manufacturer.value'),
+      shelf_id: get(data, 'shelf_id.value'),
+
+      name: get(data, 'name'),
+      photos: get(data, 'images', []).map((el) => el.file_url),
+      category_ids: methods.getValues('category_ids'),
+      unit_type_id: get(data, 'product_unit.id'),
+
+      unit_per_pack: Number(get(data, 'box_grain_count')),
+
+      quantity: Object.values(get(data, 'store_product')).reduce((total, product) => {
+        return Number(total) + Number(product.quantity)
+      }, 0),
+      retail_price: Number(get(data, 'retail_price')),
+      markup: Number(get(data, 'markup')),
+
+      status: 'active',
+      store_id: get(userData, 'store_id'),
+      store_product: Object.values(get(data, 'store_product'))
+        .filter((item) => Number(get(item, 'pack_quantity'), 0) > 0 && Number(get(item, 'retail_price'), 0) > 0 && Number(get(item, 'markup'), 0) > 0)
+        .map((item) => ({
+          ...item,
+          retail_price: Number(get(item, 'retail_price', 0)),
+          supply_price: Number(get(item, 'supply_price', 0)),
+          vat: Number(get(item, 'vat', 0)),
+          bonus_amount: Number(get(item, 'bonus_amount', 0)),
+          markup: Number(get(item, 'markup', 0)),
+          pack_quantity: Number(get(item, 'pack_quantity', 0)),
+          small_quantity: Number(get(item, 'small_quantity', 0)),
+        })),
+      // sum: Number(get(data, 'retail_price')),
+      // supply_price: Number(get(data, 'supply_price')),
+      // vat: Number(get(data, 'vat')),
+      // vat_price: Number(get(data, 'vat_price')),
     }
 
     createProduct(requestBody)
@@ -65,8 +91,7 @@ export default function ProductCreatePage() {
           isLoading={isCreatingProduct}
           buttonText='Создать'
           backIcon
-          noActions
-          backHref='/products'
+          backHref='/products/all'
           text={t('create_new_product.top.new_product')}
           checkAccessId={'product-create'}
           onSubmit={methods.handleSubmit(onSubmit, onError)}

@@ -1,11 +1,18 @@
-// import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
-
+import { Typography } from '@mui/material'
+import EmptyTableData from '../../src/assets/icons/EmptyTableData'
+import { useTranslation } from 'react-i18next'
 export const OverlayNoRowsTemplate = ({ emptyTableText }) => {
+  const { t } = useTranslation()
   return (
     <div className='no-rows-container'>
       <div className='no-rows-root'>
-        <h3>{emptyTableText?.title ? emptyTableText?.title : 'Данные не найдены'}</h3>
-        <p>{emptyTableText?.description ? emptyTableText?.description : ''}</p>
+        <EmptyTableData />
+        <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.950'}>
+          {emptyTableText?.title ? emptyTableText?.title : t('table.data.empty.title')}
+        </Typography>
+        <Typography mb={'50px'} fontSize={'18px'} mt={'8px'} lineHeight={'28px'} fontWeight={'500'} color={'bunker.500'}>
+          {emptyTableText?.description ? emptyTableText?.description : t('table.data.empty.description')}
+        </Typography>
       </div>
     </div>
   )
@@ -31,22 +38,6 @@ export const icons = {
   menuRemoveRowGroup: `<i class="fas fa-align-left fa-lg"  style="padding-right: 12px; color: #119676;"></i>`,
 }
 
-// export function CustomCircularProgress({ percentage }) {
-//   return (
-//     <div style={{ width: 18, height: 18 }}>
-//       <CircularProgressbar
-//         styles={buildStyles({
-//           strokeLinecap: 'butt',
-//           trailColor: '#EAEAEA',
-//           pathColor: '#1F78FF',
-//         })}
-//         strokeWidth={24}
-//         value={percentage}
-//       />
-//     </div>
-//   )
-// }
-
 export const HeaderCheckbox = ({ api, percentage, deleteAllProducts, addAllProducts, setSelectAll, checked, setChecked }) => {
   const selectAllCondition = !!setSelectAll && percentage > 0 && percentage < 100
 
@@ -54,8 +45,7 @@ export const HeaderCheckbox = ({ api, percentage, deleteAllProducts, addAllProdu
     <div>
       {selectAllCondition && checked ? (
         <></>
-      ) : /* <CustomCircularProgress percentage={percentage} /> */
-      selectAllCondition && !checked ? (
+      ) : selectAllCondition && !checked ? (
         <input disabled type='checkbox' style={{ cursor: 'not-allowed' }} />
       ) : (
         <input

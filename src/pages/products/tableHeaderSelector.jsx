@@ -1,22 +1,25 @@
-import { memo } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import TimeCell from '../../../components/AgGridTable/Cells/TimeCell'
-import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
-import thousandDivider from '../../../utils/thousandDivider'
-import getImageUrl from '../../../utils/getImageUrl'
-import { products_statuses } from '../../assets/data/products-statuses'
-import ProductImagePlaceholder from '../../assets/icons/ProductImagePlaceholder'
-import EditIcon from '../../assets/icons/EditIcon'
-import DeleteIcon from '../../assets/icons/DeleteIcon'
-import ExpressIcon from '../../assets/icons/ExpressIcon'
-import StyledTooltip from '../../../components/StyledTooltip'
-import CheckAccess from '../../../components/CheckAccess'
-import { useQueryParams } from '../../hooks/useQueryParams'
+import { useTheme } from '@mui/styles'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
+import { memo } from 'react'
+import Highlighter from 'react-highlight-words'
+import { useNavigate } from 'react-router-dom'
+import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
+import CheckAccess from '../../../components/CheckAccess'
+import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
+import thousandDivider from '../../../utils/thousandDivider'
+import { products_statuses } from '../../assets/data/products-statuses'
+import DefaultImgIcon from '../../assets/icons/defaultImgIcon'
+import DeleteIcon from '../../assets/icons/DeleteIcon'
+import EditIcon from '../../assets/icons/EditIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
-    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
+    <Typography
+      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
+      id={`product-${type}-${rowIndex}`}
+    >
       {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
     </Typography>
   )
@@ -37,41 +40,38 @@ const Image = ({ data, rowIndex, setImages }) => {
         },
       }}
     >
-      {/* {data?.main_photo?.[0] ? ( */}
-      <img
-        id={`product-image-${rowIndex}`}
-        src={data?.main_photo || '/default-img.avif'}
-        alt={data?.name}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
-      />
-      {/* ) : (
-        <ProductImagePlaceholder />
-      )} */}
-      {data?.files?.[0] && (
-        <Box
-          sx={{
-            transition: 'all 0.2s ease',
-            cursor: 'pointer',
-            opacity: 0,
-            borderRadius: 2,
-            bottom: 0,
-            right: 0,
-            top: 0,
-            left: 0,
-            bgcolor: 'green.600',
-            position: 'absolute',
-            zIndex: 2,
-          }}
-          id='overlay_image'
-          onClick={() => setImages({ data: data?.files })}
+      {data?.photos?.[0] ? (
+        <img
+          onClick={() => setImages({ data: data?.photos })}
+          id={`product-image-${rowIndex}`}
+          src={data?.photos[0] || '/default-img.avif'}
+          alt={data?.name}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
         />
+      ) : (
+        <DefaultImgIcon />
       )}
     </Box>
   )
 }
 
-export default function tableHeaderSelector({ productsColumns, values, setImages, t, setOpenConfirmDialog, setIsDrawerOpen }) {
-  // const { values } = useQueryParams()
+export default function tableHeaderSelector({
+  productsColumns,
+  values,
+  setImages,
+  canChangebarcode,
+  t,
+  setOpenConfirmDialog,
+  setOpenProductDrawer,
+  changeBarcode,
+}) {
+  const theme = useTheme()
+  const navigate = useNavigate()
+  const getDateColor = (date) => {
+    if (date > 25) return { color: theme.palette.green[700] }
+    if (date > 3 && date < 25) return { color: theme.palette.orange[400] }
+    if (date < 3) return { color: theme.palette.red[400] }
+  }
   const columns = productsColumns?.map((el) => {
     if (el.field === 'main_photo') {
       return {
@@ -86,7 +86,14 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         ...el,
         headerName: t('table_columns.name'),
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
+        cellRenderer: memo((p) => (
+          <Box
+            sx={{ '& span': { color: 'orange.500', whiteSpace: 'pre-line' }, '& .highlighter': { color: 'orange.500' }, cursor: 'pointer' }}
+            onClick={() => setOpenProductDrawer(p.data.id)}
+          >
+            <Highlighter highlightClassName='highlighter' searchWords={[values?.search]} autoEscape textToHighlight={`${p.data.name}`} />
+          </Box>
+        )),
       }
     }
     if (el.field === 'sum') {
@@ -102,7 +109,13 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         ...el,
         headerName: t('table_columns.category'),
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='category' />),
+        cellRenderer: memo((p) => (
+          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.data.categories[0]?.name}-${p.rowIndex}`}>
+            {get(p, 'data.categories', [])
+              .map((e) => `${e.name}`)
+              .join(',')}
+          </Typography>
+        )),
       }
     }
     if (el.field === 'retail_price') {
@@ -121,12 +134,28 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         cellRenderer: memo((p) => <SimpleText currency='%' withDevider {...p} type='vat' />),
       }
     }
+    if (el.field === 'markup') {
+      return {
+        ...el,
+        headerName: 'Наценка',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='%' withDevider {...p} type='markup' />),
+      }
+    }
+    if (el.field === 'markup_price') {
+      return {
+        ...el,
+        headerName: 'Цена наценка',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='markup_price' />),
+      }
+    }
     if (el.field === 'vat_price') {
       return {
         ...el,
         headerName: t('table_columns.vat_price'),
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='sum' withDevider {...p} type='vat_price' />),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='vat_price' />),
       }
     }
     if (el.field === 'supply_price') {
@@ -183,7 +212,36 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         ...el,
         headerName: t('table_columns.barcode'),
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' {...p} type='barcode' />),
+        cellRenderer: memo((p) => {
+          if (!canChangebarcode) {
+            return <SimpleText currency='' {...p} type='barcode' />
+          } else {
+            return (
+              <NumberFormatInput
+                onBlur={({ target }) => {
+                  if (p?.data?.barcode == get(target, 'value')) return
+
+                  changeBarcode({ id: get(p, 'data.id'), barcode: get(target, 'value') })
+                }}
+                placeholder={'0'}
+                thousandSeparator={''}
+                defaultValue={p?.data?.barcode}
+                id={`editable_barcode_${p?.data?.id}`}
+                name={`editable_barcode_${p?.data?.id}`}
+                type='number'
+                fullWidth
+              />
+            )
+          }
+        }),
+      }
+    }
+    if (el.field === 'material_code') {
+      return {
+        ...el,
+        headerName: 'Код продукта',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' {...p} type='material_code' />),
       }
     }
     if (el.field === 'product_variability') {
@@ -200,7 +258,12 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         ...el,
         headerName: t('table_columns.quantity'),
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='quantity' />),
+        cellRenderer: memo((p) => (
+          <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+            {thousandDivider(p?.data?.quantity)} {p?.data?.unit_name}
+          </Typography>
+        )),
+        // <SimpleText withDevider {...p} type='quantity' />),
       }
     }
     if (el.field === 'expire_date') {
@@ -208,7 +271,12 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         ...el,
         headerName: t('table_columns.expire_date'),
         colId: el.field,
-        cellRenderer: memo((p) => <TimeCell {...p} type='expire_date' format='DD.MM.YYYY' />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')}</Typography>
+            <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography>
+          </Box>
+        )),
       }
     }
     if (el.field === 'actions') {
@@ -219,29 +287,16 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         cellRenderer: memo(({ data }) => (
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
             <Box display='inline-flex' columnGap={'8px'}>
-              <CheckAccess id={'product-edit'}>
-                <IconButton onClick={() => window.open(`/products/edit/${data.id}`, '_blank')} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+              <CheckAccess id={'edit-product'}>
+                <IconButton onClick={() => navigate(`/products/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />
                 </IconButton>
               </CheckAccess>
-              <CheckAccess id={'product-delete'}>
+              <CheckAccess id={'delete-product'}>
                 <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <DeleteIcon />
                 </IconButton>
               </CheckAccess>
-              {/* {data.status === 'ACTIVE' ? (
-                <CheckAccess id={'product-deactive'}>
-                  <IconButton onClick={() => setOpenConfirmDialog({ type: 'deactivate', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                    <PauseIcon />
-                  </IconButton>
-                </CheckAccess>
-              ) : (
-                <CheckAccess id={'product-active'}>
-                  <IconButton onClick={() => setOpenConfirmDialog({ type: 'activate', id: data._id })} sx={{ borderRadius: 3, p: '14px' }}>
-                    <PlayIcon />
-                  </IconButton>
-                </CheckAccess>
-              )} */}
             </Box>
           </CheckAccess>
         )),

@@ -1,95 +1,99 @@
-import { useEffect, useMemo, useState } from 'react'
-import TabContainer from '../../../components/Tab/TabContainer'
-import LoadingContainer from '../../../components/LoadingContainer'
-import { Box, Button, Typography } from '@mui/material'
-import InputSearch from '../../../components/Inputs/InputSearch'
-import { user_statuses } from '../../assets/data/user-statuses'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { useMutation, useQuery } from 'react-query'
-import { requests } from '../../../utils/requests'
-import AgGridTable from '../../../components/AgGridTable/AgGridTable'
-import tableHeaderSelector from './tableHeaderSelector'
-import { useDispatch, useSelector } from 'react-redux'
-import { resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/clientTableColumns'
-import ClientDrawer from './ClientDrawer'
 import { LoadingButton } from '@mui/lab'
+import { Box, Button, TextField, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import AgGridTable from '../../../components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../components/ConfirmDialog'
+import StyledDialog from '../../../components/Dialogs/StyledDialog'
+import ImageGallery from '../../../components/ImageGallery'
+import InputSearch from '../../../components/Inputs/InputSearch'
+import LoadingContainer from '../../../components/LoadingContainer'
+import { requests } from '../../../utils/requests'
+import { error, success } from '../../../utils/toast'
 import BigTickIcon from '../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../assets/icons/BigWarningIcon'
-import { error, success } from '../../../utils/toast'
-import InputSwitch from '../../../components/Inputs/InputSwitch'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowDownWideShort, faArrowUpWideShort } from '@fortawesome/free-solid-svg-icons'
+import DeleteIcon from '../../assets/icons/DeleteIcon'
+import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
+import { useQueryParams } from '../../hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/clientTableColumns'
 import FilterMenu from './FilterMenu'
-import ForwardArrow from '../../assets/icons/ForwardArrow'
-import { useNavigate } from 'react-router-dom'
-import CheckAccess from '../../../components/CheckAccess'
-import { useTheme } from '@mui/material'
-import SoonPage from '../../../components/soon'
+import tableHeaderSelector from './tableHeaderSelector'
+import { downloadExcel } from '../../../utils/downloadEXCEL'
+const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ClientsPage() {
-  return <SoonPage />
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
   const theme = useTheme()
+  const dispatch = useDispatch()
+  const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.clientTableColumns)
   const { values } = useQueryParams()
-  const [status, setStatus] = useState('ALL')
+  const [regions, setRegions] = useState([])
+  const [selectClients, setselectClients] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
-  const [isDrawerOpen, setIsDrawerOpen] = useState(null)
-  const [sourceType, setSourceType] = useState('ALL')
+  const [openImageGallery, setOpenImageGallery] = useState(false)
+  const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
-  const tableColumns = tableHeaderSelector({ userColumns: columns, setIsDrawerOpen, setOpenConfirmDialog })
+  const selectClientsFunc = (isChecked, id) => {
+    if (isChecked) {
+      setselectClients((p) => [...p, id])
+    } else {
+      setselectClients((p) => p.filter((ids) => ids !== id))
+    }
+  }
+  const tableColumns = tableHeaderSelector({
+    clientsColumns: columns,
+    t,
+    values,
+    setImages: setOpenImageGallery,
+    setOpenConfirmDialog,
+    selectClientsFunc,
+  })
 
-  const userListFilter = useMemo(() => {
+  useEffect(() => {
+    if (tableColumns) {
+      const formattedData = tableColumns
+        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
+        ?.map((el) => ({
+          ...el,
+          label: el.headerName,
+          desc: el.desc,
+          name: el.colId,
+          always_active: el?.always_active ?? el?.always_active,
+        }))
+
+      dispatch(changeColumnSequence(formattedData))
+    }
+  }, [])
+
+  const clientsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      offset: values?.offset || 0,
+      offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      source: sourceType === 'ALL' ? undefined : sourceType,
-      group: values?.group_id,
-      ordersCountFrom: values?.from_order_count,
-      ordersCountTo: values?.to_order_count,
-      averageChequeFrom: values?.from_average_cheque,
-      averageChequeTo: values?.to_average_cheque,
-      lastOrderTimeStart: values?.from_last_order_time,
-      lastOrderTimeEnd: values?.to_last_order_time,
-      ...(status !== 'ALL' && { status }),
+      store_id: values?.store_id,
     }
-  }, [
-    status,
-    values?.offset,
-    values?.limit,
-    values?.search,
-    values?.group_id,
-    sourceType,
-    values?.from_order_count,
-    values?.to_order_count,
-    values?.from_average_cheque,
-    values?.to_average_cheque,
-    values?.from_last_order_time,
-    values?.to_last_order_time,
-  ])
-
+  }, [values?.offset, values?.limit, values?.search, values?.store_id])
   const {
-    data: userList,
-    isLoading: userListLoading,
-    isFetching: isFetchingUserList,
+    data: clientsList,
+    isLoading: clientsListLoading,
+    isFetching: isFetchingclientsList,
     refetch,
-  } = useQuery(['userList', userListFilter], () => requests.getUserList(userListFilter))
+  } = useQuery(['clientsList', clientsListFilter], () => requests.getAllCustomers(clientsListFilter))
 
-  const { mutate: changeUserStatus, isLoading: isChangingUserStatus } = useMutation(requests.updateUser, {
+  const { mutate: deleteClient, isLoading: isDeletingProduct } = useMutation(requests.deleteClient, {
     onSuccess: () => {
-      success('Статус пользователя успешно изменен!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
+      refetch()
+      success('Kлиент успешно удален!')
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
-      error('Ошибка при обновлении статуса пользователя!')
       refetch()
+      error('Ошибка при удалении клиент!')
       setOpenConfirmDialog(null)
       console.log('err', err)
     },
@@ -97,125 +101,162 @@ export default function ClientsPage() {
 
   useEffect(() => {
     refetch()
-  }, [userListFilter])
+  }, [clientsListFilter])
 
   useEffect(() => {
-    const count =
-      status === 'ACTIVE'
-        ? userList?.data?.active
-        : status === 'INACTIVE'
-        ? userList?.data?.inactive
-        : status === 'BLOCKED'
-        ? userList?.data?.blocked
-        : userList?.data.totalCount
-
+    const count = clientsList?.data?.data?._meta?.total_count
+    setselectClients([])
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [userList?.data, values?.limit, status])
+  }, [clientsList?.data, values?.limit])
+  const { mutate: clientsExcelReport, isLoading: isclientsExcelReport } = useMutation(requests.getClientsExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadExcel(data, 'Клиенти')
+    },
+    onError: (err) => {
+      console.log(err)
 
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={true}>
-      <Box display='flex' flexDirection='column' position='relative' pt={6} px={4} pb={3}>
-        <Box display={'flex'} justifyContent={'space-between'}>
-          <Typography variant='h1'>Клиенты</Typography>
-          <CheckAccess id={'/reports/main'}>
-            <Button color='secondary' onClick={() => navigate('/reports/main')}>
-              Перейти в отчет <ForwardArrow fill={theme.palette.type === 'dark' ? '#FBF7FA' : '#3BA98F'} style={{ marginLeft: '20px' }} />
-            </Button>
-          </CheckAccess>
-        </Box>
-        <Box display='flex' mb={3} mt={4}>
-          <TabContainer
-            customTooltip
-            tabs={user_statuses?.map((el) => ({ label: el.name, id: el.id }))}
-            counts={[userList?.data?.totalCount, userList?.data?.active, userList?.data?.inactive, userList?.data?.blocked]}
-            selected={status}
-            setSelected={setStatus}
-          />
-        </Box>
-        <Box columnGap={2} display='inline-flex' width='100%'>
-          <Box width='100%'>
-            <InputSearch fullWidth id='producrs-search' name='search' placeholder='Введите информацию о продукте' uncontrolled />
-          </Box>
-          <Box mt={-2} minWidth={320}>
-            <InputSwitch
-              uncontrolled
-              id='source-type'
-              name='source-type'
-              value={sourceType}
-              defaultValue='ALL'
-              onChange={(e) => setSourceType(e)}
-              options={[
-                { title: 'Все', value: 'ALL' },
-                { title: 'Веб', value: 'WEB' },
-                { title: 'Мобил', value: 'MOBILE' },
-              ]}
-            />
-          </Box>
-          <Box minWidth={180}>
-            <Button
-              fullWidth
-              startIcon={<FontAwesomeIcon width={14} icon={filterMenu ? faArrowUpWideShort : faArrowDownWideShort} />}
-              variant='contained'
-              color='secondary'
-              onClick={() => setFilterMenu((prev) => !prev)}
+      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
+        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+          {t('clients')}
+        </Typography>
+
+        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
+          <Box display={'flex'}>
+            <Box
+              width='100%'
+              sx={{
+                '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+                '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                  background: 'transparent',
+                  width: '400px',
+                  height: 48,
+                },
+              }}
             >
-              Фильтровать
-            </Button>
+              <InputSearch id='producrs-search' name='search' placeholder={'ID, Имя, Телефон'} uncontrolled />
+            </Box>
+
+            <Box minWidth={113} ml={'16px'}>
+              <Button
+                sx={{
+                  height: '48px',
+                  padding: 0,
+                  bgcolor: '#fff',
+                  border: '1px solid #ECEDF2',
+                  color: 'dark.500',
+                  fontWeight: '500',
+                  fontSize: '16px',
+                  lineHeight: '24px',
+                  '& span': {
+                    mr: '12px',
+                  },
+                }}
+                fullWidth
+                startIcon={<FilterMenuIcon color={theme.palette.black} />}
+                variant='contained'
+                color='secondary'
+                onClick={() => setFilterMenu((prev) => !prev)}
+              >
+                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
+                  {t('filter_dialog.label')}
+                </Typography>
+              </Button>
+            </Box>
+            {selectClients.length > 0 && (
+              <>
+                <Box minWidth={48} ml={'16px'}>
+                  <Button
+                    sx={{
+                      height: '48px',
+                      padding: 0,
+                      bgcolor: '#fff',
+                      border: '1px solid #ECEDF2',
+                      color: 'dark.500',
+                      fontWeight: '500',
+                      fontSize: '16px',
+                      lineHeight: '24px',
+                      '& span': {
+                        mr: '12px',
+                      },
+                    }}
+                    fullWidth
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => deleteClient({ data: selectClients })}
+                  >
+                    <DeleteIcon width='24px' />
+                  </Button>
+                </Box>
+              </>
+            )}
+          </Box>
+          <Box display={'flex'} alignItems={'center'}>
+            <Box>
+              <ColumnsFilterButtonForAll
+                title={t('ag_grid.table_setting.label')}
+                columns={tableColumns}
+                isCatalog={false}
+                changeColumnSequence={changeColumnSequence}
+                resetTableHeader={resetTableHeader}
+              />
+            </Box>
           </Box>
         </Box>
-        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
+        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
-            id='users-main-table'
+            id='clients-main-table'
             tableSettings
+            fullDownload={() => clientsExcelReport({ ...clientsListFilter, limit: 1000000 })}
+            downloadByFilter={() => clientsExcelReport(clientsListFilter)}
+            isDownloading={isclientsExcelReport}
             columns={tableColumns}
-            data={userList?.data?.users || []}
-            isDataLoading={isFetchingUserList || userListLoading}
+            totalCount={clientsList?.data?.data?._meta?.total_count || 0}
+            data={clientsList?.data?.data?.data || []}
+            isDataLoading={isFetchingclientsList || clientsListLoading}
             offsetCount={offsetCount}
+            emptyTableText={{
+              title: 'Клиент не существует',
+              description: 'Если вы не нашли искомого Клиента, нажмите кнопку «Добавить нового» и введите необходимую информацию.',
+            }}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}
+            fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            status={status}
-            isRefreshing={loading || isFetchingUserList || userListLoading}
+            isRefreshing={loading || isFetchingclientsList || clientsListLoading}
           />
         </Box>
       </Box>
-      <ClientDrawer setOpenConfirmDialog={setOpenConfirmDialog} isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(null)} />
+
+      <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (
         <ConfirmDialog
           open={!!openConfirmDialog}
           setOpen={setOpenConfirmDialog}
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={
-            openConfirmDialog?.type === 'activate'
-              ? 'Активировать пользователя?'
-              : openConfirmDialog?.type === 'blocked'
-              ? 'Блокировать пользователя?'
-              : 'Удалить магазин?'
-          }
-          desc={
-            openConfirmDialog?.type === 'activate'
-              ? 'Вы действительно хотите активировать пользователя, вы не можете вернуть этот прогресс после активации.'
-              : 'Вы действительно хотите блокировать пользователя, вы не можете вернуть этот прогресс после блокировки.'
-          }
+          title={'Удалить клиента?'}
+          desc={'Хотите ли вы удалить клиента?'}
+          supDesc={'“Azitromitsin 250 mg”'}
           actions={
             <>
-              <Button variant='contained' color='secondary' onClick={() => setOpenConfirmDialog(null)}>
+              <Button
+                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                fullWidth
+                color='secondary'
+                variant='contained'
+                onClick={() => setOpenConfirmDialog(null)}
+              >
                 Нет
               </Button>
-              <LoadingButton
-                variant='contained'
-                type='button'
-                loading={isChangingUserStatus}
-                onClick={() =>
-                  openConfirmDialog?.type === 'activate'
-                    ? changeUserStatus({ id: openConfirmDialog.id, data: { status: 'ACTIVE' } })
-                    : changeUserStatus({ id: openConfirmDialog.id, data: { status: 'BLOCKED' } })
-                }
-              >
-                Да
+              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteClient({ data: [openConfirmDialog.id] })}>
+                Да, удалить
               </LoadingButton>
             </>
           }

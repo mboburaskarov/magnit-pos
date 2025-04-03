@@ -12,6 +12,9 @@ import useVirtualizedData from '../../src/hooks/useVirtualizedData'
 import DeleteSmallIcon from '../../src/assets/icons/DeleteSmallIcon'
 import DeleteIconBig from '../../src/assets/icons/DeleteIconBig'
 import LoadingBlock from '../LoadingBlock'
+import Label from '../Label'
+import { get } from 'lodash'
+import { t } from 'i18next'
 
 const SingleValue = ({ children, selectProps, ...props }) => (
   <components.SingleValue selectProps={selectProps} {...props}>
@@ -72,6 +75,7 @@ function LazySelect({
   getOptionLabel = (option) => option.name,
   getOptionValue,
   defaultValue,
+  customLabel = 'name',
   boxStyle,
   label,
   placeholder = 'components.enterAttribute',
@@ -80,6 +84,7 @@ function LazySelect({
   onChange,
   beforeContent,
   white,
+  minHeight,
   isMulti,
   required,
   maxWidth,
@@ -118,6 +123,7 @@ function LazySelect({
     error,
     maxOptionMenuHeight,
     small,
+    minHeight,
     mini,
     solidBorder,
     placeholderWrap: placeholderWrap || true,
@@ -126,13 +132,14 @@ function LazySelect({
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [debouncedSearch] = useDebounce(search, 300)
-  const { data, hasMore, loading, setData } = useVirtualizedData(request, debouncedSearch, page, slug || id, filters)
+  const { data, hasMore, loading, setData, response } = useVirtualizedData(request, debouncedSearch, page, slug || id, filters)
 
   useEffect(() => {
     if (typeof getData === 'function') {
       getData(data)
     }
   }, [data])
+
   const cls = useStyles()
   const observer = useRef()
   const lastElementRef = useCallback(
@@ -154,9 +161,15 @@ function LazySelect({
     setSearch(inputValue)
   }
 
-  const handleCreate = (inputValue) => {
+  const handleCreate = async (inputValue, onChange) => {
     if (!!createOptionRequest) {
-      create({ name: inputValue })
+      const response = await createOptionRequest({ name: inputValue })
+
+      const newOption = response?.data?.data // Adjust this based on your API response structure
+      onChange({
+        value: get(newOption, 'id'),
+        label: get(newOption, 'name'),
+      })
     } else {
       control.setValue(name, { label: inputValue })
     }
@@ -166,10 +179,9 @@ function LazySelect({
   return (
     <Box className={cls.root} {...boxStyle} maxWidth={maxWidth}>
       {label && (
-        <Typography className={`${!label && cls.noLabel} ${label && required && asteriks ? cls.required : ''}`} mb={2} variant='h5'>
-          {labelOrder && <span className={cls.orderedLabel}>{labelOrder}</span>}
+        <Label mb={1.5} required={required}>
           {label}
-        </Typography>
+        </Label>
       )}
       {uncontrolled ? (
         <Select
@@ -181,7 +193,7 @@ function LazySelect({
           isSearchable={isSearchable}
           placeholder={placeholder}
           noOptionsMessage={() => 'no options'}
-          formatCreateLabel={(inputValue) => 'components.add_inputValue ' + inputValue}
+          formatCreateLabel={(inputValue) => t('components.add_inputValue', { inputValue })}
           onChange={(val) => onChange(val)}
           value={value}
           isDisabled={disabled}
@@ -190,7 +202,7 @@ function LazySelect({
           getOptionLabel={getOptionLabel}
           filterOption={filterOption}
           options={
-            data?.map((el) => ({ ...el, id: el._id })) || [
+            response?.data?.data?.data?.map((el) => ({ ...el })) || [
               {
                 _id: '64960ad8fb82b59680236ffa',
                 fullName: 'Nosirzoda Khasanjon',
@@ -241,7 +253,7 @@ function LazySelect({
                 formatCreateLabel={(inputValue) => (
                   <>
                     <FontAwesomeIcon icon={faPlusCircle} color={'#119676'} />
-                    <span style={{ marginLeft: 8 }}>{'components.add_inputValue ' + inputValue}</span>
+                    <span style={{ marginLeft: 8 }}>{t('components.add_inputValue', { inputValue })}</span>
                   </>
                 )}
                 noOptionsMessage={() => 'no_options'}
@@ -250,7 +262,7 @@ function LazySelect({
                   Option: CustomOption,
                   ClearIndicator,
                 }}
-                onCreateOption={handleCreate}
+                onCreateOption={(a) => handleCreate(a, onChange)}
                 onChange={(val) => {
                   if (isMulti) {
                     onChange(val.map((el) => el))
@@ -260,7 +272,7 @@ function LazySelect({
                   }
                 }}
                 value={value}
-                options={data?.map((option) => ({
+                options={response?.data?.data?.data?.map((option) => ({
                   label: option?.name,
                   value: option?.id,
                 }))}
@@ -280,10 +292,10 @@ function LazySelect({
                 filterOption={filterOption}
                 noOptionsMessage={() => 'no_options'}
                 isMulti={isMulti}
-                formatCreateLabel={(inputValue) => 'components.add_inputValue ' + inputValue}
+                formatCreateLabel={(inputValue) => t('components.add_inputValue', { inputValue })}
                 onChange={(val) => {
                   if (isMulti) {
-                    onChange(val.map((el) => ({ id: el?._id, ...el })))
+                    onChange(val.map((el) => ({ id: el?.id, ...el })))
                   } else {
                     const formattedValue = customValue ? customValue(val) : val
                     onChange(formattedValue)
@@ -291,7 +303,13 @@ function LazySelect({
                 }}
                 getOptionLabel={getOptionLabel}
                 getOptionValue={(option) => option.id}
-                options={data || []}
+                options={
+                  response?.data?.data?.data?.map((option) => ({
+                    name: option?.[customLabel],
+                    value: option?.id,
+                    id: option?.id,
+                  })) || []
+                }
                 defaultValue={defaultValue || ''}
                 value={value}
                 beforeContent={beforeContent}

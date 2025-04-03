@@ -1,21 +1,28 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
-import { Box, Button, Typography } from '@mui/material'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import HeadPhonesIcon from '../../../assets/icons/HeadPhonesIcon'
-import { FormProvider, useForm } from 'react-hook-form'
-import AssigneMeButton from './AssigneMeButton'
-import UnlockIcon from '../../../assets/icons/UnlockIcon'
-import UserOutlineIcon from '../../../assets/icons/UserOutlineIcon'
-import SerchedItem from './SerchedItem'
+import { LoadingButton } from '@mui/lab'
+import { Box, Button, ListItem, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { requests } from '../../../../utils/requests'
-import { useQueryParams } from '../../../hooks/useQueryParams'
+import { get, head, size } from 'lodash'
+import React, { useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useDebounce } from 'use-debounce'
 import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
-import ArrowDown from '../../../assets/icons/ArrowDown'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
+import InputSearch from '../../../../components/Inputs/InputSearch'
+import { requests } from '../../../../utils/requests'
+import thousandDivider from '../../../../utils/thousandDivider'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
+import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
+import UnlockIcon from '../../../assets/icons/UnlockIcon'
+import SerchedItem from './SerchedItem'
 const useStyles = makeStyles((theme) => ({
+  avatar: {
+    width: 30,
+    borderRadius: '50%',
+  },
   overlay: {
     cursor: 'pointer',
     position: 'fixed',
@@ -39,10 +46,9 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
   searchResult: {
-    // padding: 3,
+    height: '100vh',
+    overflowY: 'auto',
     zIndex: 27,
-    // maxHeight: '83vh',
-    // overflow: 'scroll',
     '&::-webkit-scrollbar': {
       background: 'transparent',
       width: 6,
@@ -93,145 +99,291 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[500],
   },
   searchItemBox: {
-    width: 'calc(100% - 168px)',
+    width: '100%',
+    position: 'relative',
     display: 'flex',
+    maxHeight: '90px',
     backgroundColor: '#fff',
-    padding: '12px 16px',
+    padding: '12px 30px 12px 16px',
     borderRadius: 16,
   },
   searchItem: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'start',
     width: '100%',
     minHeight: 72,
-
+    flexDirection: 'column',
     marginTop: 16,
-    // backgroundColor: theme.palette.background.default,
     borderRadius: 16,
     position: 'relative',
     zIndex: 100,
     cursor: 'pointer',
-    // '&:focus-visible': {
-    //   transition: 'all 0.01s ease',
-    //   boxShadow: `0 0 0px 3px ${theme.palette.red[500]} !important`,
-    //   outline: 'transparent !important',
-    //   background: theme.palette.gray[101],
-    // },
+  },
+  currentUser: {
+    maxWidth: '200px',
+    height: '48px',
+    padding: '4px 12px 4px 4px !important',
+    justifyContent: 'space-between',
+    backgroundColor: theme.palette.gray[50],
+    borderRadius: '32px !important',
+  },
+  avatarPlaceholder: {
+    position: 'relative',
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    marginRight: 12,
+    fontWeight: 600,
+    fontSize: 16,
+    backgroundColor: theme.palette.orange[500],
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    color: '#fff',
+    transition: '0.3s',
+    '& img': {
+      width: '100%',
+    },
+  },
+  bonus_amount: {
+    width: 130,
+    margin: 0,
+    lineHeight: '19px',
+    fontWeight: 600,
+    fontFamily: "'Gilroy', sans-serif",
+    color: theme.palette.orange[500],
+    fontSize: 16,
+    transition: 'all .2s',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    textAlign: 'left',
+  },
+  shopname: {
+    margin: 0,
+    lineHeight: '20px',
+    fontWeight: 600,
+    fontFamily: "'Gilroy', sans-serif",
+    color: theme.palette.bunker[400],
+    fontSize: 14,
+    transition: 'all .2s',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    textAlign: 'left',
+  },
+  username: {
+    width: '100%',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    fontWeight: '600',
+    lineHeight: '24px',
+    fontSize: '16px',
+    color: theme.palette.bunker[950],
   },
 }))
-function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
-  const { values } = useQueryParams()
+let a = -1
+function CartSearchBar({
+  refetchcartItemsList,
+  openDraft,
+  discount,
+  addNewMarking,
+  searchResetRef,
+  searchRef,
+
+  handleAddProduct,
+  setIsOpenChangeShift,
+  cashBoxDetails,
+  showOverlay,
+  shouldWorkEnter,
+  setShowOverlay,
+}) {
   const [searchTearm, setSearchTerm] = useState('')
+  const navigate = useNavigate()
+  const [closeCashBox, setCloseCashBox] = useState(false)
+  const [debouncedSearchTerm] = useDebounce(searchTearm, 200)
+  const searchItemRef = useRef([])
+  const userData = useSelector((state) => state.user)
+  const { id } = useParams()
+  useImperativeHandle(searchResetRef, () => ({
+    clearValue: () => setSearchTerm(''),
+  }))
 
   const productsListFilter = useMemo(() => {
     return {
-      search: searchTearm,
+      search: searchTearm.slice(0, 31),
     }
-  }, [searchTearm])
-  const {
-    data: productsList,
-    isLoading: productsListLoading,
-    isFetching: isFetchingproductsList,
-    refetch,
-  } = useQuery(['productsList', productsListFilter], () => requests.getAllProducts(productsListFilter))
+  }, [debouncedSearchTerm])
+  const { data: productsList } = useQuery(['storeProductsList', productsListFilter], () =>
+    requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter)
+  )
+  const { data: sellerBonusInOneSale } = useQuery(
+    ['sellerBonusInOneSale'],
+    () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
+    { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
+  )
+  const { data: darftList, refetch, isDarftList } = useQuery(['darftList'], () => requests.getDarftList())
+
   const methods = useForm()
   const classes = useStyles()
-  const productsData = productsList?.data?.data?.data
+  const productsData = productsList?.data?.data
+
+  const selectDownItems = () => {
+    if (a == searchItemRef.current.length - 1) {
+      a = 0
+    } else {
+      a = a + 1
+    }
+
+    const nextInput = searchItemRef.current[a]
+    if (nextInput) {
+      nextInput.focus()
+    }
+  }
+  const selectUpItems = () => {
+    if (a == 0) {
+      a = searchItemRef.current.length - 1
+    } else {
+      a = a - 1
+    }
+    const nextInput = searchItemRef.current[a]
+
+    if (nextInput) {
+      nextInput.focus()
+    }
+  }
+  useHotkeys('j', () => methods.setFocus('product-search'), {
+    enableOnTags: ['INPUT', 'TEXTAREA'],
+  })
+  useHotkeys('ArrowDown', (event) => selectDownItems(event), { enableOnFormTags: true })
+  useHotkeys(
+    'Enter',
+    (event) => {
+      if (!shouldWorkEnter) {
+        return
+      }
+      if (document.activeElement.id?.length === 36) {
+        // setSearchTerm('')
+        setShowOverlay(false)
+
+        handleAddProduct({
+          discount_type: get(discount, 'type', 'percent'),
+          discount_value: Number(get(discount, 'amount', 0)),
+          store_product_id: get(document, 'activeElement.id', 'err #3'),
+          sale_id: id,
+        })
+      }
+    },
+    {
+      enableOnFormTags: true,
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+    }
+  )
+  useHotkeys('ArrowUp', (event) => selectUpItems(event), { enableOnFormTags: true })
   return (
     <Box className={classes.quick_search} mb={4}>
       <FormProvider {...methods}>
         <Box display={'flex'}>
           <InputSearch
+            inputRef={searchRef}
             id='product-search'
+            hasShortCut
+            disabled={get(cashBoxDetails, 'data.data.sale_type') == 'RETURN'}
             style={{ zIndex: showOverlay ? 25 : 10 }}
             sx={{ marginRight: '16px !important', height: '48px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
             name='search'
-            // uncontrolled
-            placeholder={'Qidirish: mahsulot, kategoriya, shtrix-kod'}
+            placeholder={'Поиск: товар, категория, штрих-код'}
             fullWidth
-            onChange={(e) => {
-              // setFakeIndexForCheckSearch(-1)
-              setSearchTerm(e.target.value)
+            onFocus={() => {
+              a = 0
               setShowOverlay(true)
-              // setPage(1)
             }}
-            // }}
-            // onFocus={() => event('new_sale_search_attempts')}
-            // onKeyDown={(e) => {
-            //   if (e.key === 'Enter') {
-            //     onEnter()
-            //   }
-            // }}
-            // disabled={webkassaOn}
-            // onClick={() => setFakeIndexForCheckSearch(-1)}
-            // adornmentTextHotKey={t('buttons.press')}
-            // value={searchTerm}
-            // handleClickGiftCards={!giftCardsRoute && !giftCardSale && handleClickGiftCards}
-            // inputRef={searchInputRef}
-            // setSearchTerm={setSearchTerm}
-          />
-          <Box position={'relative'} minWidth={'240px'}>
-            <SelectSimple
-              id='operator'
-              name='operator'
-              minWidth='auto'
-              borderNone
-              fullWidth
-              placeholder={
-                <Typography ml={4} color='#bdbdbd'>
-                  Sotuvchi
-                </Typography>
-              }
-              // options={[]}
-              getOptionLabel={(option) => (
-                <Typography maxHeight={48} display='inline-flex' color='gray.600'>
-                  <Box px={0.5} width={32}>
-                    <UserOutlineIcon />
-                  </Box>
-                  {/* {option.fullName} */}
-                </Typography>
-              )}
+            value={searchTearm}
+            setSearchTerm={setSearchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value)
+            }}
+            onKeyDown={(e) => {
+              setShowOverlay(true)
 
-              // filterOption={(candidate, input) => {
-              //   const formatText = (text) => {
-              //     const newText = String(text)?.toLowerCase()?.replaceAll(' ', '')
-              //     return newText
-              //   }
-              //   const inputFrmttd = formatText(input)
-              //   return formatText(candidate?.data?.fullName)?.includes(inputFrmttd) || formatText(candidate?.data?.phone)?.includes(inputFrmttd)
-              // }}
-            />
-            <AssigneMeButton isSelected={true} />
-          </Box>
+              if (e.key == 'Escape') {
+                e.preventDefault()
+              }
+              if (e.key == 'Enter') {
+                setShowOverlay(false)
+                if (productsData.length === 1) {
+                  handleAddProduct({
+                    discount_type: get(discount, 'type', 'percent'),
+                    discount_value: Number(get(discount, 'amount', 0)),
+                    sale_id: id,
+                    barcode: get(head(productsData), 'barcode'),
+                  })
+                } else {
+                  handleAddProduct({
+                    discount_type: get(discount, 'type', 'percent'),
+                    discount_value: Number(get(discount, 'amount', 0)),
+                    sale_id: id,
+                    barcode: searchTearm.slice(0, 31),
+                  })
+                }
+              }
+            }}
+          />
+          <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
+            <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
+              <div className={classes.avatarPlaceholder}>
+                <img src={get(userData, 'photo')} />
+              </div>
+
+              <Box maxWidth='73%'>
+                <Typography id='user-username' className={classes.username}>
+                  {get(userData, 'first_name')}
+                </Typography>
+                <p id='user-shopname' className={`${classes.bonus_amount} `}>
+                  +{thousandDivider(get(sellerBonusInOneSale, 'data.data.bonus', 0), 'сум')}
+                </p>
+              </Box>
+            </Box>
+          </ListItem>
+
           <ButtonWithPopup
             id={'ff'}
             noArrow
-            // endIcon={<ArrowDown />}
+            ml={'16px'}
+            sx={{ height: '48px' }}
             noMarginSvg
             placement='bottom-end'
+            onClick={() => refetch()}
             buttonLabel={
-              <Box ml={'16px'} className='cash_register_icon_wrapper' bgcolor={'#F8F8F9'} padding={'12px'} width={'48px'} height={'48px'} borderRadius={'50%'}>
+              <Box
+                sx={{ '&:hover': { bgcolor: 'transparent !important' } }}
+                className='cash_register_icon_wrapper'
+                bgcolor={'#F8F8F9'}
+                padding={'10px'}
+                width={'44px'}
+                height={'44px'}
+                borderRadius={'50%'}
+              >
                 <FinanceAndPaymentIcon />
               </Box>
             }
             popperData={[
-              { title: 'Kassa aparatini yopish', icon: <UnlockIcon /> },
-              { title: "Kassa aparatini o'zgartirish", icon: <FinanceAndPaymentIcon />, soon: true },
+              {
+                title: 'Закрыть кассу',
+                icon: <UnlockIcon />,
+                clickHandler: () => {
+                  if (size(get(darftList, 'data.data.data')) > 0) {
+                    setCloseCashBox(true)
+                  } else {
+                    navigate(`/sales/cash-shift-detail/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`)
+                  }
+                },
+              },
+              { title: 'Обмен сменами', icon: <FinanceAndPaymentIcon />, soon: false, clickHandler: () => setIsOpenChangeShift(true) },
             ]}
-            // popperContentProps={{
-            //   customDateRanges: customDateRanges(),
-            //   onCustomRangeSelect: (name) => setCustomDateRangeSelected(name),
-            //   isFilter: true,
-            //   dateState: {
-            //     from: dateState.from,
-            //     to: dateState.to,
-            //     month: dateState.month,
-            //   },
-            //   setDateState: (val) => setDateState(val),
-            //   onClose: (data) => onClose(data),
-            // }}
-            // PopperContent={DateFilterDrawerSingle}
           />
         </Box>
         {showOverlay && searchTearm && (
@@ -245,11 +397,64 @@ function CartSearchBar({ handleAddProduct, showOverlay, setShowOverlay }) {
         {showOverlay && searchTearm && (
           <Box className={classes.searchResult}>
             {productsData?.length ? (
-              productsData?.map((product) => <SerchedItem handleAddProduct={handleAddProduct} product={product} searchTerm={searchTearm} classes={classes} />)
+              productsData?.map((product, index) => (
+                <SerchedItem
+                  isChild={false}
+                  discount={discount}
+                  index={index}
+                  handleAddProduct={handleAddProduct}
+                  setSearchTerm={setSearchTerm}
+                  item={product}
+                  itemRef={(el) => (searchItemRef.current[index] = el)}
+                  product={product}
+                  searchTerm={'searchTearm'}
+                  classes={classes}
+                />
+              ))
             ) : (
-              <span>Dori mavjud emas</span>
+              <Box sx={{ zIndex: 999999, display: 'flex', justifyContent: 'center', paddingTop: '75px', height: '100vh' }}>
+                <Typography zIndex={'9999999'} fontSize={'25px'} fontWeight={'600'} color={'#fff'}>
+                  Продукт не найден
+                </Typography>
+              </Box>
             )}
           </Box>
+        )}
+        {closeCashBox && (
+          <ConfirmDialog
+            open={closeCashBox}
+            setOpen={setCloseCashBox}
+            icon={<BigWarningIcon />}
+            title={'Закрыть кассу?'}
+            desc={'Сначала очистите черновики, а затем закройте кассу или нажмите «Продолжить», чтобы оставить черновики без изменений.'}
+            supDesc={'Есть черновики.'}
+            actions={
+              <>
+                <Button
+                  sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                  fullWidth
+                  color='secondary'
+                  variant='contained'
+                  onClick={() => {
+                    openDraft()
+                    setCloseCashBox(false)
+                  }}
+                >
+                  Просмотреть черновики
+                </Button>
+                <LoadingButton
+                  variant='contained'
+                  type='button'
+                  // loading={isdeleteCartItem}
+                  onClick={() => {
+                    navigate(`/sales/cash-shift-detail/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`)
+                  }}
+                >
+                  Продолжить
+                </LoadingButton>
+              </>
+            }
+          />
         )}
       </FormProvider>
     </Box>

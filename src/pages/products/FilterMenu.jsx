@@ -1,47 +1,61 @@
-import { Box, Button, IconButton, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { Box, Button, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import { get } from 'lodash'
+import * as qs from 'qs'
+import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { requests } from '../../../utils/requests'
-import SelectSimple from '../../../components/Select/SelectSimple'
-import InputRange from '../../../components/Inputs/InputRange'
-import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
-import * as qs from 'qs'
 import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
+import InputRange from '../../../components/Inputs/InputRange'
+import LazySelect from '../../../components/Select/LazySelect'
+import SelectSimple from '../../../components/Select/SelectSimple'
+import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
+import { requests } from '../../../utils/requests'
 import CloseIcon from '../../assets/icons/CloseIcon'
-import { theme } from '../../assets/theme'
-import { useTranslation } from 'react-i18next'
+import { useQueryParams } from '../../hooks/useQueryParams'
 
-export default function FilterMenu({ open, setOpen, setRegions }) {
+export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
-  const { formState, reset, control, getValues } = methods
-  const [isExpress, setIsExpress] = useState(false)
+  const { formState, reset } = methods
 
-  const { data: shopList } = useQuery('shopList', () => requests.getAllShops({ limit: 1000, offset: 0 }))
-  const { data: categories } = useQuery('categories', () => requests.getAllCategories({ limit: 1000, offset: 0 }))
-  const { data: producers } = useQuery('producers', () => requests.getAllProducer({ limit: 1000, offset: 0 }))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 100, offset: 0 }))
+  const { data: categories } = useQuery('categories', () => requests.getAllCategories({ id: values?.category_id }), {
+    enabled: Boolean(get(values, 'category_id', false)),
+  })
+  const { data: producers } = useQuery(['producers', values], () => requests.getProducer({ id: values?.producer_id }), {
+    enabled: Boolean(get(values, 'producer_id', false)),
+  })
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])
 
     const requestBody = {
-      category_id: data.category_id?.id || undefined,
+      category_id: data.category_id?.value || undefined,
+      category_name: data.category_id?.name || undefined,
       supply_price_from: data.supply_price_from || undefined,
       supply_price_to: data.supply_price_to || undefined,
       retail_price_from: data.retail_price_from || undefined,
       retail_price_to: data.retail_price_to || undefined,
-      store_id: data.store_id?.id || undefined,
-      producer: data.producer?.name || undefined,
-      isExpress: isExpress || undefined,
+      store_id: data.store_id?.value || undefined,
+      store_name: data.store_id?.name || undefined,
+      producer_id: data.producer_id?.value || undefined,
+      producer_name: data.producer_id?.name || undefined,
+      no_barcode: data.no_barcode?.id || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
+    reset({
+      supply_price_to: null,
+      retail_price_to: null,
+      supply_price_from: null,
+      retail_price_from: null,
+    })
     setOpen(false)
-    navigate(`/products${requestParams}`)
+    navigate(`/products/all${requestParams}`)
   }
 
   const onError = (err) => {
@@ -49,23 +63,25 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { supply_price_to, retail_price_to, supply_price_from, retail_price_from, category_id, store_id, producer } = values
+    const { supply_price_to, no_barcode, retail_price_to, supply_price_from, retail_price_from, category_id, store_id, producer_id } = values
 
     reset(
       {
-        category_id: category_id ? getOptionsFromUrlParam(category_id, categories?.data?.data)[0] : null,
-        producer: producer ? getOptionsFromUrlParam(producer, producers?.data?.data)[0] : null,
-        store_id: store_id ? getOptionsFromUrlParam(store_id, shopList?.data?.data, 'name')[0] : null,
-        supply_price_to: supply_price_to,
-        retail_price_to: retail_price_to,
-        supply_price_from: supply_price_from,
-        retail_price_from: retail_price_from,
+        category_id: category_id ? { name: values?.category_name, value: values?.category_id } : null,
+        producer_id: producer_id ? { name: values?.producer_name, value: values?.producer_id } : null,
+        store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
+        supply_price_to: supply_price_to || null,
+        retail_price_to: retail_price_to || null,
+        supply_price_from: supply_price_from || null,
+        retail_price_from: retail_price_from || null,
+        no_barcode: no_barcode ? getOptionsFromUrlParam(no_barcode, barcodeFilterList, 'name')[0] : null,
       },
       { keepDirty: true }
     )
   }, [
-    values?.producer,
+    values?.producer_id,
     values?.category_id,
+    values?.no_barcode,
     values?.store_id,
     values?.retail_price_to,
     values?.retail_price_from,
@@ -74,16 +90,37 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
     categories,
     producers,
     shopList,
+    open,
   ])
+  const theme = useTheme()
 
   const resetFilter = () => {
+    reset(
+      {
+        supply_price_to: null,
+        retail_price_to: null,
+        supply_price_from: null,
+        retail_price_from: null,
+      },
+      { keepDirty: true }
+    )
     reset()
+    methods.setValue('')
     setOpen(false)
-    navigate(`/products?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/products/all?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
+  const barcodeFilterList = [
+    { name: 'Без штрих-кода', id: '1' },
+    { name: 'Со штрих-кодом', id: '2' },
+  ]
   return (
-    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog
+      onClose={() => setOpen(false)}
+      open={open}
+      title={t('filter_dialog.label')}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+    >
       <Box
         sx={{
           width: '100%',
@@ -101,7 +138,8 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <SelectSimple
+            <Box padding={'0 2px'} maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'scroll'}>
+              {/* <SelectSimple
               fullWidth
               id='sto'
               name='store_id'
@@ -110,51 +148,123 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               label={t('input.store.label')}
               placeholder={t('input.store.placeholder')}
               getOptionLabel={(el) => el.name}
-              options={shopList?.data?.data}
-            />
-            <SelectSimple
+              options={shopList?.data?.data?.data}
+            /> */}
+              <SelectSimple
+                fullWidth
+                id='nobarcode'
+                white
+                name='no_barcode'
+                minWidth='auto'
+                label={'Штрих-код'}
+                placeholder={'Bыберите статус'}
+                options={barcodeFilterList}
+                getOptionLabel={(el) => el.name}
+              />
+              <Box height={'20px'} />
+
+              <LazySelect
+                slug='users'
+                boxStyle={{ width: '100%' }}
+                id='store'
+                name='store_id'
+                isMulti={false}
+                placeholder={t('Выберите Магазин')}
+                minWidth='auto'
+                isClearable={true}
+                label={t('input.store.label')}
+                request={requests.getAllStores}
+                filters={{ limit: 10 }}
+                control={methods.control}
+                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+                // uncontrolled
+                getOptionLabel={(option) => {
+                  return <Typography color='grey.600'>{option.name}</Typography>
+                }}
+                filterOption={() => true}
+              />
+              <Box height={'20px'} />
+
+              {/* <SelectSimple
               fullWidth
               id='categ'
               white
               name='category_id'
               minWidth='auto'
               label={t('input.category.label')}
-              placeholder={t('input.store.placeholder')}
-              options={categories?.data?.data}
+              placeholder={t('input.category.placeholder')}
+              options={categories?.data?.data?.data}
               getOptionLabel={(el) => el.name}
-            />
-            <SelectSimple
-              fullWidth
-              id='produ'
-              name='producer'
-              white
-              minWidth='auto'
-              label={t('input.manufacturer.label')}
-              placeholder={t('input.store.placeholder')}
-              options={producers?.data?.data}
-              getOptionLabel={(el) => el.name}
-            />
-            <InputRange
-              fullWidth
-              id='prixwce'
-              label={t('input.supply_price.label')}
-              name1='supply_price_from'
-              name2='supply_price_to'
-              placeholder1={t('input.price.from')}
-              placeholder2={t('input.price.to')}
-            />
-            <InputRange
-              fullWidth
-              id='prixwce'
-              label={t('input.retail_price.label')}
-              name1='retail_price_from'
-              name2='retail_price_to'
-              placeholder1={t('input.price.from')}
-              placeholder2={t('input.price.to')}
-            />
+            /> */}
+              <LazySelect
+                slug='users'
+                boxStyle={{ width: '100%' }}
+                id='category_id'
+                name='category_id'
+                isMulti={false}
+                label={t('input.category.label')}
+                placeholder={t('input.category.placeholder')}
+                minWidth='auto'
+                isClearable={true}
+                request={requests.getAllCategories}
+                filters={{ limit: 10 }}
+                control={methods.control}
+                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+                // uncontrolled
+                getOptionLabel={(option) => {
+                  return <Typography color='grey.600'>{option.name}</Typography>
+                }}
+                filterOption={() => true}
+              />
+              <Box height={'20px'} />
+
+              <LazySelect
+                slug='users'
+                boxStyle={{ width: '100%' }}
+                id='producer'
+                name='producer_id'
+                isMulti={false}
+                label={t('input.manufacturer.label')}
+                placeholder={t('input.manufacturer.placeholder')}
+                minWidth='auto'
+                isClearable={true}
+                request={requests.getProducer}
+                filters={{ limit: 10 }}
+                control={methods.control}
+                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+                // uncontrolled
+                getOptionLabel={(option) => {
+                  return <Typography color='grey.600'>{option.name}</Typography>
+                }}
+                filterOption={() => true}
+              />
+              <Box height={'20px'} />
+
+              <InputRange
+                fullWidth
+                id='prixwce'
+                label={t('input.supply_price.label')}
+                name1='supply_price_from'
+                name2='supply_price_to'
+                placeholder1={t('input.price.from')}
+                placeholder2={t('input.price.to')}
+              />
+              <Box height={'20px'} />
+
+              <InputRange
+                fullWidth
+                id='prixwce'
+                label={t('input.retail_price.label')}
+                name1='retail_price_from'
+                name2='retail_price_to'
+                placeholder1={t('input.price.from')}
+                placeholder2={t('input.price.to')}
+              />
+              <Box height={'20px'} />
+            </Box>
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
-                sx={{ bgcolor: '#fff !important', border: '1px solid #ECEDF2' }}
+                sx={{ bgcolor: `${theme.palette.background.gray} !important`, border: '1px solid #ECEDF2' }}
                 fullWidth
                 color='secondary'
                 variant='contained'

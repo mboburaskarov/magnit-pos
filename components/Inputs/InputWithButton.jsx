@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '18px',
     lineHeight: '28px',
     fontWeight: '600',
-    paddingRight: '20px',
+    paddingRight: '40px',
     color: theme.palette.orange[500] + ' !important',
     whiteSpace: 'nowrap',
   },

@@ -5,7 +5,7 @@ import { useMutation } from 'react-query'
 import { useDropzone } from 'react-dropzone'
 import { requests } from '../../utils/requests'
 import { error } from '../../utils/toast'
-import ImagePreview from './ImagePreview'
+import ImagePreview from './ImageProfilePreview'
 import Label from '../Label'
 
 export default function ImageUpload({ id, images, onChange, label, width, height, type, withoutTextBox }) {
@@ -17,12 +17,18 @@ export default function ImageUpload({ id, images, onChange, label, width, height
       const newImages = editingImage
         ? oldImages.map((el) => {
             if (el.name === editingImage) {
-              el.name = data?.[0].name
-              el.key = data?.[0].key
+              el.name = data?.file_name
+              el.key = data?.file_url
             }
             return el
           })
-        : [...oldImages, data?.[0]].map((el, ind) => ({
+        : [
+            ...oldImages,
+            {
+              name: data?.file_name,
+              key: data?.file_url,
+            },
+          ].map((el, ind) => ({
             ...el,
             sequence_number: ind,
           }))
@@ -55,7 +61,7 @@ export default function ImageUpload({ id, images, onChange, label, width, height
     (files) => {
       for (const file of files) {
         const formData = new FormData()
-        formData.append('files', file, file.name)
+        formData.append('file', file, file.name)
         if (type) formData.append('type', type)
         uploadImage(formData)
       }

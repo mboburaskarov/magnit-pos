@@ -10,8 +10,8 @@ import NavItemMini from './NavItemMini'
 import isEqual from '../../../utils/isEqual'
 import BackArrowIcon from '../../assets/icons/BackArrow'
 import { useTranslation } from 'react-i18next'
-import { size } from 'lodash'
-
+import { get, size } from 'lodash'
+import { useQueryParams } from '../../hooks/useQueryParams'
 function NavbarDrawer({
   classes,
   isOpen,
@@ -26,9 +26,12 @@ function NavbarDrawer({
 }) {
   const { t } = useTranslation()
   const location = useLocation()
+  const { values } = useQueryParams()
+  const isNewSalePage = location?.pathname?.split('new-sale/')[0] == '/sales/'
   const userData = useSelector((state) => state.user)
   const firstName = userData?.fullName?.split(' ')?.[0]
   const lastName = userData?.fullName?.split(' ')?.[1]
+
   return (
     <div id='navbar' className={classes.container}>
       <div className={classes.logo}>
@@ -63,19 +66,21 @@ function NavbarDrawer({
                 {t(currentRoutesMemoized?.label)}
               </ListItem>
               <div className={classes.hr} />
-              {currentRoutesMemoized?.children?.map((item, index) => {
-                return (
-                  <NavItem
-                    item={item}
-                    key={index}
-                    classes={classes}
-                    handleClickNavItems={setCurrentRoutes}
-                    handleShowDialog={setShowDialog}
-                    setNextHref={setNextHref}
-                    isActive={`/${location.pathname.split('/')[1]}` === item?.href}
-                  />
-                )
-              })}
+              <Box p={'20px'}>
+                {currentRoutesMemoized?.children?.map((item, index) => {
+                  return (
+                    <NavItem
+                      item={item}
+                      key={index}
+                      classes={classes}
+                      handleClickNavItems={setCurrentRoutes}
+                      handleShowDialog={setShowDialog}
+                      setNextHref={setNextHref}
+                      isActive={`/${location.pathname.split('/')[1]}` === item?.href}
+                    />
+                  )
+                })}
+              </Box>
             </div>
           </div>
         )}
@@ -113,37 +118,36 @@ function NavbarDrawer({
               </ListItem>
               {currentRoutesMemoized?.children?.map((item, index) => {
                 return (
-                  <NavItem isActive={`${location.pathname}` === item?.href} item={item} key={index} classes={classes} handleClickNavItems={setCurrentRoutes} />
+                  <NavItem isActive={`${location.pathname}` == item?.href} item={item} key={index} classes={classes} handleClickNavItems={setCurrentRoutes} />
                 )
               })}
             </div>
           )}
         </Box>
       </List>
-      {/* {!userData?.fullName ? (
-        <Box position='relative' marginTop={'auto'}>
-          <Box className={classes.fakeImage} />
-          <Skeleton className={classes.skeleton} />
-        </Box>
-      ) : (
-        <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
-          <Box display='flex' alignItems='center' justifyContent='flex-start'>
-            <div className={classes.avatarPlaceholder}>
-              {firstName.charAt(0)}
-              {lastName.charAt(0)}
-            </div>
-
-            <Box maxWidth='73%'>
-              <Typography id='user-username' className={classes.username}>
-                {`${lastName || ''} ${firstName.charAt(0) + '.' || ''}`}
-              </Typography>
-              <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                {userData.type.toLowerCase()}
-              </p>
+      {isNewSalePage && (
+        <ListItem onClick={() => setIsUserOpen(true)} width={'100% !important'} className={`${classes.currentNavBarUser} drawer_user_avatar`} id='avatar'>
+          <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
+            <Box className={classes.avatarPlaceholder}>
+              <img src={get(userData, 'photo')} />
             </Box>
+
+            {isOpen && (
+              <Box maxWidth='73%'>
+                <Typography id='user-username' className={classes.username}>
+                  {get(userData, 'store.name')}
+                </Typography>
+                <p id='user-shopname' className={`${classes.shopname} shopname`}>
+                  {get(userData, 'store.store_code')}
+                </p>
+              </Box>
+            )}
           </Box>
+          {/* <Box display={'flex'} alignItems={'center'}>
+              <ArrowDown />
+            </Box> */}
         </ListItem>
-      )} */}
+      )}
     </div>
   )
 }

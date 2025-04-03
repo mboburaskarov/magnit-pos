@@ -5,6 +5,11 @@ import RowFilterButton from './RowFilterButton'
 import DownloadButton from './DownloadButton'
 import Pagination from './Pagination'
 import { useTranslation } from 'react-i18next'
+import ButtonWithPopup from '../Buttons/ButtonWithPopup'
+import FinanceAndPaymentIcon from '../../src/assets/icons/FinanceAndPaymentIcon'
+import UnlockIcon from '../../src/assets/icons/UnlockIcon'
+import DownloadIcon from '../../src/assets/icons/DownloadIcon'
+import { borderColor, fontSize, fontWeight, minWidth } from '@mui/system'
 
 const rotateAnimation = keyframes`
   0% {
@@ -52,8 +57,10 @@ function AgGridBottom({
   offsetIndex,
   offsetQuery,
   isDownloading,
-  download,
+  fullDownload,
+  downloadByFilter,
   offsetSize,
+  totalCount,
   setOffsetSize,
   eventMessages,
   fullInfoAboutCurrentPage,
@@ -61,31 +68,83 @@ function AgGridBottom({
   isRefreshing,
 }) {
   const { t } = useTranslation()
+
   return (
     <Box
       sx={(theme) => ({
         display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        // justifyContent: 'space-between',
+        // alignItems: 'center',
         width: '100%',
         paddingTop: 2,
-        // borderTop: `2px solid ${theme.palette.gray[200]}`,
       })}
     >
       <Box width={'100%'} display='flex' justifyContent={'space-between'} alignItems='center'>
-        {download && <DownloadButton isDownloading={isDownloading} download={download} />}
-        {/* {resetTable && (
-          <RefreshButton
-          loading={isRefreshing}
-          onClick={() => {
-            resetTable()
-            }}
+        <Box display={'flex'}>
+          <RowFilterButton
+            totalCount={totalCount}
+            offsetIndex={offsetIndex}
+            offsetQuery={offsetQuery}
+            eventMessage={eventMessages?.[1]}
+            offsetSize={offsetSize}
+            setOffsetSize={setOffsetSize}
+          />
+          {fullDownload && downloadByFilter && (
+            <ButtonWithPopup
+              id={'ff'}
+              noArrow
+              ml={'16px'}
+              disabled={isDownloading}
+              borderRadius={'20px'}
+              popperStyle={{
+                '& div': {
+                  minWidth: '100px',
+                },
+                '& span': {
+                  marginLeft: '0px !important',
+                },
+                '& button': {
+                  padding: '5px 10px !important',
+                },
+                '& b': {
+                  fontSize: '17px',
+                  fontWeight: '600',
+                },
+              }}
+              sx={{
+                height: '40px',
+                borderRadius: '10px',
+                backgroundColor: 'transparent !important',
+                borderColor: '#cfcfcf',
+                '.optionTitle': {
+                  fontWeight: '400',
+                  fontSize: '17px',
+                },
+              }}
+              noMarginSvg
+              placement='bottom-end'
+              buttonLabel={
+                <Box display={'flex'} alignItems={'center'}>
+                  <DownloadIcon />
+                  <Typography fontSize={'17px'} mt={'3px'} ml={'10px'}>
+                    Скачать
+                  </Typography>
+                </Box>
+              }
+              popperData={[
+                {
+                  title: 'Полная скачать',
+                  clickHandler: () => fullDownload(),
+                },
+                { title: 'Скачать по фильтру', clickHandler: () => downloadByFilter() },
+              ]}
             />
-            )} */}
-        <RowFilterButton eventMessage={eventMessages?.[1]} offsetSize={offsetSize} setOffsetSize={setOffsetSize} />
+          )}
+          {/* {download && <DownloadButton isDownloading={isDownloading} download={download} />} */}
+        </Box>
         {fullInfoAboutCurrentPage && (
           <Typography fontSize={'16px'} lineHeight={'24px'} color={'bunker.400'} fontWeight={'500'}>
-            {t('ag_grid.bottom.info', { from: controlledOffsetCount, start: offsetIndex * offsetSize, end: offsetIndex * offsetSize + Number(offsetSize) })}
+            {t('ag_grid.bottom.info', { from: totalCount, start: offsetIndex * offsetSize - offsetSize + 1, end: offsetIndex * offsetSize })}
           </Typography>
         )}
         <Pagination count={controlledOffsetCount} handleChangeOffset={changeOffset} offset={offsetIndex} offsetQuery={offsetQuery} />

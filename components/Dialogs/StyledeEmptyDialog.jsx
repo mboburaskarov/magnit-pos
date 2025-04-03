@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography'
 import BackArrow from '../../src/assets/icons/BackArrow'
 import { makeStyles } from '@mui/styles'
 import ButtonWithWrapper from '../Buttons/ButtonWithWrapper'
+import { useEffect } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
       overflow: ({ overflowVisible }) => (overflowVisible ? 'visible' : 'hidden'),
       boxShadow: 'none !important',
       borderRadius: 20,
+      // overflowY: 'scroll !important',
       transition: open ? 'padding 0.3s ease-out' : 'padding 0.1s ease-in',
       zIndex: 15,
     },
@@ -40,6 +42,17 @@ const useStyles = makeStyles((theme) => ({
 function StyledEmptyDialog({ onClose, open, reset, children, title, customButtons, maxWidth, overflowVisible, titleStyles }) {
   const classes = useStyles({ overflowVisible, maxWidth, open })
 
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden' // Prevent scrolling
+    } else {
+      document.body.style.overflow = '' // Restore scrolling
+    }
+
+    return () => {
+      document.body.style.overflow = '' // Ensure cleanup on unmount
+    }
+  }, [open])
   const handleClose = () => {
     onClose()
     if (reset) reset()

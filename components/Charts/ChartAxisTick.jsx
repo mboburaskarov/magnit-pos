@@ -3,8 +3,6 @@ import { getDateFromDateTime, getTimeFromDateTime } from '../../utils/parseDateT
 import paletteLight from '../../src/assets/theme/paletteLight'
 
 export default function ChartAxisTick({ x, y, payload, detalization, index, visibleTicksCount }) {
-  // While filtering by month, words mix with each other.
-  // To prevent, hide even months options
   const hideEvenTicksMonthOption = detalization.value === 'month' && (visibleTicksCount > 8 ? index % 2 !== 0 : false)
   return (
     <g transform={`translate(${x},${y})`}>

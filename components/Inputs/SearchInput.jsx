@@ -20,11 +20,8 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     borderRadius: 16,
     width: ({ maxWidth }) => maxWidth,
-    // backgroundColor: theme.palette.gray[100],
     color: theme.palette.gray[400],
-    '&:hover': {
-      // backgroundColor: theme.palette.gray[101],
-    },
+
     '& .MuiOutlinedInput-input': {
       padding: '15.5px 5px',
     },

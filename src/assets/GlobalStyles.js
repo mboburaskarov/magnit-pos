@@ -1,6 +1,6 @@
 import createStyles from '@mui/styles/createStyles'
 import { makeStyles } from '@mui/styles'
-import { pad } from 'lodash'
+import { bgcolor } from '@mui/system'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -48,8 +48,6 @@ const useStyles = makeStyles((theme) =>
         boxShadow: theme.boxShadow['32-12'],
       },
 
-      // DatePicker
-
       '.datepicker .react-datepicker': {
         backgroundColor: theme.palette.background.default,
         boxShadow: theme.boxShadow['16-8'],
@@ -74,7 +72,7 @@ const useStyles = makeStyles((theme) =>
         backgroundColor: theme.palette.orange[600],
       },
       '.datepicker .react-datepicker__day--outside-month': {
-        color: theme.palette.gray[400],
+        color: theme.palette.bunker[900],
       },
       '.datepicker .react-datepicker__day--selected': {
         backgroundColor: theme.palette.orange[600],
@@ -89,7 +87,7 @@ const useStyles = makeStyles((theme) =>
         color: theme.palette.common.white,
       },
       '.react-datepicker__day--disabled': {
-        color: `${theme.palette.gray[100]} !important`,
+        color: `${theme.palette.gray[400]} !important`,
       },
 
       '.datepicker .react-datepicker__navigation-icon::before, .react-datepicker__year-read-view--down-arrow, .react-datepicker__month-read-view--down-arrow, .react-datepicker__month-year-read-view--down-arrow':
@@ -102,7 +100,6 @@ const useStyles = makeStyles((theme) =>
           backgroundColor: `${theme.palette.orange[500]} !important`,
         },
 
-      // multi option select :only color:
       '.label': {
         color: theme.palette.gray[600],
       },
@@ -135,7 +132,6 @@ const useStyles = makeStyles((theme) =>
         borderColor: theme.palette.gray[200],
       },
 
-      // rich text editor :only color:
       '.rdw-storybook-root': {
         backgroundColor: theme.palette.gray[100],
       },
@@ -192,7 +188,6 @@ const useStyles = makeStyles((theme) =>
         backgroundColor: theme.palette.gray[101],
       },
 
-      // ag grid styles :only color:
       '.ag-theme-alpine.ag-dnd-ghost': {
         backgroundColor: theme.palette.background.default + ' !important',
         borderColor: theme.palette.background.default + ' !important',
@@ -261,16 +256,17 @@ const useStyles = makeStyles((theme) =>
       '.ag-row-hover': {
         color: 'red !important',
       },
+      '.ag-row:hover': {
+        backgroundColor: `${theme.palette.orange[150]} !important`,
+      },
 
       '.ag-theme-alpine .ag-header-cell:hover': {
-        background: theme.palette.gray[100],
+        backgroundColor: `${theme.palette.bunker[100]} !important`,
       },
-      // '.ag-header-row.ag-header-row-column': {
-      //   backgroundColor: theme.palette.gray[50],
-      // },
       '.ag-cell-label-container': {
         padding: '12px',
       },
+
       '.ag-body': {
         borderColor: theme.palette.bunker[100],
         border: '1px solid',
@@ -311,21 +307,23 @@ const useStyles = makeStyles((theme) =>
         background: theme.palette.gray[200],
       },
       '.ag-row.ag-row-odd': {
-        background: '#fff',
+        background: 'none',
       },
       ".ag-menu.ag-ltr.ag-popup-child[aria-label='SubMenu']": {
         background: theme.palette.background.default,
         boxShadow: theme.boxShadow['16-8'],
       },
+
       '.ag-theme-alpine .ag-paging-panel': {
         borderColor: theme.palette.gray[200],
       },
       '.no-rows-container': {
-        borderColor: theme.palette.gray[300],
+        borderColor: theme.palette.bunker[100],
       },
-      '.no-rows-root p': {
-        color: theme.palette.gray[300],
+      '.no-rows-container': {
+        borderColor: theme.palette.bunker[100],
       },
+
       '.ag-theme-alpine .ag-pinned-left-header': {
         borderColor: theme.palette.gray[200] + ' !important',
       },

@@ -7,12 +7,15 @@ function NavItemMini({ item, handleClickNavItems, isActive }) {
 
   return (
     <ListItem
-      // aria-describedby='popper'
-      // className={`${classes.listItem} ${item.className || ''} drawer_list_item`}
-      // style={{ backgroundColor: isActive && palette.orange[500] }}
       component={RouterLink}
       to={item.href}
-      sx={{ p: 0, m: 0 }}
+      sx={{
+        p: 0,
+        m: 0,
+        height: '48px',
+        marginLeft: '24px',
+        marginBottom: '8px',
+      }}
       onClick={(event) => {
         if (item.children?.length) {
           event.preventDefault()
@@ -25,11 +28,9 @@ function NavItemMini({ item, handleClickNavItems, isActive }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          width: 32,
-          height: 32,
-          marginLeft: 4,
-          marginBottom: 2,
-          borderRadius: 2,
+          width: 48,
+          height: 48,
+          borderRadius: '50%',
           cursor: 'pointer',
           backgroundColor: isActive && theme.palette.orange[500],
           '&:hover': {

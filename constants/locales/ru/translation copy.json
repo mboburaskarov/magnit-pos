@@ -133,6 +133,7 @@
   "buttons.download": "Скачать",
   "buttons.download_with_errors": "Скачать файл с ошибками",
   "buttons.edit": "Редактировать",
+  "table_columns.amount": "Кол-во продуктов",
   "buttons.edit_attribute": "Редактирование атрибута",
   "buttons.exit": "Выйти",
   "buttons.free": "Бесплатно",
@@ -1989,7 +1990,7 @@
   "menu.reports.product_efficiency_table_columns.write_off_amount": "Кол-во",
   "menu.reports.product_efficiency_table_columns.write_off_retail_sum": "Сумма продажи",
   "menu.reports.product_efficiency_table_columns.write_off_supply_sum": "Сумма по цене поставки",
-  "menu.reports.product_leftovers": "Остатки продуктов",
+  "menu.reports.product_leftovers": "Недоступные",
   "menu.reports.product_performance": "Перформанс продуктов",
   "menu.reports.product_prefix": "продуктов",
   "menu.reports.product_report.groupBy": "Группировка",
@@ -2715,9 +2716,9 @@
   "navbar.cashbox_operations": "Кассовые операции",
   "navbar.cashbox_state": "Состояние счетов",
   "navbar.cashboxes": "Кассы",
-
+  "should_pay": "Должен платить",
   "navbar.catalog": "Каталог",
-
+  "payment_type": "Тип оплаты",
   "navbar.certificates": "Сертификаты",
   "navbar.cheques": "Чеки",
   "navbar.clients": "Клиенты",

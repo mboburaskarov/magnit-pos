@@ -1,16 +1,19 @@
 import React, { useMemo, useRef } from 'react'
 import { makeStyles } from '@mui/styles'
-import MuiTreeItem from '@mui/lab/TreeItem'
+// import { TreeItem as MuiTreeItem } from '@mui/lab'
+// import MuiTreeItem from '@mui/lab/TreeItem'
+import { TreeItem as MuiTreeItem } from '@mui/x-tree-view/TreeItem'
+
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Highlighter from 'react-highlight-words'
 import { Box } from '@mui/material'
-import PencilIcon from '../../src/assets/icons/BigWarningIcon'
+import InfoIcon from '../../src/assets/icons/InfoIcon'
+import StyledTooltip from '../StyledTooltip'
 
 const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disabled = false, handleCreate, searchTerm, highlight }) => {
   const tree = useMemo(() => flattenTree({ items }), [items])
   const marksUncheckedRef = useRef(createMarksUnchecked({ tree, items, selected }))
-
   const activeParentRef = useRef('')
 
   const handleChange = ({ event, parents = [], children = [] }) => {
@@ -19,7 +22,6 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
     } = event
 
     let newSelect = selected.slice()
-
     if (checked) {
       newSelect = [...parents, value].reverse().reduce(
         (prev, curr, index) => {
@@ -35,7 +37,6 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
               marksUncheckedRef.current = marksUncheckedRef?.current?.filter((marksUnchecked) => ![...childNodes, node].includes(marksUnchecked))
             }
           } else {
-            // const childNodes = getTreeNodes({ tree, node, depth: 1 });
             const childNodes = getTreeNodes({ tree, node })
             const childNodesLength = childNodes.length
 
@@ -94,14 +95,13 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
         ?.forEach((item) => {
           const node = item
           const childNodes = getTreeNodes({ tree, node, depth: 1 })
-
           if (childNodes.length > 0) {
             marksUncheckedRef.current = [...new Set([...marksUncheckedRef?.current, ...childNodes])]
           } else {
             marksUncheckedRef.current = [...new Set([...marksUncheckedRef?.current, node])]
           }
         })
-      newSelect = newSelect?.filter((select) => select !== value)
+      newSelect = newSelect?.filter((select) => select !== value && select != 'e14d59f2-0292-4c9e-a8b4-33c804208393')
     }
 
     if (disableMultiParentSelection) {
@@ -119,13 +119,15 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
       }
     }
 
-    onSelect([...newSelect, ...children?.filter((child) => child?.id !== 'create')?.map((el) => el?.id)])
+    onSelect([
+      ...newSelect,
+      // ...children?.filter((child) => child?.id !== 'create')?.map((el) => el?.id)
+    ])
   }
   const renderTreeItem = ({ nodes, parents = [], level = 0 }) =>
     nodes?.map((node) => {
-      const { id: value, name: label, children } = node
-      const checked = selected.includes(value) || parents.some((parent) => selected.includes(parent))
-
+      const { id: value, name: label, description, children } = node
+      const checked = selected.includes(value)
       if (children && children.length > 0) {
         const indeterminate = isIndeterminate({ tree, selected, node: value })
         const treeItemLabel = createTreeItemLabel({
@@ -145,15 +147,10 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
                   display='inline-flex'
                 >
                   {label}
-                  <Box
-                    onClick={(e) => {
-                      if (disabled) return
-                      e.stopPropagation()
-                      handleCreate(value)
-                    }}
-                    padding='8px 16px 1px 8px'
-                  >
-                    <PencilIcon />
+                  <Box padding='14px 16px 1px 8px'>
+                    <StyledTooltip title={description}>
+                      <InfoIcon />
+                    </StyledTooltip>
                   </Box>
                 </Box>
               ),
@@ -172,7 +169,7 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
         })
 
         return (
-          <MuiTreeItem key={value} nodeId={value} label={treeItemLabel}>
+          <MuiTreeItem itemId={value} key={value} nodeId={value} label={treeItemLabel}>
             {renderTreeItem({
               nodes: children,
               parents: [value],
@@ -199,15 +196,10 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
                 display='inline-flex'
               >
                 {label}
-                <Box
-                  onClick={(e) => {
-                    if (disabled) return
-                    e.stopPropagation()
-                    handleCreate(value)
-                  }}
-                  padding='8px 16px 1px 8px'
-                >
-                  <PencilIcon />
+                <Box padding='14px 16px 1px 8px'>
+                  <StyledTooltip title={description}>
+                    <InfoIcon />
+                  </StyledTooltip>
                 </Box>
               </Box>
             ),
@@ -224,7 +216,7 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
         parents,
       })
 
-      return <MuiTreeItem key={value} nodeId={value} label={treeItemLabel} />
+      return <MuiTreeItem itemId={value} key={value} nodeId={value} label={treeItemLabel} />
     }) || null
 
   return renderTreeItem({ nodes: items })

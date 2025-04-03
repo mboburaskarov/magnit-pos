@@ -1,4 +1,3 @@
-import { colors } from '@mui/material'
 import typography from './typography'
 
 export const theme = ({ mode, palette }) => {
@@ -39,14 +38,13 @@ export const theme = ({ mode, palette }) => {
         defaultProps: {
           disableGutters: true,
           fixed: true,
-          // maxWidth: 'lg',
         },
         styleOverrides: {
           maxWidthXl: {
             maxWidth: '1440px',
           },
           maxWidthLg: {
-            maxWidth: '1280px !important',
+            maxWidth: 'calc(100vw - 96px) !important',
           },
         },
       },
@@ -113,13 +111,23 @@ export const theme = ({ mode, palette }) => {
             border: '0',
             cursor: 'pointer',
             position: 'relative',
+            '&.MuiButton-containedPrimary.Mui-disabled': {
+              '& p': {
+                color: `${palette.orange[200]} !important`,
+              },
+            },
+            '&.MuiButton-containedSecondary.Mui-disabled': {
+              backgroundColor: palette.background.gray,
+              '& p': {
+                color: `${palette.bunker[900]} !important`,
+              },
+            },
 
             '&.Mui-disabled': {
               backgroundColor: `${palette.orange[50]} !important`,
               color: `${palette.orange[200]} !important`,
               cursor: 'auto',
               background: palette.gray[50],
-              color: palette.gray[400],
               '&:hover': {
                 background: palette.gray[100],
                 color: palette.gray[400],
@@ -136,10 +144,10 @@ export const theme = ({ mode, palette }) => {
           },
 
           containedSecondary: {
-            backgroundColor: palette.white,
+            backgroundColor: `${palette.background.gray} !important`,
             color: '#000',
             '&:hover': {
-              background: '#00000020',
+              backgroundColor: `${palette.bunker[100]} !important`,
             },
             border: `2px solid ${palette.bunker[100]}`,
           },
@@ -300,9 +308,6 @@ export const theme = ({ mode, palette }) => {
             alignItems: 'center',
             color: palette.black,
           },
-          body1: {
-            // color: palette.gray[600],
-          },
         },
       },
       MuiAccordion: {
@@ -396,6 +401,9 @@ export const theme = ({ mode, palette }) => {
         },
         styleOverrides: {
           root: {
+            color: '#fff',
+            height: '20px',
+            width: '20px',
             '& .MuiSvgIcon-root': {
               fontSize: 24,
               fill: palette.orange[500],
@@ -435,7 +443,6 @@ export const theme = ({ mode, palette }) => {
           input: {
             '&:-webkit-autofill': {
               color: 'red',
-              borderRadius: '40px',
               paddingTop: '11px !important',
               paddingRight: 12,
               paddingBottom: '1px !important',
@@ -446,11 +453,8 @@ export const theme = ({ mode, palette }) => {
               ' -webkit-text-fill-color': 'inherit !important' /* Inherit the text color */,
               fontSize: 'inherit !important' /* Maintain font size */,
               lineHeight: 'inherit !important' /* Prevent height issues */,
-              // padding: "inherit !important" /* Preserve padding */,
               borderRadius: 'inherit !important' /* Keep border radius consistent */,
             },
-            // padding: "18.5px 14px",
-            // marginTop: "10px",
           },
         },
       },
@@ -458,6 +462,7 @@ export const theme = ({ mode, palette }) => {
         defaultProps: { autoComplete: 'off' },
         styleOverrides: {
           root: {
+            backgroundColor: `${palette.white} !important`,
             margin: '0 !important',
           },
         },
@@ -502,17 +507,13 @@ export const theme = ({ mode, palette }) => {
         styleOverrides: {
           root: {
             borderRadius: 50,
-            // backgroundColor: palette.white,
             transition: '0.3s',
             color: palette.gray[600],
-            '&:hover': {
-              // backgroundColor: palette.gray[101],
-            },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
               border: 'none',
             },
             '&.Mui-disabled.MuiOutlinedInput-root': {
-              backgroundColor: 'white',
+              backgroundColor: palette.background.gray,
             },
             paddingRight: '0px !important',
           },
@@ -539,7 +540,6 @@ export const theme = ({ mode, palette }) => {
             lineHeight: '24px',
             letterSpacing: 'normal',
             border: '2px solid transparent',
-            borderColor: 'transparent',
             borderColor: palette.bunker[100],
             backgroundColor: palette.white,
             height: 48,
@@ -559,20 +559,16 @@ export const theme = ({ mode, palette }) => {
             },
             '&:-webkit-autofill': {
               color: 'red',
-              borderRadius: 16,
               paddingTop: '10px !important',
               fontWeight: '400 !important',
 
-              // paddingRight: 12,
-              paddingBottom: 8,
+              paddingBottom: '9px !important',
               border: 'none !important',
-              // paddingLeft: 12,
               backgroundColor: 'transparent !important',
               '-webkit-box-shadow': '0 0 0 1000px white inset !important',
               ' -webkit-text-fill-color': 'inherit !important' /* Inherit the text color */,
               fontSize: '16px !important' /* Maintain font size */,
               lineHeight: 'inherit !important' /* Prevent height issues */,
-              // padding: "inherit !important" /* Preserve padding */,
               borderRadius: 'inherit !important' /* Keep border radius consistent */,
             },
           },

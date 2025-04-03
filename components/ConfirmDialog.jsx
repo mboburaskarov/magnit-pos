@@ -1,7 +1,6 @@
 import { Box, Typography, Dialog } from '@mui/material'
-import { makeStyles } from '@mui/styles'
+import { makeStyles, useTheme } from '@mui/styles'
 import CloseIcon from '../src/assets/icons/CloseIcon'
-// import { theme } from '../src/assets/theme'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,17 +62,14 @@ const useStyles = makeStyles((theme) => ({
     '& button': {
       height: '56px !important',
       width: '100%',
-
-      // minWidth: '196px',
     },
     '& button:nth-child(1)': {
       marginRight: 32,
-      color: theme.palette.bunker[950],
+      // color: theme.palette.bunker[950],
     },
   },
 }))
-
-const ConfirmDialog = ({ open, setOpen, actions, title = '', icon, desc, descWidth, supDesc, noCloseIcon, setDisableSubmit }) => {
+const ConfirmDialog = ({ open, setOpen, onKeyDown = () => {}, actions, title = '', icon, desc, descWidth, supDesc, noCloseIcon, setDisableSubmit }) => {
   const handleClose = () => {
     setOpen(false)
     if (setDisableSubmit) {
@@ -83,22 +79,16 @@ const ConfirmDialog = ({ open, setOpen, actions, title = '', icon, desc, descWid
   const classes = useStyles()
   return (
     <>
-      <Dialog onClose={handleClose} open={open} className={classes.root} disableScrollLock>
+      <Dialog onKeyDown={onKeyDown} onClose={handleClose} open={open} className={classes.root} disableScrollLock>
         {!noCloseIcon && (
           <Box onClick={() => setOpen(false)} className={classes.dialogHeader}>
             <Typography variant='h2' fontWeight={'700'} fontSize={'24px'} lineHeight={'32px'}>
               {title}
             </Typography>
-            <Box>
-              <CloseIcon />
-            </Box>
           </Box>
         )}
         <Box className={classes.content}>
-          <Box className={classes.title}>
-            {icon}
-            {/* <Typography variant='h2'>{title}</Typography> */}
-          </Box>
+          <Box className={classes.title}>{icon}</Box>
           <Typography sx={{ display: 'flex', width: descWidth ? descWidth : null }} className={classes.desc} mb={5}>
             {supDesc && <Box>{supDesc}</Box>}
             {typeof desc === 'string' ? desc : desc}

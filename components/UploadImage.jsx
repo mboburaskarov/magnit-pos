@@ -125,11 +125,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'end',
     alignItems: 'center',
     width: '100%',
-    // height: '100%',
     padding: '8px',
     borderRadius: 16,
     color: theme.palette.common.white,
-    // background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3))',
     cursor: 'move',
     '&.visible:hover': {
       display: 'flex',
@@ -158,7 +156,6 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   preview_btn: {
-    // minWidth: 80,
     marginLeft: '8px',
     maxWidth: 32,
     height: 32,
@@ -187,14 +184,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function newFunction() {
-  return `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="10" y2="0" stroke="black" stroke-width="5" stroke-dasharray="10,5"/></svg>')`
-}
-
 export default function UploadImage({ id, images, onChange, showGuideList = true }) {
   const { t } = useTranslation()
   const classes = useStyles()
   const [uploadedImages, setUploadedImages] = useState(images || [])
+
   const [editingImage, setEditingImage] = useState(null)
   const setActiveImage = (file_name) => {
     const newImages = uploadedImages.map((el) => {
@@ -226,11 +220,8 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
             <StarOutlinedIcon />
           </div>
         )}
-        {/* <label onClick={() => setEditingImage(item.file_name)} className={classes.preview_text} htmlFor={id}>
-          {t('buttons.replace')}
-        </label> */}
+
         <Button onClick={() => deleteImage(item)} className={classes.preview_btn}>
-          {/* {t('buttons.delete')} */}
           <DeleteIcon width='24px' />
         </Button>
       </div>
@@ -290,6 +281,7 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
       for (const file of files) {
         const formData = new FormData()
         formData.append('file', file)
+
         uploadImage(formData)
       }
     },
@@ -298,7 +290,11 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     onDrop,
-    accept: 'image/jpeg, image/png',
+    maxFiles: 2,
+    maxSize: 5242880,
+    accept: {
+      'image/png': ['.png', '.jpg', '.jpeg'],
+    },
   })
 
   useEffect(() => {
@@ -335,17 +331,24 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
           `,
         })}
       >
-        <input id={id} {...getInputProps()} data-test='upload-photo' />
+        <input
+          {...getInputProps({
+            accept: 'image/jpeg, image/png, image/jpg',
+          })}
+          id={id}
+          // {...getInputProps()}
+          data-test='upload-photo'
+        />
         <Box>
           <div className={classes.previewIcon}>
             <PreviewIcon />
           </div>
-          <Typography className={classes.previewText}>{'Rasmni shu yerga tashlang'}</Typography>
+          <Typography className={classes.previewText}>{t('create_new_product.products_set_section.photo_first')}</Typography>
         </Box>
         <Typography color='textSecondary' className={classes.previewText}>
-          yoki
+          {t('create_new_product.products_set_section.photo_second')}
         </Typography>
-        <Typography className={classes.uploadPhotoText}>{'bu yerni bosing'}</Typography>
+        <Typography className={classes.uploadPhotoText}>{t('create_new_product.products_set_section.photo_third')}</Typography>
       </div>
     </div>
   )

@@ -3,19 +3,26 @@ import { createSlice } from '@reduxjs/toolkit'
 const userData = createSlice({
   name: 'userData',
   initialState: {
-    fullName: 'Buchet User',
+    first_name: 'Unknown',
+    last_name: 'Unknown',
     type: 'SUPER_ADMIN',
     phone: '',
+    companyID: '',
     id: 'undefined',
     role_actions: [],
+    store: [],
   },
   reducers: {
     setUserData(state, action) {
-      state.fullName = `${action.payload.first_name} ${action.payload.last_name}`
-      state.type = 'SUPER_ADMIN'
+      state.first_name = action.payload.first_name
+      state.last_name = action.payload.last_name
+      state.photo = action.payload.photo
+      state.type = action.payload.role_type
       state.phone = action.payload.phone
+      state.companyID = action.payload.companyID
       state.id = action.payload.id
-      state.role_actions = action.payload.role_actions
+      state.store = action.payload.store
+      state.role_actions = action.payload.permissions
     },
   },
 })

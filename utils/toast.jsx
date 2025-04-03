@@ -100,9 +100,6 @@ const Notification = ({ closeToast, type, message, icon, body, primary }) => {
         <span id='toastify-message' className={cls.message}>
           {message}
         </span>
-        {/* <span id='toastify-message-body' className={cls.bodyText}>
-          {body}
-        </span> */}
       </div>
       <button type='button' id='close-toast' onClick={closeToast}>
         <TimesSmallIcon color={primary && 'white'} />

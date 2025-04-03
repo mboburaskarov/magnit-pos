@@ -82,56 +82,6 @@ function InputPassword({
             </InputAdornment>
           }
         />
-        {/* <TextField
-          {...methods?.register(name, { required: required })}
-          name={name}
-          id={name}
-          type={showPassword ? 'text' : 'password'}
-          variant='outlined'
-          autoComplete={autoComplete}
-          placeholder={placeholder}
-          disabled={disabled}
-          onKeyDown={onKeyDown}
-          fullWidth
-          multiline={multiline}
-          rows={rowsMax}
-          error={!!methods?.formState?.errors?.[name]}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment className={classes.adornment} onClick={() => setShowPassword(!showPassword)} position='end'>
-                {showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon />}
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            '& .MuiOutlinedInput-adornedEnd': {
-              padding: 0,
-            },
-            '& .Mui-error:not(.Mui-focused)': {
-              border: '0 0 0 2px red',
-            },
-
-            '& .MuiOutlinedInput-root': {
-              height: secondary && `${height}px !important`,
-              borderRadius: secondary && `${height === 56 ? 16 : 20}px !important`,
-            },
-            mt: !label && 0,
-          }}
-          className={`${noLabel && classes.noLabel}`}
-          defaultValue={defaultValue || ''}
-          rules={{
-            required,
-            minLength: {
-              value: minLength,
-              message: `('components.min_length', ${minLength})`,
-            },
-            validate: (value) => {
-              if (password) {
-                return password?.current === value || password === value || `('components.passwordNotMatch')`
-              }
-            },
-          }}
-        /> */}
       </FormControl>
     </Box>
   )

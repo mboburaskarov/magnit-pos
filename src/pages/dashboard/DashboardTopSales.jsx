@@ -13,7 +13,7 @@ export default function DashboardTopSales({ data, sortBy }) {
       flexDirection='column'
       alignItems='flex-start'
       width='100%'
-      sx={(theme) => ({ px: 3, py: 2.5, border: 0.5, borderRadius: 4, borderColor: '#A4A5AB33', borderRadius: 6 })}
+      sx={(theme) => ({ px: 3, py: 2.5, border: 0.5, borderColor: '#A4A5AB33', borderRadius: 6 })}
     >
       <Box justifyContent='space-between' width='100%' display='inline-flex'>
         <Box width='100%' justifyContent='space-between' display='inline-flex'>

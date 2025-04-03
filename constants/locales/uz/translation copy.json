@@ -1797,7 +1797,7 @@
   "menu.reports.product_efficiency_table_columns.write_off_amount": "Soni",
   "menu.reports.product_efficiency_table_columns.write_off_retail_sum": "Сумма продажи",
   "menu.reports.product_efficiency_table_columns.write_off_supply_sum": "Kirib kelish narxi summasi",
-  "menu.reports.product_leftovers": "Остатки продуктов",
+  "menu.reports.product_leftovers": "Недоступные",
   "menu.reports.product_performance": "Перформанс продуктов",
   "menu.reports.product_prefix": "mahsulotlar",
   "menu.reports.product_report.groupBy": "Группировка",
