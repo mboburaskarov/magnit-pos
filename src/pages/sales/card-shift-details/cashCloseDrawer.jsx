@@ -5,17 +5,16 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
-import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
+import { useReactToPrint } from 'react-to-print'
+import RippedPaperZReportCheck from '../../../../components/ChequePaper/ZReportCheck'
+import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
+import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import CartOutlineIcon from '../../../assets/icons/CartOutline'
 import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
-import thousandDivider from '../../../../utils/thousandDivider'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-import RippedPaperZReportCheck from '../../../../components/ChequePaper/ZReportCheck'
-import { useReactToPrint } from 'react-to-print'
 const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
@@ -289,9 +288,15 @@ function CashCloseDrawer({ open, setOpen }) {
           <Button
             type='submit'
             onClick={() =>
-              closeZReport({
-                token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
-                method: 'closeZreport', // Название метода, Обязательное поле, String
+              // closeZReport({
+              //   token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+              //   method: 'closeZreport', // Название метода, Обязательное поле, String
+              // })
+              closeCheckZReport({
+                token: 'DXJFX32CN1296678504F2',
+                method: 'getZreportInfo',
+                printerSize: 80,
+                zReportId: 1,
               })
             }
             sx={{ bottom: 0, margin: '0 24px 24px', '& > svg': { width: 24, height: 24, ml: '12px' } }}
