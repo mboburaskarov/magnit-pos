@@ -220,7 +220,7 @@ export default function AllSalesPage() {
           />
         </Box>
       </Box>
-      <SaleDrawer open={openSaleDrawer} setOpen={setOpenSaleDrawer} />
+      <SaleDrawer ids={(salesList?.data?.data?.data || []).map(({ id }) => id)} open={openSaleDrawer} setOpen={setOpenSaleDrawer} />
 
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
     </LoadingContainer>

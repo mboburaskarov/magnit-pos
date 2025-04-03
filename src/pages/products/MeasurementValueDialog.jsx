@@ -28,7 +28,12 @@ export default function MeasurementValueDialog({ open, setValue, setOpen }) {
   const theme = useTheme()
 
   return (
-    <StyledEmptyDialog open={open} title={'Добавить поступление?'} customButtons={<CloseIcon color={theme.palette.black} onClick={() => closeBox()} />}>
+    <StyledEmptyDialog
+      onClose={() => setOpen(false)}
+      open={open}
+      title={'Добавить поступление?'}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => closeBox()} />}
+    >
       <Box
         sx={{
           width: '100%',

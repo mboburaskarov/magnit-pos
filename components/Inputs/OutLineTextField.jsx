@@ -61,6 +61,9 @@ const OutLineTextField = ({
             borderRadius: '20px',
             height: 'auto',
             padding: '0',
+            '&:hover': {
+              backgroundColor: 'gray.100',
+            },
           },
         }
       }

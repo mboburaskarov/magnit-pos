@@ -8,12 +8,12 @@ import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import InputRange from '../../../../components/Inputs/InputRange'
+import LazySelect from '../../../../components/Select/LazySelect'
 import SelectSimple from '../../../../components/Select/SelectSimple'
 import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
 import { requests } from '../../../../utils/requests'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import LazySelect from '../../../../components/Select/LazySelect'
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -22,6 +22,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const { formState, reset, control } = methods
 
   const { data: paymentTypeList } = useQuery('paymentTypeList', () => requests.getPaymentTypesList({ limit: 20, offset: 0 }))
+  console.log(paymentTypeList)
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])
@@ -80,6 +81,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const { t } = useTranslation()
   return (
     <StyledEmptyDialog
+      onClose={() => setOpen(false)}
       overflowVisible
       open={open}
       title={t('filter_dialog.label')}
@@ -119,6 +121,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 slug='users'
                 boxStyle={{ width: '100%' }}
                 id='store'
+                white
                 name='store_id'
                 isMulti={false}
                 placeholder={t('Выберите Магазин')}

@@ -60,6 +60,7 @@ export default function ReturnExchangeFilter({ open, setOpen, setRegions }) {
   const { t } = useTranslation()
   return (
     <StyledEmptyDialog
+      onClose={() => setOpen(false)}
       overflowVisible
       open={open}
       title={t('filter_dialog.label')}
@@ -90,7 +91,7 @@ export default function ReturnExchangeFilter({ open, setOpen, setRegions }) {
             component='form'
             onSubmit={methods.handleSubmit(onSubmit, onError)}
           >
-            <Box maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'scroll'}>
+            <Box maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'visible'}>
               <InputDatePicker
                 defaultValue={new Date()}
                 name='expired_date'

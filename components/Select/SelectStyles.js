@@ -1,5 +1,5 @@
-import { makeStyles } from '@mui/styles'
 import { useTheme } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import paletteDark from '../../src/assets/theme/paletteDark'
 import paletteLight from '../../src/assets/theme/paletteLight'
 
@@ -36,6 +36,7 @@ export const generateCustomStyles = (props = {}) => {
     inicatoorRight = false,
     solidBorder,
     mini,
+    minHeight = '48px',
     placeholderWrap = true,
   } = props
 
@@ -57,11 +58,12 @@ export const generateCustomStyles = (props = {}) => {
       minWidth: minWidth || 296,
       width: '100%',
       display: 'flex',
-      minHeight: mini ? 40 : 48,
+      minHeight: mini ? 40 : minHeight,
       fontWeight: 600,
+      overflow: 'hidden',
       backgroundColor: white ? palette.background.default : palette.white,
       '&:hover': {
-        backgroundColor: white ? palette.background.default : palette.white,
+        backgroundColor: white ? palette.gray[10] : palette.gray[10],
       },
       boxShadow: state.isFocused
         ? `0 0 0 2px ${palette.orange[500]}`

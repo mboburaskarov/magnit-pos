@@ -1,22 +1,19 @@
-import { Box, Button, Checkbox, Drawer, Typography } from '@mui/material'
+import { faCheckCircle, faCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { LoadingButton } from '@mui/lab'
+import { Box, Checkbox, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
+import { get } from 'lodash'
 import React, { useState } from 'react'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import WaitingCashAmoutIcon from '../../../assets/icons/WaitingCashAmoutIcon'
-import InComeCashIcon from '../../../assets/icons/InComeCashIcon'
-import ExpenseCashIcon from '../../../assets/icons/ExpenseCashIcon'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useMutation } from 'react-query'
+import { useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 import InputDatePicker from '../../../../components/Inputs/InputDatePicker'
 import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckCircle, faCircle } from '@fortawesome/free-solid-svg-icons'
-import { FormProvider, useForm, useFormContext } from 'react-hook-form'
-import { useMutation, useQuery } from 'react-query'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
-import { useSelector } from 'react-redux'
-import { get } from 'lodash'
-import { useNavigate, useParams } from 'react-router-dom'
-import { LoadingButton } from '@mui/lab'
+import CloseIcon from '../../../assets/icons/CloseIcon'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -120,13 +117,40 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
                   placeholder='Время черновика'
                 />
                 <Box display={'flex'} justifyContent={'start'}>
-                  <Typography sx={{ cursor: 'pointer' }} onClick={() => changeExpireDate('ertaga')} className={classes.expireInitialDate}>
+                  <Typography
+                    sx={{
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: 'gray.200',
+                      },
+                    }}
+                    onClick={() => changeExpireDate('ertaga')}
+                    className={classes.expireInitialDate}
+                  >
                     До завтра
                   </Typography>
-                  <Typography sx={{ cursor: 'pointer' }} onClick={() => changeExpireDate('3kun')} className={classes.expireInitialDate}>
+                  <Typography
+                    sx={{
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: 'gray.200',
+                      },
+                    }}
+                    onClick={() => changeExpireDate('3kun')}
+                    className={classes.expireInitialDate}
+                  >
                     3 дней
                   </Typography>
-                  <Typography sx={{ cursor: 'pointer' }} onClick={() => changeExpireDate('1hafta')} className={classes.expireInitialDate}>
+                  <Typography
+                    sx={{
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: 'gray.200',
+                      },
+                    }}
+                    onClick={() => changeExpireDate('1hafta')}
+                    className={classes.expireInitialDate}
+                  >
                     1 недели
                   </Typography>
                 </Box>

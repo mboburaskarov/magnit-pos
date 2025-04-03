@@ -1,40 +1,16 @@
-import { Box, Button, Typography } from '@mui/material'
-import InputSwitch from '../../../components/Inputs/InputSwitch'
-import DateRangeInput from '../../../components/Inputs/DateRangeInput.jsx/DateRangeInput'
-import { useSelector } from 'react-redux'
+import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
-import CheckAccess from '../../../components/CheckAccess'
-import { useTranslation } from 'react-i18next'
 import { get } from 'lodash'
-import SelectSimple from '../../../components/Select/SelectSimple'
-import { useMemo } from 'react'
-import LazySelect from '../../../components/Select/LazySelect'
-import { requests } from '../../../utils/requests'
-import * as qs from 'qs'
-import { useNavigate } from 'react-router-dom'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { minWidth } from '@mui/system'
-export default function DashboardHeader({ setSortBy }) {
-  const { isOpen } = useSelector((state) => state.sidebarSettings)
-  const { type } = useSelector((state) => state.user)
-  const check = type === 'SUPERADMIN' || type === 'ACCOUNTANT'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import DateRangeInput from '../../../components/Inputs/DateRangeInput.jsx/DateRangeInput'
+import PopUpSelect from '../../../components/Inputs/PopUpSelect/PopUpSelect'
+export default function DashboardHeader({ selectedStore, setselectedStore }) {
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
-  const navigate = useNavigate()
-  const { values } = useQueryParams()
-  const getSelectDefaultValue = (options, value) => {
-    return options.find((option) => option.value === value) || options[0]
-  }
-  const THEME_OPTIONS = [
-    { name: 'Auto', value: 'auto' },
-    { name: 'Dark', value: 'dark' },
-    { name: 'Light', value: 'light' },
-  ]
-
-  const themeDefaultValue = useMemo(() => {}, [])
 
   return (
-    <Box p={'30px 30px 50px 30px'} bgcolor='background.default' top={0} display='inline-flex' justifyContent='space-between'>
+    <Box p={'24px 20px 13px 20px'} bgcolor='background.default' top={0} display='inline-flex' justifyContent='space-between'>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <Typography variant='h1' fontWeight={600} mb={'5px'} fontSize={'40px'} lineHeight={'50px'} color={'dark.500'}>
           {t('greeting')}, {get(userData, 'first_name')}!
@@ -43,8 +19,9 @@ export default function DashboardHeader({ setSortBy }) {
           Добро пожаловать в магазин. Управляйте своим магазином с помощью магазина
         </Typography>
       </Box>
-      <Box display='inline-flex' columnGap={3}>
+      <Box display='inline-flex' padding={'11px 0'} columnGap={3}>
         <DateRangeInput
+          minHeight={'56px'}
           defaultFilterData={{ label: 'Это час', start_date: dayjs().tz().startOf('week'), end_date: dayjs().tz() }}
           id='accounting-report-date-range'
         />
@@ -59,10 +36,12 @@ export default function DashboardHeader({ setSortBy }) {
             maxWidth: 200,
           }}
         >
-          <LazySelect
+          <PopUpSelect selectedStore={selectedStore} setselectedStore={setselectedStore} id='1' name='f' />
+          {/* <LazySelect
             slug='users'
             boxStyle={{ minWidth: '200px', width: '100%' }}
             id='store'
+            minHeight={'56px'}
             name='store_id'
             isMulti={false}
             placeholder={t('input.store.placeholder')}
@@ -93,7 +72,7 @@ export default function DashboardHeader({ setSortBy }) {
               return <Typography color='grey.600'>{option.name}</Typography>
             }}
             filterOption={() => true}
-          />
+          /> */}
           {/* <SelectSimple
             maxWidth={'150px'}
             minWidth={'100px'}

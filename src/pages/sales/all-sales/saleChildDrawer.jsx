@@ -2,7 +2,7 @@ import { Box, Grid, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { requests } from '../../../../utils/requests'
@@ -12,10 +12,13 @@ import SaleChildItemsBox from './SaleChildItemsBox'
 import thousandDivider from '../../../../utils/thousandDivider'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { height } from '@mui/system'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { useQueryParams } from '../../../hooks/useQueryParams'
+import { useDebounce } from 'use-debounce'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
-    height: '50vh',
+    height: '100vh',
     overflowY: 'auto',
     '& .MuiDrawer-paper': {
       width: '660px',
@@ -25,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerHeader: {
     height: '88px',
-    padding: '16px 80px',
+    padding: '16px 20px',
     position: 'absolute',
     backgroundColor: theme.palette.background.default,
 
@@ -51,18 +54,49 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 4px',
   },
 }))
-function SaleChildDrawer({ open, setOpen }) {
+function SaleChildDrawer({ open, setOpen, ids }) {
   const { t } = useTranslation()
   const classes = useStyles()
+  const [currentSaleId, setCurrentSaleId] = useState()
+  const [currentIndex, setcurrentIndex] = useState(0)
+  const [debouncedCurrentSaleId] = useDebounce(currentSaleId, 200)
+
+  const { values } = useQueryParams()
+
   const {
     data: saleDetailsList,
     refetch,
     isLoading,
-  } = useQuery(['saleDetailsList', get(open, 'id')], () => requests.getCashBoxDetaildWithSaleId(get(open, 'id')), { enabled: Boolean(get(open, 'id')) })
+  } = useQuery(['saleDetailsList', debouncedCurrentSaleId], () => requests.getCashBoxDetaildWithSaleId(debouncedCurrentSaleId), {
+    enabled: Boolean(debouncedCurrentSaleId),
+  })
+  console.log(currentSaleId)
+
   useEffect(() => {
     if (get(open, 'id', false)) refetch()
-  }, [open])
 
+    setCurrentSaleId(get(open, 'id'))
+  }, [open])
+  useHotkeys(['ArrowRight', 'ArrowLeft'], (key) => {
+    if (key.key == 'ArrowRight') {
+      // const currentIndex = ids.findIndex(() => currentSaleId)
+      console.log(currentIndex)
+
+      if (ids.length - 1 > currentIndex) {
+        console.log('ll', ids[currentIndex + 1])
+        setcurrentIndex((a) => a + 1)
+        setCurrentSaleId(ids[currentIndex + 1])
+      }
+    }
+    if (key.key == 'ArrowLeft') {
+      // const currentIndex = ids.findIndex(() => currentSaleId)
+      if (currentIndex >= 1) {
+        setcurrentIndex((a) => a - 1)
+
+        setCurrentSaleId(ids[currentIndex - 1])
+      }
+    }
+  })
   const theme = useTheme()
   return (
     <LoadingContainer noHeight readyState={!isLoading}>
@@ -95,7 +129,7 @@ function SaleChildDrawer({ open, setOpen }) {
           />
         </Box>
 
-        <Box padding={'104px 20px 0'} paddingX={'80px'}>
+        <Box padding={'104px 10px 0'} paddingX={'20px'}>
           <Box alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
             <Typography fontSize={20} lineHeight={'32px'} fontWeight={600}>
               {t('cart')}
@@ -106,7 +140,6 @@ function SaleChildDrawer({ open, setOpen }) {
               </Typography>
               {/* <DefaultImgIcon /> */}
               <img className={classes.usrImg} src='/default-user-img.png' />
-
               <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
                 {get(saleDetailsList, 'data.data.employee.first_name')}
               </Typography>
@@ -123,12 +156,12 @@ function SaleChildDrawer({ open, setOpen }) {
             </Typography>
             <Grid container display={'flex'}>
               {get(saleDetailsList, 'data.data.sale_payments', [])?.map((pays) => (
-                <Grid item xs={12} sm={6} md={4} lg={2} width={'100%'} padding={'4px'}>
-                  <Box bgcolor={'bg.10'} borderRadius={'16px'} padding={'12px 16px'}>
+                <Grid item xl={2} xs={2} sm={2} md={2} lg={2} width={'100%'} padding={'4px'}>
+                  <Box minWidth={'180px'} bgcolor={'bg.10'} borderRadius={'16px'} padding={'12px 16px'}>
                     <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
                       {get(pays, 'payment_type.name')}
                     </Typography>
-                    <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                    <Typography fontSize={16} mt={'4px'} flexShrink={'none'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
                       {thousandDivider(get(pays, 'amount'), 'сум')}
                     </Typography>
                   </Box>

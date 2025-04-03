@@ -3,11 +3,11 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import StyledTooltip from '../../../../components/StyledTooltip'
+import StyledSwitch from '../../../../components/Switch/StyledSwitch'
 import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 import getImageUrl from '../../../../utils/getImageUrl'
 import thousandDivider from '../../../../utils/thousandDivider'
 import DefaultUserImgIcon from '../../../assets/icons/defaultUserImgIcon'
-import StyledSwitch from '../../../../components/Switch/StyledSwitch'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -42,7 +42,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'ID',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box sx={{ '& p': { color: 'orange.500' }, cursor: 'pointer' }} onClick={() => setOpenSaleDrawer({ id: p.data.id })}>
+          <Box sx={{ whiteSpace: 'pre-line', '& p': { color: 'orange.500' }, cursor: 'pointer' }} onClick={() => setOpenSaleDrawer({ id: p.data.id })}>
             {/* <SimpleText {...p} type='sale_number' /> */}
             <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
               {get(p, 'data.sale_type', 'SALE') === 'SALE' ? 'Продажа' : 'Возврат'} #{get(p, 'data.sale_number', '-')}
@@ -298,7 +298,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'Клиент',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + get(p, 'data.customer_phone', 'xxx xx xxx xx xx'))}>
+          <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + (get(p, 'data.customer_phone') ?? 'xxxxxxxxxxxx'))}>
             <Box display={'flex'} alignItems={'center'}>
               {p.data?.image ? (
                 <img style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data?.image)} />

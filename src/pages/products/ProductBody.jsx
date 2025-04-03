@@ -465,7 +465,6 @@ export default function ProductBody({ productData = null }) {
             // fullWidth
 
             maxWidth={'500px'}
-            uncontrolled={false}
             onChange={({ target }) => setStoreSearchText(get(target, 'value'))}
             id='producrs-search'
             name='search'

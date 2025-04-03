@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
 import { Box, TextField, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 // import { NumberFormatBase } from 'react-number-format'
+import { useTheme } from '@mui/styles'
 import { NumericFormat } from 'react-number-format'
 import Label from '../Label'
-import { useTheme } from '@mui/styles'
 
 const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandler, name, onChange, right, ...rest }) => {
   const theme = useTheme()
@@ -38,6 +38,9 @@ const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandle
           },
           '& .MuiInputBase-root': {
             borderRadius: right ? '0 40px 40px 0' : '40px 0 0 40px',
+            '&:hover': {
+              backgroundColor: 'gray.10',
+            },
           },
           '& input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button': {
             appearance: 'none',

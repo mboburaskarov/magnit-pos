@@ -68,7 +68,12 @@ export default function ChangeShift({ open, setOpen }) {
   const theme = useTheme()
 
   return (
-    <StyledEmptyDialog open={open} title={'Передать смену'} customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog
+      onClose={() => setOpen(false)}
+      open={open}
+      title={'Передать смену'}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+    >
       <Box
         sx={{
           width: '100%',

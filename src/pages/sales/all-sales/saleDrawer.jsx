@@ -1,8 +1,7 @@
-import { Box, Button, Drawer, Typography } from '@mui/material'
+import { Box, Drawer } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import WithdrawIcon from '../../../assets/icons/WithdrawIcon'
 import SaleChildDrawer from './saleChildDrawer'
 
 const useStyles = makeStyles((theme) => ({
@@ -11,10 +10,10 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative !important',
 
     '& .MuiDrawer-paper': {
-      width: '100%',
-      height: '50vh',
+      width: '600px',
+      height: '100vh',
 
-      borderRadius: '24px 24px 0 0',
+      borderRadius: '24px 0 0 24px',
       boxShadow: '4px -5px 20px 0px #ccc !important',
 
       backgroundColor: theme.palette.background.default,
@@ -22,13 +21,14 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerHeader: {
     height: '80px',
-    padding: '16px 24px',
+    padding: '16px 10px',
     borderBottom: `1px solid ${theme.palette.bunker[100]}`,
   },
 }))
-function SaleDrawer({ open, setOpen }) {
+function SaleDrawer({ open, setOpen, ids }) {
   const { t } = useTranslation()
   const classes = useStyles()
+  console.log(ids)
 
   return (
     <Drawer
@@ -38,19 +38,18 @@ function SaleDrawer({ open, setOpen }) {
         'aria-hidden': false, // ✅ Prevents MUI from blocking other elements
         disableScrollLock: true, // Prevents MUI from adding `overflow: hidden` to `body`
       }}
-      sx={{ height: '50vh !important' }}
+      sx={{ height: '100vh !important' }}
       open={open}
       onClose={() => setOpen(false)}
-      anchor='bottom'
+      anchor='right'
       elevation={1}
       className={classes.drawer}
     >
-      <SaleChildDrawer open={open} setOpen={setOpen} />
+      <SaleChildDrawer ids={ids} open={open} setOpen={setOpen} />
       <Box
         sx={{
           bottom: 10,
-          mb: '10px',
-          m: '10px 20px',
+          m: '10px 10px',
           '& .MuiButtonBase-root': {
             height: 48,
           },

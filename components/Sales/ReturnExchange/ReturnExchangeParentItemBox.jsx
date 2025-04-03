@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: '50%',
+    '&:hover': {
+      backgroundColor: '#ccc4 ',
+    },
   },
   usrImg: {
     width: '24px',
@@ -46,6 +49,11 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
       bgcolor={'bg.10'}
       padding={'18px 16px'}
       justifyContent={'space-between'}
+      sx={{
+        '&:hover': {
+          backgroundColor: 'gray.200',
+        },
+      }}
     >
       <Box display={'flex'}>
         <Box className={classes.productsNumsWrapper}>

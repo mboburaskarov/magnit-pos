@@ -3,16 +3,16 @@ import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
+import Highlighter from 'react-highlight-words'
 import { useNavigate } from 'react-router-dom'
 import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
 import CheckAccess from '../../../components/CheckAccess'
+import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
 import thousandDivider from '../../../utils/thousandDivider'
 import { products_statuses } from '../../assets/data/products-statuses'
 import DefaultImgIcon from '../../assets/icons/defaultImgIcon'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
 import EditIcon from '../../assets/icons/EditIcon'
-import { checkPermission } from '../../../utils/checkPermission'
-import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -87,8 +87,11 @@ export default function tableHeaderSelector({
         headerName: t('table_columns.name'),
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box sx={{ '& p': { color: 'orange.500' }, cursor: 'pointer' }} onClick={() => setOpenProductDrawer(p.data.id)}>
-            <SimpleText {...p} type='name' />
+          <Box
+            sx={{ '& span': { color: 'orange.500', whiteSpace: 'pre-line' }, '& .highlighter': { color: 'orange.500' }, cursor: 'pointer' }}
+            onClick={() => setOpenProductDrawer(p.data.id)}
+          >
+            <Highlighter highlightClassName='highlighter' searchWords={[values?.search]} autoEscape textToHighlight={`${p.data.name}`} />
           </Box>
         )),
       }

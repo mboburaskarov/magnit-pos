@@ -47,6 +47,7 @@ export default function CreateAutoOrder({ open, refetch, setOpen }) {
   return (
     <StyledEmptyDialog
       overflowVisible
+      onClose={() => setOpen(false)}
       open={open}
       title={'Создать автозаказ'}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}

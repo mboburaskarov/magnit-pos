@@ -1,5 +1,7 @@
 import { Box, Button, Container, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import { get } from 'lodash'
+import * as qs from 'qs'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -7,25 +9,23 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
+import Header from '../../../../components/Header'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/importDetailTableColumns'
-import FilterMenu from './FilterMenu'
-import { get } from 'lodash'
-import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
-import Header from '../../../../components/Header'
 import ImportIcon from '../../../assets/icons/ImportIcon'
 import ImportWithIcon from '../../../assets/icons/ImportWithIcon'
 import ImportWithoutIcon from '../../../assets/icons/ImportWithoutIcon'
+import { useQueryParams } from '../../../hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/importDetailTableColumns'
+import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
-import * as qs from 'qs'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
 
 export default function ImportDetailsPage() {
   const theme = useTheme()
@@ -76,7 +76,7 @@ export default function ImportDetailsPage() {
       search: values?.search,
       received_amount_to: values?.received_amount_to,
       received_amount_from: values?.received_amount_from,
-      no_barcode: values?.no_barcode,
+      no_barcode: values?.no_barcode == '1' ? true : false,
     }
   }, [values?.received_amount_to, values?.no_barcode, values?.received_amount_from, values?.offset, values?.limit, values?.search])
   const {
@@ -154,7 +154,7 @@ export default function ImportDetailsPage() {
                   },
                 }}
               >
-                <InputSearch id='producrs-search' name='search' placeholder={'Штрих-код'} uncontrolled />
+                <InputSearch id='producrs-search' name='search' placeholder={'Название, штрих-код'} uncontrolled />
               </Box>
 
               <Box minWidth={113} ml={'16px'}>

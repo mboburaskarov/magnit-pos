@@ -81,7 +81,14 @@ function AgGridBottom({
     >
       <Box width={'100%'} display='flex' justifyContent={'space-between'} alignItems='center'>
         <Box display={'flex'}>
-          <RowFilterButton eventMessage={eventMessages?.[1]} offsetSize={offsetSize} setOffsetSize={setOffsetSize} />
+          <RowFilterButton
+            totalCount={totalCount}
+            offsetIndex={offsetIndex}
+            offsetQuery={offsetQuery}
+            eventMessage={eventMessages?.[1]}
+            offsetSize={offsetSize}
+            setOffsetSize={setOffsetSize}
+          />
           {fullDownload && downloadByFilter && (
             <ButtonWithPopup
               id={'ff'}

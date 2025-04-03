@@ -62,7 +62,7 @@ const columns = [
   {
     field: 'status',
     hide: false,
-    minWidth: 70,
+    minWidth: 140,
     width: 180,
   },
 
