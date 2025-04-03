@@ -27,7 +27,6 @@ import DashboardInfoBox from './DashboardInfoBox'
 
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
-
   const { type } = useSelector((state) => state.user)
   const { values } = useQueryParams()
   const [detailing, setDetaling] = useState('week')
