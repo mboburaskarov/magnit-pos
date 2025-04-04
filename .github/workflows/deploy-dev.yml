@@ -15,6 +15,7 @@ env:
   SSH_KEY: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
   SSH_PASS: ${{ secrets.DEV_SSH_PASS_DEV }}
   PORT: 3000:3000
+  ENV_FILE: .env.development
 
 jobs:
   build_and_push:
@@ -42,7 +43,7 @@ jobs:
           context: .
           push: true
           tags: '${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ github.sha }}'
-          build-args: REACT_APP_ENV=development # 👈 Pass "development"
+          build-args: ENV_FILE=${{ env.ENV_FILE }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_NAME }}:buildcache,mode=max
 

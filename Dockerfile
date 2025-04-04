@@ -4,24 +4,16 @@ WORKDIR /app
 
 # Copy package.json and install dependencies
 COPY package*.json ./
-RUN yarn install 
+RUN yarn install
 
 # Copy all files
 COPY . .
 
-# Accept a build argument for the environment (default: production)
-ARG REACT_APP_ENV=production
+# ENV_FILE argumentini qabul qilish
+ARG ENV_FILE
+RUN cp $ENV_FILE .env
 
-# Set ENV for later use
-ENV REACT_APP_ENV=${REACT_APP_ENV}
-
-# Ensure the correct .env file is copied before building
-RUN cp .env.${REACT_APP_ENV} .env
-
-# Debugging: Check which environment is being used
-RUN echo "Building with .env.${REACT_APP_ENV} settings"
-
-# Build the React app
+# Build React app
 RUN yarn build
 
 # Production Image
