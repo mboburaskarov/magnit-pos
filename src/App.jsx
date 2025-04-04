@@ -9,6 +9,7 @@ import GlobalStyles from './assets/GlobalStyles'
 // import { ShortcutProvider } from './ShortcutProvider'
 
 function App() {
+  console.log('TEST DEPLOYMENT')
   return (
     <Providers>
       {/* <SocketProvider> */}
