@@ -1,9 +1,9 @@
-import { Box, Typography } from '@mui/material'
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material'
-import ShortcutWrapper from '../ShortcutWrapper'
+import { Box, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import { memo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { makeStyles } from '@mui/styles'
+import ShortcutWrapper from '../ShortcutWrapper'
 
 const ShortcutsDrawerArray = [
   {
@@ -151,7 +151,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    background: theme.palette.gray[100],
+    background: theme.palette.gray[50],
     cursor: 'pointer',
     transition: 'all 0.3s ease',
     '&:hover': {
@@ -232,7 +232,7 @@ function ShortcutsDrawer() {
           </Box>
 
           <Box onClick={() => setIsOpen(!isOpen)} className={classes.icon}>
-            {isOpen ? <KeyboardArrowDown style={{ fontSize: '24px', fill: '#4993DD' }} /> : <KeyboardArrowUp style={{ fontSize: '24px', fill: '#4993DD' }} />}
+            {isOpen ? <KeyboardArrowDown style={{ fontSize: '24px', fill: '#fe5000' }} /> : <KeyboardArrowUp style={{ fontSize: '24px', fill: '#fe5000' }} />}
           </Box>
         </Box>
         {isOpen && (

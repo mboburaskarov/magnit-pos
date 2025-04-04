@@ -1,18 +1,15 @@
+import { Box, Skeleton, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { Box, Typography } from '@mui/material'
-import { Skeleton } from '@mui/material'
-import { XAxis, YAxis, CartesianGrid, Tooltip, Bar, BarChart, ResponsiveContainer, AreaChart, Area } from 'recharts'
+import { useTranslation } from 'react-i18next'
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import getShorterNumber from '../../utils/getShorterNumber'
+import { getDateFromDateTime } from '../../utils/parseDateTime'
+import LoadingBlurry from '../LoadingBlurry'
+import SelectSimple from '../Select/SelectSimple'
 import CustomizedAxisTick from './ChartAxisTick'
 import ChartPlaceholder from './ChartPlaceholder'
 import ChartSlider from './ChartSlider'
 import DashboardTooltip from './DashboardTooltip'
-import SelectSimple from '../Select/SelectSimple'
-import paletteLight from '../../src/assets/theme/paletteLight'
-import getShorterNumber from '../../utils/getShorterNumber'
-import { getDateFromDateTime, getTimeFromDateTime } from '../../utils/parseDateTime'
-import LoadingBlurry from '../LoadingBlurry'
-import thousandDivider from '../../utils/thousandDivider'
-import { useTranslation } from 'react-i18next'
 
 const detailingOptions = [
   { name: 'Это 30 минут', value: '30min' },
@@ -78,7 +75,6 @@ export default function SingleBarChart({
     }
   }, [data, detalization])
   const maxValue = Math.max(...chartData.slice(sliderValue[0], sliderValue[1]).map((item) => item?.count))
-  console.log(dataKey, chartData)
 
   return (
     <Box

@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, ListItem, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get, head, size } from 'lodash'
 import React, { useImperativeHandle, useMemo, useRef, useState } from 'react'
@@ -13,7 +13,6 @@ import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import { requests } from '../../../../utils/requests'
-import thousandDivider from '../../../../utils/thousandDivider'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
 import UnlockIcon from '../../../assets/icons/UnlockIcon'
@@ -293,7 +292,7 @@ function CartSearchBar({
             hasShortCut
             disabled={get(cashBoxDetails, 'data.data.sale_type') == 'RETURN'}
             style={{ zIndex: showOverlay ? 25 : 10 }}
-            sx={{ marginRight: '16px !important', height: '48px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
+            sx={{ width: '100%', marginRight: '16px !important', height: '48px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
             name='search'
             placeholder={'Поиск: товар, категория, штрих-код'}
             fullWidth
@@ -332,28 +331,12 @@ function CartSearchBar({
               }
             }}
           />
-          <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
-            <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
-              <div className={classes.avatarPlaceholder}>
-                <img src={get(userData, 'photo')} />
-              </div>
-
-              <Box maxWidth='73%'>
-                <Typography id='user-username' className={classes.username}>
-                  {get(userData, 'first_name')}
-                </Typography>
-                <p id='user-shopname' className={`${classes.bonus_amount} `}>
-                  +{thousandDivider(get(sellerBonusInOneSale, 'data.data.bonus', 0), 'сум')}
-                </p>
-              </Box>
-            </Box>
-          </ListItem>
 
           <ButtonWithPopup
             id={'ff'}
             noArrow
-            ml={'16px'}
-            sx={{ height: '48px' }}
+            // ml={'16px'}
+            sx={{ height: '48px', width: 48, border: '1px solid transparent !important' }}
             noMarginSvg
             placement='bottom-end'
             onClick={() => refetch()}
@@ -361,10 +344,10 @@ function CartSearchBar({
               <Box
                 sx={{ '&:hover': { bgcolor: 'transparent !important' } }}
                 className='cash_register_icon_wrapper'
-                bgcolor={'#F8F8F9'}
+                bgcolor={'bg.10 !important'}
                 padding={'10px'}
-                width={'44px'}
-                height={'44px'}
+                width={'48px'}
+                height={'48px'}
                 borderRadius={'50%'}
               >
                 <FinanceAndPaymentIcon />

@@ -4,7 +4,6 @@ import { get } from 'lodash'
 import React, { memo } from 'react'
 import { useMutation } from 'react-query'
 import InputQuantity from '../../../../components/Inputs/InputQuantity'
-import StyledTooltip from '../../../../components/StyledTooltip'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
@@ -229,7 +228,6 @@ const CartItem = ({
   removeMarking,
 }) => {
   const cls = useStyles()
-  console.log(markingsList)
 
   const { mutate: changeCartItemQuantity } = useMutation(requests.changeCartItemQuantity, {
     onSuccess: ({ data }) => {
@@ -336,7 +334,7 @@ const CartItem = ({
                 <Box
                   sx={{
                     '& .MuiInputBase-root': {
-                      width: get(item, 'unit_per_pack') == 0 ? '100px' : '100px',
+                      width: get(item, 'unit_per_pack') == 0 ? '110px' : '110px',
                     },
                   }}
                 >
@@ -345,7 +343,7 @@ const CartItem = ({
                     name={`unit_quantity_${item?.id}`}
                     defaultValue={get(item, 'unit_quantity', 1)}
                     adornmentPosition='end'
-                    adornment='шт'
+                    adornment={<Typography mr={'20px'}>{item.unit_per_pack}/шт</Typography>}
                     inputRef={(e) => unitRef(e)}
                     adornmentClassName={cls.adornment}
                     max={100}
@@ -429,7 +427,8 @@ const CartItem = ({
               >
                 <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
                   <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>
-                    {item?.barcode} / {item.current_stock} {get(item, 'shelf', '').length > 0 ? `/ Полка: ${get(item, 'shelf', 'X')}` : ''}
+                    {item?.barcode} {get(item, 'shelf', '').length > 0 ? `/ Полка: ${get(item, 'shelf', 'X')}` : ''}/ Остаток:{' '}
+                    {Math.floor(item.current_stock / item.unit_per_pack)}уп {item.current_stock % item.unit_per_pack}шт{' '}
                   </Typography>
                 </Box>
               </Box>

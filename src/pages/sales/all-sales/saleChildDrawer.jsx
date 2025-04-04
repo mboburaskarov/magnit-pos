@@ -2,19 +2,17 @@ import { Box, Grid, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
-import { requests } from '../../../../utils/requests'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import LeftArrowIcon from '../../../assets/icons/LeftArrow'
-import SaleChildItemsBox from './SaleChildItemsBox'
-import thousandDivider from '../../../../utils/thousandDivider'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { height } from '@mui/system'
-import { useHotkeys } from 'react-hotkeys-hook'
-import { useQueryParams } from '../../../hooks/useQueryParams'
 import { useDebounce } from 'use-debounce'
+import LoadingContainer from '../../../../components/LoadingContainer'
+import { requests } from '../../../../utils/requests'
+import thousandDivider from '../../../../utils/thousandDivider'
+import CloseIcon from '../../../assets/icons/CloseIcon'
+import { useQueryParams } from '../../../hooks/useQueryParams'
+import SaleChildItemsBox from './SaleChildItemsBox'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -70,7 +68,6 @@ function SaleChildDrawer({ open, setOpen, ids }) {
   } = useQuery(['saleDetailsList', debouncedCurrentSaleId], () => requests.getCashBoxDetaildWithSaleId(debouncedCurrentSaleId), {
     enabled: Boolean(debouncedCurrentSaleId),
   })
-  console.log(currentSaleId)
 
   useEffect(() => {
     if (get(open, 'id', false)) refetch()
@@ -80,10 +77,8 @@ function SaleChildDrawer({ open, setOpen, ids }) {
   useHotkeys(['ArrowRight', 'ArrowLeft'], (key) => {
     if (key.key == 'ArrowRight') {
       // const currentIndex = ids.findIndex(() => currentSaleId)
-      console.log(currentIndex)
 
       if (ids.length - 1 > currentIndex) {
-        console.log('ll', ids[currentIndex + 1])
         setcurrentIndex((a) => a + 1)
         setCurrentSaleId(ids[currentIndex + 1])
       }

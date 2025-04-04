@@ -21,6 +21,7 @@
     "@mui/material": "^5.14.0",
     "@mui/styles": "^5.14.0",
     "@mui/system": "^6.1.10",
+    "@mui/x-date-pickers-pro": "^7.28.3",
     "@mui/x-tree-view": "^7.23.2",
     "@reduxjs/toolkit": "^1.9.5",
     "ag-grid-community": "^30.0.5",
