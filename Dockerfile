@@ -9,12 +9,17 @@ RUN yarn install
 # Copy all files
 COPY . .
 
-# Accept a build argument for the environment
+# Accept a build argument for the environment (default: production)
 ARG REACT_APP_ENV=production
+
+# Ensure React picks up the correct environment
 ENV REACT_APP_ENV=${REACT_APP_ENV}
 
-# Copy the correct environment file before building
-RUN cp .env.${REACT_APP_ENV} .env && yarn build
+# Print environment variables for debugging
+RUN echo "Building for environment: $REACT_APP_ENV"
+
+# Pass environment variable to React
+RUN REACT_APP_ENV=$REACT_APP_ENV yarn build
 
 # Production Image
 FROM node:20.11-alpine
