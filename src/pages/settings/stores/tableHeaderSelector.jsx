@@ -1,11 +1,10 @@
 import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
-import CheckAccess from '../../../../components/CheckAccess'
+import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 import thousandDivider from '../../../../utils/thousandDivider'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import EditIcon from '../../../assets/icons/EditIcon'
-import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -91,6 +90,14 @@ export default function tableHeaderSelector({ productsColumns, values, t, setOpe
         headerName: 'Адрес',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='address' />),
+      }
+    }
+    if (el.field === 'work_hours') {
+      return {
+        ...el,
+        headerName: 'Режим работа ',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='work_hours' />),
       }
     }
     if (el.field === 'phone') {

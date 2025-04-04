@@ -26,7 +26,7 @@ import { userSlice } from './userSlice'
 // Define your migration function here
 const migrations = {
   // Example migration
-  178: (state) => {
+  179: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -44,7 +44,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 178, // Current version of the persisted state
+  version: 179, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)

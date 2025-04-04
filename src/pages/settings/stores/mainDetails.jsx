@@ -155,10 +155,9 @@ export default function MainDetails({ clientData, openDrawer }) {
           <InputSwitchNew
             id='client-time-type'
             noMarginTop
-            required
             name='time-type'
             control={control}
-            defaultValue='range'
+            defaultValue='24'
             error={errors?.gender}
             options={[
               {

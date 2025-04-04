@@ -20,6 +20,12 @@ const columns = [
     width: 194,
   },
   {
+    field: 'work_hours',
+    hide: false,
+    minWidth: 70,
+    width: 192,
+  },
+  {
     field: 'address',
     hide: false,
     minWidth: 70,

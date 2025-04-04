@@ -428,7 +428,7 @@ const CartItem = ({
                 <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
                   <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>
                     {item?.barcode} {get(item, 'shelf', '').length > 0 ? `/ Полка: ${get(item, 'shelf', 'X')}` : ''}/ Остаток:{' '}
-                    {Math.floor(item.current_stock / item.unit_per_pack)}уп {item.current_stock % item.unit_per_pack}шт{' '}
+                    {Math.floor(Number(item.current_stock) / item.unit_per_pack)}уп {Number(item.current_stock) % item.unit_per_pack}шт{' '}
                   </Typography>
                 </Box>
               </Box>
