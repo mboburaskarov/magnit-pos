@@ -5,17 +5,16 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
-import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
+import { useReactToPrint } from 'react-to-print'
+import RippedPaperZReportCheck from '../../../../components/ChequePaper/ZReportCheck'
+import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
+import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import CartOutlineIcon from '../../../assets/icons/CartOutline'
 import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
-import thousandDivider from '../../../../utils/thousandDivider'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-import RippedPaperZReportCheck from '../../../../components/ChequePaper/ZReportCheck'
-import { useReactToPrint } from 'react-to-print'
 const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
@@ -175,7 +174,6 @@ function CashCloseDrawer({ open, setOpen }) {
     console.log('err', err)
     error('Пожалуйста, заполните все поля!')
   }
-  console.log(reactToPrintContent)
 
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='bottom' elevation={1} className={classes.drawer}>
