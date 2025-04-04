@@ -18,6 +18,7 @@ import OrderDrawer from '../../../../components/Sales/ClientCreateMini/OrderDraw
 import DraftDrawer from '../../../../components/Sales/DraftDrawer'
 import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchange/ReturnExchangeDrawer'
 import ShortcutsDrawer from '../../../../components/Sales/ShortcutsDrawer'
+import StyledTooltip from '../../../../components/StyledTooltip'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
@@ -725,7 +726,7 @@ function NewSale() {
       <LoadingOverflow fullHeight readyState={!hasChange} />
 
       <Box display={'flex'}>
-        <Box width={'70%'} position={'relative'} padding={'20px'}>
+        <Box width={'calc(100% - 384px)'} position={'relative'} padding={'20px'}>
           <Box position={'relative'}>
             <CartSearchBar
               discount={{ type: discount, amount: inputDiscount }}
@@ -758,16 +759,20 @@ function NewSale() {
                   {t('menu.orders.new_order.heading')}
                 </Typography>
                 {get(cartItemsList, 'data.data.data', 0)?.length ? (
-                  <Box
-                    display={'flex'}
-                    sx={{ cursor: 'pointer', ml: '16px', backgroundColor: 'bg.10', p: '6px 19px', borderRadius: '40px' }}
-                    height={'48px'}
-                    alignItems={'center'}
-                    onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}
-                  >
-                    <Typography sx={{ mr: '12px', mt: '3px', fontSize: '22px', fontWeight: '600' }}>{size(get(cartItemsList, 'data.data.data', 0))}</Typography>
-                    <DeleteIcon width={'20px'} />
-                  </Box>
+                  <StyledTooltip title={'Удалить все продукты'}>
+                    <Box
+                      display={'flex'}
+                      sx={{ cursor: 'pointer', ml: '16px', backgroundColor: 'bg.10', p: '6px 19px', borderRadius: '40px' }}
+                      height={'48px'}
+                      alignItems={'center'}
+                      onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}
+                    >
+                      <Typography sx={{ mr: '12px', mt: '3px', fontSize: '22px', fontWeight: '600' }}>
+                        {size(get(cartItemsList, 'data.data.data', 0))}
+                      </Typography>
+                      <DeleteIcon width={'20px'} />
+                    </Box>
+                  </StyledTooltip>
                 ) : (
                   <></>
                 )}

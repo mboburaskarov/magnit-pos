@@ -1,22 +1,22 @@
-import { Box, Typography, Button, Tooltip } from '@mui/material'
+import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Box, Button, Typography } from '@mui/material'
 import { get, size } from 'lodash'
 import React from 'react'
+import Highlighter from 'react-highlight-words'
+import { useTranslation } from 'react-i18next'
+import OutsideClickHandler from 'react-outside-click-handler'
+import CheckAccess from '../../../../components/CheckAccess'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
+import OutLineTextFieldThousand from '../../../../components/Inputs/OutLineTextFieldThousand'
+import SearchInput from '../../../../components/Inputs/SearchInput'
+import Label from '../../../../components/Label'
+import StyledTooltip from '../../../../components/StyledTooltip'
+import thousandDivider from '../../../../utils/thousandDivider'
 import FileIcon from '../../../assets/icons/FileIcon'
 import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
-import Label from '../../../../components/Label'
-import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
 import TimesSmallIcon from '../../../assets/icons/TimesSmallIcon'
-import SearchInput from '../../../../components/Inputs/SearchInput'
-import OutsideClickHandler from 'react-outside-click-handler'
-import Highlighter from 'react-highlight-words'
-import thousandDivider from '../../../../utils/thousandDivider'
-import InputSwitch from '../../../../components/Inputs/InputSwitch'
-import { useTranslation } from 'react-i18next'
-import CheckAccess from '../../../../components/CheckAccess'
-import OutLineTextFieldThousand from '../../../../components/Inputs/OutLineTextFieldThousand'
-import StyledTooltip from '../../../../components/StyledTooltip'
+import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
 
 function CartDetailSide({
   cashBoxDetails,
@@ -53,26 +53,25 @@ function CartDetailSide({
             #{get(cashBoxDetails, 'data.data.sale_number')}
           </Typography>
         </Box>
-        <Tooltip placement='top' title='Открыть новое окно продаж'>
-          <Box
-            onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })}
-            className={classes.cart_detail_icon}
-          >
+        <Box
+          onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })}
+          className={classes.cart_detail_icon}
+        >
+          <StyledTooltip title={'Открыть новое окно продаж'}>
             <FileIcon color='#000' />
-          </Box>
-        </Tooltip>
-        <Tooltip placement='top' title='Черновики'>
-          <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
+          </StyledTooltip>
+        </Box>
+        <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
+          <StyledTooltip title={'Черновики'}>
             <TimeAndDate />
-          </Box>
-        </Tooltip>
+          </StyledTooltip>
+        </Box>
         <CheckAccess id={'can-return-product'}>
-          <Tooltip placement='top' title='Возврат'>
-            {/* <Box onClick={() => {}} className={classes.cart_detail_icon}> */}
-            <Box onClick={() => setIsOpenReturnExchange(true)} className={classes.cart_detail_icon}>
-              <FontAwesomeIcon icon={faExchangeAlt} />
-            </Box>
-          </Tooltip>
+          <Box onClick={() => setIsOpenReturnExchange(true)} className={classes.cart_detail_icon}>
+            <StyledTooltip title={'Возврат'}>
+              <FontAwesomeIcon color='black' icon={faExchangeAlt} />
+            </StyledTooltip>
+          </Box>
         </CheckAccess>
       </Box>
       <Box mb={'24px'}>

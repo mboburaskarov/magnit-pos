@@ -12,6 +12,7 @@ import { useDebounce } from 'use-debounce'
 import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import InputSearch from '../../../../components/Inputs/InputSearch'
+import StyledTooltip from '../../../../components/StyledTooltip'
 import { requests } from '../../../../utils/requests'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
@@ -331,43 +332,44 @@ function CartSearchBar({
               }
             }}
           />
-
-          <ButtonWithPopup
-            id={'ff'}
-            noArrow
-            // ml={'16px'}
-            sx={{ height: '48px', width: 48, border: '1px solid transparent !important' }}
-            noMarginSvg
-            placement='bottom-end'
-            onClick={() => refetch()}
-            buttonLabel={
-              <Box
-                sx={{ '&:hover': { bgcolor: 'transparent !important' } }}
-                className='cash_register_icon_wrapper'
-                bgcolor={'bg.10 !important'}
-                padding={'10px'}
-                width={'48px'}
-                height={'48px'}
-                borderRadius={'50%'}
-              >
-                <FinanceAndPaymentIcon />
-              </Box>
-            }
-            popperData={[
-              {
-                title: 'Закрыть кассу',
-                icon: <UnlockIcon />,
-                clickHandler: () => {
-                  if (size(get(darftList, 'data.data.data')) > 0) {
-                    setCloseCashBox(true)
-                  } else {
-                    navigate(`/sales/cash-shift-detail/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`)
-                  }
+          <StyledTooltip title={'Закрыть кассу & Обмен сменами'}>
+            <ButtonWithPopup
+              id={'ff'}
+              noArrow
+              // ml={'16px'}
+              sx={{ height: '48px', width: 48, border: '1px solid transparent !important' }}
+              noMarginSvg
+              placement='bottom-end'
+              onClick={() => refetch()}
+              buttonLabel={
+                <Box
+                  sx={{ '&:hover': { bgcolor: 'transparent !important' } }}
+                  className='cash_register_icon_wrapper'
+                  bgcolor={'bg.10 !important'}
+                  padding={'10px'}
+                  width={'48px'}
+                  height={'48px'}
+                  borderRadius={'50%'}
+                >
+                  <FinanceAndPaymentIcon />
+                </Box>
+              }
+              popperData={[
+                {
+                  title: 'Закрыть кассу',
+                  icon: <UnlockIcon />,
+                  clickHandler: () => {
+                    if (size(get(darftList, 'data.data.data')) > 0) {
+                      setCloseCashBox(true)
+                    } else {
+                      navigate(`/sales/cash-shift-detail/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`)
+                    }
+                  },
                 },
-              },
-              { title: 'Обмен сменами', icon: <FinanceAndPaymentIcon />, soon: false, clickHandler: () => setIsOpenChangeShift(true) },
-            ]}
-          />
+                { title: 'Обмен сменами', icon: <FinanceAndPaymentIcon />, soon: false, clickHandler: () => setIsOpenChangeShift(true) },
+              ]}
+            />
+          </StyledTooltip>
         </Box>
         {showOverlay && searchTearm && (
           <div

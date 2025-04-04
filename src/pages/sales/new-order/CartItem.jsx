@@ -4,6 +4,7 @@ import { get } from 'lodash'
 import React, { memo } from 'react'
 import { useMutation } from 'react-query'
 import InputQuantity from '../../../../components/Inputs/InputQuantity'
+import StyledTooltip from '../../../../components/StyledTooltip'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
@@ -334,7 +335,7 @@ const CartItem = ({
                 <Box
                   sx={{
                     '& .MuiInputBase-root': {
-                      width: get(item, 'unit_per_pack') == 0 ? '110px' : '110px',
+                      // width: get(item, 'unit_per_pack') == 0 ? '110px' : '110px',
                     },
                   }}
                 >
@@ -343,7 +344,15 @@ const CartItem = ({
                     name={`unit_quantity_${item?.id}`}
                     defaultValue={get(item, 'unit_quantity', 1)}
                     adornmentPosition='end'
-                    adornment={<Typography mr={'20px'}>{item.unit_per_pack}/шт</Typography>}
+                    adornment={
+                      <Typography display={'flex'} fontSize={'18px'} mr={'20px'}>
+                        /
+                        <Typography fontSize={'20px'} color='bunker.950'>
+                          {item.unit_per_pack}
+                        </Typography>{' '}
+                        шт
+                      </Typography>
+                    }
                     inputRef={(e) => unitRef(e)}
                     adornmentClassName={cls.adornment}
                     max={100}
@@ -428,13 +437,13 @@ const CartItem = ({
                 <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
                   <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>
                     {item?.barcode} {get(item, 'shelf', '').length > 0 ? `/ Полка: ${get(item, 'shelf', 'X')}` : ''}/ Остаток:{' '}
-                    {Math.floor(Number(item.current_stock) / item.unit_per_pack)}уп {Number(item.current_stock) % item.unit_per_pack}шт{' '}
+                    {Math.floor(Number(item.current_stock))}
                   </Typography>
                 </Box>
               </Box>
             </Box>
             <Box display={'flex'} alignItems={'center'}>
-              {item?.discount_value > 0 && (
+              {/* {item?.discount_value > 0 && (
                 <Typography
                   whiteSpace={'pre'}
                   sx={{
@@ -451,29 +460,59 @@ const CartItem = ({
                 >
                   - {item?.discount_value}%
                 </Typography>
-              )}
+              )} */}
 
               <Box alignItems={'end'} display={'flex'} flexDirection={'column'}>
-                {item?.discount_price > 0 && (
-                  <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
-                    {thousandDivider(item?.discount_price, 'сум')}
-                  </Typography>
+                {item.quantity > 1 && (
+                  <StyledTooltip title={'Это цена одного товара без скидки.'}>
+                    <Box display={'flex'}>
+                      {/* {item?.discount_price > 0 && (
+                      <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
+                        {thousandDivider(item?.discount_price, 'сум')}
+                      </Typography>
+                    )} */}
+
+                      <Typography
+                        textDecoration='line-through'
+                        sx={{
+                          mr: '10px',
+                          color: 'bunker.200',
+                          whiteSpace: 'pre',
+                          fontSize: item?.discount_price > 0 ? '14px' : '16px',
+                          lineHeight: '24px',
+                          fontWeight: '600',
+                          // textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
+                          color: item?.discount_price > 0 ? 'bunker.300' : 'bunker.500',
+                        }}
+                      >
+                        {thousandDivider(item?.unit_price, 'сум')}
+                      </Typography>
+                    </Box>
+                  </StyledTooltip>
                 )}
-                <Typography
-                  textDecoration='line-through'
-                  sx={{
-                    mr: '10px',
-                    color: 'orange.500',
-                    whiteSpace: 'pre',
-                    fontSize: item?.discount_price > 0 ? '14px' : '16px',
-                    lineHeight: '24px',
-                    fontWeight: '600',
-                    textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
-                    color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
-                  }}
-                >
-                  {thousandDivider(item?.unit_price, 'сум')}
-                </Typography>
+                <Box display={'flex'}>
+                  {item?.discount_price > 0 && (
+                    <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
+                      {thousandDivider(item?.discount_price * item.quantity, 'сум')}
+                    </Typography>
+                  )}
+                  <Typography
+                    textDecoration='line-through'
+                    sx={{
+                      mr: '10px',
+                      color: 'orange.500',
+                      whiteSpace: 'pre',
+                      fontSize: item?.discount_price > 0 ? '14px' : '16px',
+                      lineHeight: '24px',
+                      mt: '1px',
+                      fontWeight: '600',
+                      textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
+                      color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
+                    }}
+                  >
+                    {thousandDivider(item?.total_price, 'сум')}
+                  </Typography>
+                </Box>
               </Box>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>

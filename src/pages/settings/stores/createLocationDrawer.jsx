@@ -84,7 +84,7 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
       name: get(data, 'name'),
       detailed_name: get(data, 'detailed_name'),
       location: get(data, 'location'),
-      phone: '998' + data?.phone?.replace(/[()\s]/g, ''),
+      ...(data?.phone && { phone: '998' + data.phone.replace(/[()\s]/g, '') }),
       address: get(data, 'address'),
       employee_count: Number(get(data, 'employee_count')),
       cash_box_count: Number(get(data, 'cash_box_count')),
