@@ -1,27 +1,22 @@
-import { Box, Button, Drawer, Typography } from '@mui/material'
-import { makeStyles, useTheme } from '@mui/styles'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import CloseIcon from '../../src/assets/icons/CloseIcon'
-import InputSearch from '../Inputs/InputSearch'
-import DraftParentItemsBox from './DraftParentItemsBox'
-import LeftArrowIcon from '../../src/assets/icons/LeftArrow'
-import DraftChildItemsBox from './DraftChildItemsBox'
-import DeleteIcon from '../../src/assets/icons/DeleteIcon'
-import MarkRectangleIcon from '../../src/assets/icons/MarkRectangleIcon'
-import WithdrawIcon from '../../src/assets/icons/WithdrawIcon'
-import { get } from 'lodash'
-import { requests } from '../../utils/requests'
-import { useMutation, useQuery } from 'react-query'
-import dayjs from 'dayjs'
 import { LoadingButton } from '@mui/lab'
+import { Box, Button, Typography } from '@mui/material'
+import { makeStyles, useTheme } from '@mui/styles'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
+import React, { useCallback, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useNavigate } from 'react-router-dom'
+import { useReactToPrint } from 'react-to-print'
+import CloseIcon from '../../src/assets/icons/CloseIcon'
+import DeleteIcon from '../../src/assets/icons/DeleteIcon'
+import LeftArrowIcon from '../../src/assets/icons/LeftArrow'
+import MarkRectangleIcon from '../../src/assets/icons/MarkRectangleIcon'
+import { requests } from '../../utils/requests'
+import thousandDivider from '../../utils/thousandDivider'
 import { error, success } from '../../utils/toast'
 import LoadingContainer from '../LoadingContainer'
-import { RippedPaperItem } from '../RippedPaperList'
-import { useReactToPrint } from 'react-to-print'
-import { useNavigate } from 'react-router-dom'
-import { t } from 'i18next'
-import { useTranslation } from 'react-i18next'
-import thousandDivider from '../../utils/thousandDivider'
+import DraftChildItemsBox from './DraftChildItemsBox'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -45,6 +40,12 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '50%',
     '& svg': {
       backgroundColor: theme.palette.bg[10],
+    },
+    '&:hover': {
+      backgroundColor: '#ccc4 ',
+      '& > svg': {
+        backgroundColor: '#ccc4 !important',
+      },
     },
   },
   usrImg: {
@@ -138,7 +139,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
             </Box>
           </Box>
           <Box maxHeight={'calc(100vh - 485px)'} sx={{ overflowY: 'auto' }} padding={'0px 40px'}>
-            {get(darftChildList, 'data.data.cart_items', []).map((el) => (
+            {get(darftChildList, 'data.data.cart_items', [])?.map((el) => (
               <DraftChildItemsBox key={el.id} item={el} />
             ))}
           </Box>
@@ -169,7 +170,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
                 Клиент
               </Typography>
               <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                {get(darftChildList, 'data.data.customer.full_name')}
+                {get(darftChildList, 'data.data.customer.full_name') ?? '-'}
               </Typography>
             </Box>
           </Box>

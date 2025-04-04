@@ -1,20 +1,18 @@
-import { Box, Button, IconButton, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { Box, Button, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import * as qs from 'qs'
+import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
-import { requests } from '../../utils/requests'
-import SelectSimple from '../../components/Select/SelectSimple'
-import InputRange from '../../components/Inputs/InputRange'
-import getOptionsFromUrlParam from '../../utils/getOptionsFromUrlParam'
-import * as qs from 'qs'
 import StyledEmptyDialog from '../../components/Dialogs/StyledeEmptyDialog'
-import CloseIcon from '../../src/assets/icons/CloseIcon'
-import { useTranslation } from 'react-i18next'
 import InputDatePicker from '../../components/Inputs/InputDatePicker'
-import { useTheme } from '@mui/styles'
 import LazySelect from '../../components/Select/LazySelect'
+import CloseIcon from '../../src/assets/icons/CloseIcon'
+import { useQueryParams } from '../../src/hooks/useQueryParams'
+import getOptionsFromUrlParam from '../../utils/getOptionsFromUrlParam'
+import { requests } from '../../utils/requests'
 export default function DraftFilter({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
@@ -63,6 +61,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
   return (
     <StyledEmptyDialog
       overflowVisible
+      onClose={() => setOpen(false)}
       open={open}
       title={t('filter_dialog.label')}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
@@ -71,6 +70,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
         sx={{
           width: '100%',
           padding: '24px',
+
           '& .MuiInputBase-root': {
             border: `2px solid`,
             borderColor: 'bunker.100',
@@ -92,7 +92,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
             component='form'
             onSubmit={methods.handleSubmit(onSubmit, onError)}
           >
-            <Box maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'scroll'}>
+            <Box maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'visible'}>
               <InputDatePicker
                 defaultValue={new Date()}
                 name='expired_date'

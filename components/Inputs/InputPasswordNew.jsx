@@ -1,9 +1,9 @@
-import { useState } from 'react'
-import { Box, TextField, InputAdornment } from '@mui/material'
-import { useFormContext } from 'react-hook-form'
+import { Box, InputAdornment, TextField } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import ShowPasswordIcon from '../../src/assets/icons/ShowPasswordIcon'
+import { useState } from 'react'
+import { useFormContext } from 'react-hook-form'
 import HidePasswordIcon from '../../src/assets/icons/HidePasswordIcon'
+import ShowPasswordIcon from '../../src/assets/icons/ShowPasswordIcon'
 import Label from '../Label'
 
 const useStyles = makeStyles(() => ({
@@ -87,6 +87,9 @@ function InputPassword({
           '& .MuiOutlinedInput-root': {
             height: secondary && `${height}px !important`,
             borderRadius: secondary && `${height === 56 ? 16 : 20}px !important`,
+            '&:hover': {
+              backgroundColor: 'gray.10',
+            },
           },
           mt: !label && 0,
         }}

@@ -1,4 +1,4 @@
-import { Box, Typography, Button } from '@mui/material'
+import { Box, Typography, Button, Tooltip } from '@mui/material'
 import { get, size } from 'lodash'
 import React from 'react'
 import FileIcon from '../../../assets/icons/FileIcon'
@@ -16,6 +16,7 @@ import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import { useTranslation } from 'react-i18next'
 import CheckAccess from '../../../../components/CheckAccess'
 import OutLineTextFieldThousand from '../../../../components/Inputs/OutLineTextFieldThousand'
+import StyledTooltip from '../../../../components/StyledTooltip'
 
 function CartDetailSide({
   cashBoxDetails,
@@ -52,20 +53,27 @@ function CartDetailSide({
             #{get(cashBoxDetails, 'data.data.sale_number')}
           </Typography>
         </Box>
-        <Box
-          onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })}
-          className={classes.cart_detail_icon}
-        >
-          <FileIcon color='#000' />
-        </Box>
-
-        <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
-          <TimeAndDate />
-        </Box>
-        {/* <Box onClick={() => {}} className={classes.cart_detail_icon}> */}
-        <Box onClick={() => setIsOpenReturnExchange(true)} className={classes.cart_detail_icon}>
-          <FontAwesomeIcon icon={faExchangeAlt} />
-        </Box>
+        <Tooltip placement='top' title='Открыть новое окно продаж'>
+          <Box
+            onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })}
+            className={classes.cart_detail_icon}
+          >
+            <FileIcon color='#000' />
+          </Box>
+        </Tooltip>
+        <Tooltip placement='top' title='Черновики'>
+          <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
+            <TimeAndDate />
+          </Box>
+        </Tooltip>
+        <CheckAccess id={'can-return-product'}>
+          <Tooltip placement='top' title='Возврат'>
+            {/* <Box onClick={() => {}} className={classes.cart_detail_icon}> */}
+            <Box onClick={() => setIsOpenReturnExchange(true)} className={classes.cart_detail_icon}>
+              <FontAwesomeIcon icon={faExchangeAlt} />
+            </Box>
+          </Tooltip>
+        </CheckAccess>
       </Box>
       <Box mb={'24px'}>
         <Box sx={{ display: 'flex', mb: '4px', justifyContent: 'space-between' }}>

@@ -52,7 +52,7 @@ const customDateRanges = () => [
 const today = dayjs().toDate()
 const tomorrow = dayjs().add(1, 'day').toDate()
 
-export default function DateRangeInput({ id, name, startDateQuery = 'start_date', endDateQuery = 'end_date', defaultFilterData }) {
+export default function DateRangeInput({ id, name, minHeight = '48px', startDateQuery = 'start_date', endDateQuery = 'end_date', defaultFilterData }) {
   const defaultState = {
     from: dayjs(defaultFilterData?.start_date).isValid() ? dayjs(defaultFilterData?.start_date).toDate() : today,
     to: dayjs(defaultFilterData?.end_date).isValid() ? dayjs(defaultFilterData?.end_date).toDate() : today,
@@ -148,7 +148,7 @@ export default function DateRangeInput({ id, name, startDateQuery = 'start_date'
         endIcon={<ArrowDown />}
         noMarginSvg
         sx={{
-          height: '48px',
+          height: minHeight,
           border: '1px solid #ECEDF2 !important',
         }}
         placement='bottom-end'

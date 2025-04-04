@@ -423,6 +423,7 @@ function CartSearchBar({
         {closeCashBox && (
           <ConfirmDialog
             open={closeCashBox}
+            setOpen={setCloseCashBox}
             icon={<BigWarningIcon />}
             title={'Закрыть кассу?'}
             desc={'Сначала очистите черновики, а затем закройте кассу или нажмите «Продолжить», чтобы оставить черновики без изменений.'}

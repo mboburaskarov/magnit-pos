@@ -1,21 +1,19 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
-import React, { useEffect, useMemo, useState } from 'react'
-import CloseIcon from '../../src/assets/icons/CloseIcon'
-import InputSearch from '../Inputs/InputSearch'
-import DraftParentItemsBox from './DraftParentItemsBox'
-import DraftChildDrawer from './DraftChildDrawer'
-import FilterMenuIcon from '../../src/assets/icons/FilterMenuIcon'
-import DraftFilter from './DraftFilter'
-import { requests } from '../../utils/requests'
-import { useMutation, useQuery } from 'react-query'
-import { get } from 'lodash'
-import { useSelector } from 'react-redux'
-import { error, success } from '../../utils/toast'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
 import dayjs from 'dayjs'
+import { get } from 'lodash'
+import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import CloseIcon from '../../src/assets/icons/CloseIcon'
+import FilterMenuIcon from '../../src/assets/icons/FilterMenuIcon'
+import { useQueryParams } from '../../src/hooks/useQueryParams'
+import { requests } from '../../utils/requests'
 import ListWithPagination from '../AgGridTable/ListWithPagination'
+import InputSearch from '../Inputs/InputSearch'
+import DraftChildDrawer from './DraftChildDrawer'
+import DraftFilter from './DraftFilter'
+import DraftParentItemsBox from './DraftParentItemsBox'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -49,12 +47,8 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
       draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : '',
     }
   }, [values?.customer_id, values?.draft_date, values?.search])
-  const { data: darftList, refetch, isDarftList } = useQuery(['darftList', draftsListFilter], () => requests.getDarftList(draftsListFilter))
-  useEffect(() => {
-    refetch()
-  }, [open])
+
   const theme = useTheme()
-  const draftListData = get(darftList, 'data.data.data', [])
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
       {!isOpenChild ? (
@@ -66,7 +60,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
             <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
           </Box>
           <Box display={'flex'} py={'24px'} px={'40px'}>
-            <InputSearch fullWidth uncontrolled placeholder={'Поиск: ID, Клиент, Продавец'} />
+            <InputSearch fullWidth uncontrolled placeholder={'Поиск: ID'} />
             <Box minWidth={113} ml={'16px'}>
               <Button
                 sx={{
@@ -98,6 +92,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
             <ListWithPagination
               request={(filter) => requests.getDarftList(filter)}
               renderItem={(item) => <DraftParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}
+              customFilter={draftsListFilter}
             />
             {/* {draftListData.map((item, index) => {
               return <DraftParentItemsBox key={index} item={item} setIsOpenChild={setIsOpenChild} />

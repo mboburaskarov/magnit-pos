@@ -100,17 +100,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         ...el,
         headerName: t('table_columns.name'),
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Link
-            to={`/products/auto-order/${p.data.id}?${qs.stringify({
-              previusLimit: values?.limit,
-              previusOffset: values?.offset,
-            })}
-                `}
-          >
-            <SimpleText {...p} data={p.data.product} type='name' />
-          </Link>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} data={p.data.product} type='name' />),
       }
     }
 

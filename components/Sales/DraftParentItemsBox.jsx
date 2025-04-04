@@ -1,14 +1,11 @@
-import { ShoppingBag } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import ArrowRightIcon from '../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../src/assets/icons/BagOutline'
-import { get } from 'lodash'
-import dayjs from 'dayjs'
-import { useQuery } from 'react-query'
-import { requests } from '../../utils/requests'
-import { useTranslation } from 'react-i18next'
 import thousandDivider from '../../utils/thousandDivider'
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {
@@ -49,6 +46,11 @@ function DraftParentItemsBox({ setIsOpenChild, item }) {
       bgcolor={'bg.10'}
       padding={'18px 16px'}
       justifyContent={'space-between'}
+      sx={{
+        '&:hover': {
+          backgroundColor: 'gray.200',
+        },
+      }}
     >
       <Box display={'flex'}>
         <Box className={classes.productsNumsWrapper}>

@@ -2,10 +2,19 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { persistReducer, persistStore } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import { sidebarSettingsSlice } from './sidebarSettingsSlice'
+import { autoOrderDetailSlice } from './tableSlices/autoOrderDetailTableColumns'
+import { autoOrderTableColumnsSlice } from './tableSlices/autoOrderTableColumns'
+import { bonusProductTableColumnsSlice } from './tableSlices/bonusProductTableColumns'
+import { cardShiftTableColumnsSlice } from './tableSlices/cardShiftTableColumns'
+import { cashBoxShiftHistoryTableColumnsSlice } from './tableSlices/cashBoxShiftHistoryTableColumns'
+import { cashBoxShiftsTableColumnsSlice } from './tableSlices/cashBoxShiftsTableColumns'
+import { cashboxTableColumnsSlice } from './tableSlices/cashboxTableColumns'
 import { clientTableColumnsSlice } from './tableSlices/clientTableColumns'
 import { importDetailsTableColumnsSlice } from './tableSlices/importDetailTableColumns'
+import { importWithCheckingTableColumnsSlice } from './tableSlices/importWithCheckingTableColumns'
 import { importsTableColumnsSlice } from './tableSlices/importsTableColumns'
 import { orderTableColumnsSlice } from './tableSlices/orderTableColumns'
+import { productPriceListTableColumnsForProductSlice } from './tableSlices/productPriceListTableColumnsForProduct'
 import { productsTableColumnsSlice } from './tableSlices/productsTableColumns'
 import { rolesTableColumnsSlice } from './tableSlices/rolesTableColumns'
 import { salesTableColumnsSlice } from './tableSlices/salesTableColumns'
@@ -13,20 +22,11 @@ import { storeTableColumnsSlice } from './tableSlices/storeTableColumns'
 import { storesListTableColumnsForProductSlice } from './tableSlices/storesListTableColumnsForProduct'
 import { vendorsTableColumnsSlice } from './tableSlices/vendorsTableColumns'
 import { userSlice } from './userSlice'
-import { importWithCheckingTableColumnsSlice } from './tableSlices/importWithCheckingTableColumns'
-import { cardShiftTableColumnsSlice } from './tableSlices/cardShiftTableColumns'
-import { cashBoxShiftsTableColumnsSlice } from './tableSlices/cashBoxShiftsTableColumns'
-import { cashboxTableColumnsSlice } from './tableSlices/cashboxTableColumns'
-import { autoOrderTableColumnsSlice } from './tableSlices/autoOrderTableColumns'
-import { autoOrderDetailSlice } from './tableSlices/autoOrderDetailTableColumns'
-import { productPriceListTableColumnsForProductSlice } from './tableSlices/productPriceListTableColumnsForProduct'
-import { cashBoxShiftHistoryTableColumnsSlice } from './tableSlices/cashBoxShiftHistoryTableColumns'
-import { bonusProductTableColumnsSlice } from './tableSlices/bonusProductTableColumns'
 
 // Define your migration function here
 const migrations = {
   // Example migration
-  177: (state) => {
+  178: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -44,7 +44,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 177, // Current version of the persisted state
+  version: 178, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)

@@ -2,9 +2,8 @@ import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import FilterMenuIcon from '../../../src/assets/icons/FilterMenuIcon'
@@ -58,7 +57,7 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
             <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
           </Box>
           <Box display={'flex'} py={'24px'} px={'40px'}>
-            <InputSearch fullWidth uncontrolled placeholder={'Поиск: ID, Клиент, Продавец'} />
+            <InputSearch fullWidth uncontrolled placeholder={'Поиск: ID'} />
             <Box minWidth={113} ml={'16px'}>
               <Button
                 sx={{

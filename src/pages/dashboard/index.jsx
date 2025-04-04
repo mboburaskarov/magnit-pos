@@ -1,13 +1,18 @@
-import { Box, Button, Grid } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import dayjs from 'dayjs'
 import isoWeek from 'dayjs/plugin/isoWeek'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import TotalOrdersByCity from '../../../components/Charts/SingleBarChart'
 import SingleLineChart from '../../../components/Charts/SingleLineChart'
+import TopBonusProducts from '../../../components/Charts/TopBonusProducts'
+import TopProducts from '../../../components/Charts/TopProducts'
+import TopSellers from '../../../components/Charts/TopSellers'
+import Transactions from '../../../components/Charts/transactions'
+import CheckAccess from '../../../components/CheckAccess'
 import LoadingContainer from '../../../components/LoadingContainer'
 import dataTypeFilter from '../../../utils/dataTypeFilter'
 import { getDetaling } from '../../../utils/getDetaling'
@@ -19,67 +24,22 @@ import VendorsIcon from '../../assets/icons/VendorsIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import DashboardHeader from './DashboardHeader'
 import DashboardInfoBox from './DashboardInfoBox'
-import tableHeaderSelector from './tableHeaderSelector'
-import RippedPaperCheck from '../../../components/ChequePaper/ZReportCheck'
-import RippedPaperZReportCheck from '../../../components/ChequePaper/ZReportCheck'
-import TopProducts from '../../../components/Charts/TopProducts'
-import TopSellers from '../../../components/Charts/TopSellers'
-import TopBonusProducts from '../../../components/Charts/TopBonusProducts'
-import CheckAccess from '../../../components/CheckAccess'
 
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
-  const [status, setStatus] = useState('ALL')
-
   const { type } = useSelector((state) => state.user)
   const { values } = useQueryParams()
   const [detailing, setDetaling] = useState('week')
-
+  const [selectedStore, setselectedStore] = useState([])
   const [detalization, setDetalization] = useState({ name: 'Сегодня', value: 'day' })
   const check = type === 'SUPERADMIN' || type === 'ACCOUNTANT'
   const [sortBy, setSortBy] = useState(check ? 'SUM' : 'COUNT')
-  const { columns, loading } = useSelector((state) => state.orderTableColumns)
-  const [regions, setRegions] = useState([])
-  const [offsetCount, setOffsetCount] = useState(0)
   const { t } = useTranslation()
   const dashboardFilter = useMemo(() => {
     return { type: sortBy, fromDate: values?.start_date, toDate: values?.end_date }
   }, [values?.start_date, values?.end_date, sortBy])
-  const operator = values?.operator
-  const shop = values?.shop
-  const client = values?.client
-  const orderListFilter = useMemo(() => {
-    return {
-      orderNumber: values?.search?.replaceAll('/', '\\'),
-      limit: values?.limit || 10,
-      offset: values?.search ? 0 : values?.offset || 0,
-      shopId: shop,
-      regions: regions?.length ? regions?.map((item) => item?.id) : undefined,
-      userId: client,
-      moderatorId: operator,
-      fromDate: values?.start_date,
-      toDate: values?.end_date,
-      detalization: detalization,
-      source: values?.source,
-      ...(status !== 'ALL' && { status }),
-    }
-  }, [
-    status,
-    values?.offset,
-    values?.limit,
-    detalization,
-    values?.source,
-    values?.search,
-    shop,
-    client,
-    values?.start_date,
-    values?.end_date,
-    operator,
-    regions,
-  ])
 
   const DataTypeFilter = useMemo(() => dataTypeFilter(detalization), [values?.start_date, values?.end_date, detalization])
-  const userData = useSelector((state) => state.user)
 
   const chartInfo = []
   useEffect(() => {
@@ -93,7 +53,6 @@ export default function DashboarPage() {
     total_sale_amount,
     total_product_count,
     total_sale_count,
-    total_store_count,
     expiring_soon_amount,
     total_net_income,
     stock_total_amount,
@@ -160,23 +119,19 @@ export default function DashboarPage() {
       },
     ]
   }
-  const tableColumns = tableHeaderSelector({
-    orderColumns: columns,
-    searchTerm: values?.search,
-    userData,
-  })
+  console.log(selectedStore, selectedStore.length)
 
   const dashboard_filter = useMemo(() => {
     return {
       limit: values?.limit || 5,
       search: values?.search,
       start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
-      store_id: values?.store_id || null,
+      store_id: selectedStore.length <= 63 ? [...selectedStore] : null || null,
       type: dataTypeFilter(detalization),
       end_date: values?.start_date == values?.end_date ? null : values?.end_date,
       offset: values?.search ? 0 : values?.offset || 0,
     }
-  }, [values?.offset, detalization, values?.store_id, values?.start_date, values?.end_date, values?.limit, values?.search])
+  }, [values?.offset, detalization, selectedStore, values?.start_date, values?.end_date, values?.limit, values?.search])
   const { data: chartData, isLoading: isGetChartData, refetch } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
   const { data: countStats, isLoading: isCountStats } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
   const { data: topStores, isLoading: isTopStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
@@ -202,30 +157,26 @@ export default function DashboarPage() {
     [chartData, dashboard_filter]
   )
 
-  const { mutate: getZReportByDate, isLoading: isgetZReportByDate } = useMutation(requests.getZReportByDate, {
-    onSuccess: ({ data }) => {},
-    onError: (err) => {},
-  })
   return (
     <LoadingContainer readyState={true}>
-      <DashboardHeader setSortBy={setSortBy} />
+      <DashboardHeader setselectedStore={setselectedStore} selectedStore={selectedStore} />
 
-      <Box display='flex' flexDirection='column' position='relative' pt={0} px={'30px'} pb={3} width={'100%'}>
+      <Box display='flex' flexDirection='column' position='relative' pt={0} px={'20px'} pb={3} width={'100%'}>
         <Grid width={'100%'} container>
           <Grid width={'100%'} item>
-            <Grid container spacing={2}>
+            <Grid container mt={0} spacing={2}>
               {OrdersStatistics(get(countStats, 'data.data', {}))
                 ?.filter((el) => (check ? el : el.title !== 'Общая сумма заказов'))
                 ?.map((el, ind) => (
                   <CheckAccess id={`dashboard-box-${el.id}`}>
-                    <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'20px'} spacing={2}>
+                    <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
                       <DashboardInfoBox key={ind} {...el} />
                     </Grid>
                   </CheckAccess>
                 ))}
             </Grid>
             <CheckAccess id={'dashboard-chart'}>
-              <Box display='inline-flex' columnGap={3} width='100%'>
+              <Box mt={'32px'} display='inline-flex' columnGap={3} width='100%'>
                 <SingleLineChart
                   width='100%'
                   id='dashboard-chart'
@@ -244,6 +195,12 @@ export default function DashboarPage() {
             </CheckAccess>
           </Grid>
         </Grid>
+        <CheckAccess id={'dashboard-vendor'}>
+          <Box mt={4} columnGap={3} display='inline-flex'>
+            <Transactions id='dashboard-chart' data={get(topStores, 'data.data')} title={'Платежи'} subTitle={'64 116 872 UZS'} />
+            <Transactions id='dashboard-chart' data={get(topStores, 'data.data')} title={'Транзакции'} subTitle={'64 шт'} />
+          </Box>
+        </CheckAccess>
         <CheckAccess id={'dashboard-vendor'}>
           <Box mt={4} columnGap={3} display='inline-flex'>
             <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />

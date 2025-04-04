@@ -24,26 +24,26 @@ export default function TopBonusProducts({ data }) {
         <TableContainer px={'20px'}>
           <Table size='small'>
             <TableHead sx={{ borderBottom: '1px solid', borderColor: 'gray.200', padding: '0' }}>
-              <TableCell sx={{ fontSize: '20px', fontWeight: 300, lineHeight: '28px', p: '16px 16px 16px 0', border: 'none', color: 'dark.500' }}>
+              <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 16px 16px 0', border: 'none', color: 'dark.500' }}>
                 Продукт
               </TableCell>
-              <TableCell sx={{ fontSize: '20px', fontWeight: 300, lineHeight: '28px', p: '16px 16px 16px 0', border: 'none', color: 'dark.500' }}>
+              <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 16px 16px 0', border: 'none', color: 'dark.500' }}>
                 Заказ
               </TableCell>
-              <TableCell sx={{ fontSize: '20px', fontWeight: 300, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
+              <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
                 Продажи
               </TableCell>
             </TableHead>
             <TableBody>
               {data?.map((item, index) => (
                 <TableRow key={item.name}>
-                  <TableCell sx={{ fontSize: '20px', fontWeight: 300, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}>
+                  <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}>
                     {index + 1}. {item.name}
                   </TableCell>
-                  <TableCell sx={{ fontSize: '20px', fontWeight: 300, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}>
+                  <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}>
                     {item.count}
                   </TableCell>
-                  <TableCell sx={{ fontSize: '20px', fontWeight: 300, lineHeight: '28px', border: 'none', p: '16px 0px 16px 0', color: 'dark.500' }}>
+                  <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', border: 'none', p: '16px 0px 16px 0', color: 'dark.500' }}>
                     {thousandDivider(item.total_amount, 'сум')}
                   </TableCell>
                 </TableRow>

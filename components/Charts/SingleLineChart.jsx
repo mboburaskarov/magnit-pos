@@ -122,6 +122,7 @@ export default function SingleBarChart({
             name={id + 'detailing'}
             placeholder='Детализация'
             uncontrolled
+            isSearchable={false}
             onChange={setDetalization}
             minWidth={130}
             value={detalization}

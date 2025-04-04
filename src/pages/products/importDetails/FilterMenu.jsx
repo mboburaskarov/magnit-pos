@@ -7,13 +7,13 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import InputRange from '../../../../components/Inputs/InputRange'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
 import SelectSimple from '../../../../components/Select/SelectSimple'
 import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
+import CloseIcon from '../../../assets/icons/CloseIcon'
+import { useQueryParams } from '../../../hooks/useQueryParams'
 const barcodeFilterList = [
-  { name: 'Без штрих-кода', value: true },
-  { name: 'Со штрих-кодом', value: false },
+  { name: 'Без штрих-кода', id: '1' },
+  { name: 'Со штрих-кодом', id: '2' },
 ]
 export default function FilterMenu({ open, id, setOpen }) {
   const navigate = useNavigate()
@@ -22,8 +22,10 @@ export default function FilterMenu({ open, id, setOpen }) {
   const { formState, reset } = methods
 
   const onSubmit = (data) => {
+    console.log(data)
+
     const requestBody = {
-      no_barcode: data.no_barcode.value || undefined,
+      no_barcode: data.no_barcode?.id || undefined,
       received_amount_from: data.received_amount_from || undefined,
       received_amount_to: data.received_amount_to || undefined,
     }
@@ -39,12 +41,13 @@ export default function FilterMenu({ open, id, setOpen }) {
 
   useEffect(() => {
     const { received_amount_to, no_barcode, received_amount_from } = values
+    // console.log(getOptionsFromUrlParam(no_barcode, barcodeFilterList?.data?.data, 'name')[0])
 
     reset(
       {
         received_amount_to: received_amount_to || null,
         received_amount_from: received_amount_from || null,
-        // no_barcode: getOptionsFromUrlParam(no_barcode, barcodeFilterList, 'name') || null,
+        no_barcode: no_barcode ? getOptionsFromUrlParam(no_barcode, barcodeFilterList, 'name')[0] : null,
       },
       { keepDirty: true }
     )
@@ -58,7 +61,12 @@ export default function FilterMenu({ open, id, setOpen }) {
   }
   const { t } = useTranslation()
   return (
-    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog
+      onClose={setOpen}
+      open={open}
+      title={t('filter_dialog.label')}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+    >
       <Box
         sx={{
           width: '100%',

@@ -1,10 +1,7 @@
-import { ShoppingBag } from '@mui/icons-material'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import React from 'react'
-import ArrowRightIcon from '../../src/assets/icons/ArrowRightIcon'
-import BagOutline from '../../src/assets/icons/BagOutline'
 import { get } from 'lodash'
+import React from 'react'
 import thousandDivider from '../../utils/thousandDivider'
 const useStyles = makeStyles((theme) => ({
   productImg: {

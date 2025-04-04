@@ -65,6 +65,7 @@ export default function FilterMenu({ open, setOpen }) {
     <StyledEmptyDialog
       overflowVisible
       open={open}
+      onClose={() => setOpen(false)}
       title={t('filter_dialog.label')}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
     >

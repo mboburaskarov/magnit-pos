@@ -1,6 +1,30 @@
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
+const monthMap = {
+  Январь: 0,
+  Февраль: 1,
+  Март: 2,
+  Апрель: 3,
+  Май: 4,
+  Июнь: 5,
+  Июль: 6,
+  Август: 7,
+  Сентябрь: 8,
+  Октябрь: 9,
+  Ноябрь: 10,
+  Декабрь: 11,
+}
 
+function parseRussianDate(russianDate) {
+  const [day, monthName, year] = russianDate.split(' ')
+  const month = monthMap[monthName]
+
+  if (month === undefined) {
+    throw new Error('Invalid month name')
+  }
+
+  return new Date(year, month, day)
+}
 export default function YearMonthFormNew({ date, onChange }) {
   const today = new Date()
   const currentYear = new Date().getFullYear()
@@ -20,7 +44,7 @@ export default function YearMonthFormNew({ date, onChange }) {
   const handleChange = function handleChange(e) {
     const { yearmonth } = e.target.form
 
-    onChange(new Date(yearmonth.value))
+    onChange(parseRussianDate(`1 ${yearmonth.value}`))
   }
 
   const dateName = newMonths[date.getMonth()] + ' ' + date.getFullYear()

@@ -10,10 +10,11 @@ import { useNavigate } from 'react-router-dom'
 import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
 import InputRange from '../../../components/Inputs/InputRange'
 import LazySelect from '../../../components/Select/LazySelect'
+import SelectSimple from '../../../components/Select/SelectSimple'
+import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
 import { requests } from '../../../utils/requests'
 import CloseIcon from '../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
-import SelectSimple from '../../../components/Select/SelectSimple'
 
 export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -43,7 +44,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
       store_name: data.store_id?.name || undefined,
       producer_id: data.producer_id?.value || undefined,
       producer_name: data.producer_id?.name || undefined,
-      no_barcode: data.no_barcode.value || undefined,
+      no_barcode: data.no_barcode?.id || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
@@ -62,7 +63,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { supply_price_to, retail_price_to, supply_price_from, retail_price_from, category_id, store_id, producer_id } = values
+    const { supply_price_to, no_barcode, retail_price_to, supply_price_from, retail_price_from, category_id, store_id, producer_id } = values
 
     reset(
       {
@@ -73,6 +74,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
         retail_price_to: retail_price_to || null,
         supply_price_from: supply_price_from || null,
         retail_price_from: retail_price_from || null,
+        no_barcode: no_barcode ? getOptionsFromUrlParam(no_barcode, barcodeFilterList, 'name')[0] : null,
       },
       { keepDirty: true }
     )
@@ -109,11 +111,16 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   }
   const { t } = useTranslation()
   const barcodeFilterList = [
-    { name: 'Без штрих-кода', value: true },
-    { name: 'Со штрих-кодом', value: false },
+    { name: 'Без штрих-кода', id: '1' },
+    { name: 'Со штрих-кодом', id: '2' },
   ]
   return (
-    <StyledEmptyDialog open={open} title={t('filter_dialog.label')} customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}>
+    <StyledEmptyDialog
+      onClose={() => setOpen(false)}
+      open={open}
+      title={t('filter_dialog.label')}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+    >
       <Box
         sx={{
           width: '100%',

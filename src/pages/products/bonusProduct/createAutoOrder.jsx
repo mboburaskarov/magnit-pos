@@ -53,6 +53,7 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
   return (
     <StyledEmptyDialog
       overflowVisible
+      onClose={() => setOpen(false)}
       open={open}
       title={'Создать бонусный продукт'}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}

@@ -1,10 +1,10 @@
 import { Box, Button, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { useRef, useMemo } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
 import { makeStyles } from '@mui/styles'
-import { error } from '../../../utils/toast'
+import dayjs from 'dayjs'
+import { useMemo, useRef } from 'react'
 import DayPicker, { DateUtils } from 'react-day-picker'
+import { FormProvider, useForm } from 'react-hook-form'
+import { error } from '../../../utils/toast'
 import DateRangeInputsBox from './DateRangeInputsBox'
 import YearMonthFormNew from './YearMonthFormNew'
 
@@ -237,7 +237,7 @@ export default function DateFilterDrawerSingle({
   const weekDays = useMemo(() => localeData.weekdays().map((item) => item[0].toUpperCase() + item.slice(1)), [localeData])
   const weekdaysMin = useMemo(() => localeData.weekdaysMin().map((item) => item[0].toUpperCase() + item.slice(1)), [localeData])
 
-  const classes = useStyles({ isOneDayDifference: dateState?.from - dateState?.to === -86000000 || dateState?.from - dateState?.to === 0 })
+  const classes = useStyles({ isOneDayDifference: dateState?.from - dateState?.to === -86400000 || dateState?.from - dateState?.to === 0 })
 
   function isSelectingFirstDay(from, to, day) {
     const isBeforeFirstDay = from && DateUtils.isDayBefore(day, from)

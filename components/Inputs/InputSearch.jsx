@@ -24,11 +24,19 @@ const useStyles = makeStyles((theme) => ({
       fill: theme.palette.bunker[400],
     },
     '&:hover': {
-      backgroundColor: theme.palette.gray[101],
+      // backgroundColor: '#fe9000 !important',
     },
     '& .MuiOutlinedInput-root': {
       border: `2px solid transparent`,
+      '&:hover': {
+        backgroundColor: `${theme.palette.gray[101]} !important`,
+      },
     },
+
+    '& .MuiInputBase-root:hover': {
+      // backgroundColor: '#fe5000 !important',
+    },
+
     '& .MuiInputBase-input::placeholder': {
       color: theme.palette.bunker[400], // Change placeholder color
       fontSize: '18px', // Adjust font size

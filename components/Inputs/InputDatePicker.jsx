@@ -1,15 +1,15 @@
-import { useState } from 'react'
-import { Box, Typography, TextField, InputAdornment, ClickAwayListener, useTheme } from '@mui/material'
-import { Controller, useFormContext } from 'react-hook-form'
-import DatePicker from 'react-datepicker'
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import dayjs from 'dayjs'
-import { faCalendarAlt, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
+import { Box, ClickAwayListener, InputAdornment, TextField, Typography, useTheme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import dayjs from 'dayjs'
+import { useState } from 'react'
+import DatePicker from 'react-datepicker'
+import { Controller, useFormContext } from 'react-hook-form'
+import ReactInputMask from 'react-input-mask'
+import CalendarIcon from '../../src/assets/icons/CalendarIcon'
 import DeleteSmallIcon from '../../src/assets/icons/DeleteSmallIcon'
 import Label from '../Label'
-import CalendarIcon from '../../src/assets/icons/CalendarIcon'
-import ReactInputMask from 'react-input-mask'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: ({ customRadius }) => (customRadius ? customRadius : null),
       '& > input': {
         '-webkit-text-fill-color': theme.palette.gray[600] + ' !important',
+      },
+      '&:hover': {
+        backgroundColor: theme.palette.gray[100],
       },
     },
   },

@@ -1,7 +1,10 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Tooltip, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,6 +19,7 @@ import InputSwitch from '../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../components/LoadingContainer'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
+import BarcodeIcon from '../../assets/icons/BarcodeIcon'
 import BigTickIcon from '../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../assets/icons/BigWarningIcon'
 import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
@@ -25,10 +29,6 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import FilterMenu from './FilterMenu'
 import ProductDrawer from './product-edit/ProductDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
-import { get } from 'lodash'
-import { FormProvider, useForm } from 'react-hook-form'
-import BarcodeIcon from '../../assets/icons/BarcodeIcon'
-import dayjs from 'dayjs'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function ProductsPage() {
   const theme = useTheme()
@@ -104,7 +104,7 @@ export default function ProductsPage() {
       region: values?.region_id,
       supply_price_from: values?.supply_price_from,
       retail_price_from: values?.retail_price_from,
-      no_barcode: values?.no_barcode,
+      no_barcode: values?.no_barcode == '1' ? true : false,
       isExpress: values?.isExpress,
       start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
       end_date: values?.start_date == values?.end_date ? null : values?.end_date,
@@ -141,7 +141,7 @@ export default function ProductsPage() {
     isLoading: statusCountListLoading,
     isFetching: isFetchingstatusCountList,
     refetch: fetchStatusCountList,
-  } = useQuery(['statusCountList', values?.search], () => requests.getAllProductsStatusCount({ search: values?.search }))
+  } = useQuery(['statusCountList', values?.search, productsListFilter], () => requests.getAllProductsStatusCount(productsListFilter))
 
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
     onSuccess: () => {
@@ -271,67 +271,71 @@ export default function ProductsPage() {
                 </Button>
               </Box>
             </Box>
-            <Box>
-              <CheckAccess id={'can-change-barcode'}>
-                <Button
-                  sx={{
-                    height: '48px',
-                    width: '48px',
-                    padding: 0,
-                    bgcolor: '#fff',
-                    border: '1px solid #ECEDF2',
-                    color: 'dark.500',
-                    fontWeight: '500',
-                    fontSize: '16px',
-                    lineHeight: '24px',
-                    '& span': {
-                      mr: '12px',
-                    },
-                  }}
-                  fullWidth
-                  // startIcon={<BarcodeIcon color={theme.palette.black} />}
-                  variant='contained'
-                  color='secondary'
-                  onClick={() => setCanChangebarcode((prev) => !prev)}
-                >
-                  {canChangebarcode ? (
-                    <Typography fontSize='24px' fontWeight={'500'} mt={'6px'}>
-                      T
-                    </Typography>
-                  ) : (
-                    <BarcodeIcon />
-                  )}
-                </Button>
-              </CheckAccess>
-            </Box>
-            <Box display={'flex'} alignItems={'center'}>
-              <CheckAccess id={'products-all-table'}>
-                <Box>
-                  <ColumnsFilterButtonForAll
-                    title={t('ag_grid.table_setting.label')}
-                    columns={tableColumns}
-                    isCatalog={false}
-                    routeString={routeString}
-                    resetTableHeader={resetTableHeader}
-                    changeColumnSequence={changeColumnSequence}
-                  />
-                </Box>
-              </CheckAccess>
-              <CheckAccess id={'product-create'}>
-                <Box minWidth={156}>
+            <Tooltip placement='top' title='Включить изменение штрих-кода'>
+              <Box>
+                <CheckAccess id={'can-change-barcode'}>
                   <Button
-                    sx={{ height: '48px' }}
-                    onClick={() => navigate('/products/create')}
+                    sx={{
+                      height: '48px',
+                      width: '48px',
+                      padding: 0,
+                      bgcolor: '#fff',
+                      border: '1px solid #ECEDF2',
+                      color: 'dark.500',
+                      fontWeight: '500',
+                      fontSize: '16px',
+                      lineHeight: '24px',
+                      '& span': {
+                        mr: '12px',
+                      },
+                    }}
                     fullWidth
-                    startIcon={<PlusIcon color='#fff' />}
+                    // startIcon={<BarcodeIcon color={theme.palette.black} />}
                     variant='contained'
-                    color='primary'
+                    color='secondary'
+                    onClick={() => setCanChangebarcode((prev) => !prev)}
                   >
-                    {t('button.add_new.text')}
+                    {canChangebarcode ? (
+                      <Typography fontSize='24px' fontWeight={'500'} mt={'6px'}>
+                        T
+                      </Typography>
+                    ) : (
+                      <BarcodeIcon />
+                    )}
                   </Button>
-                </Box>
-              </CheckAccess>
-            </Box>
+                </CheckAccess>
+              </Box>
+            </Tooltip>
+            <Tooltip placement='top' title='Настройки таблица'>
+              <Box display={'flex'} alignItems={'center'}>
+                <CheckAccess id={'products-all-table'}>
+                  <Box>
+                    <ColumnsFilterButtonForAll
+                      title={t('ag_grid.table_setting.label')}
+                      columns={tableColumns}
+                      isCatalog={false}
+                      routeString={routeString}
+                      resetTableHeader={resetTableHeader}
+                      changeColumnSequence={changeColumnSequence}
+                    />
+                  </Box>
+                </CheckAccess>
+                <CheckAccess id={'product-create'}>
+                  <Box minWidth={156}>
+                    <Button
+                      sx={{ height: '48px' }}
+                      onClick={() => navigate('/products/create')}
+                      fullWidth
+                      startIcon={<PlusIcon color='#fff' />}
+                      variant='contained'
+                      color='primary'
+                    >
+                      {t('button.add_new.text')}
+                    </Button>
+                  </Box>
+                </CheckAccess>
+              </Box>
+            </Tooltip>
           </Box>
           <FilterMenu refetch={refetch} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
           <Box>

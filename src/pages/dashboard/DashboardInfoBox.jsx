@@ -10,7 +10,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
   const isFall = percent < 0
   return (
     <Box sx={(theme) => ({ border: 1, borderRadius: '16px', borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' })}>
-      <Box key={ind} sx={(theme) => ({ pr: '14px', pl: '16px', pt: '16px', pb: '10px', m: 0 })}>
+      <Box key={ind} sx={(theme) => ({ pr: '26px', pl: '16px', minHeight: '115px', pt: '16px', pb: '10px', m: 0 })}>
         <Box width='100%' alignItems={'center'} display='inline-flex'>
           {!noDot && (
             <Box
@@ -40,12 +40,12 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
         </Box>
 
         {!!percent && (
-          <Box mt={icon ? '30px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
+          <Box mt={icon ? '10px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
             <Box>
-              <Typography alignItems={'end'} display={'flex'} color='dark.500' fontSize={'32px'} lineHeight={'32px'} fontWeight='600' variant='h1'>
+              <Typography alignItems={'end'} display={'flex'} color='dark.500' fontSize={'30px'} lineHeight={'32px'} fontWeight='600' variant='h1'>
                 {id === 'expiring_soon_amount' ? (
                   <>
-                    {amount} сум{' '}
+                    {amount} сум
                     <Typography color='dark.500' fontSize={'20px'} lineHeight={'25px'} fontWeight='500' ml={'10px'}>
                       ({withoutDivider ? count : thousandDivider(count, '')}шт)
                     </Typography>
@@ -57,13 +57,13 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
                 )}
               </Typography>
             </Box>
-            {/* <Box
+            <Box
               display='inline-flex'
               sx={{
                 borderRadius: '5px',
                 display: 'flex',
                 alignItems: 'center',
-                padding: '5px',
+                padding: '4px 5px',
                 backgroundColor: !isFall ? '#30BE821A' : '#F45B691A',
               }}
               alignItems='center'
@@ -72,18 +72,18 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
               <Typography color={isFall ? '#F45B69' : '#30BE82'} fontWeight='500' mr={0.5} fontSize={14} lineHeight={'18px'}>
                 {percent}%
               </Typography>
-            </Box> */}
+            </Box>
           </Box>
         )}
       </Box>
 
-      {/* <Box key={ind} sx={(theme) => ({ pt: '10px', pb: '8px', px: '16px', m: 0, borderTop: 1, borderColor: '#A4A5AB33' })}>
+      <Box key={ind} sx={(theme) => ({ pt: '10px', pb: '8px', px: '16px', m: 0, height: 37, borderTop: 1, borderColor: '#A4A5AB33' })}>
         <Box>
           <Typography color='gray.500' fontSize={'16px'} lineHeight={'20px'} fontWeight='500' variant='h1'>
-            Update: September 17, 2023
+            530 за прошедший период
           </Typography>
         </Box>
-      </Box> */}
+      </Box>
     </Box>
   )
 }

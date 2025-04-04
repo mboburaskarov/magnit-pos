@@ -1,12 +1,9 @@
-import { Fragment, memo, useLayoutEffect, useRef, useState } from 'react'
-import { Typography, Box, Button, Container, IconButton } from '@mui/material'
-import { createBrowserHistory } from 'history'
-import { useSelector } from 'react-redux'
-import BackArrowIcon from '../src/assets/icons/BackArrow'
+import { Box, Button, Container, IconButton, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { createBrowserHistory } from 'history'
+import { Fragment, memo, useLayoutEffect, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import CheckAccess from './CheckAccess'
-import RightArrowSmallIcon from '../src/assets/icons/RightArrowSmallIcon'
 import LeftArrowIcon from '../src/assets/icons/LeftArrow'
 
 const useStyles = makeStyles((theme) => ({
@@ -144,7 +141,16 @@ function Header({
             <Box display='flex' width='100%' alignItems='center' justifyContent='space-between'>
               <Typography variant='h1' display='inline-flex' alignItems='center'>
                 {backIcon && (
-                  <IconButton color='primary' id={backButtonId} onClick={backButtonClickHandler} sx={{ mr: 2, p: '0', backgroundColor: '#fff' }}>
+                  <IconButton
+                    color='primary'
+                    id={backButtonId}
+                    onClick={backButtonClickHandler}
+                    sx={{
+                      mr: 2,
+                      p: '0',
+                      backgroundColor: '#fff',
+                    }}
+                  >
                     <Box
                       sx={{
                         width: '48px',
@@ -155,6 +161,9 @@ function Header({
                         justifyContent: 'center',
                         borderRadius: '50%',
                         backgroundColor: 'bunker.100',
+                        '&:hover': {
+                          backgroundColor: 'gray.10',
+                        },
                       }}
                     >
                       <LeftArrowIcon />

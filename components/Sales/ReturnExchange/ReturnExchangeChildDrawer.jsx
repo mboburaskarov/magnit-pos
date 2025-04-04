@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
@@ -9,9 +8,7 @@ import { useMutation, useQuery } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
-import DeleteIcon from '../../../src/assets/icons/DeleteIcon'
 import LeftArrowIcon from '../../../src/assets/icons/LeftArrow'
-import MarkRectangleIcon from '../../../src/assets/icons/MarkRectangleIcon'
 import { requests } from '../../../utils/requests'
 import thousandDivider from '../../../utils/thousandDivider'
 import { error, success } from '../../../utils/toast'
@@ -164,7 +161,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
             </Box>
           </Box>
           <Box maxHeight={'calc(100vh - 485px)'} sx={{ overflowY: 'auto' }} padding={'0px 40px'}>
-            <Box mb={'10px'} borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} mr={'8px'} display={'flex'} width={'100%'}>
+            <Box mb={'10px'} borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} mr={'8px'} display={'flex'} width={'auto'}>
               <Box
                 sx={{
                   display: 'flex',
@@ -208,7 +205,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
                 Клиент
               </Typography>
               <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                {get(darftChildList, 'data.data.customer_name')}
+                {get(darftChildList, 'data.data.customer_name') ?? '-'}
               </Typography>
             </Box>
           </Box>
