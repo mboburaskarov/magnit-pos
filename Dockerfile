@@ -12,14 +12,17 @@ COPY . .
 # Accept a build argument for the environment (default: production)
 ARG REACT_APP_ENV=production
 
-# Ensure React picks up the correct environment
+# Set ENV for later use
 ENV REACT_APP_ENV=${REACT_APP_ENV}
 
-# Print environment variables for debugging
-RUN echo "Building for environment: $REACT_APP_ENV"
+# Ensure the correct .env file is copied before building
+RUN cp .env.${REACT_APP_ENV} .env
 
-# Pass environment variable to React
-RUN REACT_APP_ENV=$REACT_APP_ENV yarn build
+# Debugging: Check which environment is being used
+RUN echo "Building with .env.${REACT_APP_ENV} settings"
+
+# Build the React app
+RUN yarn build
 
 # Production Image
 FROM node:20.11-alpine
