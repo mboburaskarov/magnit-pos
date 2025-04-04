@@ -21,6 +21,10 @@ export default function MainDetails({ clientData, openDrawer }) {
       setValue('cash_box_count', get(clientData, 'cash_box_count'))
       setValue('store_code', get(clientData, 'store_code'))
       setValue('address', get(clientData, 'address'))
+
+      setValue('work-time', get(clientData, 'work_hours'))
+      setValue('time-type', get(clientData, 'work_hours') == '24' ? '24' : 'range')
+      setDate(get(clientData, 'work_hours'))
     } else {
       reset()
     }
