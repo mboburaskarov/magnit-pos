@@ -195,7 +195,7 @@ export default function DashboarPage() {
             </CheckAccess>
           </Grid>
         </Grid>
-        <CheckAccess id={'dashboard-vendor'}>
+        <CheckAccess id={'dashboard-transactions-vendor'}>
           <Box mt={4} columnGap={3} display='inline-flex'>
             <Transactions id='dashboard-chart' data={get(topStores, 'data.data')} title={'Платежи'} subTitle={'64 116 872 UZS'} />
             <Transactions id='dashboard-chart' data={get(topStores, 'data.data')} title={'Транзакции'} subTitle={'64 шт'} />
