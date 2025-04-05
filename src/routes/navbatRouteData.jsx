@@ -1,14 +1,8 @@
-import CourierIcon from '../assets/icons/CourierIcon'
-import FinanceIcon from '../assets/icons/FInanceIcon'
-import MarketingIcon from '../assets/icons/MarketingIcon'
 import MenuOutline from '../assets/icons/MenuOutline'
-import OrdersIcon from '../assets/icons/OrdersIcon'
 import ProductsIcon from '../assets/icons/ProductsIcon'
-import ReportsIcon from '../assets/icons/ReportsIcon'
-import SettingsIcon from '../assets/icons/SettingsIcon'
-import UserOutlineIcon from '../assets/icons/UserOutlineIcon'
-import UsersIcon from '../assets/icons/UsersIcon'
 import QrScanIcon from '../assets/icons/QrScanIcon'
+import SettingsIcon from '../assets/icons/SettingsIcon'
+import UsersIcon from '../assets/icons/UsersIcon'
 
 export const navbatRouteData = [
   {
@@ -41,6 +35,12 @@ export const navbatRouteData = [
         active: '/products/auto-order/*',
         id: '32',
         href: '/products/auto-order',
+      },
+      {
+        label: 'Инвентаризация',
+        active: '/products/inventory/*',
+        id: '32',
+        href: '/products/inventory',
       },
       {
         label: 'Категории',

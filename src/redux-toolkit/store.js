@@ -13,6 +13,8 @@ import { clientTableColumnsSlice } from './tableSlices/clientTableColumns'
 import { importDetailsTableColumnsSlice } from './tableSlices/importDetailTableColumns'
 import { importWithCheckingTableColumnsSlice } from './tableSlices/importWithCheckingTableColumns'
 import { importsTableColumnsSlice } from './tableSlices/importsTableColumns'
+import { inventoryTableColumnsSlice } from './tableSlices/inventoryTableColumns'
+import { inventoryWithCheckingTableColumnsSlice } from './tableSlices/inventoryWithCheckingTableColumns'
 import { orderTableColumnsSlice } from './tableSlices/orderTableColumns'
 import { productPriceListTableColumnsForProductSlice } from './tableSlices/productPriceListTableColumnsForProduct'
 import { productsTableColumnsSlice } from './tableSlices/productsTableColumns'
@@ -57,11 +59,13 @@ const reducer = combineReducers({
   productsTableColumns: productsTableColumnsSlice,
   cardShiftTableColumns: cardShiftTableColumnsSlice,
   importsTableColumns: importsTableColumnsSlice,
+  inventoryTableColumns: inventoryTableColumnsSlice,
   autoOrderTableColumns: autoOrderTableColumnsSlice,
   bonusProductTableColumns: bonusProductTableColumnsSlice,
   autoOrderTableDetailColumns: autoOrderDetailSlice,
   importDetailsColumns: importDetailsTableColumnsSlice,
   importWithCheckingColumns: importWithCheckingTableColumnsSlice,
+  inventoryWithCheckingColumns: inventoryWithCheckingTableColumnsSlice,
   salesTableColumns: salesTableColumnsSlice,
   cashBoxShiftsTableColumns: cashBoxShiftsTableColumnsSlice,
   cashBoxShiftHistoryTableColumns: cashBoxShiftHistoryTableColumnsSlice,
