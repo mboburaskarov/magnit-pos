@@ -5,7 +5,7 @@ import { error } from '../toast'
 const debouncedShowNotification = debounce(() => error('Нет соединения'), 2000)
 
 export const authRequest = axios.create({
-  baseURL: import.meta.env.VITE_BASE_API_URL,
+  baseURL: import.meta.env.MODE == 'dev' ? import.meta.env.VITE_BASE_API_URL_DEV : import.meta.env.VITE_BASE_API_URL,
   headers: {
     Accept: 'application/json',
     'Access-Control-Allow-Origin': '*',
@@ -14,7 +14,7 @@ export const authRequest = axios.create({
 })
 
 export const request = axios.create({
-  baseURL: import.meta.env.VITE_BASE_API_URL,
+  baseURL: import.meta.env.MODE == 'dev' ? import.meta.env.VITE_BASE_API_URL_DEV : import.meta.env.VITE_BASE_API_URL,
   headers: {
     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     Accept: 'application/json',
@@ -30,7 +30,7 @@ export const request = axios.create({
 })
 
 export const requestEXCEL = axios.create({
-  baseURL: import.meta.env.VITE_BASE_API_URL,
+  baseURL: import.meta.env.MODE == 'dev' ? import.meta.env.VITE_BASE_API_URL_DEV : import.meta.env.VITE_BASE_API_URL,
   headers: {
     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     Accept: 'application/json',
@@ -46,7 +46,7 @@ export const requestEXCEL = axios.create({
 })
 
 export const eposRequest = axios.create({
-  baseURL: import.meta.env.VITE_EPOS_BASE_API_URL,
+  baseURL: import.meta.env.MODE == 'dev' ? import.meta.env.VITE_EPOS_BASE_API_URL_DEV : import.meta.env.VITE_EPOS_BASE_API_URL,
   headers: {
     Accept: 'application/json',
     'Access-Control-Allow-Origin': '*',
@@ -60,7 +60,7 @@ export const eposRequest = axios.create({
 })
 
 export const fileUploadRequest = axios.create({
-  baseURL: import.meta.env.VITE_FILE_API_URL,
+  baseURL: import.meta.env.MODE == 'dev' ? import.meta.env.VITE_FILE_API_URL_DEV : import.meta.env.VITE_FILE_API_URL,
   headers: {
     Authorization: localStorage.getItem('access_token'),
     'Content-Type': 'multipart/form-data',
