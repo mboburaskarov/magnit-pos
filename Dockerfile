@@ -2,21 +2,12 @@ FROM node:20.11-alpine AS build
 
 WORKDIR /app
 
-# Copy package.json and install dependencies
 COPY package*.json ./
-RUN yarn install
+RUN yarn install 
 
-# Copy all files
 COPY . .
-
-# ENV_FILE argumentini qabul qilish
-ARG ENV_FILE
-RUN cp $ENV_FILE .env
-
-# Build React app
 RUN yarn build
 
-# Production Image
 FROM node:20.11-alpine
 
 WORKDIR /app
