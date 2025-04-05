@@ -125,7 +125,7 @@ export default function DashboarPage() {
       limit: values?.limit || 5,
       search: values?.search,
       start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
-      store_id: selectedStore.length <= 63 ? [...selectedStore] : null || null,
+      store_ids: selectedStore.length <= 63 ? [...selectedStore] : null || null,
       type: dataTypeFilter(detalization),
       end_date: values?.start_date == values?.end_date ? null : values?.end_date,
       offset: values?.search ? 0 : values?.offset || 0,

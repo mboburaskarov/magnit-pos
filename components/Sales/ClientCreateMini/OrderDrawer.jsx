@@ -1,31 +1,28 @@
+import { LoadingButton } from '@mui/lab'
 import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { get, size } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
-import { RippedPaperItem } from '../../RippedPaperList'
-import PaymentMethodInput from './PaymentMethodInput'
-import { LoadingButton } from '@mui/lab'
-import { get, size } from 'lodash'
-import { FormProvider, useForm } from 'react-hook-form'
 import { useReactToPrint } from 'react-to-print'
 import { paymeGoId } from '../../../constants/paymeGoId'
-import AddPaumentTypeIcon from '../../../src/assets/icons/AddPaymentTypeIcon'
 import RemovePaymentIcon from '../../../src/assets/icons/CloseIcon'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import StyledDialog from '../../Dialogs/StyledeEmptyDialog'
+import { RippedPaperItem } from '../../RippedPaperList'
+import PaymentMethodInput from './PaymentMethodInput'
 
+import { useHotkeys } from 'react-hotkeys-hook'
+import { useSelector } from 'react-redux'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import QrScanIcon from '../../../src/assets/icons/QrScanIcon'
-import { useHotkeys } from 'react-hotkeys-hook'
 import thousandDivider from '../../../utils/thousandDivider'
-import { useSelector } from 'react-redux'
-import { eposRequest } from '../../../utils/axios'
-import LoadingContainer from '../../LoadingContainer'
-import LoadingBlock from '../../LoadingBlock'
 import TextField from '../../Inputs/TextField'
+import LoadingBlock from '../../LoadingBlock'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -518,6 +515,11 @@ export default function OrderDrawer({
         app_type: get(type, 'name').toLowerCase(),
       }))
 
+    const markingData = get(cartItemsList, 'data', []).map((el) => ({
+      id: el.id,
+      marking_count: Object.values(markingsList[el.id] || {}).filter((a) => a.length)?.length,
+    }))
+
     finishSaleWithoutAppPaymentType({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
       payment_types: paymentTypes,
@@ -526,6 +528,7 @@ export default function OrderDrawer({
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
       return_amount: Math.abs(maxAmount),
+      marking_data: markingData,
     })
 
     return
