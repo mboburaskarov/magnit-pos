@@ -104,7 +104,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     maxHeight: '90px',
     backgroundColor: '#fff',
-    padding: '12px 30px 12px 16px',
+    padding: '12px 12px 12px 16px',
     borderRadius: 16,
   },
   searchItem: {

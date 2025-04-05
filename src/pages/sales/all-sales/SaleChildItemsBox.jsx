@@ -92,7 +92,7 @@ function SaleChildItemsBox({ item }) {
           <Typography display={'flex'} alignItems={'center'} color={'bunker.400'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'}>
             Количество маркировок:
             <Typography whiteSpace={'pre'} ml={'5px'} mt={'2px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'20px'} color={'orange.500'}>
-              {thousandDivider(get(item, 'bonus_amount'))} so'm
+              {thousandDivider(get(item, 'bonus_amount'))} шт
             </Typography>
           </Typography>
           <Typography display={'flex'} alignItems={'center'} color={'bunker.400'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'}>

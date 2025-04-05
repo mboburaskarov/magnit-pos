@@ -9,6 +9,7 @@ import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import PrizeBoxIcon from '../../../assets/icons/PrizeBoxIcon'
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -442,6 +443,24 @@ const CartItem = ({
                 </Box>
               </Box>
             </Box>
+            {item?.bonus_amount > 0 && (
+              <Box
+                sx={{
+                  borderRadius: '24px',
+                  padding: '0 9px',
+                  height: '22px',
+                  display: 'flex',
+                  mr: '10px',
+                  alignItems: 'center',
+                  backgroundColor: 'orange.500',
+                }}
+              >
+                <PrizeBoxIcon />
+                <Typography ml='4px' color={'white'} fontSize={'10px'} fontWeight={'600'}>
+                  {item.bonus_amount}сум
+                </Typography>
+              </Box>
+            )}
             <Box display={'flex'} alignItems={'center'}>
               {/* {item?.discount_value > 0 && (
                 <Typography
@@ -516,7 +535,7 @@ const CartItem = ({
               </Box>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              {item?.bonus_amount > 0 && (
+              {/* {item?.bonus_amount > 0 && (
                 <Box
                   sx={{
                     position: 'absolute',
@@ -534,13 +553,13 @@ const CartItem = ({
                 >
                   Bonus
                 </Box>
-              )}
+              )} */}
               <Box
                 sx={{
-                  width: 48,
+                  width: 40,
                   ml: '8px',
                   borderRadius: '50%',
-                  height: 48,
+                  height: 40,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -552,7 +571,7 @@ const CartItem = ({
                 }}
                 onClick={() => setOpenConfirmDialog({ type: 'deleteOne', id: item?.id, name: item?.name })}
               >
-                <DeleteIcon width='24px' />
+                <DeleteIcon width='20px' />
               </Box>
             </Box>
           </Box>
