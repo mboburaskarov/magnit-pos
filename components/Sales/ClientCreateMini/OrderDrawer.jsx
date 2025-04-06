@@ -238,28 +238,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const intitalDebtInfo = {
-  id: '',
-  active: false,
-  amount: '',
-  date: '',
-  comment: '',
-}
-
 const MAX_F_BUTTONS_QUANTITY = 10
 
 export default function OrderDrawer({
   setIsOrderDrower,
   isOrderDrower,
-  closeDrawer,
   markingsList,
-  setInputDiscount,
   printContainer,
   cartItemsList,
   customerId,
   cashBoxDetails,
-  refetchcartItemsList,
-  noCheck,
   setMarkingList,
   setMarkingCount,
   half,
@@ -267,7 +255,6 @@ export default function OrderDrawer({
   setOpenDebt,
 }) {
   const methods = useForm()
-  let timeout
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
 
   const classes = useStyles()
@@ -303,15 +290,13 @@ export default function OrderDrawer({
     }
   }, [paymentsList, cartItemsList])
 
-  const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
-    onSuccess: ({ data }) => {
-      navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
-    },
+  const { mutate: sendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
+    onSuccess: ({ data }) => {},
     onError: (err) => {
       error('Ошибка при епосе')
     },
   })
-  const { mutate: saleCreate, isLoading: issaleCreate } = useMutation(requests.saleCreate, {
+  const { mutate: saleCreate } = useMutation(requests.saleCreate, {
     onSuccess: ({ data }) => {
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
       window.location.reload()
@@ -322,14 +307,13 @@ export default function OrderDrawer({
     },
   })
 
-  const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
-  const {
-    mutate: finishSaleWithoutAppPaymentType,
-    isSuccess: saleFinishSuccess,
-    isLoading: isfinishSaleWithoutAppPaymentType,
-  } = useMutation(requests.addToOrderPayment, {
+  const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
+  const { mutate: finishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
       if (false) {
+        // disabling epos
+        console.log('falsee')
+
         navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
         setIsOrderDrower(false)
         handlePrint()
@@ -337,10 +321,7 @@ export default function OrderDrawer({
         setMarkingList({})
         setMarkingCount({})
       } else {
-        // refetchcartItemsList()
-        ///
         //send to epos
-
         const mockData = get(cartItemsList, 'data', []).map((el) => {
           return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
             barcode: el.barcode,
@@ -384,14 +365,9 @@ export default function OrderDrawer({
               return rest
             })(),
           }),
-          // ...(SALE_TYPE === 'RETURN' && { refundInfo: {} }),
         })
 
-        setInputDiscount(NaN)
-        // navigate(`/sales/new-sale/${get(data, 'data', '/')}`)
-        // setIsOrderDrower(false)
-        // handlePrint()
-        // success('Продажа завершена!')
+        // setInputDiscount(NaN)
         setPaymentsList([])
 
         // success('Продажа завершена!')
@@ -418,13 +394,12 @@ export default function OrderDrawer({
         error(`EPOS: ${get(data, 'message')}`)
         return
       } else {
-        sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
-
         setQrcodeUrl(get(data, 'info.qrCodeURL', 'pending'))
       }
-      setIsOrderDrower(false)
       handlePrint()
       success('Продажа завершена!')
+      setIsOrderDrower(false)
+      sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
     },
     onError: (err) => {
       sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
@@ -501,6 +476,9 @@ export default function OrderDrawer({
     content: reactToPrintContent,
     documentTitle: documentName.current,
     removeAfterPrint: true,
+    onAfterPrint: () => {
+      navigate(`/sales/create`)
+    },
   })
 
   const onSubmit = async (data) => {
@@ -579,38 +557,6 @@ export default function OrderDrawer({
     }
   }
 
-  // const handleKeyPress = (event) => {
-  //   const scannedBarcode = scannedKeys.join('')
-  //   console.log(event)
-
-  //   if (scannedBarcode.length >= 18) {
-  //     // if (event.key === 'Enter') {
-  //     onSubmit(scannedBarcode.replace('Enter', ''))
-  //     setScannedKeys([])
-  //     return
-  //   }
-  //   setScannedKeys((prev) => [...prev, event.key])
-
-  //   if (timeoutRef) clearTimeout(timeoutRef)
-  //   timeoutRef = setTimeout(() => {
-  //     // setScannedKeys([])
-  //   }, 300)
-  // }
-
-  // useHotkeys(
-  //   '*',
-  //   (event) => {
-  //     // handleKeyPress(event)
-  //   },
-  //   {
-  //     enabled: isOpenScanDialog,
-  //   }
-  // )
-  // useHotkeys('*', (event) => {
-  //   if (event?.key == 'Backspace') {
-  //     removeLastPaymentType()
-  //   }
-  // })
   useHotkeys(
     Object.values(paymentHotKeys),
     (event) => {
@@ -734,7 +680,6 @@ export default function OrderDrawer({
                               {getPaymentTypeHotKeyLabel(get(item, 'name'))}
                             </Box>
                           </Typography>
-                          {/* <AddPaumentTypeIcon color={isVisiblePaymentType(item) ? '#2558FF' : '#AFD5FF'} /> */}
                         </Box>
                       </Grid>
                     ))}

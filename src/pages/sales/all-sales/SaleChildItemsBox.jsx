@@ -41,11 +41,36 @@ function SaleChildItemsBox({ item }) {
                 >
                   {get(item, 'name')}
                 </Typography>
-                <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
-                  {get(item, 'quantity')}
-                  {get(item, 'short_name')}
-                  {get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''}
-                </Typography>
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    // flexDirection: 'column',
+                    alignItems: 'end',
+                  }}
+                >
+                  <Typography fontSize={'16px'} mr='5px' fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
+                    {get(item, 'quantity')}
+                    {get(item, 'short_name')}
+                    {get(item, 'unit_quantity') > 0 ? `,${get(item, 'unit_quantity')}шт` : ''}
+                  </Typography>
+                  {get(item, 'total_discount') > 0 && (
+                    <Typography
+                      whiteSpace={'pre'}
+                      sx={{ textDecoration: 'line-through' }}
+                      mt={'4px'}
+                      fontSize={'14px'}
+                      fontWeight={'600'}
+                      lineHeight={'24px'}
+                      color={'bunker.500'}
+                    >
+                      {thousandDivider(get(item, 'total_price'), 'сум')}
+                    </Typography>
+                  )}
+                  <Typography whiteSpace={'pre'} fontSize={'16px'} fontWeight={'600'} lineHeight={'20px'} color={'orange.500'}>
+                    x {get(item, 'total_discount') > 0 ? thousandDivider(get(item, 'total_discount'), 'сум') : thousandDivider(get(item, 'total_price'), 'сум')}
+                  </Typography>
+                </Box>
               </Box>
               <Box display={'flex'} justifyContent={'space-between'}>
                 <Typography mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
@@ -71,7 +96,7 @@ function SaleChildItemsBox({ item }) {
                       {thousandDivider(get(item, 'total_price'), 'сум')}
                     </Typography>
                   )}
-                  <Typography whiteSpace={'pre'} fontSize={'16px'} fontWeight={'600'} lineHeight={'20px'} color={'orange.500'}>
+                  <Typography whiteSpace={'pre'} fontSize={'18px'} fontWeight={'600'} lineHeight={'20px'} color={'orange.500'}>
                     {get(item, 'total_discount') > 0 ? thousandDivider(get(item, 'total_discount'), 'сум') : thousandDivider(get(item, 'total_price'), 'сум')}
                   </Typography>
                 </Box>
@@ -98,7 +123,7 @@ function SaleChildItemsBox({ item }) {
           <Typography display={'flex'} alignItems={'center'} color={'bunker.400'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'}>
             Бонус:
             <Typography whiteSpace={'pre'} ml={'5px'} mt={'2px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'20px'} color={'orange.500'}>
-              {thousandDivider(get(item, 'bonus_amount'))} so'm
+              {thousandDivider(get(item, 'bonus_amount'))} сум
             </Typography>
           </Typography>
         </Box>
