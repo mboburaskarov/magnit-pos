@@ -17,7 +17,9 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 
+import CheckAccess from '../../../../components/CheckAccess'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import CreateInventory from './createInventory'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function InventoryPage() {
@@ -28,6 +30,7 @@ export default function InventoryPage() {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
+  const [orderModel, setOrderModel] = useState(false)
 
   const [filterMenu, setFilterMenu] = useState(false)
   const tableColumns = tableHeaderSelector({
@@ -165,9 +168,26 @@ export default function InventoryPage() {
                 changeColumnSequence={changeColumnSequence}
               />
             </Box>
+            <CheckAccess id={'create-auto-order'}>
+              <Box minWidth={156}>
+                <Button
+                  sx={{ height: '48px' }}
+                  type='submit'
+                  onClick={() => setOrderModel(true)}
+                  fullWidth
+                  // startIcon={<PlusIcon color='#fff' />}
+                  variant='contained'
+                  color='primary'
+                >
+                  Новая инвентаризация
+                </Button>
+              </Box>
+            </CheckAccess>
           </Box>
         </Box>
         <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
+        <CreateInventory refetch={refetch} open={orderModel} setOpen={setOrderModel} />
+
         <Box>
           <AgGridTable
             id='imports-main-table'

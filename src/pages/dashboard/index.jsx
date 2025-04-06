@@ -14,6 +14,7 @@ import TopSellers from '../../../components/Charts/TopSellers'
 import Transactions from '../../../components/Charts/transactions'
 import CheckAccess from '../../../components/CheckAccess'
 import LoadingContainer from '../../../components/LoadingContainer'
+import { calculatePercentage } from '../../../utils/calculatePercentage'
 import dataTypeFilter from '../../../utils/dataTypeFilter'
 import { getDetaling } from '../../../utils/getDetaling'
 import { requests } from '../../../utils/requests'
@@ -58,15 +59,24 @@ export default function DashboarPage() {
     stock_total_amount,
     bonus_amount,
     expiring_soon_count,
+    before_sale_amount,
+    before_product_count,
+    before_sale_count,
+    before_expiring_soon_amount,
+    before_total_net_income,
+    before_stock_amount,
+    before_bonus_amount,
+    before_expiring_soon_count,
   }) => {
     return [
       {
         title: t('Общая сумма продаж'),
         icon: <RevenueIcon />,
         count: total_sale_amount,
-        percent: 10,
+        percent: calculatePercentage(before_sale_amount || 1, total_sale_amount),
         id: 'total_sale_amount',
         endText: 'сум',
+        old: before_sale_amount,
       },
       {
         title: t('Общая сумма баланса'),
@@ -75,30 +85,34 @@ export default function DashboarPage() {
         count: stock_total_amount,
         endText: 'сум',
         id: 'stock_total_amount',
-        percent: -5,
+        percent: calculatePercentage(before_stock_amount || 1, stock_total_amount),
+        old: before_sale_amount,
       },
       {
         title: t('Чистая прибыль'),
         icon: <VendorsIcon />,
         count: total_net_income,
         endText: 'сум',
-        percent: 20,
+        percent: calculatePercentage(before_total_net_income || 1, total_net_income),
         id: 'total_net_income',
+        old: before_total_net_income,
       },
       {
         title: t('Общее количество продаж'),
         icon: <OrdersIcon />,
         count: total_sale_count,
         id: 'total_sale_count',
-        percent: 8,
+        percent: calculatePercentage(before_sale_count || 1, total_sale_count),
+        old: before_sale_count,
       },
       {
         title: t('Общее количество остатков'),
         icon: <ProductsIcon />,
         count: total_product_count,
         endText: '',
-        percent: 20,
+        percent: calculatePercentage(before_product_count || 1, total_product_count),
         id: 'total_product_count',
+        old: before_product_count,
       },
       {
         title: t('Просроченные продукты'),
@@ -106,7 +120,8 @@ export default function DashboarPage() {
         count: expiring_soon_count,
         amount: expiring_soon_amount,
         id: 'expiring_soon_amount',
-        percent: 20,
+        percent: calculatePercentage(before_expiring_soon_count || 1, expiring_soon_count),
+        old: before_expiring_soon_count,
       },
 
       {
@@ -114,8 +129,9 @@ export default function DashboarPage() {
         icon: <VendorsIcon />,
         count: bonus_amount,
         id: 'bonus_amount',
-        percent: 20,
+        percent: calculatePercentage(before_bonus_amount || 1, bonus_amount),
         endText: 'сум',
+        old: before_bonus_amount,
       },
     ]
   }

@@ -31,12 +31,12 @@ function SaleDrawer({ open, setOpen, ids }) {
 
   return (
     <Drawer
-      ModalProps={{
-        hideBackdrop: true, // Optional: Removes the overlay
-        keepMounted: true, // Keeps drawer in the DOM for better performance
-        'aria-hidden': false, // ✅ Prevents MUI from blocking other elements
-        disableScrollLock: true, // Prevents MUI from adding `overflow: hidden` to `body`
-      }}
+      // ModalProps={{
+      //   hideBackdrop: true, // Optional: Removes the overlay
+      //   keepMounted: true, // Keeps drawer in the DOM for better performance
+      //   'aria-hidden': false, // ✅ Prevents MUI from blocking other elements
+      //   disableScrollLock: true, // Prevents MUI from adding `overflow: hidden` to `body`
+      // }}
       sx={{ height: '100vh !important' }}
       open={open}
       onClose={() => setOpen(false)}

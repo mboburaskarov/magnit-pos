@@ -5,6 +5,8 @@ import BonusProductPage from '../../pages/products/bonusProduct/index'
 import CatalogManagement from '../../pages/products/categories'
 import ImportPage from '../../pages/products/import'
 import InventoryPage from '../../pages/products/inventory'
+import TransferPage from '../../pages/products/transfer'
+import WriteOffPage from '../../pages/products/writeOff'
 const productsRoutes = {
   path: 'products',
   element: <LayoutWithHeaderNavbar />,
@@ -29,6 +31,14 @@ const productsRoutes = {
     {
       path: 'inventory',
       element: <InventoryPage />,
+    },
+    {
+      path: 'transfer',
+      element: <TransferPage />,
+    },
+    {
+      path: 'write-off',
+      element: <WriteOffPage />,
     },
     {
       path: 'bonus-product',

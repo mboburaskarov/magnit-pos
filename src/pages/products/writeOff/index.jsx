@@ -1,7 +1,5 @@
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -9,46 +7,43 @@ import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ImageGallery from '../../../../components/ImageGallery'
-import DateRangeInput from '../../../../components/Inputs/DateRangeInput.jsx/DateRangeInput'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/salesTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryTableColumns'
 import FilterMenu from './FilterMenu'
-import SaleDrawer from './saleDrawer'
-import SaleMiniDashboardHeader from './saleMiniDashboardHeader'
 import tableHeaderSelector from './tableHeaderSelector'
+
+import CheckAccess from '../../../../components/CheckAccess'
+import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import CreateWriteOff from './createWriterOff'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function AllSalesPage() {
+export default function WriteOffPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { columns, loading } = useSelector((state) => state.salesTableColumns)
+  const { columns, loading } = useSelector((state) => state.inventoryTableColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
+  const [orderModel, setOrderModel] = useState(false)
   const [openImageGallery, setOpenImageGallery] = useState(false)
+
   const [filterMenu, setFilterMenu] = useState(false)
-  const [hasFilter, setHasFilter] = useState(Object.keys(values).length > 2)
-  const [openSaleDrawer, setOpenSaleDrawer] = useState(false)
   const tableColumns = tableHeaderSelector({
-    productsColumns: columns,
+    importsColumns: columns,
     t,
     values,
     setImages: setOpenImageGallery,
-    setOpenSaleDrawer,
   })
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
+        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
         ?.map((el) => ({
           ...el,
           label: el.headerName,
@@ -61,69 +56,51 @@ export default function AllSalesPage() {
     }
   }, [])
 
-  const salesListFilter = useMemo(() => {
-    setHasFilter(Object.keys(values).length > 2)
+  const importsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
-      store_id: values?.store_id,
-      category_id: values?.category_id,
-      producer: values?.producer,
-      payment_type_id: values?.payment_type_id,
-      vendor_id: values?.vendor_id,
-      employee_id: values?.employee_id,
-      cashbox_id: values?.cashbox_id,
 
-      total_amount_to: values?.total_amount_to,
-      total_amount_from: values?.total_amount_from,
-      start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
-      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
+      store_id: values?.store_id,
+      start_date: values?.start_date,
+      end_date: values?.end_date,
+      status: values?.status,
+      import_date: values?.import_date,
+      received_amount_to: values?.received_amount_to,
+      received_amount_from: values?.received_amount_from,
     }
   }, [
     values?.offset,
     values?.limit,
-    values?.search,
-    values?.payment_type_id,
-    values?.producer,
-    values?.employee_id,
-    values?.cashbox_id,
-
-    values?.category_id,
-    values?.vendor_id,
-    values?.store_id,
-    values?.total_amount_to,
-    values?.total_amount_from,
-    values?.start_date,
     values?.end_date,
+    values?.start_date,
+    values?.search,
+    values?.status,
+    values?.store_id,
+    values?.received_amount_to,
+    values?.received_amount_from,
   ])
   const {
-    data: salesList,
-    isLoading: salesListLoading,
-    isFetching: isFetchingsalesList,
+    data: importsList,
+    isLoading: importsListLoading,
+    isFetching: isFetchingimportsList,
     refetch,
-  } = useQuery(['salesList', salesListFilter], () => requests.getAllSales(salesListFilter))
-  const {
-    data: saleStatsData,
-    isLoading: saleStatsDataLoading,
-    isFetching: isFetchingsaleStatsData,
-    refetch: refetchSaleStats,
-  } = useQuery(['saleStatsData', salesListFilter], () => requests.getAllSaleStats(salesListFilter))
+  } = useQuery(['importsList', importsListFilter], () => requests.getAllImports(importsListFilter))
 
   useEffect(() => {
     refetch()
-  }, [salesListFilter])
+  }, [importsListFilter])
 
   useEffect(() => {
-    const count = salesList?.data?.data?._meta?.total_count
+    const count = importsList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [salesList?.data, values?.limit])
-  const { mutate: allSalesExcelReport, isLoading: isallSalesExcelReport } = useMutation(requests.getAllSalesExcelReport, {
+  }, [importsList?.data, values?.limit])
+  const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Продажи')
+      downloadExcel(data, 'Импорт')
     },
     onError: (err) => {
       console.log(err)
@@ -135,12 +112,13 @@ export default function AllSalesPage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {t('sales')}
+          {'Списание'}
         </Typography>
-        <SaleMiniDashboardHeader saleStatsData={get(saleStatsData, 'data.data')} />
+
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-          <Box width='100%' display={'flex'}>
+          <Box display={'flex'}>
             <Box
+              width='100%'
               sx={{
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
@@ -150,7 +128,7 @@ export default function AllSalesPage() {
                 },
               }}
             >
-              <InputSearch fullWidth id='producrs-search' name='search' placeholder={'ID, Филиал'} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'Импортный номер, наименование'} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>
@@ -169,18 +147,16 @@ export default function AllSalesPage() {
                   },
                 }}
                 fullWidth
-                startIcon={<FilterMenuIcon color={!hasFilter ? theme.palette.black : theme.palette.orange[500]} />}
+                startIcon={<FilterMenuIcon color={theme.palette.black} />}
                 variant='contained'
                 color='secondary'
                 onClick={() => setFilterMenu((prev) => !prev)}
               >
-                <Typography color={!hasFilter ? theme.palette.black : theme.palette.orange[500]} fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
+                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
                   {t('filter_dialog.label')}
                 </Typography>
               </Button>
             </Box>
-            <Box width={'20px'} />
-            <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box>
@@ -192,35 +168,52 @@ export default function AllSalesPage() {
                 changeColumnSequence={changeColumnSequence}
               />
             </Box>
+            <CheckAccess id={'create-auto-order'}>
+              <Box minWidth={156}>
+                <Button
+                  sx={{ height: '48px' }}
+                  type='submit'
+                  onClick={() => setOrderModel(true)}
+                  fullWidth
+                  // startIcon={<PlusIcon color='#fff' />}
+                  variant='contained'
+                  color='primary'
+                >
+                  Новое списание
+                </Button>
+              </Box>
+            </CheckAccess>
           </Box>
         </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
+        <CreateWriteOff refetch={refetch} open={orderModel} setOpen={setOrderModel} />
+
         <Box>
           <AgGridTable
-            id='products-main-table'
-            downloadByFilter={() => allSalesExcelReport(salesListFilter)}
-            fullDownload={() => allSalesExcelReport({ ...salesListFilter, limit: 1000000 })}
-            isDownloading={isallSalesExcelReport}
+            id='imports-main-table'
+            fullDownload={() => importsExcelReport({ ...importsListFilter, limit: 1000000 })}
+            downloadByFilter={() => importsExcelReport(importsListFilter)}
+            isDownloading={isimportsExcelReport}
             tableSettings
             columns={tableColumns}
-            data={salesList?.data?.data?.data || []}
-            totalCount={salesList?.data?.data?._meta?.total_count || 0}
-            isDataLoading={isFetchingsalesList || salesListLoading}
+            defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
+            data={importsList?.data?.data?.data || []}
+            totalCount={importsList?.data?.data?._meta?.total_count || 0}
+            isDataLoading={isFetchingimportsList || importsListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}
-            fullInfoAboutCurrentPage
             emptyTableText={{
-              title: 'Продажи недоступен',
-              description: 'Если вы не можете найти искомый Продажи, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+              title: 'Импорт недоступен',
+              description: 'Если вы не можете найти искомый Импорт',
             }}
+            fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingsalesList || salesListLoading}
+            isRefreshing={loading || isFetchingimportsList || importsListLoading}
           />
         </Box>
       </Box>
-      <SaleDrawer ids={(salesList?.data?.data?.data || []).map(({ id }) => id)} open={openSaleDrawer} setOpen={setOpenSaleDrawer} />
 
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
     </LoadingContainer>

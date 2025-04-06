@@ -43,6 +43,18 @@ export const navbatRouteData = [
         href: '/products/inventory',
       },
       {
+        label: 'Трансфер',
+        active: '/products/transfer/*',
+        id: '32',
+        href: '/products/transfer',
+      },
+      {
+        label: 'Списание',
+        active: '/products/write-off/*',
+        id: '32',
+        href: '/products/write-off',
+      },
+      {
         label: 'Категории',
         active: '/products/categories/*',
         id: '327',
