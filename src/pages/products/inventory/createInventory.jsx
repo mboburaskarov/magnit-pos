@@ -49,7 +49,7 @@ export default function CreateInventory({ open, refetch, setOpen }) {
       overflowVisible
       onClose={() => setOpen(false)}
       open={open}
-      title={'Новая инвентаризация'}
+      title={'Новое списание'}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
     >
       <Box

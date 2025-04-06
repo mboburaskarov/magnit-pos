@@ -24,7 +24,7 @@ function SaleChildItemsBox({ item }) {
           <Box display={'flex'} width={'100%'} alignItems={'center'}>
             {size(get(item, 'photos[0]', [])) <= 0 ? <DefaultImgIcon /> : <img className={classes.productImg} src={get(item, 'photos[0]')} />}
             <Box display={'flex'} ml={'10px'} flexDirection={'column'} width={'100%'}>
-              <Box display={'flex'} justifyContent={'space-between'}>
+              <Box display={'flex'} mb='5px' justifyContent={'space-between'}>
                 <Typography
                   sx={{
                     display: '-webkit-box',
@@ -42,34 +42,79 @@ function SaleChildItemsBox({ item }) {
                   {get(item, 'name')}
                 </Typography>
 
-                <Box
-                  sx={{
-                    display: 'flex',
-                    // flexDirection: 'column',
-                    alignItems: 'end',
-                  }}
-                >
-                  <Typography fontSize={'16px'} mr='5px' fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
-                    {get(item, 'quantity')}
-                    {get(item, 'short_name')}
-                    {get(item, 'unit_quantity') > 0 ? `,${get(item, 'unit_quantity')}шт` : ''}
-                  </Typography>
-                  {get(item, 'total_discount') > 0 && (
-                    <Typography
-                      whiteSpace={'pre'}
-                      sx={{ textDecoration: 'line-through' }}
-                      mt={'4px'}
-                      fontSize={'14px'}
-                      fontWeight={'600'}
-                      lineHeight={'24px'}
-                      color={'bunker.500'}
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                  {get(item, 'quantity') > 0 && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        // flexDirection: 'column',
+                        alignItems: 'end',
+                      }}
                     >
-                      {thousandDivider(get(item, 'total_price'), 'сум')}
-                    </Typography>
+                      <Typography fontSize={'16px'} mr='5px' fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
+                        <>
+                          {get(item, 'quantity')}
+                          {get(item, 'short_name')}
+                        </>
+                      </Typography>
+                      {get(item, 'total_discount') > 0 && (
+                        <Typography
+                          whiteSpace={'pre'}
+                          sx={{ textDecoration: 'line-through' }}
+                          mt={'4px'}
+                          fontSize={'14px'}
+                          fontWeight={'600'}
+                          lineHeight={'24px'}
+                          color={'bunker.500'}
+                        >
+                          {thousandDivider(get(item, 'total_price'), 'сум')}
+                        </Typography>
+                      )}
+                      <Typography display={'flex'} whiteSpace={'pre'} fontSize={'16px'} fontWeight={'600'} lineHeight={'20px'} color={'orange.500'}>
+                        <Typography display={'flex'} whiteSpace={'pre'} fontSize={'16px'} fontWeight={'600'} lineHeight={'20px'} color={'bunker.950'}>
+                          x{' '}
+                        </Typography>
+                        {get(item, 'total_discount') > 0
+                          ? thousandDivider(get(item, 'total_discount'), 'сум')
+                          : thousandDivider(get(item, 'pack_price'), 'сум')}
+                      </Typography>
+                    </Box>
                   )}
-                  <Typography whiteSpace={'pre'} fontSize={'16px'} fontWeight={'600'} lineHeight={'20px'} color={'orange.500'}>
-                    x {get(item, 'total_discount') > 0 ? thousandDivider(get(item, 'total_discount'), 'сум') : thousandDivider(get(item, 'total_price'), 'сум')}
-                  </Typography>
+                  {get(item, 'unit_quantity') > 0 && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        // flexDirection: 'column',
+                        justifyContent: 'end',
+                        alignItems: 'end',
+                      }}
+                    >
+                      <Typography fontSize={'16px'} mr='5px' fontWeight={'600'} lineHeight={'24px'} color={'bunker.500'}>
+                        {get(item, 'unit_quantity')}шт
+                      </Typography>
+                      {get(item, 'total_discount') > 0 && (
+                        <Typography
+                          whiteSpace={'pre'}
+                          sx={{ textDecoration: 'line-through' }}
+                          mt={'4px'}
+                          fontSize={'14px'}
+                          fontWeight={'600'}
+                          lineHeight={'24px'}
+                          color={'bunker.500'}
+                        >
+                          {thousandDivider(get(item, 'total_price'), 'сум')}
+                        </Typography>
+                      )}
+                      <Typography display={'flex'} whiteSpace={'pre'} fontSize={'16px'} fontWeight={'600'} lineHeight={'20px'} color={'orange.500'}>
+                        <Typography display={'flex'} whiteSpace={'pre'} fontSize={'16px'} fontWeight={'600'} lineHeight={'20px'} color={'bunker.950'}>
+                          x{' '}
+                        </Typography>
+                        {get(item, 'total_discount') > 0
+                          ? thousandDivider(get(item, 'total_discount'), 'сум')
+                          : thousandDivider(get(item, 'unit_price'), 'сум')}
+                      </Typography>
+                    </Box>
+                  )}
                 </Box>
               </Box>
               <Box display={'flex'} justifyContent={'space-between'}>
@@ -117,7 +162,7 @@ function SaleChildItemsBox({ item }) {
           <Typography display={'flex'} alignItems={'center'} color={'bunker.400'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'}>
             Количество маркировок:
             <Typography whiteSpace={'pre'} ml={'5px'} mt={'2px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'20px'} color={'orange.500'}>
-              {thousandDivider(get(item, 'bonus_amount'))} шт
+              {thousandDivider(get(item, 'marking_count'))} шт
             </Typography>
           </Typography>
           <Typography display={'flex'} alignItems={'center'} color={'bunker.400'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'}>

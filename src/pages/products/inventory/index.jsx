@@ -13,7 +13,7 @@ import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/importsTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 
@@ -26,7 +26,7 @@ export default function InventoryPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { columns, loading } = useSelector((state) => state.inventoryTableColumns)
+  const { columns, loading } = useSelector((state) => state.importsTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
@@ -112,7 +112,7 @@ export default function InventoryPage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {'Инвентаризация'}
+          {'Импорт'}
         </Typography>
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -212,6 +212,7 @@ export default function InventoryPage() {
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             isRefreshing={loading || isFetchingimportsList || importsListLoading}
           />
+          import InventoryPage from '../inventory copy/index';
         </Box>
       </Box>
 

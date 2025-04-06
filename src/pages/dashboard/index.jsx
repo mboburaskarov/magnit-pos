@@ -150,6 +150,8 @@ export default function DashboarPage() {
   const { data: chartData, isLoading: isGetChartData, refetch } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
   const { data: countStats, isLoading: isCountStats } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
   const { data: topStores, isLoading: isTopStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
+  const { data: payments, isLoading: ispayments } = useQuery(['payments', dashboard_filter], () => requests.dashboradPayments(dashboard_filter))
+  const { data: transaction, isLoading: istransaction } = useQuery(['transaction', dashboard_filter], () => requests.dashboradTransaction(dashboard_filter))
   const { data: topProducts, isLoading: isTopProducts } = useQuery(['TopProducts', dashboard_filter], () => requests.dashboradTopProducts(dashboard_filter))
   const { data: topBonusProducts, isLoading: isTopBonusProducts } = useQuery(['TopBonusProducts', dashboard_filter], () =>
     requests.dashboradTopBonusProducts(dashboard_filter)
@@ -212,8 +214,8 @@ export default function DashboarPage() {
         </Grid>
         <CheckAccess id={'dashboard-transactions-vendor'}>
           <Box mt={4} columnGap={3} display='inline-flex'>
-            <Transactions id='dashboard-chart' data={get(topStores, 'data.data')} title={'Платежи'} subTitle={'64 116 872 UZS'} />
-            <Transactions id='dashboard-chart' data={get(topStores, 'data.data')} title={'Транзакции'} subTitle={'64 шт'} />
+            <Transactions id='dashboard-chart' data={get(payments, 'data.data')} title={'Платежи'} subTitle={'64 116 872 UZS'} />
+            <Transactions id='dashboard-chart' data={get(transaction, 'data.data')} title={'Транзакции'} subTitle={'64 шт'} />
           </Box>
         </CheckAccess>
         <CheckAccess id={'dashboard-vendor'}>

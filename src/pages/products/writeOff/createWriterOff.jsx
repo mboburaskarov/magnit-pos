@@ -1,16 +1,24 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import dayjs from 'dayjs'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
+import Label from '../../../../components/Label'
 import LazySelect from '../../../../components/Select/LazySelect'
+import SelectSimple from '../../../../components/Select/SelectSimple'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
-
+const writeOffReason = [
+  { name: 'Другое', id: 'other' },
+  { name: 'Дефект', id: 'other' },
+  { name: 'Потеря', id: 'other' },
+  { name: 'Списание с каталога', id: 'other' },
+  { name: 'Исправление пересорта', id: 'other' },
+]
 export default function CreateWriteOff({ open, refetch, setOpen }) {
   const methods = useForm()
   const { reset, control } = methods
@@ -69,6 +77,22 @@ export default function CreateWriteOff({ open, refetch, setOpen }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
+            <Box width={'100%'}>
+              <Label mb='12px'>{t('Назовите списание')}</Label>
+              <TextField
+                id='client-name'
+                name='name'
+                control={control}
+                fullWidth
+                // label='Назовите списание'
+                // error={errors?.name}
+                placeholder={t('Назовите списание')}
+                required
+                defaultValue={`Cписание ${dayjs().format('YYYY.MM.DD HH:mm')}`}
+                asteriks
+              />
+            </Box>
+
             <LazySelect
               boxStyle={{ width: '100%' }}
               slug='store_id'
@@ -90,48 +114,47 @@ export default function CreateWriteOff({ open, refetch, setOpen }) {
               }}
               filterOption={() => true}
             />
-            <Box width={'100%'}>
-              <NumberFormatInput
-                id={`interval_day`}
-                name={`interval_day`}
-                fullWidth
-                required
-                defaultValue={0}
-                type='number'
-                label={'Интервальный день'}
-                InputProps={{
-                  onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
-                }}
-                // defaultValue={get(p, 'data.small_quantity')}
-                disabled={false}
-              />
-              <Box display={'flex'} padding={'5px'}>
-                <Box
-                  onClick={() => methods.setValue('interval_day', 1)}
-                  sx={{
-                    backgroundColor: '#eee',
-                    padding: '5px 10px',
-                    borderRadius: '10px',
-                    fontSize: '17px',
-                  }}
+            <SelectSimple
+              fullWidth
+              id='nobarcode'
+              white
+              name='no_barcode'
+              minWidth='auto'
+              label={'Причина списания'}
+              placeholder={'Bыберите причина'}
+              options={writeOffReason}
+              getOptionLabel={(el) => el.name}
+            />
+            <Box
+              sx={{
+                border: '2px solid #ECEDF2',
+                borderRadius: '20px',
+                padding: '15px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <Box mr={'10px'}>
+                <svg
+                  aria-hidden='true'
+                  focusable='false'
+                  data-prefix='fas'
+                  data-icon='triangle-exclamation'
+                  class='svg-inline--fa fa-triangle-exclamation fa-xl jss7266'
+                  role='img'
+                  xmlns='http://www.w3.org/2000/svg'
+                  viewBox='0 0 512 512'
                 >
-                  День
-                </Box>
-                <Box
-                  onClick={() => methods.setValue('interval_day', 7)}
-                  sx={{
-                    backgroundColor: '#eee',
-                    padding: '5px 10px',
-                    borderRadius: '10px',
-                    fontSize: '17px',
-                    ml: '10px',
-                  }}
-                >
-                  Неделя
-                </Box>
+                  <path
+                    fill='#f2c94c'
+                    d='M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480L40 480c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24l0 112c0 13.3 10.7 24 24 24s24-10.7 24-24l0-112c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z'
+                  ></path>
+                </svg>
               </Box>
+              <Typography>
+                При выборе причины списания “Исправление пересорта”, результаты данного списания не будут отражены в финансовых отчетах в виде расходов
+              </Typography>
             </Box>
-
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button fullWidth variant='contained' type='submit'>
                 {t('filter_dialog.save.label')}
