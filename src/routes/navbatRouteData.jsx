@@ -47,12 +47,15 @@ export const navbatRouteData = [
         active: '/products/transfer/*',
         id: '32',
         href: '/products/transfer',
+
+        soon: true,
       },
       {
         label: 'Списание',
         active: '/products/write-off/*',
         id: '32',
         href: '/products/write-off',
+        soon: true,
       },
       {
         label: 'Категории',

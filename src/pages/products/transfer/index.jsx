@@ -18,11 +18,14 @@ import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 
 import CheckAccess from '../../../../components/CheckAccess'
+import SoonPage from '../../../../components/soon'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import CreateTransfer from './createTransfer'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function TransferPage() {
+  return <SoonPage />
+
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()

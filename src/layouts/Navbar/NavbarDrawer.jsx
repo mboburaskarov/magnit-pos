@@ -138,7 +138,7 @@ function NavbarDrawer({
                   {get(userData, 'store.name')}
                 </Typography>
                 <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                  {get(userData, 'store.store_code')}
+                  {get(userData, 'store.cashboxname', '-')}
                 </p>
               </Box>
             )}

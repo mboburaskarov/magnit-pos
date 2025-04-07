@@ -1,15 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from 'react'
-import { InputAdornment, Box, TextField, Typography } from '@mui/material'
-import * as qs from 'qs'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Box, InputAdornment, TextField, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
-import useDebouncedValue from '../../src/hooks/useDebouncedValue'
+import * as qs from 'qs'
+import { useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import SearchIcon from '../../src/assets/icons/SearchIcon'
-import { useRef } from 'react'
+import useDebouncedValue from '../../src/hooks/useDebouncedValue'
+import { useQueryParams } from '../../src/hooks/useQueryParams'
 
 const useStyles = makeStyles((theme) => ({
   input: {
