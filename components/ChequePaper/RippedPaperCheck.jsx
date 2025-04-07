@@ -103,7 +103,7 @@ function RippedPaperCheck({
                   id={`return-price-${'index9'}`}
                   rowData={{
                     type: `Kontakt:`,
-                    value: `+${get(userData, 'store.phone', '-')}`,
+                    value: get(userData, 'store.phone', '998').length > 3 ? `+${get(userData, 'store.phone', '-')}` : '-',
                   }}
                 />
               )}
@@ -257,14 +257,12 @@ function RippedPaperCheck({
                 Siz xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
               </Typography>
               <QRCodeCanvas value={qrcodeUrl} />
-              <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
-                CHEK NUSXASI
-              </Typography>
+
               <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
                 SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
               </Typography>
               <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
-                XARIDINGIZ UCHUN RAXMAT!!!
+                XARIDINGIZ UCHUN RAHMAT!!!
               </Typography>
               {/* </> */}
               {/* ) : ( */}

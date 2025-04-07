@@ -60,19 +60,25 @@ function SaleChildDrawer({ open, setOpen, ids }) {
   const [debouncedCurrentSaleId] = useDebounce(currentSaleId, 200)
 
   const { values } = useQueryParams()
+  console.log(Boolean(debouncedCurrentSaleId), !!debouncedCurrentSaleId)
 
   const {
     data: saleDetailsList,
     refetch,
     isLoading,
+    isFetched: isFetch,
   } = useQuery(['saleDetailsList', debouncedCurrentSaleId], () => requests.getCashBoxDetaildWithSaleId(debouncedCurrentSaleId), {
-    enabled: Boolean(debouncedCurrentSaleId),
+    enabled: !!debouncedCurrentSaleId,
   })
 
-  useEffect(() => {
-    if (get(open, 'id', false)) refetch()
+  // useEffect(() => {
+  //   if (get(open, 'id', false)) refetch()
 
-    setCurrentSaleId(get(open, 'id'))
+  //   setCurrentSaleId(get(open, 'id'))
+  // }, [open])
+  useEffect(() => {
+    const id = get(open, 'id')
+    if (id) setCurrentSaleId(id)
   }, [open])
   useHotkeys(['ArrowRight', 'ArrowLeft'], (key) => {
     if (key.key == 'ArrowRight') {
@@ -94,7 +100,7 @@ function SaleChildDrawer({ open, setOpen, ids }) {
   })
   const theme = useTheme()
   return (
-    <LoadingContainer noHeight readyState={!isLoading}>
+    <LoadingContainer noHeight readyState={debouncedCurrentSaleId}>
       <Box className={classes.drawer}>
         <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
           <Box display={'flex'} alignItems={'center'}>
