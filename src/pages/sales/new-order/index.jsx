@@ -261,8 +261,6 @@ function NewSale() {
     setInputDiscount(0)
   }, [discount])
   const focusUnitInput = (event) => {
-    console.log(event)
-
     if (event.key === '+' && !event.shiftKey) {
       const activeInput = document.activeElement
       if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
@@ -277,7 +275,6 @@ function NewSale() {
         }
       }
     }
-    console.log(event)
     if (event.key === '-' && !event.shiftKey) {
       const activeInput = document.activeElement
       if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
@@ -589,7 +586,15 @@ function NewSale() {
     }
   }
   const isAllMarkingFill = () => {
-    const cartsMarkingCount = Object.values(markingCount)?.reduce((acc, i) => acc + i, 0)
+    const newmarkingCount = {}
+
+    get(cartItemsList, 'data.data.data').map((item) => {
+      if (item.is_marking) {
+        newmarkingCount[item.id] = markingCount[item.id]
+      }
+    })
+
+    const cartsMarkingCount = Object.values(newmarkingCount)?.reduce((acc, i) => acc + i, 0)
     const userIsFilledMarkingCount = Object.values(markingsList)
       ?.map((e) => Object.values(e)?.filter((a) => a?.length))
       ?.map((e) => Object.keys(e).length)

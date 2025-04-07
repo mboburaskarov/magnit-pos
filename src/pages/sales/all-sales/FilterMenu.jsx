@@ -22,7 +22,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const { formState, reset, control } = methods
 
   const { data: paymentTypeList } = useQuery('paymentTypeList', () => requests.getPaymentTypesList({ limit: 20, offset: 0 }))
-  console.log(paymentTypeList)
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])

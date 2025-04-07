@@ -1,10 +1,9 @@
 import { Box, Button, Dialog, Typography } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
-import TextField from '../../../../components/Inputs/TextField'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import { LoadingButton } from '@mui/lab'
 import { useTranslation } from 'react-i18next'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
+import TextField from '../../../../components/Inputs/TextField'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 
 function ImplementMarkingDialog({
   open,
@@ -191,7 +190,7 @@ function ImplementMarkingDialog({
         icon={<BigWarningIcon />}
         onKeyDown={(event) => {
           if (event.key === 'Enter') {
-            addEmptyStringMarkToMarkinglessProduct(markingsList, markingCount)
+            setOpenConfirmDialog(false)
           }
         }}
         title={t('no_marking')}
@@ -205,9 +204,9 @@ function ImplementMarkingDialog({
               variant='contained'
               onClick={() => setOpenConfirmDialog(null)}
             >
-              {t('cancel')}
+              {t('Зсакрыть диалог')}
             </Button>
-            <LoadingButton
+            {/* <LoadingButton
               variant='contained'
               type='button'
               onClick={() => {
@@ -215,7 +214,7 @@ function ImplementMarkingDialog({
               }}
             >
               {t('continue')}
-            </LoadingButton>
+            </LoadingButton> */}
           </>
         }
       />

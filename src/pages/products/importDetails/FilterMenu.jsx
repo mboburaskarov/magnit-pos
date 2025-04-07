@@ -22,8 +22,6 @@ export default function FilterMenu({ open, id, setOpen }) {
   const { formState, reset } = methods
 
   const onSubmit = (data) => {
-    console.log(data)
-
     const requestBody = {
       no_barcode: data.no_barcode?.id || undefined,
       received_amount_from: data.received_amount_from || undefined,
@@ -41,7 +39,6 @@ export default function FilterMenu({ open, id, setOpen }) {
 
   useEffect(() => {
     const { received_amount_to, no_barcode, received_amount_from } = values
-    // console.log(getOptionsFromUrlParam(no_barcode, barcodeFilterList?.data?.data, 'name')[0])
 
     reset(
       {

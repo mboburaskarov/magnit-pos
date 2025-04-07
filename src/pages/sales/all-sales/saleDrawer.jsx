@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
 function SaleDrawer({ open, setOpen, ids }) {
   const { t } = useTranslation()
   const classes = useStyles()
-  console.log(ids)
 
   return (
     <Drawer

@@ -1,12 +1,9 @@
-import { Box, Divider, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import thousandDivider from '../../../utils/thousandDivider'
-import GrowIcon from '../../assets/icons/GrowIcon'
 import FallIcon from '../../assets/icons/FallIcon'
-import { theme } from '../../assets/theme'
+import GrowIcon from '../../assets/icons/GrowIcon'
 
 export default function DashboardInfoBox({ noDot, ind, title, icon, count, amount, percent, id, endText, withoutDivider, ...l }) {
-  console.log(l, title)
-
   const isFall = percent < 0
   return (
     <Box sx={(theme) => ({ border: 1, borderRadius: '16px', borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' })}>

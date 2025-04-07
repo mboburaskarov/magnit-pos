@@ -1,16 +1,15 @@
-import React, { useEffect, useState, Fragment, useMemo } from 'react'
 import { Box, Typography } from '@mui/material'
-import TickOutlinedIcon from '../../src/assets/icons/BigTickIcon'
+import React, { Fragment } from 'react'
 
+import { QRCodeCanvas } from 'qrcode.react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { QRCodeCanvas } from 'qrcode.react'
 import DashedRow from './DashedRow.jsx'
 import useStyles from './useStyles'
 
-import palette from '../../src/assets/theme/mui.config'
-import { get } from 'lodash'
 import dayjs from 'dayjs'
+import { get } from 'lodash'
+import palette from '../../src/assets/theme/mui.config'
 import thousandDivider from '../../utils/thousandDivider.js'
 
 function RippedPaperCheck({
@@ -48,7 +47,6 @@ function RippedPaperCheck({
 
     return !!found ? found?.is_active === true : true
   }
-  console.log(qrcodeUrl)
 
   return (
     <Box className={`${classes.root} ${noSticky ? classes.noSticky : ''}`}>

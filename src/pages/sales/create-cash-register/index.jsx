@@ -6,7 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
+import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 import TextField from '../../../../components/Inputs/TextField'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import SelectSimple from '../../../../components/Select/SelectSimple'
@@ -15,7 +15,6 @@ import { error } from '../../../../utils/toast'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import CartOutlineIcon from '../../../assets/icons/CartOutline'
 import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 const useStyles = makeStyles((theme) => ({
   box: {
     display: 'flex',
@@ -156,16 +155,7 @@ function NewCashRegister() {
       <FormProvider {...methods}>
         <Box className={classes.box}>
           <Box className={classes.wrapper}>
-            <Typography
-              onClick={() => console.log(methods.getValues())}
-              display={'flex'}
-              alignItems={'center'}
-              fontSize={'32px'}
-              lineHeight={'48px'}
-              fontWeight={'700'}
-              color={'bunker.950'}
-              p={'24px'}
-            >
+            <Typography display={'flex'} alignItems={'center'} fontSize={'32px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'} p={'24px'}>
               {get(canCreate, 'is_open') ? (
                 'Kassirni tanlang'
               ) : (

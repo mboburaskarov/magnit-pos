@@ -4,7 +4,6 @@ import { get } from 'lodash'
 import React, { memo } from 'react'
 import { useMutation } from 'react-query'
 import InputQuantity from '../../../../components/Inputs/InputQuantity'
-import StyledTooltip from '../../../../components/StyledTooltip'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
@@ -229,7 +228,6 @@ const CartItem = ({
   removeMarking,
 }) => {
   const cls = useStyles()
-  console.log(markingsList)
 
   const { mutate: changeCartItemQuantity } = useMutation(requests.changeCartItemQuantity, {
     onSuccess: ({ data }) => {
