@@ -1,6 +1,6 @@
 import { Box, InputAdornment, TextField } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import Label from '../Label'
 
@@ -94,6 +94,7 @@ function InputQuantity({
   value,
   id,
   max,
+  initWidth = '74px',
   applyAll,
 
   aplyAllFunc = () => {},
@@ -104,6 +105,10 @@ function InputQuantity({
   onBlur = () => {},
 }) {
   const methods = useFormContext()
+  const [inputValue, setValue] = useState(0)
+  useEffect(() => {
+    setValue(methods.getValues(name))
+  }, [methods.watch(name)])
   // Custom onKeyDown to restrict unwanted characters
   const handleKeyDown = (event) => {
     onKeyDown(event)
@@ -225,7 +230,7 @@ function InputQuantity({
         {...inputProps}
         style={{
           ...inputStyles,
-          width: fullWidth ? '100%' : `calc(74px +  ${String(value || 1).length ? String(value || 1).length * 10 : 0}px)`,
+          width: fullWidth ? '100%' : `calc(${initWidth} +  ${String(inputValue || 1).length ? String(inputValue || 1).length * 10 : 0}px)`,
         }}
         className={`${classes.textfield} ${!label && classes.noMargin} ${multiline && classes.multiline} ${adornment && classes.hasAdornment}`}
         error={!!error}

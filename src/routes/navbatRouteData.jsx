@@ -1,9 +1,9 @@
+import ChartIcon from '../assets/icons/ChartIcon'
 import MenuOutline from '../assets/icons/MenuOutline'
 import ProductsIcon from '../assets/icons/ProductsIcon'
 import QrScanIcon from '../assets/icons/QrScanIcon'
 import SettingsIcon from '../assets/icons/SettingsIcon'
 import UsersIcon from '../assets/icons/UsersIcon'
-
 export const navbatRouteData = [
   {
     label: 'navbar.dashboard',
@@ -100,7 +100,15 @@ export const navbatRouteData = [
     icon: <UsersIcon />,
     href: '/clients/all',
   },
+  {
+    label: 'Отчеты',
+    id: '333',
+    icon: <ChartIcon />,
+    href: '/',
+    active: '/se/*',
 
+    soon: true,
+  },
   {
     label: 'navbar.settings',
     id: '9',

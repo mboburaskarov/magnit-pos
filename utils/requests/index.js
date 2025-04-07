@@ -110,6 +110,14 @@ export const requests = {
   sendScannedImportNumber: ({ id, scanned_count }) => request.put(`v1/import-detail/${id}`, { scanned_count }),
   getImportDetailsExcelReport: (filter) => requestEXCEL.get(`v1/import-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
+  //inventory
+  createInventory: (data) => request.post(`v1/inventory`, data),
+  getAllInventory: (filter) => request.get(`v1/inventory/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  sendScannedInventoryNumber: ({ id, barcode, product_id, type, scanned_count }) =>
+    request.patch(`v1/inventory/${id}/add-product-by-barcode`, { barcode, count: scanned_count, type, product_id }),
+  getInventoryDetails: (filter) => request.get(`v1/inventory-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getInventoryScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   // autoOrder
   createAutoOrder: (data) => request.post(`v1/auto-order`, data),
   finalAutoOrder: (id) => request.post(`v1/auto-order/send/${id}`),

@@ -41,8 +41,8 @@ const columns = [
   },
 ]
 
-const inventoryWithCheckingTableColumns = createSlice({
-  name: 'inventoryWithCheckingTableColumns',
+const inventoryDetailsTableColumns = createSlice({
+  name: 'inventoryDetailsTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -82,5 +82,5 @@ const inventoryWithCheckingTableColumns = createSlice({
 })
 
 export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
-  inventoryWithCheckingTableColumns.actions
-export const inventoryWithCheckingTableColumnsSlice = inventoryWithCheckingTableColumns.reducer
+  inventoryDetailsTableColumns.actions
+export const inventoryDetailsTableColumnsSlice = inventoryDetailsTableColumns.reducer

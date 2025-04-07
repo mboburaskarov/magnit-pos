@@ -24,7 +24,7 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function ImportWithCheckingPage() {
+export default function InventoryWithCheckingPage() {
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
   const overplusScanAudio = new Audio(overplusAudio)
@@ -42,10 +42,11 @@ export default function ImportWithCheckingPage() {
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
-  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedImportNumber, {
+  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
       refetch()
       fetchStatusCountList()
+      setBarcode('')
     },
     onError: (err) => {
       error('Ошибка при сканирование!')
@@ -68,9 +69,9 @@ export default function ImportWithCheckingPage() {
     id,
     setScanedNumber,
   })
-  const importWithCheckingDetailsFilter = useMemo(() => {
+  const inventoryWithCheckingDetailsFilter = useMemo(() => {
     return {
-      import_id: id,
+      inventory_id: id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: barcode,
@@ -78,12 +79,19 @@ export default function ImportWithCheckingPage() {
     }
   }, [values?.offset, status, values?.limit, id, barcode])
 
+  // const {
+  //   data: inventoryDetails,
+  //   isLoading: inventoryDetailsLoading,
+  //   isFetching: isFetchinginventoryDetails,
+  //   refetch,
+  // } = useQuery(['inventoryDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
+
   const {
-    data: importWithCheckingDetails,
-    isLoading: importWithCheckingDetailsLoading,
-    isFetching: isFetchingimportWithCheckingDetails,
+    data: inventoryWithCheckingDetails,
+    isLoading: inventoryWithCheckingDetailsLoading,
+    isFetching: isFetchinginventoryWithCheckingDetails,
     refetch,
-  } = useQuery(['importWithCheckingDetails', importWithCheckingDetailsFilter], () => requests.getImportScanDetails(importWithCheckingDetailsFilter))
+  } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
   const {
     data: statusCountList,
     isLoading: statusCountListLoading,
@@ -108,23 +116,29 @@ export default function ImportWithCheckingPage() {
 
   useEffect(() => {
     refetch()
-  }, [importWithCheckingDetailsFilter])
+  }, [inventoryWithCheckingDetailsFilter])
 
   useEffect(() => {
-    const count = importWithCheckingDetails?.data?.data?._meta?.total_count
+    const count = inventoryWithCheckingDetails?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
 
-    get(importWithCheckingDetails, 'data.data.data', []).map((importData) => {
+    get(inventoryWithCheckingDetails, 'data.data.data', []).map((importData) => {
       methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
     })
-  }, [importWithCheckingDetails?.data, values?.limit])
+  }, [inventoryWithCheckingDetails?.data, values?.limit])
 
   const sendScannedImport = () => {
     if (barcode === '') return
-    // addScan({ barcode, count: Number(manualNumber), import_id: id })
+    setScanedNumber({
+      id,
+      barcode: barcode,
+      type: 'SCAN',
+      scanned_count: Number(manualNumber),
+    })
   }
+  console.log(inventoryWithCheckingDetails)
 
   return (
     <LoadingContainer readyState={!isfinishImportChecking}>
@@ -132,10 +146,10 @@ export default function ImportWithCheckingPage() {
         <Header
           onSubmit={() => finishImportChecking(id)}
           isLoading={false}
-          buttonText='Завершить'
+          buttonText='Результаты'
           backIcon
           backHref='/products/import'
-          text={'Импорт с проверкой'}
+          text={'Инвентаризация с проверкой'}
           checkAccessId={'product-create'}
         />
         <Container>
@@ -148,10 +162,22 @@ export default function ImportWithCheckingPage() {
               defaultValue='ALL'
               onChange={(e) => setStatus(e)}
               options={[
-                { title: t('switch.title.all'), value: 'ALL', count: get(statusCountList, 'data.data.total_count', 0) },
-                { title: t('switch.title.scanned_count'), value: 'scanned', count: get(statusCountList, 'data.data.scanned_count', 0) },
-                { title: t('switch.title.shortage_count'), value: 'shortage', count: get(statusCountList, 'data.data.shortage_count', 0) },
-                { title: t('switch.title.surplus_count'), value: 'surplus', count: get(statusCountList, 'data.data.surplus_count', 0) },
+                { title: t('switch.title.all'), value: 'ALL', count: get(inventoryWithCheckingDetails, 'data.data.stats_count.all', 0) },
+                {
+                  title: t('switch.title.scanned_count'),
+                  value: 'scanned',
+                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.scanned', 0),
+                },
+                {
+                  title: t('switch.title.shortage_count'),
+                  value: 'shortage',
+                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.shortage', 0),
+                },
+                {
+                  title: t('switch.title.surplus_count'),
+                  value: 'surplus',
+                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.surplus', 0),
+                },
               ]}
             />
           </Box>
@@ -219,9 +245,9 @@ export default function ImportWithCheckingPage() {
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
-                data={importWithCheckingDetails?.data?.data?.data || []}
-                totalCount={importWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
-                isDataLoading={isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
+                data={inventoryWithCheckingDetails?.data?.data?.data || []}
+                totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
@@ -233,7 +259,7 @@ export default function ImportWithCheckingPage() {
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
                 status={appType}
-                isRefreshing={loading || hasTableChange || isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
+                isRefreshing={loading || hasTableChange || isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
               />
             </Box>
           </Box>

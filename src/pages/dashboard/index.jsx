@@ -32,7 +32,8 @@ export default function DashboarPage() {
   const { values } = useQueryParams()
   const [detailing, setDetaling] = useState('week')
   const [selectedStore, setselectedStore] = useState([])
-  const [detalization, setDetalization] = useState({ name: 'Сегодня', value: 'day' })
+  const [detalization, setDetalization] = useState({ name: 'по дням', value: 'day' })
+  const [chartType, setchartType] = useState({ name: 'Продажи', value: 'sale' })
   const check = type === 'SUPERADMIN' || type === 'ACCOUNTANT'
   const [sortBy, setSortBy] = useState(check ? 'SUM' : 'COUNT')
   const { t } = useTranslation()
@@ -200,6 +201,8 @@ export default function DashboarPage() {
                   period={detailing}
                   detalization={detalization}
                   setDetalization={setDetalization}
+                  chartType={chartType}
+                  setchartType={setchartType}
                   sortBy={sortBy}
                   dataKey={sortBy === 'SUM' ? 'all_orders' : 'count'}
                   data={{

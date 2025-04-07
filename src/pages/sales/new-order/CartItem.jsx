@@ -263,7 +263,7 @@ const CartItem = ({
               display={'flex'}
               sx={{
                 '& .MuiInputBase-root': {
-                  width: get(item, 'unit_per_pack') == 0 ? '100px' : '100px',
+                  width: get(item, 'unit_per_pack') == 0 ? '100%' : '100%',
                 },
               }}
             >
@@ -273,7 +273,6 @@ const CartItem = ({
                     id={`quantity_${item?.id}`}
                     name={`quantity_${item?.id}`}
                     adornmentPosition='end'
-                    fullWidth
                     adornmentClassName={cls.adornment}
                     max={100}
                     adornment={item?.short_name}
@@ -345,19 +344,18 @@ const CartItem = ({
                     name={`unit_quantity_${item?.id}`}
                     defaultValue={get(item, 'unit_quantity', 1)}
                     adornmentPosition='end'
+                    initWidth='85px'
                     adornment={
-                      <Typography display={'flex'} fontSize={'18px'} mr={'20px'}>
-                        /
-                        <Typography fontSize={'20px'} color='bunker.950'>
-                          {item.unit_per_pack}
-                        </Typography>{' '}
-                        шт
+                      <Typography display={'flex'}>
+                        <Box fontSize={'12px'} m={'0px 0'} color='bunker.950'>
+                          /{item.unit_per_pack}
+                        </Box>{' '}
+                        <Typography m={'0 4px'}>шт</Typography>
                       </Typography>
                     }
                     inputRef={(e) => unitRef(e)}
                     adornmentClassName={cls.adornment}
                     max={100}
-                    fullWidth
                     type='number'
                     onFocus={({ target }) => {
                       if (Number(get(target, 'value')) == 0) {

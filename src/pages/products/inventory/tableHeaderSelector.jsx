@@ -1,18 +1,17 @@
+import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
+import { get } from 'lodash'
+import * as qs from 'qs'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
+import palette from '../../../../src/assets/theme/mui.config'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import palette from '../../../../src/assets/theme/mui.config'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import * as qs from 'qs'
-import { get } from 'lodash'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography
@@ -107,14 +106,14 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         colId: el.field,
         cellRenderer: memo((p) => (
           <Link
-            to={`/products/imports/${p.data.id}?${qs.stringify({
+            to={`/products/inventory-with-checking/${p.data.id}?${qs.stringify({
               previusLimit: values?.limit,
               previusOffset: values?.offset,
             })}
         `}
           >
             <Typography whiteSpace={'pre-wrap'} fontWeight={'600'} color={'orange.500'} fontSize={'16px'} lineHeight={'24px'}>
-              {p.data.document_number}
+              {p.data.name}
             </Typography>
           </Link>
         )),

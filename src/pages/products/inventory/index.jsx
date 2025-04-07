@@ -56,7 +56,7 @@ export default function InventoryPage() {
     }
   }, [])
 
-  const importsListFilter = useMemo(() => {
+  const inventoryListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
@@ -82,22 +82,22 @@ export default function InventoryPage() {
     values?.received_amount_from,
   ])
   const {
-    data: importsList,
-    isLoading: importsListLoading,
-    isFetching: isFetchingimportsList,
+    data: inventoryList,
+    isLoading: inventoryListLoading,
+    isFetching: isFetchinginventoryList,
     refetch,
-  } = useQuery(['importsList', importsListFilter], () => requests.getAllImports(importsListFilter))
+  } = useQuery(['inventoryList', inventoryListFilter], () => requests.getAllInventory(inventoryListFilter))
 
   useEffect(() => {
     refetch()
-  }, [importsListFilter])
+  }, [inventoryListFilter])
 
   useEffect(() => {
-    const count = importsList?.data?.data?._meta?.total_count
+    const count = inventoryList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [importsList?.data, values?.limit])
+  }, [inventoryList?.data, values?.limit])
   const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
     onSuccess: ({ data }) => {
       downloadExcel(data, 'Импорт')
@@ -112,7 +112,7 @@ export default function InventoryPage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {'Импорт'}
+          {'Инвентаризация'}
         </Typography>
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -191,28 +191,27 @@ export default function InventoryPage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
-            fullDownload={() => importsExcelReport({ ...importsListFilter, limit: 1000000 })}
-            downloadByFilter={() => importsExcelReport(importsListFilter)}
+            fullDownload={() => importsExcelReport({ ...inventoryListFilter, limit: 1000000 })}
+            downloadByFilter={() => importsExcelReport(inventoryListFilter)}
             isDownloading={isimportsExcelReport}
             tableSettings
             columns={tableColumns}
             defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
-            data={importsList?.data?.data?.data || []}
-            totalCount={importsList?.data?.data?._meta?.total_count || 0}
-            isDataLoading={isFetchingimportsList || importsListLoading}
+            data={inventoryList?.data?.data?.data || []}
+            totalCount={inventoryList?.data?.data?._meta?.total_count || 0}
+            isDataLoading={isFetchinginventoryList || inventoryListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}
             emptyTableText={{
-              title: 'Импорт недоступен',
+              title: 'Инвентаризация недоступен',
               description: 'Если вы не можете найти искомый Импорт',
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingimportsList || importsListLoading}
+            isRefreshing={loading || isFetchinginventoryList || inventoryListLoading}
           />
-          import InventoryPage from '../inventory copy/index';
         </Box>
       </Box>
 
