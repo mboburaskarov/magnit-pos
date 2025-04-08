@@ -599,6 +599,7 @@ function NewSale() {
       }
     },
     {
+      preventDefault: true,
       enableOnFormTags: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
