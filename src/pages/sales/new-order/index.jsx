@@ -441,13 +441,18 @@ function NewSale() {
         setDiscountType(defaultType?.length > 0 ? defaultType : 'percent')
         setInputDiscount(get(head(cartList), 'discount_amount', 0))
       }
+      let newmarkingcount = { ...markingCount }
       cartList.map((item) => {
-        setMarkingCount((p) => ({ ...p, [item.id]: calculate(item.quantity, item.unit_quantity, item.unit_per_pack) }))
+        if (item.is_marking) {
+          newmarkingcount[item.id] = calculate(item.quantity, item.unit_quantity, item.unit_per_pack)
+        }
         method.setValue(`unit_quantity_${item.id}`, get(item, 'unit_quantity'))
         method.setValue(`quantity_${item.id}`, get(item, 'quantity'))
       })
+      setMarkingCount(newmarkingcount)
     }
   }, [cartItemsList?.data])
+
   const changeDiscount = (value) => {
     if (discount != 'percent' && discount != 'cash') {
       return

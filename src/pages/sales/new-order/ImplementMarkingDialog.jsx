@@ -98,58 +98,61 @@ function ImplementMarkingDialog({
           </Typography>
         </Box>
 
-        {cartItems.map((item, parentIndex) => (
-          <Box
-            key={item.id}
-            sx={{
-              padding: '5px 10px',
-              backgroundColor: '#f3f3f3',
-              m: '10px 0px',
-              borderRadius: '20px',
-            }}
-          >
-            <Typography fontWeight={'600'} my={'10px'}>
-              {item.name}
-            </Typography>
-            {Array(markingCount[item.id])
-              .fill(1)
-              .map((_, childIndex) => {
-                const flatIndex = getFlatIndex(parentIndex, childIndex, markingCount)
+        {cartItems.map((item, parentIndex) => {
+          if (!Object.keys(markingCount || {}).includes(item.id)) return
+          return (
+            <Box
+              key={item.id}
+              sx={{
+                padding: '5px 10px',
+                backgroundColor: '#f3f3f3',
+                m: '10px 0px',
+                borderRadius: '20px',
+              }}
+            >
+              <Typography fontWeight={'600'} my={'10px'}>
+                {item.name}
+              </Typography>
+              {Array(markingCount[item.id])
+                .fill(1)
+                .map((_, childIndex) => {
+                  const flatIndex = getFlatIndex(parentIndex, childIndex, markingCount)
 
-                return (
-                  <Box
-                    key={`${item.id}-${childIndex}`}
-                    sx={{
-                      mb: '5px',
-                      mt: '10px',
-                      '.MuiFormControl-root': {
-                        backgroundColor: 'transparent !important',
-                      },
-                      '.input-label': {
-                        mb: '0px !important',
-                      },
-                    }}
-                  >
-                    <TextField
-                      uncontrolled
-                      setValue={(e) => implementMarkingList(e, item?.id, childIndex)}
-                      defaultValue={markingsList?.[item.id]?.[childIndex]}
-                      required
-                      onKeyDown={(e) => handleKeyDown(e, flatIndex)}
-                      fullWidth
-                      inputRef={(el) => (inputsRef.current[flatIndex] = el)}
-                      borderRadius={'40px'}
-                      name={`${item.id}-${childIndex}`}
-                      id={`${item.id}-${childIndex}`}
-                      label={t('marking')}
-                      placeholder={t('marking.placeholder')}
-                      sx={{ mb: 0 }}
-                    />
-                  </Box>
-                )
-              })}
-          </Box>
-        ))}
+                  return (
+                    <Box
+                      key={`${item.id}-${childIndex}`}
+                      sx={{
+                        mb: '5px',
+                        mt: '10px',
+                        '.MuiFormControl-root': {
+                          backgroundColor: 'transparent !important',
+                        },
+                        '.input-label': {
+                          mb: '0px !important',
+                        },
+                      }}
+                    >
+                      <TextField
+                        uncontrolled
+                        setValue={(e) => implementMarkingList(e, item?.id, childIndex)}
+                        defaultValue={markingsList?.[item.id]?.[childIndex]}
+                        required
+                        onKeyDown={(e) => handleKeyDown(e, flatIndex)}
+                        fullWidth
+                        inputRef={(el) => (inputsRef.current[flatIndex] = el)}
+                        borderRadius={'40px'}
+                        name={`${item.id}-${childIndex}`}
+                        id={`${item.id}-${childIndex}`}
+                        label={t('marking')}
+                        placeholder={t('marking.placeholder')}
+                        sx={{ mb: 0 }}
+                      />
+                    </Box>
+                  )
+                })}
+            </Box>
+          )
+        })}
       </Box>
 
       {/* Rest of your dialog footer remains the same */}
