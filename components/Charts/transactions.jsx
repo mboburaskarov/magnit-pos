@@ -12,7 +12,6 @@ export default function Transactions({ data, title, subTitle }) {
         borderRadius: '24px',
         padding: '32px 25px',
         backgroundColor: '#fff',
-        height: '100%',
         width: '100%',
       }}
     >
@@ -46,7 +45,7 @@ export default function Transactions({ data, title, subTitle }) {
                 Продажи
               </TableCell>
             </TableHead> */}
-            <TableBody>
+            <TableBody sx={{ borderTop: '1px solid', borderColor: 'gray.200' }}>
               {data?.map((item, index) => (
                 <TableRow key={item.name}>
                   <TableCell

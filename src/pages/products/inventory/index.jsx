@@ -6,23 +6,24 @@ import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '../../../../components/CheckAccess'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import SoonPage from '../../../../components/soon/index'
+import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/importsTableColumns'
+import CreateInventory from './createInventory'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-
-import CheckAccess from '../../../../components/CheckAccess'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
-import CreateInventory from './createInventory'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function InventoryPage() {
+  return <SoonPage />
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()

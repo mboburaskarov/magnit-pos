@@ -1,10 +1,10 @@
 import { Box, Button, Dialog, Typography } from '@mui/material'
+import { get } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
-import TextField from '../../../../components/Inputs/TextField'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import { LoadingButton } from '@mui/lab'
 import { useTranslation } from 'react-i18next'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
+import TextField from '../../../../components/Inputs/TextField'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 
 function ImplementMarkingDialog({
   open,
@@ -99,58 +99,61 @@ function ImplementMarkingDialog({
           </Typography>
         </Box>
 
-        {cartItems.map((item, parentIndex) => (
-          <Box
-            key={item.id}
-            sx={{
-              padding: '5px 10px',
-              backgroundColor: '#f3f3f3',
-              m: '10px 0px',
-              borderRadius: '20px',
-            }}
-          >
-            <Typography fontWeight={'600'} my={'10px'}>
-              {item.name}
-            </Typography>
-            {Array(markingCount[item.id])
-              .fill(1)
-              .map((_, childIndex) => {
-                const flatIndex = getFlatIndex(parentIndex, childIndex, markingCount)
+        {cartItems.map((item, parentIndex) => {
+          if (!Object.keys(markingCount || {}).includes(item.id)) return
+          return (
+            <Box
+              key={item.id}
+              sx={{
+                padding: '5px 10px',
+                backgroundColor: '#f3f3f3',
+                m: '10px 0px',
+                borderRadius: '20px',
+              }}
+            >
+              <Typography fontWeight={'600'} my={'10px'}>
+                {item.name}
+              </Typography>
+              {Array(markingCount[item.id])
+                .fill(1)
+                .map((_, childIndex) => {
+                  const flatIndex = getFlatIndex(parentIndex, childIndex, markingCount)
 
-                return (
-                  <Box
-                    key={`${item.id}-${childIndex}`}
-                    sx={{
-                      mb: '5px',
-                      mt: '10px',
-                      '.MuiFormControl-root': {
-                        backgroundColor: 'transparent !important',
-                      },
-                      '.input-label': {
-                        mb: '0px !important',
-                      },
-                    }}
-                  >
-                    <TextField
-                      uncontrolled
-                      setValue={(e) => implementMarkingList(e, item?.id, childIndex)}
-                      defaultValue={markingsList?.[item.id]?.[childIndex]}
-                      required
-                      onKeyDown={(e) => handleKeyDown(e, flatIndex)}
-                      fullWidth
-                      inputRef={(el) => (inputsRef.current[flatIndex] = el)}
-                      borderRadius={'40px'}
-                      name={`${item.id}-${childIndex}`}
-                      id={`${item.id}-${childIndex}`}
-                      label={t('marking')}
-                      placeholder={t('marking.placeholder')}
-                      sx={{ mb: 0 }}
-                    />
-                  </Box>
-                )
-              })}
-          </Box>
-        ))}
+                  return (
+                    <Box
+                      key={`${item.id}-${childIndex}`}
+                      sx={{
+                        mb: '5px',
+                        mt: '10px',
+                        '.MuiFormControl-root': {
+                          backgroundColor: 'transparent !important',
+                        },
+                        '.input-label': {
+                          mb: '0px !important',
+                        },
+                      }}
+                    >
+                      <TextField
+                        uncontrolled
+                        setValue={(e) => implementMarkingList(e, item?.id, childIndex)}
+                        defaultValue={markingsList?.[item.id]?.[childIndex]}
+                        required={get(item, 'is_marking')}
+                        onKeyDown={(e) => handleKeyDown(e, flatIndex)}
+                        fullWidth
+                        inputRef={(el) => (inputsRef.current[flatIndex] = el)}
+                        borderRadius={'40px'}
+                        name={`${item.id}-${childIndex}`}
+                        id={`${item.id}-${childIndex}`}
+                        label={t('marking')}
+                        placeholder={t('marking.placeholder')}
+                        sx={{ mb: 0 }}
+                      />
+                    </Box>
+                  )
+                })}
+            </Box>
+          )
+        })}
       </Box>
 
       {/* Rest of your dialog footer remains the same */}
@@ -191,7 +194,7 @@ function ImplementMarkingDialog({
         icon={<BigWarningIcon />}
         onKeyDown={(event) => {
           if (event.key === 'Enter') {
-            addEmptyStringMarkToMarkinglessProduct(markingsList, markingCount)
+            setOpenConfirmDialog(false)
           }
         }}
         title={t('no_marking')}
@@ -205,9 +208,9 @@ function ImplementMarkingDialog({
               variant='contained'
               onClick={() => setOpenConfirmDialog(null)}
             >
-              {t('cancel')}
+              {t('Зсакрыть диалог')}
             </Button>
-            <LoadingButton
+            {/* <LoadingButton
               variant='contained'
               type='button'
               onClick={() => {
@@ -215,7 +218,7 @@ function ImplementMarkingDialog({
               }}
             >
               {t('continue')}
-            </LoadingButton>
+            </LoadingButton> */}
           </>
         }
       />

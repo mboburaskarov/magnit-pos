@@ -11,7 +11,6 @@ export default function TotalOrdersByCity({ data }) {
         borderRadius: '24px',
         padding: '32px 25px',
         backgroundColor: '#fff',
-        height: '100%',
         width: '100%',
       }}
     >

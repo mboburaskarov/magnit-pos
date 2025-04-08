@@ -1,11 +1,8 @@
 import { Box, Button, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import PaginationTable from '../../../../components/AgGridTable/PaginationTable'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import CreateEditCategories from '../../../../components/CreateEditCategories'
@@ -112,6 +109,7 @@ export default function CatalogManagement() {
             </Button>
           </Box>
         </Box>
+
         <PaginationTable
           isExpendable
           customTablePadding='8px 14px'
@@ -125,6 +123,7 @@ export default function CatalogManagement() {
           withHover
         />
       </Box>
+
       <CreateEditCategories
         withoutNavigate
         refetch={categoriesRefetch}
@@ -133,7 +132,6 @@ export default function CatalogManagement() {
         focusId={createEdit?.id}
         closeDrawer={() => setCreateEdit(false)}
       />
-
       <ConfirmDialog
         open={!!confirmToDelete}
         setOpen={setConfirmToDelete}

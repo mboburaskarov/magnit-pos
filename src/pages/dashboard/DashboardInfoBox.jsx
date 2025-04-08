@@ -79,8 +79,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
       <Box key={ind} sx={(theme) => ({ pt: '10px', pb: '8px', px: '16px', m: 0, height: 37, borderTop: 1, borderColor: '#A4A5AB33' })}>
         <Box>
           <Typography color='gray.500' fontSize={'16px'} lineHeight={'20px'} fontWeight='500' variant='h1'>
-            {thousandDivider(old)}
-            {endText} за прошедший период
+            {thousandDivider(old)} {endText} за прошедший период
           </Typography>
         </Box>
       </Box>

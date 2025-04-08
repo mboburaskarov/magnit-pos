@@ -87,7 +87,7 @@ export default function DashboarPage() {
         endText: 'сум',
         id: 'stock_total_amount',
         percent: calculatePercentage(before_stock_amount || 1, stock_total_amount),
-        old: before_sale_amount,
+        old: before_stock_amount,
       },
       {
         title: t('Чистая прибыль'),
@@ -216,19 +216,19 @@ export default function DashboarPage() {
           </Grid>
         </Grid>
         <CheckAccess id={'dashboard-transactions-vendor'}>
-          <Box mt={4} columnGap={3} display='inline-flex'>
+          <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
             <Transactions id='dashboard-chart' data={get(payments, 'data.data')} title={'Платежи'} subTitle={'64 116 872 UZS'} />
             <Transactions id='dashboard-chart' data={get(transaction, 'data.data')} title={'Транзакции'} subTitle={'64 шт'} />
           </Box>
         </CheckAccess>
         <CheckAccess id={'dashboard-vendor'}>
-          <Box mt={4} columnGap={3} display='inline-flex'>
+          <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
             <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
             <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} />
           </Box>
         </CheckAccess>
         <CheckAccess id={'dashboard-seller'}>
-          <Box mt={4} columnGap={3} display='inline-flex'>
+          <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
             <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} />
             <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} />
           </Box>

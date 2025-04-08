@@ -54,6 +54,9 @@ export default function ImportDetailsPage() {
   })
   useEffect(() => {
     if (tableColumns) {
+      console.log(routeString, tableColumns)
+      ;('retail_price_vat')
+      ;('retail_price_vat')
       const formattedData = tableColumns
         ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
         ?.map((el) => ({
