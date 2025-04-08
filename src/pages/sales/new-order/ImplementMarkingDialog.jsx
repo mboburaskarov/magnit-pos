@@ -105,6 +105,8 @@ function ImplementMarkingDialog({
             <Box
               key={item.id}
               sx={{
+                display: get(item, 'is_marking') ? 'block' : 'none',
+
                 padding: '5px 10px',
                 backgroundColor: '#f3f3f3',
                 m: '10px 0px',
@@ -180,6 +182,7 @@ function ImplementMarkingDialog({
               return
             }
             setIsOrderDrower(true)
+            addEmptyStringMarkToMarkinglessProduct(markingsList, markingCount)
             handleClose()
           }}
           fullWidth
@@ -208,7 +211,7 @@ function ImplementMarkingDialog({
               variant='contained'
               onClick={() => setOpenConfirmDialog(null)}
             >
-              {t('Зсакрыть диалог')}
+              {t('Закрыть диалог')}
             </Button>
             {/* <LoadingButton
               variant='contained'
