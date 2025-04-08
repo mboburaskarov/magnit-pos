@@ -77,7 +77,7 @@ function LayoutHeader() {
               <Skeleton className={classes.skeleton} />
             </Box>
           ) : (
-            <Box width={'400px'}>
+            <Box>
               <ButtonWithPopup
                 id={'user-info'}
                 noArrow
