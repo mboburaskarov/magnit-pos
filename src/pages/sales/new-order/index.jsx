@@ -932,6 +932,7 @@ function NewSale() {
         customerId={customerId}
         refetchcartItemsList={refetchcartItemsList}
         markingsList={markingsList}
+        markingCount={markingCount}
         setMarkingList={setMarkingList}
         setMarkingCount={setMarkingCount}
         setIsOrderDrower={setIsOrderDrower}

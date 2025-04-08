@@ -250,13 +250,26 @@ export default function OrderDrawer({
   cashBoxDetails,
   setMarkingList,
   setMarkingCount,
+  markingCount,
   half,
 
   setOpenDebt,
 }) {
   const methods = useForm()
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
-
+  const addEmptyStringMarkToMarkinglessProduct = (markings, shouldHaveMarkings) => {
+    let newMarkingList = { ...markings }
+    for (const key in shouldHaveMarkings) {
+      const count = shouldHaveMarkings[key]
+      const existingValues = markings[key] || {}
+      const mergedValues = {}
+      for (let i = 0; i < count; i++) {
+        mergedValues[i] = existingValues[i] || ''
+      }
+      newMarkingList[key] = mergedValues
+    }
+    setMarkingList(newMarkingList)
+  }
   const classes = useStyles()
   const [payments, setPayments] = useState([])
   const [paymentsList, setPaymentsList] = useState([])
@@ -273,7 +286,9 @@ export default function OrderDrawer({
   const navigate = useNavigate()
   const lastPaymentInput = useRef()
   const scannedBarcodeRef = useRef()
-
+  useEffect(() => {
+    addEmptyStringMarkToMarkinglessProduct(markingsList, markingCount)
+  }, [markingsList, markingCount])
   useEffect(() => {
     let amount = 0
     paymentsList.map((el) => {
