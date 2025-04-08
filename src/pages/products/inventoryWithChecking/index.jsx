@@ -1,4 +1,4 @@
-import { Box, Container } from '@mui/material'
+import { Box, Container, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -18,9 +18,12 @@ import { error } from '../../../../utils/toast'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import overplusAudio from '../../../assets/audio/overplus.mp3'
+import ArrowDown from '../../../assets/icons/ArrowDown'
+import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
+import InventoryDashboard from './inventoryDashboard'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
@@ -34,7 +37,7 @@ export default function InventoryWithCheckingPage() {
   const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.inventoryWithCheckingColumns)
   const { values } = useQueryParams()
-  const [imports, setImports] = useState([])
+  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
   const [hasTableChange, setHasTableChange] = useState(false)
@@ -65,7 +68,7 @@ export default function InventoryWithCheckingPage() {
     importsColumns: columns,
     t,
     values,
-    setImports,
+
     id,
     setScanedNumber,
   })
@@ -152,8 +155,26 @@ export default function InventoryWithCheckingPage() {
           text={'Инвентаризация с проверкой'}
           checkAccessId={'product-create'}
         />
+
         <Container>
-          <Box minWidth={320}>
+          <Box
+            sx={{
+              m: ' 0 0 20px',
+              userSelect: 'none !important',
+              cursor: 'pointer',
+              '& > p': {
+                cursor: 'pointer',
+                userSelect: 'none !important',
+              },
+            }}
+            display={'flex'}
+            onClick={() => setIsOpenStatDashboard((p) => !p)}
+          >
+            {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
+            <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
+          </Box>
+          {isOpenStatDashboard && <InventoryDashboard data={get(inventoryWithCheckingDetails, 'data.data')} />}
+          <Box display={'flex'} minWidth={320}>
             <InputSwitch
               uncontrolled
               id='status'

@@ -114,9 +114,9 @@ export default function SerchedItem({
                   className={classes.itemBarcode}
                   textToHighlight={product?.barcode}
                 />
-                <Typography color={'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
+                {/* <Typography color={'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
                   / {get(product, 'quantity ', 0)}
-                </Typography>
+                </Typography> */}
                 <Typography color={get(product, 'expire_day', 0) < 0 ? 'red.500' : 'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
                   / {get(product, 'expire_day', 0)} kun
                 </Typography>

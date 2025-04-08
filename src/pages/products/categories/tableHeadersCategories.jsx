@@ -1,13 +1,12 @@
-import Highlighter from 'react-highlight-words'
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
+import Highlighter from 'react-highlight-words'
 // import Button from 'components/Buttons/Button'
 // import Tooltip from 'components/Tooltip'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import DeleteMiddleIcon from '../../../assets/icons/DeleteMiddleIcon'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { get } from 'lodash'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import EditIcon from '../../../assets/icons/EditIcon'
-import { get } from 'lodash'
 
 const list = [
   { accessor: 'name', is_active: true },
@@ -31,9 +30,9 @@ const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, st
                 }}
               >
                 {row.isExpanded ? (
-                  <FontAwesomeIcon style={{ color: '#4993DD', marginRight: 8 }} icon={faChevronDown} />
+                  <FontAwesomeIcon style={{ color: '#fe5000', marginRight: 8 }} icon={faChevronDown} />
                 ) : (
-                  <FontAwesomeIcon style={{ color: '#4993DD', marginRight: 8 }} icon={faChevronRight} />
+                  <FontAwesomeIcon style={{ color: '#fe5000', marginRight: 8 }} icon={faChevronRight} />
                 )}
                 {row.original.name !== '' ? (
                   <Highlighter
@@ -73,7 +72,7 @@ const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, st
                   isSub: row.original.parent_id !== '',
                 })
               }
-              color={!!row?.original?.product_count ? '#4993DD' : '#BDBDBD'}
+              color={!!row?.original?.product_count ? '#fe5000' : '#BDBDBD'}
             >
               {row?.original?.product_count}
             </Box>
