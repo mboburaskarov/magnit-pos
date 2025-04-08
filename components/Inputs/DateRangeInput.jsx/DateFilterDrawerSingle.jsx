@@ -167,9 +167,10 @@ const useStyles = makeStyles((theme) => ({
     '& .DayPicker-Day--end.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside)': {
       backgroundColor: theme.palette.orange[600],
       borderRadius: '12px !important',
+      margin: '0 2px',
       color: '#fff',
-      boxShadow: ({ isOneDayDifference }) =>
-        !isOneDayDifference && `-9px 0 0px 0px ${theme.palette.type === 'dark' ? theme.palette.orange[200] : theme.palette.orange[50]}`,
+      // boxShadow: ({ isOneDayDifference }) =>
+      //   !isOneDayDifference && `-9px 0 0px 0px ${theme.palette.type === 'dark' ? theme.palette.orange[200] : theme.palette.orange[50]}`,
     },
     '& .DayPicker-Day.DayPicker-Day--disabled': {
       color: `${theme.palette.gray[400]} !important`,
