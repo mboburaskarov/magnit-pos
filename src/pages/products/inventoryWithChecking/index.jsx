@@ -1,4 +1,6 @@
-import { Box, Container, Typography } from '@mui/material'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Box, Button, Container, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -8,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import InputQuantity from '../../../../components/Inputs/InputQuantity'
 import InputSearch from '../../../../components/Inputs/InputSearch'
@@ -42,23 +45,26 @@ export default function InventoryWithCheckingPage() {
   const methods = useForm()
   const [hasTableChange, setHasTableChange] = useState(false)
   const [appType, setAppType] = useState('ALL')
+  const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
-      refetch()
+      // refetch()
       fetchStatusCountList()
       setBarcode('')
     },
     onError: (err) => {
+      refetch()
+
       error('Ошибка при сканирование!')
     },
   })
 
-  const { mutate: finishImportChecking, isLoading: isfinishImportChecking } = useMutation(requests.finishImportChecking, {
+  const { mutate: finishInventoryChecking, isLoading: isfinishInventoryChecking } = useMutation(requests.finishInventoryChecking, {
     onSuccess: ({ data }) => {
-      navigate('/products/import')
+      navigate('/products/inventory')
     },
     onError: (err) => {
       error('Ошибка при завершение импорта!')
@@ -144,14 +150,14 @@ export default function InventoryWithCheckingPage() {
   console.log(inventoryWithCheckingDetails)
 
   return (
-    <LoadingContainer readyState={!isfinishImportChecking}>
+    <LoadingContainer readyState={!isfinishInventoryChecking}>
       <FormProvider {...methods}>
         <Header
-          onSubmit={() => finishImportChecking(id)}
+          onSubmit={() => setOpenFinishConfirmDialog(true)}
           isLoading={false}
-          buttonText='Результаты'
+          buttonText='Завершить'
           backIcon
-          backHref='/products/import'
+          backHref='/products/inventory'
           text={'Инвентаризация с проверкой'}
           checkAccessId={'product-create'}
         />
@@ -296,6 +302,40 @@ export default function InventoryWithCheckingPage() {
           }}
         /> */}
       </FormProvider>
+      <ConfirmDialog
+        open={openFinishConfirmDialog}
+        setOpen={() => setOpenFinishConfirmDialog(false)}
+        icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
+        title={t('alerts.finish_inventory')}
+        desc={
+          <>
+            <Typography fontWeight={'600'} fontSize={'20px'}>
+              {t('alerts.finish_inventory_desc')}
+            </Typography>
+            <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
+              {t('alerts.finish_inventory_warning')}
+            </Typography>
+          </>
+        }
+        actions={
+          <>
+            <Button secondary onClick={() => setOpenFinishConfirmDialog(false)}>
+              {t('buttons.go_back')}
+            </Button>
+            <Button
+              size='medium'
+              variant='contained'
+              onClick={() => {
+                setOpenFinishConfirmDialog(false)
+                finishInventoryChecking(id)
+              }}
+              isLoading={false}
+            >
+              {t('buttons.yes_complete')}
+            </Button>
+          </>
+        }
+      />
     </LoadingContainer>
   )
 }
