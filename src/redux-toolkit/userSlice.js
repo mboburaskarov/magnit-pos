@@ -22,6 +22,7 @@ const userData = createSlice({
       state.companyID = action.payload.companyID
       state.id = action.payload.id
       state.store = action.payload.store
+      state.cashbox = action.payload.cashbox
       state.role_actions = action.payload.permissions
     },
   },
