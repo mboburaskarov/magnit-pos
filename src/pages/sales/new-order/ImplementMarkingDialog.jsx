@@ -23,7 +23,7 @@ function ImplementMarkingDialog({
   useEffect(() => {
     if (open) {
       setTimeout(() => {
-        inputsRef.current[0]?.focus()
+        inputsRef.current.filter((a) => a)[0]?.focus()
       }, 100)
     }
   }, [open])
@@ -62,6 +62,7 @@ function ImplementMarkingDialog({
       }
     }
   }
+  console.log(inputsRef)
 
   // Calculate flat index from parent and child indexes
   const getFlatIndex = (parentIndex, childIndex, markingCounts) => {
@@ -142,7 +143,7 @@ function ImplementMarkingDialog({
                         required={get(item, 'is_marking')}
                         onKeyDown={(e) => handleKeyDown(e, flatIndex)}
                         fullWidth
-                        inputRef={(el) => (inputsRef.current[flatIndex] = el)}
+                        inputRef={(el) => get(item, 'is_marking') && (inputsRef.current[flatIndex] = el)}
                         borderRadius={'40px'}
                         name={`${item.id}-${childIndex}`}
                         id={`${item.id}-${childIndex}`}
