@@ -23,7 +23,7 @@ function InventoryDashboard({ data }) {
           <Box
             sx={{
               boxShadow: ' 0px 0px 16px rgba(0, 0, 0, 0.08)',
-              backgroundColor: stat.title == 'result' ? 'orange.200' : '#fff',
+              backgroundColor: stat.title == 'result' ? '#dfdfdf' : '#fff',
               borderRadius: '24px',
               padding: '20px',
               minHeight: '110px',
