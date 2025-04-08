@@ -1,12 +1,12 @@
-import React from 'react'
-import { Box, Typography, TextField, InputAdornment } from '@mui/material'
-import DatePicker, { registerLocale } from 'react-datepicker'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
-import paletteLight from '../../src/assets/theme/paletteLight'
-import ru from 'date-fns/locale/ru'
-import { YearMonthFormNew } from './InputDatePicker'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Box, InputAdornment, TextField, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import ru from 'date-fns/locale/ru'
+import React from 'react'
+import DatePicker, { registerLocale } from 'react-datepicker'
+import paletteLight from '../../src/assets/theme/paletteLight'
+import { YearMonthFormNew } from './InputDatePicker'
 
 registerLocale('ru', ru)
 
@@ -71,7 +71,14 @@ function InputDateRangePicker({
 
   return (
     <Box width={fullWidth ? '100%' : 320} maxWidth={maxWidth} className={classes.root} mt={!label && !noMarginTop && '21px'} {...boxStyle}>
-      <Typography className={`${required && label && asteriks ? classes.required : ''}`} mb={2} variant='h5'>
+      <Typography
+        className={`${required && label && asteriks ? classes.required : ''}`}
+        mb={2}
+        fontSize={'16px'}
+        color={'bunker.700'}
+        fontWeight={'600'}
+        variant='h5'
+      >
         {label}
       </Typography>
       <DatePicker
