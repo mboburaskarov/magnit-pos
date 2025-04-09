@@ -5,6 +5,7 @@ import * as qs from 'qs'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
+import StyledTooltip from '../../../../components/StyledTooltip'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 import ArrowRight from '../../../assets/icons/ArrowRight'
@@ -162,38 +163,42 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  bgcolor: 'green.500',
-                }}
-              >
-                <LeftArrowIcon fill='transparent' color='#fff' />
-              </Box>
+              <StyledTooltip title={'Недостачи'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'red.500',
+                  }}
+                >
+                  <LeftArrowIcon fill='transparent' color='#fff' />
+                </Box>
+              </StyledTooltip>
 
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={''} type={'shortage'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  bgcolor: 'red.500',
-                }}
-              >
-                <ArrowRight color='#fff' />
-              </Box>
+              <StyledTooltip title={'Излишек'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'green.500',
+                  }}
+                >
+                  <ArrowRight color='#fff' />
+                </Box>
+              </StyledTooltip>
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={''} type={'surplus'} />

@@ -480,7 +480,7 @@ const CartItem = ({
               )} */}
 
               <Box alignItems={'end'} display={'flex'} flexDirection={'column'}>
-                {item.quantity > 0 && (
+                {item.quantity >= 0 && (
                   <StyledTooltip title={'Это цена одного товара без скидки.'}>
                     <Box display={'flex'}>
                       {/* {item?.discount_price > 0 && (
@@ -502,7 +502,7 @@ const CartItem = ({
                           color: item?.discount_price > 0 ? 'bunker.300' : 'bunker.500',
                         }}
                       >
-                        {thousandDivider(item?.unit_price, 'сум')}
+                        уп: {thousandDivider(item?.unit_price, 'сум')}
                       </Typography>
                     </Box>
                   </StyledTooltip>
@@ -510,25 +510,48 @@ const CartItem = ({
                 <Box display={'flex'}>
                   {item?.discount_price > 0 && (
                     <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
-                      {thousandDivider(item?.discount_price * item.quantity, 'сум')}
+                      {thousandDivider(item?.discount_price * item.quantity || item.unit_quantity, 'сум')}
                     </Typography>
                   )}
-                  <Typography
-                    textDecoration='line-through'
-                    sx={{
-                      mr: '10px',
-                      color: 'orange.500',
-                      whiteSpace: 'pre',
-                      fontSize: item?.discount_price > 0 ? '14px' : '16px',
-                      lineHeight: '24px',
-                      mt: '1px',
-                      fontWeight: '600',
-                      textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
-                      color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
-                    }}
-                  >
-                    {thousandDivider(item?.total_price, 'сум')}
-                  </Typography>
+                  <Box>
+                    {item?.unit_quantity_price && item.unit_quantity >= 1 ? (
+                      <Typography
+                        textDecoration='line-through'
+                        sx={{
+                          mr: '10px',
+                          color: 'orange.500',
+                          whiteSpace: 'pre',
+                          fontSize: item?.discount_price > 0 ? '14px' : '16px',
+                          lineHeight: '24px',
+                          mt: '1px',
+                          fontWeight: '600',
+                          // textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
+                          color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
+                        }}
+                      >
+                        шт: {thousandDivider(item?.unit_quantity_price, 'сум')}
+                      </Typography>
+                    ) : (
+                      ''
+                    )}
+                    <Typography
+                      textDecoration='line-through'
+                      sx={{
+                        mr: '10px',
+                        color: 'orange.500',
+                        whiteSpace: 'pre',
+                        fontSize: item?.discount_price > 0 ? '14px' : '16px',
+                        lineHeight: '24px',
+                        mt: '1px',
+                        textAlign: 'end',
+                        fontWeight: '600',
+                        textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
+                        color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
+                      }}
+                    >
+                      {thousandDivider(item?.total_price, 'сум')}
+                    </Typography>
+                  </Box>
                 </Box>
               </Box>
             </Box>

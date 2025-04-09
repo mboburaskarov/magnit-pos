@@ -38,16 +38,15 @@ const columns = [
     minWidth: 70,
     width: 370,
   },
-
   {
-    field: 'accepted_amount',
+    field: 'received_count',
     hide: false,
     minWidth: 70,
     width: 170,
   },
 
   {
-    field: 'received_count',
+    field: 'accepted_amount',
     hide: false,
     minWidth: 70,
     width: 170,
