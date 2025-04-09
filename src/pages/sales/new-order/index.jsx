@@ -656,7 +656,6 @@ function NewSale() {
     }
   }
   const isAllMarkingFill = () => {
-    // const cartsMarkingCount = Object.values(markingCount)?.reduce((acc, i) => acc + i, 0)
     const newmarkingCount = {}
 
     get(cartItemsList, 'data.data.data').map((item) => {
