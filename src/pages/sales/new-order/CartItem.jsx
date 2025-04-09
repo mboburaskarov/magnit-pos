@@ -502,7 +502,7 @@ const CartItem = ({
                           color: item?.discount_price > 0 ? 'bunker.300' : 'bunker.500',
                         }}
                       >
-                        уп: {thousandDivider(item?.unit_price, 'сум')}
+                        {thousandDivider(item?.unit_price, 'сум')}
                       </Typography>
                     </Box>
                   </StyledTooltip>
@@ -529,7 +529,7 @@ const CartItem = ({
                           color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
                         }}
                       >
-                        шт: {thousandDivider(item?.unit_quantity_price, 'сум')}
+                        {thousandDivider(item?.unit_quantity_price, 'сум')}
                       </Typography>
                     ) : (
                       ''
