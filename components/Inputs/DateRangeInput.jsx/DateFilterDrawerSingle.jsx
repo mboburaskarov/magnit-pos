@@ -15,12 +15,13 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginTop: 10,
     borderRadius: '16px',
-    backgroundColor: theme.palette.background.default,
+    // backgroundColor: theme.palette.background.default,
   },
   body: {
     flexGrow: '1',
     display: 'flex',
     height: '100%',
+    marginBottom: '5px',
     '& > div:nth-last-of-type(1)': {
       display: 'flex',
     },
@@ -106,20 +107,20 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: 'center',
       alignItems: 'center',
       width: 44,
-      height: 42,
+      height: 44,
+      borderRadius: '50%',
       padding: 0,
       marginRight: 0,
       color: theme.palette.gray[600],
       fontSize: 16,
       lineHeight: '19px',
       fontWeight: 600,
-      borderRadius: 0,
       transition: 'all 0s ease',
       cursor: 'pointer',
       '&:not(.DayPicker-Day--outside):hover': {
         backgroundColor: `${theme.palette.orange[600]} !important`,
         color: '#fff !important',
-        borderRadius: '12px !important',
+        borderRadius: '50% !important',
         zIndex: 1,
         boxShadow: 'none !important',
       },
@@ -148,10 +149,10 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.type === 'dark' ? theme.palette.orange[200] : theme.palette.orange[50],
       color: theme.palette.type === 'dark' ? theme.palette.gray[700] : theme.palette.gray[600],
       '&:last-child': {
-        borderRadius: '0 12px 12px 0',
+        borderRadius: '50% !important',
       },
       '&:first-child': {
-        borderRadius: '12px 0 0 12px',
+        borderRadius: '50% !important',
       },
       '&:hover, &.DayPicker-Day--end, &.DayPicker-Day--start': {
         color: '#fff',
@@ -160,13 +161,13 @@ const useStyles = makeStyles((theme) => ({
     '& .DayPicker-Day--start.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside)': {
       backgroundColor: theme.palette.orange[600],
       color: '#fff',
-      borderRadius: '12px !important',
+      borderRadius: '50% !important',
       boxShadow: ({ isOneDayDifference }) =>
         !isOneDayDifference && `9px 0 0px 0px ${theme.palette.type === 'dark' ? theme.palette.orange[200] : theme.palette.orange[50]}`,
     },
     '& .DayPicker-Day--end.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside)': {
       backgroundColor: theme.palette.orange[600],
-      borderRadius: '12px !important',
+      borderRadius: '50% !important',
       margin: '0 2px',
       color: '#fff',
       // boxShadow: ({ isOneDayDifference }) =>
@@ -178,7 +179,7 @@ const useStyles = makeStyles((theme) => ({
       '&:not(.DayPicker-Day--outside):hover': {
         backgroundColor: `#fff !important`,
         color: `${theme.palette.gray[400]} !important`,
-        borderRadius: '12px !important',
+        borderRadius: '50% !important',
         zIndex: 1,
         boxShadow: 'none !important',
       },
@@ -337,7 +338,16 @@ export default function DateFilterDrawerSingle({
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit, onError)} noValidate>
           <Box className={classes.body}>
-            <Box display='flex' flexWrap='wrap' flexGrow='1' p={3}>
+            <Box
+              sx={(theme) => ({
+                backgroundColor: theme.palette.background.default,
+                borderRadius: '16px',
+              })}
+              display='flex'
+              flexWrap='wrap'
+              flexGrow='1'
+              p={3}
+            >
               <DayPicker
                 className={classes.dateRange}
                 firstDayOfWeek={1}
@@ -359,7 +369,10 @@ export default function DateFilterDrawerSingle({
               sx={(theme) => ({
                 display: 'flex',
                 flexDirection: 'column',
-                borderLeft: `2px solid ${theme.palette.gray[200]}`,
+                backgroundColor: theme.palette.background.default,
+                borderRadius: '16px',
+                width: '100%',
+                m: '0 0 0px 5px',
               })}
               p={3}
               pb={1}
@@ -382,9 +395,10 @@ export default function DateFilterDrawerSingle({
                   secondary
                   sx={{
                     borderRadius: 4,
+                    border: 'none',
                     backgroundColor: selectedRange == item?.id ? '#fe5000 !important' : '#fff',
                     marginBottom: 2,
-                    color: selectedRange == item?.id ? '#fff !important' : '#000',
+                    color: selectedRange == item?.id ? '#fff !important' : 'bunker.950',
                     height: '54px',
                     justifyContent: 'flex-start',
                   }}
@@ -399,6 +413,7 @@ export default function DateFilterDrawerSingle({
               ))}
             </Box>
           </Box>
+
           <DateRangeInputsBox dateState={dateState} />
         </form>
       </FormProvider>
