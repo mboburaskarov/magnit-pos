@@ -480,7 +480,7 @@ const CartItem = ({
               )} */}
 
               <Box alignItems={'end'} display={'flex'} flexDirection={'column'}>
-                {item.quantity > 1 && (
+                {item.quantity > 0 && (
                   <StyledTooltip title={'Это цена одного товара без скидки.'}>
                     <Box display={'flex'}>
                       {/* {item?.discount_price > 0 && (
