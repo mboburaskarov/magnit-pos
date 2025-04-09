@@ -498,6 +498,7 @@ const CartItem = ({
                           fontSize: item?.discount_price > 0 ? '14px' : '16px',
                           lineHeight: '24px',
                           fontWeight: '600',
+                          textAlign: 'end',
                           // textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
                           color: item?.discount_price > 0 ? 'bunker.300' : 'bunker.500',
                         }}
@@ -525,6 +526,8 @@ const CartItem = ({
                           lineHeight: '24px',
                           mt: '1px',
                           fontWeight: '600',
+                          textAlign: 'end',
+
                           // textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
                           color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
                         }}
