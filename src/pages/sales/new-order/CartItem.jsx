@@ -515,7 +515,7 @@ const CartItem = ({
                     </Typography>
                   )}
                   <Box>
-                    {item?.unit_quantity_price && item.unit_quantity >= 1 ? (
+                    {/* {item?.unit_quantity_price && item.unit_quantity >= 1 ? (
                       <Typography
                         textDecoration='line-through'
                         sx={{
@@ -536,7 +536,7 @@ const CartItem = ({
                       </Typography>
                     ) : (
                       ''
-                    )}
+                    )} */}
                     <Typography
                       textDecoration='line-through'
                       sx={{
