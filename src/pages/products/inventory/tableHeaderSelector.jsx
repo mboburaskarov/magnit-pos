@@ -93,7 +93,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
     if (el.field === 'public_id') {
       return {
         ...el,
-        headerName: 'Импортный номер',
+        headerName: 'Номер',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='public_id' />),
       }
