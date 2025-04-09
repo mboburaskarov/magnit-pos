@@ -184,10 +184,31 @@ function LayoutHeader() {
             width: '48px',
             height: '48px',
             borderRadius: '100%',
+            position: 'relative',
             backgroundColor: 'gray.50',
           }}
         >
           <NotificationSmallIcon />
+          <Typography
+            sx={{
+              width: '40px',
+              height: '20px',
+              backgroundColor: '#A53EFF',
+              color: '#fff',
+              fontSize: '10px',
+              fontWeight: '600',
+              borderRadius: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              ml: '5px',
+              position: 'absolute',
+              top: '-6px',
+              right: '-10px',
+            }}
+          >
+            soon
+          </Typography>
         </Box>
       </Box>
       {/* <UserLogOutDrawer
