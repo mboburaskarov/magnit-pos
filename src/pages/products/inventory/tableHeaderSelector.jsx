@@ -1,5 +1,3 @@
-import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
@@ -7,10 +5,11 @@ import * as qs from 'qs'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
-import palette from '../../../../src/assets/theme/mui.config'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
+import ArrowRight from '../../../assets/icons/ArrowRight'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
+import LeftArrowIcon from '../../../assets/icons/LeftArrow'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -163,44 +162,41 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  bgcolor: 'green.500',
+                }}
+              >
+                <LeftArrowIcon fill='transparent' color='#fff' />
+              </Box>
 
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={'сум'} type={'received_amount'} />
+              <SimpleText {...p} withDevider currency={''} type={'shortage'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
-
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  bgcolor: 'red.500',
+                }}
+              >
+                <ArrowRight color='#fff' />
+              </Box>
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={'сум'} type={'accepted_amount'} />
-            </Box>
-          </>
-        )),
-        // <SimpleText currency='сум' withDevider {...p} type='accepted_amount' />),
-      }
-    }
-    if (el.field === 'accepted_amount_vat') {
-      return {
-        ...el,
-        headerName: 'Cумма СНДС',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
-
-              <Box width={'10px'} />
-
-              <SimpleText {...p} withDevider currency={'сум'} type={'received_amount_vat'} />
-            </Box>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
-
-              <Box width={'10px'} />
-
-              <SimpleText {...p} withDevider currency={'сум'} type={'accepted_amount_vat'} />
+              <SimpleText {...p} withDevider currency={''} type={'surplus'} />
             </Box>
           </>
         )),
@@ -213,26 +209,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: 'Количество',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
-
-              <Box width={'10px'} />
-              <Typography>
-                {p?.data?.received_count} {p?.data?.unit_name}
-              </Typography>
-            </Box>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
-
-              <Box width={'10px'} />
-              <Typography>
-                {p?.data?.accepted_count} {p?.data?.unit_name}
-              </Typography>
-            </Box>
-          </>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={''} type={'measurement_count'} />),
       }
     }
 

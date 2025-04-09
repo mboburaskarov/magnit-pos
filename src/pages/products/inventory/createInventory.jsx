@@ -9,6 +9,7 @@ import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog
 import TextField from '../../../../components/Inputs/TextField'
 import Label from '../../../../components/Label'
 import LazySelect from '../../../../components/Select/LazySelect'
+import SelectSimple from '../../../../components/Select/SelectSimple'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
@@ -49,6 +50,10 @@ export default function CreateInventory({ open, refetch, setOpen }) {
   const theme = useTheme()
 
   const { t } = useTranslation()
+  const inventoryOpetions = [
+    { name: 'Полная', id: 'FULL' },
+    { name: 'Частичная', id: 'PARTIAL', isDisabled: true },
+  ]
   return (
     <StyledEmptyDialog
       overflowVisible
@@ -83,11 +88,10 @@ export default function CreateInventory({ open, refetch, setOpen }) {
                 fullWidth
                 placeholder={t('Назовите инвентаризация')}
                 required
-                defaultValue={`Cписание ${dayjs().format('YYYY.MM.DD HH:mm')}`}
+                defaultValue={`Инвентаризация ${dayjs().format('YYYY.MM.DD HH:mm')}`}
                 asteriks
               />
             </Box>
-
             <LazySelect
               boxStyle={{ width: '100%' }}
               slug='store_id'
@@ -110,6 +114,44 @@ export default function CreateInventory({ open, refetch, setOpen }) {
               filterOption={() => true}
             />
 
+            <SelectSimple
+              fullWidth
+              id='nobarcode'
+              white
+              name='inventory_type'
+              minWidth='auto'
+              onChange={() => {}}
+              label={'Тип'}
+              value='FULL'
+              isClearable={false}
+              placeholder={'Bыберите тип'}
+              defaultValue={{ name: 'Полная', id: 'FULL' }}
+              options={inventoryOpetions}
+              getOptionLabel={(el) => (
+                <Box display={'flex'}>
+                  {el.name}
+                  {el.id == 'PARTIAL' && (
+                    <Typography
+                      sx={{
+                        width: '40px',
+                        height: '18px',
+                        backgroundColor: '#A53EFF',
+                        color: '#fff',
+                        fontSize: '10px',
+                        fontWeight: '600',
+                        borderRadius: '24px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        ml: '5px',
+                      }}
+                    >
+                      soon
+                    </Typography>
+                  )}
+                </Box>
+              )}
+            />
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button fullWidth variant='contained' type='submit'>
                 {t('filter_dialog.save.label')}

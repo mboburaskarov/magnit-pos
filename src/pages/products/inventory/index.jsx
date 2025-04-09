@@ -15,7 +15,7 @@ import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/importsTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryTableColumns'
 import CreateInventory from './createInventory'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
@@ -26,7 +26,7 @@ export default function InventoryPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { columns, loading } = useSelector((state) => state.importsTableColumns)
+  const { columns, loading } = useSelector((state) => state.inventoryTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
@@ -100,7 +100,7 @@ export default function InventoryPage() {
   }, [inventoryList?.data, values?.limit])
   const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Импорт')
+      downloadExcel(data, 'Инвентаризация')
     },
     onError: (err) => {
       console.log(err)
@@ -128,7 +128,7 @@ export default function InventoryPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={'Импортный номер, наименование'} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'Инвентаризацияный номер, наименование'} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>
@@ -206,7 +206,7 @@ export default function InventoryPage() {
             }}
             emptyTableText={{
               title: 'Инвентаризация недоступен',
-              description: 'Если вы не можете найти искомый Импорт',
+              description: 'Если вы не можете найти искомый Инвентаризация',
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}

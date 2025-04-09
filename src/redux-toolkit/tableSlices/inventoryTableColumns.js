@@ -17,7 +17,7 @@ const columns = [
   {
     field: 'document_number',
     hide: false,
-    minWidth: 200,
+    minWidth: 280,
     flex: 1,
   },
   {
@@ -45,12 +45,7 @@ const columns = [
     minWidth: 70,
     width: 170,
   },
-  {
-    field: 'accepted_amount_vat',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
+
   {
     field: 'received_count',
     hide: false,

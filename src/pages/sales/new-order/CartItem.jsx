@@ -344,13 +344,13 @@ const CartItem = ({
                     name={`unit_quantity_${item?.id}`}
                     defaultValue={get(item, 'unit_quantity', 1)}
                     adornmentPosition='end'
-                    initWidth='85px'
+                    initWidth='90px'
                     adornment={
-                      <Typography display={'flex'}>
+                      <Typography pr='8px' display={'flex'}>
                         <Box fontSize={'12px'} m={'0px 0'} color='bunker.950'>
                           /{item.unit_per_pack}
                         </Box>{' '}
-                        <Typography m={'0 4px'}>шт</Typography>
+                        <Typography m={'0 4px 0'}>шт</Typography>
                       </Typography>
                     }
                     inputRef={(e) => unitRef(e)}

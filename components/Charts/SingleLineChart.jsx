@@ -19,8 +19,8 @@ const detailingOptions = [
 ]
 const chartOptions = [
   { name: 'Продажи', value: 'sale' },
-  { name: 'Обмены', value: 'swap' },
-  { name: 'Возвраты', value: 'return' },
+  { name: 'Обмены', value: 'swap', soon: true, isDisabled: true },
+  { name: 'Возвраты', value: 'return', soon: true, isDisabled: true },
 ]
 
 const purpleColor = '#a811d6'
@@ -135,23 +135,25 @@ export default function SingleBarChart({
               getOptionLabel={(option) => (
                 <Box display={'flex'}>
                   {option.name}
-                  <Typography
-                    sx={{
-                      width: '40px',
-                      height: '20px',
-                      backgroundColor: '#A53EFF',
-                      color: '#fff',
-                      fontSize: '10px',
-                      fontWeight: '600',
-                      borderRadius: '24px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      ml: '5px',
-                    }}
-                  >
-                    soon
-                  </Typography>
+                  {option.soon && (
+                    <Typography
+                      sx={{
+                        width: '40px',
+                        height: '20px',
+                        backgroundColor: '#A53EFF',
+                        color: '#fff',
+                        fontSize: '10px',
+                        fontWeight: '600',
+                        borderRadius: '24px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        ml: '5px',
+                      }}
+                    >
+                      soon
+                    </Typography>
+                  )}
                 </Box>
               )}
               beforeContent=''
