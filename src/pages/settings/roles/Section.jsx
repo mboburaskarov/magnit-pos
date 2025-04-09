@@ -1,7 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { useTranslation } from 'react-i18next'
-import StyledSwitch from '../../../../components/Switch/StyledSwitch'
 import TreeSelectCategory from '../../../../components/TreeSelectCategory/index'
 
 const useStyles = makeStyles((theme) => ({
@@ -61,7 +60,7 @@ export default function Section({ section, sectionRef, setDisabled, disabled, se
         <Typography variant='h3' className={classes.title}>
           {t(`navbar.${section?.key}`)}
         </Typography>
-        <StyledSwitch
+        {/* <StyledSwitch
           checked={!disabled?.includes(section.key)}
           onChange={() => {
             if (setDisabled) {
@@ -73,7 +72,7 @@ export default function Section({ section, sectionRef, setDisabled, disabled, se
             }
           }}
           name={section?.key}
-        />
+        /> */}
       </Box>
       <Box>
         {!!sectionArrays?.length && (
