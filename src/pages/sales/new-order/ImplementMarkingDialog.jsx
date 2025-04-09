@@ -122,12 +122,10 @@ function ImplementMarkingDialog({
               <Typography fontWeight={'600'} my={'10px'}>
                 {item.name}
               </Typography>
-              {console.log(markingCount)}
               {Array(markingCount[item.id])
                 .fill(1)
                 .map((_, childIndex) => {
                   const flatIndex = getFlatIndex(parentIndex, childIndex, markingCount)
-                  console.log(flatIndex)
 
                   return (
                     <Box
