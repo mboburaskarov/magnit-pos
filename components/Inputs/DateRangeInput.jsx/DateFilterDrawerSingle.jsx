@@ -89,17 +89,25 @@ const useStyles = makeStyles((theme) => ({
       height: 40,
       padding: 0,
       marginRight: 4,
-      color: theme.palette.gray[400],
+      color: theme.palette.bunker[800],
       fontSize: 16,
       lineHeight: '19px',
       fontWeight: 600,
       verticalAlign: 'middle',
       textTransform: 'capitalize',
       '& abbr': {
+        textDecoration: 'none !important',
+
         cursor: 'default',
       },
       '&:last-child': {
         marginRight: 0,
+      },
+      '&:nth-child(6) ': {
+        color: theme.palette.orange[500],
+      },
+      '&:nth-child(7) ': {
+        color: theme.palette.orange[500],
       },
     },
     '& .DayPicker-Day': {
@@ -401,10 +409,17 @@ export default function DateFilterDrawerSingle({
                     color: selectedRange == item?.id ? '#fff !important' : 'bunker.950',
                     height: '54px',
                     justifyContent: 'flex-start',
+                    '&:hover': {
+                      backgroundColor: selectedRange == item?.id ? '#fe5000 !important' : '#fff',
+                      color: selectedRange == item?.id ? '#fff !important' : 'bunker.950',
+                      border: 'none',
+                    },
                   }}
                 >
                   <Box pl={1} display='flex' flexDirection='column' alignItems='flex-start'>
-                    <b>{item.label}</b>
+                    <Typography color={selectedRange == item?.id ? '#fff !important' : '#000'} fontWeight={'600'} fontSize={'16px'}>
+                      {item.label}
+                    </Typography>
                     <Typography color={selectedRange == item?.id ? '#fff !important' : '#000'}>
                       {item.values[0] === item.values[1] ? item.values[0] : item.values?.join(' - ')}
                     </Typography>
