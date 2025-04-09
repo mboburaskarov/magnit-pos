@@ -1,17 +1,17 @@
-import { Box, List, ListItem, Skeleton, Typography } from '@mui/material'
-import { Link, useLocation } from 'react-router-dom'
+import { Box, List, ListItem, Typography } from '@mui/material'
+import { get, size } from 'lodash'
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import LogoMain from '../../assets/icons/LogoMain'
-import LogoLetters from '../../assets/icons/LogoLetters'
-import SidebarIcon from '../../assets/icons/SidebarIcon'
-import NavItem from './NavItem'
-import NavItemMini from './NavItemMini'
+import { Link, useLocation } from 'react-router-dom'
 import isEqual from '../../../utils/isEqual'
 import BackArrowIcon from '../../assets/icons/BackArrow'
-import { useTranslation } from 'react-i18next'
-import { get, size } from 'lodash'
+import LogoLetters from '../../assets/icons/LogoLetters'
+import LogoMain from '../../assets/icons/LogoMain'
+import SidebarIcon from '../../assets/icons/SidebarIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
+import NavItem from './NavItem'
+import NavItemMini from './NavItemMini'
 function NavbarDrawer({
   classes,
   isOpen,
@@ -138,7 +138,7 @@ function NavbarDrawer({
                   {get(userData, 'store.name')}
                 </Typography>
                 <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                  {get(userData, 'store.store_code')}
+                  {get(userData, 'cashbox.name', '-')}
                 </p>
               </Box>
             )}

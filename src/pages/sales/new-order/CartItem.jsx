@@ -4,10 +4,12 @@ import { get } from 'lodash'
 import React, { memo } from 'react'
 import { useMutation } from 'react-query'
 import InputQuantity from '../../../../components/Inputs/InputQuantity'
+import StyledTooltip from '../../../../components/StyledTooltip'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import PrizeBoxIcon from '../../../assets/icons/PrizeBoxIcon'
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -261,7 +263,7 @@ const CartItem = ({
               display={'flex'}
               sx={{
                 '& .MuiInputBase-root': {
-                  width: get(item, 'unit_per_pack') == 0 ? '100px' : '100px',
+                  width: get(item, 'unit_per_pack') == 0 ? '100%' : '100%',
                 },
               }}
             >
@@ -271,7 +273,6 @@ const CartItem = ({
                     id={`quantity_${item?.id}`}
                     name={`quantity_${item?.id}`}
                     adornmentPosition='end'
-                    fullWidth
                     adornmentClassName={cls.adornment}
                     max={100}
                     adornment={item?.short_name}
@@ -334,7 +335,7 @@ const CartItem = ({
                 <Box
                   sx={{
                     '& .MuiInputBase-root': {
-                      width: get(item, 'unit_per_pack') == 0 ? '100px' : '100px',
+                      // width: get(item, 'unit_per_pack') == 0 ? '110px' : '110px',
                     },
                   }}
                 >
@@ -343,11 +344,18 @@ const CartItem = ({
                     name={`unit_quantity_${item?.id}`}
                     defaultValue={get(item, 'unit_quantity', 1)}
                     adornmentPosition='end'
-                    adornment='шт'
+                    initWidth='90px'
+                    adornment={
+                      <Typography pr='8px' display={'flex'}>
+                        <Box fontSize={'12px'} m={'0px 0'} color='bunker.950'>
+                          /{item.unit_per_pack}
+                        </Box>{' '}
+                        <Typography m={'0 4px 0'}>шт</Typography>
+                      </Typography>
+                    }
                     inputRef={(e) => unitRef(e)}
                     adornmentClassName={cls.adornment}
                     max={100}
-                    fullWidth
                     type='number'
                     onFocus={({ target }) => {
                       if (Number(get(target, 'value')) == 0) {
@@ -427,13 +435,32 @@ const CartItem = ({
               >
                 <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
                   <Typography sx={{ color: 'bunker.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>
-                    {item?.barcode} / {item.current_stock} {get(item, 'shelf', '').length > 0 ? `/ Полка: ${get(item, 'shelf', 'X')}` : ''}
+                    {item?.barcode} {get(item, 'shelf', '').length > 0 ? `/ Полка: ${get(item, 'shelf', 'X')}` : ''}/ Остаток:{' '}
+                    {item.quantity_stock > 0 && `${item.quantity_stock}уп`} {item.unit_quantity_stock > 0 && `${item.unit_quantity_stock}шт`}
                   </Typography>
                 </Box>
               </Box>
             </Box>
+            {item?.bonus_amount > 0 && (
+              <Box
+                sx={{
+                  borderRadius: '24px',
+                  padding: '0 9px',
+                  height: '22px',
+                  display: 'flex',
+                  mr: '10px',
+                  alignItems: 'center',
+                  backgroundColor: 'orange.500',
+                }}
+              >
+                <PrizeBoxIcon />
+                <Typography ml='4px' color={'white'} fontSize={'10px'} fontWeight={'600'}>
+                  {item.bonus_amount}сум
+                </Typography>
+              </Box>
+            )}
             <Box display={'flex'} alignItems={'center'}>
-              {item?.discount_value > 0 && (
+              {/* {item?.discount_value > 0 && (
                 <Typography
                   whiteSpace={'pre'}
                   sx={{
@@ -450,33 +477,89 @@ const CartItem = ({
                 >
                   - {item?.discount_value}%
                 </Typography>
-              )}
+              )} */}
 
               <Box alignItems={'end'} display={'flex'} flexDirection={'column'}>
-                {item?.discount_price > 0 && (
-                  <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
-                    {thousandDivider(item?.discount_price, 'сум')}
-                  </Typography>
+                {item.quantity >= 0 && (
+                  <StyledTooltip title={'Это цена одного товара без скидки.'}>
+                    <Box display={'flex'}>
+                      {/* {item?.discount_price > 0 && (
+                      <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
+                        {thousandDivider(item?.discount_price, 'сум')}
+                      </Typography>
+                    )} */}
+
+                      <Typography
+                        textDecoration='line-through'
+                        sx={{
+                          mr: '10px',
+                          color: 'bunker.200',
+                          whiteSpace: 'pre',
+                          fontSize: item?.discount_price > 0 ? '14px' : '16px',
+                          lineHeight: '24px',
+                          fontWeight: '600',
+                          textAlign: 'end',
+                          // textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
+                          color: item?.discount_price > 0 ? 'bunker.300' : 'bunker.500',
+                        }}
+                      >
+                        {thousandDivider(item?.unit_price, 'сум')}
+                      </Typography>
+                    </Box>
+                  </StyledTooltip>
                 )}
-                <Typography
-                  textDecoration='line-through'
-                  sx={{
-                    mr: '10px',
-                    color: 'orange.500',
-                    whiteSpace: 'pre',
-                    fontSize: item?.discount_price > 0 ? '14px' : '16px',
-                    lineHeight: '24px',
-                    fontWeight: '600',
-                    textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
-                    color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
-                  }}
-                >
-                  {thousandDivider(item?.unit_price, 'сум')}
-                </Typography>
+                <Box display={'flex'}>
+                  {item?.discount_price > 0 && (
+                    <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
+                      {thousandDivider(item?.discount_price * item.quantity || item.unit_quantity, 'сум')}
+                    </Typography>
+                  )}
+                  <Box>
+                    {/* {item?.unit_quantity_price && item.unit_quantity >= 1 ? (
+                      <Typography
+                        textDecoration='line-through'
+                        sx={{
+                          mr: '10px',
+                          color: 'orange.500',
+                          whiteSpace: 'pre',
+                          fontSize: item?.discount_price > 0 ? '14px' : '16px',
+                          lineHeight: '24px',
+                          mt: '1px',
+                          fontWeight: '600',
+                          textAlign: 'end',
+
+                          // textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
+                          color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
+                        }}
+                      >
+                        {thousandDivider(item?.unit_quantity_price, 'сум')}
+                      </Typography>
+                    ) : (
+                      ''
+                    )} */}
+                    <Typography
+                      textDecoration='line-through'
+                      sx={{
+                        mr: '10px',
+                        color: 'orange.500',
+                        whiteSpace: 'pre',
+                        fontSize: item?.discount_price > 0 ? '14px' : '16px',
+                        lineHeight: '24px',
+                        mt: '1px',
+                        textAlign: 'end',
+                        fontWeight: '600',
+                        textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
+                        color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
+                      }}
+                    >
+                      {thousandDivider(item?.total_price, 'сум')}
+                    </Typography>
+                  </Box>
+                </Box>
               </Box>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              {item?.bonus_amount > 0 && (
+              {/* {item?.bonus_amount > 0 && (
                 <Box
                   sx={{
                     position: 'absolute',
@@ -494,13 +577,13 @@ const CartItem = ({
                 >
                   Bonus
                 </Box>
-              )}
+              )} */}
               <Box
                 sx={{
-                  width: 48,
+                  width: 40,
                   ml: '8px',
                   borderRadius: '50%',
-                  height: 48,
+                  height: 40,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -512,7 +595,7 @@ const CartItem = ({
                 }}
                 onClick={() => setOpenConfirmDialog({ type: 'deleteOne', id: item?.id, name: item?.name })}
               >
-                <DeleteIcon width='24px' />
+                <DeleteIcon width='20px' />
               </Box>
             </Box>
           </Box>

@@ -1,17 +1,16 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/display-name */
-import { memo, useEffect, useState } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
-import StyledDialog from '../Dialogs/StyledDialog'
-import CheckboxWithDragDrop from './CheckboxWithDragDrop'
-import { useDispatch, useSelector } from 'react-redux'
-import StyledEmptyDialog from '../Dialogs/StyledeEmptyDialog'
+import { memo, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import EditorIcon from '../../src/assets/icons/EditorIcon'
 import ButtonWithWrapper from '../Buttons/ButtonWithWrapper'
-import { useTranslation } from 'react-i18next'
 import CheckAccess from '../CheckAccess'
+import StyledEmptyDialog from '../Dialogs/StyledeEmptyDialog'
+import CheckboxWithDragDrop from './CheckboxWithDragDrop'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -100,6 +99,7 @@ function ColumnsFilterButtonForAll({ routeString = false, columns, title, change
               checkAllField
               setData={setData}
             />
+
             <Box
               columnGap={2}
               display='flex'

@@ -296,12 +296,22 @@
   "menu.orders.new_order.seller_filter.add_seller": "Добавить продавца",
   "menu.orders.new_order.seller_filter.all_sellers": "Все продавцы",
   "menu.orders.new_order.seller_filter.seller_name_placeholder": "Введите имя продавца",
+  "alerts.finish_inventory": "Завершить инвентаризацию?",
+  "alerts.finish_inventory_desc": "Вы уверены что хотите завершить инвентаризацию?",
+  "alerts.finish_inventory_warning": "Не сканированные товары будут списаны",
   "no_marking": "Без маркировки",
   "total": "Итого",
+  "buttons.go_back": "Нет, вернуться",
+  "buttons.yes_complete": "Да, завершить",
   "return": "Сдача",
   "scanner": "Сканер",
   "scanned_code.placeholder": "сканированный код",
   "new_order.app.pass_scan": "Отсканируйте QR-код клиента, чтобы завершить платеж.",
   "new_order.marking_dialog_info": "Не все добавленные продукты содержат маркер. Введите все теги для торговли.",
-  "new_order.empty_marking.dialog_info": "Вы не ввели наценку для всех товаров. Продажа без маркировки юридически невозможна. "
+  "new_order.empty_marking.dialog_info": "Вы не ввели наценку для всех товаров. Продажа без маркировки юридически невозможна. ",
+
+  "navbar./settings": "Настройки",
+  "navbar./sales": "Продажи",
+  "navbar./products": "Товары",
+  "navbar./": "Дашборд"
 }

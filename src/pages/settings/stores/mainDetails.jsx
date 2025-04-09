@@ -1,15 +1,17 @@
 import { Box, Grid } from '@mui/material'
-import React, { useEffect } from 'react'
+import { get } from 'lodash'
+import React, { useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { get } from 'lodash'
+import ReactInputMask from 'react-input-mask'
+import InputSwitchNew from '../../../../components/Inputs/InputSwitch'
+import InputPhone from '../../../../components/Inputs/PhoneNumber'
 import TextField from '../../../../components/Inputs/TextField'
 import Label from '../../../../components/Label'
-import InputPhone from '../../../../components/Inputs/PhoneNumber'
 export default function MainDetails({ clientData, openDrawer }) {
-  const { control, errors, setValue, register, reset, watch } = useFormContext()
+  const { control, errors, setValue, register, reset, getValues, watch } = useFormContext()
   const { t } = useTranslation()
-
+  const [time, setDate] = useState('08:00 - 23:00')
   useEffect(() => {
     if (get(openDrawer, 'mode') === 'edit') {
       setValue('name', get(clientData, 'name'))
@@ -19,10 +21,23 @@ export default function MainDetails({ clientData, openDrawer }) {
       setValue('cash_box_count', get(clientData, 'cash_box_count'))
       setValue('store_code', get(clientData, 'store_code'))
       setValue('address', get(clientData, 'address'))
+
+      setValue('work-time', get(clientData, 'work_hours'))
+      setValue('time-type', get(clientData, 'work_hours') == '24' ? '24' : 'range')
+      setDate(get(clientData, 'work_hours'))
     } else {
       reset()
     }
   }, [clientData, openDrawer])
+  console.log(time)
+  useEffect(() => {
+    setDate('00:00 - 00:00')
+    setValue('time-type', getValues('time-type'))
+  }, [watch('time-type')])
+  useEffect(() => {
+    setValue('work-time', time)
+  }, [time])
+
   return (
     <Box mt={'24px'}>
       <Grid container mb={'20px'} spacing={3}>
@@ -51,7 +66,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             control={control}
             fullWidth
             boxStyle={{ marginBottom: '0', marginTop: 'auto' }}
-            required
+            // required
             setCountry={({ dial_code }) => setValue('dial_code', dial_code)}
             error={errors?.phone}
           />
@@ -73,7 +88,6 @@ export default function MainDetails({ clientData, openDrawer }) {
       <Grid container spacing={3}>
         <Grid item xs={6}>
           <Label mb='4px'>{'Количество сотрудников'}</Label>
-
           <TextField
             id='client-name'
             name='employee_count'
@@ -121,6 +135,45 @@ export default function MainDetails({ clientData, openDrawer }) {
           <Label mb='4px'>{'Локация'}</Label>
 
           <TextField id='last-name' name='location' control={control} fullWidth error={errors?.location} placeholder={'Локация'} asteriks />
+        </Grid>
+      </Grid>
+      <Grid mt={'5px'} container spacing={3}>
+        <Grid item xs={6}>
+          <Label mb='4px'>{'Режим работа '}</Label>
+
+          <ReactInputMask
+            disabled={getValues('time-type') == '24'}
+            mask='99:99 - 99:99'
+            value={time}
+            onChange={(e) => getValues('time-type') !== '24' && setDate(e.target.value)}
+            placeholder='HH:MM - HH:MM'
+          >
+            {(inputProps) => (
+              <TextField {...inputProps} setValue={() => {}} id='client-name' name='ranged-time' fullWidth uncontrolled placeholder={'В магазине код'} />
+            )}
+          </ReactInputMask>
+        </Grid>
+        <Grid item xs={6}>
+          {/* <Label mb='4px'>{t('gender')}</Label> */}
+          <Box height={'25px'} />
+          <InputSwitchNew
+            id='client-time-type'
+            noMarginTop
+            name='time-type'
+            control={control}
+            defaultValue='24'
+            error={errors?.gender}
+            options={[
+              {
+                title: '24 часа',
+                value: '24',
+              },
+              {
+                title: 'Своботна',
+                value: 'range',
+              },
+            ]}
+          />
         </Grid>
       </Grid>
     </Box>

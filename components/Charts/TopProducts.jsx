@@ -11,7 +11,6 @@ export default function TopProducts({ data }) {
         borderRadius: '24px',
         padding: '32px 25px',
         backgroundColor: '#fff',
-        height: '100%',
         width: '100%',
       }}
     >
@@ -37,13 +36,40 @@ export default function TopProducts({ data }) {
             <TableBody>
               {data?.map((item, index) => (
                 <TableRow key={item.name}>
-                  <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}>
+                  <TableCell
+                    sx={{
+                      display: '-webkit-box',
+                      overflow: 'hidden',
+                      wordWrap: 'break-word',
+                      textOverflow: 'ellipsis',
+                      '-webkit-box-orient': 'vertical',
+                      '-webkit-line-clamp': '1',
+                      fontSize: '16px',
+                      fontWeight: 500,
+                      lineHeight: '28px',
+                      border: 'none',
+                      // maxWidth: '500px',
+                      p: '16px 16px 0px 0',
+                      color: 'dark.500',
+                    }}
+                  >
                     {index + 1}. {item.name}
                   </TableCell>
                   <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}>
                     {item.count}
                   </TableCell>
-                  <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', border: 'none', p: '16px 0px 16px 0', color: 'dark.500' }}>
+                  <TableCell
+                    sx={{
+                      flexShrink: 0,
+                      whiteSpace: 'nowrap',
+                      fontSize: '16px',
+                      fontWeight: 500,
+                      lineHeight: '28px',
+                      border: 'none',
+                      p: '16px 0px 16px 0',
+                      color: 'dark.500',
+                    }}
+                  >
                     {thousandDivider(item.total_amount, 'сум')}
                   </TableCell>
                 </TableRow>

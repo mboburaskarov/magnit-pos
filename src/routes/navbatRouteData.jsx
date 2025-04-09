@@ -1,15 +1,9 @@
-import CourierIcon from '../assets/icons/CourierIcon'
-import FinanceIcon from '../assets/icons/FInanceIcon'
-import MarketingIcon from '../assets/icons/MarketingIcon'
+import ChartIcon from '../assets/icons/ChartIcon'
 import MenuOutline from '../assets/icons/MenuOutline'
-import OrdersIcon from '../assets/icons/OrdersIcon'
 import ProductsIcon from '../assets/icons/ProductsIcon'
-import ReportsIcon from '../assets/icons/ReportsIcon'
-import SettingsIcon from '../assets/icons/SettingsIcon'
-import UserOutlineIcon from '../assets/icons/UserOutlineIcon'
-import UsersIcon from '../assets/icons/UsersIcon'
 import QrScanIcon from '../assets/icons/QrScanIcon'
-
+import SettingsIcon from '../assets/icons/SettingsIcon'
+import UsersIcon from '../assets/icons/UsersIcon'
 export const navbatRouteData = [
   {
     label: 'navbar.dashboard',
@@ -41,6 +35,28 @@ export const navbatRouteData = [
         active: '/products/auto-order/*',
         id: '32',
         href: '/products/auto-order',
+      },
+      {
+        label: 'Инвентаризация',
+        active: '/products/inventory/*',
+        id: '32',
+        href: '/products/inventory',
+        soon: true,
+      },
+      {
+        label: 'Трансфер',
+        active: '/products/transfer/*',
+        id: '32',
+        href: '/products/transfer',
+
+        soon: true,
+      },
+      {
+        label: 'Списание',
+        active: '/products/write-off/*',
+        id: '32',
+        href: '/products/write-off',
+        soon: true,
       },
       {
         label: 'Категории',
@@ -88,7 +104,15 @@ export const navbatRouteData = [
     icon: <UsersIcon />,
     href: '/clients/all',
   },
+  {
+    label: 'Отчеты',
+    id: '333',
+    icon: <ChartIcon />,
+    href: '/',
+    active: '/se/*',
 
+    soon: true,
+  },
   {
     label: 'navbar.settings',
     id: '9',

@@ -1,31 +1,28 @@
+import { LoadingButton } from '@mui/lab'
 import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { get, size } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
-import { RippedPaperItem } from '../../RippedPaperList'
-import PaymentMethodInput from './PaymentMethodInput'
-import { LoadingButton } from '@mui/lab'
-import { get, size } from 'lodash'
-import { FormProvider, useForm } from 'react-hook-form'
 import { useReactToPrint } from 'react-to-print'
 import { paymeGoId } from '../../../constants/paymeGoId'
-import AddPaumentTypeIcon from '../../../src/assets/icons/AddPaymentTypeIcon'
 import RemovePaymentIcon from '../../../src/assets/icons/CloseIcon'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import StyledDialog from '../../Dialogs/StyledeEmptyDialog'
+import { RippedPaperItem } from '../../RippedPaperList'
+import PaymentMethodInput from './PaymentMethodInput'
 
+import { useHotkeys } from 'react-hotkeys-hook'
+import { useSelector } from 'react-redux'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import QrScanIcon from '../../../src/assets/icons/QrScanIcon'
-import { useHotkeys } from 'react-hotkeys-hook'
 import thousandDivider from '../../../utils/thousandDivider'
-import { useSelector } from 'react-redux'
-import { eposRequest } from '../../../utils/axios'
-import LoadingContainer from '../../LoadingContainer'
-import LoadingBlock from '../../LoadingBlock'
 import TextField from '../../Inputs/TextField'
+import LoadingBlock from '../../LoadingBlock'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -241,38 +238,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const intitalDebtInfo = {
-  id: '',
-  active: false,
-  amount: '',
-  date: '',
-  comment: '',
-}
-
 const MAX_F_BUTTONS_QUANTITY = 10
 
 export default function OrderDrawer({
   setIsOrderDrower,
   isOrderDrower,
-  closeDrawer,
   markingsList,
-  setInputDiscount,
   printContainer,
   cartItemsList,
   customerId,
   cashBoxDetails,
-  refetchcartItemsList,
-  noCheck,
   setMarkingList,
   setMarkingCount,
+  markingCount,
   half,
 
   setOpenDebt,
 }) {
   const methods = useForm()
-  let timeout
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
-
+  const addEmptyStringMarkToMarkinglessProduct = (markings, shouldHaveMarkings) => {
+    let newMarkingList = { ...markings }
+    for (const key in shouldHaveMarkings) {
+      const count = shouldHaveMarkings[key]
+      const existingValues = markings[key] || {}
+      const mergedValues = {}
+      for (let i = 0; i < count; i++) {
+        mergedValues[i] = existingValues[i] || ''
+      }
+      newMarkingList[key] = mergedValues
+    }
+    setMarkingList(newMarkingList)
+  }
   const classes = useStyles()
   const [payments, setPayments] = useState([])
   const [paymentsList, setPaymentsList] = useState([])
@@ -289,7 +286,9 @@ export default function OrderDrawer({
   const navigate = useNavigate()
   const lastPaymentInput = useRef()
   const scannedBarcodeRef = useRef()
-
+  useEffect(() => {
+    addEmptyStringMarkToMarkinglessProduct(markingsList, markingCount)
+  }, [markingCount])
   useEffect(() => {
     let amount = 0
     paymentsList.map((el) => {
@@ -306,15 +305,13 @@ export default function OrderDrawer({
     }
   }, [paymentsList, cartItemsList])
 
-  const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
-    onSuccess: ({ data }) => {
-      navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
-    },
+  const { mutate: sendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
+    onSuccess: ({ data }) => {},
     onError: (err) => {
       error('Ошибка при епосе')
     },
   })
-  const { mutate: saleCreate, isLoading: issaleCreate } = useMutation(requests.saleCreate, {
+  const { mutate: saleCreate } = useMutation(requests.saleCreate, {
     onSuccess: ({ data }) => {
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
       window.location.reload()
@@ -325,14 +322,13 @@ export default function OrderDrawer({
     },
   })
 
-  const { data: paymentTypesList, refetch: refetchPaymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
-  const {
-    mutate: finishSaleWithoutAppPaymentType,
-    isSuccess: saleFinishSuccess,
-    isLoading: isfinishSaleWithoutAppPaymentType,
-  } = useMutation(requests.addToOrderPayment, {
+  const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
+  const { mutate: finishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
       if (false) {
+        // disabling epos
+        console.log('falsee')
+
         navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
         setIsOrderDrower(false)
         handlePrint()
@@ -340,10 +336,7 @@ export default function OrderDrawer({
         setMarkingList({})
         setMarkingCount({})
       } else {
-        // refetchcartItemsList()
-        ///
         //send to epos
-
         const mockData = get(cartItemsList, 'data', []).map((el) => {
           return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
             barcode: el.barcode,
@@ -387,14 +380,9 @@ export default function OrderDrawer({
               return rest
             })(),
           }),
-          // ...(SALE_TYPE === 'RETURN' && { refundInfo: {} }),
         })
 
-        setInputDiscount(NaN)
-        // navigate(`/sales/new-sale/${get(data, 'data', '/')}`)
-        // setIsOrderDrower(false)
-        // handlePrint()
-        // success('Продажа завершена!')
+        // setInputDiscount(NaN)
         setPaymentsList([])
 
         // success('Продажа завершена!')
@@ -421,13 +409,12 @@ export default function OrderDrawer({
         error(`EPOS: ${get(data, 'message')}`)
         return
       } else {
-        sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
-
         setQrcodeUrl(get(data, 'info.qrCodeURL', 'pending'))
       }
-      setIsOrderDrower(false)
       handlePrint()
       success('Продажа завершена!')
+      setIsOrderDrower(false)
+      sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
     },
     onError: (err) => {
       sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
@@ -504,6 +491,9 @@ export default function OrderDrawer({
     content: reactToPrintContent,
     documentTitle: documentName.current,
     removeAfterPrint: true,
+    onAfterPrint: () => {
+      navigate(`/sales/create`)
+    },
   })
 
   const onSubmit = async (data) => {
@@ -518,6 +508,11 @@ export default function OrderDrawer({
         app_type: get(type, 'name').toLowerCase(),
       }))
 
+    const markingData = get(cartItemsList, 'data', []).map((el) => ({
+      id: el.id,
+      marking_count: Object.values(markingsList[el.id] || {}).filter((a) => a.length)?.length,
+    }))
+
     finishSaleWithoutAppPaymentType({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
       payment_types: paymentTypes,
@@ -526,6 +521,7 @@ export default function OrderDrawer({
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
       return_amount: Math.abs(maxAmount),
+      marking_data: markingData,
     })
 
     return
@@ -576,38 +572,6 @@ export default function OrderDrawer({
     }
   }
 
-  // const handleKeyPress = (event) => {
-  //   const scannedBarcode = scannedKeys.join('')
-  //   console.log(event)
-
-  //   if (scannedBarcode.length >= 18) {
-  //     // if (event.key === 'Enter') {
-  //     onSubmit(scannedBarcode.replace('Enter', ''))
-  //     setScannedKeys([])
-  //     return
-  //   }
-  //   setScannedKeys((prev) => [...prev, event.key])
-
-  //   if (timeoutRef) clearTimeout(timeoutRef)
-  //   timeoutRef = setTimeout(() => {
-  //     // setScannedKeys([])
-  //   }, 300)
-  // }
-
-  // useHotkeys(
-  //   '*',
-  //   (event) => {
-  //     // handleKeyPress(event)
-  //   },
-  //   {
-  //     enabled: isOpenScanDialog,
-  //   }
-  // )
-  // useHotkeys('*', (event) => {
-  //   if (event?.key == 'Backspace') {
-  //     removeLastPaymentType()
-  //   }
-  // })
   useHotkeys(
     Object.values(paymentHotKeys),
     (event) => {
@@ -696,7 +660,7 @@ export default function OrderDrawer({
                   </Typography>
                   <Grid container display={'flex'}>
                     {get(paymentTypesList, 'data.data', []).map((item) => (
-                      <Grid item sx='3' sm='3' lg='3' xl='3' xs='3' p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
+                      <Grid key={item.id} item sx='3' sm='3' lg='3' xl='3' xs='3' p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
                         <Box
                           display={'flex'}
                           p={'20px'}
@@ -731,7 +695,6 @@ export default function OrderDrawer({
                               {getPaymentTypeHotKeyLabel(get(item, 'name'))}
                             </Box>
                           </Typography>
-                          {/* <AddPaumentTypeIcon color={isVisiblePaymentType(item) ? '#2558FF' : '#AFD5FF'} /> */}
                         </Box>
                       </Grid>
                     ))}

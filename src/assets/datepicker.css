@@ -51,7 +51,7 @@
   height: 32px;
   margin: 0;
   margin-right: 4px;
-  color: #4993dd;
+  color: #fe5000;
   line-height: 19px;
   font-weight: 600;
 }
@@ -117,7 +117,7 @@
 .react-datepicker__year-read-view--down-arrow,
 .react-datepicker__month-read-view--down-arrow,
 .react-datepicker__month-year-read-view--down-arrow {
-  border-color: #4993dd;
+  border-color: #fe5000;
 }
 .react-datepicker__day--keyboard-selected,
 .react-datepicker__month-text--keyboard-selected,

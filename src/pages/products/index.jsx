@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
@@ -17,6 +17,7 @@ import ImageGallery from '../../../components/ImageGallery'
 import InputSearch from '../../../components/Inputs/InputSearch'
 import InputSwitch from '../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../components/LoadingContainer'
+import StyledTooltip from '../../../components/StyledTooltip'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import BarcodeIcon from '../../assets/icons/BarcodeIcon'
@@ -271,7 +272,7 @@ export default function ProductsPage() {
                 </Button>
               </Box>
             </Box>
-            <Tooltip placement='top' title='Включить изменение штрих-кода'>
+            <StyledTooltip title={'Включить изменение штрих-кода'}>
               <Box>
                 <CheckAccess id={'can-change-barcode'}>
                   <Button
@@ -305,11 +306,11 @@ export default function ProductsPage() {
                   </Button>
                 </CheckAccess>
               </Box>
-            </Tooltip>
-            <Tooltip placement='top' title='Настройки таблица'>
-              <Box display={'flex'} alignItems={'center'}>
-                <CheckAccess id={'products-all-table'}>
-                  <Box>
+            </StyledTooltip>
+            <Box display={'flex'} alignItems={'center'}>
+              <CheckAccess id={'products-all-table'}>
+                <Box>
+                  <StyledTooltip title={'Настройки таблица'}>
                     <ColumnsFilterButtonForAll
                       title={t('ag_grid.table_setting.label')}
                       columns={tableColumns}
@@ -318,24 +319,24 @@ export default function ProductsPage() {
                       resetTableHeader={resetTableHeader}
                       changeColumnSequence={changeColumnSequence}
                     />
-                  </Box>
-                </CheckAccess>
-                <CheckAccess id={'product-create'}>
-                  <Box minWidth={156}>
-                    <Button
-                      sx={{ height: '48px' }}
-                      onClick={() => navigate('/products/create')}
-                      fullWidth
-                      startIcon={<PlusIcon color='#fff' />}
-                      variant='contained'
-                      color='primary'
-                    >
-                      {t('button.add_new.text')}
-                    </Button>
-                  </Box>
-                </CheckAccess>
-              </Box>
-            </Tooltip>
+                  </StyledTooltip>
+                </Box>
+              </CheckAccess>
+              <CheckAccess id={'product-create'}>
+                <Box minWidth={156}>
+                  <Button
+                    sx={{ height: '48px' }}
+                    onClick={() => navigate('/products/create')}
+                    fullWidth
+                    startIcon={<PlusIcon color='#fff' />}
+                    variant='contained'
+                    color='primary'
+                  >
+                    {t('button.add_new.text')}
+                  </Button>
+                </Box>
+              </CheckAccess>
+            </Box>
           </Box>
           <FilterMenu refetch={refetch} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
           <Box>

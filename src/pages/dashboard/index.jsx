@@ -14,6 +14,7 @@ import TopSellers from '../../../components/Charts/TopSellers'
 import Transactions from '../../../components/Charts/transactions'
 import CheckAccess from '../../../components/CheckAccess'
 import LoadingContainer from '../../../components/LoadingContainer'
+import { calculatePercentage } from '../../../utils/calculatePercentage'
 import dataTypeFilter from '../../../utils/dataTypeFilter'
 import { getDetaling } from '../../../utils/getDetaling'
 import { requests } from '../../../utils/requests'
@@ -31,7 +32,8 @@ export default function DashboarPage() {
   const { values } = useQueryParams()
   const [detailing, setDetaling] = useState('week')
   const [selectedStore, setselectedStore] = useState([])
-  const [detalization, setDetalization] = useState({ name: 'Сегодня', value: 'day' })
+  const [detalization, setDetalization] = useState({ name: 'по дням', value: 'day' })
+  const [chartType, setchartType] = useState({ name: 'Продажи', value: 'sale' })
   const check = type === 'SUPERADMIN' || type === 'ACCOUNTANT'
   const [sortBy, setSortBy] = useState(check ? 'SUM' : 'COUNT')
   const { t } = useTranslation()
@@ -58,15 +60,24 @@ export default function DashboarPage() {
     stock_total_amount,
     bonus_amount,
     expiring_soon_count,
+    before_sale_amount,
+    before_product_count,
+    before_sale_count,
+    before_expiring_soon_amount,
+    before_total_net_income,
+    before_stock_amount,
+    before_bonus_amount,
+    before_expiring_soon_count,
   }) => {
     return [
       {
         title: t('Общая сумма продаж'),
         icon: <RevenueIcon />,
         count: total_sale_amount,
-        percent: 10,
+        percent: calculatePercentage(before_sale_amount || 1, total_sale_amount),
         id: 'total_sale_amount',
         endText: 'сум',
+        old: before_sale_amount,
       },
       {
         title: t('Общая сумма баланса'),
@@ -75,30 +86,34 @@ export default function DashboarPage() {
         count: stock_total_amount,
         endText: 'сум',
         id: 'stock_total_amount',
-        percent: -5,
+        percent: calculatePercentage(before_stock_amount || 1, stock_total_amount),
+        old: before_stock_amount,
       },
       {
         title: t('Чистая прибыль'),
         icon: <VendorsIcon />,
         count: total_net_income,
         endText: 'сум',
-        percent: 20,
+        percent: calculatePercentage(before_total_net_income || 1, total_net_income),
         id: 'total_net_income',
+        old: before_total_net_income,
       },
       {
         title: t('Общее количество продаж'),
         icon: <OrdersIcon />,
         count: total_sale_count,
         id: 'total_sale_count',
-        percent: 8,
+        percent: calculatePercentage(before_sale_count || 1, total_sale_count),
+        old: before_sale_count,
       },
       {
         title: t('Общее количество остатков'),
         icon: <ProductsIcon />,
         count: total_product_count,
         endText: '',
-        percent: 20,
+        percent: calculatePercentage(before_product_count || 1, total_product_count),
         id: 'total_product_count',
+        old: before_product_count,
       },
       {
         title: t('Просроченные продукты'),
@@ -106,7 +121,8 @@ export default function DashboarPage() {
         count: expiring_soon_count,
         amount: expiring_soon_amount,
         id: 'expiring_soon_amount',
-        percent: 20,
+        percent: calculatePercentage(before_expiring_soon_count || 1, expiring_soon_count),
+        old: before_expiring_soon_count,
       },
 
       {
@@ -114,19 +130,19 @@ export default function DashboarPage() {
         icon: <VendorsIcon />,
         count: bonus_amount,
         id: 'bonus_amount',
-        percent: 20,
+        percent: calculatePercentage(before_bonus_amount || 1, bonus_amount),
         endText: 'сум',
+        old: before_bonus_amount,
       },
     ]
   }
-  console.log(selectedStore, selectedStore.length)
 
   const dashboard_filter = useMemo(() => {
     return {
       limit: values?.limit || 5,
       search: values?.search,
       start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
-      store_id: selectedStore.length <= 63 ? [...selectedStore] : null || null,
+      store_ids: selectedStore.length <= 63 ? [...selectedStore] : null || null,
       type: dataTypeFilter(detalization),
       end_date: values?.start_date == values?.end_date ? null : values?.end_date,
       offset: values?.search ? 0 : values?.offset || 0,
@@ -135,6 +151,8 @@ export default function DashboarPage() {
   const { data: chartData, isLoading: isGetChartData, refetch } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
   const { data: countStats, isLoading: isCountStats } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
   const { data: topStores, isLoading: isTopStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
+  const { data: payments, isLoading: ispayments } = useQuery(['payments', dashboard_filter], () => requests.dashboradPayments(dashboard_filter))
+  const { data: transaction, isLoading: istransaction } = useQuery(['transaction', dashboard_filter], () => requests.dashboradTransaction(dashboard_filter))
   const { data: topProducts, isLoading: isTopProducts } = useQuery(['TopProducts', dashboard_filter], () => requests.dashboradTopProducts(dashboard_filter))
   const { data: topBonusProducts, isLoading: isTopBonusProducts } = useQuery(['TopBonusProducts', dashboard_filter], () =>
     requests.dashboradTopBonusProducts(dashboard_filter)
@@ -183,6 +201,8 @@ export default function DashboarPage() {
                   period={detailing}
                   detalization={detalization}
                   setDetalization={setDetalization}
+                  chartType={chartType}
+                  setchartType={setchartType}
                   sortBy={sortBy}
                   dataKey={sortBy === 'SUM' ? 'all_orders' : 'count'}
                   data={{
@@ -195,20 +215,20 @@ export default function DashboarPage() {
             </CheckAccess>
           </Grid>
         </Grid>
-        <CheckAccess id={'dashboard-vendor'}>
-          <Box mt={4} columnGap={3} display='inline-flex'>
-            <Transactions id='dashboard-chart' data={get(topStores, 'data.data')} title={'Платежи'} subTitle={'64 116 872 UZS'} />
-            <Transactions id='dashboard-chart' data={get(topStores, 'data.data')} title={'Транзакции'} subTitle={'64 шт'} />
+        <CheckAccess id={'dashboard-transactions-vendor'}>
+          <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
+            <Transactions id='dashboard-chart' data={get(payments, 'data.data')} title={'Платежи'} subTitle={'64 116 872 UZS'} />
+            <Transactions id='dashboard-chart' data={get(transaction, 'data.data')} title={'Транзакции'} subTitle={'64 шт'} />
           </Box>
         </CheckAccess>
         <CheckAccess id={'dashboard-vendor'}>
-          <Box mt={4} columnGap={3} display='inline-flex'>
+          <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
             <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
             <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} />
           </Box>
         </CheckAccess>
         <CheckAccess id={'dashboard-seller'}>
-          <Box mt={4} columnGap={3} display='inline-flex'>
+          <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
             <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} />
             <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} />
           </Box>

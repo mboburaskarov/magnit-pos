@@ -12,12 +12,15 @@ import ChartSlider from './ChartSlider'
 import DashboardTooltip from './DashboardTooltip'
 
 const detailingOptions = [
-  { name: 'Это 30 минут', value: '30min' },
-  { name: 'Это час', value: 'hour' },
-  { name: 'Сегодня', value: 'day' },
-  { name: 'На этой неделе', value: 'week' },
-  { name: 'Это месяц', value: 'month' },
-  { name: 'В этом году', value: 'year' },
+  { name: 'по час', value: 'hour' },
+  { name: 'по дням', value: 'day' },
+  { name: 'по неделям', value: 'week' },
+  { name: 'по месяцам', value: 'month' },
+]
+const chartOptions = [
+  { name: 'Продажи', value: 'sale' },
+  { name: 'Обмены', value: 'swap', soon: true, isDisabled: true },
+  { name: 'Возвраты', value: 'return', soon: true, isDisabled: true },
 ]
 
 const purpleColor = '#a811d6'
@@ -53,6 +56,8 @@ export default function SingleBarChart({
   data,
   detalization,
   setDetalization,
+  setchartType,
+  chartType,
   period,
   isLoading,
   width: boxWidth = '100%',
@@ -74,6 +79,7 @@ export default function SingleBarChart({
       setSliderValue([0, data?.values?.length])
     }
   }, [data, detalization])
+  const maxValue = Math.max(...chartData.slice(sliderValue[0], sliderValue[1]).map((item) => item?.count))
 
   return (
     <Box
@@ -112,32 +118,73 @@ export default function SingleBarChart({
               </Typography>
             </Box>
           )}
-          <SelectSimple
-            id={id + 'detailing'}
-            name={id + 'detailing'}
-            placeholder='Детализация'
-            uncontrolled
-            isSearchable={false}
-            onChange={setDetalization}
-            minWidth={130}
-            value={detalization}
-            fullWidth
-            boxStyle={{ width: 157 }}
-            isClearable={false}
-            options={
-              period === 'today' || period === 'yesterday'
-                ? detailingOptions.slice(0, 2)
-                : period === 'week'
-                ? detailingOptions.slice(0, 4)
-                : period === 'month'
-                ? detailingOptions.slice(1, 5)
-                : period === 'days'
-                ? detailingOptions.slice(0, 3)
-                : detailingOptions.slice(5)
-            }
-            getOptionLabel={(option) => option.name}
-            beforeContent=''
-          />
+          <Box display={'flex'}>
+            <SelectSimple
+              id={id + 'detailing'}
+              name={id + 'detailing'}
+              placeholder='Детализация'
+              uncontrolled
+              isSearchable={false}
+              onChange={setchartType}
+              minWidth={130}
+              value={chartType}
+              fullWidth
+              boxStyle={{ width: 187, mr: '10px' }}
+              isClearable={false}
+              options={chartOptions}
+              getOptionLabel={(option) => (
+                <Box display={'flex'}>
+                  {option.name}
+                  {option.soon && (
+                    <Typography
+                      sx={{
+                        width: '40px',
+                        height: '20px',
+                        backgroundColor: '#A53EFF',
+                        color: '#fff',
+                        fontSize: '10px',
+                        fontWeight: '600',
+                        borderRadius: '24px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        ml: '5px',
+                      }}
+                    >
+                      soon
+                    </Typography>
+                  )}
+                </Box>
+              )}
+              beforeContent=''
+            />
+            <SelectSimple
+              id={id + 'detailing'}
+              name={id + 'detailing'}
+              placeholder='Детализация'
+              uncontrolled
+              isSearchable={false}
+              onChange={setDetalization}
+              minWidth={130}
+              value={detalization}
+              fullWidth
+              boxStyle={{ width: 157 }}
+              isClearable={false}
+              options={
+                period === 'today' || period === 'yesterday'
+                  ? detailingOptions.slice(0, 2)
+                  : period === 'week'
+                  ? detailingOptions.slice(0, 4)
+                  : period === 'month'
+                  ? detailingOptions.slice(1, 5)
+                  : period === 'days'
+                  ? detailingOptions.slice(0, 3)
+                  : detailingOptions.slice(5)
+              }
+              getOptionLabel={(option) => option.name}
+              beforeContent=''
+            />
+          </Box>
         </Box>
         <Body isLoading={isLoading} isEmpty={!chartData.length}>
           <ResponsiveContainer width='100%' height={350}>

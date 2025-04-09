@@ -13,6 +13,9 @@ import { clientTableColumnsSlice } from './tableSlices/clientTableColumns'
 import { importDetailsTableColumnsSlice } from './tableSlices/importDetailTableColumns'
 import { importWithCheckingTableColumnsSlice } from './tableSlices/importWithCheckingTableColumns'
 import { importsTableColumnsSlice } from './tableSlices/importsTableColumns'
+import { inventoryDetailsTableColumnsSlice } from './tableSlices/inventoryDetailTableColumns'
+import { inventoryTableColumnsSlice } from './tableSlices/inventoryTableColumns'
+import { inventoryWithCheckingTableColumnsSlice } from './tableSlices/inventoryWithCheckingTableColumns'
 import { orderTableColumnsSlice } from './tableSlices/orderTableColumns'
 import { productPriceListTableColumnsForProductSlice } from './tableSlices/productPriceListTableColumnsForProduct'
 import { productsTableColumnsSlice } from './tableSlices/productsTableColumns'
@@ -26,7 +29,7 @@ import { userSlice } from './userSlice'
 // Define your migration function here
 const migrations = {
   // Example migration
-  178: (state) => {
+  186: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -44,7 +47,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 178, // Current version of the persisted state
+  version: 186, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -57,11 +60,14 @@ const reducer = combineReducers({
   productsTableColumns: productsTableColumnsSlice,
   cardShiftTableColumns: cardShiftTableColumnsSlice,
   importsTableColumns: importsTableColumnsSlice,
+  inventoryTableColumns: inventoryTableColumnsSlice,
   autoOrderTableColumns: autoOrderTableColumnsSlice,
   bonusProductTableColumns: bonusProductTableColumnsSlice,
   autoOrderTableDetailColumns: autoOrderDetailSlice,
   importDetailsColumns: importDetailsTableColumnsSlice,
+  inventoryDetailsColumns: inventoryDetailsTableColumnsSlice,
   importWithCheckingColumns: importWithCheckingTableColumnsSlice,
+  inventoryWithCheckingColumns: inventoryWithCheckingTableColumnsSlice,
   salesTableColumns: salesTableColumnsSlice,
   cashBoxShiftsTableColumns: cashBoxShiftsTableColumnsSlice,
   cashBoxShiftHistoryTableColumns: cashBoxShiftHistoryTableColumnsSlice,

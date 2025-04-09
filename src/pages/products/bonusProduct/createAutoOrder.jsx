@@ -1,17 +1,17 @@
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
+import InputDateRangePicker from '../../../../components/Inputs/InputDateRangePicker'
 import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 import LazySelect from '../../../../components/Select/LazySelect'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
-import InputDateRangePicker from '../../../../components/Inputs/InputDateRangePicker'
-import dayjs from 'dayjs'
 
 export default function CreateBonusProduct({ open, refetch, setOpen }) {
   const methods = useForm()
@@ -100,6 +100,7 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
               id='import-date'
               name='date'
               noValidation
+              asteriks
               label={'Дата бонус'}
               minWidth='auto'
               placeholder={'Дата бонус'}
@@ -107,6 +108,7 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
               startDate={startDate}
               endDate={endDate}
               setStartDate={setStartDate}
+              required
               setEndDate={setEndDate}
               control={control}
             />

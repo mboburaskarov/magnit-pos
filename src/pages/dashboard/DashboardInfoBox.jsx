@@ -3,8 +3,9 @@ import thousandDivider from '../../../utils/thousandDivider'
 import FallIcon from '../../assets/icons/FallIcon'
 import GrowIcon from '../../assets/icons/GrowIcon'
 
-export default function DashboardInfoBox({ noDot, ind, title, icon, count, amount, percent, id, endText, withoutDivider, ...l }) {
+export default function DashboardInfoBox({ noDot, ind, title, icon, count, amount, percent, id, old, endText, withoutDivider, ...l }) {
   const isFall = percent < 0
+
   return (
     <Box sx={(theme) => ({ border: 1, borderRadius: '16px', borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' })}>
       <Box key={ind} sx={(theme) => ({ pr: '26px', pl: '16px', minHeight: '115px', pt: '16px', pb: '10px', m: 0 })}>
@@ -36,7 +37,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
           </Box>
         </Box>
 
-        {!!percent && (
+        {
           <Box mt={icon ? '10px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
             <Box>
               <Typography alignItems={'end'} display={'flex'} color='dark.500' fontSize={'30px'} lineHeight={'32px'} fontWeight='600' variant='h1'>
@@ -71,13 +72,13 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
               </Typography>
             </Box>
           </Box>
-        )}
+        }
       </Box>
 
       <Box key={ind} sx={(theme) => ({ pt: '10px', pb: '8px', px: '16px', m: 0, height: 37, borderTop: 1, borderColor: '#A4A5AB33' })}>
         <Box>
           <Typography color='gray.500' fontSize={'16px'} lineHeight={'20px'} fontWeight='500' variant='h1'>
-            530 за прошедший период
+            {thousandDivider(old)} {endText} за прошедший период
           </Typography>
         </Box>
       </Box>

@@ -1,9 +1,8 @@
-import { Box, Button } from '@mui/material'
-import ForwardArrow from '../../../src/assets/icons/ForwardArrow'
-import { useIMask } from 'react-imask'
+import { Box, Button, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
-import dayjs from 'dayjs'
+import { useIMask } from 'react-imask'
 import TextField from '../TextField'
 
 export default function DateRangeInputsBox({ dateState }) {
@@ -28,7 +27,12 @@ export default function DateRangeInputsBox({ dateState }) {
   }, [dateState])
 
   return (
-    <Box width='100%' sx={(theme) => ({ display: 'flex', justifyContent: 'center', borderTop: `2px solid ${theme.palette.gray[200]}` })} py={3} px={3}>
+    <Box
+      width='100%'
+      sx={(theme) => ({ display: 'flex', justifyContent: 'center', backgroundColor: theme.palette.background.default, borderRadius: '16px' })}
+      py={3}
+      px={3}
+    >
       <Box display='flex' alignItems='center'>
         <Box flexGrow='50%'>
           <Box columnGap={1} display='flex'>
@@ -43,8 +47,9 @@ export default function DateRangeInputsBox({ dateState }) {
             </Box>
           </Box>
         </Box>
-        <Box width={48} display='flex' alignItems='center' justifyContent='center'>
-          <ForwardArrow fill='#bdbdbd' />
+        <Box width={48} m={'0 10px'} display='flex' alignItems='center' justifyContent='center'>
+          {/* <ForwardArrow fill='#bdbdbd' /> */}
+          <Typography>до</Typography>
         </Box>
 
         <Box flexGrow='50%' mr={4}>

@@ -9,8 +9,9 @@ import { useMutation } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
 import thousandDivider from '../../../../utils/thousandDivider'
+import { error } from '../../../../utils/toast'
+import PrizeBoxIcon from '../../../assets/icons/PrizeBoxIcon'
 
 export default function SerchedItem({
   index,
@@ -113,23 +114,46 @@ export default function SerchedItem({
                   className={classes.itemBarcode}
                   textToHighlight={product?.barcode}
                 />
-                <Typography color={'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
+                {/* <Typography color={'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
                   / {get(product, 'quantity ', 0)}
-                </Typography>
+                </Typography> */}
                 <Typography color={get(product, 'expire_day', 0) < 0 ? 'red.500' : 'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
                   / {get(product, 'expire_day', 0)} kun
                 </Typography>
               </Typography>
             </Box>
           </Box>
+
           {!conflictItem && (
             <Box flex='0 0 22%' pr={2} textAlign='right'>
-              <Typography whiteSpace={'pre'} className={classes.itemQuantity}>
-                <span>Кол: {item?.quantity}</span>
-              </Typography>
-              <Typography whiteSpace={'pre'} className={classes.itemPrice}>
-                {thousandDivider(product?.retail_price, 'сум')}{' '}
-              </Typography>
+              <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
+                {item?.bonus_amount > 0 && (
+                  <Box
+                    sx={{
+                      borderRadius: '24px',
+                      padding: '0 9px',
+                      height: '22px',
+                      display: 'flex',
+                      mr: '10px',
+                      alignItems: 'center',
+                      backgroundColor: 'orange.500',
+                    }}
+                  >
+                    <PrizeBoxIcon />
+                    <Typography ml='4px' color={'white'} fontSize={'10px'} fontWeight={'600'}>
+                      {item.bonus_amount}сум
+                    </Typography>
+                  </Box>
+                )}
+                <Box>
+                  <Typography whiteSpace={'pre'} className={classes.itemQuantity}>
+                    <span>Кол: {item?.quantity}</span>
+                  </Typography>
+                  <Typography whiteSpace={'pre'} className={classes.itemPrice}>
+                    {thousandDivider(product?.retail_price, 'сум')}{' '}
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
           )}
           {!isChild && (
@@ -175,7 +199,7 @@ export default function SerchedItem({
           ))}
       </Box>
 
-      {item?.bonus_amount > 0 && (
+      {/* {item?.bonus_amount > 0 && (
         <Box
           sx={{
             position: 'absolute',
@@ -192,7 +216,7 @@ export default function SerchedItem({
         >
           Bonus
         </Box>
-      )}
+      )} */}
     </Box>
   )
 }

@@ -1,16 +1,15 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
-import { get, size } from 'lodash'
+import { get } from 'lodash'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import { useSelector } from 'react-redux'
-import CloseIcon from '../../../assets/icons/CloseIcon'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
-import MainDetails from './mainDetails'
+import CloseIcon from '../../../assets/icons/CloseIcon'
 import PlusIcon from '../../../assets/icons/PlusIcon'
+import MainDetails from './mainDetails'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -85,11 +84,12 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
       name: get(data, 'name'),
       detailed_name: get(data, 'detailed_name'),
       location: get(data, 'location'),
-      phone: '998' + data?.phone?.replace(/[()\s]/g, ''),
+      ...(data?.phone && { phone: '998' + data.phone.replace(/[()\s]/g, '') }),
       address: get(data, 'address'),
       employee_count: Number(get(data, 'employee_count')),
       cash_box_count: Number(get(data, 'cash_box_count')),
       store_code: Number(get(data, 'store_code')),
+      work_hours: get(data, 'time-type') == '24' ? '24' : get(data, 'work-time'),
     }
     if (openDrawer?.mode === 'edit') {
       handleUpdateStore({ data: requestBody, id: openDrawer?.data?.id })

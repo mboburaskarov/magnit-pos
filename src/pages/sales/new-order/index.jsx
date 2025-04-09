@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, ListItem, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get, head, size } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
@@ -18,7 +18,9 @@ import OrderDrawer from '../../../../components/Sales/ClientCreateMini/OrderDraw
 import DraftDrawer from '../../../../components/Sales/DraftDrawer'
 import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchange/ReturnExchangeDrawer'
 import ShortcutsDrawer from '../../../../components/Sales/ShortcutsDrawer'
+import StyledTooltip from '../../../../components/StyledTooltip'
 import { requests } from '../../../../utils/requests'
+import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
@@ -32,8 +34,72 @@ import CartDetailSide from './cart_detail_side'
 import CreateDraftDrawer from './createDraftDrawer'
 import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck'
 const useStyles = makeStyles((theme) => ({
+  currentUser: {
+    // minWidth: '120px',
+    width: 'auto',
+    height: '48px',
+    padding: '4px 4px 4px 16px !important',
+    justifyContent: 'space-between',
+    backgroundColor: theme.palette.gray[50],
+    borderRadius: '40px !important',
+  },
+  avatarPlaceholder: {
+    position: 'relative',
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    marginLeft: 12,
+    fontWeight: 600,
+    fontSize: 16,
+    backgroundColor: theme.palette.orange[500],
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    color: '#fff',
+    transition: '0.3s',
+    '& img': {
+      width: '100%',
+    },
+  },
+  bonus_amount: {
+    margin: 0,
+    lineHeight: '14px',
+    fontWeight: 600,
+    fontFamily: "'Gilroy', sans-serif",
+    color: theme.palette.orange[500],
+    fontSize: 12,
+    transition: 'all .2s',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    textAlign: 'left',
+  },
+  shopname: {
+    margin: 0,
+    lineHeight: '20px',
+    fontWeight: 600,
+    fontFamily: "'Gilroy', sans-serif",
+    color: theme.palette.bunker[400],
+    fontSize: 14,
+    transition: 'all .2s',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    textAlign: 'left',
+  },
+  username: {
+    width: '100%',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    fontWeight: '600',
+    lineHeight: '16px',
+    fontSize: '16px',
+    color: theme.palette.bunker[950],
+  },
   card_detail: {
-    width: '30%',
+    width: '384px',
     borderLeft: `1px solid ${theme.palette.bunker[100]}`,
     minHeight: '100vh',
     padding: '20px',
@@ -261,6 +327,8 @@ function NewSale() {
     setInputDiscount(0)
   }, [discount])
   const focusUnitInput = (event) => {
+    console.log(event)
+
     if (event.key === '+' && !event.shiftKey) {
       const activeInput = document.activeElement
       if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
@@ -275,6 +343,7 @@ function NewSale() {
         }
       }
     }
+    console.log(event)
     if (event.key === '-' && !event.shiftKey) {
       const activeInput = document.activeElement
       if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
@@ -441,18 +510,13 @@ function NewSale() {
         setDiscountType(defaultType?.length > 0 ? defaultType : 'percent')
         setInputDiscount(get(head(cartList), 'discount_amount', 0))
       }
-      let newmarkingcount = { ...markingCount }
       cartList.map((item) => {
-        if (item.is_marking) {
-          newmarkingcount[item.id] = calculate(item.quantity, item.unit_quantity, item.unit_per_pack)
-        }
+        setMarkingCount((p) => ({ ...p, [item.id]: calculate(item.quantity, item.unit_quantity, item.unit_per_pack) }))
         method.setValue(`unit_quantity_${item.id}`, get(item, 'unit_quantity'))
         method.setValue(`quantity_${item.id}`, get(item, 'quantity'))
       })
-      setMarkingCount(newmarkingcount)
     }
   }, [cartItemsList?.data])
-
   const changeDiscount = (value) => {
     if (discount != 'percent' && discount != 'cash') {
       return
@@ -535,6 +599,7 @@ function NewSale() {
       }
     },
     {
+      preventDefault: true,
       enableOnFormTags: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
@@ -591,6 +656,7 @@ function NewSale() {
     }
   }
   const isAllMarkingFill = () => {
+    // const cartsMarkingCount = Object.values(markingCount)?.reduce((acc, i) => acc + i, 0)
     const newmarkingCount = {}
 
     get(cartItemsList, 'data.data.data').map((item) => {
@@ -660,13 +726,17 @@ function NewSale() {
       searchRef.current?.focus() // Focus the input field
     }
   })
-
+  const { data: sellerBonusInOneSale } = useQuery(
+    ['sellerBonusInOneSale'],
+    () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
+    { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
+  )
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />
 
       <Box display={'flex'}>
-        <Box width={'70%'} position={'relative'} padding={'20px'}>
+        <Box width={'calc(100% - 384px)'} position={'relative'} padding={'20px'}>
           <Box position={'relative'}>
             <CartSearchBar
               discount={{ type: discount, amount: inputDiscount }}
@@ -694,17 +764,44 @@ function NewSale() {
                 justifyContent: 'space-between',
               }}
             >
-              <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
-                {t('menu.orders.new_order.heading')}
-              </Typography>
-              {get(cartItemsList, 'data.data.data', 0)?.length ? (
-                <Box display={'flex'} sx={{ cursor: 'pointer' }} alignItems={'center'} onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}>
-                  <Typography sx={{ mr: '12px', color: 'orange.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>{t('delete_all')}</Typography>
-                  <DeleteIcon width={'20px'} />
+              <Box display={'flex'} alignItems={'center'}>
+                <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
+                  {t('menu.orders.new_order.heading')}
+                </Typography>
+                {get(cartItemsList, 'data.data.data', 0)?.length ? (
+                  <StyledTooltip title={'Удалить все продукты'}>
+                    <Box
+                      display={'flex'}
+                      sx={{ cursor: 'pointer', ml: '16px', backgroundColor: 'bg.10', p: '6px 19px', borderRadius: '40px' }}
+                      height={'48px'}
+                      alignItems={'center'}
+                      onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}
+                    >
+                      <Typography sx={{ mr: '12px', mt: '3px', fontSize: '22px', fontWeight: '600' }}>
+                        {size(get(cartItemsList, 'data.data.data', 0))}
+                      </Typography>
+                      <DeleteIcon width={'20px'} />
+                    </Box>
+                  </StyledTooltip>
+                ) : (
+                  <></>
+                )}
+              </Box>
+              <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
+                <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
+                  <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
+                    <Typography id='user-username' className={classes.username}>
+                      {get(userData, 'first_name')}
+                    </Typography>
+                    <p id='user-shopname' className={`${classes.bonus_amount} `}>
+                      +{thousandDivider(get(sellerBonusInOneSale, 'data.data.bonus', 0), 'сум')}
+                    </p>
+                  </Box>
+                  <div className={classes.avatarPlaceholder}>
+                    <img src={get(userData, 'photo')} />
+                  </div>
                 </Box>
-              ) : (
-                <></>
-              )}
+              </ListItem>
             </Box>
             <LoadingContainer noHeight readyState={!isCartItemsLIstLoading}>
               {!size(get(cartItemsList, 'data.data.data')) ? (
@@ -836,6 +933,7 @@ function NewSale() {
         customerId={customerId}
         refetchcartItemsList={refetchcartItemsList}
         markingsList={markingsList}
+        markingCount={markingCount}
         setMarkingList={setMarkingList}
         setMarkingCount={setMarkingCount}
         setIsOrderDrower={setIsOrderDrower}

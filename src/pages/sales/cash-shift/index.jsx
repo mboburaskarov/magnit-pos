@@ -1,12 +1,13 @@
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '../../../../components/CheckAccess'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
@@ -16,10 +17,8 @@ import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/cashBoxShiftsTableColumns'
 import FilterMenu from './FilterMenu'
-import tableHeaderSelector from './tableHeaderSelector'
 import MiniDashboard from './miniDashboard'
-import CheckAccess from '../../../../components/CheckAccess'
-import { useNavigate } from 'react-router-dom'
+import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function CasShiftsPage() {
@@ -161,7 +160,7 @@ export default function CasShiftsPage() {
             <CheckAccess id={'product-create'}>
               <Box minWidth={156}>
                 <Button sx={{ height: '48px' }} onClick={() => navigate('/sales/cash-shift-history')} fullWidth variant='contained' color='primary'>
-                  Shiftlar tarixi
+                  История смен
                 </Button>
               </Box>
             </CheckAccess>

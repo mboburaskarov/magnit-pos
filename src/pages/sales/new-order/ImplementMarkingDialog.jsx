@@ -1,4 +1,5 @@
 import { Box, Button, Dialog, Typography } from '@mui/material'
+import { get } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
@@ -22,7 +23,7 @@ function ImplementMarkingDialog({
   useEffect(() => {
     if (open) {
       setTimeout(() => {
-        inputsRef.current[0]?.focus()
+        inputsRef.current.filter((a) => a)[0]?.focus()
       }, 100)
     }
   }, [open])
@@ -46,16 +47,22 @@ function ImplementMarkingDialog({
   const handleKeyDown = (e, flatIndex) => {
     if (e.key === 'Enter') {
       e.preventDefault()
+
       if (inputsRef.current.length - 1 == flatIndex) {
         if (!isAllMarkingFill()) {
           setOpenConfirmDialog(true)
+
           return
         }
+
         setIsOrderDrower(true)
         handleClose()
         return
       }
-      const nextInput = inputsRef.current[flatIndex + 1]
+      const currentIndex = Object.keys(inputsRef.current).findIndex((key) => key == flatIndex)
+      const nextIndex = Object.keys(inputsRef.current)[currentIndex + 1]
+
+      const nextInput = inputsRef.current[nextIndex]
       if (nextInput) {
         nextInput.focus()
       }
@@ -104,6 +111,8 @@ function ImplementMarkingDialog({
             <Box
               key={item.id}
               sx={{
+                display: get(item, 'is_marking') ? 'block' : 'none',
+
                 padding: '5px 10px',
                 backgroundColor: '#f3f3f3',
                 m: '10px 0px',
@@ -113,10 +122,12 @@ function ImplementMarkingDialog({
               <Typography fontWeight={'600'} my={'10px'}>
                 {item.name}
               </Typography>
+              {console.log(markingCount)}
               {Array(markingCount[item.id])
                 .fill(1)
                 .map((_, childIndex) => {
                   const flatIndex = getFlatIndex(parentIndex, childIndex, markingCount)
+                  console.log(flatIndex)
 
                   return (
                     <Box
@@ -136,10 +147,10 @@ function ImplementMarkingDialog({
                         uncontrolled
                         setValue={(e) => implementMarkingList(e, item?.id, childIndex)}
                         defaultValue={markingsList?.[item.id]?.[childIndex]}
-                        required
+                        required={get(item, 'is_marking')}
                         onKeyDown={(e) => handleKeyDown(e, flatIndex)}
                         fullWidth
-                        inputRef={(el) => (inputsRef.current[flatIndex] = el)}
+                        inputRef={(el) => get(item, 'is_marking') && (inputsRef.current[flatIndex] = el)}
                         borderRadius={'40px'}
                         name={`${item.id}-${childIndex}`}
                         id={`${item.id}-${childIndex}`}
@@ -179,6 +190,7 @@ function ImplementMarkingDialog({
               return
             }
             setIsOrderDrower(true)
+            addEmptyStringMarkToMarkinglessProduct(markingsList, markingCount)
             handleClose()
           }}
           fullWidth
@@ -207,7 +219,7 @@ function ImplementMarkingDialog({
               variant='contained'
               onClick={() => setOpenConfirmDialog(null)}
             >
-              {t('Зсакрыть диалог')}
+              {t('Закрыть диалог')}
             </Button>
             {/* <LoadingButton
               variant='contained'

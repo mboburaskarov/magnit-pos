@@ -2,9 +2,10 @@ import MainLayout from '../../layouts/MainLayout'
 import AutoOrderDetailPage from '../../pages/products/autoOrderDetail'
 import ImportDetailsPage from '../../pages/products/importDetails'
 import ImportWithCheckingPage from '../../pages/products/importWithChecking'
+import InventoryDetailPage from '../../pages/products/inventoryDetails/index'
+import InventoryWithCheckingPage from '../../pages/products/inventoryWithChecking/index'
 import ProductCreatePage from '../../pages/products/product-create'
 import ProductEditPage from '../../pages/products/product-edit'
-
 const productsCreateRoutes = {
   path: 'products',
   element: <MainLayout />,
@@ -27,11 +28,29 @@ const productsCreateRoutes = {
       ],
     },
     {
+      path: 'inventory-with-checking/:id',
+      children: [
+        {
+          path: '',
+          element: <InventoryWithCheckingPage />,
+        },
+      ],
+    },
+    {
       path: 'imports/:id',
       children: [
         {
           path: '',
           element: <ImportDetailsPage />,
+        },
+      ],
+    },
+    {
+      path: 'inventory/:id',
+      children: [
+        {
+          path: '',
+          element: <InventoryDetailPage />,
         },
       ],
     },

@@ -1,8 +1,8 @@
-import { NavLink as RouterLink, useNavigate } from 'react-router-dom'
-import { useTheme } from '@mui/material'
+import { Typography, useTheme } from '@mui/material'
 import ListItem from '@mui/material/ListItem'
-import BottomArrowIcon from '../../assets/icons/BottomArrowIcon'
 import { useTranslation } from 'react-i18next'
+import { NavLink as RouterLink } from 'react-router-dom'
+import BottomArrowIcon from '../../assets/icons/BottomArrowIcon'
 function NavItem({ item, classes, handleClickNavItems, isActive }) {
   const { t } = useTranslation()
   const { palette } = useTheme()
@@ -32,7 +32,27 @@ function NavItem({ item, classes, handleClickNavItems, isActive }) {
           }}
         >
           {t(item.label)}
+          {item.soon && (
+            <Typography
+              sx={{
+                width: '40px',
+                height: '20px',
+                backgroundColor: '#A53EFF',
+                color: '#fff',
+                fontSize: '10px',
+                fontWeight: '600',
+                borderRadius: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                ml: '20px',
+              }}
+            >
+              soon
+            </Typography>
+          )}
         </div>
+
         {item?.icon && !!item?.children && (
           <div className={classes.itemArrow + ' bottomIcon'}>
             <BottomArrowIcon color={isActive ? '#fff' : palette.bunker[400]} />

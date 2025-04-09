@@ -90,7 +90,7 @@
 }
 
 .ag-floating-bottom-viewport .ag-row-pinned div {
-  color: rgb(73, 147, 221);
+  color: rgb(254, 80, 0);
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -146,13 +146,13 @@
   cursor: pointer;
 }
 .ag-theme-alpine .ag-sort-ascending-icon {
-  color: rgb(73, 147, 221);
+  color: rgb(254, 80, 0);
 }
 .ag-theme-alpine .ag-sort-descending-icon {
-  color: rgb(73, 147, 221);
+  color: rgb(254, 80, 0);
 }
 .ag-theme-alpine .ag-header-icon:hover {
-  color: rgb(73, 147, 221);
+  color: rgb(254, 80, 0);
 }
 
 .ag-header-cell-menu-button:not(.ag-header-menu-always-show) {

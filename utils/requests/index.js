@@ -1,6 +1,6 @@
 import { get } from 'lodash'
-import { authRequest, eposRequest, fileUploadRequest, request, requestEXCEL, yandexMapsRequest } from '../axios'
 import * as qs from 'qs'
+import { authRequest, eposRequest, fileUploadRequest, request, requestEXCEL } from '../axios'
 
 export const requests = {
   //epos
@@ -18,13 +18,17 @@ export const requests = {
   /// company
   changeComanyInfo: ({ id, data }) => request.put(`v1/company/${id}`, data),
   getComanyInfo: () => request.get(`v1/company/info`),
-  //
-  dashboradChart: (filter) => request.get(`v1/dashboard/chart${qs.stringify(filter, { addQueryPrefix: true })}`),
-  dashboradCountStats: (filter) => request.get(`v1/dashboard/count-stats${qs.stringify(filter, { addQueryPrefix: true })}`),
-  dashboradTopStores: (filter) => request.get(`v1/dashboard/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`),
-  dashboradTopProducts: (filter) => request.get(`v1/dashboard/top-products${qs.stringify(filter, { addQueryPrefix: true })}`),
-  dashboradTopSellers: (filter) => request.get(`v1/dashboard/top-seller${qs.stringify(filter, { addQueryPrefix: true })}`),
-  dashboradTopBonusProducts: (filter) => request.get(`v1/dashboard/bonus-products${qs.stringify(filter, { addQueryPrefix: true })}`),
+
+  //dashboard
+  dashboradChart: ({ store_ids, ...filter }) => request.post(`v1/dashboard/chart${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  dashboradCountStats: ({ store_ids, ...filter }) => request.post(`v1/dashboard/count-stats${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  dashboradTopStores: ({ store_ids, ...filter }) => request.post(`v1/dashboard/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  dashboradPayments: ({ store_ids, ...filter }) => request.post(`v1/dashboard/payments${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  dashboradTransaction: ({ store_ids, ...filter }) => request.post(`v1/dashboard/transaction${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  dashboradTopProducts: ({ store_ids, ...filter }) => request.post(`v1/dashboard/top-products${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  dashboradTopSellers: ({ store_ids, ...filter }) => request.post(`v1/dashboard/top-seller${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  dashboradTopBonusProducts: ({ store_ids, ...filter }) =>
+    request.post(`v1/dashboard/bonus-products${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
 
   //auth
   logIn: (data) => authRequest.post(`v1/login`, data),
@@ -106,6 +110,14 @@ export const requests = {
   sendScannedImportNumber: ({ id, scanned_count }) => request.put(`v1/import-detail/${id}`, { scanned_count }),
   getImportDetailsExcelReport: (filter) => requestEXCEL.get(`v1/import-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
+  //inventory
+  createInventory: (data) => request.post(`v1/inventory`, data),
+  getAllInventory: (filter) => request.get(`v1/inventory/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  sendScannedInventoryNumber: ({ id, barcode, product_id, type, scanned_count }) =>
+    request.patch(`v1/inventory/${id}/add-product-by-barcode`, { barcode, count: scanned_count, type, product_id }),
+  getInventoryDetails: (filter) => request.get(`v1/inventory-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getInventoryScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
+  finishInventoryChecking: (id) => request.post(`v1/inventory/confirm/${id}`),
   // autoOrder
   createAutoOrder: (data) => request.post(`v1/auto-order`, data),
   finalAutoOrder: (id) => request.post(`v1/auto-order/send/${id}`),

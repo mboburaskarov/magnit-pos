@@ -50,6 +50,7 @@ function SelectBody({ setselectedStore, selectedStore: defaultData, close }) {
         name='searchs'
         placeholder={'Филиалы'}
       />
+
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit, onError)}>
           <Box

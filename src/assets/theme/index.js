@@ -362,7 +362,7 @@ export const theme = ({ mode, palette }) => {
         styleOverrides: {
           tooltip: {
             padding: 16,
-            backgroundColor: palette.gray[300],
+            backgroundColor: palette.bunker[300],
             borderRadius: 16,
             fontSize: 16,
             lineHeight: '19px',
@@ -371,7 +371,7 @@ export const theme = ({ mode, palette }) => {
             textAlign: 'center',
           },
           arrow: {
-            color: palette.gray[300],
+            color: palette.bunker[300],
             '&:before': {
               borderRadius: '0 0 2px 0',
             },

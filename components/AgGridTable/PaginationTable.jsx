@@ -1,26 +1,25 @@
-import React, { forwardRef, useEffect, useRef, useState, Fragment, memo, useCallback } from 'react'
-import { useTable, usePagination, useRowSelect, useColumnOrder, useExpanded, useMountedLayoutEffect } from 'react-table'
-import { Box, Typography, useTheme, Button } from '@mui/material'
-import StyledSwitch from '../Switch/StyledSwitch'
-import { useLocation, useNavigate } from 'react-router-dom'
-import * as qs from 'qs'
-import { useTranslation } from 'react-i18next'
-import paletteLight from '../../src/assets/theme/paletteLight'
-import { useSelector } from 'react-redux'
-import colors from '../../src/assets/theme/mui.config'
-import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
-import RowFilterButton from './RowFilterButton'
-import checkTableProps from './checkTableProps'
-import useDidUpdate from '../../src/hooks/useDidUpdate'
+import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import * as qs from 'qs'
+import React, { forwardRef, Fragment, memo, useCallback, useEffect, useRef, useState } from 'react'
+import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useColumnOrder, useExpanded, useMountedLayoutEffect, usePagination, useRowSelect, useTable } from 'react-table'
+import DownloadIcon from '../../src/assets/icons/DownloadIcon'
+import colors from '../../src/assets/theme/mui.config'
+import paletteLight from '../../src/assets/theme/paletteLight'
+import useDeepCompareEffect from '../../src/hooks/useDeepCompareEffect'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
-import InputSearch from '../Inputs/SearchInput'
 import isEqual from '../../utils/isEqual'
+import InputSearch from '../Inputs/SearchInput'
 import LoadingBlurry from '../LoadingBlurry'
 import Placeholder from '../Placeholder'
+import StyledSwitch from '../Switch/StyledSwitch'
 import Pagination from '../Table/Pagination'
-import DownloadIcon from '../../src/assets/icons/DownloadIcon'
-import useDeepCompareEffect from '../../src/hooks/useDeepCompareEffect'
+import RowFilterButton from './RowFilterButton'
+import checkTableProps from './checkTableProps'
 const useStyles = makeStyles((theme) => ({
   root: {
     width: (props) => (props?.width ? '100%' : !props.isHasNavbarInDOM ? 'calc(100vw - 288px)' : props.isOpen ? 'calc(100vw - 380px)' : 'calc(100vw - 160px)'),
@@ -686,6 +685,7 @@ function PaginationTable({
                               <button onClick={() => selectedRowActionOne && selectedRowActionOne(selectedFlatRows)} type='button'>
                                 {t('titles.print_price_tag')}
                               </button>
+
                               <button
                                 onClick={() => {
                                   if (selectedRowActionTwo) {
@@ -791,6 +791,7 @@ function PaginationTable({
                   </Button>
                 </Box>
               )}
+
               {!setTableHeaderColumnsWithSettingsIcon && setTableHeaderColumns && (
                 <ColumnsFilterButtonForAll
                   columns={allColumns}
@@ -799,7 +800,6 @@ function PaginationTable({
                   eventMessage={eventMessages?.[0]}
                 />
               )}
-
               <RowFilterButton eventMessage={eventMessages?.[1]} offsetSize={pageSize} setOffsetSize={setPageSize} />
             </Box>
           </div>

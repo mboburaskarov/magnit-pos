@@ -8,7 +8,30 @@ import ButtonWithPopup from '../../../components/Buttons/ButtonWithPopup'
 import InputSearch from '../../../components/Inputs/InputSearch'
 import ArrowDown from '../../assets/icons/ArrowDown'
 import NotificationSmallIcon from '../../assets/icons/NotificationSmallIcon'
+import UserFilledIcon from '../../assets/icons/UserFilledIcon'
+import LogOutIcon from '../../assets/icons/logOutIcon'
 import { headerStyles } from './HeaderStyles'
+
+const DialogRowBox = ({ children, onClick }) => (
+  <Box
+    sx={{
+      display: 'flex',
+      p: '8px 10px',
+      alignItems: 'center',
+      fontWeight: 500,
+      fontSize: 15,
+      mt: '10px',
+      borderRadius: '20px',
+      cursor: 'pointer',
+      '&:hover': {
+        backgroundColor: 'gray.10',
+      },
+    }}
+    onClick={onClick}
+  >
+    {children}
+  </Box>
+)
 function LayoutHeader() {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
   const [isUserOpen, setIsUserOpen] = useState(null)
@@ -54,7 +77,7 @@ function LayoutHeader() {
               <Skeleton className={classes.skeleton} />
             </Box>
           ) : (
-            <Box minWidth={163}>
+            <Box>
               <ButtonWithPopup
                 id={'user-info'}
                 noArrow
@@ -75,6 +98,7 @@ function LayoutHeader() {
                   // '& path': {
                   //   fill: '#fff !important',
                   // },
+
                   // minHeight: '56px',
                 }}
                 placement='bottom-end'
@@ -95,21 +119,57 @@ function LayoutHeader() {
                   </Box>
                 }
                 popperContentProps={{}}
-                PopperContent={() => (
+                PopperContent={({ close }) => (
                   <Box
                     sx={{
+                      minWidth: '350px',
                       backgroundColor: '#fff',
-                      borderRadius: '12px',
+                      borderRadius: '20px',
                       mt: '5px',
-                      padding: '5px 10px',
-                      '&:hover': {
-                        backgroundColor: '#eee',
-                      },
+                      padding: '10px 10px',
+                      // '&:hover': {
+                      //   backgroundColor: '#eee',
+                      // },
                     }}
                   >
-                    <Typography fontWeight={'500'} fontSize={15} onClick={() => logout()}>
-                      Выйти из системы
-                    </Typography>
+                    <Box>
+                      <Box sx={{ alignItems: 'center' }} display={'flex'}>
+                        <Box width={40} height={40} mr={'10px'} borderRadius={2} overflow='hidden'>
+                          {!userData?.photo ? (
+                            <div className={classes.avatarPlaceholder}>
+                              {firstName?.charAt(0)}
+                              {lastName?.charAt(0)}
+                            </div>
+                          ) : (
+                            <img src={userData?.photo} alt={userData?.first_name} className={classes.avatar} />
+                          )}
+                        </Box>
+                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                          <Typography fontWeight={'600'} fontSize={18}>
+                            {get(userData, 'first_name')}
+                            {get(userData, 'last_name')}
+                          </Typography>
+                          <Typography color={'bunker.400'} fontWeight={'500'} fontSize={14}>
+                            {get(userData, 'store.name')}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+                    <DialogRowBox
+                      onClick={() => {
+                        navigate('/settings/profile')
+                        close()
+                      }}
+                    >
+                      <UserFilledIcon />
+                      <Typography sx={{ fontSize: '17px', lineHeight: '20px', fontWeight: '500', ml: '8px' }}>Профиль</Typography>
+                    </DialogRowBox>
+                    {/* <DialogRowBox onClick={() => navigate('/settings/profile')}>
+                      <SettingsIcon /> <Typography sx={{ fontSize: '17px', lineHeight: '20px', fontWeight: '500', ml: '8px' }}>Настройки</Typography>
+                    </DialogRowBox> */}
+                    <DialogRowBox onClick={() => logout()}>
+                      <LogOutIcon /> <Typography sx={{ fontSize: '17px', lineHeight: '20px', fontWeight: '500', ml: '8px' }}>Выйти из системы</Typography>
+                    </DialogRowBox>
                   </Box>
                 )}
               />
@@ -124,10 +184,31 @@ function LayoutHeader() {
             width: '48px',
             height: '48px',
             borderRadius: '100%',
+            position: 'relative',
             backgroundColor: 'gray.50',
           }}
         >
           <NotificationSmallIcon />
+          <Typography
+            sx={{
+              width: '40px',
+              height: '20px',
+              backgroundColor: '#A53EFF',
+              color: '#fff',
+              fontSize: '10px',
+              fontWeight: '600',
+              borderRadius: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              ml: '5px',
+              position: 'absolute',
+              top: '-6px',
+              right: '-10px',
+            }}
+          >
+            soon
+          </Typography>
         </Box>
       </Box>
       {/* <UserLogOutDrawer
