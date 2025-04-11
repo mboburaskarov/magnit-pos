@@ -398,7 +398,6 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
         // disabling epos
 
         navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
-        setIsOrderDrower(false)
         handlePrint()
         success('Продажа завершена!')
         // setMarkingList({})
@@ -482,7 +481,6 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       }
       handlePrint()
       success('Продажа завершена!')
-      setIsOrderDrower(false)
       sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
     },
     onError: (err) => {
