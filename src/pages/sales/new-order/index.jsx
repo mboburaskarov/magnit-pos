@@ -613,6 +613,22 @@ function NewSale() {
     }
   )
 
+  useHotkeys(
+    'F9',
+    () => {
+      if (isAllMarkingFill()) {
+        setIsOrderDrower(true)
+      } else {
+        setIsOpenImplementMarkingDialog({ mode: 'fu;;' })
+      }
+    },
+    {
+      preventDefault: true,
+      enableOnFormTags: true,
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+    }
+  )
+
   const [debouncedDiscount, setDebouncedDiscount] = useState('')
 
   const changeDiscountDebounce = (value) => {

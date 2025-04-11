@@ -86,8 +86,12 @@ const ShortcutsDrawerArray = [
     title: 'menu.sales.shortcuts.payment',
     types: [
       {
-        titleofshortcut: 'Оплата',
+        titleofshortcut: 'Оплата (LITE)',
         symbolofshortcut: ['F10'],
+      },
+      {
+        titleofshortcut: 'Оплата (Полный)',
+        symbolofshortcut: ['F9'],
       },
       {
         titleofshortcut: 'Закрыть кассу',
