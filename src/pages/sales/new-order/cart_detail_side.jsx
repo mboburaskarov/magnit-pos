@@ -357,7 +357,7 @@ function CartDetailSide({
               </Typography>
             </Button>
             <Button
-              disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0}
+              disabled={size(get(cartItemsList, 'data.data.data')) === 0}
               // onClick={() => setIsOrderDrower(true)}
               sx={{ borderRadius: '16px', ml: '4px', p: '12px', width: '140px' }}
               onClick={() => {

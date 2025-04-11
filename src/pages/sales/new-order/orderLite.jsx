@@ -473,7 +473,13 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       console.log('err', err)
     },
   })
-
+  useEffect(() => {
+    if (isOpenScanDialog) {
+      setTimeout(() => {
+        scannedBarcodeRef.current.focus()
+      }, 100)
+    }
+  }, [isOpenScanDialog, scannedBarcodeRef])
   const { mutate: sendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
     onSuccess: ({ data }) => {},
     onError: (err) => {
