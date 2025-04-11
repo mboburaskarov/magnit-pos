@@ -173,7 +173,7 @@ const useStyles = makeStyles((theme) => ({
     // bottom: 20,
     // right: 0,
     // left: 0,
-    padding: '12px',
+    padding: '16px 12px',
     display: 'flex',
     flexDirection: 'column',
     // border: '1px solid',

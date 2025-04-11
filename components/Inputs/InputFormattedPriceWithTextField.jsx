@@ -10,6 +10,7 @@ function InputFormattedPriceWithTextField({
   error,
   onKeyDown,
   control,
+  noMarginTop,
   label,
   noLabel,
   placeholder,
@@ -76,6 +77,7 @@ function InputFormattedPriceWithTextField({
             fullWidth={fullWidth}
             boxStyle={boxStyle}
             adornment={adornment}
+            noMarginTop={noMarginTop}
             adornmentPosition={adornmentPosition}
             adornmentClassName={adornmentClassName}
             required={required}

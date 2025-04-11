@@ -553,7 +553,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
         },
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: '12px' }}>
         <Box
           sx={{
             width: '100%',
@@ -628,6 +628,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
           '& .react-select__control': {
             width: '80px',
           },
+          mt: '8px',
         }}
       >
         <InputFormattedPriceWithTextField
@@ -635,6 +636,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
           id='lite_cash_amount'
           placeholder={t('Наличные')}
           control={control}
+          noMarginTop
           required
           onInput={(e) => {
             if (e.target.value == '') {
@@ -676,11 +678,13 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
           '& .react-select__control': {
             width: '100px',
           },
+          mt: '8px',
         }}
       >
         <InputFormattedPriceWithTextField
           name='lite_card_amount'
           id='lite_card_amount'
+          noMarginTop
           placeholder={t('По карте')}
           inputRef={(el) => {
             inputRefs.current[1] = el
@@ -729,10 +733,12 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
           '& .react-select__control': {
             width: '100px',
           },
+          mt: '8px',
         }}
       >
         <InputFormattedPriceWithTextField
           name='lite_online_amount'
+          noMarginTop
           id='lite_online_amount_id'
           placeholder={t('Онлайн оплата')}
           control={control}

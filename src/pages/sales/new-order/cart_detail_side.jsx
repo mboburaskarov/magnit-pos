@@ -310,7 +310,7 @@ function CartDetailSide({
               }
             }}
             color='primary'
-            sx={{ mb: '16px', borderRadius: '16px', display: 'flex', justifyContent: 'space-between' }}
+            sx={{ mb: '16px', height: '48px', borderRadius: '16px', display: 'flex', justifyContent: 'space-between' }}
           >
             <Typography display={'flex'} alignItems={'center'} fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
               {t('pay')}
@@ -342,6 +342,7 @@ function CartDetailSide({
                 borderRadius: '16px',
                 mr: '4px',
                 p: '12px',
+                height: '48px',
                 width: '140px',
                 '& svg': {
                   flexShrink: 0,
@@ -359,7 +360,7 @@ function CartDetailSide({
             <Button
               disabled={size(get(cartItemsList, 'data.data.data')) === 0}
               // onClick={() => setIsOrderDrower(true)}
-              sx={{ borderRadius: '16px', ml: '4px', p: '12px', width: '140px' }}
+              sx={{ borderRadius: '16px', ml: '4px', p: '12px', width: '140px', height: '48px' }}
               onClick={() => {
                 if (isAllMarkingFill()) {
                   setIsOrderDrower(true)
