@@ -360,7 +360,16 @@ function CartDetailSide({
             <Button
               disabled={size(get(cartItemsList, 'data.data.data')) === 0}
               // onClick={() => setIsOrderDrower(true)}
-              sx={{ borderRadius: '16px', ml: '4px', p: '12px', width: '140px', height: '48px' }}
+              sx={{
+                borderRadius: '16px',
+                ml: '4px',
+                p: '12px',
+                width: '140px',
+                height: '48px',
+                '& svg > path': {
+                  stroke: '#fff',
+                },
+              }}
               onClick={() => {
                 if (isAllMarkingFill()) {
                   setIsOrderDrower(true)

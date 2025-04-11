@@ -181,7 +181,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     ['n', 'N', 'T', 'т'],
     (event) => {
       const activeInput = document.activeElement.id
-      if (activeInput.includes('lite_')) {
+      if (activeInput.includes('lite_') || activeInput == '') {
         inputRefs.current[0].focus()
         setValue('lite_cash_amount', get(cartItemsList, 'total_amount') - paymentAmount)
         changeCursor(inputRefs.current[0])
@@ -196,7 +196,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     ['p', 'P', 'з', 'З'],
     (event) => {
       const activeInput = document.activeElement.id
-      if (activeInput.includes('lite_')) {
+      if (activeInput.includes('lite_') || activeInput == '') {
         inputRefs.current[2].focus()
         setValue('lite_online_amount', get(cartItemsList, 'total_amount') - paymentAmount)
         changeCursor(inputRefs.current[2])
@@ -215,7 +215,11 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     ['c', 'C', 'С', 'с'],
     (event) => {
       const activeInput = document.activeElement.id
-      if (activeInput.includes('lite_')) {
+      console.log(activeInput == '')
+
+      if (activeInput.includes('lite_') || activeInput == '') {
+        console.log('goo')
+
         inputRefs.current[2].focus()
         setValue('lite_online_amount', get(cartItemsList, 'total_amount') - paymentAmount)
         changeCursor(inputRefs.current[2])
@@ -235,7 +239,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     ['u', 'U', 'Г', 'г'],
     (event) => {
       const activeInput = document.activeElement.id
-      if (activeInput.includes('lite_')) {
+      if (activeInput.includes('lite_') || activeInput == '') {
         inputRefs.current[1].focus()
         setValue('lite_card_amount', get(cartItemsList, 'total_amount') - paymentAmount)
         changeCursor(inputRefs.current[1])
@@ -255,7 +259,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     ['h', 'H', 'Р', 'р'],
     (event) => {
       const activeInput = document.activeElement.id
-      if (activeInput.includes('lite_')) {
+      if (activeInput.includes('lite_') || activeInput == '') {
         inputRefs.current[1].focus()
         setValue('lite_card_amount', get(cartItemsList, 'total_amount') - paymentAmount)
         changeCursor(inputRefs.current[1])

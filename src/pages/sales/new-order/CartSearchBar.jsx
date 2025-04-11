@@ -311,6 +311,7 @@ function CartSearchBar({
 
               if (e.key == 'Escape') {
                 e.preventDefault()
+                setShowOverlay(false)
               }
               if (e.key == 'Enter') {
                 setShowOverlay(false)

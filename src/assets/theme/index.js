@@ -117,9 +117,9 @@ export const theme = ({ mode, palette }) => {
               },
             },
             '&.MuiButton-containedSecondary.Mui-disabled': {
-              backgroundColor: palette.background.gray,
+              backgroundColor: `${palette.background.gray} !important`,
               '& p': {
-                color: `${palette.bunker[900]} !important`,
+                color: `${palette.bunker[300]} !important`,
               },
             },
 
