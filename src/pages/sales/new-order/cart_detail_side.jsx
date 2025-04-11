@@ -294,8 +294,8 @@ function CartDetailSide({
             <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>
               {t('discount')}:
             </Typography>
-            <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
-              {thousandDivider(get(cartItemsList, 'data.data.discount_amount'), 'сум')}
+            <Typography fontWeight={'500'} fontSize={'18px'} color={'red.500'} lineHeight={'28px'}>
+              -{thousandDivider(get(cartItemsList, 'data.data.discount_amount'), 'сум')}
             </Typography>
           </Box>
           <Button

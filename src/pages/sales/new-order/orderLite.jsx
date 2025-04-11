@@ -319,10 +319,11 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     }),
     singleValue: (provided) => ({
       ...provided,
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: 600,
+      lineHeight: '20px',
       fontFamily: "'Inter', sans-serif",
-      color: useTheme().palette.gray[600],
+      color: useTheme().palette.black,
       alignItems: 'center',
       width: '80px',
     }),
@@ -642,7 +643,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       <Box
         sx={{
           '& .react-select__control': {
-            width: '80px',
+            width: '75px',
           },
           mt: '8px',
         }}
@@ -692,7 +693,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       <Box
         sx={{
           '& .react-select__control': {
-            width: '100px',
+            width: '95px',
           },
           mt: '8px',
         }}
@@ -747,7 +748,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       <Box
         sx={{
           '& .react-select__control': {
-            width: '100px',
+            width: '95px',
           },
           mt: '8px',
         }}
