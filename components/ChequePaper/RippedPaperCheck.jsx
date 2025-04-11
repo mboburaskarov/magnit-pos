@@ -17,6 +17,7 @@ function RippedPaperCheck({
   margin,
   qrcodeUrl,
   cashBoxDetails,
+  mode,
   customerId,
   checked,
   paymentsList,
@@ -187,21 +188,38 @@ function RippedPaperCheck({
               {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             </Fragment>
           ))}
-
+          {console.log(paymentsList)}
           <Fragment key={'index39'}>
             <Box className={classes.content}>
-              {paymentsList?.map(
-                (el) =>
-                  disableSumsOnGoods() && (
-                    <DashedRow
-                      id={`return-price-${'index'}`}
-                      rowData={{
-                        type: `${el.name}:`,
-                        value: `${thousandDivider(el.amount)} so'm`,
-                      }}
-                    />
-                  )
-              )}
+              {
+                (mode = 'lite'
+                  ? paymentsList
+                      .filter((a) => a.amount > 0)
+                      ?.map(
+                        (el) =>
+                          disableSumsOnGoods() && (
+                            <DashedRow
+                              id={`return-price-${'index'}`}
+                              rowData={{
+                                type: `${el.name}:`,
+                                value: `${thousandDivider(el.amount)} so'm`,
+                              }}
+                            />
+                          )
+                      )
+                  : paymentsList?.map(
+                      (el) =>
+                        disableSumsOnGoods() && (
+                          <DashedRow
+                            id={`return-price-${'index'}`}
+                            rowData={{
+                              type: `${el.name}:`,
+                              value: `${thousandDivider(el.amount)} so'm`,
+                            }}
+                          />
+                        )
+                    ))
+              }
 
               {disableSumsOnGoods() && (
                 <DashedRow

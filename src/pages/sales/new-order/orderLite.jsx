@@ -99,6 +99,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       payment.type === 'cash'
         ? {
             ...payment,
+            name: 'Naqd',
             payment_type_id: get(paymentTypesList, 'data.data', []).find((item) => item.name === 'Naqd')?.id,
             amount: getValues('lite_cash_amount'),
           }
@@ -119,12 +120,13 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     }, 100)
   }
   useEffect(() => {
-    if (cardPaymentType == 'Uzcard') {
+    if (cardPaymentType.from == 'Uzcard') {
       const updatedPaymentList = paymentsList.map((payment) =>
         payment.type === 'card'
           ? {
               ...payment,
               app_type: cardPaymentType.from,
+              name: cardPaymentType.from,
               payment_type_id: get(paymentTypesList, 'data.data', []).find((item) => item.name === 'Uzcard')?.id,
               amount: getValues('lite_card_amount'),
             }
@@ -137,6 +139,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
           ? {
               ...payment,
               app_type: cardPaymentType.from,
+              name: cardPaymentType.from,
               payment_type_id: get(paymentTypesList, 'data.data', []).find((item) => item.name === 'Humo')?.id,
               amount: getValues('lite_card_amount'),
             }
@@ -146,12 +149,13 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     }
   }, [watch('lite_card_amount')])
   useEffect(() => {
-    if (onlinePaymentType == 'Click') {
+    if (onlinePaymentType.from == 'Click') {
       const updatedPaymentList = paymentsList.map((payment) =>
         payment.type === 'app'
           ? {
               ...payment,
               app_type: onlinePaymentType.from,
+              name: onlinePaymentType.from,
               payment_type_id: get(paymentTypesList, 'data.data', []).find((item) => item.name === 'Click')?.id,
               amount: getValues('lite_online_amount'),
             }
@@ -164,6 +168,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
           ? {
               ...payment,
               app_type: onlinePaymentType.from,
+              name: onlinePaymentType.from,
               payment_type_id: get(paymentTypesList, 'data.data', []).find((item) => item.name === 'Payme')?.id,
               amount: getValues('lite_online_amount'),
             }
@@ -172,7 +177,14 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       setPaymentsList(updatedPaymentList)
     }
   }, [watch('lite_online_amount')])
-
+  const shouldPaymentInputActive = () => {
+    const activeInput = document.activeElement.id
+    if (activeInput.includes('lite_') || activeInput.includes('quantity_') || activeInput.includes('inputQuantity') || activeInput == '') {
+      return true
+    } else {
+      return false
+    }
+  }
   useEffect(() => {
     setValue('onlinePaymentType', onlinePaymentType)
     setValue('cardPaymentType', cardPaymentType)
@@ -180,8 +192,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
   useHotkeys(
     ['n', 'N', 'T', 'т'],
     (event) => {
-      const activeInput = document.activeElement.id
-      if (activeInput.includes('lite_') || activeInput == '') {
+      if (shouldPaymentInputActive()) {
         inputRefs.current[0].focus()
         setValue('lite_cash_amount', get(cartItemsList, 'total_amount') - paymentAmount)
         changeCursor(inputRefs.current[0])
@@ -196,7 +207,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     ['p', 'P', 'з', 'З'],
     (event) => {
       const activeInput = document.activeElement.id
-      if (activeInput.includes('lite_') || activeInput == '') {
+      if (shouldPaymentInputActive()) {
         inputRefs.current[2].focus()
         setValue('lite_online_amount', get(cartItemsList, 'total_amount') - paymentAmount)
         changeCursor(inputRefs.current[2])
@@ -217,7 +228,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       const activeInput = document.activeElement.id
       console.log(activeInput == '')
 
-      if (activeInput.includes('lite_') || activeInput == '') {
+      if (shouldPaymentInputActive()) {
         console.log('goo')
 
         inputRefs.current[2].focus()
@@ -239,7 +250,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     ['u', 'U', 'Г', 'г'],
     (event) => {
       const activeInput = document.activeElement.id
-      if (activeInput.includes('lite_') || activeInput == '') {
+      if (shouldPaymentInputActive()) {
         inputRefs.current[1].focus()
         setValue('lite_card_amount', get(cartItemsList, 'total_amount') - paymentAmount)
         changeCursor(inputRefs.current[1])
@@ -259,7 +270,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     ['h', 'H', 'Р', 'р'],
     (event) => {
       const activeInput = document.activeElement.id
-      if (activeInput.includes('lite_') || activeInput == '') {
+      if (shouldPaymentInputActive()) {
         inputRefs.current[1].focus()
         setValue('lite_card_amount', get(cartItemsList, 'total_amount') - paymentAmount)
         changeCursor(inputRefs.current[1])
@@ -809,6 +820,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
             paymentsList={paymentsList}
             cartItemsList={cartItemsList}
             id='cheque_of_orders'
+            mode='lite'
             cashBoxDetails={cashBoxDetails}
             customerId={customerId}
             noFormControl

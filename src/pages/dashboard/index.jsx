@@ -18,6 +18,7 @@ import { calculatePercentage } from '../../../utils/calculatePercentage'
 import dataTypeFilter from '../../../utils/dataTypeFilter'
 import { getDetaling } from '../../../utils/getDetaling'
 import { requests } from '../../../utils/requests'
+import thousandDivider from '../../../utils/thousandDivider'
 import OrdersIcon from '../../assets/icons/OrdersIcon'
 import ProductsIcon from '../../assets/icons/ProductsIcon'
 import RevenueIcon from '../../assets/icons/RevenueIcon'
@@ -217,8 +218,19 @@ export default function DashboarPage() {
         </Grid>
         <CheckAccess id={'dashboard-transactions-vendor'}>
           <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-            <Transactions id='dashboard-chart' data={get(payments, 'data.data')} title={'Платежи'} subTitle={'64 116 872 UZS'} />
-            <Transactions id='dashboard-chart' data={get(transaction, 'data.data')} title={'Транзакции'} subTitle={'64 шт'} />
+            <Transactions
+              id='dashboard-chart'
+              data={get(payments, 'data.data')}
+              title={'Платежи'}
+              subTitle={thousandDivider(Math.round(get(payments, 'data.data', []).reduce((a, b) => a + b.amount, 0)), 'сум')}
+            />
+            <Transactions
+              id='dashboard-chart'
+              data={get(transaction, 'data.data')}
+              title={'Транзакции'}
+              subTitle={thousandDivider(Number(get(transaction, 'data.data')[0].count), 'шт')}
+            />
+            {console.log(get(transaction, 'data.data')[0].count)}
           </Box>
         </CheckAccess>
         <CheckAccess id={'dashboard-vendor'}>
