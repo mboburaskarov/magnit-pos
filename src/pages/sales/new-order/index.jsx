@@ -598,6 +598,8 @@ function NewSale() {
   useHotkeys(
     'F10',
     () => {
+      if (isOrderDrower) return
+
       if (isAllMarkingFill()) {
         setLiteOrder(true)
 

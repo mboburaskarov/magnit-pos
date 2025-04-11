@@ -187,7 +187,6 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
   }
   const setRemainPriceToPaymentValue = (name) => {
     const remainPrice = get(cartItemsList, 'total_amount') - paymentAmount
-    console.log(remainPrice)
 
     if (remainPrice > 0) {
       setValue(name, remainPrice)
@@ -234,8 +233,6 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     ['c', 'C', 'С', 'с'],
     (event) => {
       if (shouldPaymentInputActive()) {
-        console.log('goo')
-
         inputRefs.current[2].focus()
         setRemainPriceToPaymentValue('lite_online_amount')
 

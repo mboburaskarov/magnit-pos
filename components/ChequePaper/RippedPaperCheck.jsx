@@ -188,7 +188,6 @@ function RippedPaperCheck({
               {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             </Fragment>
           ))}
-          {console.log(paymentsList)}
           <Fragment key={'index39'}>
             <Box className={classes.content}>
               {
