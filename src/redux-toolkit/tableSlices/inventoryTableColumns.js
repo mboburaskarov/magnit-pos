@@ -58,6 +58,12 @@ const columns = [
     minWidth: 70,
     width: 170,
   },
+  {
+    field: 'actions',
+    hide: false,
+    minWidth: 120,
+    width: 120,
+  },
 ]
 
 const inventoryTableColumns = createSlice({

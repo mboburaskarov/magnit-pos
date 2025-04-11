@@ -41,7 +41,6 @@ export const navbatRouteData = [
         active: '/products/inventory/*',
         id: '32',
         href: '/products/inventory',
-        soon: true,
       },
       {
         label: 'Трансфер',

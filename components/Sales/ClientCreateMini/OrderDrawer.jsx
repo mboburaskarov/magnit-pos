@@ -509,6 +509,7 @@ export default function OrderDrawer({
 
     const markingData = get(cartItemsList, 'data', []).map((el) => ({
       id: el.id,
+      marking_list: Object.values(markingsList[el.id] || {}).filter((a) => a.length),
       marking_count: Object.values(markingsList[el.id] || {}).filter((a) => a.length)?.length,
     }))
 

@@ -1,3 +1,4 @@
+import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
@@ -7,12 +8,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../../components/CheckAccess'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
+import { error, success } from '../../../../utils/toast'
+import BigTickIcon from '../../../assets/icons/BigTickIcon'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryTableColumns'
@@ -31,6 +35,7 @@ export default function InventoryPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [orderModel, setOrderModel] = useState(false)
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
   const [filterMenu, setFilterMenu] = useState(false)
   const tableColumns = tableHeaderSelector({
@@ -38,6 +43,7 @@ export default function InventoryPage() {
     t,
     values,
     setImages: setOpenImageGallery,
+    setOpenConfirmDialog: setOpenConfirmDialog,
   })
 
   useEffect(() => {
@@ -106,6 +112,19 @@ export default function InventoryPage() {
       console.log(err)
 
       error('Ошибка при скачать excel!')
+    },
+  })
+  const { mutate: deleteInventory, isLoading: isDeletingProduct } = useMutation(requests.deleteInventory, {
+    onSuccess: () => {
+      refetch()
+      success('Инвентаризация был успешно удален!')
+      setOpenConfirmDialog(null)
+    },
+    onError: (err) => {
+      refetch()
+      error('Ошибка при удалении Инвентаризация!')
+      setOpenConfirmDialog(null)
+      console.log('err', err)
     },
   })
   return (
@@ -216,6 +235,32 @@ export default function InventoryPage() {
       </Box>
 
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
+      {openConfirmDialog && (
+        <ConfirmDialog
+          open={!!openConfirmDialog}
+          setOpen={setOpenConfirmDialog}
+          icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
+          title={'Удалить инвентаризацию?'}
+          desc={'Вы уверены что хотите удалить инвентаризацию?'}
+          // supDesc={'“Azitromitsin 250 mg”'}
+          actions={
+            <>
+              <Button
+                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                fullWidth
+                color='secondary'
+                variant='contained'
+                onClick={() => setOpenConfirmDialog(null)}
+              >
+                Нет
+              </Button>
+              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteInventory({ id: openConfirmDialog.id })}>
+                Да, удалить
+              </LoadingButton>
+            </>
+          }
+        />
+      )}
     </LoadingContainer>
   )
 }

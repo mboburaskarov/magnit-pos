@@ -1,11 +1,11 @@
+import { faVideo } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { Link } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faVideo } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from 'react-i18next'
-import StyledSwitch from '../Switch/StyledSwitch'
+import { Link } from 'react-router-dom'
 import PlusIcon from '../../src/assets/icons/PlusIcon'
+import StyledSwitch from '../Switch/StyledSwitch'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     left: ({ isStickyToLeft }) => (isStickyToLeft ? 0 : 'auto'),
     width: ({ width }) => width,
     minHeight: 281,
-    // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='24' ry='24' stroke='%23333' stroke-width='4' stroke-dasharray='10' stroke-dashoffset='0' stroke-linecap='round'/%3e%3c/svg%3e")`,
+    // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='24' ry='24' stroke='%23333' strokeWidth='4' stroke-dasharray='10' stroke-dashoffset='0' strokeLinecap='round'/%3e%3c/svg%3e")`,
   },
   fullHeight: {
     height: '100%',

@@ -1,15 +1,17 @@
-import { Box, Typography } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import * as qs from 'qs'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
+import CheckAccess from '../../../../components/CheckAccess'
 import StyledTooltip from '../../../../components/StyledTooltip'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 import ArrowRight from '../../../assets/icons/ArrowRight'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import LeftArrowIcon from '../../../assets/icons/LeftArrow'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
@@ -71,7 +73,7 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, t }) {
+export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmDialog }) {
   const { values } = useQueryParams()
 
   const columns = importsColumns?.map((el) => {
@@ -226,6 +228,22 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'actions') {
+      return {
+        ...el,
+        headerName: t('table_columns.actions'),
+        colId: el.field,
+        cellRenderer: memo(({ data }) => (
+          <Box width={'100%'} display='flex' justifyContent={'center'} alignItems={'center'}>
+            <CheckAccess id={'delete-product'}>
+              <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <DeleteIcon />
+              </IconButton>
+            </CheckAccess>
           </Box>
         )),
       }
