@@ -228,9 +228,15 @@ export default function DashboarPage() {
               id='dashboard-chart'
               data={get(transaction, 'data.data')}
               title={'Транзакции'}
-              subTitle={thousandDivider(Number(get(transaction, 'data.data')[0].count), 'шт')}
+              subTitle={thousandDivider(
+                get(transaction, 'data.data', []).reduce((a, b) => {
+                  const count = parseFloat((b.count || '0').replace(',', '.'))
+                  return a + count
+                }, 0),
+
+                'шт'
+              )}
             />
-            {console.log(get(transaction, 'data.data')[0].count)}
           </Box>
         </CheckAccess>
         <CheckAccess id={'dashboard-vendor'}>
