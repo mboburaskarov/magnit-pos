@@ -2,7 +2,7 @@ import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Typography } from '@mui/material'
 import { get, size } from 'lodash'
-import React from 'react'
+import React, { useState } from 'react'
 import Highlighter from 'react-highlight-words'
 import { useTranslation } from 'react-i18next'
 import OutsideClickHandler from 'react-outside-click-handler'
@@ -13,10 +13,12 @@ import SearchInput from '../../../../components/Inputs/SearchInput'
 import Label from '../../../../components/Label'
 import StyledTooltip from '../../../../components/StyledTooltip'
 import thousandDivider from '../../../../utils/thousandDivider'
+import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import FileIcon from '../../../assets/icons/FileIcon'
 import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
 import TimesSmallIcon from '../../../assets/icons/TimesSmallIcon'
 import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
+import OrderLite from './orderLite'
 
 function CartDetailSide({
   cashBoxDetails,
@@ -43,8 +45,14 @@ function CartDetailSide({
   setIsCreateOpenDraft,
   setInputDiscount,
   setIsOpenDraft,
+  printContainer,
+  markingsList,
+  liteOrder,
+  setLiteOrder,
 }) {
   const { t } = useTranslation()
+  const [maxAmount, setMaxAmount] = useState(0)
+
   return (
     <Box className={classes.card_detail}>
       <Box display={'flex'}>
@@ -245,66 +253,130 @@ function CartDetailSide({
             ))}
         </Box>
       </CheckAccess>
-      <Box className={classes.priceDetails}>
-        <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
-          <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>
-            {t('total_amount')}:
-          </Typography>
-          <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
-            {thousandDivider(get(cartItemsList, 'data.data.sum'), 'сум')}
-          </Typography>
-        </Box>
-        <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
-          <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>
-            {t('discount')}:
-          </Typography>
-          <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
-            {thousandDivider(get(cartItemsList, 'data.data.discount_amount'), 'сум')}
-          </Typography>
-        </Box>
-        <Button
-          disabled={size(get(cartItemsList, 'data.data.data')) === 0}
-          // onClick={() => setIsOrderDrower(true)}
-          onClick={() => {
-            if (isAllMarkingFill()) {
-              setIsOrderDrower(true)
-            } else {
-              setIsOpenImplementMarkingDialog(true)
-            }
-          }}
-          color='primary'
-          sx={{ mb: '16px', display: 'flex', justifyContent: 'space-between' }}
-        >
-          <Typography display={'flex'} alignItems={'center'} fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
-            {t('pay')}
-            <Box
+      <Box
+        sx={(theme) => ({
+          position: 'absolute',
+          bottom: 20,
+          right: 20,
+          width: 'calc(100% - 40px)',
+          left: 20,
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          border: '1px solid',
+          backgroundColor: theme.palette.white,
+          borderRadius: '32px',
+          borderColor: theme.palette.bunker[100],
+          boxShadow: '0px 4px 12px 0px #00000014',
+        })}
+      >
+        <OrderLite
+          liteOrder={liteOrder}
+          setMaxAmount={setMaxAmount}
+          maxAmount={maxAmount}
+          setLiteOrder={setLiteOrder}
+          cartItemsList={get(cartItemsList, 'data.data')}
+          markingsList={markingsList}
+          cashBoxDetails={cashBoxDetails}
+          customerId={customerId}
+          printContainer={printContainer}
+        />
+        <Box className={classes.priceDetails}>
+          <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
+            <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>
+              {t('total_amount')}:
+            </Typography>
+            <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
+              {thousandDivider(get(cartItemsList, 'data.data.sum'), 'сум')}
+            </Typography>
+          </Box>
+          <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
+            <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>
+              {t('discount')}:
+            </Typography>
+            <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
+              {thousandDivider(get(cartItemsList, 'data.data.discount_amount'), 'сум')}
+            </Typography>
+          </Box>
+          <Button
+            disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0}
+            // onClick={() => setIsOrderDrower(true)}
+            onClick={() => {
+              if (isAllMarkingFill()) {
+                setLiteOrder(true)
+              } else {
+                setLiteOrder(false)
+                setIsOpenImplementMarkingDialog({ mode: 'lite' })
+              }
+            }}
+            color='primary'
+            sx={{ mb: '16px', borderRadius: '16px', display: 'flex', justifyContent: 'space-between' }}
+          >
+            <Typography display={'flex'} alignItems={'center'} fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
+              {t('pay')}
+              <Box
+                sx={{
+                  color: '#fff',
+                  border: '2px solid #fff',
+                  height: '34px',
+                  display: 'flex',
+                  padding: '2px',
+                  ml: '15px',
+                  fontSize: '12px',
+                  minWidth: '34px',
+                  alignItems: 'center',
+                  borderRadius: '8px',
+                  justifyContent: 'center',
+                }}
+              >
+                F10
+              </Box>
+            </Typography>
+            <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
+              {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
+            </Typography>
+          </Button>
+          <Box display={'flex'}>
+            <Button
               sx={{
-                color: '#fff',
-                border: '2px solid #fff',
-                height: '34px',
-                display: 'flex',
-                padding: '2px',
-                ml: '15px',
-                fontSize: '12px',
-                minWidth: '34px',
-                alignItems: 'center',
-                borderRadius: '8px',
-                justifyContent: 'center',
+                borderRadius: '16px',
+                mr: '4px',
+                p: '12px',
+                width: '140px',
+                '& svg': {
+                  flexShrink: 0,
+                },
               }}
+              disabled={size(get(cartItemsList, 'data.data.data')) == 0}
+              color='secondary'
+              onClick={() => setIsCreateOpenDraft(true)}
             >
-              F10
-            </Box>
-          </Typography>
-          <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
-            {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
-          </Typography>
-        </Button>
-        <Button disabled={size(get(cartItemsList, 'data.data.data')) == 0} color='secondary' onClick={() => setIsCreateOpenDraft(true)}>
-          <TimeAndDate disabled={size(get(cartItemsList, 'data.data.data'))} />
-          <Typography ml={'12px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
-            {t('draft')}
-          </Typography>
-        </Button>
+              <TimeAndDate disabled={size(get(cartItemsList, 'data.data.data'))} />
+              <Typography ml={'8px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
+                {t('draft')}
+              </Typography>
+            </Button>
+            <Button
+              disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0}
+              // onClick={() => setIsOrderDrower(true)}
+              sx={{ borderRadius: '16px', ml: '4px', p: '12px', width: '140px' }}
+              onClick={() => {
+                if (isAllMarkingFill()) {
+                  setIsOrderDrower(true)
+                } else {
+                  setIsOpenImplementMarkingDialog({ mode: 'full' })
+                }
+              }}
+              color='primary'
+            >
+              <Typography mr={'20px'} fontWeight={'500'} fontSize={'18px'} color={'#fff'} lineHeight={'26px'}>
+                {t('Полный')}
+              </Typography>
+
+              <ArrowRightIcon disabled={size(get(cartItemsList, 'data.data.data'))} />
+            </Button>
+          </Box>
+        </Box>
       </Box>
     </Box>
   )

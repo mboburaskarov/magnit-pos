@@ -123,8 +123,6 @@ function CheckboxWithDragDrop({ data, checkAllField, setData, pin = true, dragHa
     setData(changedData)
   }
   const handlePinChange = (propName, checked) => {
-    console.log(propName, checked)
-
     const changedData = data?.map((el) => {
       if (el.name === propName) {
         el.pinned = checked

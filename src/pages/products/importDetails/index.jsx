@@ -54,7 +54,6 @@ export default function ImportDetailsPage() {
   })
   useEffect(() => {
     if (tableColumns) {
-      console.log(routeString, tableColumns)
       ;('retail_price_vat')
       ;('retail_price_vat')
       const formattedData = tableColumns

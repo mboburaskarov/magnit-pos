@@ -65,23 +65,23 @@ const ShortcutsDrawerArray = [
       // },
     ],
   },
-  {
-    title: 'menu.sales.shortcuts.add_client_discount',
-    types: [
-      // {
-      //   titleofshortcut: 'menu.sales.shortcuts.add_client',
-      //   symbolofshortcut: ['J'],
-      // },
-      // {
-      //   titleofshortcut: 'menu.sales.shortcuts.check_discount',
-      //   symbolofshortcut: ['K'],
-      // },
-      // {
-      //   titleofshortcut: 'menu.sales.shortcuts.discount_type',
-      //   symbolofshortcut: ['right', 'left'],
-      // },
-    ],
-  },
+  // {
+  //   title: 'menu.sales.shortcuts.add_client_discount',
+  //   types: [
+  //     // {
+  //     //   titleofshortcut: 'menu.sales.shortcuts.add_client',
+  //     //   symbolofshortcut: ['J'],
+  //     // },
+  //     // {
+  //     //   titleofshortcut: 'menu.sales.shortcuts.check_discount',
+  //     //   symbolofshortcut: ['K'],
+  //     // },
+  //     // {
+  //     //   titleofshortcut: 'menu.sales.shortcuts.discount_type',
+  //     //   symbolofshortcut: ['right', 'left'],
+  //     // },
+  //   ],
+  // },
   {
     title: 'menu.sales.shortcuts.payment',
     types: [
@@ -92,6 +92,26 @@ const ShortcutsDrawerArray = [
       {
         titleofshortcut: 'Закрыть кассу',
         symbolofshortcut: ['x'],
+      },
+      {
+        titleofshortcut: 'Выберите наличными',
+        symbolofshortcut: ['N'],
+      },
+      {
+        titleofshortcut: 'Выберите HUMO',
+        symbolofshortcut: ['H'],
+      },
+      {
+        titleofshortcut: 'Выберите UZCARD',
+        symbolofshortcut: ['U'],
+      },
+      {
+        titleofshortcut: 'Выберите PAYME',
+        symbolofshortcut: ['P'],
+      },
+      {
+        titleofshortcut: 'Выберите CLICK',
+        symbolofshortcut: ['C'],
       },
 
       // {
@@ -159,7 +179,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   shortcutsBox: {
-    marginTop: 40,
     width: '108%',
     display: 'flex',
     flexDirection: 'row',
@@ -168,6 +187,7 @@ const useStyles = makeStyles((theme) => ({
   shortcutInfoBox: {
     marginRight: 0,
     minHeight: 218,
+    marginTop: '15px',
     width: '50%',
   },
   infoBoxTitle: {

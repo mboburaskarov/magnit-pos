@@ -147,7 +147,6 @@ export default function InventoryWithCheckingPage() {
       scanned_count: Number(manualNumber),
     })
   }
-  console.log(inventoryWithCheckingDetails)
 
   return (
     <LoadingContainer readyState={!isfinishInventoryChecking}>

@@ -60,7 +60,6 @@ function SaleChildDrawer({ open, setOpen, ids }) {
   const [debouncedCurrentSaleId] = useDebounce(currentSaleId, 200)
 
   const { values } = useQueryParams()
-  console.log(Boolean(debouncedCurrentSaleId), !!debouncedCurrentSaleId)
 
   const {
     data: saleDetailsList,

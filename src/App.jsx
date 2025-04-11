@@ -11,7 +11,6 @@ import Routes from './Routes'
 function App() {
   console.log(import.meta.env.VITE_MODE)
 
-  console.log('TEST DEPLOYMENT')
   return (
     <Providers>
       {/* <SocketProvider> */}

@@ -12,6 +12,8 @@ function ImplementMarkingDialog({
   isAllMarkingFill,
   markingCount,
   handleClose,
+  setLiteOrder,
+  liteOrder,
   cartItems,
   implementMarkingList,
   markingsList,
@@ -39,7 +41,11 @@ function ImplementMarkingDialog({
       newMarkingList[key] = mergedValues
     }
     setMarkingList(newMarkingList)
-    setIsOrderDrower(true)
+    if (get(open, 'mode', 'lite') === 'lite') {
+      setLiteOrder(true)
+    } else {
+      setIsOrderDrower(true)
+    }
     handleClose()
     setOpenConfirmDialog(null)
   }
@@ -54,8 +60,11 @@ function ImplementMarkingDialog({
 
           return
         }
-
-        setIsOrderDrower(true)
+        if (get(open, 'mode', 'lite') === 'lite') {
+          setLiteOrder(true)
+        } else {
+          setIsOrderDrower(true)
+        }
         handleClose()
         return
       }
@@ -187,7 +196,12 @@ function ImplementMarkingDialog({
               setOpenConfirmDialog(true)
               return
             }
-            setIsOrderDrower(true)
+            if (get(open, 'mode', 'lite') === 'lite') {
+              setLiteOrder(true)
+            } else {
+              setIsOrderDrower(true)
+            }
+
             addEmptyStringMarkToMarkinglessProduct(markingsList, markingCount)
             handleClose()
           }}
@@ -215,7 +229,9 @@ function ImplementMarkingDialog({
               fullWidth
               color='secondary'
               variant='contained'
-              onClick={() => setOpenConfirmDialog(null)}
+              onClick={() => {
+                setOpenConfirmDialog(null)
+              }}
             >
               {t('Закрыть диалог')}
             </Button>

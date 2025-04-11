@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Radio, RadioGroup, FormControlLabel } from '@mui/material'
-import { Controller } from 'react-hook-form'
-import TickOutlinedIcon from '../src/assets/icons/BigTickIcon'
-import RippedPaperCheck from './ChequePaper/RippedPaperCheck'
+import { Box, RadioGroup } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import React from 'react'
+import { Controller } from 'react-hook-form'
+import RippedPaperCheck from './ChequePaper/RippedPaperCheck'
 
 const useStyles = makeStyles((theme) => ({
   inner: {
