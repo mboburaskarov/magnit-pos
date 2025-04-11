@@ -20,19 +20,19 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
-  {
-    field: 'start_date',
-    hide: false,
-    minWidth: 70,
-    width: 270,
-  },
+  // {
+  //   field: 'start_date',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 270,
+  // },
 
-  {
-    field: 'end_data',
-    hide: false,
-    minWidth: 70,
-    width: 270,
-  },
+  // {
+  //   field: 'end_data',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 270,
+  // },
   {
     field: 'actions',
     hide: false,

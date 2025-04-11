@@ -145,6 +145,7 @@ export const requests = {
   createBonusProduct: (data) => request.post(`v1/product-bonus`, data),
   getProductListForSelect: (filter) => request.get(`v1/product/product-list${qs.stringify(filter, { addQueryPrefix: true })}`),
   deleteBonusProduct: (id) => request.delete(`v1/product-bonus`, id),
+  setMarkingRequired: ({ product_id, is_marking }) => request.patch(`v1/product/is-marking`, { product_id, is_marking }),
 
   getSingleProduct: (id) => request.get(`v1/product/${id}`),
   getSingleProductHistory: (filter, id) => request.get(`v1/product/import/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),

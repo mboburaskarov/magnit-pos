@@ -48,6 +48,16 @@ export default function ProductsPage() {
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const { mutate: setMarkingRequired, isLoading: isSetMarkingRequired } = useMutation(requests.setMarkingRequired, {
+    onSuccess: ({ data }) => {
+      success('Статус обязательности Маркировка был изменен')
+    },
+    onError: (err) => {
+      refetch()
+
+      error('Ошибка при Маркировка был изменен!')
+    },
+  })
   const { mutate: changeBarcode, isLoading: isChangeBarcode } = useMutation(requests.changeBarcode, {
     onSuccess: ({ data }) => {
       refetch()
@@ -62,6 +72,7 @@ export default function ProductsPage() {
     t,
     values,
     setOpenProductDrawer,
+    setMarkingRequired,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     changeBarcode,

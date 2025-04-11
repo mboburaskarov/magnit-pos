@@ -61,6 +61,7 @@ export default function tableHeaderSelector({
   setImages,
   canChangebarcode,
   t,
+  setMarkingRequired,
   setOpenConfirmDialog,
   setOpenProductDrawer,
   changeBarcode,
@@ -275,6 +276,25 @@ export default function tableHeaderSelector({
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')}</Typography>
             <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'required_marking') {
+      return {
+        ...el,
+        headerName: 'Требуется маркировка',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <input
+              onChange={(e) => setMarkingRequired({ is_marking: e.target.checked, product_id: p.data.id })}
+              defaultChecked={get(p, 'data.is_marking', false)}
+              name='checkbox_zero'
+              className='customCheckbox'
+              type='checkbox'
+            />
+            {console.log(p)}
           </Box>
         )),
       }
