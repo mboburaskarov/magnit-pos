@@ -178,11 +178,14 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     setValue('cardPaymentType', cardPaymentType)
   }, [onlinePaymentType, cardPaymentType])
   useHotkeys(
-    'n',
+    ['n', 'N', 'T', 'т'],
     (event) => {
-      inputRefs.current[0].focus()
-      setValue('lite_cash_amount', get(cartItemsList, 'total_amount') - paymentAmount)
-      changeCursor(inputRefs.current[0])
+      const activeInput = document.activeElement.id
+      if (activeInput.includes('lite_')) {
+        inputRefs.current[0].focus()
+        setValue('lite_cash_amount', get(cartItemsList, 'total_amount') - paymentAmount)
+        changeCursor(inputRefs.current[0])
+      }
     },
     {
       enableOnTags: ['INPUT', 'TEXTAREA'],
@@ -190,15 +193,18 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     }
   )
   useHotkeys(
-    'p',
+    ['p', 'P', 'з', 'З'],
     (event) => {
-      inputRefs.current[2].focus()
-      setValue('lite_online_amount', get(cartItemsList, 'total_amount') - paymentAmount)
-      changeCursor(inputRefs.current[2])
-      setOnlinePaymentType({
-        from: 'Payme',
-        to: 'Click',
-      })
+      const activeInput = document.activeElement.id
+      if (activeInput.includes('lite_')) {
+        inputRefs.current[2].focus()
+        setValue('lite_online_amount', get(cartItemsList, 'total_amount') - paymentAmount)
+        changeCursor(inputRefs.current[2])
+        setOnlinePaymentType({
+          from: 'Payme',
+          to: 'Click',
+        })
+      }
     },
     {
       enableOnTags: ['INPUT', 'TEXTAREA'],
@@ -206,16 +212,19 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     }
   )
   useHotkeys(
-    'c',
+    ['c', 'C', 'С', 'с'],
     (event) => {
-      inputRefs.current[2].focus()
-      setValue('lite_online_amount', get(cartItemsList, 'total_amount') - paymentAmount)
-      changeCursor(inputRefs.current[2])
+      const activeInput = document.activeElement.id
+      if (activeInput.includes('lite_')) {
+        inputRefs.current[2].focus()
+        setValue('lite_online_amount', get(cartItemsList, 'total_amount') - paymentAmount)
+        changeCursor(inputRefs.current[2])
 
-      setOnlinePaymentType({
-        from: 'Click',
-        to: 'Payme',
-      })
+        setOnlinePaymentType({
+          from: 'Click',
+          to: 'Payme',
+        })
+      }
     },
     {
       enableOnTags: ['INPUT', 'TEXTAREA'],
@@ -223,16 +232,19 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     }
   )
   useHotkeys(
-    'u',
+    ['u', 'U', 'Г', 'г'],
     (event) => {
-      inputRefs.current[1].focus()
-      setValue('lite_card_amount', get(cartItemsList, 'total_amount') - paymentAmount)
-      changeCursor(inputRefs.current[1])
+      const activeInput = document.activeElement.id
+      if (activeInput.includes('lite_')) {
+        inputRefs.current[1].focus()
+        setValue('lite_card_amount', get(cartItemsList, 'total_amount') - paymentAmount)
+        changeCursor(inputRefs.current[1])
 
-      setCardPaymentType({
-        from: 'Uzcard',
-        to: 'Humo',
-      })
+        setCardPaymentType({
+          from: 'Uzcard',
+          to: 'Humo',
+        })
+      }
     },
     {
       enableOnTags: ['INPUT', 'TEXTAREA'],
@@ -240,16 +252,19 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     }
   )
   useHotkeys(
-    'h',
+    ['h', 'H', 'Р', 'р'],
     (event) => {
-      inputRefs.current[1].focus()
-      setValue('lite_card_amount', get(cartItemsList, 'total_amount') - paymentAmount)
-      changeCursor(inputRefs.current[1])
+      const activeInput = document.activeElement.id
+      if (activeInput.includes('lite_')) {
+        inputRefs.current[1].focus()
+        setValue('lite_card_amount', get(cartItemsList, 'total_amount') - paymentAmount)
+        changeCursor(inputRefs.current[1])
 
-      setCardPaymentType({
-        from: 'Humo',
-        to: 'Uzcard',
-      })
+        setCardPaymentType({
+          from: 'Humo',
+          to: 'Uzcard',
+        })
+      }
     },
     {
       enableOnTags: ['INPUT', 'TEXTAREA'],
