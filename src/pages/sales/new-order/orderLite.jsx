@@ -197,7 +197,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     setValue('cardPaymentType', cardPaymentType)
   }, [onlinePaymentType, cardPaymentType])
   useHotkeys(
-    ['n', 'N', 'T', 'т'],
+    ['n', 'N', 'т'],
     (event) => {
       if (shouldPaymentInputActive()) {
         inputRefs.current[0].focus()

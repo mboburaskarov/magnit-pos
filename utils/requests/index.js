@@ -118,7 +118,7 @@ export const requests = {
   getInventoryDetails: (filter) => request.get(`v1/inventory-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getInventoryScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
   finishInventoryChecking: (id) => request.post(`v1/inventory/confirm/${id}`),
-  deleteInventory: ({ id }) => request.delete(`v1/inventory/cancel/${id}`),
+  deleteInventory: ({ id }) => request.post(`v1/inventory/cancel/${id}`),
 
   // autoOrder
   createAutoOrder: (data) => request.post(`v1/auto-order`, data),
