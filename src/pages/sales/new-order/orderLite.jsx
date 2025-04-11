@@ -185,6 +185,14 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       return false
     }
   }
+  const setRemainPriceToPaymentValue = (name) => {
+    const remainPrice = get(cartItemsList, 'total_amount') - paymentAmount
+    console.log(remainPrice)
+
+    if (remainPrice > 0) {
+      setValue(name, remainPrice)
+    }
+  }
   useEffect(() => {
     setValue('onlinePaymentType', onlinePaymentType)
     setValue('cardPaymentType', cardPaymentType)
@@ -194,7 +202,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
     (event) => {
       if (shouldPaymentInputActive()) {
         inputRefs.current[0].focus()
-        setValue('lite_cash_amount', get(cartItemsList, 'total_amount') - paymentAmount)
+        setRemainPriceToPaymentValue('lite_cash_amount')
         changeCursor(inputRefs.current[0])
       }
     },
@@ -206,10 +214,10 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
   useHotkeys(
     ['p', 'P', 'з', 'З'],
     (event) => {
-      const activeInput = document.activeElement.id
       if (shouldPaymentInputActive()) {
         inputRefs.current[2].focus()
-        setValue('lite_online_amount', get(cartItemsList, 'total_amount') - paymentAmount)
+        setRemainPriceToPaymentValue('lite_online_amount')
+
         changeCursor(inputRefs.current[2])
         setOnlinePaymentType({
           from: 'Payme',
@@ -225,14 +233,12 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
   useHotkeys(
     ['c', 'C', 'С', 'с'],
     (event) => {
-      const activeInput = document.activeElement.id
-      console.log(activeInput == '')
-
       if (shouldPaymentInputActive()) {
         console.log('goo')
 
         inputRefs.current[2].focus()
-        setValue('lite_online_amount', get(cartItemsList, 'total_amount') - paymentAmount)
+        setRemainPriceToPaymentValue('lite_online_amount')
+
         changeCursor(inputRefs.current[2])
 
         setOnlinePaymentType({
@@ -249,10 +255,10 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
   useHotkeys(
     ['u', 'U', 'Г', 'г'],
     (event) => {
-      const activeInput = document.activeElement.id
       if (shouldPaymentInputActive()) {
         inputRefs.current[1].focus()
-        setValue('lite_card_amount', get(cartItemsList, 'total_amount') - paymentAmount)
+        setRemainPriceToPaymentValue('lite_card_amount')
+
         changeCursor(inputRefs.current[1])
 
         setCardPaymentType({
@@ -269,10 +275,9 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
   useHotkeys(
     ['h', 'H', 'Р', 'р'],
     (event) => {
-      const activeInput = document.activeElement.id
       if (shouldPaymentInputActive()) {
         inputRefs.current[1].focus()
-        setValue('lite_card_amount', get(cartItemsList, 'total_amount') - paymentAmount)
+        setRemainPriceToPaymentValue('lite_card_amount')
         changeCursor(inputRefs.current[1])
 
         setCardPaymentType({
