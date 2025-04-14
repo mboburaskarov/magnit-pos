@@ -1,4 +1,3 @@
-import { faWeight } from '@fortawesome/free-solid-svg-icons'
 import makeStyles from '@mui/styles/makeStyles'
 
 const drawerWidth = '296px'
@@ -261,6 +260,7 @@ export const headerStyles = makeStyles((theme) => {
     avatarPlaceholder: {
       position: 'relative',
       height: 40,
+      flexShrink: 0,
       width: 40,
       borderRadius: 20,
       marginRight: 12,

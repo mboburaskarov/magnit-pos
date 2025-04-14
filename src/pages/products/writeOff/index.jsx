@@ -10,7 +10,6 @@ import CheckAccess from '../../../../components/CheckAccess'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
-import SoonPage from '../../../../components/soon/index'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
@@ -23,7 +22,7 @@ import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function WriteOffPage() {
-  return <SoonPage />
+  // return <SoonPage />
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()

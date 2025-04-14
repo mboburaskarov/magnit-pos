@@ -430,13 +430,6 @@ function NewSale() {
         addNewMarking(data?.data?.id, searchValue)
       }
 
-      const markingBarcode = extractNumbers(data?.data.marking)
-      const productBarcode = get(data?.data, 'barcode')
-      if (markingBarcode != productBarcode) {
-        deleteCartItem(data?.data?.id)
-        error('xato barcode yoki markirofka')
-      }
-
       searchResetRef.current.clearValue()
       searchRef?.current?.focus()
       setShowOverlay(false)

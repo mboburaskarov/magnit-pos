@@ -41,6 +41,7 @@ function LayoutHeader() {
   const firstName = userData?.first_name
   const lastName = userData?.last_name
   const [isLogout, setIsLogout] = useState(false)
+  console.log(userData)
 
   const classes = headerStyles({ isOpen })
   const logout = () => {
@@ -84,8 +85,10 @@ function LayoutHeader() {
                 endIcon={<ArrowDown />}
                 noMarginSvg
                 sx={{
+                  width: '100%',
                   padding: '4px 5px',
                   height: 48,
+                  justifyContent: 'start',
                   border: '0px solid #ECEDF2 !important',
                   // maxWidth: '200px',
                   // backgroundColor: '#fe5000 !important',
@@ -103,17 +106,21 @@ function LayoutHeader() {
                 }}
                 placement='bottom-end'
                 buttonLabel={
-                  <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
+                  <Box width={'100%'} mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
                     <div className={classes.avatarPlaceholder}>
                       <img src={get(userData, 'photo')} />
                     </div>
 
-                    <Box maxWidth='73%'>
+                    <Box width={'100%'}>
                       <Typography textAlign={'start'} id='user-username' className={classes.username}>
                         {`${firstName}`}
                       </Typography>
                       <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                        {get(userData, 'store.name')}
+                        {get(userData, 'type') == 'FOUNDER'
+                          ? 'Учредитель'
+                          : get(userData, 'type') == 'DIRECTOR'
+                          ? 'Генеральный директор '
+                          : get(userData, 'store.name')}
                       </p>
                     </Box>
                   </Box>
@@ -149,8 +156,13 @@ function LayoutHeader() {
                             {get(userData, 'first_name')}
                             {get(userData, 'last_name')}
                           </Typography>
+
                           <Typography color={'bunker.400'} fontWeight={'500'} fontSize={14}>
-                            {get(userData, 'store.name')}
+                            {get(userData, 'type') == 'FOUNDER'
+                              ? 'Учредитель'
+                              : get(userData, 'type') == 'DIRECTOR'
+                              ? 'Генеральный директор '
+                              : get(userData, 'store.name')}
                           </Typography>
                         </Box>
                       </Box>
