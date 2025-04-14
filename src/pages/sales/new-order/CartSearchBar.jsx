@@ -333,7 +333,6 @@ function CartSearchBar({
                   const productBarcode = get(head(productsData), 'barcode')
                   if (markingBarcode != productBarcode) {
                     error('xato barcode yoki markirofka')
-                    return
                   }
                   handleAddProduct({
                     discount_type: get(discount, 'type', 'percent'),
