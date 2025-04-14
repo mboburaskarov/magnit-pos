@@ -319,7 +319,7 @@ function CartSearchBar({
               if (e.key == 'Enter') {
                 setShowOverlay(false)
                 if (productsData.length !== 1) {
-                  console.log(extractNumbers(searchTearm))
+                  console.log(extractNumbers(searchTearm), productsData)
 
                   handleAddProduct({
                     discount_type: get(discount, 'type', 'percent'),
