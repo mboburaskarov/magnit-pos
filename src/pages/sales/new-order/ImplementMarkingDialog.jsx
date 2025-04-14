@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import TextField from '../../../../components/Inputs/TextField'
+import extractNumbers from '../../../../utils/extractBarcodeFromMarking'
+import { error } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 
 function ImplementMarkingDialog({
@@ -49,31 +51,43 @@ function ImplementMarkingDialog({
     handleClose()
     setOpenConfirmDialog(null)
   }
-
-  const handleKeyDown = (e, flatIndex) => {
+  const checkMarkingBarcode = (e, flatIndex, productBarcode) => {
+    const markingBarcode = extractNumbers(e.target.value)
+    if (markingBarcode != productBarcode) {
+      inputsRef.current[flatIndex].value = ''
+      error('Маркировка и штрих-код не поступили.')
+      return false
+    } else {
+      return true
+    }
+  }
+  const handleKeyDown = (e, flatIndex, productBarcode) => {
     if (e.key === 'Enter') {
       e.preventDefault()
+      console.log(e.target.value)
 
-      if (inputsRef.current.length - 1 == flatIndex) {
-        if (!isAllMarkingFill()) {
-          setOpenConfirmDialog(true)
+      if (checkMarkingBarcode(e, flatIndex, productBarcode)) {
+        if (inputsRef.current.length - 1 == flatIndex) {
+          if (!isAllMarkingFill()) {
+            setOpenConfirmDialog(true)
 
+            return
+          }
+          if (get(open, 'mode', 'lite') === 'lite') {
+            setLiteOrder(true)
+          } else {
+            setIsOrderDrower(true)
+          }
+          handleClose()
           return
         }
-        if (get(open, 'mode', 'lite') === 'lite') {
-          setLiteOrder(true)
-        } else {
-          setIsOrderDrower(true)
-        }
-        handleClose()
-        return
-      }
-      const currentIndex = Object.keys(inputsRef.current).findIndex((key) => key == flatIndex)
-      const nextIndex = Object.keys(inputsRef.current)[currentIndex + 1]
+        const currentIndex = Object.keys(inputsRef.current).findIndex((key) => key == flatIndex)
+        const nextIndex = Object.keys(inputsRef.current)[currentIndex + 1]
 
-      const nextInput = inputsRef.current[nextIndex]
-      if (nextInput) {
-        nextInput.focus()
+        const nextInput = inputsRef.current[nextIndex]
+        if (nextInput) {
+          nextInput.focus()
+        }
       }
     }
   }
@@ -152,10 +166,10 @@ function ImplementMarkingDialog({
                     >
                       <TextField
                         uncontrolled
-                        setValue={(e) => implementMarkingList(e, item?.id, childIndex)}
+                        setValue={(e) => checkMarkingBarcode(e, flatIndex, item.barcode) && implementMarkingList(e, item?.id, childIndex)}
                         defaultValue={markingsList?.[item.id]?.[childIndex]}
                         required={get(item, 'is_marking')}
-                        onKeyDown={(e) => handleKeyDown(e, flatIndex)}
+                        onKeyDown={(e) => handleKeyDown(e, flatIndex, item.barcode)}
                         fullWidth
                         inputRef={(el) => get(item, 'is_marking') && (inputsRef.current[flatIndex] = el)}
                         borderRadius={'40px'}
