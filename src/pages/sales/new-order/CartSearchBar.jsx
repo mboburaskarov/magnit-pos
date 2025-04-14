@@ -216,11 +216,13 @@ function CartSearchBar({
 
   const productsListFilter = useMemo(() => {
     return {
-      search: searchTearm.slice(0, 31),
+      search: searchTearm.slice(0, 31) || 'undefined',
     }
   }, [debouncedSearchTerm])
-  const { data: productsList } = useQuery(['storeProductsList', productsListFilter], () =>
-    requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter)
+  const { data: productsList } = useQuery(
+    ['storeProductsList', productsListFilter],
+    () => requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter),
+    { enabled: searchTearm.length > 0 }
   )
   const { data: sellerBonusInOneSale } = useQuery(
     ['sellerBonusInOneSale'],
@@ -319,16 +321,13 @@ function CartSearchBar({
               if (e.key == 'Enter') {
                 setShowOverlay(false)
                 if (productsData.length !== 1) {
-                  console.log(extractNumbers(searchTearm), productsData, searchTearm)
-                  setTimeout(() => {
-                    handleAddProduct({
-                      discount_type: get(discount, 'type', 'percent'),
-                      discount_value: Number(get(discount, 'amount', 0)),
-                      sale_id: id,
-                      type: 'first_item',
-                      barcode: get(head(productsData), 'barcode'),
-                    })
-                  }, 205)
+                  handleAddProduct({
+                    discount_type: get(discount, 'type', 'percent'),
+                    discount_value: Number(get(discount, 'amount', 0)),
+                    sale_id: id,
+                    type: 'first_item',
+                    barcode: get(head(productsData), 'barcode'),
+                  })
                 } else {
                   const markingBarcode = extractNumbers(searchTearm)
                   const productBarcode = get(head(productsData), 'barcode')
