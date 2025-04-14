@@ -13,7 +13,9 @@ import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import StyledTooltip from '../../../../components/StyledTooltip'
+import extractNumbers from '../../../../utils/extractBarcodeFromMarking'
 import { requests } from '../../../../utils/requests'
+import { error } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
 import UnlockIcon from '../../../assets/icons/UnlockIcon'
@@ -274,6 +276,7 @@ function CartSearchBar({
           discount_value: Number(get(discount, 'amount', 0)),
           store_product_id: get(document, 'activeElement.id', 'err #3'),
           sale_id: id,
+          type: 'cart_item_select',
         })
       }
     },
@@ -316,17 +319,27 @@ function CartSearchBar({
               if (e.key == 'Enter') {
                 setShowOverlay(false)
                 if (productsData.length !== 1) {
+                  console.log(extractNumbers(searchTearm))
+
                   handleAddProduct({
                     discount_type: get(discount, 'type', 'percent'),
                     discount_value: Number(get(discount, 'amount', 0)),
                     sale_id: id,
+                    type: 'first_item',
                     barcode: get(head(productsData), 'barcode'),
                   })
                 } else {
+                  const markingBarcode = extractNumbers(searchTearm)
+                  const productBarcode = get(head(productsData), 'barcode')
+                  if (markingBarcode != productBarcode) {
+                    error('xato barcode yoki markirofka')
+                    return
+                  }
                   handleAddProduct({
                     discount_type: get(discount, 'type', 'percent'),
                     discount_value: Number(get(discount, 'amount', 0)),
                     sale_id: id,
+                    type: 'marking',
                     barcode: searchTearm.slice(0, 31),
                   })
                 }
