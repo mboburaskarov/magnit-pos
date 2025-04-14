@@ -320,14 +320,15 @@ function CartSearchBar({
                 setShowOverlay(false)
                 if (productsData.length !== 1) {
                   console.log(extractNumbers(searchTearm), productsData, searchTearm)
-
-                  handleAddProduct({
-                    discount_type: get(discount, 'type', 'percent'),
-                    discount_value: Number(get(discount, 'amount', 0)),
-                    sale_id: id,
-                    type: 'first_item',
-                    barcode: get(head(productsData), 'barcode'),
-                  })
+                  setTimeout(() => {
+                    handleAddProduct({
+                      discount_type: get(discount, 'type', 'percent'),
+                      discount_value: Number(get(discount, 'amount', 0)),
+                      sale_id: id,
+                      type: 'first_item',
+                      barcode: get(head(productsData), 'barcode'),
+                    })
+                  }, 205)
                 } else {
                   const markingBarcode = extractNumbers(searchTearm)
                   const productBarcode = get(head(productsData), 'barcode')
