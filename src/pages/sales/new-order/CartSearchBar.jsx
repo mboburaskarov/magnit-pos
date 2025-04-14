@@ -13,9 +13,7 @@ import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import StyledTooltip from '../../../../components/StyledTooltip'
-import extractNumbers from '../../../../utils/extractBarcodeFromMarking'
 import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
 import UnlockIcon from '../../../assets/icons/UnlockIcon'
@@ -216,10 +214,10 @@ function CartSearchBar({
 
   const productsListFilter = useMemo(() => {
     return {
-      search: searchTearm.slice(0, 31) || 'undefined',
+      search: searchTearm.slice(0, 31),
     }
   }, [debouncedSearchTerm])
-  const { data: productsList } = useQuery(
+  const { data: productsList, isFetching: isProductsFetching } = useQuery(
     ['storeProductsList', productsListFilter],
     () => requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter),
     { enabled: searchTearm.length > 0 }
@@ -312,6 +310,8 @@ function CartSearchBar({
               setSearchTerm(e.target.value)
             }}
             onKeyDown={(e) => {
+              // if (isProductsFetching) return // Wait for productsData to be ready
+
               setShowOverlay(true)
 
               if (e.key == 'Escape') {
@@ -320,7 +320,7 @@ function CartSearchBar({
               }
               if (e.key == 'Enter') {
                 setShowOverlay(false)
-                if (productsData.length === 1) {
+                if (productsData.length === 1 && searchTearm.length < 20) {
                   handleAddProduct({
                     discount_type: get(discount, 'type', 'percent'),
                     discount_value: Number(get(discount, 'amount', 0)),
@@ -329,11 +329,6 @@ function CartSearchBar({
                     barcode: get(head(productsData), 'barcode'),
                   })
                 } else {
-                  const markingBarcode = extractNumbers(searchTearm)
-                  const productBarcode = get(head(productsData), 'barcode')
-                  if (markingBarcode != productBarcode) {
-                    error('xato barcode yoki markirofka')
-                  }
                   handleAddProduct({
                     discount_type: get(discount, 'type', 'percent'),
                     discount_value: Number(get(discount, 'amount', 0)),
