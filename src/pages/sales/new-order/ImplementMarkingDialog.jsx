@@ -52,8 +52,6 @@ function ImplementMarkingDialog({
     setOpenConfirmDialog(null)
   }
   const checkMarkingBarcode = (e, flatIndex, productBarcode) => {
-    console.log(e)
-
     const markingBarcode = extractNumbers(e)
     if (markingBarcode != productBarcode) {
       inputsRef.current[flatIndex].value = ''
@@ -66,7 +64,6 @@ function ImplementMarkingDialog({
   const handleKeyDown = (e, flatIndex, productBarcode) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      console.log(e.target.value, checkMarkingBarcode(e.target.value, flatIndex, productBarcode), isAllMarkingFill())
 
       if (checkMarkingBarcode(e.target.value, flatIndex, productBarcode)) {
         if (inputsRef.current.length - 1 == flatIndex) {
@@ -170,7 +167,7 @@ function ImplementMarkingDialog({
                         uncontrolled
                         setValue={
                           (e) => {
-                            console.log(checkMarkingBarcode(e, flatIndex, item.barcode)), implementMarkingList(e, item?.id, childIndex)
+                            checkMarkingBarcode(e, flatIndex, item.barcode) && implementMarkingList(e, item?.id, childIndex)
                           }
 
                           //  checkMarkingBarcode(e, flatIndex, item.barcode) &&
