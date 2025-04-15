@@ -13,7 +13,9 @@ import SearchInput from '../../../../components/Inputs/SearchInput'
 import Label from '../../../../components/Label'
 import StyledTooltip from '../../../../components/StyledTooltip'
 import thousandDivider from '../../../../utils/thousandDivider'
+import ArrowDown from '../../../assets/icons/ArrowDown'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
+import ArrowUp from '../../../assets/icons/ArrowUp'
 import FileIcon from '../../../assets/icons/FileIcon'
 import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
 import TimesSmallIcon from '../../../assets/icons/TimesSmallIcon'
@@ -52,7 +54,7 @@ function CartDetailSide({
 }) {
   const { t } = useTranslation()
   const [maxAmount, setMaxAmount] = useState(0)
-
+  const [collapseDiscount, setCollapseDiscount] = useState(false)
   return (
     <Box className={classes.card_detail}>
       <Box display={'flex'}>
@@ -203,55 +205,77 @@ function CartDetailSide({
           </OutsideClickHandler>
         )}
       </Box>
+
       <CheckAccess id={'new-sale-discount'}>
-        <Box display={'flex'} alignItems={'center'}>
-          <OutLineTextFieldThousand
-            setValue={(e) => changeDiscountDebounce(e)}
-            value={inputDiscount}
-            type={'number'}
-            fullWidth
-            name='discount'
-            label={t('discount')}
-            uncontrolled
-            placeholder='Введите скидку'
-          />
-          <Box ml={'8px'}>
-            <InputSwitch
-              uncontrolled
-              id='app-type'
-              name='app-type'
-              style={{ marginTop: '32px', width: 'auto' }}
-              defaultValue={discount}
-              onChange={setDiscountType}
-              options={[
-                { title: '%', value: 'percent' },
-                { title: 'UZS', value: 'cash' },
-              ]}
-            />
+        <Box onClick={() => setCollapseDiscount((p) => !p)} width={'100%'} display={'flex'} justifyContent={'space-between'}>
+          <Label>{t('discount')}</Label>
+          <Box
+            sx={{
+              width: '20px',
+              height: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              backgroundColor: 'bg.10',
+            }}
+          >
+            {collapseDiscount ? <ArrowDown color='#111217' /> : <ArrowUp color='#111217' />}{' '}
           </Box>
         </Box>
-        <Box mt='8px' display={'flex'}>
-          {discount === 'percent' &&
-            [15, 30, 50, 75].map((el, index) => (
-              <Box
-                sx={{ cursor: 'pointer', color: el === inputDiscount ? 'orange.500' : '#000' }}
-                onClick={() => setInputDiscount(el)}
-                className={classes.percent}
-              >
-                {el}%
-              </Box>
-            ))}
-          {discount === 'cash' &&
-            [5, 10, 50, 100].map((el, index) => (
-              <Box
-                sx={{ cursor: 'pointer', color: el === inputDiscount / 1000 ? 'orange.500' : '#000' }}
-                onClick={() => setInputDiscount(`${el}000`)}
-                className={classes.percent}
-              >
-                {el}k
-              </Box>
-            ))}
-        </Box>
+        {collapseDiscount && (
+          <Box display={'flex'} alignItems={'center'}>
+            <OutLineTextFieldThousand
+              setValue={(e) => changeDiscountDebounce(e)}
+              value={inputDiscount}
+              type={'number'}
+              fullWidth
+              name='discount'
+              label={''}
+              uncontrolled
+              placeholder='Введите скидку'
+            />
+            <Box ml={'8px'}>
+              <InputSwitch
+                uncontrolled
+                id='app-type'
+                noMarginTop
+                name='app-type'
+                style={{ width: 'auto' }}
+                defaultValue={discount}
+                onChange={setDiscountType}
+                options={[
+                  { title: '%', value: 'percent' },
+                  { title: 'UZS', value: 'cash' },
+                ]}
+              />
+            </Box>
+          </Box>
+        )}
+        {collapseDiscount && (
+          <Box mt='8px' display={'flex'}>
+            {discount === 'percent' &&
+              [15, 30, 50, 75].map((el, index) => (
+                <Box
+                  sx={{ cursor: 'pointer', color: el === inputDiscount ? 'orange.500' : '#000' }}
+                  onClick={() => setInputDiscount(el)}
+                  className={classes.percent}
+                >
+                  {el}%
+                </Box>
+              ))}
+            {discount === 'cash' &&
+              [5, 10, 50, 100].map((el, index) => (
+                <Box
+                  sx={{ cursor: 'pointer', color: el === inputDiscount / 1000 ? 'orange.500' : '#000' }}
+                  onClick={() => setInputDiscount(`${el}000`)}
+                  className={classes.percent}
+                >
+                  {el}k
+                </Box>
+              ))}
+          </Box>
+        )}
       </CheckAccess>
       <Box
         sx={(theme) => ({

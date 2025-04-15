@@ -36,7 +36,7 @@ export default function DashboarPage() {
   const [detalization, setDetalization] = useState({ name: 'по дням', value: 'day' })
   const [chartType, setchartType] = useState({ name: 'Продажи', value: 'sale' })
   const check = type === 'SUPERADMIN' || type === 'ACCOUNTANT'
-  const [sortBy, setSortBy] = useState(check ? 'SUM' : 'COUNT')
+  const [sortBy, setSortBy] = useState('SUM')
   const { t } = useTranslation()
   const dashboardFilter = useMemo(() => {
     return { type: sortBy, fromDate: values?.start_date, toDate: values?.end_date }

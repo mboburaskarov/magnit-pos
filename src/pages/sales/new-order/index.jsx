@@ -437,6 +437,10 @@ function NewSale() {
     },
     onError: (err) => {
       searchResetRef.current.clearValue()
+      if (get(err, 'response.data.code') === 422) {
+        error('Маркировка товара не соответствует его штрих-коду. Пожалуйста, введите корректную маркировку.')
+        return
+      }
       if (get(err, 'response.data.code') === 409) {
         error(`Описание
       Редактировать

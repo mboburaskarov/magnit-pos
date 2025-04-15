@@ -68,7 +68,7 @@ export default function TopBonusProducts({ data }) {
                       color: 'dark.500',
                     }}
                   >
-                    {thousandDivider(item.total_amount, 'сум')}
+                    {thousandDivider(item.bonus_amount, 'сум')}
                   </TableCell>
                 </TableRow>
               ))}

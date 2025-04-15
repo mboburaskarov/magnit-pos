@@ -288,76 +288,85 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       enableOnFormTags: true,
     }
   )
-  const customStylesMini = {
-    control: () => ({
-      width: 'min-content',
-      height: 40,
-      display: 'flex',
-      background: useTheme().palette.background.default,
-      marginRight: '4px',
-      borderRadius: 12,
-      cursor: 'pointer',
-    }),
-    menu: (base) => ({
-      ...base,
-      borderRadius: 16,
-      width: 80,
-      backgroundColor: useTheme().palette.background.default,
-      border: 'none',
-      boxShadow: useTheme().boxShadow['16-8'],
-      overflow: 'hidden',
-      zIndex: 7,
-    }),
-    menuList: (base) => ({
-      ...base,
-      maxHeight: 300,
-      padding: 0,
-      '&::-webkit-scrollbar-thumb': {
+  const customStylesMini = () => {
+    return {
+      control: () => ({
+        width: 'min-content',
+        height: 40,
+        display: 'flex',
+        background: useTheme().palette.background.default,
+        marginRight: '4px',
+        borderRadius: 12,
+        cursor: 'pointer',
+      }),
+      menu: (base) => ({
+        ...base,
+        borderRadius: 16,
+        width: 80,
+        backgroundColor: useTheme().palette.background.default,
+        border: 'none',
+        boxShadow: useTheme().boxShadow['16-8'],
+        overflow: 'hidden',
+        zIndex: 7,
+      }),
+      menuList: (base) => ({
+        ...base,
+        maxHeight: 300,
+        padding: 0,
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: useTheme().palette.gray[10],
+          outline: `1px solid ${useTheme().palette.gray[200]}`,
+        },
+      }),
+      singleValue: (provided) => ({
+        ...provided,
+        fontSize: 14,
+        fontWeight: 600,
+        lineHeight: '20px',
+        fontFamily: "'Inter', sans-serif",
+        color: useTheme().palette.black,
+        alignItems: 'center',
+        width: '80px',
+      }),
+      indicatorSeparator: (provided) => ({
+        ...provided,
+        display: 'none',
+        padding: '0 !important',
+      }),
+      IndicatorsContainer2: (provided) => ({
+        display: 'none',
+        padding: '0 !important',
+      }),
+      indicatorContainer: (provided) => ({
+        ...provided,
+        padding: '0px !important',
+        backgroundColor: '#fe5000',
+      }),
+      option: (base) => ({
+        ...base,
+        display: 'inline-flex',
+        alignItems: 'center',
+        height: 48,
+        padding: '0 16px',
+        fontSize: 16,
+        lineHeight: '19px',
+        fontWeight: 600,
+        fontFamily: "'Inter', sans-serif",
+        color: useTheme().palette.gray[600],
+        cursor: 'pointer',
         backgroundColor: useTheme().palette.gray[10],
-        outline: `1px solid ${useTheme().palette.gray[200]}`,
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      fontSize: 14,
-      fontWeight: 600,
-      lineHeight: '20px',
-      fontFamily: "'Inter', sans-serif",
-      color: useTheme().palette.black,
-      alignItems: 'center',
-      width: '80px',
-    }),
-    indicatorSeparator: (provided) => ({
-      ...provided,
-      display: 'none',
-    }),
-    IndicatorsContainer2: (provided) => ({
-      display: 'none',
-    }),
-    option: (base) => ({
-      ...base,
-      display: 'inline-flex',
-      alignItems: 'center',
-      height: 48,
-      padding: '0 16px',
-      fontSize: 16,
-      lineHeight: '19px',
-      fontWeight: 600,
-      fontFamily: "'Inter', sans-serif",
-      color: useTheme().palette.gray[600],
-      cursor: 'pointer',
-      backgroundColor: useTheme().palette.gray[10],
-      '&:hover': {
-        backgroundColor: useTheme().palette.gray[101],
-      },
-    }),
+        '&:hover': {
+          backgroundColor: useTheme().palette.gray[101],
+        },
+      }),
+    }
   }
 
   const AdornmentSelect = ({ name, getOptionLabel = (option) => option.name, options, defaultValue, value, disabled = false, onChange }) => {
     const { t } = useTranslation()
     return (
       <Select
-        styles={customStylesMini}
+        styles={customStylesMini()}
         name={name}
         classNamePrefix='react-select'
         isSearchable={false}
@@ -568,6 +577,10 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
           border: '2px solid transparent',
           height: '48px !important',
         },
+        '& .react-select__dropdown-indicator': {
+          padding: '0px !important',
+          mr: '5px',
+        },
       }}
     >
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: '12px' }}>
@@ -643,7 +656,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       <Box
         sx={{
           '& .react-select__control': {
-            width: '75px',
+            width: '65px',
           },
           mt: '8px',
         }}
@@ -693,7 +706,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       <Box
         sx={{
           '& .react-select__control': {
-            width: '95px',
+            width: '85px',
           },
           mt: '8px',
         }}
@@ -748,7 +761,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       <Box
         sx={{
           '& .react-select__control': {
-            width: '95px',
+            width: '85px',
           },
           mt: '8px',
         }}

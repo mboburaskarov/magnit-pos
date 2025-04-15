@@ -57,18 +57,13 @@ export const navbatRouteData = [
         href: '/products/write-off',
         soon: true,
       },
-      {
-        label: 'Категории',
-        active: '/products/categories/*',
-        id: '327',
-        href: '/products/categories',
-      },
-      {
-        label: 'Бонусный продукт',
-        active: '/products/bonus-product/*',
-        id: '327',
-        href: '/products/bonus-product',
-      },
+
+      // {
+      //   label: 'Бонусный продукт',
+      //   active: '/products/bonus-product/*',
+      //   id: '327',
+      //   href: '/products/bonus-product',
+      // },
     ],
   },
   {
@@ -153,6 +148,12 @@ export const navbatRouteData = [
         active: '/settings/cashbox/*',
         id: '94',
         href: '/settings/cashbox',
+      },
+      {
+        label: 'Категории',
+        active: '/products/categories/*',
+        id: '327',
+        href: '/products/categories',
       },
     ],
   },

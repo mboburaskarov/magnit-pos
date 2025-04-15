@@ -166,7 +166,7 @@ function ImplementMarkingDialog({
                     >
                       <TextField
                         uncontrolled
-                        setValue={(e) => checkMarkingBarcode(e, flatIndex, item.barcode) && implementMarkingList(e, item?.id, childIndex)}
+                        setValue={(e) => implementMarkingList(e, item?.id, childIndex)}
                         defaultValue={markingsList?.[item.id]?.[childIndex]}
                         required={get(item, 'is_marking')}
                         onKeyDown={(e) => handleKeyDown(e, flatIndex, item.barcode)}

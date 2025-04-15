@@ -402,7 +402,7 @@ function InputSimple({
               ${centered && classes.centered} 
               ${whiteDisabled && classes.whiteDisabled}`}
               error={!!error}
-              defaultValue={defaultValue ?? 0}
+              defaultValue={defaultValue ?? ''}
               disabled={disabled}
               onInput={onInput}
               inputRef={inputRef}

@@ -212,7 +212,7 @@ export default function ProductsPage() {
             {t('page.catalog.title')}
           </Typography>
 
-          <Box minWidth={320}>
+          <Box minWidth={320} sx={{ display: 'flex' }}>
             <InputSwitch
               uncontrolled
               id='app-type'
@@ -230,6 +230,19 @@ export default function ProductsPage() {
                 { title: t('switch.title.outofdate'), value: 'expired', count: get(statusCountList, 'data.data.expired_count', 0) },
               ]}
             />
+            <Box sx={{ flexShrink: '0', alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+              <Button
+                sx={{ height: '48px', bgcolor: `${theme.palette.background.gray} !important`, border: '1px solid #ECEDF2' }}
+                fullWidth
+                color='secondary'
+                variant='contained'
+                onClick={() => navigate('/products/bonus-product')}
+              >
+                <Typography fontWeight={600} lineHeight={'24px'} fontSize={'16px'}>
+                  Бонусный продукт
+                </Typography>
+              </Button>
+            </Box>
           </Box>
           <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
             <Box width='100%' display={'flex'}>
