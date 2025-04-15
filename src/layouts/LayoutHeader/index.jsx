@@ -41,7 +41,6 @@ function LayoutHeader() {
   const firstName = userData?.first_name
   const lastName = userData?.last_name
   const [isLogout, setIsLogout] = useState(false)
-  console.log(userData)
 
   const classes = headerStyles({ isOpen })
   const logout = () => {
