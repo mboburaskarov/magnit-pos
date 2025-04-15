@@ -52,7 +52,9 @@ function ImplementMarkingDialog({
     setOpenConfirmDialog(null)
   }
   const checkMarkingBarcode = (e, flatIndex, productBarcode) => {
-    const markingBarcode = extractNumbers(e.target.value)
+    console.log(e)
+
+    const markingBarcode = extractNumbers(e)
     if (markingBarcode != productBarcode) {
       inputsRef.current[flatIndex].value = ''
       error('Маркировка и штрих-код не поступили.')
@@ -64,9 +66,9 @@ function ImplementMarkingDialog({
   const handleKeyDown = (e, flatIndex, productBarcode) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      console.log(e.target.value)
+      console.log(e.target.value, checkMarkingBarcode(e.target.value, flatIndex, productBarcode), isAllMarkingFill())
 
-      if (checkMarkingBarcode(e, flatIndex, productBarcode)) {
+      if (checkMarkingBarcode(e.target.value, flatIndex, productBarcode)) {
         if (inputsRef.current.length - 1 == flatIndex) {
           if (!isAllMarkingFill()) {
             setOpenConfirmDialog(true)
@@ -166,9 +168,12 @@ function ImplementMarkingDialog({
                     >
                       <TextField
                         uncontrolled
-                        setValue={(e) =>
+                        setValue={
+                          (e) => {
+                            console.log(checkMarkingBarcode(e, flatIndex, item.barcode)), implementMarkingList(e, item?.id, childIndex)
+                          }
+
                           //  checkMarkingBarcode(e, flatIndex, item.barcode) &&
-                          implementMarkingList(e, item?.id, childIndex)
                         }
                         defaultValue={markingsList?.[item.id]?.[childIndex]}
                         required={get(item, 'is_marking')}
