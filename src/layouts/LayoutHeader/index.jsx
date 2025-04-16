@@ -114,7 +114,7 @@ function LayoutHeader() {
                       <Typography textAlign={'start'} id='user-username' className={classes.username}>
                         {`${firstName}`}
                       </Typography>
-                      {console.log(userData)}
+
                       <p id='user-shopname' className={`${classes.shopname} shopname`}>
                         {get(userData, 'position') == '' ? get(userData, 'store.name') : get(userData, 'position')}
                       </p>
@@ -149,16 +149,11 @@ function LayoutHeader() {
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                           <Typography fontWeight={'600'} fontSize={18}>
-                            {get(userData, 'first_name')}
-                            {get(userData, 'last_name')}
+                            {get(userData, 'first_name')} {get(userData, 'last_name')}
                           </Typography>
 
                           <Typography color={'bunker.400'} fontWeight={'500'} fontSize={14}>
-                            {get(userData, 'type') == 'FOUNDER'
-                              ? 'Учредитель'
-                              : get(userData, 'type') == 'DIRECTOR'
-                              ? 'Генеральный директор '
-                              : get(userData, 'store.name')}
+                            {get(userData, 'position') == '' ? get(userData, 'store.name') : get(userData, 'position')}
                           </Typography>
                         </Box>
                       </Box>
