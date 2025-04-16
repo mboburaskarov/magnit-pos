@@ -26,8 +26,10 @@ function ImplementMarkingDialog({
   const { t } = useTranslation()
   useEffect(() => {
     if (open) {
+      console.log(inputsRef.current)
+
       setTimeout(() => {
-        inputsRef.current.filter((a) => a)[0]?.focus()
+        inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
       }, 100)
     }
   }, [open])
@@ -71,11 +73,18 @@ function ImplementMarkingDialog({
       }
     }
   }, [markingsList]) // Replace with actual marking state dependency
+  console.log(markingCount, markingsList)
+
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
     if (e.key === 'Enter') {
       e.preventDefault()
       if (checkMarkingBarcode(e.target.value, flatIndex, productBarcode)) {
-        implementMarkingList(e.target.value, id, childIndex)
+        if (implementMarkingList(e.target.value, id, childIndex)) {
+        } else {
+          inputsRef.current[flatIndex].value = ''
+          error('Эта маркировка использовалась.')
+          return
+        }
 
         if (inputsRef.current.length - 1 == flatIndex) {
           // if (!isAllMarkingFill()) {

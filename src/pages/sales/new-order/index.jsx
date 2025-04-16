@@ -667,7 +667,11 @@ function NewSale() {
     return () => clearTimeout(handler)
   }, [debouncedDiscount])
   const implementMarkingList = (marking, id, index) => {
+    if (Object.values(markingsList[id] || {}).includes(marking)) {
+      return false
+    }
     setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
+    return true
   }
   const addNewMarking = (id, marking) => {
     if (Object.values(markingsList[id] || {}).includes(marking)) {
