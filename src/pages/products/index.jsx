@@ -18,6 +18,7 @@ import InputSearch from '../../../components/Inputs/InputSearch'
 import InputSwitch from '../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../components/LoadingContainer'
 import StyledTooltip from '../../../components/StyledTooltip'
+import { downloadExcel } from '../../../utils/downloadEXCEL'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import BarcodeIcon from '../../assets/icons/BarcodeIcon'
@@ -215,7 +216,16 @@ export default function ProductsPage() {
       methods.setValue(`editable_barcode_${get(productData, 'id')}`, get(productData, 'barcode'))
     })
   }, [productsList?.data, values?.limit, appType])
+  const { mutate: productsExcelReport, isLoading: isproductsExcelReport } = useMutation(requests.getProductsExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadExcel(data, 'Каталог')
+    },
+    onError: (err) => {
+      console.log(err)
 
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
@@ -387,6 +397,9 @@ export default function ProductsPage() {
               id='products-main-table'
               alwaysShowHorizontalScroll={true}
               tableSettings
+              fullDownload={() => productsExcelReport({ ...productsListFilter, limit: 1000000 })}
+              downloadByFilter={() => productsExcelReport(productsListFilter)}
+              isDownloading={isproductsExcelReport}
               columns={tableColumns}
               data={productsList?.data?.data?.data || []}
               totalCount={productsList?.data?.data?._meta?.total_count || 0}

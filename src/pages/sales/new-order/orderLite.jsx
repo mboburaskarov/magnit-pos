@@ -18,7 +18,18 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
-function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteOrder, cashBoxDetails, setLiteOrder, customerId, printContainer }) {
+function OrderLite({
+  cartItemsList,
+  markingsList,
+  setHasChange,
+  maxAmount,
+  setMaxAmount,
+  liteOrder,
+  cashBoxDetails,
+  setLiteOrder,
+  customerId,
+  printContainer,
+}) {
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
   const theme = useTheme()
   const { id } = useParams()
@@ -509,6 +520,8 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
   const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true)) {
+        setHasChange(false)
+
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
         error(`EPOS: ${get(data, 'message')}`)
         return
@@ -516,11 +529,14 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
         setQrcodeUrl(get(data, 'info.qrCodeURL', 'pending'))
       }
       handlePrint()
+      setHasChange(false)
+
       success('Продажа завершена!')
       sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
     },
     onError: (err) => {
       sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
+      setHasChange(false)
 
       error('Ошибка при EPOS')
       console.log('err', err)
@@ -551,6 +567,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
   })
 
   const onSubmit = async (data) => {
+    setHasChange(true)
     setOpenScanDialog(false)
     const paymentTypes = paymentsList
       .filter((type) => get(type, 'amount', false))
