@@ -2,7 +2,6 @@ import { useTheme } from '@mui/material/styles'
 
 const BackArrowIcon = (props) => {
   const { mode } = useTheme()
-
   return props.type == 'down' ? (
     <svg
       width='14'

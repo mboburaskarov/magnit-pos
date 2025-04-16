@@ -153,6 +153,8 @@ function Test() {
     },
   })
   useEffect(() => {
+    console.log(checkdata)
+
     if (checkdata) {
       handlePrint()
     }
@@ -251,10 +253,24 @@ function Test() {
             <Button
               type='submit'
               onClick={() =>
-                closeZReport({
-                  token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
-                  method: 'closeZreport', // Название метода, Обязательное поле, String
-                })
+                closeZReport(
+                  //   {
+                  //   token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+                  //   method: 'closeZreport', // Название метода, Обязательное поле, String
+                  // }
+
+                  {
+                    token: 'DXJFX32CN1296678504F2',
+                    method: 'getReceiptInfo',
+                    number: 628,
+                  }
+                  // {
+                  //   token: 'DXJFX32CN1296678504F2',
+                  //   method: 'getReceiptsInfoByDate',
+                  //   startDate: '20250318000000',
+                  //   endDate: '20250321000000',
+                  // }
+                )
               }
               sx={{ bottom: 0, margin: '0 24px 24px', '& > svg': { width: 24, height: 24, ml: '12px' } }}
             >

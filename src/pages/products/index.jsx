@@ -23,6 +23,7 @@ import { error, success } from '../../../utils/toast'
 import BarcodeIcon from '../../assets/icons/BarcodeIcon'
 import BigTickIcon from '../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../assets/icons/BigWarningIcon'
+import CategoryIcon from '../../assets/icons/CategoryIcon'
 import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
 import PlusIcon from '../../assets/icons/PlusIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
@@ -208,10 +209,28 @@ export default function ProductsPage() {
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-          <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-            {t('page.catalog.title')}
-          </Typography>
-
+          <Box mb={'20px'} display={'flex'} justifyContent={'space-between'}>
+            <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+              {t('page.catalog.title')}
+            </Typography>
+            <StyledTooltip title={'Управление каталогом'}>
+              <Box
+                onClick={() => navigate('/products/categories')}
+                sx={{
+                  backgroundColor: 'bg.10',
+                  padding: '10px',
+                  borderRadius: '10px',
+                  display: 'flex',
+                  width: '38px',
+                  height: '38px',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <CategoryIcon />
+              </Box>
+            </StyledTooltip>
+          </Box>
           <Box minWidth={320} sx={{ display: 'flex' }}>
             <InputSwitch
               uncontrolled

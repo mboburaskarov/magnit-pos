@@ -12,7 +12,7 @@ import ConfirmDialog from '../../../../components/ConfirmDialog'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
-import SoonPage from '../../../../components/soon'
+// import SoonPage from '../../../../components/soon/index'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
@@ -20,18 +20,17 @@ import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryTableColumns'
-import CreateInventory from './createInventory'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/writeOffTableColumns'
+import CreateWriteOff from './createWriteOff'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
-
-export default function InventoryPage() {
-  return <SoonPage />
+export default function WriteOffPage() {
+  // return <SoonPage />
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { columns, loading } = useSelector((state) => state.inventoryTableColumns)
+  const { columns, loading } = useSelector((state) => state.writeOffTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
@@ -63,7 +62,7 @@ export default function InventoryPage() {
     }
   }, [])
 
-  const inventoryListFilter = useMemo(() => {
+  const writeOffListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
@@ -73,7 +72,7 @@ export default function InventoryPage() {
       start_date: values?.start_date,
       end_date: values?.end_date,
       status: values?.status,
-      import_date: values?.import_date,
+      writeoff_date: values?.import_date,
       received_amount_to: values?.received_amount_to,
       received_amount_from: values?.received_amount_from,
     }
@@ -89,25 +88,25 @@ export default function InventoryPage() {
     values?.received_amount_from,
   ])
   const {
-    data: inventoryList,
-    isLoading: inventoryListLoading,
-    isFetching: isFetchinginventoryList,
+    data: writeOffList,
+    isLoading: writeOffListLoading,
+    isFetching: isFetchingwriteOffList,
     refetch,
-  } = useQuery(['inventoryList', inventoryListFilter], () => requests.getAllInventory(inventoryListFilter))
+  } = useQuery(['writeOffList', writeOffListFilter], () => requests.getAllWriteOff(writeOffListFilter))
 
   useEffect(() => {
     refetch()
-  }, [inventoryListFilter])
+  }, [writeOffListFilter])
 
   useEffect(() => {
-    const count = inventoryList?.data?.data?._meta?.total_count
+    const count = writeOffList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [inventoryList?.data, values?.limit])
+  }, [writeOffList?.data, values?.limit])
   const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Инвентаризация')
+      downloadExcel(data, 'Списание')
     },
     onError: (err) => {
       console.log(err)
@@ -115,15 +114,15 @@ export default function InventoryPage() {
       error('Ошибка при скачать excel!')
     },
   })
-  const { mutate: deleteInventory, isLoading: isDeletingProduct } = useMutation(requests.deleteInventory, {
+  const { mutate: deleteWriteOff, isLoading: isDeletingProduct } = useMutation(requests.deleteWriteOff, {
     onSuccess: () => {
       refetch()
-      success('Инвентаризация был успешно удален!')
+      success('Списание был успешно удален!')
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
-      error('Ошибка при удалении Инвентаризация!')
+      error('Ошибка при удалении Списание!')
       setOpenConfirmDialog(null)
       console.log('err', err)
     },
@@ -132,7 +131,7 @@ export default function InventoryPage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {'Инвентаризация'}
+          {'Списание'}
         </Typography>
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -148,7 +147,7 @@ export default function InventoryPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={'Инвентаризацияный номер, наименование'} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'Списаниеный номер, наименование'} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>
@@ -199,38 +198,38 @@ export default function InventoryPage() {
                   variant='contained'
                   color='primary'
                 >
-                  Новая инвентаризация
+                  Новая Списание
                 </Button>
               </Box>
             </CheckAccess>
           </Box>
         </Box>
         <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
-        <CreateInventory refetch={refetch} open={orderModel} setOpen={setOrderModel} />
+        <CreateWriteOff refetch={refetch} open={orderModel} setOpen={setOrderModel} />
 
         <Box>
           <AgGridTable
             id='imports-main-table'
-            fullDownload={() => importsExcelReport({ ...inventoryListFilter, limit: 1000000 })}
-            downloadByFilter={() => importsExcelReport(inventoryListFilter)}
+            fullDownload={() => importsExcelReport({ ...writeOffListFilter, limit: 1000000 })}
+            downloadByFilter={() => importsExcelReport(writeOffListFilter)}
             isDownloading={isimportsExcelReport}
             tableSettings
             columns={tableColumns}
             defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
-            data={inventoryList?.data?.data?.data || []}
-            totalCount={inventoryList?.data?.data?._meta?.total_count || 0}
-            isDataLoading={isFetchinginventoryList || inventoryListLoading}
+            data={writeOffList?.data?.data?.data || []}
+            totalCount={writeOffList?.data?.data?._meta?.total_count || 0}
+            isDataLoading={isFetchingwriteOffList || writeOffListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}
             emptyTableText={{
-              title: 'Инвентаризация недоступен',
-              description: 'Если вы не можете найти искомый Инвентаризация',
+              title: 'Списание недоступен',
+              description: 'Если вы не можете найти искомый Списание',
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchinginventoryList || inventoryListLoading}
+            isRefreshing={loading || isFetchingwriteOffList || writeOffListLoading}
           />
         </Box>
       </Box>
@@ -255,7 +254,7 @@ export default function InventoryPage() {
               >
                 Нет
               </Button>
-              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteInventory({ id: openConfirmDialog.id })}>
+              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteWriteOff({ id: openConfirmDialog.id })}>
                 Да, удалить
               </LoadingButton>
             </>

@@ -149,12 +149,6 @@ export const navbatRouteData = [
         id: '94',
         href: '/settings/cashbox',
       },
-      {
-        label: 'Категории',
-        active: '/products/categories/*',
-        id: '327',
-        href: '/products/categories',
-      },
     ],
   },
 ]

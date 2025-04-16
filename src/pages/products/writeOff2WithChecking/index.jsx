@@ -25,12 +25,12 @@ import ArrowDown from '../../../assets/icons/ArrowDown'
 import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
-import InventoryDashboard from './inventoryDashboard'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/writeOffWithCheckingTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
+import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function InventoryWithCheckingPage() {
+export default function WriteOffScanWithCheckingPage() {
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
   const overplusScanAudio = new Audio(overplusAudio)
@@ -38,7 +38,7 @@ export default function InventoryWithCheckingPage() {
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.inventoryWithCheckingColumns)
+  const { columns, loading } = useSelector((state) => state.writeOffWithCheckingColumns)
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
@@ -49,7 +49,7 @@ export default function InventoryWithCheckingPage() {
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
-  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
+  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedWriteOffNumber, {
     onSuccess: ({ data }) => {
       // refetch()
       fetchStatusCountList()
@@ -62,9 +62,9 @@ export default function InventoryWithCheckingPage() {
     },
   })
 
-  const { mutate: finishInventoryChecking, isLoading: isfinishInventoryChecking } = useMutation(requests.finishInventoryChecking, {
+  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.finishWriteOffChecking, {
     onSuccess: ({ data }) => {
-      navigate('/products/inventory')
+      navigate('/products/writeoff')
     },
     onError: (err) => {
       error('Ошибка при завершение импорта!')
@@ -78,29 +78,29 @@ export default function InventoryWithCheckingPage() {
     id,
     setScanedNumber,
   })
-  const inventoryWithCheckingDetailsFilter = useMemo(() => {
+  const WriteOffWithCheckingDetailsFilter = useMemo(() => {
     return {
-      inventory_id: id,
+      writeoff_id: id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: barcode,
       type: status,
     }
-  }, [values?.offset, status, values?.limit, id, barcode])
-
-  // const {
-  //   data: inventoryDetails,
-  //   isLoading: inventoryDetailsLoading,
-  //   isFetching: isFetchinginventoryDetails,
-  //   refetch,
-  // } = useQuery(['inventoryDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
+  }, [id])
 
   const {
-    data: inventoryWithCheckingDetails,
-    isLoading: inventoryWithCheckingDetailsLoading,
-    isFetching: isFetchinginventoryWithCheckingDetails,
+    data: getWriteOffDashBoard,
+    isLoading: getWriteOffDashBoardLoading,
+    isFetching: isFetchinggetWriteOffDashBoard,
+    refetch: refetchgetWriteOffDashBoard,
+  } = useQuery(['getWriteOffDashBoard', id], () => requests.getWriteOffDashBoard(id))
+
+  const {
+    data: WriteOffWithCheckingDetails,
+    isLoading: WriteOffWithCheckingDetailsLoading,
+    isFetching: isFetchingWriteOffWithCheckingDetails,
     refetch,
-  } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
+  } = useQuery(['WriteOffWithCheckingDetails', WriteOffWithCheckingDetailsFilter], () => requests.getWriteOffDetails(WriteOffWithCheckingDetailsFilter))
 
   /// filter table columns with permission
   useEffect(() => {
@@ -120,18 +120,18 @@ export default function InventoryWithCheckingPage() {
 
   useEffect(() => {
     refetch()
-  }, [inventoryWithCheckingDetailsFilter])
+  }, [WriteOffWithCheckingDetailsFilter])
 
   useEffect(() => {
-    const count = inventoryWithCheckingDetails?.data?.data?._meta?.total_count
+    const count = WriteOffWithCheckingDetails?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
 
-    get(inventoryWithCheckingDetails, 'data.data.data', []).map((importData) => {
+    get(WriteOffWithCheckingDetails, 'data.data.data', []).map((importData) => {
       methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
     })
-  }, [inventoryWithCheckingDetails?.data, values?.limit])
+  }, [WriteOffWithCheckingDetails?.data, values?.limit])
 
   const sendScannedImport = () => {
     if (barcode === '') return
@@ -144,15 +144,15 @@ export default function InventoryWithCheckingPage() {
   }
 
   return (
-    <LoadingContainer readyState={!isfinishInventoryChecking}>
+    <LoadingContainer readyState={!isfinishWriteOffChecking}>
       <FormProvider {...methods}>
         <Header
           onSubmit={() => setOpenFinishConfirmDialog(true)}
           isLoading={false}
           buttonText='Завершить'
           backIcon
-          backHref='/products/inventory'
-          text={'Инвентаризация с проверкой'}
+          backHref='/products/write-off'
+          text={'Списание с проверкой'}
           checkAccessId={'product-create'}
         />
 
@@ -173,7 +173,7 @@ export default function InventoryWithCheckingPage() {
             {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
-          {isOpenStatDashboard && <InventoryDashboard data={get(inventoryWithCheckingDetails, 'data.data')} />}
+          {isOpenStatDashboard && <WriteOffDashboard data={get(getWriteOffDashBoard, 'data.data')} />}
           <Box display={'flex'} minWidth={320}>
             <InputSwitch
               uncontrolled
@@ -183,21 +183,21 @@ export default function InventoryWithCheckingPage() {
               defaultValue='ALL'
               onChange={(e) => setStatus(e)}
               options={[
-                { title: t('switch.title.all'), value: 'ALL', count: get(inventoryWithCheckingDetails, 'data.data.stats_count.all', 0) },
+                { title: t('switch.title.all'), value: 'ALL', count: get(WriteOffWithCheckingDetails, 'data.data.stats_count.all', 0) },
                 {
                   title: t('switch.title.scanned_count'),
                   value: 'scanned',
-                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.scanned', 0),
+                  count: get(WriteOffWithCheckingDetails, 'data.data.stats_count.scanned', 0),
                 },
                 {
                   title: t('switch.title.shortage_count'),
                   value: 'shortage',
-                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.shortage', 0),
+                  count: get(WriteOffWithCheckingDetails, 'data.data.stats_count.shortage', 0),
                 },
                 {
                   title: t('switch.title.surplus_count'),
                   value: 'surplus',
-                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.surplus', 0),
+                  count: get(WriteOffWithCheckingDetails, 'data.data.stats_count.surplus', 0),
                 },
               ]}
             />
@@ -266,9 +266,9 @@ export default function InventoryWithCheckingPage() {
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
-                data={inventoryWithCheckingDetails?.data?.data?.data || []}
-                totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
-                isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
+                data={WriteOffWithCheckingDetails?.data?.data?.data || []}
+                totalCount={WriteOffWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                isDataLoading={isFetchingWriteOffWithCheckingDetails || WriteOffWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
@@ -280,7 +280,7 @@ export default function InventoryWithCheckingPage() {
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
                 status={appType}
-                isRefreshing={loading || hasTableChange || isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
+                isRefreshing={loading || hasTableChange || isFetchingWriteOffWithCheckingDetails || WriteOffWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
@@ -300,14 +300,14 @@ export default function InventoryWithCheckingPage() {
         open={openFinishConfirmDialog}
         setOpen={() => setOpenFinishConfirmDialog(false)}
         icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
-        title={t('alerts.finish_inventory')}
+        title={t('alerts.finish_writeoff')}
         desc={
           <>
             <Typography fontWeight={'600'} fontSize={'20px'}>
-              {t('alerts.finish_inventory_desc')}
+              {t('alerts.finish_writeoff_desc')}
             </Typography>
             <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
-              {t('alerts.finish_inventory_warning')}
+              {t('alerts.finish_writeoff_warning')}
             </Typography>
           </>
         }
@@ -321,7 +321,7 @@ export default function InventoryWithCheckingPage() {
               variant='contained'
               onClick={() => {
                 setOpenFinishConfirmDialog(false)
-                finishInventoryChecking(id)
+                finishWriteOffChecking(id)
               }}
               isLoading={false}
             >

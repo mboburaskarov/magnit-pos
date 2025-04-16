@@ -110,6 +110,16 @@ export const requests = {
   sendScannedImportNumber: ({ id, scanned_count }) => request.put(`v1/import-detail/${id}`, { scanned_count }),
   getImportDetailsExcelReport: (filter) => requestEXCEL.get(`v1/import-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
+  //writeOff
+  createWriteOff: (data) => request.post(`v1/write-off`, data),
+  getAllWriteOff: (filter) => request.get(`v1/write-off/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  sendScannedWriteOffNumber: ({ id, barcode, product_id, type, scanned_count }) =>
+    request.patch(`v1/write-off/${id}/add-product-by-barcode`, { barcode, count: scanned_count, type, product_id }),
+  getWriteOffDetails: (filter) => request.get(`v1/write-off-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getWriteOffDashBoard: (id) => request.get(`v1/write-off/${id}`),
+  getWriteOffScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
+  finishWriteOffChecking: (id) => request.post(`v1/write-off/confirm/${id}`),
+  deleteWriteOff: ({ id }) => request.post(`v1/write-off/cancel/${id}`),
   //inventory
   createInventory: (data) => request.post(`v1/inventory`, data),
   getAllInventory: (filter) => request.get(`v1/inventory/list${qs.stringify(filter, { addQueryPrefix: true })}`),

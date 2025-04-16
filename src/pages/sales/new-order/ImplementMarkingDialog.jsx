@@ -61,17 +61,26 @@ function ImplementMarkingDialog({
       return true
     }
   }
-  const handleKeyDown = (e, flatIndex, productBarcode) => {
+  useEffect(() => {
+    if (markingsList.length) {
+      if (!isAllMarkingFill()) {
+        // Open order drawer or lite mode
+        setOpenConfirmDialog(true)
+      }
+    }
+  }, [markingsList]) // Replace with actual marking state dependency
+  const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-
       if (checkMarkingBarcode(e.target.value, flatIndex, productBarcode)) {
-        if (inputsRef.current.length - 1 == flatIndex) {
-          if (!isAllMarkingFill()) {
-            setOpenConfirmDialog(true)
+        implementMarkingList(e.target.value, id, childIndex)
 
-            return
-          }
+        if (inputsRef.current.length - 1 == flatIndex) {
+          // if (!isAllMarkingFill()) {
+          //   setOpenConfirmDialog(true)
+
+          //   return
+          // }
           if (get(open, 'mode', 'lite') === 'lite') {
             setLiteOrder(true)
           } else {
@@ -82,7 +91,6 @@ function ImplementMarkingDialog({
         }
         const currentIndex = Object.keys(inputsRef.current).findIndex((key) => key == flatIndex)
         const nextIndex = Object.keys(inputsRef.current)[currentIndex + 1]
-
         const nextInput = inputsRef.current[nextIndex]
         if (nextInput) {
           nextInput.focus()
@@ -166,15 +174,13 @@ function ImplementMarkingDialog({
                       <TextField
                         uncontrolled
                         setValue={
-                          (e) => {
-                            checkMarkingBarcode(e, flatIndex, item.barcode) && implementMarkingList(e, item?.id, childIndex)
-                          }
+                          (e) => {}
 
                           //  checkMarkingBarcode(e, flatIndex, item.barcode) &&
                         }
                         defaultValue={markingsList?.[item.id]?.[childIndex]}
                         required={get(item, 'is_marking')}
-                        onKeyDown={(e) => handleKeyDown(e, flatIndex, item.barcode)}
+                        onKeyDown={(e) => handleKeyDown(e, flatIndex, item.barcode, item.id, childIndex)}
                         fullWidth
                         inputRef={(el) => get(item, 'is_marking') && (inputsRef.current[flatIndex] = el)}
                         borderRadius={'40px'}

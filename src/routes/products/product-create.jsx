@@ -6,6 +6,7 @@ import InventoryDetailPage from '../../pages/products/inventoryDetails/index'
 import InventoryWithCheckingPage from '../../pages/products/inventoryWithChecking/index'
 import ProductCreatePage from '../../pages/products/product-create'
 import ProductEditPage from '../../pages/products/product-edit'
+import WriteOffScanWithCheckingPage from '../../pages/products/writeOff2WithChecking'
 const productsCreateRoutes = {
   path: 'products',
   element: <MainLayout />,
@@ -33,6 +34,15 @@ const productsCreateRoutes = {
         {
           path: '',
           element: <InventoryWithCheckingPage />,
+        },
+      ],
+    },
+    {
+      path: 'write-off-with-checking/:id',
+      children: [
+        {
+          path: '',
+          element: <WriteOffScanWithCheckingPage />,
         },
       ],
     },

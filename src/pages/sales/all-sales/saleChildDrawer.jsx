@@ -58,7 +58,6 @@ function SaleChildDrawer({ open, setOpen, ids }) {
   const [currentSaleId, setCurrentSaleId] = useState()
   const [currentIndex, setcurrentIndex] = useState(0)
   const [debouncedCurrentSaleId] = useDebounce(currentSaleId, 200)
-
   const { values } = useQueryParams()
 
   const {
@@ -82,24 +81,29 @@ function SaleChildDrawer({ open, setOpen, ids }) {
   useHotkeys(['ArrowRight', 'ArrowLeft'], (key) => {
     if (key.key == 'ArrowRight') {
       // const currentIndex = ids.findIndex(() => currentSaleId)
-
       if (ids.length - 1 > currentIndex) {
+        // 🧹 Clear old data
+
+        // 🔄 Update index and ID
         setcurrentIndex((a) => a + 1)
         setCurrentSaleId(ids[currentIndex + 1])
       }
     }
     if (key.key == 'ArrowLeft') {
+      refetch()
       // const currentIndex = ids.findIndex(() => currentSaleId)
       if (currentIndex >= 1) {
-        setcurrentIndex((a) => a - 1)
+        // 🧹 Clear old data
 
+        // 🔄 Update index and ID
+        setcurrentIndex((a) => a - 1)
         setCurrentSaleId(ids[currentIndex - 1])
       }
     }
   })
   const theme = useTheme()
   return (
-    <LoadingContainer noHeight readyState={debouncedCurrentSaleId}>
+    <LoadingContainer noHeight readyState={debouncedCurrentSaleId || !isLoading}>
       <Box className={classes.drawer}>
         <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
           <Box display={'flex'} alignItems={'center'}>
@@ -146,8 +150,8 @@ function SaleChildDrawer({ open, setOpen, ids }) {
             </Box>
           </Box>
           <Box padding={'16px 0'}>
-            {get(saleDetailsList, 'data.data.products', [])?.map((el) => (
-              <SaleChildItemsBox key={el.id} item={el} />
+            {get(saleDetailsList, 'data.data.products', [])?.map((el, index) => (
+              <SaleChildItemsBox key={index} item={el} />
             ))}
           </Box>
           <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
