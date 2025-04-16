@@ -887,11 +887,13 @@ function NewSale() {
           cashBoxDetails={cashBoxDetails}
           saleCreate={saleCreate}
           userData={userData}
+          hasChange={hasChange}
           markingsList={markingsList}
           liteOrder={liteOrder}
           setLiteOrder={setLiteOrder}
           printContainer={printContainer}
           classes={classes}
+          setHasChange={setHasChange}
           setIsOpenReturnExchange={setIsOpenReturnExchange}
           setOpenClientCreateMini={setOpenClientCreateMini}
           customerId={customerId}

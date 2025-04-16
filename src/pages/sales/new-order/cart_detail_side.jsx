@@ -27,6 +27,7 @@ function CartDetailSide({
   saleCreate,
   userData,
   classes,
+  hasChange,
   setOpenClientCreateMini,
   customerId,
   setCustomerId,
@@ -42,6 +43,7 @@ function CartDetailSide({
   setIsOpenImplementMarkingDialog,
   setDiscountType,
   cartItemsList,
+  setHasChange,
   discount,
   setIsOpenReturnExchange,
   setIsCreateOpenDraft,
@@ -52,6 +54,8 @@ function CartDetailSide({
   liteOrder,
   setLiteOrder,
 }) {
+  console.log(hasChange)
+
   const { t } = useTranslation()
   const [maxAmount, setMaxAmount] = useState(0)
   const [collapseDiscount, setCollapseDiscount] = useState(false)
@@ -299,6 +303,7 @@ function CartDetailSide({
           setMaxAmount={setMaxAmount}
           maxAmount={maxAmount}
           setLiteOrder={setLiteOrder}
+          setHasChange={setHasChange}
           cartItemsList={get(cartItemsList, 'data.data')}
           markingsList={markingsList}
           cashBoxDetails={cashBoxDetails}
@@ -323,7 +328,8 @@ function CartDetailSide({
             </Typography>
           </Box>
           <Button
-            disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0}
+            loading={hasChange}
+            disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0 || hasChange}
             // onClick={() => setIsOrderDrower(true)}
             onClick={() => {
               if (isAllMarkingFill()) {

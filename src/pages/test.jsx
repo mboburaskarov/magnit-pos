@@ -103,6 +103,8 @@ function Test() {
     error('Пожалуйста, заполните все поля!')
   }
   const onSubmit = (data) => {
+    console.log(data)
+
     const requestBody = {
       cash_amount: Number(get(data, 'opened_amout')),
       cash_box_id: get(data, 'registerCash_id.id', null),
@@ -143,7 +145,7 @@ function Test() {
         return
       } else {
         setcheckdata(get(data, 'message'))
-        methods.handleSubmit(onSubmit, onError)()
+        // methods.handleSubmit(onSubmit, onError)()
         success('Касса закрыта! (cose z info report)')
       }
     },
@@ -229,7 +231,11 @@ function Test() {
                       />
                       <Box height={'24px'} />
                     </Box>
-                    <Button type='submit' onClick={() => onSubmit()} sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}>
+                    <Button
+                      type='submit'
+                      onClick={() => methods.handleSubmit(onSubmit, onError)()}
+                      sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}
+                    >
                       Kassani oching <ArrowRightIcon color={'#FF6018'} />
                     </Button>
                   </Box>

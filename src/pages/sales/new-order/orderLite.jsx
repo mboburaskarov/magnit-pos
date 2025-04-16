@@ -1,6 +1,6 @@
 import { Box, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
-import { get } from 'lodash'
+import { get, size } from 'lodash'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -18,7 +18,18 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
-function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteOrder, cashBoxDetails, setLiteOrder, customerId, printContainer }) {
+function OrderLite({
+  cartItemsList,
+  markingsList,
+  setHasChange,
+  maxAmount,
+  setMaxAmount,
+  liteOrder,
+  cashBoxDetails,
+  setLiteOrder,
+  customerId,
+  printContainer,
+}) {
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
   const theme = useTheme()
   const { id } = useParams()
@@ -27,18 +38,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
   const [paymentAmount, setPaymentAmount] = useState(0)
   const userData = useSelector((state) => state.user)
   const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
-  useEffect(() => {
-    if (liteOrder) {
-      if (paymentsList.find((el) => el.type === 'app')?.amount > 0) {
-        setOpenScanDialog(true)
-        setLiteOrder(false)
-      } else {
-        onSubmit()
-        setLiteOrder(false)
-      }
-    }
-  }, [liteOrder])
-  const [paymentsList, setPaymentsList] = useState([
+  const defultPaymentTypes = [
     {
       amount: 0,
       payment_type_id: null,
@@ -60,7 +60,19 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
       otp_data: null,
       app_type: 'humo',
     },
-  ])
+  ]
+  useEffect(() => {
+    if (liteOrder) {
+      if (paymentsList.find((el) => el.type === 'app')?.amount > 0) {
+        setOpenScanDialog(true)
+        setLiteOrder(false)
+      } else {
+        onSubmit()
+        setLiteOrder(false)
+      }
+    }
+  }, [liteOrder])
+  const [paymentsList, setPaymentsList] = useState(defultPaymentTypes)
 
   const methods = useFormContext({
     defaultValues: {
@@ -386,6 +398,18 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
   const { t } = useTranslation()
   const navigate = useNavigate()
   useEffect(() => {
+    // if(cartItemsList)
+    if (size(get(cartItemsList, 'data')) == 0) {
+      setPaymentsList(defultPaymentTypes)
+      inputRefs.current[0].value = ''
+      inputRefs.current[1].value = ''
+      inputRefs.current[2].value = ''
+      setValue('lite_cash_amount', '')
+      setValue('lite_card_amount', '')
+      setValue('lite_online_amount', '')
+      setMaxAmount(0)
+      return
+    }
     let amount = 0
     paymentsList.map((el) => {
       if (el.amount) {
@@ -496,6 +520,8 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
   const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true)) {
+        setHasChange(false)
+
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
         error(`EPOS: ${get(data, 'message')}`)
         return
@@ -503,11 +529,14 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
         setQrcodeUrl(get(data, 'info.qrCodeURL', 'pending'))
       }
       handlePrint()
+      setHasChange(false)
+
       success('Продажа завершена!')
       sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
     },
     onError: (err) => {
       sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
+      setHasChange(false)
 
       error('Ошибка при EPOS')
       console.log('err', err)
@@ -538,6 +567,7 @@ function OrderLite({ cartItemsList, markingsList, maxAmount, setMaxAmount, liteO
   })
 
   const onSubmit = async (data) => {
+    setHasChange(true)
     setOpenScanDialog(false)
     const paymentTypes = paymentsList
       .filter((type) => get(type, 'amount', false))
