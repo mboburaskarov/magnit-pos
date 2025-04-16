@@ -219,7 +219,7 @@ export default function ProductsPage() {
   }, [productsList?.data, values?.limit, appType])
   const { mutate: productsExcelReport, isLoading: isproductsExcelReport } = useMutation(requests.getProductsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Каталог')
+      downloadExcel(data, `${values?.store_name || 'Все филиалы'} | ${dayjs().format('YYYY-MM-DD HH:mm')}`)
     },
     onError: (err) => {
       console.log(err)
