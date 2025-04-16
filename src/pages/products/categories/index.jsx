@@ -1,11 +1,13 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Container } from '@mui/material'
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
+import { useNavigate } from 'react-router-dom'
 import PaginationTable from '../../../../components/AgGridTable/PaginationTable'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import CreateEditCategories from '../../../../components/CreateEditCategories'
+import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
@@ -19,6 +21,7 @@ export default function CatalogManagement() {
   const queryParams = useQueryParams()
   const { t } = useTranslation()
   const { values } = useQueryParams()
+  const navigate = useNavigate()
   const [type, setType] = useState('categories')
   const [status, setStatus] = useState('')
   const [categoryDrawer, setCategoryDrawer] = useState(false)
@@ -82,80 +85,91 @@ export default function CatalogManagement() {
 
   return (
     <>
-      <Box pt={6} px={4} pb={3}>
-        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          Категории
-        </Typography>
-        <Box display='flex' width='100%' mb={3} mt={4}>
-          <Box flex='1 0 30%' mr={1}>
-            <InputSearch
-              name='search'
-              placeholder={
-                type === 'attributes'
-                  ? t('placeholders.attribute_name')
-                  : type === 'characteristics'
-                  ? t('placeholders.characteristics_name')
-                  : t('menu.finance.categories.searchplaceholder')
-              }
-              fullWidth
-              onChange={(e) => setSearchTerm(e.target.value)}
-              value={searchTerm}
-              setSearchTerm={setSearchTerm}
+      <Box display='flex' flexDirection='column' position='relative' pb={'20px'}>
+        <Header
+          isLoading={false}
+          buttonText='Категории'
+          backIcon
+          noActions
+          backButtonClick={() => navigate('/products/all')}
+          text={'Категории'}
+          checkAccessId={'product-create'}
+        />
+        <Container>
+          <Box pb={3}>
+            <Box display='flex' width='100%' mb={3}>
+              <Box flex='1 0 30%' mr={1}>
+                <InputSearch
+                  name='search'
+                  placeholder={
+                    type === 'attributes'
+                      ? t('placeholders.attribute_name')
+                      : type === 'characteristics'
+                      ? t('placeholders.characteristics_name')
+                      : t('menu.finance.categories.searchplaceholder')
+                  }
+                  fullWidth
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  value={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                />
+              </Box>
+              <Box flex='0 0 10%' minWidth={256}>
+                <Button id='create' adornmentStart={<PlusIcon fill='#fff' />} primary onClick={() => setCreateEdit({ type })} style={{ minWidth: 256 }}>
+                  {t('menu.finance.categories.new')}
+                </Button>
+              </Box>
+            </Box>
+
+            <PaginationTable
+              isExpendable
+              width
+              customTablePadding='8px 14px'
+              defaultPageSize={10}
+              columns={columns}
+              isDataLoading={tableLoading}
+              data={tableData}
+              pageCount={offsetCount}
+              navigateUrl='/products/categories'
+              noDataTitle={t('titles.data_not_found')}
+              withHover
             />
           </Box>
-          <Box flex='0 0 10%' minWidth={256}>
-            <Button id='create' adornmentStart={<PlusIcon fill='#fff' />} primary onClick={() => setCreateEdit({ type })} style={{ minWidth: 256 }}>
-              {t('menu.finance.categories.new')}
-            </Button>
-          </Box>
-        </Box>
 
-        <PaginationTable
-          isExpendable
-          customTablePadding='8px 14px'
-          defaultPageSize={10}
-          columns={columns}
-          isDataLoading={tableLoading}
-          data={tableData}
-          pageCount={offsetCount}
-          navigateUrl='/products/categories'
-          noDataTitle={t('titles.data_not_found')}
-          withHover
-        />
+          <CreateEditCategories
+            withoutNavigate
+            refetch={categoriesRefetch}
+            open={!!createEdit}
+            editId={createEdit?.parentId}
+            focusId={createEdit?.id}
+            closeDrawer={() => setCreateEdit(false)}
+          />
+          <ConfirmDialog
+            open={!!confirmToDelete}
+            setOpen={setConfirmToDelete}
+            icon={<BigWarningCircleIcon />}
+            title={t('menu.finance.categories.delete_subcattegory.title')}
+            desc={t('menu.finance.categories.delete_subcattegory.desc')}
+            actions={
+              <>
+                <Button variant='contained' id='stop' onClick={() => setConfirmToDelete(false)}>
+                  {t('buttons.cancel')}
+                </Button>
+                <Button
+                  onClick={() => {
+                    setConfirmToDelete(false)
+                    deleteCategory({ data: [confirmToDelete] })
+                  }}
+                  size='medium'
+                  variant='contained'
+                >
+                  {t('buttons.delete')}
+                </Button>
+              </>
+            }
+          />
+        </Container>
       </Box>
-
-      <CreateEditCategories
-        withoutNavigate
-        refetch={categoriesRefetch}
-        open={!!createEdit}
-        editId={createEdit?.parentId}
-        focusId={createEdit?.id}
-        closeDrawer={() => setCreateEdit(false)}
-      />
-      <ConfirmDialog
-        open={!!confirmToDelete}
-        setOpen={setConfirmToDelete}
-        icon={<BigWarningCircleIcon />}
-        title={t('menu.finance.categories.delete_subcattegory.title')}
-        desc={t('menu.finance.categories.delete_subcattegory.desc')}
-        actions={
-          <>
-            <Button variant='contained' id='stop' onClick={() => setConfirmToDelete(false)}>
-              {t('buttons.cancel')}
-            </Button>
-            <Button
-              onClick={() => {
-                setConfirmToDelete(false)
-                deleteCategory({ data: [confirmToDelete] })
-              }}
-              size='medium'
-              variant='contained'
-            >
-              {t('buttons.delete')}
-            </Button>
-          </>
-        }
-      />
     </>
   )
 }

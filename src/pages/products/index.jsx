@@ -27,6 +27,7 @@ import BigWarningIcon from '../../assets/icons/BigWarningIcon'
 import CategoryIcon from '../../assets/icons/CategoryIcon'
 import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
 import PlusIcon from '../../assets/icons/PlusIcon'
+import PrizeBoxIcon from '../../assets/icons/PrizeBoxIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
 import FilterMenu from './FilterMenu'
@@ -230,27 +231,10 @@ export default function ProductsPage() {
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-          <Box mb={'20px'} display={'flex'} justifyContent={'space-between'}>
+          <Box display={'flex'} justifyContent={'space-between'}>
             <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
               {t('page.catalog.title')}
             </Typography>
-            <StyledTooltip title={'Управление каталогом'}>
-              <Box
-                onClick={() => navigate('/products/categories')}
-                sx={{
-                  backgroundColor: 'bg.10',
-                  padding: '10px',
-                  borderRadius: '10px',
-                  display: 'flex',
-                  width: '38px',
-                  height: '38px',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <CategoryIcon />
-              </Box>
-            </StyledTooltip>
           </Box>
           <Box minWidth={320} sx={{ display: 'flex' }}>
             <InputSwitch
@@ -270,18 +254,46 @@ export default function ProductsPage() {
                 { title: t('switch.title.outofdate'), value: 'expired', count: get(statusCountList, 'data.data.expired_count', 0) },
               ]}
             />
-            <Box sx={{ flexShrink: '0', alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-              <Button
-                sx={{ height: '48px', bgcolor: `${theme.palette.background.gray} !important`, border: '1px solid #ECEDF2' }}
-                fullWidth
-                color='secondary'
-                variant='contained'
-                onClick={() => navigate('/products/bonus-product')}
-              >
-                <Typography fontWeight={600} lineHeight={'24px'} fontSize={'16px'}>
-                  Бонусный продукт
-                </Typography>
-              </Button>
+            <Box display={'flex'}>
+              <StyledTooltip title={'Управление каталогом'}>
+                <Box
+                  onClick={() => navigate('/products/categories')}
+                  sx={{
+                    backgroundColor: 'bg.10',
+                    padding: '10px',
+                    borderRadius: '10px',
+                    mr: '10px',
+                    display: 'flex',
+                    width: '38px',
+                    height: '38px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <CategoryIcon />
+                </Box>
+              </StyledTooltip>
+              <StyledTooltip title={'Бонусный продукт'}>
+                <Box
+                  onClick={() => navigate('/products/bonus-product')}
+                  sx={{
+                    backgroundColor: 'bg.10',
+                    padding: '10px',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    width: '38px',
+                    height: '38px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    '& svg': {
+                      width: '18px',
+                      height: '18px',
+                    },
+                  }}
+                >
+                  <PrizeBoxIcon color='#fe5000' />
+                </Box>
+              </StyledTooltip>
             </Box>
           </Box>
           <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>

@@ -1,8 +1,6 @@
 import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import ProductsPage from '../../pages/products'
 import AutoOrderPage from '../../pages/products/autoOrder'
-import BonusProductPage from '../../pages/products/bonusProduct/index'
-import CatalogManagement from '../../pages/products/categories'
 import ImportPage from '../../pages/products/import'
 import InventoryPage from '../../pages/products/inventory'
 import TransferPage from '../../pages/products/transfer'
@@ -20,10 +18,7 @@ const productsRoutes = {
       path: 'import',
       element: <ImportPage />,
     },
-    {
-      path: 'categories',
-      element: <CatalogManagement />,
-    },
+
     {
       path: 'auto-order',
       element: <AutoOrderPage />,
@@ -39,10 +34,6 @@ const productsRoutes = {
     {
       path: 'write-off',
       element: <WriteOffPage />,
-    },
-    {
-      path: 'bonus-product',
-      element: <BonusProductPage />,
     },
   ],
 }

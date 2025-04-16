@@ -1,5 +1,7 @@
 import MainLayout from '../../layouts/MainLayout'
 import AutoOrderDetailPage from '../../pages/products/autoOrderDetail'
+import BonusProductPage from '../../pages/products/bonusProduct'
+import CatalogManagement from '../../pages/products/categories/index'
 import ImportDetailsPage from '../../pages/products/importDetails'
 import ImportWithCheckingPage from '../../pages/products/importWithChecking'
 import InventoryDetailPage from '../../pages/products/inventoryDetails/index'
@@ -63,6 +65,14 @@ const productsCreateRoutes = {
           element: <InventoryDetailPage />,
         },
       ],
+    },
+    {
+      path: 'categories',
+      element: <CatalogManagement />,
+    },
+    {
+      path: 'bonus-product',
+      element: <BonusProductPage />,
     },
     {
       path: 'auto-order/:id',
