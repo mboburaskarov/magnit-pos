@@ -114,12 +114,9 @@ function LayoutHeader() {
                       <Typography textAlign={'start'} id='user-username' className={classes.username}>
                         {`${firstName}`}
                       </Typography>
+                      {console.log(userData)}
                       <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                        {get(userData, 'type') == 'FOUNDER'
-                          ? 'Учредитель'
-                          : get(userData, 'type') == 'DIRECTOR'
-                          ? 'Генеральный директор '
-                          : get(userData, 'store.name')}
+                        {get(userData, 'position') == '' ? get(userData, 'store.name') : get(userData, 'position')}
                       </p>
                     </Box>
                   </Box>

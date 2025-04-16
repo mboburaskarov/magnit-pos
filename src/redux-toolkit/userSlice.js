@@ -24,6 +24,7 @@ const userData = createSlice({
       state.store = action.payload.store
       state.cashbox = action.payload.cashbox
       state.role_actions = action.payload.permissions
+      state.position = action.payload.position || ''
     },
   },
 })
