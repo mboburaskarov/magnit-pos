@@ -58,9 +58,7 @@ function SaleChildDrawer({ open, setOpen, ids }) {
   const [currentSaleId, setCurrentSaleId] = useState()
   const [currentIndex, setcurrentIndex] = useState(0)
   const [debouncedCurrentSaleId] = useDebounce(currentSaleId, 200)
-
   const { values } = useQueryParams()
-  console.log(Boolean(debouncedCurrentSaleId), !!debouncedCurrentSaleId)
 
   const {
     data: saleDetailsList,
@@ -83,24 +81,29 @@ function SaleChildDrawer({ open, setOpen, ids }) {
   useHotkeys(['ArrowRight', 'ArrowLeft'], (key) => {
     if (key.key == 'ArrowRight') {
       // const currentIndex = ids.findIndex(() => currentSaleId)
-
       if (ids.length - 1 > currentIndex) {
+        // 🧹 Clear old data
+
+        // 🔄 Update index and ID
         setcurrentIndex((a) => a + 1)
         setCurrentSaleId(ids[currentIndex + 1])
       }
     }
     if (key.key == 'ArrowLeft') {
+      refetch()
       // const currentIndex = ids.findIndex(() => currentSaleId)
       if (currentIndex >= 1) {
-        setcurrentIndex((a) => a - 1)
+        // 🧹 Clear old data
 
+        // 🔄 Update index and ID
+        setcurrentIndex((a) => a - 1)
         setCurrentSaleId(ids[currentIndex - 1])
       }
     }
   })
   const theme = useTheme()
   return (
-    <LoadingContainer noHeight readyState={debouncedCurrentSaleId}>
+    <LoadingContainer noHeight readyState={debouncedCurrentSaleId || !isLoading}>
       <Box className={classes.drawer}>
         <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
           <Box display={'flex'} alignItems={'center'}>
@@ -147,8 +150,8 @@ function SaleChildDrawer({ open, setOpen, ids }) {
             </Box>
           </Box>
           <Box padding={'16px 0'}>
-            {get(saleDetailsList, 'data.data.products', [])?.map((el) => (
-              <SaleChildItemsBox key={el.id} item={el} />
+            {get(saleDetailsList, 'data.data.products', [])?.map((el, index) => (
+              <SaleChildItemsBox key={index} item={el} />
             ))}
           </Box>
           <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
@@ -157,7 +160,7 @@ function SaleChildDrawer({ open, setOpen, ids }) {
             </Typography>
             <Grid container display={'flex'}>
               {get(saleDetailsList, 'data.data.sale_payments', [])?.map((pays) => (
-                <Grid item xl={2} xs={2} sm={2} md={2} lg={2} width={'100%'} padding={'4px'}>
+                <Grid item xl={6} xs={6} sm={6} md={6} lg={6} width={'100%'} padding={'4px'}>
                   <Box minWidth={'180px'} bgcolor={'bg.10'} borderRadius={'16px'} padding={'12px 16px'}>
                     <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
                       {get(pays, 'payment_type.name')}

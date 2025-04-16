@@ -66,8 +66,8 @@ const columns = [
   },
 ]
 
-const inventoryTableColumns = createSlice({
-  name: 'inventoryTableColumns',
+const writeOffTableColumns = createSlice({
+  name: 'writeOffTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -107,5 +107,5 @@ const inventoryTableColumns = createSlice({
 })
 
 export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
-  inventoryTableColumns.actions
-export const inventoryTableColumnsSlice = inventoryTableColumns.reducer
+  writeOffTableColumns.actions
+export const writeOffTableColumnsSlice = writeOffTableColumns.reducer

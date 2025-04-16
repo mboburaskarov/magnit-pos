@@ -169,20 +169,18 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   priceDetails: {
-    position: 'absolute',
-    bottom: 20,
-    right: 0,
-    width: 'calc(100% - 40px)',
-    left: 0,
-    margin: 'auto',
-    padding: '24px',
+    // position: 'absolute',
+    // bottom: 20,
+    // right: 0,
+    // left: 0,
+    padding: '16px 12px',
     display: 'flex',
     flexDirection: 'column',
-    border: '1px solid',
+    // border: '1px solid',
     backgroundColor: theme.palette.white,
-    borderRadius: '16px',
-    borderColor: theme.palette.bunker[100],
-    boxShadow: '0px 4px 12px 0px #00000014',
+    borderRadius: '24px',
+    // borderColor: theme.palette.bunker[100],
+    boxShadow: '0px 0px 12px 0px #0000000A',
   },
 
   searchItemList: {
@@ -277,6 +275,7 @@ function NewSale() {
   const method = useForm()
   const classes = useStyles()
   const cartItemRef = useRef([])
+
   const [showOverlay, setShowOverlay] = useState(false)
   const [hasChange, setHasChange] = useState(false)
   const [isOpenDraft, setIsOpenDraft] = useState(false)
@@ -284,6 +283,8 @@ function NewSale() {
   const [isCreateOpenDraft, setIsCreateOpenDraft] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [isOpenChangeShift, setIsOpenChangeShift] = useState(false)
+  const [liteOrder, setLiteOrder] = useState(false)
+
   const [isOpenImplementMarkingDialog, setIsOpenImplementMarkingDialog] = useState(false)
   const [input, setInput] = useState('')
   const lastKeyPressTime = useRef(Date.now())
@@ -307,12 +308,18 @@ function NewSale() {
   const searchRef = useRef('')
   const searchResetRef = useRef('')
   const printContainer = useRef()
-  const cartRef = cartItemRef.current.filter((a) => a)
+  const cartRef = cartItemRef.current
+  for (const key in cartRef) {
+    if (cartRef[key] === null) {
+      delete cartRef[key]
+    }
+  }
   const focusPackInput = (event, id) => {
+    let clearRef = cartRef.filter((el) => el)
     if (event.key === 'Tab' && !event.shiftKey) {
       event.preventDefault()
-      const nextInput = cartRef[a + 1]
-      if (a == cartRef.length - 2) {
+      const nextInput = clearRef[a + 1]
+      if (a == clearRef.length - 2) {
         a = -1
       } else {
         a++
@@ -327,12 +334,12 @@ function NewSale() {
     setInputDiscount(0)
   }, [discount])
   const focusUnitInput = (event) => {
-    console.log(event)
-
     if (event.key === '+' && !event.shiftKey) {
       const activeInput = document.activeElement
+
       if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
         let unitId = activeInput.name.split('_')
+
         if (unitId[0] === 'quantity') {
           cartRef.find((el) => el.name == `quantity_${unitId[1]}`).value = 0
         }
@@ -343,7 +350,6 @@ function NewSale() {
         }
       }
     }
-    console.log(event)
     if (event.key === '-' && !event.shiftKey) {
       const activeInput = document.activeElement
       if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
@@ -423,6 +429,7 @@ function NewSale() {
         //save to marking
         addNewMarking(data?.data?.id, searchValue)
       }
+
       searchResetRef.current.clearValue()
       searchRef?.current?.focus()
       setShowOverlay(false)
@@ -430,6 +437,10 @@ function NewSale() {
     },
     onError: (err) => {
       searchResetRef.current.clearValue()
+      if (get(err, 'response.data.code') === 422) {
+        error('Маркировка товара не соответствует его штрих-коду. Пожалуйста, введите корректную маркировку.')
+        return
+      }
       if (get(err, 'response.data.code') === 409) {
         error(`Описание
       Редактировать
@@ -592,10 +603,30 @@ function NewSale() {
   useHotkeys(
     'F10',
     () => {
+      if (isOrderDrower) return
+
+      if (isAllMarkingFill()) {
+        setLiteOrder(true)
+
+        // setIsOrderDrower(true)
+      } else {
+        setIsOpenImplementMarkingDialog({ mode: 'lite' })
+      }
+    },
+    {
+      preventDefault: true,
+      enableOnFormTags: true,
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+    }
+  )
+
+  useHotkeys(
+    'F9',
+    () => {
       if (isAllMarkingFill()) {
         setIsOrderDrower(true)
       } else {
-        setIsOpenImplementMarkingDialog(true)
+        setIsOpenImplementMarkingDialog({ mode: 'fu;;' })
       }
     },
     {
@@ -636,7 +667,11 @@ function NewSale() {
     return () => clearTimeout(handler)
   }, [debouncedDiscount])
   const implementMarkingList = (marking, id, index) => {
+    if (Object.values(markingsList[id] || {}).includes(marking)) {
+      return false
+    }
     setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
+    return true
   }
   const addNewMarking = (id, marking) => {
     if (Object.values(markingsList[id] || {}).includes(marking)) {
@@ -656,7 +691,6 @@ function NewSale() {
     }
   }
   const isAllMarkingFill = () => {
-    // const cartsMarkingCount = Object.values(markingCount)?.reduce((acc, i) => acc + i, 0)
     const newmarkingCount = {}
 
     get(cartItemsList, 'data.data.data').map((item) => {
@@ -705,7 +739,7 @@ function NewSale() {
       size(get(cartItemsList, 'data.data.data')) !== 0 && setIsCreateOpenDraft(true)
       setInput('') // Reset after detection
     }
-    if (['U', 'u', 'г'].includes(event.key)) {
+    if (['K', 'k', 'л'].includes(event.key)) {
       setOpenClientCreateMini(true)
       setInput('') // Reset after detection
     }
@@ -837,7 +871,7 @@ function NewSale() {
                       setOpenConfirmDialog={setOpenConfirmDialog}
                       item={el}
                       packRef={(els) => (cartItemRef.current[index] = els)}
-                      unitRef={(els) => (cartItemRef.current[el?.id + 'unit'] = els)}
+                      unitRef={(els) => (cartItemRef.current[el.id + 'unit'] = els)}
                       key={el?.id}
                       index={el?.id}
                     />
@@ -853,6 +887,10 @@ function NewSale() {
           cashBoxDetails={cashBoxDetails}
           saleCreate={saleCreate}
           userData={userData}
+          markingsList={markingsList}
+          liteOrder={liteOrder}
+          setLiteOrder={setLiteOrder}
+          printContainer={printContainer}
           classes={classes}
           setIsOpenReturnExchange={setIsOpenReturnExchange}
           setOpenClientCreateMini={setOpenClientCreateMini}
@@ -947,6 +985,8 @@ function NewSale() {
       />
       <ProductDrawer open={openProductDrawer} onClose={setOpenProductDrawer} />
       <ImplementMarkingDialog
+        liteOrder={liteOrder}
+        setLiteOrder={setLiteOrder}
         markingCount={markingCount}
         isAllMarkingFill={isAllMarkingFill}
         cartItems={get(cartItemsList, 'data.data.data', [])}

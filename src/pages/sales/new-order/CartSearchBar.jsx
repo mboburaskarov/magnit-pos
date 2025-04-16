@@ -217,8 +217,10 @@ function CartSearchBar({
       search: searchTearm.slice(0, 31),
     }
   }, [debouncedSearchTerm])
-  const { data: productsList } = useQuery(['storeProductsList', productsListFilter], () =>
-    requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter)
+  const { data: productsList, isFetching: isProductsFetching } = useQuery(
+    ['storeProductsList', productsListFilter],
+    () => requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter),
+    { enabled: searchTearm.length > 0 }
   )
   const { data: sellerBonusInOneSale } = useQuery(
     ['sellerBonusInOneSale'],
@@ -274,6 +276,7 @@ function CartSearchBar({
           discount_value: Number(get(discount, 'amount', 0)),
           store_product_id: get(document, 'activeElement.id', 'err #3'),
           sale_id: id,
+          type: 'cart_item_select',
         })
       }
     },
@@ -307,18 +310,22 @@ function CartSearchBar({
               setSearchTerm(e.target.value)
             }}
             onKeyDown={(e) => {
+              // if (isProductsFetching) return // Wait for productsData to be ready
+
               setShowOverlay(true)
 
               if (e.key == 'Escape') {
                 e.preventDefault()
+                setShowOverlay(false)
               }
               if (e.key == 'Enter') {
                 setShowOverlay(false)
-                if (productsData.length === 1) {
+                if (productsData?.length === 1 || searchTearm?.length < 8) {
                   handleAddProduct({
                     discount_type: get(discount, 'type', 'percent'),
                     discount_value: Number(get(discount, 'amount', 0)),
                     sale_id: id,
+                    type: 'first_item',
                     barcode: get(head(productsData), 'barcode'),
                   })
                 } else {
@@ -326,6 +333,7 @@ function CartSearchBar({
                     discount_type: get(discount, 'type', 'percent'),
                     discount_value: Number(get(discount, 'amount', 0)),
                     sale_id: id,
+                    type: 'marking',
                     barcode: searchTearm.slice(0, 31),
                   })
                 }

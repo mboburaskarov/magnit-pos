@@ -6,7 +6,7 @@ import CatalogManagement from '../../pages/products/categories'
 import ImportPage from '../../pages/products/import'
 import InventoryPage from '../../pages/products/inventory'
 import TransferPage from '../../pages/products/transfer'
-import WriteOffPage from '../../pages/products/writeOff'
+import WriteOffPage from '../../pages/products/writeOff2'
 const productsRoutes = {
   path: 'products',
   element: <LayoutWithHeaderNavbar />,

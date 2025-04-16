@@ -21,7 +21,7 @@ export default function Transactions({ data, title, subTitle }) {
             {title}
           </Typography>
           <Typography color='orange.500' lineHeight={'30px'} fontWeight={'600'} fontSize={'20px'}>
-            {thousandDivider(Math.round(data?.reduce((a, b) => a + b.amount, 0)), 'сум')}
+            {subTitle}
           </Typography>
         </Box>
         <Box

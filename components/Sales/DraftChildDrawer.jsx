@@ -68,7 +68,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   const classes = useStyles()
   const { mutate: deleteDraft, isLoading: isDeleteDraft } = useMutation(requests.deleteDraft, {
     onSuccess: ({ data }) => {
-      refetchDraftList()
+      // refetchDraftList()
       setChildOpen(false)
       // setOpen(false)
       success('Черновик удален!')
@@ -80,7 +80,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   })
   const { mutate: completeDraft, isLoading: isCompleteDraft } = useMutation(requests.completeDraft, {
     onSuccess: ({ data }) => {
-      refetchDraftList()
+      // refetchDraftList()
       setChildOpen(false)
       setOpen(false)
       navigate(`/sales/new-sale/${get(data, 'data')}`)

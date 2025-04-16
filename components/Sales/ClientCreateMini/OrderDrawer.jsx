@@ -1,7 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { get, size } from 'lodash'
+import { get, isNaN, size } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -273,11 +273,11 @@ export default function OrderDrawer({
   const classes = useStyles()
   const [payments, setPayments] = useState([])
   const [paymentsList, setPaymentsList] = useState([])
+
   const [maxAmount, setMaxAmount] = useState(0)
   const [paymentAmount, setPaymentAmount] = useState(0)
   const [hasChange, setHasChange] = useState(false)
   const [qrcodeUrl, setQrcodeUrl] = useState('pending')
-  const [scannedKeys, setScannedKeys] = useState([])
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
   const [payme, setPayme] = useState(false)
   const { id } = useParams()
@@ -327,7 +327,6 @@ export default function OrderDrawer({
     onSuccess: ({ data }) => {
       if (false) {
         // disabling epos
-        console.log('falsee')
 
         navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
         setIsOrderDrower(false)
@@ -390,7 +389,7 @@ export default function OrderDrawer({
     },
     onError: (err) => {
       if (get(err, 'response.status') == 409) {
-        saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), error('Эта sпродажа уже закрыта.')
+        saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), error('Эта продажа уже закрыта.')
         return
       }
 
@@ -510,6 +509,7 @@ export default function OrderDrawer({
 
     const markingData = get(cartItemsList, 'data', []).map((el) => ({
       id: el.id,
+      marking_list: Object.values(markingsList[el.id] || {}).filter((a) => a.length),
       marking_count: Object.values(markingsList[el.id] || {}).filter((a) => a.length)?.length,
     }))
 

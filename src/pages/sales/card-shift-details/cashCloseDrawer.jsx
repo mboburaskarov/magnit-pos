@@ -191,7 +191,6 @@ function CashCloseDrawer({ open, setOpen }) {
                 fontWeight={'700'}
                 color={'bunker.950'}
                 p={'24px'}
-                onClick={() => console.log(methods.getValues())}
               >
                 Закрыть кассу
               </Typography>

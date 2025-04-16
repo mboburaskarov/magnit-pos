@@ -41,7 +41,6 @@ export const navbatRouteData = [
         active: '/products/inventory/*',
         id: '32',
         href: '/products/inventory',
-        soon: true,
       },
       {
         label: 'Трансфер',
@@ -58,18 +57,13 @@ export const navbatRouteData = [
         href: '/products/write-off',
         soon: true,
       },
-      {
-        label: 'Категории',
-        active: '/products/categories/*',
-        id: '327',
-        href: '/products/categories',
-      },
-      {
-        label: 'Бонусный продукт',
-        active: '/products/bonus-product/*',
-        id: '327',
-        href: '/products/bonus-product',
-      },
+
+      // {
+      //   label: 'Бонусный продукт',
+      //   active: '/products/bonus-product/*',
+      //   id: '327',
+      //   href: '/products/bonus-product',
+      // },
     ],
   },
   {

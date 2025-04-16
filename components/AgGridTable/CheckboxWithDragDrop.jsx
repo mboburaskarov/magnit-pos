@@ -123,8 +123,6 @@ function CheckboxWithDragDrop({ data, checkAllField, setData, pin = true, dragHa
     setData(changedData)
   }
   const handlePinChange = (propName, checked) => {
-    console.log(propName, checked)
-
     const changedData = data?.map((el) => {
       if (el.name === propName) {
         el.pinned = checked
@@ -142,12 +140,15 @@ function CheckboxWithDragDrop({ data, checkAllField, setData, pin = true, dragHa
   ))
   const Pin = ({ data }) => (
     <Box
-      sx={{
+      sx={(theme) => ({
         cursor: 'pointer',
         mr: '30px',
         mt: '4px',
         transform: 'rotate(45deg)',
-      }}
+        '& svg': {
+          fill: theme.palette.bunker[400],
+        },
+      })}
     >
       {!data?.pinned ? (
         <PushPinOutlined

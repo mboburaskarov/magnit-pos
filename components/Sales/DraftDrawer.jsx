@@ -100,7 +100,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
           </Box>
         </Box>
       ) : (
-        <DraftChildDrawer refetchDraftList={refetch} setChildOpen={setIsOpenChild} open={isOpenChild} setOpen={setOpen} />
+        <DraftChildDrawer setChildOpen={setIsOpenChild} open={isOpenChild} setOpen={setOpen} />
       )}
       <DraftFilter setRegions={() => {}} open={draftfilter} setOpen={setDraftFilter} />
     </Drawer>

@@ -29,7 +29,6 @@ export default function MainDetails({ clientData, openDrawer }) {
       reset()
     }
   }, [clientData, openDrawer])
-  console.log(time)
   useEffect(() => {
     setDate('00:00 - 00:00')
     setValue('time-type', getValues('time-type'))

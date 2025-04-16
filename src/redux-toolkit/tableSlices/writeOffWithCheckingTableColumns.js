@@ -8,66 +8,53 @@ const columns = [
     width: 60,
   },
   {
-    field: 'public_id',
+    field: 'name',
     hide: false,
-    minWidth: 60,
+    minWidth: 200,
+    flex: 1,
+    resizable: true,
+  },
+  {
+    field: 'material_code',
+    hide: false,
+    minWidth: 70,
+    width: 158,
+  },
+  {
+    field: 'barcode',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'retail_price',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'supply_price',
+    hide: false,
+    minWidth: 70,
     width: 200,
   },
 
   {
-    field: 'document_number',
-    hide: false,
-    minWidth: 280,
-    flex: 1,
-  },
-  {
-    field: 'store_name',
-    hide: false,
-    minWidth: 70,
-    width: 250,
-  },
-  {
-    field: 'created_at',
-    hide: false,
-    minWidth: 70,
-    width: 350,
-  },
-  {
-    field: 'import_date',
-    hide: false,
-    minWidth: 70,
-    width: 370,
-  },
-  {
-    field: 'received_count',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
-
-  {
-    field: 'accepted_amount',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
-
-  {
-    field: 'status',
+    field: 'stock_count',
     hide: false,
     minWidth: 70,
     width: 170,
   },
   {
-    field: 'actions',
+    field: 'scanned_count',
     hide: false,
-    minWidth: 120,
-    width: 120,
+    minWidth: 70,
+    width: 200,
   },
 ]
 
-const inventoryTableColumns = createSlice({
-  name: 'inventoryTableColumns',
+const writeOffWithCheckingTableColumns = createSlice({
+  name: 'writeOffWithCheckingTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -107,5 +94,5 @@ const inventoryTableColumns = createSlice({
 })
 
 export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
-  inventoryTableColumns.actions
-export const inventoryTableColumnsSlice = inventoryTableColumns.reducer
+  writeOffWithCheckingTableColumns.actions
+export const writeOffWithCheckingTableColumnsSlice = writeOffWithCheckingTableColumns.reducer

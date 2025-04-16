@@ -14,11 +14,11 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '8px',
   },
 }))
-function SaleChildItemsBox({ item }) {
+function SaleChildItemsBox({ item, key }) {
   const classes = useStyles()
 
   return (
-    <Box display={'flex'} mb={'10px'} height={'auto'} justifyContent={'space-between'}>
+    <Box key={key} display={'flex'} mb={'10px'} height={'auto'} justifyContent={'space-between'}>
       <Box borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} display={'flex'} flexDirection={'column'} width={'100%'} justifyContent={'space-between'}>
         <Box borderRadius={'16px'} bgcolor={'bg.10'} display={'flex'} width={'100%'} justifyContent={'space-between'}>
           <Box display={'flex'} width={'100%'} alignItems={'center'}>

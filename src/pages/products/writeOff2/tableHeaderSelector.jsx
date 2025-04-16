@@ -108,7 +108,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         colId: el.field,
         cellRenderer: memo((p) => (
           <Link
-            to={`/products/inventory-with-checking/${p.data.id}?${qs.stringify({
+            to={`/products/write-off-with-checking/${p.data.id}?${qs.stringify({
               previusLimit: values?.limit,
               previusOffset: values?.offset,
             })}

@@ -2,7 +2,7 @@ import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Typography } from '@mui/material'
 import { get, size } from 'lodash'
-import React from 'react'
+import React, { useState } from 'react'
 import Highlighter from 'react-highlight-words'
 import { useTranslation } from 'react-i18next'
 import OutsideClickHandler from 'react-outside-click-handler'
@@ -13,10 +13,14 @@ import SearchInput from '../../../../components/Inputs/SearchInput'
 import Label from '../../../../components/Label'
 import StyledTooltip from '../../../../components/StyledTooltip'
 import thousandDivider from '../../../../utils/thousandDivider'
+import ArrowDown from '../../../assets/icons/ArrowDown'
+import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
+import ArrowUp from '../../../assets/icons/ArrowUp'
 import FileIcon from '../../../assets/icons/FileIcon'
 import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
 import TimesSmallIcon from '../../../assets/icons/TimesSmallIcon'
 import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
+import OrderLite from './orderLite'
 
 function CartDetailSide({
   cashBoxDetails,
@@ -43,8 +47,14 @@ function CartDetailSide({
   setIsCreateOpenDraft,
   setInputDiscount,
   setIsOpenDraft,
+  printContainer,
+  markingsList,
+  liteOrder,
+  setLiteOrder,
 }) {
   const { t } = useTranslation()
+  const [maxAmount, setMaxAmount] = useState(0)
+  const [collapseDiscount, setCollapseDiscount] = useState(false)
   return (
     <Box className={classes.card_detail}>
       <Box display={'flex'}>
@@ -195,116 +205,212 @@ function CartDetailSide({
           </OutsideClickHandler>
         )}
       </Box>
+
       <CheckAccess id={'new-sale-discount'}>
-        <Box display={'flex'} alignItems={'center'}>
-          <OutLineTextFieldThousand
-            setValue={(e) => changeDiscountDebounce(e)}
-            value={inputDiscount}
-            type={'number'}
-            fullWidth
-            name='discount'
-            label={t('discount')}
-            uncontrolled
-            placeholder='Введите скидку'
-          />
-          <Box ml={'8px'}>
-            <InputSwitch
-              uncontrolled
-              id='app-type'
-              name='app-type'
-              style={{ marginTop: '32px', width: 'auto' }}
-              defaultValue={discount}
-              onChange={setDiscountType}
-              options={[
-                { title: '%', value: 'percent' },
-                { title: 'UZS', value: 'cash' },
-              ]}
-            />
+        <Box onClick={() => setCollapseDiscount((p) => !p)} width={'100%'} display={'flex'} justifyContent={'space-between'}>
+          <Label>{t('discount')}</Label>
+          <Box
+            sx={{
+              width: '20px',
+              height: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              backgroundColor: 'bg.10',
+            }}
+          >
+            {collapseDiscount ? <ArrowDown color='#111217' /> : <ArrowUp color='#111217' />}{' '}
           </Box>
         </Box>
-        <Box mt='8px' display={'flex'}>
-          {discount === 'percent' &&
-            [15, 30, 50, 75].map((el, index) => (
-              <Box
-                sx={{ cursor: 'pointer', color: el === inputDiscount ? 'orange.500' : '#000' }}
-                onClick={() => setInputDiscount(el)}
-                className={classes.percent}
-              >
-                {el}%
-              </Box>
-            ))}
-          {discount === 'cash' &&
-            [5, 10, 50, 100].map((el, index) => (
-              <Box
-                sx={{ cursor: 'pointer', color: el === inputDiscount / 1000 ? 'orange.500' : '#000' }}
-                onClick={() => setInputDiscount(`${el}000`)}
-                className={classes.percent}
-              >
-                {el}k
-              </Box>
-            ))}
-        </Box>
-      </CheckAccess>
-      <Box className={classes.priceDetails}>
-        <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
-          <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>
-            {t('total_amount')}:
-          </Typography>
-          <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
-            {thousandDivider(get(cartItemsList, 'data.data.sum'), 'сум')}
-          </Typography>
-        </Box>
-        <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
-          <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>
-            {t('discount')}:
-          </Typography>
-          <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
-            {thousandDivider(get(cartItemsList, 'data.data.discount_amount'), 'сум')}
-          </Typography>
-        </Box>
-        <Button
-          disabled={size(get(cartItemsList, 'data.data.data')) === 0}
-          // onClick={() => setIsOrderDrower(true)}
-          onClick={() => {
-            if (isAllMarkingFill()) {
-              setIsOrderDrower(true)
-            } else {
-              setIsOpenImplementMarkingDialog(true)
-            }
-          }}
-          color='primary'
-          sx={{ mb: '16px', display: 'flex', justifyContent: 'space-between' }}
-        >
-          <Typography display={'flex'} alignItems={'center'} fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
-            {t('pay')}
-            <Box
-              sx={{
-                color: '#fff',
-                border: '2px solid #fff',
-                height: '34px',
-                display: 'flex',
-                padding: '2px',
-                ml: '15px',
-                fontSize: '12px',
-                minWidth: '34px',
-                alignItems: 'center',
-                borderRadius: '8px',
-                justifyContent: 'center',
-              }}
-            >
-              F10
+        {collapseDiscount && (
+          <Box display={'flex'} alignItems={'center'}>
+            <OutLineTextFieldThousand
+              setValue={(e) => changeDiscountDebounce(e)}
+              value={inputDiscount}
+              type={'number'}
+              fullWidth
+              name='discount'
+              label={''}
+              uncontrolled
+              placeholder='Введите скидку'
+            />
+            <Box ml={'8px'}>
+              <InputSwitch
+                uncontrolled
+                id='app-type'
+                noMarginTop
+                name='app-type'
+                style={{ width: 'auto' }}
+                defaultValue={discount}
+                onChange={setDiscountType}
+                options={[
+                  { title: '%', value: 'percent' },
+                  { title: 'UZS', value: 'cash' },
+                ]}
+              />
             </Box>
-          </Typography>
-          <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
-            {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
-          </Typography>
-        </Button>
-        <Button disabled={size(get(cartItemsList, 'data.data.data')) == 0} color='secondary' onClick={() => setIsCreateOpenDraft(true)}>
-          <TimeAndDate disabled={size(get(cartItemsList, 'data.data.data'))} />
-          <Typography ml={'12px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
-            {t('draft')}
-          </Typography>
-        </Button>
+          </Box>
+        )}
+        {collapseDiscount && (
+          <Box mt='8px' display={'flex'}>
+            {discount === 'percent' &&
+              [15, 30, 50, 75].map((el, index) => (
+                <Box
+                  sx={{ cursor: 'pointer', color: el === inputDiscount ? 'orange.500' : '#000' }}
+                  onClick={() => setInputDiscount(el)}
+                  className={classes.percent}
+                >
+                  {el}%
+                </Box>
+              ))}
+            {discount === 'cash' &&
+              [5, 10, 50, 100].map((el, index) => (
+                <Box
+                  sx={{ cursor: 'pointer', color: el === inputDiscount / 1000 ? 'orange.500' : '#000' }}
+                  onClick={() => setInputDiscount(`${el}000`)}
+                  className={classes.percent}
+                >
+                  {el}k
+                </Box>
+              ))}
+          </Box>
+        )}
+      </CheckAccess>
+      <Box
+        sx={(theme) => ({
+          position: 'absolute',
+          bottom: 20,
+          right: 20,
+          width: 'calc(100% - 40px)',
+          left: 20,
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          border: '1px solid',
+          backgroundColor: theme.palette.white,
+          borderRadius: '32px',
+          borderColor: theme.palette.bunker[100],
+          boxShadow: '0px 4px 12px 0px #00000014',
+        })}
+      >
+        <OrderLite
+          liteOrder={liteOrder}
+          setMaxAmount={setMaxAmount}
+          maxAmount={maxAmount}
+          setLiteOrder={setLiteOrder}
+          cartItemsList={get(cartItemsList, 'data.data')}
+          markingsList={markingsList}
+          cashBoxDetails={cashBoxDetails}
+          customerId={customerId}
+          printContainer={printContainer}
+        />
+        <Box className={classes.priceDetails}>
+          <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
+            <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>
+              {t('total_amount')}:
+            </Typography>
+            <Typography fontWeight={'500'} fontSize={'18px'} color={'bunker.800'} lineHeight={'28px'}>
+              {thousandDivider(get(cartItemsList, 'data.data.sum'), 'сум')}
+            </Typography>
+          </Box>
+          <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
+            <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>
+              {t('discount')}:
+            </Typography>
+            <Typography fontWeight={'500'} fontSize={'18px'} color={'red.500'} lineHeight={'28px'}>
+              -{thousandDivider(get(cartItemsList, 'data.data.discount_amount'), 'сум')}
+            </Typography>
+          </Box>
+          <Button
+            disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0}
+            // onClick={() => setIsOrderDrower(true)}
+            onClick={() => {
+              if (isAllMarkingFill()) {
+                setLiteOrder(true)
+              } else {
+                setLiteOrder(false)
+                setIsOpenImplementMarkingDialog({ mode: 'lite' })
+              }
+            }}
+            color='primary'
+            sx={{ mb: '16px', height: '48px', borderRadius: '16px', display: 'flex', justifyContent: 'space-between' }}
+          >
+            <Typography display={'flex'} alignItems={'center'} fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
+              {t('pay')}
+              <Box
+                sx={{
+                  color: '#fff',
+                  border: '2px solid #fff',
+                  height: '34px',
+                  display: 'flex',
+                  padding: '2px',
+                  ml: '15px',
+                  fontSize: '12px',
+                  minWidth: '34px',
+                  alignItems: 'center',
+                  borderRadius: '8px',
+                  justifyContent: 'center',
+                }}
+              >
+                F10
+              </Box>
+            </Typography>
+            <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
+              {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
+            </Typography>
+          </Button>
+          <Box display={'flex'}>
+            <Button
+              sx={{
+                borderRadius: '16px',
+                mr: '4px',
+                p: '12px',
+                height: '48px',
+                width: '140px',
+                '& svg': {
+                  flexShrink: 0,
+                },
+              }}
+              disabled={size(get(cartItemsList, 'data.data.data')) == 0}
+              color='secondary'
+              onClick={() => setIsCreateOpenDraft(true)}
+            >
+              <TimeAndDate disabled={size(get(cartItemsList, 'data.data.data'))} />
+              <Typography ml={'8px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
+                {t('draft')}
+              </Typography>
+            </Button>
+            <Button
+              disabled={size(get(cartItemsList, 'data.data.data')) === 0}
+              // onClick={() => setIsOrderDrower(true)}
+              sx={{
+                borderRadius: '16px',
+                ml: '4px',
+                p: '12px',
+                width: '140px',
+                height: '48px',
+                '& svg > path': {
+                  stroke: '#fff',
+                },
+              }}
+              onClick={() => {
+                if (isAllMarkingFill()) {
+                  setIsOrderDrower(true)
+                } else {
+                  setIsOpenImplementMarkingDialog({ mode: 'full' })
+                }
+              }}
+              color='primary'
+            >
+              <Typography mr={'20px'} fontWeight={'500'} fontSize={'18px'} color={'#fff'} lineHeight={'26px'}>
+                {t('Полный')}
+              </Typography>
+
+              <ArrowRightIcon disabled={size(get(cartItemsList, 'data.data.data'))} />
+            </Button>
+          </Box>
+        </Box>
       </Box>
     </Box>
   )

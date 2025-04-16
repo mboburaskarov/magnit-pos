@@ -259,16 +259,15 @@ const CartItem = ({
       <Box id={`cartItem${index}`} tabIndex={index} className={cls.root}>
         <Box className={cls.content}>
           <Box className={cls.details}>
-            <Box
-              display={'flex'}
-              sx={{
-                '& .MuiInputBase-root': {
-                  width: get(item, 'unit_per_pack') == 0 ? '100%' : '100%',
-                },
-              }}
-            >
+            <Box display={'flex'}>
               {get(item, 'unit_per_pack') >= 0 && (
-                <>
+                <Box
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      borderRadius: get(item, 'unit_per_pack') > 0 ? '12px 0px 0px 12px !important' : '',
+                    },
+                  }}
+                >
                   <InputQuantity
                     id={`quantity_${item?.id}`}
                     name={`quantity_${item?.id}`}
@@ -328,14 +327,14 @@ const CartItem = ({
                       }
                     }}
                   />
-                  <Box width={'5px'} />
-                </>
+                </Box>
               )}
               {get(item, 'unit_per_pack') > 0 ? (
                 <Box
                   sx={{
-                    '& .MuiInputBase-root': {
-                      // width: get(item, 'unit_per_pack') == 0 ? '110px' : '110px',
+                    '& .MuiFormControl-root .MuiInputBase-root': {
+                      borderRadius: '0px 12px 12px 0px !important',
+                      borderLeft: 'none',
                     },
                   }}
                 >
