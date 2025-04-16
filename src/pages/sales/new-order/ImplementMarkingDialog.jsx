@@ -66,6 +66,8 @@ function ImplementMarkingDialog({
       if (!isAllMarkingFill()) {
         // Open order drawer or lite mode
         setOpenConfirmDialog(true)
+        setLiteOrder(false)
+        setIsOrderDrower(false)
       }
     }
   }, [markingsList]) // Replace with actual marking state dependency
