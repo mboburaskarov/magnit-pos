@@ -320,7 +320,7 @@ function CartSearchBar({
               }
               if (e.key == 'Enter') {
                 setShowOverlay(false)
-                if (productsData.length === 1 || searchTearm.length < 8) {
+                if (productsData?.length === 1 || searchTearm?.length < 8) {
                   handleAddProduct({
                     discount_type: get(discount, 'type', 'percent'),
                     discount_value: Number(get(discount, 'amount', 0)),
