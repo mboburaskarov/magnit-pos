@@ -26,8 +26,6 @@ function ImplementMarkingDialog({
   const { t } = useTranslation()
   useEffect(() => {
     if (open) {
-      console.log(inputsRef.current)
-
       setTimeout(() => {
         inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
       }, 100)
@@ -73,7 +71,6 @@ function ImplementMarkingDialog({
       }
     }
   }, [markingsList]) // Replace with actual marking state dependency
-  console.log(markingCount, markingsList)
 
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
     if (e.key === 'Enter') {
