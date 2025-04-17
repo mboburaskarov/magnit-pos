@@ -4,7 +4,7 @@ import AutoOrderPage from '../../pages/products/autoOrder'
 import ImportPage from '../../pages/products/import'
 import InventoryPage from '../../pages/products/inventory'
 import TransferPage from '../../pages/products/transfer'
-import WriteOffPage from '../../pages/products/writeOff2'
+import WriteOffPage from '../../pages/products/writeOff'
 const productsRoutes = {
   path: 'products',
   element: <LayoutWithHeaderNavbar />,

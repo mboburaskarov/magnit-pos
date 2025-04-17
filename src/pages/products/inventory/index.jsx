@@ -211,8 +211,8 @@ export default function InventoryPage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
-            fullDownload={() => importsExcelReport({ ...inventoryListFilter, limit: 1000000 })}
-            downloadByFilter={() => importsExcelReport(inventoryListFilter)}
+            // fullDownload={() => importsExcelReport({ ...inventoryListFilter, limit: 1000000 })}
+            // downloadByFilter={() => importsExcelReport(inventoryListFilter)}
             isDownloading={isimportsExcelReport}
             tableSettings
             columns={tableColumns}

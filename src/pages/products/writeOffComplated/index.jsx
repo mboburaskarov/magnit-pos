@@ -30,7 +30,7 @@ import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function WriteOffScanWithCheckingPage() {
+export default function WriteOffComplatedPage() {
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
   const overplusScanAudio = new Audio(overplusAudio)
@@ -52,7 +52,7 @@ export default function WriteOffScanWithCheckingPage() {
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedWriteOffNumber, {
     onSuccess: ({ data }) => {
       // refetch()
-      fetchStatusCountList()
+      refetchgetWriteOffDashBoard()
       setBarcode('')
     },
     onError: (err) => {
@@ -101,6 +101,7 @@ export default function WriteOffScanWithCheckingPage() {
     isFetching: isFetchingWriteOffWithCheckingDetails,
     refetch,
   } = useQuery(['WriteOffWithCheckingDetails', WriteOffWithCheckingDetailsFilter], () => requests.getWriteOffDetails(WriteOffWithCheckingDetailsFilter))
+  console.log(WriteOffWithCheckingDetails)
 
   /// filter table columns with permission
   useEffect(() => {
@@ -174,34 +175,7 @@ export default function WriteOffScanWithCheckingPage() {
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
           {isOpenStatDashboard && <WriteOffDashboard data={get(getWriteOffDashBoard, 'data.data')} />}
-          <Box display={'flex'} minWidth={320}>
-            <InputSwitch
-              uncontrolled
-              id='status'
-              name='status'
-              value={status}
-              defaultValue='ALL'
-              onChange={(e) => setStatus(e)}
-              options={[
-                { title: t('switch.title.all'), value: 'ALL', count: get(WriteOffWithCheckingDetails, 'data.data.stats_count.all', 0) },
-                {
-                  title: t('switch.title.scanned_count'),
-                  value: 'scanned',
-                  count: get(WriteOffWithCheckingDetails, 'data.data.stats_count.scanned', 0),
-                },
-                {
-                  title: t('switch.title.shortage_count'),
-                  value: 'shortage',
-                  count: get(WriteOffWithCheckingDetails, 'data.data.stats_count.shortage', 0),
-                },
-                {
-                  title: t('switch.title.surplus_count'),
-                  value: 'surplus',
-                  count: get(WriteOffWithCheckingDetails, 'data.data.stats_count.surplus', 0),
-                },
-              ]}
-            />
-          </Box>
+
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
               <Box display={'flex'}>

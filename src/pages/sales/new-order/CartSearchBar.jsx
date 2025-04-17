@@ -215,7 +215,7 @@ function CartSearchBar({
 
   const productsListFilter = useMemo(() => {
     return {
-      search: convertoRuOrEngToEng(searchTearm.slice(0, 31)),
+      search: searchTearm.slice(0, 31),
     }
   }, [debouncedSearchTerm])
   const { data: productsList, isFetching: isProductsFetching } = useQuery(

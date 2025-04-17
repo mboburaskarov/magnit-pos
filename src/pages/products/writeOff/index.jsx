@@ -1,3 +1,4 @@
+import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
@@ -7,30 +8,34 @@ import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../../components/CheckAccess'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+// import SoonPage from '../../../../components/soon/index'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
+import { error, success } from '../../../../utils/toast'
+import BigTickIcon from '../../../assets/icons/BigTickIcon'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryTableColumns'
-import CreateWriteOff from './createWriterOff'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/writeOffTableColumns'
+import CreateWriteOff from './createWriteOff'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
-
 export default function WriteOffPage() {
   // return <SoonPage />
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { columns, loading } = useSelector((state) => state.inventoryTableColumns)
+  const { columns, loading } = useSelector((state) => state.writeOffTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
-  const [orderModel, setOrderModel] = useState(false)
   const [openImageGallery, setOpenImageGallery] = useState(false)
+  const [orderModel, setOrderModel] = useState(false)
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
   const [filterMenu, setFilterMenu] = useState(false)
   const tableColumns = tableHeaderSelector({
@@ -38,6 +43,7 @@ export default function WriteOffPage() {
     t,
     values,
     setImages: setOpenImageGallery,
+    setOpenConfirmDialog: setOpenConfirmDialog,
   })
 
   useEffect(() => {
@@ -56,7 +62,7 @@ export default function WriteOffPage() {
     }
   }, [])
 
-  const importsListFilter = useMemo(() => {
+  const writeOffListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
@@ -66,7 +72,7 @@ export default function WriteOffPage() {
       start_date: values?.start_date,
       end_date: values?.end_date,
       status: values?.status,
-      import_date: values?.import_date,
+      writeoff_date: values?.import_date,
       received_amount_to: values?.received_amount_to,
       received_amount_from: values?.received_amount_from,
     }
@@ -82,30 +88,43 @@ export default function WriteOffPage() {
     values?.received_amount_from,
   ])
   const {
-    data: importsList,
-    isLoading: importsListLoading,
-    isFetching: isFetchingimportsList,
+    data: writeOffList,
+    isLoading: writeOffListLoading,
+    isFetching: isFetchingwriteOffList,
     refetch,
-  } = useQuery(['importsList', importsListFilter], () => requests.getAllImports(importsListFilter))
+  } = useQuery(['writeOffList', writeOffListFilter], () => requests.getAllWriteOff(writeOffListFilter))
 
   useEffect(() => {
     refetch()
-  }, [importsListFilter])
+  }, [writeOffListFilter])
 
   useEffect(() => {
-    const count = importsList?.data?.data?._meta?.total_count
+    const count = writeOffList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [importsList?.data, values?.limit])
+  }, [writeOffList?.data, values?.limit])
   const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Импорт')
+      downloadExcel(data, 'Списание')
     },
     onError: (err) => {
       console.log(err)
 
       error('Ошибка при скачать excel!')
+    },
+  })
+  const { mutate: deleteWriteOff, isLoading: isDeletingProduct } = useMutation(requests.deleteWriteOff, {
+    onSuccess: () => {
+      refetch()
+      success('Списание был успешно удален!')
+      setOpenConfirmDialog(null)
+    },
+    onError: (err) => {
+      refetch()
+      error('Ошибка при удалении Списание!')
+      setOpenConfirmDialog(null)
+      console.log('err', err)
     },
   })
   return (
@@ -128,7 +147,7 @@ export default function WriteOffPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={'Импортный номер, наименование'} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'Списаниеный номер, наименование'} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>
@@ -179,7 +198,7 @@ export default function WriteOffPage() {
                   variant='contained'
                   color='primary'
                 >
-                  Новое списание
+                  Новая Списание
                 </Button>
               </Box>
             </CheckAccess>
@@ -191,31 +210,57 @@ export default function WriteOffPage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
-            fullDownload={() => importsExcelReport({ ...importsListFilter, limit: 1000000 })}
-            downloadByFilter={() => importsExcelReport(importsListFilter)}
+            // fullDownload={() => importsExcelReport({ ...writeOffListFilter, limit: 1000000 })}
+            // downloadByFilter={() => importsExcelReport(writeOffListFilter)}
             isDownloading={isimportsExcelReport}
             tableSettings
             columns={tableColumns}
             defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
-            data={importsList?.data?.data?.data || []}
-            totalCount={importsList?.data?.data?._meta?.total_count || 0}
-            isDataLoading={isFetchingimportsList || importsListLoading}
+            data={writeOffList?.data?.data?.data || []}
+            totalCount={writeOffList?.data?.data?._meta?.total_count || 0}
+            isDataLoading={isFetchingwriteOffList || writeOffListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}
             emptyTableText={{
-              title: 'Импорт недоступен',
-              description: 'Если вы не можете найти искомый Импорт',
+              title: 'Списание недоступен',
+              description: 'Если вы не можете найти искомый Списание',
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingimportsList || importsListLoading}
+            isRefreshing={loading || isFetchingwriteOffList || writeOffListLoading}
           />
         </Box>
       </Box>
 
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
+      {openConfirmDialog && (
+        <ConfirmDialog
+          open={!!openConfirmDialog}
+          setOpen={setOpenConfirmDialog}
+          icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
+          title={'Удалить инвентаризацию?'}
+          desc={'Вы уверены что хотите удалить инвентаризацию?'}
+          // supDesc={'“Azitromitsin 250 mg”'}
+          actions={
+            <>
+              <Button
+                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                fullWidth
+                color='secondary'
+                variant='contained'
+                onClick={() => setOpenConfirmDialog(null)}
+              >
+                Нет
+              </Button>
+              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteWriteOff({ id: openConfirmDialog.id })}>
+                Да, удалить
+              </LoadingButton>
+            </>
+          }
+        />
+      )}
     </LoadingContainer>
   )
 }
