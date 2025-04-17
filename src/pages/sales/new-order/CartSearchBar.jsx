@@ -13,6 +13,7 @@ import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import StyledTooltip from '../../../../components/StyledTooltip'
+import { convertoRuOrEngToEng } from '../../../../utils/convertoRuOrEngToEng'
 import { requests } from '../../../../utils/requests'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
@@ -214,7 +215,7 @@ function CartSearchBar({
 
   const productsListFilter = useMemo(() => {
     return {
-      search: searchTearm.slice(0, 31),
+      search: convertoRuOrEngToEng(searchTearm.slice(0, 31)),
     }
   }, [debouncedSearchTerm])
   const { data: productsList, isFetching: isProductsFetching } = useQuery(
@@ -334,7 +335,7 @@ function CartSearchBar({
                     discount_value: Number(get(discount, 'amount', 0)),
                     sale_id: id,
                     type: 'marking',
-                    barcode: searchTearm.slice(0, 31),
+                    barcode: convertoRuOrEngToEng(searchTearm.slice(0, 31)),
                   })
                 }
               }

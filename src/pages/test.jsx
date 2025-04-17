@@ -12,6 +12,7 @@ import InputPassword from '../../components/Inputs/InputPasswordNew'
 import NumberFormatInput from '../../components/Inputs/OutLineTextFieldThousand'
 import TextField from '../../components/Inputs/TextField'
 import SelectSimple from '../../components/Select/SelectSimple'
+import { convertoRuOrEngToEng } from '../../utils/convertoRuOrEngToEng'
 import { requests } from '../../utils/requests'
 import { error, success } from '../../utils/toast'
 import ArrowRightIcon from '../assets/icons/ArrowRightIcon'
@@ -177,127 +178,17 @@ function Test() {
       console.log('err', err)
     },
   })
-  const ruToEnMap = {
-    ё: '`',
-    1: '1',
-    2: '2',
-    3: '3',
-    4: '4',
-    5: '5',
-    6: '6',
-    7: '7',
-    8: '8',
-    9: '9',
-    0: '0',
-    '-': '-',
-    '=': '=',
-    й: 'q',
-    ц: 'w',
-    у: 'e',
-    к: 'r',
-    е: 't',
-    н: 'y',
-    г: 'u',
-    ш: 'i',
-    щ: 'o',
-    з: 'p',
-    х: '[',
-    ъ: ']',
-    ф: 'a',
-    ы: 's',
-    в: 'd',
-    а: 'f',
-    п: 'g',
-    р: 'h',
-    о: 'j',
-    л: 'k',
-    д: 'l',
-    ж: ';',
-    э: "'",
-    я: 'z',
-    ч: 'x',
-    с: 'c',
-    м: 'v',
-    и: 'b',
-    т: 'n',
-    ь: 'm',
-    б: ',',
-    ю: '.',
-    '.': '/',
-
-    Ё: '~',
-    '!': '!',
-    '"': '@',
-    '№': '#',
-    ';': '$',
-    '%': '%',
-    ':': '^',
-    '?': '&',
-    '*': '*',
-    '(': '(',
-    ')': ')',
-    _: '_',
-    '+': '+',
-
-    Й: 'Q',
-    Ц: 'W',
-    У: 'E',
-    К: 'R',
-    Е: 'T',
-    Н: 'Y',
-    Г: 'U',
-    Ш: 'I',
-    Щ: 'O',
-    З: 'P',
-    Х: '{',
-    Ъ: '}',
-    Ф: 'A',
-    Ы: 'S',
-    В: 'D',
-    А: 'F',
-    П: 'G',
-    Р: 'H',
-    О: 'J',
-    Л: 'K',
-    Д: 'L',
-    Ж: ':',
-    Э: '"',
-    Я: 'Z',
-    Ч: 'X',
-    С: 'C',
-    М: 'V',
-    И: 'B',
-    Т: 'N',
-    Ь: 'M',
-    Б: '<',
-    Ю: '>',
-    ',': '?',
-  }
-
-  // Function to detect if the string contains Cyrillic
-  function containsCyrillic(text) {
-    return /[а-яА-ЯёЁ]/.test(text)
-  }
-
-  function convertIfRu(input) {
-    if (!containsCyrillic(input)) return input
-
-    return input
-      .split('')
-      .map((char) => ruToEnMap[char] || char)
-      .join('')
-  }
 
   // Examples
-  console.log(convertIfRu('руддщ')) // hello
-  console.log(convertIfRu('hello')) // hello
-  console.log(convertIfRu('ghbdtn123')) // ghbdtn123
-  console.log(convertIfRu('зкщы')) // port
+  console.log(convertoRuOrEngToEng('руддщ')) // hello
+  console.log(convertoRuOrEngToEng('hello')) // hello
+  console.log(convertoRuOrEngToEng('ghbdtn123')) // ghbdtn123
+  console.log(convertoRuOrEngToEng('зкщы')) // port
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      alert(convertIfRu(e.target.value))
-      console.log(convertIfRu(e.target.value))
+      alert(convertoRuOrEngToEng(e.target.value))
+      console.log(convertoRuOrEngToEng(e.target.value))
     }
   }
   return (
