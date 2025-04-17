@@ -1,25 +1,19 @@
-import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Drawer, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useQuery } from 'react-query'
+import { useNavigate } from 'react-router-dom'
 import CheckAccess from '../../../../components/CheckAccess'
-import CardDrawer from '../../../../components/Drawers/CardDrawer'
 import DrawerInfoBox from '../../../../components/Drawers/DrawerInfoBox'
 import SectionTitle from '../../../../components/SectionTitle'
 import getImageUrl from '../../../../utils/getImageUrl'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
-import CancelOrderIcon from '../../../assets/icons/CancelOrderIcon'
-import ImagePlaceholder from '../../../assets/icons/ImagePlaceholder'
-import ProductHistory from './ProductHistory'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
-import dayjs from 'dayjs'
+import ProductHistory from './ProductHistory'
 import ProductRemainsHistory from './ProductRemainsHistory'
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import ImageGallery from '../../../../components/ImageGallery'
-import { theme } from '../../../assets/theme'
 
 const Image = ({ data, setImages }) => {
   return (
@@ -146,7 +140,30 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
             { title: 'Категории', info: productData?.data?.data?.categories.map((item) => item.name).join('<br>'), fullWidth: true },
           ]}
         />
+        <CheckAccess id={'can-view-markinglist'}>
+          <Box mb={'80px'}>
+            {productData?.data?.data?.markings?.map((el) => (
+              <Box
+                key={el}
+                sx={{
+                  backgroundColor: 'bg.10',
+                  borderRadius: '10px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: '600',
+                  fontSize: '20px',
+                  mb: '15px',
+                }}
+              >
+                {el}
+              </Box>
+            ))}
+          </Box>
+        </CheckAccess>
       </Box>
+
       <Box
         sx={{
           borderBottomLeftRadius: '24px',

@@ -17,7 +17,7 @@ function App() {
       {import.meta.env.VITE_MODE == 'dev' ? (
         <Box
           sx={{
-            position: 'absolute',
+            position: 'fixed',
             zIndex: 999999,
             width: '100%',
             overflow: 'hidden',
