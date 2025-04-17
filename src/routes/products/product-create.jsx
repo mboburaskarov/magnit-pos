@@ -8,7 +8,8 @@ import InventoryDetailPage from '../../pages/products/inventoryDetails/index'
 import InventoryWithCheckingPage from '../../pages/products/inventoryWithChecking/index'
 import ProductCreatePage from '../../pages/products/product-create'
 import ProductEditPage from '../../pages/products/product-edit'
-import WriteOffScanWithCheckingPage from '../../pages/products/writeOff2WithChecking'
+import WriteOffComplatedPage from '../../pages/products/writeOffComplated'
+import WriteOffScanWithCheckingPage from '../../pages/products/writeOffWithChecking'
 const productsCreateRoutes = {
   path: 'products',
   element: <MainLayout />,
@@ -45,6 +46,15 @@ const productsCreateRoutes = {
         {
           path: '',
           element: <WriteOffScanWithCheckingPage />,
+        },
+      ],
+    },
+    {
+      path: 'complated/:id',
+      children: [
+        {
+          path: '',
+          element: <WriteOffComplatedPage />,
         },
       ],
     },

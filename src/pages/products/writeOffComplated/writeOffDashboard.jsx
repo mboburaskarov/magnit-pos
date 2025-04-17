@@ -3,7 +3,7 @@ import { get } from 'lodash'
 import React from 'react'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DownloadIcon from '../../../assets/icons/DownloadIcon'
-import { writeOffReason } from '../writeOff2/createWriteOff'
+import { writeOffReason } from '../writeOff/createWriteOff'
 
 function WriteOffDashboard({ data }) {
   return (

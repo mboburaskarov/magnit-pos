@@ -11,13 +11,12 @@ import { useNavigate } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import InputDateRangePicker from '../../../../components/Inputs/InputDateRangePicker'
 import InputRange from '../../../../components/Inputs/InputRange'
+import LazySelect from '../../../../components/Select/LazySelect'
 import SelectSimple from '../../../../components/Select/SelectSimple'
-import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
 import { requests } from '../../../../utils/requests'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import LazySelect from '../../../../components/Select/LazySelect'
 
 export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
@@ -42,7 +41,7 @@ export default function FilterMenu({ open, setOpen }) {
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
     setOpen(false)
-    navigate(`/products/import${requestParams}`)
+    navigate(`/products/write-off${requestParams}`)
   }
 
   const onError = (err) => {
@@ -79,7 +78,7 @@ export default function FilterMenu({ open, setOpen }) {
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/products/import?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/products/write-off?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
   return (
@@ -141,9 +140,9 @@ export default function FilterMenu({ open, setOpen }) {
               id='import-date'
               name='date'
               noValidation
-              label={'Дата импорта'}
+              label={'Дата инвентаризация'}
               minWidth='auto'
-              placeholder={'Дата импорта'}
+              placeholder={'Дата инвентаризация'}
               fullWidth
               startDate={startDate}
               endDate={endDate}
