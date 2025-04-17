@@ -1,7 +1,7 @@
-import ChartIcon from '../assets/icons/ChartIcon'
 import MenuOutline from '../assets/icons/MenuOutline'
 import ProductsIcon from '../assets/icons/ProductsIcon'
 import QrScanIcon from '../assets/icons/QrScanIcon'
+import RevenueIcon from '../assets/icons/RevenueIcon'
 import SettingsIcon from '../assets/icons/SettingsIcon'
 import UsersIcon from '../assets/icons/UsersIcon'
 export const navbatRouteData = [
@@ -55,7 +55,6 @@ export const navbatRouteData = [
         active: '/products/write-off/*',
         id: '32',
         href: '/products/write-off',
-        soon: true,
       },
 
       // {
@@ -98,14 +97,21 @@ export const navbatRouteData = [
     icon: <UsersIcon />,
     href: '/clients/all',
   },
+
   {
     label: 'Отчеты',
-    id: '333',
-    icon: <ChartIcon />,
-    href: '/',
-    active: '/se/*',
-
-    soon: true,
+    id: '9999',
+    icon: <RevenueIcon />,
+    href: '/reports',
+    children: [
+      {
+        label: '  Oтчет LFL',
+        active: '/reports/lfl/*',
+        id: '91',
+        soon: true,
+        href: '/reports/lfl',
+      },
+    ],
   },
   {
     label: 'navbar.settings',

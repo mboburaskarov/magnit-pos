@@ -1,5 +1,4 @@
 import makeStyles from '@mui/styles/makeStyles'
-import { borderRadius, maxWidth, width } from '@mui/system'
 
 const drawerWidth = '296px'
 
@@ -192,6 +191,9 @@ export const navbarStyles = makeStyles((theme) => {
       '&:hover .drawer_icon > svg > .stroke-icon': {
         stroke: theme.palette.white,
       },
+      '&:hover .drawer_icon > svg > g > .stroke-icon': {
+        stroke: theme.palette.white,
+      },
       '& .drawer_icon> svg > .stroke-icon': {
         stroke: theme.palette.black,
         strokeWidth: 1.5,
@@ -204,6 +206,9 @@ export const navbarStyles = makeStyles((theme) => {
         fill: theme.palette.white,
       },
       '&.active .drawer_icon > svg > .stroke-icon': {
+        stroke: theme.palette.white,
+      },
+      '&.active .drawer_icon > svg > g > .stroke-icon': {
         stroke: theme.palette.white,
       },
     },

@@ -73,7 +73,7 @@ export default function DashboarPage() {
     return [
       {
         title: t('Общая сумма продаж'),
-        icon: <RevenueIcon />,
+        icon: <RevenueIcon color='#fe5000' />,
         count: total_sale_amount,
         percent: calculatePercentage(before_sale_amount || 1, total_sale_amount),
         id: 'total_sale_amount',
@@ -82,7 +82,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Общая сумма баланса'),
-        icon: <RevenueIcon />,
+        icon: <RevenueIcon color='#fe5000' />,
 
         count: stock_total_amount,
         endText: 'сум',

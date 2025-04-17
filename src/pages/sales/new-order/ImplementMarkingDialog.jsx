@@ -51,8 +51,6 @@ function ImplementMarkingDialog({
     setOpenConfirmDialog(null)
   }
   const checkMarkingBarcode = (e, flatIndex, productBarcode) => {
-    console.log(checkBarcodeWithMarking(productBarcode, e), e, productBarcode)
-
     if (!checkBarcodeWithMarking(productBarcode, e)) {
       inputsRef.current[flatIndex].value = ''
       error('Маркировка и штрих-код не поступили.')

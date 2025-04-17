@@ -71,26 +71,10 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         )),
       }
     }
-    if (el.field === 'supply_price') {
-      return {
-        ...el,
-        headerName: 'Цена продажи',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type={'supply_price'} />),
-      }
-    }
-    if (el.field === 'retail_price') {
-      return {
-        ...el,
-        headerName: 'Цена поставки',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type={'retail_price'} />),
-      }
-    }
     if (el.field === 'stock_count') {
       return {
         ...el,
-        headerName: 'Текущее кол-во',
+        headerName: 'Заявлено',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>

@@ -178,6 +178,9 @@ export const headerStyles = makeStyles((theme) => {
       '&:hover > svg > .stroke-icon': {
         stroke: theme.palette.white,
       },
+      '&:hover > svg > g > .stroke-icon': {
+        stroke: theme.palette.white,
+      },
       '&:hover .drawer_icon > svg > .fill-icon': {
         fill: theme.palette.white,
       },
@@ -196,6 +199,9 @@ export const headerStyles = makeStyles((theme) => {
         fill: theme.palette.white,
       },
       '&.active .drawer_icon > svg > .stroke-icon': {
+        stroke: theme.palette.white,
+      },
+      '&.active .drawer_icon > svg > g > .stroke-icon': {
         stroke: theme.palette.white,
       },
     },

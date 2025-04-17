@@ -4,11 +4,12 @@ import BonusProductPage from '../../pages/products/bonusProduct'
 import CatalogManagement from '../../pages/products/categories/index'
 import ImportDetailsPage from '../../pages/products/importDetails'
 import ImportWithCheckingPage from '../../pages/products/importWithChecking'
+import InventoryCompleted from '../../pages/products/inventoryCompleted'
 import InventoryDetailPage from '../../pages/products/inventoryDetails/index'
 import InventoryWithCheckingPage from '../../pages/products/inventoryWithChecking/index'
 import ProductCreatePage from '../../pages/products/product-create'
 import ProductEditPage from '../../pages/products/product-edit'
-import WriteOffComplatedPage from '../../pages/products/writeOffComplated'
+import WriteOffCompletedPage from '../../pages/products/writeOffComplated/index'
 import WriteOffScanWithCheckingPage from '../../pages/products/writeOffWithChecking'
 const productsCreateRoutes = {
   path: 'products',
@@ -41,6 +42,15 @@ const productsCreateRoutes = {
       ],
     },
     {
+      path: 'inventory-completed/:id',
+      children: [
+        {
+          path: '',
+          element: <InventoryCompleted />,
+        },
+      ],
+    },
+    {
       path: 'write-off-with-checking/:id',
       children: [
         {
@@ -50,11 +60,11 @@ const productsCreateRoutes = {
       ],
     },
     {
-      path: 'complated/:id',
+      path: 'write-off-completed/:id',
       children: [
         {
           path: '',
-          element: <WriteOffComplatedPage />,
+          element: <WriteOffCompletedPage />,
         },
       ],
     },

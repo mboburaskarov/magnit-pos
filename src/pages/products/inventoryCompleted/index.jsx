@@ -12,7 +12,9 @@ import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
+import InputQuantity from '../../../../components/Inputs/InputQuantity'
 import InputSearch from '../../../../components/Inputs/InputSearch'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
@@ -23,12 +25,12 @@ import ArrowDown from '../../../assets/icons/ArrowDown'
 import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/writeOffWithCheckingTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
+import InventoryDashboard from './inventoryDashboard'
 import tableHeaderSelector from './tableHeaderSelector'
-import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function WriteOffCompletedPage() {
+export default function InventoryCompleted() {
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
   const overplusScanAudio = new Audio(overplusAudio)
@@ -36,7 +38,7 @@ export default function WriteOffCompletedPage() {
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.writeOffWithCheckingColumns)
+  const { columns, loading } = useSelector((state) => state.inventoryWithCheckingColumns)
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
@@ -47,10 +49,10 @@ export default function WriteOffCompletedPage() {
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
-  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedWriteOffNumber, {
+  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
       // refetch()
-      refetchgetWriteOffDashBoard()
+      fetchStatusCountList()
       setBarcode('')
     },
     onError: (err) => {
@@ -60,9 +62,9 @@ export default function WriteOffCompletedPage() {
     },
   })
 
-  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.finishWriteOffChecking, {
+  const { mutate: finishInventoryChecking, isLoading: isfinishInventoryChecking } = useMutation(requests.finishInventoryChecking, {
     onSuccess: ({ data }) => {
-      navigate('/products/writeoff')
+      navigate('/products/inventory')
     },
     onError: (err) => {
       error('Ошибка при завершение импорта!')
@@ -76,30 +78,29 @@ export default function WriteOffCompletedPage() {
     id,
     setScanedNumber,
   })
-  const WriteOffWithCheckingDetailsFilter = useMemo(() => {
+  const inventoryWithCheckingDetailsFilter = useMemo(() => {
     return {
-      writeoff_id: id,
+      inventory_id: id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: barcode,
       type: status,
     }
-  }, [id])
+  }, [values?.offset, status, values?.limit, id, barcode])
+
+  // const {
+  //   data: inventoryDetails,
+  //   isLoading: inventoryDetailsLoading,
+  //   isFetching: isFetchinginventoryDetails,
+  //   refetch,
+  // } = useQuery(['inventoryDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
 
   const {
-    data: getWriteOffDashBoard,
-    isLoading: getWriteOffDashBoardLoading,
-    isFetching: isFetchinggetWriteOffDashBoard,
-    refetch: refetchgetWriteOffDashBoard,
-  } = useQuery(['getWriteOffDashBoard', id], () => requests.getWriteOffDashBoard(id))
-
-  const {
-    data: WriteOffWithCheckingDetails,
-    isLoading: WriteOffWithCheckingDetailsLoading,
-    isFetching: isFetchingWriteOffWithCheckingDetails,
+    data: inventoryWithCheckingDetails,
+    isLoading: inventoryWithCheckingDetailsLoading,
+    isFetching: isFetchinginventoryWithCheckingDetails,
     refetch,
-  } = useQuery(['WriteOffWithCheckingDetails', WriteOffWithCheckingDetailsFilter], () => requests.getWriteOffDetails(WriteOffWithCheckingDetailsFilter))
-  console.log(WriteOffWithCheckingDetails)
+  } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
 
   /// filter table columns with permission
   useEffect(() => {
@@ -119,18 +120,18 @@ export default function WriteOffCompletedPage() {
 
   useEffect(() => {
     refetch()
-  }, [WriteOffWithCheckingDetailsFilter])
+  }, [inventoryWithCheckingDetailsFilter])
 
   useEffect(() => {
-    const count = WriteOffWithCheckingDetails?.data?.data?._meta?.total_count
+    const count = inventoryWithCheckingDetails?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
 
-    get(WriteOffWithCheckingDetails, 'data.data.data', []).map((importData) => {
+    get(inventoryWithCheckingDetails, 'data.data.data', []).map((importData) => {
       methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
     })
-  }, [WriteOffWithCheckingDetails?.data, values?.limit])
+  }, [inventoryWithCheckingDetails?.data, values?.limit])
 
   const sendScannedImport = () => {
     if (barcode === '') return
@@ -143,9 +144,9 @@ export default function WriteOffCompletedPage() {
   }
 
   return (
-    <LoadingContainer readyState={!isfinishWriteOffChecking}>
+    <LoadingContainer readyState={!isfinishInventoryChecking}>
       <FormProvider {...methods}>
-        <Header isLoading={false} backIcon noActions backHref='/products/write-off' text={'Списание с проверкой'} checkAccessId={'product-create'} />
+        <Header noActions isLoading={false} backIcon backHref='/products/inventory' text={'Инвентаризация'} checkAccessId={'product-create'} />
 
         <Container>
           <Box
@@ -164,8 +165,35 @@ export default function WriteOffCompletedPage() {
             {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
-          {isOpenStatDashboard && <WriteOffDashboard data={get(getWriteOffDashBoard, 'data.data')} />}
-
+          {isOpenStatDashboard && <InventoryDashboard data={get(inventoryWithCheckingDetails, 'data.data')} />}
+          <Box display={'flex'} minWidth={320}>
+            <InputSwitch
+              uncontrolled
+              id='status'
+              name='status'
+              value={status}
+              defaultValue='ALL'
+              onChange={(e) => setStatus(e)}
+              options={[
+                { title: t('switch.title.all'), value: 'ALL', count: get(inventoryWithCheckingDetails, 'data.data.stats_count.all', 0) },
+                {
+                  title: t('switch.title.scanned_count'),
+                  value: 'scanned',
+                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.scanned', 0),
+                },
+                {
+                  title: t('switch.title.shortage_count'),
+                  value: 'shortage',
+                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.shortage', 0),
+                },
+                {
+                  title: t('switch.title.surplus_count'),
+                  value: 'surplus',
+                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.surplus', 0),
+                },
+              ]}
+            />
+          </Box>
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
               <Box display={'flex'}>
@@ -191,6 +219,11 @@ export default function WriteOffCompletedPage() {
                     placeholder={t('input.search.product.multi')}
                   />
                 </Box>
+                {appType === 'manual' && (
+                  <Box sx={{ ml: '16px' }}>
+                    <InputQuantity placeholder={'0'} uncontrolled defaultValue={1} onChange={({ target }) => setManualNumber(target.value)} />
+                  </Box>
+                )}
               </Box>
               <Box display={'flex'} alignItems={'center'}>
                 <Box>
@@ -210,9 +243,9 @@ export default function WriteOffCompletedPage() {
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
-                data={WriteOffWithCheckingDetails?.data?.data?.data || []}
-                totalCount={WriteOffWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
-                isDataLoading={isFetchingWriteOffWithCheckingDetails || WriteOffWithCheckingDetailsLoading}
+                data={inventoryWithCheckingDetails?.data?.data?.data || []}
+                totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
@@ -224,7 +257,7 @@ export default function WriteOffCompletedPage() {
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
                 status={appType}
-                isRefreshing={loading || hasTableChange || isFetchingWriteOffWithCheckingDetails || WriteOffWithCheckingDetailsLoading}
+                isRefreshing={loading || hasTableChange || isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
@@ -244,14 +277,14 @@ export default function WriteOffCompletedPage() {
         open={openFinishConfirmDialog}
         setOpen={() => setOpenFinishConfirmDialog(false)}
         icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
-        title={t('alerts.finish_writeoff')}
+        title={t('alerts.finish_inventory')}
         desc={
           <>
             <Typography fontWeight={'600'} fontSize={'20px'}>
-              {t('alerts.finish_writeoff_desc')}
+              {t('alerts.finish_inventory_desc')}
             </Typography>
             <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
-              {t('alerts.finish_writeoff_warning')}
+              {t('alerts.finish_inventory_warning')}
             </Typography>
           </>
         }
@@ -265,7 +298,7 @@ export default function WriteOffCompletedPage() {
               variant='contained'
               onClick={() => {
                 setOpenFinishConfirmDialog(false)
-                finishWriteOffChecking(id)
+                finishInventoryChecking(id)
               }}
               isLoading={false}
             >
