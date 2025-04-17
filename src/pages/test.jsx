@@ -187,7 +187,6 @@ function Test() {
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      alert(convertoRuOrEngToEng(e.target.value))
       console.log(convertoRuOrEngToEng(e.target.value))
     }
   }
