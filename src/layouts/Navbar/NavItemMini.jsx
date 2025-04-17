@@ -1,6 +1,6 @@
 import { Box, ListItem } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { NavLink as RouterLink, useNavigate } from 'react-router-dom'
+import { NavLink as RouterLink } from 'react-router-dom'
 
 function NavItemMini({ item, handleClickNavItems, isActive }) {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
@@ -39,10 +39,16 @@ function NavItemMini({ item, handleClickNavItems, isActive }) {
           '&:hover svg > .stroke-icon': {
             stroke: theme.palette.white,
           },
+          '&:hover svg > g > .stroke-icon': {
+            stroke: theme.palette.white,
+          },
           '&:hover svg > .fill-icon': {
             fill: theme.palette.white,
           },
           '& svg > .stroke-icon': {
+            stroke: isActive && theme.palette.white,
+          },
+          '& svg > g > .stroke-icon': {
             stroke: isActive && theme.palette.white,
           },
           '& svg > .fill-icon': {

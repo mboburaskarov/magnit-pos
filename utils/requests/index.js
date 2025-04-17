@@ -10,7 +10,7 @@ export const requests = {
   openZReport: (data) => eposRequest.post(`/uzpos`, data),
   getZReportByDate: (data) => eposRequest.post(`/uzpos`, data),
   sendEPOSresponseToBackend: (data) => request.post(`v1/sale/epos-result`, data),
-
+  checkEPOSTurnOn: (data) => eposRequest.post(`/uzpos`, data),
   //tags
   getAllTags: (filter) => request.get(`v1/tag/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createTag: (data) => request.post(`v1/tag`, data),

@@ -108,11 +108,17 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         colId: el.field,
         cellRenderer: memo((p) => (
           <Link
-            to={`/products/inventory-with-checking/${p.data.id}?${qs.stringify({
-              previusLimit: values?.limit,
-              previusOffset: values?.offset,
-            })}
-        `}
+            to={
+              p.data.status == 'completed'
+                ? `/products/inventory-with-checking/${p.data.id}?${qs.stringify({
+                    previusLimit: values?.limit,
+                    previusOffset: values?.offset,
+                  })}`
+                : `/products/inventory-completed/${p.data.id}?${qs.stringify({
+                    previusLimit: values?.limit,
+                    previusOffset: values?.offset,
+                  })}`
+            }
           >
             <Typography whiteSpace={'pre-wrap'} fontWeight={'600'} color={'orange.500'} fontSize={'16px'} lineHeight={'24px'}>
               {p.data.name}

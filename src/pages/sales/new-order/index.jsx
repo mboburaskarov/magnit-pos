@@ -278,6 +278,8 @@ function NewSale() {
 
   const [showOverlay, setShowOverlay] = useState(false)
   const [hasChange, setHasChange] = useState(false)
+  const [isEposTurnOn, setisEposTurnOn] = useState(true)
+
   const [isOpenDraft, setIsOpenDraft] = useState(false)
   const [isOpenReturnExchange, setIsOpenReturnExchange] = useState(false)
   const [isCreateOpenDraft, setIsCreateOpenDraft] = useState(false)
@@ -512,7 +514,23 @@ function NewSale() {
       console.log('err', err)
     },
   })
+  const { mutate: checkEPOSTurnOn, isLoading: ischeckEPOSTurnOn } = useMutation(requests.checkEPOSTurnOn, {
+    onSuccess: ({ data }) => {
+      if (get(data, 'error', true)) {
+        setisEposTurnOn(false)
+      }
+    },
+    onError: (err) => {
+      setisEposTurnOn(false)
+      error('Программа EPOS отключена. Запустить программу EPOS')
+      console.log('err', err)
+    },
+  })
   useEffect(() => {
+    checkEPOSTurnOn({
+      token: 'DXJFX32CN1296678504F2',
+      method: 'checkStatus',
+    })
     const cartList = cartItemsList?.data?.data?.data
 
     if (cartList?.length > 0) {
@@ -768,154 +786,159 @@ function NewSale() {
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />
-
-      <Box display={'flex'}>
-        <Box width={'calc(100% - 384px)'} position={'relative'} padding={'20px'}>
-          <Box position={'relative'}>
-            <CartSearchBar
-              discount={{ type: discount, amount: inputDiscount }}
-              searchRef={searchRef}
-              openDraft={() => setIsOpenDraft(true)}
-              setIsOpenChangeShift={setIsOpenChangeShift}
-              refetchcartItemsList={refetchcartItemsList}
-              cashBoxDetails={cashBoxDetails}
-              showOverlay={showOverlay}
-              searchResetRef={searchResetRef}
-              addNewMarking={addNewMarking}
-              setShowOverlay={setShowOverlay}
-              shouldWorkEnter={!isOpenRemoveMarkingDialog && !isOpenImplementMarkingDialog}
-              handleAddProduct={handleAddProduct}
-            />
-          </Box>
-          <Box mt={8} />
-          <Box padding={'24px 0'}>
-            <Box
-              sx={{
-                width: '100%',
-                display: 'flex',
-                mb: '16px',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Box display={'flex'} alignItems={'center'}>
-                <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
-                  {t('menu.orders.new_order.heading')}
-                </Typography>
-                {get(cartItemsList, 'data.data.data', 0)?.length ? (
-                  <StyledTooltip title={'Удалить все продукты'}>
-                    <Box
-                      display={'flex'}
-                      sx={{ cursor: 'pointer', ml: '16px', backgroundColor: 'bg.10', p: '6px 19px', borderRadius: '40px' }}
-                      height={'48px'}
-                      alignItems={'center'}
-                      onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}
-                    >
-                      <Typography sx={{ mr: '12px', mt: '3px', fontSize: '22px', fontWeight: '600' }}>
-                        {size(get(cartItemsList, 'data.data.data', 0))}
-                      </Typography>
-                      <DeleteIcon width={'20px'} />
-                    </Box>
-                  </StyledTooltip>
-                ) : (
-                  <></>
-                )}
-              </Box>
-              <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
-                <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
-                  <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
-                    <Typography id='user-username' className={classes.username}>
-                      {get(userData, 'first_name')}
-                    </Typography>
-                    <p id='user-shopname' className={`${classes.bonus_amount} `}>
-                      +{thousandDivider(get(sellerBonusInOneSale, 'data.data.bonus', 0), 'сум')}
-                    </p>
-                  </Box>
-                  <div className={classes.avatarPlaceholder}>
-                    <img src={get(userData, 'photo')} />
-                  </div>
-                </Box>
-              </ListItem>
+      {isEposTurnOn ? (
+        <Box display={'flex'}>
+          <Box width={'calc(100% - 384px)'} position={'relative'} padding={'20px'}>
+            <Box position={'relative'}>
+              <CartSearchBar
+                discount={{ type: discount, amount: inputDiscount }}
+                searchRef={searchRef}
+                openDraft={() => setIsOpenDraft(true)}
+                setIsOpenChangeShift={setIsOpenChangeShift}
+                refetchcartItemsList={refetchcartItemsList}
+                cashBoxDetails={cashBoxDetails}
+                showOverlay={showOverlay}
+                searchResetRef={searchResetRef}
+                addNewMarking={addNewMarking}
+                setShowOverlay={setShowOverlay}
+                shouldWorkEnter={!isOpenRemoveMarkingDialog && !isOpenImplementMarkingDialog}
+                handleAddProduct={handleAddProduct}
+              />
             </Box>
-            <LoadingContainer noHeight readyState={!isCartItemsLIstLoading}>
-              {!size(get(cartItemsList, 'data.data.data')) ? (
-                <Box className={classes.empty_list}>
-                  <Typography fontWeight={'800'} fontSize={'24px'} lineHeight={'32px'}>
-                    {t('page.new_sale.empty_cart_title')}
+            <Box mt={8} />
+            <Box padding={'24px 0'}>
+              <Box
+                sx={{
+                  width: '100%',
+                  display: 'flex',
+                  mb: '16px',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Box display={'flex'} alignItems={'center'}>
+                  <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
+                    {t('menu.orders.new_order.heading')}
                   </Typography>
-                  <Typography fontWeight={'500'} fontSize={'16px'} color={'bunker.500'} lineHeight={'24px'}>
-                    {t('page.new_sale.empty_cart_desc')}
-                  </Typography>
+                  {get(cartItemsList, 'data.data.data', 0)?.length ? (
+                    <StyledTooltip title={'Удалить все продукты'}>
+                      <Box
+                        display={'flex'}
+                        sx={{ cursor: 'pointer', ml: '16px', backgroundColor: 'bg.10', p: '6px 19px', borderRadius: '40px' }}
+                        height={'48px'}
+                        alignItems={'center'}
+                        onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}
+                      >
+                        <Typography sx={{ mr: '12px', mt: '3px', fontSize: '22px', fontWeight: '600' }}>
+                          {size(get(cartItemsList, 'data.data.data', 0))}
+                        </Typography>
+                        <DeleteIcon width={'20px'} />
+                      </Box>
+                    </StyledTooltip>
+                  ) : (
+                    <></>
+                  )}
                 </Box>
-              ) : (
-                <Box
-                  sx={{
-                    overflowY: 'auto',
-                    maxHeight: '75vh',
-                    paddingBottom: '80px',
-                    '&::-webkit-scrollbar': {
-                      display: 'none',
-                    },
-                  }}
-                >
-                  {get(cartItemsList, 'data.data.data', []).map((el, index) => (
-                    <CartItem
-                      implementMarkingList={implementMarkingList}
-                      markingsList={markingsList}
-                      removeMarking={removeMarking}
-                      setMarkingList={setMarkingList}
-                      setOpenProductDrawer={setOpenProductDrawer}
-                      // onKeyDown={(e) => handleTabSwitch(e, el?.id)}
-                      refetchcartItemsList={refetchcartItemsList}
-                      method={method}
-                      setOpenConfirmDialog={setOpenConfirmDialog}
-                      item={el}
-                      packRef={(els) => (cartItemRef.current[index] = els)}
-                      unitRef={(els) => (cartItemRef.current[el.id + 'unit'] = els)}
-                      key={el?.id}
-                      index={el?.id}
-                    />
-                  ))}
-                </Box>
-              )}
-            </LoadingContainer>
+                <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
+                  <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
+                    <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
+                      <Typography id='user-username' className={classes.username}>
+                        {get(userData, 'first_name')}
+                      </Typography>
+                      <p id='user-shopname' className={`${classes.bonus_amount} `}>
+                        +{thousandDivider(get(sellerBonusInOneSale, 'data.data.bonus', 0), 'сум')}
+                      </p>
+                    </Box>
+                    <div className={classes.avatarPlaceholder}>
+                      <img src={get(userData, 'photo')} />
+                    </div>
+                  </Box>
+                </ListItem>
+              </Box>
+              <LoadingContainer noHeight readyState={!isCartItemsLIstLoading}>
+                {!size(get(cartItemsList, 'data.data.data')) ? (
+                  <Box className={classes.empty_list}>
+                    <Typography fontWeight={'800'} fontSize={'24px'} lineHeight={'32px'}>
+                      {t('page.new_sale.empty_cart_title')}
+                    </Typography>
+                    <Typography fontWeight={'500'} fontSize={'16px'} color={'bunker.500'} lineHeight={'24px'}>
+                      {t('page.new_sale.empty_cart_desc')}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Box
+                    sx={{
+                      overflowY: 'auto',
+                      maxHeight: '75vh',
+                      paddingBottom: '80px',
+                      '&::-webkit-scrollbar': {
+                        display: 'none',
+                      },
+                    }}
+                  >
+                    {get(cartItemsList, 'data.data.data', []).map((el, index) => (
+                      <CartItem
+                        implementMarkingList={implementMarkingList}
+                        markingsList={markingsList}
+                        removeMarking={removeMarking}
+                        setMarkingList={setMarkingList}
+                        setOpenProductDrawer={setOpenProductDrawer}
+                        // onKeyDown={(e) => handleTabSwitch(e, el?.id)}
+                        refetchcartItemsList={refetchcartItemsList}
+                        method={method}
+                        setOpenConfirmDialog={setOpenConfirmDialog}
+                        item={el}
+                        packRef={(els) => (cartItemRef.current[index] = els)}
+                        unitRef={(els) => (cartItemRef.current[el.id + 'unit'] = els)}
+                        key={el?.id}
+                        index={el?.id}
+                      />
+                    ))}
+                  </Box>
+                )}
+              </LoadingContainer>
+            </Box>
+            <ShortcutsDrawer />
           </Box>
-          <ShortcutsDrawer />
-        </Box>
 
-        <CartDetailSide
-          cashBoxDetails={cashBoxDetails}
-          saleCreate={saleCreate}
-          userData={userData}
-          hasChange={hasChange}
-          markingsList={markingsList}
-          liteOrder={liteOrder}
-          setLiteOrder={setLiteOrder}
-          printContainer={printContainer}
-          classes={classes}
-          setHasChange={setHasChange}
-          setIsOpenReturnExchange={setIsOpenReturnExchange}
-          setOpenClientCreateMini={setOpenClientCreateMini}
-          customerId={customerId}
-          setCustomerId={setCustomerId}
-          setSearchTerm={setSearchTerm}
-          searchTerm={searchTerm}
-          customers={customers}
-          setQuickCreateClientName={setQuickCreateClientName}
-          // fakeIndexForCheckClient={fakeIndexForCheckClient}
-          changeDiscountDebounce={changeDiscountDebounce}
-          inputDiscount={inputDiscount}
-          isAllMarkingFill={isAllMarkingFill}
-          setIsOrderDrower={setIsOrderDrower}
-          setIsOpenImplementMarkingDialog={setIsOpenImplementMarkingDialog}
-          setDiscountType={setDiscountType}
-          setIsCreateOpenDraft={setIsCreateOpenDraft}
-          discount={discount}
-          cartItemsList={cartItemsList}
-          setInputDiscount={setInputDiscount}
-          setIsOpenDraft={setIsOpenDraft}
-        />
-      </Box>
+          <CartDetailSide
+            cashBoxDetails={cashBoxDetails}
+            saleCreate={saleCreate}
+            userData={userData}
+            hasChange={hasChange}
+            markingsList={markingsList}
+            liteOrder={liteOrder}
+            setLiteOrder={setLiteOrder}
+            printContainer={printContainer}
+            classes={classes}
+            setHasChange={setHasChange}
+            setIsOpenReturnExchange={setIsOpenReturnExchange}
+            setOpenClientCreateMini={setOpenClientCreateMini}
+            customerId={customerId}
+            setCustomerId={setCustomerId}
+            setSearchTerm={setSearchTerm}
+            searchTerm={searchTerm}
+            customers={customers}
+            setQuickCreateClientName={setQuickCreateClientName}
+            // fakeIndexForCheckClient={fakeIndexForCheckClient}
+            changeDiscountDebounce={changeDiscountDebounce}
+            inputDiscount={inputDiscount}
+            isAllMarkingFill={isAllMarkingFill}
+            setIsOrderDrower={setIsOrderDrower}
+            setIsOpenImplementMarkingDialog={setIsOpenImplementMarkingDialog}
+            setDiscountType={setDiscountType}
+            setIsCreateOpenDraft={setIsCreateOpenDraft}
+            discount={discount}
+            cartItemsList={cartItemsList}
+            setInputDiscount={setInputDiscount}
+            setIsOpenDraft={setIsOpenDraft}
+          />
+        </Box>
+      ) : (
+        <Box display={'flex'} alignItems={'center'} color={'red.500'} fontSize={'20px'} fontWeight={'700'} justifyContent={'center'} height={'100vh'}>
+          Программа EPOS отключена. Запустить программу EPOS{' '}
+        </Box>
+      )}
 
       {openConfirmDialog && (
         <ConfirmDialog

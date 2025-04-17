@@ -13,5 +13,8 @@ function trimLeadingZeros(input) {
 export function checkBarcodeWithMarking(barcode, marking) {
   const markingBarcode = extractNumbers(marking)
   const cleanBarcode = trimLeadingZeros(barcode)
+  console.log('markingBarcode ->>>>>>>>>', markingBarcode)
+  console.log('cleanBarcode ->>>>>>>>>', cleanBarcode)
+
   return markingBarcode === cleanBarcode
 }
