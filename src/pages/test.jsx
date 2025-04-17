@@ -297,6 +297,7 @@ function Test() {
     if (e.key === 'Enter') {
       e.preventDefault()
       alert(convertIfRu(e.target.value))
+      console.log(convertIfRu(e.target.value))
     }
   }
   return (
