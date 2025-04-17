@@ -4,10 +4,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import TextField from '../../../../components/Inputs/TextField'
-import extractNumbers from '../../../../utils/extractBarcodeFromMarking'
+import { checkBarcodeWithMarking } from '../../../../utils/checkingMarkingWithBarcode'
 import { error } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-
 function ImplementMarkingDialog({
   open,
   setIsOrderDrower,
@@ -52,8 +51,9 @@ function ImplementMarkingDialog({
     setOpenConfirmDialog(null)
   }
   const checkMarkingBarcode = (e, flatIndex, productBarcode) => {
-    const markingBarcode = extractNumbers(e)
-    if (markingBarcode != productBarcode) {
+    console.log(checkBarcodeWithMarking(productBarcode, e), e, productBarcode)
+
+    if (!checkBarcodeWithMarking(productBarcode, e)) {
       inputsRef.current[flatIndex].value = ''
       error('Маркировка и штрих-код не поступили.')
       return false

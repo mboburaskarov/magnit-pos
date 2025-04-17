@@ -138,6 +138,7 @@ export default function CreateWriteOff({ open, refetch, setOpen }) {
                 alignItems: 'center',
               }}
             >
+              {}{' '}
               <Box mr={'10px'}>
                 <svg
                   aria-hidden='true'
