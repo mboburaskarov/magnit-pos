@@ -10,7 +10,9 @@ import { useReactToPrint } from 'react-to-print'
 import RippedPaperZReportCheck from '../../components/ChequePaper/ZReportCheck'
 import InputPassword from '../../components/Inputs/InputPasswordNew'
 import NumberFormatInput from '../../components/Inputs/OutLineTextFieldThousand'
+import TextField from '../../components/Inputs/TextField'
 import SelectSimple from '../../components/Select/SelectSimple'
+import { convertoRuOrEngToEng } from '../../utils/convertoRuOrEngToEng'
 import { requests } from '../../utils/requests'
 import { error, success } from '../../utils/toast'
 import ArrowRightIcon from '../assets/icons/ArrowRightIcon'
@@ -176,6 +178,18 @@ function Test() {
       console.log('err', err)
     },
   })
+
+  // Examples
+  console.log(convertoRuOrEngToEng('руддщ')) // hello
+  console.log(convertoRuOrEngToEng('hello')) // hello
+  console.log(convertoRuOrEngToEng('ghbdtn123')) // ghbdtn123
+  console.log(convertoRuOrEngToEng('зкщы')) // port
+  const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      console.log(convertoRuOrEngToEng(e.target.value))
+    }
+  }
   return (
     <Box>
       <Box sx={{ maxWidth: '400px', margin: 'auto', marginTop: '20px' }}>
@@ -183,7 +197,7 @@ function Test() {
           id='password'
           onKeyDown={(e) => {
             if (e.key == 'Enter') {
-              if (e.target.value == 'parol') {
+              if (e.target.value == 'prol123') {
                 setHasAccess(true)
               }
             }
@@ -199,6 +213,22 @@ function Test() {
       </Box>
       {hasAccess && (
         <Box>
+          <TextField
+            uncontrolled
+            setValue={
+              (e) => {}
+
+              //  checkMarkingBarcode(e, flatIndex, item.barcode) &&
+            }
+            onKeyDown={(e) => handleKeyDown(e)}
+            fullWidth
+            borderRadius={'40px'}
+            name={`edfd`}
+            id={`edfd`}
+            label={'marking'}
+            placeholder={'marking.placeholder'}
+            sx={{ mb: 0 }}
+          />
           <FormProvider {...methods}>
             <Box className={classes.box}>
               <Box className={classes.wrapper}>
@@ -264,12 +294,17 @@ function Test() {
                   //   token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
                   //   method: 'closeZreport', // Название метода, Обязательное поле, String
                   // }
-
                   {
                     token: 'DXJFX32CN1296678504F2',
-                    method: 'getReceiptInfo',
-                    number: 628,
+                    method: 'validationMarking',
+                    marking: '010482300080729721ФЗФР8ИПЫЯЧ4Ы891ГЯА092и0ТЧКЬ7ЧУ5КягАчИВГМ2гИщЧд5УДЯлКев7цфезчвОГШ=',
                   }
+
+                  // {
+                  //   token: 'DXJFX32CN1296678504F2',
+                  //   method: 'getReceiptInfo',
+                  //   number: 628,
+                  // }
                   // {
                   //   token: 'DXJFX32CN1296678504F2',
                   //   method: 'getReceiptsInfoByDate',
