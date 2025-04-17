@@ -10,6 +10,7 @@ import { useReactToPrint } from 'react-to-print'
 import RippedPaperZReportCheck from '../../components/ChequePaper/ZReportCheck'
 import InputPassword from '../../components/Inputs/InputPasswordNew'
 import NumberFormatInput from '../../components/Inputs/OutLineTextFieldThousand'
+import TextField from '../../components/Inputs/TextField'
 import SelectSimple from '../../components/Select/SelectSimple'
 import { requests } from '../../utils/requests'
 import { error, success } from '../../utils/toast'
@@ -176,6 +177,128 @@ function Test() {
       console.log('err', err)
     },
   })
+  const ruToEnMap = {
+    ё: '`',
+    1: '1',
+    2: '2',
+    3: '3',
+    4: '4',
+    5: '5',
+    6: '6',
+    7: '7',
+    8: '8',
+    9: '9',
+    0: '0',
+    '-': '-',
+    '=': '=',
+    й: 'q',
+    ц: 'w',
+    у: 'e',
+    к: 'r',
+    е: 't',
+    н: 'y',
+    г: 'u',
+    ш: 'i',
+    щ: 'o',
+    з: 'p',
+    х: '[',
+    ъ: ']',
+    ф: 'a',
+    ы: 's',
+    в: 'd',
+    а: 'f',
+    п: 'g',
+    р: 'h',
+    о: 'j',
+    л: 'k',
+    д: 'l',
+    ж: ';',
+    э: "'",
+    я: 'z',
+    ч: 'x',
+    с: 'c',
+    м: 'v',
+    и: 'b',
+    т: 'n',
+    ь: 'm',
+    б: ',',
+    ю: '.',
+    '.': '/',
+
+    Ё: '~',
+    '!': '!',
+    '"': '@',
+    '№': '#',
+    ';': '$',
+    '%': '%',
+    ':': '^',
+    '?': '&',
+    '*': '*',
+    '(': '(',
+    ')': ')',
+    _: '_',
+    '+': '+',
+
+    Й: 'Q',
+    Ц: 'W',
+    У: 'E',
+    К: 'R',
+    Е: 'T',
+    Н: 'Y',
+    Г: 'U',
+    Ш: 'I',
+    Щ: 'O',
+    З: 'P',
+    Х: '{',
+    Ъ: '}',
+    Ф: 'A',
+    Ы: 'S',
+    В: 'D',
+    А: 'F',
+    П: 'G',
+    Р: 'H',
+    О: 'J',
+    Л: 'K',
+    Д: 'L',
+    Ж: ':',
+    Э: '"',
+    Я: 'Z',
+    Ч: 'X',
+    С: 'C',
+    М: 'V',
+    И: 'B',
+    Т: 'N',
+    Ь: 'M',
+    Б: '<',
+    Ю: '>',
+    ',': '?',
+  }
+
+  // Function to detect if the string contains Cyrillic
+  function containsCyrillic(text) {
+    return /[а-яА-ЯёЁ]/.test(text)
+  }
+
+  function convertIfRu(input) {
+    if (!containsCyrillic(input)) return input
+
+    return input
+      .split('')
+      .map((char) => ruToEnMap[char] || char)
+      .join('')
+  }
+
+  // Examples
+  console.log(convertIfRu('руддщ')) // hello
+  console.log(convertIfRu('hello')) // hello
+  console.log(convertIfRu('ghbdtn123')) // ghbdtn123
+  console.log(convertIfRu('зкщы')) // port
+  const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      alert(convertIfRu(e.target.value))
+    }
+  }
   return (
     <Box>
       <Box sx={{ maxWidth: '400px', margin: 'auto', marginTop: '20px' }}>
@@ -183,7 +306,7 @@ function Test() {
           id='password'
           onKeyDown={(e) => {
             if (e.key == 'Enter') {
-              if (e.target.value == 'parol') {
+              if (e.target.value == 'prol123') {
                 setHasAccess(true)
               }
             }
@@ -199,6 +322,22 @@ function Test() {
       </Box>
       {hasAccess && (
         <Box>
+          <TextField
+            uncontrolled
+            setValue={
+              (e) => {}
+
+              //  checkMarkingBarcode(e, flatIndex, item.barcode) &&
+            }
+            onKeyDown={(e) => handleKeyDown(e)}
+            fullWidth
+            borderRadius={'40px'}
+            name={`edfd`}
+            id={`edfd`}
+            label={'marking'}
+            placeholder={'marking.placeholder'}
+            sx={{ mb: 0 }}
+          />
           <FormProvider {...methods}>
             <Box className={classes.box}>
               <Box className={classes.wrapper}>
@@ -264,12 +403,17 @@ function Test() {
                   //   token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
                   //   method: 'closeZreport', // Название метода, Обязательное поле, String
                   // }
-
                   {
                     token: 'DXJFX32CN1296678504F2',
-                    method: 'getReceiptInfo',
-                    number: 628,
+                    method: 'validationMarking',
+                    marking: '010482300080729721ФЗФР8ИПЫЯЧ4Ы891ГЯА092и0ТЧКЬ7ЧУ5КягАчИВГМ2гИщЧд5УДЯлКев7цфезчвОГШ=',
                   }
+
+                  // {
+                  //   token: 'DXJFX32CN1296678504F2',
+                  //   method: 'getReceiptInfo',
+                  //   number: 628,
+                  // }
                   // {
                   //   token: 'DXJFX32CN1296678504F2',
                   //   method: 'getReceiptsInfoByDate',
