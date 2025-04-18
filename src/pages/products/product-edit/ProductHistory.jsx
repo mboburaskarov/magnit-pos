@@ -3,14 +3,11 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
+import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import { requests } from '../../../../utils/requests'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { Link, useNavigate } from 'react-router-dom'
-import { faArrowCircleDown, faArrowCircleUp, faCheckCircle, faCircleDown } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import palette from '../../../../src/assets/theme/mui.config'
 import thousandDivider from '../../../../utils/thousandDivider'
+import { useQueryParams } from '../../../hooks/useQueryParams'
 
 export default function ProductHistory({ id }) {
   const { values } = useQueryParams()
@@ -28,7 +25,7 @@ export default function ProductHistory({ id }) {
     isLoading: isproductDataLoadingHistory,
     isFetching: isFetchingproductDataHistory,
     refetch,
-  } = useQuery(['productDataHistory', productHistoryFilter], () => requests.getSingleProductHistory(productHistoryFilter, id))
+  } = useQuery(['productDataHistory', productHistoryFilter], () => requests.getSingleProductMovement(productHistoryFilter, id))
 
   useEffect(() => {
     const count = productDataHistory?.data?.data?._meta?.total_count
@@ -52,7 +49,7 @@ export default function ProductHistory({ id }) {
         width: 185,
         cellRenderer: ({ data, rowIndex }) => (
           <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(data?.import.created_at).format('DD.MM.YYYY HH:mm')}</Typography>
+            <Typography>{dayjs(data?.created_at).format('DD.MM.YYYY HH:mm')}</Typography>
           </Box>
         ),
       },
@@ -64,8 +61,14 @@ export default function ProductHistory({ id }) {
         width: 250,
         cellRenderer: ({ data, rowIndex }) => (
           <Typography color={'orange.500'} onClick={() => navigate(`/products/imports/${get(data, 'import.id')}?tab=details`)}>
-            {get(data, 'import.status') == 'writeoff' ? 'Списание/' : 'Импорт/'}
-            {get(data, 'import.document_number')}
+            {get(data, 'entry_type') == '3'
+              ? 'Списание '
+              : get(data, 'entry_type') == '1'
+              ? 'Импорт '
+              : get(data, 'entry_type') == '2'
+              ? 'Инвентаризация '
+              : 'Продажa '}
+            #{get(data, 'public_id')}
           </Typography>
         ),
       },
@@ -78,16 +81,8 @@ export default function ProductHistory({ id }) {
         cellRenderer: ({ data, rowIndex }) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(data?.received_count)}
-              </Typography>
-            </Box>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
-
-              <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(data?.accepted_count)}
+                {thousandDivider(data?.count).replace('.', ',')}
               </Typography>
             </Box>
           </>
@@ -103,15 +98,8 @@ export default function ProductHistory({ id }) {
         cellRenderer: ({ data, rowIndex }) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
               <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(data?.received_amount, 'сум')}
-              </Typography>
-            </Box>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
-              <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(data?.accepted_amount, 'сум')}
+                {thousandDivider(data?.sum, 'сум')}
               </Typography>
             </Box>
           </>
@@ -122,9 +110,9 @@ export default function ProductHistory({ id }) {
         headerName: 'Магазин',
         colId: 'store',
         minWidth: 185,
-        maxWidth: 185,
-        width: 185,
-        cellRenderer: ({ data, rowIndex }) => <Typography>{get(data, 'import.store.name')}</Typography>,
+        maxWidth: 285,
+        width: 285,
+        cellRenderer: ({ data, rowIndex }) => <Typography>{get(data, 'store_name')}</Typography>,
       },
     ],
     []

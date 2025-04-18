@@ -111,10 +111,8 @@ export default function tableHeaderSelector({
         headerName: t('table_columns.category'),
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.data.categories[0]?.name}-${p.rowIndex}`}>
-            {get(p, 'data.categories', [])
-              .map((e) => `${e.name}`)
-              .join(',')}
+          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.data.category_name}-${p.rowIndex}`}>
+            {get(p, 'data.category_name', '')}
           </Typography>
         )),
       }
@@ -261,7 +259,9 @@ export default function tableHeaderSelector({
         colId: el.field,
         cellRenderer: memo((p) => (
           <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-            {thousandDivider(p?.data?.quantity)} {p?.data?.unit_name}
+            {p?.data?.unit_per_pack > 0 && p?.data?.unit_quantity > 0
+              ? `${p.data.quantity} (${p.data.unit_quantity}/${p.data.unit_per_pack})`
+              : `${thousandDivider(p?.data?.quantity)} ${p?.data?.short_name}`}
           </Typography>
         )),
         // <SimpleText withDevider {...p} type='quantity' />),

@@ -1,76 +1,27 @@
-import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
+import { Box, Typography } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import ImageGallery from '../../../../components/ImageGallery'
-import InputSearch from '../../../../components/Inputs/InputSearch'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
-import SoonPage from '../../../../components/soon'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import BigTickIcon from '../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
+import { error } from '../../../../utils/toast'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/clientTableColumns'
-import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ReportLfl() {
-  return <SoonPage />
-  const theme = useTheme()
-  const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { columns, loading } = useSelector((state) => state.clientTableColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
-  const [selectClients, setselectClients] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
-  const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [rejectComment, setRejectComment] = useState(null)
-  const [filterMenu, setFilterMenu] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
-  const selectClientsFunc = (isChecked, id) => {
-    if (isChecked) {
-      setselectClients((p) => [...p, id])
-    } else {
-      setselectClients((p) => p.filter((ids) => ids !== id))
-    }
-  }
-  const tableColumns = tableHeaderSelector({
-    clientsColumns: columns,
-    t,
-    values,
-    setImages: setOpenImageGallery,
-    setOpenConfirmDialog,
-    selectClientsFunc,
-  })
+  const [appType, setAppType] = useState('ALL')
 
-  useEffect(() => {
-    if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+  const [columnGroups, setColumnGroups] = useState([
+    { id: 'december', name: 'Декабрь' },
+    { id: 'january', name: 'Январь' },
+  ])
 
-      dispatch(changeColumnSequence(formattedData))
-    }
-  }, [])
-
-  const clientsListFilter = useMemo(() => {
+  const ReportLFLFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
@@ -78,37 +29,23 @@ export default function ReportLfl() {
       store_id: values?.store_id,
     }
   }, [values?.offset, values?.limit, values?.search, values?.store_id])
-  const {
-    data: clientsList,
-    isLoading: clientsListLoading,
-    isFetching: isFetchingclientsList,
-    refetch,
-  } = useQuery(['clientsList', clientsListFilter], () => requests.getAllCustomers(clientsListFilter))
 
-  const { mutate: deleteClient, isLoading: isDeletingProduct } = useMutation(requests.deleteClient, {
-    onSuccess: () => {
-      refetch()
-      success('Kлиент успешно удален!')
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении клиент!')
-      setOpenConfirmDialog(null)
-      console.log('err', err)
-    },
-  })
+  const {
+    data: ReportLFL,
+    isLoading: ReportLFLLoading,
+    isFetching: isFetchingReportLFL,
+    refetch,
+  } = useQuery(['ReportLFL', ReportLFLFilter], () => requests.getAllCustomers(ReportLFLFilter))
 
   useEffect(() => {
     refetch()
-  }, [clientsListFilter])
+  }, [ReportLFLFilter])
 
   useEffect(() => {
-    const count = clientsList?.data?.data?._meta?.total_count
-    setselectClients([])
+    const count = ReportLFL?.data?.data?._meta?.total_count
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [clientsList?.data, values?.limit])
+  }, [ReportLFL?.data, values?.limit])
   const { mutate: clientsExcelReport, isLoading: isclientsExcelReport } = useMutation(requests.getClientsExcelReport, {
     onSuccess: ({ data }) => {
       downloadExcel(data, 'Клиенти')
@@ -119,149 +56,173 @@ export default function ReportLfl() {
       error('Ошибка при скачать excel!')
     },
   })
+
+  const mockApiData = {
+    december: [
+      {
+        id: 1,
+        date: '05.12.24, Чт',
+        pharmacy_count: '52 шт',
+        priceform: '892 345 432 sum',
+        medicine: '892 345 432 sum',
+        total_sales: '9 892 345 432 sum',
+        rowId: '1',
+      },
+      {
+        id: 2,
+
+        date: '06.12.24, Пт',
+        pharmacy_count: '48 шт',
+        priceform: '792 345 432 sum',
+        medicine: '792 345 432 sum',
+        total_sales: '8 792 345 432 sum',
+        rowId: '2',
+      },
+    ],
+    january: [
+      {
+        date: '05.01.25, Сб',
+        id: 4,
+        pharmacy_count: '52',
+        priceform: '892 345 432 sum',
+        medicine: '892 345 432 sum',
+        total_sales: '9 892 345 432 sum',
+        rowId: '1',
+      },
+      {
+        date: '06.01.25, Вс',
+        id: 5,
+        pharmacy_count: '50',
+        priceform: '872 345 432 sum',
+        medicine: '872 345 432 sum',
+        total_sales: '9 872 345 432 sum',
+        rowId: '2',
+      },
+    ],
+  }
+  const baseColumnDefinition = [
+    { headerName: 'Дата', field: 'date', minWidth: 120, width: 80, flex: 1 },
+    { headerName: 'Кол-во аптек', field: 'pharmacy_count', minWidth: 150, width: 100 },
+    { headerName: 'Парафарма', field: 'priceform', minWidth: 170, width: 120 },
+    { headerName: 'Лекарство', field: 'medicine', minWidth: 170, width: 120 },
+    { headerName: 'Общая продажа', field: 'total_sales', minWidth: 200, width: 120 },
+  ]
+
+  const dynamicColumnDefs = useMemo(() => {
+    return columnGroups.map((group) => {
+      const groupColumns = baseColumnDefinition.map((baseCol, index) => {
+        const isLastColumn = index === baseColumnDefinition.length - 1
+
+        return {
+          ...baseCol,
+          field: `${group.id}_${baseCol.field}`,
+          colId: `${group.id}_${baseCol.field}`,
+          cellClass: isLastColumn ? 'last-grouped-child' : '',
+          headerClass: isLastColumn ? 'last-grouped-child' : '',
+          cellRenderer: (params) => {
+            const fieldValue = params.data?.[params.colDef.field]
+            return <Typography>{fieldValue !== undefined ? fieldValue : '-'}</Typography>
+          },
+        }
+      })
+      return {
+        headerName: group.name,
+        children: groupColumns,
+      }
+    })
+  }, [columnGroups, baseColumnDefinition])
+  let ind = 0
+  const transformDataForGrid = (apiData) => {
+    const rows = []
+    const rowIds = new Set()
+    columnGroups.forEach((group) => {
+      const groupData = apiData[group.id] || []
+      groupData.forEach((item) => rowIds.add(item.rowId))
+    })
+    Array.from(rowIds).forEach((rowId) => {
+      const rowData = {}
+
+      columnGroups.forEach((group) => {
+        const groupData = apiData[group.id] || []
+        const rowItem = groupData.find((item) => item.rowId === rowId) || {}
+        baseColumnDefinition.forEach((col, index) => {
+          const value = rowItem[col.field]
+          rowData[`${group.id}_${col.field}`] = value !== undefined ? value : '-'
+          rowData[`id`] = ind
+          ind++
+        })
+      })
+
+      rows.push(rowData)
+    })
+
+    return rows
+  }
+
+  const tableData = useMemo(() => transformDataForGrid(mockApiData), [mockApiData, columnGroups])
+
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {t('clients')}
+          {t('Oтчет LFL ')}
         </Typography>
-
-        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-          <Box display={'flex'}>
-            <Box
-              width='100%'
-              sx={{
-                '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                  background: 'transparent',
-                  width: '400px',
-                  height: 48,
-                },
-              }}
-            >
-              <InputSearch id='producrs-search' name='search' placeholder={'ID, Имя, Телефон'} uncontrolled />
-            </Box>
-
-            <Box minWidth={113} ml={'16px'}>
-              <Button
-                sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
-                  },
-                }}
-                fullWidth
-                startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
-              >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
-            </Box>
-            {selectClients.length > 0 && (
-              <>
-                <Box minWidth={48} ml={'16px'}>
-                  <Button
-                    sx={{
-                      height: '48px',
-                      padding: 0,
-                      bgcolor: '#fff',
-                      border: '1px solid #ECEDF2',
-                      color: 'dark.500',
-                      fontWeight: '500',
-                      fontSize: '16px',
-                      lineHeight: '24px',
-                      '& span': {
-                        mr: '12px',
-                      },
-                    }}
-                    fullWidth
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => deleteClient({ data: selectClients })}
-                  >
-                    <DeleteIcon width='24px' />
-                  </Button>
-                </Box>
-              </>
-            )}
-          </Box>
-          <Box display={'flex'} alignItems={'center'}>
-            <Box>
-              <ColumnsFilterButtonForAll
-                title={t('ag_grid.table_setting.label')}
-                columns={tableColumns}
-                isCatalog={false}
-                changeColumnSequence={changeColumnSequence}
-                resetTableHeader={resetTableHeader}
-              />
-            </Box>
-          </Box>
+        <Box
+          minWidth={320}
+          mb={'16px'}
+          sx={{
+            display: 'flex',
+            width: '100%',
+            '& .slider': {
+              width: '100%',
+            },
+            '& .slider_box': {
+              width: '100%',
+            },
+            '& .slider_box_wrapper': {
+              width: '100%',
+            },
+          }}
+        >
+          <InputSwitch
+            uncontrolled
+            id='app-type'
+            style={{ width: '100%' }}
+            name='app-type'
+            value={appType}
+            defaultValue='ALL'
+            onChange={(e) => setAppType(e)}
+            options={[
+              { title: t('Таблица'), value: 'ALL' },
+              { title: t('График'), value: 'active', soon: true },
+            ]}
+          />
         </Box>
-        {/* <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} /> */}
         <Box>
           <AgGridTable
-            id='clients-main-table'
+            id='group-table'
+            className=''
             tableSettings
-            fullDownload={() => clientsExcelReport({ ...clientsListFilter, limit: 1000000 })}
-            downloadByFilter={() => clientsExcelReport(clientsListFilter)}
+            groupHeaderHeight={50}
+            headerHeight={40}
+            fullDownload={() => clientsExcelReport({ ...ReportLFLFilter, limit: 1000000 })}
+            downloadByFilter={() => clientsExcelReport(ReportLFLFilter)}
             isDownloading={isclientsExcelReport}
-            columns={tableColumns}
-            totalCount={clientsList?.data?.data?._meta?.total_count || 0}
-            data={clientsList?.data?.data?.data || []}
-            isDataLoading={isFetchingclientsList || clientsListLoading}
+            columns={dynamicColumnDefs}
+            // totalCount={ReportLFL?.data?.data?._meta?.total_count || 0}
+            // data={ReportLFL?.data?.data?.data || []}
+            data={tableData}
+            isDataLoading={isFetchingReportLFL || ReportLFLLoading}
             offsetCount={offsetCount}
             emptyTableText={{
               title: 'Клиент не существует',
               description: 'Если вы не нашли искомого Клиента, нажмите кнопку «Добавить нового» и введите необходимую информацию.',
             }}
-            updaterAction={(newData) => {
-              if (newData) dispatch(updateTableHeader(newData))
-            }}
             fullInfoAboutCurrentPage
-            resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingclientsList || clientsListLoading}
+            isRefreshing={isFetchingReportLFL || ReportLFLLoading}
           />
         </Box>
       </Box>
-
-      <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
-      {openConfirmDialog && (
-        <ConfirmDialog
-          open={!!openConfirmDialog}
-          setOpen={setOpenConfirmDialog}
-          icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={'Удалить клиента?'}
-          desc={'Хотите ли вы удалить клиента?'}
-          supDesc={'“Azitromitsin 250 mg”'}
-          actions={
-            <>
-              <Button
-                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
-                fullWidth
-                color='secondary'
-                variant='contained'
-                onClick={() => setOpenConfirmDialog(null)}
-              >
-                Нет
-              </Button>
-              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteClient({ data: [openConfirmDialog.id] })}>
-                Да, удалить
-              </LoadingButton>
-            </>
-          }
-        />
-      )}
     </LoadingContainer>
   )
 }

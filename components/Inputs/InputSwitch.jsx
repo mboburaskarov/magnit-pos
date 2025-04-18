@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
-import SwitchSlider from './SwitchSlider'
 import Label from '../Label'
+import SwitchSlider from './SwitchSlider'
 
 const InputSwitch = ({ name, label, noLabel, options = [], required = false, uncontrolled, noMarginTop, defaultValue, onChange, style, disabled, id }) => {
   const methods = useFormContext()

@@ -105,11 +105,18 @@ export const navbatRouteData = [
     href: '/reports',
     children: [
       {
-        label: '  Oтчет LFL',
+        label: 'Oтчет LFL',
         active: '/reports/lfl/*',
         id: '91',
         soon: true,
         href: '/reports/lfl',
+      },
+      {
+        label: 'Отчет о бонусах',
+        active: '/reports/seller-bonus/*',
+        id: '911',
+        soon: true,
+        href: '/reports/seller-bonus',
       },
     ],
   },
