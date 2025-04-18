@@ -54,11 +54,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 function SaleChildDrawer({ open, setOpen, ids }) {
   const { t } = useTranslation()
+  const { values } = useQueryParams()
   const classes = useStyles()
-  const [currentSaleId, setCurrentSaleId] = useState()
+  const [currentSaleId, setCurrentSaleId] = useState(get(values, 'sale_id', ''))
   const [currentIndex, setcurrentIndex] = useState(0)
   const [debouncedCurrentSaleId] = useDebounce(currentSaleId, 200)
-  const { values } = useQueryParams()
+  console.log(values)
 
   const {
     data: saleDetailsList,

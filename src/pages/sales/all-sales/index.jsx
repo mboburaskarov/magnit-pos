@@ -112,6 +112,9 @@ export default function AllSalesPage() {
   } = useQuery(['saleStatsData', salesListFilter], () => requests.getAllSaleStats(salesListFilter))
 
   useEffect(() => {
+    if (get(values, 'sale_id')) {
+      setOpenSaleDrawer(true)
+    }
     refetch()
   }, [salesListFilter])
 
