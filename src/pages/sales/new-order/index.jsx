@@ -786,7 +786,7 @@ function NewSale() {
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />
-      {isEposTurnOn ? (
+      {isEposTurnOn || get(userData, 'type') === 'SUPERADMIN' ? (
         <Box display={'flex'}>
           <Box width={'calc(100% - 384px)'} position={'relative'} padding={'20px'}>
             <Box position={'relative'}>

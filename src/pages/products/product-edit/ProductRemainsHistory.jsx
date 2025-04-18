@@ -1,12 +1,12 @@
 import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import { memo, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import { requests } from '../../../../utils/requests'
-import { useQueryParams } from '../../../hooks/useQueryParams'
 import thousandDivider from '../../../../utils/thousandDivider'
+import { useQueryParams } from '../../../hooks/useQueryParams'
 
 export default function ProductRemainsHistory({ id }) {
   const { values } = useQueryParams()
@@ -118,7 +118,7 @@ export default function ProductRemainsHistory({ id }) {
   const formattedData = productReaminsDataHistory?.data?.data?.data
 
   return (
-    <>
+    <Box mt={'16px'}>
       <AgGridTable
         isDataLoading={isproductDataLoadingHistory || isFetchingproductReaminsDataHistory}
         offsetQuery='remainsOffset'
@@ -130,6 +130,6 @@ export default function ProductRemainsHistory({ id }) {
         offsetCount={offsetCount}
         defaultOffsetSize={5}
       />
-    </>
+    </Box>
   )
 }

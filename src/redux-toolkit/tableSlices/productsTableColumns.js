@@ -59,8 +59,8 @@ const columns = [
   {
     field: 'barcode',
     hide: false,
-    minWidth: 70,
-    width: 236,
+    minWidth: 260,
+    flex: 1,
   },
   {
     field: 'category',

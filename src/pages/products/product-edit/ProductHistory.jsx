@@ -135,7 +135,7 @@ export default function ProductHistory({ id }) {
   const formattedData = productDataHistory?.data?.data?.data
 
   return (
-    <>
+    <Box mt={'16px'}>
       <AgGridTable
         isDataLoading={isproductDataLoadingHistory || isFetchingproductDataHistory}
         offsetQuery='offsetHistory'
@@ -147,6 +147,6 @@ export default function ProductHistory({ id }) {
         offsetCount={offsetCount}
         defaultOffsetSize={5}
       />
-    </>
+    </Box>
   )
 }

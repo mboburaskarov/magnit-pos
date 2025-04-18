@@ -14,6 +14,24 @@ const columns = [
     width: 250,
   },
   {
+    field: 'bonus_amount',
+    hide: false,
+    minWidth: 150,
+    width: 150,
+  },
+  {
+    field: 'sales_count',
+    hide: false,
+    minWidth: 200,
+    width: 200,
+  },
+  {
+    field: 'status',
+    hide: false,
+    minWidth: 70,
+    width: 170,
+  },
+  {
     field: 'store',
     hide: false,
     minWidth: 70,
@@ -31,25 +49,6 @@ const columns = [
     hide: false,
     minWidth: 200,
     width: 200,
-  },
-  {
-    field: 'bonus_amount',
-    hide: false,
-    minWidth: 150,
-    width: 150,
-  },
-  {
-    field: 'sales_count',
-    hide: false,
-    minWidth: 200,
-    width: 200,
-  },
-
-  {
-    field: 'status',
-    hide: false,
-    minWidth: 70,
-    width: 170,
   },
 ]
 
