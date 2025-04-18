@@ -1,5 +1,6 @@
 import { Box, Grid, Typography } from '@mui/material'
 import React from 'react'
+import thousandDivider from '../../../../utils/thousandDivider'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DownloadIcon from '../../../assets/icons/DownloadIcon'
 
@@ -79,7 +80,7 @@ function InventoryDashboard({ data }) {
                   }}
                 >
                   {data?.stats_count[stat.value] < 0 && <BigWarningIcon />}
-                  {data?.stats_count[stat.value]} сум
+                  {thousandDivider(data?.stats_count[stat.value], 'сум')}
                 </Typography>
               </>
             )}

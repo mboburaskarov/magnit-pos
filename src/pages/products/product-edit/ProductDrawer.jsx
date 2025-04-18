@@ -101,7 +101,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
       </Box>
       <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
       <Box px={'40px'} my={'20px'}>
-        <SectionTitle grey>История импорта</SectionTitle>
+        <SectionTitle grey>История продукта</SectionTitle>
         <ProductHistory id={id} />
       </Box>
       <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />

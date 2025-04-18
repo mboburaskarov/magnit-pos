@@ -1,6 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material'
 import { get } from 'lodash'
 import React from 'react'
+import thousandDivider from '../../../../utils/thousandDivider'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DownloadIcon from '../../../assets/icons/DownloadIcon'
 import { writeOffReason } from '../writeOff/createWriteOff'
@@ -85,7 +86,7 @@ function WriteOffDashboard({ data }) {
                     ? get(data, 'store.name', 'Undefined')
                     : stat.value == 'comment'
                     ? writeOffReason.find((r) => r.id == data?.comment)?.name
-                    : `${data?.[stat.value]} сум`}
+                    : thousandDivider(data?.[stat.value], 'сум')}
                 </Typography>
               </>
             )}
