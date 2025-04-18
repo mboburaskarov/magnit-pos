@@ -294,7 +294,45 @@
 .ag-theme-alpine .ag-paging-panel {
   border-top: 2px solid;
 }
-
+#group-table {
+  .ag-header-cell {
+    border: none !important;
+  }
+  .ag-header {
+    height: 105px !important;
+  }
+  .ag-header-group-cell {
+    display: flex;
+    justify-content: center;
+  }
+  .ag-header-row-column-group {
+    background-color: #ecedf2;
+    border-bottom: 1px solid #ecedf2 !important;
+    margin: 0 !important;
+  }
+  .ag-header-group-cell-label.ag-sticky-label {
+    position: relative;
+  }
+  .ag-header-group-cell-with-group:not(:last-child) .ag-header-cell-resize {
+    border-right: 1px solid #e1e3e7 !important;
+    right: 0;
+  }
+  .last-grouped-child:not(:last-child) {
+    border-right: 1px solid #e1e3e7 !important;
+    border-radius: 0;
+  }
+  .ag-header-cell {
+    border-radius: 0 !important;
+  }
+  .ag-header-row.ag-header-row-column {
+    margin-left: 0;
+  }
+  .ag-cell {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+  }
+}
 /* No Rows Overlay */
 .ag-theme-alpine .ag-overlay-no-rows-wrapper.ag-layout-auto-height {
   padding-top: 70px;

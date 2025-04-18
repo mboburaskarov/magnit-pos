@@ -75,11 +75,11 @@ export default function SwitchSlider({ name, options, onChange, defaultValue, no
 
   return (
     options?.length !== 0 && (
-      <Box style={style} sx={{ width: '100%', marginTop: !noMarginTop && 2, borderRadius: 4, boxShadow: error && '0 0 0 2px red' }}>
-        <Box className={classes.inner}>
+      <Box style={style} className='slider' sx={{ width: '100%', marginTop: !noMarginTop && 2, borderRadius: 4, boxShadow: error && '0 0 0 2px red' }}>
+        <Box className={classes.inner + ' slider_box_wrapper'}>
           {options.map((option, index) => (
             <Tooltip key={index} title={option.tooltip} arrow>
-              <Box className={classes.slider}>
+              <Box className={classes.slider + ' slider_box'}>
                 <input
                   type='radio'
                   id={name + index}
@@ -88,6 +88,7 @@ export default function SwitchSlider({ name, options, onChange, defaultValue, no
                   value={option.value}
                   className={classes.input}
                   onClick={() => {
+                    if (option.soon) return
                     if (uncontrolled) {
                       setValue(options[index].value)
                     } else {
@@ -100,13 +101,34 @@ export default function SwitchSlider({ name, options, onChange, defaultValue, no
                   <Box className={classes.radioTitle}>
                     <Typography
                       fontWeight={500}
+                      display={'flex'}
                       fontSize={'14px'}
                       lineHeight={'20px'}
                       whiteSpace={'nowrap'}
                       color={value === option.value ? 'orange.500' : 'dark.500'}
                       id={value + index}
                     >
-                      {option.title} {option.count ? `(${get(option, 'count', 0)})` : ''}
+                      {option.title} {option.count ? `(${get(option, 'count', 0)})` : ''}{' '}
+                      {option.soon && (
+                        <Typography
+                          sx={{
+                            width: '40px',
+
+                            height: '20px',
+                            backgroundColor: '#A53EFF',
+                            color: '#fff',
+                            fontSize: '10px',
+                            fontWeight: '600',
+                            borderRadius: '24px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            ml: '10px',
+                          }}
+                        >
+                          soon
+                        </Typography>
+                      )}
                     </Typography>
                   </Box>
                 </label>

@@ -2,83 +2,59 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const columns = [
   {
-    field: 'number',
+    field: 'public_id',
     hide: false,
     minWidth: 60,
-    width: 60,
-    pinned: 'left',
-  },
-
-  {
-    field: 'name',
-    hide: false,
-    minWidth: 370,
-    flex: 1,
-    pinned: 'left',
+    width: 120,
   },
   {
-    field: 'main_photo',
+    field: 'fish',
     hide: false,
     minWidth: 70,
-    width: 90,
+    width: 250,
   },
-
-  // {
-  //   field: 'expire_date',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 250,
-  // },
-
   {
-    field: 'quantity',
+    field: 'store',
     hide: false,
     minWidth: 70,
+    width: 260,
+  },
+  {
+    field: 'phone',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+
+  {
+    field: 'role',
+    hide: false,
+    minWidth: 200,
+    width: 200,
+  },
+  {
+    field: 'bonus_amount',
+    hide: false,
+    minWidth: 150,
     width: 150,
   },
-
   {
-    field: 'manufacturer',
+    field: 'sales_count',
     hide: false,
-    minWidth: 70,
-    width: 290,
+    minWidth: 200,
+    width: 200,
   },
 
   {
-    field: 'material_code',
-    hide: false,
-    minWidth: 70,
-    width: 176,
-  },
-  {
-    field: 'required_marking',
-    hide: false,
-    minWidth: 70,
-    width: 176,
-  },
-  {
-    field: 'barcode',
-    hide: false,
-    minWidth: 70,
-    width: 236,
-  },
-  {
-    field: 'category',
+    field: 'status',
     hide: false,
     minWidth: 70,
     width: 170,
   },
-  {
-    field: 'actions',
-    hide: false,
-    minWidth: 96,
-    width: 96,
-    pinned: 'right',
-  },
 ]
 
-const productsTableColumns = createSlice({
-  name: 'productsTableColumns',
+const sellerBonusTableColumns = createSlice({
+  name: 'sellerBonusTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -118,5 +94,5 @@ const productsTableColumns = createSlice({
 })
 
 export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
-  productsTableColumns.actions
-export const productsTableColumnsSlice = productsTableColumns.reducer
+  sellerBonusTableColumns.actions
+export const sellerBonusTableColumnsSlice = sellerBonusTableColumns.reducer
