@@ -1,6 +1,6 @@
 // Extracts the barcode number from the marking string
 function extractNumbers(marking) {
-  const match = marking.match(/0100*(\d+)21.*/)
+  const match = marking.match(/01+0*(\d{8,14})(?=21)/)
   return match ? match[1] : ''
 }
 
@@ -15,6 +15,8 @@ export function checkBarcodeWithMarking(barcode, marking) {
   const cleanBarcode = trimLeadingZeros(barcode)
   console.log('markingBarcode ->>>>>>>>>', markingBarcode)
   console.log('cleanBarcode ->>>>>>>>>', cleanBarcode)
+  console.log('barcode ->>>>>>>>>', barcode)
+  console.log('marking ->>>>>>>>>', marking)
 
   return markingBarcode === cleanBarcode
 }
