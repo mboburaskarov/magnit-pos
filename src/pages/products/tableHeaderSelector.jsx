@@ -283,7 +283,7 @@ export default function tableHeaderSelector({
     if (el.field === 'required_marking') {
       return {
         ...el,
-        headerName: 'Требуется маркировка',
+        headerName: 'Маркировка',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

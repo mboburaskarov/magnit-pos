@@ -60,7 +60,21 @@ export default function ProductHistory({ id }) {
         maxWidth: 250,
         width: 250,
         cellRenderer: ({ data, rowIndex }) => (
-          <Typography color={'orange.500'} onClick={() => navigate(`/products/imports/${get(data, 'import.id')}?tab=details`)}>
+          <Typography
+            color={'orange.500'}
+            onClick={() => {
+              const type = get(data, 'entry_type')
+              if (type == '4') {
+                navigate(`/sales/all-sales?limit=10&offset=0&search=${get(data, 'public_id')}&sale_id=${get(data, 'id')}`)
+              } else if (type == '3') {
+                navigate(`/products/write-off-completed/${get(data, 'id')}`)
+              } else if (type == '2') {
+                navigate(`/products/inventory-completed/${get(data, 'id')}`)
+              } else {
+                navigate(`/products/imports/${get(data, 'import.id')}?tab=details`)
+              }
+            }}
+          >
             {get(data, 'entry_type') == '3'
               ? 'Списание '
               : get(data, 'entry_type') == '1'
