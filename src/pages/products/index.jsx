@@ -46,6 +46,7 @@ export default function ProductsPage() {
   const [regions, setRegions] = useState([])
   const [appType, setAppType] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
+  const [controlleroffset, setControllerOffset] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [canChangebarcode, setCanChangebarcode] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
@@ -104,12 +105,17 @@ export default function ProductsPage() {
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
-
+  useEffect(() => {
+    setControllerOffset(values?.offset)
+  }, [values?.offset])
+  useEffect(() => {
+    setControllerOffset(0)
+  }, [values?.search])
   const productsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       search: values?.search,
-      offset: values?.search ? 0 : values?.offset || 0,
+      offset: controlleroffset || 0,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
       category_id: values?.category_id,
@@ -127,7 +133,7 @@ export default function ProductsPage() {
     }
   }, [
     appType,
-    values?.offset,
+    controlleroffset,
     values?.limit,
     values?.search,
     values?.producer_id,

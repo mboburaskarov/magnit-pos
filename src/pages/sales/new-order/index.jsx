@@ -427,7 +427,8 @@ function NewSale() {
   const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createCartItem, {
     onSuccess: ({ data }) => {
       const searchValue = searchRef.current.value
-      if (searchValue.length > 30) {
+
+      if (searchValue.length > 30 && get(data, 'data.is_marking', false)) {
         //save to marking
         addNewMarking(data?.data?.id, searchValue)
       }
@@ -648,7 +649,7 @@ function NewSale() {
       if (isAllMarkingFill()) {
         setIsOrderDrower(true)
       } else {
-        setIsOpenImplementMarkingDialog({ mode: 'fu;;' })
+        setIsOpenImplementMarkingDialog({ mode: 'full' })
       }
     },
     {
