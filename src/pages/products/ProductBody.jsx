@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
@@ -7,10 +7,8 @@ import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import AgGridTable from '../../../components/AgGridTable/AgGridTable'
 import CategoriesTree from '../../../components/CategoriesTree'
-import InputDatePicker from '../../../components/Inputs/InputDatePicker'
 import InputQuantity from '../../../components/Inputs/InputQuantity'
 import InputSearch from '../../../components/Inputs/InputSearch'
-import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
 import TextField from '../../../components/Inputs/TextField'
 import Label from '../../../components/Label'
 import SectionTitle from '../../../components/SectionTitle'
@@ -326,7 +324,7 @@ export default function ProductBody({ productData = null }) {
             // request={requests.brand.getAll}
             createOptionRequest={requests.createProducer}
             getOptionLabel={(option) => {
-              return <Typography color='grey.600'>{option.name}</Typography>
+              return option.name
             }}
             // filterOption={() => true}
           />
@@ -415,7 +413,7 @@ export default function ProductBody({ productData = null }) {
             // request={requests.brand.getAll}
             createOptionRequest={requests.createShelf}
             getOptionLabel={(option) => {
-              return <Typography color='grey.600'>{option.name}</Typography>
+              return option.name
             }}
             // filterOption={() => true}
           />

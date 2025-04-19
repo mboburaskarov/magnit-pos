@@ -60,12 +60,18 @@ export default function AllSalesPage() {
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
-
+  const [controlleroffset, setControllerOffset] = useState(0)
+  useEffect(() => {
+    setControllerOffset(values?.offset)
+  }, [values?.offset])
+  useEffect(() => {
+    setControllerOffset(0)
+  }, [values?.search])
   const salesListFilter = useMemo(() => {
     setHasFilter(Object.keys(values).length > 2)
     return {
       limit: values?.limit || 10,
-      offset: values?.search ? 0 : values?.offset || 0,
+      offset: controlleroffset || 0,
       search: values?.search,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
@@ -82,7 +88,7 @@ export default function AllSalesPage() {
       end_date: values?.start_date == values?.end_date ? null : values?.end_date,
     }
   }, [
-    values?.offset,
+    controlleroffset,
     values?.limit,
     values?.search,
     values?.payment_type_id,

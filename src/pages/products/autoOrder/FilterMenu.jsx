@@ -1,7 +1,5 @@
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
 import * as qs from 'qs'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -9,15 +7,10 @@ import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import InputDateRangePicker from '../../../../components/Inputs/InputDateRangePicker'
-import InputRange from '../../../../components/Inputs/InputRange'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
+import LazySelect from '../../../../components/Select/LazySelect'
 import { requests } from '../../../../utils/requests'
-import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import LazySelect from '../../../../components/Select/LazySelect'
 
 export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
@@ -102,7 +95,7 @@ export default function FilterMenu({ open, setOpen }) {
               // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
               // uncontrolled
               getOptionLabel={(option) => {
-                return <Typography color='grey.600'>{option.name}</Typography>
+                return option.name
               }}
               filterOption={() => true}
             />

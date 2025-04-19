@@ -7,13 +7,10 @@ import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import InputRange from '../../../../components/Inputs/InputRange'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
+import LazySelect from '../../../../components/Select/LazySelect'
 import { requests } from '../../../../utils/requests'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import LazySelect from '../../../../components/Select/LazySelect'
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -103,7 +100,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
                 // uncontrolled
                 getOptionLabel={(option) => {
-                  return <Typography color='grey.600'>{option.name}</Typography>
+                  return option.name
                 }}
                 filterOption={() => true}
               />
@@ -127,7 +124,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
                 // uncontrolled
                 getOptionLabel={(option) => {
-                  return <Typography color='grey.600'>{option.name}</Typography>
+                  return option.name
                 }}
                 filterOption={() => true}
               />

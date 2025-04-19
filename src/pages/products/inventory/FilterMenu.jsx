@@ -132,7 +132,7 @@ export default function FilterMenu({ open, setOpen }) {
               // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
               // uncontrolled
               getOptionLabel={(option) => {
-                return <Typography color='grey.600'>{option.name}</Typography>
+                return option.name
               }}
               filterOption={() => true}
             />

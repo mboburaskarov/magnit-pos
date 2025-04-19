@@ -105,6 +105,7 @@ export default function ProductsPage() {
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
+
   useEffect(() => {
     setControllerOffset(values?.offset)
   }, [values?.offset])

@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
@@ -92,7 +92,7 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
               // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
               // uncontrolled
               getOptionLabel={(option) => {
-                return <Typography color='grey.600'>{option.name}</Typography>
+                return option.name
               }}
               filterOption={() => true}
             />

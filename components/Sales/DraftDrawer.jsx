@@ -2,7 +2,7 @@ import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
@@ -36,17 +36,24 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
   const { values } = useQueryParams()
 
   const [isOpenChild, setIsOpenChild] = useState(false)
+  const [controlleroffset, setControllerOffset] = useState(0)
+  useEffect(() => {
+    setControllerOffset(values?.offset)
+  }, [values?.offset])
+  useEffect(() => {
+    setControllerOffset(0)
+  }, [values?.search])
   const draftsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      offset: values?.search ? 0 : values?.offset || 0,
+      offset: controlleroffset || 0,
       search: values?.search || null,
       store_id: get(userData, 'store.id'),
       cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
       customer_id: values?.customer_id,
       draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : '',
     }
-  }, [values?.customer_id, values?.draft_date, values?.search])
+  }, [values?.customer_id, values?.draft_date, values?.search, controlleroffset])
 
   const theme = useTheme()
   return (
