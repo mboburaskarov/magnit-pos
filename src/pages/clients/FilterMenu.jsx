@@ -1,20 +1,16 @@
-import { Box, Button, IconButton, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import * as qs from 'qs'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { requests } from '../../../utils/requests'
-import SelectSimple from '../../../components/Select/SelectSimple'
-import InputRange from '../../../components/Inputs/InputRange'
-import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
-import * as qs from 'qs'
 import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
-import CloseIcon from '../../assets/icons/CloseIcon'
-import { theme } from '../../assets/theme'
-import { useTranslation } from 'react-i18next'
-import { useTheme } from '@mui/styles'
 import LazySelect from '../../../components/Select/LazySelect'
+import { requests } from '../../../utils/requests'
+import CloseIcon from '../../assets/icons/CloseIcon'
+import { useQueryParams } from '../../hooks/useQueryParams'
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -112,7 +108,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
               // uncontrolled
               getOptionLabel={(option) => {
-                return <Typography color='grey.600'>{option.name}</Typography>
+                return option.name
               }}
               filterOption={() => true}
             />

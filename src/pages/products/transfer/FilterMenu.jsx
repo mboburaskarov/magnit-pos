@@ -11,13 +11,12 @@ import { useNavigate } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import InputDateRangePicker from '../../../../components/Inputs/InputDateRangePicker'
 import InputRange from '../../../../components/Inputs/InputRange'
+import LazySelect from '../../../../components/Select/LazySelect'
 import SelectSimple from '../../../../components/Select/SelectSimple'
-import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
 import { requests } from '../../../../utils/requests'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import LazySelect from '../../../../components/Select/LazySelect'
 
 export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
@@ -133,7 +132,7 @@ export default function FilterMenu({ open, setOpen }) {
               // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
               // uncontrolled
               getOptionLabel={(option) => {
-                return <Typography color='grey.600'>{option.name}</Typography>
+                return option.name
               }}
               filterOption={() => true}
             />

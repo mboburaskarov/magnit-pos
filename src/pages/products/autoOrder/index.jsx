@@ -1,11 +1,13 @@
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '../../../../components/CheckAccess'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -13,13 +15,9 @@ import { requests } from '../../../../utils/requests'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/autoOrderTableColumns'
+import CreateAutoOrder from './createAutoOrder'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-import CheckAccess from '../../../../components/CheckAccess'
-import PlusIcon from '../../../assets/icons/PlusIcon'
-import { FormProvider, useForm } from 'react-hook-form'
-import { error } from '../../../../utils/toast'
-import CreateAutoOrder from './createAutoOrder'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function AutoOrderPage() {
@@ -56,11 +54,17 @@ export default function AutoOrderPage() {
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
-
+  const [controlleroffset, setControllerOffset] = useState(0)
+  useEffect(() => {
+    setControllerOffset(values?.offset)
+  }, [values?.offset])
+  useEffect(() => {
+    setControllerOffset(0)
+  }, [values?.search])
   const autoOrderListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      offset: values?.search ? 0 : values?.offset || 0,
+      offset: controlleroffset || 0,
       search: values?.search,
       store_id: values?.store_id,
       start_date: values?.start_date,
@@ -71,7 +75,7 @@ export default function AutoOrderPage() {
       received_amount_from: values?.received_amount_from,
     }
   }, [
-    values?.offset,
+    controlleroffset,
     values?.limit,
     values?.end_date,
     values?.start_date,

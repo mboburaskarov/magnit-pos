@@ -1,15 +1,14 @@
 import { Box, Grid, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import dayjs from 'dayjs'
 import React, { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { requests } from '../../../utils/requests'
 import InputDatePicker from '../../Inputs/InputDatePicker'
 import InputSwitchNew from '../../Inputs/InputSwitch'
 import InputPhone from '../../Inputs/PhoneNumber'
 import TextField from '../../Inputs/TextField'
-import dayjs from 'dayjs'
-import { useQuery } from 'react-query'
-import { requests } from '../../../utils/requests'
 import LazySelect from '../../Select/LazySelect'
 
 const useStyles = makeStyles((theme) => ({
@@ -166,7 +165,7 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
             // request={requests.brand.getAll}
             createOptionRequest={requests.createTag}
             getOptionLabel={(option) => {
-              return <Typography color='grey.600'>{option.name}</Typography>
+              return option.name
             }}
             // filterOption={() => true}
           />

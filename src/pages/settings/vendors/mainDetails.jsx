@@ -153,7 +153,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             filters={{ limit: 10 }}
             control={control}
             getOptionLabel={(option) => {
-              return <Typography color='grey.600'>{option.name}</Typography>
+              return option.name
             }}
             filterOption={() => true}
           />
@@ -172,7 +172,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             filters={{ limit: 10 }}
             control={control}
             getOptionLabel={(option) => {
-              return <Typography color='grey.600'>{option.name}</Typography>
+              return option.name
             }}
             filterOption={() => true}
           />

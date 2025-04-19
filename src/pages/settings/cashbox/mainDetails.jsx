@@ -1,6 +1,6 @@
-import { Box, Grid, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { useForm, useFormContext } from 'react-hook-form'
+import { Box, Grid } from '@mui/material'
+import React, { useEffect } from 'react'
+import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import InputSwitchNew from '../../../../components/Inputs/InputSwitch'
 
@@ -9,12 +9,8 @@ import { get } from 'lodash'
 import { useQuery } from 'react-query'
 import TextField from '../../../../components/Inputs/TextField'
 import Label from '../../../../components/Label'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import { requests } from '../../../../utils/requests'
-import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
 import LazySelect from '../../../../components/Select/LazySelect'
-import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
-import StyledSwitch from '../../../../components/Switch/StyledSwitch'
+import { requests } from '../../../../utils/requests'
 import PaymentTypeRow from './paymentTypeRow'
 
 const useStyles = makeStyles((theme) => ({
@@ -115,7 +111,7 @@ export default function MainDetails({ clientData, paymentTypes, setPaymentTypes,
             // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
             // uncontrolled
             getOptionLabel={(option) => {
-              return <Typography color='grey.600'>{option.name}</Typography>
+              return option.name
             }}
             filterOption={() => true}
           />

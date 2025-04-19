@@ -20,8 +20,8 @@ import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import LockIcon from '../../../assets/icons/LockIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/sellerBonusTableColumns'
-import CreateVendorDrawer from './createVendorDrawer'
 import FilterMenu from './FilterMenu'
+import SaleDrawer from './saleDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
@@ -33,27 +33,16 @@ export default function SellerBonus() {
   const [regions, setRegions] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [openCreateVendorDrawer, setopenCreateVendorDrawer] = useState(false)
-  const [rejectComment, setRejectComment] = useState(null)
+
   const [filterMenu, setFilterMenu] = useState(false)
+  const [openSaleDrawer, setOpenSaleDrawer] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [slectedVendors, setSelectedVendors] = useState([])
-  const selectVendors = (isChecked, id) => {
-    if (isChecked) {
-      setSelectedVendors((p) => [...p, id])
-    } else {
-      setSelectedVendors((p) => p.filter((ids) => ids !== id))
-    }
-  }
 
   const tableColumns = tableHeaderSelector({
     vendorsColumns: columns,
     t,
-    values,
-    setImages: setOpenImageGallery,
-    setOpenConfirmDialog,
-    selectVendors,
-    setopenCreateVendorDrawer,
+    setOpenSaleDrawer,
   })
 
   /// filter table columns with permission
@@ -365,15 +354,7 @@ export default function SellerBonus() {
           }
         />
       )}
-
-      <CreateVendorDrawer
-        refetchVendorList={refetch}
-        setCustomerId={'setCustomerId'}
-        quickCreateClientName={'quickCreateClientName'}
-        openDrawer={openCreateVendorDrawer}
-        closeDrawer={() => setopenCreateVendorDrawer(false)}
-        clientData={'clientDetails'}
-      />
+      <SaleDrawer ids={[].map(({ id }) => id)} open={openSaleDrawer} setOpen={setOpenSaleDrawer} />
     </LoadingContainer>
   )
 }

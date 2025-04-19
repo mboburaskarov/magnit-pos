@@ -59,7 +59,7 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ setopenCreateVendorDrawer, values, vendorsColumns, t, setOpenConfirmDialog, selectVendors }) {
+export default function tableHeaderSelector({ setOpenSaleDrawer, vendorsColumns, t }) {
   const columns = vendorsColumns?.map((el) => {
     if (el.field === 'sales_count') {
       return {
@@ -92,7 +92,11 @@ export default function tableHeaderSelector({ setopenCreateVendorDrawer, values,
         ...el,
         headerName: t('fish'),
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')}</Typography>),
+        cellRenderer: memo((p) => (
+          <Typography sx={{ whiteSpace: 'pre-line', color: 'orange.500', cursor: 'pointer' }} onClick={() => setOpenSaleDrawer({ id: p.data.id })}>
+            {get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')}
+          </Typography>
+        )),
       }
     }
     if (el.field === 'store') {

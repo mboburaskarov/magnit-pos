@@ -295,7 +295,7 @@ export const headerStyles = makeStyles((theme) => {
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       textAlign: 'left',
-      maxWidth: '120px',
+      maxWidth: '130px',
     },
     username: {
       width: '100%',
