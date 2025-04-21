@@ -40,6 +40,7 @@ function RippedPaperProductPriceCheck() {
         >
           Parastamol
         </Typography>
+        <Box height={'10px'} />
         <Typography
           sx={{
             fontSize: '50px',
@@ -47,11 +48,11 @@ function RippedPaperProductPriceCheck() {
             m: '15px 0 10px',
           }}
         >
-          124.000 sum
+          124.000
         </Typography>
       </Box>
       <Box>
-        <Barcode fontSize={'20px'} width={'1px'} value='1234567891010' />
+        <Barcode fontSize={'20px'} width={'2px'} value='1234567891010' />
       </Box>
     </Box>
   )
