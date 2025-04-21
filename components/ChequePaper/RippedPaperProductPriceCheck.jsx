@@ -13,9 +13,8 @@ function RippedPaperProductPriceCheck() {
       sx={{
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'end',
+        alignItems: 'start',
         justifyContent: 'start',
-        padding: '0 16px',
         flexDirection: 'column',
         height: '72px',
       }}
@@ -26,7 +25,6 @@ function RippedPaperProductPriceCheck() {
           justifyContent: 'space-between',
           alignItems: 'end',
           justifyContent: 'start',
-          padding: '0 16px',
           width: '100%',
           flexDirection: 'column',
         }}
@@ -45,14 +43,14 @@ function RippedPaperProductPriceCheck() {
           sx={{
             fontSize: '50px',
             fontWeight: '600',
-            m: '10px 0',
+            m: '15px 0 10px',
           }}
         >
           124.000 sum
         </Typography>
       </Box>
       <Box>
-        <Barcode fontSize={'20px'} width={'4px'} value='12345678' />
+        <Barcode fontSize={'20px'} width={'3px'} value='1234567891010' />
       </Box>
     </Box>
   )
