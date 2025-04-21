@@ -54,7 +54,7 @@ function RippedPaperProductPriceCheck({ data }) {
         </Typography>
       </Box>
       <Box>
-        <Barcode fontSize={'20px'} height={'50px'} width={'3px'} value={get(data, 'barcode')} />
+        <Barcode fontSize={'20px'} height={'60px'} width={'2px'} value={get(data, 'barcode')} />
       </Box>
     </Box>
   )
