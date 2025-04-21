@@ -3,6 +3,7 @@ import { get } from 'lodash'
 import React from 'react'
 import Barcode from 'react-barcode'
 
+import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 import thousandDivider from '../../utils/thousandDivider'
 
@@ -53,8 +54,9 @@ function RippedPaperProductPriceCheck({ data }) {
           {thousandDivider(get(data, 'price', 0))}
         </Typography>
       </Box>
-      <Box>
+      <Box display={'flex'} alignItems={'center'}>
         <Barcode fontSize={'20px'} height={'60px'} width={'2px'} value={get(data, 'barcode')} />
+        <Typography fontSize={'10px'}>{dayjs().format('DD.MM.YYYY')}</Typography>
       </Box>
     </Box>
   )
