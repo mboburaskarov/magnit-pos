@@ -1,10 +1,12 @@
 import { Box, Typography } from '@mui/material'
+import { get } from 'lodash'
 import React from 'react'
 import Barcode from 'react-barcode'
 
 import { useSelector } from 'react-redux'
+import thousandDivider from '../../utils/thousandDivider'
 
-function RippedPaperProductPriceCheck() {
+function RippedPaperProductPriceCheck({ data }) {
   const userData = useSelector((state) => state.user)
 
   return (
@@ -38,7 +40,7 @@ function RippedPaperProductPriceCheck() {
             fontWeight: '600',
           }}
         >
-          Parastamol
+          {get(data, 'name', '')}
         </Typography>
         <Box height={'10px'} />
         <Typography
@@ -48,11 +50,11 @@ function RippedPaperProductPriceCheck() {
             m: '15px 0 10px',
           }}
         >
-          124.000
+          {thousandDivider(get(data, 'price', 0))}
         </Typography>
       </Box>
       <Box>
-        <Barcode fontSize={'20px'} width={'2px'} value='1234567891010' />
+        <Barcode fontSize={'20px'} height={'50px'} width={'3px'} value={get(data, 'barcode')} />
       </Box>
     </Box>
   )

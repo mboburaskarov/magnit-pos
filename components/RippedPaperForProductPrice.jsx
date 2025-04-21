@@ -12,9 +12,7 @@ export default function RippedPaperForProductPrice({ data, name = 'cheque_id', c
         render={({ onChange }) => (
           <RadioGroup defaultValue={data?.cheques?.[0]?.id} aria-label='cheque' onChange={(e) => onChange(e.target.value)}>
             <Box>
-              {data?.cheques?.map((el, index) => (
-                <RippedPaperItem />
-              ))}
+              <RippedPaperItem data={data} />
             </Box>
           </RadioGroup>
         )}
@@ -23,10 +21,10 @@ export default function RippedPaperForProductPrice({ data, name = 'cheque_id', c
   )
 }
 
-export function RippedPaperItem() {
+export function RippedPaperItem({ data }) {
   return (
     <Box>
-      <RippedPaperProductPriceCheck />
+      <RippedPaperProductPriceCheck data={data} />
     </Box>
   )
 }

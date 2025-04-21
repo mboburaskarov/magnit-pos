@@ -222,7 +222,11 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
           ref={printContainer}
         >
           <RippedPaperForProductPrice
-            data={{ cheques: [1] }}
+            data={{
+              name: get(productData, 'data.data.name'),
+              price: get(productData, 'data.data.retail_price'),
+              barcode: get(productData, 'data.data.barcode'),
+            }}
             // qrcodeUrl={'qrcodeUrl'}
             // qrcode='pending'
             // paymentsList={paymentsList}
