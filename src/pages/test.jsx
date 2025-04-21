@@ -193,7 +193,7 @@ function Test() {
           id='password'
           onKeyDown={(e) => {
             if (e.key == 'Enter') {
-              if (e.target.value == 'prol123') {
+              if (e.target.value == 'parol12') {
                 setHasAccess(true)
               }
             }

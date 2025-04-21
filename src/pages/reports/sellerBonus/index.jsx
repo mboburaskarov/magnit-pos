@@ -245,8 +245,6 @@ export default function SellerBonus() {
               },
             }}
           >
-            {console.log(dayjs().endOf('month').format('YYYY-MM-DD'))}
-
             <DateRangeInput
               minHeight={'48px'}
               id='accounting-report-date-range'

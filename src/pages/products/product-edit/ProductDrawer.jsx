@@ -3,10 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
+import { useCallback, useRef } from 'react'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
+import { useReactToPrint } from 'react-to-print'
 import CheckAccess from '../../../../components/CheckAccess'
 import DrawerInfoBox from '../../../../components/Drawers/DrawerInfoBox'
+import RippedPaperForProductPrice from '../../../../components/RippedPaperForProductPrice'
 import SectionTitle from '../../../../components/SectionTitle'
 import getImageUrl from '../../../../utils/getImageUrl'
 import { requests } from '../../../../utils/requests'
@@ -73,7 +76,17 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     isLoading: productDataLoading,
     isFetching: isFetchingproductData,
   } = useQuery(['productData', id], () => requests.getSingleProduct(id), { enabled: !!id })
-
+  const printContainer = useRef()
+  const documentName = useRef('Pharma CHEQUE')
+  const reactToPrintContent = useCallback(() => printContainer.current, [])
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: documentName.current,
+    removeAfterPrint: true,
+    onAfterPrint: () => {
+      // navigate(`/sales/create`)
+    },
+  })
   const navigate = useNavigate()
   return (
     <Drawer
@@ -90,6 +103,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
       open={!!id}
       isLoading={productDataLoading && isFetchingproductData}
     >
+      <Box onClick={() => handlePrint()}>hi</Box>
       <Box display='inline-flex' pt={'40px'} pb={'20px'} px={'40px'}>
         <Image setImages={setImages} data={productData?.data?.data} />
         <Typography mt={0.5} ml={2} fontSize={24} color={'bunker.950'} lineHeight={'32px'} fontWeight={'700'}>
@@ -105,7 +119,6 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         <ProductHistory id={id} />
       </Box>
       <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
-
       <Box px={'40px'} my={'20px'}>
         <SectionTitle grey>Остатки</SectionTitle>
 
@@ -163,7 +176,6 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
           </Box>
         </CheckAccess>
       </Box>
-
       <Box
         sx={{
           borderBottomLeftRadius: '24px',
@@ -190,6 +202,39 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
           Редактировать
         </Button>
         {/* </CheckAccess> */}
+      </Box>
+      d
+      <Box
+        maxWidth='400px'
+        sx={{
+          // display: 'none',
+          width: '355px',
+          overflowY: 'scroll',
+          maxHeight: '75vh',
+        }}
+      >
+        <Box
+          mx={-2}
+          mt={'-3px'}
+          style={{
+            padding: '20px',
+          }}
+          ref={printContainer}
+        >
+          <RippedPaperForProductPrice
+            data={{ cheques: [1] }}
+            // qrcodeUrl={'qrcodeUrl'}
+            // qrcode='pending'
+            // paymentsList={paymentsList}
+            // cartItemsList={cartItemsList}
+            // id='cheque_of_orders'
+            // mode='lite'
+            // cashBoxDetails={cashBoxDetails}
+            // customerId={customerId}
+            // noFormControl
+            // printContainer={printContainer}
+          />
+        </Box>
       </Box>
     </Drawer>
   )
