@@ -20,10 +20,22 @@ function RippedPaperProductPriceCheck() {
         height: '72px',
       }}
     >
-      <Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'end',
+          justifyContent: 'start',
+          padding: '0 16px',
+          flexDirection: 'column',
+          height: '72px',
+        }}
+      >
         <Typography
           sx={{
-            fontSize: '14px',
+            width: '100%',
+            textAlign: 'center',
+            fontSize: '16px',
             fontWeight: '600',
           }}
         >
@@ -31,7 +43,7 @@ function RippedPaperProductPriceCheck() {
         </Typography>
         <Typography
           sx={{
-            fontSize: '20px',
+            fontSize: '28px',
             fontWeight: '600',
           }}
         >
@@ -39,7 +51,7 @@ function RippedPaperProductPriceCheck() {
         </Typography>
       </Box>
       <Box>
-        <Barcode width={'4px'} value='12345678' />
+        <Barcode fontSize={'20px'} width={'4px'} value='12345678' />
       </Box>
     </Box>
   )
