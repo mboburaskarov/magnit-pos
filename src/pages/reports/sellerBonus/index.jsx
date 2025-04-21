@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
@@ -31,6 +32,7 @@ const SELECTION_ID = 'checkboxSelectionField'
 export default function SellerBonus() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
   const [selectedShops, setSelectedShops] = useState('all')
   const { columns, loading } = useSelector((state) => state.sellerBonusTableColumns)
@@ -56,7 +58,9 @@ export default function SellerBonus() {
     t,
     setOpenSaleDrawer,
   })
-
+  useEffect(() => {
+    navigate(`/reports/seller-bonus?limit=10&offset=0&start_date=${dayjs().startOf('month').format('YYYY-MM-DD')}&end_date=${dayjs().format('YYYY-MM-DD')}`)
+  }, [shopList])
   /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
@@ -241,7 +245,13 @@ export default function SellerBonus() {
               },
             }}
           >
-            <DateRangeInput minHeight={'48px'} id='accounting-report-date-range' />
+            {console.log(dayjs().endOf('month').format('YYYY-MM-DD'))}
+
+            <DateRangeInput
+              minHeight={'48px'}
+              id='accounting-report-date-range'
+              defaultFilterData={{ end_date: dayjs().endOf('month').format('YYYY-MM-DD'), start_date: dayjs().startOf('month').format('YYYY-MM-DD') }}
+            />
             <Box width={'15px'} />
             <MultiOptionSelectNew
               zIndex={999}

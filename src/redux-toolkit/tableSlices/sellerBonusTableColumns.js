@@ -43,7 +43,7 @@ const columns = [
     field: 'role',
     hide: false,
     minWidth: 200,
-    width: 200,
+    flex: 1,
   },
 ]
 
