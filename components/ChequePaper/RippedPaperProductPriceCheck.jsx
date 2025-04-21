@@ -14,6 +14,7 @@ function RippedPaperProductPriceCheck() {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'start',
+        padding: '0 10px 0 0',
         justifyContent: 'start',
         flexDirection: 'column',
         height: '72px',
@@ -50,7 +51,7 @@ function RippedPaperProductPriceCheck() {
         </Typography>
       </Box>
       <Box>
-        <Barcode fontSize={'20px'} width={'3px'} value='1234567891010' />
+        <Barcode fontSize={'20px'} width={'1px'} value='1234567891010' />
       </Box>
     </Box>
   )
