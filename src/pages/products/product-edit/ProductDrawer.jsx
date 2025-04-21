@@ -103,7 +103,6 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
       open={!!id}
       isLoading={productDataLoading && isFetchingproductData}
     >
-      <Box onClick={() => handlePrint()}>hi</Box>
       <Box display='inline-flex' pt={'40px'} pb={'20px'} px={'40px'}>
         <Image setImages={setImages} data={productData?.data?.data} />
         <Typography mt={0.5} ml={2} fontSize={24} color={'bunker.950'} lineHeight={'32px'} fontWeight={'700'}>
@@ -189,6 +188,17 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         width='660px'
         display='inline-flex'
       >
+        <Button
+          sx={{
+            height: '48px',
+          }}
+          color='secondary'
+          onClick={() => handlePrint()}
+          // startIcon={<Print width={15} icon={faPen} />}
+          fullWidth
+        >
+          Печать ценников
+        </Button>
         {/* <CheckAccess id={'product-edit'}> */}
         <Button
           sx={{

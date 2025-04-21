@@ -56,7 +56,7 @@ function RippedPaperProductPriceCheck({ data }) {
       </Box>
       <Box display={'flex'} alignItems={'center'}>
         <Barcode fontSize={'20px'} height={'60px'} width={'2px'} value={get(data, 'barcode')} />
-        <Typography fontSize={'10px'}>{dayjs().format('DD.MM.YYYY')}</Typography>
+        <Typography fontSize={'14px'}>{dayjs().format('DD.MM.YYYY')}</Typography>
       </Box>
     </Box>
   )
