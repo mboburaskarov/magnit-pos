@@ -60,6 +60,11 @@ export const requests = {
   getShelf: (filter) => request.get(`v1/shelf/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createShelf: (data) => request.post(`v1/shelf`, data),
 
+  //report seller bonus
+  getSellerBonus: (filter, storeId) =>
+    request.post(`v1/report/bonus${qs.stringify(filter, { addQueryPrefix: true })}`, storeId?.length > 0 ? [storeId] : undefined),
+  getsellerBonusExcelReport: (filter) => requestEXCEL.post(`v1/report/bonus-export${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   //shift
   createShift: (data) => request.post(`v1/shift`, data),
 

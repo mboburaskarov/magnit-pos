@@ -52,7 +52,7 @@ const Image = ({ data, rowIndex, setImages }) => {
             zIndex: 2,
           }}
           id='overlay_image'
-          onClick={() => setImages({ data: data?.files })}
+          // onClick={() => setImages({ data: data?.files })}
         />
       )}
     </Box>
@@ -67,7 +67,7 @@ export default function tableHeaderSelector({ setOpenSaleDrawer, vendorsColumns,
         headerName: 'Количество продаж',
         colId: el.field,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
-          return <SimpleText {...p} type='sales_count' />
+          return <SimpleText withDevider {...p} type='count' />
         }),
       }
     }
@@ -76,7 +76,7 @@ export default function tableHeaderSelector({ setOpenSaleDrawer, vendorsColumns,
         ...el,
         headerName: 'Бонусы',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='bonus_amount' />),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='amount' />),
       }
     }
     if (el.field === 'public_id') {
@@ -93,8 +93,11 @@ export default function tableHeaderSelector({ setOpenSaleDrawer, vendorsColumns,
         headerName: t('fish'),
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Typography sx={{ whiteSpace: 'pre-line', color: 'orange.500', cursor: 'pointer' }} onClick={() => setOpenSaleDrawer({ id: p.data.id })}>
-            {get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')}
+          <Typography
+            sx={{ whiteSpace: 'pre-line', color: 'orange.500', cursor: 'pointer' }}
+            // onClick={() => setOpenSaleDrawer({ id: p.data.id })}
+          >
+            {get(p, 'data.[full_name]')}
           </Typography>
         )),
       }
@@ -104,7 +107,7 @@ export default function tableHeaderSelector({ setOpenSaleDrawer, vendorsColumns,
         ...el,
         headerName: t('branch'),
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{get(p, 'data.[store].name')}</Typography>),
+        cellRenderer: memo((p) => <Typography>{get(p, 'data.store_name')}</Typography>),
       }
     }
     if (el.field === 'phone') {
@@ -124,13 +127,7 @@ export default function tableHeaderSelector({ setOpenSaleDrawer, vendorsColumns,
         ...el,
         headerName: t('role'),
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Typography whiteSpace={'pre-line'}>
-            {get(p, 'data.roles', [])
-              .map((e) => e?.name)
-              .join(',')}
-          </Typography>
-        )),
+        cellRenderer: memo((p) => <Typography whiteSpace={'pre-line'}>{p.data.role}</Typography>),
       }
     }
 
