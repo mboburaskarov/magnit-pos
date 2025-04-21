@@ -54,8 +54,6 @@ function CartDetailSide({
   liteOrder,
   setLiteOrder,
 }) {
-  console.log(hasChange)
-
   const { t } = useTranslation()
   const [maxAmount, setMaxAmount] = useState(0)
   const [collapseDiscount, setCollapseDiscount] = useState(false)

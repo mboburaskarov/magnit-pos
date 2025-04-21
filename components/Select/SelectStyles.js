@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme) => ({
 export const generateCustomStyles = (props = {}) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const theme = useTheme()
+  const hasBeforeContent = props?.beforeContent
+
   const palette = theme.mode === 'dark' ? paletteDark : paletteLight
   const {
     withAllSelect,
@@ -52,6 +54,7 @@ export const generateCustomStyles = (props = {}) => {
       padding: 1,
       borderRadius: '40px',
     }),
+
     control: (provided, state) => ({
       borderRadius: borderRadius || '40px',
       transition: '0.3s',
@@ -61,7 +64,7 @@ export const generateCustomStyles = (props = {}) => {
       minHeight: mini ? 40 : minHeight,
       fontWeight: 600,
       overflow: 'hidden',
-      backgroundColor: white ? palette.background.default : palette.white,
+      backgroundColor: white ? palette.bg[10] : palette.white,
       '&:hover': {
         backgroundColor: white ? palette.gray[10] : palette.gray[10],
       },
@@ -100,11 +103,12 @@ export const generateCustomStyles = (props = {}) => {
     }),
     singleValue: (provided) => ({
       ...provided,
-      paddingLeft: 8,
+      paddingLeft: hasBeforeContent ? '20px' : 8,
       fontSize: 17,
       fontWeight: 500,
       fontFamily: 'Gilroy',
       color: palette.dark[500],
+
       alignItems: 'center',
       lineHeight: '28px',
     }),

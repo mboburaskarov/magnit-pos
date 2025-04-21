@@ -99,7 +99,6 @@ export default function WriteOffCompletedPage() {
     isFetching: isFetchingWriteOffWithCheckingDetails,
     refetch,
   } = useQuery(['WriteOffWithCheckingDetails', WriteOffWithCheckingDetailsFilter], () => requests.getWriteOffDetails(WriteOffWithCheckingDetailsFilter))
-  console.log(WriteOffWithCheckingDetails)
 
   /// filter table columns with permission
   useEffect(() => {

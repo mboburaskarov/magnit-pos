@@ -58,7 +58,6 @@ function SaleChildDrawer({ open, setOpen, ids }) {
   const [currentSaleId, setCurrentSaleId] = useState(get(values, 'sale_id', ''))
   const [currentIndex, setcurrentIndex] = useState(0)
   const [debouncedCurrentSaleId] = useDebounce(currentSaleId, 200)
-  console.log(values)
 
   const {
     data: saleDetailsList,

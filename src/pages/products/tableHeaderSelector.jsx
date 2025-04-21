@@ -294,7 +294,6 @@ export default function tableHeaderSelector({
               className='customCheckbox'
               type='checkbox'
             />
-            {console.log(p)}
           </Box>
         )),
       }
