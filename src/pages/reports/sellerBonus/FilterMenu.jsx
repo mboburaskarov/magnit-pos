@@ -30,7 +30,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
     setOpen(false)
-    navigate(`/settings/vendors${requestParams}`)
+    navigate(`/reports/seller-bonus${requestParams}`)
   }
 
   const onError = (err) => {
@@ -51,7 +51,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/settings/vendors?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/reports/seller-bonus?offset=0&limit=${values?.limit || 5}`)
   }
   const theme = useTheme()
   const { t } = useTranslation()

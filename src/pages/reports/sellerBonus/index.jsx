@@ -1,5 +1,6 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -8,11 +9,12 @@ import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import ImageGallery from '../../../../components/ImageGallery'
+import DateRangeInput from '../../../../components/Inputs/DateRangeInput.jsx/DateRangeInput'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
+import { error } from '../../../../utils/toast'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
@@ -62,102 +64,37 @@ export default function SellerBonus() {
     }
   }, [])
 
-  const vendorsListFilter = useMemo(() => {
+  const sellerBonnusFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
-      category_id: values?.category_id,
-      producer: values?.producer,
-      supply_price_to: values?.supply_price_to,
-      retail_price_to: values?.retail_price_to,
-      region: values?.region_id,
-      supply_price_from: values?.supply_price_from,
-      retail_price_from: values?.retail_price_from,
-      isExpress: values?.isExpress,
+      start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
+      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
     }
-  }, [
-    values?.offset,
-    values?.limit,
-    values?.search,
-    values?.producer,
-    values?.category_id,
-    values?.store_id,
-    values?.supply_price_to,
-    values?.retail_price_to,
-    values?.supply_price_from,
-    values?.retail_price_from,
-    values?.region_id,
-    values?.isExpress,
-    regions,
-  ])
+  }, [values?.offset, values?.limit, values?.search, values?.store_id, values?.start_date, values?.end_date])
   const {
-    data: vendorsList,
-    isLoading: vendorsListLoading,
-    isFetching: isFetchingvendorsList,
+    data: sellerBonnus,
+    isLoading: sellerBonnusLoading,
+    isFetching: isFetchingsellerBonnus,
     refetch,
-  } = useQuery(['vendorsList', vendorsListFilter], () => requests.getAllVendors(vendorsListFilter))
-
-  const { mutate: deleteVendor, isLoading: isDeletingProduct } = useMutation(requests.deleteVendor, {
-    onSuccess: () => {
-      refetch()
-      success('Продавец удален!')
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении продавец!')
-      setOpenConfirmDialog(null)
-      console.log('err', err)
-    },
-  })
-
-  const { mutate: activateVendor, isLoading: isActivatingProduct } = useMutation(requests.activateVendor, {
-    onSuccess: () => {
-      success('продавец успешно активирован!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при активации продавеца!')
-      refetch()
-      setOpenConfirmDialog(null)
-      console.log('err', err)
-    },
-  })
-  const { mutate: deActivateVendor, isLoading: isDeActivatingProduct } = useMutation(requests.deActivateVendor, {
-    onSuccess: () => {
-      success('продавец успешно деактивирован!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при деактивации продавеца!')
-      refetch()
-      setOpenConfirmDialog(null)
-      console.log('err', err)
-    },
-  })
+  } = useQuery(['sellerBonnus', sellerBonnusFilter], () => requests.getSellerBonus(sellerBonnusFilter, values?.store_id))
 
   useEffect(() => {
     refetch()
-  }, [vendorsListFilter])
+  }, [sellerBonnusFilter])
 
   useEffect(() => {
-    const count = vendorsList?.data?.data?._meta?.total_count
+    const count = sellerBonnus?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [vendorsList?.data, values?.limit])
-  const { mutate: vendorsExcelReport, isLoading: isvendorsExcelReport } = useMutation(requests.getVendorsExcelReport, {
+  }, [sellerBonnus?.data, values?.limit])
+  const { mutate: sellerBonusExcelReport, isLoading: issellerBonusExcelReport } = useMutation(requests.getsellerBonusExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Сотрудники')
+      downloadExcel(data, 'Бонусах продавца')
     },
     onError: (err) => {
       console.log(err)
@@ -180,15 +117,15 @@ export default function SellerBonus() {
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                   background: 'transparent',
-                  width: '400px',
+                  width: '450px',
                   height: 48,
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={'ID, имя, телефон'} uncontrolled />
+              <InputSearch fullWidth id='producrs-search' name='search' placeholder={'ID, имя, телефон'} uncontrolled />
             </Box>
 
-            <Box minWidth={113} ml={'16px'}>
+            <Box mr={'10px'} minWidth={113}>
               <Button
                 sx={{
                   height: '48px',
@@ -264,6 +201,7 @@ export default function SellerBonus() {
                 </Box>
               </>
             )}
+            <DateRangeInput minHeight={'48px'} id='accounting-report-date-range' />
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box>
@@ -283,12 +221,12 @@ export default function SellerBonus() {
             id='products-main-table'
             tableSettings
             columns={tableColumns}
-            downloadByFilter={() => vendorsExcelReport(vendorsListFilter)}
-            fullDownload={() => vendorsExcelReport({ ...vendorsListFilter, limit: 1000000 })}
-            isDownloading={isvendorsExcelReport}
-            data={vendorsList?.data?.data?.data || []}
-            totalCount={vendorsList?.data?.data?._meta?.total_count || 0}
-            isDataLoading={isFetchingvendorsList || vendorsListLoading}
+            downloadByFilter={() => sellerBonusExcelReport(sellerBonnusFilter)}
+            fullDownload={() => sellerBonusExcelReport({ ...sellerBonnusFilter, limit: 1000000 })}
+            isDownloading={issellerBonusExcelReport}
+            data={sellerBonnus?.data?.data?.data || []}
+            totalCount={sellerBonnus?.data?.data?._meta?.total_count || 0}
+            isDataLoading={isFetchingsellerBonnus || sellerBonnusLoading}
             offsetCount={offsetCount}
             emptyTableText={{
               title: 'Сотрудники недоступен',
@@ -299,7 +237,7 @@ export default function SellerBonus() {
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingvendorsList || vendorsListLoading}
+            isRefreshing={loading || isFetchingsellerBonnus || sellerBonnusLoading}
           />
         </Box>
       </Box>

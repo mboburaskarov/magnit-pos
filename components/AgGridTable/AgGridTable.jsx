@@ -3,10 +3,10 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Box } from '@mui/material'
 import 'ag-grid-enterprise'
-import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import debounce from 'lodash/debounce'
 import * as qs from 'qs'
+import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { usePrevious } from 'react-use'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
@@ -50,6 +50,7 @@ const AgGridSimpleTable = ({
   resetTable,
   totalData,
   columnGroup,
+  uniqId = 'id',
   totalCount = 0,
   customDisplayColumnsChangeHandler,
   simpleTable,
@@ -171,7 +172,7 @@ const AgGridSimpleTable = ({
     setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
   }, [])
 
-  const getRowId = useCallback((params) => params.data.id, [data, columns, totalData])
+  const getRowId = useCallback((params) => params.data[uniqId], [data, columns, totalData])
 
   return (
     <Fragment>

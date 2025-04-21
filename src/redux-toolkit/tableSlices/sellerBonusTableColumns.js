@@ -25,12 +25,7 @@ const columns = [
     minWidth: 200,
     width: 200,
   },
-  {
-    field: 'status',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
+
   {
     field: 'store',
     hide: false,

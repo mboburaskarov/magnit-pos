@@ -7,8 +7,8 @@ import SaleChildDrawer from './saleChildDrawer'
 const useStyles = makeStyles((theme) => ({
   drawer: {
     overflow: 'hidden',
-    position: 'relative !important',
-
+    // position: 'relative !important',
+    left: 'auto !important',
     '& .MuiDrawer-paper': {
       width: '600px',
       height: '100vh',

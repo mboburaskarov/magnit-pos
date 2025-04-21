@@ -115,7 +115,7 @@ export const navbatRouteData = [
         label: 'Отчет о бонусах',
         active: '/reports/seller-bonus/*',
         id: '911',
-        soon: true,
+        // soon: true,
         href: '/reports/seller-bonus',
       },
     ],
