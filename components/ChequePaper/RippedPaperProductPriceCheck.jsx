@@ -29,14 +29,13 @@ function RippedPaperProductPriceCheck() {
           padding: '0 16px',
           width: '100%',
           flexDirection: 'column',
-          height: '72px',
         }}
       >
         <Typography
           sx={{
             width: '100%',
             textAlign: 'center',
-            fontSize: '25px',
+            fontSize: '20px',
             fontWeight: '600',
           }}
         >
@@ -46,6 +45,7 @@ function RippedPaperProductPriceCheck() {
           sx={{
             fontSize: '50px',
             fontWeight: '600',
+            m: '10px 0',
           }}
         >
           124.000 sum
