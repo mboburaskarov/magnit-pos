@@ -27,6 +27,7 @@ function RippedPaperProductPriceCheck() {
           alignItems: 'end',
           justifyContent: 'start',
           padding: '0 16px',
+          width: '100%',
           flexDirection: 'column',
           height: '72px',
         }}
@@ -35,7 +36,7 @@ function RippedPaperProductPriceCheck() {
           sx={{
             width: '100%',
             textAlign: 'center',
-            fontSize: '16px',
+            fontSize: '25px',
             fontWeight: '600',
           }}
         >
@@ -43,7 +44,7 @@ function RippedPaperProductPriceCheck() {
         </Typography>
         <Typography
           sx={{
-            fontSize: '28px',
+            fontSize: '50px',
             fontWeight: '600',
           }}
         >
