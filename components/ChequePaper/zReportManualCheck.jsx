@@ -40,13 +40,12 @@ function ZReportManualCheck({ data, printContainer }) {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'start',
-            padding: '0 10px 0 0',
             justifyContent: 'start',
             flexDirection: 'column',
             height: '72px',
           }}
         >
-          <Box sx={{ p: 4, width: '100%' }}>
+          <Box sx={{ width: '100%' }}>
             <Typography variant='h6' align='center' gutterBottom>
               {get(data, 'filter.store_name', '')}
             </Typography>

@@ -26,6 +26,7 @@ export default function PrintManualZReport({ open, setManualZreportData, refetch
       setManualZreportData({ data: get(saleStatsData, 'data.data', []), filter: reportFilter })
       setTimeout(() => {
         handlePrint()
+        setOpen(false)
       }, 500)
     }
   }, [saleStatsData])
@@ -88,6 +89,7 @@ export default function PrintManualZReport({ open, setManualZreportData, refetch
               isClearable={true}
               label={t('input.store.label')}
               request={requests.getAllStores}
+              required={true}
               filters={{ limit: 10 }}
               control={control}
               getOptionLabel={(option) => {
@@ -107,13 +109,13 @@ export default function PrintManualZReport({ open, setManualZreportData, refetch
               startDate={startDate}
               endDate={endDate}
               setStartDate={setStartDate}
-              required
+              required={true}
               setEndDate={setEndDate}
               control={control}
             />
 
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
-              <Button onClick={() => methods.handleSubmit(onSubmit, (err) => console.log(err))} fullWidth variant='contained' type='submit'>
+              <Button fullWidth variant='contained' type='submit'>
                 Распечатать
               </Button>
             </Box>
