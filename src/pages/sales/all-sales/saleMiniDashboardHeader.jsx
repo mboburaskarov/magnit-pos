@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
+import { get } from 'lodash'
 import React from 'react'
 import thousandDivider from '../../../../utils/thousandDivider'
-import { get } from 'lodash'
 
 function SaleMiniDashboardHeader({ saleStatsData }) {
   return (
@@ -53,38 +53,41 @@ function SaleMiniDashboardHeader({ saleStatsData }) {
           },
         }}
       >
-        {get(saleStatsData, 'payment_type_stats', [])?.map((type) => (
-          <Box
-            sx={{
-              flexShrink: 0,
-              padding: '10px 15px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              borderRight: '1px dashed #ccc',
-            }}
-          >
-            <Typography
+        {get(saleStatsData, 'payment_type_stats', [])?.map((type) => {
+          if (get(type, 'sum') === 0) return null
+          return (
+            <Box
               sx={{
-                fontSize: '16px',
-                color: 'bunker.950',
-                fontWeight: '500',
-                mb: '5px',
+                flexShrink: 0,
+                padding: '10px 15px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                borderRight: '1px dashed #ccc',
               }}
             >
-              {get(type, 'name')}
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: '18px',
-                color: 'orange.500',
-                fontWeight: '700',
-              }}
-            >
-              {thousandDivider(get(type, 'sum'), 'сум')}
-            </Typography>
-          </Box>
-        ))}
+              <Typography
+                sx={{
+                  fontSize: '16px',
+                  color: 'bunker.950',
+                  fontWeight: '500',
+                  mb: '5px',
+                }}
+              >
+                {get(type, 'name')}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: '18px',
+                  color: 'orange.500',
+                  fontWeight: '700',
+                }}
+              >
+                {thousandDivider(get(type, 'sum'), 'сум')}
+              </Typography>
+            </Box>
+          )
+        })}
       </Box>
     </Box>
   )
