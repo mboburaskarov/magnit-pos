@@ -26,14 +26,20 @@ export default function PrintManualZReport({ open, setManualZreportData, refetch
       setManualZreportData({ data: get(saleStatsData, 'data.data', []), filter: reportFilter })
       setTimeout(() => {
         handlePrint()
+        setStartDate(0)
+        setEndDate(0)
         setOpen(false)
       }, 500)
     }
   }, [saleStatsData])
 
   const onSubmit = (data) => {
-    console.log(data)
+    console.log('data', data, endDate, startDate)
 
+    if (!startDate || !endDate) {
+      error('Пожалуйста, заполните все поля!')
+      return
+    }
     const requestBody = {
       store_id: data?.store_id?.value,
       store_name: data?.store_id?.name,
