@@ -25,8 +25,6 @@ export default function CreateWriteOff({ open, refetch, setOpen }) {
   const [openWarn, setopenWarn] = useState(false)
   const { reset, control } = methods
   useEffect(() => {
-    console.log(methods.getValues('reason'))
-
     if (methods.getValues('reason')?.id == 'correction_of_misclassification') {
       setopenWarn(true)
     } else {

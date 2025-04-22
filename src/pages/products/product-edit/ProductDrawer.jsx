@@ -3,9 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
+import { useCallback, useRef } from 'react'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
+import { useReactToPrint } from 'react-to-print'
 import CheckAccess from '../../../../components/CheckAccess'
+import RippedPaperProductPriceCheck from '../../../../components/ChequePaper/RippedPaperProductPriceCheck'
 import DrawerInfoBox from '../../../../components/Drawers/DrawerInfoBox'
 import SectionTitle from '../../../../components/SectionTitle'
 import getImageUrl from '../../../../utils/getImageUrl'
@@ -73,7 +76,17 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     isLoading: productDataLoading,
     isFetching: isFetchingproductData,
   } = useQuery(['productData', id], () => requests.getSingleProduct(id), { enabled: !!id })
-
+  //
+  const printContainer = useRef()
+  const documentName = useRef('Pharma CHEQUE')
+  const reactToPrintContent = useCallback(() => printContainer.current, [])
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: documentName.current,
+    removeAfterPrint: true,
+    onAfterPrint: () => {},
+  })
+  //
   const navigate = useNavigate()
   return (
     <Drawer
@@ -105,7 +118,6 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         <ProductHistory id={id} />
       </Box>
       <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
-
       <Box px={'40px'} my={'20px'}>
         <SectionTitle grey>Остатки</SectionTitle>
 
@@ -163,7 +175,6 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
           </Box>
         </CheckAccess>
       </Box>
-
       <Box
         sx={{
           borderBottomLeftRadius: '24px',
@@ -177,6 +188,17 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         width='660px'
         display='inline-flex'
       >
+        <Button
+          sx={{
+            height: '48px',
+          }}
+          color='secondary'
+          onClick={() => handlePrint()}
+          // startIcon={<Print width={15} icon={faPen} />}
+          fullWidth
+        >
+          Печать ценников
+        </Button>
         {/* <CheckAccess id={'product-edit'}> */}
         <Button
           sx={{
@@ -191,6 +213,14 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         </Button>
         {/* </CheckAccess> */}
       </Box>
+      <RippedPaperProductPriceCheck
+        printContainer={printContainer}
+        data={{
+          name: get(productData, 'data.data.name'),
+          price: get(productData, 'data.data.retail_price'),
+          barcode: get(productData, 'data.data.barcode'),
+        }}
+      />
     </Drawer>
   )
 }

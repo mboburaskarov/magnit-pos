@@ -101,6 +101,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               minWidth='auto'
               isClearable={true}
               label={t('input.store.label')}
+              beforeContent={t('placeholders.SortType')}
               request={requests.getAllStores}
               filters={{ limit: 10 }}
               control={control}

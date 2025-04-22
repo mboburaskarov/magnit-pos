@@ -105,8 +105,6 @@ function Test() {
     error('Пожалуйста, заполните все поля!')
   }
   const onSubmit = (data) => {
-    console.log(data)
-
     const requestBody = {
       cash_amount: Number(get(data, 'opened_amout')),
       cash_box_id: get(data, 'registerCash_id.id', null),
@@ -157,8 +155,6 @@ function Test() {
     },
   })
   useEffect(() => {
-    console.log(checkdata)
-
     if (checkdata) {
       handlePrint()
     }
@@ -197,7 +193,7 @@ function Test() {
           id='password'
           onKeyDown={(e) => {
             if (e.key == 'Enter') {
-              if (e.target.value == 'prol123') {
+              if (e.target.value == 'parol12') {
                 setHasAccess(true)
               }
             }

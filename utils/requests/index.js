@@ -62,7 +62,7 @@ export const requests = {
 
   //report seller bonus
   getSellerBonus: (filter, storeId) =>
-    request.post(`v1/report/bonus${qs.stringify(filter, { addQueryPrefix: true })}`, storeId?.length > 0 ? [storeId] : undefined),
+    request.post(`v1/report/bonus${qs.stringify(filter, { addQueryPrefix: true })}`, storeId?.length > 0 ? storeId : undefined),
   getsellerBonusExcelReport: (filter) => requestEXCEL.post(`v1/report/bonus-export${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //shift

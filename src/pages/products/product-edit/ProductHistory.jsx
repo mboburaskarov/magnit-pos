@@ -96,7 +96,7 @@ export default function ProductHistory({ id }) {
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(data?.count).replace('.', ',')}
+                {data?.count}
               </Typography>
             </Box>
           </>

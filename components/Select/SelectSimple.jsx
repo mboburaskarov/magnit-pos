@@ -11,12 +11,21 @@ import { generateCustomStyles } from './SelectStyles'
 const SingleValue = ({ children, selectProps, ...props }) => {
   return (
     <components.SingleValue selectProps={selectProps} {...props}>
-      <Box display='flex' alignItems='center' flexWrap='wrap'>
-        {selectProps?.beforeContent && <Typography style={{ color: 'gray.400', marginRight: 2 }}>{selectProps?.beforeContent}</Typography>}
+      <Box
+        display='flex'
+        flexDirection={selectProps?.beforeContent ? 'column' : 'row'}
+        alignItems={selectProps?.beforeContent ? 'start' : 'center'}
+        flexWrap='wrap'
+      >
+        {selectProps?.beforeContent && (
+          <Typography className='before-content' style={{ color: '#868FAA', lineHeight: '18px', fontWeight: '600', fontSize: '12px', marginRight: 2 }}>
+            {selectProps?.beforeContent}
+          </Typography>
+        )}
         <span
           id={`select-${props?.data?.name}`}
           style={{
-            lineHeight: 1.2,
+            lineHeight: '18px',
             display: `-webkit-box`,
             maxHeight: `calc(16px * 1.2 * 1)`,
             WebkitLineClamp: 1,
