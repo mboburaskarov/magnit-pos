@@ -10,8 +10,8 @@ function ZReportManualCheck({ data, printContainer }) {
 
   const Row = ({ label, value }) => (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
-      <Typography>{label}</Typography>
-      <Typography>{value}</Typography>
+      <Typography fontWeight={'600'}>{label}</Typography>
+      <Typography fontWeight={'600'}>{value}</Typography>
     </Box>
   )
 
@@ -55,7 +55,7 @@ function ZReportManualCheck({ data, printContainer }) {
                 Отчет продаж
               </Typography>
               <Row label='Пользователь:' value={`${get(userData, 'first_name', '')} ${get(userData, 'last_name', '')}`} />
-              <Row label='Дата и время отчета:' value={`${get(data, 'filter.start_date', '')} - ${get(data, 'filter.end_date', '')}`} />
+              <Row label='Дата:' value={`${get(data, 'filter.start_date', '')} - ${get(data, 'filter.end_date', '')}`} />
             </Box>
 
             <Divider sx={{ my: 2 }} />
@@ -64,14 +64,10 @@ function ZReportManualCheck({ data, printContainer }) {
               <Typography variant='subtitle1' fontWeight='bold'>
                 Транзакций
               </Typography>
-              <Row
-                label='Чеки продаж:'
-                value={`${get(data, 'data.total_count', 0)} на сумму ${thousandDivider(get(data, 'data.total_transactions_sum', 0))} UZS`}
-              />
-              <Row
-                label='Чеки возвратов:'
-                value={`${get(data, 'data.total_returnals_count', 0)} на сумму ${thousandDivider(get(data, 'data.total_returnals_sum', 0))} UZS`}
-              />
+              <Row label='Продаж:' value={`${get(data, 'data.total_count', 0)} `} />
+              <Row label='Сумму:' value={`${thousandDivider(get(data, 'data.total_transactions_sum', 0))} сум`} />
+              <Row label='Возвратов:' value={`${get(data, 'data.total_returnals_count', 0)}`} />
+              <Row label='Сумму:' value={`${thousandDivider(get(data, 'data.total_returnals_sum', 0))} сум`} />
             </Box>
 
             <Divider sx={{ my: 2 }} />
@@ -101,7 +97,7 @@ function ZReportManualCheck({ data, printContainer }) {
 
             <Divider sx={{ my: 2 }} />
 
-            <Typography fontStyle='italic' mt={2}>
+            <Typography fontWeight={'600'} fontStyle='italic' mt={2}>
               Отчет сформирован и напечатан в PharmaCosmos
             </Typography>
           </Box>

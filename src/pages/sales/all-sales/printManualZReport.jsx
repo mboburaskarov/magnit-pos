@@ -32,6 +32,8 @@ export default function PrintManualZReport({ open, setManualZreportData, refetch
   }, [saleStatsData])
 
   const onSubmit = (data) => {
+    console.log(data)
+
     const requestBody = {
       store_id: data?.store_id?.value,
       store_name: data?.store_id?.name,
