@@ -24,7 +24,9 @@ export default function PrintManualZReport({ open, setManualZreportData, refetch
   useEffect(() => {
     if (saleStatsData) {
       setManualZreportData({ data: get(saleStatsData, 'data.data', []), filter: reportFilter })
-      handlePrint()
+      setTimeout(() => {
+        handlePrint()
+      }, 500)
     }
   }, [saleStatsData])
 

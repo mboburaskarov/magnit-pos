@@ -1,10 +1,13 @@
 import { Box, Divider, Typography } from '@mui/material'
 import { get } from 'lodash'
 import React from 'react'
+import { useSelector } from 'react-redux'
 import thousandDivider from '../../utils/thousandDivider'
 
 function ZReportManualCheck({ data, printContainer }) {
   console.log(data)
+  const userData = useSelector((state) => state.user)
+
   const Row = ({ label, value }) => (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
       <Typography>{label}</Typography>
@@ -45,14 +48,14 @@ function ZReportManualCheck({ data, printContainer }) {
         >
           <Box sx={{ p: 4, width: '100%' }}>
             <Typography variant='h6' align='center' gutterBottom>
-              Все магазины
+              {get(data, 'filter.store_name', '')}
             </Typography>
 
             <Box sx={{ mt: 2 }}>
               <Typography variant='subtitle1' fontWeight='bold'>
                 Отчет продаж
               </Typography>
-              <Row label='Пользователь:' value={get(data, 'filter.store_name', '')} />
+              <Row label='Пользователь:' value={`${get(userData, 'first_name', '')} ${get(userData, 'last_name', '')}`} />
               <Row label='Дата и время отчета:' value={`${get(data, 'filter.start_date', '')} - ${get(data, 'filter.end_date', '')}`} />
             </Box>
 
