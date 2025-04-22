@@ -8,8 +8,8 @@ import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
 import CheckAccess from '../../../../components/CheckAccess'
+import RippedPaperProductPriceCheck from '../../../../components/ChequePaper/RippedPaperProductPriceCheck'
 import DrawerInfoBox from '../../../../components/Drawers/DrawerInfoBox'
-import RippedPaperForProductPrice from '../../../../components/RippedPaperForProductPrice'
 import SectionTitle from '../../../../components/SectionTitle'
 import getImageUrl from '../../../../utils/getImageUrl'
 import { requests } from '../../../../utils/requests'
@@ -76,6 +76,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     isLoading: productDataLoading,
     isFetching: isFetchingproductData,
   } = useQuery(['productData', id], () => requests.getSingleProduct(id), { enabled: !!id })
+  //
   const printContainer = useRef()
   const documentName = useRef('Pharma CHEQUE')
   const reactToPrintContent = useCallback(() => printContainer.current, [])
@@ -83,10 +84,9 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     content: reactToPrintContent,
     documentTitle: documentName.current,
     removeAfterPrint: true,
-    onAfterPrint: () => {
-      // navigate(`/sales/create`)
-    },
+    onAfterPrint: () => {},
   })
+  //
   const navigate = useNavigate()
   return (
     <Drawer
@@ -213,43 +213,14 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         </Button>
         {/* </CheckAccess> */}
       </Box>
-      d
-      <Box
-        maxWidth='400px'
-        sx={{
-          // display: 'none',
-          width: '355px',
-          overflowY: 'scroll',
-          maxHeight: '75vh',
+      <RippedPaperProductPriceCheck
+        printContainer={printContainer}
+        data={{
+          name: get(productData, 'data.data.name'),
+          price: get(productData, 'data.data.retail_price'),
+          barcode: get(productData, 'data.data.barcode'),
         }}
-      >
-        <Box
-          mx={-2}
-          mt={'-3px'}
-          style={{
-            padding: '20px',
-          }}
-          ref={printContainer}
-        >
-          <RippedPaperForProductPrice
-            data={{
-              name: get(productData, 'data.data.name'),
-              price: get(productData, 'data.data.retail_price'),
-              barcode: get(productData, 'data.data.barcode'),
-            }}
-            // qrcodeUrl={'qrcodeUrl'}
-            // qrcode='pending'
-            // paymentsList={paymentsList}
-            // cartItemsList={cartItemsList}
-            // id='cheque_of_orders'
-            // mode='lite'
-            // cashBoxDetails={cashBoxDetails}
-            // customerId={customerId}
-            // noFormControl
-            // printContainer={printContainer}
-          />
-        </Box>
-      </Box>
+      />
     </Drawer>
   )
 }

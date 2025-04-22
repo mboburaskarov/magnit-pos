@@ -2,12 +2,14 @@ import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
+import { useReactToPrint } from 'react-to-print'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import ZReportManualCheck from '../../../../components/ChequePaper/zReportManualCheck'
 import ImageGallery from '../../../../components/ImageGallery'
 import DateRangeInput from '../../../../components/Inputs/DateRangeInput.jsx/DateRangeInput'
 import InputSearch from '../../../../components/Inputs/InputSearch'
@@ -19,6 +21,7 @@ import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/salesTableColumns'
 import FilterMenu from './FilterMenu'
+import PrintManualZReport from './printManualZReport'
 import SaleDrawer from './saleDrawer'
 import SaleMiniDashboardHeader from './saleMiniDashboardHeader'
 import tableHeaderSelector from './tableHeaderSelector'
@@ -30,12 +33,15 @@ export default function AllSalesPage() {
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.salesTableColumns)
   const { values } = useQueryParams()
+  const [orderModel, setOrderModel] = useState(false)
+
   const [regions, setRegions] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [hasFilter, setHasFilter] = useState(Object.keys(values).length > 2)
   const [openSaleDrawer, setOpenSaleDrawer] = useState(false)
+  const [manualZreportData, setManualZreportData] = useState([])
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
@@ -43,7 +49,17 @@ export default function AllSalesPage() {
     setImages: setOpenImageGallery,
     setOpenSaleDrawer,
   })
-
+  //
+  const printContainer = useRef()
+  const documentName = useRef('Pharma CHEQUE')
+  const reactToPrintContent = useCallback(() => printContainer.current, [])
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: documentName.current,
+    removeAfterPrint: true,
+    onAfterPrint: () => {},
+  })
+  //
   /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
@@ -143,9 +159,14 @@ export default function AllSalesPage() {
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {t('sales')}
-        </Typography>
+        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+          <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+            {t('sales')}
+          </Typography>
+          <Button sx={{ height: '48px' }} onClick={() => setOrderModel(true)}>
+            Распечатать отчет
+          </Button>
+        </Box>
         <SaleMiniDashboardHeader saleStatsData={get(saleStatsData, 'data.data')} />
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box width='100%' display={'flex'}>
@@ -230,8 +251,10 @@ export default function AllSalesPage() {
         </Box>
       </Box>
       <SaleDrawer ids={(salesList?.data?.data?.data || []).map(({ id }) => id)} open={openSaleDrawer} setOpen={setOpenSaleDrawer} />
+      <PrintManualZReport setManualZreportData={setManualZreportData} handlePrint={handlePrint} refetch={refetch} open={orderModel} setOpen={setOrderModel} />
 
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
+      <ZReportManualCheck printContainer={printContainer} data={manualZreportData} />
     </LoadingContainer>
   )
 }
