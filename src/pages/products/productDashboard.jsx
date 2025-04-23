@@ -1,12 +1,10 @@
 import { Box, Grid, Typography } from '@mui/material'
-import { get } from 'lodash'
 import React from 'react'
-import thousandDivider from '../../../../utils/thousandDivider'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import DownloadIcon from '../../../assets/icons/DownloadIcon'
-import { writeOffReason } from '../writeOff/createWriteOff'
+import thousandDivider from '../../../utils/thousandDivider'
+import BigWarningIcon from '../../assets/icons/BigWarningIcon'
+import DownloadIcon from '../../assets/icons/DownloadIcon'
 
-function WriteOffDashboard({ data }) {
+function ProductDashboard({ data }) {
   return (
     <Grid
       container
@@ -16,11 +14,8 @@ function WriteOffDashboard({ data }) {
       }}
     >
       {[
-        { title: 'Магазин', value: 'store' },
-        { title: 'Кол-во товаров', value: 'writeoff_count' },
-        { title: 'Сумма к списанию по цене поставки', value: 'supply_price_sum' },
-        { title: 'Причина', value: 'comment' },
-        // { title: 'result' },
+        { title: 'Наименований', value: 'total_count', endText: 'шт' },
+        { title: 'Товарных единиц', value: 'total_quantity', endText: 'ед.' },
       ].map((stat) => (
         <Grid sm='6' lg='6' md='6' item sx={{}}>
           <Box
@@ -81,12 +76,8 @@ function WriteOffDashboard({ data }) {
                     },
                   }}
                 >
-                  {data?.[stat.value] < 0 && <BigWarningIcon />}
-                  {stat.value == 'store'
-                    ? get(data, 'store.name', 'Undefined')
-                    : stat.value == 'comment'
-                    ? writeOffReason.find((r) => r.id == data?.comment)?.name
-                    : thousandDivider(data?.[stat.value], 'сум')}
+                  {data?.stats_count?.[stat.value] < 0 && <BigWarningIcon />}
+                  {thousandDivider(data?.[stat.value], stat.endText)}
                 </Typography>
               </>
             )}
@@ -97,4 +88,4 @@ function WriteOffDashboard({ data }) {
   )
 }
 
-export default WriteOffDashboard
+export default ProductDashboard

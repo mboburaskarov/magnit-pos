@@ -4,11 +4,8 @@ import { memo } from 'react'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
 import CheckAccess from '../../../../components/CheckAccess'
 import thousandDivider from '../../../../utils/thousandDivider'
-import { vendor_statuses } from '../../../assets/data/vendor-statuses'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import EditIcon from '../../../assets/icons/EditIcon'
-import LockIcon from '../../../assets/icons/LockIcon'
-import UnLockIcon from '../../../assets/icons/UnLock'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -104,7 +101,7 @@ export default function tableHeaderSelector({ setopenCreateVendorDrawer, values,
         ...el,
         headerName: 'Магазин',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{get(p, 'data.store.name')}</Typography>),
+        cellRenderer: memo((p) => <Typography>{get(p, 'data.store_name')}</Typography>),
       }
     }
 

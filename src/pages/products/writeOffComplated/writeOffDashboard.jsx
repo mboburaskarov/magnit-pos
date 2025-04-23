@@ -20,9 +20,8 @@ function WriteOffDashboard({ data }) {
         { title: 'Кол-во товаров', value: 'writeoff_count' },
         { title: 'Сумма к списанию по цене поставки', value: 'supply_price_sum' },
         { title: 'Причина', value: 'comment' },
-        { title: 'result' },
       ].map((stat) => (
-        <Grid sm='4' lg='4' md='4' item sx={{}}>
+        <Grid sm='6' lg='6' md='6' item sx={{}}>
           <Box
             sx={{
               boxShadow: ' 0px 0px 16px rgba(0, 0, 0, 0.08)',

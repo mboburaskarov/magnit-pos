@@ -284,13 +284,15 @@ function CashCloseDrawer({ open, setOpen }) {
             </Box>
           </Box>
           <Button
+            disabled={iscloseZReport}
             type='submit'
-            onClick={() =>
+            onClick={() => {
+              setOpen(false)
               closeZReport({
                 token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
                 method: 'closeZreport', // Название метода, Обязательное поле, String
               })
-            }
+            }}
             sx={{ bottom: 0, margin: '0 24px 24px', '& > svg': { width: 24, height: 24, ml: '12px' } }}
           >
             Закрыть кассу <ArrowRightIcon color={!true ? '#FF6018' : '#fff'} />

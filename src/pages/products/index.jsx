@@ -21,6 +21,8 @@ import StyledTooltip from '../../../components/StyledTooltip'
 import { downloadExcel } from '../../../utils/downloadEXCEL'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
+import ArrowDown from '../../assets/icons/ArrowDown'
+import ArrowUp from '../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../assets/icons/BarcodeIcon'
 import BigTickIcon from '../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../assets/icons/BigWarningIcon'
@@ -32,6 +34,7 @@ import { useQueryParams } from '../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
 import FilterMenu from './FilterMenu'
 import ProductDrawer from './product-edit/ProductDrawer'
+import ProductDashboard from './productDashboard'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function ProductsPage() {
@@ -45,6 +48,8 @@ export default function ProductsPage() {
   const user_data = useSelector((state) => state.user)
   const [regions, setRegions] = useState([])
   const [appType, setAppType] = useState('ALL')
+  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(false)
+
   const [offsetCount, setOffsetCount] = useState(0)
   const [controlleroffset, setControllerOffset] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
@@ -238,12 +243,30 @@ export default function ProductsPage() {
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-          <Box display={'flex'} justifyContent={'space-between'}>
+          <Box display={'flex'} mb={'10px'} justifyContent={'space-between'}>
             <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
               {t('page.catalog.title')}
             </Typography>
+            <Box
+              sx={{
+                m: 'auto 0',
+                userSelect: 'none !important',
+                cursor: 'pointer',
+                '& > p': {
+                  cursor: 'pointer',
+                  userSelect: 'none !important',
+                },
+              }}
+              display={'flex'}
+              onClick={() => setIsOpenStatDashboard((p) => !p)}
+            >
+              {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
+              <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
+            </Box>
           </Box>
-          <Box minWidth={320} sx={{ display: 'flex' }}>
+          {isOpenStatDashboard && <ProductDashboard data={get(statusCountList, 'data.data', 0)} />}
+
+          <Box minWidth={320} mt={'10px'} sx={{ display: 'flex' }}>
             <InputSwitch
               uncontrolled
               id='app-type'
@@ -252,7 +275,7 @@ export default function ProductsPage() {
               defaultValue='ALL'
               onChange={(e) => setAppType(e)}
               options={[
-                { title: t('switch.title.all'), value: 'ALL', count: get(statusCountList, 'data.data.total_count', 0) },
+                { title: t('switch.title.all'), value: 'ALL', count: get(statusCountList, 'data.data.total_quantity', 0) },
                 { title: t('switch.title.active'), value: 'active', count: get(statusCountList, 'data.data.active_count', 0) },
                 { title: t('switch.title.inactive'), value: 'inactive', count: get(statusCountList, 'data.data.inactive_count', 0) },
                 { title: t('switch.title.less_amount'), value: 'low-stock', count: get(statusCountList, 'data.data.low_stock_count', 0) },

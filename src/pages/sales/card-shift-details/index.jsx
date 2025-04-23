@@ -1,4 +1,5 @@
 import { Box, Button, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -8,14 +9,13 @@ import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
+import { error } from '../../../../utils/toast'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
+import LeftArrowIcon from '../../../assets/icons/LeftArrow'
+import { useQueryParams } from '../../../hooks/useQueryParams'
 import CashCloseDrawer from './cashCloseDrawer'
 import CashTypeDrawer from './cashTypeDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
-import LeftArrowIcon from '../../../assets/icons/LeftArrow'
-import dayjs from 'dayjs'
-import { useQueryParams } from '../../../hooks/useQueryParams'
 
 function CardShiftDetails() {
   const { t } = useTranslation()
@@ -27,6 +27,10 @@ function CardShiftDetails() {
   const [closeDrawer, setCloseDrawer] = useState(false)
   const methods = useForm()
   const navigate = useNavigate()
+
+  if (window.localStorage.getItem('close') != 'true') {
+    navigate('/')
+  }
   const { columns, loading } = useSelector((state) => state.cardShiftTableColumns)
   const { mutate: changeCloseBoxNetAmout, isLoading: ischangeCloseBoxNetAmout } = useMutation(requests.changeCloseBoxNetAmout, {
     onSuccess: () => {
