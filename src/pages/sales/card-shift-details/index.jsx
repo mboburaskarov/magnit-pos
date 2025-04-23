@@ -28,9 +28,6 @@ function CardShiftDetails() {
   const methods = useForm()
   const navigate = useNavigate()
 
-  if (window.localStorage.getItem('close') != 'true') {
-    navigate('/')
-  }
   const { columns, loading } = useSelector((state) => state.cardShiftTableColumns)
   const { mutate: changeCloseBoxNetAmout, isLoading: ischangeCloseBoxNetAmout } = useMutation(requests.changeCloseBoxNetAmout, {
     onSuccess: () => {
