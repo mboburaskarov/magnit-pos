@@ -174,7 +174,10 @@ function NewCashRegister() {
     },
   })
   useEffect(() => {
-    checkEPOSTurnOn()
+    checkEPOSTurnOn({
+      token: 'DXJFX32CN1296678504F2',
+      method: 'checkStatus',
+    })
   }, [])
   return (
     <LoadingContainer readyState={!isCheckSaleExist}>
