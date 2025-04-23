@@ -116,7 +116,6 @@ function CashCloseDrawer({ open, setOpen }) {
       } else {
         setcheckdata(get(data, 'message'))
         methods.handleSubmit(onSubmit, onError)()
-        success('Касса закрыта! (cose z info report)')
       }
     },
     onError: (err) => {
@@ -131,10 +130,7 @@ function CashCloseDrawer({ open, setOpen }) {
   }, [checkdata])
   const { mutate: closeZReport, isLoading: iscloseZReport } = useMutation(requests.closeZReport, {
     onSuccess: ({ data }) => {
-      if (get(data, 'error', true)) {
-        error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
-        return
-      } else {
+      if (get(data, 'message', '').includes('ERROR_ZREPORT_IS_NOT_OPEN') || get(data, 'error', true) == false) {
         closeCheckZReport({
           token: 'DXJFX32CN1296678504F2',
           method: 'getZreportInfo',
@@ -142,6 +138,10 @@ function CashCloseDrawer({ open, setOpen }) {
           zReportId: 1,
         })
         success('Касса закрыта! (cose z report)')
+        return
+      } else {
+        error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
+        return
       }
     },
     onError: (err) => {
@@ -287,7 +287,7 @@ function CashCloseDrawer({ open, setOpen }) {
             disabled={iscloseZReport}
             type='submit'
             onClick={() => {
-              setOpen(false)
+              // setOpen(false)
               closeZReport({
                 token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
                 method: 'closeZreport', // Название метода, Обязательное поле, String

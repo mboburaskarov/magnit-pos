@@ -536,6 +536,8 @@ function NewSale() {
       token: 'DXJFX32CN1296678504F2',
       method: 'checkStatus',
     })
+  }, [])
+  useEffect(() => {
     const cartList = cartItemsList?.data?.data?.data
 
     if (cartList?.length > 0) {
