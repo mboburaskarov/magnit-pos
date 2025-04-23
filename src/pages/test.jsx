@@ -12,7 +12,6 @@ import InputPassword from '../../components/Inputs/InputPasswordNew'
 import NumberFormatInput from '../../components/Inputs/OutLineTextFieldThousand'
 import TextField from '../../components/Inputs/TextField'
 import SelectSimple from '../../components/Select/SelectSimple'
-import { convertoRuOrEngToEng } from '../../utils/convertoRuOrEngToEng'
 import { requests } from '../../utils/requests'
 import { error, success } from '../../utils/toast'
 import ArrowRightIcon from '../assets/icons/ArrowRightIcon'
@@ -176,14 +175,9 @@ function Test() {
   })
 
   // Examples
-  console.log(convertoRuOrEngToEng('руддщ')) // hello
-  console.log(convertoRuOrEngToEng('hello')) // hello
-  console.log(convertoRuOrEngToEng('ghbdtn123')) // ghbdtn123
-  console.log(convertoRuOrEngToEng('зкщы')) // port
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      console.log(convertoRuOrEngToEng(e.target.value))
     }
   }
   return (

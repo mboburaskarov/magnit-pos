@@ -34,8 +34,6 @@ export default function PrintManualZReport({ open, setManualZreportData, refetch
   }, [saleStatsData])
 
   const onSubmit = (data) => {
-    console.log('data', data, endDate, startDate)
-
     if (!startDate || !endDate) {
       error('Пожалуйста, заполните все поля!')
       return

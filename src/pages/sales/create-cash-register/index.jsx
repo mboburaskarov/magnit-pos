@@ -120,7 +120,6 @@ function NewCashRegister() {
       setCanCreate({ canCreate: true, is_open: get(methods.watch('registerCash_id'), 'is_open'), is_open: get(methods.watch('registerCash_id'), 'is_open') })
     })
   }, [methods.watch('registerCash_id')])
-  console.log(methods.watch('registerCash_id'))
 
   const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashOperationBox, {
     onSuccess: ({ data }) => {
@@ -181,7 +180,7 @@ function NewCashRegister() {
   return (
     <LoadingContainer readyState={!isCheckSaleExist}>
       <FormProvider {...methods}>
-        {isEposTurnOn ? (
+        {isEposTurnOn || get(userData, 'type') === 'SUPERADMIN' ? (
           <Box className={classes.box}>
             <Box className={classes.wrapper}>
               <Typography display={'flex'} alignItems={'center'} fontSize={'32px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'} p={'24px'}>
