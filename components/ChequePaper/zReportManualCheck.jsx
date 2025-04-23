@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import thousandDivider from '../../utils/thousandDivider'
 
 function ZReportManualCheck({ data, printContainer }) {
-  console.log(data)
   const userData = useSelector((state) => state.user)
 
   const Row = ({ label, value }) => (

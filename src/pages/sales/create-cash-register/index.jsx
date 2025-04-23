@@ -65,6 +65,15 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '10px',
     marginBottom: '5px',
   },
+  openStoreDot: {
+    width: 30,
+    height: 30,
+    display: 'flex',
+    borderRadius: '50%',
+    backgroundColor: 'green',
+    marginRight: '10px',
+    marginBottom: '5px',
+  },
 }))
 function NewCashRegister() {
   const classes = useStyles()
@@ -73,6 +82,8 @@ function NewCashRegister() {
   const [isLoading, setIsLoding] = useState(false)
   const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
+  const [isEposTurnOn, setisEposTurnOn] = useState(true)
+
   const { data: registerCashList, refetch: refetchregisterCashList } = useQuery('registerCashList', () =>
     requests.getAllCashBoxList({ store_id: get(userData, 'store.id'), limit: 20, offset: 0 })
   )
@@ -105,10 +116,11 @@ function NewCashRegister() {
     if (registerCashData) setCanCreate((a) => ({ ...a, canCreate: true }))
   }, [registerCashData])
   useEffect(() => {
-    refetchregisterCashData().then(() => {
-      setCanCreate({ canCreate: true, is_open: get(methods.watch('registerCash_id'), 'is_open') })
+    refetchregisterCashData().then((data) => {
+      setCanCreate({ canCreate: true, is_open: get(methods.watch('registerCash_id'), 'is_open'), is_open: get(methods.watch('registerCash_id'), 'is_open') })
     })
   }, [methods.watch('registerCash_id')])
+  console.log(methods.watch('registerCash_id'))
 
   const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashOperationBox, {
     onSuccess: ({ data }) => {
@@ -151,108 +163,134 @@ function NewCashRegister() {
       console.log('err', err)
     },
   })
+  const { mutate: checkEPOSTurnOn, isLoading: ischeckEPOSTurnOn } = useMutation(requests.checkEPOSTurnOn, {
+    onSuccess: ({ data }) => {
+      if (get(data, 'error', true)) {
+        setisEposTurnOn(false)
+      }
+    },
+    onError: (err) => {
+      setisEposTurnOn(false)
+      error('Программа EPOS отключена. Запустить программу EPOS')
+      console.log('err', err)
+    },
+  })
+  useEffect(() => {
+    checkEPOSTurnOn()
+  }, [])
   return (
     <LoadingContainer readyState={!isCheckSaleExist}>
       <FormProvider {...methods}>
-        <Box className={classes.box}>
-          <Box className={classes.wrapper}>
-            <Typography display={'flex'} alignItems={'center'} fontSize={'32px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'} p={'24px'}>
-              {get(canCreate, 'is_open') ? (
-                'Kassirni tanlang'
-              ) : (
-                <>
-                  <span className={classes.closeStoreDot} />
-                  Kassa Yopiq
-                </>
-              )}
-            </Typography>
-            <Box display={'flex'} p={'40px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
-              <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <Box sx={{ '& div': { backgroundColor: 'transparent' } }}>
-                  <SelectSimple
-                    onChange={() => {}}
-                    options={registerCashList?.data?.data?.data}
-                    required
-                    label={'Kassa'}
-                    placeholder='Kassirni tanlang'
-                    name={'registerCash_id'}
-                  />
-                  <Box height={'24px'} />
-                  <NumberFormatInput
-                    endAdornmentText={'UZS'}
-                    end
-                    type='number'
-                    fullWidth
-                    name='opened_amout'
-                    label='Ochilish miqdori'
-                    placeholder='Miqdorni kiriting'
-                  />
-                  <Box height={'24px'} />
+        {isEposTurnOn || get(userData, 'type') === 'SUPERADMIN' ? (
+          <Box className={classes.box}>
+            <Box className={classes.wrapper}>
+              <Typography display={'flex'} alignItems={'center'} fontSize={'32px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'} p={'24px'}>
+                {get(canCreate, 'is_open') ? (
+                  <>
+                    <span className={classes.openStoreDot} />
+                    Kassa Ochiq ({get(registerCashList, 'data.data.data', null).find((a) => a.id == get(methods.watch('registerCash_id'), 'id'))?.full_name})
+                  </>
+                ) : (
+                  <>
+                    <span className={classes.closeStoreDot} />
+                    Kassa Yopiq
+                  </>
+                )}
+              </Typography>
+              <Box display={'flex'} p={'40px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
+                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <Box sx={{ '& div': { backgroundColor: 'transparent' } }}>
+                    <SelectSimple
+                      onChange={() => {}}
+                      options={registerCashList?.data?.data?.data}
+                      required
+                      label={'Kassa'}
+                      placeholder='Kassirni tanlang'
+                      name={'registerCash_id'}
+                    />
+                    <Box height={'24px'} />
+                    <NumberFormatInput
+                      endAdornmentText={'UZS'}
+                      end
+                      type='number'
+                      fullWidth
+                      name='opened_amout'
+                      label='Ochilish miqdori'
+                      placeholder='Miqdorni kiriting'
+                    />
+                    <Box height={'24px'} />
 
-                  <TextField fullWidth name='description' label='Izoh' placeholder='Fikr kiriting' />
+                    <TextField fullWidth name='description' label='Izoh' placeholder='Fikr kiriting' />
+                  </Box>
+                  <Button
+                    type='submit'
+                    onClick={() => {
+                      if (!get(methods.watch('registerCash_id'), 'is_open', true)) {
+                        openZReport({
+                          token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
+                          method: 'openZreport', // Название метода, Обязательное поле, String
+                        })
+                      }
+                    }}
+                    disabled={get(canCreate, 'is_open')}
+                    sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}
+                  >
+                    Kassani oching <ArrowRightIcon color={!get(canCreate, 'canCreate') ? '#FF6018' : '#fff'} />
+                  </Button>
                 </Box>
-                <Button
-                  type='submit'
-                  onClick={() =>
-                    openZReport({
-                      token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
-                      method: 'openZreport', // Название метода, Обязательное поле, String
-                    })
-                  }
-                  disabled={!get(canCreate, 'canCreate')}
-                  sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}
-                >
-                  Kassani oching <ArrowRightIcon color={!get(canCreate, 'canCreate') ? '#FF6018' : '#fff'} />
-                </Button>
-              </Box>
-              <Box sx={{ border: '1px solid', mx: '40px', borderColor: 'bunker.100' }} />
+                <Box sx={{ border: '1px solid', mx: '40px', borderColor: 'bunker.100' }} />
 
-              <Box sx={{ width: '100%' }}>
-                <Typography fontSize={'16px'} lineHeight={'24px'} fontWeight={'600'} color={'bunker.700'}>
-                  Kassangizda mavjud:
-                </Typography>
-                <Box className={classes.card_box}>
-                  <Box display={'flex'} alignItems={'center'}>
-                    <Box className={classes.iconBox}>
-                      <MoneyOutlineIcon />
-                    </Box>
-                    <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.950'}>
-                      Naqd
-                    </Typography>
-                  </Box>
-                  <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
-                  <Box display={'flex'} justifyContent={'end'}>
-                    <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
-                      {get(registerCashData, 'data.data.closed_amount', null)}
-                      <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
-                        UZS
+                <Box sx={{ width: '100%' }}>
+                  <Typography fontSize={'16px'} lineHeight={'24px'} fontWeight={'600'} color={'bunker.700'}>
+                    Kassangizda mavjud:
+                  </Typography>
+                  <Box className={classes.card_box}>
+                    <Box display={'flex'} alignItems={'center'}>
+                      <Box className={classes.iconBox}>
+                        <MoneyOutlineIcon />
+                      </Box>
+                      <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.950'}>
+                        Naqd
                       </Typography>
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box className={classes.card_box}>
-                  <Box display={'flex'} alignItems={'center'}>
-                    <Box className={classes.iconBox}>
-                      <CartOutlineIcon />
                     </Box>
-                    <Typography fontSize={'24px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'}>
-                      Karta
-                    </Typography>
-                  </Box>
-                  <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
-                  <Box display={'flex'} justifyContent={'end'}>
-                    <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
-                      0
-                      <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
-                        UZS
+                    <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
+                    <Box display={'flex'} justifyContent={'end'}>
+                      <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
+                        {get(registerCashData, 'data.data.closed_amount', null)}
+                        <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
+                          UZS
+                        </Typography>
                       </Typography>
-                    </Typography>
+                    </Box>
+                  </Box>
+                  <Box className={classes.card_box}>
+                    <Box display={'flex'} alignItems={'center'}>
+                      <Box className={classes.iconBox}>
+                        <CartOutlineIcon />
+                      </Box>
+                      <Typography fontSize={'24px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'}>
+                        Karta
+                      </Typography>
+                    </Box>
+                    <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
+                    <Box display={'flex'} justifyContent={'end'}>
+                      <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
+                        0
+                        <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
+                          UZS
+                        </Typography>
+                      </Typography>
+                    </Box>
                   </Box>
                 </Box>
               </Box>
             </Box>
           </Box>
-        </Box>
+        ) : (
+          <Box display={'flex'} alignItems={'center'} color={'red.500'} fontSize={'20px'} fontWeight={'700'} justifyContent={'center'} height={'100vh'}>
+            Программа EPOS отключена. Запустить программу EPOS{' '}
+          </Box>
+        )}
       </FormProvider>
     </LoadingContainer>
   )
