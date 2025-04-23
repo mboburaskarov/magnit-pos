@@ -149,8 +149,7 @@ function NewCashRegister() {
 
   const { mutate: openZReport, isLoading: isopenZReport } = useMutation(requests.openZReport, {
     onSuccess: ({ data }) => {
-      // if (true) {
-      if (!get(data, 'error', true) && get(data, 'message') == 'SUCCESS') {
+      if (get(data, 'error', true) == false || get(data, 'message', '').includes('ERROR_ZREPORT_IS_ALREADY_OPEN')) {
         methods.handleSubmit(onSubmit, onError)()
         return
       } else {
@@ -231,7 +230,7 @@ function NewCashRegister() {
                         })
                       }
                     }}
-                    disabled={get(canCreate, 'is_open')}
+                    disabled={get(canCreate, 'is_open') || isopenZReport || isCreatingCashbox}
                     sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}
                   >
                     Kassani oching <ArrowRightIcon color={!get(canCreate, 'canCreate') ? '#FF6018' : '#fff'} />
