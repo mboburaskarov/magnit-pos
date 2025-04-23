@@ -181,7 +181,7 @@ function NewCashRegister() {
   return (
     <LoadingContainer readyState={!isCheckSaleExist}>
       <FormProvider {...methods}>
-        {isEposTurnOn || get(userData, 'type') === 'SUPERADMIN' ? (
+        {isEposTurnOn ? (
           <Box className={classes.box}>
             <Box className={classes.wrapper}>
               <Typography display={'flex'} alignItems={'center'} fontSize={'32px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'} p={'24px'}>
