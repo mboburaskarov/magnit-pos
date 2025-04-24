@@ -305,7 +305,7 @@ export default function OrderDrawer({
     }
   }, [paymentsList, cartItemsList])
 
-  const { mutate: sendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
+  const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
     onSuccess: ({ data }) => {},
     onError: (err) => {
       error('Ошибка при епосе')
@@ -323,7 +323,7 @@ export default function OrderDrawer({
   })
 
   const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
-  const { mutate: finishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
+  const { mutate: finishSaleWithoutAppPaymentType, isLoading: isFinishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
       if (false) {
         // disabling epos
@@ -791,7 +791,7 @@ export default function OrderDrawer({
             <LoadingButton
               sx={{ minHeight: '48px !important ', display: 'flex' }}
               variant='contained'
-              loading={isSendToEPOS}
+              loading={isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType}
               disabled={maxAmount > 0}
               onClick={() => handleFinish()}
             >

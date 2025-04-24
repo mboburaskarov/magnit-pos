@@ -1,21 +1,18 @@
 import { Box, Button } from '@mui/material'
 import { useTheme } from '@mui/styles'
-import * as qs from 'qs'
+import { get } from 'lodash'
+import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
+import InputPassword from '../../../../components/Inputs/InputPasswordNew'
 import SelectSimple from '../../../../components/Select/SelectSimple'
 import { requests } from '../../../../utils/requests'
+import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { useSelector } from 'react-redux'
-import { get } from 'lodash'
-import { error, success } from '../../../../utils/toast'
-import InputPassword from '../../../../components/Inputs/InputPasswordNew'
-import { borderRadius } from '@mui/system'
-import { useEffect } from 'react'
-import LazySelect from '../../../../components/Select/LazySelect'
 
 export default function ChangeShift({ open, setOpen }) {
   const navigate = useNavigate()
@@ -53,7 +50,7 @@ export default function ChangeShift({ open, setOpen }) {
   })
   const onSubmit = (data) => {
     const requestBody = {
-      cash_box_id: data.cash_box_id?.id || undefined,
+      // cash_box_id: data.cash_box_id?.id || undefined,
       from_employee_id: userData?.id || undefined,
       to_employee_id: data.employee_id?.id || undefined,
       password: data?.password || undefined,
@@ -129,7 +126,7 @@ export default function ChangeShift({ open, setOpen }) {
               }}
               filterOption={() => true}
             /> */}
-            <SelectSimple
+            {/* <SelectSimple
               fullWidth
               id='categ'
               white
@@ -143,7 +140,7 @@ export default function ChangeShift({ open, setOpen }) {
               placeholder={'Выбрать кассу'}
               getOptionLabel={(el) => el.name}
               options={cashBoxList?.data?.data}
-            />
+            /> */}
             <InputPassword
               boxStyle={{ borderRadius: '40px' }}
               id='password'
