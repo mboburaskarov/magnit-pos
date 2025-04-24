@@ -5,6 +5,7 @@ import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
+import TextField from '../../../components/Inputs/TextField'
 import Label from '../../../components/Label'
 import SectionTitle from '../../../components/SectionTitle'
 import UploadImage from '../../../components/UploadImage'
@@ -14,7 +15,6 @@ import useDebouncedValue from '../../hooks/useDebouncedValue'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import productPriceTableHeaderSelector from './productPriceTableHeaderSelector'
 import productStoresTableHeaderSelector from './productStoresTableHeaderSelector'
-
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
@@ -212,7 +212,7 @@ export default function ProductBody({ productData = null }) {
       // setValue('markup', productData?.markup || 0)
       // setValue('bonus_percent', productData?.bonus_percent || 0)
 
-      // setValue('description', productData?.description || '')
+      setValue('description', productData?.description || '')
       // setValue('manufacturer', getOptionsSchema(get(productData, 'producer', []), Object))
       // setValue('shelf_id', getOptionsSchema(get(productData, 'shelf', []), Object))
       // setValue('box_grain_count', productData?.unit_per_pack || 0)
@@ -540,7 +540,8 @@ export default function ProductBody({ productData = null }) {
         </SectionTitle>
         <CategoriesTree />
         <Box height={'30px'} />
-        <TextField borderRadius={'20px'} required multiline fullWidth name='description' label='Описание' placeholder='Введите описание' /> */}
+        */}
+        <TextField borderRadius={'20px'} required multiline fullWidth name='description' label='Описание' placeholder='Введите описание' />
       </Box>
     </Box>
   )

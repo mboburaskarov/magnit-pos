@@ -39,7 +39,7 @@ export default function ProductEditPage() {
     const requestBody = {
       // barcode: get(data, 'barcode'),
       // bonus_percent: Number(get(data, 'bonus_percent')),
-      // description: get(data, 'description'),
+      description: get(data, 'description'),
       // producer_id: get(data, 'manufacturer.value'),
       // shelf_id: get(data, 'shelf_id.value'),
       // name: get(data, 'name'),
