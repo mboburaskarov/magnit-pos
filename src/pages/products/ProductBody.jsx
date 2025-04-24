@@ -201,7 +201,7 @@ export default function ProductBody({ productData = null }) {
 
   useEffect(() => {
     if (productData) {
-      // setValue('name', productData?.name)
+      setValue('name', productData?.name)
       setImages(productData?.photos?.map((item) => ({ file_name: item, file_url: item })))
 
       // setValue('supply_price', productData?.supply_price || 0)
@@ -267,7 +267,7 @@ export default function ProductBody({ productData = null }) {
         {t('create_new_product.main_section.label')}
       </SectionTitle>
       <Box mt={'24px'}>
-        {/* <TextField
+        <TextField
           required
           fullWidth
           borderRadius={'40px'}
@@ -275,7 +275,7 @@ export default function ProductBody({ productData = null }) {
           label={t('create_new_product.product_name')}
           placeholder={t('create_new_product.product_name.placeholder')}
           sx={{ mb: 3 }}
-        /> */}
+        />
 
         <Box mt={'24px'}>
           <Label>{t('create_new_product.products_set_section.image')}</Label>
