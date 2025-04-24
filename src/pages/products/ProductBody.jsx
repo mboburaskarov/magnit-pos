@@ -541,7 +541,7 @@ export default function ProductBody({ productData = null }) {
         <CategoriesTree />
         <Box height={'30px'} />
         */}
-        <TextField borderRadius={'20px'} required multiline fullWidth name='description' label='Описание' placeholder='Введите описание' />
+        <TextField borderRadius={'20px'} multiline fullWidth name='description' label='Описание' placeholder='Введите описание' />
       </Box>
     </Box>
   )
