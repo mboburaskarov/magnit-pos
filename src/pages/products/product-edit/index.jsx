@@ -39,10 +39,10 @@ export default function ProductEditPage() {
     const requestBody = {
       // barcode: get(data, 'barcode'),
       // bonus_percent: Number(get(data, 'bonus_percent')),
-      // description: get(data, 'description'),
+      description: get(data, 'description'),
       // producer_id: get(data, 'manufacturer.value'),
       // shelf_id: get(data, 'shelf_id.value'),
-      // name: get(data, 'name'),
+      name: get(data, 'name'),
       photos: get(data, 'images', []).map((el) => el.file_url),
       // category_ids: methods.getValues('category_ids'),
       // unit_type_id: get(data, 'product_unit.id'),

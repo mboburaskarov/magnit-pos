@@ -63,6 +63,18 @@ const columns = [
     flex: 1,
   },
   {
+    field: 'mxik_code',
+    hide: false,
+    minWidth: 260,
+    flex: 1,
+  },
+  {
+    field: 'unit_code',
+    hide: false,
+    minWidth: 260,
+    flex: 1,
+  },
+  {
     field: 'category',
     hide: false,
     minWidth: 70,

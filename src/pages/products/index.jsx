@@ -228,6 +228,12 @@ export default function ProductsPage() {
     get(productsList, 'data.data.data', []).map((productData) => {
       methods.setValue(`editable_barcode_${get(productData, 'id')}`, get(productData, 'barcode'))
     })
+    get(productsList, 'data.data.data', []).map((productData) => {
+      methods.setValue(`editable_mxik_${get(productData, 'id')}`, get(productData, 'mxik'))
+    })
+    get(productsList, 'data.data.data', []).map((productData) => {
+      methods.setValue(`editable_unit_code_${get(productData, 'id')}`, get(productData, 'unit_code'))
+    })
   }, [productsList?.data, values?.limit, appType])
   const { mutate: productsExcelReport, isLoading: isproductsExcelReport } = useMutation(requests.getProductsExcelReport, {
     onSuccess: ({ data }) => {
@@ -369,7 +375,7 @@ export default function ProductsPage() {
             </Box>
             <StyledTooltip title={'Включить изменение штрих-кода'}>
               <Box>
-                <CheckAccess id={'can-change-barcode'}>
+                <CheckAccess id={'can-change-barcode-super-admin'}>
                   <Button
                     sx={{
                       height: '48px',
