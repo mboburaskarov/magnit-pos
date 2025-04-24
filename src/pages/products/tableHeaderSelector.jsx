@@ -235,6 +235,64 @@ export default function tableHeaderSelector({
         }),
       }
     }
+    if (el.field === 'mxik_code') {
+      return {
+        ...el,
+        headerName: 'MXIK',
+        colId: el.field,
+        cellRenderer: memo((p) => {
+          if (!canChangebarcode) {
+            return <SimpleText currency='' {...p} type='mxik' />
+          } else {
+            return (
+              <NumberFormatInput
+                onBlur={({ target }) => {
+                  if (p?.data?.barcode == get(target, 'value')) return
+
+                  changeBarcode({ id: get(p, 'data.id'), mxik: get(target, 'value') })
+                }}
+                placeholder={'0'}
+                thousandSeparator={''}
+                defaultValue={p?.data?.mxik}
+                id={`editable_mxik_${p?.data?.id}`}
+                name={`editable_mxik_${p?.data?.id}`}
+                type='number'
+                fullWidth
+              />
+            )
+          }
+        }),
+      }
+    }
+    if (el.field === 'unit_code') {
+      return {
+        ...el,
+        headerName: 'Унит код',
+        colId: el.field,
+        cellRenderer: memo((p) => {
+          if (!canChangebarcode) {
+            return <SimpleText currency='' {...p} type='unit_code' />
+          } else {
+            return (
+              <NumberFormatInput
+                onBlur={({ target }) => {
+                  if (p?.data?.barcode == get(target, 'value')) return
+
+                  changeBarcode({ id: get(p, 'data.id'), unit_code: get(target, 'value') })
+                }}
+                placeholder={'0'}
+                thousandSeparator={''}
+                defaultValue={p?.data?.unit_code}
+                id={`editable_unit_code_${p?.data?.id}`}
+                name={`editable_unit_code_${p?.data?.id}`}
+                type='number'
+                fullWidth
+              />
+            )
+          }
+        }),
+      }
+    }
     if (el.field === 'material_code') {
       return {
         ...el,
