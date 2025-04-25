@@ -62,6 +62,10 @@ function OrderLite({
     },
   ]
   useEffect(() => {
+    if (paymentAmount <= 0) {
+      setLiteOrder(false)
+      return
+    }
     if (liteOrder) {
       if (paymentsList.find((el) => el.type === 'app')?.amount > 0) {
         setOpenScanDialog(true)

@@ -263,7 +263,29 @@ function Test() {
               </Box>
             </Box>
           </FormProvider>
-          <Box maxWidth={'1000px'} margin={'auto'} display={'flex'}>
+          <NumberFormatInput
+            endAdornmentText={'UZS'}
+            end
+            uncontrolled
+            type='number'
+            sx={{ marginBottom: '50px' }}
+            fullWidth
+            onKeyDown={(e) => {
+              if (e.key == 'Enter') {
+                closeCheckZReport({
+                  token: 'DXJFX32CN1296678504F2',
+                  method: 'getZReportInfoByNumber',
+                  printerSize: 80,
+                  zReportId: Number(e.target.value),
+                })
+              }
+            }}
+            // uncontrolled
+            name='opened_amout'
+            label='getZReportInfoByNumber'
+            placeholder='getZReportInfoByNumber'
+          />
+          <Box mt={'10px'} maxWidth={'1000px'} margin={'auto'} display={'flex'}>
             <Button
               type='submit'
               onClick={() =>
@@ -321,6 +343,7 @@ function Test() {
             >
               oldingi z achchot olish <ArrowRightIcon color={!true ? '#FF6018' : '#fff'} />
             </Button>
+
             <Button
               type='submit'
               onClick={() =>
