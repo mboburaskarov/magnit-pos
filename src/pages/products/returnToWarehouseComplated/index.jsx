@@ -245,14 +245,14 @@ export default function ReturnToWarehouseCompletedPage() {
         open={openFinishConfirmDialog}
         setOpen={() => setOpenFinishConfirmDialog(false)}
         icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
-        title={t('alerts.finish_writeoff')}
+        title={t('alerts.finish_return')}
         desc={
           <>
             <Typography fontWeight={'600'} fontSize={'20px'}>
-              {t('alerts.finish_writeoff_desc')}
+              {t('alerts.finish_return_desc')}
             </Typography>
             <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
-              {t('alerts.finish_writeoff_warning')}
+              {t('alerts.finish_return_warning')}
             </Typography>
           </>
         }
