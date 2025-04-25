@@ -9,6 +9,9 @@ import InventoryDetailPage from '../../pages/products/inventoryDetails/index'
 import InventoryWithCheckingPage from '../../pages/products/inventoryWithChecking/index'
 import ProductCreatePage from '../../pages/products/product-create'
 import ProductEditPage from '../../pages/products/product-edit'
+import ReturnToWarehouseCompletedPage from '../../pages/products/returnToWarehouseComplated'
+import ReturnToWarehouseGetScanWithCheckingPage from '../../pages/products/returnToWarehouseGetWithChecking'
+import ReturnToWarehouseSentScanWithCheckingPage from '../../pages/products/returnToWarehouseSentWithChecking'
 import WriteOffCompletedPage from '../../pages/products/writeOffComplated/index'
 import WriteOffScanWithCheckingPage from '../../pages/products/writeOffWithChecking'
 const productsCreateRoutes = {
@@ -65,6 +68,33 @@ const productsCreateRoutes = {
         {
           path: '',
           element: <WriteOffCompletedPage />,
+        },
+      ],
+    },
+    {
+      path: 'return-to-warehouse-get-with-checking/:id',
+      children: [
+        {
+          path: '',
+          element: <ReturnToWarehouseGetScanWithCheckingPage />,
+        },
+      ],
+    },
+    {
+      path: 'return-to-warehouse-sent-with-checking/:id',
+      children: [
+        {
+          path: '',
+          element: <ReturnToWarehouseSentScanWithCheckingPage />,
+        },
+      ],
+    },
+    {
+      path: 'return-to-warehouse-completed/:id',
+      children: [
+        {
+          path: '',
+          element: <ReturnToWarehouseCompletedPage />,
         },
       ],
     },

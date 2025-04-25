@@ -3,6 +3,7 @@ import ProductsPage from '../../pages/products'
 import AutoOrderPage from '../../pages/products/autoOrder'
 import ImportPage from '../../pages/products/import'
 import InventoryPage from '../../pages/products/inventory'
+import ReturnToWarehousePage from '../../pages/products/returnToWarehouse'
 import TransferPage from '../../pages/products/transfer'
 import WriteOffPage from '../../pages/products/writeOff'
 const productsRoutes = {
@@ -34,6 +35,10 @@ const productsRoutes = {
     {
       path: 'write-off',
       element: <WriteOffPage />,
+    },
+    {
+      path: 'return-to-warehouse',
+      element: <ReturnToWarehousePage />,
     },
   ],
 }

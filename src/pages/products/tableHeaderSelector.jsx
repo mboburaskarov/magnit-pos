@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
 import CheckAccess from '../../../components/CheckAccess'
 import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
+import TextField from '../../../components/Inputs/TextField'
 import thousandDivider from '../../../utils/thousandDivider'
 import { products_statuses } from '../../assets/data/products-statuses'
 import DefaultImgIcon from '../../assets/icons/defaultImgIcon'
@@ -216,7 +217,7 @@ export default function tableHeaderSelector({
             return <SimpleText currency='' {...p} type='barcode' />
           } else {
             return (
-              <NumberFormatInput
+              <TextField
                 onBlur={({ target }) => {
                   if (p?.data?.barcode == get(target, 'value')) return
 

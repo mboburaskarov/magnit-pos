@@ -125,6 +125,17 @@ export const requests = {
   getWriteOffScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
   finishWriteOffChecking: (id) => request.post(`v1/write-off/confirm/${id}`),
   deleteWriteOff: ({ id }) => request.post(`v1/write-off/cancel/${id}`),
+  //return to warehouse
+  createReturnToWarehouse: (data) => request.post(`v1/return`, data),
+  getAllReturnToWarehouse: (filter) => request.get(`v1/return/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  sendScannedReturnToWarehouseNumber: ({ id, barcode, product_id, type, scanned_count }) =>
+    request.patch(`v1/return/${id}/add-product-by-barcode`, { barcode, count: scanned_count, type, product_id }),
+  getReturnToWarehouseDetails: (filter) => request.get(`v1/return-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getReturnToWarehouseDashBoard: (id) => request.get(`v1/return/${id}`),
+  getReturnToWarehouseScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
+  finishReturnToWarehouseChecking: (id) => request.post(`v1/return/confirm/${id}`),
+  SentReturnToWarehouseChecking: (id) => request.post(`v1/return/send/${id}`),
+  deleteReturnToWarehouse: ({ id }) => request.post(`v1/return/cancel/${id}`),
   //inventory
   createInventory: (data) => request.post(`v1/inventory`, data),
   getAllInventory: (filter) => request.get(`v1/inventory/list${qs.stringify(filter, { addQueryPrefix: true })}`),
