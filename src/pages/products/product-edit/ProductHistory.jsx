@@ -16,6 +16,7 @@ export default function ProductHistory({ id }) {
   const productHistoryFilter = useMemo(() => {
     return {
       limit: values?.limitHistory || 5,
+      store_id: values?.store_id,
       offset: values?.offsetHistory || 0,
     }
   }, [values?.limitHistory, values?.offsetHistory])

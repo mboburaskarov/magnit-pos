@@ -9,6 +9,8 @@ import InventoryDetailPage from '../../pages/products/inventoryDetails/index'
 import InventoryWithCheckingPage from '../../pages/products/inventoryWithChecking/index'
 import ProductCreatePage from '../../pages/products/product-create'
 import ProductEditPage from '../../pages/products/product-edit'
+import ReturnToWarehouseCompletedPage from '../../pages/products/returnToWarehouseComplated'
+import ReturnToWarehouseScanWithCheckingPage from '../../pages/products/returnToWarehouseWithChecking'
 import WriteOffCompletedPage from '../../pages/products/writeOffComplated/index'
 import WriteOffScanWithCheckingPage from '../../pages/products/writeOffWithChecking'
 const productsCreateRoutes = {
@@ -65,6 +67,24 @@ const productsCreateRoutes = {
         {
           path: '',
           element: <WriteOffCompletedPage />,
+        },
+      ],
+    },
+    {
+      path: 'return-to-warehouse-with-checking/:id',
+      children: [
+        {
+          path: '',
+          element: <ReturnToWarehouseScanWithCheckingPage />,
+        },
+      ],
+    },
+    {
+      path: 'return-to-warehouse-completed/:id',
+      children: [
+        {
+          path: '',
+          element: <ReturnToWarehouseCompletedPage />,
         },
       ],
     },
