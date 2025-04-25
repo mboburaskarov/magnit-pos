@@ -187,7 +187,7 @@ export default function ReturnToWarehousePage() {
                 changeColumnSequence={changeColumnSequence}
               />
             </Box>
-            <CheckAccess id={'create-auto-order'}>
+            <CheckAccess id={'create-return-to-warehouse'} noAccess>
               <Box minWidth={156}>
                 <Button
                   sx={{ height: '48px' }}
