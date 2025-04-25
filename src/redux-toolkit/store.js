@@ -19,6 +19,9 @@ import { inventoryWithCheckingTableColumnsSlice } from './tableSlices/inventoryW
 import { orderTableColumnsSlice } from './tableSlices/orderTableColumns'
 import { productPriceListTableColumnsForProductSlice } from './tableSlices/productPriceListTableColumnsForProduct'
 import { productsTableColumnsSlice } from './tableSlices/productsTableColumns'
+import { returnToWarehouseGetWithCheckingTableColumnsSlice } from './tableSlices/returnToWarehouseGetWithCheckingTableColumns'
+import { returnToWarehouseSentWithCheckingTableColumnsSlice } from './tableSlices/returnToWarehouseSentWithCheckingTableColumns'
+import { returnToWarehouseTableColumnsSlice } from './tableSlices/returnToWarehouseTableColumns'
 import { rolesTableColumnsSlice } from './tableSlices/rolesTableColumns'
 import { salesTableColumnsSlice } from './tableSlices/salesTableColumns'
 import { sellerBonusTableColumnsSlice } from './tableSlices/sellerBonusTableColumns'
@@ -32,7 +35,7 @@ import { userSlice } from './userSlice'
 // Define your migration function here
 const migrations = {
   // Example migration
-  222: (state) => {
+  230: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -50,7 +53,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 222, // Current version of the persisted state
+  version: 230, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -65,6 +68,7 @@ const reducer = combineReducers({
   importsTableColumns: importsTableColumnsSlice,
   inventoryTableColumns: inventoryTableColumnsSlice,
   writeOffTableColumns: writeOffTableColumnsSlice,
+  returnToWarehouseTableColumns: returnToWarehouseTableColumnsSlice,
   autoOrderTableColumns: autoOrderTableColumnsSlice,
   bonusProductTableColumns: bonusProductTableColumnsSlice,
   autoOrderTableDetailColumns: autoOrderDetailSlice,
@@ -73,6 +77,8 @@ const reducer = combineReducers({
   importWithCheckingColumns: importWithCheckingTableColumnsSlice,
   inventoryWithCheckingColumns: inventoryWithCheckingTableColumnsSlice,
   writeOffWithCheckingColumns: writeOffWithCheckingTableColumnsSlice,
+  returnToWarehouseGetWithCheckingColumns: returnToWarehouseGetWithCheckingTableColumnsSlice,
+  returnToWarehouseSentWithCheckingColumns: returnToWarehouseSentWithCheckingTableColumnsSlice,
   salesTableColumns: salesTableColumnsSlice,
   cashBoxShiftsTableColumns: cashBoxShiftsTableColumnsSlice,
   cashBoxShiftHistoryTableColumns: cashBoxShiftHistoryTableColumnsSlice,

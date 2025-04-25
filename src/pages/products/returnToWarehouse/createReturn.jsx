@@ -24,7 +24,7 @@ export default function CreateReturn({ open, refetch, setOpen }) {
       setopenWarn(false)
     }
   }, [methods.watch('reason')])
-  const { mutate: createWriteOff, isLoading: iscreateWriteOff } = useMutation(requests.createWriteOff, {
+  const { mutate: createReturnToWarehouse, isLoading: iscreateReturnToWarehouse } = useMutation(requests.createReturnToWarehouse, {
     onSuccess: () => {
       setOpen(false)
       success('Создать автозаказ')
@@ -41,7 +41,7 @@ export default function CreateReturn({ open, refetch, setOpen }) {
       name: data.name || undefined,
       comment: data.reason?.id || undefined,
     }
-    createWriteOff(requestBody)
+    createReturnToWarehouse(requestBody)
   }
 
   const onError = (err) => {

@@ -20,7 +20,7 @@ import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/writeOffTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/returnToWarehouseTableColumns'
 import CreateReturn from './createReturn'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
@@ -30,7 +30,7 @@ export default function ReturnToWarehousePage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { columns, loading } = useSelector((state) => state.writeOffTableColumns)
+  const { columns, loading } = useSelector((state) => state.returnToWarehouseTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
@@ -62,7 +62,7 @@ export default function ReturnToWarehousePage() {
     }
   }, [])
 
-  const writeOffListFilter = useMemo(() => {
+  const returnsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
@@ -88,22 +88,22 @@ export default function ReturnToWarehousePage() {
     values?.received_amount_from,
   ])
   const {
-    data: writeOffList,
-    isLoading: writeOffListLoading,
-    isFetching: isFetchingwriteOffList,
+    data: returnsList,
+    isLoading: returnsListLoading,
+    isFetching: isFetchingreturnsList,
     refetch,
-  } = useQuery(['writeOffList', writeOffListFilter], () => requests.getAllWriteOff(writeOffListFilter))
+  } = useQuery(['returnsList', returnsListFilter], () => requests.getAllReturnToWarehouse(returnsListFilter))
 
   useEffect(() => {
     refetch()
-  }, [writeOffListFilter])
+  }, [returnsListFilter])
 
   useEffect(() => {
-    const count = writeOffList?.data?.data?._meta?.total_count
+    const count = returnsList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [writeOffList?.data, values?.limit])
+  }, [returnsList?.data, values?.limit])
   const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
     onSuccess: ({ data }) => {
       downloadExcel(data, 'Возврат')
@@ -114,7 +114,7 @@ export default function ReturnToWarehousePage() {
       error('Ошибка при скачать excel!')
     },
   })
-  const { mutate: deleteWriteOff, isLoading: isDeletingProduct } = useMutation(requests.deleteWriteOff, {
+  const { mutate: deleteWriteOff, isLoading: isDeletingProduct } = useMutation(requests.deleteReturnToWarehouse, {
     onSuccess: () => {
       refetch()
       success('Возврат был успешно удален!')
@@ -210,15 +210,15 @@ export default function ReturnToWarehousePage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
-            // fullDownload={() => importsExcelReport({ ...writeOffListFilter, limit: 1000000 })}
-            // downloadByFilter={() => importsExcelReport(writeOffListFilter)}
+            // fullDownload={() => importsExcelReport({ ...returnsListFilter, limit: 1000000 })}
+            // downloadByFilter={() => importsExcelReport(returnsListFilter)}
             isDownloading={isimportsExcelReport}
             tableSettings
             columns={tableColumns}
             defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
-            data={writeOffList?.data?.data?.data || []}
-            totalCount={writeOffList?.data?.data?._meta?.total_count || 0}
-            isDataLoading={isFetchingwriteOffList || writeOffListLoading}
+            data={returnsList?.data?.data?.data || []}
+            totalCount={returnsList?.data?.data?._meta?.total_count || 0}
+            isDataLoading={isFetchingreturnsList || returnsListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
@@ -229,7 +229,7 @@ export default function ReturnToWarehousePage() {
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingwriteOffList || writeOffListLoading}
+            isRefreshing={loading || isFetchingreturnsList || returnsListLoading}
           />
         </Box>
       </Box>

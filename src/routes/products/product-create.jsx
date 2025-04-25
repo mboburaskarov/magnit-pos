@@ -10,7 +10,8 @@ import InventoryWithCheckingPage from '../../pages/products/inventoryWithCheckin
 import ProductCreatePage from '../../pages/products/product-create'
 import ProductEditPage from '../../pages/products/product-edit'
 import ReturnToWarehouseCompletedPage from '../../pages/products/returnToWarehouseComplated'
-import ReturnToWarehouseScanWithCheckingPage from '../../pages/products/returnToWarehouseWithChecking'
+import ReturnToWarehouseGetScanWithCheckingPage from '../../pages/products/returnToWarehouseGetWithChecking'
+import ReturnToWarehouseSentScanWithCheckingPage from '../../pages/products/returnToWarehouseSentWithChecking'
 import WriteOffCompletedPage from '../../pages/products/writeOffComplated/index'
 import WriteOffScanWithCheckingPage from '../../pages/products/writeOffWithChecking'
 const productsCreateRoutes = {
@@ -71,11 +72,20 @@ const productsCreateRoutes = {
       ],
     },
     {
-      path: 'return-to-warehouse-with-checking/:id',
+      path: 'return-to-warehouse-get-with-checking/:id',
       children: [
         {
           path: '',
-          element: <ReturnToWarehouseScanWithCheckingPage />,
+          element: <ReturnToWarehouseGetScanWithCheckingPage />,
+        },
+      ],
+    },
+    {
+      path: 'return-to-warehouse-sent-with-checking/:id',
+      children: [
+        {
+          path: '',
+          element: <ReturnToWarehouseSentScanWithCheckingPage />,
         },
       ],
     },

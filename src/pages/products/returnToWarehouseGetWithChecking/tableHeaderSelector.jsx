@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
@@ -71,20 +72,24 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         )),
       }
     }
-    if (el.field === 'supply_price') {
+    if (el.field === 'export_date') {
       return {
         ...el,
-        headerName: 'Цена продажи',
+        headerName: 'Срок годности',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type={'supply_price'} />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{dayjs(p.data?.expire_date).format('DD.MM.YYYY')}</Typography>
+          </Box>
+        )),
       }
     }
-    if (el.field === 'retail_price') {
+    if (el.field === 'serial_number') {
       return {
         ...el,
-        headerName: 'Цена поставки',
+        headerName: 'Серийный номер',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type={'retail_price'} />),
+        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type={'serial_number'} />),
       }
     }
     if (el.field === 'stock_count') {
@@ -95,7 +100,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <Typography>
-              {p.data?.stock_count} {p.data?.short_name}
+              {p.data?.received_count} {p.data?.short_name}
             </Typography>
           </Box>
         )),

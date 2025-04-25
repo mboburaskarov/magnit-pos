@@ -8,7 +8,7 @@ import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
 import CheckAccess from '../../../../components/CheckAccess'
 import StyledTooltip from '../../../../components/StyledTooltip'
 import thousandDivider from '../../../../utils/thousandDivider'
-import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
+import { returns_list_statuses } from '../../../assets/data/return-statuses'
 import ArrowRight from '../../../assets/icons/ArrowRight'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
@@ -114,13 +114,26 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
                     previusLimit: values?.limit,
                     previusOffset: values?.offset,
                   })}`
-                : `/products/return-to-warehouse-with-checking/${p.data.id}?${qs.stringify({
+                : p.data.status == 'new'
+                ? `/products/return-to-warehouse-sent-with-checking/${p.data.id}?${qs.stringify({
                     previusLimit: values?.limit,
                     previusOffset: values?.offset,
                   })}`
+                : p.data.status == 'sent'
+                ? `/products/return-to-warehouse-get-with-checking/${p.data.id}?${qs.stringify({
+                    previusLimit: values?.limit,
+                    previusOffset: values?.offset,
+                  })}`
+                : '#'
             }
           >
-            <Typography whiteSpace={'pre-wrap'} fontWeight={'600'} color={'orange.500'} fontSize={'16px'} lineHeight={'24px'}>
+            <Typography
+              whiteSpace={'pre-wrap'}
+              fontWeight={'600'}
+              color={p.data.status !== 'canceled' ? 'orange.500' : 'red.500'}
+              fontSize={'16px'}
+              lineHeight={'24px'}
+            >
               {p.data.name}
             </Typography>
           </Link>
@@ -135,6 +148,110 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         cellRenderer: memo((p) => <Typography whiteSpace={'pre-wrap'}>{p.data?.store?.name}</Typography>),
       }
     }
+    if (el.field === 'supply_price') {
+      return {
+        ...el,
+        headerName: 'Сумма продажи',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <StyledTooltip title={'Недостачи'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'red.500',
+                  }}
+                >
+                  <LeftArrowIcon fill='transparent' color='#fff' />
+                </Box>
+              </StyledTooltip>
+
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={'сум'} type={'received_retail_sum'} />
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <StyledTooltip title={'Излишек'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'green.500',
+                  }}
+                >
+                  <ArrowRight color='#fff' />
+                </Box>
+              </StyledTooltip>
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={'сум'} type={'accepted_retail_sum'} />
+            </Box>
+          </>
+        )),
+      }
+    }
+    if (el.field === 'retail_price') {
+      return {
+        ...el,
+        headerName: 'Сумма поставки',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <StyledTooltip title={'Недостачи'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'red.500',
+                  }}
+                >
+                  <LeftArrowIcon fill='transparent' color='#fff' />
+                </Box>
+              </StyledTooltip>
+
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={'сум'} type={'received_supply_sum'} />
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <StyledTooltip title={'Излишек'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'green.500',
+                  }}
+                >
+                  <ArrowRight color='#fff' />
+                </Box>
+              </StyledTooltip>
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={'сум'} type={'accepted_supply_sum'} />
+            </Box>
+          </>
+        )),
+      }
+    }
     if (el.field === 'status') {
       return {
         ...el,
@@ -143,9 +260,9 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         cellRenderer: memo((p) => (
           <StatusCell
             id={`products-status-${p.rowIndex}`}
-            color={imports_list_statuses.find((el) => el.id === p.data.status)?.color}
-            bgcolor={imports_list_statuses.find((el) => el.id === p.data.status)?.bgcolor}
-            title={imports_list_statuses.find((el) => el.id === p.data.status)?.name}
+            color={returns_list_statuses.find((el) => el.id === p.data.status)?.color}
+            bgcolor={returns_list_statuses.find((el) => el.id === p.data.status)?.bgcolor}
+            title={returns_list_statuses.find((el) => el.id === p.data.status)?.name}
           />
         )),
       }
@@ -222,7 +339,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         ...el,
         headerName: 'Количество',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={''} type={'measurement_count'} />),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={''} type={'return_count'} />),
       }
     }
 

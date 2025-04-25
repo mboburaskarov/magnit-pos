@@ -41,7 +41,7 @@ export default function FilterMenu({ open, setOpen }) {
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
     setOpen(false)
-    navigate(`/products/write-off${requestParams}`)
+    navigate(`/products/return-to-warehouse${requestParams}`)
   }
 
   const onError = (err) => {
@@ -78,7 +78,7 @@ export default function FilterMenu({ open, setOpen }) {
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/products/write-off?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/products/return-to-warehouse?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
   return (
