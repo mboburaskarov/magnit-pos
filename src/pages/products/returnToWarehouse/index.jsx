@@ -13,6 +13,7 @@ import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 // import SoonPage from '../../../../components/soon/index'
+import dayjs from 'dayjs'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
@@ -127,6 +128,16 @@ export default function ReturnToWarehousePage() {
       console.log('err', err)
     },
   })
+  const { mutate: getReturnToWarehouseExcelReport, isLoading: isgetReturnToWarehouseExcelReport } = useMutation(requests.getReturnToWarehouseExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadExcel(data, `Возврат | ${dayjs().format('YYYY-MM-DD HH:mm')}`)
+    },
+    onError: (err) => {
+      console.log(err)
+
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
@@ -210,6 +221,8 @@ export default function ReturnToWarehousePage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
+            fullDownload={() => getReturnToWarehouseExcelReport({ ...returnsListFilter, limit: 1000000 })}
+            downloadByFilter={() => getReturnToWarehouseExcelReport(returnsListFilter)}
             // fullDownload={() => importsExcelReport({ ...returnsListFilter, limit: 1000000 })}
             // downloadByFilter={() => importsExcelReport(returnsListFilter)}
             isDownloading={isimportsExcelReport}

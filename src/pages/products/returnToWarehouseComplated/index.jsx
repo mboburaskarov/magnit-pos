@@ -1,6 +1,7 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Container, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -14,6 +15,7 @@ import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import errorAudio from '../../../assets/audio/error.mp3'
@@ -47,6 +49,7 @@ export default function ReturnToWarehouseCompletedPage() {
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
+
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedWriteOffNumber, {
     onSuccess: ({ data }) => {
       // refetch()
@@ -84,7 +87,7 @@ export default function ReturnToWarehouseCompletedPage() {
       search: barcode,
       type: status,
     }
-  }, [id])
+  }, [id, barcode, values?.limit, values?.offset, status])
 
   const {
     data: getWriteOffDashBoard,
@@ -142,7 +145,19 @@ export default function ReturnToWarehouseCompletedPage() {
       scanned_count: Number(manualNumber),
     })
   }
+  const { mutate: getReturnToWarehouseDetailsExcelReport, isLoading: isgetReturnToWarehouseDetailsExcelReport } = useMutation(
+    requests.getReturnToWarehouseDetailsExcelReport,
+    {
+      onSuccess: ({ data }) => {
+        downloadExcel(data, `Возврат деталей | ${dayjs().format('YYYY-MM-DD HH:mm')}`)
+      },
+      onError: (err) => {
+        console.log(err)
 
+        error('Ошибка при скачать excel!')
+      },
+    }
+  )
   return (
     <LoadingContainer readyState={!isfinishWriteOffChecking}>
       <FormProvider {...methods}>
@@ -209,6 +224,8 @@ export default function ReturnToWarehouseCompletedPage() {
             <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' } }}>
               <AgGridTable
                 id='imports-main-table'
+                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...WriteOffWithCheckingDetailsFilter, limit: 1000000 })}
+                downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(WriteOffWithCheckingDetailsFilter)}
                 tableSettings
                 columns={tableColumns}
                 data={WriteOffWithCheckingDetails?.data?.data?.data || []}

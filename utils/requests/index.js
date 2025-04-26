@@ -136,6 +136,8 @@ export const requests = {
   finishReturnToWarehouseChecking: (id) => request.post(`v1/return/confirm/${id}`),
   SentReturnToWarehouseChecking: (id) => request.post(`v1/return/send/${id}`),
   deleteReturnToWarehouse: ({ id }) => request.post(`v1/return/cancel/${id}`),
+  getReturnToWarehouseExcelReport: (filter) => requestEXCEL.get(`v1/return/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getReturnToWarehouseDetailsExcelReport: (filter) => requestEXCEL.get(`v1/return-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   //inventory
   createInventory: (data) => request.post(`v1/inventory`, data),
   getAllInventory: (filter) => request.get(`v1/inventory/list${qs.stringify(filter, { addQueryPrefix: true })}`),
