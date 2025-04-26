@@ -27,13 +27,13 @@ const columns = [
     width: 200,
   },
   {
-    field: 'retail_price',
+    field: 'export_date',
     hide: false,
     minWidth: 70,
     width: 200,
   },
   {
-    field: 'supply_price',
+    field: 'serial_number',
     hide: false,
     minWidth: 70,
     width: 200,
