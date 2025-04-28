@@ -1,13 +1,12 @@
 import React, { useMemo, useRef } from 'react'
-import { makeStyles } from '@mui/styles'
 // import { TreeItem as MuiTreeItem } from '@mui/lab'
 // import MuiTreeItem from '@mui/lab/TreeItem'
 import { TreeItem as MuiTreeItem } from '@mui/x-tree-view/TreeItem'
 
+import { Box } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Highlighter from 'react-highlight-words'
-import { Box } from '@mui/material'
 import InfoIcon from '../../src/assets/icons/InfoIcon'
 import StyledTooltip from '../StyledTooltip'
 
@@ -20,7 +19,6 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
     const {
       target: { value, checked },
     } = event
-
     let newSelect = selected.slice()
     if (checked) {
       newSelect = [...parents, value].reverse().reduce(
@@ -95,13 +93,18 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
         ?.forEach((item) => {
           const node = item
           const childNodes = getTreeNodes({ tree, node, depth: 1 })
+          console.log(marksUncheckedRef.current, childNodes, node)
+
           if (childNodes.length > 0) {
             marksUncheckedRef.current = [...new Set([...marksUncheckedRef?.current, ...childNodes])]
           } else {
             marksUncheckedRef.current = [...new Set([...marksUncheckedRef?.current, node])]
           }
         })
+      console.log(value)
+
       newSelect = newSelect?.filter((select) => select !== value && select != 'e14d59f2-0292-4c9e-a8b4-33c804208393')
+      console.log(newSelect)
     }
 
     if (disableMultiParentSelection) {
@@ -118,16 +121,16 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
         }
       }
     }
+    console.log(newSelect)
 
-    onSelect([
-      ...newSelect,
-      // ...children?.filter((child) => child?.id !== 'create')?.map((el) => el?.id)
-    ])
+    onSelect([...newSelect, ...children?.filter((child) => child?.id !== 'create')?.map((el) => el?.id)])
   }
   const renderTreeItem = ({ nodes, parents = [], level = 0 }) =>
     nodes?.map((node) => {
       const { id: value, name: label, description, children } = node
-      const checked = selected.includes(value)
+      // const checked = selected.includes(value)
+      const checked = selected.includes(value) || parents.some((parent) => selected.includes(parent))
+
       if (children && children.length > 0) {
         const indeterminate = isIndeterminate({ tree, selected, node: value })
         const treeItemLabel = createTreeItemLabel({
