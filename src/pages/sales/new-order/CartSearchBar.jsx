@@ -320,7 +320,7 @@ function CartSearchBar({
                 setShowOverlay(false)
               }
               if (e.key == 'Enter') {
-                if (searchTearm?.length > 50) return
+                if (searchTearm?.length < 50) return
 
                 setShowOverlay(false)
                 if (productsData?.length === 1 || searchTearm?.length < 8) {
