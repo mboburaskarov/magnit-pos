@@ -98,7 +98,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         ...el,
         headerName: 'Номер',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='public_id' />),
+        cellRenderer: memo((p) => <SimpleText currency='' {...p} type='public_id' />),
       }
     }
     if (el.field === 'document_number') {
@@ -271,7 +271,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
     if (el.field === 'import_date') {
       return {
         ...el,
-        headerName: 'Дата закрытия',
+        headerName: 'Завершение',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
@@ -346,7 +346,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
     if (el.field === 'created_at') {
       return {
         ...el,
-        headerName: 'Дата создания',
+        headerName: 'Создание',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>

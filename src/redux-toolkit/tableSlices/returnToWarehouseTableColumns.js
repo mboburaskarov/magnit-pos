@@ -26,18 +26,7 @@ const columns = [
     minWidth: 70,
     width: 250,
   },
-  {
-    field: 'created_at',
-    hide: false,
-    minWidth: 70,
-    width: 350,
-  },
-  {
-    field: 'import_date',
-    hide: false,
-    minWidth: 70,
-    width: 370,
-  },
+
   {
     field: 'received_count',
     hide: false,
@@ -62,6 +51,18 @@ const columns = [
     hide: false,
     minWidth: 70,
     width: 170,
+  },
+  {
+    field: 'created_at',
+    hide: false,
+    minWidth: 70,
+    width: 350,
+  },
+  {
+    field: 'import_date',
+    hide: false,
+    minWidth: 70,
+    width: 370,
   },
   {
     field: 'actions',
