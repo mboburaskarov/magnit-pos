@@ -1,24 +1,23 @@
-import React, { useState, useMemo } from 'react'
+import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
+import { get, size } from 'lodash'
+import React, { useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { get, size } from 'lodash'
-import { LoadingButton } from '@mui/lab'
 
-import UploadImage from '../../../../components/UploadImage'
+import CheckAccess from '../../../../components/CheckAccess'
 import TextField from '../../../../components/Inputs/TextField'
-import SelectSimple from '../../../../components/Select/SelectSimple'
 import Label from '../../../../components/Label'
 import ImageUpload from '../../../../components/ProfileImageUpload'
-import ChangePassWordDialog from './changePasswordDialog'
-import { error, success } from '../../../../utils/toast'
+import SelectSimple from '../../../../components/Select/SelectSimple'
 import { requests } from '../../../../utils/requests'
-import { setUserData } from '../../../redux-toolkit/userSlice'
-import i18n from '../../../i18n'
+import { error, success } from '../../../../utils/toast'
 import LockIcon from '../../../assets/icons/LockIcon'
-import CheckAccess from '../../../../components/CheckAccess'
+import i18n from '../../../i18n'
+import { setUserData } from '../../../redux-toolkit/userSlice'
+import ChangePassWordDialog from './changePasswordDialog'
 
 // Constants for options
 const LANGUAGE_OPTIONS = [
@@ -50,6 +49,7 @@ const Profile = () => {
     defaultValues: {
       first_name: get(userData, 'first_name'),
       last_name: get(userData, 'last_name'),
+      position: get(userData, 'position'),
     },
   })
 
@@ -91,9 +91,10 @@ const Profile = () => {
 
     const requestBody = {
       first_name: get(data, 'first_name'),
+      position: get(data, 'position'),
       last_name: get(data, 'last_name'),
       photo: get(data, 'photo.key', get(data, 'photo')),
-      language: get(data, 'language').value,
+      language: get(data, 'language')?.value,
     }
 
     changeEmployeeInfo(requestBody)
@@ -132,7 +133,7 @@ const Profile = () => {
             type='BANNER'
           />
 
-          <Box display='flex' gap={3} mt={3} mb={7}>
+          <Box display='flex' gap={3} mt={3} mb={'20px'}>
             <Box flex={1}>
               <Label>Имя</Label>
               <TextField disabled={!isEditMode} required fullWidth name='first_name' placeholder='Enter first name' />
@@ -143,7 +144,12 @@ const Profile = () => {
               <TextField disabled={!isEditMode} required fullWidth name='last_name' placeholder='Enter last name' />
             </Box>
           </Box>
-
+          <CheckAccess id={'profile-update-position'}>
+            <Box flex={1} mb={7}>
+              <Label>Позиция</Label>
+              <TextField disabled={!isEditMode} required fullWidth name='position' placeholder='Enter Позиция' />
+            </Box>
+          </CheckAccess>
           <CheckAccess id={'profile-update-password'}>
             <Typography variant='h5' fontWeight={700} mb={3}>
               Безопасность

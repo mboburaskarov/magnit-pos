@@ -189,6 +189,7 @@ const AgGridSimpleTable = ({
           rowSelection='multiple'
           getRowId={getRowId}
           defaultColDef={defaultColDef}
+          suppressHorizontalScroll={true}
           isRowSelectable={isRowSelectable}
           domLayout='autoHeight'
           onDisplayedColumnsChanged={debounce((p) => onDisplayedColumnsChanged({ ...p, updaterAction }), 1000)}
