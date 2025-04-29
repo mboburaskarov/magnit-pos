@@ -148,7 +148,7 @@ export default function AllSalesPage() {
   }, [salesList?.data, values?.limit])
   const { mutate: allSalesExcelReport, isLoading: isallSalesExcelReport } = useMutation(requests.getAllSalesExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Продажи')
+      downloadExcel(data, `${values?.store_name || 'Все филиалы'} Продажи | ${dayjs().format('YYYY-MM-DD HH:mm')}`)
     },
     onError: (err) => {
       console.log(err)
