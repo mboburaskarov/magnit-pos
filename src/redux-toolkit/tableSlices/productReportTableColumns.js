@@ -108,8 +108,8 @@ const columns = [
   {
     field: 'marking_count',
     hide: false,
-    minWidth: 70,
-    width: 100,
+    minWidth: 120,
+    width: 130,
   },
 ]
 

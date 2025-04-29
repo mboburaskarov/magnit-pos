@@ -156,7 +156,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['expire_date']).format('hh:mm')}</Typography>
+            <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY hh:mm')}</Typography>
           </Box>
         )),
       }
@@ -180,7 +180,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
     if (el.field === 'marking_count') {
       return {
         ...el,
-        headerName: 'Количество кодов маркировки',
+        headerName: 'Маркировки',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='marking_count' />),
       }
