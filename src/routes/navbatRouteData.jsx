@@ -126,6 +126,12 @@ export const navbatRouteData = [
         // soon: true,
         href: '/reports/seller-bonus',
       },
+      {
+        label: 'Отчет о продукте',
+        active: '/reports/product-report/*',
+        id: '91',
+        href: '/reports/product-report',
+      },
     ],
   },
   {
