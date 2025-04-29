@@ -131,7 +131,7 @@ const AgGridSimpleTable = ({
         {
           ...values,
           [limitQuery]: offsetSize,
-          [offsetQuery]: (offsetIndex - 1) * offsetSize,
+          [offsetQuery]: offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
         },
         { addQueryPrefix: true }
       )
@@ -217,6 +217,7 @@ const AgGridSimpleTable = ({
             changeOffset={changeOffset}
             offsetIndex={offsetIndex}
             offsetQuery={offsetQuery}
+            setOffsetIndex={setOffsetIndex}
             fullDownload={fullDownload}
             downloadByFilter={downloadByFilter}
             resetTable={resetTable}

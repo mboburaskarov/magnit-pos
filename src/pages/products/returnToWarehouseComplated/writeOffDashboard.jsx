@@ -6,6 +6,8 @@ import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DownloadIcon from '../../../assets/icons/DownloadIcon'
 
 function WriteOffDashboard({ data }) {
+  console.log(data)
+
   return (
     <Grid
       container
@@ -16,7 +18,7 @@ function WriteOffDashboard({ data }) {
     >
       {[
         { title: 'Магазин', value: 'store' },
-        { title: 'Кол-во товаров', value: 'writeoff_count' },
+        { title: 'Кол-во товаров', value: 'all' },
         { title: 'Сумма к списанию по цене поставки', value: 'supply_price_sum' },
       ].map((stat) => (
         <Grid sm='4' lg='4' md='4' item sx={{}}>

@@ -43,7 +43,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
               <Typography alignItems={'end'} display={'flex'} color='dark.500' fontSize={'30px'} lineHeight={'32px'} fontWeight='600' variant='h1'>
                 {id === 'expiring_soon_amount' ? (
                   <>
-                    {amount} сум
+                    {thousandDivider(amount)} сум
                     <Typography color='dark.500' fontSize={'20px'} lineHeight={'25px'} fontWeight='500' ml={'10px'}>
                       ({withoutDivider ? count : thousandDivider(count, '')}шт)
                     </Typography>

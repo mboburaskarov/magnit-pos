@@ -1,6 +1,6 @@
 import { Box, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
-import { get, size } from 'lodash'
+import { get } from 'lodash'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -402,18 +402,16 @@ function OrderLite({
   const { t } = useTranslation()
   const navigate = useNavigate()
   useEffect(() => {
-    // if(cartItemsList)
-    if (size(get(cartItemsList, 'data')) == 0) {
-      setPaymentsList(defultPaymentTypes)
-      inputRefs.current[0].value = ''
-      inputRefs.current[1].value = ''
-      inputRefs.current[2].value = ''
-      setValue('lite_cash_amount', '')
-      setValue('lite_card_amount', '')
-      setValue('lite_online_amount', '')
-      setMaxAmount(0)
-      return
-    }
+    setPaymentsList(defultPaymentTypes)
+    inputRefs.current[0].value = ''
+    inputRefs.current[1].value = ''
+    inputRefs.current[2].value = ''
+    setValue('lite_cash_amount', '')
+    setValue('lite_card_amount', '')
+    setValue('lite_online_amount', '')
+    setMaxAmount(0)
+  }, [cartItemsList])
+  useEffect(() => {
     let amount = 0
     paymentsList.map((el) => {
       if (el.amount) {
