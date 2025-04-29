@@ -130,7 +130,6 @@ export const navbatRouteData = [
         label: 'Отчет о продукте',
         active: '/reports/product-report/*',
         id: '91',
-        soon: true,
         href: '/reports/product-report',
       },
     ],
