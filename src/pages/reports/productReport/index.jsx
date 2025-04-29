@@ -115,7 +115,7 @@ export default function ProductReportPage() {
   }, [productReportList?.data, values?.limit])
   const { mutate: getPorductReportExcelReport, isLoading: isgetPorductReportExcelReport } = useMutation(requests.getPorductReportExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Продажа развернутый')
+      downloadExcel(data, `${values?.store_name || 'Все филиалы'} Продажа развернутый`)
     },
     onError: (err) => {
       console.log(err)
