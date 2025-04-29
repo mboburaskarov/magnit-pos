@@ -140,6 +140,9 @@ const AgGridSimpleTable = ({
     }
   }, [offsetIndex, offsetSize, data, location.pathname, status])
   useEffect(() => {
+    setOffsetIndex(0)
+  }, [values?.store_id, values?.no_barcode, values?.vendor_id, values?.vendor_name, values?.payment_type_id, values?.cashbox_name])
+  useEffect(() => {
     if (id) {
       const new_table_offset_sizes = JSON.stringify({
         ...tableOffsetSizes,
