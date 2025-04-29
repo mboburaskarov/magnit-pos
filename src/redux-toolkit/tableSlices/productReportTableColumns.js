@@ -91,7 +91,7 @@ const columns = [
     field: 'completed_at',
     hide: false,
     minWidth: 70,
-    width: 170,
+    width: 190,
   },
   {
     field: 'full_name',
