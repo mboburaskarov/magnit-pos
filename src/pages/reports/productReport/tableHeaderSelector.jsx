@@ -156,7 +156,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')}</Typography>
+            <Typography>{dayjs(p.data?.['expire_date']).format('hh:mm')}</Typography>
           </Box>
         )),
       }
