@@ -1,15 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Box, Button, keyframes, Typography } from '@mui/material'
 import { memo } from 'react'
-import RowFilterButton from './RowFilterButton'
-import DownloadButton from './DownloadButton'
-import Pagination from './Pagination'
 import { useTranslation } from 'react-i18next'
-import ButtonWithPopup from '../Buttons/ButtonWithPopup'
-import FinanceAndPaymentIcon from '../../src/assets/icons/FinanceAndPaymentIcon'
-import UnlockIcon from '../../src/assets/icons/UnlockIcon'
 import DownloadIcon from '../../src/assets/icons/DownloadIcon'
-import { borderColor, fontSize, fontWeight, minWidth } from '@mui/system'
+import ButtonWithPopup from '../Buttons/ButtonWithPopup'
+import Pagination from './Pagination'
+import RowFilterButton from './RowFilterButton'
 
 const rotateAnimation = keyframes`
   0% {
@@ -56,6 +52,7 @@ function AgGridBottom({
   changeOffset,
   offsetIndex,
   offsetQuery,
+  setOffsetIndex,
   isDownloading,
   fullDownload,
   downloadByFilter,
@@ -85,6 +82,7 @@ function AgGridBottom({
             totalCount={totalCount}
             offsetIndex={offsetIndex}
             offsetQuery={offsetQuery}
+            setOffsetIndex={setOffsetIndex}
             eventMessage={eventMessages?.[1]}
             offsetSize={offsetSize}
             setOffsetSize={setOffsetSize}

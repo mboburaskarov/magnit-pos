@@ -1,11 +1,9 @@
-import { useState } from 'react'
-import { Box, Paper, List, ListItem, ClickAwayListener, Typography, Button } from '@mui/material'
+import { Box, Button, ClickAwayListener, List, ListItem, Paper, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import SortIcon from '../../src/assets/icons/SortIcon'
-import TickIcon from '../../src/assets/icons/TickIcon'
-import ArrowDown from '../../src/assets/icons/ArrowDown'
-import { t } from 'i18next'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import ArrowDown from '../../src/assets/icons/ArrowDown'
+import TickIcon from '../../src/assets/icons/TickIcon'
 
 const useStyles = makeStyles((theme) => ({
   lineSortContainer: {
@@ -74,7 +72,7 @@ function RowFilterButton({ totalCount, offsetIndex, offsetQuery, offsetSize, set
           <ClickAwayListener onClickAway={() => setOpen(false)}>
             <List className={classes.lineSortList}>
               {[5, 10, 20, 30, 40, 50]
-                .filter((n) => n < totalCount - (offsetIndex - 1) * offsetSize)
+                // .filter((n) => n < totalCount - (offsetIndex - 1) * offsetSize)
                 .map((opt) => (
                   <ListItem key={opt} component='button' className={classes.lineSortItem} onClick={() => changeOffsetSize(opt)}>
                     <Typography>{opt} строк</Typography>
