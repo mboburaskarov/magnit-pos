@@ -865,6 +865,7 @@ function OrderLite({
           <RippedPaperItem
             qrcodeUrl={qrcodeUrl}
             qrcode='pending'
+            markingsList={markingsList}
             paymentsList={paymentsList}
             cartItemsList={cartItemsList}
             id='cheque_of_orders'

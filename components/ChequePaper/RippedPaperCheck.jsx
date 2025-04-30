@@ -25,6 +25,7 @@ function RippedPaperCheck({
   chequeData: cheque,
   logo = '',
   noSticky,
+  markingsList,
   orderItems,
 }) {
   const classes = useStyles()
@@ -48,6 +49,7 @@ function RippedPaperCheck({
 
     return !!found ? found?.is_active === true : true
   }
+  console.log(markingsList, orderItems)
 
   return (
     <Box className={`${classes.root} ${noSticky ? classes.noSticky : ''}`}>
@@ -175,6 +177,9 @@ function RippedPaperCheck({
                 >
                   <Typography>O'lchiv birligi: {get(el, 'package_name', '-')}</Typography>
                   <Typography>MXIK: {get(el, 'class_code', '-')}</Typography>
+                  {/* {console.log(Object.values(markingsList[get(el, 'id')]), 'markingsList')} */}
+                  {Object.values(markingsList[get(el, 'id')] || {})?.length > 0 && <Typography>Markirovka: </Typography>}
+                  {/* <Typography>MK: {markingsList[get(el, 'id') || 0]}</Typography> */}
                   <Typography>ShtKod: {get(el, 'barcode', '-')}</Typography>
                 </Box>
                 <DashedRow
