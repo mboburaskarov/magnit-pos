@@ -368,7 +368,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
 
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={''} type={'received_supply_sum'} />
+              <SimpleText {...p} withDevider currency={''} type={'received_count'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <StyledTooltip title={'Излишек'}>
@@ -388,7 +388,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
               </StyledTooltip>
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={''} type={'accepted_supply_sum'} />
+              <SimpleText {...p} withDevider currency={''} type={'accepted_count'} />
             </Box>
           </>
         )),
