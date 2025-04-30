@@ -12,7 +12,6 @@ import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
-import InputQuantity from '../../../../components/Inputs/InputQuantity'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -218,33 +217,13 @@ export default function InventoryWithCheckingPage() {
                 >
                   <InputSearch
                     icon={<BarcodeIcon />}
-                    onKeyDown={({ code }) => code === 'Enter' && sendScannedImport()}
+                    // onKeyDown={({ code }) => code === 'Enter' && sendScannedImport()}
                     onChange={({ target }) => setBarcode(get(target, 'value'))}
                     id='producrs-search'
                     name='search'
                     value={barcode}
                     setSearchTerm={setBarcode}
                     placeholder={t('input.search.product.multi')}
-                  />
-                </Box>
-                {appType === 'manual' && (
-                  <Box sx={{ ml: '16px' }}>
-                    <InputQuantity placeholder={'0'} uncontrolled defaultValue={1} onChange={({ target }) => setManualNumber(target.value)} />
-                  </Box>
-                )}
-                <Box sx={{ ml: '16px' }}>
-                  <InputSwitch
-                    noMarginTop
-                    uncontrolled
-                    id='app-type'
-                    name='app-type'
-                    value={appType}
-                    defaultValue='auto'
-                    onChange={(e) => setAppType(e)}
-                    options={[
-                      { title: 'Руководство', value: 'manual' },
-                      { title: 'Сканирование', value: 'auto' },
-                    ]}
                   />
                 </Box>
               </Box>

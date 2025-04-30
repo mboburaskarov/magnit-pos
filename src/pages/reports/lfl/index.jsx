@@ -222,7 +222,11 @@ export default function ReportLfl() {
         </Box>
         <Box sx={{ mb: '20px', display: 'flex' }}>
           <DateRangeInputWithoutSelct
-            defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }}
+            defaultFilterData={{
+              label: 'Сегодня',
+              start_date: dayjs(new Date()).add(-1, 'month').format('YYYY-MM-DD'),
+              end_date: dayjs(new Date()).format('YYYY-MM-DD'),
+            }}
             id='accounting-report-date-range'
           />
           <Box maxWidth={'300px'} ml={2} mr={2}>
