@@ -105,16 +105,7 @@ export default function ReturnToWarehousePage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [returnsList?.data, values?.limit])
-  const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
-    onSuccess: ({ data }) => {
-      downloadExcel(data, 'Возврат')
-    },
-    onError: (err) => {
-      console.log(err)
 
-      error('Ошибка при скачать excel!')
-    },
-  })
   const { mutate: deleteWriteOff, isLoading: isDeletingProduct } = useMutation(requests.deleteReturnToWarehouse, {
     onSuccess: () => {
       refetch()
@@ -225,7 +216,7 @@ export default function ReturnToWarehousePage() {
             downloadByFilter={() => getReturnToWarehouseExcelReport(returnsListFilter)}
             // fullDownload={() => importsExcelReport({ ...returnsListFilter, limit: 1000000 })}
             // downloadByFilter={() => importsExcelReport(returnsListFilter)}
-            isDownloading={isimportsExcelReport}
+            isDownloading={isgetReturnToWarehouseExcelReport}
             tableSettings
             columns={tableColumns}
             defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}

@@ -1,3 +1,4 @@
+import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
@@ -6,34 +7,36 @@ import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '../../../../components/CheckAccess'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+// import SoonPage from '../../../../components/soon/index'
+import dayjs from 'dayjs'
+import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
+import { error, success } from '../../../../utils/toast'
+import BigTickIcon from '../../../assets/icons/BigTickIcon'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/transferTableColumns'
+import CreateReturn from './createReturn'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-
-import CheckAccess from '../../../../components/CheckAccess'
-import SoonPage from '../../../../components/soon'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
-import CreateTransfer from './createTransfer'
 const SELECTION_ID = 'checkboxSelectionField'
-
 export default function TransferPage() {
-  return <SoonPage />
-
+  // return <SoonPage />
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { columns, loading } = useSelector((state) => state.inventoryTableColumns)
+  const { columns, loading } = useSelector((state) => state.transferTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [orderModel, setOrderModel] = useState(false)
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
   const [filterMenu, setFilterMenu] = useState(false)
   const tableColumns = tableHeaderSelector({
@@ -41,6 +44,7 @@ export default function TransferPage() {
     t,
     values,
     setImages: setOpenImageGallery,
+    setOpenConfirmDialog: setOpenConfirmDialog,
   })
 
   useEffect(() => {
@@ -59,7 +63,7 @@ export default function TransferPage() {
     }
   }, [])
 
-  const importsListFilter = useMemo(() => {
+  const transferListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
@@ -69,7 +73,7 @@ export default function TransferPage() {
       start_date: values?.start_date,
       end_date: values?.end_date,
       status: values?.status,
-      import_date: values?.import_date,
+      writeoff_date: values?.import_date,
       received_amount_to: values?.received_amount_to,
       received_amount_from: values?.received_amount_from,
     }
@@ -85,25 +89,39 @@ export default function TransferPage() {
     values?.received_amount_from,
   ])
   const {
-    data: importsList,
-    isLoading: importsListLoading,
-    isFetching: isFetchingimportsList,
+    data: transferList,
+    isLoading: transferListLoading,
+    isFetching: isFetchingtransferList,
     refetch,
-  } = useQuery(['importsList', importsListFilter], () => requests.getAllImports(importsListFilter))
+  } = useQuery(['transferlist', transferListFilter], () => requests.getAllTransfer(transferListFilter))
 
   useEffect(() => {
     refetch()
-  }, [importsListFilter])
+  }, [transferListFilter])
 
   useEffect(() => {
-    const count = importsList?.data?.data?._meta?.total_count
+    const count = transferList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [importsList?.data, values?.limit])
-  const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
+  }, [transferList?.data, values?.limit])
+
+  const { mutate: deleteWriteOff, isLoading: isDeletingProduct } = useMutation(requests.deleteTransfer, {
+    onSuccess: () => {
+      refetch()
+      success('Возврат был успешно удален!')
+      setOpenConfirmDialog(null)
+    },
+    onError: (err) => {
+      refetch()
+      error('Ошибка при удалении Возврат!')
+      setOpenConfirmDialog(null)
+      console.log('err', err)
+    },
+  })
+  const { mutate: getReturnToWarehouseExcelReport, isLoading: isgetReturnToWarehouseExcelReport } = useMutation(requests.getTransferExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Импорт')
+      downloadExcel(data, `Возврат | ${dayjs().format('YYYY-MM-DD HH:mm')}`)
     },
     onError: (err) => {
       console.log(err)
@@ -131,7 +149,7 @@ export default function TransferPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={'Импортный номер, наименование'} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'Возврат номер, наименование'} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>
@@ -171,7 +189,7 @@ export default function TransferPage() {
                 changeColumnSequence={changeColumnSequence}
               />
             </Box>
-            <CheckAccess id={'create-auto-order'}>
+            <CheckAccess id={'create-return-to-warehouse'} noAccess>
               <Box minWidth={156}>
                 <Button
                   sx={{ height: '48px' }}
@@ -182,43 +200,71 @@ export default function TransferPage() {
                   variant='contained'
                   color='primary'
                 >
-                  Новая трансфер
+                  Новая Трансфер
                 </Button>
               </Box>
             </CheckAccess>
           </Box>
         </Box>
         <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
-        <CreateTransfer refetch={refetch} open={orderModel} setOpen={setOrderModel} />
+        <CreateReturn refetch={refetch} open={orderModel} setOpen={setOrderModel} />
 
         <Box>
           <AgGridTable
             id='imports-main-table'
-            fullDownload={() => importsExcelReport({ ...importsListFilter, limit: 1000000 })}
-            downloadByFilter={() => importsExcelReport(importsListFilter)}
-            isDownloading={isimportsExcelReport}
+            fullDownload={() => getReturnToWarehouseExcelReport({ ...transferListFilter, limit: 1000000 })}
+            downloadByFilter={() => getReturnToWarehouseExcelReport(transferListFilter)}
+            // fullDownload={() => importsExcelReport({ ...transferListFilter, limit: 1000000 })}
+            // downloadByFilter={() => importsExcelReport(transferListFilter)}
+            isDownloading={isgetReturnToWarehouseExcelReport}
             tableSettings
             columns={tableColumns}
             defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
-            data={importsList?.data?.data?.data || []}
-            totalCount={importsList?.data?.data?._meta?.total_count || 0}
-            isDataLoading={isFetchingimportsList || importsListLoading}
+            data={transferList?.data?.data?.data || []}
+            totalCount={transferList?.data?.data?._meta?.total_count || 0}
+            isDataLoading={isFetchingtransferList || transferListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}
             emptyTableText={{
-              title: 'Импорт недоступен',
-              description: 'Если вы не можете найти искомый Импорт',
+              title: 'Возврат недоступен',
+              description: 'Если вы не можете найти искомый Возврат',
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingimportsList || importsListLoading}
+            isRefreshing={loading || isFetchingtransferList || transferListLoading}
           />
         </Box>
       </Box>
 
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
+      {openConfirmDialog && (
+        <ConfirmDialog
+          open={!!openConfirmDialog}
+          setOpen={setOpenConfirmDialog}
+          icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
+          title={'Удалить инвентаризацию?'}
+          desc={'Вы уверены что хотите удалить инвентаризацию?'}
+          // supDesc={'“Azitromitsin 250 mg”'}
+          actions={
+            <>
+              <Button
+                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                fullWidth
+                color='secondary'
+                variant='contained'
+                onClick={() => setOpenConfirmDialog(null)}
+              >
+                Нет
+              </Button>
+              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteWriteOff({ id: openConfirmDialog.id })}>
+                Да, удалить
+              </LoadingButton>
+            </>
+          }
+        />
+      )}
     </LoadingContainer>
   )
 }
