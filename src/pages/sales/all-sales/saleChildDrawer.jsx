@@ -183,7 +183,7 @@ function SaleChildDrawer({ open, setOpen, ids }) {
                   Дата создания
                 </Typography>
                 <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                  {dayjs(get(saleDetailsList, 'data.data.created_at')).format('DD.MM.YYYY | HH:mm:ss')}
+                  {dayjs(get(saleDetailsList, 'data.data.completed_at')).format('DD.MM.YYYY | HH:mm:ss')}
                 </Typography>
               </Box>
               <Box width={'100%'} bgcolor={'bg.10'} borderRadius={'16px'} padding={'16px'}>
