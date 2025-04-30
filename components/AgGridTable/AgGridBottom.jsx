@@ -141,7 +141,6 @@ function AgGridBottom({
           )}
           {/* {download && <DownloadButton isDownloading={isDownloading} download={download} />} */}
         </Box>
-        {console.log(offsetIndex, offsetSize, zeroToOne(offsetIndex))}
         {fullInfoAboutCurrentPage && (
           <Typography fontSize={'16px'} lineHeight={'24px'} color={'bunker.400'} fontWeight={'500'}>
             {t('ag_grid.bottom.info', {

@@ -1,10 +1,14 @@
 import { Box, Typography } from '@mui/material'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
+import DateRangeInputWithoutSelct from '../../../../components/Inputs/DateRangeInputWithoutSelect/DateRangeInput'
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelectNew'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
@@ -15,27 +19,32 @@ export default function ReportLfl() {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [appType, setAppType] = useState('ALL')
+  const [selectedShops, setSelectedShops] = useState('all')
+  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
 
   const [columnGroups, setColumnGroups] = useState([
-    { id: 'december', name: 'Декабрь' },
-    { id: 'january', name: 'Январь' },
+    { id: 'first_month', name: 'Декабрь' },
+    { id: 'second_month', name: 'Январь' },
   ])
+  console.log(selectedShops)
 
   const ReportLFLFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      store_id: values?.store_id,
+      store_id: selectedShops == 'all' ? undefined : selectedShops[0]?.id,
+      start_date: dayjs(values?.start_date).format('YYYY-MM') || dayjs().format('YYYY-MM-DD'),
+      end_date: values?.start_date == values?.end_date ? null : dayjs(values?.end_date).format('YYYY-MM'),
     }
-  }, [values?.offset, values?.limit, values?.search, values?.store_id])
+  }, [values?.offset, values?.limit, selectedShops, values?.search, values?.store_id, values?.start_date, values?.end_date])
 
   const {
     data: ReportLFL,
     isLoading: ReportLFLLoading,
     isFetching: isFetchingReportLFL,
     refetch,
-  } = useQuery(['ReportLFL', ReportLFLFilter], () => requests.getAllCustomers(ReportLFLFilter))
+  } = useQuery(['ReportLFL', ReportLFLFilter], () => requests.getReportLFL(ReportLFLFilter))
 
   useEffect(() => {
     refetch()
@@ -133,6 +142,8 @@ export default function ReportLfl() {
   }, [columnGroups, baseColumnDefinition])
   let ind = 0
   const transformDataForGrid = (apiData) => {
+    console.log(apiData)
+    if (ReportLFLLoading) return []
     const rows = []
     const rowIds = new Set()
     columnGroups.forEach((group) => {
@@ -158,8 +169,9 @@ export default function ReportLfl() {
 
     return rows
   }
+  console.log(ReportLFL, get(ReportLFL, 'data.data'))
 
-  const tableData = useMemo(() => transformDataForGrid(mockApiData), [mockApiData, columnGroups])
+  const tableData = useMemo(() => transformDataForGrid(get(ReportLFL, 'data.data')), [ReportLFL, ReportLFLLoading, columnGroups])
 
   return (
     <LoadingContainer readyState={true}>
@@ -198,6 +210,33 @@ export default function ReportLfl() {
             ]}
           />
         </Box>
+        <Box sx={{ mb: '20px', display: 'flex' }}>
+          <DateRangeInputWithoutSelct
+            defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }}
+            id='accounting-report-date-range'
+          />
+          <Box maxWidth={'300px'} ml={2} mr={2}>
+            <MultiOptionSelectNew
+              zIndex={999}
+              placeholder={t('placeholders.select_shops')}
+              // fullWidth
+              multiple
+              defaultSelectedAll
+              // minWidth='auto'
+              beforeContent={t('placeholders.select_shops')}
+              value={selectedShops}
+              allOptions={get(shopList, 'data.data.ids', [])}
+              selectAllLabel={t('Все филиалы')}
+              options={get(shopList, 'data.data.data', [])}
+              isLoading={false}
+              onChange={(val) => {
+                setSelectedShops(val)
+              }}
+              request={requests.getAllStores}
+            />
+          </Box>
+        </Box>
+
         <Box>
           <AgGridTable
             id='group-table'

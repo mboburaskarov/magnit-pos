@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import DateRangeInput from '../../../components/Inputs/DateRangeInput.jsx/DateRangeInput'
+import DateRangeInput from '../../../components/Inputs/DateRangeInput/DateRangeInput'
 import PopUpSelect from '../../../components/Inputs/PopUpSelect/PopUpSelect'
 export default function DashboardHeader({ selectedStore, setselectedStore }) {
   const { t } = useTranslation()

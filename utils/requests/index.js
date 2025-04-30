@@ -201,6 +201,8 @@ export const requests = {
   createDraft: (data) => request.post(`v1/draft`, data),
   deleteDraft: (id) => request.delete(`v1/draft/${id}`),
   completeDraft: (data) => request.put(`v1/draft/complete/${data}`),
+  // report lfl
+  getReportLFL: (filter) => request.post(`v1/report/lfl${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //cart_item
   changeDiscountValue: ({ id, body }) => request.put(`v1/cart_item/sale/${id}`, body),
