@@ -115,30 +115,30 @@ export default function DateRangeInputWithoutSelct({
     const start = dayjs(startDate)
     const end = dayjs(endDate)
 
-    // **Today**
-    if (start.isSame(today, 'day') && end.isSame(today, 'day')) return 'Сегодня'
+    // // **Today**
+    // if (start.isSame(today, 'day') && end.isSame(today, 'day')) return 'Сегодня'
 
-    // **Yesterday**
-    if (start.isSame(yesterday, 'day') && end.isSame(yesterday, 'day')) return 'Вчера'
+    // // **Yesterday**
+    // if (start.isSame(yesterday, 'day') && end.isSame(yesterday, 'day')) return 'Вчера'
 
-    // **This week (Monday - Sunday)**
-    const startOfWeek = today.startOf('week') // Monday start
-    const endOfWeek = today.endOf('week') // Sunday end
-    if (start.isSameOrAfter(startOfWeek, 'day')) {
-      return 'На этой неделе'
-    }
+    // // **This week (Monday - Sunday)**
+    // const startOfWeek = today.startOf('week') // Monday start
+    // const endOfWeek = today.endOf('week') // Sunday end
+    // if (start.isSameOrAfter(startOfWeek, 'day')) {
+    //   return 'На этой неделе'
+    // }
 
-    // **This month**
-    const startOfMonth = today.startOf('month')
-    if (start.isSameOrAfter(startOfMonth, 'day') && end.isSameOrBefore(today, 'day')) {
-      return 'Это месяц'
-    }
+    // // **This month**
+    // const startOfMonth = today.startOf('month')
+    // if (start.isSameOrAfter(startOfMonth, 'day') && end.isSameOrBefore(today, 'day')) {
+    //   return 'Это месяц'
+    // }
 
-    // **This year**
-    const startOfYear = today.startOf('year')
-    if (start.isSameOrAfter(startOfYear, 'day') && end.isSameOrBefore(today, 'day')) {
-      return 'В этом году'
-    }
+    // // **This year**
+    // const startOfYear = today.startOf('year')
+    // if (start.isSameOrAfter(startOfYear, 'day') && end.isSameOrBefore(today, 'day')) {
+    //   return 'В этом году'
+    // }
     const strtDate = start.format('MMMM YYYY')
     const end_Date = end.format('MMMM YYYY')
     return `${strtDate.charAt(0).toUpperCase() + strtDate.slice(1)} - ${end_Date.charAt(0).toUpperCase() + end_Date.slice(1)}`

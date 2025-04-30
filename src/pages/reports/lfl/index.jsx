@@ -11,6 +11,7 @@ import LoadingContainer from '../../../../components/LoadingContainer'
 import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelectNew'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
+import { translatedWeekNameRu } from '../../../../utils/ruWeekName'
 import { error } from '../../../../utils/toast'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 
@@ -26,7 +27,6 @@ export default function ReportLfl() {
     { id: 'first_month', name: 'Декабрь' },
     { id: 'second_month', name: 'Январь' },
   ])
-  console.log(selectedShops)
 
   const ReportLFLFilter = useMemo(() => {
     return {
@@ -51,6 +51,10 @@ export default function ReportLfl() {
   }, [ReportLFLFilter])
 
   useEffect(() => {
+    setColumnGroups([
+      { id: 'first_month', name: dayjs(values?.start_date).format('MMMM') },
+      { id: 'second_month', name: dayjs(values?.end_date).format('MMMM') },
+    ])
     const count = ReportLFL?.data?.data?._meta?.total_count
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
@@ -60,8 +64,6 @@ export default function ReportLfl() {
       downloadExcel(data, 'Клиенти')
     },
     onError: (err) => {
-      console.log(err)
-
       error('Ошибка при скачать excel!')
     },
   })
@@ -110,11 +112,12 @@ export default function ReportLfl() {
     ],
   }
   const baseColumnDefinition = [
-    { headerName: 'Дата', field: 'date', minWidth: 120, width: 80, flex: 1 },
-    { headerName: 'Кол-во аптек', field: 'pharmacy_count', minWidth: 150, width: 100 },
-    { headerName: 'Парафарма', field: 'priceform', minWidth: 170, width: 120 },
-    { headerName: 'Лекарство', field: 'medicine', minWidth: 170, width: 120 },
-    { headerName: 'Общая продажа', field: 'total_sales', minWidth: 200, width: 120 },
+    { headerName: 'Дата', field: 'weekdate', minWidth: 120, width: 80, flex: 1 },
+    { headerName: 'Неделя', field: 'weekname', minWidth: 120, width: 80, flex: 1 },
+    { headerName: 'Кол-во аптек', field: 'branch_count', minWidth: 150, width: 100 },
+    { headerName: 'Парафарма', field: 'parapharma_sum', minWidth: 170, width: 120 },
+    { headerName: 'Лекарство', field: 'lc_sum', minWidth: 170, width: 120 },
+    { headerName: 'Общая продажа', field: 'total_sum', minWidth: 200, width: 120 },
   ]
 
   const dynamicColumnDefs = useMemo(() => {
@@ -129,33 +132,41 @@ export default function ReportLfl() {
           cellClass: isLastColumn ? 'last-grouped-child' : '',
           headerClass: isLastColumn ? 'last-grouped-child' : '',
           cellRenderer: (params) => {
+            if (params.colDef.field === 'first_month_weekdate' || params.colDef.field === 'second_month_weekdate') {
+              return <Typography>{params.data?.[params.colDef.field]}</Typography>
+            }
+            if (params.colDef.field === 'first_month_weekname' || params.colDef.field === 'second_month_weekname') {
+              return <Typography> {translatedWeekNameRu(params.data?.[params.colDef.field])} </Typography>
+            }
             const fieldValue = params.data?.[params.colDef.field]
             return <Typography>{fieldValue !== undefined ? fieldValue : '-'}</Typography>
           },
         }
       })
+
       return {
-        headerName: group.name,
+        headerName: group.name.toString().toLowerCase(),
+        headerClass: 'group-header',
         children: groupColumns,
       }
     })
   }, [columnGroups, baseColumnDefinition])
   let ind = 0
   const transformDataForGrid = (apiData) => {
-    console.log(apiData)
     if (ReportLFLLoading) return []
     const rows = []
     const rowIds = new Set()
     columnGroups.forEach((group) => {
       const groupData = apiData[group.id] || []
-      groupData.forEach((item) => rowIds.add(item.rowId))
+
+      groupData.forEach((item) => rowIds.add(item.id))
     })
     Array.from(rowIds).forEach((rowId) => {
       const rowData = {}
 
       columnGroups.forEach((group) => {
         const groupData = apiData[group.id] || []
-        const rowItem = groupData.find((item) => item.rowId === rowId) || {}
+        const rowItem = groupData.find((item) => item.id === rowId) || {}
         baseColumnDefinition.forEach((col, index) => {
           const value = rowItem[col.field]
           rowData[`${group.id}_${col.field}`] = value !== undefined ? value : '-'
@@ -169,7 +180,6 @@ export default function ReportLfl() {
 
     return rows
   }
-  console.log(ReportLFL, get(ReportLFL, 'data.data'))
 
   const tableData = useMemo(() => transformDataForGrid(get(ReportLFL, 'data.data')), [ReportLFL, ReportLFLLoading, columnGroups])
 
@@ -237,7 +247,13 @@ export default function ReportLfl() {
           </Box>
         </Box>
 
-        <Box>
+        <Box
+          sx={{
+            '& .ag-header-group-text::first-letter': {
+              textTransform: 'uppercase',
+            },
+          }}
+        >
           <AgGridTable
             id='group-table'
             className=''
