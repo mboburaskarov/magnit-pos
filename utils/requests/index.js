@@ -151,6 +151,19 @@ export const requests = {
   getInventoryScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
   finishInventoryChecking: (id) => request.post(`v1/inventory/confirm/${id}`),
   deleteInventory: ({ id }) => request.post(`v1/inventory/cancel/${id}`),
+  //transfer
+  createTransfer: (data) => request.post(`v1/transfer`, data),
+  getAllTransfer: (filter) => request.get(`v1/transfer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  sendScannedTransferNumber: ({ id, barcode, product_id, type, scanned_count }) =>
+    request.patch(`v1/transfer/${id}/add-product-by-barcode`, { count: scanned_count, type, id: product_id }),
+  getTransferDetails: (filter) => request.get(`v1/transfer-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getTransferDashBoard: (id) => request.get(`v1/transfer/${id}`),
+  getTransferScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
+  finishTransferChecking: (id) => request.post(`v1/transfer/confirm/${id}`),
+  SentTransferChecking: (id) => request.post(`v1/transfer/send/${id}`),
+  deleteTransfer: ({ id }) => request.post(`v1/transfer/cancel/${id}`),
+  getTransferExcelReport: (filter) => requestEXCEL.get(`v1/transfer/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getTransferDetailsExcelReport: (filter) => requestEXCEL.get(`v1/transfer-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   // autoOrder
   createAutoOrder: (data) => request.post(`v1/auto-order`, data),

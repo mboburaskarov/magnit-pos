@@ -41,7 +41,7 @@ export default function FilterMenu({ open, setOpen }) {
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
     setOpen(false)
-    navigate(`/products/import${requestParams}`)
+    navigate(`/products/transfer${requestParams}`)
   }
 
   const onError = (err) => {
@@ -78,7 +78,7 @@ export default function FilterMenu({ open, setOpen }) {
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/products/import?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/products/transfer?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
   return (
@@ -140,9 +140,9 @@ export default function FilterMenu({ open, setOpen }) {
               id='import-date'
               name='date'
               noValidation
-              label={'Дата импорта'}
+              label={'Дата инвентаризация'}
               minWidth='auto'
-              placeholder={'Дата импорта'}
+              placeholder={'Дата инвентаризация'}
               fullWidth
               startDate={startDate}
               endDate={endDate}

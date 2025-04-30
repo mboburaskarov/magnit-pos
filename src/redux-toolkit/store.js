@@ -28,6 +28,9 @@ import { salesTableColumnsSlice } from './tableSlices/salesTableColumns'
 import { sellerBonusTableColumnsSlice } from './tableSlices/sellerBonusTableColumns'
 import { storeTableColumnsSlice } from './tableSlices/storeTableColumns'
 import { storesListTableColumnsForProductSlice } from './tableSlices/storesListTableColumnsForProduct'
+import { taransferGetWithCheckingTableColumnsSlice } from './tableSlices/transferGetWithCheckingTableColumns'
+import { transferSentWithCheckingTableColumnsSlice } from './tableSlices/transferSentWithCheckingTableColumns'
+import { transferTableColumnsSlice } from './tableSlices/transferTableColumns'
 import { vendorsTableColumnsSlice } from './tableSlices/vendorsTableColumns'
 import { writeOffTableColumnsSlice } from './tableSlices/writeOffTableColumns'
 import { writeOffWithCheckingTableColumnsSlice } from './tableSlices/writeOffWithCheckingTableColumns'
@@ -36,7 +39,7 @@ import { userSlice } from './userSlice'
 // Define your migration function here
 const migrations = {
   // Example migration
-  236: (state) => {
+  239: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -54,7 +57,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 236, // Current version of the persisted state
+  version: 239, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -69,7 +72,6 @@ const reducer = combineReducers({
   importsTableColumns: importsTableColumnsSlice,
   inventoryTableColumns: inventoryTableColumnsSlice,
   writeOffTableColumns: writeOffTableColumnsSlice,
-  returnToWarehouseTableColumns: returnToWarehouseTableColumnsSlice,
   autoOrderTableColumns: autoOrderTableColumnsSlice,
   bonusProductTableColumns: bonusProductTableColumnsSlice,
   autoOrderTableDetailColumns: autoOrderDetailSlice,
@@ -80,6 +82,11 @@ const reducer = combineReducers({
   writeOffWithCheckingColumns: writeOffWithCheckingTableColumnsSlice,
   returnToWarehouseGetWithCheckingColumns: returnToWarehouseGetWithCheckingTableColumnsSlice,
   returnToWarehouseSentWithCheckingColumns: returnToWarehouseSentWithCheckingTableColumnsSlice,
+  returnToWarehouseTableColumns: returnToWarehouseTableColumnsSlice,
+  transferGetWithCheckingColumns: taransferGetWithCheckingTableColumnsSlice,
+  transferSentWithCheckingColumns: transferSentWithCheckingTableColumnsSlice,
+  transferTableColumns: transferTableColumnsSlice,
+
   salesTableColumns: salesTableColumnsSlice,
   cashBoxShiftsTableColumns: cashBoxShiftsTableColumnsSlice,
   cashBoxShiftHistoryTableColumns: cashBoxShiftHistoryTableColumnsSlice,

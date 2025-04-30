@@ -1,20 +1,30 @@
 import { Box, Button } from '@mui/material'
 import { useTheme } from '@mui/styles'
-import { useEffect } from 'react'
+import dayjs from 'dayjs'
+import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
+import TextField from '../../../../components/Inputs/TextField'
+import Label from '../../../../components/Label'
 import LazySelect from '../../../../components/Select/LazySelect'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 
-export default function CreateTransfer({ open, refetch, setOpen }) {
+export default function CreateReturn({ open, refetch, setOpen }) {
   const methods = useForm()
+  const [openWarn, setopenWarn] = useState(false)
   const { reset, control } = methods
-  const { mutate: createAutoOrder, isLoading: iscreateAutoOrder } = useMutation(requests.createAutoOrder, {
+  useEffect(() => {
+    if (methods.getValues('reason')?.id == 'correction_of_misclassification') {
+      setopenWarn(true)
+    } else {
+      setopenWarn(false)
+    }
+  }, [methods.watch('reason')])
+  const { mutate: createReturnToWarehouse, isLoading: iscreateReturnToWarehouse } = useMutation(requests.createReturnToWarehouse, {
     onSuccess: () => {
       setOpen(false)
       success('Создать автозаказ')
@@ -27,10 +37,12 @@ export default function CreateTransfer({ open, refetch, setOpen }) {
   })
   const onSubmit = (data) => {
     const requestBody = {
-      store_id: data.store_id?.id || undefined,
-      interval_day: data.interval_day || undefined,
+      to_store_id: data.store_id_to?.id || undefined,
+      from_store_id: data.store_id_from?.id || undefined,
+      name: data.name || undefined,
+      comment: data.reason?.id || undefined,
     }
-    createAutoOrder(requestBody)
+    createReturnToWarehouse(requestBody)
   }
 
   const onError = (err) => {
@@ -49,7 +61,7 @@ export default function CreateTransfer({ open, refetch, setOpen }) {
       overflowVisible
       onClose={() => setOpen(false)}
       open={open}
-      title={'Новая трансфер'}
+      title={'Новое Перемещение'}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
     >
       <Box
@@ -69,14 +81,30 @@ export default function CreateTransfer({ open, refetch, setOpen }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
+            <Box width={'100%'}>
+              <Label mb='12px'>{t('Назовите Перемещение')}</Label>
+              <TextField
+                id='client-name'
+                name='name'
+                control={control}
+                fullWidth
+                // label='Назовите списание'
+                // error={errors?.name}
+                placeholder={t('Назовите Перемещение')}
+                required
+                defaultValue={`Перемещение ${dayjs().format('YYYY.MM.DD HH:mm')}`}
+                asteriks
+              />
+            </Box>
+
             <LazySelect
               boxStyle={{ width: '100%' }}
               slug='store_id'
               id='store_id'
-              name='store_id'
+              name='store_id_from'
               isMulti={false}
               required
-              label={t('input.store.label')}
+              label={'От ' + t('input.store.label')}
               placeholder={t('Выберите Магазин')}
               minWidth='auto'
               isClearable={true}
@@ -90,47 +118,28 @@ export default function CreateTransfer({ open, refetch, setOpen }) {
               }}
               filterOption={() => true}
             />
-            <Box width={'100%'}>
-              <NumberFormatInput
-                id={`interval_day`}
-                name={`interval_day`}
-                fullWidth
-                required
-                defaultValue={0}
-                type='number'
-                label={'Интервальный день'}
-                InputProps={{
-                  onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
-                }}
-                // defaultValue={get(p, 'data.small_quantity')}
-                disabled={false}
-              />
-              <Box display={'flex'} padding={'5px'}>
-                <Box
-                  onClick={() => methods.setValue('interval_day', 1)}
-                  sx={{
-                    backgroundColor: '#eee',
-                    padding: '5px 10px',
-                    borderRadius: '10px',
-                    fontSize: '17px',
-                  }}
-                >
-                  День
-                </Box>
-                <Box
-                  onClick={() => methods.setValue('interval_day', 7)}
-                  sx={{
-                    backgroundColor: '#eee',
-                    padding: '5px 10px',
-                    borderRadius: '10px',
-                    fontSize: '17px',
-                    ml: '10px',
-                  }}
-                >
-                  Неделя
-                </Box>
-              </Box>
-            </Box>
+
+            <LazySelect
+              boxStyle={{ width: '100%' }}
+              slug='store_id'
+              id='store_id'
+              name='store_id_to'
+              isMulti={false}
+              required
+              label={'До ' + t('input.store.label')}
+              placeholder={t('Выберите Магазин')}
+              minWidth='auto'
+              isClearable={true}
+              request={requests.getAllStores}
+              filters={{ limit: 10 }}
+              control={control}
+              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+              // uncontrolled
+              getOptionLabel={(option) => {
+                return option.name
+              }}
+              filterOption={() => true}
+            />
 
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button fullWidth variant='contained' type='submit'>

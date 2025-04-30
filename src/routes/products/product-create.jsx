@@ -12,6 +12,9 @@ import ProductEditPage from '../../pages/products/product-edit'
 import ReturnToWarehouseCompletedPage from '../../pages/products/returnToWarehouseComplated'
 import ReturnToWarehouseGetScanWithCheckingPage from '../../pages/products/returnToWarehouseGetWithChecking'
 import ReturnToWarehouseSentScanWithCheckingPage from '../../pages/products/returnToWarehouseSentWithChecking'
+import TransferCompletedPage from '../../pages/products/transferComplated'
+import TransferGetScanWithCheckingPage from '../../pages/products/transferGetWithChecking'
+import TransferSentScanWithCheckingPage from '../../pages/products/transferSentWithChecking'
 import WriteOffCompletedPage from '../../pages/products/writeOffComplated/index'
 import WriteOffScanWithCheckingPage from '../../pages/products/writeOffWithChecking'
 const productsCreateRoutes = {
@@ -98,6 +101,35 @@ const productsCreateRoutes = {
         },
       ],
     },
+
+    {
+      path: 'transfer-get-with-checking/:id',
+      children: [
+        {
+          path: '',
+          element: <TransferGetScanWithCheckingPage />,
+        },
+      ],
+    },
+    {
+      path: 'transfer-sent-with-checking/:id',
+      children: [
+        {
+          path: '',
+          element: <TransferSentScanWithCheckingPage />,
+        },
+      ],
+    },
+    {
+      path: 'transfer-completed/:id',
+      children: [
+        {
+          path: '',
+          element: <TransferCompletedPage />,
+        },
+      ],
+    },
+
     {
       path: 'imports/:id',
       children: [

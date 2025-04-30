@@ -40,6 +40,10 @@ const productsRoutes = {
       path: 'return-to-warehouse',
       element: <ReturnToWarehousePage />,
     },
+    {
+      path: 'trasnfer',
+      element: <TransferPage />,
+    },
   ],
 }
 
