@@ -55,8 +55,6 @@ export const navbatRouteData = [
         active: '/products/return-to-warehouse/*',
         id: '32',
         href: '/products/return-to-warehouse',
-
-        soon: true,
       },
       {
         label: 'Списание',

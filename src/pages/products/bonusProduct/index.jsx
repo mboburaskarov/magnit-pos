@@ -16,7 +16,7 @@ import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 
 import ImageGallery from '../../../../components/ImageGallery'
-import DateRangeInput from '../../../../components/Inputs/DateRangeInput.jsx/DateRangeInput'
+import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRangeInput'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'

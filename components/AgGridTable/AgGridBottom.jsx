@@ -3,6 +3,7 @@ import { Box, Button, keyframes, Typography } from '@mui/material'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import DownloadIcon from '../../src/assets/icons/DownloadIcon'
+import { zeroToOne } from '../../utils/zeroToOne'
 import ButtonWithPopup from '../Buttons/ButtonWithPopup'
 import Pagination from './Pagination'
 import RowFilterButton from './RowFilterButton'
@@ -142,7 +143,11 @@ function AgGridBottom({
         </Box>
         {fullInfoAboutCurrentPage && (
           <Typography fontSize={'16px'} lineHeight={'24px'} color={'bunker.400'} fontWeight={'500'}>
-            {t('ag_grid.bottom.info', { from: totalCount, start: offsetIndex * offsetSize - offsetSize + 1, end: offsetIndex * offsetSize })}
+            {t('ag_grid.bottom.info', {
+              from: totalCount,
+              start: zeroToOne(offsetIndex) * offsetSize - offsetSize + 1,
+              end: zeroToOne(offsetIndex) * offsetSize,
+            })}
           </Typography>
         )}
         <Pagination count={controlledOffsetCount} handleChangeOffset={changeOffset} offset={offsetIndex} offsetQuery={offsetQuery} />

@@ -122,8 +122,8 @@ export const requests = {
   //writeOff
   createWriteOff: (data) => request.post(`v1/write-off`, data),
   getAllWriteOff: (filter) => request.get(`v1/write-off/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  sendScannedWriteOffNumber: ({ id, barcode, product_id, type, scanned_count }) =>
-    request.patch(`v1/write-off/${id}/add-product-by-barcode`, { barcode, count: scanned_count, type, product_id }),
+  sendScannedWriteOffNumber: ({ id, product_id, type, scanned_count }) =>
+    request.patch(`v1/write-off/${id}/add-product-by-barcode`, { count: scanned_count, type, id: product_id }),
   getWriteOffDetails: (filter) => request.get(`v1/write-off-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getWriteOffDashBoard: (id) => request.get(`v1/write-off/${id}`),
   getWriteOffScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -133,7 +133,7 @@ export const requests = {
   createReturnToWarehouse: (data) => request.post(`v1/return`, data),
   getAllReturnToWarehouse: (filter) => request.get(`v1/return/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   sendScannedReturnToWarehouseNumber: ({ id, barcode, product_id, type, scanned_count }) =>
-    request.patch(`v1/return/${id}/add-product-by-barcode`, { barcode, count: scanned_count, type, id: product_id }),
+    request.patch(`v1/return/${id}/add-product-by-barcode`, { count: scanned_count, type, id: product_id }),
   getReturnToWarehouseDetails: (filter) => request.get(`v1/return-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getReturnToWarehouseDashBoard: (id) => request.get(`v1/return/${id}`),
   getReturnToWarehouseScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -146,7 +146,7 @@ export const requests = {
   createInventory: (data) => request.post(`v1/inventory`, data),
   getAllInventory: (filter) => request.get(`v1/inventory/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   sendScannedInventoryNumber: ({ id, barcode, product_id, type, scanned_count }) =>
-    request.patch(`v1/inventory/${id}/add-product-by-barcode`, { barcode, count: scanned_count, type, product_id }),
+    request.patch(`v1/inventory/${id}/add-product-by-barcode`, { count: scanned_count, type, id: product_id }),
   getInventoryDetails: (filter) => request.get(`v1/inventory-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getInventoryScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
   finishInventoryChecking: (id) => request.post(`v1/inventory/confirm/${id}`),
@@ -201,6 +201,8 @@ export const requests = {
   createDraft: (data) => request.post(`v1/draft`, data),
   deleteDraft: (id) => request.delete(`v1/draft/${id}`),
   completeDraft: (data) => request.put(`v1/draft/complete/${data}`),
+  // report lfl
+  getReportLFL: (filter) => request.post(`v1/report/lfl${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //cart_item
   changeDiscountValue: ({ id, body }) => request.put(`v1/cart_item/sale/${id}`, body),

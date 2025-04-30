@@ -64,7 +64,7 @@ export const generateCustomStyles = (props = {}) => {
       minHeight: mini ? 40 : minHeight,
       fontWeight: 600,
       overflow: 'hidden',
-      backgroundColor: white ? palette.bg[10] : palette.white,
+      backgroundColor: white ? palette.white : palette.bg[10],
       '&:hover': {
         backgroundColor: white ? palette.gray[10] : palette.gray[10],
       },

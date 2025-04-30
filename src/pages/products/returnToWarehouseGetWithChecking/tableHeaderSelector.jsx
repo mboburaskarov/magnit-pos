@@ -119,7 +119,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
 
                 setScanedNumber({
                   id,
-                  product_id: get(p, 'data.product_id'),
+                  product_id: get(p, 'data.id'),
                   barcode: get(p, 'data.barcode'),
                   type: 'MANUAL',
                   scanned_count: Number(get(target, 'value').replace(/\s+/g, '')),

@@ -25,7 +25,7 @@ import ArrowDown from '../../../assets/icons/ArrowDown'
 import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/writeOffWithCheckingTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/returnToWarehouseGetWithCheckingTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -38,7 +38,7 @@ export default function ReturnToWarehouseCompletedPage() {
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.writeOffWithCheckingColumns)
+  const { columns, loading } = useSelector((state) => state.returnToWarehouseGetWithCheckingColumns)
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
