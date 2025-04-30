@@ -156,7 +156,7 @@ export default function TransferSentScanWithCheckingPage() {
           buttonText='Отправил'
           backIcon
           backHref='/products/transfer'
-          text={'Трансфер с проверкой'}
+          text={'Перемещение с проверкой'}
           checkAccessId={'product-create'}
         />
 
