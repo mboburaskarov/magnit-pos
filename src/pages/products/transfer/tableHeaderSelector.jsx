@@ -283,7 +283,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['updated_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
+            <Typography>{p.data?.['accepeted_at'] ? dayjs(p.data?.['accepeted_at']).format('DD.MM.YYYY HH:mm:ss') : '-'}</Typography>
           </Box>
         )),
       }
@@ -347,7 +347,51 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         ...el,
         headerName: 'Количество',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={''} type={'return_count'} />),
+        cellRenderer: memo((p) => (
+          <>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <StyledTooltip title={'Недостачи'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'red.500',
+                  }}
+                >
+                  <LeftArrowIcon fill='transparent' color='#fff' />
+                </Box>
+              </StyledTooltip>
+
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={''} type={'received_supply_sum'} />
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <StyledTooltip title={'Излишек'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'green.500',
+                  }}
+                >
+                  <ArrowRight color='#fff' />
+                </Box>
+              </StyledTooltip>
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={''} type={'accepted_supply_sum'} />
+            </Box>
+          </>
+        )),
       }
     }
 

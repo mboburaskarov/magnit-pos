@@ -61,7 +61,7 @@ export default function CreateReturn({ open, refetch, setOpen }) {
       overflowVisible
       onClose={() => setOpen(false)}
       open={open}
-      title={'Новое Трансфер'}
+      title={'Новое Перемещение'}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
     >
       <Box
@@ -82,7 +82,7 @@ export default function CreateReturn({ open, refetch, setOpen }) {
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
             <Box width={'100%'}>
-              <Label mb='12px'>{t('Назовите Трансфер')}</Label>
+              <Label mb='12px'>{t('Назовите Перемещение')}</Label>
               <TextField
                 id='client-name'
                 name='name'
@@ -90,9 +90,9 @@ export default function CreateReturn({ open, refetch, setOpen }) {
                 fullWidth
                 // label='Назовите списание'
                 // error={errors?.name}
-                placeholder={t('Назовите Трансфер')}
+                placeholder={t('Назовите Перемещение')}
                 required
-                defaultValue={`Трансфер ${dayjs().format('YYYY.MM.DD HH:mm')}`}
+                defaultValue={`Перемещение ${dayjs().format('YYYY.MM.DD HH:mm')}`}
                 asteriks
               />
             </Box>

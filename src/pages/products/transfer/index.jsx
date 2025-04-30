@@ -133,7 +133,7 @@ export default function TransferPage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {'Трансфер'}
+          {'Перемещение'}
         </Typography>
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -200,7 +200,7 @@ export default function TransferPage() {
                   variant='contained'
                   color='primary'
                 >
-                  Новая Трансфер
+                  Новая Перемещение
                 </Button>
               </Box>
             </CheckAccess>
