@@ -161,7 +161,7 @@ export default function TransferCompletedPage() {
   return (
     <LoadingContainer readyState={!isfinishWriteOffChecking}>
       <FormProvider {...methods}>
-        <Header isLoading={false} backIcon noActions backHref='/products/transfer' text={'Трансфер с проверкой'} checkAccessId={'product-create'} />
+        <Header isLoading={false} backIcon noActions backHref='/products/transfer' text={'Перемещение с проверкой'} checkAccessId={'product-create'} />
 
         <Container>
           <Box
