@@ -127,6 +127,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
     }, 100)
   }
   useEffect(() => {
+    if (maxAmount < getValues('lite_card_amount') - paymentsList[1]?.amount) return
     if (cardPaymentType.from == 'Uzcard') {
       const updatedPaymentList = paymentsList.map((payment) =>
         payment.type === 'card'
@@ -701,11 +702,19 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
           noMarginTop
           required
           onInput={(e) => {
-            if (e.target.value == '') {
+            const value = parseFloat(e.target.value)
+
+            if (e.target.value === '') {
               setTimeout(() => {
                 setValue('lite_cash_amount', 0)
               }, 100)
+              return
             }
+
+            // if (value > 125) {
+            //   setValue('lite_cash_amount', 125)
+            //   inputRefs.current[0].value = 125
+            // }
           }}
           inputRef={(el) => {
             inputRefs.current[0] = el
@@ -751,6 +760,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
           name='lite_card_amount'
           id='lite_card_amount'
           noMarginTop
+          disabled={getValues('lite_cash_amount') <= 0 && maxAmount <= 0}
           placeholder={t('По карте')}
           inputRef={(el) => {
             inputRefs.current[1] = el
@@ -760,6 +770,20 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
               setTimeout(() => {
                 setValue('lite_card_amount', 0)
               }, 100)
+            }
+
+            const value = parseFloat(e.target.value)
+
+            if (e.target.value === '') {
+              setTimeout(() => {
+                setValue('lite_card_amount', 0)
+              }, 100)
+              return
+            }
+
+            if (maxAmount < value - paymentsList[1]?.amount) {
+              setValue('lite_card_amount', paymentsList[1]?.amount)
+              inputRefs.current[1].value = paymentsList[1]?.amount
             }
           }}
           control={control}
@@ -817,6 +841,19 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
               setTimeout(() => {
                 setValue('lite_online_amount', 0)
               }, 100)
+            }
+            const value = parseFloat(e.target.value)
+
+            if (e.target.value === '') {
+              setTimeout(() => {
+                setValue('lite_online_amount', 0)
+              }, 100)
+              return
+            }
+
+            if (value > 125) {
+              setValue('lite_online_amount', 125)
+              inputRefs.current[2].value = 125
             }
           }}
           inputRef={(el) => {

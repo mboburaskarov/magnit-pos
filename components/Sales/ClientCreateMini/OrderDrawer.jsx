@@ -470,7 +470,7 @@ export default function OrderDrawer({
 
   const isVisiblePaymentType = useCallback(
     (type) => {
-      const totalEnteredMoney = paymentsList.reduce((sum, item) => sum + item.amount, 0)
+      const totalEnteredMoney = paymentsList.reduce((sum, item) => sum + item.amount || 0, 0)
       const totalAmount = get(cartItemsList, 'total_amount')
       const isThereType = type === 'overAll' ? false : paymentsList.some((item) => item.id == type.id)
 
