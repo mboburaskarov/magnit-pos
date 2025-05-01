@@ -765,13 +765,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
             inputRefs.current[1] = el
           }}
           onInput={(e) => {
-            if (e.target.value == '') {
-              setTimeout(() => {
-                setValue('lite_card_amount', 0)
-              }, 100)
-            }
-
-            const value = parseFloat(e.target.value)
+            const value = Number(e.target.value.replace(/\s/g, ''))
 
             if (e.target.value === '') {
               setTimeout(() => {
@@ -780,9 +774,10 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
               return
             }
 
-            if (maxAmount < value - paymentsList[1]?.amount) {
-              setValue('lite_card_amount', paymentsList[1]?.amount)
-              inputRefs.current[1].value = paymentsList[1]?.amount
+            // if ((maxAmount <= value && value >= paymentsList[2]?.amount) || maxAmount < 0) {
+            if (maxAmount < value - paymentsList.find((a) => a.type == 'card')?.amount) {
+              setValue('lite_card_amount', paymentsList.find((a) => a.type == 'card')?.amount)
+              inputRefs.current[1].value = paymentsList.find((a) => a.type == 'card')?.amount
             }
           }}
           control={control}
@@ -836,12 +831,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
           placeholder={t('Онлайн оплата')}
           control={control}
           onInput={(e) => {
-            if (e.target.value == '') {
-              setTimeout(() => {
-                setValue('lite_online_amount', 0)
-              }, 100)
-            }
-            const value = parseFloat(e.target.value)
+            const value = Number(e.target.value.replace(/\s/g, ''))
 
             if (e.target.value === '') {
               setTimeout(() => {
@@ -849,10 +839,11 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
               }, 100)
               return
             }
+            // if ((maxAmount <= value && value >= paymentsList[2]?.amount) || maxAmount < 0) {
 
-            if (value > 125) {
-              setValue('lite_online_amount', 125)
-              inputRefs.current[2].value = 125
+            if (maxAmount < value - paymentsList.find((a) => a.type == 'app')?.amount) {
+              setValue('lite_online_amount', paymentsList.find((a) => a.type == 'app')?.amount)
+              inputRefs.current[2].value = paymentsList.find((a) => a.type == 'app')?.amount
             }
           }}
           inputRef={(el) => {
@@ -861,7 +852,6 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
           required
           onBlur={(e) => {
             const inputValue = Number(e.target.value.replace(/\s/g, ''))
-            console.log(inputValue, maxAmount)
           }}
           inputHeight='48px'
           error={errors?.lite_online_amount}
