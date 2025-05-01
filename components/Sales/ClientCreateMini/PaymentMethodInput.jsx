@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Box, TextField } from '@mui/material'
+import { Box } from '@mui/material'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import NumberFormatInput from '../../Inputs/OutLineTextFieldThousand'
 
@@ -29,7 +29,7 @@ export default function PaymentMethodInput({
 
   const handleChange = (e) => {
     const inputValue = Number(e)
-    // if (inputValue <= 0 || !e) return removePaymentType(item.id)
+    if (item?.type !== 'cash' && inputValue > totalAmount) return
     const updatedPaymentList = paymentsList.map((payment) => (payment.id === id ? { ...payment, amount: inputValue } : payment))
     setPaymentsList(updatedPaymentList)
     setValue(inputValue)
@@ -63,9 +63,17 @@ export default function PaymentMethodInput({
           const box = document.getElementById(`payment-box${index}`)
           box.classList.add(classes?.outline)
         }}
-        onBlur={() => {
+        onBlur={(e) => {
+          const inputValue = Number(e.target.value.replace(/\s/g, ''))
           const box = document.getElementById(`payment-box${index}`)
           box.classList.remove(classes?.outline)
+
+          if (item?.type !== 'CASH' && inputValue > totalAmount) {
+            const updatedPaymentList = paymentsList.map((payment) => (payment.id === id ? { ...payment, amount: item?.amount } : payment))
+            setPaymentsList(updatedPaymentList)
+            setValue(inputValue)
+            return
+          }
         }}
         setValue={handleChange}
       />
