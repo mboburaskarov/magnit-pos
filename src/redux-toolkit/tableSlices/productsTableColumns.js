@@ -74,6 +74,11 @@ const columns = [
     minWidth: 200,
   },
   {
+    field: 'unit_label',
+    hide: false,
+    minWidth: 200,
+  },
+  {
     field: 'category',
     hide: false,
     minWidth: 70,

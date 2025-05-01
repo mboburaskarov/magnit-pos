@@ -1,4 +1,4 @@
-import { Box, IconButton, Typography } from '@mui/material'
+import { Box, IconButton, OutlinedInput, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
@@ -286,6 +286,35 @@ export default function tableHeaderSelector({
                 defaultValue={p?.data?.unit_code}
                 id={`editable_unit_code_${p?.data?.id}`}
                 name={`editable_unit_code_${p?.data?.id}`}
+                type='number'
+                fullWidth
+              />
+            )
+          }
+        }),
+      }
+    }
+    if (el.field === 'unit_label') {
+      return {
+        ...el,
+        headerName: 'Код упаковки',
+        colId: el.field,
+        cellRenderer: memo((p) => {
+          if (!canChangebarcode) {
+            return <SimpleText currency='' {...p} type='unit_label' />
+          } else {
+            return (
+              <OutlinedInput
+                onBlur={({ target }) => {
+                  if (p?.data?.barcode == get(target, 'value')) return
+
+                  changeBarcode({ id: get(p, 'data.id'), unit_label: get(target, 'value') })
+                }}
+                placeholder={'0'}
+                thousandSeparator={''}
+                defaultValue={p?.data?.unit_label}
+                id={`editable_unit_label_${p?.data?.id}`}
+                name={`editable_unit_label_${p?.data?.id}`}
                 type='number'
                 fullWidth
               />
