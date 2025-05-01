@@ -1,4 +1,4 @@
-import { Box, IconButton, OutlinedInput, Typography } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
@@ -297,14 +297,14 @@ export default function tableHeaderSelector({
     if (el.field === 'unit_label') {
       return {
         ...el,
-        headerName: 'Код упаковки',
+        headerName: 'Н.упак',
         colId: el.field,
         cellRenderer: memo((p) => {
           if (!canChangebarcode) {
             return <SimpleText currency='' {...p} type='unit_label' />
           } else {
             return (
-              <OutlinedInput
+              <TextField
                 onBlur={({ target }) => {
                   if (p?.data?.barcode == get(target, 'value')) return
 
@@ -315,7 +315,6 @@ export default function tableHeaderSelector({
                 defaultValue={p?.data?.unit_label}
                 id={`editable_unit_label_${p?.data?.id}`}
                 name={`editable_unit_label_${p?.data?.id}`}
-                type='number'
                 fullWidth
               />
             )
