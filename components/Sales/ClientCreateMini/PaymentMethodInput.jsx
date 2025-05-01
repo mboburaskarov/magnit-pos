@@ -69,7 +69,7 @@ export default function PaymentMethodInput({
           const box = document.getElementById(`payment-box${index}`)
           box.classList.remove(classes?.outline)
 
-          if (item?.type !== 'CASH' && max <= 0 && item?.amount <= inputValue) {
+          if (item?.type !== 'cash' && max < inputValue - item?.amount) {
             const updatedPaymentList = paymentsList.map((payment) => (payment.id === id ? { ...payment, amount: item?.amount } : payment))
             setPaymentsList(updatedPaymentList)
             setValue(inputValue)

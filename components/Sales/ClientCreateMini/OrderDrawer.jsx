@@ -508,6 +508,7 @@ export default function OrderDrawer({
     const paymentTypes = mpaddedPaymentsList
       .filter((type) => get(type, 'isPlaceholder', false) == false)
       .map(({ id, ...type }) => ({
+        ...(get(type, 'type') === 'cash' ? { return_amount: Math.abs(maxAmount) } : {}),
         amount: get(type, 'amount'),
         payment_type_id: id,
         type: get(type, 'type'),
@@ -528,7 +529,6 @@ export default function OrderDrawer({
       store_id: get(userData, 'store.id'),
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
-      return_amount: Math.abs(maxAmount),
       marking_data: markingData,
     })
 
