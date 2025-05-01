@@ -811,9 +811,14 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
             inputRefs.current[2] = el
           }}
           required
+          onBlur={(e) => {
+            const inputValue = Number(e.target.value.replace(/\s/g, ''))
+            console.log(inputValue, maxAmount)
+          }}
           inputHeight='48px'
           error={errors?.lite_online_amount}
           fullWidth
+          max={10}
           adornmentPosition='end'
           borderRadius='18px'
           type='number'

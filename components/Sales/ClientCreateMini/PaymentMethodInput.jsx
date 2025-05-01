@@ -29,7 +29,7 @@ export default function PaymentMethodInput({
 
   const handleChange = (e) => {
     const inputValue = Number(e)
-    if (item?.type !== 'cash' && inputValue > totalAmount) return
+    if (item?.type !== 'cash' && max <= 0) return
     const updatedPaymentList = paymentsList.map((payment) => (payment.id === id ? { ...payment, amount: inputValue } : payment))
     setPaymentsList(updatedPaymentList)
     setValue(inputValue)
@@ -68,7 +68,7 @@ export default function PaymentMethodInput({
           const box = document.getElementById(`payment-box${index}`)
           box.classList.remove(classes?.outline)
 
-          if (item?.type !== 'CASH' && inputValue > totalAmount) {
+          if (item?.type !== 'CASH' && max <= 0) {
             const updatedPaymentList = paymentsList.map((payment) => (payment.id === id ? { ...payment, amount: item?.amount } : payment))
             setPaymentsList(updatedPaymentList)
             setValue(inputValue)
