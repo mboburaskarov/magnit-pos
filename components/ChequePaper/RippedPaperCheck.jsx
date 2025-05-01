@@ -279,7 +279,7 @@ function RippedPaperCheck({
               <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
                 Siz xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
               </Typography>
-              <QRCodeCanvas value={qrcodeUrl.qr} />
+              <QRCodeCanvas size={200} value={qrcodeUrl.qr} />
 
               <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
                 SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI

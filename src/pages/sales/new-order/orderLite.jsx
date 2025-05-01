@@ -760,7 +760,6 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
           name='lite_card_amount'
           id='lite_card_amount'
           noMarginTop
-          disabled={getValues('lite_cash_amount') <= 0 && maxAmount <= 0}
           placeholder={t('По карте')}
           inputRef={(el) => {
             inputRefs.current[1] = el
