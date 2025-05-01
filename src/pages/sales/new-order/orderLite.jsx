@@ -18,18 +18,7 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
-function OrderLite({
-  cartItemsList,
-  markingsList,
-  setHasChange,
-  maxAmount,
-  setMaxAmount,
-  liteOrder,
-  cashBoxDetails,
-  setLiteOrder,
-  customerId,
-  printContainer,
-}) {
+function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMaxAmount, liteOrder, cashBoxDetails, setLiteOrder, customerId }) {
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
   const theme = useTheme()
   const { id } = useParams()
@@ -38,6 +27,8 @@ function OrderLite({
   const [paymentAmount, setPaymentAmount] = useState(0)
   const userData = useSelector((state) => state.user)
   const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
+  const printContainer = useRef()
+
   const defultPaymentTypes = [
     {
       amount: 0,
@@ -103,7 +94,7 @@ function OrderLite({
     },
   ]
   const [onlinePaymentType, setOnlinePaymentType] = useState(onlinePaymentTypes[0])
-  const [qrcodeUrl, setQrcodeUrl] = useState('pending')
+  const [qrcodeUrl, setQrcodeUrl] = useState({ qr: 'pending', fiscal: 'pending' })
 
   const [cardPaymentType, setCardPaymentType] = useState(cardPaymentTypes[0])
   const inputRefs = useRef([])
@@ -436,6 +427,10 @@ function OrderLite({
     content: reactToPrintContent,
     documentTitle: documentName.current,
     removeAfterPrint: true,
+    onPrintError: (err) => {
+      error('chek bilan muammo: ', err)
+      navigate(`/sales/create`)
+    },
     onAfterPrint: () => {
       navigate(`/sales/create`)
     },
@@ -521,20 +516,15 @@ function OrderLite({
 
   const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
-      if (get(data, 'error', true)) {
-        setHasChange(false)
-
-        sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
-        error(`EPOS: ${get(data, 'message')}`)
+      if (!get(data, 'error', true)) {
+        setQrcodeUrl({ qr: get(data, 'info.qrCodeURL', 'pending'), fiscal: get(data, 'info.fiscalSign', 'pending') })
+        sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
         return
       } else {
-        setQrcodeUrl(get(data, 'info.qrCodeURL', 'pending'))
+        setHasChange(false)
+        sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
+        error(`EPOS: ${get(data, 'message')}`)
       }
-      handlePrint()
-      setHasChange(false)
-
-      success('Продажа завершена!')
-      sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
     },
     onError: (err) => {
       sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
@@ -544,6 +534,12 @@ function OrderLite({
       console.log('err', err)
     },
   })
+  useEffect(() => {
+    if (qrcodeUrl.qr != 'pending') {
+      handlePrint()
+      success('Продажа завершена!')
+    }
+  }, [qrcodeUrl])
   useEffect(() => {
     if (isOpenScanDialog) {
       setTimeout(() => {
@@ -865,6 +861,7 @@ function OrderLite({
           <RippedPaperItem
             qrcodeUrl={qrcodeUrl}
             qrcode='pending'
+            markingsList={markingsList}
             paymentsList={paymentsList}
             cartItemsList={cartItemsList}
             id='cheque_of_orders'

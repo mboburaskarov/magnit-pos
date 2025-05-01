@@ -46,6 +46,7 @@ export default function RippedPaperList({
   customerId,
   paymentsList,
   cartItemsList,
+  markingsList,
   defaultValue,
   data,
   name = 'cheque_id',
@@ -65,6 +66,7 @@ export default function RippedPaperList({
             <Box className={classes.inner}>
               {data?.cheques?.map((el, index) => (
                 <RippedPaperItem
+                  markingsList={markingsList}
                   customerId={customerId}
                   cashBoxDetails={cashBoxDetails}
                   paymentsList={paymentsList}
@@ -82,7 +84,7 @@ export default function RippedPaperList({
   )
 }
 
-export function RippedPaperItem({ mode = 'full', qrcodeUrl, printContainer, cashBoxDetails, customerId, paymentsList, cartItemsList }) {
+export function RippedPaperItem({ mode = 'full', qrcodeUrl, printContainer, markingsList, cashBoxDetails, customerId, paymentsList, cartItemsList }) {
   const classes = useStyles()
 
   return (
@@ -90,6 +92,7 @@ export function RippedPaperItem({ mode = 'full', qrcodeUrl, printContainer, cash
       <RippedPaperCheck
         mode={mode}
         qrcodeUrl={qrcodeUrl}
+        markingsList={markingsList}
         customerId={customerId}
         cashBoxDetails={cashBoxDetails}
         cartItemsList={cartItemsList}

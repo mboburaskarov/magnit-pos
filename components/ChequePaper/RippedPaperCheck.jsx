@@ -11,7 +11,9 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import palette from '../../src/assets/theme/mui.config'
 import thousandDivider from '../../utils/thousandDivider.js'
-
+const FiskalText = ({ data }) => {
+  return <Typography>Fiskal belgi: {data}</Typography>
+}
 function RippedPaperCheck({
   data,
   margin,
@@ -25,6 +27,7 @@ function RippedPaperCheck({
   chequeData: cheque,
   logo = '',
   noSticky,
+  markingsList,
   orderItems,
 }) {
   const classes = useStyles()
@@ -175,6 +178,8 @@ function RippedPaperCheck({
                 >
                   <Typography>O'lchiv birligi: {get(el, 'package_name', '-')}</Typography>
                   <Typography>MXIK: {get(el, 'class_code', '-')}</Typography>
+                  {Object.values(markingsList[get(el, 'id')] || {})?.length > 0 &&
+                    Object.values(markingsList[get(el, 'id')] || {}).map((el) => <Typography>MK: {el.slice(0, 32)}</Typography>)}
                   <Typography>ShtKod: {get(el, 'barcode', '-')}</Typography>
                 </Box>
                 <DashedRow
@@ -264,6 +269,7 @@ function RippedPaperCheck({
                 }}
               >
                 <Typography>Chek turi: {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}</Typography>
+                <FiskalText data={qrcodeUrl.fiscal} />
               </Box>
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
@@ -273,7 +279,7 @@ function RippedPaperCheck({
               <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
                 Siz xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
               </Typography>
-              <QRCodeCanvas value={qrcodeUrl} />
+              <QRCodeCanvas value={qrcodeUrl.qr} />
 
               <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
                 SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
