@@ -29,7 +29,8 @@ export default function PaymentMethodInput({
 
   const handleChange = (e) => {
     const inputValue = Number(e)
-    if (item?.type !== 'cash' && max <= 0 && item?.amount <= inputValue) return
+
+    if (item?.type !== 'cash' && max < inputValue - item?.amount) return
     const updatedPaymentList = paymentsList.map((payment) => (payment.id === id ? { ...payment, amount: inputValue } : payment))
     setPaymentsList(updatedPaymentList)
     setValue(inputValue)

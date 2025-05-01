@@ -292,7 +292,7 @@ export default function OrderDrawer({
   useEffect(() => {
     let amount = 0
     paymentsList.map((el) => {
-      amount += Number(el.amount)
+      amount += Number(el.amount || 0)
     })
 
     if (isNaN(amount)) {

@@ -696,6 +696,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
           control={control}
           noMarginTop
           required
+          disabled={(e) => maxAmount == 0}
           onInput={(e) => {
             if (e.target.value == '') {
               setTimeout(() => {
@@ -759,6 +760,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
           inputHeight='48px'
           error={errors?.lite_card_amount}
           fullWidth
+          disabled={maxAmount == 0}
           adornmentPosition='end'
           borderRadius='18px'
           type='number'
@@ -815,6 +817,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
             const inputValue = Number(e.target.value.replace(/\s/g, ''))
             console.log(inputValue, maxAmount)
           }}
+          disabled={maxAmount == 0}
           inputHeight='48px'
           error={errors?.lite_online_amount}
           fullWidth

@@ -268,7 +268,7 @@ export default function tableHeaderSelector({
     if (el.field === 'unit_code') {
       return {
         ...el,
-        headerName: 'Унит код',
+        headerName: 'Код упаковки',
         colId: el.field,
         cellRenderer: memo((p) => {
           if (!canChangebarcode) {
