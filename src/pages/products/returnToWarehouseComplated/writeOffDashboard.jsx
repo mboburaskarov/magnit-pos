@@ -6,8 +6,6 @@ import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DownloadIcon from '../../../assets/icons/DownloadIcon'
 
 function WriteOffDashboard({ data }) {
-  console.log(data)
-
   return (
     <Grid
       container

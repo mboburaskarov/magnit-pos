@@ -21,8 +21,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const { formState, reset, control, getValues } = methods
 
   const onSubmit = (data) => {
-    console.log(data)
-
     const requestBody = {
       store_id: data.store_id?.id || undefined,
       employee_id: data.employee_id?.id || undefined,

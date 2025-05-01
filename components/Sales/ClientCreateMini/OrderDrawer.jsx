@@ -277,7 +277,7 @@ export default function OrderDrawer({
   const [maxAmount, setMaxAmount] = useState(0)
   const [paymentAmount, setPaymentAmount] = useState(0)
   const [hasChange, setHasChange] = useState(false)
-  const [qrcodeUrl, setQrcodeUrl] = useState('pending')
+  const [qrcodeUrl, setQrcodeUrl] = useState({ qr: 'pending', fiscal: 'pending' })
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
   const [payme, setPayme] = useState(false)
   const { id } = useParams()
@@ -403,17 +403,15 @@ export default function OrderDrawer({
   })
   const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
-      if (get(data, 'error', true)) {
-        sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
-        error(`EPOS: ${get(data, 'message')}`)
+      if (!get(data, 'error', true)) {
+        setQrcodeUrl({ qr: get(data, 'info.qrCodeURL', 'pending'), fiscal: get(data, 'info.fiscalSign', 'pending') })
+        sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
+
         return
       } else {
-        setQrcodeUrl(get(data, 'info.qrCodeURL', 'pending'))
+        sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
+        error(`EPOS: ${get(data, 'message')}`)
       }
-      handlePrint()
-      success('Продажа завершена!')
-      setIsOrderDrower(false)
-      sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
     },
     onError: (err) => {
       sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
@@ -422,7 +420,13 @@ export default function OrderDrawer({
       console.log('err', err)
     },
   })
-
+  useEffect(() => {
+    if (qrcodeUrl.qr != 'pending') {
+      handlePrint()
+      setIsOrderDrower(false)
+      success('Продажа завершена!')
+    }
+  }, [qrcodeUrl])
   useEffect(() => {
     setPaymentsList([])
   }, [isOrderDrower])
@@ -490,6 +494,10 @@ export default function OrderDrawer({
     content: reactToPrintContent,
     documentTitle: documentName.current,
     removeAfterPrint: true,
+    onPrintError: (err) => {
+      error('chek bilan muammo: ', err)
+      navigate(`/sales/create`)
+    },
     onAfterPrint: () => {
       navigate(`/sales/create`)
     },

@@ -9,7 +9,5 @@ const weeknameMap = {
 }
 
 export const translatedWeekNameRu = (weekname) => {
-  console.log(weekname)
-
   return weeknameMap[weekname] || weekname
 }
