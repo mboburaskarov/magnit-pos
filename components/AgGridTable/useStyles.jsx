@@ -4,6 +4,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     position: 'relative',
+    overflow: 'hidden',
     '& > div:first-child': {
       height: 'unset !important',
     },

@@ -127,6 +127,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
     }, 100)
   }
   useEffect(() => {
+    if (maxAmount < getValues('lite_card_amount') - paymentsList[1]?.amount) return
     if (cardPaymentType.from == 'Uzcard') {
       const updatedPaymentList = paymentsList.map((payment) =>
         payment.type === 'card'
@@ -687,6 +688,10 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
             width: '65px',
           },
           mt: '8px',
+          '& input': {
+            fontWeight: 500,
+            color: 'bunker.950',
+          },
         }}
       >
         <InputFormattedPriceWithTextField
@@ -697,11 +702,19 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
           noMarginTop
           required
           onInput={(e) => {
-            if (e.target.value == '') {
+            const value = parseFloat(e.target.value)
+
+            if (e.target.value === '') {
               setTimeout(() => {
                 setValue('lite_cash_amount', 0)
               }, 100)
+              return
             }
+
+            // if (value > 125) {
+            //   setValue('lite_cash_amount', 125)
+            //   inputRefs.current[0].value = 125
+            // }
           }}
           inputRef={(el) => {
             inputRefs.current[0] = el
@@ -736,6 +749,10 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
           '& .react-select__control': {
             width: '85px',
           },
+          '& input': {
+            fontWeight: 500,
+            color: 'bunker.950',
+          },
           mt: '8px',
         }}
       >
@@ -748,10 +765,19 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
             inputRefs.current[1] = el
           }}
           onInput={(e) => {
-            if (e.target.value == '') {
+            const value = Number(e.target.value.replace(/\s/g, ''))
+
+            if (e.target.value === '') {
               setTimeout(() => {
                 setValue('lite_card_amount', 0)
               }, 100)
+              return
+            }
+
+            // if ((maxAmount <= value && value >= paymentsList[2]?.amount) || maxAmount < 0) {
+            if (maxAmount < value - paymentsList.find((a) => a.type == 'card')?.amount) {
+              setValue('lite_card_amount', paymentsList.find((a) => a.type == 'card')?.amount)
+              inputRefs.current[1].value = paymentsList.find((a) => a.type == 'card')?.amount
             }
           }}
           control={control}
@@ -791,6 +817,10 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
           '& .react-select__control': {
             width: '85px',
           },
+          '& input': {
+            fontWeight: 500,
+            color: 'bunker.950',
+          },
           mt: '8px',
         }}
       >
@@ -801,19 +831,32 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
           placeholder={t('Онлайн оплата')}
           control={control}
           onInput={(e) => {
-            if (e.target.value == '') {
+            const value = Number(e.target.value.replace(/\s/g, ''))
+
+            if (e.target.value === '') {
               setTimeout(() => {
                 setValue('lite_online_amount', 0)
               }, 100)
+              return
+            }
+            // if ((maxAmount <= value && value >= paymentsList[2]?.amount) || maxAmount < 0) {
+
+            if (maxAmount < value - paymentsList.find((a) => a.type == 'app')?.amount) {
+              setValue('lite_online_amount', paymentsList.find((a) => a.type == 'app')?.amount)
+              inputRefs.current[2].value = paymentsList.find((a) => a.type == 'app')?.amount
             }
           }}
           inputRef={(el) => {
             inputRefs.current[2] = el
           }}
           required
+          onBlur={(e) => {
+            const inputValue = Number(e.target.value.replace(/\s/g, ''))
+          }}
           inputHeight='48px'
           error={errors?.lite_online_amount}
           fullWidth
+          max={10}
           adornmentPosition='end'
           borderRadius='18px'
           type='number'

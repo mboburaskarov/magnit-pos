@@ -2,7 +2,7 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get, head, size } from 'lodash'
-import React, { useImperativeHandle, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useQuery } from 'react-query'
@@ -186,7 +186,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
 }))
-let a = -1
+let a = -2
 function CartSearchBar({
   refetchcartItemsList,
   openDraft,
@@ -233,7 +233,9 @@ function CartSearchBar({
   const methods = useForm()
   const classes = useStyles()
   const productsData = productsList?.data?.data
-
+  useEffect(() => {
+    a = -1
+  }, [searchTearm])
   const selectDownItems = () => {
     if (a == searchItemRef.current.length - 1) {
       a = 0

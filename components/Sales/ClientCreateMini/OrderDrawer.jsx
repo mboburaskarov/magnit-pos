@@ -292,7 +292,7 @@ export default function OrderDrawer({
   useEffect(() => {
     let amount = 0
     paymentsList.map((el) => {
-      amount += Number(el.amount)
+      amount += Number(el.amount || 0)
     })
 
     if (isNaN(amount)) {
@@ -470,7 +470,7 @@ export default function OrderDrawer({
 
   const isVisiblePaymentType = useCallback(
     (type) => {
-      const totalEnteredMoney = paymentsList.reduce((sum, item) => sum + item.amount, 0)
+      const totalEnteredMoney = paymentsList.reduce((sum, item) => sum + item.amount || 0, 0)
       const totalAmount = get(cartItemsList, 'total_amount')
       const isThereType = type === 'overAll' ? false : paymentsList.some((item) => item.id == type.id)
 
@@ -508,6 +508,7 @@ export default function OrderDrawer({
     const paymentTypes = mpaddedPaymentsList
       .filter((type) => get(type, 'isPlaceholder', false) == false)
       .map(({ id, ...type }) => ({
+        ...(get(type, 'type') === 'cash' ? { return_amount: Math.abs(maxAmount) } : {}),
         amount: get(type, 'amount'),
         payment_type_id: id,
         type: get(type, 'type'),
@@ -528,7 +529,6 @@ export default function OrderDrawer({
       store_id: get(userData, 'store.id'),
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
-      return_amount: Math.abs(maxAmount),
       marking_data: markingData,
     })
 

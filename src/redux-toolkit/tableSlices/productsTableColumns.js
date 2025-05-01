@@ -71,7 +71,7 @@ const columns = [
   {
     field: 'unit_code',
     hide: false,
-    minWidth: 260,
+    minWidth: 100,
     flex: 1,
   },
   {
