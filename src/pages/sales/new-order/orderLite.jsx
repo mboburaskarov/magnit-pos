@@ -509,6 +509,8 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
       }
     },
     onError: (err) => {
+      setHasChange(false)
+
       if (get(err, 'response.status') == 409) {
         saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), error('Эта продажа уже закрыта.')
         return
