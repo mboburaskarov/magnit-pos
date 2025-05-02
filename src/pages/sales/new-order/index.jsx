@@ -694,6 +694,8 @@ function NewSale() {
     return () => clearTimeout(handler)
   }, [debouncedDiscount])
   const implementMarkingList = (marking, id, index) => {
+    console.log(Object.values(markingsList[id] || {}), marking)
+
     if (Object.values(markingsList[id] || {}).includes(marking)) {
       return false
     }
@@ -744,6 +746,8 @@ function NewSale() {
     })
 
     const cartsMarkingCount = Object.values(newmarkingCount)?.reduce((acc, i) => acc + i, 0)
+    console.log(Object.values(markingsList))
+
     const userIsFilledMarkingCount = Object.values(markingsList)
       ?.map((e) => Object.values(e)?.filter((a) => a?.length))
       ?.map((e) => Object.keys(e).length)
