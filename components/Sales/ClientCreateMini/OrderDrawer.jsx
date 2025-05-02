@@ -369,8 +369,10 @@ export default function OrderDrawer({
             clientName: get(customerId, 'name'), //ФИО Клиента
 
             items: mockData.flat(),
-            receivedCash: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
-            receivedCard: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
+            receivedCash:
+              mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100, // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
+            receivedCard:
+              mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100, // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
           },
 
           ...(SALE_TYPE === 'RETURN' && {
