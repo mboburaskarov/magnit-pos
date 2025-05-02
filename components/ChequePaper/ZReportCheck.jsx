@@ -106,7 +106,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
                   id={`return-price-${'index8'}`}
                   rowData={{
                     type: `ИТОГО КАРТЫ:`,
-                    value: `${get(zrepo, 'totalSaleCard')}`,
+                    value: `${get(zrepo, 'totalSaleCard') / 100}.00`,
                   }}
                 />
               )}
@@ -116,7 +116,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
                   id={`return-price-${'index9'}`}
                   rowData={{
                     type: `ИТОГО НАЛИЧНЫЕ:`,
-                    value: `${get(zrepo, 'totalSaleCash', '-')}`,
+                    value: `${get(zrepo, 'totalSaleCash', '-') / 100}.00`,
                   }}
                 />
               )}
@@ -125,7 +125,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
                   id={`return-price-${'index10'}`}
                   rowData={{
                     type: `ИТОГО НДС:`,
-                    value: `${get(zrepo, 'totalSaleVAT', '-')}`,
+                    value: `${get(zrepo, 'totalSaleVAT', '-') / 100}.00`,
                   }}
                 />
               )}
@@ -134,7 +134,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
                   id={`return-price-${'index11'}`}
                   rowData={{
                     type: `ИТОГО ВОЗВРАТОВ:`,
-                    value: `${get(zrepo, 'totalRefundCount', '-')}`,
+                    value: `${get(zrepo, 'totalRefundCount', '-') / 100}.00`,
                   }}
                 />
               )}
@@ -143,7 +143,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
                   id={`return-price-${'index12'}`}
                   rowData={{
                     type: `ИТОГО ВОЗВРАТА НАЛИЧНЫЕ:`,
-                    value: `${get(zrepo, 'totalRefundCash', '-')}`,
+                    value: `${get(zrepo, 'totalRefundCash', '-') / 100}.00`,
                   }}
                 />
               )}
@@ -152,7 +152,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
                   id={`return-price-${'index13'}`}
                   rowData={{
                     type: `ИТОГО ВОЗВРАТА КАРТЫ:`,
-                    value: `${get(zrepo, 'totalRefundCard', '-')}`,
+                    value: `${get(zrepo, 'totalRefundCard', '-') / 100}.00`,
                   }}
                 />
               )}
@@ -161,7 +161,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
                   id={`return-price-${'index14'}`}
                   rowData={{
                     type: `ИТОГО ВОЗВРАТА НДС:`,
-                    value: `${get(zrepo, 'totalRefundVAT', '-')}`,
+                    value: `${get(zrepo, 'totalRefundVAT', '-') / 100}.00`,
                   }}
                 />
               )}
