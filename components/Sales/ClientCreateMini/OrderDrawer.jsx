@@ -340,10 +340,10 @@ export default function OrderDrawer({
           return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
             barcode: el.barcode,
             amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
-            price: el.quantity > index ? el.unit_price * 100 : el.unit_quantity_price * el.unit_quantity * 100,
-            discount: 1309000,
+            price: el.quantity > index ? el.unit_price : el.unit_quantity_price * el.unit_quantity,
+            discount: el.discount_amount,
             vatPercent: get(el, 'vat_percent'),
-            vat: 1402.5,
+            vat: el.quantity > index ? get(el, 'vat_price') : el.unit_vat_price * el.unit_quantity,
             label: marking,
             name: el.name,
             classCode: get(el, 'class_code'),
@@ -369,11 +369,10 @@ export default function OrderDrawer({
             clientName: get(customerId, 'name'), //ФИО Клиента
 
             items: mockData.flat(),
-            receivedCash:
-              mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100, // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
-            receivedCard:
-              mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100, // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
+            receivedCash: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
+            receivedCard: mpaddedPaymentsList.filter((item) => !item.isPlaceholder && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0), // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
           },
+
           ...(SALE_TYPE === 'RETURN' && {
             refundInfo: (() => {
               const info = JSON.parse(get(cashBoxDetails, 'data.data.epos_response.response', '{}'))?.info
