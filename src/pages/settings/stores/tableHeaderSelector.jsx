@@ -1,6 +1,7 @@
 import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
+import CustomImg from '../../../../components/CustomImg'
 import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 import thousandDivider from '../../../../utils/thousandDivider'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
@@ -29,7 +30,7 @@ const Image = ({ data, rowIndex, setImages }) => {
         },
       }}
     >
-      <img
+      <CustomImg
         id={`product-image-${rowIndex}`}
         src={data?.main_photo || '/default-img.avif'}
         alt={data?.name}

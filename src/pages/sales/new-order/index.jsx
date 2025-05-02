@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
+import CustomImg from '../../../../components/CustomImg'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import LoadingOverflow from '../../../../components/LoadingOverflow'
 import ClientCreateMini from '../../../../components/Sales/ClientCreateMini'
@@ -732,6 +733,23 @@ function NewSale() {
 
     return cartsMarkingCount === userIsFilledMarkingCount
   }
+  const filledMarkingCounts = () => {
+    const newmarkingCount = {}
+
+    get(cartItemsList, 'data.data.data').map((item) => {
+      if (item.is_marking) {
+        newmarkingCount[item.id] = markingCount[item.id]
+      }
+    })
+
+    const cartsMarkingCount = Object.values(newmarkingCount)?.reduce((acc, i) => acc + i, 0)
+    const userIsFilledMarkingCount = Object.values(markingsList)
+      ?.map((e) => Object.values(e)?.filter((a) => a?.length))
+      ?.map((e) => Object.keys(e).length)
+      ?.reduce((acc, i) => acc + i, 0)
+
+    return userIsFilledMarkingCount
+  }
   const isAllMarkingFillById = (id) => {
     const cartsMarkingCount = markingCount[id]
     const userIsFilledMarkingCount = Object.values(markingsList[id] || {})?.filter((a) => a?.length).length
@@ -857,7 +875,7 @@ function NewSale() {
                       </p>
                     </Box>
                     <div className={classes.avatarPlaceholder}>
-                      <img src={get(userData, 'photo')} />
+                      <CustomImg src={get(userData, 'photo')} />
                     </div>
                   </Box>
                 </ListItem>
@@ -1019,6 +1037,7 @@ function NewSale() {
       <ImplementMarkingDialog
         liteOrder={liteOrder}
         setLiteOrder={setLiteOrder}
+        filledMarkingCounts={filledMarkingCounts}
         markingCount={markingCount}
         isAllMarkingFill={isAllMarkingFill}
         cartItems={get(cartItemsList, 'data.data.data', [])}

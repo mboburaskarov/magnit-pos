@@ -10,6 +10,7 @@ import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 function ImplementMarkingDialog({
   open,
   setIsOrderDrower,
+  filledMarkingCounts,
   isAllMarkingFill,
   markingCount,
   handleClose,
@@ -73,7 +74,7 @@ function ImplementMarkingDialog({
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      if (inputsRef.current.length - 1 == flatIndex && !isAllMarkingFill() && inputsRef.current.length > 1) {
+      if (inputsRef.current.length - 1 == flatIndex && filledMarkingCounts() + 1 !== inputsRef.current.length && inputsRef.current.length > 1) {
         setOpenConfirmDialog(true)
         inputsRef.current[flatIndex].value = ''
         inputsRef.current[0].focus()

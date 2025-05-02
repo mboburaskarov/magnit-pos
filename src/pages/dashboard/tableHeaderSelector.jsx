@@ -1,27 +1,27 @@
 /* eslint-disable no-extra-boolean-cast */
-import { memo } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import TruncatedText from '../../../components/TruncatedText'
-import Highlighter from 'react-highlight-words'
-import TimeCell from '../../../components/AgGridTable/Cells/TimeCell'
-import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
-import thousandDivider from '../../../utils/thousandDivider'
-import StyledTooltip from '../../../components/StyledTooltip'
-import { formatPhoneNumber } from '../../../utils/formatPhoneNumber'
-import { order_statuses } from '../../assets/data/order-statuses'
-import ReOrderCourierIcon from '../../assets/icons/ReOrderCourierIcon'
-import CancelCourierIcon from '../../assets/icons/CancelCourierIcon'
-import OrderNoteIcon from '../../assets/icons/OrderNoteIcon'
-import TimeCountdown from '../../../components/TimeCountdown'
-import SelectSimple from '../../../components/Select/SelectSimple'
-import HeadPhonesIcon from '../../assets/icons/HeadPhonesIcon'
-import AssigneMeButton from './AssigneMeButton'
 import dayjs from 'dayjs'
-import CheckAccess from '../../../components/CheckAccess'
-import CancelOrderIcon from '../../assets/icons/CancelOrderIcon'
-import WarningIcon from '../../assets/icons/WarningIcon'
-import { requests } from '../../../utils/requests'
+import { memo } from 'react'
+import Highlighter from 'react-highlight-words'
+import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
+import TimeCell from '../../../components/AgGridTable/Cells/TimeCell'
+import CustomImg from '../../../components/CustomImg'
+import SelectSimple from '../../../components/Select/SelectSimple'
+import StyledTooltip from '../../../components/StyledTooltip'
+import TimeCountdown from '../../../components/TimeCountdown'
+import TruncatedText from '../../../components/TruncatedText'
 import { checkForManual } from '../../../utils/checkForRuchnoy'
+import { formatPhoneNumber } from '../../../utils/formatPhoneNumber'
+import { requests } from '../../../utils/requests'
+import thousandDivider from '../../../utils/thousandDivider'
+import { order_statuses } from '../../assets/data/order-statuses'
+import CancelCourierIcon from '../../assets/icons/CancelCourierIcon'
+import CancelOrderIcon from '../../assets/icons/CancelOrderIcon'
+import HeadPhonesIcon from '../../assets/icons/HeadPhonesIcon'
+import OrderNoteIcon from '../../assets/icons/OrderNoteIcon'
+import ReOrderCourierIcon from '../../assets/icons/ReOrderCourierIcon'
+import WarningIcon from '../../assets/icons/WarningIcon'
+import AssigneMeButton from './AssigneMeButton'
 
 const DefaultCell = ({ data, rowIndex, type, st: searchTerm }) => {
   return (
@@ -187,7 +187,7 @@ export default function tableHeaderSelector({
         cellRenderer: memo(({ data }) => (
           <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + data?.client?.phone)}>
             <Box display={'flex'} alignItems={'center'}>
-              <img
+              <CustomImg
                 style={{ width: '36px', borderRadius: '50%', height: '36px', marginRight: '10px' }}
                 src='https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg'
               />
@@ -306,7 +306,7 @@ export default function tableHeaderSelector({
             }}
             key={el._id}
           >
-            <img
+            <CustomImg
               style={{ borderRadius: 16 }}
               src={
                 data?.paymentType === 'OCTO'

@@ -7,6 +7,7 @@ import Highlighter from 'react-highlight-words'
 import { useNavigate } from 'react-router-dom'
 import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
 import CheckAccess from '../../../components/CheckAccess'
+import CustomImg from '../../../components/CustomImg'
 import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousand'
 import TextField from '../../../components/Inputs/TextField'
 import thousandDivider from '../../../utils/thousandDivider'
@@ -42,7 +43,7 @@ const Image = ({ data, rowIndex, setImages }) => {
       }}
     >
       {data?.photos?.[0] ? (
-        <img
+        <CustomImg
           onClick={() => setImages({ data: data?.photos })}
           id={`product-image-${rowIndex}`}
           src={data?.photos[0] || '/default-img.avif'}

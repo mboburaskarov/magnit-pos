@@ -1,12 +1,13 @@
-import { useState } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import StyledTooltip from './StyledTooltip'
+import { useState } from 'react'
 import ArrowDown from '../src/assets/icons/ArrowDown'
+import BackArrowIcon from '../src/assets/icons/BackArrow'
 import ZipIcon from '../src/assets/icons/ZipIcon'
 import downloadImage from '../utils/downloadImage'
 import downloadZip from '../utils/downloadZip'
 import getImageUrl from '../utils/getImageUrl'
-import BackArrowIcon from '../src/assets/icons/BackArrow'
+import CustomImg from './CustomImg'
+import StyledTooltip from './StyledTooltip'
 
 const ImageGallery = ({ open, setOpen, imagesArr, name }) => {
   const [count, setCount] = useState(0)
@@ -74,7 +75,7 @@ const ImageGallery = ({ open, setOpen, imagesArr, name }) => {
             },
           }}
         >
-          <img style={{ backdropFilter: 'blur(3px)' }} src={getImageUrl(imagesArr?.[count])} alt='image of order' />
+          <CustomImg style={{ backdropFilter: 'blur(3px)' }} src={getImageUrl(imagesArr?.[count])} alt='image of order' />
         </Box>
         <IconButton
           sx={{
@@ -145,7 +146,7 @@ const ImageGallery = ({ open, setOpen, imagesArr, name }) => {
                 onClick={() => setCount(idx)}
                 alt=''
               >
-                <img src={getImageUrl(image)} alt='image of order' />
+                <CustomImg src={getImageUrl(image)} alt='image of order' />
               </Box>
             ))}
         </Box>

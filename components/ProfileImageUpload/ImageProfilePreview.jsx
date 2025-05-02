@@ -4,6 +4,7 @@ import { useState } from 'react'
 import DeleteIcon from '../../src/assets/icons/DeleteIcon'
 import EditIcon from '../../src/assets/icons/EditIcon'
 import getImageUrl from '../../utils/getImageUrl'
+import CustomImg from '../CustomImg'
 
 const ImagePlaceholder = () => {
   const { mode } = useTheme()
@@ -102,7 +103,12 @@ export default function ImagePreview({
               position='absolute'
               key={1}
             >
-              <img src={getImageUrl(uploadedImages.key)} alt={`image of ${uploadedImages.key || 'product'}`} width={width || 128} height={height || 128} />
+              <CustomImg
+                src={getImageUrl(uploadedImages.key)}
+                alt={`image of ${uploadedImages.key || 'product'}`}
+                width={width || 128}
+                height={height || 128}
+              />
             </Box>
           </Box>
           {isEditMode ? (
@@ -325,7 +331,7 @@ export default function ImagePreview({
             position='absolute'
             key={ind}
           >
-            <img src={getImageUrl(uploadedImages.key)} alt={`image of ${uploadedImages.key || 'product'}`} width={128} height={128} />
+            <CustomImg src={getImageUrl(uploadedImages.key)} alt={`image of ${uploadedImages.key || 'product'}`} width={128} height={128} />
           </Box>
         </Box>
       ) : (

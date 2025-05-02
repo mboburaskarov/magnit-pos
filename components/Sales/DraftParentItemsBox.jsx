@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import ArrowRightIcon from '../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../src/assets/icons/BagOutline'
 import thousandDivider from '../../utils/thousandDivider'
+import CustomImg from '../CustomImg'
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {
     backgroundColor: '#fff ',
@@ -71,7 +72,7 @@ function DraftParentItemsBox({ setIsOpenChild, item }) {
       <Box display={'flex'}>
         <Box mr={'16px'}>
           <Box display={'flex'} mb={'4px'}>
-            <img className={classes.usrImg} src='/default-user-img.png' />
+            <CustomImg className={classes.usrImg} src='/default-user-img.png' />
             <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
               {get(item, 'customer.first_name') == null ? 'Unknown' : get(item, 'customer.first_name')}
             </Typography>

@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
 import CheckAccess from '../../../../components/CheckAccess'
 import RippedPaperProductPriceCheck from '../../../../components/ChequePaper/RippedPaperProductPriceCheck'
+import CustomImg from '../../../../components/CustomImg'
 import DrawerInfoBox from '../../../../components/Drawers/DrawerInfoBox'
 import SectionTitle from '../../../../components/SectionTitle'
 import getImageUrl from '../../../../utils/getImageUrl'
@@ -38,7 +39,7 @@ const Image = ({ data, setImages }) => {
       }}
     >
       {data?.photos?.[0] ? (
-        <img
+        <CustomImg
           onClick={() => setImages({ data: data?.photos })}
           src={getImageUrl(data?.photos?.[0])}
           alt={data?.name}

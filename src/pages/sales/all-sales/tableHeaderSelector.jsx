@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
+import CustomImg from '../../../../components/CustomImg'
 import StyledTooltip from '../../../../components/StyledTooltip'
 import StyledSwitch from '../../../../components/Switch/StyledSwitch'
 import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
@@ -275,7 +276,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
           <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + p.data?.phone)}>
             <Box display={'flex'} alignItems={'center'}>
               {p.data?.image ? (
-                <img style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data?.image)} />
+                <CustomImg style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data?.image)} />
               ) : (
                 <DefaultUserImgIcon />
               )}
@@ -301,7 +302,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
           <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + (get(p, 'data.customer_phone') ?? 'xxxxxxxxxxxx'))}>
             <Box display={'flex'} alignItems={'center'}>
               {p.data?.image ? (
-                <img style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data?.image)} />
+                <CustomImg style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data?.image)} />
               ) : (
                 <DefaultUserImgIcon />
               )}

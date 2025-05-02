@@ -1,17 +1,17 @@
-import React, { useState, useCallback, useEffect } from 'react'
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
-import StarFilledIcon from '../src/assets/icons/StarFilledIcon'
-import MoveIcon from '../src/assets/icons/MoveIcon'
-import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc'
-import { useMutation } from 'react-query'
-import StarOutlinedIcon from '../src/assets/icons/StarOutlinedIcon'
-import PreviewIcon from '../src/assets/icons/PreviewIcon'
-import { useTranslation } from 'react-i18next'
-import { useDropzone } from 'react-dropzone'
-import useDidUpdate from '../src/hooks/useDidUpdate'
 import { makeStyles } from '@mui/styles'
-import { requests } from '../utils/requests'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { useTranslation } from 'react-i18next'
+import { useMutation } from 'react-query'
+import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc'
 import DeleteIcon from '../src/assets/icons/DeleteIcon'
+import PreviewIcon from '../src/assets/icons/PreviewIcon'
+import StarFilledIcon from '../src/assets/icons/StarFilledIcon'
+import StarOutlinedIcon from '../src/assets/icons/StarOutlinedIcon'
+import useDidUpdate from '../src/hooks/useDidUpdate'
+import { requests } from '../utils/requests'
+import CustomImg from './CustomImg'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -209,7 +209,7 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
 
   const SortablePhoto = SortableElement(({ item, i }) => (
     <div key={i} className={classes.img_box}>
-      <img src={item.file_url} {...item} alt={item.file_name} className={classes.img_item} />
+      <CustomImg src={item.file_url} {...item} alt={item.file_name} className={classes.img_item} />
       <div className={`${classes.preview_actions} visible`}>
         {item.is_main ? (
           <div className={classes.preview_icon} key={i}>

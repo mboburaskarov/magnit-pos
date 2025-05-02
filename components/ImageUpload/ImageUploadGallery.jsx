@@ -1,7 +1,8 @@
-import { useState } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import getImageUrl from '../../utils/getImageUrl'
+import { useState } from 'react'
 import BackArrowIcon from '../../src/assets/icons/BackArrow'
+import getImageUrl from '../../utils/getImageUrl'
+import CustomImg from '../CustomImg'
 import { SortableGallery, SortablePhoto } from './ImageUploadComponents'
 
 const ImageUploadGallery = ({ open, setOpen, uploadedImages, onSortEnd, setEditingImage, setUploadedImages, id }) => {
@@ -57,7 +58,7 @@ const ImageUploadGallery = ({ open, setOpen, uploadedImages, onSortEnd, setEditi
             },
           }}
         >
-          <img src={getImageUrl(uploadedImages?.[count]?.key)} alt='image of order' />
+          <CustomImg src={getImageUrl(uploadedImages?.[count]?.key)} alt='image of order' />
         </Box>
         <IconButton
           sx={{

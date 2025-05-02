@@ -6,6 +6,7 @@ import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
 import CheckAccess from '../../../../components/CheckAccess'
+import CustomImg from '../../../../components/CustomImg'
 import StyledTooltip from '../../../../components/StyledTooltip'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
@@ -41,7 +42,7 @@ const Image = ({ data, rowIndex, setImages }) => {
       }}
     >
       {data?.main_photo?.[0] ? (
-        <img
+        <CustomImg
           id={`product-image-${rowIndex}`}
           src={data?.main_photo || '/default-img.avif'}
           alt={data?.name}
