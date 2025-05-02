@@ -73,6 +73,12 @@ function ImplementMarkingDialog({
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
     if (e.key === 'Enter') {
       e.preventDefault()
+      if (inputsRef.current.length - 1 == flatIndex && !isAllMarkingFill()) {
+        setOpenConfirmDialog(true)
+        inputsRef.current[flatIndex].value = ''
+        inputsRef.current[0].focus()
+        return
+      }
       if (checkMarkingBarcode(e.target.value, flatIndex, productBarcode)) {
         if (implementMarkingList(e.target.value, id, childIndex)) {
         } else {
@@ -82,11 +88,11 @@ function ImplementMarkingDialog({
         }
 
         if (inputsRef.current.length - 1 == flatIndex) {
-          // if (!isAllMarkingFill()) {
-          //   setOpenConfirmDialog(true)
+          if (!isAllMarkingFill()) {
+            setOpenConfirmDialog(true)
 
-          //   return
-          // }
+            return
+          }
           if (get(open, 'mode', 'lite') === 'lite') {
             setLiteOrder(true)
           } else {
@@ -192,6 +198,7 @@ function ImplementMarkingDialog({
                         borderRadius={'40px'}
                         name={`${item.id}-${childIndex}`}
                         id={`${item.id}-${childIndex}`}
+                        // autoComplete={'off'}
                         label={t('marking')}
                         placeholder={t('marking.placeholder')}
                         sx={{ mb: 0 }}

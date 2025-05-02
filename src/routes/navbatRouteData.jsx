@@ -101,7 +101,23 @@ export const navbatRouteData = [
     label: 'navbar.clients',
     id: '1',
     icon: <UsersIcon />,
-    href: '/clients/all',
+    href: '/clients',
+    children: [
+      {
+        label: 'navbar.clients',
+        active: '/clients/all*',
+        id: '912221',
+        href: '/clients/all',
+      },
+      {
+        label: 'Дисконтная карта',
+        active: '/clients/discount-cards/*',
+        id: '91122',
+        soon: true,
+
+        href: '/clients/discount-cards',
+      },
+    ],
   },
 
   {
