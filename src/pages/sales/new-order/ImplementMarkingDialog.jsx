@@ -74,12 +74,12 @@ function ImplementMarkingDialog({
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      if (inputsRef.current.length - 1 == flatIndex && filledMarkingCounts() + 1 !== inputsRef.current.length && inputsRef.current.length > 1) {
-        setOpenConfirmDialog(true)
-        inputsRef.current[flatIndex].value = ''
-        inputsRef.current[0].focus()
-        return
-      }
+      // if (inputsRef.current.length - 1 == flatIndex && filledMarkingCounts() + 1 !== inputsRef.current.length && inputsRef.current.length > 1) {
+      //   setOpenConfirmDialog(true)
+      //   inputsRef.current[flatIndex].value = ''
+      //   inputsRef.current[0].focus()
+      //   return
+      // }
       if (checkMarkingBarcode(e.target.value, flatIndex, productBarcode)) {
         if (implementMarkingList(e.target.value, id, childIndex)) {
         } else {
