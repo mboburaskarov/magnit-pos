@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { useMutation } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import CustomImg from '../../../../components/CustomImg'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
@@ -87,7 +88,7 @@ export default function SerchedItem({
         <Box className={classes.searchItemBox + ' main-Box'}>
           <Box flex='1 0 20%' maxWidth={'100%'} overflow={'hidden'} display='flex' alignItems='center'>
             <div className={classes.searchImage}>
-              <img src={product?.main_photo || '/default-img.avif'} />
+              <CustomImg src={product?.main_photo || '65eb3e64-185f-4642-8261-1aeec7379760.jpg'} />
             </div>
             <Box ml={2} width={'100%'} overflow={'hidden'}>
               <Typography

@@ -4,6 +4,7 @@ import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link, useLocation } from 'react-router-dom'
+import CustomImg from '../../../components/CustomImg'
 import isEqual from '../../../utils/isEqual'
 import BackArrowIcon from '../../assets/icons/BackArrow'
 import LogoLetters from '../../assets/icons/LogoLetters'
@@ -129,7 +130,7 @@ function NavbarDrawer({
         <ListItem onClick={() => setIsUserOpen(true)} width={'100% !important'} className={`${classes.currentNavBarUser} drawer_user_avatar`} id='avatar'>
           <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
             <Box className={classes.avatarPlaceholder}>
-              <img src={get(userData, 'photo')} />
+              <CustomImg src={get(userData, 'photo')} />
             </Box>
 
             {isOpen && (

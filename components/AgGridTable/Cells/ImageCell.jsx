@@ -1,6 +1,7 @@
 import { Box } from '@mui/material'
 import ProductImagePlaceholder from '../../../src/assets/icons/ProductImagePlaceholder'
 import getImageUrl from '../../../utils/getImageUrl'
+import CustomImg from '../../CustomImg'
 
 export default function ImageCell({ imageArr, rowIndex, setImages, width, height }) {
   if (!imageArr?.length && !Array.isArray(imageArr)) {
@@ -21,7 +22,7 @@ export default function ImageCell({ imageArr, rowIndex, setImages, width, height
       }}
     >
       {imageArr?.[0] ? (
-        <img
+        <CustomImg
           id={`image-${rowIndex || 1}`}
           src={getImageUrl(imageArr?.[0])}
           alt={''}

@@ -1,11 +1,9 @@
-import { faPen } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Box, Button, Drawer, Typography } from '@mui/material'
+import { Box, Drawer, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import CheckAccess from '../../../../components/CheckAccess'
+import CustomImg from '../../../../components/CustomImg'
 import DrawerInfoBox from '../../../../components/Drawers/DrawerInfoBox'
 import SectionTitle from '../../../../components/SectionTitle'
 import getImageUrl from '../../../../utils/getImageUrl'
@@ -33,7 +31,7 @@ const Image = ({ data, setImages }) => {
       }}
     >
       {data?.photos?.[0] ? (
-        <img
+        <CustomImg
           onClick={() => setImages({ data: data?.photos })}
           src={getImageUrl(data?.photos?.[0])}
           alt={data?.name}

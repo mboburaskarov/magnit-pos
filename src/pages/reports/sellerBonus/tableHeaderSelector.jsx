@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
+import CustomImg from '../../../../components/CustomImg'
 import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { seller_bonus_statuses } from '../../../assets/data/seller-bonus-statuses'
@@ -29,7 +30,7 @@ const Image = ({ data, rowIndex, setImages }) => {
         },
       }}
     >
-      <img
+      <CustomImg
         id={`product-image-${rowIndex}`}
         src={data?.main_photo || '/default-img.avif'}
         alt={data?.name}

@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material'
-import thousandDivider from '../../../utils/thousandDivider'
+import CustomImg from '../../../components/CustomImg'
 import getImageUrl from '../../../utils/getImageUrl'
+import thousandDivider from '../../../utils/thousandDivider'
 import DashboardEmptyData from './DashboardEmptyData'
 
 const ProductIcon = () => (
@@ -90,7 +91,7 @@ export default function DashboardTopProducts({ data, sortBy }) {
                 <Typography textAlign='center' width={24} fontSize={16} mr={1} color='green.600' variant='h2'>
                   {ind + 1}
                 </Typography>
-                <img style={{ borderRadius: '50%', objectFit: 'cover' }} width={48} height={48} src={getImageUrl(el.files?.[0])} alt='image of order' />
+                <CustomImg style={{ borderRadius: '50%', objectFit: 'cover' }} width={48} height={48} src={getImageUrl(el.files?.[0])} alt='image of order' />
                 <Typography whiteSpace='nowrap' ml={2} overflow='hidden' textOverflow='ellipsis' textAlign='left' maxWidth='90%' fontSize={16}>
                   {el.name}
                 </Typography>

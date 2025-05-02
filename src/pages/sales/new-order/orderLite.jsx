@@ -127,7 +127,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
     }, 100)
   }
   useEffect(() => {
-    if (maxAmount < getValues('lite_card_amount') - paymentsList[1]?.amount) return
+    // if (maxAmount < getValues('lite_card_amount') - paymentsList.find((a) => a.type == 'card')?.amount) return
     if (cardPaymentType.from == 'Uzcard') {
       const updatedPaymentList = paymentsList.map((payment) =>
         payment.type === 'card'
@@ -157,6 +157,8 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
     }
   }, [watch('lite_card_amount')])
   useEffect(() => {
+    // if (maxAmount < getValues('lite_online_amount') - paymentsList.find((a) => a.type == 'app')?.amount) return
+
     if (onlinePaymentType.from == 'Click') {
       const updatedPaymentList = paymentsList.map((payment) =>
         payment.type === 'app'
@@ -773,6 +775,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
               }, 100)
               return
             }
+            console.log(maxAmount < value - paymentsList.find((a) => a.type == 'card')?.amount)
 
             // if ((maxAmount <= value && value >= paymentsList[2]?.amount) || maxAmount < 0) {
             if (maxAmount < value - paymentsList.find((a) => a.type == 'card')?.amount) {

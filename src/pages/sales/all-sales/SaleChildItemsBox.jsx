@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get, size } from 'lodash'
 import React from 'react'
+import CustomImg from '../../../../components/CustomImg'
 import thousandDivider from '../../../../utils/thousandDivider'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 const useStyles = makeStyles((theme) => ({
@@ -22,7 +23,7 @@ function SaleChildItemsBox({ item, key }) {
       <Box borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} display={'flex'} flexDirection={'column'} width={'100%'} justifyContent={'space-between'}>
         <Box borderRadius={'16px'} bgcolor={'bg.10'} display={'flex'} width={'100%'} justifyContent={'space-between'}>
           <Box display={'flex'} width={'100%'} alignItems={'center'}>
-            {size(get(item, 'photos[0]', [])) <= 0 ? <DefaultImgIcon /> : <img className={classes.productImg} src={get(item, 'photos[0]')} />}
+            {size(get(item, 'photos[0]', [])) <= 0 ? <DefaultImgIcon /> : <CustomImg className={classes.productImg} src={get(item, 'photos[0]')} />}
             <Box display={'flex'} ml={'10px'} flexDirection={'column'} width={'100%'}>
               <Box display={'flex'} mb='5px' justifyContent={'space-between'}>
                 <Box>

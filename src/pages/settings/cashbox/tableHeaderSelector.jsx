@@ -3,6 +3,7 @@ import { get } from 'lodash'
 import { memo } from 'react'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
 import CheckAccess from '../../../../components/CheckAccess'
+import CustomImg from '../../../../components/CustomImg'
 import thousandDivider from '../../../../utils/thousandDivider'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import EditIcon from '../../../assets/icons/EditIcon'
@@ -30,7 +31,7 @@ const Image = ({ data, rowIndex, setImages }) => {
         },
       }}
     >
-      <img
+      <CustomImg
         id={`product-image-${rowIndex}`}
         src={data?.main_photo || '/default-img.avif'}
         alt={data?.name}

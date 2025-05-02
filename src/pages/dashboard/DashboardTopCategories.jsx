@@ -1,7 +1,8 @@
 import { Box, Typography } from '@mui/material'
-import CalendarIcon from '../../assets/icons/CalendarIcon'
-import thousandDivider from '../../../utils/thousandDivider'
+import CustomImg from '../../../components/CustomImg'
 import getImageUrl from '../../../utils/getImageUrl'
+import thousandDivider from '../../../utils/thousandDivider'
+import CalendarIcon from '../../assets/icons/CalendarIcon'
 import DashboardEmptyData from './DashboardEmptyData'
 
 export default function DashboardTopCategories({ data, sortBy }) {
@@ -38,7 +39,7 @@ export default function DashboardTopCategories({ data, sortBy }) {
               >
                 1
               </Typography>
-              <img style={{ borderRadius: '16px' }} width={56} height={56} src={getImageUrl(data?.[0]?.icon)} alt='image of order' />
+              <CustomImg style={{ borderRadius: '16px' }} width={56} height={56} src={getImageUrl(data?.[0]?.icon)} alt='image of order' />
               <Box ml={1.5}>
                 <Typography overflow='hidden' textOverflow='ellipsis' textAlign='left' lineHeight='16px' fontSize={14}>
                   {data?.[0]?.name}
@@ -69,7 +70,7 @@ export default function DashboardTopCategories({ data, sortBy }) {
                     <Typography fontSize={14} mr={1} color='green.600' variant='h2'>
                       {ind + 2}
                     </Typography>
-                    <img style={{ borderRadius: '12px' }} width={40} height={40} src={getImageUrl(el.icon)} alt='image of order' />
+                    <CustomImg style={{ borderRadius: '12px' }} width={40} height={40} src={getImageUrl(el.icon)} alt='image of order' />
                     <Box width='100%' ml={1}>
                       <Typography overflow='hidden' textOverflow='ellipsis' textAlign='left' maxWidth='90%' fontSize={14}>
                         {el.name}
@@ -85,7 +86,7 @@ export default function DashboardTopCategories({ data, sortBy }) {
                       <Typography fontSize={14} mr={1} color='green.600' variant='h2'>
                         {ind + 2}
                       </Typography>
-                      <img style={{ borderRadius: '12px' }} width={40} height={40} src={getImageUrl(el.icon)} alt='image of order' />
+                      <CustomImg style={{ borderRadius: '12px' }} width={40} height={40} src={getImageUrl(el.icon)} alt='image of order' />
                       <Typography whiteSpace='nowrap' ml={1} overflow='hidden' textOverflow='ellipsis' textAlign='left' maxWidth='90%' fontSize={14}>
                         {el.name}
                       </Typography>

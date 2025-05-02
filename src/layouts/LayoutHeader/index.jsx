@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import ButtonWithPopup from '../../../components/Buttons/ButtonWithPopup'
+import CustomImg from '../../../components/CustomImg'
 import InputSearch from '../../../components/Inputs/InputSearch'
 import ArrowDown from '../../assets/icons/ArrowDown'
 import NotificationSmallIcon from '../../assets/icons/NotificationSmallIcon'
@@ -107,7 +108,7 @@ function LayoutHeader() {
                 buttonLabel={
                   <Box width={'100%'} mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
                     <div className={classes.avatarPlaceholder}>
-                      <img src={get(userData, 'photo')} />
+                      <CustomImg src={get(userData, 'photo')} />
                     </div>
 
                     <Box width={'100%'}>
@@ -144,7 +145,7 @@ function LayoutHeader() {
                               {lastName?.charAt(0)}
                             </div>
                           ) : (
-                            <img src={userData?.photo} alt={userData?.first_name} className={classes.avatar} />
+                            <CustomImg src={userData?.photo} alt={userData?.first_name} className={classes.avatar} />
                           )}
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>

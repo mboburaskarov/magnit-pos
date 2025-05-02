@@ -7,6 +7,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useDebounce } from 'use-debounce'
+import CustomImg from '../../../../components/CustomImg'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
@@ -143,7 +144,7 @@ function SaleChildDrawer({ open, setOpen, ids }) {
                 {t('vendor')}:
               </Typography>
               {/* <DefaultImgIcon /> */}
-              <img className={classes.usrImg} src='/default-user-img.png' />
+              <CustomImg className={classes.usrImg} src='/default-user-img.png' />
               <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
                 {get(saleDetailsList, 'data.data.employee.first_name')}
               </Typography>

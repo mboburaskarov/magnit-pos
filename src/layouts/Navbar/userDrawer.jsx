@@ -1,10 +1,9 @@
-import { useState } from 'react'
-import { Box, Button, Drawer, IconButton, Typography } from '@mui/material'
-import UserLogOutDrawer from './UserLogOutDrawer'
+import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowRight, faBell } from '@fortawesome/free-solid-svg-icons'
+import { useState } from 'react'
+import CustomImg from '../../../components/CustomImg'
 import CloseIcon from '../../assets/icons/CloseIcon'
+import UserLogOutDrawer from './UserLogOutDrawer'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -117,7 +116,7 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
                       {lastName?.charAt(0)}
                     </div>
                   ) : (
-                    <img src={userData?.photo} alt={data?.first_name} className={classes.avatar} />
+                    <CustomImg src={userData?.photo} alt={data?.first_name} className={classes.avatar} />
                   )}
                 </Box>
                 <Box ml={1.5}>

@@ -1,18 +1,18 @@
+import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
+import { get } from 'lodash'
+import * as qs from 'qs'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
+import CustomImg from '../../../../components/CustomImg'
+import palette from '../../../../src/assets/theme/mui.config'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import palette from '../../../../src/assets/theme/mui.config'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import * as qs from 'qs'
-import { get } from 'lodash'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography
@@ -40,7 +40,7 @@ const Image = ({ data, rowIndex, setImages }) => {
       }}
     >
       {data?.main_photo?.[0] ? (
-        <img
+        <CustomImg
           id={`product-image-${rowIndex}`}
           src={data?.main_photo || '/default-img.avif'}
           alt={data?.name}

@@ -2,14 +2,14 @@ import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
-import CheckAccess from '../../../../components/CheckAccess'
+import CustomImg from '../../../../components/CustomImg'
+import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { vendor_statuses } from '../../../assets/data/vendor-statuses'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import EditIcon from '../../../assets/icons/EditIcon'
 import LockIcon from '../../../assets/icons/LockIcon'
 import UnLockIcon from '../../../assets/icons/UnLock'
-import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -34,7 +34,7 @@ const Image = ({ data, rowIndex, setImages }) => {
         },
       }}
     >
-      <img
+      <CustomImg
         id={`product-image-${rowIndex}`}
         src={data?.main_photo || '/default-img.avif'}
         alt={data?.name}

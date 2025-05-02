@@ -12,6 +12,7 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import SaleChildItemsBox from './SaleChildItemsBox'
+import CustomImg from '../../../../components/CustomImg'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -142,7 +143,7 @@ function SaleChildDrawer({ open, setOpen, ids }) {
                 {t('vendor')}:
               </Typography>
               {/* <DefaultImgIcon /> */}
-              <img className={classes.usrImg} src='/default-user-img.png' />
+              <CustomImg className={classes.usrImg} src='/default-user-img.png' />
               <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
                 {get(saleDetailsList, 'data.data.employee.first_name')}
               </Typography>

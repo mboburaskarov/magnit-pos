@@ -1,9 +1,7 @@
 import { Box } from '@mui/material'
 import React from 'react'
+import CustomImg from '../../../../components/CustomImg'
 import StyledTooltip from '../../../../components/StyledTooltip'
-import UserOutlineIcon from '../../../assets/icons/UserOutlineIcon'
-import { theme } from '../../../assets/theme'
-import paletteLight from '../../../assets/theme/paletteLight'
 
 export default function AssigneMeButton({ onClick, userData, isSelected, title, classes }) {
   return (
@@ -22,7 +20,7 @@ export default function AssigneMeButton({ onClick, userData, isSelected, title, 
       <StyledTooltip title={title || 'Показать мои заказы'}>
         <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
           {/* <UserOutlineIcon color={paletteLight.bunker[300]} /> */}
-          <img src={userData?.photo} alt={userData?.first_name} className={classes.avatar} />
+          <CustomImg src={userData?.photo} alt={userData?.first_name} className={classes.avatar} />
         </Box>
       </StyledTooltip>
     </Box>
