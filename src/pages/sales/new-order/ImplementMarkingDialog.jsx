@@ -73,7 +73,7 @@ function ImplementMarkingDialog({
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      if (inputsRef.current.length - 1 == flatIndex && !isAllMarkingFill()) {
+      if (inputsRef.current.length - 1 == flatIndex && !isAllMarkingFill() && inputsRef.current.length > 1) {
         setOpenConfirmDialog(true)
         inputsRef.current[flatIndex].value = ''
         inputsRef.current[0].focus()
@@ -88,11 +88,6 @@ function ImplementMarkingDialog({
         }
 
         if (inputsRef.current.length - 1 == flatIndex) {
-          if (!isAllMarkingFill()) {
-            setOpenConfirmDialog(true)
-
-            return
-          }
           if (get(open, 'mode', 'lite') === 'lite') {
             setLiteOrder(true)
           } else {
