@@ -461,7 +461,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
             name: el.name,
             classCode: get(el, 'class_code'),
             packageCode: get(el, 'package_code'),
-            commissionTIN: '',
+            // commissionTIN: '',
             other: 0,
             ownerType: 0,
           }))
