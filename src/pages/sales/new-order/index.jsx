@@ -628,6 +628,7 @@ function NewSale() {
   useHotkeys(
     'F10',
     () => {
+      return
       if (isOrderDrower) return
 
       if (isAllMarkingFill()) {
