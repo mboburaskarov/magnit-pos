@@ -372,7 +372,10 @@ export default function OrderDrawer({
 
             items: mockData.flat(),
             receivedCash: parseFloat(
-              (paymentsList.filter((item) => item.amount && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)
+              (
+                (paymentsList.filter((item) => item.amount && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) - Math.abs(maxAmount)) *
+                100
+              ).toFixed(2)
             ), // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
             receivedCard: parseFloat(
               (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)
