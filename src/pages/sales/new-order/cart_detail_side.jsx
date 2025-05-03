@@ -327,8 +327,7 @@ function CartDetailSide({
           </Box>
           <Button
             loading={hasChange}
-            disabled={true}
-            // disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0 || hasChange}
+            disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0 || hasChange}
             // onClick={() => setIsOrderDrower(true)}
             onClick={() => {
               if (isAllMarkingFill()) {
