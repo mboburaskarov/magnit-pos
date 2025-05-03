@@ -10,7 +10,6 @@ import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 function ImplementMarkingDialog({
   open,
   setIsOrderDrower,
-  filledMarkingCounts,
   isAllMarkingFill,
   markingCount,
   handleClose,
@@ -52,7 +51,7 @@ function ImplementMarkingDialog({
     setOpenConfirmDialog(null)
   }
   const checkMarkingBarcode = (e, flatIndex, productBarcode) => {
-    if (!checkBarcodeWithMarking(productBarcode, e) || e.length != 83) {
+    if (!checkBarcodeWithMarking(productBarcode, e)) {
       inputsRef.current[flatIndex].value = ''
       error('Маркировка и штрих-код не поступили.')
       return false
@@ -74,13 +73,6 @@ function ImplementMarkingDialog({
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-
-      if (inputsRef.current.length - 1 == flatIndex && filledMarkingCounts() + 1 !== inputsRef.current.length && inputsRef.current.length > 1) {
-        setOpenConfirmDialog(true)
-        inputsRef.current[flatIndex].value = ''
-        inputsRef.current[0].focus()
-        return
-      }
       if (checkMarkingBarcode(e.target.value, flatIndex, productBarcode)) {
         if (implementMarkingList(e.target.value, id, childIndex)) {
         } else {
@@ -90,6 +82,11 @@ function ImplementMarkingDialog({
         }
 
         if (inputsRef.current.length - 1 == flatIndex) {
+          // if (!isAllMarkingFill()) {
+          //   setOpenConfirmDialog(true)
+
+          //   return
+          // }
           if (get(open, 'mode', 'lite') === 'lite') {
             setLiteOrder(true)
           } else {
@@ -195,7 +192,6 @@ function ImplementMarkingDialog({
                         borderRadius={'40px'}
                         name={`${item.id}-${childIndex}`}
                         id={`${item.id}-${childIndex}`}
-                        // autoComplete={'off'}
                         label={t('marking')}
                         placeholder={t('marking.placeholder')}
                         sx={{ mb: 0 }}
