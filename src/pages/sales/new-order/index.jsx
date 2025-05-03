@@ -698,8 +698,6 @@ function NewSale() {
     return () => clearTimeout(handler)
   }, [debouncedDiscount])
   const implementMarkingList = (marking, id, index) => {
-    console.log(Object.values(markingsList[id] || {}), marking)
-
     if (Object.values(markingsList[id] || {}).includes(marking)) {
       return false
     }
@@ -714,7 +712,8 @@ function NewSale() {
   }
   const removeMarking = ({ quantity, unit_per_pack, unit_quantity, id, request }) => {
     const currentCount = calculate(quantity, unit_quantity, unit_per_pack)
-    const previusCount = Object.values(markingsList[id] || {}).length
+
+    const previusCount = Object.values(markingsList[id] || {})?.filter((a) => a?.length).length
     const userIsFilledMarkingCount = Object.values(markingsList[id] || {})?.filter((a) => a?.length).length
 
     if (userIsFilledMarkingCount > currentCount) {
@@ -740,7 +739,7 @@ function NewSale() {
 
     return cartsMarkingCount === userIsFilledMarkingCount
   }
-  const filledMarkingCounts = () => {
+  const isAllMarkingFillBeforeAdd = () => {
     const newmarkingCount = {}
 
     get(cartItemsList, 'data.data.data').map((item) => {
@@ -750,7 +749,21 @@ function NewSale() {
     })
 
     const cartsMarkingCount = Object.values(newmarkingCount)?.reduce((acc, i) => acc + i, 0)
-    console.log(Object.values(markingsList))
+    const userIsFilledMarkingCount = Object.values(markingsList)
+      ?.map((e) => Object.values(e)?.filter((a) => a?.length))
+      ?.map((e) => Object.keys(e).length)
+      ?.reduce((acc, i) => acc + i, 0)
+
+    return cartsMarkingCount === userIsFilledMarkingCount + 1
+  }
+  const filledMarkingCounts = () => {
+    const newmarkingCount = {}
+
+    get(cartItemsList, 'data.data.data').map((item) => {
+      if (item.is_marking) {
+        newmarkingCount[item.id] = markingCount[item.id]
+      }
+    })
 
     const userIsFilledMarkingCount = Object.values(markingsList)
       ?.map((e) => Object.values(e)?.filter((a) => a?.length))
@@ -1046,6 +1059,7 @@ function NewSale() {
       <ImplementMarkingDialog
         liteOrder={liteOrder}
         setLiteOrder={setLiteOrder}
+        isAllMarkingFillBeforeAdd={isAllMarkingFillBeforeAdd}
         filledMarkingCounts={filledMarkingCounts}
         markingCount={markingCount}
         isAllMarkingFill={isAllMarkingFill}

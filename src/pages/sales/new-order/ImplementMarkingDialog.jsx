@@ -13,16 +13,25 @@ function ImplementMarkingDialog({
   isAllMarkingFill,
   markingCount,
   handleClose,
+  isAllMarkingFillBeforeAdd,
   setLiteOrder,
   liteOrder,
   cartItems,
-  implementMarkingList,
+
   markingsList,
   setMarkingList,
 }) {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const inputsRef = useRef([])
   const { t } = useTranslation()
+
+  const implementMarkingList = (marking, id, index) => {
+    if (Object.values(markingsList[id] || {}).includes(marking)) {
+      return false
+    }
+    setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
+    return true
+  }
   useEffect(() => {
     if (open) {
       setTimeout(() => {
@@ -51,7 +60,8 @@ function ImplementMarkingDialog({
     setOpenConfirmDialog(null)
   }
   const checkMarkingBarcode = (e, flatIndex, productBarcode) => {
-    if (!checkBarcodeWithMarking(productBarcode, e)) {
+    if (e.length == 0) return true
+    if (!checkBarcodeWithMarking(productBarcode, e) || e.length != 83) {
       inputsRef.current[flatIndex].value = ''
       error('Маркировка и штрих-код не поступили.')
       return false
@@ -87,6 +97,28 @@ function ImplementMarkingDialog({
 
           //   return
           // }
+
+          if (!isAllMarkingFillBeforeAdd() || markingsList?.[id]?.[childIndex]?.length != 0) {
+            inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
+            return
+          } else {
+            if (get(open, 'mode', 'lite') === 'lite') {
+              setLiteOrder(true)
+            } else {
+              setIsOrderDrower(true)
+            }
+            handleClose()
+            return
+          }
+        }
+        if (markingsList?.[id]?.[childIndex]?.length != 0) {
+          inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
+          return
+        }
+        if (!isAllMarkingFillBeforeAdd()) {
+          inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
+          return
+        } else {
           if (get(open, 'mode', 'lite') === 'lite') {
             setLiteOrder(true)
           } else {
@@ -184,6 +216,32 @@ function ImplementMarkingDialog({
 
                           //  checkMarkingBarcode(e, flatIndex, item.barcode) &&
                         }
+                        onBlur={(e) => {
+                          if (e.target.value.length === 0) {
+                            setMarkingList((prev) => ({ ...prev, [item.id]: { ...prev[item.id], [childIndex]: '' } }))
+                          }
+
+                          // console.log(justUpdatedIndex)
+                          // if (justUpdatedIndex === flatIndex) {
+                          //   setJustUpdatedIndex(null) // Reset the flag
+                          //   return // Skip blur logic, Enter already handled it
+                          // }
+                          // console.log(e, markingsList?.[item.id]?.[childIndex])
+                          // if (e.target.value.length <= 0) return
+                          // if (markingsList?.[item.id]?.[childIndex] == '') {
+                          //   error('После ввода маркировки нажмите Enter')
+                          //   inputsRef.current[flatIndex].value = ''
+                          //   return
+                          // }
+                          // if (
+                          //   (Object.values(markingsList[item.id] || {}).includes(e.target.value) && markingsList?.[item.id]?.[childIndex] != e.target.value) ||
+                          //   e.target.value.length != 83
+                          // ) {
+                          //   inputsRef.current[flatIndex].value = ''
+                          //   error('Эта маркировка использовалась.')
+                          //   return
+                          // }
+                        }}
                         defaultValue={markingsList?.[item.id]?.[childIndex]}
                         required={get(item, 'is_marking')}
                         onKeyDown={(e) => handleKeyDown(e, flatIndex, item.barcode, item.id, childIndex)}
