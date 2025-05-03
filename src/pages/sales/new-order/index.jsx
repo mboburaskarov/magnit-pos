@@ -441,6 +441,11 @@ function NewSale() {
     },
     onError: (err) => {
       searchResetRef.current.clearValue()
+      if (get(err, 'response.data.code') === 406) {
+        success('Продажа обновлена')
+        navigate(`/sales/create`)
+        return
+      }
       if (get(err, 'response.data.code') === 422) {
         error('Маркировка товара не соответствует его штрих-коду. Пожалуйста, введите корректную маркировку.')
         return

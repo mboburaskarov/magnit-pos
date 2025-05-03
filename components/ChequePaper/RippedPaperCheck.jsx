@@ -178,8 +178,13 @@ function RippedPaperCheck({
                 >
                   <Typography>O'lchiv birligi: {get(el, 'package_name', '-')}</Typography>
                   <Typography>MXIK: {get(el, 'class_code', '-')}</Typography>
-                  {Object.values(markingsList[get(el, 'id')] || {})?.length > 0 &&
-                    Object.values(markingsList[get(el, 'id')] || {}).map((el) => <Typography>MK: {el.slice(0, 32)}</Typography>)}
+                  {get(el, 'is_marking') && (
+                    <Box>
+                      {Object.values(markingsList[get(el, 'id')] || {})?.length > 0 &&
+                        Object.values(markingsList[get(el, 'id')] || {}).map((el) => <Typography>MK: {el.slice(0, 32)}</Typography>)}
+                    </Box>
+                  )}
+
                   <Typography>ShtKod: {get(el, 'barcode', '-')}</Typography>
                 </Box>
                 <DashedRow
