@@ -588,6 +588,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
         payment_type_id: get(type, 'payment_type_id'),
         type: get(type, 'type'),
         ...(data ? { otp_data: data } : {}),
+        ...(get(type, 'type') == 'cash' ? { return_amount: Math.abs(maxAmount) } : {}),
         app_type: get(type, 'app_type').toLowerCase(),
       }))
 
@@ -604,7 +605,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
       store_id: get(userData, 'store.id'),
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
-      return_amount: Math.abs(maxAmount),
+
       marking_data: markingData,
     })
 

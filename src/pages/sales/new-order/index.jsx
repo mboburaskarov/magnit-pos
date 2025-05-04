@@ -929,6 +929,7 @@ function NewSale() {
                         implementMarkingList={implementMarkingList}
                         markingsList={markingsList}
                         removeMarking={removeMarking}
+                        searchRef={searchRef}
                         setMarkingList={setMarkingList}
                         setOpenProductDrawer={setOpenProductDrawer}
                         // onKeyDown={(e) => handleTabSwitch(e, el?.id)}

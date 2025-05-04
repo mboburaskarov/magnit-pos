@@ -219,6 +219,7 @@ const CartItem = ({
   markingsList,
   setMarkingList,
   index,
+  searchRef,
   packRef = () => {},
   setOpenProductDrawer,
   unitRef,
@@ -276,7 +277,11 @@ const CartItem = ({
                     max={100}
                     adornment={item?.short_name}
                     inputRef={(e) => packRef(e, index)}
-                    onKeyDown={onKeyDown}
+                    onKeyDown={({ key }) => {
+                      if (key === 'Enter' || key == 'Escape') {
+                        searchRef?.current?.focus()
+                      }
+                    }}
                     defaultValue={get(item, 'quantity', 0)}
                     type='number'
                     disabled={false}
@@ -344,6 +349,11 @@ const CartItem = ({
                     defaultValue={get(item, 'unit_quantity', 1)}
                     adornmentPosition='end'
                     initWidth='90px'
+                    onKeyDown={({ key }) => {
+                      if (key === 'Enter' || key == 'Escape') {
+                        searchRef?.current?.focus()
+                      }
+                    }}
                     adornment={
                       <Typography pr='8px' display={'flex'}>
                         <Box fontSize={'12px'} m={'0px 0'} color='bunker.950'>
