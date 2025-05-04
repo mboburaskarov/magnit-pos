@@ -13,16 +13,23 @@ function ImplementMarkingDialog({
   isAllMarkingFill,
   markingCount,
   handleClose,
+  isAllMarkingFillBeforeAdd,
   setLiteOrder,
   liteOrder,
   cartItems,
-  implementMarkingList,
+
   markingsList,
   setMarkingList,
 }) {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const [enterpressed, setEnterpressed] = useState({ state: false })
+  const [isBlurBefore, setIsBlurBefore] = useState(false)
   const inputsRef = useRef([])
   const { t } = useTranslation()
+
+  const implementMarkingList = (marking, id, index) => {
+    setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
+  }
   useEffect(() => {
     if (open) {
       setTimeout(() => {
@@ -51,7 +58,8 @@ function ImplementMarkingDialog({
     setOpenConfirmDialog(null)
   }
   const checkMarkingBarcode = (e, flatIndex, productBarcode) => {
-    if (!checkBarcodeWithMarking(productBarcode, e)) {
+    if (e.length == 0) return true
+    if (!checkBarcodeWithMarking(productBarcode, e) || e.length != 83) {
       inputsRef.current[flatIndex].value = ''
       error('Маркировка и штрих-код не поступили.')
       return false
@@ -73,6 +81,67 @@ function ImplementMarkingDialog({
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
     if (e.key === 'Enter') {
       e.preventDefault()
+      setIsBlurBefore(true)
+
+      setEnterpressed({ state: true, lastMarking: e.target.value })
+
+      if (e.target.value.length == 0) {
+        if (markingsList?.[id]?.[childIndex]?.length != 0) {
+          //demak u markirofkani tozlamoqchi
+          setIsBlurBefore(false)
+
+          implementMarkingList(e.target.value, id, childIndex)
+          return
+        }
+        //input bo'sh holatda enter bosildi
+        inputsRef.current[flatIndex].value = markingsList?.[id]?.[childIndex]
+        error('Заполните маркировку (eng:empty)')
+        return
+      }
+      if (e.target.value.length != 83) {
+        // markirofka uzunligi mos emas
+        inputsRef.current[flatIndex].value = ''
+        error('Неверная маркировка (eng:length)')
+        return
+      }
+      if (markingsList?.[id]?.[childIndex]?.length != 0) {
+        //demak u markirofkani almashtirmoqchi
+        implementMarkingList(e.target.value, id, childIndex)
+        setIsBlurBefore(false)
+
+        inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
+        return
+      }
+      if (Object.values(markingsList[id] || {}).includes(e.target.value)) {
+        // ikki martta bir xil markirofka kiritildi
+        inputsRef.current[flatIndex].value = ''
+        error('Повторение маркировки (eng:dublicate)')
+        return
+      }
+      if (!checkBarcodeWithMarking(productBarcode, e.target.value)) {
+        //markirofkadagi barcode mahsulotniki bilan mos kelmadi
+        inputsRef.current[flatIndex].value = ''
+        error('Маркировка и штрих-код не поступили. (eng:Mismatched)')
+        return
+      }
+      setIsBlurBefore(false)
+      //hammasi ok
+      implementMarkingList(e.target.value, id, childIndex)
+      if (!isAllMarkingFillBeforeAdd()) {
+        setEnterpressed({ state: false, lastMarking: e.target.value })
+        inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
+        return
+      } else {
+        if (get(open, 'mode', 'lite') === 'lite') {
+          setLiteOrder(true)
+        } else {
+          setIsOrderDrower(true)
+        }
+        handleClose()
+        return
+      }
+
+      return
       if (checkMarkingBarcode(e.target.value, flatIndex, productBarcode)) {
         if (implementMarkingList(e.target.value, id, childIndex)) {
         } else {
@@ -87,6 +156,28 @@ function ImplementMarkingDialog({
 
           //   return
           // }
+
+          if (!isAllMarkingFillBeforeAdd() || markingsList?.[id]?.[childIndex]?.length != 0) {
+            inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
+            return
+          } else {
+            if (get(open, 'mode', 'lite') === 'lite') {
+              setLiteOrder(true)
+            } else {
+              setIsOrderDrower(true)
+            }
+            handleClose()
+            return
+          }
+        }
+        if (markingsList?.[id]?.[childIndex]?.length != 0) {
+          inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
+          return
+        }
+        if (!isAllMarkingFillBeforeAdd()) {
+          inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
+          return
+        } else {
           if (get(open, 'mode', 'lite') === 'lite') {
             setLiteOrder(true)
           } else {
@@ -179,11 +270,43 @@ function ImplementMarkingDialog({
                     >
                       <TextField
                         uncontrolled
-                        setValue={
-                          (e) => {}
-
-                          //  checkMarkingBarcode(e, flatIndex, item.barcode) &&
-                        }
+                        setValue={(e) => {}}
+                        onBlur={(e) => {
+                          // if (isBlurBefore) {
+                          //   setIsBlurBefore(false)
+                          //   return
+                          // }
+                          // if (
+                          //   e.target.value.length === 0 ||
+                          //   markingsList?.[item.id]?.[childIndex] == e.target.value
+                          //   // markingsList?.[item.id]?.[childIndex] == ''
+                          // ) {
+                          //   return
+                          // }
+                          // setIsBlurBefore(true)
+                          // inputsRef.current[flatIndex]?.focus()
+                          // error('Нажмите Enter (eng: press enter)')
+                          // console.log(justUpdatedIndex)
+                          // if (justUpdatedIndex === flatIndex) {
+                          //   setJustUpdatedIndex(null) // Reset the flag
+                          //   return // Skip blur logic, Enter already handled it
+                          // }
+                          // console.log(e, markingsList?.[item.id]?.[childIndex])
+                          // if (e.target.value.length <= 0) return
+                          // if (markingsList?.[item.id]?.[childIndex] == '') {
+                          //   error('После ввода маркировки нажмите Enter')
+                          //   inputsRef.current[flatIndex].value = ''
+                          //   return
+                          // }
+                          // if (
+                          //   (Object.values(markingsList[item.id] || {}).includes(e.target.value) && markingsList?.[item.id]?.[childIndex] != e.target.value) ||
+                          //   e.target.value.length != 83
+                          // ) {
+                          //   inputsRef.current[flatIndex].value = ''
+                          //   error('Эта маркировка использовалась.')
+                          //   return
+                          // }
+                        }}
                         defaultValue={markingsList?.[item.id]?.[childIndex]}
                         required={get(item, 'is_marking')}
                         onKeyDown={(e) => handleKeyDown(e, flatIndex, item.barcode, item.id, childIndex)}
