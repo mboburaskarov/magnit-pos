@@ -206,18 +206,18 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
     setValue('onlinePaymentType', onlinePaymentType)
     setValue('cardPaymentType', cardPaymentType)
   }, [onlinePaymentType, cardPaymentType])
-  useHotkeys(
-    'F8',
-    (event) => {
-      console.log(event)
-      setQrcodeUrl({ qr: false })
-      emptyHandlePrint()
-    },
-    {
-      enableOnTags: ['INPUT', 'TEXTAREA'],
-      enableOnFormTags: true,
-    }
-  )
+  // useHotkeys(
+  //   'F8',
+  //   (event) => {
+  //     console.log(event)
+  //     setQrcodeUrl({ qr: false })
+  //     emptyHandlePrint()
+  //   },
+  //   {
+  //     enableOnTags: ['INPUT', 'TEXTAREA'],
+  //     enableOnFormTags: true,
+  //   }
+  // )
   useHotkeys(
     ['n', 'N', 'т'],
     (event) => {
