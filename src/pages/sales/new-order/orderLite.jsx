@@ -207,6 +207,18 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
     setValue('cardPaymentType', cardPaymentType)
   }, [onlinePaymentType, cardPaymentType])
   useHotkeys(
+    'F8',
+    (event) => {
+      console.log(event)
+      setQrcodeUrl({ qr: false })
+      emptyHandlePrint()
+    },
+    {
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+      enableOnFormTags: true,
+    }
+  )
+  useHotkeys(
     ['n', 'N', 'т'],
     (event) => {
       if (shouldPaymentInputActive()) {
@@ -437,6 +449,15 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
     onAfterPrint: () => {
       navigate(`/sales/create`)
     },
+  })
+  const emptyHandlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: documentName.current,
+    removeAfterPrint: true,
+    onPrintError: (err) => {
+      error('chek bilan muammo: ', err)
+    },
+    onAfterPrint: () => {},
   })
 
   const { mutate: finishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {

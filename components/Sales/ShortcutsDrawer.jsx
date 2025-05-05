@@ -29,6 +29,10 @@ const ShortcutsDrawerArray = [
         titleofshortcut: 'Закрыть список черновиков',
         symbolofshortcut: ['esc'],
       },
+      {
+        titleofshortcut: 'Не товарный чек',
+        symbolofshortcut: ['F8'],
+      },
 
       // {
       //   titleofshortcut: 'menu.sales.shortcuts.movement_in_search',
