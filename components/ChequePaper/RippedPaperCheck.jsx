@@ -84,7 +84,7 @@ function RippedPaperCheck({
           <div className={classes.border} />
           <Fragment key={'index'}>
             <Box className={classes.content}>
-              {disableSumsOnGoods() && (
+              {qrcodeUrl.qr != false && disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index2'}`}
                   rowData={{
@@ -273,25 +273,34 @@ function RippedPaperCheck({
                   },
                 }}
               >
-                <Typography>Chek turi: {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}</Typography>
-                <FiskalText data={qrcodeUrl.fiscal} />
+                <Typography>
+                  Chek turi: {qrcodeUrl.qr == false ? 'Не товарный чек' : get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}
+                </Typography>
+                {qrcodeUrl.qr !== false && <FiskalText data={qrcodeUrl.fiscal} />}
               </Box>
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
               {/* {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? ( */}
               {/* <> */}
-              <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
-                Siz xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
-              </Typography>
-              <QRCodeCanvas size={200} value={qrcodeUrl.qr} />
 
-              <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
-                SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
-              </Typography>
-              <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
-                XARIDINGIZ UCHUN RAHMAT!!!
-              </Typography>
+              {qrcodeUrl.qr == false ? (
+                ''
+              ) : (
+                <>
+                  <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
+                    Siz xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
+                  </Typography>
+                  <QRCodeCanvas size={200} value={qrcodeUrl.qr} />
+
+                  <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
+                    SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
+                  </Typography>
+                  <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
+                    XARIDINGIZ UCHUN RAHMAT!!!
+                  </Typography>
+                </>
+              )}
               {/* </> */}
               {/* ) : ( */}
               {/* <></> */}
