@@ -702,7 +702,6 @@ function NewSale() {
     if (Object.values(markingsList[id] || {}).includes(marking)) {
       return false
     }
-    console.log('3333')
 
     setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
     return true
@@ -711,7 +710,6 @@ function NewSale() {
     if (Object.values(markingsList[id] || {}).includes(marking)) {
       return
     }
-    console.log(4444)
 
     setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [prev[id] ? Number(Object.keys(prev[id]).pop()) + 1 : 0]: marking } }))
   }
@@ -1025,7 +1023,6 @@ function NewSale() {
                       delete newState[openConfirmDialog.id] // Remove the key completely
                       return newState
                     })
-                    console.log(11222)
 
                     setMarkingList((p) => removeOneMarking(p, openConfirmDialog.id))
                     deleteCartItem(openConfirmDialog.id)

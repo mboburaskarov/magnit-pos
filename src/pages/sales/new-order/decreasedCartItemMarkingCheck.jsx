@@ -176,7 +176,6 @@ function DecreasedCartItemMarkingCheck({
             if (!Object.values(removedMark).every((el) => get(open, 'available').includes(el))) {
               return
             }
-            console.log(999)
 
             setMarkingList(convertData(markingsList, removedMark, get(open, 'id')))
             handleClose()
