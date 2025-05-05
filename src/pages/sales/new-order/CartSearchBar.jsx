@@ -191,7 +191,7 @@ function CartSearchBar({
   refetchcartItemsList,
   openDraft,
   discount,
-  addNewMarking,
+
   searchResetRef,
   searchRef,
 

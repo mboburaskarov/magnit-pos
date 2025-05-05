@@ -215,15 +215,12 @@ export const useStyles = makeStyles((theme) => ({
 }))
 
 const CartItem = ({
-  implementMarkingList,
-  markingsList,
-  setMarkingList,
   index,
   searchRef,
   packRef = () => {},
   setOpenProductDrawer,
   unitRef,
-  onKeyDown,
+
   refetchcartItemsList,
   method,
   item,

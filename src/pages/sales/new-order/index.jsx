@@ -701,6 +701,8 @@ function NewSale() {
     if (Object.values(markingsList[id] || {}).includes(marking)) {
       return false
     }
+    console.log('3333')
+
     setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
     return true
   }
@@ -708,6 +710,8 @@ function NewSale() {
     if (Object.values(markingsList[id] || {}).includes(marking)) {
       return
     }
+    console.log(4444)
+
     setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [prev[id] ? Number(Object.keys(prev[id]).pop()) + 1 : 0]: marking } }))
   }
   const removeMarking = ({ quantity, unit_per_pack, unit_quantity, id, request }) => {
@@ -724,18 +728,21 @@ function NewSale() {
   }
   const isAllMarkingFill = () => {
     const newmarkingCount = {}
+    console.log(newmarkingCount, markingsList)
 
     get(cartItemsList, 'data.data.data').map((item) => {
       if (item.is_marking) {
         newmarkingCount[item.id] = markingCount[item.id]
       }
     })
+    console.log(newmarkingCount, markingsList)
 
     const cartsMarkingCount = Object.values(newmarkingCount)?.reduce((acc, i) => acc + i, 0)
     const userIsFilledMarkingCount = Object.values(markingsList)
       ?.map((e) => Object.values(e)?.filter((a) => a?.length))
       ?.map((e) => Object.keys(e).length)
       ?.reduce((acc, i) => acc + i, 0)
+    console.log(userIsFilledMarkingCount)
 
     return cartsMarkingCount === userIsFilledMarkingCount
   }
@@ -846,7 +853,6 @@ function NewSale() {
                 cashBoxDetails={cashBoxDetails}
                 showOverlay={showOverlay}
                 searchResetRef={searchResetRef}
-                addNewMarking={addNewMarking}
                 setShowOverlay={setShowOverlay}
                 shouldWorkEnter={!isOpenRemoveMarkingDialog && !isOpenImplementMarkingDialog}
                 handleAddProduct={handleAddProduct}
@@ -925,11 +931,9 @@ function NewSale() {
                   >
                     {get(cartItemsList, 'data.data.data', []).map((el, index) => (
                       <CartItem
-                        implementMarkingList={implementMarkingList}
                         markingsList={markingsList}
                         removeMarking={removeMarking}
                         searchRef={searchRef}
-                        setMarkingList={setMarkingList}
                         setOpenProductDrawer={setOpenProductDrawer}
                         // onKeyDown={(e) => handleTabSwitch(e, el?.id)}
                         refetchcartItemsList={refetchcartItemsList}
@@ -1020,6 +1024,8 @@ function NewSale() {
                       delete newState[openConfirmDialog.id] // Remove the key completely
                       return newState
                     })
+                    console.log(11222)
+
                     setMarkingList((p) => removeOneMarking(p, openConfirmDialog.id))
                     deleteCartItem(openConfirmDialog.id)
                   } else {
