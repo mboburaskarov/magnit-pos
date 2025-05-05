@@ -69,6 +69,7 @@ function RippedPaperCheck({
                 "PHARMA COSMOS" MCHJ
               </p>
             </div>
+            <Box sx={{ textAlign: 'center' }}>{qrcodeUrl == false && 'Не товарный чек'}</Box>
             <div className={classes.border} />
             <p
               style={{
@@ -84,7 +85,7 @@ function RippedPaperCheck({
           <div className={classes.border} />
           <Fragment key={'index'}>
             <Box className={classes.content}>
-              {qrcodeUrl.qr != false && disableSumsOnGoods() && (
+              {qrcodeUrl != false && disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index2'}`}
                   rowData={{
@@ -274,7 +275,7 @@ function RippedPaperCheck({
                 }}
               >
                 <Typography>
-                  Chek turi: {qrcodeUrl.qr == false ? 'Не товарный чек' : get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}
+                  Chek turi: {qrcodeUrl == false ? 'Не товарный чек' : get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}
                 </Typography>
                 {qrcodeUrl.qr !== false && <FiskalText data={qrcodeUrl.fiscal} />}
               </Box>
@@ -284,7 +285,7 @@ function RippedPaperCheck({
               {/* {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? ( */}
               {/* <> */}
 
-              {qrcodeUrl.qr == false ? (
+              {qrcodeUrl == false ? (
                 ''
               ) : (
                 <>

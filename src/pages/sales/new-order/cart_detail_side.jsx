@@ -1,8 +1,9 @@
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Print } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/material'
 import { get, size } from 'lodash'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Highlighter from 'react-highlight-words'
 import { useTranslation } from 'react-i18next'
 import OutsideClickHandler from 'react-outside-click-handler'
@@ -57,6 +58,10 @@ function CartDetailSide({
   const { t } = useTranslation()
   const [maxAmount, setMaxAmount] = useState(0)
   const [collapseDiscount, setCollapseDiscount] = useState(false)
+  const childRef = useRef()
+  const printNoProductCheque = () => {
+    childRef.current.printChildCheque()
+  }
   return (
     <Box className={classes.card_detail}>
       <Box display={'flex'}>
@@ -78,6 +83,7 @@ function CartDetailSide({
             <TimeAndDate />
           </StyledTooltip>
         </Box>
+
         <CheckAccess id={'can-return-product'}>
           <Box onClick={() => setIsOpenReturnExchange(true)} className={classes.cart_detail_icon}>
             <StyledTooltip title={'Возврат'}>
@@ -85,6 +91,19 @@ function CartDetailSide({
             </StyledTooltip>
           </Box>
         </CheckAccess>
+        <Box
+          onClick={() => size(get(cartItemsList, 'data.data.data')) !== 0 && printNoProductCheque()}
+          className={classes.cart_detail_icon}
+          sx={{
+            path: {
+              color: '#000',
+            },
+          }}
+        >
+          <StyledTooltip title={'Черновики'}>
+            <Print color='#000' />
+          </StyledTooltip>
+        </Box>
       </Box>
       <Box mb={'24px'}>
         <Box sx={{ display: 'flex', mb: '4px', justifyContent: 'space-between' }}>
@@ -299,6 +318,7 @@ function CartDetailSide({
         <OrderLite
           liteOrder={liteOrder}
           setMaxAmount={setMaxAmount}
+          childRef={childRef}
           maxAmount={maxAmount}
           setLiteOrder={setLiteOrder}
           setHasChange={setHasChange}

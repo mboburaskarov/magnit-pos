@@ -12,7 +12,6 @@ import NumberFormatInput from '../../../components/Inputs/OutLineTextFieldThousa
 import TextField from '../../../components/Inputs/TextField'
 import thousandDivider from '../../../utils/thousandDivider'
 import { products_statuses } from '../../assets/data/products-statuses'
-import DefaultImgIcon from '../../assets/icons/defaultImgIcon'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
 import EditIcon from '../../assets/icons/EditIcon'
 
@@ -42,17 +41,17 @@ const Image = ({ data, rowIndex, setImages }) => {
         },
       }}
     >
-      {data?.photos?.[0] ? (
-        <CustomImg
-          onClick={() => setImages({ data: data?.photos })}
-          id={`product-image-${rowIndex}`}
-          src={data?.photos[0] || '/default-img.avif'}
-          alt={data?.name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
-        />
-      ) : (
+      {/* {data?.photos?.[0] ? ( */}
+      <CustomImg
+        onClick={() => setImages({ data: data?.photos })}
+        id={`product-image-${rowIndex}`}
+        src={data?.photos?.[0] || '/default-img.avif'}
+        alt={data?.name}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
+      />
+      {/* ) : (
         <DefaultImgIcon />
-      )}
+      )} */}
     </Box>
   )
 }

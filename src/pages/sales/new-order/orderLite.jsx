@@ -1,7 +1,7 @@
 import { Box, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { get } from 'lodash'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
@@ -18,7 +18,7 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
-function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMaxAmount, liteOrder, cashBoxDetails, setLiteOrder, customerId }) {
+function OrderLite({ cartItemsList, markingsList, childRef, setHasChange, maxAmount, setMaxAmount, liteOrder, cashBoxDetails, setLiteOrder, customerId }) {
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
   const theme = useTheme()
   const { id } = useParams()
@@ -28,7 +28,12 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
   const userData = useSelector((state) => state.user)
   const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
   const printContainer = useRef()
-
+  const printContainerEmpty = useRef()
+  useImperativeHandle(childRef, () => ({
+    printChildCheque() {
+      emptyHandlePrint()
+    },
+  }))
   const defultPaymentTypes = [
     {
       amount: 0,
@@ -437,6 +442,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
   //api server
   const documentName = useRef('Pharma CHEQUE')
   const reactToPrintContent = useCallback(() => printContainer.current, [])
+  const reactToPrintContentEmpty = useCallback(() => printContainerEmpty.current, [])
 
   const handlePrint = useReactToPrint({
     content: reactToPrintContent,
@@ -451,7 +457,7 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
     },
   })
   const emptyHandlePrint = useReactToPrint({
-    content: reactToPrintContent,
+    content: reactToPrintContentEmpty,
     documentTitle: documentName.current,
     removeAfterPrint: true,
     onPrintError: (err) => {
@@ -949,6 +955,38 @@ function OrderLite({ cartItemsList, markingsList, setHasChange, maxAmount, setMa
             customerId={customerId}
             noFormControl
             printContainer={printContainer}
+          />
+        </Box>
+      </Box>
+      <Box
+        maxWidth='400px'
+        sx={{
+          display: 'none',
+          width: '355px',
+          overflowY: 'scroll',
+          maxHeight: '75vh',
+        }}
+      >
+        <Box
+          mx={-2}
+          mt={'-3px'}
+          style={{
+            padding: '20px',
+          }}
+          ref={printContainerEmpty}
+        >
+          <RippedPaperItem
+            qrcodeUrl={false}
+            qrcode='pending'
+            markingsList={markingsList}
+            paymentsList={paymentsList}
+            cartItemsList={cartItemsList}
+            id='cheque_of_orders'
+            mode='lite'
+            cashBoxDetails={cashBoxDetails}
+            customerId={customerId}
+            noFormControl
+            printContainer={printContainerEmpty}
           />
         </Box>
       </Box>
