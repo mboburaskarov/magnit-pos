@@ -3,6 +3,7 @@ import Highlighter from 'react-highlight-words'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import ZoomTextIcon from '../../../assets/icons/ZoomTextIcon'
 
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useState } from 'react'
 import { useMutation } from 'react-query'
@@ -119,7 +120,7 @@ export default function SerchedItem({
                   / {get(product, 'quantity ', 0)}
                 </Typography> */}
                 <Typography color={get(product, 'expire_day', 0) < 0 ? 'red.500' : 'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
-                  / {get(product, 'expire_day', 0)} kun
+                  / {dayjs(get(product, 'expire_date')).format('DD.MM.YYYY')} ({get(product, 'expire_day', 0)} kun)
                 </Typography>
               </Typography>
             </Box>
