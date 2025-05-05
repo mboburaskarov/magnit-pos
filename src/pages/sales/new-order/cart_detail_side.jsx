@@ -100,7 +100,7 @@ function CartDetailSide({
             },
           }}
         >
-          <StyledTooltip title={'Черновики'}>
+          <StyledTooltip title={'Распечатать не товарный чек'}>
             <Print color='#000' />
           </StyledTooltip>
         </Box>
