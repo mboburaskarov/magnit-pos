@@ -28,8 +28,6 @@ function ImplementMarkingDialog({
   const { t } = useTranslation()
 
   const implementMarkingList = (marking, id, index) => {
-    console.log(777)
-
     setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
   }
   useEffect(() => {
@@ -50,7 +48,6 @@ function ImplementMarkingDialog({
       }
       newMarkingList[key] = mergedValues
     }
-    console.log(8888)
 
     setMarkingList(newMarkingList)
     if (get(open, 'mode', 'lite') === 'lite') {
