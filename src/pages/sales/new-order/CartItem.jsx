@@ -331,7 +331,7 @@ const CartItem = ({
                   />
                 </Box>
               )}
-              {get(item, 'unit_per_pack') > 0 ? (
+              {get(item, 'unit_per_pack') > 1 ? (
                 <Box
                   sx={{
                     '& .MuiFormControl-root .MuiInputBase-root': {
