@@ -11,6 +11,7 @@ function trimLeadingZeros(input) {
 
 // Checks if the barcode matches the extracted barcode from marking
 export function checkBarcodeWithMarking(barcode, marking) {
+  if (barcode.length <= 0) return true
   const markingBarcode = extractNumbers(marking)
   const cleanBarcode = trimLeadingZeros(barcode)
   console.log('markingBarcode ->>>>>>>>>', markingBarcode)
