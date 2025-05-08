@@ -258,8 +258,6 @@ export default function OrderDrawer({
   const methods = useForm()
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
   const addEmptyStringMarkToMarkinglessProduct = (markings, shouldHaveMarkings) => {
-    console.log(markings)
-
     let newMarkingList = { ...markings }
     for (const key in shouldHaveMarkings) {
       const count = shouldHaveMarkings[key]
@@ -270,7 +268,6 @@ export default function OrderDrawer({
       }
       newMarkingList[key] = mergedValues
     }
-    console.log(5555)
 
     setMarkingList(newMarkingList)
   }
@@ -396,7 +393,6 @@ export default function OrderDrawer({
         })
 
         // setInputDiscount(NaN)
-        setPaymentsList([])
 
         // success('Продажа завершена!')
       }
@@ -438,6 +434,8 @@ export default function OrderDrawer({
     if (qrcodeUrl.qr != 'pending') {
       handlePrint()
       setIsOrderDrower(false)
+      setPaymentsList([])
+
       success('Продажа завершена!')
     }
   }, [qrcodeUrl])

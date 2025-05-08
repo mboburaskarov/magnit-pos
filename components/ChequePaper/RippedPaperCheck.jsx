@@ -30,6 +30,8 @@ function RippedPaperCheck({
   markingsList,
   orderItems,
 }) {
+  console.log(paymentsList)
+
   const classes = useStyles()
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
