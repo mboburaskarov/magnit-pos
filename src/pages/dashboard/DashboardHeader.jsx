@@ -35,7 +35,7 @@ export default function DashboardHeader({ selectedShops, setSelectedShops }) {
         </Box> */}
         <Box
           sx={{
-            maxWidth: 200,
+            maxWidth: 300,
             '.selection': {
               height: '56px',
             },
