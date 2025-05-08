@@ -2,13 +2,15 @@ import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import DateRangeInput from '../../../components/Inputs/DateRangeInput/DateRangeInput'
-import PopUpSelect from '../../../components/Inputs/PopUpSelect/PopUpSelect'
-export default function DashboardHeader({ selectedStore, setselectedStore }) {
+import MultiOptionSelectNew from '../../../components/Select/MultiOptionSelectNew'
+import { requests } from '../../../utils/requests'
+export default function DashboardHeader({ selectedShops, setSelectedShops }) {
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
-
+  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
   return (
     <Box p={'24px 20px 13px 20px'} bgcolor='background.default' top={0} display='inline-flex' justifyContent='space-between'>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -33,10 +35,31 @@ export default function DashboardHeader({ selectedStore, setselectedStore }) {
         </Box> */}
         <Box
           sx={{
-            maxWidth: 200,
+            maxWidth: 300,
+            '.selection': {
+              height: '56px',
+            },
           }}
         >
-          <PopUpSelect selectedStore={selectedStore} setselectedStore={setselectedStore} id='1' name='f' />
+          <MultiOptionSelectNew
+            zIndex={999}
+            placeholder={t('placeholders.select_shops')}
+            // fullWidth
+            multiple
+            defaultSelectedAll
+            // minWidth='auto'
+            beforeContent={t('placeholders.select_shops')}
+            value={selectedShops}
+            allOptions={get(shopList, 'data.data.ids', [])}
+            selectAllLabel={t('Все филиалы')}
+            options={get(shopList, 'data.data.data', [])}
+            isLoading={false}
+            onChange={(val) => {
+              setSelectedShops(val)
+            }}
+            request={requests.getAllStores}
+          />
+          {/* <PopUpSelect selectedStore={selectedStore} setselectedStore={setselectedStore} id='1' name='f' /> */}
           {/* <LazySelect
             slug='users'
             boxStyle={{ minWidth: '200px', width: '100%' }}

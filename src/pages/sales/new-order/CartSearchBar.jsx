@@ -263,6 +263,16 @@ function CartSearchBar({
   useHotkeys('j', () => methods.setFocus('product-search'), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
+
+  useHotkeys(
+    'Escape',
+    (event) => {
+      setSearchTerm('')
+      searchRef.current.value = ''
+      searchRef.current.focus()
+    },
+    { enableOnFormTags: true }
+  )
   useHotkeys('ArrowDown', (event) => selectDownItems(event), { enableOnFormTags: true })
   useHotkeys(
     'Enter',

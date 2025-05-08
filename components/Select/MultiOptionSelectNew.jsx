@@ -610,7 +610,7 @@ const MultiOptionSelectNew = ({
     }
 
     return (
-      <div className={`options ${!options?.length ? 'no-option' : ''}`}>
+      <Box sx={{ minWidth: 300 }} className={`options ${!options?.length ? 'no-option' : ''}`}>
         {options?.length ? (
           <>
             {selectAllLabel && (
@@ -640,12 +640,13 @@ const MultiOptionSelectNew = ({
         ) : (
           <div className='option no-option'>{t('components.no_options')}</div>
         )}
-      </div>
+      </Box>
     )
   }
 
   return (
-    <div
+    <Box
+      sx={{ minWidth: 300 }}
       className='select'
       tabIndex={0}
       onFocus={onFocus}
@@ -663,7 +664,7 @@ const MultiOptionSelectNew = ({
         <span className='arrow'>{!isOpen ? <ArrowDown /> : <ArrowUp color='#000' />}</span>
       </div>
       {renderOptions()}
-    </div>
+    </Box>
   )
 }
 

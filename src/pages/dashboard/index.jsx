@@ -32,7 +32,8 @@ export default function DashboarPage() {
   const { type } = useSelector((state) => state.user)
   const { values } = useQueryParams()
   const [detailing, setDetaling] = useState('week')
-  const [selectedStore, setselectedStore] = useState([])
+  const [selectedShops, setSelectedShops] = useState('all')
+
   const [detalization, setDetalization] = useState({ name: 'по дням', value: 'day' })
   const [chartType, setchartType] = useState({ name: 'Продажи', value: 'sale' })
   const check = type === 'SUPERADMIN' || type === 'ACCOUNTANT'
@@ -143,12 +144,12 @@ export default function DashboarPage() {
       limit: values?.limit || 5,
       search: values?.search,
       start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
-      store_ids: selectedStore.length <= 63 ? [...selectedStore] : null || null,
+      store_ids: selectedShops.length <= 63 && selectedShops != 'all' ? [...selectedShops?.map((a) => a.id)] : null || null,
       type: dataTypeFilter(detalization),
       end_date: values?.start_date == values?.end_date ? null : values?.end_date,
       offset: values?.search ? 0 : values?.offset || 0,
     }
-  }, [values?.offset, detalization, selectedStore, values?.start_date, values?.end_date, values?.limit, values?.search])
+  }, [values?.offset, detalization, selectedShops, values?.start_date, values?.end_date, values?.limit, values?.search])
   const { data: chartData, isLoading: isGetChartData, refetch } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
   const { data: countStats, isLoading: isCountStats } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
   const { data: topStores, isLoading: isTopStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
@@ -178,7 +179,7 @@ export default function DashboarPage() {
 
   return (
     <LoadingContainer readyState={true}>
-      <DashboardHeader setselectedStore={setselectedStore} selectedStore={selectedStore} />
+      <DashboardHeader setSelectedShops={setSelectedShops} selectedShops={selectedShops} />
 
       <Box display='flex' flexDirection='column' position='relative' pt={0} px={'20px'} pb={3} width={'100%'}>
         <Grid width={'100%'} container>
