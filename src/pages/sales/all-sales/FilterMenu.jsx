@@ -128,7 +128,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 isClearable={true}
                 label={t('input.store.label')}
                 request={requests.getAllStores}
-                filters={{ limit: 10 }}
+                filters={{ limit: 100 }}
                 control={control}
                 // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
                 // uncontrolled
