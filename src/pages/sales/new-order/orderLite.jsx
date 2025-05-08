@@ -578,6 +578,7 @@ function OrderLite({ cartItemsList, markingsList, childRef, setHasChange, maxAmo
   useEffect(() => {
     if (qrcodeUrl.qr != 'pending') {
       handlePrint()
+      setPaymentsList(defultPaymentTypes)
       success('Продажа завершена!')
     }
   }, [qrcodeUrl])
