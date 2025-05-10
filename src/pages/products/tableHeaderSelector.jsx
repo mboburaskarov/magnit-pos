@@ -69,9 +69,10 @@ export default function tableHeaderSelector({
   const theme = useTheme()
   const navigate = useNavigate()
   const getDateColor = (date) => {
-    if (date > 25) return { color: theme.palette.green[700] }
-    if (date > 3 && date < 25) return { color: theme.palette.orange[400] }
-    if (date < 3) return { color: theme.palette.red[400] }
+    if (date >= 90) return { color: theme.palette.green[700] }
+    if (date > 60 && date < 90) return { color: theme.palette.orange[400] }
+    if (date > 30 && date < 60) return { color: theme.palette.red[400] }
+    if (date < 30) return { color: theme.palette.bunker[950] }
   }
   const columns = productsColumns?.map((el) => {
     if (el.field === 'main_photo') {
@@ -360,8 +361,14 @@ export default function tableHeaderSelector({
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')}</Typography>
-            <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography>
+            {p.data?.['expire_date'] ? (
+              <>
+                <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')}</Typography>
+                <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography>
+              </>
+            ) : (
+              <Typography>Выберите филиал</Typography>
+            )}
           </Box>
         )),
       }

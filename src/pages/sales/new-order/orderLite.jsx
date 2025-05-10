@@ -24,6 +24,7 @@ function OrderLite({ cartItemsList, markingsList, childRef, setHasChange, maxAmo
   const { id } = useParams()
   const scannedBarcodeRef = useRef()
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
+  const [newSaleId, setNewSaleId] = useState(false)
   const [paymentAmount, setPaymentAmount] = useState(0)
   const userData = useSelector((state) => state.user)
   const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
@@ -450,10 +451,14 @@ function OrderLite({ cartItemsList, markingsList, childRef, setHasChange, maxAmo
     removeAfterPrint: true,
     onPrintError: (err) => {
       error('chek bilan muammo: ', err)
+      setNewSaleId(false)
+
       navigate(`/sales/create`)
     },
     onAfterPrint: () => {
-      navigate(`/sales/create`)
+      setNewSaleId(false)
+
+      navigate(`/sales/new-sale/${newSaleId}`)
     },
   })
   const emptyHandlePrint = useReactToPrint({
@@ -577,11 +582,21 @@ function OrderLite({ cartItemsList, markingsList, childRef, setHasChange, maxAmo
   })
   useEffect(() => {
     if (qrcodeUrl.qr != 'pending') {
-      handlePrint()
+      // handlePrint()
+      setHasChange(false)
+
       setPaymentsList(defultPaymentTypes)
-      success('Продажа завершена!')
     }
   }, [qrcodeUrl])
+  useEffect(() => {
+    if (newSaleId) {
+      if (qrcodeUrl.qr != 'pending') {
+        handlePrint()
+        setPaymentsList(defultPaymentTypes)
+        success('Продажа завершена!')
+      }
+    }
+  }, [newSaleId])
   useEffect(() => {
     if (isOpenScanDialog) {
       setTimeout(() => {
@@ -590,7 +605,10 @@ function OrderLite({ cartItemsList, markingsList, childRef, setHasChange, maxAmo
     }
   }, [isOpenScanDialog, scannedBarcodeRef])
   const { mutate: sendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
-    onSuccess: ({ data }) => {},
+    onSuccess: ({ data }) => {
+      console.log(data)
+      setNewSaleId(get(data, 'data.id', false))
+    },
     onError: (err) => {
       error('Ошибка при епосе')
     },
@@ -815,7 +833,6 @@ function OrderLite({ cartItemsList, markingsList, childRef, setHasChange, maxAmo
               }, 100)
               return
             }
-            console.log(maxAmount < value - paymentsList.find((a) => a.type == 'card')?.amount)
 
             // if ((maxAmount <= value && value >= paymentsList[2]?.amount) || maxAmount < 0) {
             if (maxAmount < value - paymentsList.find((a) => a.type == 'card')?.amount) {

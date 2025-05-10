@@ -727,21 +727,18 @@ function NewSale() {
   }
   const isAllMarkingFill = () => {
     const newmarkingCount = {}
-    console.log(newmarkingCount, markingsList)
 
     get(cartItemsList, 'data.data.data').map((item) => {
       if (item.is_marking) {
         newmarkingCount[item.id] = markingCount[item.id]
       }
     })
-    console.log(newmarkingCount, markingsList)
 
     const cartsMarkingCount = Object.values(newmarkingCount)?.reduce((acc, i) => acc + i, 0)
     const userIsFilledMarkingCount = Object.values(markingsList)
       ?.map((e) => Object.values(e)?.filter((a) => a?.length))
       ?.map((e) => Object.keys(e).length)
       ?.reduce((acc, i) => acc + i, 0)
-    console.log(userIsFilledMarkingCount)
 
     return cartsMarkingCount === userIsFilledMarkingCount
   }

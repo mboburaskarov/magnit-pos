@@ -1,7 +1,8 @@
-import { Box, Drawer } from '@mui/material'
+import { Box, Button, Drawer } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import React from 'react'
+import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import CheckAccess from '../../../../components/CheckAccess'
 import SaleChildDrawer from './saleChildDrawer'
 
 const useStyles = makeStyles((theme) => ({
@@ -28,7 +29,11 @@ const useStyles = makeStyles((theme) => ({
 function SaleDrawer({ open, setOpen, ids }) {
   const { t } = useTranslation()
   const classes = useStyles()
+  const childRef = useRef()
 
+  const printNoProductCheque = () => {
+    childRef.current.printChildCheque()
+  }
   return (
     <Drawer
       ModalProps={{
@@ -44,7 +49,12 @@ function SaleDrawer({ open, setOpen, ids }) {
       elevation={1}
       className={classes.drawer}
     >
-      <SaleChildDrawer ids={ids} open={open} setOpen={setOpen} />
+      <SaleChildDrawer childRef={childRef} ids={ids} open={open} setOpen={setOpen} />
+      <CheckAccess id='can-reprint'>
+        <Button sx={{ minHeight: '56px', mx: '10px' }} onClick={() => printNoProductCheque()}>
+          Повторный чек
+        </Button>
+      </CheckAccess>
       <Box
         sx={{
           bottom: 10,

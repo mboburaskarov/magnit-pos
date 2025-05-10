@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
@@ -111,6 +112,90 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
               type='number'
               fullWidth
             />
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'difference_count') {
+      return {
+        ...el,
+        headerName: 'Разница в количестве',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.difference_count}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'retail_price') {
+      return {
+        ...el,
+        headerName: 'Цена продажи',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.retail_price}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'received_sum') {
+      return {
+        ...el,
+        headerName: 'Сумма продажи',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.received_sum}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'scanned_sum') {
+      return {
+        ...el,
+        headerName: 'Cканированная сумма',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.scanned_sum}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'difference_sum') {
+      return {
+        ...el,
+        headerName: 'Разница суммы',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.difference_sum}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'expire_date') {
+      return {
+        ...el,
+        headerName: 'Срок годности',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{dayjs(p.data?.expire_date).format('DD.MM.YYYY')}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'serial_number') {
+      return {
+        ...el,
+        headerName: 'Серийный номер',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.serial_number}</Typography>
           </Box>
         )),
       }

@@ -2,15 +2,18 @@ import { Box, Grid, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
+import { useReactToPrint } from 'react-to-print'
 import { useDebounce } from 'use-debounce'
+import RippedPaperCheckReturn from '../../../../components/ChequePaper/RippedPaperCheckReturn'
 import CustomImg from '../../../../components/CustomImg'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
+import { error } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import SaleChildItemsBox from './SaleChildItemsBox'
@@ -53,14 +56,44 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 4px',
   },
 }))
-function SaleChildDrawer({ open, setOpen, ids }) {
+function SaleChildDrawer({ open, childRef, setOpen, ids }) {
   const { t } = useTranslation()
   const { values } = useQueryParams()
   const classes = useStyles()
   const [currentSaleId, setCurrentSaleId] = useState(get(values, 'sale_id', ''))
   const [currentIndex, setcurrentIndex] = useState(0)
+  const [qrCodeUrl, setQrcodeUrl] = useState('pending')
   const [debouncedCurrentSaleId] = useDebounce(currentSaleId, 200)
+  const printContainer = useRef()
+  const printContainerEmpty = useRef()
+  const documentName = useRef('Pharma CHEQUE')
+  const reactToPrintContentEmpty = useCallback(() => printContainerEmpty.current, [])
 
+  const emptyHandlePrint = useReactToPrint({
+    content: reactToPrintContentEmpty,
+    documentTitle: documentName.current,
+    removeAfterPrint: true,
+    onPrintError: (err) => {
+      error('chek bilan muammo: ', err)
+    },
+    onAfterPrint: () => {
+      setQrcodeUrl('pending')
+    },
+  })
+  useEffect(() => {
+    if (qrCodeUrl != 'pending') {
+      emptyHandlePrint()
+    }
+  }, [qrCodeUrl])
+  useImperativeHandle(childRef, () => ({
+    printChildCheque() {
+      getQrCodeWithFiscal({
+        token: 'DXJFX32CN1296678504F2',
+        method: 'getReceiptInfoByFiscalSign',
+        fiscalSign: get(saleDetailsList, 'data.data.fiscal_sign'),
+      })
+    },
+  }))
   const {
     data: saleDetailsList,
     refetch,
@@ -70,11 +103,6 @@ function SaleChildDrawer({ open, setOpen, ids }) {
     enabled: !!debouncedCurrentSaleId,
   })
 
-  // useEffect(() => {
-  //   if (get(open, 'id', false)) refetch()
-
-  //   setCurrentSaleId(get(open, 'id'))
-  // }, [open])
   useEffect(() => {
     const id = get(open, 'id')
     if (id) setCurrentSaleId(id)
@@ -103,6 +131,18 @@ function SaleChildDrawer({ open, setOpen, ids }) {
     }
   })
   const theme = useTheme()
+
+  const { mutate: getQrCodeWithFiscal, isLoading: isgetQrCodeWithFiscal } = useMutation(requests.closeZReport, {
+    onSuccess: ({ data }) => {
+      if (!get(data, 'error', true)) {
+        setQrcodeUrl(get(data, 'message.qrCodeURL', 'pending'))
+      }
+    },
+    onError: (err) => {
+      console.log('err', err)
+    },
+  })
+
   return (
     <LoadingContainer noHeight readyState={debouncedCurrentSaleId || !isLoading}>
       <Box className={classes.drawer}>
@@ -207,6 +247,34 @@ function SaleChildDrawer({ open, setOpen, ids }) {
               </Box>
             </Box>
           </Box>
+        </Box>
+      </Box>
+
+      <Box
+        maxWidth='400px'
+        sx={{
+          display: 'none',
+          width: '355px',
+          overflowY: 'scroll',
+          maxHeight: '75vh',
+        }}
+      >
+        <Box
+          mx={-2}
+          mt={'-3px'}
+          style={{
+            padding: '20px',
+          }}
+          ref={printContainerEmpty}
+        >
+          <RippedPaperCheckReturn
+            qrCodeUrl={qrCodeUrl}
+            saleDetailsList={get(saleDetailsList, 'data.data')}
+            id='cheque_of_orders'
+            mode='lite'
+            noFormControl
+            printContainer={printContainerEmpty}
+          />
         </Box>
       </Box>
     </LoadingContainer>
