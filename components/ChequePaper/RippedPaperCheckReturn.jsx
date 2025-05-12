@@ -14,22 +14,7 @@ import thousandDivider from '../../utils/thousandDivider.js'
 const FiskalText = ({ data }) => {
   return <Typography>Fiskal belgi: {data}</Typography>
 }
-function RippedPaperCheck({
-  data,
-  margin,
-  qrcodeUrl,
-  cashBoxDetails,
-  mode,
-  customerId,
-  checked,
-  paymentsList,
-  cartItemsList,
-  chequeData: cheque,
-  logo = '',
-  noSticky,
-  markingsList,
-  orderItems,
-}) {
+function RippedPaperCheckReturn({ saleDetailsList, qrCodeUrl, customerId = '', chequeData: cheque, noSticky }) {
   const classes = useStyles()
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
@@ -69,7 +54,6 @@ function RippedPaperCheck({
                 "PHARMA COSMOS" MCHJ
               </p>
             </div>
-            <Box sx={{ textAlign: 'center' }}>{qrcodeUrl == false && 'Не товарный чек'}</Box>
             <div className={classes.border} />
             <p
               style={{
@@ -85,12 +69,12 @@ function RippedPaperCheck({
           <div className={classes.border} />
           <Fragment key={'index'}>
             <Box className={classes.content}>
-              {qrcodeUrl != false && disableSumsOnGoods() && (
+              {disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index2'}`}
                   rowData={{
                     type: `Sotuv raqami:`,
-                    value: `#${get(cashBoxDetails, 'data.data.sale_number')}`,
+                    value: `#${get(saleDetailsList, 'sale_number')}`,
                   }}
                 />
               )}
@@ -117,7 +101,7 @@ function RippedPaperCheck({
                   id={`return-price-${'index4'}`}
                   rowData={{
                     type: `Sana:`,
-                    value: `${dayjs(new Date()).format('DD.MM.YYYY, HH:mm:ss')}`,
+                    value: `${dayjs(get(saleDetailsList, 'completed_at')).format('DD.MM.YYYY, HH:mm:ss')}`,
                   }}
                 />
               )}
@@ -135,7 +119,7 @@ function RippedPaperCheck({
                   id={`return-price-${'index6'}`}
                   rowData={{
                     type: `Sotuvchi:`,
-                    value: `${get(userData, 'first_name')}`,
+                    value: `${get(saleDetailsList, 'employee.full_name')}`,
                   }}
                 />
               )}
@@ -152,7 +136,7 @@ function RippedPaperCheck({
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
           </Fragment>
-          {get(cartItemsList, 'data', [])?.map((el, index) => (
+          {get(saleDetailsList, 'products', [])?.map((el, index) => (
             <Fragment key={'index3'}>
               <Box className={classes.content}>
                 <p id={`return-name-${'index'}`}>
@@ -179,12 +163,12 @@ function RippedPaperCheck({
                 >
                   <Typography>O'lchiv birligi: {get(el, 'package_name', '-')}</Typography>
                   <Typography>MXIK: {get(el, 'class_code', '-')}</Typography>
-                  {get(el, 'is_marking') && (
+                  {/* {get(el, 'is_marking') && (
                     <Box>
                       {Object.values(markingsList[get(el, 'id')] || {})?.length > 0 &&
                         Object.values(markingsList[get(el, 'id')] || {}).map((el) => <Typography>MK: {el.slice(0, 32)}</Typography>)}
                     </Box>
-                  )}
+                  )} */}
 
                   <Typography>ShtKod: {get(el, 'barcode', '-')}</Typography>
                 </Box>
@@ -201,51 +185,34 @@ function RippedPaperCheck({
           ))}
           <Fragment key={'index39'}>
             <Box className={classes.content}>
-              {
-                (mode = 'lite'
-                  ? paymentsList
-                      .filter((a) => a.amount > 0)
-                      ?.map(
-                        (el) =>
-                          disableSumsOnGoods() && (
-                            <DashedRow
-                              id={`return-price-${'index'}`}
-                              rowData={{
-                                type: `${el.name}:`,
-                                value: `${thousandDivider(el.amount)} so'm`,
-                              }}
-                            />
-                          )
-                      )
-                  : paymentsList?.map(
-                      (el) =>
-                        disableSumsOnGoods() && (
-                          <DashedRow
-                            id={`return-price-${'index'}`}
-                            rowData={{
-                              type: `${el.name}:`,
-                              value: `${thousandDivider(el.amount)} so'm`,
-                            }}
-                          />
-                        )
-                    ))
-              }
+              {get(saleDetailsList, 'sale_payments', [])?.map(
+                (el) =>
+                  disableSumsOnGoods() && (
+                    <DashedRow
+                      id={`return-price-${'index'}`}
+                      rowData={{
+                        type: `${el.payment_type.name}:`,
+                        value: `${thousandDivider(el.amount)} so'm`,
+                      }}
+                    />
+                  )
+              )}
 
               {disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index'}`}
                   rowData={{
                     type: `Umumiy narx`,
-                    value: `${thousandDivider(get(cartItemsList, 'sum'))} so'm`,
+                    value: `${thousandDivider(get(saleDetailsList, 'total_amount'))} so'm`,
                   }}
                 />
               )}
-              {disableSumsOnGoods() && get(cartItemsList, 'discount_amount', 0) > 0 && (
+              {disableSumsOnGoods() && get(saleDetailsList, 'discount_amount', 0) > 0 && (
                 <DashedRow
                   id={`return-price-${'index'}`}
                   rowData={{
                     type: `Chegirma`,
-                    value: `${thousandDivider(get(cartItemsList, 'discount_amount'))} so'm`,
+                    value: `${thousandDivider(get(saleDetailsList, 'discount_amount'))} so'm`,
                   }}
                 />
               )}
@@ -253,7 +220,7 @@ function RippedPaperCheck({
                 id={`return-price-${'index'}`}
                 rowData={{
                   type: `Umumiy QQS`,
-                  value: `${thousandDivider(get(cartItemsList, 'vat_sum'))} so'm`,
+                  value: `${thousandDivider(get(saleDetailsList, 'vat_sum'))} so'm`,
                 }}
               />
               {disableSumsOnGoods() && (
@@ -262,7 +229,7 @@ function RippedPaperCheck({
                   main
                   rowData={{
                     type: `Yakuniy narx`,
-                    value: `${thousandDivider(get(cartItemsList, 'total_amount'))} so'm`,
+                    value: `${thousandDivider(get(saleDetailsList, 'total_amount'))} so'm`,
                   }}
                 />
               )}
@@ -274,10 +241,8 @@ function RippedPaperCheck({
                   },
                 }}
               >
-                <Typography>
-                  Chek turi: {qrcodeUrl == false ? 'Не товарный чек' : get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}
-                </Typography>
-                {qrcodeUrl.qr !== false && <FiskalText data={qrcodeUrl.fiscal} />}
+                <Typography>Chek turi: {get(saleDetailsList, 'sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}</Typography>
+                {<FiskalText data={get(saleDetailsList, 'fiscal_sign')} />}
               </Box>
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
@@ -285,23 +250,18 @@ function RippedPaperCheck({
               {/* {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? ( */}
               {/* <> */}
 
-              {qrcodeUrl == false ? (
-                ''
-              ) : (
-                <>
-                  <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
-                    Siz xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
-                  </Typography>
-                  <QRCodeCanvas size={200} value={qrcodeUrl.qr} />
+              <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
+                Siz xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
+              </Typography>
+              <QRCodeCanvas size={200} value={qrCodeUrl} />
 
-                  <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
-                    SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
-                  </Typography>
-                  <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
-                    XARIDINGIZ UCHUN RAHMAT!!!
-                  </Typography>
-                </>
-              )}
+              <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
+                SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
+              </Typography>
+              <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
+                XARIDINGIZ UCHUN RAHMAT!!!
+              </Typography>
+
               {/* </> */}
               {/* ) : ( */}
               {/* <></> */}
@@ -314,4 +274,4 @@ function RippedPaperCheck({
   )
 }
 
-export default RippedPaperCheck
+export default RippedPaperCheckReturn

@@ -10,8 +10,6 @@ import Routes from './Routes'
 // import { ShortcutProvider } from './ShortcutProvider'
 
 function App() {
-  console.log(import.meta.env.VITE_MODE)
-
   return (
     <Providers>
       {import.meta.env.VITE_MODE == 'dev' ? (

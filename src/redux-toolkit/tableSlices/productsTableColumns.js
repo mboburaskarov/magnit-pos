@@ -45,6 +45,13 @@ const columns = [
   },
 
   {
+    field: 'expire_date',
+    hide: false,
+    minWidth: 70,
+    width: 290,
+  },
+
+  {
     field: 'material_code',
     hide: false,
     minWidth: 70,

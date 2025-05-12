@@ -277,6 +277,8 @@ export default function OrderDrawer({
 
   const [maxAmount, setMaxAmount] = useState(0)
   const [paymentAmount, setPaymentAmount] = useState(0)
+  const [newSaleId, setNewSaleId] = useState(false)
+
   const [hasChange, setHasChange] = useState(false)
   const [qrcodeUrl, setQrcodeUrl] = useState({ qr: 'pending', fiscal: 'pending' })
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
@@ -307,7 +309,9 @@ export default function OrderDrawer({
   }, [paymentsList, cartItemsList])
 
   const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
-    onSuccess: ({ data }) => {},
+    onSuccess: ({ data }) => {
+      setNewSaleId(get(data, 'data.id', false))
+    },
     onError: (err) => {
       error('Ошибка при епосе')
     },
@@ -432,13 +436,19 @@ export default function OrderDrawer({
   })
   useEffect(() => {
     if (qrcodeUrl.qr != 'pending') {
-      handlePrint()
       setIsOrderDrower(false)
       setPaymentsList([])
-
-      success('Продажа завершена!')
     }
   }, [qrcodeUrl])
+  useEffect(() => {
+    if (newSaleId) {
+      if (qrcodeUrl.qr != 'pending') {
+        handlePrint()
+        setHasChange(false)
+        success('Продажа завершена!')
+      }
+    }
+  }, [newSaleId])
   useEffect(() => {
     setPaymentsList([])
   }, [isOrderDrower])
@@ -508,10 +518,13 @@ export default function OrderDrawer({
     removeAfterPrint: true,
     onPrintError: (err) => {
       error('chek bilan muammo: ', err)
+      setNewSaleId(false)
       navigate(`/sales/create`)
     },
     onAfterPrint: () => {
-      navigate(`/sales/create`)
+      setNewSaleId(false)
+
+      navigate(`/sales/new-sale/${newSaleId}`)
     },
   })
 

@@ -29,10 +29,13 @@ const SELECTION_ID = 'checkboxSelectionField'
 export default function ProductReportPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
+  const [selectedShops, setSelectedShops] = useState('all')
+
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.productReportTableColumns)
   const { values } = useQueryParams()
   const [regions, setRegions] = useState([])
+
   const [selectClients, setselectClients] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
@@ -76,12 +79,23 @@ export default function ProductReportPage() {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      store_id: values?.store_id,
+      store_ids: selectedShops != 'all' ? selectedShops.map(({ id }) => id) : undefined,
+      producer_id: values?.producer_id,
       employee_id: values?.employee_id,
       start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
       end_date: values?.start_date == values?.end_date ? null : values?.end_date,
     }
-  }, [values?.offset, values?.limit, values?.search, values?.store_id, values?.employee_id, values?.start_date, values?.end_date])
+  }, [
+    values?.offset,
+    values?.limit,
+    selectedShops,
+    values?.producer_id,
+    values?.search,
+    values?.store_id,
+    values?.employee_id,
+    values?.start_date,
+    values?.end_date,
+  ])
   const {
     data: productReportList,
     isLoading: productReportListLoading,
@@ -214,7 +228,7 @@ export default function ProductReportPage() {
             </Box>
           </Box>
         </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+        <FilterMenu selectedShops={selectedShops} setSelectedShops={setSelectedShops} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='clients-main-table'
