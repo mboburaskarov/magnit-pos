@@ -484,19 +484,16 @@ function NewSale() {
     data: cartItemsList,
     refetch: refetchcartItemsList,
     isLoading: isCartItemsLIstLoading,
-  } = useQuery(['cartItemsList', id], () =>
-    requests
-      .getCartItemList({ sale_id: id, limit: 20, offset: 0 })
-      .then((a) => {
-        setHasChange(false)
-        return a
-      })
-      .catch((e) => {
-        if (get(e, 'response.data.code') == '409') {
-          navigate('/sales/create')
-        }
-      })
-  )
+  } = useQuery(['cartItemsList', id], () => requests.getCartItemList({ sale_id: id, limit: 20, offset: 0 }), {
+    onSuccess: () => {
+      setHasChange(false)
+    },
+    onError: (e) => {
+      if (get(e, 'response.data.code') == '409') {
+        navigate('/sales/create')
+      }
+    },
+  })
   const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
 
   useEffect(() => {
