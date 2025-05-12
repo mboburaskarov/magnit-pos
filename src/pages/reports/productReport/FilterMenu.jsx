@@ -4,26 +4,31 @@ import { get } from 'lodash'
 import * as qs from 'qs'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
+import Label from '../../../../components/Label'
 import LazySelect from '../../../../components/Select/LazySelect'
+import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelectNew'
 import { requests } from '../../../../utils/requests'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 
-export default function FilterMenu({ open, setOpen, setRegions }) {
+export default function FilterMenu({ open, selectedShops, setSelectedShops, setOpen, setRegions }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
   const userData = useSelector((state) => state.user)
-
+  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
   const { formState, reset, control, getValues } = methods
 
   const onSubmit = (data) => {
     const requestBody = {
-      store_id: data.store_id?.id || undefined,
+      // store_ids: selectedShops.map(({ id }) => id) || undefined,
       employee_id: data.employee_id?.id || undefined,
+      producer_id: data.producer_id?.value || undefined,
+      producer_name: data.producer_id?.name || undefined,
       store_name: data.store_id?.name || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
@@ -101,19 +106,41 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               }}
               filterOption={() => true}
             />
+            <Box width={'100%'}>
+              <Label>Магазин</Label>
+              <MultiOptionSelectNew
+                zIndex={999}
+                placeholder={t('placeholders.select_shops')}
+                // fullWidth
+                multiple
+                defaultSelectedAll
+                // minWidth='auto'
+                beforeContent={t('placeholders.select_shops')}
+                value={selectedShops}
+                allOptions={get(shopList, 'data.data.ids', [])}
+                selectAllLabel={t('Все филиалы')}
+                options={get(shopList, 'data.data.data', [])}
+                isLoading={false}
+                onChange={(val) => {
+                  setSelectedShops(val)
+                }}
+                request={requests.getAllStores}
+              />
+            </Box>
+
             <LazySelect
               slug='users'
               boxStyle={{ width: '100%' }}
-              id='store'
-              name='store_id'
+              id='producer'
+              name='producer_id'
               isMulti={false}
-              placeholder={t('Выберите Магазин')}
+              label={t('input.manufacturer.label')}
+              placeholder={t('input.manufacturer.placeholder')}
               minWidth='auto'
               isClearable={true}
-              label={t('input.store.label')}
-              request={requests.getAllStores}
-              filters={{ limit: 10 }}
-              control={control}
+              request={requests.getProducer}
+              filters={{ limit: 100 }}
+              control={methods.control}
               // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
               // uncontrolled
               getOptionLabel={(option) => {
@@ -121,7 +148,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               }}
               filterOption={() => true}
             />
-
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
                 sx={{ bgcolor: `${theme.palette.background.gray} !important`, border: '1px solid #ECEDF2' }}
