@@ -80,9 +80,12 @@ function ImplementMarkingDialog({
   }, [markingsList]) // Replace with actual marking state dependency
 
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
+    console.log('#1')
+
     if (e.key === 'Enter') {
       e.preventDefault()
       setIsBlurBefore(true)
+      console.log('#2')
 
       setEnterpressed({ state: true, lastMarking: e.target.value })
 
@@ -90,16 +93,21 @@ function ImplementMarkingDialog({
         if (markingsList?.[id]?.[childIndex]?.length != 0) {
           //demak u markirofkani tozlamoqchi
           setIsBlurBefore(false)
+          console.log('#3')
 
           implementMarkingList(e.target.value, id, childIndex)
           return
         }
+        console.log('#4')
+
         //input bo'sh holatda enter bosildi
         inputsRef.current[flatIndex].value = markingsList?.[id]?.[childIndex]
         error('Заполните маркировку (eng:empty)')
         return
       }
       if (e.target.value.length != 83) {
+        console.log('#5')
+
         // markirofka uzunligi mos emas
         inputsRef.current[flatIndex].value = ''
         error('Неверная маркировка (eng:length)')
@@ -109,6 +117,7 @@ function ImplementMarkingDialog({
         //demak u markirofkani almashtirmoqchi
         implementMarkingList(e.target.value, id, childIndex)
         setIsBlurBefore(false)
+        console.log('#6')
 
         inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
         return
@@ -116,31 +125,47 @@ function ImplementMarkingDialog({
       if (Object.values(markingsList[id] || {}).includes(e.target.value)) {
         // ikki martta bir xil markirofka kiritildi
         inputsRef.current[flatIndex].value = ''
+        console.log('#7')
+
         error('Повторение маркировки (eng:dublicate)')
         return
       }
       if (!checkBarcodeWithMarking(productBarcode, e.target.value)) {
         //markirofkadagi barcode mahsulotniki bilan mos kelmadi
         inputsRef.current[flatIndex].value = ''
+        console.log('#8')
+
         error('Маркировка и штрих-код не поступили. (eng:Mismatched)')
         return
       }
       setIsBlurBefore(false)
       //hammasi ok
+      console.log('#9')
+
       implementMarkingList(e.target.value, id, childIndex)
+      console.log('#10')
+
       if (!isAllMarkingFillBeforeAdd()) {
         setEnterpressed({ state: false, lastMarking: e.target.value })
         inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
+        console.log('#11')
+
         return
       } else {
         if (get(open, 'mode', 'lite') === 'lite') {
           setLiteOrder(true)
+          console.log('#12')
         } else {
+          console.log('#13')
+
           setIsOrderDrower(true)
         }
+        console.log('#14')
+
         handleClose()
         return
       }
+      console.log('#15')
 
       return
       if (checkMarkingBarcode(e.target.value, flatIndex, productBarcode)) {
