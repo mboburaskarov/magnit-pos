@@ -223,14 +223,14 @@ export default function DashboarPage() {
               id='dashboard-chart'
               data={get(payments, 'data.data')}
               title={'Платежи'}
-              subTitle={thousandDivider(Math.round(get(payments, 'data.data', []).reduce((a, b) => a + b.amount, 0)), 'сум')}
+              subTitle={thousandDivider(Math.round(get(payments, 'data.data', [])?.reduce((a, b) => a + b.amount, 0)), 'сум')}
             />
             <Transactions
               id='dashboard-chart'
               data={get(transaction, 'data.data')}
               title={'Транзакции'}
               subTitle={thousandDivider(
-                get(transaction, 'data.data', []).reduce((a, b) => {
+                get(transaction, 'data.data', [])?.reduce((a, b) => {
                   const count = parseFloat((b.count || '0').replace(',', '.'))
                   return a + count
                 }, 0),
