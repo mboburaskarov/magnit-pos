@@ -1,3 +1,4 @@
+import { Refresh } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, ListItem, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
@@ -484,7 +485,17 @@ function NewSale() {
     refetch: refetchcartItemsList,
     isLoading: isCartItemsLIstLoading,
   } = useQuery(['cartItemsList', id], () =>
-    requests.getCartItemList({ sale_id: id, limit: 20, offset: 0 }).catch((e) => get(e, 'response.data.code') == '409' && navigate('/sales/create'))
+    requests
+      .getCartItemList({ sale_id: id, limit: 20, offset: 0 })
+      .then((a) => {
+        setHasChange(false)
+        return a
+      })
+      .catch((e) => {
+        if (get(e, 'response.data.code') == '409') {
+          navigate('/sales/create')
+        }
+      })
   )
   const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
 
@@ -543,6 +554,7 @@ function NewSale() {
       method: 'checkStatus',
     })
   }, [])
+
   useEffect(() => {
     const cartList = cartItemsList?.data?.data?.data
 
@@ -900,6 +912,29 @@ function NewSale() {
                   ) : (
                     <></>
                   )}
+                  <Box
+                    onClick={() => {
+                      refetchcartItemsList()
+                      setHasChange(true)
+                    }}
+                    sx={{
+                      cursor: 'pointer',
+                      ml: '16px',
+                      height: '48px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      backgroundColor: 'bg.10',
+                      p: '6px 19px',
+                      borderRadius: '40px',
+                      svg: {
+                        width: '23px',
+                        height: '23px',
+                        fill: '#fe5000',
+                      },
+                    }}
+                  >
+                    <Refresh />
+                  </Box>
                 </Box>
                 <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
                   <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
