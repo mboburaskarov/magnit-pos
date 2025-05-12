@@ -759,6 +759,19 @@ function NewSale() {
 
     return cartsMarkingCount === userIsFilledMarkingCount
   }
+  const cartmarkingCount = () => {
+    const newmarkingCount = {}
+
+    get(cartItemsList, 'data.data.data').map((item) => {
+      if (item.is_marking) {
+        newmarkingCount[item.id] = markingCount[item.id]
+      }
+    })
+
+    const cartsMarkingCount = Object.values(newmarkingCount)?.reduce((acc, i) => acc + i, 0)
+
+    return cartsMarkingCount
+  }
   const filledMarkingCounts = () => {
     const newmarkingCount = {}
 
@@ -1061,6 +1074,7 @@ function NewSale() {
       <ImplementMarkingDialog
         liteOrder={liteOrder}
         setLiteOrder={setLiteOrder}
+        cartmarkingCount={cartmarkingCount}
         isAllMarkingFillBeforeAdd={isAllMarkingFillBeforeAdd}
         filledMarkingCounts={filledMarkingCounts}
         markingCount={markingCount}

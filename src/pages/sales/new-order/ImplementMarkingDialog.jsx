@@ -13,6 +13,7 @@ function ImplementMarkingDialog({
   isAllMarkingFill,
   markingCount,
   handleClose,
+  cartmarkingCount,
   isAllMarkingFillBeforeAdd,
   setLiteOrder,
   liteOrder,
@@ -113,16 +114,16 @@ function ImplementMarkingDialog({
         error('Неверная маркировка (eng:length)')
         return
       }
-      if (markingsList?.[id]?.[childIndex]?.length != 0) {
-        //demak u markirofkani almashtirmoqchi
-        implementMarkingList(e.target.value, id, childIndex)
-        setIsBlurBefore(false)
-        console.log('#6')
+      // if (markingsList?.[id]?.[childIndex]?.length != 0) {
+      //   //demak u markirofkani almashtirmoqchi
+      //   implementMarkingList(e.target.value, id, childIndex)
+      //   setIsBlurBefore(false)
+      //   console.log('#6')
 
-        inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
-        return
-      }
-      if (Object.values(markingsList[id] || {}).includes(e.target.value)) {
+      //   inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
+      //   return
+      // }
+      if (Object.values(markingsList[id] || {}).includes(e.target.value) && markingsList?.[id]?.[childIndex]?.length == 0) {
         // ikki martta bir xil markirofka kiritildi
         inputsRef.current[flatIndex].value = ''
         console.log('#7')
@@ -145,7 +146,11 @@ function ImplementMarkingDialog({
       implementMarkingList(e.target.value, id, childIndex)
       console.log('#10')
 
-      if (!isAllMarkingFillBeforeAdd()) {
+      const values = inputsRef.current
+        .map((input) => input?.value || '') // Ensure input and value are safe
+        .filter((val) => val.length > 0)
+
+      if (cartmarkingCount() != values.length) {
         setEnterpressed({ state: false, lastMarking: e.target.value })
         inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
         console.log('#11')
@@ -165,6 +170,7 @@ function ImplementMarkingDialog({
         handleClose()
         return
       }
+
       console.log('#15')
 
       return
