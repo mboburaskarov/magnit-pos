@@ -757,7 +757,7 @@ function NewSale() {
       ?.map((e) => Object.keys(e).length)
       ?.reduce((acc, i) => acc + i, 0)
 
-    return cartsMarkingCount === userIsFilledMarkingCount + 1
+    return cartsMarkingCount === userIsFilledMarkingCount
   }
   const filledMarkingCounts = () => {
     const newmarkingCount = {}
