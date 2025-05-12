@@ -1004,6 +1004,7 @@ function NewSale() {
             setLiteOrder={setLiteOrder}
             printContainer={printContainer}
             classes={classes}
+            setMarkingList={setMarkingList}
             setHasChange={setHasChange}
             setIsOpenReturnExchange={setIsOpenReturnExchange}
             setOpenClientCreateMini={setOpenClientCreateMini}
