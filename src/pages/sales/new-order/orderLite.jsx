@@ -18,7 +18,19 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
-function OrderLite({ cartItemsList, markingsList, childRef, setHasChange, maxAmount, setMaxAmount, liteOrder, cashBoxDetails, setLiteOrder, customerId }) {
+function OrderLite({
+  cartItemsList,
+  markingsList,
+  childRef,
+  setMarkingList,
+  setHasChange,
+  maxAmount,
+  setMaxAmount,
+  liteOrder,
+  cashBoxDetails,
+  setLiteOrder,
+  customerId,
+}) {
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
   const theme = useTheme()
   const { id } = useParams()
@@ -468,7 +480,9 @@ function OrderLite({ cartItemsList, markingsList, childRef, setHasChange, maxAmo
     onPrintError: (err) => {
       error('chek bilan muammo: ', err)
     },
-    onAfterPrint: () => {},
+    onAfterPrint: () => {
+      setMarkingList({})
+    },
   })
 
   const { mutate: finishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {

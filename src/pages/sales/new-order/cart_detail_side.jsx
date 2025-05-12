@@ -31,6 +31,7 @@ function CartDetailSide({
   hasChange,
   setOpenClientCreateMini,
   customerId,
+  setMarkingList,
   setCustomerId,
   setSearchTerm,
   searchTerm,
@@ -321,6 +322,7 @@ function CartDetailSide({
           childRef={childRef}
           maxAmount={maxAmount}
           setLiteOrder={setLiteOrder}
+          setMarkingList={setMarkingList}
           setHasChange={setHasChange}
           cartItemsList={get(cartItemsList, 'data.data')}
           markingsList={markingsList}

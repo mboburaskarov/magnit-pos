@@ -437,6 +437,7 @@ export default function OrderDrawer({
   useEffect(() => {
     if (qrcodeUrl.qr != 'pending') {
       setIsOrderDrower(false)
+
       setPaymentsList([])
     }
   }, [qrcodeUrl])
@@ -523,7 +524,7 @@ export default function OrderDrawer({
     },
     onAfterPrint: () => {
       setNewSaleId(false)
-
+      setMarkingList({})
       navigate(`/sales/new-sale/${newSaleId}`)
     },
   })
