@@ -464,11 +464,13 @@ function OrderLite({
     onPrintError: (err) => {
       error('chek bilan muammo: ', err)
       setNewSaleId(false)
+      setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
 
       navigate(`/sales/create`)
     },
     onAfterPrint: () => {
       setNewSaleId(false)
+      setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
 
       navigate(`/sales/new-sale/${newSaleId}`)
     },
