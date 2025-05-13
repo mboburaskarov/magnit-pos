@@ -146,6 +146,12 @@ export const navbatRouteData = [
         id: '91',
         href: '/reports/product-report',
       },
+      {
+        label: 'Отчет филиала',
+        active: '/reports/store-report/*',
+        id: '91',
+        href: '/reports/store-report',
+      },
     ],
   },
   {

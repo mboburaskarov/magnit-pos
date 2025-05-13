@@ -2,6 +2,7 @@ import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import LFLReport from '../../pages/reports/lfl'
 import ProductReportPage from '../../pages/reports/productReport'
 import SellerBonus from '../../pages/reports/sellerBonus'
+import StoreReportPage from '../../pages/reports/storeReport'
 
 const reportsRoutes = {
   path: 'reports',
@@ -19,6 +20,10 @@ const reportsRoutes = {
     {
       path: 'product-report',
       children: [{ path: '', element: <ProductReportPage /> }],
+    },
+    {
+      path: 'store-report',
+      children: [{ path: '', element: <StoreReportPage /> }],
     },
   ],
 }

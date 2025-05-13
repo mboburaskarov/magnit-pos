@@ -26,6 +26,7 @@ import { returnToWarehouseTableColumnsSlice } from './tableSlices/returnToWareho
 import { rolesTableColumnsSlice } from './tableSlices/rolesTableColumns'
 import { salesTableColumnsSlice } from './tableSlices/salesTableColumns'
 import { sellerBonusTableColumnsSlice } from './tableSlices/sellerBonusTableColumns'
+import { storeReportTableColumnsSlice } from './tableSlices/storeReportTableColumns'
 import { storeTableColumnsSlice } from './tableSlices/storeTableColumns'
 import { storesListTableColumnsForProductSlice } from './tableSlices/storesListTableColumnsForProduct'
 import { taransferGetWithCheckingTableColumnsSlice } from './tableSlices/transferGetWithCheckingTableColumns'
@@ -39,7 +40,7 @@ import { userSlice } from './userSlice'
 // Define your migration function here
 const migrations = {
   // Example migration
-  245: (state) => {
+  246: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -57,7 +58,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 245, // Current version of the persisted state
+  version: 246, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -95,6 +96,7 @@ const reducer = combineReducers({
   cashboxTableColumns: cashboxTableColumnsSlice,
   clientTableColumns: clientTableColumnsSlice,
   productReportTableColumns: productReportTableColumnsSlice,
+  storeReportTableColumns: storeReportTableColumnsSlice,
   user: userSlice,
   productPriceListTableColumnsForProduct: productPriceListTableColumnsForProductSlice,
   storesListTableColumnsForProduct: storesListTableColumnsForProductSlice,

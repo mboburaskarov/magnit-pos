@@ -69,6 +69,10 @@ export const requests = {
   getProductReport: (filter) => request.post(`v1/report/product${qs.stringify(filter, { addQueryPrefix: true })}`),
   getPorductReportExcelReport: (filter) => requestEXCEL.post(`v1/report/product-export${qs.stringify(filter, { addQueryPrefix: true })}`),
 
+  // / report store
+  getStoreReport: (filter) => request.post(`v1/report/store-amount${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getStoreReportExcelReport: (filter) => requestEXCEL.post(`v1/report/store-amount-export${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   //shift
   createShift: (data) => request.post(`v1/shift`, data),
 
