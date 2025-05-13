@@ -1,10 +1,35 @@
 import { Box, Grid, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import React from 'react'
+import { useMutation } from 'react-query'
+import { useParams } from 'react-router-dom'
+import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
+import { error } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DownloadIcon from '../../../assets/icons/DownloadIcon'
 
-function InventoryDashboard({ data }) {
+function InventoryDashboard({ data: stats, setHasChange }) {
+  console.log(stats?.store)
+
+  const { id } = useParams()
+
+  const { mutate: getInventoryExcelReport, isLoading: isgetInventoryExcelReport } = useMutation(requests.getInventoryExcelReport, {
+    onSuccess: ({ data }) => {
+      setHasChange(false)
+
+      downloadExcel(data, `${stats?.store?.name || ''}_Инвентаризация | ${dayjs().format('YYYY-MM-DD HH:mm')}`)
+    },
+    onError: (err) => {
+      setHasChange(false)
+
+      console.log(err)
+
+      error('Ошибка при скачать excel!')
+    },
+  })
+
   return (
     <Grid
       container
@@ -45,6 +70,10 @@ function InventoryDashboard({ data }) {
                     width: '20px',
                   },
                 }}
+                onClick={() => {
+                  setHasChange(true)
+                  getInventoryExcelReport({ inventory_id: id, limit: 1000000 })
+                }}
               >
                 <Typography
                   sx={{
@@ -79,8 +108,8 @@ function InventoryDashboard({ data }) {
                     },
                   }}
                 >
-                  {data?.stats_count[stat.value] < 0 && <BigWarningIcon />}
-                  {thousandDivider(data?.stats_count[stat.value], 'сум')}
+                  {stats?.[stat.value] < 0 && <BigWarningIcon />}
+                  {thousandDivider(stats?.[stat.value], 'сум')}
                 </Typography>
               </>
             )}

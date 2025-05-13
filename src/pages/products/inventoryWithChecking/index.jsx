@@ -1,6 +1,8 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { UploadFile } from '@mui/icons-material'
 import { Box, Button, Container, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -27,12 +29,15 @@ import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
 import InventoryDashboard from './inventoryDashboard'
 import tableHeaderSelector from './tableHeaderSelector'
+import UploadCV from './uploadCV'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function InventoryWithCheckingPage() {
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
   const overplusScanAudio = new Audio(overplusAudio)
+  const [openUpload, setOpenUpload] = useState(false)
+  const [hasChange, setHasChange] = useState(false)
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
@@ -51,7 +56,7 @@ export default function InventoryWithCheckingPage() {
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
       // refetch()
-      fetchStatusCountList()
+      // fetchStatusCountList()
       setBarcode('')
     },
     onError: (err) => {
@@ -141,9 +146,10 @@ export default function InventoryWithCheckingPage() {
       scanned_count: Number(manualNumber),
     })
   }
+  const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
 
   return (
-    <LoadingContainer readyState={!isfinishInventoryChecking}>
+    <LoadingContainer readyState={!isfinishInventoryChecking && !hasChange}>
       <FormProvider {...methods}>
         <Header
           onSubmit={() => setOpenFinishConfirmDialog(true)}
@@ -152,9 +158,9 @@ export default function InventoryWithCheckingPage() {
           backIcon
           backHref='/products/inventory'
           text={'Инвентаризация с проверкой'}
+          subText={`${inventoryStat?.data?.data?.store?.name} - ${dayjs(inventoryStat?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
           checkAccessId={'product-create'}
         />
-
         <Container>
           <Box
             sx={{
@@ -172,7 +178,7 @@ export default function InventoryWithCheckingPage() {
             {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
-          {isOpenStatDashboard && <InventoryDashboard data={get(inventoryWithCheckingDetails, 'data.data')} />}
+          {isOpenStatDashboard && <InventoryDashboard setHasChange={setHasChange} data={get(inventoryStat, 'data.data')} />}
           <Box display={'flex'} minWidth={320}>
             <InputSwitch
               uncontrolled
@@ -228,6 +234,9 @@ export default function InventoryWithCheckingPage() {
                 </Box>
               </Box>
               <Box display={'flex'} alignItems={'center'}>
+                <Button color='secondary' sx={{ height: '48px', mr: '10px' }} onClick={() => setOpenUpload(true)}>
+                  <UploadFile />
+                </Button>
                 <Box>
                   <ColumnsFilterButtonForAll
                     title={t('ag_grid.table_setting.label')}
@@ -309,6 +318,7 @@ export default function InventoryWithCheckingPage() {
           </>
         }
       />
+      <UploadCV open={openUpload} setHasChange={setHasChange} refetch={refetch} setOpen={setOpenUpload} />
     </LoadingContainer>
   )
 }

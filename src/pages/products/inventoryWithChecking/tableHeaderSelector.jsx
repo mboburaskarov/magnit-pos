@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, TextField, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
@@ -43,7 +43,25 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.barcode}</Typography>
+            {/* <Typography>{p.data?.barcode}</Typography> */}
+            <TextField
+              onBlur={({ target }) => {
+                if (p?.data?.barcode == get(target, 'value')) return
+
+                setScanedNumber({
+                  id,
+                  product_id: get(p, 'data.id'),
+                  type: 'MANUAL',
+                  barcode: get(target, 'value').replace(/\s+/g, ''),
+                })
+              }}
+              placeholder={'0'}
+              defaultValue={p.data?.barcode}
+              id={`barcode.${p?.data?.id}`}
+              name={`barcode.${p?.data?.id}`}
+              // type='number'
+              fullWidth
+            />
           </Box>
         )),
       }
@@ -119,7 +137,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
     if (el.field === 'difference_count') {
       return {
         ...el,
-        headerName: 'Разница в количестве',
+        headerName: 'Разница',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
@@ -183,7 +201,26 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.expire_date).format('DD.MM.YYYY')}</Typography>
+            {/* <Typography>{dayjs(p.data?.expire_date).format('DD.MM.YYYY')}</Typography> */}
+            <TextField
+              onBlur={({ target }) => {
+                if (p?.data?.expire_date == get(target, 'value')) return
+
+                setScanedNumber({
+                  id,
+                  product_id: get(p, 'data.id'),
+                  barcode: get(p, 'data.barcode'),
+                  type: 'MANUAL',
+                  expire_date: get(target, 'value').replace(/\s+/g, ''),
+                })
+              }}
+              placeholder={'0'}
+              defaultValue={dayjs(p.data?.expire_date).format('DD.MM.YYYY')}
+              id={`expire_date_${p?.data?.id}`}
+              name={`expire_date_${p?.data?.id}`}
+              // type='number'
+              fullWidth
+            />
           </Box>
         )),
       }

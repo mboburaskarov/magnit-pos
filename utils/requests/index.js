@@ -149,12 +149,15 @@ export const requests = {
   //inventory
   createInventory: (data) => request.post(`v1/inventory`, data),
   getAllInventory: (filter) => request.get(`v1/inventory/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  sendScannedInventoryNumber: ({ id, barcode, product_id, type, scanned_count }) =>
-    request.patch(`v1/inventory/${id}/add-product-by-barcode`, { count: scanned_count, type, id: product_id }),
+  sendScannedInventoryNumber: ({ id, barcode, product_id, expire_date, type, scanned_count }) =>
+    request.patch(`v1/inventory/${id}/add-product-by-barcode`, { count: scanned_count, expire_date, type, barcode, id: product_id }),
   getInventoryDetails: (filter) => request.get(`v1/inventory-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getInventoryScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
   finishInventoryChecking: (id) => request.post(`v1/inventory/confirm/${id}`),
   deleteInventory: ({ id }) => request.post(`v1/inventory/cancel/${id}`),
+  getInventoryExcelReport: (filter) => requestEXCEL.get(`v1/inventory-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getInventoryStat: (id) => request.get(`v1/inventory/${id}`),
+
   //transfer
   createTransfer: (data) => request.post(`v1/transfer`, data),
   getAllTransfer: (filter) => request.get(`v1/transfer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -249,6 +252,7 @@ export const requests = {
 
   //upload files
   imageUpload: (data) => fileUploadRequest.post('v1/upload/file', data),
+  cvUpload: (data) => fileUploadRequest.post('v1/inventory-detail/upload-excel', data),
 
   // roles
   getAllRoles: (filter) => request.get(`v1/role/list${qs.stringify(filter, { addQueryPrefix: true })}`),
