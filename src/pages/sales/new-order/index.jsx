@@ -744,6 +744,9 @@ function NewSale() {
     })
 
     const cartsMarkingCount = Object.values(newmarkingCount)?.reduce((acc, i) => acc + i, 0)
+    if (cartsMarkingCount == 0) {
+      return true
+    }
     const userIsFilledMarkingCount = Object.values(markingsList)
       ?.map((e) => Object.values(e)?.filter((a) => a?.length))
       ?.map((e) => Object.keys(e).length)
