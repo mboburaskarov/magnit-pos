@@ -50,7 +50,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
     if (el.field === 'total_amount') {
       return {
         ...el,
-        headerName: 'Общая сумма наличных',
+        headerName: 'Общая сумма',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} withDevider type='total_amount' />),
       }
@@ -69,6 +69,14 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         headerName: 'HUMO',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} withDevider type='humo' />),
+      }
+    }
+    if (el.field === 'return_amount') {
+      return {
+        ...el,
+        headerName: 'Сумма возврата',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='return_amount' />),
       }
     }
     if (el.field === 'uzcard') {
