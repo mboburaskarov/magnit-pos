@@ -19,12 +19,7 @@ const columns = [
     minWidth: 60,
     width: 200,
   },
-  {
-    field: 'total_amount',
-    hide: false,
-    minWidth: 220,
-    flex: 1,
-  },
+
   {
     field: 'cash',
     hide: false,
@@ -48,6 +43,18 @@ const columns = [
     hide: false,
     minWidth: 70,
     width: 158,
+  },
+  {
+    field: 'return_amount',
+    hide: false,
+    minWidth: 70,
+    width: 158,
+  },
+  {
+    field: 'total_amount',
+    hide: false,
+    minWidth: 220,
+    flex: 1,
   },
 ]
 
