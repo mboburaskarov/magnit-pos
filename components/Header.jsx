@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
   spanHEaderText: {
     fontSize: '32px',
-    lineHeight: '48px',
+    // lineHeight: '48px',
     fontWeight: '700 !important',
     paddingRight: 10,
   },
@@ -75,6 +75,7 @@ function Header({
   typeText,
   isLoading,
   cancel,
+  subText,
   fullWidth,
   cancelButtonLabel,
   noCancel = true,
@@ -180,6 +181,9 @@ function Header({
                       </Typography>
                     )}
                     <Typography className={classes.spanHEaderText}>{text}</Typography>
+                    {subText && (
+                      <Typography sx={{ fontSize: '14px', lineHeight: '20px', mt: '5px', fontWeight: 'bold', color: 'grey.600' }}>{subText}</Typography>
+                    )}
                   </Typography>
                   {description && <Typography color='textSecondary'>{description}</Typography>}
                 </Box>
