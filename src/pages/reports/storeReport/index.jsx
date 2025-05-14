@@ -2,6 +2,7 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
+import { get } from 'lodash'
 import * as qs from 'qs'
 import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -25,6 +26,7 @@ import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/storeReportTableColumns'
+import StoreReposrMiniDashboardHeader from './storeReposrMiniDashboardHeader'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
@@ -138,18 +140,27 @@ export default function StoreReportPage() {
 
     navigate(`/reports/store-report${requestParams}`)
   }, [methods.watch('store_id')])
+  const {
+    data: saleStatsData,
+    isLoading: saleStatsDataLoading,
+    isFetching: isFetchingsaleStatsData,
+    refetch: refetchSaleStats,
+  } = useQuery(['saleStatsData', storeReportListFilter], () => requests.getAllSaleStats(storeReportListFilter))
+
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           Отчет филиала
         </Typography>
+        <StoreReposrMiniDashboardHeader saleStatsData={get(saleStatsData, 'data.data')} />
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box
               width='100%'
               sx={{
+                mr: '10px',
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                   background: 'transparent',
@@ -219,7 +230,7 @@ export default function StoreReportPage() {
               sx={{
                 minWidth: '400px',
                 width: '400px',
-                ml: '25px',
+                ml: '10px',
               }}
             >
               <LazySelect

@@ -10,12 +10,12 @@ import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
+import { error } from '../../../../utils/toast'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/importsTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-import { error } from '../../../../utils/toast'
 
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -61,7 +61,7 @@ export default function ImportPage() {
 
       store_id: values?.store_id,
       start_date: values?.start_date,
-      end_date: values?.end_date,
+      end_date: values?.end_date == values?.start_date ? null : values?.end_date,
       status: values?.status,
       import_date: values?.import_date,
       received_amount_to: values?.received_amount_to,
