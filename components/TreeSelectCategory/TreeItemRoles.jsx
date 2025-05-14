@@ -54,10 +54,10 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
               console.log('##6')
 
               if (isEveryChildrenExist) {
-                newSelectSoFar = [...newSelectSoFar.filter((select) => !childNodes.includes(select)), node]
+                newSelectSoFar = [...newSelectSoFar.filter((select) => node != select), node]
                 console.log('##7')
 
-                marksUncheckedRef.current = marksUncheckedRef?.current?.filter((marksUnchecked) => ![...childNodes, node]?.includes(marksUnchecked))
+                marksUncheckedRef.current = marksUncheckedRef?.current?.filter((marksUnchecked) => ![]?.includes(marksUnchecked))
               }
             }
           }
@@ -161,6 +161,7 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
       }
     }
     console.log('##24')
+    console.log(newSelect)
 
     onSelect([
       ...newSelect,
