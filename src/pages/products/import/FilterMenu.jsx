@@ -35,8 +35,8 @@ export default function FilterMenu({ open, setOpen }) {
       import_date: data.import_date || undefined,
       store_id: data.store_id?.id || undefined,
       store_name: data.store_id?.name || undefined,
-      start_date: startDate != 0 ? dayjs(startDate).format('YYYY-MM-DD') : undefined,
-      end_date: endDate != 0 ? dayjs(endDate).format('YYYY-MM-DD') : undefined,
+      start_date: startDate ? dayjs(startDate).format('YYYY-MM-DD') : undefined,
+      end_date: endDate ? dayjs(endDate).format('YYYY-MM-DD') : undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
