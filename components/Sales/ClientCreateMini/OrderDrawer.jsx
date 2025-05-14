@@ -434,18 +434,17 @@ export default function OrderDrawer({
       console.log('err', err)
     },
   })
-  useEffect(() => {
-    if (qrcodeUrl.qr != 'pending') {
-      setIsOrderDrower(false)
+  // useEffect(() => {
+  //   if (qrcodeUrl.qr != 'pending') {
+  //     setIsOrderDrower(false)
 
-      setPaymentsList([])
-    }
-  }, [qrcodeUrl])
+  //     setPaymentsList([])
+  //   }
+  // }, [qrcodeUrl])
   useEffect(() => {
     if (newSaleId) {
       if (qrcodeUrl.qr != 'pending') {
         handlePrint()
-        setHasChange(false)
         success('Продажа завершена!')
       }
     }
@@ -520,12 +519,20 @@ export default function OrderDrawer({
     onPrintError: (err) => {
       error('chek bilan muammo: ', err)
       setNewSaleId(false)
+      setHasChange(false)
+      setIsOrderDrower(false)
+
+      setPaymentsList([])
       setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
 
       navigate(`/sales/create`)
     },
     onAfterPrint: () => {
       setNewSaleId(false)
+      setHasChange(false)
+      setIsOrderDrower(false)
+
+      setPaymentsList([])
       setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
       setMarkingList({})
       navigate(`/sales/new-sale/${newSaleId}`)

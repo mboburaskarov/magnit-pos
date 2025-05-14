@@ -464,12 +464,20 @@ function OrderLite({
     onPrintError: (err) => {
       error('chek bilan muammo: ', err)
       setNewSaleId(false)
+      setHasChange(false)
+
       setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
+      setPaymentsList(defultPaymentTypes)
 
       navigate(`/sales/create`)
     },
     onAfterPrint: () => {
+      setMarkingList({})
+
       setNewSaleId(false)
+      setHasChange(false)
+      setPaymentsList(defultPaymentTypes)
+
       setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
 
       navigate(`/sales/new-sale/${newSaleId}`)
@@ -482,9 +490,7 @@ function OrderLite({
     onPrintError: (err) => {
       error('chek bilan muammo: ', err)
     },
-    onAfterPrint: () => {
-      setMarkingList({})
-    },
+    onAfterPrint: () => {},
   })
 
   const { mutate: finishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
@@ -596,19 +602,15 @@ function OrderLite({
       console.log('err', err)
     },
   })
-  useEffect(() => {
-    if (qrcodeUrl.qr != 'pending') {
-      // handlePrint()
-      setHasChange(false)
-
-      setPaymentsList(defultPaymentTypes)
-    }
-  }, [qrcodeUrl])
+  // useEffect(() => {
+  //   if (qrcodeUrl.qr != 'pending') {
+  //     // handlePrint()
+  //   }
+  // }, [qrcodeUrl])
   useEffect(() => {
     if (newSaleId) {
       if (qrcodeUrl.qr != 'pending') {
         handlePrint()
-        setPaymentsList(defultPaymentTypes)
         success('Продажа завершена!')
       }
     }
