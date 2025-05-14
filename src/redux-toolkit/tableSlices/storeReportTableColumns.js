@@ -17,9 +17,15 @@ const columns = [
     field: 'store_name',
     hide: false,
     minWidth: 60,
-    width: 200,
+    width: 400,
   },
 
+  {
+    field: 'sale_date',
+    hide: false,
+    minWidth: 60,
+    width: 200,
+  },
   {
     field: 'cash',
     hide: false,

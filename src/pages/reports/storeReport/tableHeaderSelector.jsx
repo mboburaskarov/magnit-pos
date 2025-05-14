@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import thousandDivider from '../../../../utils/thousandDivider'
@@ -44,7 +45,15 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Филиал',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),
+        cellRenderer: memo((p) => <Typography color='#fe5000'>{p?.data.store_name}</Typography>),
+      }
+    }
+    if (el.field === 'sale_date') {
+      return {
+        ...el,
+        headerName: 'Дата ',
+        colId: el.field,
+        cellRenderer: memo((p) => <Typography>{dayjs(get(p, 'data.sale_date')).format('DD.MM.YYYY')}</Typography>),
       }
     }
     if (el.field === 'total_amount') {
@@ -74,7 +83,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
     if (el.field === 'return_amount') {
       return {
         ...el,
-        headerName: 'Сумма возврата',
+        headerName: 'Возврат',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} withDevider type='return_amount' />),
       }

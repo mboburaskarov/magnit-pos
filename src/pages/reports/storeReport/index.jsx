@@ -2,10 +2,13 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
+import * as qs from 'qs'
 import { useEffect, useMemo, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
@@ -13,16 +16,15 @@ import ImageGallery from '../../../../components/ImageGallery'
 import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRangeInput'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import LazySelect from '../../../../components/Select/LazySelect'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/storeReportTableColumns'
-import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
@@ -30,7 +32,8 @@ export default function StoreReportPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const [selectedShops, setSelectedShops] = useState('all')
-
+  const methods = useForm()
+  const navigate = useNavigate()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.storeReportTableColumns)
   const { values } = useQueryParams()
@@ -125,6 +128,16 @@ export default function StoreReportPage() {
       error('Ошибка при скачать excel!')
     },
   })
+  useEffect(() => {
+    const store_id = methods.getValues('store_id')
+    const requestBody = {
+      store_id: store_id?.id || undefined,
+      store_name: store_id?.name || undefined,
+    }
+    const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
+
+    navigate(`/reports/store-report${requestParams}`)
+  }, [methods.watch('store_id')])
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
@@ -148,7 +161,7 @@ export default function StoreReportPage() {
               <InputSearch id='producrs-search' name='search' placeholder={'Филиал'} uncontrolled />
             </Box>
 
-            <Box minWidth={113} ml={'16px'} mr={'10px'}>
+            {/* <Box minWidth={113} ml={'16px'} mr={'10px'}>
               <Button
                 sx={{
                   height: '48px',
@@ -173,7 +186,7 @@ export default function StoreReportPage() {
                   {t('filter_dialog.label')}
                 </Typography>
               </Button>
-            </Box>
+            </Box> */}
             {selectClients.length > 0 && (
               <>
                 <Box minWidth={48} ml={'16px'}>
@@ -202,6 +215,34 @@ export default function StoreReportPage() {
               </>
             )}
             <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
+            <Box
+              sx={{
+                minWidth: '400px',
+                width: '400px',
+                ml: '25px',
+              }}
+            >
+              <LazySelect
+                slug='users'
+                boxStyle={{ width: '100%' }}
+                id='store'
+                name='store_id'
+                isMulti={false}
+                placeholder={t('Выберите Магазин')}
+                minWidth='auto'
+                isClearable={true}
+                label={''}
+                request={requests.getAllStores}
+                filters={{ limit: 100 }}
+                control={methods.control}
+                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+                // uncontrolled
+                getOptionLabel={(option) => {
+                  return option.name
+                }}
+                filterOption={() => true}
+              />
+            </Box>
           </Box>
 
           <Box display={'flex'} alignItems={'center'}>
@@ -216,10 +257,11 @@ export default function StoreReportPage() {
             </Box>
           </Box>
         </Box>
-        <FilterMenu selectedShops={selectedShops} setSelectedShops={setSelectedShops} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+        {/* <FilterMenu selectedShops={selectedShops} setSelectedShops={setSelectedShops} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} /> */}
         <Box>
           <AgGridTable
             id='clients-main-table'
+            uniqId='uid'
             tableSettings
             fullDownload={() => getPorductReportExcelReport({ ...storeReportListFilter, limit: 1000000 })}
             downloadByFilter={() => getPorductReportExcelReport(storeReportListFilter)}
