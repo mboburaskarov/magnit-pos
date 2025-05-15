@@ -45,6 +45,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             {/* <Typography>{p.data?.barcode}</Typography> */}
             <TextField
+              disabled={true}
               onBlur={({ target }) => {
                 if (p?.data?.barcode == get(target, 'value')) return
 
@@ -112,6 +113,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <NumberFormatInput
+              disabled={true}
               onBlur={({ target }) => {
                 if (p?.data?.scanned_count == get(target, 'value')) return
 
@@ -203,6 +205,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             {/* <Typography>{dayjs(p.data?.expire_date).format('DD.MM.YYYY')}</Typography> */}
             <TextField
+              disabled={true}
               onBlur={({ target }) => {
                 if (p?.data?.expire_date == get(target, 'value')) return
 
