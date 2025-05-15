@@ -1,4 +1,5 @@
-import { Box, Typography } from '@mui/material'
+import { Box, TextField, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
@@ -42,7 +43,25 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.barcode}</Typography>
+            {/* <Typography>{p.data?.barcode}</Typography> */}
+            <TextField
+              onBlur={({ target }) => {
+                if (p?.data?.barcode == get(target, 'value')) return
+
+                setScanedNumber({
+                  id,
+                  product_id: get(p, 'data.id'),
+                  type: 'MANUAL',
+                  barcode: get(target, 'value').replace(/\s+/g, ''),
+                })
+              }}
+              placeholder={'0'}
+              defaultValue={p.data?.barcode}
+              id={`barcode.${p?.data?.id}`}
+              name={`barcode.${p?.data?.id}`}
+              // type='number'
+              fullWidth
+            />
           </Box>
         )),
       }
@@ -93,7 +112,17 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <NumberFormatInput
-              disabled={true}
+              onBlur={({ target }) => {
+                if (p?.data?.scanned_count == get(target, 'value')) return
+
+                setScanedNumber({
+                  id,
+                  product_id: get(p, 'data.id'),
+                  barcode: get(p, 'data.barcode'),
+                  type: 'MANUAL',
+                  scanned_count: Number(get(target, 'value').replace(/\s+/g, '')),
+                })
+              }}
               placeholder={'0'}
               defaultValue={p?.data?.scanned_count}
               id={`scanned_quantity_${p?.data?.id}`}
@@ -101,6 +130,109 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
               type='number'
               fullWidth
             />
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'difference_count') {
+      return {
+        ...el,
+        headerName: 'Разница',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.difference_count}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'retail_price') {
+      return {
+        ...el,
+        headerName: 'Цена продажи',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.retail_price}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'received_sum') {
+      return {
+        ...el,
+        headerName: 'Сумма продажи',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.received_sum}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'scanned_sum') {
+      return {
+        ...el,
+        headerName: 'Cканированная сумма',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.scanned_sum}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'difference_sum') {
+      return {
+        ...el,
+        headerName: 'Разница суммы',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.difference_sum}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'expire_date') {
+      return {
+        ...el,
+        headerName: 'Срок годности',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            {/* <Typography>{dayjs(p.data?.expire_date).format('DD.MM.YYYY')}</Typography> */}
+            <TextField
+              onBlur={({ target }) => {
+                if (p?.data?.expire_date == get(target, 'value')) return
+
+                setScanedNumber({
+                  id,
+                  product_id: get(p, 'data.id'),
+                  barcode: get(p, 'data.barcode'),
+                  type: 'MANUAL',
+                  expire_date: get(target, 'value').replace(/\s+/g, ''),
+                })
+              }}
+              placeholder={'0'}
+              defaultValue={dayjs(p.data?.expire_date).format('DD.MM.YYYY')}
+              id={`expire_date_${p?.data?.id}`}
+              name={`expire_date_${p?.data?.id}`}
+              // type='number'
+              fullWidth
+            />
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'serial_number') {
+      return {
+        ...el,
+        headerName: 'Серийный номер',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{p.data?.serial_number}</Typography>
           </Box>
         )),
       }
