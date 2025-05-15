@@ -465,21 +465,16 @@ function OrderLite({
       error('chek bilan muammo: ', err)
       setNewSaleId(false)
       setHasChange(false)
-
       setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
       setPaymentsList(defultPaymentTypes)
-
       navigate(`/sales/create`)
     },
     onAfterPrint: () => {
       setMarkingList({})
-
       setNewSaleId(false)
       setHasChange(false)
       setPaymentsList(defultPaymentTypes)
-
       setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
-
       navigate(`/sales/new-sale/${newSaleId}`)
     },
   })
