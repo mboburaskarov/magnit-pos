@@ -138,7 +138,9 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
       if (!get(data, 'error', true)) {
         setQrcodeUrl(get(data, 'message.qrCodeURL', 'pending'))
       } else {
-        error('FISCAL NOT FOUND')
+        console.log(data)
+
+        error(`FISCAL: ${data?.message}`)
       }
     },
     onError: (err) => {
