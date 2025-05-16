@@ -160,15 +160,33 @@ function RippedPaperCheck({
                     {index + 1}. {get(el, 'name')}
                   </b>
                 </p>
-                {disableSumsOnGoods() && (
+                {/* {disableSumsOnGoods() && (
                   <DashedRow
                     id={`return-price-${'index'}`}
                     rowData={{
-                      type: `${get(el, 'quantity')},${get(el, 'unit_quantity')} dona`,
+                      type: `${get(el, 'quantity') > 0 ? get(el, 'quantity') : ''}${
+                        get(el, 'unit_quantity') > 0 ? `(${get(el, 'unit_quantity')}/${get(el, 'unit_per_pack')})` : ''
+                      } X`,
                       value: `${thousandDivider(get(el, 'total_price'))} so'm`,
                     }}
                   />
-                )}
+                )} */}
+                <Box mt={'15px'} mb={'10px'} display={'flex'} alignItems={'center'} justifyContent={'end'}>
+                  <Typography sx={{ fontSize: '17px !important', fontWeight: '600 !important' }}>
+                    {`${get(el, 'quantity') > 0 ? get(el, 'quantity') : ''}${
+                      get(el, 'unit_quantity') > 0 ? ` (${get(el, 'unit_quantity')}/${get(el, 'unit_per_pack')})` : ''
+                    } X `}
+                    {thousandDivider(get(el, 'unit_price'))}
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      ml: '5px',
+                      fontSize: '17px !important',
+                      fontWeight: '600 !important',
+                    }}
+                  >{` = ${thousandDivider(get(el, 'total_price'))} so'm`}</Typography>
+                </Box>
                 <Box
                   sx={{
                     '& > p': {
