@@ -83,6 +83,7 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
   useEffect(() => {
     if (qrCodeUrl != 'pending') {
       emptyHandlePrint()
+    } else {
     }
   }, [qrCodeUrl])
   useImperativeHandle(childRef, () => ({
@@ -136,6 +137,8 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
     onSuccess: ({ data }) => {
       if (!get(data, 'error', true)) {
         setQrcodeUrl(get(data, 'message.qrCodeURL', 'pending'))
+      } else {
+        error('FISCAL NOT FOUND')
       }
     },
     onError: (err) => {

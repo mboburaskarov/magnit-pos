@@ -1,15 +1,10 @@
 import { Box, IconButton, Typography } from '@mui/material'
-import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
-import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
-import CheckAccess from '../../../components/CheckAccess'
-import thousandDivider from '../../../utils/thousandDivider'
-import { products_statuses } from '../../assets/data/products-statuses'
-import DeleteIcon from '../../assets/icons/DeleteIcon'
-import EditIcon from '../../assets/icons/EditIcon'
-import { formatDate } from '../../../utils/validateDate'
 import { formatPhoneNumber } from '../../../utils/formatPhoneNumber'
+import thousandDivider from '../../../utils/thousandDivider'
+import { formatDate } from '../../../utils/validateDate'
+import DeleteIcon from '../../assets/icons/DeleteIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -70,7 +65,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         colId: el.field,
         cellRenderer: memo((p) => (
           <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
-            {formatPhoneNumber(p.data.phone)}
+            {p.data.phone.length > 0 ? formatPhoneNumber(p.data.phone) : '-'}
           </Typography>
         )),
       }
