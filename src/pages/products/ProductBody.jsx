@@ -1,20 +1,26 @@
-import { Box } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
+import CategoriesTree from '../../../components/CategoriesTree'
+import InputQuantity from '../../../components/Inputs/InputQuantity'
 import TextField from '../../../components/Inputs/TextField'
 import Label from '../../../components/Label'
 import SectionTitle from '../../../components/SectionTitle'
+import LazySelect from '../../../components/Select/LazySelect'
+import SelectSimple from '../../../components/Select/SelectSimple'
 import UploadImage from '../../../components/UploadImage'
+import getOptionsSchema from '../../../utils/getOptionsSchema'
 import { requests } from '../../../utils/requests'
 import { error } from '../../../utils/toast'
 import useDebouncedValue from '../../hooks/useDebouncedValue'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import productPriceTableHeaderSelector from './productPriceTableHeaderSelector'
 import productStoresTableHeaderSelector from './productStoresTableHeaderSelector'
+
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
   const [productCategories, setProductCategories] = useState([{}])
@@ -213,13 +219,13 @@ export default function ProductBody({ productData = null }) {
       // setValue('bonus_percent', productData?.bonus_percent || 0)
 
       setValue('description', productData?.description || '')
-      // setValue('manufacturer', getOptionsSchema(get(productData, 'producer', []), Object))
-      // setValue('shelf_id', getOptionsSchema(get(productData, 'shelf', []), Object))
-      // setValue('box_grain_count', productData?.unit_per_pack || 0)
-      // setValue('product_unit', { value: productData?.unit_type?.codename, name: productData?.unit_type?.unit_name, id: productData?.unit_type?.id } || 0)
-      // // setValue('expire_date', get(productData, 'expire_date', false) ? new Date(get(productData, 'expire_date', new Date())) : null)
-      // setValue('barcode', productData?.barcode || 0)
-      // setProductCategories(productData?.categories?.map((el, ind) => ({ ...el, name: el.nameRu, quantity: productData?.quantityOfCategories?.[ind] })))
+      setValue('manufacturer', getOptionsSchema(get(productData, 'producer', []), Object))
+      setValue('shelf_id', getOptionsSchema(get(productData, 'shelf', []), Object))
+      setValue('box_grain_count', productData?.unit_per_pack || 0)
+      setValue('product_unit', { value: productData?.unit_type?.codename, name: productData?.unit_type?.unit_name, id: productData?.unit_type?.id } || 0)
+      // setValue('expire_date', get(productData, 'expire_date', false) ? new Date(get(productData, 'expire_date', new Date())) : null)
+      setValue('barcode', productData?.barcode || 0)
+      setProductCategories(productData?.categories?.map((el, ind) => ({ ...el, name: el.nameRu, quantity: productData?.quantityOfCategories?.[ind] })))
     } else {
       setValue('vat', 12)
     }
@@ -282,13 +288,21 @@ export default function ProductBody({ productData = null }) {
           <UploadImage id='images' name='images' images={images} onChange={(imagesArr) => setValue('images', imagesArr)} />
         </Box>
         <Box height={'56px'} />
-        {/* <SectionTitle noWrap withLine>
+        <SectionTitle noWrap withLine>
           {t('create_new_product.features.label')}
-        </SectionTitle> */}
+        </SectionTitle>
 
         <Box height={'24px'} />
         <Box display={'flex'} width={'100%'} mt={'24px'}>
-          {/*           
+          {/* <TextField
+            required
+            fullWidth
+            borderRadius={'40px'}
+            name='manufacturer'
+            label={t('create_new_product.features.manufacturer')}
+            placeholder={t('create_new_product.features.manufacturer.placeholder')}
+            sx={{ mb: 3 }}
+          /> */}
           <LazySelect
             isCreatable={true}
             slug='manufacturer'
@@ -310,9 +324,9 @@ export default function ProductBody({ productData = null }) {
               return option.name
             }}
             // filterOption={() => true}
-          /> */}
+          />
 
-          {/* {uniType === 'pack' && (
+          {uniType === 'pack' && (
             <>
               <Box width={'20px'} />
               <Box
@@ -346,7 +360,7 @@ export default function ProductBody({ productData = null }) {
                 />
               </Box>
             </>
-          )} */}
+          )}
           <Box width={'20px'} />
           <Box
             sx={{
@@ -355,7 +369,7 @@ export default function ProductBody({ productData = null }) {
               },
             }}
           >
-            {/* <SelectSimple
+            <SelectSimple
               required
               white
               isClearable={false}
@@ -363,13 +377,22 @@ export default function ProductBody({ productData = null }) {
               placeholder='Выберите единицу измерения'
               name={'product_unit'}
               options={get(unitsList, 'data.data', []).map((el) => ({ value: el.codename, name: el.unit_name, id: el.id }))}
-            /> */}
+            />
           </Box>
         </Box>
         <Box display={'flex'} width={'100%'} mt={'24px'}>
+          {/* <InputDatePicker
+            defaultValue={new Date()}
+            name='expire_date'
+            minDate={new Date()}
+            required
+            id='expire_date'
+            label='Дата срока'
+            placeholder='Дата срока'
+          /> */}
           <Box width={'20px'} />
           {/* <Box maxWidth={'200px'}> */}
-          {/* <LazySelect
+          <LazySelect
             isCreatable={true}
             slug='shelf_id'
             boxStyle={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
@@ -390,12 +413,12 @@ export default function ProductBody({ productData = null }) {
               return option.name
             }}
             // filterOption={() => true}
-          /> */}
+          />
           {/* <TextField required fullWidth borderRadius={'40px'} name='shelf' label={'Полка'} placeholder={'А4'} sx={{ mb: 3 }} /> */}
           {/* </Box> */}
           <Box width={'20px'} />
 
-          {/* <TextField
+          <TextField
             required
             InputProps={{
               endAdornment: (
@@ -424,15 +447,15 @@ export default function ProductBody({ productData = null }) {
             label={t('create_new_product.main_section.barcode')}
             placeholder={t('create_new_product.main_section.enter_barcode')}
             sx={{ mb: 3 }}
-          /> */}
+          />
         </Box>
 
-        <Box height={'56px'} />
+        {/* <Box height={'56px'} /> */}
         {/* <MeasurementValueDialog setValue={setValue} open={openChangeQuantity} setOpen={setOpenChangeQuantity} /> */}
         {/* <SectionTitle noWrap withLine>
           {t('create_new_product.amount_section.label')}
-        </SectionTitle> */}
-        {/* <Box mt={'24px'}>
+        </SectionTitle>
+        <Box mt={'24px'}>
           <InputSearch
             // fullWidth
 
@@ -460,10 +483,10 @@ export default function ProductBody({ productData = null }) {
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             isRefreshing={false}
           />
-        </Box>
-        <Box height={'56px'} />
-        <MeasurementValueDialog setValue={setValue} open={openChangeQuantity} setOpen={setOpenChangeQuantity} />
-        <SectionTitle noWrap withLine>
+        </Box> */}
+        {/* <Box height={'56px'} /> */}
+        {/* <MeasurementValueDialog setValue={setValue} open={openChangeQuantity} setOpen={setOpenChangeQuantity} /> */}
+        {/* <SectionTitle noWrap withLine>
           {t('create_new_product.amount_section.label')}
         </SectionTitle>
         <Box mt={'24px'}>
@@ -534,14 +557,13 @@ export default function ProductBody({ productData = null }) {
           />
         </Box> */}
 
-        {/* <Box height={'56px'} />
+        <Box height={'56px'} />
         <SectionTitle noWrap withLine>
           {t('create_new_product.additional_information.category')}
         </SectionTitle>
         <CategoriesTree />
         <Box height={'30px'} />
-        */}
-        <TextField borderRadius={'20px'} multiline fullWidth name='description' label='Описание' placeholder='Введите описание' />
+        <TextField borderRadius={'20px'} required multiline fullWidth name='description' label='Описание' placeholder='Введите описание' />
       </Box>
     </Box>
   )

@@ -138,8 +138,6 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
       if (!get(data, 'error', true)) {
         setQrcodeUrl(get(data, 'message.qrCodeURL', 'pending'))
       } else {
-        console.log(data)
-
         error(`FISCAL: ${data?.message}`)
       }
     },
