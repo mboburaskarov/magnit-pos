@@ -268,6 +268,21 @@ function CartSearchBar({
   useHotkeys('j', () => methods.setFocus('product-search'), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
+  useHotkeys(
+    'ctrl+shift',
+    () => {
+      if (inputlang === 'en') {
+        setInputLang('ru')
+        localStorage.setItem('inputlang', 'ru')
+      } else {
+        setInputLang('en')
+        localStorage.setItem('inputlang', 'en')
+      }
+    },
+    {
+      enableOnFormTags: true,
+    }
+  )
 
   useHotkeys(
     'Escape',
