@@ -10,6 +10,10 @@ const ShortcutsDrawerArray = [
     title: 'menu.sales.shortcuts.add_search',
     types: [
       {
+        titleofshortcut: 'Сменить язык',
+        symbolofshortcut: ['Ctrl+Shift'],
+      },
+      {
         titleofshortcut: 'Создать клиента',
         symbolofshortcut: ['U'],
       },
