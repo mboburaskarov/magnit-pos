@@ -2,7 +2,6 @@ import { Box, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 import thousandDivider from '../../../../utils/thousandDivider'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -15,7 +14,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, values, t, setScanedNumber }) {
+export default function tableHeaderSelector({ importsColumns, editable = false, values, t, setScanedNumber }) {
   const { id } = useParams()
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {
@@ -84,30 +83,33 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
       return {
         ...el,
         headerName: 'Факт УП',
+        editable: editable,
+
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <NumberFormatInput
-              onBlur={({ target }) => {
-                if (p?.data?.fact_quantity == get(target, 'value')) return
+          <SimpleText {...p} withDevider type='fact_quantity' />
+          // <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+          //   <NumberFormatInput
+          //     onBlur={({ target }) => {
+          //       if (p?.data?.fact_quantity == get(target, 'value')) return
 
-                setScanedNumber({
-                  id,
-                  product_id: get(p, 'data.id'),
-                  barcode: get(p, 'data.barcode'),
-                  type: 'MANUAL',
-                  fact_quantity: Number(get(target, 'value').replace(/\s+/g, '')),
-                })
-              }}
-              disabled={p?.data?.unit_per_pack == 0}
-              placeholder={'0'}
-              defaultValue={p?.data?.fact_quantity}
-              id={`fact_quantity_${p?.data?.id}`}
-              name={`fact_quantity_${p?.data?.id}`}
-              type='number'
-              fullWidth
-            />
-          </Box>
+          //       setScanedNumber({
+          //         id,
+          //         product_id: get(p, 'data.id'),
+          //         barcode: get(p, 'data.barcode'),
+          //         type: 'MANUAL',
+          //         fact_quantity: Number(get(target, 'value').replace(/\s+/g, '')),
+          //       })
+          //     }}
+          //     disabled={p?.data?.unit_per_pack == 0}
+          //     placeholder={'0'}
+          //     defaultValue={p?.data?.fact_quantity}
+          //     id={`fact_quantity_${p?.data?.id}`}
+          //     name={`fact_quantity_${p?.data?.id}`}
+          //     type='number'
+          //     fullWidth
+          //   />
+          // </Box>
         )),
       }
     }
@@ -115,30 +117,34 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
       return {
         ...el,
         headerName: 'Факт кол-во',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <NumberFormatInput
-              onBlur={({ target }) => {
-                if (p?.data?.fact_unit == get(target, 'value')) return
+        editable: editable,
 
-                setScanedNumber({
-                  id,
-                  product_id: get(p, 'data.id'),
-                  barcode: get(p, 'data.barcode'),
-                  type: 'MANUAL',
-                  fact_unit: Number(get(target, 'value').replace(/\s+/g, '')),
-                })
-              }}
-              placeholder={'0'}
-              defaultValue={p?.data?.fact_unit}
-              id={`fact_unit_${p?.data?.id}`}
-              name={`fact_unit_${p?.data?.id}`}
-              type='number'
-              fullWidth
-            />
-          </Box>
-        )),
+        colId: el.field,
+        cellRenderer: memo(
+          (p) => <SimpleText {...p} withDevider type='fact_unit' />
+
+          // <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+          //   <NumberFormatInput
+          //     onBlur={({ target }) => {
+          //       if (p?.data?.fact_unit == get(target, 'value')) return
+
+          //       setScanedNumber({
+          //         id,
+          //         product_id: get(p, 'data.id'),
+          //         barcode: get(p, 'data.barcode'),
+          //         type: 'MANUAL',
+          //         fact_unit: Number(get(target, 'value').replace(/\s+/g, '')),
+          //       })
+          //     }}
+          //     placeholder={'0'}
+          //     defaultValue={p?.data?.fact_unit}
+          //     id={`fact_unit_${p?.data?.id}`}
+          //     name={`fact_unit_${p?.data?.id}`}
+          //     type='number'
+          //     fullWidth
+          //   />
+          // </Box>
+        ),
       }
     }
     if (el.field === 'fact_quantity_pattern') {

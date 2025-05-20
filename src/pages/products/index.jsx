@@ -23,7 +23,6 @@ import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import ArrowDown from '../../assets/icons/ArrowDown'
 import ArrowUp from '../../assets/icons/ArrowUp'
-import BarcodeIcon from '../../assets/icons/BarcodeIcon'
 import BigTickIcon from '../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../assets/icons/BigWarningIcon'
 import CategoryIcon from '../../assets/icons/CategoryIcon'
@@ -82,6 +81,7 @@ export default function ProductsPage() {
     values,
     setOpenProductDrawer,
     setMarkingRequired,
+    editable: true,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     changeBarcode,
@@ -245,6 +245,32 @@ export default function ProductsPage() {
       error('Ошибка при скачать excel!')
     },
   })
+
+  const onCellValueChanged = (params) => {
+    const { data, colDef, newValue, oldValue } = params
+    console.log(colDef?.field, newValue, oldValue)
+
+    if (colDef?.field === 'barcode' && newValue !== oldValue) {
+      const id = data?.id
+      const barcode = newValue
+      changeBarcode({ id, barcode })
+    }
+    if (colDef?.field === 'mxik_code' && newValue !== oldValue) {
+      const id = data?.id
+      const mxik = newValue
+      changeBarcode({ id, mxik })
+    }
+    if (colDef?.field === 'unit_code' && newValue !== oldValue) {
+      const id = data?.id
+      const unit_code = newValue
+      changeBarcode({ id, unit_code })
+    }
+    if (colDef?.field === 'unit_label' && newValue !== oldValue) {
+      const id = data?.id
+      const unit_label = newValue
+      changeBarcode({ id, unit_label })
+    }
+  }
   return (
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
@@ -373,7 +399,7 @@ export default function ProductsPage() {
                 </Button>
               </Box>
             </Box>
-            <StyledTooltip title={'Включить изменение штрих-кода'}>
+            {/* <StyledTooltip title={'Включить изменение штрих-кода'}>
               <Box>
                 <CheckAccess id={'can-change-barcode-super-admin'}>
                   <Button
@@ -407,7 +433,7 @@ export default function ProductsPage() {
                   </Button>
                 </CheckAccess>
               </Box>
-            </StyledTooltip>
+            </StyledTooltip> */}
             <Box display={'flex'} alignItems={'center'}>
               <CheckAccess id={'products-all-table'}>
                 <Box>
@@ -445,6 +471,7 @@ export default function ProductsPage() {
               id='products-main-table'
               alwaysShowHorizontalScroll={true}
               tableSettings
+              onCellValueChanged={onCellValueChanged}
               fullDownload={() => productsExcelReport({ ...productsListFilter, limit: 1000000 })}
               downloadByFilter={() => productsExcelReport(productsListFilter)}
               isDownloading={isproductsExcelReport}

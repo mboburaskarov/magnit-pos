@@ -42,6 +42,7 @@ const Image = ({ data, rowIndex, setImages }) => {
     >
       {/* {data?.photos?.[0] ? ( */}
       <CustomImg
+        key={rowIndex}
         onClick={() => setImages({ data: data?.photos })}
         id={`product-image-${rowIndex}`}
         src={data?.photos?.[0] || '/default-img.avif'}
@@ -60,6 +61,7 @@ export default function tableHeaderSelector({
   values,
   setImages,
   canChangebarcode,
+  editable = false,
   t,
   setMarkingRequired,
   setOpenConfirmDialog,
@@ -186,6 +188,7 @@ export default function tableHeaderSelector({
         ...el,
         headerName: t('table_columns.manufacturer'),
         colId: el.field,
+
         cellRenderer: memo((p) => <SimpleText type={'manufacturer'} {...p} />),
       }
     }
@@ -210,11 +213,13 @@ export default function tableHeaderSelector({
     if (el.field === 'barcode') {
       return {
         ...el,
+        editable: editable,
+
         headerName: t('table_columns.barcode'),
         colId: el.field,
         cellRenderer: memo((p) => {
+          return <SimpleText currency='' {...p} type='barcode' />
           if (!canChangebarcode) {
-            return <SimpleText currency='' {...p} type='barcode' />
           } else {
             return (
               <TextField
@@ -240,10 +245,12 @@ export default function tableHeaderSelector({
       return {
         ...el,
         headerName: 'MXIK',
+        editable: editable,
+
         colId: el.field,
         cellRenderer: memo((p) => {
+          return <SimpleText currency='' {...p} type='mxik' />
           if (!canChangebarcode) {
-            return <SimpleText currency='' {...p} type='mxik' />
           } else {
             return (
               <TextField
@@ -270,9 +277,11 @@ export default function tableHeaderSelector({
         ...el,
         headerName: 'Код упаковки',
         colId: el.field,
+        editable: editable,
+
         cellRenderer: memo((p) => {
+          return <SimpleText currency='' {...p} type='unit_code' />
           if (!canChangebarcode) {
-            return <SimpleText currency='' {...p} type='unit_code' />
           } else {
             return (
               <TextField
@@ -299,9 +308,11 @@ export default function tableHeaderSelector({
         ...el,
         headerName: 'Н.упак',
         colId: el.field,
+        editable: editable,
+
         cellRenderer: memo((p) => {
+          return <SimpleText currency='' {...p} type='unit_label' />
           if (!canChangebarcode) {
-            return <SimpleText currency='' {...p} type='unit_label' />
           } else {
             return (
               <TextField
@@ -378,6 +389,7 @@ export default function tableHeaderSelector({
         ...el,
         headerName: 'Маркировка',
         colId: el.field,
+
         cellRenderer: memo((p) => (
           <Box sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <input

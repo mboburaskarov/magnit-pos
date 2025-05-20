@@ -18,6 +18,7 @@ import { onColumnResized, onDisplayedColumnsChanged, scrollShowHide, useScrollLi
 import CheckBoxRenderer from './CheckboxRenderer'
 import useStyles from './useStyles'
 
+// New prop for cell selection callback
 const AgGridSimpleTable = ({
   id,
   emptyTableText,
@@ -27,6 +28,7 @@ const AgGridSimpleTable = ({
   selection,
   navigateUrl,
   noRedirect = false,
+  onCellValueChanged = () => {},
   defaultOffsetSize = 10,
   defaultOffsetIndex = 1,
   offsetQuery = 'offset',
@@ -56,6 +58,7 @@ const AgGridSimpleTable = ({
   simpleTable,
   isRefreshing,
   status,
+  onCellSelectionChange, // New prop to handle cell selection changes
 }) => {
   const tableOffsetSizes = localStorage?.getItem('table_offset_sizes') ? JSON.parse(localStorage?.getItem('table_offset_sizes')) : {}
   const classes = useStyles()
@@ -65,6 +68,7 @@ const AgGridSimpleTable = ({
   const [offsetIndex, setOffsetIndex] = useState(defaultOffsetIndex)
   const [offsetSize, setOffsetSize] = useState(tableOffsetSizes?.[id] || defaultOffsetSize)
   const [headerCheckboxChecked, setHeaderCheckboxChecked] = useState(null)
+  const [selectedCells, setSelectedCells] = useState([]) // New state for selected cells
   const OverlayLoadingTemplate = OverlayLoadingTemplateFunc()
   const allColumns = useMemo(() => gridApi?.columnApi?.getAllGridColumns(), [columns, gridApi])
   const popupParent = useMemo(() => document.querySelector('body'), [])
@@ -80,7 +84,11 @@ const AgGridSimpleTable = ({
     () => ({
       sortable: true,
       resizable: true,
-      cellClass: 'cell-class',
+      cellClass: (params) => {
+        // Add class for selected cells
+        const isSelected = selectedCells.some((cell) => cell.rowId === params.data[uniqId] && cell.colId === params.column.colId)
+        return isSelected ? 'cell-class selected-cell' : 'cell-class'
+      },
       autoHeight: true,
       lockPosition: false,
       valueFormatter: (params) => {
@@ -92,8 +100,13 @@ const AgGridSimpleTable = ({
       comparator: () => null,
       menuTabs: ['generalMenuTab'],
     }),
-    []
+    [selectedCells, uniqId]
   )
+  const cellSelection = useMemo(() => {
+    return {
+      handle: { mode: 'fill' },
+    }
+  }, [])
   const modifyColumns = useMemo(() => {
     if (selection) {
       return [
@@ -117,12 +130,41 @@ const AgGridSimpleTable = ({
           resizable: false,
           sortable: false,
           lockPosition: 'left',
+          cellClass: 'cell-class', // Ensure checkbox column is not affected by cell selection styling
         },
         ...columns,
       ]
     }
     return columns
   }, [selection, columns, headerCheckboxChecked, selectedRowsIds])
+
+  // Handle cell selection
+  const onCellClicked = useCallback(
+    (params) => {
+      if (params.column.colId === 'checkboxSelectionField') return // Ignore clicks on checkbox column
+      const rowId = params.data[uniqId]
+      const colId = params.column.colId
+      const value = params.value
+
+      setSelectedCells((prev) => {
+        const existingIndex = prev.findIndex((cell) => cell.rowId === rowId && cell.colId === colId)
+        let newSelectedCells
+        if (existingIndex >= 0) {
+          // Deselect cell if already selected
+          newSelectedCells = prev.filter((_, index) => index !== existingIndex)
+        } else {
+          // Select new cell
+          newSelectedCells = [...prev, { rowId, colId, value }]
+        }
+        // Notify parent component of selection change
+        if (onCellSelectionChange) {
+          onCellSelectionChange(newSelectedCells)
+        }
+        return newSelectedCells
+      })
+    },
+    [uniqId, onCellSelectionChange]
+  )
 
   useEffect(() => {
     const baseUrl = navigateUrl || location.pathname
@@ -139,9 +181,11 @@ const AgGridSimpleTable = ({
       navigate(`${baseUrl}${offsetLimitParams}`)
     }
   }, [offsetIndex, offsetSize, data, location.pathname, status])
+
   useEffect(() => {
     setOffsetIndex(0)
   }, [values?.store_id, values?.no_barcode, values?.vendor_id, values?.vendor_name, values?.payment_type_id, values?.cashbox_name])
+
   useEffect(() => {
     if (id) {
       const new_table_offset_sizes = JSON.stringify({
@@ -166,6 +210,7 @@ const AgGridSimpleTable = ({
   const isRowSelectable = useCallback(() => {
     return true
   }, [])
+
   const pinnedBottomRowData = useMemo(() => {
     return totalData
   }, [totalData])
@@ -176,6 +221,7 @@ const AgGridSimpleTable = ({
   }, [])
 
   const getRowId = useCallback((params) => params.data[uniqId], [data, columns, totalData])
+  console.log(onCellSelectionChange)
 
   return (
     <Fragment>
@@ -201,9 +247,12 @@ const AgGridSimpleTable = ({
           suppressRowClickSelection={true}
           suppressPaginationPanel={true}
           suppressContextMenu={true}
-          suppressCellFocus={true}
+          suppressCellFocus={false} // Enable cell focus for cell selection
           icons={icons}
+          // cellSelection={cellSelection}
+          onCellValueChanged={onCellValueChanged}
           popupParent={popupParent}
+          enableFillHandle={true}
           enableCellTextSelection={true}
           pinnedBottomRowData={pinnedBottomRowData}
           alwaysShowHorizontalScroll={true}
@@ -211,6 +260,7 @@ const AgGridSimpleTable = ({
           suppressAnimationFrame={true}
           animateRows={true}
           animateColums={true}
+          onCellClicked={onCellClicked} // Add cell click handler
         />
         <LoadingBlurry isLoading={isDataLoading} height={-50} outside />
         {data?.length > 0 && pagination && (
@@ -238,4 +288,19 @@ const AgGridSimpleTable = ({
     </Fragment>
   )
 }
+
+// Add CSS for selected cell styling
+const styles = `
+  .selected-cell {
+    background-color: #e0f7fa !important; /* Light cyan for selected cells */
+    border: 1px solid #0288d1 !important; /* Blue border for visibility */
+  }
+`
+
+// Inject styles into the document
+const styleSheet = document.createElement('style')
+styleSheet.type = 'text/css'
+styleSheet.innerText = styles
+document.head.appendChild(styleSheet)
+
 export default memo(AgGridSimpleTable, (prevProps, nextProps) => isEqual(prevProps, nextProps))

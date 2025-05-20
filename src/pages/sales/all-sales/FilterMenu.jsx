@@ -5,7 +5,9 @@ import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import CheckAccess from '../../../../components/CheckAccess'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import InputRange from '../../../../components/Inputs/InputRange'
 import LazySelect from '../../../../components/Select/LazySelect'
@@ -20,6 +22,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const { values } = useQueryParams()
   const methods = useForm()
   const { formState, reset, control } = methods
+  const userData = useSelector((state) => state.user)
 
   const { data: paymentTypeList } = useQuery('paymentTypeList', () => requests.getPaymentTypesList({ limit: 20, offset: 0 }))
 
@@ -115,28 +118,30 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 getOptionLabel={(el) => el.name}
                 options={paymentTypeList?.data?.data}
               />
-              <Box height={'20px'} />
-              <LazySelect
-                slug='users'
-                boxStyle={{ width: '100%' }}
-                id='store'
-                white
-                name='store_id'
-                isMulti={false}
-                placeholder={t('Выберите Магазин')}
-                minWidth='auto'
-                isClearable={true}
-                label={t('input.store.label')}
-                request={requests.getAllStores}
-                filters={{ limit: 100 }}
-                control={control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
-                getOptionLabel={(option) => {
-                  return option.name
-                }}
-                filterOption={() => true}
-              />
+              <CheckAccess id={'can-filter-salaes-by-store'}>
+                <Box height={'20px'} />
+                <LazySelect
+                  slug='users'
+                  boxStyle={{ width: '100%' }}
+                  id='store'
+                  white
+                  name='store_id'
+                  isMulti={false}
+                  placeholder={t('Выберите Магазин')}
+                  minWidth='auto'
+                  isClearable={true}
+                  label={t('input.store.label')}
+                  request={requests.getAllStores}
+                  filters={{ limit: 100 }}
+                  control={control}
+                  // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
+                  // uncontrolled
+                  getOptionLabel={(option) => {
+                    return option.name
+                  }}
+                  filterOption={() => true}
+                />
+              </CheckAccess>
               <Box height={'20px'} />
 
               <LazySelect
@@ -151,7 +156,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 isClearable={true}
                 label={'Продавец'}
                 request={requests.getAllVendors}
-                filters={{ limit: 10 }}
+                filters={{ limit: 10, store_id: userData.store.id || undefined }}
                 control={control}
                 // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
                 // uncontrolled

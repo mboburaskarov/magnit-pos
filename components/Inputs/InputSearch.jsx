@@ -5,6 +5,7 @@ import { Box, InputAdornment, TextField, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import * as qs from 'qs'
 import { useEffect, useRef } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useNavigate } from 'react-router-dom'
 import SearchIcon from '../../src/assets/icons/SearchIcon'
 import useDebouncedValue from '../../src/hooks/useDebouncedValue'
@@ -115,7 +116,7 @@ const InputSearch = ({
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const classes = useStyles({ maxWidth, handleClickGiftCards })
-
+  const myref = inputRef || useRef(null)
   const [value, setValue, debouncedValue] = useDebouncedValue(values?.search || '', timeout)
 
   const hasMounted = useRef(false)
@@ -130,6 +131,9 @@ const InputSearch = ({
     const searchParams = qs.stringify({ ...values, search: debouncedValue || undefined }, { addQueryPrefix: true })
     navigate(`${location.pathname}${searchParams}`)
   }, [debouncedValue])
+  useHotkeys('F3', (event) => {
+    myref.current.focus()
+  })
 
   return (
     <Box position='relative' display='flex' width='100%'>
@@ -189,7 +193,7 @@ const InputSearch = ({
           if (onKeyDown) onKeyDown(e)
         }}
         value={uncontrolled ? value : searchTerm}
-        inputRef={inputRef}
+        inputRef={myref}
         {...rest}
       />
     </Box>
