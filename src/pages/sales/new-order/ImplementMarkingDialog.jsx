@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import TextField from '../../../../components/Inputs/TextField'
 import { checkBarcodeWithMarking } from '../../../../utils/checkingMarkingWithBarcode'
+import { containsCyrillic } from '../../../../utils/convertoRuOrEngToEng'
 import { error } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 function ImplementMarkingDialog({
@@ -89,7 +90,11 @@ function ImplementMarkingDialog({
       console.log('#2')
 
       setEnterpressed({ state: true, lastMarking: e.target.value })
-
+      if (containsCyrillic(e.target.value)) {
+        inputsRef.current[flatIndex].value = ''
+        error('Кириллица не поддерживается (eng: cyrillic not supported)')
+        return
+      }
       if (e.target.value.length == 0) {
         if (markingsList?.[id]?.[childIndex]?.length != 0) {
           //demak u markirofkani tozlamoqchi

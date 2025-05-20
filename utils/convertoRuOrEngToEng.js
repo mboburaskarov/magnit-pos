@@ -96,7 +96,7 @@ const ruToEnMap = {
 }
 
 // Function to detect if the string contains Cyrillic
-function containsCyrillic(text) {
+export function containsCyrillic(text) {
   return /[а-яА-ЯёЁ]/.test(text)
 }
 
