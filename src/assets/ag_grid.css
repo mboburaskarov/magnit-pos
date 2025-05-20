@@ -21,6 +21,7 @@
 .ag-center-cols-container {
   min-height: unset !important;
 }
+
 .ag-center-cols-viewport {
   min-height: unset !important;
 }
@@ -568,4 +569,18 @@
 }
 .ag-center-cols-container {
   /* width: 100% !important; */
+}
+
+.ag-root-wrapper:focus-within {
+  /* Prevent page scrolling when grid is focused */
+}
+
+.ag-root-wrapper {
+  /* Ensure the grid can receive focus */
+  outline: none;
+}
+
+/* Alternatively, you can apply this to the entire page when grid is active */
+body.ag-grid-focused {
+  overflow: hidden;
 }

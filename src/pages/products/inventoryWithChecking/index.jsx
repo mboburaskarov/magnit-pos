@@ -78,6 +78,7 @@ export default function InventoryWithCheckingPage() {
     importsColumns: columns,
     t,
     values,
+    editable: true,
 
     id,
     setScanedNumber,
@@ -137,17 +138,30 @@ export default function InventoryWithCheckingPage() {
     })
   }, [inventoryWithCheckingDetails?.data, values?.limit])
 
-  const sendScannedImport = () => {
-    if (barcode === '') return
-    setScanedNumber({
-      id,
-      barcode: barcode,
-      type: 'SCAN',
-      scanned_count: Number(manualNumber),
-    })
-  }
   const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
+  const onCellValueChanged = (params) => {
+    const { data, colDef, newValue, oldValue } = params
+    console.log(colDef?.field, newValue, oldValue)
 
+    if (colDef?.field === 'fact_quantity' && newValue !== oldValue) {
+      const fact_quantity = newValue
+      setScanedNumber({
+        id,
+        product_id: get(data, 'id'),
+        type: 'MANUAL',
+        fact_quantity: Number(fact_quantity),
+      })
+    }
+    if (colDef?.field === 'fact_unit' && newValue !== oldValue) {
+      const fact_unit = newValue
+      setScanedNumber({
+        id,
+        product_id: get(data, 'id'),
+        type: 'MANUAL',
+        fact_unit: Number(fact_unit),
+      })
+    }
+  }
   return (
     <LoadingContainer readyState={!isfinishInventoryChecking && !hasChange}>
       <FormProvider {...methods}>
@@ -253,6 +267,7 @@ export default function InventoryWithCheckingPage() {
               <AgGridTable
                 id='imports-main-table'
                 tableSettings
+                onCellValueChanged={onCellValueChanged}
                 columns={tableColumns}
                 data={inventoryWithCheckingDetails?.data?.data?.data || []}
                 totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}

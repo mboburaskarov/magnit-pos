@@ -293,6 +293,15 @@ const useStyles = makeStyles((theme) =>
       '.ag-theme-alpine .ag-header-icon': {
         color: theme.palette.gray[400],
       },
+      '.ag-row-focus': {
+        backgroundColor: `${theme.palette.orange[150]} !important`,
+      },
+      '.ag-row-hover': {
+        backgroundColor: `${theme.palette.orange[150]} !important`,
+      },
+      '.ag-cell-focus': {
+        borderColor: `${theme.palette.orange[500]} !important`,
+      },
       '.ag-tabs.ag-menu': {
         boxShadow: theme.boxShadow['64-16'],
       },
