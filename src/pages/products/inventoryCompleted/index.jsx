@@ -49,6 +49,8 @@ export default function InventoryCompleted() {
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
+  const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
+
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
       // refetch()
@@ -122,16 +124,16 @@ export default function InventoryCompleted() {
     refetch()
   }, [inventoryWithCheckingDetailsFilter])
 
-  useEffect(() => {
-    const count = inventoryWithCheckingDetails?.data?.data?._meta?.total_count
+  // useEffect(() => {
+  //   const count = inventoryWithCheckingDetails?.data?.data?._meta?.total_count
 
-    const offsetsCount = Math.ceil(count / Number(values?.limit))
-    setOffsetCount(offsetsCount || 0)
+  //   const offsetsCount = Math.ceil(count / Number(values?.limit))
+  //   setOffsetCount(offsetsCount || 0)
 
-    get(inventoryWithCheckingDetails, 'data.data.data', []).map((importData) => {
-      methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
-    })
-  }, [inventoryWithCheckingDetails?.data, values?.limit])
+  //   get(inventoryWithCheckingDetails, 'data.data.data', [])?.map((importData) => {
+  //     methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
+  //   })
+  // }, [inventoryWithCheckingDetails?.data, values?.limit])
 
   const sendScannedImport = () => {
     if (barcode === '') return
@@ -165,7 +167,7 @@ export default function InventoryCompleted() {
             {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
-          {isOpenStatDashboard && <InventoryDashboard data={get(inventoryWithCheckingDetails, 'data.data')} />}
+          {isOpenStatDashboard && <InventoryDashboard data={get(inventoryStat, 'data.data')} />}
           <Box display={'flex'} minWidth={320}>
             <InputSwitch
               uncontrolled
