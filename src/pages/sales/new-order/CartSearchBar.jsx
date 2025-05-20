@@ -13,6 +13,7 @@ import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import StyledTooltip from '../../../../components/StyledTooltip'
+import { convertEngToRu } from '../../../../utils/convertoEngToRu'
 import { convertoRuOrEngToEng } from '../../../../utils/convertoRuOrEngToEng'
 import { requests } from '../../../../utils/requests'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
@@ -207,6 +208,10 @@ function CartSearchBar({
   const [closeCashBox, setCloseCashBox] = useState(false)
   const [debouncedSearchTerm] = useDebounce(searchTearm, 200)
   const searchItemRef = useRef([])
+  const [inputlang, setInputLang] = useState('ru')
+  useEffect(() => {
+    setInputLang(localStorage.getItem('inputlang') === 'ru' ? 'ru' : 'en')
+  }, [])
   const userData = useSelector((state) => state.user)
   const { id } = useParams()
   useImperativeHandle(searchResetRef, () => ({
@@ -320,7 +325,11 @@ function CartSearchBar({
             value={searchTearm}
             setSearchTerm={setSearchTerm}
             onChange={(e) => {
-              setSearchTerm(e.target.value)
+              if (inputlang === 'ru') {
+                setSearchTerm(convertEngToRu(e.target.value))
+              } else {
+                setSearchTerm(e.target.value)
+              }
             }}
             onKeyDown={(e) => {
               // if (isProductsFetching) return // Wait for productsData to be ready
@@ -355,6 +364,36 @@ function CartSearchBar({
               }
             }}
           />
+          <StyledTooltip title={'Сменить язык'}>
+            <Box
+              onClick={() => {
+                if (inputlang === 'en') {
+                  setInputLang('ru')
+                  localStorage.setItem('inputlang', 'ru')
+                } else {
+                  setInputLang('en')
+                  localStorage.setItem('inputlang', 'en')
+                }
+              }}
+              sx={{
+                bgcolor: 'bg.10',
+                height: '48px',
+                width: '48px',
+                userSelect: 'none',
+                flexShrink: 0,
+                mr: '16px',
+                display: 'flex',
+                borderRadius: '50%',
+                pt: '5px',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '2px solid transparent !important',
+                borderColor: inputlang == 'ru' ? '#fe5000 !important' : 'transparent',
+              }}
+            >
+              🇷🇺
+            </Box>
+          </StyledTooltip>
           <StyledTooltip title={'Закрыть кассу & Обмен сменами'}>
             <ButtonWithPopup
               id={'ff'}
