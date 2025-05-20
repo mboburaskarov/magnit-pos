@@ -313,6 +313,35 @@ function NewSale() {
   const searchResetRef = useRef('')
   const printContainer = useRef()
   const cartRef = cartItemRef.current
+  const { mutate: addDiscountCard, isLoading: isaddDiscountCard } = useMutation(requests.addDiscountCard, {
+    onSuccess: ({ data }) => {
+      success('Карта скидки успешно добавлена')
+    },
+    onError: (err) => {
+      error('Ошибка при добавлении карты скидки')
+      console.log('err', err)
+    },
+  })
+  const { mutate: removeDiscountCard, isLoading: isremoveDiscountCard } = useMutation(requests.removeDiscountCard, {
+    onSuccess: ({ data }) => {
+      setCustomerId('')
+      success('Карта скидки успешно удалена')
+    },
+    onError: (err) => {
+      error('Ошибка при удалении карты скидки')
+      console.log('err', err)
+    },
+  })
+  useEffect(() => {
+    console.log(customerId)
+
+    if (customerId?.id) {
+      addDiscountCard({
+        customer_id: customerId?.id,
+        sale_id: id,
+      })
+    }
+  }, [customerId])
   for (const key in cartRef) {
     if (cartRef[key] === null) {
       delete cartRef[key]
@@ -1003,6 +1032,7 @@ function NewSale() {
             userData={userData}
             hasChange={hasChange}
             markingsList={markingsList}
+            removeDiscountCard={removeDiscountCard}
             liteOrder={liteOrder}
             setLiteOrder={setLiteOrder}
             printContainer={printContainer}

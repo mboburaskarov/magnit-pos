@@ -52,7 +52,8 @@ export const requests = {
   getCashBoxDetaildWithSaleId: (id) => request.get(`v1/sale/${id}`),
   addToOrderPayment: (data) => request.post(`v1/sale/final`, data),
   returnSaleItem: (data) => request.post(`v1/sale/return`, data),
-
+  addDiscountCard: (data) => request.post(`v1/sale/discount-card`, data),
+  removeDiscountCard: (data) => request.delete(`v1/sale/discount-card`, data),
   //producer
   createProducer: (data) => request.post(`v1/producer`, data),
   getProducer: (filter) => request.get(`v1/producer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
