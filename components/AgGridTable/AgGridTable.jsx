@@ -25,6 +25,7 @@ const AgGridSimpleTable = ({
   data,
   columns,
   components,
+  enableFillHandle = false,
   selection,
   navigateUrl,
   noRedirect = false,
@@ -50,6 +51,7 @@ const AgGridSimpleTable = ({
   setRemovedItems,
   setAddedItems,
   resetTable,
+  canCellClick = false,
   totalData,
   columnGroup,
   uniqId = 'id',
@@ -141,6 +143,7 @@ const AgGridSimpleTable = ({
   // Handle cell selection
   const onCellClicked = useCallback(
     (params) => {
+      // return
       if (params.column.colId === 'checkboxSelectionField') return // Ignore clicks on checkbox column
       const rowId = params.data[uniqId]
       const colId = params.column.colId
@@ -252,7 +255,7 @@ const AgGridSimpleTable = ({
           // cellSelection={cellSelection}
           onCellValueChanged={onCellValueChanged}
           popupParent={popupParent}
-          enableFillHandle={true}
+          enableFillHandle={enableFillHandle}
           enableCellTextSelection={true}
           pinnedBottomRowData={pinnedBottomRowData}
           alwaysShowHorizontalScroll={true}
@@ -260,7 +263,7 @@ const AgGridSimpleTable = ({
           suppressAnimationFrame={true}
           animateRows={true}
           animateColums={true}
-          onCellClicked={onCellClicked} // Add cell click handler
+          onCellClicked={canCellClick && onCellClicked} // Add cell click handler
         />
         <LoadingBlurry isLoading={isDataLoading} height={-50} outside />
         {data?.length > 0 && pagination && (

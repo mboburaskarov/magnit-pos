@@ -267,6 +267,8 @@ export default function InventoryWithCheckingPage() {
               <AgGridTable
                 id='imports-main-table'
                 tableSettings
+                enableFillHandle={true}
+                canCellClick={true}
                 onCellValueChanged={onCellValueChanged}
                 columns={tableColumns}
                 data={inventoryWithCheckingDetails?.data?.data?.data || []}
