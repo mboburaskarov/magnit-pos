@@ -63,7 +63,7 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
         ...el,
         headerName: 'Програм кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='current_quantity_pattern' />),
+        cellRenderer: memo((p) => <Typography>{`${Math.floor(p?.data?.current_quantity)}(${p?.data?.current_unit}/${p?.data?.unit_per_pack})`}</Typography>),
       }
     }
     if (el.field === 'current_price') {
@@ -71,7 +71,7 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
         ...el,
         headerName: 'Програм Cумма',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='current_price' />),
+        cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type='current_sum' />),
       }
     }
     //
@@ -148,7 +148,7 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
         ...el,
         headerName: 'Факт  кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='fact_quantity_pattern' />),
+        cellRenderer: memo((p) => <Typography>{`${Math.floor(p?.data?.fact_quantity)}(${p?.data?.fact_unit}/${p?.data?.unit_per_pack})`}</Typography>),
       }
     }
     if (el.field === 'fact_price') {
@@ -156,7 +156,7 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
         ...el,
         headerName: 'Факт Cумма',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='fact_price' />),
+        cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type='fact_sum' />),
       }
     }
     //
@@ -173,7 +173,9 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
         ...el,
         headerName: 'Разница кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='difference_quantity_pattern' />),
+        cellRenderer: memo((p) => (
+          <Typography>{`${Math.floor(p?.data?.difference_quantity)}(${p?.data?.difference_unit}/${p?.data?.unit_per_pack})`}</Typography>
+        )),
       }
     }
     if (el.field === 'difference_price') {
@@ -181,7 +183,7 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
         ...el,
         headerName: 'Разница сумма',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='difference_price' />),
+        cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type='difference_sum' />),
       }
     }
     // if (el.field === 'barcode') {
