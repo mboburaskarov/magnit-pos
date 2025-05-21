@@ -341,6 +341,7 @@ function NewSale() {
         sale_id: id,
       })
     }
+    refetchcartItemsList()
   }, [customerId])
   for (const key in cartRef) {
     if (cartRef[key] === null) {
