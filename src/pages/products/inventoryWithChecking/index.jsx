@@ -206,13 +206,6 @@ export default function InventoryWithCheckingPage() {
         />
         <Container>
           <Box
-            onClick={() => {
-              handleFocus()
-            }}
-          >
-            fdf
-          </Box>
-          <Box
             sx={{
               m: ' 0 0 20px',
               userSelect: 'none !important',
