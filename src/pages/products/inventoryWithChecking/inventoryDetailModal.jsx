@@ -82,9 +82,9 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
 
-    // get(inventoryDetailFlow, 'data.data.data', []).map((importData) => {
-    //   methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
-    // })
+    get(inventoryDetailFlow, 'data.data.data', [])?.map((importData) => {
+      methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
+    })
   }, [inventoryDetailFlow?.data, values?.limit])
   const onError = (err) => {
     error('Пожалуйста, заполните все поля!')

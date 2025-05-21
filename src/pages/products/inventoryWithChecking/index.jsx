@@ -151,7 +151,7 @@ export default function InventoryWithCheckingPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
 
-    get(inventoryWithCheckingDetails, 'data.data.data', []).map((importData) => {
+    get(inventoryWithCheckingDetails, 'data.data.data', [])?.map((importData) => {
       methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
     })
   }, [inventoryWithCheckingDetails?.data, values?.limit])

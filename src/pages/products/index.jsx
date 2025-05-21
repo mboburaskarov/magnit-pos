@@ -225,13 +225,13 @@ export default function ProductsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
 
-    get(productsList, 'data.data.data', []).map((productData) => {
+    get(productsList, 'data.data.data', [])?.map((productData) => {
       methods.setValue(`editable_barcode_${get(productData, 'id')}`, get(productData, 'barcode'))
     })
-    get(productsList, 'data.data.data', []).map((productData) => {
+    get(productsList, 'data.data.data', [])?.map((productData) => {
       methods.setValue(`editable_mxik_${get(productData, 'id')}`, get(productData, 'mxik'))
     })
-    get(productsList, 'data.data.data', []).map((productData) => {
+    get(productsList, 'data.data.data', [])?.map((productData) => {
       methods.setValue(`editable_unit_code_${get(productData, 'id')}`, get(productData, 'unit_code'))
     })
   }, [productsList?.data, values?.limit, appType])
