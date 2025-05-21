@@ -56,6 +56,7 @@ const AgGridSimpleTable = ({
   canCellClick = false,
   selectedCellRowId = () => {},
   totalData,
+  onChangeSelectedCellRowId = () => {},
   columnGroup,
   uniqId = 'id',
   totalCount = 0,
@@ -181,7 +182,7 @@ const AgGridSimpleTable = ({
   }, [selection, columns, headerCheckboxChecked, selectedRowsIds])
 
   useHotkeys(
-    'ctrl+enter',
+    'ctrl+shift',
     () => {
       if (!gridApi) return
 
@@ -224,6 +225,8 @@ const AgGridSimpleTable = ({
           newSelectedCells = prev.filter((_, index) => index !== existingIndex)
         } else {
           // Select new cell
+          console.log(rowId, colId, value)
+          onChangeSelectedCellRowId(rowId)
           newSelectedCells = [...prev, { rowId, colId, value }]
         }
         // Notify parent component of selection change

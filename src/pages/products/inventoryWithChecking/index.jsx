@@ -50,6 +50,7 @@ export default function InventoryWithCheckingPage() {
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
   const [selectedCellRowId, setSelectedCellRowId] = useState(null)
+  const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(null)
   const [hasTableChange, setHasTableChange] = useState(false)
   const [appType, setAppType] = useState('ALL')
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
@@ -80,7 +81,12 @@ export default function InventoryWithCheckingPage() {
   const handleFocus = () => {
     const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
     // Call the exposed method: focus row with id 'b2' on column 'qty'
-    childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
+    if (lastSelectedCellRowId == null) {
+      setLastSelectedCellRowId(firstrowid)
+      childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
+    } else {
+      childRef.current?.focusCellByRowId(lastSelectedCellRowId, 'fact_quantity')
+    }
   }
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
@@ -125,6 +131,11 @@ export default function InventoryWithCheckingPage() {
     focustimeout()
     return clearTimeout(focustimeout)
   }, [inventoryWithCheckingDetailsLoading, selectedCellRowId])
+  useEffect(() => {
+    if (selectedCellRowId) {
+      setLastSelectedCellRowId(selectedCellRowId)
+    }
+  }, [selectedCellRowId])
   /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
@@ -296,6 +307,9 @@ export default function InventoryWithCheckingPage() {
                 childRef={childRef}
                 enableFillHandle={true}
                 canCellClick={true}
+                onChangeSelectedCellRowId={(id) => {
+                  setLastSelectedCellRowId(id)
+                }}
                 onCellValueChanged={onCellValueChanged}
                 columns={tableColumns}
                 data={inventoryWithCheckingDetails?.data?.data?.data || []}
