@@ -38,7 +38,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       vendor_name: data.vendor_id?.name || undefined,
       cashbox_id: data.cashbox_id?.value || undefined,
       cashbox_name: data.cashbox_id?.name || undefined,
-      payment_type_id: data.payment_type_id?.id || undefined,
+      payment_type_id: data?.payment_type_id?.id || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
@@ -156,7 +156,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 isClearable={true}
                 label={'Продавец'}
                 request={requests.getAllVendors}
-                filters={{ limit: 10, store_id: userData.store.id || undefined }}
+                filters={{ limit: 10, store_id: userData?.store?.id || undefined }}
                 control={control}
                 // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
                 // uncontrolled

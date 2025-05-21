@@ -471,6 +471,8 @@ export default function ProductsPage() {
               id='products-main-table'
               alwaysShowHorizontalScroll={true}
               tableSettings
+              canCellClick={true}
+              enableFillHandle={true}
               onCellValueChanged={onCellValueChanged}
               fullDownload={() => productsExcelReport({ ...productsListFilter, limit: 1000000 })}
               downloadByFilter={() => productsExcelReport(productsListFilter)}
