@@ -63,7 +63,13 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
         ...el,
         headerName: 'Програм кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{`${Math.floor(p?.data?.current_quantity)}(${p?.data?.current_unit}/${p?.data?.unit_per_pack})`}</Typography>),
+        cellRenderer: memo((p) => (
+          <Typography>
+            {p?.data?.current_unit > 0
+              ? `${Math.floor(p?.data?.current_quantity)}(${p?.data?.current_unit}/${p?.data?.unit_per_pack})`
+              : p?.data?.current_quantity}
+          </Typography>
+        )),
       }
     }
     if (el.field === 'current_price') {
@@ -148,7 +154,11 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
         ...el,
         headerName: 'Факт  кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{`${Math.floor(p?.data?.fact_quantity)}(${p?.data?.fact_unit}/${p?.data?.unit_per_pack})`}</Typography>),
+        cellRenderer: memo((p) => (
+          <Typography>
+            {p?.data?.fact_unit > 0 ? `${Math.floor(p?.data?.fact_quantity)}(${p?.data?.fact_unit}/${p?.data?.unit_per_pack})` : p?.data?.fact_quantity}
+          </Typography>
+        )),
       }
     }
     if (el.field === 'fact_price') {
@@ -174,7 +184,11 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
         headerName: 'Разница кол-во',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Typography>{`${Math.floor(p?.data?.difference_quantity)}(${p?.data?.difference_unit}/${p?.data?.unit_per_pack})`}</Typography>
+          <Typography>
+            {p?.data?.difference_unit > 0
+              ? `${Math.floor(p?.data?.difference_quantity)}(${p?.data?.difference_unit}/${p?.data?.unit_per_pack})`
+              : p?.data?.difference_quantity}
+          </Typography>
         )),
       }
     }
