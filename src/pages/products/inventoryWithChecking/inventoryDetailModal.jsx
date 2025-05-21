@@ -2,7 +2,7 @@ import { Box } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -22,6 +22,7 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
   const { reset, control } = methods
   const [startDate, setStartDate] = useState(0)
   const dispatch = useDispatch()
+  const childRef = useRef()
 
   const [endDate, setEndDate] = useState(0)
   const [offsetCount, setOffsetCount] = useState(0)
@@ -106,7 +107,20 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
       error('Ошибка при сканирование!')
     },
   })
-
+  const handleFocus = () => {
+    const firstrowid = inventoryDetailFlow?.data?.data?.data[0]?.id
+    // Call the exposed method: focus row with id 'b2' on column 'qty'
+    childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
+  }
+  useEffect(() => {
+    if (!open) return
+    const focustimeout = () =>
+      setTimeout(() => {
+        handleFocus()
+      }, 100)
+    focustimeout()
+    return clearTimeout(focustimeout)
+  }, [inventoryDetailFlowLoading, open])
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
     console.log(colDef?.field, data, newValue, oldValue)
@@ -158,6 +172,7 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
           <AgGridTable
             id='imports-main-table'
             tableSettings
+            childRef={childRef}
             enableFillHandle={true}
             canCellClick={true}
             onCellValueChanged={onCellValueChanged}

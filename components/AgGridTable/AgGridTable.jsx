@@ -6,7 +6,7 @@ import 'ag-grid-enterprise'
 import { AgGridReact } from 'ag-grid-react'
 import debounce from 'lodash/debounce'
 import * as qs from 'qs'
-import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, memo, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { usePrevious } from 'react-use'
@@ -61,6 +61,7 @@ const AgGridSimpleTable = ({
   totalCount = 0,
   customDisplayColumnsChangeHandler,
   simpleTable,
+  childRef = null,
   isRefreshing,
   status,
   onCellSelectionChange, // New prop to handle cell selection changes
@@ -82,7 +83,43 @@ const AgGridSimpleTable = ({
   const rowData = useMemo(() => data, [data, totalData])
   useScrollListener(agGridTableArea, agGridTableScroll)
   const navigate = useNavigate()
+  const gridApiRef = useRef(null)
+  const columnApiRef = useRef(null)
 
+  useImperativeHandle(childRef, () => ({
+    focusCellByRowId: (rowId, colId) => {
+      const api = gridApiRef.current
+      const columnApi = columnApiRef.current
+      if (!api || !columnApi) return
+      console.log(api, 'kk')
+
+      const rowModel = api.getModel()
+      const rowCount = rowModel.getRowCount()
+
+      for (let i = 0; i < rowCount; i++) {
+        console.log('a')
+
+        const rowNode = rowModel.getRow(i)
+        console.log(rowNode?.data?.[uniqId], rowId)
+
+        if (rowNode?.data?.[uniqId] === rowId) {
+          console.log('b')
+
+          const targetColId = colId || columnApi.getAllDisplayedColumns()?.[0]?.colId
+          if (targetColId) {
+            console.log('fics')
+
+            api.ensureIndexVisible(i) // Scroll to row
+            api.setFocusedCell(i, targetColId)
+
+            // Optional: DOM focus so keyboard nav works
+            document.querySelector('.ag-root')?.focus()
+          }
+          break
+        }
+      }
+    },
+  }))
   const prevStatus = usePrevious(status)
 
   const defaultColDef = useMemo(
@@ -250,6 +287,8 @@ const AgGridSimpleTable = ({
 
   const onGridReady = useCallback((params) => {
     setGridApi(params.api) // ✅ only the API, not the full params
+    gridApiRef.current = params.api
+    columnApiRef.current = params.columnApi
     setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
   }, [])
 

@@ -4,7 +4,7 @@ import { UploadFile } from '@mui/icons-material'
 import { Box, Button, Container, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -42,6 +42,7 @@ export default function InventoryWithCheckingPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
+  const childRef = useRef()
   const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.inventoryWithCheckingColumns)
   const { values } = useQueryParams()
@@ -76,6 +77,11 @@ export default function InventoryWithCheckingPage() {
       error('Ошибка при завершение импорта!')
     },
   })
+  const handleFocus = () => {
+    const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
+    // Call the exposed method: focus row with id 'b2' on column 'qty'
+    childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
+  }
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
@@ -108,7 +114,17 @@ export default function InventoryWithCheckingPage() {
     isFetching: isFetchinginventoryWithCheckingDetails,
     refetch,
   } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
+  useEffect(() => {
+    console.log(selectedCellRowId)
 
+    if (selectedCellRowId) return
+    const focustimeout = () =>
+      setTimeout(() => {
+        handleFocus()
+      }, 100)
+    focustimeout()
+    return clearTimeout(focustimeout)
+  }, [inventoryWithCheckingDetailsLoading, selectedCellRowId])
   /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
@@ -178,6 +194,13 @@ export default function InventoryWithCheckingPage() {
           checkAccessId={'product-create'}
         />
         <Container>
+          <Box
+            onClick={() => {
+              handleFocus()
+            }}
+          >
+            fdf
+          </Box>
           <Box
             sx={{
               m: ' 0 0 20px',
@@ -270,6 +293,7 @@ export default function InventoryWithCheckingPage() {
                 selectedCellRowId={setSelectedCellRowId}
                 id='imports-main-table'
                 tableSettings
+                childRef={childRef}
                 enableFillHandle={true}
                 canCellClick={true}
                 onCellValueChanged={onCellValueChanged}
