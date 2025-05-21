@@ -245,7 +245,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
     if (el.field === 'created_at') {
       return {
         ...el,
-        headerName: 'Дата регистрации',
+        headerName: 'Дата продажа',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
