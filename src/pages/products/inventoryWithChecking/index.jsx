@@ -28,6 +28,7 @@ import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
 import InventoryDashboard from './inventoryDashboard'
+import InventoryDetailModal from './inventoryDetailModal'
 import tableHeaderSelector from './tableHeaderSelector'
 import UploadCV from './uploadCV'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -47,6 +48,7 @@ export default function InventoryWithCheckingPage() {
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
+  const [selectedCellRowId, setSelectedCellRowId] = useState(null)
   const [hasTableChange, setHasTableChange] = useState(false)
   const [appType, setAppType] = useState('ALL')
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
@@ -265,6 +267,7 @@ export default function InventoryWithCheckingPage() {
 
             <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' } }}>
               <AgGridTable
+                selectedCellRowId={setSelectedCellRowId}
                 id='imports-main-table'
                 tableSettings
                 enableFillHandle={true}
@@ -335,6 +338,8 @@ export default function InventoryWithCheckingPage() {
           </>
         }
       />
+      <InventoryDetailModal refetch={refetch} open={selectedCellRowId} setOpen={setSelectedCellRowId} />
+
       <UploadCV open={openUpload} setHasChange={setHasChange} refetch={refetch} setOpen={setOpenUpload} />
     </LoadingContainer>
   )

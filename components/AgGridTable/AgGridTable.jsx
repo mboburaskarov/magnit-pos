@@ -7,6 +7,7 @@ import { AgGridReact } from 'ag-grid-react'
 import debounce from 'lodash/debounce'
 import * as qs from 'qs'
 import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { usePrevious } from 'react-use'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
@@ -24,6 +25,7 @@ const AgGridSimpleTable = ({
   emptyTableText,
   data,
   columns,
+  gettingId = 'product_id',
   components,
   enableFillHandle = false,
   selection,
@@ -52,6 +54,7 @@ const AgGridSimpleTable = ({
   setAddedItems,
   resetTable,
   canCellClick = false,
+  selectedCellRowId = () => {},
   totalData,
   columnGroup,
   uniqId = 'id',
@@ -140,10 +143,37 @@ const AgGridSimpleTable = ({
     return columns
   }, [selection, columns, headerCheckboxChecked, selectedRowsIds])
 
+  useHotkeys(
+    'ctrl+enter',
+    () => {
+      if (!gridApi) return
+
+      const focusedCell = gridApi.getFocusedCell()
+      if (!focusedCell) return
+
+      const rowNode = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex)
+      const rowId = rowNode?.data?.[gettingId]
+
+      if (rowId) {
+        selectedCellRowId(rowId)
+        console.log(rowNode?.data)
+
+        console.log('Focused row ID on Ctrl+Enter:', rowId)
+        // handleRowSubmit(rowId)
+      }
+    },
+    {
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+      preventDefault: true,
+    }
+  )
+
   // Handle cell selection
   const onCellClicked = useCallback(
     (params) => {
       // return
+      console.log('k')
+
       if (params.column.colId === 'checkboxSelectionField') return // Ignore clicks on checkbox column
       const rowId = params.data[uniqId]
       const colId = params.column.colId
@@ -219,7 +249,7 @@ const AgGridSimpleTable = ({
   }, [totalData])
 
   const onGridReady = useCallback((params) => {
-    setGridApi(params)
+    setGridApi(params.api) // ✅ only the API, not the full params
     setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
   }, [])
 

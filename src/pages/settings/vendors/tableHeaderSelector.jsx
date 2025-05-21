@@ -36,7 +36,7 @@ const Image = ({ data, rowIndex, setImages }) => {
     >
       <CustomImg
         id={`product-image-${rowIndex}`}
-        src={data?.main_photo || '/default-img.avif'}
+        src={data?.main_photo || 'default-img.avif'}
         alt={data?.name}
         style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
       />

@@ -415,7 +415,7 @@ const CartItem = ({
               )}
               <Box width={'10px'} />
               {/* <Box className={cls.img_cont}>
-                <img src={item?.main_photo || '/default-img.avif'} />
+                <img src={item?.main_photo || 'default-img.avif'} />
               </Box> */}
             </Box>
             <Box ml={'8px'} display={'flex'} width={'100%'} flexDirection={'column'}>

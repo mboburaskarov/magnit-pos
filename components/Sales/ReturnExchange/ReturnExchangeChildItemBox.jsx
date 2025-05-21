@@ -33,7 +33,7 @@ function ReturnExchangeChildItemBox({ item, selectedReturnItems, selectReturnIte
               type='checkbox'
             />
           </Box>
-          {/* <img className={classes.productImg} src='/default-img.avif' /> */}
+          {/* <img className={classes.productImg} src='default-img.avif' /> */}
           <Box display={'flex'} flexDirection={'column'} width={'100%'}>
             <Box display={'flex'} justifyContent={'space-between'}>
               <Typography
