@@ -63,7 +63,7 @@ export default function InventoryWithCheckingPage() {
     onSuccess: ({ data }) => {
       // refetch()
       // fetchStatusCountList()
-      setBarcode('')
+      // setBarcode('')
     },
     onError: (err) => {
       refetch()
