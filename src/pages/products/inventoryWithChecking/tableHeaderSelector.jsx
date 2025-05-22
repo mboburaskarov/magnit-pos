@@ -80,6 +80,15 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
         cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type='current_sum' />),
       }
     }
+    if (el.field === 'retail_price') {
+      return {
+        ...el,
+        headerName: 'Цена продажи',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type='retail_price' />),
+      }
+    }
+
     //
     if (el.field === 'fact_quantity') {
       return {

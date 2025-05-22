@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
@@ -46,9 +47,10 @@ export default function InventoryWithCheckingPage() {
   const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.inventoryWithCheckingColumns)
   const { values } = useQueryParams()
-  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
+  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(false)
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
+  const [modernSearch, setModernSearch] = useState('')
   const [selectedCellRowId, setSelectedCellRowId] = useState(null)
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(null)
   const [hasTableChange, setHasTableChange] = useState(false)
@@ -80,12 +82,26 @@ export default function InventoryWithCheckingPage() {
   })
   const handleFocus = () => {
     const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
+    const currentfocus = document.activeElement?.tagName
+
     // Call the exposed method: focus row with id 'b2' on column 'qty'
-    if (lastSelectedCellRowId == null) {
+    if (lastSelectedCellRowId != null && inventoryWithCheckingDetails?.data?.data?.data?.some((el) => el?.id === lastSelectedCellRowId)) {
+      childRef.current?.focusCellByRowId(lastSelectedCellRowId, 'fact_quantity')
+    } else {
       setLastSelectedCellRowId(firstrowid)
       childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
+    }
+  }
+  const handleFocusUnit = () => {
+    const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
+    const currentfocus = document.activeElement?.tagName
+
+    // Call the exposed method: focus row with id 'b2' on column 'qty'
+    if (lastSelectedCellRowId != null && inventoryWithCheckingDetails?.data?.data?.data?.some((el) => el?.id === lastSelectedCellRowId)) {
+      childRef.current?.focusCellByRowId(lastSelectedCellRowId, 'fact_unit')
     } else {
-      childRef.current?.focusCellByRowId(lastSelectedCellRowId, 'fact_quantity')
+      setLastSelectedCellRowId(firstrowid)
+      childRef.current?.focusCellByRowId(firstrowid, 'fact_unit')
     }
   }
   const tableColumns = tableHeaderSelector({
@@ -102,10 +118,10 @@ export default function InventoryWithCheckingPage() {
       inventory_id: id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
-      search: barcode,
+      search: modernSearch || barcode,
       type: status,
     }
-  }, [values?.offset, status, values?.limit, id, barcode])
+  }, [values?.offset, status, modernSearch, values?.limit, id, barcode])
 
   // const {
   //   data: inventoryDetails,
@@ -120,17 +136,17 @@ export default function InventoryWithCheckingPage() {
     isFetching: isFetchinginventoryWithCheckingDetails,
     refetch,
   } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
-  useEffect(() => {
-    console.log(selectedCellRowId)
+  // useEffect(() => {
+  //   console.log(selectedCellRowId)
 
-    if (selectedCellRowId) return
-    const focustimeout = () =>
-      setTimeout(() => {
-        handleFocus()
-      }, 100)
-    focustimeout()
-    return clearTimeout(focustimeout)
-  }, [inventoryWithCheckingDetailsLoading, selectedCellRowId])
+  //   if (selectedCellRowId) return
+  //   const focustimeout = () =>
+  //     setTimeout(() => {
+  //       handleFocus()
+  //     }, 100)
+  //   focustimeout()
+  //   return clearTimeout(focustimeout)
+  // }, [inventoryWithCheckingDetailsLoading, selectedCellRowId])
   useEffect(() => {
     if (selectedCellRowId) {
       setLastSelectedCellRowId(selectedCellRowId)
@@ -170,7 +186,6 @@ export default function InventoryWithCheckingPage() {
   const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
-    console.log(colDef?.field, newValue, oldValue)
 
     if (colDef?.field === 'fact_quantity' && newValue !== oldValue) {
       const fact_quantity = newValue
@@ -191,6 +206,39 @@ export default function InventoryWithCheckingPage() {
       })
     }
   }
+  useHotkeys(
+    '*',
+    (event) => {
+      if (selectedCellRowId) return
+      const key = event.key.toLowerCase()
+      if (/^[a-zа-яё0-9]$/i.test(key)) {
+        setModernSearch((prev) => prev + key)
+      }
+      if (event.code === 'Backspace') {
+        setModernSearch((prev) => prev.slice(0, -1))
+      }
+      if (event.code === 'Enter') {
+        if (document.activeElement?.tagName === 'INPUT') return
+        handleFocus()
+      }
+
+      if (event.code === 'Escape') {
+        setModernSearch('')
+      }
+      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
+        handleFocusUnit()
+      }
+    },
+    {
+      // enableOnFormTags: true,
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+    }
+  )
+  // useEffect(() => {
+  //   if (realTimeSelectedCellRowId) {
+  //     setLastSelectedCellRowId(realTimeSelectedCellRowId)
+  //   }
+  // }, [realTimeSelectedCellRowId])
   return (
     <LoadingContainer readyState={!isfinishInventoryChecking && !hasChange}>
       <FormProvider {...methods}>
@@ -256,6 +304,9 @@ export default function InventoryWithCheckingPage() {
                 <Box
                   width='100%'
                   sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
                     '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                     '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                       background: 'transparent',
@@ -274,6 +325,25 @@ export default function InventoryWithCheckingPage() {
                     setSearchTerm={setBarcode}
                     placeholder={t('input.search.product.multi')}
                   />
+                  <Typography
+                    sx={{
+                      fontSize: '18px',
+                      ml: '10px',
+                      backgroundColor: 'bg.10',
+                      borderRadius: '25px',
+                      fontWeight: '600',
+                      color: 'gray.600',
+                      padding: '0 20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '100%',
+                      minWidth: '200px',
+                      height: '48px',
+                    }}
+                  >
+                    {modernSearch}
+                  </Typography>
                 </Box>
               </Box>
               <Box display={'flex'} alignItems={'center'}>
@@ -297,8 +367,13 @@ export default function InventoryWithCheckingPage() {
                 selectedCellRowId={setSelectedCellRowId}
                 id='imports-main-table'
                 tableSettings
+                gettingId='id'
+                realTimeSelectedCellRowId={({ id, rowId }) => {
+                  if (id == 'main') setLastSelectedCellRowId(rowId)
+                }}
                 childRef={childRef}
                 enableFillHandle={true}
+                custonName='main'
                 canCellClick={true}
                 onChangeSelectedCellRowId={(id) => {
                   setLastSelectedCellRowId(id)

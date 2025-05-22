@@ -248,7 +248,6 @@ export default function ProductsPage() {
 
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
-    console.log(colDef?.field, newValue, oldValue)
 
     if (colDef?.field === 'barcode' && newValue !== oldValue) {
       const id = data?.id

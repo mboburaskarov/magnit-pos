@@ -32,6 +32,7 @@ const AgGridSimpleTable = ({
   navigateUrl,
   noRedirect = false,
   onCellValueChanged = () => {},
+  enableGetRealTimeSelectedCellRowId = false,
   defaultOffsetSize = 10,
   defaultOffsetIndex = 1,
   offsetQuery = 'offset',
@@ -51,10 +52,12 @@ const AgGridSimpleTable = ({
   addAllProducts,
   deleteAllProducts,
   setRemovedItems,
+  custonName = 'custonName',
   setAddedItems,
   resetTable,
   canCellClick = false,
   selectedCellRowId = () => {},
+  realTimeSelectedCellRowId = () => {},
   totalData,
   onChangeSelectedCellRowId = () => {},
   columnGroup,
@@ -92,24 +95,16 @@ const AgGridSimpleTable = ({
       const api = gridApiRef.current
       const columnApi = columnApiRef.current
       if (!api || !columnApi) return
-      console.log(api, 'kk')
 
       const rowModel = api.getModel()
       const rowCount = rowModel.getRowCount()
 
       for (let i = 0; i < rowCount; i++) {
-        console.log('a')
-
         const rowNode = rowModel.getRow(i)
-        console.log(rowNode?.data?.[uniqId], rowId)
 
         if (rowNode?.data?.[uniqId] === rowId) {
-          console.log('b')
-
           const targetColId = colId || columnApi.getAllDisplayedColumns()?.[0]?.colId
           if (targetColId) {
-            console.log('fics')
-
             api.ensureIndexVisible(i) // Scroll to row
             api.setFocusedCell(i, targetColId)
 
@@ -194,9 +189,7 @@ const AgGridSimpleTable = ({
 
       if (rowId) {
         selectedCellRowId(rowId)
-        console.log(rowNode?.data)
 
-        console.log('Focused row ID on Ctrl+Enter:', rowId)
         // handleRowSubmit(rowId)
       }
     },
@@ -205,7 +198,30 @@ const AgGridSimpleTable = ({
       preventDefault: true,
     }
   )
+  useHotkeys(
+    ['ArrowUp', 'ArrowDown'],
+    () => {
+      if (!gridApi) return
 
+      const focusedCell = gridApi.getFocusedCell()
+      if (!focusedCell) return
+
+      const rowNode = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex)
+      const rowId = rowNode?.data?.[gettingId]
+
+      if (rowId) {
+        // if (!enableGetRealTimeSelectedCellRowId) {
+        //   return
+        // }
+        realTimeSelectedCellRowId({ id: custonName, rowId })
+        // handleRowSubmit(rowId)
+      }
+    },
+    {
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+      preventDefault: true,
+    }
+  )
   // Handle cell selection
   const onCellClicked = useCallback(
     (params) => {
@@ -225,7 +241,6 @@ const AgGridSimpleTable = ({
           newSelectedCells = prev.filter((_, index) => index !== existingIndex)
         } else {
           // Select new cell
-          console.log(rowId, colId, value)
           onChangeSelectedCellRowId(rowId)
           newSelectedCells = [...prev, { rowId, colId, value }]
         }
@@ -296,7 +311,6 @@ const AgGridSimpleTable = ({
   }, [])
 
   const getRowId = useCallback((params) => params.data[uniqId], [data, columns, totalData])
-  console.log(onCellSelectionChange)
 
   return (
     <Fragment>

@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
@@ -23,7 +24,8 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
   const [startDate, setStartDate] = useState(0)
   const dispatch = useDispatch()
   const childRef = useRef()
-
+  const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(null)
+  const [realTimeSelectedCellRowId, setRealTimeSelectedCellRowId] = useState(null)
   const [endDate, setEndDate] = useState(0)
   const [offsetCount, setOffsetCount] = useState(0)
   const { mutate: createBonusProduct, isLoading: iscreateBonusProduct } = useMutation(requests.createBonusProduct, {
@@ -108,9 +110,14 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
     },
   })
   const handleFocus = () => {
-    const firstrowid = inventoryDetailFlow?.data?.data?.data[0]?.id
+    const firstrowid = inventoryDetailFlow?.data?.data?.data?.[0]?.id
     // Call the exposed method: focus row with id 'b2' on column 'qty'
     childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
+  }
+  const handleFocusUnit = () => {
+    setLastSelectedCellRowId(lastSelectedCellRowId)
+
+    childRef.current?.focusCellByRowId(lastSelectedCellRowId, 'fact_unit')
   }
   useEffect(() => {
     if (!open) return
@@ -119,11 +126,12 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
         handleFocus()
       }, 100)
     focustimeout()
+    setLastSelectedCellRowId(inventoryDetailFlow?.data?.data?.data?.[0]?.id)
     return clearTimeout(focustimeout)
   }, [inventoryDetailFlowLoading, open])
+
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
-    console.log(colDef?.field, data, newValue, oldValue)
 
     if (colDef?.field === 'fact_quantity' && newValue !== oldValue) {
       const fact_quantity = newValue
@@ -144,6 +152,21 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
       })
     }
   }
+  useHotkeys(
+    '*',
+    (event) => {
+      // if (selectedCellRowId) return
+
+      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
+        handleFocusUnit()
+      }
+    },
+    {
+      enableOnFormTags: true,
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+    }
+  )
+
   return (
     <StyledEmptyDialog
       overflowVisible
@@ -173,7 +196,15 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
             id='imports-main-table'
             tableSettings
             childRef={childRef}
+            gettingId='id'
             enableFillHandle={true}
+            realTimeSelectedCellRowId={({ id, rowId }) => {
+              setLastSelectedCellRowId(rowId)
+            }}
+            onChangeSelectedCellRowId={(id) => {
+              if (id == 'flow') setLastSelectedCellRowId(id)
+            }}
+            custonName='flow'
             canCellClick={true}
             onCellValueChanged={onCellValueChanged}
             columns={tableColumns}

@@ -128,7 +128,6 @@ export default function UploadFile({ id = 'cv-file-id', name = 'cv-file', onSucc
     if (sheet) {
       // setValue(name, sheet)
       setFile(sheet)
-      console.log(sheet)
 
       // await sheetToJSON(sheet).then((res) => {
       //   if (res) {
