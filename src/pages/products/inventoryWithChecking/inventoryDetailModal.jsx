@@ -13,13 +13,17 @@ import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
+import errorAudio from '../../../assets/audio/error.mp3'
 import CloseIcon from '../../../assets/icons/CloseIcon'
+
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
 
 export default function InventoryDetailModal({ open, refetch, setOpen }) {
   const methods = useForm()
+  const errorScanAudio = new Audio(errorAudio)
+
   const { reset, control } = methods
   const [startDate, setStartDate] = useState(0)
   const dispatch = useDispatch()
@@ -135,19 +139,41 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
 
     if (colDef?.field === 'fact_quantity' && newValue !== oldValue) {
       const fact_quantity = newValue
+      if (fact_quantity < 0) {
+        errorScanAudio.play()
+        refetchInventoryDetailFlow()
+
+        error('Количество не может быть меньше 0!')
+        return
+      }
       setScanedNumber({
         id,
         product_id: get(data, 'product_id'),
         type: 'MANUAL',
+        fact_unit: get(data, 'fact_unit'),
         fact_quantity: Number(fact_quantity),
       })
     }
     if (colDef?.field === 'fact_unit' && newValue !== oldValue) {
       const fact_unit = newValue
+      if (fact_unit > get(data, 'unit_per_pack')) {
+        errorScanAudio.play()
+        refetchInventoryDetailFlow()
+        error(`Количество не может быть больше количества в упаковке! (max:${get(data, 'unit_per_pack')})`)
+        return
+      }
+      if (fact_unit < 0) {
+        errorScanAudio.play()
+        refetchInventoryDetailFlow()
+
+        error('Количество не может быть меньше 0!')
+        return
+      }
       setScanedNumber({
         id,
-        product_id: get(data, 'product_id'),
+        product_id: get(data, 'id'),
         type: 'MANUAL',
+        fact_quantity: get(data, 'fact_quantity'),
         fact_unit: Number(fact_unit),
       })
     }

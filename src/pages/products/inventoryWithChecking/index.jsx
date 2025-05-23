@@ -187,7 +187,6 @@ export default function InventoryWithCheckingPage() {
 
   const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
   const onCellValueChanged = (params) => {
-    console.log(params)
     const { data, colDef, newValue, oldValue } = params
 
     if (colDef?.field === 'fact_quantity' && newValue !== oldValue) {
