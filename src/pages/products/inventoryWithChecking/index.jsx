@@ -1,5 +1,6 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { UploadFile } from '@mui/icons-material'
 import { Box, Button, Container, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
@@ -11,6 +12,7 @@ import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
@@ -185,24 +187,52 @@ export default function InventoryWithCheckingPage() {
 
   const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
   const onCellValueChanged = (params) => {
-    const { data, colDef, newValue, oldValue } = params
     console.log(params)
+    const { data, colDef, newValue, oldValue } = params
 
     if (colDef?.field === 'fact_quantity' && newValue !== oldValue) {
       const fact_quantity = newValue
+      // if (fact_quantity > get(data, 'unit_per_pack')) {
+      //   errorScanAudio.play()
+      //   error('Количество не может быть больше количества в упаковке!')
+      //   return
+      // }
+      if (fact_quantity < 0) {
+        errorScanAudio.play()
+        refetch()
+
+        error('Количество не может быть меньше 0!')
+        return
+      }
       setScanedNumber({
         id,
         product_id: get(data, 'id'),
         type: 'MANUAL',
+        fact_unit: get(data, 'fact_unit'),
         fact_quantity: Number(fact_quantity),
       })
     }
     if (colDef?.field === 'fact_unit' && newValue !== oldValue) {
       const fact_unit = newValue
+
+      if (fact_unit > get(data, 'unit_per_pack')) {
+        errorScanAudio.play()
+        refetch()
+        error(`Количество не может быть больше количества в упаковке! (max:${get(data, 'unit_per_pack')})`)
+        return
+      }
+      if (fact_unit < 0) {
+        errorScanAudio.play()
+        refetch()
+
+        error('Количество не может быть меньше 0!')
+        return
+      }
       setScanedNumber({
         id,
         product_id: get(data, 'id'),
         type: 'MANUAL',
+        fact_quantity: get(data, 'fact_quantity'),
         fact_unit: Number(fact_unit),
       })
     }
