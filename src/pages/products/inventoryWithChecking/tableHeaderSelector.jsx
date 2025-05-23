@@ -24,7 +24,7 @@ const CustomHeader = (props) => {
 
     let newOrder = { position: 0, colId: '' }
     if (lastStort) {
-      if (orderPosition == 2) {
+      if (orderPosition == 2 && ordercolId == props.column.colId) {
         newOrder = {
           position: 0,
           colId: '',
