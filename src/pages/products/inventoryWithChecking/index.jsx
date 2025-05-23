@@ -23,12 +23,9 @@ import { error } from '../../../../utils/toast'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import overplusAudio from '../../../assets/audio/overplus.mp3'
-import ArrowDown from '../../../assets/icons/ArrowDown'
-import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
-import InventoryDashboard from './inventoryDashboard'
 import InventoryDetailModal from './inventoryDetailModal'
 import tableHeaderSelector from './tableHeaderSelector'
 import UploadCV from './uploadCV'
@@ -275,7 +272,7 @@ export default function InventoryWithCheckingPage() {
           checkAccessId={'product-create'}
         />
         <Container>
-          <Box
+          {/* <Box
             sx={{
               m: ' 0 0 20px',
               userSelect: 'none !important',
@@ -290,8 +287,8 @@ export default function InventoryWithCheckingPage() {
           >
             {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
-          </Box>
-          {isOpenStatDashboard && <InventoryDashboard setHasChange={setHasChange} data={get(inventoryStat, 'data.data')} />}
+          </Box> */}
+          {/* {isOpenStatDashboard && <InventoryDashboard setHasChange={setHasChange} data={get(inventoryStat, 'data.data')} />} */}
           <Box display={'flex'} minWidth={320}>
             <InputSwitch
               uncontrolled
