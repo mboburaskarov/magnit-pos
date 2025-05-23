@@ -15,7 +15,7 @@ const columns = [
     resizable: true,
   },
   {
-    field: 'package_count',
+    field: 'unit_per_pack',
     hide: false,
     minWidth: 90,
     width: 90,
@@ -44,7 +44,7 @@ const columns = [
     resizable: true,
   },
   {
-    field: 'current_price',
+    field: 'current_sum',
     hide: false,
     minWidth: 200,
     width: 150,
@@ -73,7 +73,7 @@ const columns = [
     resizable: true,
   },
   {
-    field: 'fact_price',
+    field: 'fact_sum',
     hide: false,
     minWidth: 200,
     width: 150,
@@ -96,10 +96,11 @@ const columns = [
     resizable: true,
   },
   {
-    field: 'difference_price',
+    field: 'difference_sum',
     hide: false,
     minWidth: 200,
     width: 150,
+    sort: 'desc',
     resizable: true,
   },
   //

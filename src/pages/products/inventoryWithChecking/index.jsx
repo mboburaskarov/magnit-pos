@@ -49,7 +49,10 @@ export default function InventoryWithCheckingPage() {
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(false)
   const [barcode, setBarcode] = useState('')
+  const [rowData, setRowData] = useState([])
+
   const methods = useForm()
+  const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
   const [modernSearch, setModernSearch] = useState('')
   const [selectedCellRowId, setSelectedCellRowId] = useState(null)
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(null)
@@ -109,7 +112,8 @@ export default function InventoryWithCheckingPage() {
     t,
     values,
     editable: true,
-
+    setOrderStoring,
+    orderStoring,
     id,
     setScanedNumber,
   })
@@ -118,10 +122,11 @@ export default function InventoryWithCheckingPage() {
       inventory_id: id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
-      search: modernSearch || barcode,
+      search: barcode,
+      order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
       type: status,
     }
-  }, [values?.offset, status, modernSearch, values?.limit, id, barcode])
+  }, [values?.offset, orderStoring, status, values?.limit, id, barcode])
 
   // const {
   //   data: inventoryDetails,
@@ -212,10 +217,10 @@ export default function InventoryWithCheckingPage() {
       if (selectedCellRowId) return
       const key = event.key.toLowerCase()
       if (/^[a-zа-яё0-9]$/i.test(key)) {
-        setModernSearch((prev) => prev + key)
+        setBarcode((prev) => prev + key)
       }
       if (event.code === 'Backspace') {
-        setModernSearch((prev) => prev.slice(0, -1))
+        setBarcode((prev) => prev.slice(0, -1))
       }
       if (event.code === 'Enter') {
         if (document.activeElement?.tagName === 'INPUT') return
@@ -223,7 +228,7 @@ export default function InventoryWithCheckingPage() {
       }
 
       if (event.code === 'Escape') {
-        setModernSearch('')
+        setBarcode('')
       }
       if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
         handleFocusUnit()
@@ -239,6 +244,23 @@ export default function InventoryWithCheckingPage() {
   //     setLastSelectedCellRowId(realTimeSelectedCellRowId)
   //   }
   // }, [realTimeSelectedCellRowId])
+  useEffect(() => {
+    if (inventoryWithCheckingDetails?.data?.data?.data) {
+      setRowData([
+        ...inventoryWithCheckingDetails?.data?.data?.data,
+        {
+          id: 'ag-grid-footer',
+          name: 'Итого',
+          fact_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'),
+          current_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'),
+          difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
+        },
+      ])
+      get(inventoryWithCheckingDetails, 'data.data.data', []).map((importData) => {
+        methods.setValue(`net_amount_${get(importData, 'id')}`, get(importData, 'net_amount'))
+      })
+    }
+  }, [inventoryWithCheckingDetails])
   return (
     <LoadingContainer readyState={!isfinishInventoryChecking && !hasChange}>
       <FormProvider {...methods}>
@@ -325,25 +347,6 @@ export default function InventoryWithCheckingPage() {
                     setSearchTerm={setBarcode}
                     placeholder={t('input.search.product.multi')}
                   />
-                  <Typography
-                    sx={{
-                      fontSize: '18px',
-                      ml: '10px',
-                      backgroundColor: 'bg.10',
-                      borderRadius: '25px',
-                      fontWeight: '600',
-                      color: 'gray.600',
-                      padding: '0 20px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '100%',
-                      minWidth: '200px',
-                      height: '48px',
-                    }}
-                  >
-                    {modernSearch}
-                  </Typography>
                 </Box>
               </Box>
               <Box display={'flex'} alignItems={'center'}>
@@ -380,7 +383,7 @@ export default function InventoryWithCheckingPage() {
                 }}
                 onCellValueChanged={onCellValueChanged}
                 columns={tableColumns}
-                data={inventoryWithCheckingDetails?.data?.data?.data || []}
+                data={rowData || []}
                 totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
                 offsetCount={offsetCount}

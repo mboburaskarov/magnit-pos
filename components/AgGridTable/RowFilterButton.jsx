@@ -71,7 +71,7 @@ function RowFilterButton({ totalCount, offsetIndex, offsetQuery, offsetSize, set
         <Paper className={classes.lineSortContainer}>
           <ClickAwayListener onClickAway={() => setOpen(false)}>
             <List className={classes.lineSortList}>
-              {[5, 10, 20, 30, 40, 50]
+              {[5, 10, 20, 30, 40, 50, 100]
                 // .filter((n) => n < totalCount - (offsetIndex - 1) * offsetSize)
                 .map((opt) => (
                   <ListItem key={opt} component='button' className={classes.lineSortItem} onClick={() => changeOffsetSize(opt)}>

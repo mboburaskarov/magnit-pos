@@ -627,6 +627,7 @@ export default function OrderDrawer({
       enableOnFormTags: true,
     }
   )
+  console.log(markingCount, markingsList)
 
   return (
     <Box hidden>

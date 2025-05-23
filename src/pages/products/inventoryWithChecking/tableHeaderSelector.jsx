@@ -1,4 +1,5 @@
-import { Typography } from '@mui/material'
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
+import { Box, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
@@ -13,21 +14,92 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
     </Typography>
   )
 }
+const CustomHeader = (props) => {
+  const lastStort = props.column.colDef.orderStoring
+  const currentColId = props.column.colId
+  const orderPosition = lastStort?.position || 0
+  const ordercolId = lastStort?.colId || 0
+  const onClick = () => {
+    console.log(props.column.colDef)
 
-export default function tableHeaderSelector({ importsColumns, editable = false, values, t, setScanedNumber }) {
+    let newOrder = { position: 0, colId: '' }
+    if (lastStort) {
+      if (orderPosition == 2) {
+        newOrder = {
+          position: 0,
+          colId: '',
+        }
+      } else {
+        if (ordercolId != props.column.colId && ordercolId != '') {
+          newOrder = {
+            position: 1,
+            colId: props.column.colId,
+          }
+        } else {
+          newOrder = {
+            position: orderPosition + 1,
+            colId: props.column.colId,
+          }
+        }
+      }
+    }
+    console.log(newOrder)
+
+    // Toggle sort direction manually
+    props.column.colDef.setOrderStoring(newOrder)
+  }
+
+  return (
+    <Box
+      onClick={onClick}
+      sx={{
+        cursor: 'pointer',
+        display: 'flex',
+        flex: '1 1 auto',
+        overflow: 'hidden',
+        padding: '12px',
+        alignItems: 'center',
+        textOverflow: 'ellipsis',
+        alignSelf: 'stretch',
+      }}
+    >
+      <Typography
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#111217',
+          fontSize: '16px',
+          fontWeight: ' 600',
+          lineHeight: '24px',
+        }}
+      >
+        {props.displayName}
+        <Box height={'18px'} ml='10px'>
+          {orderPosition == 1 && currentColId == ordercolId && <ArrowUpward color='#ccc' />}
+          {orderPosition == 2 && currentColId == ordercolId && <ArrowDownward color='#ccc' />}
+        </Box>
+      </Typography>
+    </Box>
+  )
+}
+
+export default function tableHeaderSelector({ importsColumns, setOrderStoring, orderStoring, editable = false, values, t, setScanedNumber }) {
   const { id } = useParams()
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        setOrderStoring,
+        orderStoring,
         headerName: '№',
         colId: el.field,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
           const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
-
           return (
             <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-              {absoluteIndex}
+              {p?.data?.id == 'ag-grid-footer' ? '' : absoluteIndex}
             </Typography>
           )
         }),
@@ -36,15 +108,21 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
     if (el.field === 'name') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         headerName: 'Название',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
       }
     }
 
-    if (el.field === 'package_count') {
+    if (el.field === 'unit_per_pack') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         headerName: 'УП',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} withDevider type='unit_per_pack' />),
@@ -53,6 +131,9 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
     if (el.field === 'current_quantity') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         headerName: 'Програм кол-во',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} withDevider type='current_quantity' />),
@@ -61,6 +142,9 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
     if (el.field === 'current_quantity_pattern') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         headerName: 'Програм кол-во',
         colId: el.field,
         cellRenderer: memo((p) => (
@@ -72,9 +156,12 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
         )),
       }
     }
-    if (el.field === 'current_price') {
+    if (el.field === 'current_sum') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         headerName: 'Програм Cумма',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type='current_sum' />),
@@ -83,7 +170,10 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
     if (el.field === 'retail_price') {
       return {
         ...el,
-        headerName: 'Цена продажи',
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
+        headerName: 'Цена',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type='retail_price' />),
       }
@@ -93,6 +183,9 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
     if (el.field === 'fact_quantity') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         headerName: 'Факт УП',
         editable: editable,
 
@@ -127,6 +220,9 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
     if (el.field === 'fact_unit') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         headerName: 'Факт кол-во',
         editable: editable,
 
@@ -161,6 +257,9 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
     if (el.field === 'fact_quantity_pattern') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         headerName: 'Факт  кол-во',
         colId: el.field,
         cellRenderer: memo((p) => (
@@ -170,9 +269,12 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
         )),
       }
     }
-    if (el.field === 'fact_price') {
+    if (el.field === 'fact_sum') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         headerName: 'Факт Cумма',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type='fact_sum' />),
@@ -182,6 +284,9 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
     if (el.field === 'difference_quantity') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         headerName: 'Разница кол-во',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} withDevider type='difference_quantity' />),
@@ -190,6 +295,9 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
     if (el.field === 'difference_quantity_pattern') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         headerName: 'Разница кол-во',
         colId: el.field,
         cellRenderer: memo((p) => (
@@ -201,11 +309,15 @@ export default function tableHeaderSelector({ importsColumns, editable = false, 
         )),
       }
     }
-    if (el.field === 'difference_price') {
+    if (el.field === 'difference_sum') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         headerName: 'Разница сумма',
         colId: el.field,
+        // sortingOrder: ['asc', 'desc'],
         cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type='difference_sum' />),
       }
     }
