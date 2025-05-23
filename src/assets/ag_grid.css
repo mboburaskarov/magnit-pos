@@ -3,9 +3,11 @@
 .ag-theme-alpine {
   /* border-radius: 16px; */
   /* border: 1px solid red; */
+  /* flex: '1 1 auto'; */
 }
 .ag-theme-alpine .ag-root-wrapper {
   border: none;
+  /* min-height: 800px !important; */
 }
 .ag-watermark {
   display: none !important;

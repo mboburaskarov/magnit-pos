@@ -1,6 +1,5 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { UploadFile } from '@mui/icons-material'
 import { Box, Button, Container, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
@@ -12,7 +11,6 @@ import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
@@ -61,7 +59,7 @@ export default function InventoryWithCheckingPage() {
   const [manualNumber, setManualNumber] = useState(1)
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
-      // refetch()
+      refetch()
       // fetchStatusCountList()
       // setBarcode('')
     },
@@ -188,6 +186,7 @@ export default function InventoryWithCheckingPage() {
   const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
+    console.log(params)
 
     if (colDef?.field === 'fact_quantity' && newValue !== oldValue) {
       const fact_quantity = newValue

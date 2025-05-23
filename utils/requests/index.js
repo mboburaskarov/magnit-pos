@@ -152,6 +152,8 @@ export const requests = {
   getAllInventory: (filter) => request.get(`v1/inventory/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   sendScannedInventoryNumber: ({ id, barcode, product_id, expire_date, fact_unit, type, fact_quantity, scanned_count }) =>
     request.patch(`v1/inventory/${id}/add-product-by-barcode`, { count: scanned_count, expire_date, fact_unit, fact_quantity, type, barcode, id: product_id }),
+  sendScannedInventoryFlowNumber: ({ id, barcode, product_id, expire_date, fact_unit, type, fact_quantity, scanned_count }) =>
+    request.patch(`v1/inventory/${id}/detailed_flow`, { count: scanned_count, expire_date, fact_unit, fact_quantity, type, barcode, id: product_id }),
   getInventoryDetails: (filter) => request.get(`v1/inventory-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getInventoryDetailFlow: (filter) => request.get(`v1/inventory-detail/detailed-flow${qs.stringify(filter, { addQueryPrefix: true })}`),
   getInventoryScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),

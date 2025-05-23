@@ -314,8 +314,17 @@ const AgGridSimpleTable = ({
 
   return (
     <Fragment>
-      <Box className={`${classes.root} ag-theme-alpine ${columnGroup ? 'column-group-header' : ''}`} id={id || 'simpleGrid'}>
+      <Box
+        className={`${classes.root} ag-theme-alpine ${columnGroup ? 'column-group-header' : ''}`}
+        id={id || 'simpleGrid'}
+        // sx={{ height: '600px', width: '100%', display: 'flex', flexDirection: 'column', height: '100vh' }}
+      >
         <AgGridReact
+          rowBuffer={100} // Optional: how many rows outside viewport to render
+          // domLayout='normal' // or "autoHeight", but avoid it with big data sets
+          // domLayout='normal'
+          // pagination={true}
+          paginationPageSize={3000}
           groupDisplayType='multipleColumns'
           onGridReady={onGridReady}
           overlayNoRowsTemplate={'<span></span>'}

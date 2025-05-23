@@ -97,7 +97,7 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
     reset({}, { keepDirty: true })
   }, [open])
   const theme = useTheme()
-  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
+  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryFlowNumber, {
     onSuccess: ({ data }) => {
       refetch()
       // fetchStatusCountList()
