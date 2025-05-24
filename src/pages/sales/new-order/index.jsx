@@ -586,7 +586,7 @@ function NewSale() {
     },
     onError: (err) => {
       setisEposTurnOn(false)
-      error('Программа EPOS отключена. Запустить программу EPOS')
+      error('Программа EPOS отключена. Запустить программу EPOS (uz: epos dasturi o‘chirilgan. Epos dasturini yoqing)')
       console.log('err', err)
     },
   })

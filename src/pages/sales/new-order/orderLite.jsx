@@ -564,7 +564,8 @@ function OrderLite({
       setHasChange(false)
 
       if (get(err, 'response.status') == 409) {
-        saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), error('Эта продажа уже закрыта.')
+        saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }),
+          error('Эта продажа уже закрыта. (uz: Bu sotuv yakunlangan - barcha sotuvlar sahifasidan tekshiring)')
         return
       }
 
