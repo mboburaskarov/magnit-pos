@@ -10,7 +10,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
       sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
       id={`product-${type}-${rowIndex}`}
     >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
+      {typeof data?.[type] != 'undefined' ? (withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-') : ''}
     </Typography>
   )
 }
