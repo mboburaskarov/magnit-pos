@@ -110,7 +110,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         cellRenderer: memo((p) => (
           <Link
             to={
-              p.data.status == 'completed'
+              p.data.status == 'completed' || p.data.status == 'canceled'
                 ? `/products/return-to-warehouse-completed/${p.data.id}?${qs.stringify({
                     previusLimit: values?.limit,
                     previusOffset: values?.offset,
