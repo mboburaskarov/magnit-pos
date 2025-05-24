@@ -1,5 +1,5 @@
 // Extracts the barcode number from the marking string
-function extractNumbers(marking) {
+export function extractNumbers(marking) {
   const match = marking.match(/01+0*(\d{8,14})(?=21)/)
   return match ? match[1] : ''
 }

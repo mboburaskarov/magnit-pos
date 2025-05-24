@@ -368,13 +368,23 @@ function CartSearchBar({
                     barcode: get(head(productsData), 'barcode'),
                   })
                 } else {
-                  handleAddProduct({
-                    discount_type: get(discount, 'type', 'percent'),
-                    discount_value: Number(get(discount, 'amount', 0)),
-                    sale_id: id,
-                    type: 'marking',
-                    barcode: convertoRuOrEngToEng(searchTearm.slice(0, 31)),
-                  })
+                  if (inputlang === 'ru') {
+                    handleAddProduct({
+                      discount_type: get(discount, 'type', 'percent'),
+                      discount_value: Number(get(discount, 'amount', 0)),
+                      sale_id: id,
+                      type: 'marking',
+                      barcode: convertoRuOrEngToEng(searchTearm.slice(0, 31)),
+                    })
+                  } else {
+                    handleAddProduct({
+                      discount_type: get(discount, 'type', 'percent'),
+                      discount_value: Number(get(discount, 'amount', 0)),
+                      sale_id: id,
+                      type: 'marking',
+                      barcode: searchTearm.slice(0, 31),
+                    })
+                  }
                 }
               }
             }}

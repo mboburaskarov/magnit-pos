@@ -302,7 +302,21 @@ const AgGridSimpleTable = ({
   const pinnedBottomRowData = useMemo(() => {
     return totalData
   }, [totalData])
-
+  useHotkeys(
+    'numenter',
+    (event) => {
+      if (!gridApi) return
+      const focusedCell = gridApi.getFocusedCell()
+      if (focusedCell) {
+        event.preventDefault()
+        gridApi.startEditingCell({
+          rowIndex: focusedCell.rowIndex,
+          colKey: focusedCell.column.colId,
+        })
+      }
+    },
+    { enableOnFormTags: true }
+  )
   const onGridReady = useCallback((params) => {
     setGridApi(params.api) // ✅ only the API, not the full params
     gridApiRef.current = params.api

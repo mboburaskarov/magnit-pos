@@ -261,7 +261,7 @@ export default function InventoryWithCheckingPage() {
       }
       console.log(event.code)
 
-      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd' || event.code === 'ShiftRight') {
+      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
         console.log('hi')
 
         handleFocusUnit()

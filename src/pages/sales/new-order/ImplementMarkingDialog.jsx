@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import TextField from '../../../../components/Inputs/TextField'
-import { checkBarcodeWithMarking } from '../../../../utils/checkingMarkingWithBarcode'
+import { checkBarcodeWithMarking, extractNumbers } from '../../../../utils/checkingMarkingWithBarcode'
 import { containsCyrillic } from '../../../../utils/convertoRuOrEngToEng'
 import { error } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
@@ -92,7 +92,7 @@ function ImplementMarkingDialog({
       setEnterpressed({ state: true, lastMarking: e.target.value })
       if (containsCyrillic(e.target.value)) {
         inputsRef.current[flatIndex].value = ''
-        error('Кириллица не поддерживается (eng: cyrillic not supported)')
+        error('Кириллица не поддерживается (uz: krilcha qabul qilinmaydi)')
         return
       }
       if (e.target.value.length == 0) {
@@ -108,7 +108,7 @@ function ImplementMarkingDialog({
 
         //input bo'sh holatda enter bosildi
         inputsRef.current[flatIndex].value = markingsList?.[id]?.[childIndex]
-        error('Заполните маркировку (eng:empty)')
+        error("Заполните маркировку (uz: bo'sh joyni to'ldiring)")
         return
       }
       if (e.target.value.length != 83) {
@@ -116,7 +116,7 @@ function ImplementMarkingDialog({
 
         // markirofka uzunligi mos emas
         inputsRef.current[flatIndex].value = ''
-        error('Неверная маркировка (eng:length)')
+        error("Неверная маркировка (uz: noto'g'ri uzunlikdagi markirovka)")
         return
       }
       // if (markingsList?.[id]?.[childIndex]?.length != 0) {
@@ -133,7 +133,7 @@ function ImplementMarkingDialog({
         inputsRef.current[flatIndex].value = ''
         console.log('#7')
 
-        error('Повторение маркировки (eng:dublicate)')
+        error('Повторение маркировки (uz: takrorlangan markirovka)')
         return
       }
       if (!checkBarcodeWithMarking(productBarcode, e.target.value)) {
@@ -141,7 +141,7 @@ function ImplementMarkingDialog({
         inputsRef.current[flatIndex].value = ''
         console.log('#8')
 
-        error('Маркировка и штрих-код не поступили. (eng:Mismatched)')
+        error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl:${extractNumbers(e.target.value)}))`)
         return
       }
       setIsBlurBefore(false)

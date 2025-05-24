@@ -90,7 +90,6 @@
   bottom: 0px !important;
   /* position: fixed !important; */
   left: -5px !important;
-  z-index: 999;
 }
 .ag-floating-bottom-viewport .ag-row-pinned {
   height: 80px !important;
