@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useMemo, ReactNode } from 'react'
+import React, { ReactNode, useEffect, useMemo, useState } from 'react'
 
 const formatThousands = (num: number, separator: string) => {
   if (separator === 'auto') {
     return new Intl.NumberFormat().format(num)
   }
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator)
+  return num?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator)
 }
 
 interface MatnProps {
@@ -17,6 +17,7 @@ interface MatnProps {
   duration?: number
   font?: 'normal' | 'italic' | 'bold'
   color?: string
+  endText?: string
   lineCount?: number
   copyable?: boolean
   mask?: boolean | RegExp
@@ -40,6 +41,7 @@ const Matn: React.FC<MatnProps> = ({
   duration = 1000,
   font = 'normal',
   color,
+  endText = '',
   lineCount,
   copyable = false,
   mask = false,
@@ -90,7 +92,7 @@ const Matn: React.FC<MatnProps> = ({
 
   // Process text with useMemo
   const processedText = useMemo(() => {
-    let str = text.toString()
+    let str = text?.toString()
 
     // Apply masking
     if (mask) {
@@ -139,7 +141,7 @@ const Matn: React.FC<MatnProps> = ({
   // Copy to clipboard
   const [copied, setCopied] = useState(false)
   const handleCopy = () => {
-    navigator.clipboard.writeText(children.toString())
+    navigator.clipboard.writeText(children?.toString())
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -150,7 +152,7 @@ const Matn: React.FC<MatnProps> = ({
       style={{
         fontStyle: font === 'italic' ? 'italic' : 'normal',
         fontWeight: font === 'bold' ? 'bold' : 'normal',
-        display: lineCount ? '-webkit-box' : undefined,
+        display: lineCount ? '-webkit-box' : 'flex',
         WebkitBoxOrient: lineCount ? 'vertical' : undefined,
         WebkitLineClamp: lineCount,
         overflow: lineCount ? 'hidden' : 'visible',
@@ -165,7 +167,7 @@ const Matn: React.FC<MatnProps> = ({
       }}
       title={tooltip}
     >
-      {processedText}
+      {processedText} {endText}
       {copyable && (
         <button onClick={handleCopy} style={{ marginLeft: '8px' }}>
           📋 {copied ? 'Copied!' : 'Copy'}

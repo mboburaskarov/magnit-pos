@@ -93,6 +93,8 @@ export default function InventoryWithCheckingPage() {
     }
   }
   const handleFocusUnit = () => {
+    console.log(inventoryWithCheckingDetails)
+
     const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
     const currentfocus = document.activeElement?.tagName
 
@@ -154,6 +156,8 @@ export default function InventoryWithCheckingPage() {
       setLastSelectedCellRowId(selectedCellRowId)
     }
   }, [selectedCellRowId])
+  console.log(selectedCellRowId, lastSelectedCellRowId)
+
   /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
@@ -241,7 +245,7 @@ export default function InventoryWithCheckingPage() {
     (event) => {
       if (selectedCellRowId) return
       const key = event.key.toLowerCase()
-      if (/^[a-zа-яё0-9]$/i.test(key)) {
+      if (/^[a-zа-яё]$/i.test(key)) {
         setBarcode((prev) => prev + key)
       }
       if (event.code === 'Backspace') {
@@ -255,12 +259,16 @@ export default function InventoryWithCheckingPage() {
       if (event.code === 'Escape') {
         setBarcode('')
       }
-      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
+      console.log(event.code)
+
+      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd' || event.code === 'ShiftRight') {
+        console.log('hi')
+
         handleFocusUnit()
       }
     },
     {
-      // enableOnFormTags: true,
+      enableOnFormTags: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )

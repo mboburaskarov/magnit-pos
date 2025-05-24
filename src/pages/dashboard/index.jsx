@@ -151,7 +151,11 @@ export default function DashboarPage() {
     }
   }, [values?.offset, detalization, selectedShops, values?.start_date, values?.end_date, values?.limit, values?.search])
   const { data: chartData, isLoading: isGetChartData, refetch } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
-  const { data: countStats, isLoading: isCountStats } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
+  const {
+    data: countStats,
+    isLoading: isCountStats,
+    refetch: refetchStat,
+  } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
   const { data: topStores, isLoading: isTopStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
   const { data: payments, isLoading: ispayments } = useQuery(['payments', dashboard_filter], () => requests.dashboradPayments(dashboard_filter))
   const { data: transaction, isLoading: istransaction } = useQuery(['transaction', dashboard_filter], () => requests.dashboradTransaction(dashboard_filter))
@@ -160,7 +164,14 @@ export default function DashboarPage() {
     requests.dashboradTopBonusProducts(dashboard_filter)
   )
   const { data: topSellers, isLoading: isTopSellers } = useQuery(['TopSellers', dashboard_filter], () => requests.dashboradTopSellers(dashboard_filter))
-
+  useEffect(() => {
+    const refetchStatData = setInterval(() => {
+      refetchStat()
+    }, 10000)
+    return () => {
+      clearInterval(refetchStatData)
+    }
+  }, [])
   const toFixData = useMemo(
     () =>
       chartData?.data?.data?.map((item) => ({
