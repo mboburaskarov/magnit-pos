@@ -70,7 +70,7 @@ const columns = [
     flex: 1,
   },
   {
-    field: 'mxik_code',
+    field: 'mxik',
     hide: false,
     minWidth: 260,
     flex: 1,

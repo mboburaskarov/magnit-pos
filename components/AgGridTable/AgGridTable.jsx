@@ -309,7 +309,21 @@ const AgGridSimpleTable = ({
     columnApiRef.current = params.columnApi
     setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
   }, [])
+  const getRowStyle = (params) => {
+    console.log(params)
 
+    if (params.node.rowPinned === 'bottom') {
+      return {
+        // fontWeight: 'bold',
+        // backgroundColor: '#f8f9fa',
+        // position: 'sticky',
+        // bottom: 0,
+        // zIndex: 1,
+        // borderTop: '2px solid #dee2e6',
+      }
+    }
+    return null
+  }
   const getRowId = useCallback((params) => params.data[uniqId], [data, columns, totalData])
 
   return (
@@ -344,6 +358,7 @@ const AgGridSimpleTable = ({
           rowHeight={48}
           suppressRowClickSelection={true}
           suppressPaginationPanel={true}
+          getRowStyle={getRowStyle}
           suppressContextMenu={true}
           suppressCellFocus={false} // Enable cell focus for cell selection
           icons={icons}

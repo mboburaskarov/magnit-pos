@@ -245,12 +245,12 @@ export default function tableHeaderSelector({
         }),
       }
     }
-    if (el.field === 'mxik_code') {
+    if (el.field === 'mxik') {
       return {
         ...el,
-        headerName: 'MXIK',
         editable: editable,
 
+        headerName: 'MXIK',
         colId: el.field,
         cellRenderer: memo((p) => {
           return <SimpleText currency='' {...p} type='mxik' />

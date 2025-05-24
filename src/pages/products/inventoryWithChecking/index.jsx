@@ -281,13 +281,14 @@ export default function InventoryWithCheckingPage() {
     if (inventoryWithCheckingDetails?.data?.data?.data) {
       setRowData([
         ...inventoryWithCheckingDetails?.data?.data?.data,
-        {
-          id: 'ag-grid-footer',
-          name: 'Итого',
-          fact_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'),
-          current_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'),
-          difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
-        },
+        // {
+        //   id: 'ag-grid-footer',
+        //   name: 'Итого',
+        //   pinned: true,
+        //   fact_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'),
+        //   current_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'),
+        //   difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
+        // },
       ])
       get(inventoryWithCheckingDetails, 'data.data.data', []).map((importData) => {
         methods.setValue(`net_amount_${get(importData, 'id')}`, get(importData, 'net_amount'))
@@ -398,7 +399,7 @@ export default function InventoryWithCheckingPage() {
               </Box>
             </Box>
 
-            <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' } }}>
+            <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' }, mb: '100px' }}>
               <AgGridTable
                 selectedCellRowId={setSelectedCellRowId}
                 id='imports-main-table'
@@ -410,6 +411,16 @@ export default function InventoryWithCheckingPage() {
                 childRef={childRef}
                 enableFillHandle={true}
                 custonName='main'
+                totalData={[
+                  {
+                    id: 'ag-grid-footer',
+                    name: 'Итого',
+                    pinned: true,
+                    fact_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'),
+                    current_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'),
+                    difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
+                  },
+                ]}
                 canCellClick={true}
                 onChangeSelectedCellRowId={(id) => {
                   setLastSelectedCellRowId(id)
