@@ -69,11 +69,11 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
   const inventoryDetailFlowFilter = useMemo(() => {
     return {
       inventory_id: id,
-      limit: values?.limit || 10,
-      offset: values?.offset || 0,
+      flowLimit: values?.flowLimit || 10,
+      flowOffset: values?.flowOffset || 0,
       product_id: open || undefined,
     }
-  }, [values?.offset, open, values?.limit, id])
+  }, [values?.flowOffset, open, values?.flowLimit, id])
 
   const {
     data: inventoryDetailFlow,
@@ -223,6 +223,8 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
             tableSettings
             childRef={childRef}
             gettingId='id'
+            limitQuery='flowLimit'
+            offsetQuery='flowOffset'
             enableFillHandle={true}
             realTimeSelectedCellRowId={({ id, rowId }) => {
               setLastSelectedCellRowId(rowId)

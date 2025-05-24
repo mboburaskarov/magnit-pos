@@ -4,13 +4,13 @@ import { authRequest, eposRequest, fileUploadRequest, request, requestEXCEL } fr
 
 export const requests = {
   //epos
-  sendToEpos: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
-  closeZReport: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
-  closeCheckZReport: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
-  openZReport: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
-  getZReportByDate: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
+  sendToEpos: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'prod' ? `/helper/epos` : `/uzpos`, data),
+  closeZReport: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'prod' ? `/helper/epos` : `/uzpos`, data),
+  closeCheckZReport: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'prod' ? `/helper/epos` : `/uzpos`, data),
+  openZReport: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'prod' ? `/helper/epos` : `/uzpos`, data),
+  getZReportByDate: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'prod' ? `/helper/epos` : `/uzpos`, data),
   sendEPOSresponseToBackend: (data) => request.post(`v1/sale/epos-result`, data),
-  checkEPOSTurnOn: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
+  checkEPOSTurnOn: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'prod' ? `/helper/epos` : `/uzpos`, data),
 
   //tags
   getAllTags: (filter) => request.get(`v1/tag/list${qs.stringify(filter, { addQueryPrefix: true })}`),
