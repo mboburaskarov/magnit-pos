@@ -9,6 +9,8 @@ function ListWithPagination({ request, renderItem, customFilter }) {
 
   const [page, setPage] = useState(0)
   const handleChange = (e) => {
+    console.log(e)
+
     setPage(e)
   }
   const dataFilter = useMemo(() => {
