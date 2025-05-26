@@ -177,6 +177,25 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
         fact_unit: Number(fact_unit),
       })
     }
+    if (colDef?.field === 'barcode' && newValue !== oldValue) {
+      error('Изменить штрих-код перевода невозможно.!')
+      refetchInventoryDetailFlow()
+
+      return
+      const barcode = newValue
+      if (!barcode) {
+        errorScanAudio.play()
+        refetch()
+        error('Штрих-код не может быть пустым!')
+        return
+      }
+      setScanedNumber({
+        id,
+        product_id: get(data, 'id'),
+        type: 'MANUAL',
+        barcode: barcode,
+      })
+    }
   }
   useHotkeys(
     '*',

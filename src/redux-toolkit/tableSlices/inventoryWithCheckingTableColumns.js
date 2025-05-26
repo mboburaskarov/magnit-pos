@@ -15,6 +15,12 @@ const columns = [
     resizable: true,
   },
   {
+    field: 'barcode',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
     field: 'unit_per_pack',
     hide: false,
     minWidth: 90,

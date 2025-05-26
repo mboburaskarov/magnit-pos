@@ -239,6 +239,21 @@ export default function InventoryWithCheckingPage() {
         fact_unit: Number(fact_unit),
       })
     }
+    if (colDef?.field === 'barcode' && newValue !== oldValue) {
+      const barcode = newValue
+      if (!barcode) {
+        errorScanAudio.play()
+        refetch()
+        error('Штрих-код не может быть пустым!')
+        return
+      }
+      setScanedNumber({
+        id,
+        product_id: get(data, 'id'),
+        type: 'MANUAL',
+        barcode: barcode,
+      })
+    }
   }
   useHotkeys(
     '*',

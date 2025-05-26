@@ -179,6 +179,18 @@ export default function tableHeaderSelector({ importsColumns, setOrderStoring, o
       }
     }
 
+    if (el.field === 'barcode') {
+      return {
+        ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        editable: editable,
+        setOrderStoring,
+        headerName: 'Штрих-код',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='barcode' />),
+      }
+    }
     //
     if (el.field === 'fact_quantity') {
       return {

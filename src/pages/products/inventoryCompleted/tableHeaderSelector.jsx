@@ -292,6 +292,19 @@ export default function tableHeaderSelector({ importsColumns, setOrderStoring, o
         cellRenderer: memo((p) => <SimpleText {...p} withDevider type='difference_quantity' />),
       }
     }
+
+    if (el.field === 'barcode') {
+      return {
+        ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
+        editable: editable,
+        headerName: 'Штрих-код',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='barcode' />),
+      }
+    }
     if (el.field === 'difference_quantity_pattern') {
       return {
         ...el,
