@@ -1,10 +1,9 @@
-import LayoutWithNavbar from '../../layouts/LayoutWithNavbar'
+import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import AllSalesPage from '../../pages/sales/all-sales'
 import CardShiftDetails from '../../pages/sales/card-shift-details'
 import NewCashRegister from '../../pages/sales/create-cash-register'
+import EposSales from '../../pages/sales/epos-sales'
 import NewSale from '../../pages/sales/new-order'
-import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
-import CasShiftsPage from '../../pages/sales/cash-shift/index'
 
 const salesRoutes = {
   path: 'sales',
@@ -22,6 +21,10 @@ const salesRoutes = {
     {
       path: 'cash-shift-detail',
       children: [{ path: ':id', element: <CardShiftDetails /> }],
+    },
+    {
+      path: 'epos-sales',
+      children: [{ path: '', element: <EposSales /> }],
     },
 
     {
