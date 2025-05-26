@@ -6,19 +6,22 @@ import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import CheckAccess from '../../../../components/CheckAccess'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
+import { HasAccess } from '../../../../components/hasAccess'
 import InputDateRangePicker from '../../../../components/Inputs/InputDateRangePicker'
 import LazySelect from '../../../../components/Select/LazySelect'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
-
 export default function PrintManualZReport({ open, setManualZreportData, refetch, setOpen, handlePrint }) {
   const methods = useForm()
   const { reset, control } = methods
   const [startDate, setStartDate] = useState(0)
   const [reportFilter, setReportFilter] = useState(0)
   const [endDate, setEndDate] = useState(0)
+  const user_data = useSelector((state) => state.user)
 
   const { data: saleStatsData } = useQuery(['saleStatsData', reportFilter], () => requests.getAllSaleStats(reportFilter), { enabled: !!reportFilter })
   useEffect(() => {
@@ -39,8 +42,8 @@ export default function PrintManualZReport({ open, setManualZreportData, refetch
       return
     }
     const requestBody = {
-      store_id: data?.store_id?.value,
-      store_name: data?.store_id?.name,
+      store_id: HasAccess('can_choose_z_report_sale', user_data) ? data?.store_id?.value : get(user_data, 'store.id'),
+      // store_name: data?.store_id?.name,
       start_date: startDate != 0 ? dayjs(startDate).format('YYYY-MM-DD') : undefined,
       end_date: endDate != 0 ? dayjs(endDate).format('YYYY-MM-DD') : undefined,
     }
@@ -83,26 +86,29 @@ export default function PrintManualZReport({ open, setManualZreportData, refetch
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <LazySelect
-              slug='users'
-              boxStyle={{ width: '100%' }}
-              id='store'
-              white
-              name='store_id'
-              isMulti={false}
-              placeholder={t('Выберите Магазин')}
-              minWidth='auto'
-              isClearable={true}
-              label={t('input.store.label')}
-              request={requests.getAllStores}
-              required={true}
-              filters={{ limit: 10 }}
-              control={control}
-              getOptionLabel={(option) => {
-                return option.name
-              }}
-              filterOption={() => true}
-            />
+            <CheckAccess id={'can_choose_z_report_sale'}>
+              <LazySelect
+                slug='users'
+                boxStyle={{ width: '100%' }}
+                id='store'
+                white
+                name='store_id'
+                isMulti={false}
+                placeholder={t('Выберите Магазин')}
+                minWidth='auto'
+                isClearable={true}
+                label={t('input.store.label')}
+                request={requests.getAllStores}
+                required={true}
+                filters={{ limit: 10 }}
+                control={control}
+                getOptionLabel={(option) => {
+                  return option.name
+                }}
+                filterOption={() => true}
+              />
+            </CheckAccess>
+
             <InputDateRangePicker
               id='import-date'
               name='date'
