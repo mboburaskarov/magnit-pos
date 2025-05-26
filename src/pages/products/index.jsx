@@ -58,6 +58,7 @@ export default function ProductsPage() {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const { mutate: setMarkingRequired, isLoading: isSetMarkingRequired } = useMutation(requests.setMarkingRequired, {
     onSuccess: ({ data }) => {
+      refetch()
       success('Статус обязательности Маркировка был изменен')
     },
     onError: (err) => {
@@ -254,7 +255,7 @@ export default function ProductsPage() {
       const barcode = newValue
       changeBarcode({ id, barcode })
     }
-    if (colDef?.field === 'mxik_code' && newValue !== oldValue) {
+    if (colDef?.field === 'mxik' && newValue !== oldValue) {
       const id = data?.id
       const mxik = newValue
       changeBarcode({ id, mxik })
