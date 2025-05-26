@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material'
+import Matn from '../../../components/Matn'
 import thousandDivider from '../../../utils/thousandDivider'
 import FallIcon from '../../assets/icons/FallIcon'
 import GrowIcon from '../../assets/icons/GrowIcon'
@@ -40,10 +41,29 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
         {
           <Box mt={icon ? '10px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
             <Box>
-              <Typography alignItems={'end'} display={'flex'} color='dark.500' fontSize={'30px'} lineHeight={'32px'} fontWeight='600' variant='h1'>
+              <Typography
+                alignItems={'end'}
+                display={'flex'}
+                color='dark.500'
+                fontSize={'30px'}
+                lineHeight={'32px'}
+                fontWeight='600'
+                variant='h1'
+                sx={{
+                  '& > p': {
+                    fontSize: '30px',
+                    lineHeight: '32px',
+                    fontWeight: '600 !important',
+                    color: 'dark.500',
+                    ml: '10px',
+                  },
+                }}
+              >
                 {id === 'expiring_soon_amount' ? (
                   <>
-                    {thousandDivider(amount)} сум
+                    <Matn formatNumber endText={'сум'} animateNumber duration={1000}>
+                      {amount}
+                    </Matn>
                     <Typography color='dark.500' fontSize={'20px'} lineHeight={'25px'} fontWeight='500' ml={'10px'}>
                       ({withoutDivider ? count : thousandDivider(count, '')}шт)
                     </Typography>
@@ -51,7 +71,9 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
                 ) : withoutDivider ? (
                   count
                 ) : (
-                  thousandDivider(count, endText)
+                  <Matn formatNumber endText={endText} animateNumber duration={1000}>
+                    {count}
+                  </Matn>
                 )}
               </Typography>
             </Box>

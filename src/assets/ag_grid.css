@@ -3,9 +3,11 @@
 .ag-theme-alpine {
   /* border-radius: 16px; */
   /* border: 1px solid red; */
+  /* flex: '1 1 auto'; */
 }
 .ag-theme-alpine .ag-root-wrapper {
   border: none;
+  /* min-height: 800px !important; */
 }
 .ag-watermark {
   display: none !important;
@@ -81,8 +83,14 @@
 
 .ag-theme-alpine .ag-floating-bottom {
   border: none;
+  height: 100px !important;
 }
-
+.ag-floating-bottom-viewport {
+  height: 100px !important;
+  bottom: 0px !important;
+  /* position: fixed !important; */
+  left: -5px !important;
+}
 .ag-floating-bottom-viewport .ag-row-pinned {
   height: 80px !important;
   margin-top: 10px;

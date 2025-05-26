@@ -18,7 +18,7 @@ function DraftChildItemsBox({ item, setIsOpenChild }) {
     <Box display={'flex'} mb={'10px'} height={'80px'} justifyContent={'space-between'}>
       <Box borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} mr={'8px'} display={'flex'} width={'100%'} justifyContent={'space-between'}>
         <Box display={'flex'} width={'100%'}>
-          <CustomImg className={classes.productImg} src='/default-img.avif' />
+          <CustomImg className={classes.productImg} src='default-img.avif' />
           <Box display={'flex'} flexDirection={'column'} width={'100%'}>
             <Box display={'flex'} justifyContent={'space-between'}>
               <Typography

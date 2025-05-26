@@ -347,7 +347,7 @@ export default function OrderDrawer({
             amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
             price:
               el.quantity > index ? parseFloat((el.unit_price * 100).toFixed(2)) : parseFloat((el.unit_quantity_price * el.unit_quantity * 100).toFixed(2)),
-            discount: el.discount_amount,
+            discount: parseFloat((el.discount_amount * 100).toFixed(2)),
             vatPercent: get(el, 'vat_percent'),
             vat:
               el.quantity > index ? parseFloat((get(el, 'vat_price') * 100).toFixed(2)) : parseFloat((el.unit_vat_price * el.unit_quantity * 100).toFixed(2)),
@@ -627,6 +627,7 @@ export default function OrderDrawer({
       enableOnFormTags: true,
     }
   )
+  console.log(markingCount, markingsList)
 
   return (
     <Box hidden>

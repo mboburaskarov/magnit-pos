@@ -313,6 +313,36 @@ function NewSale() {
   const searchResetRef = useRef('')
   const printContainer = useRef()
   const cartRef = cartItemRef.current
+  const { mutate: addDiscountCard, isLoading: isaddDiscountCard } = useMutation(requests.addDiscountCard, {
+    onSuccess: ({ data }) => {
+      success('Карта скидки успешно добавлена')
+    },
+    onError: (err) => {
+      error('Ошибка при добавлении карты скидки')
+      console.log('err', err)
+    },
+  })
+  const { mutate: removeDiscountCard, isLoading: isremoveDiscountCard } = useMutation(requests.removeDiscountCard, {
+    onSuccess: ({ data }) => {
+      setCustomerId('')
+      success('Карта скидки успешно удалена')
+    },
+    onError: (err) => {
+      error('Ошибка при удалении карты скидки')
+      console.log('err', err)
+    },
+  })
+  useEffect(() => {
+    console.log(customerId)
+
+    if (customerId?.id) {
+      addDiscountCard({
+        customer_id: customerId?.id,
+        sale_id: id,
+      })
+    }
+    refetchcartItemsList()
+  }, [customerId])
   for (const key in cartRef) {
     if (cartRef[key] === null) {
       delete cartRef[key]
@@ -426,7 +456,19 @@ function NewSale() {
       console.log('err', err)
     },
   })
-  const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(requests.createCartItem, {
+  const conditionalCreateCartItem = async (params) => {
+    console.log(markingCount, markingsList)
+
+    const shouldSend = size(get(cartItemsList, 'data.data.data')) <= 9 // Your logic here
+    if (!shouldSend) {
+      // Optional: throw an error or just return a dummy response
+      throw new Error('Condition not met. Request not sent.')
+      // or return Promise.reject({ message: 'Not allowed' })
+    }
+    return requests.createCartItem(params)
+  }
+
+  const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(conditionalCreateCartItem, {
     onSuccess: ({ data }) => {
       const searchValue = searchRef.current.value
 
@@ -462,8 +504,11 @@ function NewSale() {
       Максимальное количество упаковок на складе - ${get(err, 'response.data.data.pack_quantity')},
       единичное количество на складе - ${get(err, 'response.data.data.unit_quantity')}.`)
       } else {
-        error('Ошибка при создании элемента карты.')
-        console.log('err', err)
+        if (err.toString().includes('Error: Condition not met. Request not sent')) {
+          error('Ошибка при создании элемента карты. Максимальное количество товаров в корзине 10')
+          return
+        }
+        error(`Ошибка при создании элемента карты. ${err.toString().includes('Error: Condition not met. Request not sent')}`)
       }
     },
   })
@@ -541,7 +586,7 @@ function NewSale() {
     },
     onError: (err) => {
       setisEposTurnOn(false)
-      error('Программа EPOS отключена. Запустить программу EPOS')
+      error('Программа EPOS отключена. Запустить программу EPOS (uz: epos dasturi o‘chirilgan. Epos dasturini yoqing)')
       console.log('err', err)
     },
   })
@@ -1003,6 +1048,7 @@ function NewSale() {
             userData={userData}
             hasChange={hasChange}
             markingsList={markingsList}
+            removeDiscountCard={removeDiscountCard}
             liteOrder={liteOrder}
             setLiteOrder={setLiteOrder}
             printContainer={printContainer}

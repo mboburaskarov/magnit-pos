@@ -96,7 +96,7 @@ function DecreasedCartItemMarkingCheck({
           }}
         >
           <Typography color={'#fe5000'} fontWeight={'500'}>
-            Какой маркирофный продукт вы удалили?
+            Какой маркирофный продукт вы удалили? (UZ: Aynan qaysi markirovka mahsulotini olib tashladingiz?)
           </Typography>
         </Box>
         {cartItems

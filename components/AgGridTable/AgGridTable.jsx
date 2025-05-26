@@ -6,7 +6,8 @@ import 'ag-grid-enterprise'
 import { AgGridReact } from 'ag-grid-react'
 import debounce from 'lodash/debounce'
 import * as qs from 'qs'
-import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, memo, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { usePrevious } from 'react-use'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
@@ -24,12 +25,14 @@ const AgGridSimpleTable = ({
   emptyTableText,
   data,
   columns,
+  gettingId = 'product_id',
   components,
   enableFillHandle = false,
   selection,
   navigateUrl,
   noRedirect = false,
   onCellValueChanged = () => {},
+  enableGetRealTimeSelectedCellRowId = false,
   defaultOffsetSize = 10,
   defaultOffsetIndex = 1,
   offsetQuery = 'offset',
@@ -49,15 +52,20 @@ const AgGridSimpleTable = ({
   addAllProducts,
   deleteAllProducts,
   setRemovedItems,
+  custonName = 'custonName',
   setAddedItems,
   resetTable,
   canCellClick = false,
+  selectedCellRowId = () => {},
+  realTimeSelectedCellRowId = () => {},
   totalData,
+  onChangeSelectedCellRowId = () => {},
   columnGroup,
   uniqId = 'id',
   totalCount = 0,
   customDisplayColumnsChangeHandler,
   simpleTable,
+  childRef = null,
   isRefreshing,
   status,
   onCellSelectionChange, // New prop to handle cell selection changes
@@ -79,7 +87,35 @@ const AgGridSimpleTable = ({
   const rowData = useMemo(() => data, [data, totalData])
   useScrollListener(agGridTableArea, agGridTableScroll)
   const navigate = useNavigate()
+  const gridApiRef = useRef(null)
+  const columnApiRef = useRef(null)
 
+  useImperativeHandle(childRef, () => ({
+    focusCellByRowId: (rowId, colId) => {
+      const api = gridApiRef.current
+      const columnApi = columnApiRef.current
+      if (!api || !columnApi) return
+
+      const rowModel = api.getModel()
+      const rowCount = rowModel.getRowCount()
+
+      for (let i = 0; i < rowCount; i++) {
+        const rowNode = rowModel.getRow(i)
+
+        if (rowNode?.data?.[uniqId] === rowId) {
+          const targetColId = colId || columnApi.getAllDisplayedColumns()?.[0]?.colId
+          if (targetColId) {
+            api.ensureIndexVisible(i) // Scroll to row
+            api.setFocusedCell(i, targetColId)
+
+            // Optional: DOM focus so keyboard nav works
+            document.querySelector('.ag-root')?.focus()
+          }
+          break
+        }
+      }
+    },
+  }))
   const prevStatus = usePrevious(status)
 
   const defaultColDef = useMemo(
@@ -140,10 +176,58 @@ const AgGridSimpleTable = ({
     return columns
   }, [selection, columns, headerCheckboxChecked, selectedRowsIds])
 
+  useHotkeys(
+    'ctrl+shift',
+    () => {
+      if (!gridApi) return
+
+      const focusedCell = gridApi.getFocusedCell()
+      if (!focusedCell) return
+
+      const rowNode = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex)
+      const rowId = rowNode?.data?.[gettingId]
+
+      if (rowId) {
+        selectedCellRowId(rowId)
+
+        // handleRowSubmit(rowId)
+      }
+    },
+    {
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+      preventDefault: true,
+    }
+  )
+  useHotkeys(
+    ['ArrowUp', 'ArrowDown'],
+    () => {
+      if (!gridApi) return
+
+      const focusedCell = gridApi.getFocusedCell()
+      if (!focusedCell) return
+
+      const rowNode = gridApi.getDisplayedRowAtIndex(focusedCell.rowIndex)
+      const rowId = rowNode?.data?.[gettingId]
+
+      if (rowId) {
+        // if (!enableGetRealTimeSelectedCellRowId) {
+        //   return
+        // }
+        realTimeSelectedCellRowId({ id: custonName, rowId })
+        // handleRowSubmit(rowId)
+      }
+    },
+    {
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+      preventDefault: true,
+    }
+  )
   // Handle cell selection
   const onCellClicked = useCallback(
     (params) => {
       // return
+      console.log('k')
+
       if (params.column.colId === 'checkboxSelectionField') return // Ignore clicks on checkbox column
       const rowId = params.data[uniqId]
       const colId = params.column.colId
@@ -157,6 +241,7 @@ const AgGridSimpleTable = ({
           newSelectedCells = prev.filter((_, index) => index !== existingIndex)
         } else {
           // Select new cell
+          onChangeSelectedCellRowId(rowId)
           newSelectedCells = [...prev, { rowId, colId, value }]
         }
         // Notify parent component of selection change
@@ -217,19 +302,57 @@ const AgGridSimpleTable = ({
   const pinnedBottomRowData = useMemo(() => {
     return totalData
   }, [totalData])
-
+  useHotkeys(
+    'numenter',
+    (event) => {
+      if (!gridApi) return
+      const focusedCell = gridApi.getFocusedCell()
+      if (focusedCell) {
+        event.preventDefault()
+        gridApi.startEditingCell({
+          rowIndex: focusedCell.rowIndex,
+          colKey: focusedCell.column.colId,
+        })
+      }
+    },
+    { enableOnFormTags: true }
+  )
   const onGridReady = useCallback((params) => {
-    setGridApi(params)
+    setGridApi(params.api) // ✅ only the API, not the full params
+    gridApiRef.current = params.api
+    columnApiRef.current = params.columnApi
     setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
   }, [])
+  const getRowStyle = (params) => {
+    console.log(params)
 
+    if (params.node.rowPinned === 'bottom') {
+      return {
+        // fontWeight: 'bold',
+        // backgroundColor: '#f8f9fa',
+        // position: 'sticky',
+        // bottom: 0,
+        // zIndex: 1,
+        // borderTop: '2px solid #dee2e6',
+      }
+    }
+    return null
+  }
   const getRowId = useCallback((params) => params.data[uniqId], [data, columns, totalData])
-  console.log(onCellSelectionChange)
 
   return (
     <Fragment>
-      <Box className={`${classes.root} ag-theme-alpine ${columnGroup ? 'column-group-header' : ''}`} id={id || 'simpleGrid'}>
+      <Box
+        className={`${classes.root} ag-theme-alpine ${columnGroup ? 'column-group-header' : ''}`}
+        id={id || 'simpleGrid'}
+        // sx={{ height: '600px', width: '100%', display: 'flex', flexDirection: 'column', height: '100vh' }}
+      >
         <AgGridReact
+          rowBuffer={100} // Optional: how many rows outside viewport to render
+          // domLayout='normal' // or "autoHeight", but avoid it with big data sets
+          // domLayout='normal'
+          // pagination={true}
+          paginationPageSize={3000}
           groupDisplayType='multipleColumns'
           onGridReady={onGridReady}
           overlayNoRowsTemplate={'<span></span>'}
@@ -249,6 +372,7 @@ const AgGridSimpleTable = ({
           rowHeight={48}
           suppressRowClickSelection={true}
           suppressPaginationPanel={true}
+          getRowStyle={getRowStyle}
           suppressContextMenu={true}
           suppressCellFocus={false} // Enable cell focus for cell selection
           icons={icons}

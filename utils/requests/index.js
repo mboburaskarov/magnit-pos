@@ -52,7 +52,8 @@ export const requests = {
   getCashBoxDetaildWithSaleId: (id) => request.get(`v1/sale/${id}`),
   addToOrderPayment: (data) => request.post(`v1/sale/final`, data),
   returnSaleItem: (data) => request.post(`v1/sale/return`, data),
-
+  addDiscountCard: (data) => request.post(`v1/sale/discount-card`, data),
+  removeDiscountCard: (data) => request.delete(`v1/sale/discount-card`, data),
   //producer
   createProducer: (data) => request.post(`v1/producer`, data),
   getProducer: (filter) => request.get(`v1/producer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -151,7 +152,10 @@ export const requests = {
   getAllInventory: (filter) => request.get(`v1/inventory/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   sendScannedInventoryNumber: ({ id, barcode, product_id, expire_date, fact_unit, type, fact_quantity, scanned_count }) =>
     request.patch(`v1/inventory/${id}/add-product-by-barcode`, { count: scanned_count, expire_date, fact_unit, fact_quantity, type, barcode, id: product_id }),
+  sendScannedInventoryFlowNumber: ({ id, barcode, product_id, expire_date, fact_unit, type, fact_quantity, scanned_count }) =>
+    request.patch(`v1/inventory/${id}/detailed-flow`, { count: scanned_count, expire_date, fact_unit, fact_quantity, type, barcode, id: product_id }),
   getInventoryDetails: (filter) => request.get(`v1/inventory-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getInventoryDetailFlow: (filter) => request.get(`v1/inventory-detail/detailed-flow${qs.stringify(filter, { addQueryPrefix: true })}`),
   getInventoryScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
   finishInventoryChecking: (id) => request.post(`v1/inventory/confirm/${id}`),
   deleteInventory: ({ id }) => request.post(`v1/inventory/cancel/${id}`),

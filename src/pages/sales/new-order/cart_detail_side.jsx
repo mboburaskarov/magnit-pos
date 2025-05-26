@@ -7,6 +7,7 @@ import React, { useRef, useState } from 'react'
 import Highlighter from 'react-highlight-words'
 import { useTranslation } from 'react-i18next'
 import OutsideClickHandler from 'react-outside-click-handler'
+import { useParams } from 'react-router-dom'
 import CheckAccess from '../../../../components/CheckAccess'
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import OutLineTextFieldThousand from '../../../../components/Inputs/OutLineTextFieldThousand'
@@ -31,6 +32,7 @@ function CartDetailSide({
   hasChange,
   setOpenClientCreateMini,
   customerId,
+  removeDiscountCard,
   setMarkingList,
   setCustomerId,
   setSearchTerm,
@@ -60,6 +62,8 @@ function CartDetailSide({
   const [maxAmount, setMaxAmount] = useState(0)
   const [collapseDiscount, setCollapseDiscount] = useState(false)
   const childRef = useRef()
+  const { id } = useParams()
+
   const printNoProductCheque = () => {
     childRef.current.printChildCheque()
   }
@@ -126,7 +130,7 @@ function CartDetailSide({
                 </Typography>
               </Box>
             </Box>
-            <Box height={'24px'} onClick={() => setCustomerId('')}>
+            <Box height={'24px'} onClick={() => removeDiscountCard({ data: { sale_id: id, customer_id: customerId.id } })} sx={{ cursor: 'pointer' }}>
               <TimesSmallIcon />
             </Box>
           </Box>

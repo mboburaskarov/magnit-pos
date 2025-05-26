@@ -11,8 +11,6 @@ import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DownloadIcon from '../../../assets/icons/DownloadIcon'
 
 function InventoryDashboard({ data: stats, setHasChange }) {
-  console.log(stats?.store)
-
   const { id } = useParams()
 
   const { mutate: getInventoryExcelReport, isLoading: isgetInventoryExcelReport } = useMutation(requests.getInventoryExcelReport, {

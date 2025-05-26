@@ -1,21 +1,18 @@
-import { CircularProgress } from '@mui/material'
-import Button from '@mui/material/Button'
-import DialogTitle from '@mui/material/DialogTitle'
 import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
 import Typography from '@mui/material/Typography'
-import BackArrow from '../../src/assets/icons/BackArrow'
 import { makeStyles } from '@mui/styles'
-import ButtonWithWrapper from '../Buttons/ButtonWithWrapper'
 import { useEffect } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiDialog-paper.MuiDialog-paper': {
-      width: (props) => (props.maxWidth ? 'auto' : '100%'),
+      width: (props) => (props.maxWidth ? '100%' : '100%'),
       maxWidth: (props) => props.maxWidth || 680,
       overflow: ({ overflowVisible }) => (overflowVisible ? 'visible' : 'hidden'),
       boxShadow: 'none !important',
       borderRadius: 20,
+      // minHeight: 500,
       // overflowY: 'scroll !important',
       transition: open ? 'padding 0.3s ease-out' : 'padding 0.1s ease-in',
       zIndex: 15,

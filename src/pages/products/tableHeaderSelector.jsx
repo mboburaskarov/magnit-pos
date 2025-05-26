@@ -7,7 +7,6 @@ import Highlighter from 'react-highlight-words'
 import { useNavigate } from 'react-router-dom'
 import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
 import CheckAccess from '../../../components/CheckAccess'
-import CustomImg from '../../../components/CustomImg'
 import TextField from '../../../components/Inputs/TextField'
 import thousandDivider from '../../../utils/thousandDivider'
 import { products_statuses } from '../../assets/data/products-statuses'
@@ -38,17 +37,21 @@ const Image = ({ data, rowIndex, setImages }) => {
             opacity: 0.5,
           },
         },
+        img: {
+          width: '40px',
+        },
       }}
     >
+      <img src='/no-img.png' />
       {/* {data?.photos?.[0] ? ( */}
-      <CustomImg
+      {/* <CustomImg
         key={rowIndex}
         onClick={() => setImages({ data: data?.photos })}
         id={`product-image-${rowIndex}`}
-        src={data?.photos?.[0] || '/default-img.avif'}
+        src={data?.photos?.[0] || 'default-img.avif'}
         alt={data?.name}
         style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
-      />
+      /> */}
       {/* ) : (
         <DefaultImgIcon />
       )} */}
@@ -82,6 +85,7 @@ export default function tableHeaderSelector({
         ...el,
         headerName: t('table_columns.photo'),
         colId: el.field,
+        suppressCellFlash: true,
         cellRenderer: memo((p) => <Image {...p} setImages={setImages} />),
       }
     }
@@ -241,12 +245,12 @@ export default function tableHeaderSelector({
         }),
       }
     }
-    if (el.field === 'mxik_code') {
+    if (el.field === 'mxik') {
       return {
         ...el,
-        headerName: 'MXIK',
         editable: editable,
 
+        headerName: 'MXIK',
         colId: el.field,
         cellRenderer: memo((p) => {
           return <SimpleText currency='' {...p} type='mxik' />
