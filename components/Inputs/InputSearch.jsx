@@ -131,9 +131,15 @@ const InputSearch = ({
     const searchParams = qs.stringify({ ...values, search: debouncedValue || undefined }, { addQueryPrefix: true })
     navigate(`${location.pathname}${searchParams}`)
   }, [debouncedValue])
-  useHotkeys('F3', (event) => {
-    myref.current.focus()
-  })
+  useHotkeys(
+    'F3',
+    (event) => {
+      myref.current.focus()
+    },
+    {
+      preventDefault: true,
+    }
+  )
 
   return (
     <Box position='relative' display='flex' width='100%'>
