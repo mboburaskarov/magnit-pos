@@ -120,9 +120,9 @@ export default function StoreReportPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [storeReportList?.data, values?.limit])
-  const { mutate: getPorductReportExcelReport, isLoading: isgetPorductReportExcelReport } = useMutation(requests.getPorductReportExcelReport, {
+  const { mutate: getStoreReportExcelReport, isLoading: isgetStoreReportExcelReport } = useMutation(requests.getStoreReportExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, `${values?.store_name || 'Все филиалы'} Продажа развернутый`)
+      downloadExcel(data, `${values?.store_name || 'Все филиалы'}  Отчет филиала`)
     },
     onError: (err) => {
       console.log(err)
@@ -274,9 +274,9 @@ export default function StoreReportPage() {
             id='clients-main-table'
             uniqId='uid'
             tableSettings
-            fullDownload={() => getPorductReportExcelReport({ ...storeReportListFilter, limit: 1000000 })}
-            downloadByFilter={() => getPorductReportExcelReport(storeReportListFilter)}
-            isDownloading={isgetPorductReportExcelReport}
+            fullDownload={() => getStoreReportExcelReport({ ...storeReportListFilter, limit: 1000000 })}
+            downloadByFilter={() => getStoreReportExcelReport(storeReportListFilter)}
+            isDownloading={isgetStoreReportExcelReport}
             columns={tableColumns}
             totalCount={storeReportList?.data?.data?._meta?.total_count || 0}
             data={storeReportList?.data?.data?.data || []}
