@@ -291,6 +291,22 @@ export default function InventoryWithCheckingPage() {
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
+  useHotkeys(
+    '*',
+    (event) => {
+      if (selectedCellRowId) return
+
+      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
+        console.log('hi')
+
+        handleFocusUnit()
+      }
+    },
+    {
+      enableOnFormTags: true,
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+    }
+  )
   // useEffect(() => {
   //   if (realTimeSelectedCellRowId) {
   //     setLastSelectedCellRowId(realTimeSelectedCellRowId)
