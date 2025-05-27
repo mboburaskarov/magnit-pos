@@ -256,6 +256,22 @@ export default function InventoryWithCheckingPage() {
         barcode: barcode,
       })
     }
+    if (colDef?.field === 'retail_price' && newValue !== oldValue) {
+      const retail_price = newValue
+      if (retail_price < 0) {
+        errorScanAudio.play()
+        refetch()
+
+        error('Розничная цена не может быть меньше 0!')
+        return
+      }
+      setScanedNumber({
+        id,
+        product_id: get(data, 'id'),
+        type: 'MANUAL',
+        retail_price: Number(retail_price),
+      })
+    }
   }
   useHotkeys(
     '*',
@@ -278,7 +294,7 @@ export default function InventoryWithCheckingPage() {
       if (event.code === 'Escape') {
         setBarcode('')
       }
-      console.log(event.code)
+      console.log(event)
 
       if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
         console.log('hi')
@@ -295,6 +311,18 @@ export default function InventoryWithCheckingPage() {
     '*',
     (event) => {
       if (selectedCellRowId) return
+      const activeEl = document.activeElement
+      const tag = activeEl?.tagName?.toLowerCase()
+      const classList = activeEl?.classList || []
+
+      const isAGGridInput =
+        tag === 'input' &&
+        (classList.contains('ag-cell-edit-input') ||
+          classList.contains('ag-input-field-input') ||
+          classList.contains('ag-text-field-input') ||
+          classList.contains('ag-cell-editor'))
+
+      console.log(event, isAGGridInput)
 
       if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
         console.log('hi')

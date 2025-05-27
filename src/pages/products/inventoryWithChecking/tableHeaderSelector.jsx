@@ -173,6 +173,7 @@ export default function tableHeaderSelector({ importsColumns, setOrderStoring, o
         headerComponent: CustomHeader,
         orderStoring,
         setOrderStoring,
+        editable: editable,
         headerName: 'Цена',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type='retail_price' />),
