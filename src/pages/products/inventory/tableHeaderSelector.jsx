@@ -167,7 +167,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
     if (el.field === 'accepted_amount') {
       return {
         ...el,
-        headerName: 'Cумма',
+        headerName: 'Количество',
         colId: el.field,
         cellRenderer: memo((p) => (
           <>
@@ -221,7 +221,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
     if (el.field === 'received_count') {
       return {
         ...el,
-        headerName: 'Количество',
+        headerName: 'Cумма',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={''} type={'measurement_count'} />),
       }
