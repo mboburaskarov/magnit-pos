@@ -388,7 +388,7 @@ export default function InventoryWithCheckingPage() {
                 >
                   <InputSearch
                     icon={<BarcodeIcon />}
-                    // onKeyDown={({ code }) => code === 'Enter' && sendScannedImport()}
+                    onKeyDown={({ code }) => code === 'Enter' && setBarcode('')}
                     onChange={({ target }) => setBarcode(get(target, 'value'))}
                     id='producrs-search'
                     name='search'
