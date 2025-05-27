@@ -63,7 +63,7 @@ export default function InventoryWithCheckingPage() {
     onSuccess: ({ data }) => {
       refetch()
       // fetchStatusCountList()
-      // setBarcode('')
+      setBarcode('')
     },
     onError: (err) => {
       refetch()
@@ -283,7 +283,7 @@ export default function InventoryWithCheckingPage() {
       }
     },
     {
-      enableOnFormTags: true,
+      // enableOnFormTags: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import TextField from '../../../../components/Inputs/TextField'
-import { checkBarcodeWithMarking } from '../../../../utils/checkingMarkingWithBarcode'
+import { checkBarcodeWithMarking, extractNumbers } from '../../../../utils/checkingMarkingWithBarcode'
 import { containsCyrillic } from '../../../../utils/convertoRuOrEngToEng'
 import { error } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
@@ -136,14 +136,14 @@ function ImplementMarkingDialog({
         error('Повторение маркировки (uz: takrorlangan markirovka)')
         return
       }
-      // if (!checkBarcodeWithMarking(productBarcode, e.target.value)) {
-      //   //markirofkadagi barcode mahsulotniki bilan mos kelmadi
-      //   inputsRef.current[flatIndex].value = ''
-      //   console.log('#8')
+      if (!checkBarcodeWithMarking(productBarcode, e.target.value)) {
+        //markirofkadagi barcode mahsulotniki bilan mos kelmadi
+        inputsRef.current[flatIndex].value = ''
+        console.log('#8')
 
-      //   error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl:${extractNumbers(e.target.value)}))`)
-      //   return
-      // }
+        error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl:${extractNumbers(e.target.value)}))`)
+        return
+      }
       setIsBlurBefore(false)
       //hammasi ok
       console.log('#9')
