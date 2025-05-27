@@ -303,7 +303,7 @@ const AgGridSimpleTable = ({
     return totalData
   }, [totalData])
   useHotkeys(
-    'numenter',
+    ['numenter', 'NumpadEnter'],
     (event) => {
       if (!gridApi) return
       const focusedCell = gridApi.getFocusedCell()
