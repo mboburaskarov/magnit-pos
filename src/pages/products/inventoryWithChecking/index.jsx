@@ -81,6 +81,8 @@ export default function InventoryWithCheckingPage() {
     },
   })
   const handleFocus = () => {
+    console.log(inventoryWithCheckingDetails)
+
     const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
     const currentfocus = document.activeElement?.tagName
 
@@ -267,6 +269,8 @@ export default function InventoryWithCheckingPage() {
         setBarcode((prev) => prev.slice(0, -1))
       }
       if (event.code === 'Enter') {
+        console.log('entereerr')
+
         if (document.activeElement?.tagName === 'INPUT') return
         handleFocus()
       }
@@ -388,7 +392,7 @@ export default function InventoryWithCheckingPage() {
                 >
                   <InputSearch
                     icon={<BarcodeIcon />}
-                    onKeyDown={({ code }) => code === 'Enter' && setBarcode('')}
+                    onKeyDown={({ code }) => code === 'Enter' && handleFocus()}
                     onChange={({ target }) => setBarcode(get(target, 'value'))}
                     id='producrs-search'
                     name='search'
