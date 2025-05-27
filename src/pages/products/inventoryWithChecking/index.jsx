@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useDebounce } from 'use-debounce'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
@@ -59,6 +60,8 @@ export default function InventoryWithCheckingPage() {
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
+  const [debouncedSearchBarcode] = useDebounce(barcode, 200)
+
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
       refetch()
@@ -127,7 +130,7 @@ export default function InventoryWithCheckingPage() {
       order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
       type: status,
     }
-  }, [values?.offset, orderStoring, status, values?.limit, id, barcode])
+  }, [values?.offset, orderStoring, status, values?.limit, id, debouncedSearchBarcode])
 
   // const {
   //   data: inventoryDetails,
