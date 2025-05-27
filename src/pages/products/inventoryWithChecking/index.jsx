@@ -301,6 +301,12 @@ export default function InventoryWithCheckingPage() {
 
         handleFocusUnit()
       }
+      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+        console.log('entereerr')
+
+        if (document.activeElement?.tagName === 'INPUT') return
+        handleFocus()
+      }
     },
     {
       enableOnFormTags: true,
