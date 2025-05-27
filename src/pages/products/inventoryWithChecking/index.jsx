@@ -268,7 +268,7 @@ export default function InventoryWithCheckingPage() {
       if (event.code === 'Backspace') {
         setBarcode((prev) => prev.slice(0, -1))
       }
-      if (event.code === 'Enter') {
+      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         console.log('entereerr')
 
         if (document.activeElement?.tagName === 'INPUT') return
