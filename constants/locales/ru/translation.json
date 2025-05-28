@@ -66,6 +66,8 @@
   "switch.title.scanned_count": "Сканированные",
   "switch.title.shortage_count": "Недостача",
   "switch.title.surplus_count": "Излишек",
+  "switch.title.zero_price": "Нулевая цена",
+
   "switch.title.total_count": "Общий",
 
   "table_columns.photo": "Фото",
