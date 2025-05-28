@@ -423,6 +423,11 @@ export default function InventoryWithCheckingPage() {
                   value: 'surplus',
                   count: get(inventoryWithCheckingDetails, 'data.data.stats_count.surplus', 0),
                 },
+                {
+                  title: t('switch.title.zero_price'),
+                  value: 'zero_price',
+                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.zero_price', 0),
+                },
               ]}
             />
           </Box>
