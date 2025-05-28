@@ -65,12 +65,13 @@ export default function InventoryWithCheckingPage() {
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
       refetch()
+      successScanAudio.play()
       // fetchStatusCountList()
       // setBarcode('')g
     },
     onError: (err) => {
       refetch()
-
+      errorScanAudio.play()
       error('Ошибка при сканирование!')
     },
   })
