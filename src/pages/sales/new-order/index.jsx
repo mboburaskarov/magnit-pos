@@ -3,7 +3,7 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Button, ListItem, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get, head, size } from 'lodash'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
@@ -459,6 +459,7 @@ function NewSale() {
   const conditionalCreateCartItem = async (params) => {
     console.log(markingCount, markingsList)
 
+    // const shouldSend = true // Your logic here
     const shouldSend = size(get(cartItemsList, 'data.data.data')) <= 9 // Your logic here
     if (!shouldSend) {
       // Optional: throw an error or just return a dummy response
