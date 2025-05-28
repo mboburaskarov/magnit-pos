@@ -148,7 +148,7 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
       }
       setScanedNumber({
         id,
-        product_id: get(data, 'product_id'),
+        product_id: get(data, 'id'),
         type: 'MANUAL',
         fact_unit: get(data, 'fact_unit'),
         fact_quantity: Number(fact_quantity),
