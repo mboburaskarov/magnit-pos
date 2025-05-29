@@ -44,7 +44,6 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box sx={{ whiteSpace: 'pre-line', '& p': { color: 'orange.500' }, cursor: 'pointer' }} onClick={() => setOpenSaleDrawer({ id: p.data?.id })}>
-            {/* <SimpleText {...p} type='sale_number' /> */}
             <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
               {get(p, 'data.sale_type', 'SALE') === 'SALE' ? 'Продажа' : 'Возврат'} #{get(p, 'data.sale_number', '-')}
             </Typography>
@@ -60,14 +59,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         cellRenderer: memo((p) => <SimpleText {...p} type='cash_box_name' />),
       }
     }
-    // if (el.field === 'organisation') {
-    //   return {
-    //     ...el,
-    //     headerName: 'Организация',
-    //     colId: el.field,
-    //     cellRenderer: memo((p) => <SimpleText {...p} type='organisation' />),
-    //   }
-    // }
+
     if (el.field === 'total_amount') {
       return {
         ...el,
@@ -115,17 +107,6 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
             data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Naqd')}
             type='amount'
           />
-          // )
-          // <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-          //   <Typography>
-          //     {get(
-          //       get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Naqd'),
-          //       'amount',
-          //       0
-          //     )}
-          //     сум
-          //   </Typography>
-          // </Box>
         )),
       }
     }

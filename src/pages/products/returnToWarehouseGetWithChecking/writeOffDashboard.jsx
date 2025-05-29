@@ -1,6 +1,5 @@
 import { Box, Grid, Typography } from '@mui/material'
 import { get } from 'lodash'
-import React from 'react'
 import thousandDivider from '../../../../utils/thousandDivider'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DownloadIcon from '../../../assets/icons/DownloadIcon'
@@ -18,7 +17,6 @@ function WriteOffDashboard({ data }) {
         { title: 'Магазин', value: 'store' },
         { title: 'Кол-во товаров', value: 'writeoff_count' },
         { title: 'Сумма к списанию по цене поставки', value: 'supply_price_sum' },
-        // { title: 'result' },
       ].map((stat) => (
         <Grid sm='4' lg='4' md='4' item sx={{}}>
           <Box

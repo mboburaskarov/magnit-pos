@@ -67,8 +67,6 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
         qtyRef.current[1].focus()
       }
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-        console.log(open)
-
         setScanedNumber({
           id,
           product_id: get(open, 'data.id'),

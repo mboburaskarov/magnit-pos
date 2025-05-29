@@ -1,10 +1,9 @@
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import * as qs from 'qs'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import LazySelect from '../../../../components/Select/LazySelect'
@@ -17,9 +16,6 @@ export default function FilterMenu({ open, setOpen }) {
   const { values } = useQueryParams()
   const methods = useForm()
   const { formState, reset, control } = methods
-  const [startDate, setStartDate] = useState(0)
-  const [endDate, setEndDate] = useState(0)
-  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
     const requestBody = {
@@ -92,8 +88,6 @@ export default function FilterMenu({ open, setOpen }) {
               label={t('input.store.label')}
               filters={{ limit: 10 }}
               control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
               getOptionLabel={(option) => {
                 return option.name
               }}

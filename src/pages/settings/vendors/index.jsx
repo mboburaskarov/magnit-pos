@@ -1,17 +1,16 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
-import StyledDialog from '../../../../components/Dialogs/StyledDialog'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
@@ -25,7 +24,6 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import CreateVendorDrawer from './createVendorDrawer'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function VendorsPage() {
@@ -33,11 +31,9 @@ export default function VendorsPage() {
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.vendorsTableColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [openCreateVendorDrawer, setopenCreateVendorDrawer] = useState(false)
-  const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [slectedVendors, setSelectedVendors] = useState([])
@@ -59,7 +55,6 @@ export default function VendorsPage() {
     setopenCreateVendorDrawer,
   })
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
@@ -81,7 +76,6 @@ export default function VendorsPage() {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
       category_id: values?.category_id,
       producer: values?.producer,
@@ -90,7 +84,6 @@ export default function VendorsPage() {
       region: values?.region_id,
       supply_price_from: values?.supply_price_from,
       retail_price_from: values?.retail_price_from,
-      isExpress: values?.isExpress,
     }
   }, [
     values?.offset,
@@ -103,9 +96,6 @@ export default function VendorsPage() {
     values?.retail_price_to,
     values?.supply_price_from,
     values?.retail_price_from,
-    values?.region_id,
-    values?.isExpress,
-    regions,
   ])
   const {
     data: vendorsList,
@@ -289,7 +279,6 @@ export default function VendorsPage() {
                 resetTableHeader={resetTableHeader}
               />
             </Box>
-            {/* <CheckAccess id={'product-create'}> */}
             <Box minWidth={156}>
               <Button
                 sx={{ height: '48px' }}
@@ -302,10 +291,9 @@ export default function VendorsPage() {
                 {t('button.add_new.text')}
               </Button>
             </Box>
-            {/* </CheckAccess> */}
           </Box>
         </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'

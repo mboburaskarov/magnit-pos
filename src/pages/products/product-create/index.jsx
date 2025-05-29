@@ -40,7 +40,6 @@ export default function ProductCreatePage() {
       barcode: get(data, 'barcode'),
       bonus_percent: Number(get(data, 'bonus_percent')),
       description: get(data, 'description'),
-      // expire_date: get(data, 'expire_date'),
       producer_id: get(data, 'manufacturer.value'),
       shelf_id: get(data, 'shelf_id.value'),
 
@@ -71,10 +70,6 @@ export default function ProductCreatePage() {
           pack_quantity: Number(get(item, 'pack_quantity', 0)),
           small_quantity: Number(get(item, 'small_quantity', 0)),
         })),
-      // sum: Number(get(data, 'retail_price')),
-      // supply_price: Number(get(data, 'supply_price')),
-      // vat: Number(get(data, 'vat')),
-      // vat_price: Number(get(data, 'vat_price')),
     }
 
     createProduct(requestBody)

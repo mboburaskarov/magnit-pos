@@ -89,8 +89,6 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
               request={requests.getProductListForSelect}
               filters={{ limit: 10 }}
               control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
               getOptionLabel={(option) => {
                 return option.name
               }}

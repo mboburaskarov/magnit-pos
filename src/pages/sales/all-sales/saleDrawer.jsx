@@ -1,6 +1,6 @@
-import { Box, Button, Drawer } from '@mui/material'
+import { Button, Drawer } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import CheckAccess from '../../../../components/CheckAccess'
 import SaleChildDrawer from './saleChildDrawer'
@@ -8,7 +8,6 @@ import SaleChildDrawer from './saleChildDrawer'
 const useStyles = makeStyles((theme) => ({
   drawer: {
     overflow: 'hidden',
-    // position: 'relative !important',
     left: 'auto !important',
     '& .MuiDrawer-paper': {
       width: '600px',
@@ -55,22 +54,6 @@ function SaleDrawer({ open, setOpen, ids }) {
           Повторный чек
         </Button>
       </CheckAccess>
-      <Box
-        sx={{
-          bottom: 10,
-          m: '10px 10px',
-          '& .MuiButtonBase-root': {
-            height: 48,
-          },
-        }}
-      >
-        {/* <Button fullWidth color='secondary' variant='contained'>
-          <WithdrawIcon />
-          <Typography fontSize={16} ml={'12px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-            {t('print')}
-          </Typography>
-        </Button> */}
-      </Box>
     </Drawer>
   )
 }

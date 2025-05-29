@@ -16,9 +16,6 @@ import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
-import errorAudio from '../../../assets/audio/error.mp3'
-import successAudio from '../../../assets/audio/normal.mp3'
-import overplusAudio from '../../../assets/audio/overplus.mp3'
 import ArrowDown from '../../../assets/icons/ArrowDown'
 import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
@@ -29,9 +26,6 @@ import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function WriteOffCompletedPage() {
-  const errorScanAudio = new Audio(errorAudio)
-  const successScanAudio = new Audio(successAudio)
-  const overplusScanAudio = new Audio(overplusAudio)
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
@@ -41,15 +35,11 @@ export default function WriteOffCompletedPage() {
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
-  const [hasTableChange, setHasTableChange] = useState(false)
-  const [appType, setAppType] = useState('ALL')
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
-  const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedWriteOffNumber, {
     onSuccess: ({ data }) => {
-      // refetch()
       refetchgetWriteOffDashBoard()
       setBarcode('')
     },
@@ -82,16 +72,10 @@ export default function WriteOffCompletedPage() {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: barcode,
-      type: status,
     }
   }, [id])
 
-  const {
-    data: getWriteOffDashBoard,
-    isLoading: getWriteOffDashBoardLoading,
-    isFetching: isFetchinggetWriteOffDashBoard,
-    refetch: refetchgetWriteOffDashBoard,
-  } = useQuery(['getWriteOffDashBoard', id], () => requests.getWriteOffDashBoard(id))
+  const { data: getWriteOffDashBoard, refetch: refetchgetWriteOffDashBoard } = useQuery(['getWriteOffDashBoard', id], () => requests.getWriteOffDashBoard(id))
 
   const {
     data: WriteOffWithCheckingDetails,
@@ -222,22 +206,12 @@ export default function WriteOffCompletedPage() {
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
-                status={appType}
-                isRefreshing={loading || hasTableChange || isFetchingWriteOffWithCheckingDetails || WriteOffWithCheckingDetailsLoading}
+                status={'ALL'}
+                isRefreshing={loading || isFetchingWriteOffWithCheckingDetails || WriteOffWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
         </Container>
-        {/* <ConflictDialog
-          refetch={refetch}
-          setBarcode={setBarcode}
-          manualNumber={manualNumber}
-          conflictList={conflictList}
-          open={conflictOpen}
-          setOpen={() => {
-            setConflictOpen(false), setConflictList([])
-          }}
-        /> */}
       </FormProvider>
       <ConfirmDialog
         open={openFinishConfirmDialog}

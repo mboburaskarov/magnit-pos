@@ -23,7 +23,6 @@ import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
-import overplusAudio from '../../../assets/audio/overplus.mp3'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
@@ -36,7 +35,6 @@ const SELECTION_ID = 'checkboxSelectionField'
 export default function InventoryWithCheckingPage() {
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
-  const overplusScanAudio = new Audio(overplusAudio)
   const [openUpload, setOpenUpload] = useState(false)
   const [hasChange, setHasChange] = useState(false)
   const dispatch = useDispatch()
@@ -46,30 +44,23 @@ export default function InventoryWithCheckingPage() {
   const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.inventoryWithCheckingColumns)
   const { values } = useQueryParams()
-  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(false)
   const [barcode, setBarcode] = useState('')
   const [rowData, setRowData] = useState([])
 
   const methods = useForm()
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
-  const [modernSearch, setModernSearch] = useState('')
   const [selectedCellRowId, setSelectedCellRowId] = useState(null)
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(null)
-  const [hasTableChange, setHasTableChange] = useState(false)
   const [quantityModalOpen, setQuantityModalOpen] = useState(false)
-  const [appType, setAppType] = useState('ALL')
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
-  const [manualNumber, setManualNumber] = useState(1)
   const [debouncedSearchBarcode] = useDebounce(barcode, 200)
 
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
       refetch()
       successScanAudio.play()
-      // fetchStatusCountList()
-      // setBarcode('')g
     },
     onError: (err) => {
       refetch()
@@ -87,18 +78,9 @@ export default function InventoryWithCheckingPage() {
     },
   })
   const handleFocus = () => {
-    console.log(inventoryWithCheckingDetails)
-
     const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
-    const currentfocus = document.activeElement?.tagName
-    console.log(currentfocus, 'currentfocus')
-    console.log(childRef, 'childRef')
-    console.log(firstrowid, 'firstrowid')
-    console.log(lastSelectedCellRowId, 'lastSelectedCellRowId')
     const activeEl = document.activeElement
-    const tag = activeEl?.tagName?.toLowerCase()
     const classList = activeEl?.classList || []
-    console.log(classList)
     if (classList.contains('ag-cell')) {
       if (barcode && inventoryWithCheckingDetails?.data?.data?.data.length == 1) {
         setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data[0] })
@@ -118,10 +100,7 @@ export default function InventoryWithCheckingPage() {
     }
   }
   const handleFocusUnit = () => {
-    console.log(inventoryWithCheckingDetails)
-
     const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
-    const currentfocus = document.activeElement?.tagName
 
     // Call the exposed method: focus row with id 'b2' on column 'qty'
     if (lastSelectedCellRowId != null && inventoryWithCheckingDetails?.data?.data?.data?.some((el) => el?.id === lastSelectedCellRowId)) {
@@ -152,36 +131,18 @@ export default function InventoryWithCheckingPage() {
     }
   }, [values?.offset, orderStoring, status, values?.limit, id, debouncedSearchBarcode])
 
-  // const {
-  //   data: inventoryDetails,
-  //   isLoading: inventoryDetailsLoading,
-  //   isFetching: isFetchinginventoryDetails,
-  //   refetch,
-  // } = useQuery(['inventoryDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
-
   const {
     data: inventoryWithCheckingDetails,
     isLoading: inventoryWithCheckingDetailsLoading,
     isFetching: isFetchinginventoryWithCheckingDetails,
     refetch,
   } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
-  // useEffect(() => {
-  //   console.log(selectedCellRowId)
 
-  //   if (selectedCellRowId) return
-  //   const focustimeout = () =>
-  //     setTimeout(() => {
-  //       handleFocus()
-  //     }, 100)
-  //   focustimeout()
-  //   return clearTimeout(focustimeout)
-  // }, [inventoryWithCheckingDetailsLoading, selectedCellRowId])
   useEffect(() => {
     if (selectedCellRowId) {
       setLastSelectedCellRowId(selectedCellRowId)
     }
   }, [selectedCellRowId])
-  console.log(selectedCellRowId, lastSelectedCellRowId)
 
   /// filter table columns with permission
   useEffect(() => {
@@ -220,11 +181,6 @@ export default function InventoryWithCheckingPage() {
 
     if (colDef?.field === 'fact_quantity' && newValue !== oldValue) {
       const fact_quantity = newValue
-      // if (fact_quantity > get(data, 'unit_per_pack')) {
-      //   errorScanAudio.play()
-      //   error('Количество не может быть больше количества в упаковке!')
-      //   return
-      // }
       if (fact_quantity < 0) {
         errorScanAudio.play()
         refetch()
@@ -314,8 +270,6 @@ export default function InventoryWithCheckingPage() {
       if (event.code === 'Space') {
         setBarcode((p) => p + ' ')
       }
-
-      console.log(event)
     },
     {
       // enableOnFormTags: true,
@@ -329,7 +283,6 @@ export default function InventoryWithCheckingPage() {
       const activeEl = document.activeElement
       const tag = activeEl?.tagName?.toLowerCase()
       const classList = activeEl?.classList || []
-      console.log(classList)
 
       const isAGGridInput =
         tag === 'input' &&
@@ -338,16 +291,10 @@ export default function InventoryWithCheckingPage() {
           classList.contains('ag-text-field-input') ||
           classList.contains('ag-cell-editor'))
 
-      console.log(event, isAGGridInput)
-
       if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
-        console.log('hi')
-
         handleFocusUnit()
       }
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-        console.log('entereerr')
-
         if (document.activeElement?.tagName === 'INPUT') return
         handleFocus()
       }
@@ -362,24 +309,9 @@ export default function InventoryWithCheckingPage() {
       handleFocus()
     }
   }, [quantityModalOpen])
-  // useEffect(() => {
-  //   if (realTimeSelectedCellRowId) {
-  //     setLastSelectedCellRowId(realTimeSelectedCellRowId)
-  //   }
-  // }, [realTimeSelectedCellRowId])
   useEffect(() => {
     if (inventoryWithCheckingDetails?.data?.data?.data) {
-      setRowData([
-        ...inventoryWithCheckingDetails?.data?.data?.data,
-        // {
-        //   id: 'ag-grid-footer',
-        //   name: 'Итого',
-        //   pinned: true,
-        //   fact_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'),
-        //   current_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'),
-        //   difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
-        // },
-      ])
+      setRowData([...inventoryWithCheckingDetails?.data?.data?.data])
       get(inventoryWithCheckingDetails, 'data.data.data', []).map((importData) => {
         methods.setValue(`net_amount_${get(importData, 'id')}`, get(importData, 'net_amount'))
       })
@@ -399,24 +331,6 @@ export default function InventoryWithCheckingPage() {
           checkAccessId={'product-create'}
         />
         <Container>
-          {/* <Box
-            sx={{
-              m: ' 0 0 20px',
-              userSelect: 'none !important',
-              cursor: 'pointer',
-              '& > p': {
-                cursor: 'pointer',
-                userSelect: 'none !important',
-              },
-            }}
-            display={'flex'}
-            onClick={() => setIsOpenStatDashboard((p) => !p)}
-          >
-            {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
-            <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
-          </Box> */}
-          {/* {isOpenStatDashboard && <InventoryDashboard setHasChange={setHasChange} data={get(inventoryStat, 'data.data')} />} */}
-
           <Box display='flex' flexDirection='column' position='relative' pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
               <Box display={'flex'}>
@@ -538,22 +452,11 @@ export default function InventoryWithCheckingPage() {
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
-                status={appType}
-                isRefreshing={loading || hasTableChange || isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
+                isRefreshing={loading || isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
         </Container>
-        {/* <ConflictDialog
-          refetch={refetch}
-          setBarcode={setBarcode}
-          manualNumber={manualNumber}
-          conflictList={conflictList}
-          open={conflictOpen}
-          setOpen={() => {
-            setConflictOpen(false), setConflictList([])
-          }}
-        /> */}
       </FormProvider>
       <ConfirmDialog
         open={openFinishConfirmDialog}

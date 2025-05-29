@@ -1,6 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -12,8 +13,6 @@ import ConfirmDialog from '../../../../components/ConfirmDialog'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
-// import SoonPage from '../../../../components/soon/index'
-import dayjs from 'dayjs'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
@@ -27,7 +26,6 @@ import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function ReturnToWarehousePage() {
-  // return <SoonPage />
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -191,15 +189,7 @@ export default function ReturnToWarehousePage() {
             </Box>
             <CheckAccess id={'create-return-to-warehouse'} noAccess>
               <Box minWidth={156}>
-                <Button
-                  sx={{ height: '48px' }}
-                  type='submit'
-                  onClick={() => setOrderModel(true)}
-                  fullWidth
-                  // startIcon={<PlusIcon color='#fff' />}
-                  variant='contained'
-                  color='primary'
-                >
+                <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
                   Новая Возврат
                 </Button>
               </Box>
@@ -214,8 +204,6 @@ export default function ReturnToWarehousePage() {
             id='imports-main-table'
             fullDownload={() => getReturnToWarehouseExcelReport({ ...returnsListFilter, limit: 1000000 })}
             downloadByFilter={() => getReturnToWarehouseExcelReport(returnsListFilter)}
-            // fullDownload={() => importsExcelReport({ ...returnsListFilter, limit: 1000000 })}
-            // downloadByFilter={() => importsExcelReport(returnsListFilter)}
             isDownloading={isgetReturnToWarehouseExcelReport}
             tableSettings
             columns={tableColumns}

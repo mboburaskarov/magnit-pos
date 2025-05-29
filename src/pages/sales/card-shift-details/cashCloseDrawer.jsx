@@ -1,7 +1,7 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -287,7 +287,6 @@ function CashCloseDrawer({ open, setOpen }) {
             disabled={iscloseZReport}
             type='submit'
             onClick={() => {
-              // setOpen(false)
               closeZReport({
                 token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
                 method: 'closeZreport', // Название метода, Обязательное поле, String

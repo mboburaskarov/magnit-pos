@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 // import { TreeItem as MuiTreeItem } from '@mui/lab'
 // import MuiTreeItem from '@mui/lab/TreeItem'
 import { TreeItem as MuiTreeItem } from '@mui/x-tree-view/TreeItem'
@@ -35,7 +35,7 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
             const childNodes = getTreeNodes({ tree, node })
             const childNodesLength = childNodes.length
             if (childNodesLength > 0) {
-              console.log('##4', childNodes, node, value)
+              console.log('##4')
 
               newSelectSoFar = [...newSelectSoFar, ...childNodes]
               // newSelectSoFar = [...newSelectSoFar?.filter((select) => !childNodes.includes(select))]

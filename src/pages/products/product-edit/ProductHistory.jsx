@@ -102,7 +102,6 @@ export default function ProductHistory({ id }) {
             </Box>
           </>
         ),
-        // <Typography>{get(data, 'import.accepted_count')}</Typography>,
       },
       {
         headerName: 'Цена',
@@ -119,7 +118,6 @@ export default function ProductHistory({ id }) {
             </Box>
           </>
         ),
-        // <Typography>{get(data, 'import.accepted_count')}</Typography>,
       },
       {
         headerName: 'Магазин',

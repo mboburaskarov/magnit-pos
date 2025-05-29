@@ -28,7 +28,6 @@ export default function CasShiftsPage() {
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.cashBoxShiftsTableColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [filterMenu, setFilterMenu] = useState(false)
   const tableColumns = tableHeaderSelector({
@@ -37,7 +36,6 @@ export default function CasShiftsPage() {
     values,
   })
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
@@ -90,12 +88,7 @@ export default function CasShiftsPage() {
       error('Ошибка при скачать excel!')
     },
   })
-  const {
-    data: cashShiftStat,
-    isLoading: cashShiftStatLoading,
-    isFetching: isFetchingcashShiftStat,
-    refetch: cashStatFtech,
-  } = useQuery(['cashShiftStat', cashShiftsListFilter], () => requests.getCashBoxShiftsStat(cashShiftsListFilter))
+  const { data: cashShiftStat } = useQuery(['cashShiftStat', cashShiftsListFilter], () => requests.getCashBoxShiftsStat(cashShiftsListFilter))
 
   return (
     <LoadingContainer readyState={true}>
@@ -166,7 +159,7 @@ export default function CasShiftsPage() {
             </CheckAccess>
           </Box>
         </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'

@@ -1,7 +1,7 @@
 import { Box, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { get } from 'lodash'
-import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
@@ -145,7 +145,6 @@ function OrderLite({
     }, 100)
   }
   useEffect(() => {
-    // if (maxAmount < getValues('lite_card_amount') - paymentsList.find((a) => a.type == 'card')?.amount) return
     if (cardPaymentType.from == 'Uzcard') {
       const updatedPaymentList = paymentsList.map((payment) =>
         payment.type === 'card'
@@ -175,8 +174,6 @@ function OrderLite({
     }
   }, [watch('lite_card_amount')])
   useEffect(() => {
-    // if (maxAmount < getValues('lite_online_amount') - paymentsList.find((a) => a.type == 'app')?.amount) return
-
     if (onlinePaymentType.from == 'Click') {
       const updatedPaymentList = paymentsList.map((payment) =>
         payment.type === 'app'
@@ -224,18 +221,7 @@ function OrderLite({
     setValue('onlinePaymentType', onlinePaymentType)
     setValue('cardPaymentType', cardPaymentType)
   }, [onlinePaymentType, cardPaymentType])
-  // useHotkeys(
-  //   'F8',
-  //   (event) => {
-  //     console.log(event)
-  //     setQrcodeUrl({ qr: false })
-  //     emptyHandlePrint()
-  //   },
-  //   {
-  //     enableOnTags: ['INPUT', 'TEXTAREA'],
-  //     enableOnFormTags: true,
-  //   }
-  // )
+
   useHotkeys(
     ['n', 'N', 'т'],
     (event) => {
@@ -553,11 +539,6 @@ function OrderLite({
             })(),
           }),
         })
-
-        // setInputDiscount(NaN)
-        // setPaymentsList([])
-
-        // success('Продажа завершена!')
       }
     },
     onError: (err) => {
@@ -598,11 +579,6 @@ function OrderLite({
       console.log('err', err)
     },
   })
-  // useEffect(() => {
-  //   if (qrcodeUrl.qr != 'pending') {
-  //     // handlePrint()
-  //   }
-  // }, [qrcodeUrl])
   useEffect(() => {
     if (newSaleId) {
       if (qrcodeUrl.qr != 'pending') {
@@ -620,7 +596,6 @@ function OrderLite({
   }, [isOpenScanDialog, scannedBarcodeRef])
   const { mutate: sendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
     onSuccess: ({ data }) => {
-      console.log(data)
       setNewSaleId(get(data, 'data.id', false))
     },
     onError: (err) => {
@@ -847,8 +822,6 @@ function OrderLite({
               }, 100)
               return
             }
-
-            // if ((maxAmount <= value && value >= paymentsList[2]?.amount) || maxAmount < 0) {
             if (maxAmount < value - paymentsList.find((a) => a.type == 'card')?.amount) {
               setValue('lite_card_amount', paymentsList.find((a) => a.type == 'card')?.amount)
               inputRefs.current[1].value = paymentsList.find((a) => a.type == 'card')?.amount
@@ -913,7 +886,6 @@ function OrderLite({
               }, 100)
               return
             }
-            // if ((maxAmount <= value && value >= paymentsList[2]?.amount) || maxAmount < 0) {
 
             if (maxAmount < value - paymentsList.find((a) => a.type == 'app')?.amount) {
               setValue('lite_online_amount', paymentsList.find((a) => a.type == 'app')?.amount)

@@ -12,7 +12,6 @@ import ConfirmDialog from '../../../../components/ConfirmDialog'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
-// import SoonPage from '../../../../components/soon/index'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
@@ -26,7 +25,6 @@ import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function WriteOffPage() {
-  // return <SoonPage />
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -189,15 +187,7 @@ export default function WriteOffPage() {
             </Box>
             <CheckAccess id={'create-auto-order'}>
               <Box minWidth={156}>
-                <Button
-                  sx={{ height: '48px' }}
-                  type='submit'
-                  onClick={() => setOrderModel(true)}
-                  fullWidth
-                  // startIcon={<PlusIcon color='#fff' />}
-                  variant='contained'
-                  color='primary'
-                >
+                <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
                   Новая Списание
                 </Button>
               </Box>
@@ -210,8 +200,6 @@ export default function WriteOffPage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
-            // fullDownload={() => importsExcelReport({ ...writeOffListFilter, limit: 1000000 })}
-            // downloadByFilter={() => importsExcelReport(writeOffListFilter)}
             isDownloading={isimportsExcelReport}
             tableSettings
             columns={tableColumns}
@@ -242,7 +230,6 @@ export default function WriteOffPage() {
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
           title={'Удалить инвентаризацию?'}
           desc={'Вы уверены что хотите удалить инвентаризацию?'}
-          // supDesc={'“Azitromitsin 250 mg”'}
           actions={
             <>
               <Button

@@ -130,7 +130,6 @@ export default function ImportDetailsPage() {
           buttonText='Детали импорта'
           backIcon
           noActions
-          // backButtonClick={() => (get(values, 'tab') === 'details' ? '/products/all' : '/products/import')}
           backHref={
             get(values, 'tab') === 'details'
               ? '/products/all'
@@ -211,7 +210,6 @@ export default function ImportDetailsPage() {
                     </Box>
                   }
                   popperData={[
-                    // { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => {}, soon: true },
                     { title: 'Импорт без проверки', icon: <ImportWithoutIcon />, clickHandler: () => loadWithoutChecking() },
                     { title: 'Импорт с проверкой', icon: <ImportWithIcon />, clickHandler: () => navigate(`/products/import-with-checking/${id}`) },
                   ]}

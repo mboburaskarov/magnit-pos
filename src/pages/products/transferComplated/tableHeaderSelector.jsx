@@ -2,7 +2,6 @@ import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
-import { useParams } from 'react-router-dom'
 import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 import thousandDivider from '../../../../utils/thousandDivider'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
@@ -17,7 +16,6 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
 }
 
 export default function tableHeaderSelector({ importsColumns, values, t, setScanedNumber }) {
-  const { id } = useParams()
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {
       return {

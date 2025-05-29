@@ -87,8 +87,6 @@ export default function CreateReturn({ open, refetch, setOpen }) {
                 name='name'
                 control={control}
                 fullWidth
-                // label='Назовите списание'
-                // error={errors?.name}
                 placeholder={t('Назовите Возврат')}
                 required
                 defaultValue={`Возврат ${dayjs().format('YYYY.MM.DD HH:mm')}`}
@@ -110,8 +108,6 @@ export default function CreateReturn({ open, refetch, setOpen }) {
               request={requests.getAllStores}
               filters={{ limit: 10 }}
               control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
               getOptionLabel={(option) => {
                 return option.name
               }}

@@ -102,8 +102,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 request={requests.getAllStores}
                 filters={{ limit: 10 }}
                 control={control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
                 getOptionLabel={(option) => {
                   return option.name
                 }}
@@ -125,8 +123,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 request={requests.getAllCashBoxList}
                 filters={{ limit: 10 }}
                 control={control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
                 getOptionLabel={(option) => {
                   return option.name
                 }}

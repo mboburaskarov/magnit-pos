@@ -60,7 +60,6 @@ export default function SerchedItem({
           sale_id: id,
           store_product_id: get(product, 'id', 'err #1'),
         })
-        // setSearchTerm('')
       }}
       sx={{
         position: 'relative',
@@ -76,11 +75,6 @@ export default function SerchedItem({
               },
             },
       }}
-      // onKeyDown={(event) => {
-      //   if (event.key === 'Enter' && fakeIndexForCheckSearch === index) {
-      //     handleAddProduct(product)
-      //   }
-      // }}
       tabIndex={index}
       key={index}
       ref={itemRef}
@@ -116,9 +110,6 @@ export default function SerchedItem({
                   className={classes.itemBarcode}
                   textToHighlight={product?.barcode}
                 />
-                {/* <Typography color={'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
-                  / {get(product, 'quantity ', 0)}
-                </Typography> */}
                 <Typography color={get(product, 'expire_day', 0) < 0 ? 'red.500' : 'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
                   / {dayjs(get(product, 'expire_date')).format('DD.MM.YYYY')} ({get(product, 'expire_day', 0)} kun)
                 </Typography>
@@ -200,25 +191,6 @@ export default function SerchedItem({
             </Box>
           ))}
       </Box>
-
-      {/* {item?.bonus_amount > 0 && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 3,
-            right: -16,
-            backgroundColor: '#fe5000',
-            color: '#fff',
-            fontSize: '14px',
-            fontWeight: '600',
-            padding: '2px 15px 2px 30px',
-            transform: 'rotate(35deg)',
-          }}
-          id='product-details'
-        >
-          Bonus
-        </Box>
-      )} */}
     </Box>
   )
 }

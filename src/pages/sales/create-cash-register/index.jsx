@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
@@ -150,7 +150,9 @@ function NewCashRegister() {
   const { mutate: openZReport, isLoading: isopenZReport } = useMutation(requests.openZReport, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true) == false || get(data, 'message', '').includes('ERROR_ZREPORT_IS_ALREADY_OPEN')) {
+        localStorage.setItem('leftZreportCount', get(data, 'leftZreportCount', 0))
         methods.handleSubmit(onSubmit, onError)()
+
         return
       } else {
         error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)

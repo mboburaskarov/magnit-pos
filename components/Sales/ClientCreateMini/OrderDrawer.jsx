@@ -434,13 +434,7 @@ export default function OrderDrawer({
       console.log('err', err)
     },
   })
-  // useEffect(() => {
-  //   if (qrcodeUrl.qr != 'pending') {
-  //     setIsOrderDrower(false)
 
-  //     setPaymentsList([])
-  //   }
-  // }, [qrcodeUrl])
   useEffect(() => {
     if (newSaleId) {
       if (qrcodeUrl.qr != 'pending') {
@@ -627,7 +621,6 @@ export default function OrderDrawer({
       enableOnFormTags: true,
     }
   )
-  console.log(markingCount, markingsList)
 
   return (
     <Box hidden>

@@ -1,5 +1,4 @@
-import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
@@ -9,8 +8,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import ImageGallery from '../../../../components/ImageGallery'
 import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRangeInput'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -19,14 +16,9 @@ import SelectSimple from '../../../../components/Select/SelectSimple'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
-import BigTickIcon from '../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import LockIcon from '../../../assets/icons/LockIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/sellerBonusTableColumns'
 import FilterMenu from '../../clients/FilterMenu'
-import SaleDrawer from './saleDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function SellerBonus() {
@@ -37,15 +29,9 @@ export default function SellerBonus() {
   const [selectedShops, setSelectedShops] = useState('all')
   const { columns, loading } = useSelector((state) => state.sellerBonusTableColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
-  const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [selectedCurrency, setSelectedCurrency] = useState()
   const [selectedBonusType, setSelectedBonusType] = useState({ id: 'default', name: 'По умолчанию' })
   const [filterMenu, setFilterMenu] = useState(false)
-  const [openSaleDrawer, setOpenSaleDrawer] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
-  const [slectedVendors, setSelectedVendors] = useState([])
   const sortTypes = [
     { id: 'default', name: 'По умолчанию' },
     { id: 'max_amount', name: 'Топ продажи сум' },
@@ -56,12 +42,11 @@ export default function SellerBonus() {
   const tableColumns = tableHeaderSelector({
     vendorsColumns: columns,
     t,
-    setOpenSaleDrawer,
   })
   useEffect(() => {
     navigate(`/reports/seller-bonus?limit=10&offset=0&start_date=${dayjs().startOf('month').format('YYYY-MM-DD')}&end_date=${dayjs().format('YYYY-MM-DD')}`)
   }, [shopList])
-  /// filter table columns with permission
+
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
@@ -83,13 +68,13 @@ export default function SellerBonus() {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
       order: selectedBonusType == 'default' ? undefined : selectedBonusType?.id,
       start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
       end_date: values?.start_date == values?.end_date ? null : values?.end_date,
     }
   }, [values?.offset, selectedBonusType, selectedShops, values?.limit, values?.search, values?.store_id, values?.start_date, values?.end_date])
+
   const {
     data: sellerBonnus,
     isLoading: sellerBonnusLoading,
@@ -143,83 +128,6 @@ export default function SellerBonus() {
             >
               <InputSearch fullWidth id='producrs-search' name='search' placeholder={'ID, имя, телефон'} uncontrolled />
             </Box>
-
-            {/* <Box mr={'10px'} minWidth={113}>
-              <Button
-                sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
-                  },
-                }}
-                fullWidth
-                startIcon={<FilterMenuIcon />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
-              >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
-            </Box> */}
-            {slectedVendors.length > 0 && (
-              <>
-                <Box ml={'16px'}>
-                  <Button
-                    sx={{
-                      height: '48px',
-                      padding: 0,
-                      bgcolor: '#fff',
-                      border: '1px solid #ECEDF2',
-                      color: 'dark.500',
-                      fontWeight: '500',
-                      fontSize: '16px',
-                      lineHeight: '24px',
-                      '& span': {
-                        mr: '12px',
-                      },
-                    }}
-                    fullWidth
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => deActivateVendor(slectedVendors)}
-                  >
-                    <LockIcon color='#111217' />
-                  </Button>
-                </Box>
-                <Box minWidth={48} ml={'16px'}>
-                  <Button
-                    sx={{
-                      height: '48px',
-                      padding: 0,
-                      bgcolor: '#fff',
-                      border: '1px solid #ECEDF2',
-                      color: 'dark.500',
-                      fontWeight: '500',
-                      fontSize: '16px',
-                      lineHeight: '24px',
-                      '& span': {
-                        mr: '12px',
-                      },
-                    }}
-                    fullWidth
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => deleteVendor({ data: slectedVendors })}
-                  >
-                    <DeleteIcon width='24px' />
-                  </Button>
-                </Box>
-              </>
-            )}
           </Box>
           <SelectSimple
             name='customer_id'
@@ -254,10 +162,8 @@ export default function SellerBonus() {
             <MultiOptionSelectNew
               zIndex={999}
               placeholder={t('placeholders.select_shops')}
-              // fullWidth
               multiple
               defaultSelectedAll
-              // minWidth='auto'
               beforeContent={t('placeholders.select_shops')}
               value={selectedShops}
               allOptions={get(shopList, 'data.data.ids', [])}
@@ -282,7 +188,7 @@ export default function SellerBonus() {
             </Box>
           </Box>
         </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'
@@ -308,58 +214,6 @@ export default function SellerBonus() {
           />
         </Box>
       </Box>
-
-      <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
-      {openConfirmDialog && (
-        <ConfirmDialog
-          open={!!openConfirmDialog}
-          setOpen={setOpenConfirmDialog}
-          icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={
-            openConfirmDialog?.type === 'activate'
-              ? 'Активировать сотрудника?'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Деактивировать сотрудника?'
-              : 'Удалить сотрудника?'
-          }
-          desc={
-            openConfirmDialog?.type === 'activate'
-              ? 'Вы действительно хотите активировать сотрудника, но после активации вы не сможете отменить процесс.'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Вы уверены, что хотите удалить сотрудника? После удаления вы не сможете отменить процесс.'
-              : 'вы хотите удалить?'
-          }
-          supDesc={openConfirmDialog.name}
-          actions={
-            <>
-              <Button
-                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
-                fullWidth
-                color='secondary'
-                variant='contained'
-                onClick={() => setOpenConfirmDialog(null)}
-              >
-                Нет
-              </Button>
-              <LoadingButton
-                variant='contained'
-                type='button'
-                loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                onClick={() =>
-                  openConfirmDialog?.type === 'activate'
-                    ? activateVendor([openConfirmDialog.id])
-                    : openConfirmDialog?.type === 'deactivate'
-                    ? deActivateVendor([openConfirmDialog.id])
-                    : deleteVendor({ data: [openConfirmDialog.id] })
-                }
-              >
-                Да, удалить
-              </LoadingButton>
-            </>
-          }
-        />
-      )}
-      <SaleDrawer ids={[].map(({ id }) => id)} open={openSaleDrawer} setOpen={setOpenSaleDrawer} />
     </LoadingContainer>
   )
 }

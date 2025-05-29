@@ -69,7 +69,7 @@
   "switch.title.zero_price": "Нулевая цена",
 
   "switch.title.total_count": "Общий",
-
+  "components.no_options": "Нет вариантов",
   "table_columns.photo": "Фото",
   "table_columns.name": "Наименование",
   "table_columns.price": "Цена",

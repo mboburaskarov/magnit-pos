@@ -18,8 +18,6 @@ import { requests } from '../../../utils/requests'
 import { error } from '../../../utils/toast'
 import useDebouncedValue from '../../hooks/useDebouncedValue'
 import { useQueryParams } from '../../hooks/useQueryParams'
-import productPriceTableHeaderSelector from './productPriceTableHeaderSelector'
-import productStoresTableHeaderSelector from './productStoresTableHeaderSelector'
 
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
@@ -114,32 +112,6 @@ export default function ProductBody({ productData = null }) {
       }
     }
   }
-  const tableColumns = productStoresTableHeaderSelector({
-    productsColumns: columns,
-    t,
-    values,
-    productData: productData,
-    register,
-    setOpenChangeQuantity,
-    register,
-    setValues: setValue,
-    getValues: getValues,
-    applyAllFunc: applyAllFunc,
-    applyAllDateFunc: applyAllPriceFunc,
-  })
-  const priceTableColumns = productPriceTableHeaderSelector({
-    productsColumns: priceColumns,
-    t,
-    values,
-    productData: productData,
-    register,
-    setOpenChangeQuantity,
-    register,
-    setValues: setValue,
-    getValues: getValues,
-    applyAllPriceFunc: applyAllPriceFunc,
-    changeAmount: changeAmount,
-  })
 
   const storeHistoryFilter = useMemo(() => {
     return {
@@ -210,20 +182,12 @@ export default function ProductBody({ productData = null }) {
       setValue('name', productData?.name)
       setImages(productData?.photos?.map((item) => ({ file_name: item, file_url: item })))
 
-      // setValue('supply_price', productData?.supply_price || 0)
-      // setValue('retail_price', productData?.retail_price || 0)
-      // setValue('vat', productData?.vat || 0)
-      // setValue('vat_price', productData?.vat_price || 0)
-      // setValue('bonus_amount', productData?.bonus_amount || 0)
-      // setValue('markup', productData?.markup || 0)
-      // setValue('bonus_percent', productData?.bonus_percent || 0)
-
       setValue('description', productData?.description || '')
       setValue('manufacturer', getOptionsSchema(get(productData, 'producer', []), Object))
       setValue('shelf_id', getOptionsSchema(get(productData, 'shelf', []), Object))
       setValue('box_grain_count', productData?.unit_per_pack || 0)
       setValue('product_unit', { value: productData?.unit_type?.codename, name: productData?.unit_type?.unit_name, id: productData?.unit_type?.id } || 0)
-      // setValue('expire_date', get(productData, 'expire_date', false) ? new Date(get(productData, 'expire_date', new Date())) : null)
+      // setValue('expire_date', get(productDaa, 'expire_date', false) ? new Date(get(productData, 'expire_date', new Date())) : null)
       setValue('barcode', productData?.barcode || 0)
       setProductCategories(productData?.categories?.map((el, ind) => ({ ...el, name: el.nameRu, quantity: productData?.quantityOfCategories?.[ind] })))
     } else {
@@ -294,15 +258,6 @@ export default function ProductBody({ productData = null }) {
 
         <Box height={'24px'} />
         <Box display={'flex'} width={'100%'} mt={'24px'}>
-          {/* <TextField
-            required
-            fullWidth
-            borderRadius={'40px'}
-            name='manufacturer'
-            label={t('create_new_product.features.manufacturer')}
-            placeholder={t('create_new_product.features.manufacturer.placeholder')}
-            sx={{ mb: 3 }}
-          /> */}
           <LazySelect
             isCreatable={true}
             slug='manufacturer'
@@ -316,14 +271,10 @@ export default function ProductBody({ productData = null }) {
             isClearable={true}
             request={requests.getProducer}
             filters={{ limit: 10 }}
-            // control={control}
-            // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-            // request={requests.brand.getAll}
             createOptionRequest={requests.createProducer}
             getOptionLabel={(option) => {
               return option.name
             }}
-            // filterOption={() => true}
           />
 
           {uniType === 'pack' && (
@@ -381,17 +332,7 @@ export default function ProductBody({ productData = null }) {
           </Box>
         </Box>
         <Box display={'flex'} width={'100%'} mt={'24px'}>
-          {/* <InputDatePicker
-            defaultValue={new Date()}
-            name='expire_date'
-            minDate={new Date()}
-            required
-            id='expire_date'
-            label='Дата срока'
-            placeholder='Дата срока'
-          /> */}
           <Box width={'20px'} />
-          {/* <Box maxWidth={'200px'}> */}
           <LazySelect
             isCreatable={true}
             slug='shelf_id'
@@ -405,17 +346,11 @@ export default function ProductBody({ productData = null }) {
             isClearable={true}
             request={requests.getShelf}
             filters={{ limit: 10 }}
-            // control={control}
-            // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-            // request={requests.brand.getAll}
             createOptionRequest={requests.createShelf}
             getOptionLabel={(option) => {
               return option.name
             }}
-            // filterOption={() => true}
           />
-          {/* <TextField required fullWidth borderRadius={'40px'} name='shelf' label={'Полка'} placeholder={'А4'} sx={{ mb: 3 }} /> */}
-          {/* </Box> */}
           <Box width={'20px'} />
 
           <TextField
@@ -449,113 +384,6 @@ export default function ProductBody({ productData = null }) {
             sx={{ mb: 3 }}
           />
         </Box>
-
-        {/* <Box height={'56px'} /> */}
-        {/* <MeasurementValueDialog setValue={setValue} open={openChangeQuantity} setOpen={setOpenChangeQuantity} /> */}
-        {/* <SectionTitle noWrap withLine>
-          {t('create_new_product.amount_section.label')}
-        </SectionTitle>
-        <Box mt={'24px'}>
-          <InputSearch
-            // fullWidth
-
-            maxWidth={'500px'}
-            onChange={({ target }) => setStoreSearchText(get(target, 'value'))}
-            id='producrs-search'
-            name='search'
-            placeholder={'Поиск филиала'}
-          />
-        </Box> */}
-
-        {/* <Box mt={'24px'}>
-          <AgGridTable
-            id='products-main-feftables'
-            tableSettings
-            columns={tableColumns}
-            data={get(storeList, 'data.data.data')}
-            totalCount={storeList?.data?.data?._meta?.total_count || 0}
-            pagination
-            offsetQuery='offsetStore'
-            limitQuery='limitStore'
-            isDataLoading={false}
-            offsetCount={offsetCount}
-            fullInfoAboutCurrentPage
-            resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={false}
-          />
-        </Box> */}
-        {/* <Box height={'56px'} /> */}
-        {/* <MeasurementValueDialog setValue={setValue} open={openChangeQuantity} setOpen={setOpenChangeQuantity} /> */}
-        {/* <SectionTitle noWrap withLine>
-          {t('create_new_product.amount_section.label')}
-        </SectionTitle>
-        <Box mt={'24px'}>
-          <InputSearch
-            // fullWidth
-
-            maxWidth={'500px'}
-            uncontrolled={false}
-            onChange={({ target }) => setStoreSearchText(get(target, 'value'))}
-            id='producrs-search'
-            name='search'
-            placeholder={'Поиск филиала'}
-          />
-        </Box>
-        <Box mt={'24px'}>
-          <AgGridTable
-            id='products-main-feftables'
-            tableSettings
-            columns={priceTableColumns}
-            data={get(storeList, 'data.data.data')}
-            totalCount={storeList?.data?.data?._meta?.total_count || 0}
-            pagination
-            offsetQuery='offsetStore'
-            limitQuery='limitStore'
-            isDataLoading={false}
-            offsetCount={offsetCount}
-            fullInfoAboutCurrentPage
-            resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={false}
-          />
-        </Box> */}
-        {/* <Box height={'50px'} />
-
-        <Box mt={'24px'}>
-          <AgGridTable
-            id='products-main-feftables'
-            tableSettings
-            columns={bonusPriceTableColumns}
-            data={get(storeList, 'data.data.data')}
-            totalCount={storeList?.data?.data?._meta?.total_count || 0}
-            pagination
-            offsetQuery='offsetStore'
-            limitQuery='limitStore'
-            isDataLoading={false}
-            offsetCount={offsetCount}
-            fullInfoAboutCurrentPage
-            resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={false}
-          />
-        </Box>
-        <Box height={'50px'} />
-
-        <Box mt={'24px'}>
-          <AgGridTable
-            id='products-main-feftables'
-            tableSettings
-            columns={vatPriceTableColumns}
-            data={get(storeList, 'data.data.data')}
-            totalCount={storeList?.data?.data?._meta?.total_count || 0}
-            pagination
-            offsetQuery='offsetStore'
-            limitQuery='limitStore'
-            isDataLoading={false}
-            offsetCount={offsetCount}
-            fullInfoAboutCurrentPage
-            resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={false}
-          />
-        </Box> */}
 
         <Box height={'56px'} />
         <SectionTitle noWrap withLine>

@@ -2,7 +2,7 @@ import { Box, Grid, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -151,14 +151,6 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
       <Box className={classes.drawer}>
         <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
           <Box display={'flex'} alignItems={'center'}>
-            {/* <Box
-              onClick={() => {
-                setOpen(false), setOpen(false)
-              }}
-              className={classes.rightArrowIcon}
-            >
-              <LeftArrowIcon />
-            </Box> */}
             <Box ml={'16px'}>
               <Typography fontSize={24} lineHeight={'32px'} fontWeight={700}>
                 #{get(saleDetailsList, 'data.data.sale_number')}
@@ -186,7 +178,6 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
               <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
                 {t('vendor')}:
               </Typography>
-              {/* <DefaultImgIcon /> */}
               <CustomImg className={classes.usrImg} src='/default-user-img.png' />
               <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
                 {get(saleDetailsList, 'data.data.employee.first_name')}

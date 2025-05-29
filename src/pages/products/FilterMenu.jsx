@@ -139,17 +139,6 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
             <Box padding={'0 2px'} maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'scroll'}>
-              {/* <SelectSimple
-              fullWidth
-              id='sto'
-              name='store_id'
-              white
-              minWidth='auto'
-              label={t('input.store.label')}
-              placeholder={t('input.store.placeholder')}
-              getOptionLabel={(el) => el.name}
-              options={shopList?.data?.data?.data}
-            /> */}
               <SelectSimple
                 fullWidth
                 id='nobarcode'
@@ -176,8 +165,6 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                 request={requests.getAllStores}
                 filters={{ limit: 10 }}
                 control={methods.control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
                 getOptionLabel={(option) => {
                   return option.name
                 }}
@@ -185,17 +172,6 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
               />
               <Box height={'20px'} />
 
-              {/* <SelectSimple
-              fullWidth
-              id='categ'
-              white
-              name='category_id'
-              minWidth='auto'
-              label={t('input.category.label')}
-              placeholder={t('input.category.placeholder')}
-              options={categories?.data?.data?.data}
-              getOptionLabel={(el) => el.name}
-            /> */}
               <LazySelect
                 slug='users'
                 boxStyle={{ width: '100%' }}
@@ -209,8 +185,6 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                 request={requests.getAllCategories}
                 filters={{ limit: 10 }}
                 control={methods.control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
                 getOptionLabel={(option) => {
                   return option.name
                 }}
@@ -231,8 +205,6 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                 request={requests.getProducer}
                 filters={{ limit: 10 }}
                 control={methods.control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
                 getOptionLabel={(option) => {
                   return option.name
                 }}

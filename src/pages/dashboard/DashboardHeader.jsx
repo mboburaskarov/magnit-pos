@@ -27,15 +27,10 @@ export default function DashboardHeader({ selectedShops, setSelectedShops }) {
           defaultFilterData={{ label: 'Это час', start_date: dayjs().tz().startOf('week'), end_date: dayjs().tz() }}
           id='accounting-report-date-range'
         />
-        {/* <CheckAccess id='shop-create'> */}
-        {/* <Box>
-          <Button onClick={() => navigate('/shops/create')} fullWidth variant='contained' color='primary'>
-            {t('all_reports')}
-          </Button>
-        </Box> */}
+
         <Box
           sx={{
-            maxWidth: 300,
+            maxWidth: 400,
             '.selection': {
               height: '56px',
             },
@@ -44,10 +39,8 @@ export default function DashboardHeader({ selectedShops, setSelectedShops }) {
           <MultiOptionSelectNew
             zIndex={999}
             placeholder={t('placeholders.select_shops')}
-            // fullWidth
             multiple
             defaultSelectedAll
-            // minWidth='auto'
             beforeContent={t('placeholders.select_shops')}
             value={selectedShops}
             allOptions={get(shopList, 'data.data.ids', [])}
@@ -59,57 +52,7 @@ export default function DashboardHeader({ selectedShops, setSelectedShops }) {
             }}
             request={requests.getAllStores}
           />
-          {/* <PopUpSelect selectedStore={selectedStore} setselectedStore={setselectedStore} id='1' name='f' /> */}
-          {/* <LazySelect
-            slug='users'
-            boxStyle={{ minWidth: '200px', width: '100%' }}
-            id='store'
-            minHeight={'56px'}
-            name='store_id'
-            isMulti={false}
-            placeholder={t('input.store.placeholder')}
-            minWidth='auto'
-            isClearable={false}
-            // label={t('input.store.label')}
-            request={requests.getAllStores}
-            filters={{ limit: 10 }}
-            // control={control}
-            onChange={(e) => {
-              navigate(
-                `/dashboard${qs.stringify({ ...values, ...{ store_name: get(e, 'name'), store_id: get(e, 'id') }, offset: 0 }, { addQueryPrefix: true })}`
-              )
-            }}
-            value={
-              values?.store_id
-                ? {
-                    id: values?.store_id,
-                    name: values?.store_name,
-                  }
-                : {
-                    id: 'all',
-                    name: 'Все',
-                  }
-            }
-            uncontrolled
-            getOptionLabel={(option) => {
-              return <Typography color='grey.600'>{option.name}</Typography>
-            }}
-            filterOption={() => true}
-          /> */}
-          {/* <SelectSimple
-            maxWidth={'150px'}
-            minWidth={'100px'}
-            onChange={() => {}}
-            value=''
-            uncontrolled
-            disabled={false}
-            white
-            isClearable={false}
-            options={THEME_OPTIONS}
-            name='thdeme'
-          /> */}
         </Box>
-        {/* </CheckAccess> */}
       </Box>
     </Box>
   )

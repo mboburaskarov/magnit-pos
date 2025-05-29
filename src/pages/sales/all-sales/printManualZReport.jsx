@@ -43,7 +43,6 @@ export default function PrintManualZReport({ open, setManualZreportData, refetch
     }
     const requestBody = {
       store_id: HasAccess('can_choose_z_report_sale', user_data) ? data?.store_id?.value : get(user_data, 'store.id'),
-      // store_name: data?.store_id?.name,
       start_date: startDate != 0 ? dayjs(startDate).format('YYYY-MM-DD') : undefined,
       end_date: endDate != 0 ? dayjs(endDate).format('YYYY-MM-DD') : undefined,
     }

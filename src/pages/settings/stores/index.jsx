@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -7,10 +7,7 @@ import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
-import StyledDialog from '../../../../components/Dialogs/StyledDialog'
-import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
@@ -30,8 +27,6 @@ export default function ProductsPage() {
   const { columns, loading } = useSelector((state) => state.storeTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
-  const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [rejectComment, setRejectComment] = useState(null)
   const [openCreateLocationDrawer, setopenCreateLocationDrawer] = useState(false)
 
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
@@ -40,7 +35,6 @@ export default function ProductsPage() {
     t,
     setopenCreateLocationDrawer,
     values,
-    setImages: setOpenImageGallery,
     setOpenConfirmDialog,
   })
 
@@ -133,7 +127,6 @@ export default function ProductsPage() {
                 resetTableHeader={resetTableHeader}
               />
             </Box>
-            {/* <CheckAccess id={'product-create'}> */}
             <Box minWidth={156}>
               <Button
                 sx={{ height: '48px' }}
@@ -146,7 +139,6 @@ export default function ProductsPage() {
                 {t('button.add_new.text')}
               </Button>
             </Box>
-            {/* </CheckAccess> */}
           </Box>
         </Box>
         <Box>
@@ -172,7 +164,6 @@ export default function ProductsPage() {
         </Box>
       </Box>
 
-      <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (
         <ConfirmDialog
           open={!!openConfirmDialog}
@@ -199,18 +190,7 @@ export default function ProductsPage() {
           }
         />
       )}
-      <StyledDialog open={!!rejectComment?.id} title={'Причину отклонения'} buttonLabel={'Сохранить'} onClose={() => setRejectComment(null)}>
-        {rejectComment && (
-          <Box p={7} pt={5}>
-            <TextField
-              multiline
-              onChange={(e) => setRejectComment((p) => ({ ...p, comment: e.target.value }))}
-              fullWidth
-              placeholder='Введите причину отклонения'
-            />
-          </Box>
-        )}
-      </StyledDialog>
+
       <CreateLocationDrawer
         refetchVendorList={refetch}
         setCustomerId={'setCustomerId'}

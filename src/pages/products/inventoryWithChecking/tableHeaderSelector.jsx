@@ -20,8 +20,6 @@ const CustomHeader = (props) => {
   const orderPosition = lastStort?.position || 0
   const ordercolId = lastStort?.colId || 0
   const onClick = () => {
-    console.log(props.column.colDef)
-
     let newOrder = { position: 0, colId: '' }
     if (lastStort) {
       if (orderPosition == 2 && ordercolId == props.column.colId) {
@@ -43,7 +41,6 @@ const CustomHeader = (props) => {
         }
       }
     }
-    console.log(newOrder)
 
     // Toggle sort direction manually
     props.column.colDef.setOrderStoring(newOrder)

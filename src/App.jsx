@@ -46,6 +46,40 @@ function App() {
       ) : (
         <Box></Box>
       )}
+      {localStorage.getItem('leftZreportCount') <= 3 ? (
+        <Box
+          sx={{
+            position: 'fixed',
+            zIndex: 999999,
+            width: '100%',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            backgroundColor: '#fe5000',
+            height: '20px',
+            top: 0,
+          }}
+        >
+          <Box
+            component='span'
+            sx={{
+              display: 'inline-block',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: '18px',
+              px: 2,
+              animation: 'scrollText 10s linear infinite',
+              '@keyframes scrollText': {
+                '0%': { transform: 'translateX(100vw)' },
+                '100%': { transform: 'translateX(-10vw)' },
+              },
+            }}
+          >
+            У вас есть еще {localStorage.getItem('leftZreportCount')} возможности открыть z-отчеты.
+          </Box>
+        </Box>
+      ) : (
+        <Box></Box>
+      )}
       {/* <SocketProvider> */}
       {/* <ShortcutProvider> */}
       <Routes />

@@ -4,7 +4,7 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Checkbox, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import { get } from 'lodash'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import { useSelector } from 'react-redux'
@@ -158,7 +158,6 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
               <Box height={'24px'} />
               <OutLineTextField
                 multiline
-                // type='number'
                 fullWidth
                 borderRadius={'20px'}
                 name='description'

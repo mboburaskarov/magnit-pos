@@ -3,8 +3,6 @@ import { useTheme } from '@mui/styles'
 import * as qs from 'qs'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import LazySelect from '../../../../components/Select/LazySelect'
@@ -12,13 +10,11 @@ import { requests } from '../../../../utils/requests'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 
-export default function FilterMenu({ open, selectedShops, setSelectedShops, setOpen, setRegions }) {
+export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
-  const userData = useSelector((state) => state.user)
-  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
-  const { formState, reset, control, getValues } = methods
+  const { formState, reset } = methods
 
   const onSubmit = (data) => {
     const requestBody = {
@@ -68,17 +64,6 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            {/* <SelectSimple
-              fullWidth
-              id='sto'
-              name='store_id'
-              white
-              minWidth='auto'
-              label={t('input.store.label')}
-              placeholder={t('input.store.placeholder')}
-              getOptionLabel={(el) => el.name}
-              options={shopList?.data?.data?.data}
-            /> */}
             <LazySelect
               slug='users'
               boxStyle={{ width: '100%' }}
@@ -92,8 +77,6 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
               request={requests.getAllStores}
               filters={{ limit: 10 }}
               control={methods.control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
               getOptionLabel={(option) => {
                 return option.name
               }}

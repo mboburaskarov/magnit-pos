@@ -1,11 +1,9 @@
-import { Box, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
-import CustomImg from '../../../../components/CustomImg'
 import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 import { toFlot } from '../../../../utils/parseFormatNumberToFloat'
 import thousandDivider from '../../../../utils/thousandDivider'
-import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
@@ -26,54 +24,6 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
     >
       {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
     </Typography>
-  )
-}
-
-const Image = ({ data, rowIndex, setImages }) => {
-  return (
-    <Box
-      sx={{
-        position: 'relative',
-        width: '40px',
-        height: '40px',
-        borderRadius: 2,
-        '&:hover': {
-          '#overlay_image': {
-            opacity: 0.5,
-          },
-        },
-      }}
-    >
-      {data?.main_photo?.[0] ? (
-        <CustomImg
-          id={`product-image-${rowIndex}`}
-          src={data?.main_photo || 'default-img.avif'}
-          alt={data?.name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
-        />
-      ) : (
-        <DefaultImgIcon />
-      )}
-      {data?.files?.[0] && (
-        <Box
-          sx={{
-            transition: 'all 0.2s ease',
-            cursor: 'pointer',
-            opacity: 0,
-            borderRadius: 2,
-            bottom: 0,
-            right: 0,
-            top: 0,
-            left: 0,
-            bgcolor: 'green.600',
-            position: 'absolute',
-            zIndex: 2,
-          }}
-          id='overlay_image'
-          onClick={() => setImages({ data: data?.files })}
-        />
-      )}
-    </Box>
   )
 }
 
@@ -128,7 +78,6 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
                 id: p?.data?.id,
               })
             }}
-            // defaultValue={get(p, 'data.small_quantity')}
             disabled={false}
           />
         )),
@@ -162,7 +111,6 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
                 id: p?.data?.id,
               })
             }}
-            // defaultValue={get(p, 'data.small_quantity')}
             disabled={false}
           />
         )),
@@ -190,7 +138,6 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
                 id: p?.data?.id,
               })
             }}
-            // defaultValue={get(p, 'data.small_quantity')}
             disabled={false}
           />
         )),
@@ -279,15 +226,8 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
                 id: p?.data?.id,
               })
             }}
-            // defaultValue={get(p, 'data.small_quantity')}
             disabled={false}
           />
-          // <TextField
-          //   id={`net_amount_${p?.data?.store_id + p?.data?.product_id}`}
-          //   defaultValue={p?.data?.suggested_order}
-          //   name={`adjusted_order_${p?.data?.id}`}
-          //   type='number'
-          // />
         )),
       }
     }

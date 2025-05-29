@@ -80,17 +80,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            {/* <SelectSimple
-              fullWidth
-              id='sto'
-              name='store_id'
-              white
-              minWidth='auto'
-              label={t('input.store.label')}
-              placeholder={t('input.store.placeholder')}
-              getOptionLabel={(el) => el.name}
-              options={shopList?.data?.data?.data}
-            /> */}
             <LazySelect
               slug='users'
               boxStyle={{ width: '100%' }}
@@ -104,8 +93,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               request={requests.getAllStores}
               filters={{ limit: 10 }}
               control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
               getOptionLabel={(option) => {
                 return option.name
               }}

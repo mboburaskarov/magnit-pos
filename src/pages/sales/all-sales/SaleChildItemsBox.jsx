@@ -1,7 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get, size } from 'lodash'
-import React from 'react'
 import CustomImg from '../../../../components/CustomImg'
 import thousandDivider from '../../../../utils/thousandDivider'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
@@ -53,7 +52,6 @@ function SaleChildItemsBox({ item, key }) {
                     <Box
                       sx={{
                         display: 'flex',
-                        // flexDirection: 'column',
                         alignItems: 'end',
                       }}
                     >
@@ -101,7 +99,6 @@ function SaleChildItemsBox({ item, key }) {
                     <Box
                       sx={{
                         display: 'flex',
-                        // flexDirection: 'column',
                         justifyContent: 'end',
                         alignItems: 'end',
                       }}
@@ -168,16 +165,13 @@ function SaleChildItemsBox({ item, key }) {
             sx={{
               mt: '10px',
 
-              // borderTop: '1px dashed',
               display: 'flex',
               justifyContent: 'space-between',
-              // borderColor: 'bunker.400',
             }}
           >
             <Box
               sx={{
                 display: 'flex',
-                // flexDirection: 'column',
                 alignItems: 'end',
               }}
             >

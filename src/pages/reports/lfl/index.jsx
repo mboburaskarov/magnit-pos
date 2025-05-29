@@ -68,49 +68,6 @@ export default function ReportLfl() {
     },
   })
 
-  const mockApiData = {
-    december: [
-      {
-        id: 1,
-        date: '05.12.24, Чт',
-        pharmacy_count: '52 шт',
-        priceform: '892 345 432 sum',
-        medicine: '892 345 432 sum',
-        total_sales: '9 892 345 432 sum',
-        rowId: '1',
-      },
-      {
-        id: 2,
-
-        date: '06.12.24, Пт',
-        pharmacy_count: '48 шт',
-        priceform: '792 345 432 sum',
-        medicine: '792 345 432 sum',
-        total_sales: '8 792 345 432 sum',
-        rowId: '2',
-      },
-    ],
-    january: [
-      {
-        date: '05.01.25, Сб',
-        id: 4,
-        pharmacy_count: '52',
-        priceform: '892 345 432 sum',
-        medicine: '892 345 432 sum',
-        total_sales: '9 892 345 432 sum',
-        rowId: '1',
-      },
-      {
-        date: '06.01.25, Вс',
-        id: 5,
-        pharmacy_count: '50',
-        priceform: '872 345 432 sum',
-        medicine: '872 345 432 sum',
-        total_sales: '9 872 345 432 sum',
-        rowId: '2',
-      },
-    ],
-  }
   const baseColumnDefinition = [
     { headerName: 'Дата', field: 'weekdate', minWidth: 120, width: 80, flex: 1 },
     { headerName: 'Неделя', field: 'weekname', minWidth: 120, width: 80, flex: 1 },
@@ -233,10 +190,8 @@ export default function ReportLfl() {
             <MultiOptionSelectNew
               zIndex={999}
               placeholder={t('placeholders.select_shops')}
-              // fullWidth
               multiple
               defaultSelectedAll
-              // minWidth='auto'
               beforeContent={t('placeholders.select_shops')}
               value={selectedShops}
               allOptions={get(shopList, 'data.data.ids', [])}
@@ -268,8 +223,6 @@ export default function ReportLfl() {
             downloadByFilter={() => clientsExcelReport(ReportLFLFilter)}
             isDownloading={isclientsExcelReport}
             columns={dynamicColumnDefs}
-            // totalCount={ReportLFL?.data?.data?._meta?.total_count || 0}
-            // data={ReportLFL?.data?.data?.data || []}
             data={tableData}
             isDataLoading={isFetchingReportLFL || ReportLFLLoading}
             offsetCount={offsetCount}

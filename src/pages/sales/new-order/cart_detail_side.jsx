@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Print } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/material'
 import { get, size } from 'lodash'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import Highlighter from 'react-highlight-words'
 import { useTranslation } from 'react-i18next'
 import OutsideClickHandler from 'react-outside-click-handler'
@@ -39,7 +39,6 @@ function CartDetailSide({
   searchTerm,
   customers,
   setQuickCreateClientName,
-  //   fakeIndexForCheckClient,
   changeDiscountDebounce,
   inputDiscount,
   isAllMarkingFill,
@@ -141,9 +140,6 @@ function CartDetailSide({
             placeholder={t('client.placeholder')}
             fullWidth
             onChange={(e) => setSearchTerm(e.target.value)}
-            // onKeyDown={(e) => {
-            //   if (e.keyCode === 13) onEnter()
-            // }}
             value={searchTerm}
             setSearchTerm={setSearchTerm}
             client
@@ -354,7 +350,6 @@ function CartDetailSide({
           <Button
             loading={hasChange}
             disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0 || hasChange}
-            // onClick={() => setIsOrderDrower(true)}
             onClick={() => {
               if (isAllMarkingFill()) {
                 setLiteOrder(true)
@@ -413,7 +408,6 @@ function CartDetailSide({
             </Button>
             <Button
               disabled={size(get(cartItemsList, 'data.data.data')) === 0}
-              // onClick={() => setIsOrderDrower(true)}
               sx={{
                 borderRadius: '16px',
                 ml: '4px',
