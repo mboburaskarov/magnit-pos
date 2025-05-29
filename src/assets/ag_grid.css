@@ -84,6 +84,11 @@
 .ag-theme-alpine .ag-floating-bottom {
   border: none;
   height: 100px !important;
+  position: fixed;
+  bottom: 0;
+  z-index: 9;
+  background-color: #fff;
+  opacity: 1;
 }
 .ag-floating-bottom-viewport {
   height: 100px !important;

@@ -27,6 +27,7 @@ import overplusAudio from '../../../assets/audio/overplus.mp3'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
+import ChangeQuantityModal from './changeQuantityModal'
 import InventoryDetailModal from './inventoryDetailModal'
 import tableHeaderSelector from './tableHeaderSelector'
 import UploadCV from './uploadCV'
@@ -55,6 +56,7 @@ export default function InventoryWithCheckingPage() {
   const [selectedCellRowId, setSelectedCellRowId] = useState(null)
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(null)
   const [hasTableChange, setHasTableChange] = useState(false)
+  const [quantityModalOpen, setQuantityModalOpen] = useState(false)
   const [appType, setAppType] = useState('ALL')
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [status, setStatus] = useState('ALL')
@@ -89,6 +91,23 @@ export default function InventoryWithCheckingPage() {
 
     const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
     const currentfocus = document.activeElement?.tagName
+    console.log(currentfocus, 'currentfocus')
+    console.log(childRef, 'childRef')
+    console.log(firstrowid, 'firstrowid')
+    console.log(lastSelectedCellRowId, 'lastSelectedCellRowId')
+    const activeEl = document.activeElement
+    const tag = activeEl?.tagName?.toLowerCase()
+    const classList = activeEl?.classList || []
+    console.log(classList)
+    if (classList.contains('ag-cell')) {
+      if (barcode && inventoryWithCheckingDetails?.data?.data?.data.length == 1) {
+        setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data[0] })
+        return
+      } else if (lastSelectedCellRowId) {
+        setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
+        return
+      }
+    }
 
     // Call the exposed method: focus row with id 'b2' on column 'qty'
     if (lastSelectedCellRowId != null && inventoryWithCheckingDetails?.data?.data?.data?.some((el) => el?.id === lastSelectedCellRowId)) {
@@ -116,7 +135,7 @@ export default function InventoryWithCheckingPage() {
     importsColumns: columns,
     t,
     values,
-    editable: true,
+    editable: false,
     setOrderStoring,
     orderStoring,
     id,
@@ -282,29 +301,21 @@ export default function InventoryWithCheckingPage() {
     (event) => {
       if (selectedCellRowId) return
       const key = event.key.toLowerCase()
-      if (/^[a-zа-яё]$/i.test(key)) {
+      if (/^[a-zа-яё0-9]$/i.test(key)) {
         setBarcode((prev) => prev + key)
       }
       if (event.code === 'Backspace') {
         setBarcode((prev) => prev.slice(0, -1))
       }
-      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-        console.log('entereerr')
-
-        if (document.activeElement?.tagName === 'INPUT') return
-        handleFocus()
-      }
 
       if (event.code === 'Escape') {
         setBarcode('')
       }
-      console.log(event)
-
-      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
-        console.log('hi')
-
-        handleFocusUnit()
+      if (event.code === 'Space') {
+        setBarcode((p) => p + ' ')
       }
+
+      console.log(event)
     },
     {
       // enableOnFormTags: true,
@@ -318,6 +329,7 @@ export default function InventoryWithCheckingPage() {
       const activeEl = document.activeElement
       const tag = activeEl?.tagName?.toLowerCase()
       const classList = activeEl?.classList || []
+      console.log(classList)
 
       const isAGGridInput =
         tag === 'input' &&
@@ -345,6 +357,11 @@ export default function InventoryWithCheckingPage() {
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
+  useEffect(() => {
+    if (!quantityModalOpen) {
+      handleFocus()
+    }
+  }, [quantityModalOpen])
   // useEffect(() => {
   //   if (realTimeSelectedCellRowId) {
   //     setLastSelectedCellRowId(realTimeSelectedCellRowId)
@@ -399,40 +416,8 @@ export default function InventoryWithCheckingPage() {
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box> */}
           {/* {isOpenStatDashboard && <InventoryDashboard setHasChange={setHasChange} data={get(inventoryStat, 'data.data')} />} */}
-          <Box display={'flex'} minWidth={320}>
-            <InputSwitch
-              uncontrolled
-              id='status'
-              name='status'
-              value={status}
-              defaultValue='ALL'
-              onChange={(e) => setStatus(e)}
-              options={[
-                { title: t('switch.title.all'), value: 'ALL', count: get(inventoryWithCheckingDetails, 'data.data.stats_count.all', 0) },
-                {
-                  title: t('switch.title.scanned_count'),
-                  value: 'scanned',
-                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.scanned', 0),
-                },
-                {
-                  title: t('switch.title.shortage_count'),
-                  value: 'shortage',
-                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.shortage', 0),
-                },
-                {
-                  title: t('switch.title.surplus_count'),
-                  value: 'surplus',
-                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.surplus', 0),
-                },
-                {
-                  title: t('switch.title.zero_price'),
-                  value: 'zero_price',
-                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.zero_price', 0),
-                },
-              ]}
-            />
-          </Box>
-          <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
+
+          <Box display='flex' flexDirection='column' position='relative' pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
               <Box display={'flex'}>
                 <Box
@@ -449,16 +434,51 @@ export default function InventoryWithCheckingPage() {
                     },
                   }}
                 >
-                  <InputSearch
-                    icon={<BarcodeIcon />}
-                    onKeyDown={({ code }) => code === 'Enter' && handleFocus()}
-                    onChange={({ target }) => setBarcode(get(target, 'value'))}
-                    id='producrs-search'
-                    name='search'
-                    value={barcode}
-                    setSearchTerm={setBarcode}
-                    placeholder={t('input.search.product.multi')}
-                  />
+                  <Box display={'flex'}>
+                    <InputSearch
+                      icon={<BarcodeIcon />}
+                      onKeyDown={({ code }) => code === 'Enter' && handleFocus()}
+                      onChange={({ target }) => setBarcode(get(target, 'value'))}
+                      id='producrs-search'
+                      name='search'
+                      value={barcode}
+                      setSearchTerm={setBarcode}
+                      placeholder={t('input.search.product.multi')}
+                    />
+                    <Box width={'20px'} />
+                    <InputSwitch
+                      uncontrolled
+                      id='status'
+                      noMarginTop
+                      name='status'
+                      value={status}
+                      defaultValue='ALL'
+                      onChange={(e) => setStatus(e)}
+                      options={[
+                        { title: t('switch.title.all'), value: 'ALL', count: get(inventoryWithCheckingDetails, 'data.data.stats_count.all', 0) },
+                        {
+                          title: t('switch.title.scanned_count'),
+                          value: 'scanned',
+                          count: get(inventoryWithCheckingDetails, 'data.data.stats_count.scanned', 0),
+                        },
+                        {
+                          title: t('switch.title.shortage_count'),
+                          value: 'shortage',
+                          count: get(inventoryWithCheckingDetails, 'data.data.stats_count.shortage', 0),
+                        },
+                        {
+                          title: t('switch.title.surplus_count'),
+                          value: 'surplus',
+                          count: get(inventoryWithCheckingDetails, 'data.data.stats_count.surplus', 0),
+                        },
+                        {
+                          title: t('switch.title.zero_price'),
+                          value: 'zero_price',
+                          count: get(inventoryWithCheckingDetails, 'data.data.stats_count.zero_price', 0),
+                        },
+                      ]}
+                    />
+                  </Box>
                 </Box>
               </Box>
               <Box display={'flex'} alignItems={'center'}>
@@ -570,6 +590,7 @@ export default function InventoryWithCheckingPage() {
         }
       />
       <InventoryDetailModal refetch={refetch} open={selectedCellRowId} setOpen={setSelectedCellRowId} />
+      <ChangeQuantityModal setBarcode={setBarcode} refetch={refetch} open={quantityModalOpen} setOpen={setQuantityModalOpen} />
 
       <UploadCV open={openUpload} setHasChange={setHasChange} refetch={refetch} setOpen={setOpenUpload} />
     </LoadingContainer>

@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function StyledEmptyDialog({ onClose, open, reset, children, title, customButtons, maxWidth, overflowVisible, titleStyles }) {
+function StyledEmptyDialog({ onClose, open, reset, children, title, noHeader = false, customButtons, maxWidth, overflowVisible, titleStyles }) {
   const classes = useStyles({ overflowVisible, maxWidth, open })
 
   useEffect(() => {
@@ -57,12 +57,14 @@ function StyledEmptyDialog({ onClose, open, reset, children, title, customButton
 
   return (
     <Dialog disableScrollLock disableRestoreFocus open={open} className={classes.root} onClose={handleClose}>
-      <DialogTitle className={classes.header}>
-        <Typography fontSize={24} lineHeight={'32px'} fontWeight={'700'} variant='h3' style={titleStyles}>
-          {title}
-        </Typography>
-        {customButtons || <span />}
-      </DialogTitle>
+      {!noHeader && (
+        <DialogTitle className={classes.header}>
+          <Typography fontSize={24} lineHeight={'32px'} fontWeight={'700'} variant='h3' style={titleStyles}>
+            {title}
+          </Typography>
+          {customButtons || <span />}
+        </DialogTitle>
+      )}
       {children}
     </Dialog>
   )
