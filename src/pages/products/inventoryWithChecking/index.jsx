@@ -21,6 +21,7 @@ import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
+import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
@@ -453,16 +454,16 @@ export default function InventoryWithCheckingPage() {
                 childRef={childRef}
                 enableFillHandle={true}
                 custonName='main'
-                totalData={[
-                  {
-                    id: 'ag-grid-footer',
-                    name: 'Итого',
-                    pinned: true,
-                    fact_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'),
-                    current_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'),
-                    difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
-                  },
-                ]}
+                // totalData={[
+                //   {
+                //     id: 'ag-grid-footer',
+                //     name: 'Итого',
+                //     pinned: true,
+                //     fact_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'),
+                //     current_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'),
+                //     difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
+                //   },
+                // ]}
                 canCellClick={true}
                 onChangeSelectedCellRowId={(id) => {
                   setLastSelectedCellRowId(id)
@@ -527,7 +528,37 @@ export default function InventoryWithCheckingPage() {
       />
       <InventoryDetailModal setBarcode={setBarcode} refetch={refetch} open={selectedCellRowId} setOpen={setSelectedCellRowId} />
       <ChangeQuantityModal setBarcode={setBarcode} refetch={refetch} open={quantityModalOpen} setOpen={setQuantityModalOpen} />
-
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          display: 'flex',
+          justifyContent: 'end',
+          width: '100%',
+          backgroundColor: '#fff',
+          zIndex: 9999,
+          padding: '20px',
+        }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
+          <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Програм Cумма</Typography>
+          <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
+            {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'), 'сум')}
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
+          <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Факт Cумма</Typography>
+          <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
+            {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'), 'сум')}
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
+          <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Разница сумма</Typography>
+          <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
+            {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'), 'сум')}
+          </Typography>
+        </Box>
+      </Box>
       <UploadCV open={openUpload} setHasChange={setHasChange} refetch={refetch} setOpen={setOpenUpload} />
     </LoadingContainer>
   )
