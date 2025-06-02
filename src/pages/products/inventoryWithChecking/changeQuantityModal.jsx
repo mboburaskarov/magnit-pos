@@ -1,5 +1,6 @@
 import { Box, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -74,6 +75,7 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
           fact_quantity: Number(qtyRef.current[0].value),
           fact_unit: Number(qtyRef.current[1].value),
           barcode: qtyRef.current[2].value,
+          retail_price: Number(qtyRef.current[4].value),
 
           expire_date: qtyRef.current[3].value,
         })
@@ -129,6 +131,14 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Факт УП</Typography>
               <TextField
+                onKeyDown={(e) => {
+                  const invalidKeys = ['e', 'E', '+', '-']
+
+                  if (invalidKeys.includes(e.key)) {
+                    e.preventDefault()
+                    return
+                  }
+                }}
                 onFocus={(e) => {
                   qtyRef.current[0].value = ''
                 }}
@@ -150,6 +160,14 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
                 onFocus={(e) => {
                   qtyRef.current[1].value = ''
                 }}
+                onKeyDown={(e) => {
+                  const invalidKeys = ['e', 'E', '+', '-']
+
+                  if (invalidKeys.includes(e.key)) {
+                    e.preventDefault()
+                    return
+                  }
+                }}
                 onBlur={(e) => {
                   if (e.target.value == '') {
                     qtyRef.current[1].value = get(open, 'data.fact_unit')
@@ -170,17 +188,32 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
               justifyContent: 'space-between',
             }}
           >
-            <Box>
+            <Box
+              sx={{
+                width: '100%',
+              }}
+            >
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Штрих-код</Typography>
 
               <TextField
-                onFocus={(e) => {
-                  qtyRef.current[2].value = ''
-                }}
-                onBlur={(e) => {
-                  if (e.target.value == '') {
-                    qtyRef.current[2].value = get(open, 'data.barcode')
+                // onFocus={(e) => {
+                //   qtyRef.current[2].value = ''
+                // }}
+                // onBlur={(e) => {
+                //   if (e.target.value == '') {
+                //     qtyRef.current[2].value = get(open, 'data.barcode')
+                //   }
+                // }}
+                onKeyDown={(e) => {
+                  const invalidKeys = ['e', 'E', '+', '-']
+
+                  if (invalidKeys.includes(e.key)) {
+                    e.preventDefault()
+                    return
                   }
+                }}
+                sx={{
+                  width: '100%',
                 }}
                 defaultValue={get(open, 'data.barcode')}
                 name='barcode'
@@ -188,19 +221,63 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
                 type='number'
               />
             </Box>
+          </Box>
+
+          <Box
+            sx={{
+              display: 'flex',
+              mb: '20px',
+              width: '100%',
+              justifyContent: 'space-between',
+            }}
+          >
             <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Штрих-код</Typography>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Цена</Typography>
 
               <TextField
-                onFocus={(e) => {
-                  qtyRef.current[3].value = ''
-                }}
-                onBlur={(e) => {
-                  if (e.target.value == '') {
-                    qtyRef.current[3].value = get(open, 'data.expire_date')
+                // onFocus={(e) => {
+                //   qtyRef.current[4].value = ''
+                // }}
+                // onBlur={(e) => {
+                //   if (e.target.value == '') {
+                //     qtyRef.current[4].value = get(open, 'data.retail_price')
+                //   }
+                // }}
+                onKeyDown={(e) => {
+                  const invalidKeys = ['e', 'E', '+', '-']
+
+                  if (invalidKeys.includes(e.key)) {
+                    e.preventDefault()
+                    return
                   }
                 }}
-                defaultValue={get(open, 'data.expire_date')}
+                defaultValue={get(open, 'data.retail_price')}
+                name='retail_price'
+                inputRef={(e) => (qtyRef.current[4] = e)}
+                type='number'
+              />
+            </Box>
+            <Box>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Срок</Typography>
+
+              <TextField
+                // onFocus={(e) => {
+                //   qtyRef.current[3].value = ''
+                // }}
+                // onBlur={(e) => {
+                //   if (e.target.value == '') {
+                //     qtyRef.current[3].value = get(open, 'data.expire_date')
+                //   }
+                // }}
+                onKeyDown={(e) => {
+                  const invalidKeys = ['e', 'E', '+', '-']
+
+                  if (invalidKeys.includes(e.key)) {
+                    e.preventDefault()
+                    return
+                  }
+                }}
+                defaultValue={dayjs(get(open, 'data.expire_date')).format('YYYY-MM-DD')}
                 name='date'
                 inputRef={(e) => (qtyRef.current[3] = e)}
                 type='date'

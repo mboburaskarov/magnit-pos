@@ -19,6 +19,7 @@ import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import errorAudio from '../../../assets/audio/error.mp3'
@@ -140,7 +141,16 @@ export default function InventoryWithCheckingPage() {
     isFetching: isFetchinginventoryWithCheckingDetails,
     refetch,
   } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
+  const { mutate: inventoryExcelReport, isLoading: isinventoryExcelReport } = useMutation(requests.getInventoryExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadExcel(data, `${inventoryStat?.data?.data?.store?.name}_${dayjs(inventoryStat?.data?.data?.created_at).format('DD_MM_YYYY_HH_mm')}`)
+    },
+    onError: (err) => {
+      console.log(err)
 
+      error('Ошибка при скачать excel!')
+    },
+  })
   useEffect(() => {
     if (selectedCellRowId) {
       setLastSelectedCellRowId(selectedCellRowId)
@@ -463,6 +473,9 @@ export default function InventoryWithCheckingPage() {
                 onCellValueChanged={onCellValueChanged}
                 columns={tableColumns}
                 data={rowData || []}
+                fullDownload={() => inventoryExcelReport({ ...inventoryWithCheckingDetailsFilter, limit: 1000000 })}
+                downloadByFilter={() => inventoryExcelReport(inventoryWithCheckingDetailsFilter)}
+                isDownloading={isinventoryExcelReport}
                 totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
