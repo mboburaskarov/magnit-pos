@@ -113,9 +113,8 @@ export default function StoreReportPage() {
         <StoreReposrMiniDashboardHeader saleStatsData={get(saleStatsData, 'data.data')} />
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-          <Box display={'flex'}>
+          <Box display={'flex'} sx={{ width: '100%' }}>
             <Box
-              width='100%'
               sx={{
                 mr: '10px',
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },

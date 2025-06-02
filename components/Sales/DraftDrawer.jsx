@@ -45,8 +45,6 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
   }, [values?.search])
   const draftsListFilter = useMemo(() => {
     return {
-      limit: values?.limit || 10,
-      offset: controlleroffset || 0,
       search: values?.search || null,
       store_id: get(userData, 'store.id'),
       cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
