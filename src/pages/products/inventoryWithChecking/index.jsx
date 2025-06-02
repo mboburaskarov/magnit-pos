@@ -61,6 +61,9 @@ export default function InventoryWithCheckingPage() {
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
       refetch()
+      const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
+
+      childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
       successScanAudio.play()
     },
     onError: (err) => {
@@ -84,18 +87,18 @@ export default function InventoryWithCheckingPage() {
     const classList = activeEl?.classList || []
     console.log('ff')
 
-    if (barcode.length > 0) {
-    } else {
-      if (classList.contains('ag-cell')) {
-        if (barcode && inventoryWithCheckingDetails?.data?.data?.data.length == 1) {
-          setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data[0] })
-          return
-        } else if (lastSelectedCellRowId) {
-          setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
-          return
-        }
+    // if (barcode.length > 0) {
+    // } else {
+    if (classList.contains('ag-cell')) {
+      if (barcode && inventoryWithCheckingDetails?.data?.data?.data.length == 1) {
+        setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data[0] })
+        return
+      } else if (lastSelectedCellRowId) {
+        setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
+        return
       }
     }
+    // }
 
     // Call the exposed method: focus row with id 'b2' on column 'qty'
     if (lastSelectedCellRowId != null && inventoryWithCheckingDetails?.data?.data?.data?.some((el) => el?.id === lastSelectedCellRowId)) {
@@ -278,7 +281,9 @@ export default function InventoryWithCheckingPage() {
   useHotkeys(
     '*',
     (event) => {
-      if (selectedCellRowId) return
+      let isexeption = document.activeElement.tagName == 'INPUT'
+
+      if (selectedCellRowId || isexeption) return
       const key = event.key.toLowerCase()
       if (/^[a-zа-яё0-9]$/i.test(key)) {
         setBarcode((prev) => prev + key)
@@ -296,6 +301,7 @@ export default function InventoryWithCheckingPage() {
     },
     {
       // enableOnFormTags: true,
+      // preventDefault: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
