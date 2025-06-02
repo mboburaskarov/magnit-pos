@@ -12,7 +12,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ clientsColumns, values, selectClientsFunc, t, setOpenConfirmDialog }) {
+export default function tableHeaderSelector({ clientsColumns, values }) {
   const columns = clientsColumns?.map((el) => {
     if (el.field === 'number') {
       return {

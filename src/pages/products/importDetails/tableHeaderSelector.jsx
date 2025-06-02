@@ -1,23 +1,13 @@
+import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
+import palette from '../../../../src/assets/theme/mui.config'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
-import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import palette from '../../../../src/assets/theme/mui.config'
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
 
 export default function tableHeaderSelector({ importsColumns, values, t }) {
   const columns = importsColumns?.map((el) => {

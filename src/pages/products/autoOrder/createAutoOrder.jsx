@@ -14,7 +14,7 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 export default function CreateAutoOrder({ open, refetch, setOpen }) {
   const methods = useForm()
   const { reset, control } = methods
-  const { mutate: createAutoOrder, isLoading: iscreateAutoOrder } = useMutation(requests.createAutoOrder, {
+  const { mutate: createAutoOrder } = useMutation(requests.createAutoOrder, {
     onSuccess: () => {
       setOpen(false)
       success('Создать автозаказ')
@@ -83,8 +83,6 @@ export default function CreateAutoOrder({ open, refetch, setOpen }) {
               request={requests.getAllStores}
               filters={{ limit: 10 }}
               control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
               getOptionLabel={(option) => {
                 return option.name
               }}
@@ -102,7 +100,6 @@ export default function CreateAutoOrder({ open, refetch, setOpen }) {
                 InputProps={{
                   onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
                 }}
-                // defaultValue={get(p, 'data.small_quantity')}
                 disabled={false}
               />
               <Box display={'flex'} padding={'5px'}>

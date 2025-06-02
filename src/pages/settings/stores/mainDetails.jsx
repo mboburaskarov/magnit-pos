@@ -1,6 +1,6 @@
 import { Box, Grid } from '@mui/material'
 import { get } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import ReactInputMask from 'react-input-mask'
@@ -65,7 +65,6 @@ export default function MainDetails({ clientData, openDrawer }) {
             control={control}
             fullWidth
             boxStyle={{ marginBottom: '0', marginTop: 'auto' }}
-            // required
             setCountry={({ dial_code }) => setValue('dial_code', dial_code)}
             error={errors?.phone}
           />
@@ -153,7 +152,6 @@ export default function MainDetails({ clientData, openDrawer }) {
           </ReactInputMask>
         </Grid>
         <Grid item xs={6}>
-          {/* <Label mb='4px'>{t('gender')}</Label> */}
           <Box height={'25px'} />
           <InputSwitchNew
             id='client-time-type'

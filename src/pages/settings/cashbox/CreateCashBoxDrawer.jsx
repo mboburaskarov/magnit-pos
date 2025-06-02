@@ -1,16 +1,14 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
-import { get, size } from 'lodash'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import { useSelector } from 'react-redux'
-import CloseIcon from '../../../assets/icons/CloseIcon'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
-import MainDetails from './mainDetails'
+import CloseIcon from '../../../assets/icons/CloseIcon'
 import PlusIcon from '../../../assets/icons/PlusIcon'
+import MainDetails from './mainDetails'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -45,7 +43,6 @@ export default function CreateCashBoxDrawer({ refetchVendorList, quickCreateClie
   const { t } = useTranslation()
   const classes = useStyles()
   const methods = useForm()
-  const userData = useSelector((state) => state.user)
   const [paymentTypes, setPaymentTypes] = useState([])
 
   useEffect(() => {
@@ -132,7 +129,6 @@ export default function CreateCashBoxDrawer({ refetchVendorList, quickCreateClie
                 width: '100%',
                 display: 'flex',
                 justifyContent: 'end',
-                // position: 'absolute',
                 bottom: 0,
               }}
             >

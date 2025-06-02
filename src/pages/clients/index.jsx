@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -8,10 +8,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../components/ConfirmDialog'
-import StyledDialog from '../../../components/Dialogs/StyledDialog'
 import ImageGallery from '../../../components/ImageGallery'
 import InputSearch from '../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../components/LoadingContainer'
+import { downloadExcel } from '../../../utils/downloadEXCEL'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import BigTickIcon from '../../assets/icons/BigTickIcon'
@@ -22,7 +22,6 @@ import { useQueryParams } from '../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/clientTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-import { downloadExcel } from '../../../utils/downloadEXCEL'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ClientsPage() {
@@ -31,11 +30,9 @@ export default function ClientsPage() {
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.clientTableColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
   const [selectClients, setselectClients] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const selectClientsFunc = (isChecked, id) => {
@@ -208,7 +205,7 @@ export default function ClientsPage() {
             </Box>
           </Box>
         </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='clients-main-table'

@@ -1,10 +1,9 @@
-import { memo } from 'react'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { get } from 'lodash'
-import TextField from '../../../../components/Inputs/TextField'
 import { Typography } from '@mui/material'
 import dayjs from 'dayjs'
+import { get } from 'lodash'
+import { memo } from 'react'
 import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
+import thousandDivider from '../../../../utils/thousandDivider'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -17,16 +16,14 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, setImports, t, setScanedNumber, id }) {
+export default function tableHeaderSelector({ importsColumns, t, setScanedNumber }) {
   const columns = importsColumns?.map((el) => {
     if (el.field === 'checkbox') {
       return {
         ...el,
         headerName: '',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <input onChange={(e) => setImports(e.target.checked, p.data?.id)} name='checkbox_zero' className='customCheckbox' type='checkbox' />
-        )),
+        cellRenderer: memo((p) => <input onChange={(e) => {}} name='checkbox_zero' className='customCheckbox' type='checkbox' />),
       }
     }
     if (el.field === 'name') {

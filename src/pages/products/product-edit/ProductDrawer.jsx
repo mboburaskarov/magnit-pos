@@ -95,9 +95,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
       sx={{
         '& .MuiDrawer-paper': {
           width: '660px',
-          // padding: '40px',
           borderRadius: '24px 0 0 24px',
-          // backgroundColor: theme.palette.background.default,
         },
       }}
       onClose={() => onClose(false)}
@@ -195,12 +193,10 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
           }}
           color='secondary'
           onClick={() => handlePrint()}
-          // startIcon={<Print width={15} icon={faPen} />}
           fullWidth
         >
           Печать ценников
         </Button>
-        {/* <CheckAccess id={'product-edit'}> */}
         <Button
           sx={{
             height: '48px',
@@ -212,7 +208,6 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         >
           Редактировать
         </Button>
-        {/* </CheckAccess> */}
       </Box>
       <RippedPaperProductPriceCheck
         printContainer={printContainer}

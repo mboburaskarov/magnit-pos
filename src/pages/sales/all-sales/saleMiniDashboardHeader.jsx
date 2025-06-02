@@ -1,6 +1,5 @@
 import { Box, Typography } from '@mui/material'
 import { get } from 'lodash'
-import React from 'react'
 import thousandDivider from '../../../../utils/thousandDivider'
 
 function SaleMiniDashboardHeader({ saleStatsData }) {

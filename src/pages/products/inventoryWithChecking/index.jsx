@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { UploadFile } from '@mui/icons-material'
 import { Box, Button, Container, Typography } from '@mui/material'
 import dayjs from 'dayjs'
-import { get } from 'lodash'
+import { get, head, size } from 'lodash'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -19,14 +19,16 @@ import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
+import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
-import overplusAudio from '../../../assets/audio/overplus.mp3'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
+import ChangeQuantityModal from './changeQuantityModal'
 import InventoryDetailModal from './inventoryDetailModal'
 import tableHeaderSelector from './tableHeaderSelector'
 import UploadCV from './uploadCV'
@@ -35,7 +37,6 @@ const SELECTION_ID = 'checkboxSelectionField'
 export default function InventoryWithCheckingPage() {
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
-  const overplusScanAudio = new Audio(overplusAudio)
   const [openUpload, setOpenUpload] = useState(false)
   const [hasChange, setHasChange] = useState(false)
   const dispatch = useDispatch()
@@ -45,29 +46,26 @@ export default function InventoryWithCheckingPage() {
   const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.inventoryWithCheckingColumns)
   const { values } = useQueryParams()
-  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(false)
   const [barcode, setBarcode] = useState('')
   const [rowData, setRowData] = useState([])
 
   const methods = useForm()
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
-  const [modernSearch, setModernSearch] = useState('')
   const [selectedCellRowId, setSelectedCellRowId] = useState(null)
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(null)
-  const [hasTableChange, setHasTableChange] = useState(false)
-  const [appType, setAppType] = useState('ALL')
+  const [quantityModalOpen, setQuantityModalOpen] = useState(null)
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
-  const [manualNumber, setManualNumber] = useState(1)
   const [debouncedSearchBarcode] = useDebounce(barcode, 200)
 
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
       refetch()
+      const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
+
+      childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
       successScanAudio.play()
-      // fetchStatusCountList()
-      // setBarcode('')g
     },
     onError: (err) => {
       refetch()
@@ -85,10 +83,23 @@ export default function InventoryWithCheckingPage() {
     },
   })
   const handleFocus = () => {
-    console.log(inventoryWithCheckingDetails)
-
     const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
-    const currentfocus = document.activeElement?.tagName
+    const activeEl = document.activeElement
+    const classList = activeEl?.classList || []
+    console.log('ff')
+
+    // if (barcode.length > 0) {
+    // } else {
+    if (classList.contains('ag-cell')) {
+      if (barcode && inventoryWithCheckingDetails?.data?.data?.data.length == 1) {
+        setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data[0] })
+        return
+      } else if (lastSelectedCellRowId) {
+        setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
+        return
+      }
+    }
+    // }
 
     // Call the exposed method: focus row with id 'b2' on column 'qty'
     if (lastSelectedCellRowId != null && inventoryWithCheckingDetails?.data?.data?.data?.some((el) => el?.id === lastSelectedCellRowId)) {
@@ -99,10 +110,7 @@ export default function InventoryWithCheckingPage() {
     }
   }
   const handleFocusUnit = () => {
-    console.log(inventoryWithCheckingDetails)
-
     const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
-    const currentfocus = document.activeElement?.tagName
 
     // Call the exposed method: focus row with id 'b2' on column 'qty'
     if (lastSelectedCellRowId != null && inventoryWithCheckingDetails?.data?.data?.data?.some((el) => el?.id === lastSelectedCellRowId)) {
@@ -133,36 +141,37 @@ export default function InventoryWithCheckingPage() {
     }
   }, [values?.offset, orderStoring, status, values?.limit, id, debouncedSearchBarcode])
 
-  // const {
-  //   data: inventoryDetails,
-  //   isLoading: inventoryDetailsLoading,
-  //   isFetching: isFetchinginventoryDetails,
-  //   refetch,
-  // } = useQuery(['inventoryDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
-
   const {
     data: inventoryWithCheckingDetails,
     isLoading: inventoryWithCheckingDetailsLoading,
     isFetching: isFetchinginventoryWithCheckingDetails,
     refetch,
-  } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
-  // useEffect(() => {
-  //   console.log(selectedCellRowId)
+  } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter), {
+    onSuccess: ({ data }) => {
+      if (size(get(data, 'data.data', [])) == 1) {
+        setQuantityModalOpen({ id: get(head(get(data, 'data.data', [])), 'id'), data: head(get(data, 'data.data', [])) })
+      }
+      console.log('Query succeeded with:', data)
+    },
+    onError: (error) => {
+      console.error('Query failed:', error)
+    },
+  })
+  const { mutate: inventoryExcelReport, isLoading: isinventoryExcelReport } = useMutation(requests.getInventoryExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadExcel(data, `${inventoryStat?.data?.data?.store?.name}_${dayjs(inventoryStat?.data?.data?.created_at).format('DD_MM_YYYY_HH_mm')}`)
+    },
+    onError: (err) => {
+      console.log(err)
 
-  //   if (selectedCellRowId) return
-  //   const focustimeout = () =>
-  //     setTimeout(() => {
-  //       handleFocus()
-  //     }, 100)
-  //   focustimeout()
-  //   return clearTimeout(focustimeout)
-  // }, [inventoryWithCheckingDetailsLoading, selectedCellRowId])
+      error('Ошибка при скачать excel!')
+    },
+  })
   useEffect(() => {
     if (selectedCellRowId) {
       setLastSelectedCellRowId(selectedCellRowId)
     }
   }, [selectedCellRowId])
-  console.log(selectedCellRowId, lastSelectedCellRowId)
 
   /// filter table columns with permission
   useEffect(() => {
@@ -198,51 +207,23 @@ export default function InventoryWithCheckingPage() {
   const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
+    console.log(colDef?.field)
 
-    if (colDef?.field === 'fact_quantity' && newValue !== oldValue) {
-      const fact_quantity = newValue
-      // if (fact_quantity > get(data, 'unit_per_pack')) {
-      //   errorScanAudio.play()
-      //   error('Количество не может быть больше количества в упаковке!')
-      //   return
-      // }
-      if (fact_quantity < 0) {
+    if (colDef?.field === 'expired_date' && newValue !== oldValue) {
+      const expire_date = newValue
+
+      if (expire_date < 0) {
         errorScanAudio.play()
         refetch()
 
-        error('Количество не может быть меньше 0!')
+        error('xato')
         return
       }
       setScanedNumber({
         id,
         product_id: get(data, 'id'),
         type: 'MANUAL',
-        fact_unit: get(data, 'fact_unit'),
-        fact_quantity: Number(fact_quantity),
-      })
-    }
-    if (colDef?.field === 'fact_unit' && newValue !== oldValue) {
-      const fact_unit = newValue
-
-      if (fact_unit > get(data, 'unit_per_pack')) {
-        errorScanAudio.play()
-        refetch()
-        error(`Количество не может быть больше количества в упаковке! (max:${get(data, 'unit_per_pack')})`)
-        return
-      }
-      if (fact_unit < 0) {
-        errorScanAudio.play()
-        refetch()
-
-        error('Количество не может быть меньше 0!')
-        return
-      }
-      setScanedNumber({
-        id,
-        product_id: get(data, 'id'),
-        type: 'MANUAL',
-        fact_quantity: get(data, 'fact_quantity'),
-        fact_unit: Number(fact_unit),
+        expire_date: Number(expire_date),
       })
     }
     if (colDef?.field === 'barcode' && newValue !== oldValue) {
@@ -278,36 +259,50 @@ export default function InventoryWithCheckingPage() {
     }
   }
   useHotkeys(
+    'ctrl+Backspace',
+    (e) => {
+      const activeEl = document.activeElement
+      const classList = activeEl?.classList || []
+      if (classList.contains('ag-cell')) {
+        setScanedNumber({
+          id,
+          product_id: lastSelectedCellRowId,
+          type: 'MANUAL',
+          fact_unit: 0,
+          fact_quantity: 0,
+        })
+      }
+    },
+    {
+      // enableOnTags: ['INPUT', 'TEXTAREA'],
+      enableOnFormTags: true,
+      // preventDefault: true,
+    }
+  )
+  useHotkeys(
     '*',
     (event) => {
-      if (selectedCellRowId) return
+      let isexeption = document.activeElement.tagName == 'INPUT'
+
+      if (selectedCellRowId || isexeption) return
       const key = event.key.toLowerCase()
-      if (/^[a-zа-яё]$/i.test(key)) {
+      if (/^[a-zа-яё0-9]$/i.test(key)) {
         setBarcode((prev) => prev + key)
       }
       if (event.code === 'Backspace') {
         setBarcode((prev) => prev.slice(0, -1))
       }
-      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-        console.log('entereerr')
-
-        if (document.activeElement?.tagName === 'INPUT') return
-        handleFocus()
-      }
 
       if (event.code === 'Escape') {
         setBarcode('')
       }
-      console.log(event)
-
-      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
-        console.log('hi')
-
-        handleFocusUnit()
+      if (event.code === 'Space') {
+        setBarcode((p) => p + ' ')
       }
     },
     {
       // enableOnFormTags: true,
+      // preventDefault: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
@@ -315,28 +310,16 @@ export default function InventoryWithCheckingPage() {
     '*',
     (event) => {
       if (selectedCellRowId) return
-      const activeEl = document.activeElement
-      const tag = activeEl?.tagName?.toLowerCase()
-      const classList = activeEl?.classList || []
 
-      const isAGGridInput =
-        tag === 'input' &&
-        (classList.contains('ag-cell-edit-input') ||
-          classList.contains('ag-input-field-input') ||
-          classList.contains('ag-text-field-input') ||
-          classList.contains('ag-cell-editor'))
-
-      console.log(event, isAGGridInput)
-
-      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
-        console.log('hi')
-
-        handleFocusUnit()
-      }
+      // if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
+      //   handleFocusUnit()
+      // }
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-        console.log('entereerr')
+        let exeption_ids = ['expired_date', 'barcode', 'retail_price']
 
-        if (document.activeElement?.tagName === 'INPUT') return
+        let isexeption = exeption_ids.includes(document.activeElement.getAttribute('col-id'))
+        if (document.activeElement?.tagName === 'INPUT' || isexeption) return
+
         handleFocus()
       }
     },
@@ -345,24 +328,21 @@ export default function InventoryWithCheckingPage() {
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
-  // useEffect(() => {
-  //   if (realTimeSelectedCellRowId) {
-  //     setLastSelectedCellRowId(realTimeSelectedCellRowId)
-  //   }
-  // }, [realTimeSelectedCellRowId])
+  useHotkeys(
+    '*',
+    (event) => {
+      console.log(event)
+    },
+    { enableOnFormTags: true, enableOnTags: ['INPUT', 'TEXTAREA'], preventDefault: false }
+  )
+  useEffect(() => {
+    if ((quantityModalOpen == false) & (typeof quantityModalOpen == 'boolean')) {
+      // handleFocus()
+    }
+  }, [quantityModalOpen])
   useEffect(() => {
     if (inventoryWithCheckingDetails?.data?.data?.data) {
-      setRowData([
-        ...inventoryWithCheckingDetails?.data?.data?.data,
-        // {
-        //   id: 'ag-grid-footer',
-        //   name: 'Итого',
-        //   pinned: true,
-        //   fact_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'),
-        //   current_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'),
-        //   difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
-        // },
-      ])
+      setRowData([...inventoryWithCheckingDetails?.data?.data?.data])
       get(inventoryWithCheckingDetails, 'data.data.data', []).map((importData) => {
         methods.setValue(`net_amount_${get(importData, 'id')}`, get(importData, 'net_amount'))
       })
@@ -382,57 +362,7 @@ export default function InventoryWithCheckingPage() {
           checkAccessId={'product-create'}
         />
         <Container>
-          {/* <Box
-            sx={{
-              m: ' 0 0 20px',
-              userSelect: 'none !important',
-              cursor: 'pointer',
-              '& > p': {
-                cursor: 'pointer',
-                userSelect: 'none !important',
-              },
-            }}
-            display={'flex'}
-            onClick={() => setIsOpenStatDashboard((p) => !p)}
-          >
-            {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
-            <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
-          </Box> */}
-          {/* {isOpenStatDashboard && <InventoryDashboard setHasChange={setHasChange} data={get(inventoryStat, 'data.data')} />} */}
-          <Box display={'flex'} minWidth={320}>
-            <InputSwitch
-              uncontrolled
-              id='status'
-              name='status'
-              value={status}
-              defaultValue='ALL'
-              onChange={(e) => setStatus(e)}
-              options={[
-                { title: t('switch.title.all'), value: 'ALL', count: get(inventoryWithCheckingDetails, 'data.data.stats_count.all', 0) },
-                {
-                  title: t('switch.title.scanned_count'),
-                  value: 'scanned',
-                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.scanned', 0),
-                },
-                {
-                  title: t('switch.title.shortage_count'),
-                  value: 'shortage',
-                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.shortage', 0),
-                },
-                {
-                  title: t('switch.title.surplus_count'),
-                  value: 'surplus',
-                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.surplus', 0),
-                },
-                {
-                  title: t('switch.title.zero_price'),
-                  value: 'zero_price',
-                  count: get(inventoryWithCheckingDetails, 'data.data.stats_count.zero_price', 0),
-                },
-              ]}
-            />
-          </Box>
-          <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
+          <Box display='flex' flexDirection='column' position='relative' pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
               <Box display={'flex'}>
                 <Box
@@ -449,16 +379,51 @@ export default function InventoryWithCheckingPage() {
                     },
                   }}
                 >
-                  <InputSearch
-                    icon={<BarcodeIcon />}
-                    onKeyDown={({ code }) => code === 'Enter' && handleFocus()}
-                    onChange={({ target }) => setBarcode(get(target, 'value'))}
-                    id='producrs-search'
-                    name='search'
-                    value={barcode}
-                    setSearchTerm={setBarcode}
-                    placeholder={t('input.search.product.multi')}
-                  />
+                  <Box display={'flex'}>
+                    <InputSearch
+                      icon={<BarcodeIcon />}
+                      // onKeyDown={({ code }) => code === 'Enter' && handleFocus()}
+                      onChange={({ target }) => setBarcode(get(target, 'value'))}
+                      id='producrs-search'
+                      name='search'
+                      value={barcode}
+                      setSearchTerm={setBarcode}
+                      placeholder={t('input.search.product.multi')}
+                    />
+                    <Box width={'20px'} />
+                    <InputSwitch
+                      uncontrolled
+                      id='status'
+                      noMarginTop
+                      name='status'
+                      value={status}
+                      defaultValue='ALL'
+                      onChange={(e) => setStatus(e)}
+                      options={[
+                        { title: t('switch.title.all'), value: 'ALL', count: get(inventoryWithCheckingDetails, 'data.data.stats_count.all', 0) },
+                        {
+                          title: t('switch.title.scanned_count'),
+                          value: 'scanned',
+                          count: get(inventoryWithCheckingDetails, 'data.data.stats_count.scanned', 0),
+                        },
+                        {
+                          title: t('switch.title.shortage_count'),
+                          value: 'shortage',
+                          count: get(inventoryWithCheckingDetails, 'data.data.stats_count.shortage', 0),
+                        },
+                        {
+                          title: t('switch.title.surplus_count'),
+                          value: 'surplus',
+                          count: get(inventoryWithCheckingDetails, 'data.data.stats_count.surplus', 0),
+                        },
+                        {
+                          title: t('switch.title.zero_price'),
+                          value: 'zero_price',
+                          count: get(inventoryWithCheckingDetails, 'data.data.stats_count.zero_price', 0),
+                        },
+                      ]}
+                    />
+                  </Box>
                 </Box>
               </Box>
               <Box display={'flex'} alignItems={'center'}>
@@ -489,16 +454,16 @@ export default function InventoryWithCheckingPage() {
                 childRef={childRef}
                 enableFillHandle={true}
                 custonName='main'
-                totalData={[
-                  {
-                    id: 'ag-grid-footer',
-                    name: 'Итого',
-                    pinned: true,
-                    fact_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'),
-                    current_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'),
-                    difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
-                  },
-                ]}
+                // totalData={[
+                //   {
+                //     id: 'ag-grid-footer',
+                //     name: 'Итого',
+                //     pinned: true,
+                //     fact_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'),
+                //     current_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'),
+                //     difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
+                //   },
+                // ]}
                 canCellClick={true}
                 onChangeSelectedCellRowId={(id) => {
                   setLastSelectedCellRowId(id)
@@ -506,6 +471,9 @@ export default function InventoryWithCheckingPage() {
                 onCellValueChanged={onCellValueChanged}
                 columns={tableColumns}
                 data={rowData || []}
+                fullDownload={() => inventoryExcelReport({ ...inventoryWithCheckingDetailsFilter, limit: 1000000 })}
+                downloadByFilter={() => inventoryExcelReport(inventoryWithCheckingDetailsFilter)}
+                isDownloading={isinventoryExcelReport}
                 totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
@@ -518,22 +486,11 @@ export default function InventoryWithCheckingPage() {
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
-                status={appType}
-                isRefreshing={loading || hasTableChange || isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
+                isRefreshing={loading || isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
         </Container>
-        {/* <ConflictDialog
-          refetch={refetch}
-          setBarcode={setBarcode}
-          manualNumber={manualNumber}
-          conflictList={conflictList}
-          open={conflictOpen}
-          setOpen={() => {
-            setConflictOpen(false), setConflictList([])
-          }}
-        /> */}
       </FormProvider>
       <ConfirmDialog
         open={openFinishConfirmDialog}
@@ -569,8 +526,39 @@ export default function InventoryWithCheckingPage() {
           </>
         }
       />
-      <InventoryDetailModal refetch={refetch} open={selectedCellRowId} setOpen={setSelectedCellRowId} />
-
+      <InventoryDetailModal setBarcode={setBarcode} refetch={refetch} open={selectedCellRowId} setOpen={setSelectedCellRowId} />
+      <ChangeQuantityModal setBarcode={setBarcode} refetch={refetch} open={quantityModalOpen} setOpen={setQuantityModalOpen} />
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          display: 'flex',
+          justifyContent: 'end',
+          width: '100%',
+          backgroundColor: '#fff',
+          zIndex: 9999,
+          padding: '20px',
+        }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
+          <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Програм Cумма</Typography>
+          <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
+            {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'), 'сум')}
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
+          <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Факт Cумма</Typography>
+          <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
+            {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'), 'сум')}
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
+          <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Разница сумма</Typography>
+          <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
+            {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'), 'сум')}
+          </Typography>
+        </Box>
+      </Box>
       <UploadCV open={openUpload} setHasChange={setHasChange} refetch={refetch} setOpen={setOpenUpload} />
     </LoadingContainer>
   )

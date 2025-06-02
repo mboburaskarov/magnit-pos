@@ -161,8 +161,17 @@ export const requests = {
       retail_price,
       id: product_id,
     }),
-  sendScannedInventoryFlowNumber: ({ id, barcode, product_id, expire_date, fact_unit, type, fact_quantity, scanned_count }) =>
-    request.patch(`v1/inventory/${id}/detailed-flow`, { count: scanned_count, expire_date, fact_unit, fact_quantity, type, barcode, id: product_id }),
+  sendScannedInventoryFlowNumber: ({ id, barcode, retail_price, product_id, expire_date, fact_unit, type, fact_quantity, scanned_count }) =>
+    request.patch(`v1/inventory/${id}/detailed-flow`, {
+      count: scanned_count,
+      expire_date,
+      fact_unit,
+      fact_quantity,
+      type,
+      barcode,
+      id: product_id,
+      retail_price,
+    }),
   getInventoryDetails: (filter) => request.get(`v1/inventory-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getInventoryDetailFlow: (filter) => request.get(`v1/inventory-detail/detailed-flow${qs.stringify(filter, { addQueryPrefix: true })}`),
   getInventoryScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -170,6 +179,7 @@ export const requests = {
   deleteInventory: ({ id }) => request.post(`v1/inventory/cancel/${id}`),
   getInventoryExcelReport: (filter) => requestEXCEL.get(`v1/inventory-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   getInventoryStat: (id) => request.get(`v1/inventory/${id}`),
+  getInventoryExcelReport: (filter) => requestEXCEL.get(`v1/inventory-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //transfer
   createTransfer: (data) => request.post(`v1/transfer`, data),
@@ -191,6 +201,9 @@ export const requests = {
   autoOrderChangeQuantity: ({ id, ...adjusted_order_quantity }) => request.put(`v1/auto-order-detail/change-quantity/${id}`, { ...adjusted_order_quantity }),
   getAutoOrderDetailList: (filter) => request.get(`v1/auto-order-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAutoOrderList: (filter) => request.get(`v1/auto-order/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  //repricing
+  getRevaluationList: (filter) => request.get(`v1/repricing/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getRevaluationDetailList: (id) => request.get(`v1/repricing/${id}`),
 
   //category
   getAllCategories: (filter) => request.get(`v1/category/list${qs.stringify(filter, { addQueryPrefix: true })}`),

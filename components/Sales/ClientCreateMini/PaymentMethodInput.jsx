@@ -1,26 +1,20 @@
 import { Box } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import NumberFormatInput from '../../Inputs/OutLineTextFieldThousand'
 
 export default function PaymentMethodInput({
   classes,
   item,
   paymentsList,
-  removePaymentType,
   id,
   setPaymentsList,
   index,
   disabled,
-  totalAmount,
-  paymentAmount,
   max,
 
   lastPaymentInput,
   isLast = false,
 }) {
-  const { t } = useTranslation()
-
   const [value, setValue] = useState(item?.amount)
 
   useEffect(() => {

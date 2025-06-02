@@ -52,7 +52,6 @@ export default function ProductsPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [controlleroffset, setControllerOffset] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [canChangebarcode, setCanChangebarcode] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
@@ -85,8 +84,6 @@ export default function ProductsPage() {
     editable: true,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
-    changeBarcode,
-    canChangebarcode,
   })
   const routeString = []
 
@@ -164,12 +161,9 @@ export default function ProductsPage() {
     refetch,
   } = useQuery(['productsList', productsListFilter], () => requests.getAllProducts(productsListFilter))
 
-  const {
-    data: statusCountList,
-    isLoading: statusCountListLoading,
-    isFetching: isFetchingstatusCountList,
-    refetch: fetchStatusCountList,
-  } = useQuery(['statusCountList', values?.search, productsListFilter], () => requests.getAllProductsStatusCount(productsListFilter))
+  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['statusCountList', values?.search, productsListFilter], () =>
+    requests.getAllProductsStatusCount(productsListFilter)
+  )
 
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
     onSuccess: () => {
@@ -399,41 +393,7 @@ export default function ProductsPage() {
                 </Button>
               </Box>
             </Box>
-            {/* <StyledTooltip title={'Включить изменение штрих-кода'}>
-              <Box>
-                <CheckAccess id={'can-change-barcode-super-admin'}>
-                  <Button
-                    sx={{
-                      height: '48px',
-                      width: '48px',
-                      padding: 0,
-                      bgcolor: '#fff',
-                      border: '1px solid #ECEDF2',
-                      color: 'dark.500',
-                      fontWeight: '500',
-                      fontSize: '16px',
-                      lineHeight: '24px',
-                      '& span': {
-                        mr: '12px',
-                      },
-                    }}
-                    fullWidth
-                    // startIcon={<BarcodeIcon color={theme.palette.black} />}
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => setCanChangebarcode((prev) => !prev)}
-                  >
-                    {canChangebarcode ? (
-                      <Typography fontSize='24px' fontWeight={'500'} mt={'6px'}>
-                        T
-                      </Typography>
-                    ) : (
-                      <BarcodeIcon />
-                    )}
-                  </Button>
-                </CheckAccess>
-              </Box>
-            </StyledTooltip> */}
+
             <Box display={'flex'} alignItems={'center'}>
               <CheckAccess id={'products-all-table'}>
                 <Box>
@@ -488,7 +448,7 @@ export default function ProductsPage() {
               fullInfoAboutCurrentPage
               resetTable={() => dispatch(resetTableHeader({ refetch }))}
               status={appType}
-              isRefreshing={loading || canChangebarcode || isFetchingproductsList || productsListLoading}
+              isRefreshing={loading || isFetchingproductsList || productsListLoading}
             />
           </Box>
         </Box>

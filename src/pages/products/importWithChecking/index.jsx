@@ -15,9 +15,6 @@ import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
-import errorAudio from '../../../assets/audio/error.mp3'
-import successAudio from '../../../assets/audio/normal.mp3'
-import overplusAudio from '../../../assets/audio/overplus.mp3'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/importWithCheckingTableColumns'
@@ -25,24 +22,19 @@ import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ImportWithCheckingPage() {
-  const errorScanAudio = new Audio(errorAudio)
-  const successScanAudio = new Audio(successAudio)
-  const overplusScanAudio = new Audio(overplusAudio)
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.importWithCheckingColumns)
   const { values } = useQueryParams()
-  const [imports, setImports] = useState([])
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
-  const [hasTableChange, setHasTableChange] = useState(false)
   const [appType, setAppType] = useState('ALL')
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
-  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedImportNumber, {
+  const { mutate: setScanedNumber } = useMutation(requests.sendScannedImportNumber, {
     onSuccess: ({ data }) => {
       refetch()
       fetchStatusCountList()
@@ -63,9 +55,6 @@ export default function ImportWithCheckingPage() {
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
-    values,
-    setImports,
-    id,
     setScanedNumber,
   })
   const importWithCheckingDetailsFilter = useMemo(() => {
@@ -84,13 +73,9 @@ export default function ImportWithCheckingPage() {
     isFetching: isFetchingimportWithCheckingDetails,
     refetch,
   } = useQuery(['importWithCheckingDetails', importWithCheckingDetailsFilter], () => requests.getImportScanDetails(importWithCheckingDetailsFilter))
-  const {
-    data: statusCountList,
-    isLoading: statusCountListLoading,
-    isFetching: isFetchingstatusCountList,
-    refetch: fetchStatusCountList,
-  } = useQuery(['statusCountList', values?.search], () => requests.getAllImportsDetailStatusCount({ id: id, filter: { search: values?.search } }))
-  /// filter table columns with permission
+  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['statusCountList', values?.search], () =>
+    requests.getAllImportsDetailStatusCount({ id: id, filter: { search: values?.search } })
+  )
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
@@ -123,7 +108,6 @@ export default function ImportWithCheckingPage() {
 
   const sendScannedImport = () => {
     if (barcode === '') return
-    // addScan({ barcode, count: Number(manualNumber), import_id: id })
   }
 
   return (
@@ -233,21 +217,11 @@ export default function ImportWithCheckingPage() {
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
                 status={appType}
-                isRefreshing={loading || hasTableChange || isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
+                isRefreshing={loading || isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
         </Container>
-        {/* <ConflictDialog
-          refetch={refetch}
-          setBarcode={setBarcode}
-          manualNumber={manualNumber}
-          conflictList={conflictList}
-          open={conflictOpen}
-          setOpen={() => {
-            setConflictOpen(false), setConflictList([])
-          }}
-        /> */}
       </FormProvider>
     </LoadingContainer>
   )

@@ -40,7 +40,6 @@ export default function ProductEditPage() {
       barcode: get(data, 'barcode'),
       bonus_percent: Number(get(data, 'bonus_percent')),
       description: get(data, 'description'),
-      // expire_date: get(data, 'expire_date'),
       producer_id: get(data, 'manufacturer.value'),
       shelf_id: get(data, 'shelf_id.value'),
       name: get(data, 'name'),
@@ -51,8 +50,6 @@ export default function ProductEditPage() {
       quantity: Object.values(get(data, 'store_product')).reduce((total, product) => {
         return Number(total) + Number(product.quantity)
       }, 0),
-      // retail_price: Number(get(data, 'retail_price')),
-      // markup: Number(get(data, 'markup')),
       status: 'active',
       store_id: get(userData, 'store_id'),
       store_product: Object.values(get(data, 'store_product'))
@@ -67,10 +64,6 @@ export default function ProductEditPage() {
           pack_quantity: Number(get(item, 'pack_quantity', 0)),
           small_quantity: Number(get(item, 'small_quantity', 0)),
         })),
-      // sum: Number(get(data, 'retail_price')),
-      // supply_price: Number(get(data, 'supply_price')),
-      // vat: Number(get(data, 'vat')),
-      // vat_price: Number(get(data, 'vat_price')),
     }
 
     updateProduct({ id, data: requestBody })

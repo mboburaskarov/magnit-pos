@@ -2,7 +2,6 @@ import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
-import CustomImg from '../../../../components/CustomImg'
 import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { vendor_statuses } from '../../../assets/data/vendor-statuses'
@@ -16,51 +15,6 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
     <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
       {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
     </Typography>
-  )
-}
-
-const Image = ({ data, rowIndex, setImages }) => {
-  return (
-    <Box
-      sx={{
-        position: 'relative',
-        width: '40px',
-        height: '40px',
-        borderRadius: 2,
-        '&:hover': {
-          '#overlay_image': {
-            opacity: 0.5,
-          },
-        },
-      }}
-    >
-      <CustomImg
-        id={`product-image-${rowIndex}`}
-        src={data?.main_photo || 'default-img.avif'}
-        alt={data?.name}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
-      />
-
-      {data?.files?.[0] && (
-        <Box
-          sx={{
-            transition: 'all 0.2s ease',
-            cursor: 'pointer',
-            opacity: 0,
-            borderRadius: 2,
-            bottom: 0,
-            right: 0,
-            top: 0,
-            left: 0,
-            bgcolor: 'green.600',
-            position: 'absolute',
-            zIndex: 2,
-          }}
-          id='overlay_image'
-          onClick={() => setImages({ data: data?.files })}
-        />
-      )}
-    </Box>
   )
 }
 
@@ -165,10 +119,8 @@ export default function tableHeaderSelector({ setopenCreateVendorDrawer, values,
         headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          // <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
           <Box display='inline-flex' columnGap={'8px'}>
             {data.status === 'active' ? (
-              // <CheckAccess id={'product-deactive'}>
               <>
                 <IconButton
                   sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
@@ -178,8 +130,6 @@ export default function tableHeaderSelector({ setopenCreateVendorDrawer, values,
                 </IconButton>
               </>
             ) : (
-              // </CheckAccess>
-              // <CheckAccess id={'product-active'}>
               <>
                 <IconButton
                   sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
@@ -188,23 +138,17 @@ export default function tableHeaderSelector({ setopenCreateVendorDrawer, values,
                   <UnLockIcon color='#111217' />
                 </IconButton>
               </>
-              // </CheckAccess>
             )}
-            {/* <CheckAccess id={'product-edit'}> */}
             <IconButton onClick={() => setopenCreateVendorDrawer({ mode: 'edit', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
               <EditIcon />
             </IconButton>
-            {/* </CheckAccess> */}
-            {/* <CheckAccess id={'product-delete'}> */}
             <IconButton
               onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
               sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
             >
               <DeleteIcon />
             </IconButton>
-            {/* </CheckAccess> */}
           </Box>
-          // </CheckAccess>
         )),
       }
     }

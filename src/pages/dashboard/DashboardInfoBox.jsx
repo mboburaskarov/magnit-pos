@@ -1,5 +1,4 @@
 import { Box, Typography } from '@mui/material'
-import Matn from '../../../components/Matn'
 import thousandDivider from '../../../utils/thousandDivider'
 import FallIcon from '../../assets/icons/FallIcon'
 import GrowIcon from '../../assets/icons/GrowIcon'
@@ -61,9 +60,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
               >
                 {id === 'expiring_soon_amount' ? (
                   <>
-                    <Matn formatNumber endText={'сум'} animateNumber duration={1000}>
-                      {amount}
-                    </Matn>
+                    {thousandDivider(amount, 'сум')}
                     <Typography color='dark.500' fontSize={'20px'} lineHeight={'25px'} fontWeight='500' ml={'10px'}>
                       ({withoutDivider ? count : thousandDivider(count, '')}шт)
                     </Typography>
@@ -71,9 +68,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
                 ) : withoutDivider ? (
                   count
                 ) : (
-                  <Matn formatNumber endText={endText} animateNumber duration={1000}>
-                    {count}
-                  </Matn>
+                  <Typography>{thousandDivider(amount, endText)}</Typography>
                 )}
               </Typography>
             </Box>

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Print } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/material'
 import { get, size } from 'lodash'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import Highlighter from 'react-highlight-words'
 import { useTranslation } from 'react-i18next'
 import OutsideClickHandler from 'react-outside-click-handler'
@@ -39,7 +39,6 @@ function CartDetailSide({
   searchTerm,
   customers,
   setQuickCreateClientName,
-  //   fakeIndexForCheckClient,
   changeDiscountDebounce,
   inputDiscount,
   isAllMarkingFill,
@@ -63,7 +62,7 @@ function CartDetailSide({
   const [collapseDiscount, setCollapseDiscount] = useState(false)
   const childRef = useRef()
   const { id } = useParams()
-
+  const leftZreportCount = localStorage.getItem('leftZreportCount')
   const printNoProductCheque = () => {
     childRef.current.printChildCheque()
   }
@@ -141,9 +140,6 @@ function CartDetailSide({
             placeholder={t('client.placeholder')}
             fullWidth
             onChange={(e) => setSearchTerm(e.target.value)}
-            // onKeyDown={(e) => {
-            //   if (e.keyCode === 13) onEnter()
-            // }}
             value={searchTerm}
             setSearchTerm={setSearchTerm}
             client
@@ -303,6 +299,37 @@ function CartDetailSide({
           </Box>
         )}
       </CheckAccess>
+      {leftZreportCount <= 3 ? (
+        <Box
+          sx={{
+            width: '100%',
+            overflow: 'hidden',
+            backgroundColor: '#f00',
+            padding: '10px 5px',
+            borderRadius: '10px',
+            mt: '20px',
+          }}
+        >
+          <StyledTooltip
+            title={`Вам осталось открыть еще ${leftZreportCount} отчета z. После еще ${leftZreportCount} отчетов z вы не сможете открыть кассовый аппарат. Вам необходимо получить новую сим-карту epos в течение ${leftZreportCount} дней.`}
+          >
+            <Box
+              component='span'
+              sx={{
+                display: 'inline-block',
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: '18px',
+                px: 2,
+              }}
+            >
+              У вас есть еще {leftZreportCount} возможности открыть z-отчеты.
+            </Box>
+          </StyledTooltip>
+        </Box>
+      ) : (
+        <Box></Box>
+      )}
       <Box
         sx={(theme) => ({
           position: 'absolute',
@@ -354,7 +381,6 @@ function CartDetailSide({
           <Button
             loading={hasChange}
             disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0 || hasChange}
-            // onClick={() => setIsOrderDrower(true)}
             onClick={() => {
               if (isAllMarkingFill()) {
                 setLiteOrder(true)
@@ -413,7 +439,6 @@ function CartDetailSide({
             </Button>
             <Button
               disabled={size(get(cartItemsList, 'data.data.data')) === 0}
-              // onClick={() => setIsOrderDrower(true)}
               sx={{
                 borderRadius: '16px',
                 ml: '4px',

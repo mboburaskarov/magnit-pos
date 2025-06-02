@@ -18,9 +18,10 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
+import ChangeTransitionQuantityModal from './changeTransitionQuantityModal'
 import tableHeaderSelector from './tableHeaderSelector'
 
-export default function InventoryDetailModal({ open, refetch, setOpen }) {
+export default function InventoryDetailModal({ open, refetch, barcode, setBarcode, setOpen }) {
   const methods = useForm()
   const errorScanAudio = new Audio(errorAudio)
 
@@ -28,6 +29,8 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
   const [startDate, setStartDate] = useState(0)
   const dispatch = useDispatch()
   const childRef = useRef()
+  const [quantityTransitionModalOpen, setQuantityTransitionModalOpen] = useState(false)
+
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(null)
   const [realTimeSelectedCellRowId, setRealTimeSelectedCellRowId] = useState(null)
   const [endDate, setEndDate] = useState(0)
@@ -96,7 +99,11 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
     error('Пожалуйста, заполните все поля!')
     console.log('err', err)
   }
-
+  useEffect(() => {
+    if (!quantityTransitionModalOpen) {
+      // handleFocus()
+    }
+  }, [quantityTransitionModalOpen])
   useEffect(() => {
     reset({}, { keepDirty: true })
   }, [open])
@@ -104,6 +111,7 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryFlowNumber, {
     onSuccess: ({ data }) => {
       refetch()
+      refetchInventoryDetailFlow()
       // fetchStatusCountList()
       // setBarcode('')
     },
@@ -114,7 +122,22 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
     },
   })
   const handleFocus = () => {
-    const firstrowid = inventoryDetailFlow?.data?.data?.data?.[0]?.id
+    console.log('jj')
+
+    const firstrowid = inventoryDetailFlow?.data?.data?.data[0]?.id
+    const activeEl = document.activeElement
+    const classList = activeEl?.classList || []
+    console.log(classList)
+
+    if (classList.contains('ag-cell')) {
+      if (barcode && inventoryDetailFlow?.data?.data?.data.length == 1) {
+        setQuantityTransitionModalOpen({ id: firstrowid, data: inventoryDetailFlow?.data?.data?.data[0] })
+        return
+      } else if (lastSelectedCellRowId) {
+        setQuantityTransitionModalOpen({ id: firstrowid, data: inventoryDetailFlow?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
+        return
+      }
+    }
     // Call the exposed method: focus row with id 'b2' on column 'qty'
     childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
   }
@@ -136,52 +159,26 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
 
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
+    console.log(colDef?.field)
 
-    if (colDef?.field === 'fact_quantity' && newValue !== oldValue) {
-      const fact_quantity = newValue
-      if (fact_quantity < 0) {
+    if (colDef?.field === 'expired_date' && newValue !== oldValue) {
+      const expire_date = newValue
+
+      if (expire_date < 0) {
         errorScanAudio.play()
-        refetchInventoryDetailFlow()
+        refetch()
 
-        error('Количество не может быть меньше 0!')
+        error('xato')
         return
       }
       setScanedNumber({
         id,
         product_id: get(data, 'id'),
         type: 'MANUAL',
-        fact_unit: get(data, 'fact_unit'),
-        fact_quantity: Number(fact_quantity),
-      })
-    }
-    if (colDef?.field === 'fact_unit' && newValue !== oldValue) {
-      const fact_unit = newValue
-      if (fact_unit > get(data, 'unit_per_pack')) {
-        errorScanAudio.play()
-        refetchInventoryDetailFlow()
-        error(`Количество не может быть больше количества в упаковке! (max:${get(data, 'unit_per_pack')})`)
-        return
-      }
-      if (fact_unit < 0) {
-        errorScanAudio.play()
-        refetchInventoryDetailFlow()
-
-        error('Количество не может быть меньше 0!')
-        return
-      }
-      setScanedNumber({
-        id,
-        product_id: get(data, 'id'),
-        type: 'MANUAL',
-        fact_quantity: get(data, 'fact_quantity'),
-        fact_unit: Number(fact_unit),
+        expire_date: Number(expire_date),
       })
     }
     if (colDef?.field === 'barcode' && newValue !== oldValue) {
-      error('Изменить штрих-код перевода невозможно.!')
-      refetchInventoryDetailFlow()
-
-      return
       const barcode = newValue
       if (!barcode) {
         errorScanAudio.play()
@@ -196,14 +193,58 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
         barcode: barcode,
       })
     }
+    if (colDef?.field === 'retail_price' && newValue !== oldValue) {
+      const retail_price = newValue
+      if (retail_price < 0) {
+        errorScanAudio.play()
+        refetch()
+
+        error('Розничная цена не может быть меньше 0!')
+        return
+      }
+      setScanedNumber({
+        id,
+        product_id: get(data, 'id'),
+        type: 'MANUAL',
+        retail_price: Number(retail_price),
+      })
+    }
   }
+  useHotkeys(
+    'ctrl+Backspace',
+    (e) => {
+      const activeEl = document.activeElement
+      const classList = activeEl?.classList || []
+      if (classList.contains('ag-cell')) {
+        setScanedNumber({
+          id,
+          product_id: lastSelectedCellRowId,
+          type: 'MANUAL',
+          fact_unit: 0,
+          fact_quantity: 0,
+        })
+      }
+    },
+    {
+      // enableOnTags: ['INPUT', 'TEXTAREA'],
+      enableOnFormTags: true,
+      // preventDefault: true,
+    }
+  )
   useHotkeys(
     '*',
     (event) => {
       // if (selectedCellRowId) return
 
-      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
-        handleFocusUnit()
+      // if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
+      //   handleFocusUnit()
+      // }
+      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+        let exeption_ids = ['expired_date', 'barcode', 'retail_price']
+
+        let isexeption = exeption_ids.includes(document.activeElement.getAttribute('col-id'))
+        if (document.activeElement?.tagName === 'INPUT' || isexeption) return
+        handleFocus()
       }
     },
     {
@@ -273,6 +314,14 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
           />
         </Box>
       </Box>
+      <ChangeTransitionQuantityModal
+        setBarcode={setBarcode}
+        refetch={() => {
+          refetch(), refetchInventoryDetailFlow()
+        }}
+        open={quantityTransitionModalOpen}
+        setOpen={setQuantityTransitionModalOpen}
+      />
     </StyledEmptyDialog>
   )
 }

@@ -1,6 +1,5 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Container } from '@mui/material'
-import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import * as qs from 'qs'
 import { useEffect, useMemo, useState } from 'react'
@@ -25,13 +24,12 @@ import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/bonusProductTableColumns'
-import CreateAutoOrder from './createAutoOrder'
+import CreateBonusProduct from './createBonusProduct'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function BonusProductPage() {
-  const theme = useTheme()
   const methods = useForm()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -51,7 +49,7 @@ export default function BonusProductPage() {
     setImages: setOpenImageGallery,
     setOpenConfirmDialog: setOpenConfirmDialog,
   })
-  const { mutate: deleteBonusProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteBonusProduct, {
+  const { mutate: deleteBonusProduct } = useMutation(requests.deleteBonusProduct, {
     onSuccess: () => {
       refetch().then(() => {
         const requestParams = qs.stringify({ ...values, offset: 0 }, { addQueryPrefix: true })
@@ -173,15 +171,7 @@ export default function BonusProductPage() {
                   </Box>
                   <CheckAccess id={'create-auto-order'}>
                     <Box minWidth={156}>
-                      <Button
-                        sx={{ height: '48px' }}
-                        type='submit'
-                        onClick={() => setOrderModel(true)}
-                        fullWidth
-                        // startIcon={<PlusIcon color='#fff' />}
-                        variant='contained'
-                        color='primary'
-                      >
+                      <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
                         Создать
                       </Button>
                     </Box>
@@ -189,7 +179,7 @@ export default function BonusProductPage() {
                 </Box>
               </Box>
               <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
-              <CreateAutoOrder refetch={refetch} open={orderModel} setOpen={setOrderModel} />
+              <CreateBonusProduct refetch={refetch} open={orderModel} setOpen={setOrderModel} />
               <Box>
                 <AgGridTable
                   id='auto-order-main-table'
@@ -233,12 +223,7 @@ export default function BonusProductPage() {
                   >
                     Нет
                   </Button>
-                  <LoadingButton
-                    variant='contained'
-                    type='button'
-                    // loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                    onClick={() => deleteBonusProduct({ data: [openConfirmDialog.id] })}
-                  >
+                  <LoadingButton variant='contained' type='button' onClick={() => deleteBonusProduct({ data: [openConfirmDialog.id] })}>
                     Да, удалить
                   </LoadingButton>
                 </>

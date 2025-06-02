@@ -1,6 +1,6 @@
 import { Box, Button, Container } from '@mui/material'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
@@ -22,11 +22,7 @@ export default function CatalogManagement() {
   const { t } = useTranslation()
   const { values } = useQueryParams()
   const navigate = useNavigate()
-  const [type, setType] = useState('categories')
-  const [status, setStatus] = useState('')
-  const [categoryDrawer, setCategoryDrawer] = useState(false)
   const [createEdit, setCreateEdit] = useState(null)
-  const [openConfirm, setOpenConfirm] = useState(null)
   const [searchTerm, setSearchTerm, debouncedSearchTerm] = useDebouncedValue('', 300)
   const [confirmToDelete, setConfirmToDelete] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
@@ -61,11 +57,9 @@ export default function CatalogManagement() {
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-
-    // refetchAll()
   }, [categories?.data, queryParams?.values?.search, queryParams?.values?.limit, queryParams?.values?.page])
 
-  const columnsCategories = tableHeadersCategories(searchTerm, setCategoryDrawer, setCreateEdit, status, type, setOpenConfirm, t, setConfirmToDelete)
+  const columnsCategories = tableHeadersCategories({ searchTerm, setCreateEdit, t, setConfirmToDelete })
 
   const columns = columnsCategories
 
@@ -101,13 +95,7 @@ export default function CatalogManagement() {
               <Box flex='1 0 30%' mr={1}>
                 <InputSearch
                   name='search'
-                  placeholder={
-                    type === 'attributes'
-                      ? t('placeholders.attribute_name')
-                      : type === 'characteristics'
-                      ? t('placeholders.characteristics_name')
-                      : t('menu.finance.categories.searchplaceholder')
-                  }
+                  placeholder={t('menu.finance.categories.searchplaceholder')}
                   fullWidth
                   onChange={(e) => setSearchTerm(e.target.value)}
                   value={searchTerm}
@@ -115,7 +103,13 @@ export default function CatalogManagement() {
                 />
               </Box>
               <Box flex='0 0 10%' minWidth={256}>
-                <Button id='create' adornmentStart={<PlusIcon fill='#fff' />} primary onClick={() => setCreateEdit({ type })} style={{ minWidth: 256 }}>
+                <Button
+                  id='create'
+                  adornmentStart={<PlusIcon fill='#fff' />}
+                  primary
+                  onClick={() => setCreateEdit({ type: 'categories' })}
+                  style={{ minWidth: 256 }}
+                >
                   {t('menu.finance.categories.new')}
                 </Button>
               </Box>

@@ -1,10 +1,8 @@
-import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
-import Highlighter from 'react-highlight-words'
-// import Button from 'components/Buttons/Button'
-// import Tooltip from 'components/Tooltip'
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
 import { get } from 'lodash'
+import Highlighter from 'react-highlight-words'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import EditIcon from '../../../assets/icons/EditIcon'
 
@@ -14,7 +12,7 @@ const list = [
   { accessor: 'action', is_active: true },
 ]
 
-const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, status, type, setOpenConfirm, t, setConfirmToDelete) => {
+const tableHeadersCategories = ({ searchTerm, setCreateEdit, t, setConfirmToDelete }) => {
   return list?.map((item) => {
     switch (item.accessor) {
       case 'name':
@@ -59,112 +57,59 @@ const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, st
           Header: t('table_columns.name'),
         }
 
-      case 'quantity':
-        return {
-          ...item,
-          Cell: ({ row }) => (
-            <Box
-              onClick={() =>
-                row?.original?.product_count &&
-                setCategoryDrawer({
-                  id: row?.original?.id,
-                  name: row.original.name,
-                  isSub: row.original.parent_id !== '',
-                })
-              }
-              color={!!row?.original?.product_count ? '#fe5000' : '#BDBDBD'}
-            >
-              {row?.original?.product_count}
-            </Box>
-          ),
-          Header: t('table_columns.amount'),
-          minWidth: 150,
-        }
       case 'action':
         return {
           ...item,
           Cell: ({ row }) => (
             <Box display='inline-flex'>
-              {status === 'deleted' ? (
-                <Tooltip title={t('buttons.restore')} placement='top'>
+              <>
+                <Tooltip title={t('buttons.edit')} placement='top'>
                   <Button
-                    variant=''
+                    sx={{ borderRadius: '15px', width: '50px', height: '50px' }}
                     onClick={(e) => {
                       e.stopPropagation()
-                      setOpenConfirm({
-                        type,
-                        id: row.original.id,
-                        isDelete: false,
-                      })
+                      setCreateEdit({ type: 'categories', id: row?.original?.id, parentId: get(row, 'original.parent_id') || get(row, 'original.id') })
                     }}
-                    recover
-                    square
-                  />
+                  >
+                    <IconButton
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        backgroundColor: 'transparent',
+                        borderRadius: 3,
+                        p: '8px',
+                        '&:hover': {
+                          backgroundColor: 'transparent',
+                        },
+                      }}
+                    >
+                      <EditIcon color='#fff' />
+                    </IconButton>
+                  </Button>
                 </Tooltip>
-              ) : (
-                <>
-                  <Tooltip title={t('buttons.edit')} placement='top'>
-                    <Button
-                      sx={{ borderRadius: '15px', width: '50px', height: '50px' }}
-                      // variant=''
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setCreateEdit({ type, id: row?.original?.id, parentId: get(row, 'original.parent_id') || get(row, 'original.id') })
+                <Box width={16} />
+                <Tooltip title={t('buttons.delete')} placement='top'>
+                  <Button sx={{ borderRadius: '15px', width: '50px', height: '50px' }} square trash>
+                    <IconButton
+                      backgroundColor='#fe5000'
+                      onClick={() => setConfirmToDelete(row?.original?.id)}
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        backgroundColor: 'transparent',
+                        borderRadius: 3,
+                        p: '8px',
+                        '&:hover': {
+                          backgroundColor: 'transparent',
+                        },
                       }}
                     >
-                      <IconButton
-                        // onClick={() => navigate(`/products/edit/${data.id}`)}
-                        sx={{
-                          width: 32,
-                          height: 32,
-                          backgroundColor: 'transparent',
-                          borderRadius: 3,
-                          p: '8px',
-                          '&:hover': {
-                            backgroundColor: 'transparent',
-                          },
-                        }}
-                      >
-                        <EditIcon color='#fff' />
-                      </IconButton>
-                    </Button>
-                  </Tooltip>
-                  <Box width={16} />
-                  <Tooltip title={t('buttons.delete')} placement='top'>
-                    <Button
-                      sx={{ borderRadius: '15px', width: '50px', height: '50px' }}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setOpenConfirm({
-                          type,
-                          id: row.original.id,
-                          isDelete: true,
-                        })
-                      }}
-                      square
-                      trash
-                    >
-                      <IconButton
-                        backgroundColor='#fe5000'
-                        onClick={() => setConfirmToDelete(row?.original?.id)}
-                        sx={{
-                          width: 32,
-                          height: 32,
-                          backgroundColor: 'transparent',
-                          borderRadius: 3,
-                          p: '8px',
-                          '&:hover': {
-                            backgroundColor: 'transparent',
-                          },
-                        }}
-                      >
-                        <DeleteIcon color='#fff' />
-                      </IconButton>
-                      {/* <Delete /> */}
-                    </Button>
-                  </Tooltip>
-                </>
-              )}
+                      <DeleteIcon color='#fff' />
+                    </IconButton>
+                    {/* <Delete /> */}
+                  </Button>
+                </Tooltip>
+              </>
             </Box>
           ),
           Header: t('table_columns.action'),

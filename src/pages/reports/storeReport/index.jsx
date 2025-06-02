@@ -1,6 +1,4 @@
-import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
+import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import * as qs from 'qs'
@@ -12,18 +10,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import ImageGallery from '../../../../components/ImageGallery'
 import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRangeInput'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import LazySelect from '../../../../components/Select/LazySelect'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import BigTickIcon from '../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import { error } from '../../../../utils/toast'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/storeReportTableColumns'
 import StoreReposrMiniDashboardHeader from './storeReposrMiniDashboardHeader'
@@ -31,36 +24,19 @@ import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function StoreReportPage() {
-  const theme = useTheme()
   const dispatch = useDispatch()
-  const [selectedShops, setSelectedShops] = useState('all')
   const methods = useForm()
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.storeReportTableColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
 
-  const [selectClients, setselectClients] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
-  const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [rejectComment, setRejectComment] = useState(null)
-  const [filterMenu, setFilterMenu] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
-  const selectClientsFunc = (isChecked, id) => {
-    if (isChecked) {
-      setselectClients((p) => [...p, id])
-    } else {
-      setselectClients((p) => p.filter((ids) => ids !== id))
-    }
-  }
+
   const tableColumns = tableHeaderSelector({
     clientsColumns: columns,
     t,
     values,
-    setImages: setOpenImageGallery,
-    setOpenConfirmDialog,
-    selectClientsFunc,
   })
 
   useEffect(() => {
@@ -88,7 +64,7 @@ export default function StoreReportPage() {
       start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
       end_date: values?.start_date == values?.end_date ? null : values?.end_date,
     }
-  }, [values?.offset, values?.limit, values?.store_id, selectedShops, values?.search, values?.start_date, values?.end_date])
+  }, [values?.offset, values?.limit, values?.store_id, values?.search, values?.start_date, values?.end_date])
   const {
     data: storeReportList,
     isLoading: storeReportListLoading,
@@ -96,27 +72,12 @@ export default function StoreReportPage() {
     refetch,
   } = useQuery(['storeReportList', storeReportListFilter], () => requests.getStoreReport(storeReportListFilter))
 
-  const { mutate: deleteClient, isLoading: isDeletingProduct } = useMutation(requests.deleteClient, {
-    onSuccess: () => {
-      refetch()
-      success('Kлиент успешно удален!')
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении клиент!')
-      setOpenConfirmDialog(null)
-      console.log('err', err)
-    },
-  })
-
   useEffect(() => {
     refetch()
   }, [storeReportListFilter])
 
   useEffect(() => {
     const count = storeReportList?.data?.data?._meta?.total_count
-    setselectClients([])
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [storeReportList?.data, values?.limit])
@@ -140,12 +101,8 @@ export default function StoreReportPage() {
 
     navigate(`/reports/store-report${requestParams}`)
   }, [methods.watch('store_id')])
-  const {
-    data: saleStatsData,
-    isLoading: saleStatsDataLoading,
-    isFetching: isFetchingsaleStatsData,
-    refetch: refetchSaleStats,
-  } = useQuery(['saleStatsData', storeReportListFilter], () => requests.getAllSaleStats(storeReportListFilter))
+
+  const { data: saleStatsData } = useQuery(['saleStatsData', storeReportListFilter], () => requests.getAllSaleStats(storeReportListFilter))
 
   return (
     <LoadingContainer readyState={true}>
@@ -171,59 +128,6 @@ export default function StoreReportPage() {
               <InputSearch id='producrs-search' name='search' placeholder={'Филиал'} uncontrolled />
             </Box>
 
-            {/* <Box minWidth={113} ml={'16px'} mr={'10px'}>
-              <Button
-                sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
-                  },
-                }}
-                fullWidth
-                startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
-              >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
-            </Box> */}
-            {selectClients.length > 0 && (
-              <>
-                <Box minWidth={48} ml={'16px'}>
-                  <Button
-                    sx={{
-                      height: '48px',
-                      padding: 0,
-                      bgcolor: '#fff',
-                      border: '1px solid #ECEDF2',
-                      color: 'dark.500',
-                      fontWeight: '500',
-                      fontSize: '16px',
-                      lineHeight: '24px',
-                      '& span': {
-                        mr: '12px',
-                      },
-                    }}
-                    fullWidth
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => deleteClient({ data: selectClients })}
-                  >
-                    <DeleteIcon width='24px' />
-                  </Button>
-                </Box>
-              </>
-            )}
             <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
             <Box
               sx={{
@@ -245,8 +149,6 @@ export default function StoreReportPage() {
                 request={requests.getAllStores}
                 filters={{ limit: 100 }}
                 control={methods.control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
                 getOptionLabel={(option) => {
                   return option.name
                 }}
@@ -267,7 +169,6 @@ export default function StoreReportPage() {
             </Box>
           </Box>
         </Box>
-        {/* <FilterMenu selectedShops={selectedShops} setSelectedShops={setSelectedShops} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} /> */}
         <Box>
           <AgGridTable
             id='clients-main-table'
@@ -294,34 +195,6 @@ export default function StoreReportPage() {
           />
         </Box>
       </Box>
-
-      <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
-      {openConfirmDialog && (
-        <ConfirmDialog
-          open={!!openConfirmDialog}
-          setOpen={setOpenConfirmDialog}
-          icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={'Удалить клиента?'}
-          desc={'Хотите ли вы удалить клиента?'}
-          supDesc={'“Azitromitsin 250 mg”'}
-          actions={
-            <>
-              <Button
-                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
-                fullWidth
-                color='secondary'
-                variant='contained'
-                onClick={() => setOpenConfirmDialog(null)}
-              >
-                Нет
-              </Button>
-              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteClient({ data: [openConfirmDialog.id] })}>
-                Да, удалить
-              </LoadingButton>
-            </>
-          }
-        />
-      )}
     </LoadingContainer>
   )
 }

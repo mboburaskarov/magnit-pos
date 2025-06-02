@@ -7,7 +7,6 @@ import Highlighter from 'react-highlight-words'
 import { useNavigate } from 'react-router-dom'
 import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
 import CheckAccess from '../../../components/CheckAccess'
-import TextField from '../../../components/Inputs/TextField'
 import thousandDivider from '../../../utils/thousandDivider'
 import { products_statuses } from '../../assets/data/products-statuses'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
@@ -43,18 +42,6 @@ const Image = ({ data, rowIndex, setImages }) => {
       }}
     >
       <img src='/no-img.png' />
-      {/* {data?.photos?.[0] ? ( */}
-      {/* <CustomImg
-        key={rowIndex}
-        onClick={() => setImages({ data: data?.photos })}
-        id={`product-image-${rowIndex}`}
-        src={data?.photos?.[0] || 'default-img.avif'}
-        alt={data?.name}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
-      /> */}
-      {/* ) : (
-        <DefaultImgIcon />
-      )} */}
     </Box>
   )
 }
@@ -63,7 +50,6 @@ export default function tableHeaderSelector({
   productsColumns,
   values,
   setImages,
-  canChangebarcode,
   editable = false,
   t,
   setMarkingRequired,
@@ -99,7 +85,7 @@ export default function tableHeaderSelector({
             sx={{ '& span': { color: 'orange.500', whiteSpace: 'pre-line' }, '& .highlighter': { color: 'orange.500' }, cursor: 'pointer' }}
             onClick={() => setOpenProductDrawer(p.data.id)}
           >
-            <Highlighter highlightClassName='highlighter' searchWords={[values?.search]} autoEscape textToHighlight={`${p.data.name}`} />
+            <Highlighter highlightClassName='highlighter' searchWords={[values?.search]} autoEscape textToHighlight={`${p.data?.name}`} />
           </Box>
         )),
       }
@@ -118,7 +104,7 @@ export default function tableHeaderSelector({
         headerName: t('table_columns.category'),
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.data.category_name}-${p.rowIndex}`}>
+          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p?.data?.category_name}-${p.rowIndex}`}>
             {get(p, 'data.category_name', '')}
           </Typography>
         )),
@@ -223,25 +209,6 @@ export default function tableHeaderSelector({
         colId: el.field,
         cellRenderer: memo((p) => {
           return <SimpleText currency='' {...p} type='barcode' />
-          if (!canChangebarcode) {
-          } else {
-            return (
-              <TextField
-                onBlur={({ target }) => {
-                  if (p?.data?.barcode == get(target, 'value')) return
-
-                  changeBarcode({ id: get(p, 'data.id'), barcode: get(target, 'value') })
-                }}
-                placeholder={'0'}
-                thousandSeparator={''}
-                defaultValue={p?.data?.barcode}
-                id={`editable_barcode_${p?.data?.id}`}
-                name={`editable_barcode_${p?.data?.id}`}
-                type='number'
-                fullWidth
-              />
-            )
-          }
         }),
       }
     }
@@ -254,25 +221,6 @@ export default function tableHeaderSelector({
         colId: el.field,
         cellRenderer: memo((p) => {
           return <SimpleText currency='' {...p} type='mxik' />
-          if (!canChangebarcode) {
-          } else {
-            return (
-              <TextField
-                onBlur={({ target }) => {
-                  if (p?.data?.barcode == get(target, 'value')) return
-
-                  changeBarcode({ id: get(p, 'data.id'), mxik: get(target, 'value') })
-                }}
-                placeholder={'0'}
-                thousandSeparator={''}
-                defaultValue={p?.data?.mxik}
-                id={`editable_mxik_${p?.data?.id}`}
-                name={`editable_mxik_${p?.data?.id}`}
-                type='number'
-                fullWidth
-              />
-            )
-          }
         }),
       }
     }
@@ -285,25 +233,6 @@ export default function tableHeaderSelector({
 
         cellRenderer: memo((p) => {
           return <SimpleText currency='' {...p} type='unit_code' />
-          if (!canChangebarcode) {
-          } else {
-            return (
-              <TextField
-                onBlur={({ target }) => {
-                  if (p?.data?.barcode == get(target, 'value')) return
-
-                  changeBarcode({ id: get(p, 'data.id'), unit_code: get(target, 'value') })
-                }}
-                placeholder={'0'}
-                thousandSeparator={''}
-                defaultValue={p?.data?.unit_code}
-                id={`editable_unit_code_${p?.data?.id}`}
-                name={`editable_unit_code_${p?.data?.id}`}
-                type='number'
-                fullWidth
-              />
-            )
-          }
         }),
       }
     }
@@ -316,24 +245,6 @@ export default function tableHeaderSelector({
 
         cellRenderer: memo((p) => {
           return <SimpleText currency='' {...p} type='unit_label' />
-          if (!canChangebarcode) {
-          } else {
-            return (
-              <TextField
-                onBlur={({ target }) => {
-                  if (p?.data?.barcode == get(target, 'value')) return
-
-                  changeBarcode({ id: get(p, 'data.id'), unit_label: get(target, 'value') })
-                }}
-                placeholder={'0'}
-                thousandSeparator={''}
-                defaultValue={p?.data?.unit_label}
-                id={`editable_unit_label_${p?.data?.id}`}
-                name={`editable_unit_label_${p?.data?.id}`}
-                fullWidth
-              />
-            )
-          }
         }),
       }
     }
@@ -366,7 +277,6 @@ export default function tableHeaderSelector({
               : `${thousandDivider(p?.data?.quantity)} ${p?.data?.short_name}`}
           </Typography>
         )),
-        // <SimpleText withDevider {...p} type='quantity' />),
       }
     }
     if (el.field === 'expire_date') {

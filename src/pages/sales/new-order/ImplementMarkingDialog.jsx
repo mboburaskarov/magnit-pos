@@ -15,17 +15,13 @@ function ImplementMarkingDialog({
   markingCount,
   handleClose,
   cartmarkingCount,
-  isAllMarkingFillBeforeAdd,
   setLiteOrder,
-  liteOrder,
   cartItems,
 
   markingsList,
   setMarkingList,
 }) {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
-  const [enterpressed, setEnterpressed] = useState({ state: false })
-  const [isBlurBefore, setIsBlurBefore] = useState(false)
   const inputsRef = useRef([])
   const { t } = useTranslation()
 
@@ -60,16 +56,7 @@ function ImplementMarkingDialog({
     handleClose()
     setOpenConfirmDialog(null)
   }
-  const checkMarkingBarcode = (e, flatIndex, productBarcode) => {
-    if (e.length == 0) return true
-    if (!checkBarcodeWithMarking(productBarcode, e) || e.length != 83) {
-      inputsRef.current[flatIndex].value = ''
-      error('Маркировка и штрих-код не поступили.')
-      return false
-    } else {
-      return true
-    }
-  }
+
   useEffect(() => {
     if (markingsList.length) {
       if (!isAllMarkingFill()) {
@@ -86,10 +73,8 @@ function ImplementMarkingDialog({
 
     if (e.key === 'Enter') {
       e.preventDefault()
-      setIsBlurBefore(true)
       console.log('#2')
 
-      setEnterpressed({ state: true, lastMarking: e.target.value })
       if (containsCyrillic(e.target.value)) {
         inputsRef.current[flatIndex].value = ''
         error('Кириллица не поддерживается (uz: krilcha qabul qilinmaydi)')
@@ -98,7 +83,6 @@ function ImplementMarkingDialog({
       if (e.target.value.length == 0) {
         if (markingsList?.[id]?.[childIndex]?.length != 0) {
           //demak u markirofkani tozlamoqchi
-          setIsBlurBefore(false)
           console.log('#3')
 
           implementMarkingList(e.target.value, id, childIndex)
@@ -119,15 +103,7 @@ function ImplementMarkingDialog({
         error("Неверная маркировка (uz: noto'g'ri uzunlikdagi markirovka)")
         return
       }
-      // if (markingsList?.[id]?.[childIndex]?.length != 0) {
-      //   //demak u markirofkani almashtirmoqchi
-      //   implementMarkingList(e.target.value, id, childIndex)
-      //   setIsBlurBefore(false)
-      //   console.log('#6')
 
-      //   inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
-      //   return
-      // }
       if (Object.values(markingsList[id] || {}).includes(e.target.value) && markingsList?.[id]?.[childIndex]?.length == 0) {
         // ikki martta bir xil markirofka kiritildi
         inputsRef.current[flatIndex].value = ''
@@ -144,7 +120,6 @@ function ImplementMarkingDialog({
         error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl:${extractNumbers(e.target.value)}))`)
         return
       }
-      setIsBlurBefore(false)
       //hammasi ok
       console.log('#9')
 
@@ -156,7 +131,6 @@ function ImplementMarkingDialog({
         .filter((val) => val.length > 0)
 
       if (cartmarkingCount() != values.length) {
-        setEnterpressed({ state: false, lastMarking: e.target.value })
         inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
         console.log('#11')
 
@@ -175,65 +149,9 @@ function ImplementMarkingDialog({
         handleClose()
         return
       }
-
-      console.log('#15')
-
-      return
-      if (checkMarkingBarcode(e.target.value, flatIndex, productBarcode)) {
-        if (implementMarkingList(e.target.value, id, childIndex)) {
-        } else {
-          inputsRef.current[flatIndex].value = ''
-          error('Эта маркировка использовалась.')
-          return
-        }
-
-        if (inputsRef.current.length - 1 == flatIndex) {
-          // if (!isAllMarkingFill()) {
-          //   setOpenConfirmDialog(true)
-
-          //   return
-          // }
-
-          if (!isAllMarkingFillBeforeAdd() || markingsList?.[id]?.[childIndex]?.length != 0) {
-            inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
-            return
-          } else {
-            if (get(open, 'mode', 'lite') === 'lite') {
-              setLiteOrder(true)
-            } else {
-              setIsOrderDrower(true)
-            }
-            handleClose()
-            return
-          }
-        }
-        if (markingsList?.[id]?.[childIndex]?.length != 0) {
-          inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
-          return
-        }
-        if (!isAllMarkingFillBeforeAdd()) {
-          inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
-          return
-        } else {
-          if (get(open, 'mode', 'lite') === 'lite') {
-            setLiteOrder(true)
-          } else {
-            setIsOrderDrower(true)
-          }
-          handleClose()
-          return
-        }
-        const currentIndex = Object.keys(inputsRef.current).findIndex((key) => key == flatIndex)
-        const nextIndex = Object.keys(inputsRef.current)[currentIndex + 1]
-        const nextInput = inputsRef.current[nextIndex]
-        if (nextInput) {
-          nextInput.focus()
-        }
-      }
     }
   }
 
-  // Calculate flat index from parent and child indexes
   const getFlatIndex = (parentIndex, childIndex, markingCounts) => {
     let flatIndex = 0
     for (let i = 0; i < parentIndex; i++) {
@@ -308,42 +226,7 @@ function ImplementMarkingDialog({
                       <TextField
                         uncontrolled
                         setValue={(e) => {}}
-                        onBlur={(e) => {
-                          // if (isBlurBefore) {
-                          //   setIsBlurBefore(false)
-                          //   return
-                          // }
-                          // if (
-                          //   e.target.value.length === 0 ||
-                          //   markingsList?.[item.id]?.[childIndex] == e.target.value
-                          //   // markingsList?.[item.id]?.[childIndex] == ''
-                          // ) {
-                          //   return
-                          // }
-                          // setIsBlurBefore(true)
-                          // inputsRef.current[flatIndex]?.focus()
-                          // error('Нажмите Enter (eng: press enter)')
-                          // console.log(justUpdatedIndex)
-                          // if (justUpdatedIndex === flatIndex) {
-                          //   setJustUpdatedIndex(null) // Reset the flag
-                          //   return // Skip blur logic, Enter already handled it
-                          // }
-                          // console.log(e, markingsList?.[item.id]?.[childIndex])
-                          // if (e.target.value.length <= 0) return
-                          // if (markingsList?.[item.id]?.[childIndex] == '') {
-                          //   error('После ввода маркировки нажмите Enter')
-                          //   inputsRef.current[flatIndex].value = ''
-                          //   return
-                          // }
-                          // if (
-                          //   (Object.values(markingsList[item.id] || {}).includes(e.target.value) && markingsList?.[item.id]?.[childIndex] != e.target.value) ||
-                          //   e.target.value.length != 83
-                          // ) {
-                          //   inputsRef.current[flatIndex].value = ''
-                          //   error('Эта маркировка использовалась.')
-                          //   return
-                          // }
-                        }}
+                        onBlur={(e) => {}}
                         defaultValue={markingsList?.[item.id]?.[childIndex]}
                         required={get(item, 'is_marking')}
                         onKeyDown={(e) => handleKeyDown(e, flatIndex, item.barcode, item.id, childIndex)}
@@ -426,15 +309,6 @@ function ImplementMarkingDialog({
             >
               {t('Закрыть диалог')}
             </Button>
-            {/* <LoadingButton
-              variant='contained'
-              type='button'
-              onClick={() => {
-                addEmptyStringMarkToMarkinglessProduct(markingsList, markingCount)
-              }}
-            >
-              {t('continue')}
-            </LoadingButton> */}
           </>
         }
       />

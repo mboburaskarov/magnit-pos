@@ -1,30 +1,17 @@
 import { Box, Button, Dialog, Typography } from '@mui/material'
 import { get } from 'lodash'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useMutation } from 'react-query'
 import TextField from '../../../../components/Inputs/TextField'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 
-function DecreasedCartItemMarkingCheck({
-  open,
-  isAllMarkingFillById,
-  markingCount,
-  handleClose,
-  cartItems,
-  implementMarkingList,
-  markingsList,
-  refetchcartItemsList,
-  setMarkingList,
-}) {
+function DecreasedCartItemMarkingCheck({ open, handleClose, cartItems, markingsList, refetchcartItemsList, setMarkingList }) {
   const convertData = (data, input, targetId) => {
-    // Create a new object to store the result
     const result = { ...data }
 
-    // Get the values from input that we want to filter out
     const inputValues = Object.values(input)
 
-    // Only modify the target ID
     const currentObj = { ...result[targetId] }
     Object.keys(currentObj).forEach((key) => {
       if (inputValues?.includes(currentObj[key])) {
@@ -65,7 +52,6 @@ function DecreasedCartItemMarkingCheck({
     const inputSet = new Set(input) // Remove duplicates
     const evialableSet = new Set(evialable)
 
-    // Ensure all elements in inputSet exist in evialableSet
     return inputSet.size === input.length && [...inputSet].every((el) => evialableSet.has(el))
   }
   return (
@@ -132,11 +118,7 @@ function DecreasedCartItemMarkingCheck({
                       >
                         <TextField
                           uncontrolled
-                          // onBlur={({ target }) => {
-                          //   setRemovedMark((p) => [...p, target.value])
-                          // }}
                           setValue={(e) => setRemovedMark((p) => ({ ...p, [index]: e }))}
-                          // defaultValue={markingsList?.[item.id]?.[index]}
                           required
                           fullWidth
                           borderRadius={'40px'}
@@ -171,7 +153,6 @@ function DecreasedCartItemMarkingCheck({
         <Box width={'20px'} />
         <Button
           disabled={!isValidInput(get(open, 'available'), Object.values(removedMark))}
-          // !Object.values(removedMark).every((el) => get(open, 'available')?.includes(el))}
           onClick={() => {
             if (!Object.values(removedMark).every((el) => get(open, 'available').includes(el))) {
               return

@@ -34,12 +34,10 @@ export default function ProductReportPage() {
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.productReportTableColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
 
   const [selectClients, setselectClients] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [rejectComment, setRejectComment] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const selectClientsFunc = (isChecked, id) => {
@@ -228,7 +226,7 @@ export default function ProductReportPage() {
             </Box>
           </Box>
         </Box>
-        <FilterMenu selectedShops={selectedShops} setSelectedShops={setSelectedShops} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+        <FilterMenu selectedShops={selectedShops} setSelectedShops={setSelectedShops} open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='clients-main-table'

@@ -687,27 +687,6 @@ function NewSale() {
   useHotkeys('Shift', (event) => focusedItemDetailDrawerOpen(event), { enableOnFormTags: true })
 
   useHotkeys(
-    'F10',
-    () => {
-      return
-      if (isOrderDrower) return
-
-      if (isAllMarkingFill()) {
-        setLiteOrder(true)
-
-        // setIsOrderDrower(true)
-      } else {
-        setIsOpenImplementMarkingDialog({ mode: 'lite' })
-      }
-    },
-    {
-      preventDefault: true,
-      enableOnFormTags: true,
-      enableOnTags: ['INPUT', 'TEXTAREA'],
-    }
-  )
-
-  useHotkeys(
     'F9',
     () => {
       if (isAllMarkingFill()) {

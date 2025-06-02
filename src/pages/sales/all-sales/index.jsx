@@ -126,12 +126,7 @@ export default function AllSalesPage() {
     isFetching: isFetchingsalesList,
     refetch,
   } = useQuery(['salesList', salesListFilter], () => requests.getAllSales(salesListFilter))
-  const {
-    data: saleStatsData,
-    isLoading: saleStatsDataLoading,
-    isFetching: isFetchingsaleStatsData,
-    refetch: refetchSaleStats,
-  } = useQuery(['saleStatsData', salesListFilter], () => requests.getAllSaleStats(salesListFilter))
+  const { data: saleStatsData } = useQuery(['saleStatsData', salesListFilter], () => requests.getAllSaleStats(salesListFilter))
 
   useEffect(() => {
     if (get(values, 'sale_id')) {

@@ -18,9 +18,6 @@ import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadExcel } from '../../../../utils/downloadEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
-import errorAudio from '../../../assets/audio/error.mp3'
-import successAudio from '../../../assets/audio/normal.mp3'
-import overplusAudio from '../../../assets/audio/overplus.mp3'
 import ArrowDown from '../../../assets/icons/ArrowDown'
 import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
@@ -31,9 +28,6 @@ import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ReturnToWarehouseSentScanWithCheckingPage() {
-  const errorScanAudio = new Audio(errorAudio)
-  const successScanAudio = new Audio(successAudio)
-  const overplusScanAudio = new Audio(overplusAudio)
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
@@ -43,15 +37,10 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
-  const [hasTableChange, setHasTableChange] = useState(false)
-  const [appType, setAppType] = useState('ALL')
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
-  const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
-  const [manualNumber, setManualNumber] = useState(1)
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedReturnToWarehouseNumber, {
     onSuccess: ({ data }) => {
-      // refetch()
       refetchgetReturnToWarehouseDashBoard()
       setBarcode('')
     },
@@ -84,9 +73,8 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: barcode,
-      type: status,
     }
-  }, [id, values?.limit, values?.offset, barcode, status])
+  }, [id, values?.limit, values?.offset, barcode])
 
   const {
     data: getReturnToWarehouseDashBoard,
@@ -237,22 +225,12 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
-                status={appType}
-                isRefreshing={loading || hasTableChange || isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
+                status={'ALL'}
+                isRefreshing={loading || isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
         </Container>
-        {/* <ConflictDialog
-          refetch={refetch}
-          setBarcode={setBarcode}
-          manualNumber={manualNumber}
-          conflictList={conflictList}
-          open={conflictOpen}
-          setOpen={() => {
-            setConflictOpen(false), setConflictList([])
-          }}
-        /> */}
       </FormProvider>
       <ConfirmDialog
         open={openFinishConfirmDialog}

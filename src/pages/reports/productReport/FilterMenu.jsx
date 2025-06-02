@@ -15,7 +15,7 @@ import { requests } from '../../../../utils/requests'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 
-export default function FilterMenu({ open, selectedShops, setSelectedShops, setOpen, setRegions }) {
+export default function FilterMenu({ open, selectedShops, setSelectedShops, setOpen }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
@@ -25,7 +25,6 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
 
   const onSubmit = (data) => {
     const requestBody = {
-      // store_ids: selectedShops.map(({ id }) => id) || undefined,
       employee_id: data.employee_id?.id || undefined,
       producer_id: data.producer_id?.value || undefined,
       producer_name: data.producer_id?.name || undefined,
@@ -74,17 +73,6 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            {/* <SelectSimple
-              fullWidth
-              id='sto'
-              name='store_id'
-              white
-              minWidth='auto'
-              label={t('input.store.label')}
-              placeholder={t('input.store.placeholder')}
-              getOptionLabel={(el) => el.name}
-              options={shopList?.data?.data?.data}
-            /> */}
             <LazySelect
               slug='employee_id'
               boxStyle={{ width: '100%' }}
@@ -99,8 +87,6 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
               request={requests.getAllVendors}
               filters={{ store_id: get(userData, 'store.id'), limit: 20 }}
               control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
               getOptionLabel={(option) => {
                 return option.name
               }}
@@ -111,10 +97,8 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
               <MultiOptionSelectNew
                 zIndex={999}
                 placeholder={t('placeholders.select_shops')}
-                // fullWidth
                 multiple
                 defaultSelectedAll
-                // minWidth='auto'
                 beforeContent={t('placeholders.select_shops')}
                 value={selectedShops}
                 allOptions={get(shopList, 'data.data.ids', [])}
@@ -141,8 +125,6 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
               request={requests.getProducer}
               filters={{ limit: 100 }}
               control={methods.control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
               getOptionLabel={(option) => {
                 return option.name
               }}

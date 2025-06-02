@@ -1,5 +1,6 @@
 import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
@@ -20,8 +21,6 @@ const CustomHeader = (props) => {
   const orderPosition = lastStort?.position || 0
   const ordercolId = lastStort?.colId || 0
   const onClick = () => {
-    console.log(props.column.colDef)
-
     let newOrder = { position: 0, colId: '' }
     if (lastStort) {
       if (orderPosition == 2 && ordercolId == props.column.colId) {
@@ -43,7 +42,6 @@ const CustomHeader = (props) => {
         }
       }
     }
-    console.log(newOrder)
 
     // Toggle sort direction manually
     props.column.colDef.setOrderStoring(newOrder)
@@ -192,6 +190,22 @@ export default function tableHeaderSelector({ importsColumns, setOrderStoring, o
         cellRenderer: memo((p) => <SimpleText {...p} type='barcode' />),
       }
     }
+    if (el.field === 'expired_date') {
+      return {
+        ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        editable: editable,
+        setOrderStoring,
+        headerName: 'Срок',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')}</Typography>
+          </Box>
+        )),
+      }
+    }
     //
     if (el.field === 'fact_quantity') {
       return {
@@ -200,7 +214,6 @@ export default function tableHeaderSelector({ importsColumns, setOrderStoring, o
         orderStoring,
         setOrderStoring,
         headerName: 'Факт УП',
-        editable: editable,
 
         colId: el.field,
         cellRenderer: memo((p) => (
@@ -237,7 +250,6 @@ export default function tableHeaderSelector({ importsColumns, setOrderStoring, o
         orderStoring,
         setOrderStoring,
         headerName: 'Факт кол-во',
-        editable: editable,
 
         colId: el.field,
         cellRenderer: memo(

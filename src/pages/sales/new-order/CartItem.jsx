@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
-import React, { memo } from 'react'
+import { memo } from 'react'
 import { useMutation } from 'react-query'
 import InputQuantity from '../../../../components/Inputs/InputQuantity'
 import StyledTooltip from '../../../../components/StyledTooltip'
@@ -414,9 +414,6 @@ const CartItem = ({
                 <></>
               )}
               <Box width={'10px'} />
-              {/* <Box className={cls.img_cont}>
-                <img src={item?.main_photo || 'default-img.avif'} />
-              </Box> */}
             </Box>
             <Box ml={'8px'} display={'flex'} width={'100%'} flexDirection={'column'}>
               <Box onClick={() => setOpenProductDrawer(item)} id='product-details' className={cls.text}>
@@ -428,9 +425,6 @@ const CartItem = ({
                 >
                   {item?.name}
                 </Typography>
-                {/* <Typography sx={{ minWidth: '30px', whiteSpace: 'pre', color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>
-                  A4
-                </Typography> */}
               </Box>
               <Box
                 sx={{
@@ -467,35 +461,10 @@ const CartItem = ({
               </Box>
             )}
             <Box display={'flex'} alignItems={'center'}>
-              {/* {item?.discount_value > 0 && (
-                <Typography
-                  whiteSpace={'pre'}
-                  sx={{
-                    bgcolor: 'red.500',
-                    color: '#fff',
-                    px: '6px',
-                    mr: '5px',
-                    py: '3px',
-                    borderRadius: '15px',
-                    fontSize: '12px',
-                    lineHeight: '20px',
-                    fontWeight: '500',
-                  }}
-                >
-                  - {item?.discount_value}%
-                </Typography>
-              )} */}
-
               <Box alignItems={'end'} display={'flex'} flexDirection={'column'}>
                 {item.quantity >= 0 && (
                   <StyledTooltip title={'Это цена одного товара без скидки.'}>
                     <Box display={'flex'}>
-                      {/* {item?.discount_price > 0 && (
-                      <Typography sx={{ mr: '10px', whiteSpace: 'pre', color: 'orange.500', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>
-                        {thousandDivider(item?.discount_price, 'сум')}
-                      </Typography>
-                    )} */}
-
                       <Typography
                         textDecoration='line-through'
                         sx={{
@@ -506,7 +475,6 @@ const CartItem = ({
                           lineHeight: '24px',
                           fontWeight: '600',
                           textAlign: 'end',
-                          // textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
                           color: item?.discount_price > 0 ? 'bunker.300' : 'bunker.500',
                         }}
                       >
@@ -522,28 +490,6 @@ const CartItem = ({
                     </Typography>
                   )}
                   <Box>
-                    {/* {item?.unit_quantity_price && item.unit_quantity >= 1 ? (
-                      <Typography
-                        textDecoration='line-through'
-                        sx={{
-                          mr: '10px',
-                          color: 'orange.500',
-                          whiteSpace: 'pre',
-                          fontSize: item?.discount_price > 0 ? '14px' : '16px',
-                          lineHeight: '24px',
-                          mt: '1px',
-                          fontWeight: '600',
-                          textAlign: 'end',
-
-                          // textDecoration: item?.discount_price > 0 ? 'line-through' : 'none',
-                          color: item?.discount_price > 0 ? 'bunker.300' : 'orange.500',
-                        }}
-                      >
-                        {thousandDivider(item?.unit_quantity_price, 'сум')}
-                      </Typography>
-                    ) : (
-                      ''
-                    )} */}
                     <Typography
                       textDecoration='line-through'
                       sx={{
@@ -566,25 +512,6 @@ const CartItem = ({
               </Box>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              {/* {item?.bonus_amount > 0 && (
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    top: get(item, 'discount_price', 0) > 0 ? -13 : -14,
-                    right: -35,
-                    backgroundColor: '#fe5000',
-                    color: '#fff',
-                    // width: '100px',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    padding: '2px 15px 2px 25px',
-                    transform: 'rotate(35deg)',
-                  }}
-                  id='product-details'
-                >
-                  Bonus
-                </Box>
-              )} */}
               <Box
                 sx={{
                   width: 40,
@@ -608,14 +535,6 @@ const CartItem = ({
           </Box>
         </Box>
       </Box>
-      {/* <Box display={'flex'} flexDirection={'column'} padding={'16px'} bgcolor={'bg.10'} ml={'8px'} height={'80px'} borderRadius={'16px'} minWidth={'120px'}>
-        <Typography sx={{ color: 'bunker.950', fontSize: '16px', lineHeight: '24px', fontWeight: '600' }}>Bonus</Typography>
-        <Box display={'flex'} justifyContent={'space-between'}>
-          <Typography sx={{ color: 'purple.500', fontSize: '14px', lineHeight: '20px', fontWeight: '500' }}>
-            {thousandDivider(item?.bonus_amount, 'сум')}
-          </Typography>
-        </Box>
-      </Box> */}
     </Box>
   )
 }

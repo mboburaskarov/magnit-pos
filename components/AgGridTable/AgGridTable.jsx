@@ -1,6 +1,3 @@
-/* eslint-disable react/display-name */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-refresh/only-export-components */
 import { Box } from '@mui/material'
 import 'ag-grid-enterprise'
 import { AgGridReact } from 'ag-grid-react'
@@ -19,7 +16,6 @@ import { onColumnResized, onDisplayedColumnsChanged, scrollShowHide, useScrollLi
 import CheckBoxRenderer from './CheckboxRenderer'
 import useStyles from './useStyles'
 
-// New prop for cell selection callback
 const AgGridSimpleTable = ({
   id,
   emptyTableText,
@@ -226,7 +222,6 @@ const AgGridSimpleTable = ({
   const onCellClicked = useCallback(
     (params) => {
       // return
-      console.log('k')
 
       if (params.column.colId === 'checkboxSelectionField') return // Ignore clicks on checkbox column
       const rowId = params.data[uniqId]
@@ -302,21 +297,7 @@ const AgGridSimpleTable = ({
   const pinnedBottomRowData = useMemo(() => {
     return totalData
   }, [totalData])
-  // useHotkeys(
-  //   ['numenter', 'NumpadEnter'],
-  //   (event) => {
-  //     if (!gridApi) return
-  //     const focusedCell = gridApi.getFocusedCell()
-  //     if (focusedCell) {
-  //       event.preventDefault()
-  //       gridApi.startEditingCell({
-  //         rowIndex: focusedCell.rowIndex,
-  //         colKey: focusedCell.column.colId,
-  //       })
-  //     }
-  //   },
-  //   { enableOnFormTags: true }
-  // )
+
   const onGridReady = useCallback((params) => {
     setGridApi(params.api) // ✅ only the API, not the full params
     gridApiRef.current = params.api
@@ -324,17 +305,8 @@ const AgGridSimpleTable = ({
     setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
   }, [])
   const getRowStyle = (params) => {
-    console.log(params)
-
     if (params.node.rowPinned === 'bottom') {
-      return {
-        // fontWeight: 'bold',
-        // backgroundColor: '#f8f9fa',
-        // position: 'sticky',
-        // bottom: 0,
-        // zIndex: 1,
-        // borderTop: '2px solid #dee2e6',
-      }
+      return {}
     }
     return null
   }
@@ -342,16 +314,9 @@ const AgGridSimpleTable = ({
 
   return (
     <Fragment>
-      <Box
-        className={`${classes.root} ag-theme-alpine ${columnGroup ? 'column-group-header' : ''}`}
-        id={id || 'simpleGrid'}
-        // sx={{ height: '600px', width: '100%', display: 'flex', flexDirection: 'column', height: '100vh' }}
-      >
+      <Box className={`${classes.root} ag-theme-alpine ${columnGroup ? 'column-group-header' : ''}`} id={id || 'simpleGrid'}>
         <AgGridReact
           rowBuffer={100} // Optional: how many rows outside viewport to render
-          // domLayout='normal' // or "autoHeight", but avoid it with big data sets
-          // domLayout='normal'
-          // pagination={true}
           paginationPageSize={3000}
           groupDisplayType='multipleColumns'
           onGridReady={onGridReady}
@@ -376,7 +341,6 @@ const AgGridSimpleTable = ({
           suppressContextMenu={true}
           suppressCellFocus={false} // Enable cell focus for cell selection
           icons={icons}
-          // cellSelection={cellSelection}
           onCellValueChanged={onCellValueChanged}
           popupParent={popupParent}
           enableFillHandle={enableFillHandle}
