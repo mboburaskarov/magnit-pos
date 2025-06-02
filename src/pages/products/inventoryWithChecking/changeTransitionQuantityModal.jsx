@@ -1,0 +1,177 @@
+import { Box, TextField, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import { get } from 'lodash'
+import { useEffect, useRef } from 'react'
+import { useForm } from 'react-hook-form'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { useTranslation } from 'react-i18next'
+import { useMutation } from 'react-query'
+import { useParams } from 'react-router-dom'
+import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
+import { requests } from '../../../../utils/requests'
+import { error } from '../../../../utils/toast'
+import errorAudio from '../../../assets/audio/error.mp3'
+import successAudio from '../../../assets/audio/normal.mp3'
+import CloseIcon from '../../../assets/icons/CloseIcon'
+export default function ChangeTransitionQuantityModal({ open, setBarcode, refetch, setOpen }) {
+  const methods = useForm()
+  const { reset, control } = methods
+  const errorScanAudio = new Audio(errorAudio)
+  const successScanAudio = new Audio(successAudio)
+  const qtyRef = useRef([])
+  const { id } = useParams()
+
+  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryFlowNumber, {
+    onSuccess: ({ data }) => {
+      refetch()
+      setOpen(false)
+      successScanAudio.play()
+      setBarcode('')
+      // fetchStatusCountList()
+      // setBarcode('')g
+    },
+    onError: (err) => {
+      refetch()
+      errorScanAudio.play()
+      error('Ошибка при сканирование!')
+    },
+  })
+
+  useEffect(() => {
+    reset({}, { keepDirty: true })
+    if (open) {
+      setTimeout(() => {
+        qtyRef.current?.[0]?.focus()
+      }, 200)
+    }
+  }, [open])
+  const theme = useTheme()
+
+  useHotkeys(
+    '*',
+    (event) => {
+      console.log(event)
+
+      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd' || event.code === 'ShiftRight') {
+        qtyRef.current[1].focus()
+      }
+      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+        setScanedNumber({
+          id,
+          product_id: get(open, 'data.id'),
+          type: 'MANUAL',
+          fact_quantity: Number(qtyRef.current[0].value),
+          fact_unit: Number(qtyRef.current[1].value),
+          barcode: qtyRef.current[2].value,
+
+          expire_date: qtyRef.current[3].value,
+        })
+      }
+    },
+    {
+      enabled: Boolean(open),
+      enableOnFormTags: true,
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+    }
+  )
+  const { t } = useTranslation()
+  return (
+    <StyledEmptyDialog
+      overflowVisible
+      maxWidth='500px'
+      onClose={() => setOpen(false)}
+      open={open}
+      noHeader
+      title={'Создать бонусный продукт'}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+    >
+      <Box
+        sx={{
+          width: '100%',
+          padding: '24px',
+          '& .MuiInputBase-root': {
+            border: `2px solid`,
+            borderColor: 'bunker.100',
+            height: '48px',
+          },
+          '& svg': {
+            fill: '#868FAA',
+            stroke: '#868FAA',
+          },
+        }}
+      >
+        <Typography sx={{ m: 'auto', width: '100%', textAlign: 'center', mb: '20px', fontWeight: '600' }}>{get(open, 'data.name')}</Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              mb: '20px',
+              width: '100%',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Box>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Факт УП</Typography>
+              <TextField name='pack' inputRef={(e) => (qtyRef.current[0] = e)} type='number' />
+            </Box>
+            <Box>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Факт кол-во</Typography>
+
+              <TextField name='unit' inputRef={(e) => (qtyRef.current[1] = e)} type='number' />
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              mb: '20px',
+              width: '100%',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Box>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Штрих-код</Typography>
+
+              <TextField
+                onFocus={(e) => {
+                  qtyRef.current[2].value = ''
+                }}
+                onBlur={(e) => {
+                  if (e.target.value == '') {
+                    qtyRef.current[2].value = get(open, 'data.barcode')
+                  }
+                }}
+                defaultValue={get(open, 'data.barcode')}
+                name='barcode'
+                inputRef={(e) => (qtyRef.current[2] = e)}
+                type='number'
+              />
+            </Box>
+            <Box>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Штрих-код</Typography>
+
+              <TextField
+                onFocus={(e) => {
+                  qtyRef.current[3].value = ''
+                }}
+                onBlur={(e) => {
+                  if (e.target.value == '') {
+                    qtyRef.current[3].value = get(open, 'data.expire_date')
+                  }
+                }}
+                defaultValue={get(open, 'data.expire_date')}
+                name='date'
+                inputRef={(e) => (qtyRef.current[3] = e)}
+                type='date'
+              />
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    </StyledEmptyDialog>
+  )
+}

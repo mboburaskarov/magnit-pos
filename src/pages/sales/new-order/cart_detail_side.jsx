@@ -62,7 +62,7 @@ function CartDetailSide({
   const [collapseDiscount, setCollapseDiscount] = useState(false)
   const childRef = useRef()
   const { id } = useParams()
-
+  const leftZreportCount = localStorage.getItem('leftZreportCount')
   const printNoProductCheque = () => {
     childRef.current.printChildCheque()
   }
@@ -299,6 +299,37 @@ function CartDetailSide({
           </Box>
         )}
       </CheckAccess>
+      {leftZreportCount <= 3 ? (
+        <Box
+          sx={{
+            width: '100%',
+            overflow: 'hidden',
+            backgroundColor: '#f00',
+            padding: '10px 5px',
+            borderRadius: '10px',
+            mt: '20px',
+          }}
+        >
+          <StyledTooltip
+            title={`Вам осталось открыть еще ${leftZreportCount} отчета z. После еще ${leftZreportCount} отчетов z вы не сможете открыть кассовый аппарат. Вам необходимо получить новую сим-карту epos в течение ${leftZreportCount} дней.`}
+          >
+            <Box
+              component='span'
+              sx={{
+                display: 'inline-block',
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: '18px',
+                px: 2,
+              }}
+            >
+              У вас есть еще {leftZreportCount} возможности открыть z-отчеты.
+            </Box>
+          </StyledTooltip>
+        </Box>
+      ) : (
+        <Box></Box>
+      )}
       <Box
         sx={(theme) => ({
           position: 'absolute',

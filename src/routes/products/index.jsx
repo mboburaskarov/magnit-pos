@@ -1,6 +1,7 @@
 import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import ProductsPage from '../../pages/products'
 import AutoOrderPage from '../../pages/products/autoOrder'
+import ChangePricePage from '../../pages/products/changePrice'
 import ImportPage from '../../pages/products/import'
 import InventoryPage from '../../pages/products/inventory'
 import ReturnToWarehousePage from '../../pages/products/returnToWarehouse'
@@ -23,6 +24,10 @@ const productsRoutes = {
     {
       path: 'auto-order',
       element: <AutoOrderPage />,
+    },
+    {
+      path: 'revaluation',
+      element: <ChangePricePage />,
     },
     {
       path: 'inventory',

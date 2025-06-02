@@ -2,6 +2,7 @@ import MainLayout from '../../layouts/MainLayout'
 import AutoOrderDetailPage from '../../pages/products/autoOrderDetail'
 import BonusProductPage from '../../pages/products/bonusProduct'
 import CatalogManagement from '../../pages/products/categories/index'
+import ChangePriceDetailPage from '../../pages/products/changePriceDetail'
 import ImportDetailsPage from '../../pages/products/importDetails'
 import ImportWithCheckingPage from '../../pages/products/importWithChecking'
 import InventoryCompleted from '../../pages/products/inventoryCompleted'
@@ -162,6 +163,15 @@ const productsCreateRoutes = {
         {
           path: '',
           element: <AutoOrderDetailPage />,
+        },
+      ],
+    },
+    {
+      path: 'revaluation/create/:id',
+      children: [
+        {
+          path: '',
+          element: <ChangePriceDetailPage />,
         },
       ],
     },

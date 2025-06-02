@@ -35,7 +35,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
 
     const requestBody = {
       category_id: data.category_id?.value || undefined,
-      category_name: data.category_id?.name || undefined,
+      category_name: data?.category_id?.name || undefined,
       supply_price_from: data.supply_price_from || undefined,
       supply_price_to: data.supply_price_to || undefined,
       retail_price_from: data.retail_price_from || undefined,

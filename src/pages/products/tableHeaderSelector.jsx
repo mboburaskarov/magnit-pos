@@ -85,7 +85,7 @@ export default function tableHeaderSelector({
             sx={{ '& span': { color: 'orange.500', whiteSpace: 'pre-line' }, '& .highlighter': { color: 'orange.500' }, cursor: 'pointer' }}
             onClick={() => setOpenProductDrawer(p.data.id)}
           >
-            <Highlighter highlightClassName='highlighter' searchWords={[values?.search]} autoEscape textToHighlight={`${p.data.name}`} />
+            <Highlighter highlightClassName='highlighter' searchWords={[values?.search]} autoEscape textToHighlight={`${p.data?.name}`} />
           </Box>
         )),
       }
@@ -104,7 +104,7 @@ export default function tableHeaderSelector({
         headerName: t('table_columns.category'),
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.data.category_name}-${p.rowIndex}`}>
+          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p?.data?.category_name}-${p.rowIndex}`}>
             {get(p, 'data.category_name', '')}
           </Typography>
         )),

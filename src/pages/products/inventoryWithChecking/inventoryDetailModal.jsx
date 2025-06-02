@@ -18,9 +18,10 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
+import ChangeTransitionQuantityModal from './changeTransitionQuantityModal'
 import tableHeaderSelector from './tableHeaderSelector'
 
-export default function InventoryDetailModal({ open, refetch, setOpen }) {
+export default function InventoryDetailModal({ open, refetch, barcode, setBarcode, setOpen }) {
   const methods = useForm()
   const errorScanAudio = new Audio(errorAudio)
 
@@ -28,6 +29,8 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
   const [startDate, setStartDate] = useState(0)
   const dispatch = useDispatch()
   const childRef = useRef()
+  const [quantityTransitionModalOpen, setQuantityTransitionModalOpen] = useState(false)
+
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(null)
   const [realTimeSelectedCellRowId, setRealTimeSelectedCellRowId] = useState(null)
   const [endDate, setEndDate] = useState(0)
@@ -52,7 +55,7 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
     importsColumns: columns,
     t,
     values,
-    editable: true,
+    editable: false,
 
     id,
     setScanedNumber: () => {},
@@ -96,7 +99,11 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
     error('Пожалуйста, заполните все поля!')
     console.log('err', err)
   }
-
+  useEffect(() => {
+    if (!quantityTransitionModalOpen) {
+      handleFocus()
+    }
+  }, [quantityTransitionModalOpen])
   useEffect(() => {
     reset({}, { keepDirty: true })
   }, [open])
@@ -104,6 +111,7 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryFlowNumber, {
     onSuccess: ({ data }) => {
       refetch()
+      refetchInventoryDetailFlow()
       // fetchStatusCountList()
       // setBarcode('')
     },
@@ -114,7 +122,22 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
     },
   })
   const handleFocus = () => {
-    const firstrowid = inventoryDetailFlow?.data?.data?.data?.[0]?.id
+    console.log('jj')
+
+    const firstrowid = inventoryDetailFlow?.data?.data?.data[0]?.id
+    const activeEl = document.activeElement
+    const classList = activeEl?.classList || []
+    console.log(classList)
+
+    if (classList.contains('ag-cell')) {
+      if (barcode && inventoryDetailFlow?.data?.data?.data.length == 1) {
+        setQuantityTransitionModalOpen({ id: firstrowid, data: inventoryDetailFlow?.data?.data?.data[0] })
+        return
+      } else if (lastSelectedCellRowId) {
+        setQuantityTransitionModalOpen({ id: firstrowid, data: inventoryDetailFlow?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
+        return
+      }
+    }
     // Call the exposed method: focus row with id 'b2' on column 'qty'
     childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
   }
@@ -198,12 +221,37 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
     }
   }
   useHotkeys(
+    'ctrl+Backspace',
+    (e) => {
+      const activeEl = document.activeElement
+      const classList = activeEl?.classList || []
+      if (classList.contains('ag-cell')) {
+        setScanedNumber({
+          id,
+          product_id: lastSelectedCellRowId,
+          type: 'MANUAL',
+          fact_unit: 0,
+          fact_quantity: 0,
+        })
+      }
+    },
+    {
+      // enableOnTags: ['INPUT', 'TEXTAREA'],
+      enableOnFormTags: true,
+      // preventDefault: true,
+    }
+  )
+  useHotkeys(
     '*',
     (event) => {
       // if (selectedCellRowId) return
 
       if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
         handleFocusUnit()
+      }
+      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+        if (document.activeElement?.tagName === 'INPUT') return
+        handleFocus()
       }
     },
     {
@@ -273,6 +321,14 @@ export default function InventoryDetailModal({ open, refetch, setOpen }) {
           />
         </Box>
       </Box>
+      <ChangeTransitionQuantityModal
+        setBarcode={setBarcode}
+        refetch={() => {
+          refetch(), refetchInventoryDetailFlow()
+        }}
+        open={quantityTransitionModalOpen}
+        setOpen={setQuantityTransitionModalOpen}
+      />
     </StyledEmptyDialog>
   )
 }
