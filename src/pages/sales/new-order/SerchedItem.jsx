@@ -85,8 +85,16 @@ export default function SerchedItem({
       key={index}
       ref={itemRef}
     >
-      <Box borderRadius={'16px'} display={'flex'} width={'100%'} alignItems={'center'}>
-        <Box className={classes.searchItemBox + ' main-Box'}>
+      <Box display={'flex'} width={'100%'} alignItems={'center'}>
+        <Box
+          className={classes.searchItemBox + ' main-Box'}
+          sx={{
+            borderTopLeftRadius: index == 0 ? 16 : 0,
+            borderBottomLeftRadius: index == 29 ? 16 : 0,
+            borderTopRightRadius: index == 0 ? 16 : 0,
+            borderBottomRightRadius: index == 29 ? 16 : 0,
+          }}
+        >
           <Box flex='1 0 20%' maxWidth={'100%'} overflow={'hidden'} display='flex' alignItems='center'>
             <div className={classes.searchImage}>
               <CustomImg src={product?.main_photo || '65eb3e64-185f-4642-8261-1aeec7379760.jpg'} />

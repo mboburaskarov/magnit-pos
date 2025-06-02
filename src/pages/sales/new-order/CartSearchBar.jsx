@@ -2,7 +2,7 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get, head, size } from 'lodash'
-import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useQuery } from 'react-query'
@@ -48,7 +48,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
   searchResult: {
-    height: '100vh',
+    borderRadius: 16,
+    marginTop: '10px',
+    height: 'calc(100vh - 80px)',
+
     overflowY: 'auto',
     zIndex: 27,
     '&::-webkit-scrollbar': {
@@ -100,6 +103,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '14px',
     color: theme.palette.bunker[500],
   },
+
   searchItemBox: {
     width: '100%',
     position: 'relative',
@@ -107,7 +111,6 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '90px',
     backgroundColor: '#fff',
     padding: '12px 12px 12px 16px',
-    borderRadius: 16,
   },
   searchItem: {
     display: 'flex',
@@ -116,8 +119,8 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     minHeight: 72,
     flexDirection: 'column',
-    marginTop: 16,
-    borderRadius: 16,
+    // marginTop: 16,
+    // borderRadius: 16,
     position: 'relative',
     zIndex: 100,
     cursor: 'pointer',
@@ -221,6 +224,8 @@ function CartSearchBar({
   const productsListFilter = useMemo(() => {
     return {
       search: searchTearm.slice(0, 31),
+      offset: 0,
+      limit: 30,
     }
   }, [debouncedSearchTerm])
   const { data: productsList, isFetching: isProductsFetching } = useQuery(

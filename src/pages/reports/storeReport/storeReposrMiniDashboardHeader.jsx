@@ -1,6 +1,5 @@
 import { Box, Typography } from '@mui/material'
 import { get } from 'lodash'
-import React from 'react'
 import thousandDivider from '../../../../utils/thousandDivider'
 
 function StoreReposrMiniDashboardHeader({ saleStatsData }) {
@@ -41,7 +40,7 @@ function StoreReposrMiniDashboardHeader({ saleStatsData }) {
             fontWeight: '700',
           }}
         >
-          {thousandDivider(get(saleStatsData, 'total_transactions_sum'), 'сум')}
+          {thousandDivider(Math.round(get(saleStatsData, 'total_transactions_sum')), 'сум')}
         </Typography>
       </Box>
       <Box
@@ -83,7 +82,7 @@ function StoreReposrMiniDashboardHeader({ saleStatsData }) {
                   fontWeight: '700',
                 }}
               >
-                {thousandDivider(get(type, 'sum'), 'сум')}
+                {thousandDivider(Math.round(get(type, 'sum')), 'сум')}
               </Typography>
             </Box>
           )
@@ -116,7 +115,7 @@ function StoreReposrMiniDashboardHeader({ saleStatsData }) {
                 fontWeight: '700',
               }}
             >
-              {thousandDivider(get(saleStatsData, 'total_returnals_sum'), 'сум')}
+              {thousandDivider(Math.round(get(saleStatsData, 'total_returnals_sum')), 'сум')}
             </Typography>
           </Box>
         )}

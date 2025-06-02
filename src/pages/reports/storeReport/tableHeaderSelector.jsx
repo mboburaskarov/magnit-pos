@@ -7,7 +7,7 @@ import thousandDivider from '../../../../utils/thousandDivider'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
+      {withDevider ? thousandDivider(Math.round(data?.[type]), currency) : data?.[type] || '-'}
     </Typography>
   )
 }
