@@ -82,17 +82,17 @@ export default function InventoryWithCheckingPage() {
     const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
     const activeEl = document.activeElement
     const classList = activeEl?.classList || []
-    if (barcode.length > 0) {
-    } else {
-      if (classList.contains('ag-cell')) {
-        if (barcode && inventoryWithCheckingDetails?.data?.data?.data.length == 1) {
-          setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data[0] })
-          return
-        } else if (lastSelectedCellRowId) {
-          setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
-          return
-        }
+    // if (barcode.length > 0) {
+    // } else {
+    if (classList.contains('ag-cell')) {
+      if (barcode && inventoryWithCheckingDetails?.data?.data?.data.length == 1) {
+        setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data[0] })
+        return
+      } else if (lastSelectedCellRowId) {
+        setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
+        return
       }
+      // }
     }
 
     // Call the exposed method: focus row with id 'b2' on column 'qty'
