@@ -18,7 +18,13 @@ const columns = [
     field: 'barcode',
     hide: false,
     minWidth: 70,
-    width: 70,
+    width: 120,
+  },
+  {
+    field: 'expired_date',
+    hide: false,
+    minWidth: 70,
+    width: 120,
   },
   {
     field: 'unit_per_pack',

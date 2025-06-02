@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { UploadFile } from '@mui/icons-material'
 import { Box, Button, Container, Typography } from '@mui/material'
 import dayjs from 'dayjs'
-import { get } from 'lodash'
+import { get, head, size } from 'lodash'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -52,7 +52,7 @@ export default function InventoryWithCheckingPage() {
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
   const [selectedCellRowId, setSelectedCellRowId] = useState(null)
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(null)
-  const [quantityModalOpen, setQuantityModalOpen] = useState(false)
+  const [quantityModalOpen, setQuantityModalOpen] = useState(null)
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
@@ -82,17 +82,19 @@ export default function InventoryWithCheckingPage() {
     const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
     const activeEl = document.activeElement
     const classList = activeEl?.classList || []
-    // if (barcode.length > 0) {
-    // } else {
-    if (classList.contains('ag-cell')) {
-      if (barcode && inventoryWithCheckingDetails?.data?.data?.data.length == 1) {
-        setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data[0] })
-        return
-      } else if (lastSelectedCellRowId) {
-        setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
-        return
+    console.log('ff')
+
+    if (barcode.length > 0) {
+    } else {
+      if (classList.contains('ag-cell')) {
+        if (barcode && inventoryWithCheckingDetails?.data?.data?.data.length == 1) {
+          setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data[0] })
+          return
+        } else if (lastSelectedCellRowId) {
+          setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
+          return
+        }
       }
-      // }
     }
 
     // Call the exposed method: focus row with id 'b2' on column 'qty'
@@ -118,7 +120,7 @@ export default function InventoryWithCheckingPage() {
     importsColumns: columns,
     t,
     values,
-    editable: false,
+    editable: true,
     setOrderStoring,
     orderStoring,
     id,
@@ -140,7 +142,17 @@ export default function InventoryWithCheckingPage() {
     isLoading: inventoryWithCheckingDetailsLoading,
     isFetching: isFetchinginventoryWithCheckingDetails,
     refetch,
-  } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
+  } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter), {
+    onSuccess: ({ data }) => {
+      if (size(get(data, 'data.data', [])) == 1) {
+        setQuantityModalOpen({ id: get(head(get(data, 'data.data', [])), 'id'), data: head(get(data, 'data.data', [])) })
+      }
+      console.log('Query succeeded with:', data)
+    },
+    onError: (error) => {
+      console.error('Query failed:', error)
+    },
+  })
   const { mutate: inventoryExcelReport, isLoading: isinventoryExcelReport } = useMutation(requests.getInventoryExcelReport, {
     onSuccess: ({ data }) => {
       downloadExcel(data, `${inventoryStat?.data?.data?.store?.name}_${dayjs(inventoryStat?.data?.data?.created_at).format('DD_MM_YYYY_HH_mm')}`)
@@ -191,47 +203,23 @@ export default function InventoryWithCheckingPage() {
   const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
+    console.log(colDef?.field)
 
-    if (colDef?.field === 'fact_quantity' && newValue !== oldValue) {
-      const fact_quantity = newValue
-      if (fact_quantity < 0) {
+    if (colDef?.field === 'expired_date' && newValue !== oldValue) {
+      const expire_date = newValue
+
+      if (expire_date < 0) {
         errorScanAudio.play()
         refetch()
 
-        error('Количество не может быть меньше 0!')
+        error('xato')
         return
       }
       setScanedNumber({
         id,
         product_id: get(data, 'id'),
         type: 'MANUAL',
-        fact_unit: get(data, 'fact_unit'),
-        fact_quantity: Number(fact_quantity),
-      })
-    }
-
-    if (colDef?.field === 'fact_unit' && newValue !== oldValue) {
-      const fact_unit = newValue
-
-      if (fact_unit > get(data, 'unit_per_pack')) {
-        errorScanAudio.play()
-        refetch()
-        error(`Количество не может быть больше количества в упаковке! (max:${get(data, 'unit_per_pack')})`)
-        return
-      }
-      if (fact_unit < 0) {
-        errorScanAudio.play()
-        refetch()
-
-        error('Количество не может быть меньше 0!')
-        return
-      }
-      setScanedNumber({
-        id,
-        product_id: get(data, 'id'),
-        type: 'MANUAL',
-        fact_quantity: get(data, 'fact_quantity'),
-        fact_unit: Number(fact_unit),
+        expire_date: Number(expire_date),
       })
     }
     if (colDef?.field === 'barcode' && newValue !== oldValue) {
@@ -316,11 +304,14 @@ export default function InventoryWithCheckingPage() {
     (event) => {
       if (selectedCellRowId) return
 
-      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
-        handleFocusUnit()
-      }
+      // if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
+      //   handleFocusUnit()
+      // }
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-        if (document.activeElement?.tagName === 'INPUT') return
+        let exeption_ids = ['expired_date', 'barcode', 'retail_price']
+
+        let isexeption = exeption_ids.includes(document.activeElement.getAttribute('col-id'))
+        if (document.activeElement?.tagName === 'INPUT' || isexeption) return
 
         handleFocus()
       }
@@ -338,8 +329,8 @@ export default function InventoryWithCheckingPage() {
     { enableOnFormTags: true, enableOnTags: ['INPUT', 'TEXTAREA'], preventDefault: false }
   )
   useEffect(() => {
-    if (!quantityModalOpen) {
-      handleFocus()
+    if ((quantityModalOpen == false) & (typeof quantityModalOpen == 'boolean')) {
+      // handleFocus()
     }
   }, [quantityModalOpen])
   useEffect(() => {
@@ -384,7 +375,7 @@ export default function InventoryWithCheckingPage() {
                   <Box display={'flex'}>
                     <InputSearch
                       icon={<BarcodeIcon />}
-                      onKeyDown={({ code }) => code === 'Enter' && handleFocus()}
+                      // onKeyDown={({ code }) => code === 'Enter' && handleFocus()}
                       onChange={({ target }) => setBarcode(get(target, 'value'))}
                       id='producrs-search'
                       name='search'

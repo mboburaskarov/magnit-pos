@@ -1,5 +1,6 @@
 import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
@@ -189,6 +190,22 @@ export default function tableHeaderSelector({ importsColumns, setOrderStoring, o
         cellRenderer: memo((p) => <SimpleText {...p} type='barcode' />),
       }
     }
+    if (el.field === 'expired_date') {
+      return {
+        ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        editable: editable,
+        setOrderStoring,
+        headerName: 'Штрих-код',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')}</Typography>
+          </Box>
+        )),
+      }
+    }
     //
     if (el.field === 'fact_quantity') {
       return {
@@ -197,7 +214,6 @@ export default function tableHeaderSelector({ importsColumns, setOrderStoring, o
         orderStoring,
         setOrderStoring,
         headerName: 'Факт УП',
-        editable: editable,
 
         colId: el.field,
         cellRenderer: memo((p) => (
@@ -234,7 +250,6 @@ export default function tableHeaderSelector({ importsColumns, setOrderStoring, o
         orderStoring,
         setOrderStoring,
         headerName: 'Факт кол-во',
-        editable: editable,
 
         colId: el.field,
         cellRenderer: memo(

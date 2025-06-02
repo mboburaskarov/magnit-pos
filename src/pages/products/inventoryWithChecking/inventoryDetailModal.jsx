@@ -55,7 +55,7 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
     importsColumns: columns,
     t,
     values,
-    editable: false,
+    editable: true,
 
     id,
     setScanedNumber: () => {},
@@ -101,7 +101,7 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
   }
   useEffect(() => {
     if (!quantityTransitionModalOpen) {
-      handleFocus()
+      // handleFocus()
     }
   }, [quantityTransitionModalOpen])
   useEffect(() => {
@@ -159,52 +159,26 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
 
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
+    console.log(colDef?.field)
 
-    if (colDef?.field === 'fact_quantity' && newValue !== oldValue) {
-      const fact_quantity = newValue
-      if (fact_quantity < 0) {
+    if (colDef?.field === 'expired_date' && newValue !== oldValue) {
+      const expire_date = newValue
+
+      if (expire_date < 0) {
         errorScanAudio.play()
-        refetchInventoryDetailFlow()
+        refetch()
 
-        error('Количество не может быть меньше 0!')
+        error('xato')
         return
       }
       setScanedNumber({
         id,
         product_id: get(data, 'id'),
         type: 'MANUAL',
-        fact_unit: get(data, 'fact_unit'),
-        fact_quantity: Number(fact_quantity),
-      })
-    }
-    if (colDef?.field === 'fact_unit' && newValue !== oldValue) {
-      const fact_unit = newValue
-      if (fact_unit > get(data, 'unit_per_pack')) {
-        errorScanAudio.play()
-        refetchInventoryDetailFlow()
-        error(`Количество не может быть больше количества в упаковке! (max:${get(data, 'unit_per_pack')})`)
-        return
-      }
-      if (fact_unit < 0) {
-        errorScanAudio.play()
-        refetchInventoryDetailFlow()
-
-        error('Количество не может быть меньше 0!')
-        return
-      }
-      setScanedNumber({
-        id,
-        product_id: get(data, 'id'),
-        type: 'MANUAL',
-        fact_quantity: get(data, 'fact_quantity'),
-        fact_unit: Number(fact_unit),
+        expire_date: Number(expire_date),
       })
     }
     if (colDef?.field === 'barcode' && newValue !== oldValue) {
-      error('Изменить штрих-код перевода невозможно.!')
-      refetchInventoryDetailFlow()
-
-      return
       const barcode = newValue
       if (!barcode) {
         errorScanAudio.play()
@@ -217,6 +191,22 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
         product_id: get(data, 'id'),
         type: 'MANUAL',
         barcode: barcode,
+      })
+    }
+    if (colDef?.field === 'retail_price' && newValue !== oldValue) {
+      const retail_price = newValue
+      if (retail_price < 0) {
+        errorScanAudio.play()
+        refetch()
+
+        error('Розничная цена не может быть меньше 0!')
+        return
+      }
+      setScanedNumber({
+        id,
+        product_id: get(data, 'id'),
+        type: 'MANUAL',
+        retail_price: Number(retail_price),
       })
     }
   }
@@ -246,11 +236,14 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
     (event) => {
       // if (selectedCellRowId) return
 
-      if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
-        handleFocusUnit()
-      }
+      // if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
+      //   handleFocusUnit()
+      // }
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-        if (document.activeElement?.tagName === 'INPUT') return
+        let exeption_ids = ['expired_date', 'barcode', 'retail_price']
+
+        let isexeption = exeption_ids.includes(document.activeElement.getAttribute('col-id'))
+        if (document.activeElement?.tagName === 'INPUT' || isexeption) return
         handleFocus()
       }
     },

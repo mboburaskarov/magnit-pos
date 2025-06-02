@@ -1,6 +1,5 @@
 import { Box, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
@@ -57,16 +56,21 @@ export default function ChangeTransitionQuantityModal({ open, setBarcode, refetc
         qtyRef.current[1].focus()
       }
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+        if (Number(qtyRef.current[0].value) == 0 && Number(qtyRef.current[1].value) == 0) {
+          setOpen(false)
+          setBarcode('')
+          return
+        }
         setScanedNumber({
           id,
           product_id: get(open, 'data.id'),
           type: 'MANUAL',
           fact_quantity: Number(qtyRef.current[0].value),
           fact_unit: Number(qtyRef.current[1].value),
-          barcode: qtyRef.current[2].value,
-          retail_price: Number(qtyRef.current[4].value),
+          // barcode: qtyRef.current[2].value,
+          // retail_price: Number(qtyRef.current[4].value),
 
-          expire_date: qtyRef.current[3].value,
+          // expire_date: qtyRef.current[3].value,
         })
       }
     },
@@ -120,9 +124,9 @@ export default function ChangeTransitionQuantityModal({ open, setBarcode, refetc
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Факт УП</Typography>
               <TextField
-                onFocus={(e) => {
-                  qtyRef.current[0].value = ''
-                }}
+                // onFocus={(e) => {
+                //   qtyRef.current[0].value = ''
+                // }}
                 onKeyDown={(e) => {
                   const invalidKeys = ['e', 'E', '+', '-']
 
@@ -131,12 +135,12 @@ export default function ChangeTransitionQuantityModal({ open, setBarcode, refetc
                     return
                   }
                 }}
-                onBlur={(e) => {
-                  if (e.target.value == '') {
-                    qtyRef.current[0].value = get(open, 'data.fact_quantity')
-                  }
-                }}
-                defaultValue={get(open, 'data.fact_quantity')}
+                // onBlur={(e) => {
+                //   if (e.target.value == '') {
+                //     qtyRef.current[0].value = get(open, 'data.fact_quantity')
+                //   }
+                // }}
+                // defaultValue={get(open, 'data.fact_quantity')}
                 name='pack'
                 inputRef={(e) => (qtyRef.current[0] = e)}
                 type='number'
@@ -146,14 +150,14 @@ export default function ChangeTransitionQuantityModal({ open, setBarcode, refetc
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Факт кол-во</Typography>
 
               <TextField
-                onFocus={(e) => {
-                  qtyRef.current[1].value = ''
-                }}
-                onBlur={(e) => {
-                  if (e.target.value == '') {
-                    qtyRef.current[1].value = get(open, 'data.fact_unit')
-                  }
-                }}
+                // onFocus={(e) => {
+                //   qtyRef.current[1].value = ''
+                // }}
+                // onBlur={(e) => {
+                //   if (e.target.value == '') {
+                //     qtyRef.current[1].value = get(open, 'data.fact_unit')
+                //   }
+                // }}
                 onKeyDown={(e) => {
                   const invalidKeys = ['e', 'E', '+', '-']
 
@@ -162,14 +166,14 @@ export default function ChangeTransitionQuantityModal({ open, setBarcode, refetc
                     return
                   }
                 }}
-                defaultValue={get(open, 'data.fact_unit')}
+                // defaultValue={get(open, 'data.fact_unit')}
                 name='unit'
                 inputRef={(e) => (qtyRef.current[1] = e)}
                 type='number'
               />
             </Box>
           </Box>
-          <Box
+          {/* <Box
             sx={{
               display: 'flex',
               mb: '20px',
@@ -247,8 +251,8 @@ export default function ChangeTransitionQuantityModal({ open, setBarcode, refetc
                 inputRef={(e) => (qtyRef.current[3] = e)}
                 type='date'
               />
-            </Box>
-          </Box>
+            </Box> */}
+          {/* </Box> */}
         </Box>
       </Box>
     </StyledEmptyDialog>
