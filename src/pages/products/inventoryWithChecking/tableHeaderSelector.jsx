@@ -197,7 +197,7 @@ export default function tableHeaderSelector({ importsColumns, setOrderStoring, o
         orderStoring,
         editable: editable,
         setOrderStoring,
-        headerName: 'Штрих-код',
+        headerName: 'Срок',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
