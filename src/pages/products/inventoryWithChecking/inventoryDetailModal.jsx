@@ -101,7 +101,7 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
   }
   useEffect(() => {
     if (!quantityTransitionModalOpen) {
-      // handleFocus()
+      handleFocus()
     }
   }, [quantityTransitionModalOpen])
   useEffect(() => {
@@ -122,12 +122,9 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
     },
   })
   const handleFocus = () => {
-    console.log('jj')
-
     const firstrowid = inventoryDetailFlow?.data?.data?.data[0]?.id
     const activeEl = document.activeElement
     const classList = activeEl?.classList || []
-    console.log(classList)
 
     if (classList.contains('ag-cell')) {
       if (barcode && inventoryDetailFlow?.data?.data?.data.length == 1) {
@@ -159,7 +156,6 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
 
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
-    console.log(colDef?.field)
 
     if (colDef?.field === 'expired_date' && newValue !== oldValue) {
       const expire_date = newValue

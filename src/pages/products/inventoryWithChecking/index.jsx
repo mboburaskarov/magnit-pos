@@ -51,13 +51,14 @@ export default function InventoryWithCheckingPage() {
 
   const methods = useForm()
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
-  const [selectedCellRowId, setSelectedCellRowId] = useState(null)
-  const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(null)
-  const [quantityModalOpen, setQuantityModalOpen] = useState(null)
+  const [selectedCellRowId, setSelectedCellRowId] = useState(false)
+  const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(false)
+  const [quantityModalOpen, setQuantityModalOpen] = useState(false)
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [debouncedSearchBarcode] = useDebounce(barcode, 200)
+  console.log(quantityModalOpen)
 
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
@@ -86,15 +87,17 @@ export default function InventoryWithCheckingPage() {
     const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
     const activeEl = document.activeElement
     const classList = activeEl?.classList || []
-    console.log('ff')
 
     // if (barcode.length > 0) {
     // } else {
     if (classList.contains('ag-cell')) {
       if (barcode && inventoryWithCheckingDetails?.data?.data?.data.length == 1) {
+        console.log('fofux')
         setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data[0] })
         return
       } else if (lastSelectedCellRowId) {
+        console.log('fofux2')
+
         setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
         return
       }
@@ -148,11 +151,17 @@ export default function InventoryWithCheckingPage() {
     refetch,
   } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter), {
     onSuccess: ({ data }) => {
+      console.log('gg', data)
+
       if (size(get(data, 'data.data', [])) == 1) {
+        console.log('aa')
+
         setQuantityModalOpen({ id: get(head(get(data, 'data.data', [])), 'id'), data: head(get(data, 'data.data', [])) })
+      } else {
+        setQuantityModalOpen(false)
       }
-      console.log('Query succeeded with:', data)
     },
+
     onError: (error) => {
       console.error('Query failed:', error)
     },
@@ -207,7 +216,6 @@ export default function InventoryWithCheckingPage() {
   const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
-    console.log(colDef?.field)
 
     if (colDef?.field === 'expired_date' && newValue !== oldValue) {
       const expire_date = newValue
@@ -336,8 +344,9 @@ export default function InventoryWithCheckingPage() {
     { enableOnFormTags: true, enableOnTags: ['INPUT', 'TEXTAREA'], preventDefault: false }
   )
   useEffect(() => {
-    if ((quantityModalOpen == false) & (typeof quantityModalOpen == 'boolean')) {
-      // handleFocus()
+    if (quantityModalOpen == false && typeof quantityModalOpen == 'boolean') {
+      handleFocus()
+      setBarcode('')
     }
   }, [quantityModalOpen])
   useEffect(() => {

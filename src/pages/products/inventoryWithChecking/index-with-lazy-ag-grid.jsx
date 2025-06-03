@@ -320,13 +320,7 @@ export default function InventoryWithCheckingPage() {
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
-  useHotkeys(
-    '*',
-    (event) => {
-      console.log(event)
-    },
-    { enableOnFormTags: true, enableOnTags: ['INPUT', 'TEXTAREA'], preventDefault: false }
-  )
+
   useEffect(() => {
     if (!quantityModalOpen) {
       handleFocus()

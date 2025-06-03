@@ -50,8 +50,6 @@ export default function ChangeTransitionQuantityModal({ open, setBarcode, refetc
   useHotkeys(
     '*',
     (event) => {
-      console.log(event)
-
       if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd' || event.code === 'ShiftRight') {
         qtyRef.current[1].focus()
       }

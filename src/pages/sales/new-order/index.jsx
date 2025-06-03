@@ -457,8 +457,6 @@ function NewSale() {
     },
   })
   const conditionalCreateCartItem = async (params) => {
-    console.log(markingCount, markingsList)
-
     // const shouldSend = true // Your logic here
     const shouldSend = size(get(cartItemsList, 'data.data.data')) <= 9 // Your logic here
     if (!shouldSend) {
