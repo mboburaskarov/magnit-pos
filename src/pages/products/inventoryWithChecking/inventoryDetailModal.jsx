@@ -300,8 +300,6 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
               setLastSelectedCellRowId(rowId)
             }}
             onChangeSelectedCellRowId={(id) => {
-              console.log('fff', rowId)
-
               if (id == 'flow') setLastSelectedCellRowId(id)
             }}
             custonName='flow'
