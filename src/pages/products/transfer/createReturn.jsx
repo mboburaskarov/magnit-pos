@@ -24,7 +24,7 @@ export default function CreateReturn({ open, refetch, setOpen }) {
       setopenWarn(false)
     }
   }, [methods.watch('reason')])
-  const { mutate: createReturnToWarehouse, isLoading: iscreateReturnToWarehouse } = useMutation(requests.createReturnToWarehouse, {
+  const { mutate: createReturnToWarehouse, isLoading: iscreateReturnToWarehouse } = useMutation(requests.createTransfer, {
     onSuccess: () => {
       setOpen(false)
       success('Создать автозаказ')

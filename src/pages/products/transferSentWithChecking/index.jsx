@@ -39,7 +39,7 @@ export default function TransferSentScanWithCheckingPage() {
   const methods = useForm()
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
-  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedReturnToWarehouseNumber, {
+  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedTransferNumber, {
     onSuccess: ({ data }) => {
       refetchgetReturnToWarehouseDashBoard()
       setBarcode('')
@@ -51,7 +51,7 @@ export default function TransferSentScanWithCheckingPage() {
     },
   })
 
-  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.SentReturnToWarehouseChecking, {
+  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.SentTransferChecking, {
     onSuccess: ({ data }) => {
       navigate('/products/return-to-warehouse')
     },
@@ -77,7 +77,7 @@ export default function TransferSentScanWithCheckingPage() {
   }, [id, values?.limit, values?.offset, barcode])
 
   const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
-    requests.getReturnToWarehouseDashBoard(id)
+    requests.getTransferDashBoard(id)
   )
 
   const {
@@ -86,7 +86,7 @@ export default function TransferSentScanWithCheckingPage() {
     isFetching: isFetchingreturnToWarehouseWithCheckingDetails,
     refetch,
   } = useQuery(['returnToWarehouseWithCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
-    requests.getReturnToWarehouseDetails(returnToWarehouseWithCheckingDetailsFilter)
+    requests.getTransferDetails(returnToWarehouseWithCheckingDetailsFilter)
   )
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export default function TransferSentScanWithCheckingPage() {
     })
   }, [returnToWarehouseWithCheckingDetails?.data, values?.limit])
   const { mutate: getReturnToWarehouseDetailsExcelReport, isLoading: isgetReturnToWarehouseDetailsExcelReport } = useMutation(
-    requests.getReturnToWarehouseDetailsExcelReport,
+    requests.getTransferDetailsExcelReport,
     {
       onSuccess: ({ data }) => {
         downloadExcel(data, `Возврат деталей | ${dayjs().format('YYYY-MM-DD HH:mm')}`)

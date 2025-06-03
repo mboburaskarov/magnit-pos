@@ -83,9 +83,7 @@ export default function TransferCompletedPage() {
     isLoading: WriteOffWithCheckingDetailsLoading,
     isFetching: isFetchingWriteOffWithCheckingDetails,
     refetch,
-  } = useQuery(['WriteOffWithCheckingDetails', WriteOffWithCheckingDetailsFilter], () =>
-    requests.getReturnToWarehouseDetails(WriteOffWithCheckingDetailsFilter)
-  )
+  } = useQuery(['WriteOffWithCheckingDetails', WriteOffWithCheckingDetailsFilter], () => requests.getTransferDetails(WriteOffWithCheckingDetailsFilter))
 
   /// filter table columns with permission
   useEffect(() => {
