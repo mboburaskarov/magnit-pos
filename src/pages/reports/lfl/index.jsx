@@ -9,7 +9,7 @@ import DateRangeInputWithoutSelct from '../../../../components/Inputs/DateRangeI
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelectNew'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { translatedWeekNameRu } from '../../../../utils/ruWeekName'
 import { error } from '../../../../utils/toast'
@@ -61,7 +61,7 @@ export default function ReportLfl() {
   }, [ReportLFL?.data, values?.limit])
   const { mutate: clientsExcelReport, isLoading: isclientsExcelReport } = useMutation(requests.getClientsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Клиенти')
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       error('Ошибка при скачать excel!')

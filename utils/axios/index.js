@@ -37,7 +37,7 @@ export const requestEXCEL = axios.create({
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json; charset=utf-8',
   },
-  responseType: 'blob',
+  // responseType: 'blob',
   transformRequest: [
     (data) => {
       return JSON.stringify(data)

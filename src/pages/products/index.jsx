@@ -18,7 +18,7 @@ import InputSearch from '../../../components/Inputs/InputSearch'
 import InputSwitch from '../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../components/LoadingContainer'
 import StyledTooltip from '../../../components/StyledTooltip'
-import { downloadExcel } from '../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import ArrowDown from '../../assets/icons/ArrowDown'
@@ -232,7 +232,7 @@ export default function ProductsPage() {
   }, [productsList?.data, values?.limit, appType])
   const { mutate: productsExcelReport, isLoading: isproductsExcelReport } = useMutation(requests.getProductsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, `${values?.store_name || 'Все филиалы'} | ${dayjs().format('YYYY-MM-DD HH:mm')}`)
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       console.log(err)

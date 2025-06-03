@@ -50,8 +50,6 @@ export default function ChangeTransitionQuantityModal({ open, setBarcode, refetc
   useHotkeys(
     '*',
     (event) => {
-      console.log(event)
-
       if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd' || event.code === 'ShiftRight') {
         qtyRef.current[1].focus()
       }
@@ -106,7 +104,10 @@ export default function ChangeTransitionQuantityModal({ open, setBarcode, refetc
           },
         }}
       >
-        <Typography sx={{ m: 'auto', width: '100%', textAlign: 'center', mb: '20px', fontWeight: '600' }}>{get(open, 'data.name')}</Typography>
+        <Typography sx={{ m: 'auto', width: '100%', textAlign: 'center', mb: '20px', fontWeight: '600' }}>
+          {get(open, 'data.name')}
+          {get(open, 'data.id')}
+        </Typography>
         <Box
           sx={{
             display: 'flex',

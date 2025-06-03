@@ -24,7 +24,7 @@ const columns = [
     field: 'expired_date',
     hide: false,
     minWidth: 70,
-    width: 120,
+    width: 200,
   },
   {
     field: 'unit_per_pack',

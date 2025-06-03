@@ -13,7 +13,7 @@ import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelectNew'
 import SelectSimple from '../../../../components/Select/SelectSimple'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import { useQueryParams } from '../../../hooks/useQueryParams'
@@ -96,7 +96,7 @@ export default function SellerBonus() {
   }, [sellerBonnus?.data, values?.limit])
   const { mutate: sellerBonusExcelReport, isLoading: issellerBonusExcelReport } = useMutation(requests.getsellerBonusExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Бонусах продавца')
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       console.log(err)

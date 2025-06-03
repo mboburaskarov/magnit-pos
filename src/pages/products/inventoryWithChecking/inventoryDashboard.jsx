@@ -1,9 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import React from 'react'
 import { useMutation } from 'react-query'
 import { useParams } from 'react-router-dom'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
@@ -17,7 +15,7 @@ function InventoryDashboard({ data: stats, setHasChange }) {
     onSuccess: ({ data }) => {
       setHasChange(false)
 
-      downloadExcel(data, `${stats?.store?.name || ''}_Инвентаризация | ${dayjs().format('YYYY-MM-DD HH:mm')}`)
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       setHasChange(false)

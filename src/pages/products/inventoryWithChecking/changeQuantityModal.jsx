@@ -1,7 +1,7 @@
 import { Box, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { get } from 'lodash'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
@@ -9,7 +9,7 @@ import { useMutation } from 'react-query'
 import { useParams } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
+import { error } from '../../../../utils/toast'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import CloseIcon from '../../../assets/icons/CloseIcon'
@@ -18,28 +18,15 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
   const { reset, control } = methods
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
-  const [startDate, setStartDate] = useState(0)
   const qtyRef = useRef([])
   const { id } = useParams()
 
-  const [endDate, setEndDate] = useState(0)
-  const { mutate: createBonusProduct, isLoading: iscreateBonusProduct } = useMutation(requests.createBonusProduct, {
-    onSuccess: () => {
-      setOpen(false)
-      success('Создать автозаказ')
-      refetch()
-    },
-    onError: (err) => {
-      error('Ошибка Создать автозаказ!')
-      console.log('err', err)
-    },
-  })
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
       refetch()
       setOpen(false)
       successScanAudio.play()
-      setBarcode('')
+      // setBarcode('')
       // fetchStatusCountList()
       // setBarcode('')g
     },
@@ -69,7 +56,7 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         if (Number(qtyRef.current[0].value) == 0 && Number(qtyRef.current[1].value) == 0) {
           setOpen(false)
-          setBarcode('')
+          // setBarcode('')
           return
         }
         setScanedNumber({

@@ -11,7 +11,7 @@ import ConfirmDialog from '../../../components/ConfirmDialog'
 import ImageGallery from '../../../components/ImageGallery'
 import InputSearch from '../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../components/LoadingContainer'
-import { downloadExcel } from '../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import BigTickIcon from '../../assets/icons/BigTickIcon'
@@ -108,7 +108,7 @@ export default function ClientsPage() {
   }, [clientsList?.data, values?.limit])
   const { mutate: clientsExcelReport, isLoading: isclientsExcelReport } = useMutation(requests.getClientsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Клиенти')
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       console.log(err)

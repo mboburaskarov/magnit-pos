@@ -365,7 +365,6 @@ const InfinityAgGridSimpleTable = ({
   }
 
   const getRowId = useCallback((params) => params.data[uniqId], [data, columns, totalData])
-  console.log(getRowId)
 
   return (
     <Fragment>

@@ -55,6 +55,8 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
     importsColumns: columns,
     t,
     values,
+    level: 2,
+
     editable: true,
 
     id,
@@ -101,7 +103,7 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
   }
   useEffect(() => {
     if (!quantityTransitionModalOpen) {
-      // handleFocus()
+      handleFocus()
     }
   }, [quantityTransitionModalOpen])
   useEffect(() => {
@@ -122,24 +124,32 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
     },
   })
   const handleFocus = () => {
-    console.log('jj')
-
     const firstrowid = inventoryDetailFlow?.data?.data?.data[0]?.id
     const activeEl = document.activeElement
+    console.log(activeEl)
+
     const classList = activeEl?.classList || []
-    console.log(classList)
+    console.log(lastSelectedCellRowId)
 
     if (classList.contains('ag-cell')) {
-      if (barcode && inventoryDetailFlow?.data?.data?.data.length == 1) {
+      if (inventoryDetailFlow?.data?.data?.data.length == 1) {
         setQuantityTransitionModalOpen({ id: firstrowid, data: inventoryDetailFlow?.data?.data?.data[0] })
         return
       } else if (lastSelectedCellRowId) {
-        setQuantityTransitionModalOpen({ id: firstrowid, data: inventoryDetailFlow?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
+        setQuantityTransitionModalOpen({
+          id: firstrowid,
+          data: inventoryDetailFlow?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId),
+        })
         return
       }
     }
     // Call the exposed method: focus row with id 'b2' on column 'qty'
-    childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
+    if (lastSelectedCellRowId != null && inventoryDetailFlow?.data?.data?.data?.some((el) => el?.id === lastSelectedCellRowId)) {
+      childRef.current?.focusCellByRowId(lastSelectedCellRowId, 'fact_quantity')
+    } else {
+      setLastSelectedCellRowId(firstrowid)
+      childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
+    }
   }
   const handleFocusUnit = () => {
     setLastSelectedCellRowId(lastSelectedCellRowId)
@@ -159,7 +169,6 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
 
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
-    console.log(colDef?.field)
 
     if (colDef?.field === 'expired_date' && newValue !== oldValue) {
       const expire_date = newValue
@@ -175,7 +184,7 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
         id,
         product_id: get(data, 'id'),
         type: 'MANUAL',
-        expire_date: Number(expire_date),
+        expire_date: dayjs(expire_date).format('YYYY-MM-DD'),
       })
     }
     if (colDef?.field === 'barcode' && newValue !== oldValue) {
@@ -211,7 +220,8 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
     }
   }
   useHotkeys(
-    'ctrl+Backspace',
+    ['ctrl+Backspace', 'ctrl+delete'],
+
     (e) => {
       const activeEl = document.activeElement
       const classList = activeEl?.classList || []

@@ -19,7 +19,7 @@ import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
@@ -51,13 +51,14 @@ export default function InventoryWithCheckingPage() {
 
   const methods = useForm()
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
-  const [selectedCellRowId, setSelectedCellRowId] = useState(null)
-  const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(null)
-  const [quantityModalOpen, setQuantityModalOpen] = useState(null)
+  const [selectedCellRowId, setSelectedCellRowId] = useState(false)
+  const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(false)
+  const [quantityModalOpen, setQuantityModalOpen] = useState(false)
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [debouncedSearchBarcode] = useDebounce(barcode, 200)
+  console.log(quantityModalOpen)
 
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
@@ -86,15 +87,17 @@ export default function InventoryWithCheckingPage() {
     const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
     const activeEl = document.activeElement
     const classList = activeEl?.classList || []
-    console.log('ff')
 
     // if (barcode.length > 0) {
     // } else {
     if (classList.contains('ag-cell')) {
       if (barcode && inventoryWithCheckingDetails?.data?.data?.data.length == 1) {
+        console.log('fofux')
         setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data[0] })
         return
       } else if (lastSelectedCellRowId) {
+        console.log('fofux2')
+
         setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
         return
       }
@@ -125,6 +128,7 @@ export default function InventoryWithCheckingPage() {
     t,
     values,
     editable: true,
+    level: 1,
     setOrderStoring,
     orderStoring,
     id,
@@ -148,18 +152,24 @@ export default function InventoryWithCheckingPage() {
     refetch,
   } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter), {
     onSuccess: ({ data }) => {
+      console.log('gg', data)
+
       if (size(get(data, 'data.data', [])) == 1) {
+        console.log('aa')
+
         setQuantityModalOpen({ id: get(head(get(data, 'data.data', [])), 'id'), data: head(get(data, 'data.data', [])) })
+      } else {
+        setQuantityModalOpen(false)
       }
-      console.log('Query succeeded with:', data)
     },
+
     onError: (error) => {
       console.error('Query failed:', error)
     },
   })
   const { mutate: inventoryExcelReport, isLoading: isinventoryExcelReport } = useMutation(requests.getInventoryExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, `${inventoryStat?.data?.data?.store?.name}_${dayjs(inventoryStat?.data?.data?.created_at).format('DD_MM_YYYY_HH_mm')}`)
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       console.log(err)
@@ -207,11 +217,8 @@ export default function InventoryWithCheckingPage() {
   const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
-    console.log(colDef?.field)
-
     if (colDef?.field === 'expired_date' && newValue !== oldValue) {
       const expire_date = newValue
-
       if (expire_date < 0) {
         errorScanAudio.play()
         refetch()
@@ -223,7 +230,7 @@ export default function InventoryWithCheckingPage() {
         id,
         product_id: get(data, 'id'),
         type: 'MANUAL',
-        expire_date: Number(expire_date),
+        expire_date: dayjs(expire_date).format('YYYY-MM-DD'),
       })
     }
     if (colDef?.field === 'barcode' && newValue !== oldValue) {
@@ -259,10 +266,12 @@ export default function InventoryWithCheckingPage() {
     }
   }
   useHotkeys(
-    'ctrl+Backspace',
+    ['ctrl+Backspace', 'ctrl+delete'],
     (e) => {
       const activeEl = document.activeElement
       const classList = activeEl?.classList || []
+      console.log('jjj')
+
       if (classList.contains('ag-cell')) {
         setScanedNumber({
           id,
@@ -336,8 +345,9 @@ export default function InventoryWithCheckingPage() {
     { enableOnFormTags: true, enableOnTags: ['INPUT', 'TEXTAREA'], preventDefault: false }
   )
   useEffect(() => {
-    if ((quantityModalOpen == false) & (typeof quantityModalOpen == 'boolean')) {
-      // handleFocus()
+    if (quantityModalOpen == false && typeof quantityModalOpen == 'boolean') {
+      handleFocus()
+      setBarcode('')
     }
   }, [quantityModalOpen])
   useEffect(() => {

@@ -1,7 +1,6 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Container, Typography } from '@mui/material'
-import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -15,7 +14,7 @@ import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import ArrowDown from '../../../assets/icons/ArrowDown'
@@ -39,7 +38,7 @@ export default function TransferSentScanWithCheckingPage() {
   const methods = useForm()
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
-  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedReturnToWarehouseNumber, {
+  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedTransferNumber, {
     onSuccess: ({ data }) => {
       refetchgetReturnToWarehouseDashBoard()
       setBarcode('')
@@ -51,7 +50,7 @@ export default function TransferSentScanWithCheckingPage() {
     },
   })
 
-  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.SentReturnToWarehouseChecking, {
+  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.SentTransferChecking, {
     onSuccess: ({ data }) => {
       navigate('/products/return-to-warehouse')
     },
@@ -77,7 +76,7 @@ export default function TransferSentScanWithCheckingPage() {
   }, [id, values?.limit, values?.offset, barcode])
 
   const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
-    requests.getReturnToWarehouseDashBoard(id)
+    requests.getTransferDashBoard(id)
   )
 
   const {
@@ -86,7 +85,7 @@ export default function TransferSentScanWithCheckingPage() {
     isFetching: isFetchingreturnToWarehouseWithCheckingDetails,
     refetch,
   } = useQuery(['returnToWarehouseWithCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
-    requests.getReturnToWarehouseDetails(returnToWarehouseWithCheckingDetailsFilter)
+    requests.getTransferDetails(returnToWarehouseWithCheckingDetailsFilter)
   )
 
   useEffect(() => {
@@ -119,10 +118,10 @@ export default function TransferSentScanWithCheckingPage() {
     })
   }, [returnToWarehouseWithCheckingDetails?.data, values?.limit])
   const { mutate: getReturnToWarehouseDetailsExcelReport, isLoading: isgetReturnToWarehouseDetailsExcelReport } = useMutation(
-    requests.getReturnToWarehouseDetailsExcelReport,
+    requests.getTransferDetailsExcelReport,
     {
       onSuccess: ({ data }) => {
-        downloadExcel(data, `Возврат деталей | ${dayjs().format('YYYY-MM-DD HH:mm')}`)
+        downloadLinkExcel(get(data, 'data.file_name'))
       },
       onError: (err) => {
         console.log(err)
