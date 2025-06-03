@@ -104,7 +104,10 @@ export default function ChangeTransitionQuantityModal({ open, setBarcode, refetc
           },
         }}
       >
-        <Typography sx={{ m: 'auto', width: '100%', textAlign: 'center', mb: '20px', fontWeight: '600' }}>{get(open, 'data.name')}</Typography>
+        <Typography sx={{ m: 'auto', width: '100%', textAlign: 'center', mb: '20px', fontWeight: '600' }}>
+          {get(open, 'data.name')}
+          {get(open, 'data.id')}
+        </Typography>
         <Box
           sx={{
             display: 'flex',

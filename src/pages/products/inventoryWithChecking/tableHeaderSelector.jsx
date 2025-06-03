@@ -1,8 +1,8 @@
 import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
-import { Box, Typography } from '@mui/material'
+import { Box, TextField, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import { memo } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import thousandDivider from '../../../../utils/thousandDivider'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
@@ -13,6 +13,28 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
     >
       {typeof data?.[type] != 'undefined' ? (withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-') : ''}
     </Typography>
+  )
+}
+const DatePiker = (props) => {
+  const inputRef = useRef(null)
+
+  useEffect(() => {
+    inputRef.current.focus()
+  }, [])
+  return (
+    <TextField
+      inputRef={inputRef}
+      value={props.value}
+      // onChange={(e) => props.api.stopEditing(false)}
+      onBlur={() => props.api.stopEditing(false)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') props.api.stopEditing(false)
+        if (e.key === 'Escape') props.api.stopEditing(true)
+      }}
+      onInput={(e) => props.setValue(e.target.value)}
+      name='expired_date'
+      type='date'
+    />
   )
 }
 const CustomHeader = (props) => {
@@ -199,6 +221,7 @@ export default function tableHeaderSelector({ importsColumns, setOrderStoring, o
         setOrderStoring,
         headerName: 'Срок',
         colId: el.field,
+        // cellEditor: DatePiker,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')}</Typography>

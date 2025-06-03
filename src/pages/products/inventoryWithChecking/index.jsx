@@ -216,10 +216,8 @@ export default function InventoryWithCheckingPage() {
   const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
-
     if (colDef?.field === 'expired_date' && newValue !== oldValue) {
       const expire_date = newValue
-
       if (expire_date < 0) {
         errorScanAudio.play()
         refetch()
@@ -231,7 +229,7 @@ export default function InventoryWithCheckingPage() {
         id,
         product_id: get(data, 'id'),
         type: 'MANUAL',
-        expire_date: Number(expire_date),
+        expire_date: dayjs(expire_date).format('YYYY-MM-DD'),
       })
     }
     if (colDef?.field === 'barcode' && newValue !== oldValue) {
@@ -271,6 +269,8 @@ export default function InventoryWithCheckingPage() {
     (e) => {
       const activeEl = document.activeElement
       const classList = activeEl?.classList || []
+      console.log('jjj')
+
       if (classList.contains('ag-cell')) {
         setScanedNumber({
           id,

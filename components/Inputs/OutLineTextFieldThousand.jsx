@@ -143,11 +143,11 @@ const NumberFormatInput = ({
           if (currentValue > maxNumber) {
             methods.setValue(name, maxNumber)
           }
+          onBlur(e)
           if (currentValue == '') {
             methods.setValue(name, 0)
             return
           }
-          onBlur(e)
         }}
         onFocus={(e) => {
           setApplyAll(true)

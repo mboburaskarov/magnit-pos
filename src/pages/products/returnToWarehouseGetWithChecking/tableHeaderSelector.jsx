@@ -115,6 +115,8 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <NumberFormatInput
               onBlur={({ target }) => {
+                console.log(target)
+
                 if (p?.data?.scanned_count == get(target, 'value')) return
 
                 setScanedNumber({
