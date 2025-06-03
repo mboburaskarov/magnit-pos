@@ -14,7 +14,7 @@ import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRan
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import LazySelect from '../../../../components/Select/LazySelect'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import { useQueryParams } from '../../../hooks/useQueryParams'
@@ -83,7 +83,7 @@ export default function StoreReportPage() {
   }, [storeReportList?.data, values?.limit])
   const { mutate: getStoreReportExcelReport, isLoading: isgetStoreReportExcelReport } = useMutation(requests.getStoreReportExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, `${values?.store_name || 'Все филиалы'}  Отчет филиала`)
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       console.log(err)

@@ -1,7 +1,6 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -13,7 +12,7 @@ import ConfirmDialog from '../../../../components/ConfirmDialog'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
@@ -119,7 +118,7 @@ export default function ReturnToWarehousePage() {
   })
   const { mutate: getReturnToWarehouseExcelReport, isLoading: isgetReturnToWarehouseExcelReport } = useMutation(requests.getReturnToWarehouseExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, `Возврат | ${dayjs().format('YYYY-MM-DD HH:mm')}`)
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       console.log(err)

@@ -17,7 +17,7 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ImportPage() {
@@ -97,7 +97,7 @@ export default function ImportPage() {
   }, [importsList?.data, values?.limit])
   const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Импорт')
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       console.log(err)

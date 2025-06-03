@@ -10,7 +10,7 @@ import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/Column
 import CheckAccess from '../../../../components/CheckAccess'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
@@ -80,7 +80,7 @@ export default function CasShiftsPage() {
   }, [cashShiftsList?.data, values?.limit])
   const { mutate: allSalesExcelReport, isLoading: isallSalesExcelReport } = useMutation(requests.getAllSalesExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Продажи')
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       console.log(err)

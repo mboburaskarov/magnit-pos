@@ -19,7 +19,7 @@ import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
@@ -169,7 +169,7 @@ export default function InventoryWithCheckingPage() {
   })
   const { mutate: inventoryExcelReport, isLoading: isinventoryExcelReport } = useMutation(requests.getInventoryExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, `${inventoryStat?.data?.data?.store?.name}_${dayjs(inventoryStat?.data?.data?.created_at).format('DD_MM_YYYY_HH_mm')}`)
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       console.log(err)

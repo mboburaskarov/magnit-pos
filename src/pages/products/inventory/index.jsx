@@ -13,7 +13,7 @@ import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 // import SoonPage from '../../../../components/soon'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
@@ -107,7 +107,7 @@ export default function InventoryPage() {
   }, [inventoryList?.data, values?.limit])
   const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Инвентаризация')
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       console.log(err)

@@ -1,7 +1,6 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Container, Typography } from '@mui/material'
-import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -15,7 +14,7 @@ import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import ArrowDown from '../../../assets/icons/ArrowDown'
@@ -129,7 +128,7 @@ export default function TransferCompletedPage() {
     requests.getReturnToWarehouseDetailsExcelReport,
     {
       onSuccess: ({ data }) => {
-        downloadExcel(data, `Возврат деталей | ${dayjs().format('YYYY-MM-DD HH:mm')}`)
+        downloadLinkExcel(get(data, 'data.file_name'))
       },
       onError: (err) => {
         console.log(err)
