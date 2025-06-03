@@ -54,7 +54,6 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
         qtyRef.current[1].focus()
       }
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-        setOpen(false)
         if (Number(qtyRef.current[0].value) == 0 && Number(qtyRef.current[1].value) == 0) {
           setOpen(false)
           // setBarcode('')
