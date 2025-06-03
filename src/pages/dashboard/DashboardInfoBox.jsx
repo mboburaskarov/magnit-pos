@@ -68,7 +68,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
                 ) : withoutDivider ? (
                   count
                 ) : (
-                  <Typography>{thousandDivider(amount, endText)}</Typography>
+                  <Typography>{thousandDivider(count, endText)}</Typography>
                 )}
               </Typography>
             </Box>
