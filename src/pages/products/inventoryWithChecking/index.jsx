@@ -128,6 +128,7 @@ export default function InventoryWithCheckingPage() {
     t,
     values,
     editable: true,
+    level: 1,
     setOrderStoring,
     orderStoring,
     id,
@@ -265,7 +266,7 @@ export default function InventoryWithCheckingPage() {
     }
   }
   useHotkeys(
-    'ctrl+Backspace',
+    ['ctrl+Backspace', 'ctrl+delete'],
     (e) => {
       const activeEl = document.activeElement
       const classList = activeEl?.classList || []

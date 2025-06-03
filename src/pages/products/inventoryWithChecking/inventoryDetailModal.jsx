@@ -55,6 +55,8 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
     importsColumns: columns,
     t,
     values,
+    level: 2,
+
     editable: true,
 
     id,
@@ -218,7 +220,8 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
     }
   }
   useHotkeys(
-    'ctrl+Backspace',
+    ['ctrl+Backspace', 'ctrl+delete'],
+
     (e) => {
       const activeEl = document.activeElement
       const classList = activeEl?.classList || []

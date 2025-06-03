@@ -104,7 +104,7 @@ const CustomHeader = (props) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, setOrderStoring, orderStoring, editable = false, values, t, setScanedNumber }) {
+export default function tableHeaderSelector({ level = 2, importsColumns, setOrderStoring, orderStoring, editable = false, values, t, setScanedNumber }) {
   const { id } = useParams()
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {
@@ -217,7 +217,7 @@ export default function tableHeaderSelector({ importsColumns, setOrderStoring, o
         ...el,
         headerComponent: CustomHeader,
         orderStoring,
-        editable: editable,
+        editable: editable && level == 2,
         setOrderStoring,
         headerName: 'Срок',
         colId: el.field,
