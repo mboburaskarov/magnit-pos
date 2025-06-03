@@ -155,7 +155,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
     if (el.field === 'import_date') {
       return {
         ...el,
-        headerName: 'Дата закрытия',
+        headerName: 'Завершил',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
@@ -184,13 +184,36 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
                     bgcolor: 'red.500',
                   }}
                 >
+                  <Typography textAlign={'center'} width={'20px'} height={'20px'} color={'#fff'}>
+                    +
+                  </Typography>
+                </Box>
+              </StyledTooltip>
+
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={''} type={'surplus'} />
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <StyledTooltip title={'Недостачи'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'red.500',
+                  }}
+                >
                   <LeftArrowIcon fill='transparent' color='#fff' />
                 </Box>
               </StyledTooltip>
 
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={''} type={'shortage'} />
+              <SimpleText {...p} withDevider currency={''} type={'measurement_count'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <StyledTooltip title={'Излишек'}>
@@ -210,7 +233,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
               </StyledTooltip>
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={''} type={'surplus'} />
+              <SimpleText {...p} withDevider currency={''} type={'shortage'} />
             </Box>
           </>
         )),
@@ -223,14 +246,58 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         ...el,
         headerName: 'Cумма',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={''} type={'measurement_count'} />),
+        cellRenderer: memo((p) => (
+          <>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <StyledTooltip title={'Недостачи'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'red.500',
+                  }}
+                >
+                  <LeftArrowIcon fill='transparent' color='#fff' />
+                </Box>
+              </StyledTooltip>
+
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={'сум'} type={'current_sum'} />
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <StyledTooltip title={'Излишек'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'green.500',
+                  }}
+                >
+                  <ArrowRight color='#fff' />
+                </Box>
+              </StyledTooltip>
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={'сум'} type={'fact_sum'} />
+            </Box>
+          </>
+        )),
       }
     }
 
     if (el.field === 'created_at') {
       return {
         ...el,
-        headerName: 'Дата создания',
+        headerName: 'Создал',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
