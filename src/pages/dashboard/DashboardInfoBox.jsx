@@ -60,15 +60,15 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
               >
                 {id === 'expiring_soon_amount' ? (
                   <>
-                    {thousandDivider(amount, 'сум')}
+                    {thousandDivider(Math.round(count), 'сум')}
                     <Typography color='dark.500' fontSize={'20px'} lineHeight={'25px'} fontWeight='500' ml={'10px'}>
                       ({withoutDivider ? count : thousandDivider(count, '')}шт)
                     </Typography>
                   </>
                 ) : withoutDivider ? (
-                  count
+                  Math.round(count)
                 ) : (
-                  <Typography>{thousandDivider(count, endText)}</Typography>
+                  <Typography>{thousandDivider(Math.round(count), endText)}</Typography>
                 )}
               </Typography>
             </Box>
