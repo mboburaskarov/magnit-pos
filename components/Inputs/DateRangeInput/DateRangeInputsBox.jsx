@@ -1,20 +1,27 @@
+import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/material'
 import dayjs from 'dayjs'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useIMask } from 'react-imask'
 import TextField from '../TextField'
 
 export default function DateRangeInputsBox({ dateState }) {
   const { ref: DD_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
+  const { ref: HH_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
+  const { ref: mm_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
   const { ref: MM_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
   const { ref: YYYY_number_ref } = useIMask({ mask: '0000', lazy: true, placeholderChar: '' })
   const { ref: DD_end_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
+  const { ref: HH_end_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
+  const { ref: mm_end_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
   const { ref: MM_end_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
   const { ref: YYYY_end_number_ref } = useIMask({ mask: '0000', lazy: true, placeholderChar: '' })
   const { reset } = useFormContext()
-
+  const [showTime, setShowTime] = useState(false)
   useEffect(() => {
+    console.log(dateState)
+
     if (dateState?.from && dateState?.to) {
       const from_day = dayjs(dateState?.from).format('DD')
       const from_month = dayjs(dateState?.from).format('MM')
@@ -22,7 +29,11 @@ export default function DateRangeInputsBox({ dateState }) {
       const to_day = dayjs(dateState?.to).format('DD')
       const to_month = dayjs(dateState?.to).format('MM')
       const to_year = dayjs(dateState?.to).format('YYYY')
-      reset({ from_day, from_month, from_year, to_day, to_month, to_year })
+      const from_hour = dateState?.from_time?.split(':')[0] || '00'
+      const from_minute = dateState?.from_time?.split(':')[1] || '00'
+      const to_minute = dateState?.to_time?.split(':')[1] || '00'
+      const to_hour = dateState?.to_time?.split(':')[0] || '00'
+      reset({ from_day, from_month, from_year, to_day, to_month, to_year, from_hour, from_minute, to_minute, to_hour })
     }
   }, [dateState])
 
@@ -34,6 +45,10 @@ export default function DateRangeInputsBox({ dateState }) {
       px={3}
     >
       <Box display='flex' alignItems='center'>
+        <Box mr={2} display={'flex'} flexDirection={'column'} alignItems={'center'} onClick={() => setShowTime((p) => !p)}>
+          {/* <AccessTime sx={{ fontSize: 40, color: '#fe5000' }} /> */}
+          {!showTime ? <ExpandMore sx={{ fontSize: 40, color: '#fe5000' }} /> : <ExpandLess sx={{ fontSize: 40, color: '#fe5000' }} />}
+        </Box>
         <Box display='flex' flexDirection={'column'} alignItems='center'>
           <Box flexGrow='50%'>
             <Box columnGap={1} display='flex'>
@@ -48,34 +63,60 @@ export default function DateRangeInputsBox({ dateState }) {
               </Box>
             </Box>
           </Box>
-          {/* <Box flexGrow='50%' mt={'10px'}>
+          <Box display={showTime ? 'flex' : 'none'} flexGrow='50%' mt={'10px'}>
             <Box columnGap={1} alignItems={'center'} display='flex'>
               <Box width={60}>
-                <TextField inputRef={DD_number_ref} centerMode id='from_day' name='from_day' placeholder='ДД' fullWidth required />
+                <TextField inputRef={HH_number_ref} centerMode id='from_hour' name='from_hour' placeholder='ЦЦ' fullWidth required />
               </Box>
               <Typography>:</Typography>
               <Box width={60}>
-                <TextField inputRef={MM_number_ref} centerMode id='from_month' name='from_month' placeholder='ММ' fullWidth required />
+                <TextField inputRef={mm_number_ref} centerMode id='from_minute' name='from_minute' placeholder='ММ' fullWidth required />
               </Box>
             </Box>
-          </Box> */}
+          </Box>
         </Box>
 
-        <Box width={48} m={'0 10px'} display='flex' alignItems='center' justifyContent='center'>
+        <Box
+          width={48}
+          m={'0 10px'}
+          sx={{
+            '& > svg': {
+              fontSize: '20px',
+            },
+          }}
+          display='flex'
+          flexDirection={'column'}
+          alignItems='center'
+          justifyContent='center'
+        >
           {/* <ForwardArrow fill='#bdbdbd' /> */}
           <Typography>до</Typography>
-        </Box>
 
-        <Box flexGrow='50%' mr={4}>
-          <Box columnGap={1} display='flex'>
-            <Box width={60}>
-              <TextField inputRef={DD_end_number_ref} centerMode id='to_day' name='to_day' placeholder='ДД' fullWidth required />
+          {/* <ArrowiconUp /> */}
+        </Box>
+        <Box display='flex' flexDirection={'column'} alignItems='center'>
+          <Box flexGrow='50%' mr={4}>
+            <Box columnGap={1} display='flex'>
+              <Box width={60}>
+                <TextField inputRef={DD_end_number_ref} centerMode id='to_day' name='to_day' placeholder='ДД' fullWidth required />
+              </Box>
+              <Box width={60}>
+                <TextField inputRef={MM_end_number_ref} centerMode id='to_month' name='to_month' placeholder='ММ' fullWidth required />
+              </Box>
+              <Box width={72}>
+                <TextField inputRef={YYYY_end_number_ref} centerMode id='to_year' name='to_year' placeholder='ГГГГ' fullWidth required />
+              </Box>
             </Box>
-            <Box width={60}>
-              <TextField inputRef={MM_end_number_ref} centerMode id='to_month' name='to_month' placeholder='ММ' fullWidth required />
-            </Box>
-            <Box width={72}>
-              <TextField inputRef={YYYY_end_number_ref} centerMode id='to_year' name='to_year' placeholder='ГГГГ' fullWidth required />
+          </Box>
+          <Box flexGrow='50%' mt={'10px'}>
+            <Box display={showTime ? 'flex' : 'none'} columnGap={1} alignItems={'center'}>
+              <Box width={60}>
+                <TextField inputRef={HH_end_number_ref} centerMode id='to_hour' name='to_hour' placeholder='ЦЦ' fullWidth required />
+              </Box>
+              <Typography>:</Typography>
+              <Box width={60}>
+                <TextField inputRef={mm_end_number_ref} centerMode id='to_minute' name='to_minute' placeholder='ММ' fullWidth required />
+              </Box>
             </Box>
           </Box>
         </Box>

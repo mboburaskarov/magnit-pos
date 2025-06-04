@@ -71,6 +71,8 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
       setDateState({
         from: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
         to: dayjs(values?.end_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.end_date, 'YYYY-MM-DD').toDate() : today,
+        from_time: values?.from_time,
+        to_time: values?.to_time,
         enteredTo: dayjs(values?.end_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.end_date, 'YYYY-MM-DD').toDate() : today,
       })
       setCustomDateRangeSelected(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
@@ -79,6 +81,8 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
       setDateState({
         from: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
         to: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
+        from_time: values?.from_time,
+        to_time: values?.to_time,
         enteredTo: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
       })
       setCustomDateRangeSelected(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
@@ -89,12 +93,15 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
   const onClose = useCallback(
     (data) => {
       const baseUrl = location.pathname
+      console.log(data)
 
       const dateParams = qs.stringify(
         {
           ...values,
           [startDateQuery]: data.from.toISOString().split('T')[0] || dateState.from.toISOString().split('T')[0],
           [endDateQuery]: data.to.toISOString().split('T')[0] || dateState.to.toISOString().split('T')[0],
+          from_time: data.from_time,
+          to_time: data.to_time,
         },
         { addQueryPrefix: true }
       )
@@ -174,6 +181,8 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
           dateState: {
             from: dateState.from,
             to: dateState.to,
+            to_time: dateState.to_time,
+            from_time: dateState.from_time,
             month: dateState.month,
           },
           setDateState: (val) => setDateState(val),

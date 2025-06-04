@@ -327,13 +327,14 @@ export default function DateFilterDrawerSingle({
 
     const start_date = `${data.from_year}-${data.from_month}-${data.from_day}`
     const end_date = `${data.to_year}-${data.to_month}-${data.to_day}`
-
+    const start_Time = `${data.from_hour}:${data.from_minute}`
+    const end_Time = `${data.to_hour}:${data.to_minute}`
     if (onCustomRangeSelect) {
       onCustomRangeSelect(label.current)
     }
 
-    setDateState({ from: new Date(start_date), to: new Date(end_date), enteredTo: new Date(end_date) })
-    onClose({ from: new Date(start_date), to: new Date(end_date), enteredTo: new Date(end_date) })
+    setDateState({ from: new Date(start_date), to: new Date(end_date), enteredTo: new Date(end_date), from_time: start_Time, to_time: end_Time })
+    onClose({ from: new Date(start_date), to: new Date(end_date), enteredTo: new Date(end_date), from_time: start_Time, to_time: end_Time })
 
     if (close) close()
   }

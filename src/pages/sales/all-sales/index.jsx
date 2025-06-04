@@ -100,12 +100,14 @@ export default function AllSalesPage() {
 
       total_amount_to: values?.total_amount_to,
       total_amount_from: values?.total_amount_from,
-      start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
-      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
+      start_date: values?.start_date + 'T' + values?.from_time || dayjs(new Date()).format('YYYY-MM-DD'),
+      end_date: values?.start_date == values?.end_date ? null : values?.end_date + 'T' + values?.to_time,
     }
   }, [
     controlleroffset,
     values?.limit,
+    values?.from_time,
+    values?.to_time,
     values?.search,
     values?.payment_type_id,
     values?.producer,
