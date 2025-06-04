@@ -34,19 +34,33 @@ export default function DateRangeInputsBox({ dateState }) {
       px={3}
     >
       <Box display='flex' alignItems='center'>
-        <Box flexGrow='50%'>
-          <Box columnGap={1} display='flex'>
-            <Box width={60}>
-              <TextField inputRef={DD_number_ref} centerMode id='from_day' name='from_day' placeholder='ДД' fullWidth required />
-            </Box>
-            <Box width={60}>
-              <TextField inputRef={MM_number_ref} centerMode id='from_month' name='from_month' placeholder='ММ' fullWidth required />
-            </Box>
-            <Box width={72}>
-              <TextField centerMode inputRef={YYYY_number_ref} id='from_year' name='from_year' placeholder='ГГГГ' fullWidth required />
+        <Box display='flex' flexDirection={'column'} alignItems='center'>
+          <Box flexGrow='50%'>
+            <Box columnGap={1} display='flex'>
+              <Box width={60}>
+                <TextField inputRef={DD_number_ref} centerMode id='from_day' name='from_day' placeholder='ДД' fullWidth required />
+              </Box>
+              <Box width={60}>
+                <TextField inputRef={MM_number_ref} centerMode id='from_month' name='from_month' placeholder='ММ' fullWidth required />
+              </Box>
+              <Box width={72}>
+                <TextField centerMode inputRef={YYYY_number_ref} id='from_year' name='from_year' placeholder='ГГГГ' fullWidth required />
+              </Box>
             </Box>
           </Box>
+          {/* <Box flexGrow='50%' mt={'10px'}>
+            <Box columnGap={1} alignItems={'center'} display='flex'>
+              <Box width={60}>
+                <TextField inputRef={DD_number_ref} centerMode id='from_day' name='from_day' placeholder='ДД' fullWidth required />
+              </Box>
+              <Typography>:</Typography>
+              <Box width={60}>
+                <TextField inputRef={MM_number_ref} centerMode id='from_month' name='from_month' placeholder='ММ' fullWidth required />
+              </Box>
+            </Box>
+          </Box> */}
         </Box>
+
         <Box width={48} m={'0 10px'} display='flex' alignItems='center' justifyContent='center'>
           {/* <ForwardArrow fill='#bdbdbd' /> */}
           <Typography>до</Typography>
