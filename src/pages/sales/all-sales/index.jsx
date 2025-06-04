@@ -103,7 +103,11 @@ export default function AllSalesPage() {
       total_amount_to: values?.total_amount_to,
       total_amount_from: values?.total_amount_from,
       start_date: values?.start_date ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DD'),
-      end_date: values?.end_date ? (ready_start_date?.isSame(ready_end_date) ? null : ready_end_date.format()) : null,
+      end_date: values?.end_date
+        ? ready_start_date?.isSame(ready_end_date)
+          ? dayjs(`${values?.start_date} 23:59:59`).format()
+          : ready_end_date.format()
+        : null,
     }
   }, [
     controlleroffset,
