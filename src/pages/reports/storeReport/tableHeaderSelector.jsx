@@ -104,6 +104,14 @@ export default function tableHeaderSelector({ clientsColumns, values }) {
         cellRenderer: memo((p) => <SimpleText {...p} withDevider type='click' />),
       }
     }
+    if (el.field === 'cheque_count') {
+      return {
+        ...el,
+        headerName: 'Количество чеков',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='cheque_count' />),
+      }
+    }
   })
 
   return columns

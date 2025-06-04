@@ -62,6 +62,12 @@ const columns = [
     minWidth: 220,
     flex: 1,
   },
+  {
+    field: 'cheque_count',
+    hide: false,
+    minWidth: 220,
+    flex: 1,
+  },
 ]
 
 const storeReportTableColumns = createSlice({

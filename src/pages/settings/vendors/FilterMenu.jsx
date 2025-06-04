@@ -12,7 +12,7 @@ import { requests } from '../../../../utils/requests'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 
-export default function FilterMenu({ open, setOpen, setRegions }) {
+export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
@@ -21,8 +21,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
-    setRegions(data.regions || [])
-
     const requestBody = {
       store_id: data.store_id?.id || undefined,
       store_name: data.store_id?.name || undefined,
