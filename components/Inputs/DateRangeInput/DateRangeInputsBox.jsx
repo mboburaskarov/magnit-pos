@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useIMask } from 'react-imask'
+import StyledTooltip from '../../StyledTooltip'
 import TextField from '../TextField'
 
 export default function DateRangeInputsBox({ dateState }) {
@@ -31,8 +32,8 @@ export default function DateRangeInputsBox({ dateState }) {
       const to_year = dayjs(dateState?.to).format('YYYY')
       const from_hour = dateState?.from_time?.split(':')[0] || '00'
       const from_minute = dateState?.from_time?.split(':')[1] || '00'
-      const to_minute = dateState?.to_time?.split(':')[1] || '00'
-      const to_hour = dateState?.to_time?.split(':')[0] || '00'
+      const to_minute = dateState?.to_time?.split(':')[1] || '59'
+      const to_hour = dateState?.to_time?.split(':')[0] || '23'
       reset({ from_day, from_month, from_year, to_day, to_month, to_year, from_hour, from_minute, to_minute, to_hour })
     }
   }, [dateState])
@@ -45,10 +46,12 @@ export default function DateRangeInputsBox({ dateState }) {
       px={3}
     >
       <Box display='flex' alignItems='center'>
-        <Box mr={2} display={'flex'} flexDirection={'column'} alignItems={'center'} onClick={() => setShowTime((p) => !p)}>
-          {/* <AccessTime sx={{ fontSize: 40, color: '#fe5000' }} /> */}
-          {!showTime ? <ExpandMore sx={{ fontSize: 40, color: '#fe5000' }} /> : <ExpandLess sx={{ fontSize: 40, color: '#fe5000' }} />}
-        </Box>
+        <StyledTooltip title={'Нажмите, чтобы добавить временной фильтр'}>
+          <Box mr={2} display={'flex'} flexDirection={'column'} alignItems={'center'} onClick={() => setShowTime((p) => !p)}>
+            {/* <AccessTime sx={{ fontSize: 40, color: '#fe5000' }} /> */}
+            {!showTime ? <ExpandMore sx={{ fontSize: 40, color: '#fe5000' }} /> : <ExpandLess sx={{ fontSize: 40, color: '#fe5000' }} />}
+          </Box>
+        </StyledTooltip>
         <Box display='flex' flexDirection={'column'} alignItems='center'>
           <Box flexGrow='50%'>
             <Box columnGap={1} display='flex'>
