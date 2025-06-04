@@ -114,6 +114,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <NumberFormatInput
+              disabled={true}
               onBlur={({ target }) => {
                 console.log(target)
 
