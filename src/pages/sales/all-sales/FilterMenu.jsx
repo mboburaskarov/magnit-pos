@@ -36,6 +36,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       store_name: data.store_id?.name || undefined,
       vendor_id: data.vendor_id?.value || undefined,
       vendor_name: data.vendor_id?.name || undefined,
+      sale_type: data?.sale_type?.value || undefined,
       cashbox_id: data.cashbox_id?.value || undefined,
       cashbox_name: data.cashbox_id?.name || undefined,
       payment_type_id: data?.payment_type_id?.id || undefined,
@@ -51,11 +52,21 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { total_amount_to, total_amount_from, store_id, payment_type_id, cashbox_id, vendor_id } = values
+    const { total_amount_to, total_amount_from, store_id, payment_type_id, sale_type, cashbox_id, vendor_id } = values
 
     reset(
       {
         payment_type_id: payment_type_id ? getOptionsFromUrlParam(payment_type_id, paymentTypeList?.data?.data, 'name')[0] : null,
+        sale_type: sale_type
+          ? getOptionsFromUrlParam(
+              sale_type,
+              [
+                { id: 'sale', name: 'Продажа' },
+                { id: 'return', name: 'Возврат' },
+              ],
+              'name'
+            )[0]
+          : null,
         vendor_id: vendor_id ? { name: values?.vendor_name, value: values?.vendor_id } : null,
         cashbox_id: cashbox_id ? { name: values?.cashbox_name, value: values?.cashbox_id } : null,
         store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
@@ -67,6 +78,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }, [
     values?.payment_type_id,
     values?.vendor_id,
+    values?.sale_type,
     values?.cashbox_id,
     values?.category_id,
     values?.store_id,
@@ -107,6 +119,22 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
             <Box maxHeight={'calc(100vh - 280px)'} px={'5px'} width={'100%'} overflow={'visible'}>
+              <SelectSimple
+                fullWidth
+                id='sto'
+                name='sale_type'
+                white
+                minWidth='auto'
+                label={'Тип продажа'}
+                placeholder={t('Выберите тип продажа')}
+                getOptionLabel={(el) => el.name}
+                options={[
+                  { value: 'sale', name: 'Продажа' },
+                  { value: 'return', name: 'Возврат' },
+                ]}
+              />
+              <Box height={'20px'} />
+
               <SelectSimple
                 fullWidth
                 id='sto'
