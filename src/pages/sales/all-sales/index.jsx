@@ -97,15 +97,16 @@ export default function AllSalesPage() {
       vendor_id: values?.vendor_id,
       employee_id: values?.employee_id,
       cashbox_id: values?.cashbox_id,
-
+      sale_type: values?.sale_type,
       total_amount_to: values?.total_amount_to,
       total_amount_from: values?.total_amount_from,
-      start_date: values?.start_date + 'T' + values?.from_time || dayjs(new Date()).format('YYYY-MM-DD'),
+      start_date: values?.start_date ? values?.start_date + 'T' + values?.from_time : dayjs(new Date()).format('YYYY-MM-DD'),
       end_date: values?.start_date == values?.end_date ? null : values?.end_date + 'T' + values?.to_time,
     }
   }, [
     controlleroffset,
     values?.limit,
+    values?.sale_type,
     values?.from_time,
     values?.to_time,
     values?.search,
