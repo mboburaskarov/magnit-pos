@@ -101,7 +101,7 @@ export default function AllSalesPage() {
       total_amount_to: values?.total_amount_to,
       total_amount_from: values?.total_amount_from,
       start_date: values?.start_date ? values?.start_date + 'T' + values?.from_time : dayjs(new Date()).format('YYYY-MM-DD'),
-      end_date: values?.start_date == values?.end_date ? null : values?.end_date + 'T' + values?.to_time,
+      end_date: values?.end_date ? values?.end_date + 'T' + values?.to_time : dayjs(new Date()).format('YYYY-MM-DD'),
     }
   }, [
     controlleroffset,
