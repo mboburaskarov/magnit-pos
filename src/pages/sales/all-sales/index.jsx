@@ -102,7 +102,7 @@ export default function AllSalesPage() {
       sale_type: values?.sale_type,
       total_amount_to: values?.total_amount_to,
       total_amount_from: values?.total_amount_from,
-      start_date: values?.start_date ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DD'),
+      start_date: values?.start_date ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDTHH:mm:ssZ'),
       end_date: values?.end_date
         ? ready_start_date?.isSame(ready_end_date)
           ? dayjs(`${values?.start_date} 23:59:59`).format()
