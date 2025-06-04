@@ -86,7 +86,7 @@ export default function AllSalesPage() {
   const salesListFilter = useMemo(() => {
     setHasFilter(Object.keys(values).length > 2)
     const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
-    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}`)
+    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
     return {
       limit: values?.limit || 10,
       offset: controlleroffset || 0,
