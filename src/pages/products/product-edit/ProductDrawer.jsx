@@ -94,7 +94,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
       anchor='right'
       sx={{
         '& .MuiDrawer-paper': {
-          width: '660px',
+          width: '1000px',
           borderRadius: '24px 0 0 24px',
         },
       }}
@@ -184,7 +184,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         bottom={'0'}
         p={'20px 40px'}
         columnGap={2}
-        width='660px'
+        width='1000px'
         display='inline-flex'
       >
         <Button
