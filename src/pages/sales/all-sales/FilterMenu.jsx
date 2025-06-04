@@ -61,8 +61,8 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
           ? getOptionsFromUrlParam(
               sale_type,
               [
-                { id: 'sale', name: 'Продажа' },
-                { id: 'return', name: 'Возврат' },
+                { id: 'SALE', name: 'Продажа' },
+                { id: 'RETURN', name: 'Возврат' },
               ],
               'name'
             )[0]
@@ -129,8 +129,8 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 placeholder={t('Выберите тип продажа')}
                 getOptionLabel={(el) => el.name}
                 options={[
-                  { value: 'sale', name: 'Продажа' },
-                  { value: 'return', name: 'Возврат' },
+                  { value: 'SALE', name: 'Продажа' },
+                  { value: 'RETURN', name: 'Возврат' },
                 ]}
               />
               <Box height={'20px'} />
