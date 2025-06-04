@@ -85,6 +85,8 @@ export default function AllSalesPage() {
   }, [values?.search])
   const salesListFilter = useMemo(() => {
     setHasFilter(Object.keys(values).length > 2)
+    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
+    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}`)
     return {
       limit: values?.limit || 10,
       offset: controlleroffset || 0,
@@ -100,8 +102,8 @@ export default function AllSalesPage() {
       sale_type: values?.sale_type,
       total_amount_to: values?.total_amount_to,
       total_amount_from: values?.total_amount_from,
-      start_date: values?.start_date ? values?.start_date + 'T' + values?.from_time : dayjs(new Date()).format('YYYY-MM-DD'),
-      end_date: values?.end_date ? values?.end_date + 'T' + values?.to_time : dayjs(new Date()).format('YYYY-MM-DD'),
+      start_date: values?.start_date ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DD'),
+      end_date: values?.end_date ? (ready_start_date?.isSame(ready_end_date) ? null : ready_end_date.format()) : dayjs(new Date()).format('YYYY-MM-DD'),
     }
   }, [
     controlleroffset,
