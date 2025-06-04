@@ -14,8 +14,8 @@ export default function DateRangeInputsBox({ dateState }) {
   const { ref: MM_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
   const { ref: YYYY_number_ref } = useIMask({ mask: '0000', lazy: true, placeholderChar: '' })
   const { ref: DD_end_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
-  const { ref: HH_end_number_ref } = useIMask({ mask: '23', lazy: true, placeholderChar: '' })
-  const { ref: mm_end_number_ref } = useIMask({ mask: '59', lazy: true, placeholderChar: '' })
+  const { ref: HH_end_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
+  const { ref: mm_end_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
   const { ref: MM_end_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
   const { ref: YYYY_end_number_ref } = useIMask({ mask: '0000', lazy: true, placeholderChar: '' })
   const { reset } = useFormContext()
@@ -32,8 +32,8 @@ export default function DateRangeInputsBox({ dateState }) {
       const to_year = dayjs(dateState?.to).format('YYYY')
       const from_hour = dateState?.from_time?.split(':')[0] || '00'
       const from_minute = dateState?.from_time?.split(':')[1] || '00'
-      const to_minute = dateState?.to_time?.split(':')[1] || '00'
-      const to_hour = dateState?.to_time?.split(':')[0] || '00'
+      const to_minute = dateState?.to_time?.split(':')[1] || '59'
+      const to_hour = dateState?.to_time?.split(':')[0] || '23'
       reset({ from_day, from_month, from_year, to_day, to_month, to_year, from_hour, from_minute, to_minute, to_hour })
     }
   }, [dateState])
