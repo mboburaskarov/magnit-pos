@@ -26,7 +26,7 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
       refetch()
       setOpen(false)
       successScanAudio.play()
-      setBarcode('')
+      // setBarcode('')
       // fetchStatusCountList()
       // setBarcode('')g
     },
