@@ -3,6 +3,54 @@ import { get } from 'lodash'
 import thousandDivider from '../../../../utils/thousandDivider'
 
 function StoreReposrMiniDashboardHeader({ saleStatsData }) {
+  console.log(saleStatsData)
+  const payment_type_stats = [
+    {
+      id: '796ed9a7-ffc1-4ea7-8275-a455270f5741',
+      name: 'Naqd',
+      type: 'cash',
+      sum: get(saleStatsData, 'cash'),
+    },
+    {
+      id: '0dea04ec-0bfa-4fe8-827f-f9984c2d762c',
+      name: 'Uzcard',
+      type: 'card',
+      sum: get(saleStatsData, 'uzcard'),
+    },
+
+    {
+      id: '6033df02-7458-4ed3-aa07-2f289c92701a',
+      name: 'Humo',
+      type: 'card',
+      sum: get(saleStatsData, 'humo'),
+    },
+    {
+      id: '5c8c142b-dfcf-4207-aee7-03b865100026',
+      name: 'Payme',
+      type: 'app',
+      sum: get(saleStatsData, 'payme'),
+    },
+    {
+      id: '11b56314-97c6-4382-ac24-116c1bc63bef',
+      name: 'Uzum',
+      type: 'app',
+      sum: get(saleStatsData, 'payme'),
+    },
+
+    {
+      id: '2f8eb436-a068-40cb-9b19-6301f9796d05',
+      name: 'Click',
+      type: 'app',
+      sum: get(saleStatsData, 'click'),
+    },
+
+    {
+      id: '6033df02-7458-4ed3-aa07-2f289c92701a',
+      name: 'Вазврат',
+      type: 'card',
+      sum: get(saleStatsData, 'return_amount'),
+    },
+  ]
   return (
     <Box
       display={'flex'}
@@ -40,7 +88,7 @@ function StoreReposrMiniDashboardHeader({ saleStatsData }) {
             fontWeight: '700',
           }}
         >
-          {thousandDivider(Math.round(get(saleStatsData, 'total_transactions_sum')), 'сум')}
+          {thousandDivider(Math.round(get(saleStatsData, 'total_amount')), 'сум')}
         </Typography>
       </Box>
       <Box
@@ -52,7 +100,7 @@ function StoreReposrMiniDashboardHeader({ saleStatsData }) {
           },
         }}
       >
-        {get(saleStatsData, 'payment_type_stats', [])?.map((type) => {
+        {payment_type_stats?.map((type) => {
           if (get(type, 'sum') === 0) return null
           return (
             <Box
