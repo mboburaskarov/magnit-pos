@@ -347,7 +347,7 @@ export default function InventoryWithCheckingPage() {
   useEffect(() => {
     if (quantityModalOpen == false && typeof quantityModalOpen == 'boolean') {
       handleFocus()
-      setBarcode('')
+      // setBarcode('')
     }
   }, [quantityModalOpen])
   useEffect(() => {
