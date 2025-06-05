@@ -58,7 +58,6 @@ export default function InventoryWithCheckingPage() {
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
   const [debouncedSearchBarcode] = useDebounce(barcode, 200)
-  console.log(quantityModalOpen)
 
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
@@ -92,12 +91,9 @@ export default function InventoryWithCheckingPage() {
     // } else {
     if (classList.contains('ag-cell')) {
       if (barcode && inventoryWithCheckingDetails?.data?.data?.data.length == 1) {
-        console.log('fofux')
         setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data[0] })
         return
       } else if (lastSelectedCellRowId) {
-        console.log('fofux2')
-
         setQuantityModalOpen({ id: firstrowid, data: inventoryWithCheckingDetails?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
         return
       }
@@ -152,11 +148,7 @@ export default function InventoryWithCheckingPage() {
     refetch,
   } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter), {
     onSuccess: ({ data }) => {
-      console.log('gg', data)
-
       if (size(get(data, 'data.data', [])) == 1) {
-        console.log('aa')
-
         setQuantityModalOpen({ id: get(head(get(data, 'data.data', [])), 'id'), data: head(get(data, 'data.data', [])) })
       } else {
         setQuantityModalOpen(false)
@@ -270,7 +262,6 @@ export default function InventoryWithCheckingPage() {
     (e) => {
       const activeEl = document.activeElement
       const classList = activeEl?.classList || []
-      console.log('jjj')
 
       if (classList.contains('ag-cell')) {
         setScanedNumber({
