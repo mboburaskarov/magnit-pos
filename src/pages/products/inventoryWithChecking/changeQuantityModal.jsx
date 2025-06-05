@@ -1,7 +1,7 @@
 import { Box, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { get } from 'lodash'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
@@ -23,7 +23,7 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
 
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
-
+  const qtyRef = useRef([])
   const [factQuantity, setFactQuantity] = useState('')
   const [factUnit, setFactUnit] = useState('')
   const [factQuantityRef, setFactQuantityRef] = useState(null)
@@ -48,7 +48,8 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
       setFactQuantity('')
       setFactUnit('')
       setTimeout(() => {
-        factQuantityRef?.focus()
+        qtyRef.current?.[0]?.focus()
+        // factQuantityRef?.focus()
       }, 200)
     }
   }, [open])
@@ -117,7 +118,7 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
                 name='pack'
                 value={factQuantity}
                 onChange={(e) => setFactQuantity(e.target.value)}
-                inputRef={(ref) => setFactQuantityRef(ref)}
+                inputRef={(e) => (qtyRef.current[0] = e)}
                 onKeyDown={(e) => {
                   const invalidKeys = ['e', 'E', '+', '-']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
