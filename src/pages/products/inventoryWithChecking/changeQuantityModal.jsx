@@ -50,7 +50,7 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
       setTimeout(() => {
         qtyRef.current?.[0]?.focus()
         // factQuantityRef?.focus()
-      }, 200)
+      }, 0)
     }
   }, [open])
 
