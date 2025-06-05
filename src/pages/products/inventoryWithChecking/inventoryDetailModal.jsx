@@ -126,10 +126,8 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
   const handleFocus = () => {
     const firstrowid = inventoryDetailFlow?.data?.data?.data[0]?.id
     const activeEl = document.activeElement
-    console.log(activeEl)
 
     const classList = activeEl?.classList || []
-    console.log(lastSelectedCellRowId)
 
     if (classList.contains('ag-cell')) {
       if (inventoryDetailFlow?.data?.data?.data.length == 1) {
@@ -225,6 +223,7 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
     (e) => {
       const activeEl = document.activeElement
       const classList = activeEl?.classList || []
+      if (!open) return
       if (classList.contains('ag-cell')) {
         setScanedNumber({
           id,
