@@ -21,8 +21,6 @@ export default function DateRangeInputsBox({ dateState }) {
   const { reset } = useFormContext()
   const [showTime, setShowTime] = useState(false)
   useEffect(() => {
-    console.log(dateState)
-
     if (dateState?.from && dateState?.to) {
       const from_day = dayjs(dateState?.from).format('DD')
       const from_month = dayjs(dateState?.from).format('MM')

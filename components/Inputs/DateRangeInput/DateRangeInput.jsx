@@ -93,7 +93,6 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
   const onClose = useCallback(
     (data) => {
       const baseUrl = location.pathname
-      console.log(data)
 
       const dateParams = qs.stringify(
         {
