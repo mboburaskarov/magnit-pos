@@ -182,7 +182,7 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
         id,
         product_id: get(data, 'id'),
         type: 'MANUAL',
-        expire_date: dayjs(expire_date).format('YYYY-MM-DD'),
+        expire_date: dayjs('01.11.2028', 'DD.MM.YYYY').format('YYYY-MM-DD'),
       })
     }
     if (colDef?.field === 'barcode' && newValue !== oldValue) {

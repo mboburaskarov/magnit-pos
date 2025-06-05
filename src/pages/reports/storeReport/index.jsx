@@ -102,7 +102,7 @@ export default function StoreReportPage() {
     navigate(`/reports/store-report${requestParams}`)
   }, [methods.watch('store_id')])
 
-  const { data: saleStatsData } = useQuery(['saleStatsData', storeReportListFilter], () => requests.getAllSaleStats(storeReportListFilter))
+  const { data: saleStatsData } = useQuery(['saleStatsData', storeReportListFilter], () => requests.getStoreStats(storeReportListFilter))
 
   return (
     <LoadingContainer readyState={true}>
