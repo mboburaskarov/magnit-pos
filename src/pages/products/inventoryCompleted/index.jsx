@@ -16,7 +16,9 @@ import InputQuantity from '../../../../components/Inputs/InputQuantity'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
+import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
@@ -144,13 +146,22 @@ export default function InventoryCompleted() {
       scanned_count: Number(manualNumber),
     })
   }
+  const { mutate: inventoryExcelReport, isLoading: isinventoryExcelReport } = useMutation(requests.getInventoryExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.log(err)
 
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={!isfinishInventoryChecking}>
       <FormProvider {...methods}>
         <Header noActions isLoading={false} backIcon backHref='/products/inventory' text={'Инвентаризация'} checkAccessId={'product-create'} />
 
-        <Container>
+        <Container sx={{ mb: 20 }}>
           <Box
             sx={{
               m: ' 0 0 20px',
@@ -249,6 +260,9 @@ export default function InventoryCompleted() {
                 totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
+                fullDownload={() => inventoryExcelReport({ ...inventoryWithCheckingDetailsFilter, limit: 1000000 })}
+                downloadByFilter={() => inventoryExcelReport(inventoryWithCheckingDetailsFilter)}
+                isDownloading={isinventoryExcelReport}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
                 }}
@@ -264,6 +278,37 @@ export default function InventoryCompleted() {
             </Box>
           </Box>
         </Container>
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: 0,
+            display: 'flex',
+            justifyContent: 'end',
+            width: '100%',
+            backgroundColor: '#fff',
+            zIndex: 9999,
+            padding: '20px',
+          }}
+        >
+          <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
+            <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Програм Cумма</Typography>
+            <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
+              {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'), 'сум')}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
+            <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Факт Cумма</Typography>
+            <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
+              {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'), 'сум')}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
+            <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Разница сумма</Typography>
+            <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
+              {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'), 'сум')}
+            </Typography>
+          </Box>
+        </Box>
         {/* <ConflictDialog
           refetch={refetch}
           setBarcode={setBarcode}

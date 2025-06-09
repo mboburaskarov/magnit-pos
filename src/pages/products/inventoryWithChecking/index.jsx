@@ -54,6 +54,7 @@ export default function InventoryWithCheckingPage() {
   const [selectedCellRowId, setSelectedCellRowId] = useState(false)
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(false)
   const [quantityModalOpen, setQuantityModalOpen] = useState(false)
+  const [shouldICleanSearchQuery, setshouldICleanSearchQuery] = useState(false)
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
@@ -63,6 +64,7 @@ export default function InventoryWithCheckingPage() {
     onSuccess: ({ data }) => {
       refetch()
       const firstrowid = inventoryWithCheckingDetails?.data?.data?.data[0]?.id
+      setshouldICleanSearchQuery(true)
 
       childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
       successScanAudio.play()
@@ -73,6 +75,7 @@ export default function InventoryWithCheckingPage() {
       error('Ошибка при сканирование!')
     },
   })
+  console.log(shouldICleanSearchQuery)
 
   const { mutate: finishInventoryChecking, isLoading: isfinishInventoryChecking } = useMutation(requests.finishInventoryChecking, {
     onSuccess: ({ data }) => {
@@ -148,7 +151,7 @@ export default function InventoryWithCheckingPage() {
     refetch,
   } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter), {
     onSuccess: ({ data }) => {
-      if (size(get(data, 'data.data', [])) == 1) {
+      if (size(get(data, 'data.data', [])) == 1 && !shouldICleanSearchQuery) {
         setQuantityModalOpen({ id: get(head(get(data, 'data.data', [])), 'id'), data: head(get(data, 'data.data', [])) })
       } else {
         setQuantityModalOpen(false)
@@ -287,6 +290,13 @@ export default function InventoryWithCheckingPage() {
       if (selectedCellRowId || isexeption) return
       const key = event.key.toLowerCase()
       if (/^[a-zа-яё0-9]$/i.test(key)) {
+        if (shouldICleanSearchQuery) {
+          setBarcode('')
+          setBarcode((prev) => prev + key)
+
+          setshouldICleanSearchQuery(false)
+          return
+        }
         setBarcode((prev) => prev + key)
       }
       if (event.code === 'Backspace') {
@@ -528,7 +538,13 @@ export default function InventoryWithCheckingPage() {
         }
       />
       <InventoryDetailModal setBarcode={setBarcode} refetch={refetch} open={selectedCellRowId} setOpen={setSelectedCellRowId} />
-      <ChangeQuantityModal setBarcode={setBarcode} refetch={refetch} open={quantityModalOpen} setOpen={setQuantityModalOpen} />
+      <ChangeQuantityModal
+        setshouldICleanSearchQuery={setshouldICleanSearchQuery}
+        setBarcode={setBarcode}
+        refetch={refetch}
+        open={quantityModalOpen}
+        setOpen={setQuantityModalOpen}
+      />
       <Box
         sx={{
           position: 'fixed',

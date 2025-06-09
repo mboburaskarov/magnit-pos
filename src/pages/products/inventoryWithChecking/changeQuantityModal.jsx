@@ -14,7 +14,7 @@ import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 
-export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen }) {
+export default function ChangeQuantityModal({ open, setshouldICleanSearchQuery, setBarcode, refetch, setOpen }) {
   const methods = useForm()
   const { reset } = methods
   const { id } = useParams()
@@ -34,6 +34,7 @@ export default function ChangeQuantityModal({ open, setBarcode, refetch, setOpen
       refetch()
       setOpen(false)
       successScanAudio.play()
+      setshouldICleanSearchQuery(true)
     },
     onError: () => {
       refetch()
