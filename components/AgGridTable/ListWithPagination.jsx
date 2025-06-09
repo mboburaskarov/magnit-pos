@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
 import Pagination from './Pagination'
@@ -9,8 +9,6 @@ function ListWithPagination({ request, renderItem, customFilter }) {
 
   const [page, setPage] = useState(0)
   const handleChange = (e) => {
-    console.log(e)
-
     setPage(e)
   }
   const dataFilter = useMemo(() => {
