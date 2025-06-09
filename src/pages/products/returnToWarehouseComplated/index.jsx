@@ -137,10 +137,28 @@ export default function ReturnToWarehouseCompletedPage() {
       },
     }
   )
+  const { mutate: send1c, isLoading: isSend1c } = useMutation(requests.resend1cReturnTOwarehouse, {
+    onSuccess: ({ data }) => {
+      success('Повторно отправлено в 1с')
+    },
+    onError: (err) => {
+      console.log(err)
+
+      error('Ошибка при Повторно отправлено в 1с!')
+    },
+  })
   return (
     <LoadingContainer readyState={!isfinishWriteOffChecking}>
       <FormProvider {...methods}>
-        <Header isLoading={false} backIcon noActions backHref='/products/return-to-warehouse' text={'Возврат с проверкой'} checkAccessId={'product-create'} />
+        <Header
+          onSubmit={() => send1c(id)}
+          buttonText='Повторно отправлено в 1с'
+          isLoading={false}
+          backIcon
+          backHref='/products/return-to-warehouse'
+          text={'Возврат с проверкой'}
+          checkAccessId={'product-create'}
+        />
 
         <Container>
           <Box
