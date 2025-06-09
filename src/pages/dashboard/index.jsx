@@ -141,7 +141,7 @@ export default function DashboarPage() {
 
   const dashboard_filter = useMemo(() => {
     return {
-      limit: values?.limit || 5,
+      limit: values?.limit || 15,
       search: values?.search,
       start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
       store_ids: selectedShops.length <= 63 && selectedShops != 'all' ? [...selectedShops?.map((a) => a.id)] : null || null,
