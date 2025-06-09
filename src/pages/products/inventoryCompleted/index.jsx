@@ -19,7 +19,7 @@ import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
-import { error } from '../../../../utils/toast'
+import { error, success } from '../../../../utils/toast'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import overplusAudio from '../../../assets/audio/overplus.mp3'
@@ -156,10 +156,28 @@ export default function InventoryCompleted() {
       error('Ошибка при скачать excel!')
     },
   })
+  const { mutate: send1c, isLoading: isSend1c } = useMutation(requests.resend1cInventory, {
+    onSuccess: ({ data }) => {
+      success('Повторно отправлено в 1с')
+    },
+    onError: (err) => {
+      console.log(err)
+
+      error('Ошибка при Повторно отправлено в 1с!')
+    },
+  })
   return (
     <LoadingContainer readyState={!isfinishInventoryChecking}>
       <FormProvider {...methods}>
-        <Header noActions isLoading={false} backIcon backHref='/products/inventory' text={'Инвентаризация'} checkAccessId={'product-create'} />
+        <Header
+          onSubmit={() => send1c(id)}
+          buttonText='Повторно отправлено в 1с'
+          isLoading={false}
+          backIcon
+          backHref='/products/inventory'
+          text={'Инвентаризация'}
+          checkAccessId={'product-create'}
+        />
 
         <Container sx={{ mb: 20 }}>
           <Box
