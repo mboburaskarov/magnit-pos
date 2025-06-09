@@ -29,7 +29,7 @@ export default function ChangeQuantityModal({ open, setshouldICleanSearchQuery, 
   const [factQuantityRef, setFactQuantityRef] = useState(null)
   const [factUnitRef, setFactUnitRef] = useState(null)
 
-  const { mutate: setScanedNumber } = useMutation(requests.sendScannedInventoryNumber, {
+  const { mutate: setScanedNumber, isLoading: issetScanedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
       refetch()
       setOpen(false)
@@ -66,7 +66,10 @@ export default function ChangeQuantityModal({ open, setshouldICleanSearchQuery, 
           setOpen(false)
           return
         }
-
+        if (issetScanedNumber) {
+          setOpen(false)
+          return
+        }
         setScanedNumber({
           id,
           product_id: get(open, 'data.id'),
