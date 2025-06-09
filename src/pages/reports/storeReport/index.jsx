@@ -12,6 +12,7 @@ import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRangeInput'
 import InputSearch from '../../../../components/Inputs/InputSearch'
+import LoadingBlock from '../../../../components/LoadingBlock'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import LazySelect from '../../../../components/Select/LazySelect'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
@@ -106,6 +107,8 @@ export default function StoreReportPage() {
 
   return (
     <LoadingContainer readyState={true}>
+      {isgetStoreReportExcelReport && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
+
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           Отчет филиала
