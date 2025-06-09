@@ -1,7 +1,7 @@
 import { Box, IconButton, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
-import { get } from 'lodash'
+import { get, head } from 'lodash'
 import { memo } from 'react'
 import Highlighter from 'react-highlight-words'
 import { useNavigate } from 'react-router-dom'
@@ -24,6 +24,8 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
 }
 
 const Image = ({ data, rowIndex, setImages }) => {
+  console.log(data)
+
   return (
     <Box
       sx={{
@@ -39,9 +41,16 @@ const Image = ({ data, rowIndex, setImages }) => {
         img: {
           width: '40px',
         },
+        '.has-img': {
+          width: '25px',
+        },
       }}
     >
-      <img src='/no-img.png' />
+      {get(data, 'photos')?.length > 0 ? (
+        <img className='has-img' src={import.meta.env.VITE_FILE_API_URL + '/v1/upload/' + head(get(data, 'photos'))} />
+      ) : (
+        <img src='/no-img.png' />
+      )}
     </Box>
   )
 }
