@@ -1,9 +1,12 @@
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import thousandDivider from '../../utils/thousandDivider'
 
 export default function TopBonusProducts({ data }) {
   const { t } = useTranslation()
+  const [isCollapse, setIsCollapse] = useState(false)
+  const formattedData = isCollapse ? data : data?.slice(0, 5)
   return (
     <Box
       sx={{
@@ -19,7 +22,7 @@ export default function TopBonusProducts({ data }) {
           Бонусные продукты
         </Typography>
       </Box>
-      <Box>
+      <Box sx={{ display: 'flex', height: 'calc(100% - 25px)', justifyContent: 'space-between', flexDirection: 'column' }}>
         <TableContainer px={'20px'}>
           <Table size='small'>
             <TableHead sx={{ borderBottom: '1px solid', borderColor: 'gray.200', padding: '0' }}>
@@ -34,7 +37,7 @@ export default function TopBonusProducts({ data }) {
               </TableCell>
             </TableHead>
             <TableBody>
-              {data?.map((item, index) => (
+              {formattedData?.map((item, index) => (
                 <TableRow key={item.name}>
                   <TableCell
                     sx={{
@@ -75,6 +78,9 @@ export default function TopBonusProducts({ data }) {
             </TableBody>
           </Table>
         </TableContainer>
+        <Button sx={{ width: '100%' }} color='secondary' onClick={() => setIsCollapse((a) => !a)}>
+          {isCollapse ? 'Показать меньше' : `Показать больше`}
+        </Button>
       </Box>
     </Box>
   )
