@@ -126,16 +126,16 @@ export default function InventoryCompleted() {
     refetch()
   }, [inventoryWithCheckingDetailsFilter])
 
-  // useEffect(() => {
-  //   const count = inventoryWithCheckingDetails?.data?.data?._meta?.total_count
+  useEffect(() => {
+    const count = inventoryWithCheckingDetails?.data?.data?._meta?.total_count
 
-  //   const offsetsCount = Math.ceil(count / Number(values?.limit))
-  //   setOffsetCount(offsetsCount || 0)
+    const offsetsCount = Math.ceil(count / Number(values?.limit))
+    setOffsetCount(offsetsCount || 0)
 
-  //   get(inventoryWithCheckingDetails, 'data.data.data', [])?.map((importData) => {
-  //     methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
-  //   })
-  // }, [inventoryWithCheckingDetails?.data, values?.limit])
+    // get(inventoryWithCheckingDetails, 'data.data.data', [])?.map((importData) => {
+    //   methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
+    // })
+  }, [inventoryWithCheckingDetails?.data, values?.limit])
 
   const sendScannedImport = () => {
     if (barcode === '') return
