@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
+import AgGridTable from '../../../../components/AgGridTable/AgGridTableSimple'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
@@ -42,6 +42,7 @@ export default function TransferSentScanWithCheckingPage() {
     onSuccess: ({ data }) => {
       refetchgetReturnToWarehouseDashBoard()
       setBarcode('')
+      refetch()
     },
     onError: (err) => {
       refetch()
@@ -52,10 +53,10 @@ export default function TransferSentScanWithCheckingPage() {
 
   const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.SentTransferChecking, {
     onSuccess: ({ data }) => {
-      navigate('/products/return-to-warehouse')
+      navigate('/products/transfer')
     },
     onError: (err) => {
-      error('Ошибка при завершение импорта!')
+      error('Ошибка при завершение Перемещение!')
     },
   })
   const tableColumns = tableHeaderSelector({
@@ -68,7 +69,7 @@ export default function TransferSentScanWithCheckingPage() {
   })
   const returnToWarehouseWithCheckingDetailsFilter = useMemo(() => {
     return {
-      return_id: id,
+      transfer_id: id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: barcode,
@@ -117,19 +118,16 @@ export default function TransferSentScanWithCheckingPage() {
       methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
     })
   }, [returnToWarehouseWithCheckingDetails?.data, values?.limit])
-  const { mutate: getReturnToWarehouseDetailsExcelReport, isLoading: isgetReturnToWarehouseDetailsExcelReport } = useMutation(
-    requests.getTransferDetailsExcelReport,
-    {
-      onSuccess: ({ data }) => {
-        downloadLinkExcel(get(data, 'data.file_name'))
-      },
-      onError: (err) => {
-        console.log(err)
+  const { mutate: getTransferDetailsExcelReport, isLoading: isgetTransferDetailsExcelReport } = useMutation(requests.getTransferDetailsExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.log(err)
 
-        error('Ошибка при скачать excel!')
-      },
-    }
-  )
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={!isfinishWriteOffChecking}>
       <FormProvider {...methods}>
@@ -205,8 +203,8 @@ export default function TransferSentScanWithCheckingPage() {
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
-                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...returnToWarehouseWithCheckingDetailsFilter, limit: 1000000 })}
-                downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(returnToWarehouseWithCheckingDetailsFilter)}
+                fullDownload={() => getTransferDetailsExcelReport({ ...returnToWarehouseWithCheckingDetailsFilter, limit: 1000000 })}
+                downloadByFilter={() => getTransferDetailsExcelReport(returnToWarehouseWithCheckingDetailsFilter)}
                 data={returnToWarehouseWithCheckingDetails?.data?.data?.data || []}
                 totalCount={returnToWarehouseWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}

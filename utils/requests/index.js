@@ -140,8 +140,8 @@ export const requests = {
 
   createReturnToWarehouse: (data) => request.post(`v1/return`, data),
   getAllReturnToWarehouse: (filter) => request.get(`v1/return/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  sendScannedReturnToWarehouseNumber: ({ id, barcode, product_id, type, scanned_count }) =>
-    request.patch(`v1/return/${id}/add-product-by-barcode`, { count: scanned_count, type, id: product_id }),
+  sendScannedReturnToWarehouseNumber: ({ id, barcode, product_id, type, scanned_unit, scanned_pack }) =>
+    request.patch(`v1/return/${id}/add-product-by-barcode`, { scanned_pack, scanned_unit, type, id: product_id }),
   getReturnToWarehouseDetails: (filter) => request.get(`v1/return-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getReturnToWarehouseDashBoard: (id) => request.get(`v1/return/${id}`),
   getReturnToWarehouseScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -187,8 +187,8 @@ export const requests = {
   //transfer
   createTransfer: (data) => request.post(`v1/transfer`, data),
   getAllTransfer: (filter) => request.get(`v1/transfer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  sendScannedTransferNumber: ({ id, barcode, product_id, type, scanned_count }) =>
-    request.patch(`v1/transfer/${id}/add-product-by-barcode`, { count: scanned_count, type, id: product_id }),
+  sendScannedTransferNumber: ({ id, barcode, product_id, type, scanned_unit, scanned_pack }) =>
+    request.patch(`v1/transfer/${id}/add-product-by-barcode`, { scanned_unit, scanned_pack, type, id: product_id }),
   getTransferDetails: (filter) => request.get(`v1/transfer-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getTransferDashBoard: (id) => request.get(`v1/transfer/${id}`),
   getTransferScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -230,6 +230,7 @@ export const requests = {
   deleteBonusProduct: (id) => request.delete(`v1/product-bonus`, id),
   setMarkingRequired: ({ product_id, is_marking }) => request.patch(`v1/product/is-marking`, { product_id, is_marking }),
   getProductsExcelReport: (filter) => requestEXCEL.get(`v1/product/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getProductsExcelReportForAA: (filter) => requestEXCEL.get(`v1/product/export-arzon${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getSingleProduct: (id) => request.get(`v1/product/${id}`),
   getSingleProductMovement: (filter, id) => request.get(`v1/product/${id}/product-movement${qs.stringify(filter, { addQueryPrefix: true })}`),

@@ -47,8 +47,6 @@ export const navbatRouteData = [
         active: '/products/transfer/*',
         id: '32',
         href: '/products/transfer',
-
-        soon: true,
       },
       {
         label: 'Переоценка',

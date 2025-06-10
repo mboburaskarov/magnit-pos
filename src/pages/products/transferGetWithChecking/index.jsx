@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
+import AgGridTable from '../../../../components/AgGridTable/AgGridTableSimple'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
@@ -52,7 +52,7 @@ export default function TransferGetScanWithCheckingPage() {
 
   const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.finishTransferChecking, {
     onSuccess: ({ data }) => {
-      navigate('/products/return-to-warehouse')
+      navigate('/products/transfer')
     },
     onError: (err) => {
       error('Ошибка при завершение импорта!')
@@ -68,7 +68,7 @@ export default function TransferGetScanWithCheckingPage() {
   })
   const returnToWarehouseWithCheckingDetailsFilter = useMemo(() => {
     return {
-      return_id: id,
+      transfer_id: id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: barcode,

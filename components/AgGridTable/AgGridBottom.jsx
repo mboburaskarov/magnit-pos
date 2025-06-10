@@ -57,6 +57,8 @@ function AgGridBottom({
   isDownloading,
   fullDownload,
   downloadByFilter,
+  downloadForAA,
+  hasAADownload = false,
   offsetSize,
   totalCount,
   setOffsetSize,
@@ -136,6 +138,14 @@ function AgGridBottom({
                   clickHandler: () => fullDownload(),
                 },
                 { title: 'Скачать по фильтру', clickHandler: () => downloadByFilter() },
+                ...(hasAADownload
+                  ? [
+                      {
+                        title: 'Скачать АА',
+                        clickHandler: () => downloadForAA(),
+                      },
+                    ]
+                  : []),
               ]}
             />
           )}

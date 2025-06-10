@@ -1,6 +1,5 @@
 import { Box, Grid, Typography } from '@mui/material'
 import { get } from 'lodash'
-import React from 'react'
 import thousandDivider from '../../../../utils/thousandDivider'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DownloadIcon from '../../../assets/icons/DownloadIcon'
@@ -15,9 +14,10 @@ function WriteOffDashboard({ data }) {
       }}
     >
       {[
-        { title: 'Магазин', value: 'store' },
-        { title: 'Кол-во товаров', value: 'writeoff_count' },
-        { title: 'Сумма к списанию по цене поставки', value: 'supply_price_sum' },
+        { title: 'Отправитель', value: 'store' },
+        { title: 'Получатель', value: 'to_store' },
+        { title: 'Получено количество', value: 'received_count' },
+        { title: 'Принятое количество', value: 'accepted_count' },
         // { title: 'result' },
       ].map((stat) => (
         <Grid sm='4' lg='4' md='4' item sx={{}}>
@@ -80,7 +80,11 @@ function WriteOffDashboard({ data }) {
                   }}
                 >
                   {data?.[stat.value] < 0 && <BigWarningIcon />}
-                  {stat.value == 'store' ? get(data, 'store.name', 'Undefined') : thousandDivider(data?.[stat.value], 'сум')}
+                  {stat.value == 'store'
+                    ? get(data, 'store.name', 'Undefined')
+                    : stat.value == 'to_store'
+                    ? get(data, 'to_store.name', 'Undefined')
+                    : thousandDivider(data?.[stat.value], 'шт')}
                 </Typography>
               </>
             )}

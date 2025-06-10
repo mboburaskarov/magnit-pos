@@ -241,6 +241,16 @@ export default function ProductsPage() {
       error('Ошибка при скачать excel!')
     },
   })
+  const { mutate: productsExcelReportForAA, isLoading: isproductsExcelReportForAA } = useMutation(requests.getProductsExcelReportForAA, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.log(err)
+
+      error('Ошибка при скачать excel!')
+    },
+  })
 
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
@@ -435,8 +445,10 @@ export default function ProductsPage() {
               alwaysShowHorizontalScroll={true}
               tableSettings
               canCellClick={true}
+              hasAADownload={productsListFilter?.store_id}
               enableFillHandle={true}
               onCellValueChanged={onCellValueChanged}
+              downloadForAA={() => productsExcelReportForAA({ ...productsListFilter, limit: 1000000 })}
               fullDownload={() => productsExcelReport({ ...productsListFilter, limit: 1000000 })}
               downloadByFilter={() => productsExcelReport(productsListFilter)}
               isDownloading={isproductsExcelReport}

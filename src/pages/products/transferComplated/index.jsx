@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
+import AgGridTable from '../../../../components/AgGridTable/AgGridTableSimple'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
@@ -40,6 +40,9 @@ export default function TransferCompletedPage() {
 
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
+  const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
+    requests.getTransferDashBoard(id)
+  )
 
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedWriteOffNumber, {
     onSuccess: ({ data }) => {
@@ -70,7 +73,7 @@ export default function TransferCompletedPage() {
   })
   const WriteOffWithCheckingDetailsFilter = useMemo(() => {
     return {
-      return_id: id,
+      transfer_id: id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: barcode,
@@ -124,19 +127,16 @@ export default function TransferCompletedPage() {
       scanned_count: Number(manualNumber),
     })
   }
-  const { mutate: getReturnToWarehouseDetailsExcelReport, isLoading: isgetReturnToWarehouseDetailsExcelReport } = useMutation(
-    requests.getReturnToWarehouseDetailsExcelReport,
-    {
-      onSuccess: ({ data }) => {
-        downloadLinkExcel(get(data, 'data.file_name'))
-      },
-      onError: (err) => {
-        console.log(err)
+  const { mutate: getTransferDetailsExcelReport, isLoading: isgetTransferDetailsExcelReport } = useMutation(requests.getTransferDetailsExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.log(err)
 
-        error('Ошибка при скачать excel!')
-      },
-    }
-  )
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={!isfinishWriteOffChecking}>
       <FormProvider {...methods}>
@@ -159,7 +159,7 @@ export default function TransferCompletedPage() {
             {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
-          {isOpenStatDashboard && <WriteOffDashboard data={get(WriteOffWithCheckingDetails, 'data.data.stats_count')} />}
+          {isOpenStatDashboard && <WriteOffDashboard data={get(getReturnToWarehouseDashBoard, 'data.data')} />}
 
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -177,7 +177,7 @@ export default function TransferCompletedPage() {
                 >
                   <InputSearch
                     icon={<BarcodeIcon />}
-                    onKeyDown={({ code }) => code === 'Enter' && sendScannedImport()}
+                    // onKeyDown={({ code }) => code === 'Enter' && sendScannedImport()}
                     onChange={({ target }) => setBarcode(get(target, 'value'))}
                     id='producrs-search'
                     name='search'
@@ -203,8 +203,8 @@ export default function TransferCompletedPage() {
             <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' } }}>
               <AgGridTable
                 id='imports-main-table'
-                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...WriteOffWithCheckingDetailsFilter, limit: 1000000 })}
-                downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(WriteOffWithCheckingDetailsFilter)}
+                fullDownload={() => getTransferDetailsExcelReport({ ...WriteOffWithCheckingDetailsFilter, limit: 1000000 })}
+                downloadByFilter={() => getTransferDetailsExcelReport(WriteOffWithCheckingDetailsFilter)}
                 tableSettings
                 columns={tableColumns}
                 data={WriteOffWithCheckingDetails?.data?.data?.data || []}

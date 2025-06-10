@@ -106,29 +106,69 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         )),
       }
     }
-    if (el.field === 'scanned_count') {
+    if (el.field === 'scanned_pack') {
       return {
         ...el,
-        headerName: 'Сканированные',
+        headerName: 'Упакофка',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <NumberFormatInput
+              uncontrolled
+              setValue={() => {}}
+              value={p?.data?.scanned_pack}
               onBlur={({ target }) => {
-                if (p?.data?.scanned_count == get(target, 'value')) return
+                if (p?.data?.scanned_pack == get(target, 'value')) return
 
                 setScanedNumber({
                   id,
                   product_id: get(p, 'data.id'),
                   barcode: get(p, 'data.barcode'),
                   type: 'MANUAL',
-                  scanned_count: Number(get(target, 'value').replace(/\s+/g, '')),
+                  scanned_pack: Number(get(target, 'value').replace(/\s+/g, '')),
+                  scanned_unit: p?.data?.scanned_unit,
                 })
               }}
               placeholder={'0'}
-              defaultValue={p?.data?.scanned_count}
-              id={`scanned_quantity_${p?.data?.id}`}
-              name={`scanned_quantity_${p?.data?.id}`}
+              defaultValue={p?.data?.scanned_pack}
+              id={`scanned_quantity_pack_${p?.data?.id}`}
+              name={`scanned_quantity_pack_${p?.data?.id}`}
+              type='number'
+              fullWidth
+            />
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'scanned_unit') {
+      return {
+        ...el,
+        headerName: 'Штук',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            {console.log(p)}
+            <NumberFormatInput
+              uncontrolled
+              setValue={() => {}}
+              onBlur={({ target }) => {
+                if (p?.data?.scanned_unit == get(target, 'value')) return
+
+                setScanedNumber({
+                  id,
+                  product_id: get(p, 'data.id'),
+                  barcode: get(p, 'data.barcode'),
+                  type: 'MANUAL',
+                  scanned_pack: p?.data?.scanned_pack,
+                  scanned_unit: Number(get(target, 'value').replace(/\s+/g, '')),
+                })
+              }}
+              disabled={p?.data?.unit_per_pack == 1 || p?.data?.unit_per_pack == p?.data?.scanned_pack}
+              placeholder={'0'}
+              value={p?.data?.scanned_unit}
+              defaultValue={p?.data?.scanned_unit}
+              id={`scanned_quantity_unit_${p?.data?.id}`}
+              name={`scanned_quantity_unit_${p?.data?.id}`}
               type='number'
               fullWidth
             />
