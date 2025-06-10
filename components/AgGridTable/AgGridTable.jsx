@@ -45,6 +45,7 @@ const AgGridSimpleTable = ({
   updaterAction,
   selectedRowsIds = [],
   setSelectAll,
+  downloadForAA,
   addAllProducts,
   deleteAllProducts,
   hasAADownload,
@@ -363,6 +364,7 @@ const AgGridSimpleTable = ({
             offsetIndex={offsetIndex}
             hasAADownload={hasAADownload}
             offsetQuery={offsetQuery}
+            downloadForAA={downloadForAA}
             setOffsetIndex={setOffsetIndex}
             fullDownload={fullDownload}
             downloadByFilter={downloadByFilter}
