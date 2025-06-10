@@ -17,7 +17,7 @@ const columns = [
   {
     field: 'document_number',
     hide: false,
-    minWidth: 200,
+    minWidth: 160,
     flex: 1,
   },
   {
@@ -30,13 +30,13 @@ const columns = [
     field: 'created_at',
     hide: false,
     minWidth: 70,
-    width: 350,
+    width: 180,
   },
   {
     field: 'import_date',
     hide: false,
     minWidth: 70,
-    width: 370,
+    width: 180,
   },
 
   {
