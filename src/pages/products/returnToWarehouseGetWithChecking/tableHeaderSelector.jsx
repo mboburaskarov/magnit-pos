@@ -127,6 +127,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
                 })
               }}
               placeholder={'0'}
+              setValue={() => {}}
               disabled={true}
               defaultValue={p?.data?.scanned_pack}
               id={`scanned_quantity_pack_${p?.data?.id}`}
@@ -158,6 +159,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
                   scanned_unit: Number(get(target, 'value').replace(/\s+/g, '')),
                 })
               }}
+              setValue={() => {}}
               disabled={true}
               placeholder={'0'}
               defaultValue={p?.data?.scanned_unit}

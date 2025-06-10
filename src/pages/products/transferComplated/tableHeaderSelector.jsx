@@ -124,6 +124,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
                   scanned_unit: p?.data?.scanned_unit,
                 })
               }}
+              setValue={() => {}}
               placeholder={'0'}
               defaultValue={p?.data?.scanned_pack}
               id={`scanned_quantity_pack_${p?.data?.id}`}
@@ -157,6 +158,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
               }}
               disabled={p?.data?.unit_per_pack == 1 || p?.data?.unit_per_pack == p?.data?.scanned_pack}
               placeholder={'0'}
+              setValue={() => {}}
               defaultValue={p?.data?.scanned_unit}
               id={`scanned_quantity_unit_${p?.data?.id}`}
               name={`scanned_quantity_unit_${p?.data?.id}`}

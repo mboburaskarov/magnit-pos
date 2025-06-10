@@ -115,6 +115,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <NumberFormatInput
               uncontrolled
+              setValue={() => {}}
               value={p?.data?.scanned_pack}
               onBlur={({ target }) => {
                 if (p?.data?.scanned_pack == get(target, 'value')) return
@@ -149,6 +150,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
             {console.log(p)}
             <NumberFormatInput
               uncontrolled
+              setValue={() => {}}
               onBlur={({ target }) => {
                 if (p?.data?.scanned_unit == get(target, 'value')) return
 
