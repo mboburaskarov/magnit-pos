@@ -114,6 +114,8 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <NumberFormatInput
+              uncontrolled
+              value={p?.data?.scanned_pack}
               onBlur={({ target }) => {
                 if (p?.data?.scanned_pack == get(target, 'value')) return
 
@@ -126,6 +128,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
                   scanned_unit: p?.data?.scanned_unit,
                 })
               }}
+              disabled={true}
               placeholder={'0'}
               defaultValue={p?.data?.scanned_pack}
               id={`scanned_quantity_pack_${p?.data?.id}`}
@@ -144,7 +147,9 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            {console.log(p)}
             <NumberFormatInput
+              uncontrolled
               onBlur={({ target }) => {
                 if (p?.data?.scanned_unit == get(target, 'value')) return
 
@@ -157,8 +162,9 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
                   scanned_unit: Number(get(target, 'value').replace(/\s+/g, '')),
                 })
               }}
-              disabled={p?.data?.unit_per_pack == 1 || p?.data?.unit_per_pack == p?.data?.scanned_pack}
+              disabled={true}
               placeholder={'0'}
+              value={p?.data?.scanned_unit}
               defaultValue={p?.data?.scanned_unit}
               id={`scanned_quantity_unit_${p?.data?.id}`}
               name={`scanned_quantity_unit_${p?.data?.id}`}

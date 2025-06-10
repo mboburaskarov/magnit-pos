@@ -187,8 +187,8 @@ export const requests = {
   //transfer
   createTransfer: (data) => request.post(`v1/transfer`, data),
   getAllTransfer: (filter) => request.get(`v1/transfer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  sendScannedTransferNumber: ({ id, barcode, product_id, type, scanned_count }) =>
-    request.patch(`v1/transfer/${id}/add-product-by-barcode`, { count: scanned_count, type, id: product_id }),
+  sendScannedTransferNumber: ({ id, barcode, product_id, type, scanned_unit, scanned_pack }) =>
+    request.patch(`v1/transfer/${id}/add-product-by-barcode`, { scanned_unit, scanned_pack, type, id: product_id }),
   getTransferDetails: (filter) => request.get(`v1/transfer-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getTransferDashBoard: (id) => request.get(`v1/transfer/${id}`),
   getTransferScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
