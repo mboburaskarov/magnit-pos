@@ -47,6 +47,7 @@ const AgGridSimpleTable = ({
   setSelectAll,
   addAllProducts,
   deleteAllProducts,
+  hasAADownload,
   setRemovedItems,
   custonName = 'custonName',
   setAddedItems,
@@ -360,6 +361,7 @@ const AgGridSimpleTable = ({
             controlledOffsetCount={controlledOffsetCount}
             changeOffset={changeOffset}
             offsetIndex={offsetIndex}
+            hasAADownload={hasAADownload}
             offsetQuery={offsetQuery}
             setOffsetIndex={setOffsetIndex}
             fullDownload={fullDownload}

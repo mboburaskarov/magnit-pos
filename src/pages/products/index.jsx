@@ -435,8 +435,10 @@ export default function ProductsPage() {
               alwaysShowHorizontalScroll={true}
               tableSettings
               canCellClick={true}
+              hasAADownload={productsListFilter?.store_id}
               enableFillHandle={true}
               onCellValueChanged={onCellValueChanged}
+              downloadForAA={() => productsExcelReport({ ...productsListFilter, limit: 1000000 })}
               fullDownload={() => productsExcelReport({ ...productsListFilter, limit: 1000000 })}
               downloadByFilter={() => productsExcelReport(productsListFilter)}
               isDownloading={isproductsExcelReport}
