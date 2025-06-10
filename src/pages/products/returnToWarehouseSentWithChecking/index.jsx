@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
+import AgGridUnSelectableSimpleTable from '../../../../components/AgGridTable/AgGridTableSimple'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
@@ -42,6 +42,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
     onSuccess: ({ data }) => {
       refetchgetReturnToWarehouseDashBoard()
       setBarcode('')
+      refetch()
     },
     onError: (err) => {
       refetch()
@@ -90,6 +91,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
   } = useQuery(['returnToWarehouseWithCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
     requests.getReturnToWarehouseDetails(returnToWarehouseWithCheckingDetailsFilter)
   )
+  console.log(returnToWarehouseWithCheckingDetails)
 
   /// filter table columns with permission
   useEffect(() => {
@@ -205,7 +207,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
             </Box>
 
             <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' } }}>
-              <AgGridTable
+              <AgGridUnSelectableSimpleTable
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
@@ -213,7 +215,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
                 downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(returnToWarehouseWithCheckingDetailsFilter)}
                 data={returnToWarehouseWithCheckingDetails?.data?.data?.data || []}
                 totalCount={returnToWarehouseWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
-                isDataLoading={isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
+                isDataLoading={isFetchingreturnToWarehouseWithCheckingDetails || isSetScannedNumber || returnToWarehouseWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
@@ -225,7 +227,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
                 status={'ALL'}
-                isRefreshing={loading || isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
+                isRefreshing={loading || isSetScannedNumber || isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
