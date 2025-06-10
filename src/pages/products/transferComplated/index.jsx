@@ -40,6 +40,9 @@ export default function TransferCompletedPage() {
 
   const [offsetCount, setOffsetCount] = useState(0)
   const [manualNumber, setManualNumber] = useState(1)
+  const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
+    requests.getTransferDashBoard(id)
+  )
 
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedWriteOffNumber, {
     onSuccess: ({ data }) => {
@@ -156,7 +159,7 @@ export default function TransferCompletedPage() {
             {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
-          {isOpenStatDashboard && <WriteOffDashboard data={get(WriteOffWithCheckingDetails, 'data.data.stats_count')} />}
+          {isOpenStatDashboard && <WriteOffDashboard data={get(getReturnToWarehouseDashBoard, 'data.data')} />}
 
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
