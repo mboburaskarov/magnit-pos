@@ -140,8 +140,8 @@ export const requests = {
 
   createReturnToWarehouse: (data) => request.post(`v1/return`, data),
   getAllReturnToWarehouse: (filter) => request.get(`v1/return/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  sendScannedReturnToWarehouseNumber: ({ id, barcode, product_id, type, scanned_count }) =>
-    request.patch(`v1/return/${id}/add-product-by-barcode`, { count: scanned_count, type, id: product_id }),
+  sendScannedReturnToWarehouseNumber: ({ id, barcode, product_id, type, scanned_unit, scanned_pack }) =>
+    request.patch(`v1/return/${id}/add-product-by-barcode`, { scanned_pack, scanned_unit, type, id: product_id }),
   getReturnToWarehouseDetails: (filter) => request.get(`v1/return-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getReturnToWarehouseDashBoard: (id) => request.get(`v1/return/${id}`),
   getReturnToWarehouseScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
