@@ -1,3 +1,4 @@
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
 import { Box, IconButton, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
@@ -54,13 +55,80 @@ const Image = ({ data, rowIndex, setImages }) => {
     </Box>
   )
 }
+const CustomHeader = (props) => {
+  const lastStort = props.column.colDef.orderStoring
+  const currentColId = props.column.colId
+  const orderPosition = lastStort?.position || 0
+  const ordercolId = lastStort?.colId || 0
+  const onClick = () => {
+    let newOrder = { position: 0, colId: '' }
+    if (lastStort) {
+      if (orderPosition == 2 && ordercolId == props.column.colId) {
+        newOrder = {
+          position: 0,
+          colId: '',
+        }
+      } else {
+        if (ordercolId != props.column.colId && ordercolId != '') {
+          newOrder = {
+            position: 1,
+            colId: props.column.colId,
+          }
+        } else {
+          newOrder = {
+            position: orderPosition + 1,
+            colId: props.column.colId,
+          }
+        }
+      }
+    }
 
+    // Toggle sort direction manually
+    props.column.colDef.setOrderStoring(newOrder)
+  }
+
+  return (
+    <Box
+      onClick={onClick}
+      sx={{
+        cursor: 'pointer',
+        display: 'flex',
+        flex: '1 1 auto',
+        overflow: 'hidden',
+        padding: '12px',
+        alignItems: 'center',
+        textOverflow: 'ellipsis',
+        alignSelf: 'stretch',
+      }}
+    >
+      <Typography
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#111217',
+          fontSize: '16px',
+          fontWeight: ' 600',
+          lineHeight: '24px',
+        }}
+      >
+        {props.displayName}
+        <Box height={'18px'} ml='10px'>
+          {orderPosition == 1 && currentColId == ordercolId && <ArrowUpward color='#ccc' />}
+          {orderPosition == 2 && currentColId == ordercolId && <ArrowDownward color='#ccc' />}
+        </Box>
+      </Typography>
+    </Box>
+  )
+}
 export default function tableHeaderSelector({
   productsColumns,
   values,
   setImages,
   editable = false,
   t,
+  setOrderStoring,
+  orderStoring,
   setMarkingRequired,
   setOpenConfirmDialog,
   setOpenProductDrawer,
@@ -87,6 +155,9 @@ export default function tableHeaderSelector({
     if (el.field === 'name') {
       return {
         ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         headerName: t('table_columns.name'),
         colId: el.field,
         cellRenderer: memo((p) => (
