@@ -164,28 +164,26 @@ export default function TransferGetScanWithCheckingPage() {
 
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-              <Box display={'flex'}>
-                <Box
-                  width='100%'
-                  sx={{
-                    '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                    '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                      background: 'transparent',
-                      width: '400px',
-                      height: 48,
-                    },
-                  }}
-                >
-                  <InputSearch
-                    icon={<BarcodeIcon />}
-                    onChange={({ target }) => setBarcode(get(target, 'value'))}
-                    id='producrs-search'
-                    name='search'
-                    value={barcode}
-                    setSearchTerm={setBarcode}
-                    placeholder={t('input.search.product.multi')}
-                  />
-                </Box>
+              <Box
+                width='80%'
+                sx={{
+                  '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+                  '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                    background: 'transparent',
+                    width: '100%',
+                    height: 48,
+                  },
+                }}
+              >
+                <InputSearch
+                  icon={<BarcodeIcon />}
+                  onChange={({ target }) => setBarcode(get(target, 'value'))}
+                  id='producrs-search'
+                  name='search'
+                  value={barcode}
+                  setSearchTerm={setBarcode}
+                  placeholder={t('input.search.product.multi')}
+                />
               </Box>
               <Box display={'flex'} alignItems={'center'}>
                 <Box>

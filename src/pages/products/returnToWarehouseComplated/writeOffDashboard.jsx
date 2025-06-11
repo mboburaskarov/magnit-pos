@@ -15,7 +15,7 @@ function WriteOffDashboard({ data }) {
     >
       {[
         { title: 'Магазин', value: 'store' },
-        { title: 'Получено количество', value: 'scanned_count' },
+        { title: 'Kоличество возвратa', value: 'scanned_count' },
         { title: 'Принятое количество', value: 'return_count' },
       ].map((stat) => (
         <Grid sm='4' lg='4' md='4' item sx={{}}>
