@@ -189,7 +189,7 @@ export default function TransferPage() {
             <CheckAccess id={'create-return-to-warehouse'} noAccess>
               <Box minWidth={156}>
                 <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
-                  Новая Перемещение
+                  Новое перемещение
                 </Button>
               </Box>
             </CheckAccess>

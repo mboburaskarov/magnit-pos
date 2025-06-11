@@ -60,7 +60,7 @@ export default function CreateReturn({ open, refetch, setOpen }) {
       overflowVisible
       onClose={() => setOpen(false)}
       open={open}
-      title={'Новое Возврат'}
+      title={'Новое возврат'}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
     >
       <Box
