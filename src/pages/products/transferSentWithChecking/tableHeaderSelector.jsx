@@ -115,12 +115,8 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <NumberFormatInput
               value={p?.data?.scanned_pack}
-              onFocus={(e) => {
-                if (p?.data?.scanned_pack == 0) {
-                  methods.setValue(`scanned_quantity_pack_${p?.data?.id}`, '')
-                  return
-                }
-              }}
+              uncontrolled
+              setValue={() => {}}
               onBlur={({ target }) => {
                 if (p?.data?.scanned_pack == get(target, 'value')) return
                 methods.setValue(`scanned_quantity_pack_${p?.data?.id}`, Number(get(target, 'value').replace(/\s+/g, '')))
@@ -154,14 +150,8 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             {console.log(p)}
             <NumberFormatInput
-              // uncontrolled
-              // setValue={() => {}}
-              onFocus={(e) => {
-                if (p?.data?.scanned_unit == 0) {
-                  methods.setValue(`scanned_quantity_unit_${p?.data?.id}`, '')
-                  return
-                }
-              }}
+              uncontrolled
+              setValue={() => {}}
               onBlur={({ target }) => {
                 if (p?.data?.scanned_unit == get(target, 'value')) return
                 methods.setValue(`scanned_quantity_unit_${p?.data?.id}`, Number(get(target, 'value').replace(/\s+/g, '')))
