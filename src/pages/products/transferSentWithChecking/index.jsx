@@ -63,7 +63,7 @@ export default function TransferSentScanWithCheckingPage() {
     importsColumns: columns,
     t,
     values,
-
+    methods,
     id,
     setScanedNumber,
   })

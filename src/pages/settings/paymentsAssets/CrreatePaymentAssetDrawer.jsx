@@ -2,7 +2,7 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation } from 'react-query'
 import CardDrawer from '../../../../components/Drawers/CardDrawer'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
@@ -35,9 +35,6 @@ export default function CrreatePaymentAsset({ isOpen, onClose, categoriesRefetch
     },
   })
   const capitalizeFirstLetter = (str) => str?.charAt(0)?.toUpperCase() + str?.slice(1)
-  const { data: paymentTypeList } = useQuery(['paymentTypeList', isOpen], () => requests.getPaymentTypesList({ cash_box_id: get(isOpen, 'id', null) }), {
-    enabled: Boolean(isOpen),
-  })
 
   const onSubmit = (data) => {
     if (get(isOpen, 'mode') == 'edit') {
