@@ -164,7 +164,8 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
                   scanned_unit: Number(get(target, 'value').replace(/\s+/g, '')),
                 })
               }}
-              disabled={p?.data?.unit_per_pack == 1 || p?.data?.unit_per_pack == p?.data?.scanned_pack}
+              disabled={true}
+              // disabled={p?.data?.unit_per_pack == 1 || p?.data?.unit_per_pack == p?.data?.scanned_pack}
               placeholder={'0'}
               value={p?.data?.scanned_unit}
               defaultValue={p?.data?.scanned_unit}
