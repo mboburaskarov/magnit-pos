@@ -105,9 +105,9 @@ export default function tableHeaderSelector({ setOpenCreatePermission, values, v
         cellRenderer: memo(({ data, rowIndex }) => (
           <StatusCell
             id={`products-status-${rowIndex}`}
-            color={get(data, 'is_enable', false) === true ? 'green.700' : 'red.700'}
-            bgcolor={get(data, 'is_enable', false) === true ? 'green.10' : 'red.10'}
-            title={get(data, 'is_enable', false) === true ? 'Активный' : 'Неактивный'}
+            color={get(data, 'is_active', false) === true ? 'green.700' : 'red.700'}
+            bgcolor={get(data, 'is_active', false) === true ? 'green.10' : 'red.10'}
+            title={get(data, 'is_active', false) === true ? 'Активный' : 'Неактивный'}
           />
         )),
       }
