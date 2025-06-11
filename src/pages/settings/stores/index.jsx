@@ -5,22 +5,25 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import StyledTooltip from '../../../../components/StyledTooltip'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
+import CategoryIcon from '../../../assets/icons/CategoryIcon'
 import PlusIcon from '../../../assets/icons/PlusIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/storeTableColumns'
 import CreateLocationDrawer from './createLocationDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
-
 export default function ProductsPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -28,7 +31,7 @@ export default function ProductsPage() {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openCreateLocationDrawer, setopenCreateLocationDrawer] = useState(false)
-
+  const navigate = useNavigate()
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
@@ -118,6 +121,27 @@ export default function ProductsPage() {
             </Box>
           </Box>
           <Box display={'flex'} alignItems={'center'}>
+            <CheckAccess id={'can-add-payment-service'}>
+              <StyledTooltip title={'Управление Ключи'}>
+                <Box
+                  onClick={() => navigate('/settings/payments-assets')}
+                  sx={{
+                    backgroundColor: 'bg.10',
+                    padding: '10px',
+                    borderRadius: '10px',
+                    mr: '10px',
+                    display: 'flex',
+                    width: '38px',
+                    height: '38px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <CategoryIcon />
+                </Box>
+              </StyledTooltip>
+            </CheckAccess>
+
             <Box>
               <ColumnsFilterButtonForAll
                 title={t('ag_grid.table_setting.label')}

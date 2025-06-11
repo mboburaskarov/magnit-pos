@@ -279,7 +279,12 @@ export const requests = {
   getAllActions: () => request.get(`v1/permission/list-parents`),
   deletePermission: (id) => request.delete(`v1/permission/delete`, id),
   getPermissionById: (id) => request.get(`v1/permission/${id}`),
+  // payment service assets
+  getPaymentAssetsList: (filter) => request.get(`v1/payment-service/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getPaymentAsset: (id) => request.get(`v1/payment-service/${id}`),
 
+  createPaymentAsset: (data) => request.post(`v1/payment-service`, data),
+  editPaymentAsset: ({ id, data }) => request.put(`v1/payment-service/${id}`, data),
   //upload files
   imageUpload: (data) => fileUploadRequest.post('v1/upload/file', data),
   cvUpload: (data) => fileUploadRequest.post('v1/inventory-detail/upload-excel', data),

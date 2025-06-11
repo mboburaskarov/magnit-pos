@@ -121,11 +121,12 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
                   barcode: get(p, 'data.barcode'),
                   type: 'MANUAL',
                   scanned_pack: Number(get(target, 'value').replace(/\s+/g, '')),
-                  scanned_unit: p?.data?.scanned_unit,
+                  // scanned_unit: p?.data?.scanned_unit,
                 })
               }}
               setValue={() => {}}
               placeholder={'0'}
+              disabled={true}
               defaultValue={p?.data?.scanned_pack}
               id={`scanned_quantity_pack_${p?.data?.id}`}
               name={`scanned_quantity_pack_${p?.data?.id}`}
@@ -152,11 +153,11 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
                   product_id: get(p, 'data.id'),
                   barcode: get(p, 'data.barcode'),
                   type: 'MANUAL',
-                  scanned_pack: p?.data?.scanned_pack,
+                  // scanned_pack: p?.data?.scanned_pack,
                   scanned_unit: Number(get(target, 'value').replace(/\s+/g, '')),
                 })
               }}
-              disabled={p?.data?.unit_per_pack == 1 || p?.data?.unit_per_pack == p?.data?.scanned_pack}
+              disabled={true}
               placeholder={'0'}
               setValue={() => {}}
               defaultValue={p?.data?.scanned_unit}

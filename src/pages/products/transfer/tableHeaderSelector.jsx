@@ -234,7 +234,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.['accepeted_at'] ? dayjs(p.data?.['accepeted_at']).format('DD.MM.YYYY HH:mm:ss') : '-'}</Typography>
+            <Typography>{p.data?.['accepted_at'] ? dayjs(p.data?.['accepted_at']).format('DD.MM.YYYY HH:mm:ss') : '-'}</Typography>
           </Box>
         )),
       }

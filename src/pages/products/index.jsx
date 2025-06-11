@@ -49,6 +49,7 @@ export default function ProductsPage() {
   const [regions, setRegions] = useState([])
   const [appType, setAppType] = useState('ALL')
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(false)
+  const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
 
   const [offsetCount, setOffsetCount] = useState(0)
   const [controlleroffset, setControllerOffset] = useState(0)
@@ -85,6 +86,8 @@ export default function ProductsPage() {
     editable: true,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
+    setOrderStoring,
+    orderStoring,
   })
   const routeString = []
 
@@ -128,6 +131,8 @@ export default function ProductsPage() {
       supply_price_to: values?.supply_price_to,
       retail_price_to: values?.retail_price_to,
       region: values?.region_id,
+      order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
+
       supply_price_from: values?.supply_price_from,
       retail_price_from: values?.retail_price_from,
       no_barcode: values?.no_barcode == '1' ? true : false,
@@ -139,6 +144,7 @@ export default function ProductsPage() {
   }, [
     appType,
     controlleroffset,
+    orderStoring,
     values?.limit,
     values?.search,
     values?.producer_id,

@@ -16,7 +16,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, values, t, setScanedNumber }) {
+export default function tableHeaderSelector({ importsColumns, values, t, methods, setScanedNumber }) {
   const { id } = useParams()
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {
@@ -114,11 +114,12 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <NumberFormatInput
+              value={p?.data?.scanned_pack}
               uncontrolled
               setValue={() => {}}
-              value={p?.data?.scanned_pack}
               onBlur={({ target }) => {
                 if (p?.data?.scanned_pack == get(target, 'value')) return
+                methods.setValue(`scanned_quantity_pack_${p?.data?.id}`, Number(get(target, 'value').replace(/\s+/g, '')))
 
                 setScanedNumber({
                   id,
@@ -126,7 +127,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
                   barcode: get(p, 'data.barcode'),
                   type: 'MANUAL',
                   scanned_pack: Number(get(target, 'value').replace(/\s+/g, '')),
-                  scanned_unit: p?.data?.scanned_unit,
+                  // scanned_unit: p?.data?.scanned_unit,
                 })
               }}
               placeholder={'0'}
@@ -153,13 +154,13 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
               setValue={() => {}}
               onBlur={({ target }) => {
                 if (p?.data?.scanned_unit == get(target, 'value')) return
-
+                methods.setValue(`scanned_quantity_unit_${p?.data?.id}`, Number(get(target, 'value').replace(/\s+/g, '')))
                 setScanedNumber({
                   id,
                   product_id: get(p, 'data.id'),
                   barcode: get(p, 'data.barcode'),
                   type: 'MANUAL',
-                  scanned_pack: p?.data?.scanned_pack,
+                  // scanned_pack: p?.data?.scanned_pack,
                   scanned_unit: Number(get(target, 'value').replace(/\s+/g, '')),
                 })
               }}
