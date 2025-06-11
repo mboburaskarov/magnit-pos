@@ -1,13 +1,14 @@
 import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import SettingsPage from '../../pages/settings'
 
+import CashBoxsPage from '../../pages/settings/cashbox'
+import CompanyPage from '../../pages/settings/company'
+import PaymentsAssetsList from '../../pages/settings/paymentsAssets/actions'
 import Profile from '../../pages/settings/profile'
 import RolesPage from '../../pages/settings/roles'
+import ActionListPage from '../../pages/settings/roles/actions'
 import StoresPage from '../../pages/settings/stores'
 import VendorsPage from '../../pages/settings/vendors'
-import CashBoxsPage from '../../pages/settings/cashbox'
-import ActionListPage from '../../pages/settings/roles/actions'
-import CompanyPage from '../../pages/settings/company'
 
 const settingsRoutes = {
   path: 'settings',
@@ -37,6 +38,10 @@ const settingsRoutes = {
     {
       path: 'actions',
       element: <ActionListPage />,
+    },
+    {
+      path: 'payments-assets',
+      element: <PaymentsAssetsList />,
     },
 
     {

@@ -10,7 +10,6 @@ import StyledTooltip from '../../../../components/StyledTooltip'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 import ArrowRight from '../../../assets/icons/ArrowRight'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import LeftArrowIcon from '../../../assets/icons/LeftArrow'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
@@ -197,7 +196,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
           <Box width={'100%'} display='flex' justifyContent={'center'} alignItems={'center'}>
             <CheckAccess id={'delete-product'}>
               <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 40, height: 40, borderRadius: 3, p: '8px' }}>
-                <DeleteIcon width='18px' />
+                <d width='18px' />
               </IconButton>
             </CheckAccess>
           </Box>
