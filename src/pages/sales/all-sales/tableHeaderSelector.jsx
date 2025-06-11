@@ -104,7 +104,8 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
             currency='сум'
             withDevider
             {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Naqd')}
+            data={get(p, 'data.cash', 0)}
+            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Naqd')}
             type='amount'
           />
         )),
@@ -120,7 +121,8 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
             currency='сум'
             withDevider
             {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Humo')}
+            data={get(p, 'data.humo', 0)}
+            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Humo')}
             type='amount'
           />
         )),
@@ -136,7 +138,8 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
             currency='сум'
             withDevider
             {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Uzcard')}
+            data={get(p, 'data.uzcard', 0)}
+            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Uzcard')}
             type='amount'
           />
         )),
@@ -152,7 +155,8 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
             currency='сум'
             withDevider
             {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Visa')}
+            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Visa')}
+            data={get(p, 'data.visa', 0)}
             type='amount'
           />
         )),
@@ -168,7 +172,8 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
             currency='сум'
             withDevider
             {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Payme')}
+            data={get(p, 'data.payme', 0)}
+            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Payme')}
             type='amount'
           />
         )),
@@ -184,7 +189,8 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
             currency='сум'
             withDevider
             {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Click')}
+            data={get(p, 'data.click', 0)}
+            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Click')}
             type='amount'
           />
         )),
@@ -200,7 +206,8 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
             currency='сум'
             withDevider
             {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'UzumBank')}
+            data={get(p, 'data.uzumbank', 0)}
+            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'UzumBank')}
             type='amount'
           />
         )),
@@ -216,7 +223,8 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
             currency='сум'
             withDevider
             {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Balanc')}
+            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Balanc')}
+            data={get(p, 'data.balance', 0)}
             type='amount'
           />
         )),
