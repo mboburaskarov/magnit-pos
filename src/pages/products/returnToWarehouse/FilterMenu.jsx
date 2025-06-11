@@ -127,9 +127,9 @@ export default function FilterMenu({ open, setOpen }) {
               id='import-date'
               name='date'
               noValidation
-              label={'Дата инвентаризация'}
+              label={'Дата возврат'}
               minWidth='auto'
-              placeholder={'Дата инвентаризация'}
+              placeholder={'Дата возврат'}
               fullWidth
               startDate={startDate}
               endDate={endDate}

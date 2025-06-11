@@ -189,7 +189,7 @@ export default function ReturnToWarehousePage() {
             <CheckAccess id={'create-return-to-warehouse'} noAccess>
               <Box minWidth={156}>
                 <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
-                  Новая Возврат
+                  Новое возврат
                 </Button>
               </Box>
             </CheckAccess>
