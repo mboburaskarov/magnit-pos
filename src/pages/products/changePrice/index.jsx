@@ -164,7 +164,7 @@ export default function ChangePricePage() {
                   changeColumnSequence={changeColumnSequence}
                 />
               </Box>
-              <CheckAccess id={'create-auto-order'}>
+              <CheckAccess id={'create-revaluation'}>
                 <Box minWidth={156}>
                   <Button
                     sx={{ height: '48px' }}
@@ -185,7 +185,7 @@ export default function ChangePricePage() {
           <CreateAutoOrder refetch={refetch} open={orderModel} setOpen={setOrderModel} />
           <Box>
             <AgGridTable
-              id='auto-order-main-table'
+              id='revaluation-main-table'
               tableSettings
               columns={tableColumns}
               data={revaluationList?.data?.data?.data || []}

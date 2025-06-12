@@ -25,7 +25,7 @@ export default function FilterMenu({ open, setOpen }) {
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
     setOpen(false)
-    navigate(`/products/auto-order${requestParams}`)
+    navigate(`/products/revaluation${requestParams}`)
   }
 
   const onError = (err) => {

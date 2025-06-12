@@ -29,6 +29,7 @@ const productsRoutes = {
       path: 'revaluation',
       element: <ChangePricePage />,
     },
+
     {
       path: 'inventory',
       element: <InventoryPage />,

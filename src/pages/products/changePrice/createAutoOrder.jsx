@@ -16,7 +16,7 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 export default function CreateInventory({ open, refetch, setOpen }) {
   const methods = useForm()
   const { reset, control } = methods
-  const { mutate: createInventory, isLoading: iscreateInventory } = useMutation(requests.createInventory, {
+  const { mutate: createInventory, isLoading: iscreateInventory } = useMutation(requests.createRevaluation, {
     onSuccess: () => {
       setOpen(false)
       success('Создать инвентаризация')
