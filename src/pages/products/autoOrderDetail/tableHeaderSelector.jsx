@@ -1,8 +1,6 @@
 import { Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-import { toFlot } from '../../../../utils/parseFormatNumberToFloat'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 
@@ -61,26 +59,28 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
         ...el,
         headerName: 'Квант',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <NumberFormatInput
-            id={`store_product.${p.data.id}.kvant`}
-            name={`store_product.${p.data.id}.kvant`}
-            fullWidth
-            required
-            defaultValue={p?.data?.kvant}
-            type='number'
-            onBlur={({ target }) => {
-              if (Number(toFlot(get(target, 'value'))) == p?.data?.kvant) {
-                return
-              }
-              autoOrderChangeQuantity({
-                kvant: Number(get(target, 'value')),
-                id: p?.data?.id,
-              })
-            }}
-            disabled={false}
-          />
-        )),
+        cellRenderer: memo((p) => <Typography>{p?.data?.kvant}</Typography>),
+
+        // cellRenderer: memo((p) => (
+        //   <NumberFormatInput
+        //     id={`store_product.${p.data.id}.kvant`}
+        //     name={`store_product.${p.data.id}.kvant`}
+        //     fullWidth
+        //     required
+        //     defaultValue={p?.data?.kvant}
+        //     type='number'
+        //     onBlur={({ target }) => {
+        //       if (Number(toFlot(get(target, 'value'))) == p?.data?.kvant) {
+        //         return
+        //       }
+        //       autoOrderChangeQuantity({
+        //         kvant: Number(get(target, 'value')),
+        //         id: p?.data?.id,
+        //       })
+        //     }}
+        //     disabled={false}
+        //   />
+        // )),
       }
     }
     if (el.field === 'min_stock') {
@@ -88,32 +88,34 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
         ...el,
         headerName: 'Минимальный сток',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <NumberFormatInput
-            id={`store_product.${p.data.id}.min_stock`}
-            name={`store_product.${p.data.id}.min_stock`}
-            fullWidth
-            required
-            InputProps={{
-              onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
-            }}
-            defaultValue={p?.data?.min_stock}
-            type='number'
-            onBlur={({ target }) => {
-              if (Number(get(target, 'value')) == '') {
-                setValue(`store_product.${p.data.id}.min_stock`, '0')
-              }
-              if (Number(toFlot(get(target, 'value'))) == p?.data?.min_stock) {
-                return
-              }
-              autoOrderChangeQuantity({
-                min_stock: Number(get(target, 'value')),
-                id: p?.data?.id,
-              })
-            }}
-            disabled={false}
-          />
-        )),
+        cellRenderer: memo((p) => <Typography>{p?.data?.min_stock}</Typography>),
+
+        // cellRenderer: memo((p) => (
+        //   <NumberFormatInput
+        //     id={`store_product.${p.data.id}.min_stock`}
+        //     name={`store_product.${p.data.id}.min_stock`}
+        //     fullWidth
+        //     required
+        //     InputProps={{
+        //       onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
+        //     }}
+        //     defaultValue={p?.data?.min_stock}
+        //     type='number'
+        //     onBlur={({ target }) => {
+        //       if (Number(get(target, 'value')) == '') {
+        //         setValue(`store_product.${p.data.id}.min_stock`, '0')
+        //       }
+        //       if (Number(toFlot(get(target, 'value'))) == p?.data?.min_stock) {
+        //         return
+        //       }
+        //       autoOrderChangeQuantity({
+        //         min_stock: Number(get(target, 'value')),
+        //         id: p?.data?.id,
+        //       })
+        //     }}
+        //     disabled={false}
+        //   />
+        // )),
       }
     }
     if (el.field === 'max_stock') {
@@ -121,26 +123,28 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
         ...el,
         headerName: 'Максимальный сток',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <NumberFormatInput
-            id={`store_product.${p.data.id}.max_stock`}
-            name={`store_product.${p.data.id}.max_stock`}
-            fullWidth
-            required
-            defaultValue={p?.data?.max_stock}
-            type='number'
-            onBlur={({ target }) => {
-              if (Number(toFlot(get(target, 'value'))) == p?.data?.max_stock) {
-                return
-              }
-              autoOrderChangeQuantity({
-                max_stock: Number(toFlot(get(target, 'value'))),
-                id: p?.data?.id,
-              })
-            }}
-            disabled={false}
-          />
-        )),
+        cellRenderer: memo((p) => <Typography>{p?.data?.max_stock}</Typography>),
+
+        // cellRenderer: memo((p) => (
+        //   <NumberFormatInput
+        //     id={`store_product.${p.data.id}.max_stock`}
+        //     name={`store_product.${p.data.id}.max_stock`}
+        //     fullWidth
+        //     required
+        //     defaultValue={p?.data?.max_stock}
+        //     type='number'
+        //     onBlur={({ target }) => {
+        //       if (Number(toFlot(get(target, 'value'))) == p?.data?.max_stock) {
+        //         return
+        //       }
+        //       autoOrderChangeQuantity({
+        //         max_stock: Number(toFlot(get(target, 'value'))),
+        //         id: p?.data?.id,
+        //       })
+        //     }}
+        //     disabled={false}
+        //   />
+        // )),
       }
     }
     if (el.field === 'current_stock') {
@@ -209,26 +213,28 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
         ...el,
         headerName: 'Заказ итог',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <NumberFormatInput
-            id={`store_product.${p.data.id}.suggested_order`}
-            name={`store_product.${p.data.id}.suggested_order`}
-            fullWidth
-            required
-            defaultValue={p?.data?.suggested_order_quantity}
-            type='number'
-            onBlur={({ target }) => {
-              if (Number(toFlot(get(target, 'value'))) == p?.data?.suggested_order_quantity) {
-                return
-              }
-              autoOrderChangeQuantity({
-                adjusted_order_quantity: Number(get(target, 'value')),
-                id: p?.data?.id,
-              })
-            }}
-            disabled={false}
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='suggested_order_quantity' />),
+
+        // cellRenderer: memo((p) => (
+        //   <NumberFormatInput
+        //     id={`store_product.${p.data.id}.suggested_order`}
+        //     name={`store_product.${p.data.id}.suggested_order`}
+        //     fullWidth
+        //     required
+        //     defaultValue={p?.data?.suggested_order_quantity}
+        //     type='number'
+        //     onBlur={({ target }) => {
+        //       if (Number(toFlot(get(target, 'value'))) == p?.data?.suggested_order_quantity) {
+        //         return
+        //       }
+        //       autoOrderChangeQuantity({
+        //         adjusted_order_quantity: Number(get(target, 'value')),
+        //         id: p?.data?.id,
+        //       })
+        //     }}
+        //     disabled={false}
+        //   />
+        // )),
       }
     }
   })

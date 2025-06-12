@@ -11,7 +11,7 @@ const columns = [
     field: 'name',
     hide: false,
     minWidth: 200,
-    width: 250,
+    width: 350,
   },
 
   {
@@ -48,8 +48,8 @@ const columns = [
   {
     field: 'scanned_count',
     hide: false,
-    minWidth: 70,
-    width: 150,
+    minWidth: 100,
+    flex: 1,
   },
 ]
 

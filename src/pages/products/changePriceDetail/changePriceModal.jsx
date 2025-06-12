@@ -81,6 +81,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
+  console.log(open)
 
   return (
     <StyledEmptyDialog

@@ -1,6 +1,9 @@
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Container, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
+
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -10,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
@@ -39,6 +43,9 @@ export default function ChangePriceDetailPage() {
   const [selectedCellRowId, setSelectedCellRowId] = useState(false)
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(false)
   const [repricingModalOpen, setrepricingModalOpen] = useState(false)
+  const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
+  console.log(lastSelectedCellRowId, selectedCellRowId)
+
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [gridApi, setGridApi] = useState(null) // Add this state
   const [filterMenu, setFilterMenu] = useState(false)
@@ -127,6 +134,14 @@ export default function ChangePriceDetailPage() {
     refetch()
   }, [revaluationDetailListFilter])
 
+  const { mutate: finishRevaluation, isLoading: isfinishRevaluation } = useMutation(requests.finishRevaluation, {
+    onSuccess: ({ data }) => {
+      navigate('/products/inventory')
+    },
+    onError: (err) => {
+      error('Ошибка при завершение импорта!')
+    },
+  })
   useEffect(() => {
     const count = revaluationDetailList?.data?.data?._meta?.total_count
 
@@ -134,7 +149,7 @@ export default function ChangePriceDetailPage() {
     setOffsetCount(offsetsCount || 0)
   }, [revaluationDetailList?.data, values?.limit])
   const handleFocus = () => {
-    const firstrowid = revaluationDetailList?.data?.data?.data[0]?.id
+    const firstrowid = revaluationDetailList?.data?.data?.data?.[0]?.id
     const activeEl = document.activeElement
     const classList = activeEl?.classList || []
 
@@ -142,7 +157,7 @@ export default function ChangePriceDetailPage() {
     // } else {
     if (classList.contains('ag-cell')) {
       if (revaluationDetailList?.data?.data?.data.length == 1) {
-        setrepricingModalOpen({ id: firstrowid, data: revaluationDetailList?.data?.data?.data[0] })
+        setrepricingModalOpen({ id: firstrowid, data: revaluationDetailList?.data?.data?.data?.[0] })
         return
       } else if (lastSelectedCellRowId) {
         setrepricingModalOpen({ id: firstrowid, data: revaluationDetailList?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
@@ -158,6 +173,11 @@ export default function ChangePriceDetailPage() {
       childRef.current?.focusCellByRowId(firstrowid, 'barcode')
     }
   }
+  useEffect(() => {
+    if (selectedCellRowId) {
+      setLastSelectedCellRowId(selectedCellRowId)
+    }
+  }, [selectedCellRowId])
   useHotkeys(
     '*',
     (event) => {
@@ -187,11 +207,11 @@ export default function ChangePriceDetailPage() {
       <FormProvider {...methods}>
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
           <Header
-            // onSubmit={() => setOpenFinishConfirmDialog(true)}
+            onSubmit={() => setOpenFinishConfirmDialog(true)}
             isLoading={false}
             buttonText='Завершить'
             backIcon
-            backHref='/products/inventory'
+            backHref='/products/revaluation'
             text={'Переоценка'}
             subText={`${revaluationDetailList?.data?.data?.store?.name} - ${dayjs(revaluationDetailList?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
             checkAccessId={'product-create'}
@@ -257,6 +277,13 @@ export default function ChangePriceDetailPage() {
               <AgGridTable
                 id='revaluation-main-table'
                 tableSettings
+                gettingId='id'
+                realTimeSelectedCellRowId={({ id, rowId }) => {
+                  setLastSelectedCellRowId(rowId)
+                }}
+                onChangeSelectedCellRowId={(id) => {
+                  setLastSelectedCellRowId(id)
+                }}
                 childRef={childRef}
                 selectedCellRowId={setSelectedCellRowId}
                 columns={tableColumns}
@@ -286,6 +313,40 @@ export default function ChangePriceDetailPage() {
           open={repricingModalOpen}
           setOpen={setrepricingModalOpen}
           gridApi={gridApi}
+        />
+        <ConfirmDialog
+          open={openFinishConfirmDialog}
+          setOpen={() => setOpenFinishConfirmDialog(false)}
+          icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
+          title={'Завершить переоценка'}
+          desc={
+            <>
+              <Typography fontWeight={'600'} fontSize={'20px'}>
+                Вы уверены что хотите завершить переоценка?
+              </Typography>
+              <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
+                Не сканированные товары будут списаны
+              </Typography>
+            </>
+          }
+          actions={
+            <>
+              <Button secondary onClick={() => setOpenFinishConfirmDialog(false)}>
+                {t('buttons.go_back')}
+              </Button>
+              <Button
+                size='medium'
+                variant='contained'
+                onClick={() => {
+                  setOpenFinishConfirmDialog(false)
+                  finishRevaluation(id)
+                }}
+                isLoading={false}
+              >
+                {t('buttons.yes_complete')}
+              </Button>
+            </>
+          }
         />
         <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       </FormProvider>

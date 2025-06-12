@@ -108,7 +108,20 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
         ...el,
         headerName: 'Наценка',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='percent' />),
+        cellRenderer: memo((p) => (
+          <Typography
+            sx={{
+              whiteSpace: 'pre-line',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            id={`product-retail_price-${p?.rowIndex}`}
+          >
+            {thousandDivider(get(p, 'data.old_markup'), '%')}
+            <ArrowCircleRight sx={{ m: '0 10px', fontSize: '25px', color: '#fe5000' }} />
+            {thousandDivider(get(p, 'data.new_markup'), '%')}
+          </Typography>
+        )),
       }
     }
     if (el.field === 'scanned_count') {

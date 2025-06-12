@@ -1,7 +1,6 @@
 import { Box, TextField as MuiTextField } from '@mui/material'
 import { useFormContext } from 'react-hook-form'
 import Label from '../Label'
-import { get } from 'lodash'
 
 const TextField = ({
   placeholder,
@@ -27,6 +26,8 @@ const TextField = ({
   multiline,
   centerMode,
   onBoxClick = () => {},
+  onFocus = () => {},
+  onBlur = () => {},
   bgcolor,
   autoComplete,
   ...props
@@ -42,6 +43,8 @@ const TextField = ({
         name={name}
         id={name}
         type={type || 'text'}
+        onFocus={onFocus}
+        onBlurCapture={onBlur}
         placeholder={placeholder}
         inputRef={inputRef}
         autoComplete={autoComplete ? autoComplete : name === 'shopType' ? 'off' : 'on'}

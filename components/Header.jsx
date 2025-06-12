@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
   spanHEaderText: {
     fontSize: '32px',
-    // lineHeight: '48px',
+    lineHeight: '32px !important',
     fontWeight: '700 !important',
     paddingRight: 10,
   },
