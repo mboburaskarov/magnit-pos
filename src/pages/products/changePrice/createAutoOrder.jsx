@@ -31,7 +31,6 @@ export default function CreateInventory({ open, refetch, setOpen }) {
     const requestBody = {
       store_id: data.store_id?.id || undefined,
       name: data.name || undefined,
-      type: 'FULL',
     }
     createInventory(requestBody)
   }

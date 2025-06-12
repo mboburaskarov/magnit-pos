@@ -21,6 +21,7 @@ const AgGridSimpleTable = ({
   emptyTableText,
   data,
   columns,
+  onGridReady: onGridReadyProp,
   gettingId = 'product_id',
   components,
   enableFillHandle = false,
@@ -300,12 +301,24 @@ const AgGridSimpleTable = ({
     return totalData
   }, [totalData])
 
-  const onGridReady = useCallback((params) => {
-    setGridApi(params.api) // ✅ only the API, not the full params
-    gridApiRef.current = params.api
-    columnApiRef.current = params.columnApi
-    setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
-  }, [])
+  const onGridReady = useCallback(
+    (params) => {
+      setGridApi(params.api) // ✅ only the API, not the full params
+      gridApiRef.current = params.api
+      columnApiRef.current = params.columnApi
+      if (onGridReadyProp) {
+        onGridReadyProp(params)
+      }
+      setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
+    },
+    [onGridReadyProp]
+  )
+  useEffect(() => {
+    if (gridApi && data) {
+      // Force refresh all cells when data changes
+      gridApi.refreshCells({ force: true })
+    }
+  }, [data, gridApi])
   const getRowStyle = (params) => {
     if (params.node.rowPinned === 'bottom') {
       return {}

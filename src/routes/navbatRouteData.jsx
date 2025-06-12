@@ -53,8 +53,6 @@ export const navbatRouteData = [
         active: '/products/revaluation/*',
         id: '3255',
         href: '/products/revaluation',
-
-        soon: true,
       },
       {
         label: 'Возврат на склад',

@@ -67,11 +67,47 @@ export default function DateRangeInputsBox({ dateState }) {
           <Box display={showTime ? 'flex' : 'none'} flexGrow='50%' mt={'10px'}>
             <Box columnGap={1} alignItems={'center'} display='flex'>
               <Box width={60}>
-                <TextField inputRef={HH_number_ref} centerMode id='from_hour' name='from_hour' placeholder='ЦЦ' fullWidth required />
+                <TextField
+                  onFocus={(e) => {
+                    if (e?.target?.value == '00') {
+                      HH_number_ref.current.value = ''
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (e?.target?.value == '') {
+                      HH_number_ref.current.value = '00'
+                    }
+                  }}
+                  inputRef={HH_number_ref}
+                  centerMode
+                  id='from_hour'
+                  name='from_hour'
+                  placeholder='ЦЦ'
+                  fullWidth
+                  required
+                />
               </Box>
               <Typography>:</Typography>
               <Box width={60}>
-                <TextField inputRef={mm_number_ref} centerMode id='from_minute' name='from_minute' placeholder='ММ' fullWidth required />
+                <TextField
+                  onFocus={(e) => {
+                    if (e?.target?.value == '00') {
+                      mm_number_ref.current.value = ''
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (e?.target?.value == '') {
+                      mm_number_ref.current.value = '00'
+                    }
+                  }}
+                  inputRef={mm_number_ref}
+                  centerMode
+                  id='from_minute'
+                  name='from_minute'
+                  placeholder='ММ'
+                  fullWidth
+                  required
+                />
               </Box>
             </Box>
           </Box>
@@ -112,11 +148,47 @@ export default function DateRangeInputsBox({ dateState }) {
           <Box flexGrow='50%' mt={'10px'}>
             <Box display={showTime ? 'flex' : 'none'} columnGap={1} alignItems={'center'}>
               <Box width={60}>
-                <TextField inputRef={HH_end_number_ref} centerMode id='to_hour' name='to_hour' placeholder='ЦЦ' fullWidth required />
+                <TextField
+                  onFocus={(e) => {
+                    if (e?.target?.value == '23') {
+                      HH_end_number_ref.current.value = ''
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (e?.target?.value == '') {
+                      HH_end_number_ref.current.value = 23
+                    }
+                  }}
+                  inputRef={HH_end_number_ref}
+                  centerMode
+                  id='to_hour'
+                  name='to_hour'
+                  placeholder='ЦЦ'
+                  fullWidth
+                  required
+                />
               </Box>
               <Typography>:</Typography>
               <Box width={60}>
-                <TextField inputRef={mm_end_number_ref} centerMode id='to_minute' name='to_minute' placeholder='ММ' fullWidth required />
+                <TextField
+                  onFocus={(e) => {
+                    if (e?.target?.value == '59') {
+                      mm_end_number_ref.current.value = ''
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (e?.target?.value == '') {
+                      mm_end_number_ref.current.value = 59
+                    }
+                  }}
+                  inputRef={mm_end_number_ref}
+                  centerMode
+                  id='to_minute'
+                  name='to_minute'
+                  placeholder='ММ'
+                  fullWidth
+                  required
+                />
               </Box>
             </Box>
           </Box>

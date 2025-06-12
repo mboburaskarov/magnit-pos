@@ -99,11 +99,19 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         colId: el.field,
         cellRenderer: memo((p) => (
           <Link
-            to={`/products/auto-order/${p.data.id}?${qs.stringify({
-              previusLimit: values?.limit,
-              previusOffset: values?.offset,
-            })}
-                `}
+            to={
+              p?.data?.status == 'new'
+                ? `/products/auto-order/${p.data.id}?${qs.stringify({
+                    previusLimit: values?.limit,
+                    previusOffset: values?.offset,
+                  })}
+                `
+                : `/products/auto-order/view/${p.data.id}?${qs.stringify({
+                    previusLimit: values?.limit,
+                    previusOffset: values?.offset,
+                  })}
+                `
+            }
           >
             <Typography fontWeight={'600'} color={'orange.500'} fontSize={'16px'} lineHeight={'24px'}>
               {p.data.public_id}

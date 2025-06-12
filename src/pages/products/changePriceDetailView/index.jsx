@@ -135,7 +135,7 @@ export default function ChangePriceDetailViewPage() {
             isLoading={false}
             buttonText='Завершить'
             backIcon
-            backHref='/products/inventory'
+            backHref='/products/revaluation'
             text={'Инвентаризация с проверкой'}
             subText={`${revaluationDetailList?.data?.data?.store?.name} - ${dayjs(revaluationDetailList?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
             checkAccessId={'product-create'}

@@ -107,7 +107,7 @@ export default function SerchedItem({
                   highlightClassName='highlighter'
                   searchWords={[searchTerm]}
                   autoEscape
-                  textToHighlight={`${product?.name} / ${product?.category_name}`}
+                  textToHighlight={`${product?.name} / ${product?.category_name} (${product?.producer_name})`}
                 />
               </Typography>
               <Typography display={'flex'} id='product-barcode'>
