@@ -22,7 +22,7 @@ import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function ChangePriceDetailPage() {
+export default function ChangePriceDetailViewPage() {
   const theme = useTheme()
   const methods = useForm()
   const { id } = useParams()

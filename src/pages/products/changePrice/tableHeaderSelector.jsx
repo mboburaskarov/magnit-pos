@@ -113,7 +113,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
                     previusLimit: values?.limit,
                     previusOffset: values?.offset,
                   })}`
-                : `/products/inventory-completed/${p.data.id}?${qs.stringify({
+                : `/products/revaluation/view/${p.data.id}?${qs.stringify({
                     previusLimit: values?.limit,
                     previusOffset: values?.offset,
                   })}`

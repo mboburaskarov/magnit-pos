@@ -205,6 +205,8 @@ export const requests = {
   getAutoOrderDetailList: (filter) => request.get(`v1/auto-order-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAutoOrderList: (filter) => request.get(`v1/auto-order/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   //repricing
+  createRevaluation: (data) => request.post(`v1/repricing`, data),
+
   getRevaluationList: (filter) => request.get(`v1/repricing/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getRevaluationDetailList: (id) => request.get(`v1/repricing/${id}`),
 

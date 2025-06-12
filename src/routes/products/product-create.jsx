@@ -3,6 +3,7 @@ import AutoOrderDetailPage from '../../pages/products/autoOrderDetail'
 import BonusProductPage from '../../pages/products/bonusProduct'
 import CatalogManagement from '../../pages/products/categories/index'
 import ChangePriceDetailPage from '../../pages/products/changePriceDetail'
+import ChangePriceDetailViewPage from '../../pages/products/changePriceDetailView'
 import ImportDetailsPage from '../../pages/products/importDetails'
 import ImportWithCheckingPage from '../../pages/products/importWithChecking'
 import InventoryCompleted from '../../pages/products/inventoryCompleted'
@@ -172,6 +173,15 @@ const productsCreateRoutes = {
         {
           path: '',
           element: <ChangePriceDetailPage />,
+        },
+      ],
+    },
+    {
+      path: 'revaluation/view/:id',
+      children: [
+        {
+          path: '',
+          element: <ChangePriceDetailViewPage />,
         },
       ],
     },
