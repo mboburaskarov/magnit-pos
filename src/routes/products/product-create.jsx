@@ -168,6 +168,15 @@ const productsCreateRoutes = {
       ],
     },
     {
+      path: 'auto-order/view/:id',
+      children: [
+        {
+          path: '',
+          element: <AutoOrderDetailPage isNew={false} />,
+        },
+      ],
+    },
+    {
       path: 'revaluation/create/:id',
       children: [
         {

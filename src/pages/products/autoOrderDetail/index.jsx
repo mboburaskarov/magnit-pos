@@ -1,3 +1,5 @@
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Container, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
@@ -8,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
@@ -21,43 +24,33 @@ import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function AutoOrderDetailPage() {
+export default function AutoOrderDetailPage({ isNew = true }) {
   const theme = useTheme()
   const methods = useForm()
   const { id } = useParams()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
+
   const { columns, loading } = useSelector((state) => state.autoOrderTableDetailColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
-  const { mutate: autoOrderChangeQuantity, isLoading: isautoOrderChangeQuantity } = useMutation(requests.autoOrderChangeQuantity, {
-    onSuccess: () => {},
-    onError: (err) => {
-      error('Ошибка изменить количество!')
-      console.log('err', err)
-    },
-  })
+
   const { mutate: finalAutoOrder, isLoading: isfinalAutoOrder } = useMutation(requests.finalAutoOrder, {
     onSuccess: () => {
       navigate('/products/auto-order?limit=10&offset=0')
       success('Авто заказ подтвержден')
     },
     onError: (err) => {
-      error('Ошибка изменить количество!')
+      error('Ошибка Авто заказ!')
       console.log('err', err)
     },
   })
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
-    t,
-    values,
-    getValue: methods.getValues,
-    setValue: methods.setValue,
-    setImages: setOpenImageGallery,
-    autoOrderChangeQuantity,
   })
 
   useEffect(() => {
@@ -192,11 +185,20 @@ export default function AutoOrderDetailPage() {
                     changeColumnSequence={changeColumnSequence}
                   />
                 </Box>
-                <Box minWidth={156}>
-                  <Button sx={{ height: '48px' }} type='submit' onClick={() => finalAutoOrder(id)} fullWidth variant='contained' color='primary'>
-                    Отправить заказ
-                  </Button>
-                </Box>
+                {isNew && (
+                  <Box minWidth={156}>
+                    <Button
+                      sx={{ height: '48px' }}
+                      type='submit'
+                      onClick={() => setOpenFinishConfirmDialog(true)}
+                      fullWidth
+                      variant='contained'
+                      color='primary'
+                    >
+                      Отправить заказ
+                    </Button>
+                  </Box>
+                )}
               </Box>
             </Box>
             <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
@@ -207,7 +209,7 @@ export default function AutoOrderDetailPage() {
                 columns={tableColumns}
                 data={autoOrderDetailList?.data?.data?.data || []}
                 totalCount={autoOrderDetailList?.data?.data?._meta?.total_count || 0}
-                isDataLoading={isFetchingautoOrderDetailList || autoOrderDetailListLoading || isautoOrderChangeQuantity}
+                isDataLoading={isFetchingautoOrderDetailList || autoOrderDetailListLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
@@ -218,12 +220,45 @@ export default function AutoOrderDetailPage() {
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
-                isRefreshing={loading || isFetchingautoOrderDetailList || autoOrderDetailListLoading || isautoOrderChangeQuantity}
+                isRefreshing={loading || isFetchingautoOrderDetailList || autoOrderDetailListLoading}
               />
             </Box>
           </Container>
         </Box>
-
+        <ConfirmDialog
+          open={openFinishConfirmDialog}
+          setOpen={() => setOpenFinishConfirmDialog(false)}
+          icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
+          title={'Завершить aвто заказ'}
+          desc={
+            <>
+              <Typography fontWeight={'600'} fontSize={'20px'}>
+                Вы уверены что хотите завершить aвто заказ?
+              </Typography>
+              <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
+                Не сканированные товары будут списаны
+              </Typography>
+            </>
+          }
+          actions={
+            <>
+              <Button secondary onClick={() => setOpenFinishConfirmDialog(false)}>
+                {t('buttons.go_back')}
+              </Button>
+              <Button
+                size='medium'
+                variant='contained'
+                onClick={() => {
+                  setOpenFinishConfirmDialog(false)
+                  finalAutoOrder(id)
+                }}
+                isLoading={false}
+              >
+                {t('buttons.yes_complete')}
+              </Button>
+            </>
+          }
+        />
         <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       </FormProvider>
     </LoadingContainer>

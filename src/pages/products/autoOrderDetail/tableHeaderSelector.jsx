@@ -25,7 +25,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, t, setValue, getValue, autoOrderChangeQuantity }) {
+export default function tableHeaderSelector({ importsColumns }) {
   const { values } = useQueryParams()
 
   const columns = importsColumns?.map((el) => {
@@ -170,71 +170,50 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
     if (el.field === 'monthly_quantity') {
       return {
         ...el,
-        headerName: 'Продажа месяц средняя',
+        headerName: 'Продажа ко-во',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='month_sale_stock' />),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='sale_count' />),
       }
     }
     if (el.field === 'weekly_quantity') {
       return {
         ...el,
-        headerName: '7 дней продажа',
+        headerName: 'Срок д/п',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='day_sale_stock' />),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='import_day' />),
       }
     }
     if (el.field === 'order_growth') {
       return {
         ...el,
-        headerName: 'Заказ 7 дней ( +Прирост 10%)',
+        headerName: 'Заказ',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='order_growth' />),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='order_count' />),
       }
     }
     if (el.field === 'order_lead_time') {
       return {
         ...el,
-        headerName: 'Плечо заказа. 6 раз / в неделю.',
+        headerName: 'Период продажа',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='order_lead_time' />),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='daily_sale_count' />),
       }
     }
 
     if (el.field === 'suggested_order') {
       return {
         ...el,
-        headerName: 'Заказ итог',
+        headerName: 'Остаток на дату текущей поставки',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText tho {...p} type='suggested_order_quantity' />),
+        cellRenderer: memo((p) => <SimpleText tho {...p} type='stock_on_delivery_date' />),
       }
     }
     if (el.field === 'adjusted_order') {
       return {
         ...el,
-        headerName: 'Заказ итог',
+        headerName: 'Остаток на дату следующей поставки',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='suggested_order_quantity' />),
-
-        // cellRenderer: memo((p) => (
-        //   <NumberFormatInput
-        //     id={`store_product.${p.data.id}.suggested_order`}
-        //     name={`store_product.${p.data.id}.suggested_order`}
-        //     fullWidth
-        //     required
-        //     defaultValue={p?.data?.suggested_order_quantity}
-        //     type='number'
-        //     onBlur={({ target }) => {
-        //       if (Number(toFlot(get(target, 'value'))) == p?.data?.suggested_order_quantity) {
-        //         return
-        //       }
-        //       autoOrderChangeQuantity({
-        //         adjusted_order_quantity: Number(get(target, 'value')),
-        //         id: p?.data?.id,
-        //       })
-        //     }}
-        //     disabled={false}
-        //   />
-        // )),
+        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='reserve_quantity' />),
       }
     }
   })
