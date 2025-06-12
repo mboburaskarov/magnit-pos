@@ -208,8 +208,13 @@ export const requests = {
   createRevaluation: (data) => request.post(`v1/repricing`, data),
 
   getRevaluationList: (filter) => request.get(`v1/repricing/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getRevaluationDetailList: (id) => request.get(`v1/repricing/${id}`),
-
+  getRevaluationDetailList: (id) => request.get(`v1/repricing-detail/list/${id}`),
+  changePriceNew: ({ id, new_retail_price, product_id, store_product_id }) =>
+    request.post(`v1/repricing/new-price/${id}`, {
+      new_retail_price,
+      store_product_id,
+      id: product_id,
+    }),
   //category
   getAllCategories: (filter) => request.get(`v1/category/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getCategory: (id) => request.get(`v1/category/${id}`),

@@ -1,8 +1,7 @@
+import { ArrowCircleRight } from '@mui/icons-material'
 import { Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-import { toFlot } from '../../../../utils/parseFormatNumberToFloat'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 
@@ -47,188 +46,77 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
         }),
       }
     }
-    if (el.field === 'product_name') {
+    if (el.field === 'name') {
       return {
         ...el,
         headerName: 'Наименование',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='product_name' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
+      }
+    }
+    if (el.field === 'serial_number') {
+      return {
+        ...el,
+        headerName: 'Артикул',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='serial_number' />),
       }
     }
 
-    if (el.field === 'kvant') {
+    if (el.field === 'barcode') {
       return {
         ...el,
-        headerName: 'Квант',
+        headerName: 'Баркод',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <NumberFormatInput
-            id={`store_product.${p.data.id}.kvant`}
-            name={`store_product.${p.data.id}.kvant`}
-            fullWidth
-            required
-            defaultValue={p?.data?.kvant}
-            type='number'
-            onBlur={({ target }) => {
-              if (Number(toFlot(get(target, 'value'))) == p?.data?.kvant) {
-                return
-              }
-              autoOrderChangeQuantity({
-                kvant: Number(get(target, 'value')),
-                id: p?.data?.id,
-              })
-            }}
-            disabled={false}
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='barcode' />),
       }
     }
-    if (el.field === 'min_stock') {
+
+    if (el.field === 'retail_price') {
       return {
         ...el,
-        headerName: 'Минимальный сток',
+        headerName: '	Цена продажи',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <NumberFormatInput
-            id={`store_product.${p.data.id}.min_stock`}
-            name={`store_product.${p.data.id}.min_stock`}
-            fullWidth
-            required
-            InputProps={{
-              onWheel: (e) => e.currentTarget.blur(), // Disable scrolling
+          <Typography
+            sx={{
+              whiteSpace: 'pre-line',
+              display: 'flex',
+              alignItems: 'center',
             }}
-            defaultValue={p?.data?.min_stock}
-            type='number'
-            onBlur={({ target }) => {
-              if (Number(get(target, 'value')) == '') {
-                setValue(`store_product.${p.data.id}.min_stock`, '0')
-              }
-              if (Number(toFlot(get(target, 'value'))) == p?.data?.min_stock) {
-                return
-              }
-              autoOrderChangeQuantity({
-                min_stock: Number(get(target, 'value')),
-                id: p?.data?.id,
-              })
-            }}
-            disabled={false}
-          />
-        )),
-      }
-    }
-    if (el.field === 'max_stock') {
-      return {
-        ...el,
-        headerName: 'Максимальный сток',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <NumberFormatInput
-            id={`store_product.${p.data.id}.max_stock`}
-            name={`store_product.${p.data.id}.max_stock`}
-            fullWidth
-            required
-            defaultValue={p?.data?.max_stock}
-            type='number'
-            onBlur={({ target }) => {
-              if (Number(toFlot(get(target, 'value'))) == p?.data?.max_stock) {
-                return
-              }
-              autoOrderChangeQuantity({
-                max_stock: Number(toFlot(get(target, 'value'))),
-                id: p?.data?.id,
-              })
-            }}
-            disabled={false}
-          />
-        )),
-      }
-    }
-    if (el.field === 'current_stock') {
-      return {
-        ...el,
-        headerName: 'Остаток',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Typography>
-            {p?.data?.current_stock} {p?.data?.unit_name}
+            id={`product-retail_price-${p?.rowIndex}`}
+          >
+            {thousandDivider(get(p, 'data.old_retail_price'), 'сум')}
+            <ArrowCircleRight sx={{ m: '0 10px', fontSize: '25px', color: '#fe5000' }} />
+            {thousandDivider(get(p, 'data.new_retail_price'), 'сум')}
           </Typography>
         )),
       }
     }
-    if (el.field === 'response_order_quantity') {
+
+    if (el.field === 'supply_price') {
       return {
         ...el,
-        headerName: 'Фактическое количество',
+        headerName: 'Цена поставщика',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{p?.data?.response_order_quantity}</Typography>),
-      }
-    }
-    if (el.field === 'monthly_quantity') {
-      return {
-        ...el,
-        headerName: 'Продажа месяц средняя',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='month_sale_stock' />),
-      }
-    }
-    if (el.field === 'weekly_quantity') {
-      return {
-        ...el,
-        headerName: '7 дней продажа',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='day_sale_stock' />),
-      }
-    }
-    if (el.field === 'order_growth') {
-      return {
-        ...el,
-        headerName: 'Заказ 7 дней ( +Прирост 10%)',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='order_growth' />),
-      }
-    }
-    if (el.field === 'order_lead_time') {
-      return {
-        ...el,
-        headerName: 'Плечо заказа. 6 раз / в неделю.',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider {...p} type='order_lead_time' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='old_supply_price' withDevider currency={'сум'} />),
       }
     }
 
-    if (el.field === 'suggested_order') {
+    if (el.field === 'percent') {
       return {
         ...el,
-        headerName: 'Заказ итог',
+        headerName: 'Наценка',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText tho {...p} type='suggested_order_quantity' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='percent' />),
       }
     }
-    if (el.field === 'adjusted_order') {
+    if (el.field === 'scanned_count') {
       return {
         ...el,
-        headerName: 'Заказ итог',
+        headerName: 'Кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <NumberFormatInput
-            id={`store_product.${p.data.id}.suggested_order`}
-            name={`store_product.${p.data.id}.suggested_order`}
-            fullWidth
-            required
-            defaultValue={p?.data?.suggested_order_quantity}
-            type='number'
-            onBlur={({ target }) => {
-              if (Number(toFlot(get(target, 'value'))) == p?.data?.suggested_order_quantity) {
-                return
-              }
-              autoOrderChangeQuantity({
-                adjusted_order_quantity: Number(get(target, 'value')),
-                id: p?.data?.id,
-              })
-            }}
-            disabled={false}
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='scanned_count' />),
       }
     }
   })
