@@ -129,13 +129,17 @@ function NavbarDrawer({
       {import.meta.env.VITE_MODE == 'dev' ? (
         <Box
           sx={{
-            // position: 'fixed',
-            width: '100%',
+            position: 'fixed',
+            width: '400px',
             backgroundColor: '#fe5000',
             textAlign: 'center',
             alignItems: 'center',
             height: '20px',
             margin: 'auto',
+            top: 30,
+            left: -150,
+
+            transform: 'rotate(-40deg)',
           }}
         >
           <Box
@@ -145,9 +149,10 @@ function NavbarDrawer({
               color: 'white',
               fontWeight: 'bold',
               fontSize: '18px',
+              color: '#fff',
             }}
           >
-            THIS IS DEV MODE
+            DEV MODE
           </Box>
         </Box>
       ) : (
