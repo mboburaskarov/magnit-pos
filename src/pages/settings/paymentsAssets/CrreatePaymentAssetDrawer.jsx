@@ -39,14 +39,15 @@ export default function CrreatePaymentAsset({ isOpen, onClose, categoriesRefetch
   const onSubmit = (data) => {
     if (get(isOpen, 'mode') == 'edit') {
       const requestBody = {
-        merchant_id: Number(get(data, 'merchant_id')),
         store_id: get(data, 'store_id.value'),
         payment_type_id: get(data, 'payment_type_id.value'),
-        ...(get(data, 'type_action') !== 'payme' && { metchant_key: get(data, 'metchant_key') }),
+
+        merchant_id: Number(get(data, 'merchant_id')),
+        ...(get(data, 'type_action') !== 'payme' && { secret_key: get(data, 'metchant_key') }),
         ...(get(data, 'type_action') === 'click' && {
-          service_id: get(data, 'service_id'),
+          service_id: Number(get(data, 'service_id')),
           secret_key: get(data, 'secret_key'),
-          merchant_user_id: get(data, 'merchant_user_id'),
+          merchant_user_id: Number(get(data, 'merchant_user_id')),
         }),
 
         type: get(data, 'type_action') || 'payme',
@@ -58,12 +59,12 @@ export default function CrreatePaymentAsset({ isOpen, onClose, categoriesRefetch
         store_id: get(data, 'store_id.value'),
         payment_type_id: get(data, 'payment_type_id.value'),
 
-        merchant_id: get(data, 'merchant_id'),
-        ...(get(data, 'type_action') !== 'payme' && { metchant_key: get(data, 'metchant_key') }),
+        merchant_id: Number(get(data, 'merchant_id')),
+        ...(get(data, 'type_action') !== 'payme' && { secret_key: get(data, 'metchant_key') }),
         ...(get(data, 'type_action') === 'click' && {
-          service_id: get(data, 'service_id'),
+          service_id: Number(get(data, 'service_id')),
           secret_key: get(data, 'secret_key'),
-          merchant_user_id: get(data, 'merchant_user_id'),
+          merchant_user_id: Number(get(data, 'merchant_user_id')),
         }),
 
         type: get(data, 'type_action') || 'payme',
