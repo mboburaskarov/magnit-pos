@@ -42,11 +42,15 @@ export default function CrreatePaymentAsset({ isOpen, onClose, categoriesRefetch
         store_id: get(data, 'store_id.value'),
         payment_type_id: get(data, 'payment_type_id.value'),
 
-        merchant_id: Number(get(data, 'merchant_id')),
-        ...(get(data, 'type_action') !== 'payme' && { secret_key: get(data, 'metchant_key') }),
+        ...(get(data, 'type_action') !== 'payme' && {
+          cashbox_id: Number(get(data, 'merchant_id')),
+          secret_key: get(data, 'metchant_key'),
+        }),
         ...(get(data, 'type_action') === 'click' && {
           service_id: Number(get(data, 'service_id')),
           secret_key: get(data, 'secret_key'),
+          merchant_id: Number(get(data, 'merchant_id')),
+
           merchant_user_id: Number(get(data, 'merchant_user_id')),
         }),
 

@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { useEffect, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import './Table.css'
@@ -63,7 +64,7 @@ const TableComponent = ({ data }) => {
               <td>{index + 1}</td>
               <td>{row.name}</td>
               <td>{row.barcode}</td>
-              <td>{row.expire_date}</td>
+              <td>{dayjs(row.expire_date).format('DD.MM.YYYY')}</td>
               <td>{row.unit_per_pack}</td>
               <td>{row.retail_price}</td>
               <td>{row.current_quantity}</td>
