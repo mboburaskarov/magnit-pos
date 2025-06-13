@@ -20,7 +20,6 @@ import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
-import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
@@ -547,7 +546,7 @@ export default function InventoryWithCheckingPage() {
         open={quantityModalOpen}
         setOpen={setQuantityModalOpen}
       />
-      <Box
+      {/* <Box
         sx={{
           position: 'fixed',
           bottom: 0,
@@ -577,7 +576,7 @@ export default function InventoryWithCheckingPage() {
             {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'), 'сум')}
           </Typography>
         </Box>
-      </Box>
+      </Box> */}
       <UploadCV open={openUpload} setHasChange={setHasChange} refetch={refetch} setOpen={setOpenUpload} />
     </LoadingContainer>
   )
