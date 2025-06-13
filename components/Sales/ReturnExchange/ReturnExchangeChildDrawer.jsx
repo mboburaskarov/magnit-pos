@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -59,10 +59,10 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
     if (e.target.checked) {
       setSelectedReturnItems((p) => [
         ...p,
-        { quantity: item?.quantity, id: item?.id, unit_quantity: item?.unit_quantity, store_product_id: item?.store_product_id },
+        { quantity: item?.quantity, id: item?.store_product_id, unit_quantity: item?.unit_quantity, store_product_id: item?.store_product_id },
       ])
     } else {
-      setSelectedReturnItems((p) => p.filter((i) => i?.id != item?.id))
+      setSelectedReturnItems((p) => p.filter((i) => i?.store_product_id != item?.store_product_id))
     }
   }
   const selectAllReturnItem = (e) => {
@@ -72,7 +72,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
       items.map((item) => {
         setSelectedReturnItems((p) => [
           ...p,
-          { id: item?.id, quantity: item?.quantity, unit_quantity: item?.unit_quantity, store_product_id: item?.store_product_id },
+          { id: item?.store_product_id, quantity: item?.quantity, unit_quantity: item?.unit_quantity, store_product_id: item?.store_product_id },
         ])
       })
     } else {
