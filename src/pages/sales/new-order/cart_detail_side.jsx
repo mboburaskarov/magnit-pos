@@ -299,7 +299,7 @@ function CartDetailSide({
           </Box>
         )}
       </CheckAccess>
-      {leftZreportCount <= 7 ? (
+      {leftZreportCount <= 7 && leftZreportCount != null ? (
         <Box
           sx={{
             width: '100%',
