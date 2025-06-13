@@ -81,7 +81,7 @@ const TableComponent = ({ data }) => {
             </tr>
           ))}
         </tbody>
-        <tfoot>
+        {/* <tfoot>
           <tr>
             <td colSpan={12}>
               <strong>Итого</strong>
@@ -90,7 +90,7 @@ const TableComponent = ({ data }) => {
               <strong>{23232} сум</strong>
             </td>
           </tr>
-        </tfoot>
+        </tfoot> */}
       </table>
     </div>
   )

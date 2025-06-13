@@ -44,8 +44,8 @@ export default function CrreatePaymentAsset({ isOpen, onClose, categoriesRefetch
         type: get(data, 'type_action') || 'payme',
         name: capitalizeFirstLetter(get(data, 'type_action')) || 'Payme',
 
-        ...(get(data, 'type_action') === 'payme' && {
-          cashbox_id: Number(get(data, 'merchant_id')),
+        ...(get(data, 'type_action') != 'click' && {
+          cashbox_id: get(data, 'merchant_id'),
           secret_key: get(data, 'metchant_key'),
         }),
         ...(get(data, 'type_action') === 'click' && {
@@ -64,8 +64,8 @@ export default function CrreatePaymentAsset({ isOpen, onClose, categoriesRefetch
         type: get(data, 'type_action') || 'payme',
         name: capitalizeFirstLetter(get(data, 'type_action')) || 'Payme',
 
-        ...(get(data, 'type_action') === 'payme' && {
-          cashbox_id: Number(get(data, 'merchant_id')),
+        ...(get(data, 'type_action') != 'click' && {
+          cashbox_id: get(data, 'merchant_id'),
           secret_key: get(data, 'metchant_key'),
         }),
         ...(get(data, 'type_action') === 'click' && {
