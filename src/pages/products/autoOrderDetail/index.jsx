@@ -2,6 +2,7 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Container, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -15,6 +16,7 @@ import Header from '../../../../components/Header'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
@@ -52,7 +54,15 @@ export default function AutoOrderDetailPage({ isNew = true }) {
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
   })
-
+  const { mutate: autoOrderExcelReport, isLoading: isAutoOrderExcelReport } = useMutation(requests.getAutoOrderExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.log(err)
+      error('Ошибка при скачать excel!')
+    },
+  })
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
@@ -207,6 +217,9 @@ export default function AutoOrderDetailPage({ isNew = true }) {
                 id='auto-order-main-table'
                 tableSettings
                 columns={tableColumns}
+                fullDownload={() => autoOrderExcelReport({ ...autoOrderDetailListFilter, limit: 1000000 })}
+                downloadByFilter={() => autoOrderExcelReport(autoOrderDetailListFilter)}
+                isDownloading={isAutoOrderExcelReport}
                 data={autoOrderDetailList?.data?.data?.data || []}
                 totalCount={autoOrderDetailList?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchingautoOrderDetailList || autoOrderDetailListLoading}
