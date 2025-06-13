@@ -126,6 +126,39 @@ function NavbarDrawer({
           )}
         </Box>
       </List>
+      {import.meta.env.VITE_MODE == 'dev' ? (
+        <Box
+          sx={{
+            position: 'fixed',
+            width: '400px',
+            backgroundColor: '#fe5000',
+            textAlign: 'center',
+            alignItems: 'center',
+            height: '20px',
+            margin: 'auto',
+            top: 30,
+            left: -150,
+
+            transform: 'rotate(-40deg)',
+          }}
+        >
+          <Box
+            component='span'
+            sx={{
+              display: 'inline-block',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: '18px',
+              color: '#fff',
+            }}
+          >
+            DEV MODE
+          </Box>
+        </Box>
+      ) : (
+        <Box></Box>
+      )}
+
       {isNewSalePage && (
         <ListItem onClick={() => setIsUserOpen(true)} width={'100% !important'} className={`${classes.currentNavBarUser} drawer_user_avatar`} id='avatar'>
           <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
@@ -144,6 +177,7 @@ function NavbarDrawer({
               </Box>
             )}
           </Box>
+
           {/* <Box display={'flex'} alignItems={'center'}>
               <ArrowDown />
             </Box> */}

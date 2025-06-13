@@ -1,4 +1,3 @@
-import { Box } from '@mui/material'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 import { ToastContainer } from 'react-toastify'
@@ -12,41 +11,6 @@ import Routes from './Routes'
 function App() {
   return (
     <Providers>
-      {import.meta.env.VITE_MODE == 'dev' ? (
-        <Box
-          sx={{
-            position: 'fixed',
-            zIndex: 999999,
-            width: '100%',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            backgroundColor: '#fe5000',
-            height: '20px',
-            bottom: 0,
-          }}
-        >
-          <Box
-            component='span'
-            sx={{
-              display: 'inline-block',
-              color: 'white',
-              fontWeight: 'bold',
-              fontSize: '18px',
-              px: 2,
-              animation: 'scrollText 10s linear infinite',
-              '@keyframes scrollText': {
-                '0%': { transform: 'translateX(100vw)' },
-                '100%': { transform: 'translateX(-10vw)' },
-              },
-            }}
-          >
-            THIS IS DEV MODE
-          </Box>
-        </Box>
-      ) : (
-        <Box></Box>
-      )}
-
       {/* <SocketProvider> */}
       {/* <ShortcutProvider> */}
       <Routes />

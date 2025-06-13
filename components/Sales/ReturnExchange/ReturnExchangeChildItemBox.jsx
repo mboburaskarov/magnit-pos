@@ -1,7 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
-import React from 'react'
 import thousandDivider from '../../../utils/thousandDivider'
 const useStyles = makeStyles((theme) => ({
   productImg: {
@@ -28,7 +27,7 @@ function ReturnExchangeChildItemBox({ item, selectedReturnItems, selectReturnIte
             <input
               onChange={(e) => selectReturnItem(e, item)}
               name='checkbox_zero'
-              checked={selectedReturnItems.find((e) => e?.id == item?.id)}
+              checked={selectedReturnItems.find((e) => e?.id == item?.store_product_id)}
               className='customCheckbox'
               type='checkbox'
             />
