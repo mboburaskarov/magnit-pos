@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
+
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -27,9 +28,10 @@ import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
+import { changeColumnSequence, resetTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
 import ChangeQuantityModal from './changeQuantityModal'
 import InventoryDetailModal from './inventoryDetailModal'
+import TableComponent from './lightTable'
 import tableHeaderSelector from './tableHeaderSelector'
 import UploadCV from './uploadCV'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -57,6 +59,7 @@ export default function InventoryWithCheckingPage() {
   const [shouldICleanSearchQuery, setshouldICleanSearchQuery] = useState(false)
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [status, setStatus] = useState('ALL')
+  const [tableType, setTableType] = useState('MODERN')
   const [offsetCount, setOffsetCount] = useState(0)
   const [debouncedSearchBarcode] = useDebounce(barcode, 200)
 
@@ -137,13 +140,20 @@ export default function InventoryWithCheckingPage() {
     return {
       inventory_id: id,
       limit: values?.limit || 10,
+      // limit: status == 'checking' ? 6000 : values?.limit || 10,
       offset: values?.offset || 0,
       search: barcode,
       order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
-      type: status,
+      type: status != 'checking' ? status : 'all',
     }
   }, [values?.offset, orderStoring, status, values?.limit, id, debouncedSearchBarcode])
-
+  useEffect(() => {
+    if (status == 'checking') {
+      setTableType('LIGHT')
+    } else {
+      setTableType('MODERN')
+    }
+  }, [status])
   const {
     data: inventoryWithCheckingDetails,
     isLoading: inventoryWithCheckingDetailsLoading,
@@ -397,6 +407,7 @@ export default function InventoryWithCheckingPage() {
                       onChange={({ target }) => setBarcode(get(target, 'value'))}
                       id='producrs-search'
                       name='search'
+                      disabled={status == 'checking'}
                       value={barcode}
                       setSearchTerm={setBarcode}
                       placeholder={t('input.search.product.multi')}
@@ -432,6 +443,11 @@ export default function InventoryWithCheckingPage() {
                           value: 'zero_price',
                           count: get(inventoryWithCheckingDetails, 'data.data.stats_count.zero_price', 0),
                         },
+                        {
+                          title: 'Проверка',
+                          value: 'checking',
+                          count: get(inventoryWithCheckingDetails, 'data.data.stats_count.zero_price', 0),
+                        },
                       ]}
                     />
                   </Box>
@@ -452,54 +468,57 @@ export default function InventoryWithCheckingPage() {
                 </Box>
               </Box>
             </Box>
-
-            <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' }, mb: '100px' }}>
-              <AgGridTable
-                selectedCellRowId={setSelectedCellRowId}
-                id='imports-main-table'
-                tableSettings
-                gettingId='id'
-                realTimeSelectedCellRowId={({ id, rowId }) => {
-                  if (id == 'main') setLastSelectedCellRowId(rowId)
-                }}
-                childRef={childRef}
-                enableFillHandle={true}
-                custonName='main'
-                // totalData={[
-                //   {
-                //     id: 'ag-grid-footer',
-                //     name: 'Итого',
-                //     pinned: true,
-                //     fact_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'),
-                //     current_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'),
-                //     difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
-                //   },
-                // ]}
-                canCellClick={true}
-                onChangeSelectedCellRowId={(id) => {
-                  setLastSelectedCellRowId(id)
-                }}
-                onCellValueChanged={onCellValueChanged}
-                columns={tableColumns}
-                data={rowData || []}
-                fullDownload={() => inventoryExcelReport({ ...inventoryWithCheckingDetailsFilter, limit: 1000000 })}
-                downloadByFilter={() => inventoryExcelReport(inventoryWithCheckingDetailsFilter)}
-                isDownloading={isinventoryExcelReport}
-                totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
-                isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
-                offsetCount={offsetCount}
-                updaterAction={(newData) => {
-                  if (newData) dispatch(updateTableHeader(newData))
-                }}
-                emptyTableText={{
-                  title: 'Импорт недоступен',
-                  description: 'Если вы не можете найти искомый Импорт, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
-                }}
-                fullInfoAboutCurrentPage
-                resetTable={() => dispatch(resetTableHeader({ refetch }))}
-                isRefreshing={loading || isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
-              />
-            </Box>
+            {tableType == 'MODERN' ? (
+              <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' }, mb: '100px' }}>
+                <AgGridTable
+                  selectedCellRowId={setSelectedCellRowId}
+                  id='imports-main-table'
+                  tableSettings
+                  gettingId='id'
+                  realTimeSelectedCellRowId={({ id, rowId }) => {
+                    if (id == 'main') setLastSelectedCellRowId(rowId)
+                  }}
+                  childRef={childRef}
+                  enableFillHandle={true}
+                  custonName='main'
+                  // totalData={[
+                  //   {
+                  //     id: 'ag-grid-footer',
+                  //     name: 'Итого',
+                  //     pinned: true,
+                  //     fact_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'),
+                  //     current_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'),
+                  //     difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
+                  //   },
+                  // ]}
+                  canCellClick={true}
+                  onChangeSelectedCellRowId={(id) => {
+                    setLastSelectedCellRowId(id)
+                  }}
+                  onCellValueChanged={onCellValueChanged}
+                  columns={tableColumns}
+                  data={rowData || []}
+                  fullDownload={() => inventoryExcelReport({ ...inventoryWithCheckingDetailsFilter, limit: 1000000 })}
+                  downloadByFilter={() => inventoryExcelReport(inventoryWithCheckingDetailsFilter)}
+                  isDownloading={isinventoryExcelReport}
+                  totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                  isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
+                  offsetCount={offsetCount}
+                  updaterAction={(newData) => {
+                    if (newData) dispatch(updateTableHeader(newData))
+                  }}
+                  emptyTableText={{
+                    title: 'Импорт недоступен',
+                    description: 'Если вы не можете найти искомый Импорт, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+                  }}
+                  fullInfoAboutCurrentPage
+                  resetTable={() => dispatch(resetTableHeader({ refetch }))}
+                  isRefreshing={loading || isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
+                />
+              </Box>
+            ) : (
+              <TableComponent id={id} orderStoring={orderStoring} data={rowData} />
+            )}
           </Box>
         </Container>
       </FormProvider>

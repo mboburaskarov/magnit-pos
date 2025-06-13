@@ -425,7 +425,7 @@ export default function PaymentsAssetsList() {
         closeDrawer={() => setCreateEdit(false)}
       /> */}
 
-      <CrreatePaymentAssetDrawer categoriesRefetch={() => {}} isOpen={openCreatePermission} onClose={() => setOpenCreatePermission(null)} />
+      <CrreatePaymentAssetDrawer categoriesRefetch={() => refetch()} isOpen={openCreatePermission} onClose={() => setOpenCreatePermission(null)} />
 
       {/* <CreateCashBoxDrawer
         refetchVendorList={refetch}

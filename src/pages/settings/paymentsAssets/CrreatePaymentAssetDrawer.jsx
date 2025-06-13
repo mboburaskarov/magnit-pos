@@ -41,34 +41,40 @@ export default function CrreatePaymentAsset({ isOpen, onClose, categoriesRefetch
       const requestBody = {
         store_id: get(data, 'store_id.value'),
         payment_type_id: get(data, 'payment_type_id.value'),
+        type: get(data, 'type_action') || 'payme',
+        name: capitalizeFirstLetter(get(data, 'type_action')) || 'Payme',
 
-        merchant_id: Number(get(data, 'merchant_id')),
-        ...(get(data, 'type_action') !== 'payme' && { secret_key: get(data, 'metchant_key') }),
+        ...(get(data, 'type_action') != 'click' && {
+          cashbox_id: get(data, 'merchant_id'),
+          secret_key: get(data, 'metchant_key'),
+        }),
         ...(get(data, 'type_action') === 'click' && {
           service_id: Number(get(data, 'service_id')),
           secret_key: get(data, 'secret_key'),
+          merchant_id: Number(get(data, 'merchant_id')),
+
           merchant_user_id: Number(get(data, 'merchant_user_id')),
         }),
-
-        type: get(data, 'type_action') || 'payme',
-        name: capitalizeFirstLetter(get(data, 'type_action')) || 'Payme',
       }
       editPaymentAsset({ id: get(isOpen, 'id'), data: requestBody })
     } else {
       createPaymentAsset({
         store_id: get(data, 'store_id.value'),
         payment_type_id: get(data, 'payment_type_id.value'),
+        type: get(data, 'type_action') || 'payme',
+        name: capitalizeFirstLetter(get(data, 'type_action')) || 'Payme',
 
-        merchant_id: Number(get(data, 'merchant_id')),
-        ...(get(data, 'type_action') !== 'payme' && { secret_key: get(data, 'metchant_key') }),
+        ...(get(data, 'type_action') != 'click' && {
+          cashbox_id: get(data, 'merchant_id'),
+          secret_key: get(data, 'metchant_key'),
+        }),
         ...(get(data, 'type_action') === 'click' && {
           service_id: Number(get(data, 'service_id')),
           secret_key: get(data, 'secret_key'),
+          merchant_id: Number(get(data, 'merchant_id')),
+
           merchant_user_id: Number(get(data, 'merchant_user_id')),
         }),
-
-        type: get(data, 'type_action') || 'payme',
-        name: capitalizeFirstLetter(get(data, 'type_action')) || 'Payme',
       })
     }
   }
