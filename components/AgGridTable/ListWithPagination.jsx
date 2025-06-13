@@ -11,10 +11,12 @@ function ListWithPagination({ request, renderItem, customFilter }) {
   const handleChange = (e) => {
     setPage(e)
   }
+  console.log(page)
+
   const dataFilter = useMemo(() => {
     return {
       limit: 5,
-      offset: page * 5 - 5 || 0,
+      offset: page > 0 ? page * 5 - 5 : 0,
     }
   }, [values?.offset, page])
 

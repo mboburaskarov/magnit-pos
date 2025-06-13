@@ -11,7 +11,7 @@ const columns = [
     field: 'product_name',
     hide: false,
     minWidth: 200,
-    flex: 1,
+    width: 300,
   },
 
   {

@@ -11,14 +11,14 @@ const columns = [
     field: 'public_id',
     hide: false,
     minWidth: 130,
-    flex: 1,
+    width: 100,
   },
 
   {
     field: 'store_name',
     hide: false,
-    minWidth: 70,
-    width: 250,
+    minWidth: 250,
+    flex: 1,
   },
   {
     field: 'import_date',
