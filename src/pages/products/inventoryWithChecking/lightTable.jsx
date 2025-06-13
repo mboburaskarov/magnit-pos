@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { useEffect, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
-import './Table.css'
+import './table.css'
 
 const rows = Array.from({ length: 1000 }, (_, i) => ({
   id: i + 1,
