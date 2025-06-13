@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
+
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -149,8 +150,6 @@ export default function InventoryWithCheckingPage() {
   useEffect(() => {
     if (status == 'checking') {
       setTableType('LIGHT')
-      const requestParams = qs.stringify({ ...values, limit: 6000 }, { addQueryPrefix: true })
-      navigate(`/products/inventory-with-checking/${id}${requestParams}`)
     } else {
       setTableType('MODERN')
     }
@@ -518,7 +517,7 @@ export default function InventoryWithCheckingPage() {
                 />
               </Box>
             ) : (
-              <TableComponent data={rowData} />
+              <TableComponent id={id} orderStoring={orderStoring} data={rowData} />
             )}
           </Box>
         </Container>

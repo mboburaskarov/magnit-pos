@@ -1,6 +1,9 @@
 import dayjs from 'dayjs'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { useQuery } from 'react-query'
+import { requests } from '../../../../utils/requests'
+import { useQueryParams } from '../../../hooks/useQueryParams'
 import './table.css'
 
 const rows = Array.from({ length: 1000 }, (_, i) => ({
@@ -8,9 +11,10 @@ const rows = Array.from({ length: 1000 }, (_, i) => ({
   name: `Item ${i + 1}`,
 }))
 
-const TableComponent = ({ data }) => {
+const TableComponent = ({ data, orderStoring, id }) => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const rowRefs = useRef([])
+  const { values } = useQueryParams()
 
   useHotkeys('up', () => {
     setSelectedIndex((prev) => Math.max(0, prev - 1))
@@ -32,7 +36,27 @@ const TableComponent = ({ data }) => {
       })
     }
   }, [selectedIndex])
+  const inventoryWithCheckingDetailsFilter = useMemo(() => {
+    return {
+      inventory_id: id,
+      limit: 5000,
+      offset: values?.offset || 0,
+      order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
+      type: 'all',
+    }
+  }, [values?.offset, orderStoring, values?.limit, id])
+  const {
+    data: inventoryWithCheckingDetails,
+    isLoading: inventoryWithCheckingDetailsLoading,
+    isFetching: isFetchinginventoryWithCheckingDetails,
+    refetch,
+  } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter), {
+    onSuccess: ({ data }) => {},
 
+    onError: (error) => {
+      console.error('Query failed:', error)
+    },
+  })
   return (
     <div className='table-container'>
       <table className='custom-table'>
@@ -54,7 +78,7 @@ const TableComponent = ({ data }) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((row, index) => (
+          {inventoryWithCheckingDetails?.data?.data?.data?.map((row, index) => (
             <tr
               key={row.id}
               ref={(el) => (rowRefs.current[index] = el)}
