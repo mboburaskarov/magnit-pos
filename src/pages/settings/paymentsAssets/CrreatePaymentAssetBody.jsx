@@ -36,7 +36,7 @@ export default function CrreatePaymentAssetBody({ isOpen }) {
       )
       if (get(onePermission, 'data.data.type') == 'payme') {
         setValue('merchant_id', get(onePermission, 'data.data.cashbox_id'))
-        setValue('secret_key', get(onePermission, 'data.data.secret_key'))
+        setValue('metchant_key', get(onePermission, 'data.data.secret_key'))
       } else {
         setValue('merchant_id', get(onePermission, 'data.data.merchant_id'))
         setValue('merchant_user_id', get(onePermission, 'data.data.merchant_user_id'))
