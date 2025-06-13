@@ -12,7 +12,6 @@ import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
@@ -27,9 +26,10 @@ import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
+import { changeColumnSequence, resetTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
 import ChangeQuantityModal from './changeQuantityModal'
 import InventoryDetailModal from './inventoryDetailModal'
+import TableComponent from './lightTable'
 import tableHeaderSelector from './tableHeaderSelector'
 import UploadCV from './uploadCV'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -136,7 +136,8 @@ export default function InventoryWithCheckingPage() {
   const inventoryWithCheckingDetailsFilter = useMemo(() => {
     return {
       inventory_id: id,
-      limit: values?.limit || 10,
+      // limit: values?.limit || 10,
+      limit: 3000,
       offset: values?.offset || 0,
       search: barcode,
       order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
@@ -453,7 +454,7 @@ export default function InventoryWithCheckingPage() {
               </Box>
             </Box>
 
-            <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' }, mb: '100px' }}>
+            {/* <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' }, mb: '100px' }}>
               <AgGridTable
                 selectedCellRowId={setSelectedCellRowId}
                 id='imports-main-table'
@@ -499,7 +500,8 @@ export default function InventoryWithCheckingPage() {
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
                 isRefreshing={loading || isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
               />
-            </Box>
+            </Box> */}
+            <TableComponent data={rowData} />
           </Box>
         </Container>
       </FormProvider>
