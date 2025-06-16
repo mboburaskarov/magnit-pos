@@ -28,7 +28,7 @@ import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
 import ChangeQuantityModal from './changeQuantityModal'
 import InventoryDetailModal from './inventoryDetailModal'
 import TableComponent from './lightTable'
@@ -336,9 +336,7 @@ export default function InventoryWithCheckingPage() {
       // if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
       //   handleFocusUnit()
       // }
-      if (event.key === 'Alt') {
-        setBarcode('')
-      }
+
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         let exeption_ids = ['expired_date', 'barcode', 'retail_price']
 
@@ -409,7 +407,14 @@ export default function InventoryWithCheckingPage() {
                     <InputSearch
                       icon={<BarcodeIcon />}
                       onKeyDown={({ code }) => code === 'Enter' && handleFocus()}
-                      onChange={({ target }) => setBarcode(get(target, 'value'))}
+                      onChange={({ target }) => {
+                        if (shouldICleanSearchQuery) {
+                          setBarcode(target.value.split('')?.at(-1))
+                          setshouldICleanSearchQuery(false)
+                          return
+                        }
+                        setBarcode(get(target, 'value'))
+                      }}
                       id='producrs-search'
                       name='search'
                       disabled={status == 'checking'}
