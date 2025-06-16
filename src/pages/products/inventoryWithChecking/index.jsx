@@ -406,7 +406,11 @@ export default function InventoryWithCheckingPage() {
                   <Box display={'flex'}>
                     <InputSearch
                       icon={<BarcodeIcon />}
-                      onKeyDown={({ code }) => code === 'Enter' && handleFocus()}
+                      onKeyDown={({ code }) => {
+                        console.log(code)
+
+                        code === 'Enter' && handleFocus()
+                      }}
                       onChange={({ target }) => {
                         if (shouldICleanSearchQuery) {
                           setBarcode(target.value.split('')?.at(-1))
