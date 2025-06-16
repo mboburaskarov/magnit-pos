@@ -63,6 +63,9 @@ export default function ChangeQuantityModal({ open, setshouldICleanSearchQuery, 
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         activElem = document.activeElement.tagName
         if (activElem != 'INPUT') {
+          //
+          qtyRef?.current?.[0]?.focus()
+          //
           return
         }
         if (Number(factQuantity) === 0 && Number(factUnit) === 0) {
