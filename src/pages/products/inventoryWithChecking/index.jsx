@@ -162,6 +162,7 @@ export default function InventoryWithCheckingPage() {
   } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter), {
     onSuccess: ({ data }) => {
       if (size(get(data, 'data.data', [])) == 1 && !shouldICleanSearchQuery) {
+        setshouldICleanSearchQuery(true)
         setQuantityModalOpen({ id: get(head(get(data, 'data.data', [])), 'id'), data: head(get(data, 'data.data', [])) })
       } else {
         setQuantityModalOpen(false)
