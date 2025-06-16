@@ -597,3 +597,14 @@
 body.ag-grid-focused {
   overflow: hidden;
 }
+
+/* Disable blue cell selection */
+/* .ag-theme-alpine .selected-cell {
+  border: none !important;
+  box-shadow: none !important;
+} */
+
+/* Optional: Remove background highlight */
+/* .ag-theme-alpine .ag-cell.selected-cell:not(.ag-cell-range-selected) {
+  background-color: inherit !important;
+} */
