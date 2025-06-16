@@ -599,10 +599,10 @@ body.ag-grid-focused {
 }
 
 /* Disable blue cell selection */
-/* .ag-theme-alpine .selected-cell {
-  border: none !important;
-  box-shadow: none !important;
-} */
+.ag-theme-alpine .selected-cell {
+  background-color: inherit !important;
+  border: inherit !important;
+}
 
 /* Optional: Remove background highlight */
 /* .ag-theme-alpine .ag-cell.selected-cell:not(.ag-cell-range-selected) {
