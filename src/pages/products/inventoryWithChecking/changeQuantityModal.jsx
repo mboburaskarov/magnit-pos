@@ -50,7 +50,6 @@ export default function ChangeQuantityModal({ open, setshouldICleanSearchQuery, 
       setFactUnit('')
       setTimeout(() => {
         qtyRef.current?.[0]?.focus()
-        // factQuantityRef?.focus()
       }, 0)
     }
   }, [open])
