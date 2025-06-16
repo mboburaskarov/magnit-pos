@@ -296,10 +296,10 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
             offsetQuery='flowOffset'
             enableFillHandle={true}
             realTimeSelectedCellRowId={({ id, rowId }) => {
-              setLastSelectedCellRowId(rowId)
+              if (id == 'flow') setLastSelectedCellRowId(rowId)
             }}
             onChangeSelectedCellRowId={(id) => {
-              if (id == 'flow') setLastSelectedCellRowId(id)
+              setLastSelectedCellRowId(id)
             }}
             custonName='flow'
             canCellClick={true}
