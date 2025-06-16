@@ -132,7 +132,7 @@ const InputSearch = ({
     navigate(`${location.pathname}${searchParams}`)
   }, [debouncedValue])
   useHotkeys(
-    'F3',
+    ['F3', 'alt'],
     (event) => {
       myref.current.focus()
     },
