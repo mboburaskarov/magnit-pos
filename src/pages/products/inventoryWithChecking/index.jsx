@@ -297,7 +297,7 @@ export default function InventoryWithCheckingPage() {
     '*',
     (event) => {
       let isexeption = document.activeElement.tagName == 'INPUT'
-
+      debugger
       if (selectedCellRowId || isexeption) return
       const key = event.key.toLowerCase()
       if (/^[a-zа-яё0-9]$/i.test(key)) {
@@ -492,7 +492,7 @@ export default function InventoryWithCheckingPage() {
                   //     difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
                   //   },
                   // ]}
-                  canCellClick={true}
+                  // canCellClick={true}
                   onChangeSelectedCellRowId={(id) => {
                     setLastSelectedCellRowId(id)
                   }}
