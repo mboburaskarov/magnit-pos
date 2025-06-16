@@ -297,9 +297,10 @@ export default function InventoryWithCheckingPage() {
     '*',
     (event) => {
       let isexeption = document.activeElement.tagName == 'INPUT'
-      debugger
       if (selectedCellRowId || isexeption) return
       const key = event.key.toLowerCase()
+      console.log(key, barcode, shouldICleanSearchQuery)
+
       if (/^[a-zа-яё0-9]$/i.test(key)) {
         if (shouldICleanSearchQuery) {
           setBarcode('')
