@@ -493,7 +493,7 @@ export default function InventoryWithCheckingPage() {
                   //     difference_sum: get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'),
                   //   },
                   // ]}
-                  // canCellClick={true}
+                  canCellClick={true}
                   onChangeSelectedCellRowId={(id) => {
                     setLastSelectedCellRowId(id)
                   }}
