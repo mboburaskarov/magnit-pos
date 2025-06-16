@@ -403,7 +403,7 @@ export default function InventoryWithCheckingPage() {
                   <Box display={'flex'}>
                     <InputSearch
                       icon={<BarcodeIcon />}
-                      // onKeyDown={({ code }) => code === 'Enter' && handleFocus()}
+                      onKeyDown={({ code }) => code === 'Enter' && handleFocus()}
                       onChange={({ target }) => setBarcode(get(target, 'value'))}
                       id='producrs-search'
                       name='search'
