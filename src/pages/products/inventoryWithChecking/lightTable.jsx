@@ -1,33 +1,65 @@
+import { Box } from '@mui/material'
 import dayjs from 'dayjs'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { useQuery } from 'react-query'
+import { useInfiniteQuery } from 'react-query'
 import { requests } from '../../../../utils/requests'
-import { useQueryParams } from '../../../hooks/useQueryParams'
 import './table.css'
 
-const rows = Array.from({ length: 1000 }, (_, i) => ({
-  id: i + 1,
-  name: `Item ${i + 1}`,
-}))
+const LIMIT = 100
 
-const TableComponent = ({ data, orderStoring, id }) => {
+const TableComponent = ({ onSelectRow = () => {}, hasChange, setHasChange, orderStoring, barcode, id }) => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const rowRefs = useRef([])
-  const { values } = useQueryParams()
+  const observerRef = useRef()
 
+  // 🔄 API call with limit/offset
+  const fetchPage = async ({ pageParam = 0 }) => {
+    const filter = {
+      inventory_id: id,
+      limit: barcode ? 50 : LIMIT,
+      offset: pageParam,
+      search: barcode,
+      order: orderStoring.position === 1 ? `+${orderStoring.colId}` : orderStoring.position === 2 ? `-${orderStoring.colId}` : undefined,
+      type: 'all',
+    }
+    const res = await requests.getInventoryDetails(filter).finally((a) => {
+      setHasChange(false)
+    })
+    return { rows: res.data?.data?.data || [], nextOffset: pageParam + LIMIT }
+  }
+
+  // 🔄 useInfiniteQuery
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery(
+    ['inventoryWithCheckingDetails', id, barcode, hasChange, orderStoring],
+    fetchPage,
+    {
+      getNextPageParam: (lastPage) => (lastPage.rows.length < LIMIT ? undefined : lastPage.nextOffset),
+    }
+  )
+
+  // 🔁 Flatten all loaded rows
+  const allRows = data?.pages?.flatMap((page) => page.rows) || []
+  const rowCount = allRows.length
+
+  // 🔼⬇️ Keyboard nav
   useHotkeys('up', () => {
     setSelectedIndex((prev) => Math.max(0, prev - 1))
   })
 
   useHotkeys('down', () => {
-    setSelectedIndex((prev) => Math.min(rows.length - 1, prev + 1))
+    setSelectedIndex((prev) => Math.min(rowCount - 1, prev + 1))
   })
 
   useHotkeys('enter', () => {
-    console.log('Selected Row ID:', rows[selectedIndex].id)
+    const selectedRow = allRows[selectedIndex]
+    if (selectedRow) {
+      console.log('Selected Row ID:', selectedRow.id, selectedRow.name)
+      onSelectRow(selectedRow)
+    }
   })
 
+  // 🎯 Scroll to selected row
   useEffect(() => {
     if (rowRefs.current[selectedIndex]) {
       rowRefs.current[selectedIndex].scrollIntoView({
@@ -36,27 +68,22 @@ const TableComponent = ({ data, orderStoring, id }) => {
       })
     }
   }, [selectedIndex])
-  const inventoryWithCheckingDetailsFilter = useMemo(() => {
-    return {
-      inventory_id: id,
-      limit: 5000,
-      offset: values?.offset || 0,
-      order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
-      type: 'all',
-    }
-  }, [values?.offset, orderStoring, values?.limit, id])
-  const {
-    data: inventoryWithCheckingDetails,
-    isLoading: inventoryWithCheckingDetailsLoading,
-    isFetching: isFetchinginventoryWithCheckingDetails,
-    refetch,
-  } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter), {
-    onSuccess: ({ data }) => {},
 
-    onError: (error) => {
-      console.error('Query failed:', error)
+  // 📦 Infinite scroll observer
+  const lastRowRef = useCallback(
+    (node) => {
+      if (isFetchingNextPage) return
+      if (observerRef.current) observerRef.current.disconnect()
+      observerRef.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage()
+        }
+      })
+      if (node) observerRef.current.observe(node)
     },
-  })
+    [isFetchingNextPage, hasNextPage, fetchNextPage]
+  )
+
   return (
     <div className='table-container'>
       <table className='custom-table'>
@@ -77,45 +104,61 @@ const TableComponent = ({ data, orderStoring, id }) => {
             <th>Разница сумма</th>
           </tr>
         </thead>
+
         <tbody>
-          {inventoryWithCheckingDetails?.data?.data?.data?.map((row, index) => (
-            <tr
-              key={row.id}
-              ref={(el) => (rowRefs.current[index] = el)}
-              className={index === selectedIndex ? 'selected' : ''}
-              onClick={() => setSelectedIndex(index)}
-            >
-              <td>{index + 1}</td>
-              <td>{row.name}</td>
-              <td>{row.barcode}</td>
-              <td>{dayjs(row.expire_date).format('DD.MM.YYYY')}</td>
-              <td>{row.unit_per_pack}</td>
-              <td>{row.retail_price}</td>
-              {/* <td>{row.current_quantity}</td> */}
-              <td>{row?.current_unit > 0 ? `${Math.floor(row?.current_quantity)}(${row?.current_unit}/${row?.unit_per_pack})` : row?.current_quantity}</td>
-              <td>{row.current_sum}</td>
-              <td>{row.fact_quantity}</td>
-              <td>{row?.fact_unit > 0 ? `${Math.floor(row?.fact_quantity)}(${row?.fact_unit}/${row?.unit_per_pack})` : row?.fact_quantity}</td>
-              <td>{row.fact_sum}</td>
-              {/* <td>{row.difference_quantity}</td> */}
-              <td>
-                {row?.difference_unit > 0 ? `${Math.floor(row?.difference_quantity)}(${row?.difference_unit}/${row?.unit_per_pack})` : row?.difference_quantity}
-              </td>
-              <td>{row.difference_sum}</td>
-            </tr>
-          ))}
+          {allRows.length == 0 && (
+            <td colSpan={13}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  height: '80vh',
+                  fontSize: '20px',
+                  fontWeight: '600',
+                }}
+              >
+                Товары не найдены
+              </Box>
+            </td>
+          )}
+          {allRows.map((row, index) => {
+            const isLast = index === allRows.length - 1
+            return (
+              <tr
+                key={row.id}
+                ref={(el) => {
+                  rowRefs.current[index] = el
+                  if (isLast) lastRowRef(el)
+                }}
+                className={index === selectedIndex ? 'selected' : ''}
+                onClick={() => setSelectedIndex(index)}
+              >
+                <td>{index + 1}</td>
+                <td>{row.name}</td>
+                <td>{row.barcode}</td>
+                <td>{dayjs(row.expire_date).format('DD.MM.YYYY')}</td>
+                <td>{row.unit_per_pack}</td>
+                <td>{row.retail_price}</td>
+                <td>{row?.current_unit > 0 ? `${Math.floor(row?.current_quantity)}(${row?.current_unit}/${row?.unit_per_pack})` : row?.current_quantity}</td>
+                <td>{row.current_sum}</td>
+                <td>{row.fact_quantity}</td>
+                <td>{row?.fact_unit > 0 ? `${Math.floor(row?.fact_quantity)}(${row?.fact_unit}/${row?.unit_per_pack})` : row?.fact_quantity}</td>
+                <td>{row.fact_sum}</td>
+                <td>
+                  {row?.difference_unit > 0
+                    ? `${Math.floor(row?.difference_quantity)}(${row?.difference_unit}/${row?.unit_per_pack})`
+                    : row?.difference_quantity}
+                </td>
+                <td>{row.difference_sum}</td>
+              </tr>
+            )
+          })}
         </tbody>
-        {/* <tfoot>
-          <tr>
-            <td colSpan={12}>
-              <strong>Итого</strong>
-            </td>
-            <td>
-              <strong>{23232} сум</strong>
-            </td>
-          </tr>
-        </tfoot> */}
       </table>
+
+      {isFetchingNextPage && <div className='loader'>Loading more...</div>}
     </div>
   )
 }

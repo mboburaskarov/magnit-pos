@@ -336,9 +336,6 @@ export default function InventoryWithCheckingPage() {
       // if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd') {
       //   handleFocusUnit()
       // }
-      if (event.key === 'Alt') {
-        setBarcode('')
-      }
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         let exeption_ids = ['expired_date', 'barcode', 'retail_price']
 
@@ -409,10 +406,16 @@ export default function InventoryWithCheckingPage() {
                     <InputSearch
                       icon={<BarcodeIcon />}
                       onKeyDown={({ code }) => code === 'Enter' && handleFocus()}
-                      onChange={({ target }) => setBarcode(get(target, 'value'))}
+                      onChange={({ target }) => {
+                        if (shouldICleanSearchQuery) {
+                          setBarcode('')
+                          setshouldICleanSearchQuery(false)
+                        }
+                        setBarcode(get(target, 'value'))
+                      }}
                       id='producrs-search'
                       name='search'
-                      disabled={status == 'checking'}
+                      // disabled={status == 'checking'}
                       value={barcode}
                       setSearchTerm={setBarcode}
                       placeholder={t('input.search.product.multi')}
@@ -522,7 +525,17 @@ export default function InventoryWithCheckingPage() {
                 />
               </Box>
             ) : (
-              <TableComponent id={id} orderStoring={orderStoring} data={rowData} />
+              <TableComponent
+                onSelectRow={(rowData) => {
+                  setQuantityModalOpen({ id: rowData?.id, data: rowData })
+                }}
+                setHasChange={setHasChange}
+                hasChange={hasChange}
+                barcode={barcode}
+                id={id}
+                orderStoring={orderStoring}
+                data={rowData}
+              />
             )}
           </Box>
         </Container>
@@ -566,6 +579,7 @@ export default function InventoryWithCheckingPage() {
         setshouldICleanSearchQuery={setshouldICleanSearchQuery}
         setBarcode={setBarcode}
         refetch={refetch}
+        setHasChange={setHasChange}
         open={quantityModalOpen}
         setOpen={setQuantityModalOpen}
       />
