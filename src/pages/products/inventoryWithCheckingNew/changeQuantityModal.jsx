@@ -14,7 +14,7 @@ import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 
-export default function ChangeQuantityModal({ open, setshouldICleanSearchQuery, setBarcode, refetch, setOpen }) {
+export default function ChangeQuantityModal({ open, selectedIndex, selectedCellRowId, setshouldICleanSearchQuery, setBarcode, refetch, setOpen }) {
   const methods = useForm()
   const { reset } = methods
   const { id } = useParams()
@@ -26,18 +26,17 @@ export default function ChangeQuantityModal({ open, setshouldICleanSearchQuery, 
   const qtyRef = useRef([])
   const [factQuantity, setFactQuantity] = useState('')
   const [factUnit, setFactUnit] = useState('')
-  const [factQuantityRef, setFactQuantityRef] = useState(null)
   const [factUnitRef, setFactUnitRef] = useState(null)
-
+  let currentOffset = Math.floor(selectedIndex / 50) * 50
   const { mutate: setScanedNumber, isLoading: issetScanedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
-      refetch()
+      refetch(currentOffset)
       setOpen(false)
       successScanAudio.play()
       setshouldICleanSearchQuery(true)
     },
     onError: () => {
-      refetch()
+      refetch(currentOffset)
       errorScanAudio.play()
       error('Ошибка при сканирование!')
     },
@@ -97,7 +96,7 @@ export default function ChangeQuantityModal({ open, setshouldICleanSearchQuery, 
       overflowVisible
       maxWidth='500px'
       onClose={() => setOpen(false)}
-      open={open}
+      open={open && !selectedCellRowId}
       noHeader
       title={'Создать бонусный продукт'}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}

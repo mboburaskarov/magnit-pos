@@ -1,27 +1,38 @@
 .table-container {
   height: calc(100vh - 190px); /* Fixed height */
   overflow-y: auto;
-  border: 1px solid #ccc;
+  border-radius: 20px;
+  border: 1px solid #a4a5ab1a;
 }
 
 .custom-table {
   width: 100%;
   border-collapse: collapse;
   font-family: sans-serif;
+  color: #000;
 }
 
 .custom-table th,
 .custom-table td {
-  border: 1px solid #ccc;
+  border: none !important;
   padding: 8px;
+  border-bottom: 1px solid #a4a5ab1a !important;
+
+  height: 50px;
   text-align: left;
 }
 
 .custom-table tr.selected {
-  background-color: #d0e6ff;
+  background-color: #ffe3d7;
+}
+thead {
+  height: 56px;
+
+  background-color: #f8f8f8 !important;
 }
 thead th {
   text-align: center !important;
+  color: #000;
 }
 table thead,
 table tfoot {
@@ -35,6 +46,8 @@ table thead {
   inset-block-start: 0; /* "top" */
 }
 table tfoot {
+  border: none !important;
+
   inset-block-end: 0; /* "bottom" */
 }
 .limited-width {
@@ -42,4 +55,9 @@ table tfoot {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+/* Add to your CSS file */
+.custom-table th {
+  position: relative;
+  padding: 8px;
 }
