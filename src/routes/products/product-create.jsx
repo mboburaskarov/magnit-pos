@@ -9,6 +9,7 @@ import ImportWithCheckingPage from '../../pages/products/importWithChecking'
 import InventoryCompleted from '../../pages/products/inventoryCompleted'
 import InventoryDetailPage from '../../pages/products/inventoryDetails/index'
 import InventoryWithCheckingPage from '../../pages/products/inventoryWithChecking/index'
+import InventoryWithCheckingPageNew from '../../pages/products/inventoryWithCheckingNew'
 import ProductCreatePage from '../../pages/products/product-create'
 import ProductEditPage from '../../pages/products/product-edit'
 import ReturnToWarehouseCompletedPage from '../../pages/products/returnToWarehouseComplated'
@@ -46,6 +47,15 @@ const productsCreateRoutes = {
         {
           path: '',
           element: <InventoryWithCheckingPage />,
+        },
+      ],
+    },
+    {
+      path: 'inventory-with-checking/new/:id',
+      children: [
+        {
+          path: '',
+          element: <InventoryWithCheckingPageNew />,
         },
       ],
     },

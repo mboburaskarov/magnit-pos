@@ -2,9 +2,11 @@ import { Box } from '@mui/material'
 import { get } from 'lodash'
 import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import TextField from '../../../../components/Inputs/TextField'
+import LazySelect from '../../../../components/Select/LazySelect'
 import SelectSimple from '../../../../components/Select/SelectSimple'
 import { requests } from '../../../../utils/requests'
 const METHOD_OPETIONS = [
@@ -52,6 +54,8 @@ export default function CrreatePaymentAssetBody({ isOpen }) {
   const { data: paymentTypeList } = useQuery(['paymentTypeList', isOpen], () => requests.getPaymentTypesList({ type: 'app' }), {
     enabled: Boolean(isOpen),
   })
+  const { t } = useTranslation()
+
   return (
     <Box>
       <Box gap={3} display={'flex'} flexDirection={'column'}>
@@ -68,16 +72,23 @@ export default function CrreatePaymentAssetBody({ isOpen }) {
             ]}
           />
         </Box>
-        <SelectSimple
-          id={'store_id'}
-          options={shopList?.data?.data?.data?.flatMap((item) => ({ name: item?.name, value: item?.id }))}
-          required
-          menuPlacement='bottom'
-          fullWidth
-          label={'Магазин'}
+        <LazySelect
+          slug='users'
+          boxStyle={{ width: '100%' }}
+          id='store'
           name='store_id'
-          getOptionLabel={(option) => option.name}
-          placeholder='Выберите Магазин'
+          isMulti={false}
+          placeholder={t('Выберите Магазин')}
+          minWidth='auto'
+          isClearable={true}
+          label={t('input.store.label')}
+          request={requests.getAllStores}
+          filters={{ limit: 10 }}
+          // control={methods.control}
+          getOptionLabel={(option) => {
+            return option.name
+          }}
+          filterOption={() => true}
         />
         <SelectSimple
           id={'payment_type_id'}
