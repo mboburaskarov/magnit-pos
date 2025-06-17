@@ -8,7 +8,7 @@ import './table.css'
 
 const LIMIT = 100
 
-const TableComponent = ({ onSelectRow = () => {}, hasChange, setHasChange, orderStoring, barcode, id }) => {
+const TableComponent = ({ onSelectRow = () => {}, hasChange, orderStoring, barcode, id }) => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const rowRefs = useRef([])
   const observerRef = useRef()
@@ -24,7 +24,7 @@ const TableComponent = ({ onSelectRow = () => {}, hasChange, setHasChange, order
       type: 'all',
     }
     const res = await requests.getInventoryDetails(filter).finally((a) => {
-      setHasChange(false)
+      // setHasChange(false)
     })
     return { rows: res.data?.data?.data || [], nextOffset: pageParam + LIMIT }
   }
