@@ -3,24 +3,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { UploadFile } from '@mui/icons-material'
 import { Box, Button, Container, Typography } from '@mui/material'
 import dayjs from 'dayjs'
-import { get, head, size } from 'lodash'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { get } from 'lodash'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
-import { useInfiniteQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
+import { useInfiniteQuery, useQueryClient } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
-import { useQueryParams } from '../../../hooks/useQueryParams'
 import './table.css'
 
-import { useMutation, useQuery, useQueryClient } from 'react-query'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import { useMutation, useQuery } from 'react-query'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
@@ -29,13 +26,11 @@ import LoadingBlock from '../../../../components/LoadingBlock'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { error } from '../../../../utils/toast'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
-import { changeColumnSequence, resetTableHeader } from '../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
 import ChangeQuantityModal from './changeQuantityModal'
-import InventoryDetailModal from './inventoryDetailModal'
-import tableHeaderSelector from './tableHeaderSelector'
+import InventoryDetailModalNew from './inventoryDetailModalNew'
+import NewLightTableForInventory from './newLightTableForInventory'
 import UploadCV from './uploadCV'
 
-const SELECTION_ID = 'checkboxSelectionField'
 const LIMIT = 50
 
 const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
@@ -43,15 +38,9 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   const successScanAudio = new Audio(successAudio)
   const [openUpload, setOpenUpload] = useState(false)
   const [hasChange, setHasChange] = useState(false)
-  const dispatch = useDispatch()
   const { t } = useTranslation()
-  const childRef = useRef()
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
-  const { columns, loading } = useSelector((state) => state.inventoryWithCheckingColumns)
-  const { values } = useQueryParams()
   const [barcode, setBarcode] = useState('')
-  const [rowData, setRowData] = useState([])
 
   const methods = useForm()
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
@@ -61,109 +50,81 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   const [shouldICleanSearchQuery, setshouldICleanSearchQuery] = useState(false)
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [status, setStatus] = useState('ALL')
-  const [tableType, setTableType] = useState('MODERN')
-  const [offsetCount, setOffsetCount] = useState(0)
   const [debouncedSearchBarcode] = useDebounce(barcode, 200)
 
-  // Navigation state
+  const queryClient = useQueryClient()
+
+  //
   const [selectedIndex, setSelectedIndex] = useState(0)
   const rowRefs = useRef([])
   const observerRef = useRef()
   const { id } = useParams()
 
-  // Current view filter
-  const currentViewFilter = useMemo(
-    () => ({
-      inventory_id: id,
-      limit: LIMIT,
-      offset: 0, // Always get first page for current view
-      search: barcode,
-      order: orderStoring.position === 1 ? `+${orderStoring.colId}` : orderStoring.position === 2 ? `-${orderStoring.colId}` : undefined,
-      type: status !== 'checking' ? status : 'all',
-    }),
-    [id, debouncedSearchBarcode, orderStoring, status]
-  )
-
-  // Infinite scroll filter
-  const infiniteScrollFilter = useMemo(
-    () => ({
-      inventory_id: id,
-      search: barcode,
-      order: orderStoring.position === 1 ? `+${orderStoring.colId}` : orderStoring.position === 2 ? `-${orderStoring.colId}` : undefined,
-      type: status !== 'checking' ? status : 'all',
-    }),
-    [id, barcode, orderStoring, status]
-  )
-
-  // 🔄 Current view query (for immediate updates)
-  const {
-    data: currentViewData,
-    refetch: refetchCurrentView,
-    isLoading: isCurrentViewLoading,
-  } = useQuery(['inventoryCurrentView', currentViewFilter], () => requests.getInventoryDetails(currentViewFilter), {
-    enabled: true,
-    refetchOnWindowFocus: false,
-    onSuccess: ({ data }) => {
-      if (size(get(data, 'data.data', [])) === 1 && !shouldICleanSearchQuery) {
-        setshouldICleanSearchQuery(true)
-        setQuantityModalOpen({
-          id: get(head(get(data, 'data.data', [])), 'id'),
-          data: head(get(data, 'data.data', [])),
-        })
-      } else {
-        setQuantityModalOpen(false)
-      }
-    },
-  })
-
-  // 🔄 Infinite scroll query (for pagination)
+  // 🔄 API call with limit/offset
   const fetchPage = async ({ pageParam = 0 }) => {
     const filter = {
-      ...infiniteScrollFilter,
-      limit: LIMIT,
+      inventory_id: id,
+      limit: barcode ? 50 : LIMIT,
       offset: pageParam,
+      search: barcode,
+      order: orderStoring.position === 1 ? `+${orderStoring.colId}` : orderStoring.position === 2 ? `-${orderStoring.colId}` : undefined,
+      type: 'all',
     }
-    const res = await requests.getInventoryDetails(filter)
-    return { rows: res.data?.data?.data || [], nextOffset: pageParam + LIMIT }
+    const res = await requests.getInventoryDetails(filter).then((res) => {
+      if (get(res, 'data.data.data', []).length === 1) {
+        setQuantityModalOpen({ id: get(res, 'data.data.data.[0].id'), data: get(res, 'data.data.data.[0]') })
+        setshouldICleanSearchQuery(true)
+      }
+      return res
+      // setHasChange(false)
+    })
+    return { rows: res.data?.data?.data, total_data: res.data?.data?.total_data || [], nextOffset: pageParam + LIMIT }
   }
 
-  const {
-    data: infiniteData,
-    fetchNextPage,
-    refetch: refetchInfinite,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading: isInfiniteLoading,
-  } = useInfiniteQuery(['inventoryInfiniteScroll', infiniteScrollFilter, hasChange], fetchPage, {
-    getNextPageParam: (lastPage) => (lastPage.rows.length < LIMIT ? undefined : lastPage.nextOffset),
-    refetchOnWindowFocus: false,
-    refetchOnMount: true,
-    refetchOnReconnect: false,
-  })
+  // 🔄 useInfiniteQuery
+  const { data, fetchNextPage, refetch, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery(
+    ['inventoryWithCheckingDetails', id, debouncedSearchBarcode, hasChange, orderStoring],
+    fetchPage,
+    {
+      getNextPageParam: (lastPage) => (lastPage.rows.length < LIMIT ? undefined : lastPage.nextOffset),
+    }
+  )
 
-  // 🔁 Determine which data to display
-  const allRows = infiniteData?.pages?.flatMap((page) => page.rows) || []
-  const currentRows = currentViewData?.data?.data?.data || []
+  // 🔁 Flatten all loaded rows
+  const allRows = data?.pages?.flatMap((page) => page.rows) || []
+  const rowCount = allRows.length
 
-  // Use current view for searches and updates, infinite data for normal scrolling
-  const displayData = barcode || hasChange ? currentRows : allRows
-  const rowCount = displayData.length
-
-  // 🔼⬇️ Keyboard navigation
+  // 🔼⬇️ Keyboard nav
   useHotkeys('up', () => {
     setSelectedIndex((prev) => Math.max(0, prev - 1))
+    const selectedRow = allRows[selectedIndex - 1]
+    if (selectedRow) {
+      console.log(selectedRow.name)
+
+      setLastSelectedCellRowId(selectedRow.id)
+    }
   })
 
   useHotkeys('down', () => {
     setSelectedIndex((prev) => Math.min(rowCount - 1, prev + 1))
+    const selectedRow = allRows[selectedIndex + 1]
+    if (selectedRow) {
+      console.log(selectedRow.name)
+
+      setLastSelectedCellRowId(selectedRow.id)
+    }
   })
 
   useHotkeys('enter', () => {
-    const selectedRow = displayData[selectedIndex]
+    if (selectedCellRowId) return
+
+    const selectedRow = allRows[selectedIndex]
     if (selectedRow) {
       console.log('Selected Row ID:', selectedRow.id, selectedRow.name)
       onSelectRow(selectedRow)
+      setLastSelectedCellRowId(selectedRow.id)
       setQuantityModalOpen({ id: selectedRow.id, data: selectedRow })
+      setshouldICleanSearchQuery(true)
     }
   })
 
@@ -183,65 +144,24 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       if (isFetchingNextPage) return
       if (observerRef.current) observerRef.current.disconnect()
       observerRef.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !barcode) {
+        if (entries[0].isIntersecting && hasNextPage) {
           fetchNextPage()
         }
       })
       if (node) observerRef.current.observe(node)
     },
-    [isFetchingNextPage, hasNextPage, fetchNextPage, barcode]
+    [isFetchingNextPage, hasNextPage, fetchNextPage]
   )
 
-  // 🔧 Smart refetch hook
-  const useSmartRefetch = () => {
-    return {
-      refetchCurrentData: async () => {
-        // Refetch current view
-        await refetchCurrentView()
+  //
 
-        // Update the first page of infinite query with fresh data
-        const freshData = await queryClient.fetchQuery(['inventoryCurrentView', currentViewFilter], () => requests.getInventoryDetails(currentViewFilter))
-
-        queryClient.setQueryData(['inventoryInfiniteScroll', infiniteScrollFilter, hasChange], (oldData) => {
-          if (!oldData || !freshData?.data?.data?.data) return oldData
-
-          // Update only the first page with fresh data
-          const newPages = [...oldData.pages]
-          if (newPages[0]) {
-            newPages[0] = {
-              ...newPages[0],
-              rows: freshData.data.data.data,
-            }
-          }
-
-          return {
-            ...oldData,
-            pages: newPages,
-          }
-        })
-      },
-
-      refetchAll: () => {
-        refetchCurrentView()
-        refetchInfinite()
-      },
-    }
-  }
-
-  const { refetchCurrentData, refetchAll } = useSmartRefetch()
-
-  // 🔄 Mutations
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
-      refetchCurrentData() // Only refetch current view
-
-      const firstrowid = currentRows[0]?.id
-      setshouldICleanSearchQuery(true)
-      childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
+      handleRefetchPage()
       successScanAudio.play()
     },
     onError: (err) => {
-      refetchCurrentData() // Only refetch current view
+      handleRefetchPage()
       errorScanAudio.play()
       error('Ошибка при сканирование!')
     },
@@ -256,132 +176,23 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     },
   })
 
-  // 🎯 Focus handlers
-  const handleFocus = () => {
-    const firstrowid = currentRows[0]?.id
-    const activeEl = document.activeElement
-    const classList = activeEl?.classList || []
-
-    if (classList.contains('ag-cell')) {
-      if (barcode && currentRows.length === 1) {
-        setQuantityModalOpen({ id: firstrowid, data: currentRows[0] })
-        return
-      } else if (lastSelectedCellRowId) {
-        setQuantityModalOpen({
-          id: firstrowid,
-          data: currentRows.find((item) => item?.id === lastSelectedCellRowId),
-        })
-        return
-      }
-    }
-
-    if (lastSelectedCellRowId != null && currentRows?.some((el) => el?.id === lastSelectedCellRowId)) {
-      childRef.current?.focusCellByRowId(lastSelectedCellRowId, 'fact_quantity')
-    } else {
-      setLastSelectedCellRowId(firstrowid)
-      childRef.current?.focusCellByRowId(firstrowid, 'fact_quantity')
-    }
-  }
-
-  const handleFocusUnit = () => {
-    const firstrowid = currentRows[0]?.id
-
-    if (lastSelectedCellRowId != null && currentRows?.some((el) => el?.id === lastSelectedCellRowId)) {
-      childRef.current?.focusCellByRowId(lastSelectedCellRowId, 'fact_unit')
-    } else {
-      setLastSelectedCellRowId(firstrowid)
-      childRef.current?.focusCellByRowId(firstrowid, 'fact_unit')
-    }
-  }
-
-  // 📊 Table configuration
-  const tableColumns = tableHeaderSelector({
-    importsColumns: columns,
-    t,
-    values,
-    editable: true,
-    level: 1,
-    setOrderStoring,
-    orderStoring,
-    id,
-    setScanedNumber,
-  })
-
-  // 📈 Excel export
   const { mutate: inventoryExcelReport, isLoading: isinventoryExcelReport } = useMutation(requests.getInventoryExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       console.log(err)
+
       error('Ошибка при скачать excel!')
     },
   })
 
-  // 📊 Statistics
   const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
 
-  // 🔄 Cell value changes
-  const onCellValueChanged = (params) => {
-    const { data, colDef, newValue, oldValue } = params
-
-    if (colDef?.field === 'expired_date' && newValue !== oldValue) {
-      const expire_date = newValue
-      if (expire_date < 0) {
-        errorScanAudio.play()
-        refetchCurrentData()
-        error('xato')
-        return
-      }
-      setScanedNumber({
-        id,
-        product_id: get(data, 'id'),
-        type: 'MANUAL',
-        expire_date: dayjs(expire_date).format('YYYY-MM-DD'),
-      })
-    }
-
-    if (colDef?.field === 'barcode' && newValue !== oldValue) {
-      const barcode = newValue
-      if (!barcode) {
-        errorScanAudio.play()
-        refetchCurrentData()
-        error('Штрих-код не может быть пустым!')
-        return
-      }
-      setScanedNumber({
-        id,
-        product_id: get(data, 'id'),
-        type: 'MANUAL',
-        barcode: barcode,
-      })
-    }
-
-    if (colDef?.field === 'retail_price' && newValue !== oldValue) {
-      const retail_price = newValue
-      if (retail_price < 0) {
-        errorScanAudio.play()
-        refetchCurrentData()
-        error('Розничная цена не может быть меньше 0!')
-        return
-      }
-      setScanedNumber({
-        id,
-        product_id: get(data, 'id'),
-        type: 'MANUAL',
-        retail_price: Number(retail_price),
-      })
-    }
-  }
-
-  // ⌨️ Hotkeys
   useHotkeys(
     ['ctrl+Backspace', 'ctrl+delete'],
     (e) => {
-      const activeEl = document.activeElement
-      const classList = activeEl?.classList || []
-
-      if (classList.contains('ag-cell')) {
+      if (lastSelectedCellRowId) {
         setScanedNumber({
           id,
           product_id: lastSelectedCellRowId,
@@ -395,18 +206,17 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       enableOnFormTags: true,
     }
   )
-
   useHotkeys(
     '*',
     (event) => {
-      let isexeption = document.activeElement.tagName === 'INPUT'
+      let isexeption = document.activeElement.tagName == 'INPUT'
       if (selectedCellRowId || isexeption) return
       const key = event.key.toLowerCase()
-
       if (/^[a-zа-яё0-9]$/i.test(key)) {
         if (shouldICleanSearchQuery) {
           setBarcode('')
           setBarcode((prev) => prev + key)
+
           setshouldICleanSearchQuery(false)
           return
         }
@@ -415,6 +225,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       if (event.code === 'Backspace') {
         setBarcode((prev) => prev.slice(0, -1))
       }
+
       if (event.code === 'Escape') {
         setBarcode('')
       }
@@ -427,80 +238,62 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   )
 
-  useHotkeys(
-    '*',
-    (event) => {
-      if (selectedCellRowId) return
+  useEffect(() => {
+    if (rowRefs.current[selectedIndex]) {
+      rowRefs.current[selectedIndex].scrollIntoView({
+        behavior: 'smooth',
+        block: 'center', // Changed from 'nearest' to 'center'
+      })
+    }
+  }, [selectedIndex])
 
-      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-        let exeption_ids = ['expired_date', 'barcode', 'retail_price']
-        let isexeption = exeption_ids.includes(document.activeElement.getAttribute('col-id'))
-        if (document.activeElement?.tagName === 'INPUT' || isexeption) return
-        handleFocus()
+  useHotkeys(
+    'ctrl+shift',
+    () => {
+      if (lastSelectedCellRowId) {
+        setSelectedCellRowId(lastSelectedCellRowId)
       }
     },
     {
-      enableOnFormTags: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
+      preventDefault: true,
     }
   )
 
-  // 🔄 Effects
-  useEffect(() => {
-    if (selectedCellRowId) {
-      setLastSelectedCellRowId(selectedCellRowId)
+  // 🔄 Function to refetch a specific page
+  const refetchSpecificPage = async (targetOffset) => {
+    try {
+      // Fetch the specific page
+      const pageData = await fetchPage({ pageParam: targetOffset })
+
+      // Update the query cache for the specific page
+      queryClient.setQueryData(['inventoryWithCheckingDetails', id, debouncedSearchBarcode, hasChange, orderStoring], (oldData) => {
+        if (!oldData) return { pages: [pageData], pageParams: [targetOffset] }
+
+        // Replace or append the page corresponding to targetOffset
+        const updatedPages = oldData.pages.map((page) => (page.nextOffset === targetOffset + LIMIT ? pageData : page))
+
+        // If the page doesn't exist in the cache, append it
+        if (!updatedPages.some((page) => page.nextOffset === targetOffset + LIMIT)) {
+          updatedPages.push(pageData)
+        }
+
+        return {
+          ...oldData,
+          pages: updatedPages,
+          pageParams: oldData.pageParams.map((param, index) => (updatedPages[index]?.nextOffset - LIMIT === targetOffset ? targetOffset : param)),
+        }
+      })
+    } catch (err) {
+      console.error('Error refetching page:', err)
+      error('Ошибка при обновлении страницы!')
     }
-  }, [selectedCellRowId])
+  }
 
-  useEffect(() => {
-    if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-      dispatch(changeColumnSequence(formattedData))
-    }
-  }, [])
-
-  useEffect(() => {
-    if (status === 'checking') {
-      setTableType('LIGHT')
-    } else {
-      setTableType('MODERN')
-    }
-  }, [status])
-
-  useEffect(() => {
-    const count = currentViewData?.data?.data?._meta?.total_count
-    const offsetsCount = Math.ceil(count / Number(values?.limit))
-    setOffsetCount(offsetsCount || 0)
-
-    currentRows?.map((importData) => {
-      methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
-      methods.setValue(`net_amount_${get(importData, 'id')}`, get(importData, 'net_amount'))
-    })
-  }, [currentViewData?.data, values?.limit, currentRows])
-
-  useEffect(() => {
-    if (quantityModalOpen === false && typeof quantityModalOpen === 'boolean') {
-      handleFocus()
-    }
-  }, [quantityModalOpen])
-
-  useEffect(() => {
-    if (displayData) {
-      setRowData([...displayData])
-    }
-  }, [displayData])
-
-  // Determine loading state
-  const isLoading = isCurrentViewLoading || isInfiniteLoading
-
+  // Example: Trigger refetch for offset=150
+  const handleRefetchPage = (offset = 0) => {
+    refetchSpecificPage(offset) // Refetch only the page for offset=150
+  }
   return (
     <LoadingContainer readyState={!isfinishInventoryChecking && !hasChange}>
       {isLoading && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
@@ -518,19 +311,19 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
 
         <Container>
           <Box display='flex' flexDirection='column' position='relative' pb={'20px'}>
-            {/* <NewLightTableForInventory
+            <NewLightTableForInventory
               setSelectedIndex={setSelectedIndex}
               selectedIndex={selectedIndex}
               rowRefs={rowRefs}
+              setLastSelectedCellRowId={setLastSelectedCellRowId}
               lastRowRef={lastRowRef}
               isFetchingNextPage={isFetchingNextPage}
-              data={displayData}
-              inventoryWithCheckingDetails={currentViewData || { data: { data: { data: displayData } } }}
-            /> */}
+              data={allRows}
+              inventoryWithCheckingDetails={data}
+            />
           </Box>
         </Container>
       </FormProvider>
-
       <ConfirmDialog
         open={openFinishConfirmDialog}
         setOpen={() => setOpenFinishConfirmDialog(false)}
@@ -565,17 +358,16 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
           </>
         }
       />
-
-      <InventoryDetailModal setBarcode={setBarcode} refetch={refetchCurrentData} open={selectedCellRowId} setOpen={setSelectedCellRowId} />
-
+      <InventoryDetailModalNew setBarcode={setBarcode} refetch={refetch} open={selectedCellRowId} setOpen={setSelectedCellRowId} />
       <ChangeQuantityModal
+        selectedIndex={selectedIndex}
         setshouldICleanSearchQuery={setshouldICleanSearchQuery}
         setBarcode={setBarcode}
-        refetch={refetchCurrentData}
+        refetch={handleRefetchPage}
+        selectedCellRowId={selectedCellRowId}
         open={quantityModalOpen}
         setOpen={setQuantityModalOpen}
       />
-
       <Box
         sx={{
           position: 'fixed',
@@ -606,7 +398,6 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
             <InputSearch
               icon={<BarcodeIcon />}
               onKeyDown={({ code }) => {
-                console.log(code)
                 code === 'Enter' && handleFocus()
               }}
               onChange={({ target }) => {
@@ -619,7 +410,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
               }}
               id='producrs-search'
               name='search'
-              disabled={status === 'checking'}
+              disabled={status == 'checking'}
               value={barcode}
               setSearchTerm={setBarcode}
               placeholder={t('input.search.product.multi')}
@@ -634,31 +425,31 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
               defaultValue='ALL'
               onChange={(e) => setStatus(e)}
               options={[
-                { title: t('switch.title.all'), value: 'ALL', count: get(currentViewData, 'data.data.stats_count.all', 0) },
+                { title: t('switch.title.all'), value: 'ALL', count: 0 },
                 {
                   title: t('switch.title.scanned_count'),
                   value: 'scanned',
-                  count: get(currentViewData, 'data.data.stats_count.scanned', 0),
+                  count: 0,
                 },
                 {
                   title: t('switch.title.shortage_count'),
                   value: 'shortage',
-                  count: get(currentViewData, 'data.data.stats_count.shortage', 0),
+                  count: 0,
                 },
                 {
                   title: t('switch.title.surplus_count'),
                   value: 'surplus',
-                  count: get(currentViewData, 'data.data.stats_count.surplus', 0),
+                  count: 0,
                 },
                 {
                   title: t('switch.title.zero_price'),
                   value: 'zero_price',
-                  count: get(currentViewData, 'data.data.stats_count.zero_price', 0),
+                  count: 0,
                 },
                 {
                   title: 'Проверка',
                   value: 'checking',
-                  count: get(currentViewData, 'data.data.stats_count.zero_price', 0),
+                  count: 0,
                 },
               ]}
             />
@@ -668,19 +459,27 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
           <Button color='secondary' sx={{ height: '48px', mr: '10px' }} onClick={() => setOpenUpload(true)}>
             <UploadFile />
           </Button>
-          <Box>
-            <ColumnsFilterButtonForAll
-              title={t('ag_grid.table_setting.label')}
-              columns={tableColumns}
-              isCatalog={false}
-              resetTableHeader={resetTableHeader}
-              changeColumnSequence={changeColumnSequence}
-            />
-          </Box>
         </Box>
+        {/* <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
+          <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Програм Cумма</Typography>
+          <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
+            {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'), 'сум')}
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
+          <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Факт Cумма</Typography>
+          <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
+            {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'), 'сум')}
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
+          <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Разница сумма</Typography>
+          <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
+            {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'), 'сум')}
+          </Typography>
+        </Box> */}
       </Box>
-
-      <UploadCV open={openUpload} setHasChange={setHasChange} refetch={refetchCurrentData} setOpen={setOpenUpload} />
+      <UploadCV open={openUpload} setHasChange={setHasChange} refetch={refetch} setOpen={setOpenUpload} />
     </LoadingContainer>
   )
 }
