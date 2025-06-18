@@ -1,6 +1,5 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { UploadFile } from '@mui/icons-material'
 import { Box, Button, Container, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
@@ -17,6 +16,8 @@ import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import './table.css'
 
+import { Download } from '@mui/icons-material'
+import { LoadingButton } from '@mui/lab'
 import { useMutation, useQuery } from 'react-query'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
@@ -26,25 +27,23 @@ import LoadingBlock from '../../../../components/LoadingBlock'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { error } from '../../../../utils/toast'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
+import ChangeAdditionalsModal from './changeAdditionalsModal'
 import ChangeQuantityModal from './changeQuantityModal'
 import InventoryDetailModalNew from './inventoryDetailModalNew'
 import NewLightTableForInventory from './newLightTableForInventory'
-import UploadCV from './uploadCV'
 
 const LIMIT = 50
 
 const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
-  const [openUpload, setOpenUpload] = useState(false)
-  const [hasChange, setHasChange] = useState(false)
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [barcode, setBarcode] = useState('')
-
   const methods = useForm()
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
   const [selectedCellRowId, setSelectedCellRowId] = useState(false)
+  const [openChangeAdditionalsModel, setOpenChangeAdditionalsModel] = useState(false)
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(false)
   const [quantityModalOpen, setQuantityModalOpen] = useState(false)
   const [shouldICleanSearchQuery, setshouldICleanSearchQuery] = useState(false)
@@ -83,7 +82,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
 
   // 🔄 useInfiniteQuery
   const { data, fetchNextPage, refetch, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery(
-    ['inventoryWithCheckingDetails', id, debouncedSearchBarcode, hasChange, orderStoring],
+    ['inventoryWithCheckingDetails', id, debouncedSearchBarcode, orderStoring],
     fetchPage,
     {
       getNextPageParam: (lastPage) => (lastPage.rows.length < LIMIT ? undefined : lastPage.nextOffset),
@@ -99,8 +98,6 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     setSelectedIndex((prev) => Math.max(0, prev - 1))
     const selectedRow = allRows[selectedIndex - 1]
     if (selectedRow) {
-      console.log(selectedRow.name)
-
       setLastSelectedCellRowId(selectedRow.id)
     }
   })
@@ -109,8 +106,6 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     setSelectedIndex((prev) => Math.min(rowCount - 1, prev + 1))
     const selectedRow = allRows[selectedIndex + 1]
     if (selectedRow) {
-      console.log(selectedRow.name)
-
       setLastSelectedCellRowId(selectedRow.id)
     }
   })
@@ -154,14 +149,15 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   )
 
   //
+  let currentOffset = Math.floor(selectedIndex / 50) * 50
 
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
-      handleRefetchPage()
+      handleRefetchPage(currentOffset)
       successScanAudio.play()
     },
     onError: (err) => {
-      handleRefetchPage()
+      handleRefetchPage(currentOffset)
       errorScanAudio.play()
       error('Ошибка при сканирование!')
     },
@@ -192,7 +188,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   useHotkeys(
     ['ctrl+Backspace', 'ctrl+delete'],
     (e) => {
-      if (lastSelectedCellRowId) {
+      if (lastSelectedCellRowId && !selectedCellRowId) {
         setScanedNumber({
           id,
           product_id: lastSelectedCellRowId,
@@ -259,6 +255,25 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       preventDefault: true,
     }
   )
+  useHotkeys(
+    'shift',
+    () => {
+      if (selectedCellRowId) return
+
+      const selectedRow = allRows[selectedIndex]
+      if (selectedRow) {
+        console.log('Selected Row ID:', selectedRow.id, selectedRow.name)
+        onSelectRow(selectedRow)
+        setLastSelectedCellRowId(selectedRow.id)
+        setOpenChangeAdditionalsModel({ id: selectedRow.id, data: selectedRow })
+        setshouldICleanSearchQuery(true)
+      }
+    },
+    {
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+      preventDefault: true,
+    }
+  )
 
   // 🔄 Function to refetch a specific page
   const refetchSpecificPage = async (targetOffset) => {
@@ -267,7 +282,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       const pageData = await fetchPage({ pageParam: targetOffset })
 
       // Update the query cache for the specific page
-      queryClient.setQueryData(['inventoryWithCheckingDetails', id, debouncedSearchBarcode, hasChange, orderStoring], (oldData) => {
+      queryClient.setQueryData(['inventoryWithCheckingDetails', id, debouncedSearchBarcode, orderStoring], (oldData) => {
         if (!oldData) return { pages: [pageData], pageParams: [targetOffset] }
 
         // Replace or append the page corresponding to targetOffset
@@ -295,7 +310,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     refetchSpecificPage(offset) // Refetch only the page for offset=150
   }
   return (
-    <LoadingContainer readyState={!isfinishInventoryChecking && !hasChange}>
+    <LoadingContainer readyState={!isfinishInventoryChecking}>
       {isLoading && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
       <FormProvider {...methods}>
         <Header
@@ -368,6 +383,15 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
         open={quantityModalOpen}
         setOpen={setQuantityModalOpen}
       />
+      <ChangeAdditionalsModal
+        selectedIndex={selectedIndex}
+        setshouldICleanSearchQuery={setshouldICleanSearchQuery}
+        setBarcode={setBarcode}
+        refetch={handleRefetchPage}
+        selectedCellRowId={selectedCellRowId}
+        open={openChangeAdditionalsModel}
+        setOpen={setOpenChangeAdditionalsModel}
+      />
       <Box
         sx={{
           position: 'fixed',
@@ -398,7 +422,9 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
             <InputSearch
               icon={<BarcodeIcon />}
               onKeyDown={({ code }) => {
-                code === 'Enter' && handleFocus()
+                if (code === 'Enter') {
+                  document.activeElement.blur()
+                }
               }}
               onChange={({ target }) => {
                 if (shouldICleanSearchQuery) {
@@ -455,31 +481,28 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
             />
           </Box>
         </Box>
-        <Box display={'flex'} alignItems={'center'}>
-          <Button color='secondary' sx={{ height: '48px', mr: '10px' }} onClick={() => setOpenUpload(true)}>
-            <UploadFile />
-          </Button>
+        <Box
+          sx={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            display: 'flex',
+            backgroundColor: 'gray.50',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
+          }}
+          alignItems={'center'}
+        >
+          <LoadingButton
+            loading={isinventoryExcelReport}
+            onClick={() => {
+              inventoryExcelReport({ limit: 1000000 })
+            }}
+          >
+            <Download />
+          </LoadingButton>
         </Box>
-        {/* <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
-          <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Програм Cумма</Typography>
-          <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
-            {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_current_sum'), 'сум')}
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
-          <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Факт Cумма</Typography>
-          <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
-            {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_fact_sum'), 'сум')}
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', mr: '20px' }}>
-          <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>Разница сумма</Typography>
-          <Typography sx={{ fontSize: '20px', fontWeight: '400' }}>
-            {thousandDivider(get(inventoryWithCheckingDetails, 'data.data.total_data.total_difference_sum'), 'сум')}
-          </Typography>
-        </Box> */}
       </Box>
-      <UploadCV open={openUpload} setHasChange={setHasChange} refetch={refetch} setOpen={setOpenUpload} />
     </LoadingContainer>
   )
 }

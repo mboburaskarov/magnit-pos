@@ -14,7 +14,8 @@ import { useMutation } from 'react-query'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import { error } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
-import ChangeTransitionQuantityModal from '../inventoryWithCheckingNew/changeTransitionQuantityModal'
+import ChangeFlowAdditionalsModal from './changeFlowAdditionalsModal'
+import ChangeFlowQuantityModal from './changeFlowQuantityModal'
 import NewLightTableForInventory from './newLightTableForInventory'
 
 const LIMIT = 50
@@ -26,6 +27,8 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
 
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(false)
   const [quantityModalOpen, setQuantityModalOpen] = useState(false)
+  const [openChangeAdditionalsModel, setOpenChangeAdditionalsModel] = useState(false)
+
   const [debouncedSearchBarcode] = useDebounce(barcode, 200)
 
   //
@@ -138,7 +141,7 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
   useHotkeys(
     ['ctrl+Backspace', 'ctrl+delete'],
     (e) => {
-      if (lastSelectedCellRowId) {
+      if (lastSelectedCellRowId && open) {
         setScanedNumber({
           id,
           product_id: lastSelectedCellRowId,
@@ -161,6 +164,27 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
       })
     }
   }, [selectedIndex])
+  useHotkeys(
+    'shift',
+    () => {
+      if (!lastSelectedCellRowId || !open) {
+        return
+      }
+
+      const selectedRow = allRows[selectedIndex]
+      if (selectedRow) {
+        console.log('Selected Row ID:', selectedRow.id, selectedRow.name)
+        onSelectRow(selectedRow)
+        setLastSelectedCellRowId(selectedRow.id)
+        setOpenChangeAdditionalsModel({ id: selectedRow.id, data: selectedRow })
+        setshouldICleanSearchQuery(true)
+      }
+    },
+    {
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+      preventDefault: true,
+    }
+  )
 
   return (
     <StyledEmptyDialog
@@ -208,7 +232,8 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
           />
         </Box>
       </Box>
-      <ChangeTransitionQuantityModal setBarcode={setBarcode} refetch={refetchFlow} open={quantityModalOpen} setOpen={setQuantityModalOpen} />
+      <ChangeFlowQuantityModal setBarcode={setBarcode} refetch={refetchFlow} open={quantityModalOpen} setOpen={setQuantityModalOpen} />
+      <ChangeFlowAdditionalsModal setBarcode={setBarcode} refetch={refetchFlow} open={openChangeAdditionalsModel} setOpen={setOpenChangeAdditionalsModel} />
     </StyledEmptyDialog>
   )
 }
