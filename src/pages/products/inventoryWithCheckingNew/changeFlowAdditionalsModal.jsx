@@ -1,10 +1,10 @@
-import { Box, TextField, Typography } from '@mui/material'
+import { Box, Button, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
 import { useParams } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
@@ -14,29 +14,30 @@ import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 
-export default function ChangeQuantityModal({ open, selectedIndex, selectedCellRowId, setshouldICleanSearchQuery, setBarcode, refetch, setOpen }) {
-  const methods = useForm()
-  const { reset } = methods
-  const { id } = useParams()
+export default function ChangeFlowAdditionalsModal({ open, setBarcode, refetch, setOpen }) {
   const theme = useTheme()
-  const { t } = useTranslation()
+  const { id } = useParams()
+  const methods = useForm()
+
+  const { reset } = methods
 
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
   const qtyRef = useRef([])
-  const [factQuantity, setFactQuantity] = useState('')
-  const [factUnit, setFactUnit] = useState('')
-  const [factUnitRef, setFactUnitRef] = useState(null)
-  let currentOffset = Math.floor(selectedIndex / 50) * 50
-  const { mutate: setScanedNumber, isLoading: issetScanedNumber } = useMutation(requests.sendScannedInventoryNumber, {
-    onSuccess: ({ data }) => {
-      refetch(currentOffset)
+
+  const [newRtailPrice, setNewRtailPrice] = useState('')
+  const [newExpiredDate, setNewExpiredDate] = useState('')
+  const [newExpiredDateRef, setNewExpiredDateRef] = useState(null)
+
+  const { mutate: setScanedNumber, isLoading: issetScanedNumber } = useMutation(requests.sendScannedInventoryFlowNumber, {
+    onSuccess: () => {
+      refetch()
       setOpen(false)
       successScanAudio.play()
-      setshouldICleanSearchQuery(true)
+      setBarcode('')
     },
     onError: () => {
-      refetch(currentOffset)
+      refetch()
       errorScanAudio.play()
       error('Ошибка при сканирование!')
     },
@@ -44,9 +45,10 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
 
   useEffect(() => {
     reset({}, { keepDirty: true })
+
     if (open) {
-      setFactQuantity('')
-      setFactUnit('')
+      setNewRtailPrice(get(open, 'data.retail_price', 0))
+      setNewExpiredDate(get(open, 'data.expire_date', 0))
       setTimeout(() => {
         qtyRef.current?.[0]?.focus()
       }, 0)
@@ -57,7 +59,7 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
     '*',
     (event) => {
       if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd' || event.code === 'ShiftRight') {
-        factUnitRef?.focus()
+        newExpiredDateRef?.focus()
       }
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         let activElem = document.activeElement.tagName
@@ -67,7 +69,7 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
           //
           return
         }
-        if (Number(factQuantity) === 0 && Number(factUnit) === 0) {
+        if (Number(newRtailPrice) === 0 && Number(newExpiredDate) === 0) {
           setOpen(false)
           return
         }
@@ -75,13 +77,6 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
           setOpen(false)
           return
         }
-        setScanedNumber({
-          id,
-          product_id: get(open, 'data.id'),
-          type: 'MANUAL',
-          fact_quantity: Number(factQuantity),
-          fact_unit: Number(factUnit),
-        })
       }
     },
     {
@@ -90,13 +85,21 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
-
+  const onSubmit = () => {
+    setScanedNumber({
+      id,
+      product_id: get(open, 'data.id'),
+      type: 'MANUAL',
+      retail_price: Number(newRtailPrice),
+      expire_date: dayjs(newExpiredDate, 'YYYY.MM.DD').format('YYYY-MM-DD'),
+    })
+  }
   return (
     <StyledEmptyDialog
       overflowVisible
       maxWidth='500px'
       onClose={() => setOpen(false)}
-      open={open && !selectedCellRowId}
+      open={open}
       noHeader
       title={'Создать бонусный продукт'}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
@@ -116,17 +119,19 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
           },
         }}
       >
-        <Typography sx={{ m: 'auto', width: '100%', textAlign: 'center', mb: '20px', fontWeight: '600' }}>{get(open, 'data.name')}</Typography>
+        <Typography sx={{ m: 'auto', width: '100%', textAlign: 'center', mb: '20px', fontWeight: '600' }}>
+          {get(open, 'data.name')} ({get(open, 'data.id')}) flow
+        </Typography>
 
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ display: 'flex', mb: '20px', justifyContent: 'space-between' }}>
-            <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Факт УП</Typography>
+            <Box width={'100%'}>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Цена</Typography>
               <TextField
                 type='number'
-                name='pack'
-                value={factQuantity}
-                onChange={(e) => setFactQuantity(e.target.value)}
+                name='retial_price'
+                value={newRtailPrice}
+                onChange={(e) => setNewRtailPrice(e.target.value)}
                 inputRef={(e) => (qtyRef.current[0] = e)}
                 onKeyDown={(e) => {
                   const invalidKeys = ['e', 'E', '+', '-', 'ArrowDown']
@@ -135,22 +140,35 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
               />
             </Box>
 
-            <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Факт кол-во</Typography>
+            <Box width={'100%'}>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Срок</Typography>
               <TextField
-                type='number'
-                name='unit'
-                disabled={get(open, 'data.unit_per_pack') == 1}
-                value={factUnit}
-                onChange={(e) => setFactUnit(e.target.value)}
-                inputRef={(ref) => setFactUnitRef(ref)}
+                sx={{ width: '100%' }}
+                type='date'
+                name='expire_date'
+                value={newExpiredDate}
+                inputRef={(ref) => setNewExpiredDateRef(ref)}
+                onChange={(e) => setNewExpiredDate(e.target.value)}
                 onKeyDown={(e) => {
+                  if (e.code == 'Enter') {
+                    onSubmit()
+                  }
                   const invalidKeys = ['e', 'E', '+', '-', 'ArrowDown']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
               />
             </Box>
           </Box>
+
+          <Button
+            sx={{
+              height: '46px',
+              mt: '20px',
+            }}
+            onClick={() => onSubmit()}
+          >
+            Сохранить
+          </Button>
         </Box>
       </Box>
     </StyledEmptyDialog>

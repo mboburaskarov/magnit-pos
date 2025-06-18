@@ -13,7 +13,7 @@ import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 
-export default function ChangeTransitionQuantityModal({ open, setBarcode, refetch, setOpen }) {
+export default function ChangeFlowQuantityModal({ open, setBarcode, refetch, setOpen }) {
   const theme = useTheme()
   const { id } = useParams()
   const methods = useForm()
@@ -132,7 +132,7 @@ export default function ChangeTransitionQuantityModal({ open, setBarcode, refetc
                 onChange={(e) => setFactQuantity(e.target.value)}
                 inputRef={(e) => (qtyRef.current[0] = e)}
                 onKeyDown={(e) => {
-                  const invalidKeys = ['e', 'E', '+', '-']
+                  const invalidKeys = ['e', 'E', '+', '-', 'ArrowDown']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
               />
@@ -142,10 +142,11 @@ export default function ChangeTransitionQuantityModal({ open, setBarcode, refetc
               <TextField
                 type='number'
                 value={factUnit}
+                disabled={get(open, 'data.unit_per_pack') == 1}
                 onChange={(e) => setFactUnit(e.target.value)}
                 inputRef={(ref) => setFactUnitRef(ref)}
                 onKeyDown={(e) => {
-                  const invalidKeys = ['e', 'E', '+', '-']
+                  const invalidKeys = ['e', 'E', '+', '-', 'ArrowDown']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
               />

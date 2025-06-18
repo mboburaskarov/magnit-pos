@@ -3,6 +3,7 @@ import LFLReport from '../../pages/reports/lfl'
 import ProductReportPage from '../../pages/reports/productReport'
 import SellerBonus from '../../pages/reports/sellerBonus'
 import StoreReportPage from '../../pages/reports/storeReport'
+import TopReportsPage from '../../pages/reports/topReports'
 
 const reportsRoutes = {
   path: 'reports',
@@ -20,6 +21,10 @@ const reportsRoutes = {
     {
       path: 'product-report',
       children: [{ path: '', element: <ProductReportPage /> }],
+    },
+    {
+      path: 'top-reports',
+      element: <TopReportsPage />,
     },
     {
       path: 'store-report',

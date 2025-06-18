@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from '@mui/material'
+import { Box, Button, TextField, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { get } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
@@ -14,7 +14,7 @@ import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 
-export default function ChangeQuantityModal({ open, selectedIndex, selectedCellRowId, setshouldICleanSearchQuery, setBarcode, refetch, setOpen }) {
+export default function ChangeAdditionalsModal({ open, selectedIndex, selectedCellRowId, setshouldICleanSearchQuery, refetch, setOpen }) {
   const methods = useForm()
   const { reset } = methods
   const { id } = useParams()
@@ -23,10 +23,10 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
 
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
-  const qtyRef = useRef([])
-  const [factQuantity, setFactQuantity] = useState('')
-  const [factUnit, setFactUnit] = useState('')
-  const [factUnitRef, setFactUnitRef] = useState(null)
+  const retilaPirceRef = useRef([])
+  const [newRtailPrice, setNewRetailPrice] = useState('')
+  const [newBarcode, setNewBarcode] = useState('')
+  const [newBarcodeRef, setNewBarcodeRef] = useState(null)
   let currentOffset = Math.floor(selectedIndex / 50) * 50
   const { mutate: setScanedNumber, isLoading: issetScanedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
@@ -44,11 +44,12 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
 
   useEffect(() => {
     reset({}, { keepDirty: true })
+
     if (open) {
-      setFactQuantity('')
-      setFactUnit('')
+      setNewRetailPrice(get(open, 'data.retail_price', 0))
+      setNewBarcode(get(open, 'data.barcode', 0))
       setTimeout(() => {
-        qtyRef.current?.[0]?.focus()
+        retilaPirceRef.current?.[0]?.focus()
       }, 0)
     }
   }, [open])
@@ -57,17 +58,17 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
     '*',
     (event) => {
       if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd' || event.code === 'ShiftRight') {
-        factUnitRef?.focus()
+        newBarcodeRef?.focus()
       }
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         let activElem = document.activeElement.tagName
         if (activElem != 'INPUT') {
           //
-          qtyRef?.current?.[0]?.focus()
+          retilaPirceRef?.current?.[0]?.focus()
           //
           return
         }
-        if (Number(factQuantity) === 0 && Number(factUnit) === 0) {
+        if (Number(newRtailPrice) === 0 && Number(newBarcode) === 0) {
           setOpen(false)
           return
         }
@@ -75,13 +76,6 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
           setOpen(false)
           return
         }
-        setScanedNumber({
-          id,
-          product_id: get(open, 'data.id'),
-          type: 'MANUAL',
-          fact_quantity: Number(factQuantity),
-          fact_unit: Number(factUnit),
-        })
       }
     },
     {
@@ -90,7 +84,15 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
-
+  const onSubmit = () => {
+    setScanedNumber({
+      id,
+      product_id: get(open, 'data.id'),
+      type: 'MANUAL',
+      retail_price: Number(newRtailPrice),
+      barcode: newBarcode,
+    })
+  }
   return (
     <StyledEmptyDialog
       overflowVisible
@@ -121,13 +123,13 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ display: 'flex', mb: '20px', justifyContent: 'space-between' }}>
             <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Факт УП</Typography>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Цена</Typography>
               <TextField
                 type='number'
-                name='pack'
-                value={factQuantity}
-                onChange={(e) => setFactQuantity(e.target.value)}
-                inputRef={(e) => (qtyRef.current[0] = e)}
+                name='retial_price'
+                value={newRtailPrice}
+                onChange={(e) => setNewRetailPrice(e.target.value)}
+                inputRef={(e) => (retilaPirceRef.current[0] = e)}
                 onKeyDown={(e) => {
                   const invalidKeys = ['e', 'E', '+', '-', 'ArrowDown']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
@@ -136,21 +138,31 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
             </Box>
 
             <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Факт кол-во</Typography>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Штрих-код</Typography>
               <TextField
                 type='number'
-                name='unit'
-                disabled={get(open, 'data.unit_per_pack') == 1}
-                value={factUnit}
-                onChange={(e) => setFactUnit(e.target.value)}
-                inputRef={(ref) => setFactUnitRef(ref)}
+                name='barcode'
+                value={newBarcode}
+                onChange={(e) => setNewBarcode(e.target.value)}
+                inputRef={(ref) => setNewBarcodeRef(ref)}
                 onKeyDown={(e) => {
+                  if (e.code == 'Enter') {
+                    onSubmit()
+                  }
                   const invalidKeys = ['e', 'E', '+', '-', 'ArrowDown']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
               />
             </Box>
           </Box>
+          <Button
+            sx={{
+              height: '46px',
+            }}
+            onClick={() => onSubmit()}
+          >
+            Сохранить
+          </Button>
         </Box>
       </Box>
     </StyledEmptyDialog>

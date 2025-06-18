@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridUnSelectableSimpleTable from '../../../../components/AgGridTable/AgGridTableSimple'
+import AgGridUnSelectableSimpleTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
@@ -91,7 +91,6 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
   } = useQuery(['returnToWarehouseWithCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
     requests.getReturnToWarehouseDetails(returnToWarehouseWithCheckingDetailsFilter)
   )
-  console.log(returnToWarehouseWithCheckingDetails)
 
   /// filter table columns with permission
   useEffect(() => {

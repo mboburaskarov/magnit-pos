@@ -1,53 +1,64 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/returnToWarehouseTableColumns'
-import CreateReturn from './createReturn'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/topReportsTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
-export default function ReturnToWarehousePage() {
+
+export default function TopReportsPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { columns, loading } = useSelector((state) => state.returnToWarehouseTableColumns)
+  const { columns, loading } = useSelector((state) => state.topReportsTableColumns)
   const { values } = useQueryParams()
+  const [appType, setAppType] = useState('ALL')
+
+  const [selectClients, setselectClients] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [orderModel, setOrderModel] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
-
   const [filterMenu, setFilterMenu] = useState(false)
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const selectClientsFunc = (isChecked, id) => {
+    if (isChecked) {
+      setselectClients((p) => [...p, id])
+    } else {
+      setselectClients((p) => p.filter((ids) => ids !== id))
+    }
+  }
   const tableColumns = tableHeaderSelector({
-    importsColumns: columns,
+    clientsColumns: columns,
     t,
     values,
     setImages: setOpenImageGallery,
-    setOpenConfirmDialog: setOpenConfirmDialog,
+    setOpenConfirmDialog,
+    selectClientsFunc,
   })
 
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
+        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
         ?.map((el) => ({
           ...el,
           label: el.headerName,
@@ -60,63 +71,46 @@ export default function ReturnToWarehousePage() {
     }
   }, [])
 
-  const returnsListFilter = useMemo(() => {
+  const clientsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-
       store_id: values?.store_id,
-      start_date: values?.start_date,
-      end_date: values?.end_date,
-      status: values?.status,
-      writeoff_date: values?.import_date,
-      received_amount_to: values?.received_amount_to,
-      received_amount_from: values?.received_amount_from,
     }
-  }, [
-    values?.offset,
-    values?.limit,
-    values?.end_date,
-    values?.start_date,
-    values?.search,
-    values?.status,
-    values?.store_id,
-    values?.received_amount_to,
-    values?.received_amount_from,
-  ])
+  }, [values?.offset, values?.limit, values?.search, values?.store_id])
   const {
-    data: returnsList,
-    isLoading: returnsListLoading,
-    isFetching: isFetchingreturnsList,
+    data: clientsList,
+    isLoading: clientsListLoading,
+    isFetching: isFetchingclientsList,
     refetch,
-  } = useQuery(['returnsList', returnsListFilter], () => requests.getAllReturnToWarehouse(returnsListFilter))
+  } = useQuery(['clientsList', clientsListFilter], () => requests.getAllCustomers(clientsListFilter))
 
-  useEffect(() => {
-    refetch()
-  }, [returnsListFilter])
-
-  useEffect(() => {
-    const count = returnsList?.data?.data?._meta?.total_count
-
-    const offsetsCount = Math.ceil(count / Number(values?.limit))
-    setOffsetCount(offsetsCount || 0)
-  }, [returnsList?.data, values?.limit])
-
-  const { mutate: deleteWriteOff, isLoading: isDeletingProduct } = useMutation(requests.deleteReturnToWarehouse, {
+  const { mutate: deleteClient, isLoading: isDeletingProduct } = useMutation(requests.deleteClient, {
     onSuccess: () => {
       refetch()
-      success('Возврат был успешно удален!')
+      success('Kлиент успешно удален!')
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
-      error('Ошибка при удалении Возврат!')
+      error('Ошибка при удалении клиент!')
       setOpenConfirmDialog(null)
       console.log('err', err)
     },
   })
-  const { mutate: getReturnToWarehouseExcelReport, isLoading: isgetReturnToWarehouseExcelReport } = useMutation(requests.getReturnToWarehouseExcelReport, {
+
+  useEffect(() => {
+    refetch()
+  }, [clientsListFilter])
+
+  useEffect(() => {
+    const count = clientsList?.data?.data?._meta?.total_count
+    setselectClients([])
+    const offsetsCount = Math.ceil(count / Number(values?.limit))
+    setOffsetCount(offsetsCount || 0)
+  }, [clientsList?.data, values?.limit])
+  const { mutate: clientsExcelReport, isLoading: isclientsExcelReport } = useMutation(requests.getClientsExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
@@ -130,9 +124,24 @@ export default function ReturnToWarehousePage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {'Возврат'}
+          Топ отчеты
         </Typography>
-
+        <Box minWidth={320} mt={'10px'} sx={{ display: 'flex' }}>
+          <InputSwitch
+            uncontrolled
+            id='app-type'
+            name='app-type'
+            value={appType}
+            defaultValue='ALL'
+            onChange={(e) => setAppType(e)}
+            options={[
+              { title: 'Топ филиалам', value: 'ALL', count: 0 },
+              { title: 'Топ продукты', value: 'active', count: 0 },
+              { title: 'Топ продавцы', value: 'inactive', count: 0 },
+              { title: 'Бонусные продукты', value: 'low-stock', count: 0 },
+            ]}
+          />
+        </Box>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box
@@ -146,7 +155,7 @@ export default function ReturnToWarehousePage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={'Возврат номер, наименование'} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'ID, Имя, Телефон'} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>
@@ -175,6 +184,33 @@ export default function ReturnToWarehousePage() {
                 </Typography>
               </Button>
             </Box>
+            {selectClients.length > 0 && (
+              <>
+                <Box minWidth={48} ml={'16px'}>
+                  <Button
+                    sx={{
+                      height: '48px',
+                      padding: 0,
+                      bgcolor: '#fff',
+                      border: '1px solid #ECEDF2',
+                      color: 'dark.500',
+                      fontWeight: '500',
+                      fontSize: '16px',
+                      lineHeight: '24px',
+                      '& span': {
+                        mr: '12px',
+                      },
+                    }}
+                    fullWidth
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => deleteClient({ data: selectClients })}
+                  >
+                    <DeleteIcon width='24px' />
+                  </Button>
+                </Box>
+              </>
+            )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box>
@@ -182,45 +218,35 @@ export default function ReturnToWarehousePage() {
                 title={t('ag_grid.table_setting.label')}
                 columns={tableColumns}
                 isCatalog={false}
-                resetTableHeader={resetTableHeader}
                 changeColumnSequence={changeColumnSequence}
+                resetTableHeader={resetTableHeader}
               />
             </Box>
-            <CheckAccess id={'create-return-to-warehouse'} noAccess>
-              <Box minWidth={156}>
-                <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
-                  Новое возврат
-                </Button>
-              </Box>
-            </CheckAccess>
           </Box>
         </Box>
         <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
-        <CreateReturn refetch={refetch} open={orderModel} setOpen={setOrderModel} />
-
         <Box>
           <AgGridTable
-            id='imports-main-table'
-            fullDownload={() => getReturnToWarehouseExcelReport({ ...returnsListFilter, limit: 1000000 })}
-            downloadByFilter={() => getReturnToWarehouseExcelReport(returnsListFilter)}
-            isDownloading={isgetReturnToWarehouseExcelReport}
+            id='clients-main-table'
             tableSettings
+            fullDownload={() => clientsExcelReport({ ...clientsListFilter, limit: 1000000 })}
+            downloadByFilter={() => clientsExcelReport(clientsListFilter)}
+            isDownloading={isclientsExcelReport}
             columns={tableColumns}
-            defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
-            data={returnsList?.data?.data?.data || []}
-            totalCount={returnsList?.data?.data?._meta?.total_count || 0}
-            isDataLoading={isFetchingreturnsList || returnsListLoading}
+            totalCount={clientsList?.data?.data?._meta?.total_count || 0}
+            data={clientsList?.data?.data?.data || []}
+            isDataLoading={isFetchingclientsList || clientsListLoading}
             offsetCount={offsetCount}
+            emptyTableText={{
+              title: 'Клиент не существует',
+              description: 'Если вы не нашли искомого Клиента, нажмите кнопку «Добавить нового» и введите необходимую информацию.',
+            }}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
             }}
-            emptyTableText={{
-              title: 'Возврат недоступен',
-              description: 'Если вы не можете найти искомый Возврат',
-            }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingreturnsList || returnsListLoading}
+            isRefreshing={loading || isFetchingclientsList || clientsListLoading}
           />
         </Box>
       </Box>
@@ -231,9 +257,9 @@ export default function ReturnToWarehousePage() {
           open={!!openConfirmDialog}
           setOpen={setOpenConfirmDialog}
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={'Удалить инвентаризацию?'}
-          desc={'Вы уверены что хотите удалить инвентаризацию?'}
-          // supDesc={'“Azitromitsin 250 mg”'}
+          title={'Удалить клиента?'}
+          desc={'Хотите ли вы удалить клиента?'}
+          supDesc={'“Azitromitsin 250 mg”'}
           actions={
             <>
               <Button
@@ -245,7 +271,7 @@ export default function ReturnToWarehousePage() {
               >
                 Нет
               </Button>
-              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteWriteOff({ id: openConfirmDialog.id })}>
+              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteClient({ data: [openConfirmDialog.id] })}>
                 Да, удалить
               </LoadingButton>
             </>

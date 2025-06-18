@@ -3,7 +3,6 @@ import { get } from 'lodash'
 import thousandDivider from '../../../../utils/thousandDivider'
 
 function StoreReposrMiniDashboardHeader({ saleStatsData }) {
-  console.log(saleStatsData)
   const payment_type_stats = [
     {
       id: '796ed9a7-ffc1-4ea7-8275-a455270f5741',

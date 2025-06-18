@@ -2,6 +2,7 @@ import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import ProductsPage from '../../pages/products'
 import AutoOrderPage from '../../pages/products/autoOrder'
 import ChangePricePage from '../../pages/products/changePrice'
+import ProductsPageByImport from '../../pages/products/changeProductByImport'
 import ImportPage from '../../pages/products/import'
 import InventoryPage from '../../pages/products/inventory'
 import ReturnToWarehousePage from '../../pages/products/returnToWarehouse'
@@ -14,6 +15,10 @@ const productsRoutes = {
     {
       path: 'all',
       element: <ProductsPage />,
+    },
+    {
+      path: 'all-by-import',
+      element: <ProductsPageByImport />,
     },
 
     {
@@ -34,6 +39,7 @@ const productsRoutes = {
       path: 'inventory',
       element: <InventoryPage />,
     },
+
     {
       path: 'transfer',
       element: <TransferPage />,

@@ -1,6 +1,6 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { UploadFile } from '@mui/icons-material'
+import { NewReleasesRounded, UploadFile } from '@mui/icons-material'
 import { Box, Button, Container, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get, head, size } from 'lodash'
@@ -13,7 +13,7 @@ import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
+import AgGridTable from '../../../../components/AgGridTable/AgGridTableSelectable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
@@ -78,7 +78,6 @@ export default function InventoryWithCheckingPage() {
       error('Ошибка при сканирование!')
     },
   })
-  console.log(shouldICleanSearchQuery)
 
   const { mutate: finishInventoryChecking, isLoading: isfinishInventoryChecking } = useMutation(requests.finishInventoryChecking, {
     onSuccess: ({ data }) => {
@@ -299,7 +298,6 @@ export default function InventoryWithCheckingPage() {
       let isexeption = document.activeElement.tagName == 'INPUT'
       if (selectedCellRowId || isexeption) return
       const key = event.key.toLowerCase()
-      // console.log(key, barcode, shouldICleanSearchQuery)
 
       if (/^[a-zа-яё0-9]$/i.test(key)) {
         if (shouldICleanSearchQuery) {
@@ -407,8 +405,6 @@ export default function InventoryWithCheckingPage() {
                     <InputSearch
                       icon={<BarcodeIcon />}
                       onKeyDown={({ code }) => {
-                        console.log(code)
-
                         code === 'Enter' && handleFocus()
                       }}
                       onChange={({ target }) => {
@@ -468,6 +464,9 @@ export default function InventoryWithCheckingPage() {
                 </Box>
               </Box>
               <Box display={'flex'} alignItems={'center'}>
+                <Button color='secondary' sx={{ height: '48px', mr: '10px' }} onClick={() => navigate(`/products/inventory-with-checking/new/${id}`)}>
+                  <NewReleasesRounded sx={{ color: '#fe5000' }} />
+                </Button>
                 <Button color='secondary' sx={{ height: '48px', mr: '10px' }} onClick={() => setOpenUpload(true)}>
                   <UploadFile />
                 </Button>

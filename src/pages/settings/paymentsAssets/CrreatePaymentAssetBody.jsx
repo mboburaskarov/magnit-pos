@@ -29,8 +29,6 @@ export default function CrreatePaymentAssetBody({ isOpen }) {
   } = useQuery(['onePermission', isOpen], () => requests.getPaymentAsset(get(isOpen, 'id')), { enabled: Boolean(get(isOpen, 'id')) })
   useEffect(() => {
     setTimeout(() => {
-      console.log(onePermission)
-
       setValue('type_action', get(onePermission, 'data.data.type'))
       setValue(
         'parent_id',
