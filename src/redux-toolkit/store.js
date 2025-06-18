@@ -23,6 +23,7 @@ import { paymentAssetsTableColumnsSlice } from './tableSlices/paymentAssetsTable
 import { productPriceListTableColumnsForProductSlice } from './tableSlices/productPriceListTableColumnsForProduct'
 import { productReportTableColumnsSlice } from './tableSlices/productReportTableColumns'
 import { productsTableColumnsSlice } from './tableSlices/productsTableColumns'
+import { productsTableForChangeByStoreColumnsSlice } from './tableSlices/productsTableForChangeByStoreColumns'
 import { returnToWarehouseGetWithCheckingTableColumnsSlice } from './tableSlices/returnToWarehouseGetWithCheckingTableColumns'
 import { returnToWarehouseSentWithCheckingTableColumnsSlice } from './tableSlices/returnToWarehouseSentWithCheckingTableColumns'
 import { returnToWarehouseTableColumnsSlice } from './tableSlices/returnToWarehouseTableColumns'
@@ -73,6 +74,7 @@ const reducer = combineReducers({
   sidebarSettings: sidebarSettingsSlice,
   orderTableColumns: orderTableColumnsSlice,
   productsTableColumns: productsTableColumnsSlice,
+  productsTableForChangeByStoreColumns: productsTableForChangeByStoreColumnsSlice,
   cardShiftTableColumns: cardShiftTableColumnsSlice,
   importsTableColumns: importsTableColumnsSlice,
   inventoryTableColumns: inventoryTableColumnsSlice,

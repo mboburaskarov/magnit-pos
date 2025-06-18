@@ -72,8 +72,6 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
     setSelectedIndex((prev) => Math.max(0, prev - 1))
     const selectedRow = allRows[selectedIndex - 1]
     if (selectedRow) {
-      console.log(selectedRow.name)
-
       setLastSelectedCellRowId(selectedRow.id)
     }
   })
@@ -82,8 +80,6 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
     setSelectedIndex((prev) => Math.min(rowCount - 1, prev + 1))
     const selectedRow = allRows[selectedIndex + 1]
     if (selectedRow) {
-      console.log(selectedRow.name)
-
       setLastSelectedCellRowId(selectedRow.id)
     }
   })
@@ -177,7 +173,6 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
         onSelectRow(selectedRow)
         setLastSelectedCellRowId(selectedRow.id)
         setOpenChangeAdditionalsModel({ id: selectedRow.id, data: selectedRow })
-        setshouldICleanSearchQuery(true)
       }
     },
     {

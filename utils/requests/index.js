@@ -230,10 +230,13 @@ export const requests = {
   generateBarcode: () => request.post(`v1/product/generate-barcode`),
   getAllSimilarStoreProducts: (id) => request.get(`v1/product/similar/${id}`),
   getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllProductsByImport: (filter) => request.get(`v1/product/list-by-import${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllProductsStatusCount: (filter) => request.get(`v1/product/total-status-count${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllStoreProducts: (data, filter) => request.get(`v1/product/store/${get(data, 'id')}${qs.stringify(filter, { addQueryPrefix: true })}`),
   createProduct: (data) => request.post(`v1/product`, data),
   changeBarcode: ({ id, barcode, unit_code, mxik, unit_label }) => request.put(`v1/product/update-barcode/${id}`, { id, barcode, unit_label, unit_code, mxik }),
+  changeBarcodeByImport: ({ id, barcode, unit_code, mxik, unit_label }) =>
+    request.put(`v1/product/update-mxik-import/${id}`, { id, barcode, unit_label, unit_code, mxik }),
   getProductBonusList: (filter) => request.get(`v1/product-bonus/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createBonusProduct: (data) => request.post(`v1/product-bonus`, data),
   getProductListForSelect: (filter) => request.get(`v1/product/product-list${qs.stringify(filter, { addQueryPrefix: true })}`),

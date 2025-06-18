@@ -49,7 +49,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   const [shouldICleanSearchQuery, setshouldICleanSearchQuery] = useState(false)
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [status, setStatus] = useState('ALL')
-  const [debouncedSearchBarcode] = useDebounce(barcode, 200)
+  const [debouncedSearchBarcode] = useDebounce(barcode, 400)
 
   const queryClient = useQueryClient()
 
@@ -63,14 +63,14 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   const fetchPage = async ({ pageParam = 0 }) => {
     const filter = {
       inventory_id: id,
-      limit: barcode ? 50 : LIMIT,
+      limit: LIMIT,
       offset: pageParam,
       search: barcode,
       order: orderStoring.position === 1 ? `+${orderStoring.colId}` : orderStoring.position === 2 ? `-${orderStoring.colId}` : undefined,
       type: 'all',
     }
     const res = await requests.getInventoryDetails(filter).then((res) => {
-      if (get(res, 'data.data.data', []).length === 1) {
+      if (get(res, 'data.data.data', []).length === 1 && !shouldICleanSearchQuery) {
         setQuantityModalOpen({ id: get(res, 'data.data.data.[0].id'), data: get(res, 'data.data.data.[0]') })
         setshouldICleanSearchQuery(true)
       }
@@ -89,7 +89,6 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   )
 
-  // 🔁 Flatten all loaded rows
   const allRows = data?.pages?.flatMap((page) => page.rows) || []
   const rowCount = allRows.length
 
@@ -510,7 +509,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
           <LoadingButton
             loading={isinventoryExcelReport}
             onClick={() => {
-              inventoryExcelReport({ limit: 1000000 })
+              inventoryExcelReport({ inventory_id: id, limit: 1000000 })
             }}
           >
             <Download />

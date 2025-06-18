@@ -25,8 +25,6 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
 }
 
 const Image = ({ data, rowIndex, setImages }) => {
-  console.log(data)
-
   return (
     <Box
       sx={{

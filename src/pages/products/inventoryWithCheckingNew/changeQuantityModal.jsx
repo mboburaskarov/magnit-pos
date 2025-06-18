@@ -129,7 +129,7 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
                 onChange={(e) => setFactQuantity(e.target.value)}
                 inputRef={(e) => (qtyRef.current[0] = e)}
                 onKeyDown={(e) => {
-                  const invalidKeys = ['e', 'E', '+', '-']
+                  const invalidKeys = ['e', 'E', '+', '-', 'ArrowDown']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
               />
@@ -140,11 +140,12 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
               <TextField
                 type='number'
                 name='unit'
+                disabled={get(open, 'data.unit_per_pack') == 1}
                 value={factUnit}
                 onChange={(e) => setFactUnit(e.target.value)}
                 inputRef={(ref) => setFactUnitRef(ref)}
                 onKeyDown={(e) => {
-                  const invalidKeys = ['e', 'E', '+', '-']
+                  const invalidKeys = ['e', 'E', '+', '-', 'ArrowDown']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
               />

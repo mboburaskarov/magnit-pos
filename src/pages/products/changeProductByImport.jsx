@@ -31,19 +31,19 @@ import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
 import PlusIcon from '../../assets/icons/PlusIcon'
 import PrizeBoxIcon from '../../assets/icons/PrizeBoxIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableForChangeByStoreColumns'
 import FilterMenu from './FilterMenu'
 import ProductDrawer from './product-edit/ProductDrawer'
 import ProductDashboard from './productDashboard'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
-export default function ProductsPage() {
+export default function ProductsPageByStore() {
   const theme = useTheme()
   const methods = useForm()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.productsTableColumns)
+  const { columns, loading } = useSelector((state) => state.productsTableForChangeByStoreColumns)
   const { values } = useQueryParams()
   const user_data = useSelector((state) => state.user)
   const [regions, setRegions] = useState([])
@@ -68,7 +68,7 @@ export default function ProductsPage() {
       error('Ошибка при Маркировка был изменен!')
     },
   })
-  const { mutate: changeBarcode, isLoading: isChangeBarcode } = useMutation(requests.changeBarcode, {
+  const { mutate: changeBarcode, isLoading: isChangeBarcode } = useMutation(requests.changeBarcodeByImport, {
     onSuccess: ({ data }) => {
       refetch()
       fetchStatusCountList()
@@ -166,7 +166,7 @@ export default function ProductsPage() {
     isLoading: productsListLoading,
     isFetching: isFetchingproductsList,
     refetch,
-  } = useQuery(['productsList', productsListFilter], () => requests.getAllProducts(productsListFilter))
+  } = useQuery(['productsListForChangeByStore', productsListFilter], () => requests.getAllProductsByImport(productsListFilter))
 
   const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['statusCountList', values?.search, productsListFilter], () =>
     requests.getAllProductsStatusCount(productsListFilter)
@@ -289,8 +289,8 @@ export default function ProductsPage() {
 
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
           <Box display={'flex'} mb={'10px'} justifyContent={'space-between'}>
-            <Typography onClick={() => navigate('/products/all-by-import')} variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-              {t('page.catalog.title')}
+            <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+              Товары по импортам
             </Typography>
             <Box
               sx={{

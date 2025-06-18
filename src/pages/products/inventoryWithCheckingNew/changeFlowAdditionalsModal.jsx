@@ -26,9 +26,8 @@ export default function ChangeFlowAdditionalsModal({ open, setBarcode, refetch, 
   const qtyRef = useRef([])
 
   const [newRtailPrice, setNewRtailPrice] = useState('')
-  const [newBarcode, setNewBarcode] = useState('')
   const [newExpiredDate, setNewExpiredDate] = useState('')
-  const [newBarcodeRef, setNewBarcodeRef] = useState(null)
+  const [newExpiredDateRef, setNewExpiredDateRef] = useState(null)
 
   const { mutate: setScanedNumber, isLoading: issetScanedNumber } = useMutation(requests.sendScannedInventoryFlowNumber, {
     onSuccess: () => {
@@ -49,7 +48,7 @@ export default function ChangeFlowAdditionalsModal({ open, setBarcode, refetch, 
 
     if (open) {
       setNewRtailPrice(get(open, 'data.retail_price', 0))
-      setNewBarcode(get(open, 'data.barcode', 0))
+      setNewExpiredDate(get(open, 'data.expire_date', 0))
       setTimeout(() => {
         qtyRef.current?.[0]?.focus()
       }, 0)
@@ -60,7 +59,7 @@ export default function ChangeFlowAdditionalsModal({ open, setBarcode, refetch, 
     '*',
     (event) => {
       if (event.code === 'NumpadSubtract' || event.code === 'NumpadAdd' || event.code === 'ShiftRight') {
-        newBarcodeRef?.focus()
+        newExpiredDateRef?.focus()
       }
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         let activElem = document.activeElement.tagName
@@ -70,7 +69,7 @@ export default function ChangeFlowAdditionalsModal({ open, setBarcode, refetch, 
           //
           return
         }
-        if (Number(newRtailPrice) === 0 && Number(newBarcode) === 0) {
+        if (Number(newRtailPrice) === 0 && Number(newExpiredDate) === 0) {
           setOpen(false)
           return
         }
@@ -92,7 +91,6 @@ export default function ChangeFlowAdditionalsModal({ open, setBarcode, refetch, 
       product_id: get(open, 'data.id'),
       type: 'MANUAL',
       retail_price: Number(newRtailPrice),
-      barcode: newBarcode,
       expire_date: dayjs(newExpiredDate, 'YYYY.MM.DD').format('YYYY-MM-DD'),
     })
   }
@@ -127,7 +125,7 @@ export default function ChangeFlowAdditionalsModal({ open, setBarcode, refetch, 
 
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ display: 'flex', mb: '20px', justifyContent: 'space-between' }}>
-            <Box>
+            <Box width={'100%'}>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Цена</Typography>
               <TextField
                 type='number'
@@ -136,44 +134,32 @@ export default function ChangeFlowAdditionalsModal({ open, setBarcode, refetch, 
                 onChange={(e) => setNewRtailPrice(e.target.value)}
                 inputRef={(e) => (qtyRef.current[0] = e)}
                 onKeyDown={(e) => {
-                  const invalidKeys = ['e', 'E', '+', '-']
+                  const invalidKeys = ['e', 'E', '+', '-', 'ArrowDown']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
               />
             </Box>
 
-            <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Штрих-код</Typography>
+            <Box width={'100%'}>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Срок</Typography>
               <TextField
-                type='number'
-                name='barcode'
-                value={newBarcode}
-                onChange={(e) => setNewBarcode(e.target.value)}
-                inputRef={(ref) => setNewBarcodeRef(ref)}
+                sx={{ width: '100%' }}
+                type='date'
+                name='expire_date'
+                value={newExpiredDate}
+                inputRef={(ref) => setNewExpiredDateRef(ref)}
+                onChange={(e) => setNewExpiredDate(e.target.value)}
                 onKeyDown={(e) => {
-                  const invalidKeys = ['e', 'E', '+', '-']
+                  if (e.code == 'Enter') {
+                    onSubmit()
+                  }
+                  const invalidKeys = ['e', 'E', '+', '-', 'ArrowDown']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
               />
             </Box>
           </Box>
-          <Box>
-            <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Срок</Typography>
-            <TextField
-              sx={{ width: '100%' }}
-              type='date'
-              name='expire_date'
-              value={newExpiredDate}
-              onChange={(e) => setNewExpiredDate(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.code == 'Enter') {
-                  onSubmit()
-                }
-                const invalidKeys = ['e', 'E', '+', '-']
-                if (invalidKeys.includes(e.key)) e.preventDefault()
-              }}
-            />
-          </Box>
+
           <Button
             sx={{
               height: '46px',

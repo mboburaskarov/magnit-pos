@@ -44,7 +44,6 @@ export default function ChangePriceDetailPage() {
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(false)
   const [repricingModalOpen, setrepricingModalOpen] = useState(false)
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
-  console.log(lastSelectedCellRowId, selectedCellRowId)
 
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [gridApi, setGridApi] = useState(null) // Add this state

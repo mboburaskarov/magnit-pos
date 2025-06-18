@@ -44,7 +44,6 @@ export default function ChangeAdditionalsModal({ open, selectedIndex, selectedCe
 
   useEffect(() => {
     reset({}, { keepDirty: true })
-    console.log(open)
 
     if (open) {
       setNewRetailPrice(get(open, 'data.retail_price', 0))
@@ -132,7 +131,7 @@ export default function ChangeAdditionalsModal({ open, selectedIndex, selectedCe
                 onChange={(e) => setNewRetailPrice(e.target.value)}
                 inputRef={(e) => (retilaPirceRef.current[0] = e)}
                 onKeyDown={(e) => {
-                  const invalidKeys = ['e', 'E', '+', '-']
+                  const invalidKeys = ['e', 'E', '+', '-', 'ArrowDown']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
               />
@@ -150,7 +149,7 @@ export default function ChangeAdditionalsModal({ open, selectedIndex, selectedCe
                   if (e.code == 'Enter') {
                     onSubmit()
                   }
-                  const invalidKeys = ['e', 'E', '+', '-']
+                  const invalidKeys = ['e', 'E', '+', '-', 'ArrowDown']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
               />

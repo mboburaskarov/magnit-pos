@@ -91,7 +91,6 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
   } = useQuery(['returnToWarehouseWithCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
     requests.getReturnToWarehouseDetails(returnToWarehouseWithCheckingDetailsFilter)
   )
-  console.log(returnToWarehouseWithCheckingDetails)
 
   /// filter table columns with permission
   useEffect(() => {
