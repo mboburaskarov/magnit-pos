@@ -256,6 +256,16 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   )
   useHotkeys(
+    '*',
+    (e) => {
+      console.log(e)
+    },
+    {
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+      preventDefault: true,
+    }
+  )
+  useHotkeys(
     'shift',
     () => {
       if (selectedCellRowId) return

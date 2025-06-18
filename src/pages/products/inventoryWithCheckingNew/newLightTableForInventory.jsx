@@ -32,7 +32,11 @@ function NewLightTableForInventory({
     { id: 'diff_qty', name: 'Разница кол-во', width: '120px' },
     { id: 'diff_sum', name: 'Разница сумма', width: '120px' },
   ]
-
+  const ids = allRows.map((row) => row.id)
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index)
+  if (duplicates.length > 0) {
+    console.warn('Duplicate IDs found:', duplicates)
+  }
   return (
     <div className='table-container' ref={tableRef}>
       <table className='custom-table'>
