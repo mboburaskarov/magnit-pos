@@ -95,6 +95,8 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
 
   // 🔼⬇️ Keyboard nav
   useHotkeys('up', () => {
+    if (selectedCellRowId) return
+
     setSelectedIndex((prev) => Math.max(0, prev - 1))
     const selectedRow = allRows[selectedIndex - 1]
     if (selectedRow) {
@@ -103,6 +105,8 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   })
 
   useHotkeys('down', () => {
+    if (selectedCellRowId) return
+
     setSelectedIndex((prev) => Math.min(rowCount - 1, prev + 1))
     const selectedRow = allRows[selectedIndex + 1]
     if (selectedRow) {

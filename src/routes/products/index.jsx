@@ -34,6 +34,7 @@ const productsRoutes = {
       path: 'inventory',
       element: <InventoryPage />,
     },
+
     {
       path: 'transfer',
       element: <TransferPage />,
