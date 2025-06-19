@@ -311,7 +311,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       const pageData = await fetchPage({ pageParam: targetOffset })
 
       // Update the query cache for the specific page
-      queryClient.setQueryData(['inventoryWithCheckingDetails', id, debouncedSearchBarcode, orderStoring], (oldData) => {
+      queryClient.setQueryData(['inventoryWithCheckingDetails', id, debouncedSearchBarcode, status, orderStoring], (oldData) => {
         if (!oldData) return { pages: [pageData], pageParams: [targetOffset] }
 
         // Replace or append the page corresponding to targetOffset
