@@ -23,10 +23,10 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
     onSuccess: () => {
       setOpen(false)
       refetch()
-      success('Создать автозаказ')
+      success('Редактировать Мин-Макс')
     },
     onError: (err) => {
-      error('Ошибка Создать автозаказ!')
+      error('Ошибка Редактировать Мин-Макс!')
       console.log('err', err)
     },
   })
