@@ -64,10 +64,10 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     const filter = {
       inventory_id: id,
       limit: LIMIT,
+      type: status || 'all',
       offset: pageParam,
       search: barcode,
       order: orderStoring.position === 1 ? `+${orderStoring.colId}` : orderStoring.position === 2 ? `-${orderStoring.colId}` : undefined,
-      type: 'all',
     }
     const res = await requests.getInventoryDetails(filter).then((res) => {
       if (get(res, 'data.data.data', []).length === 1 && !shouldICleanSearchQuery) {
@@ -77,12 +77,17 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       return res
       // setHasChange(false)
     })
-    return { rows: res.data?.data?.data, total_data: res.data?.data?.total_data || [], nextOffset: pageParam + LIMIT }
+    return {
+      rows: res.data?.data?.data,
+      total_data: res.data?.data?.total_data || [],
+      total_count: res.data?.data?._meta?.total_count || [],
+      nextOffset: pageParam + LIMIT,
+    }
   }
 
   // 🔄 useInfiniteQuery
   const { data, fetchNextPage, refetch, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery(
-    ['inventoryWithCheckingDetails', id, debouncedSearchBarcode, orderStoring],
+    ['inventoryWithCheckingDetails', id, debouncedSearchBarcode, status, orderStoring],
     fetchPage,
     {
       getNextPageParam: (lastPage) => (lastPage.rows.length < LIMIT ? undefined : lastPage.nextOffset),
@@ -317,7 +322,9 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       error('Ошибка при обновлении страницы!')
     }
   }
-
+  useEffect(() => {
+    setSelectedIndex(0)
+  }, [debouncedSearchBarcode])
   // Example: Trigger refetch for offset=150
   const handleRefetchPage = (offset = 0) => {
     refetchSpecificPage(offset) // Refetch only the page for offset=150
@@ -343,6 +350,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
               setSelectedIndex={setSelectedIndex}
               selectedIndex={selectedIndex}
               rowRefs={rowRefs}
+              inventoryStat={inventoryStat}
               setLastSelectedCellRowId={setLastSelectedCellRowId}
               lastRowRef={lastRowRef}
               isFetchingNextPage={isFetchingNextPage}

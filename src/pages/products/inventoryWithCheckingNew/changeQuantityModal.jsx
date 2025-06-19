@@ -142,7 +142,11 @@ export default function ChangeQuantityModal({ open, selectedIndex, selectedCellR
                 name='unit'
                 disabled={get(open, 'data.unit_per_pack') == 1}
                 value={factUnit}
-                onChange={(e) => setFactUnit(e.target.value)}
+                onChange={(e) => {
+                  if (get(open, 'data.unit_per_pack') >= e.target.value) {
+                    setFactUnit(e.target.value)
+                  }
+                }}
                 inputRef={(ref) => setFactUnitRef(ref)}
                 onKeyDown={(e) => {
                   const invalidKeys = ['e', 'E', '+', '-', 'ArrowDown']
