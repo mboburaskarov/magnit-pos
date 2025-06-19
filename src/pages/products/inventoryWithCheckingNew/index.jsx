@@ -63,9 +63,9 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   const fetchPage = async ({ pageParam = 0 }) => {
     const filter = {
       inventory_id: id,
-      limit: LIMIT,
+      limit: status === 'checking' && pageParam === 0 ? 5000 : LIMIT, // Use 5000 for initial 'checking' fetch, otherwise LIMIT (50)
       type: status || 'all',
-      offset: pageParam,
+      offset: status === 'checking' && pageParam === 0 ? 0 : pageParam, // Use offset 0 for initial 'checking' fetch
       search: barcode,
       order: orderStoring.position === 1 ? `+${orderStoring.colId}` : orderStoring.position === 2 ? `-${orderStoring.colId}` : undefined,
     }
@@ -81,6 +81,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       rows: res.data?.data?.data,
       total_data: res.data?.data?.total_data || [],
       total_count: res.data?.data?._meta?.total_count || [],
+      _meta: res.data?.data?._meta || [],
       nextOffset: pageParam + LIMIT,
     }
   }
@@ -117,6 +118,16 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       setLastSelectedCellRowId(selectedRow.id)
     }
   })
+  useHotkeys('End', () => {
+    if (status == 'checking') {
+      setSelectedIndex(get(data, 'pages.[0]._meta.total_count', 1) - 1)
+    }
+  })
+  useHotkeys('Home', () => {
+    if (status == 'checking') {
+      setSelectedIndex(0)
+    }
+  })
 
   useHotkeys('enter', () => {
     if (selectedCellRowId) return
@@ -148,7 +159,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       if (observerRef.current) observerRef.current.disconnect()
       observerRef.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasNextPage) {
-          fetchNextPage()
+          status != 'checking' && fetchNextPage()
         }
       })
       if (node) observerRef.current.observe(node)
