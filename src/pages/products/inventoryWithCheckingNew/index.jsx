@@ -164,7 +164,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       })
       if (node) observerRef.current.observe(node)
     },
-    [isFetchingNextPage, hasNextPage, fetchNextPage]
+    [isFetchingNextPage, hasNextPage, status, fetchNextPage]
   )
 
   //

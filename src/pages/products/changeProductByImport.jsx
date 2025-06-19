@@ -35,7 +35,7 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import FilterMenu from './FilterMenu'
 import ProductDrawer from './product-edit/ProductDrawer'
 import ProductDashboard from './productDashboard'
-import tableHeaderSelector from './tableHeaderSelector'
+import tableHeaderSelector from './tableHeaderSelectorByImport'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function ProductsPageByStore() {
   const theme = useTheme()

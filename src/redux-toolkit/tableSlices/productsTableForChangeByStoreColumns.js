@@ -22,6 +22,12 @@ const columns = [
     minWidth: 70,
     width: 90,
   },
+  {
+    field: 'import_number',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
 
   // {
   //   field: 'expire_date',
@@ -35,39 +41,6 @@ const columns = [
     hide: false,
     minWidth: 70,
     width: 150,
-  },
-
-  {
-    field: 'manufacturer',
-    hide: false,
-    minWidth: 70,
-    width: 290,
-  },
-
-  {
-    field: 'expire_date',
-    hide: false,
-    minWidth: 70,
-    width: 290,
-  },
-
-  {
-    field: 'material_code',
-    hide: false,
-    minWidth: 70,
-    width: 176,
-  },
-  {
-    field: 'required_marking',
-    hide: false,
-    minWidth: 70,
-    width: 176,
-  },
-  {
-    field: 'barcode',
-    hide: false,
-    minWidth: 260,
-    flex: 1,
   },
   {
     field: 'mxik',
@@ -85,6 +58,51 @@ const columns = [
     hide: false,
     minWidth: 200,
   },
+  {
+    field: 'required_marking',
+    hide: false,
+    minWidth: 70,
+    width: 176,
+  },
+  {
+    field: 'barcode',
+    hide: false,
+    minWidth: 260,
+    flex: 1,
+  },
+  {
+    field: 'expire_date',
+    hide: false,
+    minWidth: 70,
+    width: 290,
+  },
+
+  {
+    field: 'serial_number',
+    hide: false,
+    minWidth: 70,
+    width: 290,
+  },
+  {
+    field: 'created_at',
+    hide: false,
+    minWidth: 70,
+    width: 290,
+  },
+  {
+    field: 'manufacturer',
+    hide: false,
+    minWidth: 70,
+    width: 290,
+  },
+
+  {
+    field: 'material_code',
+    hide: false,
+    minWidth: 70,
+    width: 176,
+  },
+
   {
     field: 'category',
     hide: false,

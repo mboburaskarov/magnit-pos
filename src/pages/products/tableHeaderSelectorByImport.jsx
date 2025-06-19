@@ -204,6 +204,22 @@ export default function tableHeaderSelector({
         cellRenderer: memo((p) => <SimpleText currency='%' withDevider {...p} type='vat' />),
       }
     }
+    if (el.field === 'import_number') {
+      return {
+        ...el,
+        headerName: 'Номер Импорта',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='import_number' />),
+      }
+    }
+    if (el.field === 'serial_number') {
+      return {
+        ...el,
+        headerName: 'Серия',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type='serial_number' />),
+      }
+    }
     if (el.field === 'markup') {
       return {
         ...el,
@@ -352,7 +368,7 @@ export default function tableHeaderSelector({
           <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
             {p?.data?.unit_per_pack > 0 && p?.data?.unit_quantity > 0
               ? `${p.data.quantity} (${p.data.unit_quantity}/${p.data.unit_per_pack})`
-              : `${thousandDivider(p?.data?.quantity)} ${p?.data?.short_name}`}
+              : `${thousandDivider(p?.data?.quantity)}`}
           </Typography>
         )),
       }
@@ -368,6 +384,24 @@ export default function tableHeaderSelector({
               <>
                 <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')}</Typography>
                 <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography>
+              </>
+            ) : (
+              <Typography>Выберите филиал</Typography>
+            )}
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'created_at') {
+      return {
+        ...el,
+        headerName: 'Дата импорта',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'created_at'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            {p.data?.['created_at'] ? (
+              <>
+                <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY')}</Typography>
               </>
             ) : (
               <Typography>Выберите филиал</Typography>
