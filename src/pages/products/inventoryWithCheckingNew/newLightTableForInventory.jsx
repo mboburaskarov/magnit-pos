@@ -8,6 +8,7 @@ function NewLightTableForInventory({
   inventoryWithCheckingDetails,
   setLastSelectedCellRowId,
   data: allRows,
+  inventoryStat,
   lastRowRef,
   setSelectedIndex,
   selectedIndex,
@@ -58,7 +59,7 @@ function NewLightTableForInventory({
         </thead>
 
         <tfoot>
-          <tr>
+          {/* <tr>
             <th colSpan={2}>Общий</th>
             <th colSpan={6}></th>
             <th colSpan={3}>
@@ -75,6 +76,21 @@ function NewLightTableForInventory({
               <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>
                 {thousandDivider(get(inventoryWithCheckingDetails, 'pages.[0].total_data.total_difference_sum'), '')}
               </Typography>
+            </th>
+          </tr> */}
+
+          <tr>
+            <th colSpan={1}>{get(inventoryWithCheckingDetails, 'pages.[0].total_count')}</th>
+            <th colSpan={2}>Общий</th>
+            <th colSpan={5}></th>
+            <th colSpan={3}>
+              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>{thousandDivider(get(inventoryStat, 'data.data.current_sum'), '')}</Typography>
+            </th>
+            <th colSpan={2}>
+              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>{thousandDivider(get(inventoryStat, 'data.data.fact_sum'), '')}</Typography>
+            </th>
+            <th>
+              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>{thousandDivider(get(inventoryStat, 'data.data.difference_sum'), '')}</Typography>
             </th>
           </tr>
         </tfoot>

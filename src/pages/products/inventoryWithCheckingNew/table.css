@@ -16,7 +16,7 @@
 .custom-table td {
   border: none !important;
   padding: 8px;
-  border-bottom: 1px solid #a4a5ab1a !important;
+  border: 1px solid #9a9a9a1a !important;
 
   height: 50px;
   text-align: left;
