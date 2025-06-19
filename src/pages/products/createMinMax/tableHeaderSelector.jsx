@@ -73,7 +73,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenEditMinM
         cellRenderer: memo((p) => <SimpleText {...p} type='kvant' />),
       }
     }
-    if (el.field === 'min') {
+    if (el.field === 'min_quantity') {
       return {
         ...el,
         headerName: 'Мин',
@@ -81,7 +81,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenEditMinM
         cellRenderer: memo((p) => <SimpleText {...p} withDevider type='min_quantity' />),
       }
     }
-    if (el.field === 'max') {
+    if (el.field === 'max_quantity') {
       return {
         ...el,
         headerName: 'Макс',

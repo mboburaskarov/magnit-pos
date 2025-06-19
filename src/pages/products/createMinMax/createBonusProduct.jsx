@@ -29,8 +29,6 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
     },
   })
   const onSubmit = (data) => {
-    console.log(data)
-
     const requestBody = {
       product_id: data.product.value,
       store_id: data.store_id.value,

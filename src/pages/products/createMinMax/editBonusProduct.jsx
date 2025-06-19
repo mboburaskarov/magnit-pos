@@ -15,7 +15,6 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 
 export default function EditBonusProduct({ open, refetch, setOpen }) {
   const methods = useForm()
-  console.log(open)
 
   const { reset, control } = methods
   const [startDate, setStartDate] = useState(0)
@@ -23,18 +22,32 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
   const { mutate: createMinMax, isLoading: iscreateMinMax } = useMutation(requests.editMinMax, {
     onSuccess: () => {
       setOpen(false)
-      success('Создать автозаказ')
       refetch()
+      success('Создать автозаказ')
     },
     onError: (err) => {
       error('Ошибка Создать автозаказ!')
       console.log('err', err)
     },
   })
+  useEffect(() => {
+    if (open) {
+      const { product_id, is_active, min_quantity, max_quantity, kvant } = open
+      reset(
+        {
+          product: { name: open.name, value: product_id },
+          is_active: { name: is_active ? 'Активный' : 'Неактивный', id: String(is_active) },
+          min_quantity: min_quantity || 0,
+          max_quantity: max_quantity || 0,
+          kvant: kvant || 0,
+        },
+        { keepDirty: true }
+      )
+    }
+  }, [open])
   const onSubmit = (data) => {
     const requestBody = {
       product_id: data.product.value,
-      store_id: data.store_id.value,
       is_active: data.is_active.id == 'true',
       min_quantity: data.min_quantity,
       max_quantity: data.max_quantity,
@@ -102,25 +115,7 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
               }}
               filterOption={() => true}
             />
-            <LazySelect
-              boxStyle={{ width: '100%' }}
-              slug='store_id'
-              id='store_id'
-              name='store_id'
-              isMulti={false}
-              required
-              label={t('Магазин')}
-              placeholder={t('Выберите Магазин')}
-              minWidth='auto'
-              isClearable={true}
-              request={requests.getAllStores}
-              filters={{ limit: 10 }}
-              control={control}
-              getOptionLabel={(option) => {
-                return option.name
-              }}
-              filterOption={() => true}
-            />
+
             <SelectSimple
               fullWidth
               id='is_active'

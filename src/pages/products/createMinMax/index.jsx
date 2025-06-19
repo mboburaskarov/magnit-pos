@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, Container } from '@mui/material'
+import { Box, Button, Container, Typography } from '@mui/material'
 import * as qs from 'qs'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -12,7 +12,6 @@ import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/Column
 import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
-
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -20,6 +19,7 @@ import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
+import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/minMaxTableColumns'
 import CreateBonusProduct from './createBonusProduct'
@@ -88,24 +88,8 @@ export default function CreateMinMaxPage() {
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       store_id: values?.store_id,
-      start_date: values?.start_date,
-      end_date: values?.end_date,
-      status: values?.status,
-      import_date: values?.import_date,
-      received_amount_to: values?.received_amount_to,
-      received_amount_from: values?.received_amount_from,
     }
-  }, [
-    values?.offset,
-    values?.limit,
-    values?.end_date,
-    values?.start_date,
-    values?.search,
-    values?.status,
-    values?.store_id,
-    values?.received_amount_to,
-    values?.received_amount_from,
-  ])
+  }, [values?.offset, values?.limit, values?.search, values?.store_id])
   const {
     data: minMaxProductList,
     isLoading: minMaxProductListLoading,
@@ -123,7 +107,6 @@ export default function CreateMinMaxPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [minMaxProductList?.data, values?.limit])
-
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pb={'20px'}>
@@ -132,7 +115,7 @@ export default function CreateMinMaxPage() {
           buttonText='Мин-Макс'
           backIcon
           noActions
-          backButtonClick={() => navigate('/products/all')}
+          backButtonClick={() => navigate('/products/auto-order')}
           text={'Мин-Макс'}
           checkAccessId={'product-create'}
         />
@@ -154,10 +137,32 @@ export default function CreateMinMaxPage() {
                   >
                     <InputSearch id='producrs-search' name='search' placeholder={t('table_columns.name')} uncontrolled />
                   </Box>
-                  {/* <DateRangeInput
-                    defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }}
-                    id='accounting-report-date-range'
-                  /> */}
+                  <Box minWidth={113} ml={'16px'}>
+                    <Button
+                      sx={{
+                        height: '48px',
+                        padding: 0,
+                        bgcolor: '#fff',
+                        border: '1px solid #ECEDF2',
+                        color: 'dark.500',
+                        fontWeight: '500',
+                        fontSize: '16px',
+                        lineHeight: '24px',
+                        '& span': {
+                          mr: '12px',
+                        },
+                      }}
+                      fullWidth
+                      startIcon={<FilterMenuIcon />}
+                      variant='contained'
+                      color='secondary'
+                      onClick={() => setFilterMenu((prev) => !prev)}
+                    >
+                      <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
+                        {t('filter_dialog.label')}
+                      </Typography>
+                    </Button>
+                  </Box>
                 </Box>
 
                 <Box display={'flex'} alignItems={'center'}>
@@ -186,6 +191,7 @@ export default function CreateMinMaxPage() {
                   </CheckAccess>
                 </Box>
               </Box>
+              {console.log(minMaxProductList)}
               <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
               <CreateBonusProduct refetch={refetch} open={openCreateMinMaxModal} setOpen={setOpenCreateMinMaxModal} />
               <EditBonusProduct refetch={refetch} open={openEditMinMaxModal} setOpen={setOpenEditMinMaxModal} />
@@ -194,7 +200,7 @@ export default function CreateMinMaxPage() {
                   id='auto-order-main-table'
                   tableSettings
                   columns={tableColumns}
-                  data={minMaxProductList?.data?.data?.data || []}
+                  data={[...(minMaxProductList?.data?.data?.data || [])]}
                   totalCount={minMaxProductList?.data?.data?._meta?.total_count || 0}
                   isDataLoading={isFetchingminMaxProductList || minMaxProductListLoading}
                   offsetCount={offsetCount}
@@ -207,7 +213,7 @@ export default function CreateMinMaxPage() {
                   }}
                   fullInfoAboutCurrentPage
                   resetTable={() => dispatch(resetTableHeader({ refetch }))}
-                  isRefreshing={loading || isFetchingminMaxProductList || minMaxProductListLoading}
+                  isRefreshing={isFetchingminMaxProductList || minMaxProductListLoading}
                 />
               </Box>
             </Box>

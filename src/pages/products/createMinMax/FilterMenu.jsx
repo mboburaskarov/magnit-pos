@@ -4,6 +4,7 @@ import * as qs from 'qs'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import LazySelect from '../../../../components/Select/LazySelect'
@@ -15,7 +16,9 @@ export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
-  const { formState, reset, control } = methods
+  const { formState, reset, control, getValues } = methods
+
+  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
     const requestBody = {
@@ -25,7 +28,7 @@ export default function FilterMenu({ open, setOpen }) {
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
     setOpen(false)
-    navigate(`/products/auto-order${requestParams}`)
+    navigate(`/products/min-max-create${requestParams}`)
   }
 
   const onError = (err) => {
@@ -41,21 +44,20 @@ export default function FilterMenu({ open, setOpen }) {
       },
       { keepDirty: true }
     )
-  }, [values?.store_id])
-  const theme = useTheme()
+  }, [shopList])
 
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/products/auto-order?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/products/min-max-create?offset=0&limit=${values?.limit || 5}`)
   }
-
+  const theme = useTheme()
   const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       overflowVisible
-      onClose={() => setOpen(false)}
       open={open}
+      onClose={() => setOpen(false)}
       title={t('filter_dialog.label')}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
     >
@@ -77,28 +79,27 @@ export default function FilterMenu({ open, setOpen }) {
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
             <LazySelect
+              slug='users'
               boxStyle={{ width: '100%' }}
-              slug='store_id'
-              id='store_id'
+              id='store'
               name='store_id'
               isMulti={false}
               placeholder={t('Выберите Магазин')}
-              label={t('input.store.label')}
               minWidth='auto'
               isClearable={true}
+              label={t('input.store.label')}
               request={requests.getAllStores}
               filters={{ limit: 10 }}
               control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
               getOptionLabel={(option) => {
                 return option.name
               }}
               filterOption={() => true}
             />
+
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
-                sx={{ bgcolor: `${theme.palette.background.gray} !important`, border: '1px solid #ECEDF2' }}
+                sx={{ bgcolor: '#fff !important', border: '1px solid #ECEDF2' }}
                 fullWidth
                 color='secondary'
                 variant='contained'

@@ -171,9 +171,14 @@ const AgGridUnSelectableSimpleTable = ({
   }, [totalData])
 
   const onGridReady = useCallback((params) => {
-    setGridApi(params)
+    setGridApi(params.api)
     setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
   }, [])
+  useEffect(() => {
+    if (gridApi && data?.length >= 0) {
+      gridApi.setRowData(data)
+    }
+  }, [data, gridApi])
 
   const getRowId = useCallback((params) => params.data[uniqId], [data, columns, totalData])
 
