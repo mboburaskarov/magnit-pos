@@ -4,6 +4,7 @@ import BonusProductPage from '../../pages/products/bonusProduct'
 import CatalogManagement from '../../pages/products/categories/index'
 import ChangePriceDetailPage from '../../pages/products/changePriceDetail'
 import ChangePriceDetailViewPage from '../../pages/products/changePriceDetailView'
+import CreateMinMaxPage from '../../pages/products/createMinMax'
 import ImportDetailsPage from '../../pages/products/importDetails'
 import ImportWithCheckingPage from '../../pages/products/importWithChecking'
 import InventoryCompleted from '../../pages/products/inventoryCompleted'
@@ -167,6 +168,10 @@ const productsCreateRoutes = {
     {
       path: 'bonus-product',
       element: <BonusProductPage />,
+    },
+    {
+      path: 'min-max-create',
+      element: <CreateMinMaxPage />,
     },
     {
       path: 'auto-order/:id',

@@ -238,7 +238,11 @@ export const requests = {
   changeBarcodeByImport: ({ id, barcode, unit_code, mxik, unit_label }) =>
     request.put(`v1/product/update-mxik-import/${id}`, { id, barcode, unit_label, unit_code, mxik }),
   getProductBonusList: (filter) => request.get(`v1/product-bonus/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getProductMinMaxList: (filter) => request.get(`v1/product/list-min-max${qs.stringify(filter, { addQueryPrefix: true })}`),
   createBonusProduct: (data) => request.post(`v1/product-bonus`, data),
+  createMinMax: (data) => request.post(`v1/product/min-max`, data),
+  editMinMax: ({ id, data }) => request.put(`v1/product/min-max/${id}`, data),
+
   getProductListForSelect: (filter) => request.get(`v1/product/product-list${qs.stringify(filter, { addQueryPrefix: true })}`),
   deleteBonusProduct: (id) => request.delete(`v1/product-bonus`, id),
   setMarkingRequired: ({ product_id, is_marking }) => request.patch(`v1/product/is-marking`, { product_id, is_marking }),
