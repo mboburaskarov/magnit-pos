@@ -202,7 +202,9 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     },
   })
 
-  const { data: inventoryStat, refetch: refetchInverStatus } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
+  const { data: inventoryStat, refetch: refetchInverStatus } = useQuery(['inventoryStat', debouncedSearchBarcode], () =>
+    requests.getInventoryStat(id, { search: status == 'checking' ? debouncedSearchBarcode : '' })
+  )
 
   useHotkeys(
     ['ctrl+Backspace', 'ctrl+delete'],

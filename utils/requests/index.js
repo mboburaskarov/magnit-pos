@@ -181,7 +181,7 @@ export const requests = {
   finishInventoryChecking: (id) => request.post(`v1/inventory/confirm/${id}`),
   deleteInventory: ({ id }) => request.post(`v1/inventory/cancel/${id}`),
   resend1cInventory: (id) => request.post(`v1/inventory/send1c/${id}`),
-  getInventoryStat: (id) => request.get(`v1/inventory/${id}`),
+  getInventoryStat: (id, filter) => request.get(`v1/inventory/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   getInventoryExcelReport: (filter) => requestEXCEL.get(`v1/inventory-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //transfer

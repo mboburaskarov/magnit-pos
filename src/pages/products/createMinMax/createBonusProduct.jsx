@@ -20,11 +20,11 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
   const { mutate: createMinMax, isLoading: iscreateMinMax } = useMutation(requests.createMinMax, {
     onSuccess: () => {
       setOpen(false)
-      success('Создать автозаказ')
+      success('Создать Мин-Макс')
       refetch()
     },
     onError: (err) => {
-      error('Ошибка Создать автозаказ!')
+      error('Ошибка Создать Мин-Макс!')
       console.log('err', err)
     },
   })

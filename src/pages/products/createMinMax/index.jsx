@@ -1,24 +1,18 @@
-import { LoadingButton } from '@mui/lab'
 import { Box, Button, Container, Typography } from '@mui/material'
-import * as qs from 'qs'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../../components/CheckAccess'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import BigTickIcon from '../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/minMaxTableColumns'
@@ -48,24 +42,8 @@ export default function CreateMinMaxPage() {
     values,
     setImages: setOpenImageGallery,
     setOpenEditMinMaxModal: setOpenEditMinMaxModal,
-    setOpenConfirmDialog: setOpenConfirmDialog,
   })
-  const { mutate: deleteBonusProduct } = useMutation(requests.deleteBonusProduct, {
-    onSuccess: () => {
-      refetch().then(() => {
-        const requestParams = qs.stringify({ ...values, offset: 0 }, { addQueryPrefix: true })
-        navigate(`/products/bonus-product${requestParams}`)
-      })
-      success('Продукт успешно удален!')
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении товара!')
-      setOpenConfirmDialog(null)
-      console.log('err', err)
-    },
-  })
+
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
@@ -220,31 +198,6 @@ export default function CreateMinMaxPage() {
 
             <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
           </FormProvider>
-          {openConfirmDialog && (
-            <ConfirmDialog
-              open={!!openConfirmDialog}
-              setOpen={setOpenConfirmDialog}
-              icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-              title={'Удалить бонусный продукт?'}
-              desc={'Вы хотите Удалить бонусный продукт?'}
-              actions={
-                <>
-                  <Button
-                    sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
-                    fullWidth
-                    color='secondary'
-                    variant='contained'
-                    onClick={() => setOpenConfirmDialog(null)}
-                  >
-                    Нет
-                  </Button>
-                  <LoadingButton variant='contained' type='button' onClick={() => deleteBonusProduct({ data: [openConfirmDialog.id] })}>
-                    Да, удалить
-                  </LoadingButton>
-                </>
-              }
-            />
-          )}
         </Container>
       </Box>
     </LoadingContainer>
