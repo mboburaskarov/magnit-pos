@@ -18,6 +18,7 @@ import { importsTableColumnsSlice } from './tableSlices/importsTableColumns'
 import { inventoryDetailsTableColumnsSlice } from './tableSlices/inventoryDetailTableColumns'
 import { inventoryTableColumnsSlice } from './tableSlices/inventoryTableColumns'
 import { inventoryWithCheckingTableColumnsSlice } from './tableSlices/inventoryWithCheckingTableColumns'
+import { minMaxTableColumnsSlice } from './tableSlices/minMaxTableColumns'
 import { orderTableColumnsSlice } from './tableSlices/orderTableColumns'
 import { paymentAssetsTableColumnsSlice } from './tableSlices/paymentAssetsTableColumns'
 import { productPriceListTableColumnsForProductSlice } from './tableSlices/productPriceListTableColumnsForProduct'
@@ -45,7 +46,7 @@ import { userSlice } from './userSlice'
 // Define your migration function here
 const migrations = {
   // Example migration
-  309: (state) => {
+  311: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -63,7 +64,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 309, // Current version of the persisted state
+  version: 311, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -82,6 +83,7 @@ const reducer = combineReducers({
   autoOrderTableColumns: autoOrderTableColumnsSlice,
   revaluationTableColumns: revaluationTableColumnsSlice,
   bonusProductTableColumns: bonusProductTableColumnsSlice,
+  minMaxTableColumns: minMaxTableColumnsSlice,
   autoOrderTableDetailColumns: autoOrderDetailSlice,
   changePriceTableDetailColumns: changePriceDetailSlice,
   importDetailsColumns: importDetailsTableColumnsSlice,

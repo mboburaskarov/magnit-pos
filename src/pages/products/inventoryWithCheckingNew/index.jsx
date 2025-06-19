@@ -202,7 +202,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     },
   })
 
-  const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
+  const { data: inventoryStat, refetch: refetchInverStatus } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
 
   useHotkeys(
     ['ctrl+Backspace', 'ctrl+delete'],
@@ -338,6 +338,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   }, [debouncedSearchBarcode])
   // Example: Trigger refetch for offset=150
   const handleRefetchPage = (offset = 0) => {
+    refetchInverStatus()
     refetchSpecificPage(offset) // Refetch only the page for offset=150
   }
   return (
