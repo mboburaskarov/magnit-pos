@@ -32,10 +32,10 @@ import PlusIcon from '../../assets/icons/PlusIcon'
 import PrizeBoxIcon from '../../assets/icons/PrizeBoxIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableForChangeByStoreColumns'
-import FilterMenu from './FilterMenu'
+import FilterMenu from './FilterMenuForByImport'
 import ProductDrawer from './product-edit/ProductDrawer'
 import ProductDashboard from './productDashboard'
-import tableHeaderSelector from './tableHeaderSelector'
+import tableHeaderSelector from './tableHeaderSelectorByImport'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function ProductsPageByStore() {
   const theme = useTheme()
