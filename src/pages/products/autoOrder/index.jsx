@@ -5,13 +5,16 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../../components/CheckAccess'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import StyledTooltip from '../../../../components/StyledTooltip'
 import { requests } from '../../../../utils/requests'
+import CategoryIcon from '../../../assets/icons/CategoryIcon'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/autoOrderTableColumns'
@@ -19,11 +22,10 @@ import CreateAutoOrder from './createAutoOrder'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
-
 export default function AutoOrderPage() {
   const theme = useTheme()
   const methods = useForm()
-
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.autoOrderTableColumns)
@@ -155,6 +157,28 @@ export default function AutoOrderPage() {
               </Box>
             </Box>
             <Box display={'flex'} alignItems={'center'}>
+              <StyledTooltip title={'Создать мин-макс'}>
+                <Box
+                  onClick={() => navigate('/products/min-max-create')}
+                  sx={{
+                    backgroundColor: 'bg.10',
+                    padding: '10px',
+                    borderRadius: '10px',
+                    mr: '10px',
+                    display: 'flex',
+                    width: '48px',
+                    height: '48px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    '& svg': {
+                      width: '23px',
+                      height: '23px',
+                    },
+                  }}
+                >
+                  <CategoryIcon />
+                </Box>
+              </StyledTooltip>
               <Box>
                 <ColumnsFilterButtonForAll
                   title={t('ag_grid.table_setting.label')}

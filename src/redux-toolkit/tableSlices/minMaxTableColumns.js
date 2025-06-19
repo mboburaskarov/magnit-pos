@@ -33,13 +33,13 @@ const columns = [
     width: 200,
   },
   {
-    field: 'min',
+    field: 'min_quantity',
     hide: false,
     minWidth: 70,
     width: 200,
   },
   {
-    field: 'max',
+    field: 'max_quantity',
     hide: false,
     minWidth: 70,
     width: 200,
