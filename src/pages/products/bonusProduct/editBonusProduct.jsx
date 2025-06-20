@@ -1,6 +1,7 @@
 import { Box, Button } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
+import { get } from 'lodash'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -8,35 +9,34 @@ import { useMutation } from 'react-query'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import InputDateRangePicker from '../../../../components/Inputs/InputDateRangePicker'
 import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-import LazySelect from '../../../../components/Select/LazySelect'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 
-export default function CreateBonusProduct({ open, refetch, setOpen }) {
+export default function EditBonusProduct({ open, refetch, setOpen }) {
   const methods = useForm()
   const { reset, control } = methods
   const [startDate, setStartDate] = useState(0)
   const [endDate, setEndDate] = useState(0)
-  const { mutate: createBonusProduct, isLoading: iscreateBonusProduct } = useMutation(requests.createBonusProduct, {
+  const { mutate: editBonusProduct, isLoading: iseditBonusProduct } = useMutation(requests.editBonusProduct, {
     onSuccess: () => {
       setOpen(false)
-      success('Создать Бонусный продукт успешно!')
+      success('Редактировать Бонусный продукт успешно!')
       refetch()
     },
     onError: (err) => {
-      error('Ошибка Создать Бонусный продукт успешно!')
+      error('Ошибка Редактировать Бонусный продукт успешно!')
       console.log('err', err)
     },
   })
   const onSubmit = (data) => {
     const requestBody = {
-      product_id: data.product.value,
+      product_id: get(open, 'product.id', 0),
       bonus_amount: data.bonus_amount,
       start_date: startDate != 0 ? dayjs(startDate).format('YYYY-MM-DD') : undefined,
       end_date: endDate != 0 ? dayjs(endDate).format('YYYY-MM-DD') : undefined,
     }
-    createBonusProduct(requestBody)
+    editBonusProduct({ data: requestBody, id: get(open, 'id', 0) })
   }
 
   const onError = (err) => {
@@ -45,7 +45,14 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
   }
 
   useEffect(() => {
-    reset({}, { keepDirty: true })
+    setStartDate(get(open, 'start_date', 0) ? dayjs(get(open, 'start_date')).toDate() : null),
+      setEndDate(get(open, 'end_date', 0) ? dayjs(get(open, 'end_date')).toDate() : null),
+      reset(
+        {
+          bonus_amount: get(open, 'bonus_amount', 0),
+        },
+        { keepDirty: true }
+      )
   }, [open])
   const theme = useTheme()
 
@@ -55,7 +62,7 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
       overflowVisible
       onClose={() => setOpen(false)}
       open={open}
-      title={'Создать бонусный продукт'}
+      title={'Редактировать бонусный продукт'}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
     >
       <Box
@@ -75,25 +82,6 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <LazySelect
-              boxStyle={{ width: '100%' }}
-              slug='product'
-              id='product'
-              name='product'
-              isMulti={false}
-              required
-              label={t('Продукт')}
-              placeholder={t('Выберите Продукт')}
-              minWidth='auto'
-              isClearable={true}
-              request={requests.getProductListForSelect}
-              filters={{ limit: 10 }}
-              control={control}
-              getOptionLabel={(option) => {
-                return option.name
-              }}
-              filterOption={() => true}
-            />
             <InputDateRangePicker
               id='import-date'
               name='date'

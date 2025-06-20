@@ -70,7 +70,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenEditMinM
         ...el,
         headerName: 'Квант',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='kvant' />),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='kvant' />),
       }
     }
     if (el.field === 'min_quantity') {
