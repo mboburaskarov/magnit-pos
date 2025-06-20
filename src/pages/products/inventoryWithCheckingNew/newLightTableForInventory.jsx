@@ -1,4 +1,5 @@
-import { Typography } from '@mui/material'
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
+import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useRef } from 'react'
@@ -13,6 +14,8 @@ function NewLightTableForInventory({
   setSelectedIndex,
   selectedIndex,
   rowRefs,
+  setOrderStoring,
+  orderStoring,
   isFetchingNextPage,
 }) {
   const tableRef = useRef(null)
@@ -38,7 +41,33 @@ function NewLightTableForInventory({
   if (duplicates.length > 0) {
     console.warn('Duplicate IDs found:', duplicates)
   }
-
+  const position = orderStoring?.position || 0
+  const ordercolId = orderStoring?.colId || 0
+  const onClick = (id) => {
+    console.log(id)
+    let newOrder = { position: 0, colId: '' }
+    if (orderStoring) {
+      if (position == 2 && ordercolId == id) {
+        newOrder = {
+          position: 0,
+          colId: 't',
+        }
+      } else {
+        if (ordercolId != id && ordercolId != '') {
+          newOrder = {
+            position: 1,
+            colId: id,
+          }
+        } else {
+          newOrder = {
+            position: position + 1,
+            colId: id,
+          }
+        }
+      }
+    }
+    setOrderStoring(newOrder)
+  }
   return (
     <div className='table-container' ref={tableRef}>
       <table className='custom-table'>
@@ -49,10 +78,25 @@ function NewLightTableForInventory({
                 key={col.id}
                 style={{
                   width: col.width,
+
                   position: 'relative',
                 }}
+                onClick={() => onClick(col.id)}
               >
-                {col.name}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {col.name}
+                  <Box ml={2}>
+                    {orderStoring.position == 1 && orderStoring.colId == col.id && <ArrowUpward color='#ccc' />}
+                    {orderStoring.position == 2 && orderStoring.colId == col.id && <ArrowDownward color='#ccc' />}
+                  </Box>
+                </Box>
               </th>
             ))}
           </tr>

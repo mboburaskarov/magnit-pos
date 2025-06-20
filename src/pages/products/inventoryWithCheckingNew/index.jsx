@@ -357,7 +357,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
           subText={`${inventoryStat?.data?.data?.store?.name} - ${dayjs(inventoryStat?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
           checkAccessId={'product-create'}
         />
-
+        {console.log(orderStoring, 'orderStoring')}
         <Container>
           <Box display='flex' flexDirection='column' position='relative' pb={'20px'}>
             <NewLightTableForInventory
@@ -367,6 +367,8 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
               inventoryStat={inventoryStat}
               setLastSelectedCellRowId={setLastSelectedCellRowId}
               lastRowRef={lastRowRef}
+              orderStoring={orderStoring}
+              setOrderStoring={setOrderStoring}
               isFetchingNextPage={isFetchingNextPage}
               data={allRows}
               inventoryWithCheckingDetails={data}
@@ -531,7 +533,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
           <LoadingButton
             loading={isinventoryExcelReport}
             onClick={() => {
-              inventoryExcelReport({ inventory_id: id, limit: 1000000 })
+              inventoryExcelReport({ inventory_id: id, limit: 1000000, type: status })
             }}
           >
             <Download />
