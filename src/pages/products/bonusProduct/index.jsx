@@ -25,6 +25,7 @@ import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/bonusProductTableColumns'
 import CreateBonusProduct from './createBonusProduct'
+import EditBonusProduct from './editBonusProduct'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -41,12 +42,12 @@ export default function BonusProductPage() {
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
-  const [orderModel, setOrderModel] = useState(false)
+  const [openCreateBonusModal, setopenCreateBonusModal] = useState(false)
+  const [openEditBonusModal, setopenEditBonusModal] = useState(false)
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
-    values,
-    setImages: setOpenImageGallery,
+    setopenEditBonusModal: setopenEditBonusModal,
     setOpenConfirmDialog: setOpenConfirmDialog,
   })
   const { mutate: deleteBonusProduct } = useMutation(requests.deleteBonusProduct, {
@@ -143,6 +144,7 @@ export default function BonusProductPage() {
                   <Box
                     width='100%'
                     sx={{
+                      mr: 4,
                       '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                       '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                         background: 'transparent',
@@ -171,7 +173,7 @@ export default function BonusProductPage() {
                   </Box>
                   <CheckAccess id={'create-auto-order'}>
                     <Box minWidth={156}>
-                      <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
+                      <Button sx={{ height: '48px' }} type='submit' onClick={() => setopenCreateBonusModal(true)} fullWidth variant='contained' color='primary'>
                         Создать
                       </Button>
                     </Box>
@@ -179,7 +181,8 @@ export default function BonusProductPage() {
                 </Box>
               </Box>
               <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
-              <CreateBonusProduct refetch={refetch} open={orderModel} setOpen={setOrderModel} />
+              <CreateBonusProduct refetch={refetch} open={openCreateBonusModal} setOpen={setopenCreateBonusModal} />
+              <EditBonusProduct refetch={refetch} open={openEditBonusModal} setOpen={setopenEditBonusModal} />
               <Box>
                 <AgGridTable
                   id='auto-order-main-table'

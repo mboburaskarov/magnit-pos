@@ -15,7 +15,7 @@ const columns = [
   },
 
   {
-    field: 'bonus',
+    field: 'bonus_amount',
     hide: false,
     minWidth: 70,
     width: 200,

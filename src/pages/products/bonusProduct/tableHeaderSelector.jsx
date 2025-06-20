@@ -20,7 +20,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmDialog }) {
+export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmDialog, setopenEditBonusModal }) {
   const { values } = useQueryParams()
 
   const columns = importsColumns?.map((el) => {
@@ -49,7 +49,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
       }
     }
 
-    if (el.field === 'bonus') {
+    if (el.field === 'bonus_amount') {
       return {
         ...el,
         headerName: 'Сумма бонуса',
@@ -107,7 +107,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
             <Box display='inline-flex' columnGap={'8px'}>
               <CheckAccess id={'edit-product'}>
-                <IconButton onClick={() => navigate(`/products/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <IconButton onClick={() => setopenEditBonusModal(data)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />
                 </IconButton>
               </CheckAccess>

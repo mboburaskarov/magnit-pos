@@ -240,6 +240,7 @@ export const requests = {
   getProductBonusList: (filter) => request.get(`v1/product-bonus/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getProductMinMaxList: (filter) => request.get(`v1/product/list-min-max${qs.stringify(filter, { addQueryPrefix: true })}`),
   createBonusProduct: (data) => request.post(`v1/product-bonus`, data),
+  editBonusProduct: ({ data, id }) => request.put(`v1/product-bonus/${id}`, data),
   createMinMax: (data) => request.post(`v1/product/min-max`, data),
   editMinMax: ({ id, data }) => request.put(`v1/product/min-max/${id}`, data),
 
