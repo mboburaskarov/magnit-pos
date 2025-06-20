@@ -106,12 +106,12 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         cellRenderer: memo(({ data }) => (
           <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
             <Box display='inline-flex' columnGap={'8px'}>
-              <CheckAccess id={'edit-product'}>
+              <CheckAccess id={'edit-bonus-product'}>
                 <IconButton onClick={() => setopenEditBonusModal(data)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <EditIcon />
                 </IconButton>
               </CheckAccess>
-              <CheckAccess id={'delete-product'}>
+              <CheckAccess id={'delete-bonus-product'}>
                 <IconButton
                   onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: data.name })}
                   sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
