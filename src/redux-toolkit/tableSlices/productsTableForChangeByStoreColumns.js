@@ -17,6 +17,12 @@ const columns = [
     pinned: 'left',
   },
   {
+    field: 'store_name',
+    hide: false,
+    minWidth: 70,
+    width: 170,
+  },
+  {
     field: 'main_photo',
     hide: false,
     minWidth: 70,
@@ -103,12 +109,6 @@ const columns = [
     width: 176,
   },
 
-  {
-    field: 'category',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
   {
     field: 'actions',
     hide: false,

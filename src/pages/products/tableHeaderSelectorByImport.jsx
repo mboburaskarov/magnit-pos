@@ -176,16 +176,12 @@ export default function tableHeaderSelector({
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='sum' />),
       }
     }
-    if (el.field === 'category') {
+    if (el.field === 'store_name') {
       return {
         ...el,
-        headerName: t('table_columns.category'),
+        headerName: t('table_columns.store'),
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p?.data?.category_name}-${p.rowIndex}`}>
-            {get(p, 'data.category_name', '')}
-          </Typography>
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='' {...p} type='store_name' />),
       }
     }
     if (el.field === 'retail_price') {

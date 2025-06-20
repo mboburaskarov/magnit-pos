@@ -76,7 +76,7 @@ export default function TopReportsPage() {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      store_id: values?.store_id,
+      store_ids: [],
     }
   }, [values?.offset, values?.limit, values?.search, values?.store_id])
   const {
@@ -84,7 +84,7 @@ export default function TopReportsPage() {
     isLoading: clientsListLoading,
     isFetching: isFetchingclientsList,
     refetch,
-  } = useQuery(['clientsList', clientsListFilter], () => requests.getAllCustomers(clientsListFilter))
+  } = useQuery(['clientsList', clientsListFilter], () => requests.dashboradTopProducts(clientsListFilter))
 
   const { mutate: deleteClient, isLoading: isDeletingProduct } = useMutation(requests.deleteClient, {
     onSuccess: () => {
