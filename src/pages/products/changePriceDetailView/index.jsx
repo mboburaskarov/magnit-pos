@@ -128,6 +128,13 @@ export default function ChangePriceDetailPage() {
     refetch,
   } = useQuery(['revaluationDetailList', revaluationDetailListFilter], () => requests.getRevaluationDetailList(id))
 
+  const {
+    data: revaluationById,
+    isLoading: revaluationByIdLoading,
+    isFetching: isFetchingrevaluationById,
+    refetch: refetchRevaluationById,
+  } = useQuery(['revaluationById', revaluationDetailListFilter], () => requests.getRevaluation(id))
+
   useEffect(() => {
     refetch()
   }, [revaluationDetailListFilter])
@@ -210,7 +217,7 @@ export default function ChangePriceDetailPage() {
             noActions
             backHref='/products/revaluation'
             text={'Переоценка'}
-            subText={`${revaluationDetailList?.data?.data?.store?.name} - ${dayjs(revaluationDetailList?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
+            subText={`${revaluationById?.data?.data?.store?.name} - ${dayjs(revaluationById?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
             checkAccessId={'product-create'}
           />
           <Container>
