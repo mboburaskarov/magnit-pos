@@ -24,6 +24,7 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
   const theme = useTheme()
+  const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
 
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(false)
   const [quantityModalOpen, setQuantityModalOpen] = useState(false)
@@ -224,6 +225,8 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
             isFetchingNextPage={isFetchingNextPage}
             data={allRows}
             inventoryWithCheckingDetails={data}
+            orderStoring={orderStoring}
+            setOrderStoring={setOrderStoring}
           />
         </Box>
       </Box>
