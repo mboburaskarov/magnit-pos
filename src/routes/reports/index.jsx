@@ -1,9 +1,7 @@
 import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
-import LFLReport from '../../pages/reports/lfl'
-import ProductReportPage from '../../pages/reports/productReport'
-import SellerBonus from '../../pages/reports/sellerBonus'
-import StoreReportPage from '../../pages/reports/storeReport'
-import TopReportsPage from '../../pages/reports/topReports'
+import BranchReportsList from '../../pages/reports/branch'
+import PoductReportsList from '../../pages/reports/product'
+import VendorReportsList from '../../pages/reports/vendor'
 
 const reportsRoutes = {
   path: 'reports',
@@ -11,24 +9,16 @@ const reportsRoutes = {
 
   children: [
     {
-      path: 'lfl',
-      children: [{ path: '', element: <LFLReport /> }],
+      path: 'product',
+      children: [{ path: '', element: <PoductReportsList /> }],
     },
     {
-      path: 'seller-bonus',
-      children: [{ path: '', element: <SellerBonus /> }],
+      path: 'branch',
+      children: [{ path: '', element: <BranchReportsList /> }],
     },
     {
-      path: 'product-report',
-      children: [{ path: '', element: <ProductReportPage /> }],
-    },
-    {
-      path: 'top-reports',
-      element: <TopReportsPage />,
-    },
-    {
-      path: 'store-report',
-      children: [{ path: '', element: <StoreReportPage /> }],
+      path: 'vendor',
+      children: [{ path: '', element: <VendorReportsList /> }],
     },
   ],
 }

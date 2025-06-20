@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
+import Header from '../../../../components/Header'
 import DateRangeInputWithoutSelct from '../../../../components/Inputs/DateRangeInputWithoutSelect/DateRangeInput'
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -142,10 +143,9 @@ export default function ReportLfl() {
 
   return (
     <LoadingContainer readyState={true}>
-      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {t('Oтчет LFL ')}
-        </Typography>
+      <Header noActions isLoading={false} backIcon backHref='/reports/product' text={'Отчет: бонусах продавца '} />
+
+      <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'24px'} px={'50px'} pb={'20px'}>
         <Box
           minWidth={320}
           mb={'16px'}

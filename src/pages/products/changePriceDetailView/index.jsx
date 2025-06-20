@@ -1,14 +1,19 @@
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Container, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
-import { useEffect, useMemo, useState } from 'react'
+
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
@@ -17,22 +22,30 @@ import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/autoOrderDetailTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/changePriceDetailTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function ChangePriceDetailViewPage() {
+export default function ChangePriceDetailPage() {
   const theme = useTheme()
   const methods = useForm()
   const { id } = useParams()
+  const childRef = useRef()
+
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.autoOrderTableDetailColumns)
+  const { columns, loading } = useSelector((state) => state.changePriceTableDetailColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
+  const [selectedCellRowId, setSelectedCellRowId] = useState(false)
+  const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(false)
+  const [repricingModalOpen, setrepricingModalOpen] = useState(false)
+  const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
+
   const [openImageGallery, setOpenImageGallery] = useState(false)
+  const [gridApi, setGridApi] = useState(null) // Add this state
   const [filterMenu, setFilterMenu] = useState(false)
   const { mutate: autoOrderChangeQuantity, isLoading: isautoOrderChangeQuantity } = useMutation(requests.autoOrderChangeQuantity, {
     onSuccess: () => {},
@@ -119,24 +132,84 @@ export default function ChangePriceDetailViewPage() {
     refetch()
   }, [revaluationDetailListFilter])
 
+  const { mutate: finishRevaluation, isLoading: isfinishRevaluation } = useMutation(requests.finishRevaluation, {
+    onSuccess: ({ data }) => {
+      navigate('/products/inventory')
+    },
+    onError: (err) => {
+      error('Ошибка при завершение импорта!')
+    },
+  })
   useEffect(() => {
     const count = revaluationDetailList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [revaluationDetailList?.data, values?.limit])
+  const handleFocus = () => {
+    const firstrowid = revaluationDetailList?.data?.data?.data?.[0]?.id
+    const activeEl = document.activeElement
+    const classList = activeEl?.classList || []
 
+    // if (barcode.length > 0) {
+    // } else {
+    if (classList.contains('ag-cell')) {
+      if (revaluationDetailList?.data?.data?.data.length == 1) {
+        setrepricingModalOpen({ id: firstrowid, data: revaluationDetailList?.data?.data?.data?.[0] })
+        return
+      } else if (lastSelectedCellRowId) {
+        setrepricingModalOpen({ id: firstrowid, data: revaluationDetailList?.data?.data?.data.find((item) => item?.id == lastSelectedCellRowId) })
+        return
+      }
+    }
+    // }
+    // Call the exposed method: focus row with id 'b2' on column 'qty'
+    if (lastSelectedCellRowId != null && revaluationDetailList?.data?.data?.data?.some((el) => el?.id === lastSelectedCellRowId)) {
+      childRef.current?.focusCellByRowId(lastSelectedCellRowId, 'barcode')
+    } else {
+      setLastSelectedCellRowId(firstrowid)
+      childRef.current?.focusCellByRowId(firstrowid, 'barcode')
+    }
+  }
+  useEffect(() => {
+    if (selectedCellRowId) {
+      setLastSelectedCellRowId(selectedCellRowId)
+    }
+  }, [selectedCellRowId])
+  useHotkeys(
+    '*',
+    (event) => {
+      if (selectedCellRowId) return
+      let isexeption = document.activeElement.tagName == 'INPUT'
+
+      if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+        if (document.activeElement?.tagName === 'INPUT' || isexeption) return
+
+        handleFocus()
+      }
+    },
+    {
+      enableOnFormTags: true,
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+    }
+  )
+  useEffect(() => {
+    if (repricingModalOpen == false && typeof repricingModalOpen == 'boolean') {
+      handleFocus()
+
+      // setBarcode('')
+    }
+  }, [repricingModalOpen])
   return (
     <LoadingContainer readyState={!isfinalAutoOrder}>
       <FormProvider {...methods}>
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
           <Header
-            // onSubmit={() => setOpenFinishConfirmDialog(true)}
             isLoading={false}
-            buttonText='Завершить'
             backIcon
+            noActions
             backHref='/products/revaluation'
-            text={'Инвентаризация с проверкой'}
+            text={'Переоценка'}
             subText={`${revaluationDetailList?.data?.data?.store?.name} - ${dayjs(revaluationDetailList?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
             checkAccessId={'product-create'}
           />
@@ -194,11 +267,6 @@ export default function ChangePriceDetailViewPage() {
                     changeColumnSequence={changeColumnSequence}
                   />
                 </Box>
-                <Box minWidth={156}>
-                  <Button sx={{ height: '48px' }} type='submit' onClick={() => finalAutoOrder(id)} fullWidth variant='contained' color='primary'>
-                    Отправить заказ
-                  </Button>
-                </Box>
               </Box>
             </Box>
             <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
@@ -206,6 +274,15 @@ export default function ChangePriceDetailViewPage() {
               <AgGridTable
                 id='revaluation-main-table'
                 tableSettings
+                gettingId='id'
+                realTimeSelectedCellRowId={({ id, rowId }) => {
+                  setLastSelectedCellRowId(rowId)
+                }}
+                onChangeSelectedCellRowId={(id) => {
+                  setLastSelectedCellRowId(id)
+                }}
+                childRef={childRef}
+                selectedCellRowId={setSelectedCellRowId}
                 columns={tableColumns}
                 data={revaluationDetailList?.data?.data?.data || []}
                 totalCount={revaluationDetailList?.data?.data?._meta?.total_count || 0}
@@ -221,11 +298,46 @@ export default function ChangePriceDetailViewPage() {
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
                 isRefreshing={loading || isFetchingrevaluationDetailList || revaluationDetailListLoading || isautoOrderChangeQuantity}
+                onGridReady={(params) => setGridApi(params.api)} // Add this prop
               />
             </Box>
           </Container>
         </Box>
 
+        <ConfirmDialog
+          open={openFinishConfirmDialog}
+          setOpen={() => setOpenFinishConfirmDialog(false)}
+          icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
+          title={'Завершить переоценка'}
+          desc={
+            <>
+              <Typography fontWeight={'600'} fontSize={'20px'}>
+                Вы уверены что хотите завершить переоценка?
+              </Typography>
+              <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
+                Не сканированные товары будут списаны
+              </Typography>
+            </>
+          }
+          actions={
+            <>
+              <Button secondary onClick={() => setOpenFinishConfirmDialog(false)}>
+                {t('buttons.go_back')}
+              </Button>
+              <Button
+                size='medium'
+                variant='contained'
+                onClick={() => {
+                  setOpenFinishConfirmDialog(false)
+                  finishRevaluation(id)
+                }}
+                isLoading={false}
+              >
+                {t('buttons.yes_complete')}
+              </Button>
+            </>
+          }
+        />
         <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       </FormProvider>
     </LoadingContainer>

@@ -27,6 +27,11 @@
   "input.search.product.multi": "Поиск: товар, категория, штрих-код",
   "input.search.product": "Поиск",
 
+  "menu.reports.go_to_report": "Перейти к отчету",
+  "menu.reports.report": "Отчет",
+  "menu.reports.products": "Продажи по товарам",
+  "menu.reports.products_desc": "Данный отчет покажет вам какие товары продаются хорошо. Вы сможете посмотреть разбивку по категориям, цветам, размерам и другим характеристикам товаров.",
+
   "page.catalog.title": "Каталог",
   "page.role.title": "Роли",
 
