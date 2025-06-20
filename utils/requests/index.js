@@ -211,7 +211,8 @@ export const requests = {
   finishRevaluation: (id) => request.post(`v1/repricing/confirm/${id}`),
 
   getRevaluationList: (filter) => request.get(`v1/repricing/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getRevaluationDetailList: (id) => request.get(`v1/repricing/${id}`),
+  getRevaluationDetailList: (id) => request.get(`v1/repricing-detail/list/${id}`),
+  getRevaluation: (id) => request.get(`v1/repricing/${id}`),
   changePriceNew: ({ id, new_retail_price, product_id, store_product_id }) =>
     request.post(`v1/repricing/new-price/${id}`, {
       new_retail_price,
