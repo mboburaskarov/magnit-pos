@@ -1,5 +1,3 @@
-import { faArrowCircleDown, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
@@ -8,7 +6,6 @@ import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
 import CustomImg from '../../../../components/CustomImg'
-import palette from '../../../../src/assets/theme/mui.config'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
@@ -185,23 +182,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: 'Количество',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
-
-              <Box width={'10px'} />
-
-              <SimpleText {...p} withDevider type={'adjusted_order_quantity'} />
-            </Box>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <FontAwesomeIcon color={palette.green[500]} icon={faCheckCircle} />
-
-              <Box width={'10px'} />
-              <SimpleText {...p} withDevider type={'response_order_quantity'} />
-            </Box>
-          </>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider type={'count'} />),
       }
     }
   })

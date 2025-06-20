@@ -357,7 +357,6 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
           subText={`${inventoryStat?.data?.data?.store?.name} - ${dayjs(inventoryStat?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
           checkAccessId={'product-create'}
         />
-        {console.log(orderStoring, 'orderStoring')}
         <Container>
           <Box display='flex' flexDirection='column' position='relative' pb={'20px'}>
             <NewLightTableForInventory
