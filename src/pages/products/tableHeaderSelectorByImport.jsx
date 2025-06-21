@@ -415,7 +415,7 @@ export default function tableHeaderSelector({
         cellRenderer: memo((p) => (
           <Box sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <input
-              onChange={(e) => setMarkingRequired({ is_marking: e.target.checked, product_id: p.data.id })}
+              onChange={(e) => setMarkingRequired({ is_marking: e.target.checked, product_id: p.data.product_id, id: p.data.id })}
               defaultChecked={get(p, 'data.is_marking', false)}
               name='checkbox_zero'
               className='customCheckbox'

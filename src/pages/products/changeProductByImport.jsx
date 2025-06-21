@@ -57,7 +57,7 @@ export default function ProductsPageByStore() {
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
-  const { mutate: setMarkingRequired, isLoading: isSetMarkingRequired } = useMutation(requests.setMarkingRequired, {
+  const { mutate: setMarkingRequired, isLoading: isSetMarkingRequired } = useMutation(requests.setImportMarkingRequired, {
     onSuccess: ({ data }) => {
       refetch()
       success('Статус обязательности Маркировка был изменен')
