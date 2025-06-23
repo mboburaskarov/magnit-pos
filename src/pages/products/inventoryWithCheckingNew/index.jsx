@@ -70,6 +70,11 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       order: orderStoring.position === 1 ? `+${orderStoring.colId}` : orderStoring.position === 2 ? `-${orderStoring.colId}` : undefined,
     }
     const res = await requests.getInventoryDetails(filter).then((res) => {
+      if (res.data?.data?.data?.length > 0) {
+        setSelectedCellRowId(res.data.data.data[0].id)
+        setLastSelectedCellRowId(res.data.data.data[0].id)
+        setSelectedIndex(0)
+      }
       if (get(res, 'data.data.data', []).length === 1 && !shouldICleanSearchQuery) {
         setQuantityModalOpen({ id: get(res, 'data.data.data.[0].id'), data: get(res, 'data.data.data.[0]') })
         setshouldICleanSearchQuery(true)
@@ -335,9 +340,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       error('Ошибка при обновлении страницы!')
     }
   }
-  useEffect(() => {
-    setSelectedIndex(0)
-  }, [debouncedSearchBarcode])
+
   // Example: Trigger refetch for offset=150
   const handleRefetchPage = (offset = 0) => {
     refetchInverStatus()
