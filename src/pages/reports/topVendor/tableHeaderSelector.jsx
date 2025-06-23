@@ -35,7 +35,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Филиал',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography whiteSpace={'pre-line'}>{get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type='full_name' />),
       }
     }
     if (el.field === 'count') {
@@ -43,7 +43,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Заказ',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='public_id' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='count' />),
       }
     }
     if (el.field === 'sale') {
@@ -51,7 +51,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Продажи',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='public_id' />),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='total_amount' />),
       }
     }
   })

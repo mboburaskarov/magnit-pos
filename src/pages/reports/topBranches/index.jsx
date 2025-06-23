@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
@@ -13,13 +13,13 @@ import Header from '../../../../components/Header'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelectNew'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/topReportsTableColumns'
 import FilterMenu from './FilterMenu'
@@ -33,6 +33,8 @@ export default function TopBranchesPage() {
   const { columns, loading } = useSelector((state) => state.topReportsTableColumns)
   const { values } = useQueryParams()
   const [appType, setAppType] = useState('ALL')
+  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
+  const [selectedShops, setSelectedShops] = useState('all')
 
   const [selectClients, setselectClients] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
@@ -71,20 +73,20 @@ export default function TopBranchesPage() {
     }
   }, [])
 
-  const clientsListFilter = useMemo(() => {
+  const topBranchesReportListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      store_ids: [],
+      store_ids: selectedShops === 'all' ? [] : selectedShops.map((el) => el.id),
     }
-  }, [values?.offset, values?.limit, values?.search, values?.store_id])
+  }, [values?.offset, values?.limit, values?.search, selectedShops])
   const {
-    data: clientsList,
-    isLoading: clientsListLoading,
-    isFetching: isFetchingclientsList,
+    data: topBranchesReportList,
+    isLoading: topBranchesReportListLoading,
+    isFetching: isFetchingtopBranchesReportList,
     refetch,
-  } = useQuery(['clientsList', clientsListFilter], () => requests.dashboradTopProducts(clientsListFilter))
+  } = useQuery(['topBranchesReportList', topBranchesReportListFilter], () => requests.topBranchReport(topBranchesReportListFilter))
 
   const { mutate: deleteClient, isLoading: isDeletingProduct } = useMutation(requests.deleteClient, {
     onSuccess: () => {
@@ -102,14 +104,14 @@ export default function TopBranchesPage() {
 
   useEffect(() => {
     refetch()
-  }, [clientsListFilter])
+  }, [topBranchesReportListFilter])
 
   useEffect(() => {
-    const count = clientsList?.data?.data?._meta?.total_count
+    const count = topBranchesReportList?.data?.data?._meta?.total_count
     setselectClients([])
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-  }, [clientsList?.data, values?.limit])
+  }, [topBranchesReportList?.data, values?.limit])
   const { mutate: clientsExcelReport, isLoading: isclientsExcelReport } = useMutation(requests.getClientsExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
@@ -122,7 +124,7 @@ export default function TopBranchesPage() {
   })
   return (
     <LoadingContainer readyState={true}>
-      <Header noActions isLoading={false} backIcon backHref='/reports/top-branch' text={'Топ филиалам '} />
+      <Header noActions isLoading={false} backIcon backHref='/reports/branch' text={'Топ филиалам '} />
       <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'0px'} px={'50px'} pb={'20px'}>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
@@ -139,60 +141,64 @@ export default function TopBranchesPage() {
             >
               <InputSearch id='producrs-search' name='search' placeholder={'Наименование'} uncontrolled />
             </Box>
+            <Box>
+              {selectClients.length > 0 && (
+                <>
+                  <Box minWidth={48} ml={'16px'}>
+                    <Button
+                      sx={{
+                        height: '48px',
+                        padding: 0,
+                        bgcolor: '#fff',
+                        border: '1px solid #ECEDF2',
+                        color: 'dark.500',
+                        fontWeight: '500',
+                        fontSize: '16px',
+                        lineHeight: '24px',
+                        '& span': {
+                          mr: '12px',
+                        },
+                      }}
+                      fullWidth
+                      variant='contained'
+                      color='secondary'
+                      onClick={() => deleteClient({ data: selectClients })}
+                    >
+                      <DeleteIcon width='24px' />
+                    </Button>
+                  </Box>
+                </>
+              )}
 
-            <Box minWidth={113} ml={'16px'}>
-              <Button
+              <Box
+                width={956}
+                display={'flex'}
                 sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
+                  '& .select': {
+                    width: '175px !important',
                   },
                 }}
-                fullWidth
-                startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
               >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
+                <Box width={'15px'} />
+                <MultiOptionSelectNew
+                  zIndex={999}
+                  placeholder={t('placeholders.select_shops')}
+                  multiple
+                  defaultSelectedAll
+                  beforeContent={t('placeholders.select_shops')}
+                  value={selectedShops}
+                  allOptions={get(shopList, 'data.data.ids', [])}
+                  selectAllLabel={t('Все филиалы')}
+                  options={get(shopList, 'data.data.data', [])}
+                  isLoading={false}
+                  onChange={(val) => {
+                    setSelectedShops(val)
+                  }}
+                  request={requests.getAllStores}
+                />
+                <Box width={'15px'} />
+              </Box>
             </Box>
-            {selectClients.length > 0 && (
-              <>
-                <Box minWidth={48} ml={'16px'}>
-                  <Button
-                    sx={{
-                      height: '48px',
-                      padding: 0,
-                      bgcolor: '#fff',
-                      border: '1px solid #ECEDF2',
-                      color: 'dark.500',
-                      fontWeight: '500',
-                      fontSize: '16px',
-                      lineHeight: '24px',
-                      '& span': {
-                        mr: '12px',
-                      },
-                    }}
-                    fullWidth
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => deleteClient({ data: selectClients })}
-                  >
-                    <DeleteIcon width='24px' />
-                  </Button>
-                </Box>
-              </>
-            )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box>
@@ -211,13 +217,13 @@ export default function TopBranchesPage() {
           <AgGridTable
             id='clients-main-table'
             tableSettings
-            fullDownload={() => clientsExcelReport({ ...clientsListFilter, limit: 1000000 })}
-            downloadByFilter={() => clientsExcelReport(clientsListFilter)}
+            fullDownload={() => clientsExcelReport({ ...topBranchesReportListFilter, limit: 1000000 })}
+            downloadByFilter={() => clientsExcelReport(topBranchesReportListFilter)}
             isDownloading={isclientsExcelReport}
             columns={tableColumns}
-            totalCount={clientsList?.data?.data?._meta?.total_count || 0}
-            data={clientsList?.data?.data?.data || []}
-            isDataLoading={isFetchingclientsList || clientsListLoading}
+            totalCount={topBranchesReportList?.data?.data?._meta?.total_count || 0}
+            data={topBranchesReportList?.data?.data?.data || []}
+            isDataLoading={isFetchingtopBranchesReportList || topBranchesReportListLoading}
             offsetCount={offsetCount}
             emptyTableText={{
               title: 'Филиал не существует',
@@ -228,7 +234,7 @@ export default function TopBranchesPage() {
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingclientsList || clientsListLoading}
+            isRefreshing={loading || isFetchingtopBranchesReportList || topBranchesReportListLoading}
           />
         </Box>
       </Box>

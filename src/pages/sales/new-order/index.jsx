@@ -333,9 +333,12 @@ function NewSale() {
     },
   })
   useEffect(() => {
+    console.log(customerId)
+
     if (customerId?.id) {
       addDiscountCard({
         customer_id: customerId?.id,
+        barcode: customerId?.barcode,
         sale_id: id,
       })
     }

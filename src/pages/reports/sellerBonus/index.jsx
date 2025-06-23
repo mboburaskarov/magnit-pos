@@ -19,7 +19,6 @@ import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/sellerBonusTableColumns'
-import FilterMenu from '../../clients/FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function SellerBonus() {
@@ -186,7 +185,6 @@ export default function SellerBonus() {
             </Box>
           </Box>
         </Box>
-        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'

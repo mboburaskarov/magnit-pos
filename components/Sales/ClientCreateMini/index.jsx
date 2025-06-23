@@ -1,5 +1,6 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
+import dayjs from 'dayjs'
 import { get, size } from 'lodash'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -11,7 +12,6 @@ import useDidUpdate from '../../../src/hooks/useDidUpdate'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import MainDetails from './mainDetails'
-import dayjs from 'dayjs'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -66,7 +66,12 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       closeDrawer(false)
       methods.reset()
 
-      setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance', 0) })
+      setCustomerId({
+        id: get(data, 'data.id'),
+        name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'),
+        balance: get(data, 'data.balance', 0),
+        barcode: get(data, 'data.discount_card'),
+      })
       success('Клиент создан!')
     },
     onError: (err) => {
