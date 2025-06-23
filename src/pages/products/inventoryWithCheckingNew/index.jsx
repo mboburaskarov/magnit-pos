@@ -71,7 +71,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
     const res = await requests.getInventoryDetails(filter).then((res) => {
       if (res.data?.data?.data?.length > 0) {
-        setSelectedCellRowId(res.data.data.data[0].id)
+        // setSelectedCellRowId(res.data.data.data[0].id)
         setLastSelectedCellRowId(res.data.data.data[0].id)
         setSelectedIndex(0)
       }
@@ -234,6 +234,8 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       let isexeption = document.activeElement.tagName == 'INPUT'
       if (selectedCellRowId || isexeption) return
       const key = event.key.toLowerCase()
+      const isCtrlOrCmd = event.ctrlKey || event.metaKey
+      if (isCtrlOrCmd) return
       if (/^[a-zа-яё0-9]$/i.test(key)) {
         if (shouldICleanSearchQuery) {
           setBarcode('')

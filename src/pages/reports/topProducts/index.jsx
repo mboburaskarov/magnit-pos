@@ -9,9 +9,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
+import Header from '../../../../components/Header'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
-import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
@@ -26,7 +26,7 @@ import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function TopReportsPage() {
+export default function TopProductsPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -89,12 +89,12 @@ export default function TopReportsPage() {
   const { mutate: deleteClient, isLoading: isDeletingProduct } = useMutation(requests.deleteClient, {
     onSuccess: () => {
       refetch()
-      success('Kлиент успешно удален!')
+      success('Продукт успешно удален!')
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
-      error('Ошибка при удалении клиент!')
+      error('Ошибка при удалении продукта!')
       setOpenConfirmDialog(null)
       console.log('err', err)
     },
@@ -122,26 +122,8 @@ export default function TopReportsPage() {
   })
   return (
     <LoadingContainer readyState={true}>
-      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          Топ отчеты
-        </Typography>
-        <Box minWidth={320} mt={'10px'} sx={{ display: 'flex' }}>
-          <InputSwitch
-            uncontrolled
-            id='app-type'
-            name='app-type'
-            value={appType}
-            defaultValue='ALL'
-            onChange={(e) => setAppType(e)}
-            options={[
-              { title: 'Топ филиалам', value: 'ALL', count: 0 },
-              { title: 'Топ продукты', value: 'active', count: 0 },
-              { title: 'Топ продавцы', value: 'inactive', count: 0 },
-              { title: 'Бонусные продукты', value: 'low-stock', count: 0 },
-            ]}
-          />
-        </Box>
+      <Header noActions isLoading={false} backIcon backHref='/reports/product' text={'Топ продукты '} />
+      <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'0px'} px={'50px'} pb={'20px'}>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box
@@ -155,7 +137,7 @@ export default function TopReportsPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={'ID, Имя, Телефон'} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'Наименование'} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>
@@ -238,8 +220,8 @@ export default function TopReportsPage() {
             isDataLoading={isFetchingclientsList || clientsListLoading}
             offsetCount={offsetCount}
             emptyTableText={{
-              title: 'Клиент не существует',
-              description: 'Если вы не нашли искомого Клиента, нажмите кнопку «Добавить нового» и введите необходимую информацию.',
+              title: 'Продукт не существует',
+              description: 'Если вы не нашли искомого продукта, нажмите кнопку «Добавить нового» и введите необходимую информацию.',
             }}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
