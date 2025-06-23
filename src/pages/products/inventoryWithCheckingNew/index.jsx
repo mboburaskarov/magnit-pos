@@ -350,198 +350,200 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   }
   return (
     <LoadingContainer readyState={!isfinishInventoryChecking}>
-      {isLoading && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
-      <FormProvider {...methods}>
-        <Header
-          onSubmit={() => setOpenFinishConfirmDialog(true)}
-          isLoading={false}
-          buttonText='Завершить'
-          backIcon
-          backHref='/products/inventory'
-          text={'Инвентаризация с проверкой'}
-          subText={`${inventoryStat?.data?.data?.store?.name} - ${dayjs(inventoryStat?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
-          checkAccessId={'product-create'}
+      <Box className='inventory-with-checking-page'>
+        {isLoading && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
+        <FormProvider {...methods}>
+          <Header
+            onSubmit={() => setOpenFinishConfirmDialog(true)}
+            isLoading={false}
+            buttonText='Завершить'
+            backIcon
+            backHref='/products/inventory'
+            text={'Инвентаризация с проверкой'}
+            subText={`${inventoryStat?.data?.data?.store?.name} - ${dayjs(inventoryStat?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
+            checkAccessId={'product-create'}
+          />
+          <Container>
+            <Box display='flex' flexDirection='column' position='relative' pb={'20px'}>
+              <NewLightTableForInventory
+                setSelectedIndex={setSelectedIndex}
+                selectedIndex={selectedIndex}
+                rowRefs={rowRefs}
+                inventoryStat={inventoryStat}
+                setLastSelectedCellRowId={setLastSelectedCellRowId}
+                lastRowRef={lastRowRef}
+                orderStoring={orderStoring}
+                setOrderStoring={setOrderStoring}
+                isFetchingNextPage={isFetchingNextPage}
+                data={allRows}
+                inventoryWithCheckingDetails={data}
+              />
+            </Box>
+          </Container>
+        </FormProvider>
+        <ConfirmDialog
+          open={openFinishConfirmDialog}
+          setOpen={() => setOpenFinishConfirmDialog(false)}
+          icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
+          title={t('alerts.finish_inventory')}
+          desc={
+            <>
+              <Typography fontWeight={'600'} fontSize={'20px'}>
+                {t('alerts.finish_inventory_desc')}
+              </Typography>
+              <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
+                {t('alerts.finish_inventory_warning')}
+              </Typography>
+            </>
+          }
+          actions={
+            <>
+              <Button secondary onClick={() => setOpenFinishConfirmDialog(false)}>
+                {t('buttons.go_back')}
+              </Button>
+              <Button
+                size='medium'
+                variant='contained'
+                onClick={() => {
+                  setOpenFinishConfirmDialog(false)
+                  finishInventoryChecking(id)
+                }}
+                isLoading={false}
+              >
+                {t('buttons.yes_complete')}
+              </Button>
+            </>
+          }
         />
-        <Container>
-          <Box display='flex' flexDirection='column' position='relative' pb={'20px'}>
-            <NewLightTableForInventory
-              setSelectedIndex={setSelectedIndex}
-              selectedIndex={selectedIndex}
-              rowRefs={rowRefs}
-              inventoryStat={inventoryStat}
-              setLastSelectedCellRowId={setLastSelectedCellRowId}
-              lastRowRef={lastRowRef}
-              orderStoring={orderStoring}
-              setOrderStoring={setOrderStoring}
-              isFetchingNextPage={isFetchingNextPage}
-              data={allRows}
-              inventoryWithCheckingDetails={data}
-            />
-          </Box>
-        </Container>
-      </FormProvider>
-      <ConfirmDialog
-        open={openFinishConfirmDialog}
-        setOpen={() => setOpenFinishConfirmDialog(false)}
-        icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
-        title={t('alerts.finish_inventory')}
-        desc={
-          <>
-            <Typography fontWeight={'600'} fontSize={'20px'}>
-              {t('alerts.finish_inventory_desc')}
-            </Typography>
-            <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
-              {t('alerts.finish_inventory_warning')}
-            </Typography>
-          </>
-        }
-        actions={
-          <>
-            <Button secondary onClick={() => setOpenFinishConfirmDialog(false)}>
-              {t('buttons.go_back')}
-            </Button>
-            <Button
-              size='medium'
-              variant='contained'
-              onClick={() => {
-                setOpenFinishConfirmDialog(false)
-                finishInventoryChecking(id)
-              }}
-              isLoading={false}
-            >
-              {t('buttons.yes_complete')}
-            </Button>
-          </>
-        }
-      />
-      <InventoryDetailModalNew setBarcode={setBarcode} refetch={refetch} open={selectedCellRowId} setOpen={setSelectedCellRowId} />
-      <ChangeQuantityModal
-        selectedIndex={selectedIndex}
-        setshouldICleanSearchQuery={setshouldICleanSearchQuery}
-        setBarcode={setBarcode}
-        refetch={handleRefetchPage}
-        selectedCellRowId={selectedCellRowId}
-        open={quantityModalOpen}
-        setOpen={setQuantityModalOpen}
-      />
-      <ChangeAdditionalsModal
-        selectedIndex={selectedIndex}
-        setshouldICleanSearchQuery={setshouldICleanSearchQuery}
-        setBarcode={setBarcode}
-        refetch={handleRefetchPage}
-        selectedCellRowId={selectedCellRowId}
-        open={openChangeAdditionalsModel}
-        setOpen={setOpenChangeAdditionalsModel}
-      />
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          display: 'flex',
-          justifyContent: 'end',
-          width: '100%',
-          backgroundColor: '#fff',
-          zIndex: 9999,
-          padding: '10px 20px',
-        }}
-      >
-        <Box
-          width='100%'
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-            '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-              background: 'transparent',
-              width: '400px',
-              height: 48,
-            },
-          }}
-        >
-          <Box display={'flex'}>
-            <InputSearch
-              icon={<BarcodeIcon />}
-              onKeyDown={({ code }) => {
-                if (code === 'Enter') {
-                  document.activeElement.blur()
-                }
-              }}
-              onChange={({ target }) => {
-                if (shouldICleanSearchQuery) {
-                  setBarcode(target.value.split('')?.at(-1))
-                  setshouldICleanSearchQuery(false)
-                  return
-                }
-                setBarcode(get(target, 'value'))
-              }}
-              id='producrs-search'
-              name='search'
-              disabled={status == 'checking'}
-              value={barcode}
-              setSearchTerm={setBarcode}
-              placeholder={t('input.search.product.multi')}
-            />
-            <Box width={'20px'} />
-            <InputSwitch
-              uncontrolled
-              id='status'
-              noMarginTop
-              name='status'
-              value={status}
-              defaultValue='ALL'
-              onChange={(e) => setStatus(e)}
-              options={[
-                { title: t('switch.title.all'), value: 'ALL', count: 0 },
-                {
-                  title: t('switch.title.scanned_count'),
-                  value: 'scanned',
-                  count: 0,
-                },
-                {
-                  title: t('switch.title.shortage_count'),
-                  value: 'shortage',
-                  count: 0,
-                },
-                {
-                  title: t('switch.title.surplus_count'),
-                  value: 'surplus',
-                  count: 0,
-                },
-                {
-                  title: t('switch.title.zero_price'),
-                  value: 'zero_price',
-                  count: 0,
-                },
-                {
-                  title: 'Проверка',
-                  value: 'checking',
-                  count: 0,
-                },
-              ]}
-            />
-          </Box>
-        </Box>
+        <InventoryDetailModalNew setBarcode={setBarcode} refetch={refetch} open={selectedCellRowId} setOpen={setSelectedCellRowId} />
+        <ChangeQuantityModal
+          selectedIndex={selectedIndex}
+          setshouldICleanSearchQuery={setshouldICleanSearchQuery}
+          setBarcode={setBarcode}
+          refetch={handleRefetchPage}
+          selectedCellRowId={selectedCellRowId}
+          open={quantityModalOpen}
+          setOpen={setQuantityModalOpen}
+        />
+        <ChangeAdditionalsModal
+          selectedIndex={selectedIndex}
+          setshouldICleanSearchQuery={setshouldICleanSearchQuery}
+          setBarcode={setBarcode}
+          refetch={handleRefetchPage}
+          selectedCellRowId={selectedCellRowId}
+          open={openChangeAdditionalsModel}
+          setOpen={setOpenChangeAdditionalsModel}
+        />
         <Box
           sx={{
-            alignItems: 'center',
-            justifyContent: 'center',
+            position: 'fixed',
+            bottom: 0,
             display: 'flex',
-            backgroundColor: 'gray.50',
-            borderRadius: '50%',
-            width: '50px',
-            height: '50px',
+            justifyContent: 'end',
+            width: '100%',
+            backgroundColor: '#fff',
+            zIndex: 9999,
+            padding: '10px 20px',
           }}
-          alignItems={'center'}
         >
-          <LoadingButton
-            loading={isinventoryExcelReport}
-            onClick={() => {
-              inventoryExcelReport({ inventory_id: id, limit: 1000000, type: status })
+          <Box
+            width='100%'
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+              '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                background: 'transparent',
+                width: '400px',
+                height: 48,
+              },
             }}
           >
-            <Download />
-          </LoadingButton>
+            <Box display={'flex'}>
+              <InputSearch
+                icon={<BarcodeIcon />}
+                onKeyDown={({ code }) => {
+                  if (code === 'Enter') {
+                    document.activeElement.blur()
+                  }
+                }}
+                onChange={({ target }) => {
+                  if (shouldICleanSearchQuery) {
+                    setBarcode(target.value.split('')?.at(-1))
+                    setshouldICleanSearchQuery(false)
+                    return
+                  }
+                  setBarcode(get(target, 'value'))
+                }}
+                id='producrs-search'
+                name='search'
+                disabled={status == 'checking'}
+                value={barcode}
+                setSearchTerm={setBarcode}
+                placeholder={t('input.search.product.multi')}
+              />
+              <Box width={'20px'} />
+              <InputSwitch
+                uncontrolled
+                id='status'
+                noMarginTop
+                name='status'
+                value={status}
+                defaultValue='ALL'
+                onChange={(e) => setStatus(e)}
+                options={[
+                  { title: t('switch.title.all'), value: 'ALL', count: 0 },
+                  {
+                    title: t('switch.title.scanned_count'),
+                    value: 'scanned',
+                    count: 0,
+                  },
+                  {
+                    title: t('switch.title.shortage_count'),
+                    value: 'shortage',
+                    count: 0,
+                  },
+                  {
+                    title: t('switch.title.surplus_count'),
+                    value: 'surplus',
+                    count: 0,
+                  },
+                  {
+                    title: t('switch.title.zero_price'),
+                    value: 'zero_price',
+                    count: 0,
+                  },
+                  {
+                    title: 'Проверка',
+                    value: 'checking',
+                    count: 0,
+                  },
+                ]}
+              />
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              display: 'flex',
+              backgroundColor: 'gray.50',
+              borderRadius: '50%',
+              width: '50px',
+              height: '50px',
+            }}
+            alignItems={'center'}
+          >
+            <LoadingButton
+              loading={isinventoryExcelReport}
+              onClick={() => {
+                inventoryExcelReport({ inventory_id: id, limit: 1000000, type: status })
+              }}
+            >
+              <Download />
+            </LoadingButton>
+          </Box>
         </Box>
       </Box>
     </LoadingContainer>

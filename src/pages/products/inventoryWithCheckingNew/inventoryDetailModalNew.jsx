@@ -7,7 +7,6 @@ import { useDebounce } from 'use-debounce'
 import { requests } from '../../../../utils/requests'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
-import './table.css'
 
 import { useTheme } from '@emotion/react'
 import { useMutation } from 'react-query'

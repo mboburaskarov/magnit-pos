@@ -1,4 +1,4 @@
-import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material'
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import Money from '../../src/assets/icons/Money'
 import thousandDivider from '../../utils/thousandDivider'
@@ -34,17 +34,17 @@ export default function Transactions({ data, title, subTitle }) {
       <Box>
         <TableContainer px={'20px'}>
           <Table size='small'>
-            {/* <TableHead sx={{ borderBottom: '1px solid', borderColor: 'gray.200', padding: '0' }}>
+            <TableHead sx={{ borderBottom: '1px solid', borderColor: 'gray.200', padding: '0' }}>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 16px 16px 0', border: 'none', color: 'dark.500' }}>
                 Продавец
               </TableCell>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 16px 16px 0', border: 'none', color: 'dark.500' }}>
-                Заказ
+                Количество
               </TableCell>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
                 Продажи
               </TableCell>
-            </TableHead> */}
+            </TableHead>
             <TableBody sx={{ borderTop: '1px solid', borderColor: 'gray.200' }}>
               {data?.map((item, index) => (
                 <TableRow key={item.name}>
@@ -57,7 +57,7 @@ export default function Transactions({ data, title, subTitle }) {
                     {item.count}
                   </TableCell>
                   <TableCell
-                    sx={{ textAlign: 'end', fontSize: '16px', fontWeight: 600, lineHeight: '28px', border: 'none', p: '16px 0px 16px 0', color: 'dark.500' }}
+                    sx={{ textAlign: 'start', fontSize: '16px', fontWeight: 600, lineHeight: '28px', border: 'none', p: '16px 0px 16px 0', color: 'dark.500' }}
                   >
                     {thousandDivider(item.amount, 'сум')}
                   </TableCell>
