@@ -8,6 +8,7 @@ import ArrowUp from '../../src/assets/icons/ArrowUp'
 import TickSmallIcon from '../../src/assets/icons/TickIcon'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
 import { error } from '../../utils/toast'
+import StyledTooltip from '../StyledTooltip'
 import './select.css'
 
 const MultiOptionSelectNew = ({
@@ -356,15 +357,18 @@ const MultiOptionSelectNew = ({
     }
 
     if (multiple) {
+      let val =
+        (selectAllLabel && options.length && values?.length === options.length && values.length != 1) ||
+        ((values == 'all' || isSelectAll) && values.length != 1)
+          ? selectAllLabel
+          : countLabel
+          ? `${values?.length} ${countLabel}`
+          : (values || [])?.map((value, index) => `${index !== 0 ? ', ' : ''} ${value?.name}`)
+
       return (
-        <span className='multiple value'>
-          {(selectAllLabel && options.length && values?.length === options.length && values.length != 1) ||
-          ((values == 'all' || isSelectAll) && values.length != 1)
-            ? selectAllLabel
-            : countLabel
-            ? `${values?.length} ${countLabel}`
-            : (values || [])?.map((value, index) => `${index !== 0 ? ', ' : ''} ${value?.name}`)}
-        </span>
+        <StyledTooltip title={val} placement='top'>
+          <span className='multiple value'>{val}</span>
+        </StyledTooltip>
       )
     }
 

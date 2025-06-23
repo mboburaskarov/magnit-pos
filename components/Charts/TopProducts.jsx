@@ -25,7 +25,7 @@ export default function TopProducts({ data }) {
         <Typography lineHeight={'30px'} fontWeight={'600'} fontSize={'20px'}>
           Топ продукты
         </Typography>
-        <Box onClick={() => navigate('/reports/top-reports')}>
+        <Box onClick={() => navigate('/reports/top-products')}>
           <FormatLineSpacing sx={{ fontSize: '25px' }} />
         </Box>
       </Box>

@@ -19,6 +19,7 @@ import InputSwitch from '../../../components/Inputs/InputSwitch'
 import LoadingBlock from '../../../components/LoadingBlock'
 import LoadingContainer from '../../../components/LoadingContainer'
 import StyledTooltip from '../../../components/StyledTooltip'
+import { checkPermission } from '../../../utils/checkPermission'
 import { downloadLinkExcel } from '../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
@@ -260,6 +261,7 @@ export default function ProductsPage() {
 
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
+    if (!checkPermission('can-change-product-data-katalog', user_data)) return
 
     if (colDef?.field === 'barcode' && newValue !== oldValue) {
       const id = data?.id

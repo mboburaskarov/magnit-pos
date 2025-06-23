@@ -1,7 +1,4 @@
-import { useSelector } from 'react-redux'
-
-export const checkPermission = (id) => {
-  const user_data = useSelector((state) => state.user)
+export const checkPermission = (id, user_data) => {
   const idsArray = id.split(' ')
 
   const hasAccess =

@@ -1,9 +1,12 @@
 import MainLayout from '../../layouts/MainLayout'
+import BonusProductsPage from '../../pages/reports/bonusProducts'
 import LFLReport from '../../pages/reports/lfl'
 import ProductReportPage from '../../pages/reports/productReport'
 import SellerBonus from '../../pages/reports/sellerBonus'
 import StoreReportPage from '../../pages/reports/storeReport'
-import TopReportsPage from '../../pages/reports/topReports'
+import TopBranchesPage from '../../pages/reports/topBranches'
+import TopProductsPage from '../../pages/reports/topProducts'
+import TopVendorsPage from '../../pages/reports/topVendor'
 
 const reportsInsideRoutes = {
   path: 'reports',
@@ -22,9 +25,22 @@ const reportsInsideRoutes = {
       path: 'product-report',
       children: [{ path: '', element: <ProductReportPage /> }],
     },
+
     {
-      path: 'top-reports',
-      element: <TopReportsPage />,
+      path: 'top-products',
+      element: <TopProductsPage />,
+    },
+    {
+      path: 'bonus-products',
+      element: <BonusProductsPage />,
+    },
+    {
+      path: 'top-branchs',
+      element: <TopBranchesPage />,
+    },
+    {
+      path: 'top-vendors',
+      element: <TopVendorsPage />,
     },
     {
       path: 'store-report',

@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
       margin: `4px 0 24px`,
     },
     '& > a': {
-      color: theme.palette.blue[500],
+      color: theme.palette.orange[500],
       fontWeight: 600,
       marginTop: 'auto',
       display: 'flex',

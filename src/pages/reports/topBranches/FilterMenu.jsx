@@ -28,7 +28,7 @@ export default function FilterMenu({ open, setOpen }) {
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
     setOpen(false)
-    navigate(`/clients/all${requestParams}`)
+    navigate(`/reports/top-branches${requestParams}`)
   }
 
   const onError = (err) => {
@@ -50,7 +50,7 @@ export default function FilterMenu({ open, setOpen }) {
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/clients/all?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/reports/top-branches?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
   return (
