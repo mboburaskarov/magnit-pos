@@ -75,6 +75,12 @@ export const requests = {
   getStoreReportExcelReport: (filter) => requestEXCEL.post(`v1/report/store-amount/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   getStoreStats: (filter) => request.post(`v1/report/store-stats${qs.stringify(filter, { addQueryPrefix: true })}`),
 
+  // report product
+  topProductsReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-products${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  bonusProductsReport: ({ store_ids, ...filter }) => request.post(`v1/report/bonus-products${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  topVendorReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-seller${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  topBranchReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+
   //shift
   createShift: (data) => request.post(`v1/shift`, data),
 
