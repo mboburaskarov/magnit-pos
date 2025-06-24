@@ -66,7 +66,7 @@ export default function TopProducts({ data }) {
                     {index + 1}. {item.name}
                   </TableCell>
                   <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}>
-                    {item.count}
+                    {item.count > 0 ? `${item.count}(${item.unit_quantity}/${item.unit_per_pack})` : `(${item.unit_quantity}/${item.unit_per_pack})`}
                   </TableCell>
                   <TableCell
                     sx={{
