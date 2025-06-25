@@ -38,14 +38,14 @@ const columns = [
     field: 'accepted_amount',
     hide: false,
     minWidth: 70,
-    width: 170,
+    width: 230,
   },
 
   {
     field: 'status',
     hide: false,
     minWidth: 70,
-    width: 170,
+    width: 230,
   },
   {
     field: 'created_at',

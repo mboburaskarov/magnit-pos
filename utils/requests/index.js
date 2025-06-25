@@ -99,7 +99,7 @@ export const requests = {
   //cashbox
   getAllCashBoxList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   deleteCashBox: (ids) => request.delete(`v1/cash_box/soft-delete`, ids),
-  checkSaleExist: (store_id) => request.get(`v1/cash_box/check?store_id=${store_id}`),
+  checkSaleExist: (store_id, device_id) => request.get(`v1/cash_box/check?store_id=${store_id}&device_id=${device_id}`),
   createCashBox: (data) => request.post(`v1/cash_box`, data),
   updateCashBox: ({ id, data }) => request.put(`v1/cash_box/${id}`, data),
   getSingleCashBox: (id) => request.get(`v1/cash_box/${id}`),

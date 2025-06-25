@@ -58,7 +58,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
                   },
                 }}
               >
-                {id === 'expiring_soon_amount' ? (
+                {id === 'expiring_soon_amount' || id === 'expired_soon_amount' ? (
                   <>
                     {thousandDivider(Math.round(amount), 'сум')}
                     <Typography color='dark.500' fontSize={'20px'} lineHeight={'25px'} fontWeight='500' ml={'10px'}>

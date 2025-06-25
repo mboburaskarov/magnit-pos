@@ -110,7 +110,9 @@ function NewCashRegister() {
     },
   })
   useEffect(() => {
-    checkSaleExist(get(userData, 'store.id'))
+    const device_id = localStorage.getItem('device_id')
+
+    checkSaleExist(get(userData, 'store.id'), device_id)
   }, [])
   useEffect(() => {
     if (registerCashData) setCanCreate((a) => ({ ...a, canCreate: true }))
@@ -123,6 +125,7 @@ function NewCashRegister() {
 
   const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashOperationBox, {
     onSuccess: ({ data }) => {
+      localStorage.setItem('device_id', get(data, 'data.device_id'))
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
     },
     onError: (err) => {
@@ -131,12 +134,14 @@ function NewCashRegister() {
     },
   })
   const onSubmit = (data) => {
+    const device_id = localStorage.getItem('device_id') || crypto.randomUUID()
     const requestBody = {
       cash_amount: Number(get(data, 'opened_amout')),
       cash_box_id: get(data, 'registerCash_id.id', null),
       description: get(data, 'description'),
       store_id: get(userData, 'store.id'),
       employee_id: userData?.id,
+      device_id: device_id,
       is_open: true,
     }
 
