@@ -112,7 +112,7 @@ function NewCashRegister() {
   useEffect(() => {
     const device_id = localStorage.getItem('device_id')
 
-    checkSaleExist(get(userData, 'store.id'), device_id)
+    checkSaleExist({ store_id: get(userData, 'store.id'), device_id })
   }, [])
   useEffect(() => {
     if (registerCashData) setCanCreate((a) => ({ ...a, canCreate: true }))
