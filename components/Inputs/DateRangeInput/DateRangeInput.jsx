@@ -147,7 +147,7 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
     customDateRanges().find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today'
   )
   return (
-    <Box minWidth={'190px'}>
+    <Box>
       <ButtonWithPopup
         id={id || name}
         noArrow
