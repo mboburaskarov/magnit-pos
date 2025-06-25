@@ -31,7 +31,7 @@ const columns = [
     field: 'received_count',
     hide: false,
     minWidth: 70,
-    width: 170,
+    width: 230,
   },
 
   {

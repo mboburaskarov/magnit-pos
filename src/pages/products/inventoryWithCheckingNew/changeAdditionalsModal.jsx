@@ -5,10 +5,11 @@ import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
-import { useMutation } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useParams } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import { requests } from '../../../../utils/requests'
+import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
 import errorAudio from '../../../assets/audio/error.mp3'
 import successAudio from '../../../assets/audio/normal.mp3'
@@ -27,7 +28,15 @@ export default function ChangeAdditionalsModal({ open, selectedIndex, selectedCe
   const [newRtailPrice, setNewRetailPrice] = useState('')
   const [newBarcode, setNewBarcode] = useState('')
   const [newBarcodeRef, setNewBarcodeRef] = useState(null)
+  console.log(get(open, 'data.id'))
+
   let currentOffset = Math.floor(selectedIndex / 50) * 50
+  const { data: priceOptionList, refetch: refetchInverStatus } = useQuery(
+    ['priceOptionList', open],
+    () => requests.getPriceOptions({ product_id: get(open, 'data.id'), limit: 5 }),
+    { enabled: !!get(open, 'data.id') }
+  )
+
   const { mutate: setScanedNumber, isLoading: issetScanedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
       refetch(currentOffset)
@@ -122,7 +131,7 @@ export default function ChangeAdditionalsModal({ open, selectedIndex, selectedCe
 
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ display: 'flex', mb: '20px', justifyContent: 'space-between' }}>
-            <Box>
+            <Box maxWidth={'250px'}>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Цена</Typography>
               <TextField
                 type='number'
@@ -153,6 +162,39 @@ export default function ChangeAdditionalsModal({ open, selectedIndex, selectedCe
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
               />
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+
+              width: '100%',
+              mb: '20px',
+              flexWrap: 'wrap',
+            }}
+          >
+            <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Предлагаемая цена</Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+
+                width: '100%',
+                m: '15px 0',
+                flexWrap: 'wrap',
+              }}
+            >
+              {get(priceOptionList, 'data.data', [])?.map((price) => (
+                <Typography
+                  onClick={() => {
+                    setNewRetailPrice(get(price, 'retail_price', 0))
+                  }}
+                  sx={{ fontSize: 14, m: '5px 5px', backgroundColor: 'bg.10', cursor: 'pointer', padding: '5px 10px', borderRadius: '5px', fontWeight: 600 }}
+                >
+                  {thousandDivider(get(price, 'retail_price', 0), 'сум')}
+                </Typography>
+              ))}
             </Box>
           </Box>
           <Button

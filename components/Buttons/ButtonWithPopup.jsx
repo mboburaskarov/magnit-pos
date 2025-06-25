@@ -121,7 +121,7 @@ const ButtonWithPopup = ({
             {PopperContent ? (
               <PopperContent {...popperContentProps} close={handleClose} />
             ) : (
-              <Box className={classes.options}>
+              <Box className={classes.options + ' pop-up-options'}>
                 {popperData?.map(
                   (el, index) =>
                     el && (
