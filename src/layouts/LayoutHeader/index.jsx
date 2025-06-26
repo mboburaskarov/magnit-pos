@@ -1,6 +1,6 @@
 import { Box, Skeleton, Typography } from '@mui/material'
 import { get } from 'lodash'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -45,7 +45,9 @@ function LayoutHeader() {
 
   const classes = headerStyles({ isOpen })
   const logout = () => {
-    localStorage.clear()
+    // localStorage.clear()
+    localStorage.removeItem('access_token')
+
     window.location.replace('/login')
     navigate('/login')
   }

@@ -24,7 +24,7 @@ export default function TotalOrdersByCity({ data }) {
         <Typography lineHeight={'30px'} fontWeight={'600'} fontSize={'20px'}>
           Топ филиалам
         </Typography>
-        <Box onClick={() => navigate('/reports/top-branches')}>
+        <Box onClick={() => navigate('/reports/top-branchs')}>
           <FormatLineSpacing sx={{ fontSize: '25px' }} />
         </Box>
       </Box>

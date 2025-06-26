@@ -69,6 +69,7 @@ export const requests = {
   // / report product
   getProductReport: ({ store_ids, ...filter }) => request.post(`v1/report/product${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   getPorductReportExcelReport: (filter) => requestEXCEL.post(`v1/report/product-export${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getProductReportStat: (filter) => request.post(`v1/report/product-status${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   // / report store
   getStoreReport: (filter) => request.post(`v1/report/store-amount${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -99,7 +100,7 @@ export const requests = {
   //cashbox
   getAllCashBoxList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   deleteCashBox: (ids) => request.delete(`v1/cash_box/soft-delete`, ids),
-  checkSaleExist: (store_id) => request.get(`v1/cash_box/check?store_id=${store_id}`),
+  checkSaleExist: ({ store_id, device_id }) => request.get(`v1/cash_box/check?store_id=${store_id}&device_id=${device_id}`),
   createCashBox: (data) => request.post(`v1/cash_box`, data),
   updateCashBox: ({ id, data }) => request.put(`v1/cash_box/${id}`, data),
   getSingleCashBox: (id) => request.get(`v1/cash_box/${id}`),
@@ -189,6 +190,7 @@ export const requests = {
   resend1cInventory: (id) => request.post(`v1/inventory/send1c/${id}`),
   getInventoryStat: (id, filter) => request.get(`v1/inventory/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   getInventoryExcelReport: (filter) => requestEXCEL.get(`v1/inventory-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getPriceOptions: (filter) => request.get(`v1/inventory-detail/price-option${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //transfer
   createTransfer: (data) => request.post(`v1/transfer`, data),

@@ -43,11 +43,15 @@ function NavbarDrawer({
               '& a': {
                 padding: '2px 6px',
               },
+              // '& img': {
+              //   width: '180px',
+              // },
             }}
           >
             <Link to='/dashboard' className={classes.brandLogo}>
               <span className={classes.logo_main}>{<LogoMain />}</span>
               <span className={classes.logo_letter_main}> {<LogoLetters />}</span>
+              {/* <img src='/go-pos.png' /> */}
             </Link>
           </Box>
         )}

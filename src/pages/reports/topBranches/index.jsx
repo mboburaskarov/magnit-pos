@@ -1,6 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -11,9 +12,11 @@ import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/Column
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import ImageGallery from '../../../../components/ImageGallery'
+import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRangeInput'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelectNew'
+import SelectSimple from '../../../../components/Select/SelectSimple'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
@@ -72,15 +75,25 @@ export default function TopBranchesPage() {
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
-
+  const [selectedBonusType, setSelectedBonusType] = useState({ id: 'default', name: 'По умолчанию' })
+  const sortTypes = [
+    { id: 'default', name: 'По умолчанию' },
+    { id: 'max_amount', name: 'Топ продажи сум' },
+    { id: 'min_amount', name: 'Мин продажи сум' },
+    { id: 'max_count', name: 'Больше продаж шт' },
+    { id: 'min_count', name: 'Меньше продаж шт' },
+  ]
   const topBranchesReportListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
+      order: selectedBonusType == 'default' ? undefined : selectedBonusType?.id,
       store_ids: selectedShops === 'all' ? [] : selectedShops.map((el) => el.id),
+      start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
+      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
     }
-  }, [values?.offset, values?.limit, values?.search, selectedShops])
+  }, [values?.offset, values?.limit, selectedBonusType, values?.search, selectedShops, values?.start_date, values?.end_date])
   const {
     data: topBranchesReportList,
     isLoading: topBranchesReportListLoading,
@@ -175,10 +188,33 @@ export default function TopBranchesPage() {
                 display={'flex'}
                 sx={{
                   '& .select': {
-                    width: '175px !important',
+                    // width: '175px !important',
                   },
                 }}
               >
+                <Box width={'15px'} />
+
+                <SelectSimple
+                  name='customer_id'
+                  placeholder={t('placeholders.enterSortType')}
+                  isClearable={false}
+                  options={sortTypes}
+                  small
+                  beforeContent={t('placeholders.SortType')}
+                  minWidth='285px'
+                  white
+                  maxWidth={'355px'}
+                  isSearchable={false}
+                  uncontrolled
+                  value={selectedBonusType}
+                  onChange={(e) => setSelectedBonusType(e)}
+                />
+                <Box width={'15px'} />
+                <DateRangeInput
+                  minHeight={'48px'}
+                  id='accounting-report-date-range'
+                  defaultFilterData={{ end_date: dayjs().endOf('month').format('YYYY-MM-DD'), start_date: dayjs().startOf('month').format('YYYY-MM-DD') }}
+                />
                 <Box width={'15px'} />
                 <MultiOptionSelectNew
                   zIndex={999}

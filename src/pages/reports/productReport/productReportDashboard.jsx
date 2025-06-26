@@ -1,32 +1,9 @@
 import { Box, Grid, Typography } from '@mui/material'
 import { get } from 'lodash'
-import { useMutation } from 'react-query'
-import { useParams } from 'react-router-dom'
-import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
-import { error } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 
-function InventoryDashboard({ data: stats, setHasChange }) {
-  const { id } = useParams()
-
-  const { mutate: getInventoryExcelReport, isLoading: isgetInventoryExcelReport } = useMutation(requests.getInventoryExcelReport, {
-    onSuccess: ({ data }) => {
-      setHasChange(false)
-
-      downloadLinkExcel(get(data, 'data.file_name'))
-    },
-    onError: (err) => {
-      setHasChange(false)
-
-      console.log(err)
-
-      error('Ошибка при скачать excel!')
-    },
-  })
-  console.log(stats)
-
+function ProductReportDashboard({ data: stats, setHasChange }) {
   return (
     <Grid
       container
@@ -36,11 +13,12 @@ function InventoryDashboard({ data: stats, setHasChange }) {
       }}
     >
       {[
-        { title: 'Програм Cумма', value: 'total_data.total_current_sum' },
-        { title: 'Факт Cумма', value: 'total_data.total_fact_sum' },
-        { title: 'Разница сумма', value: 'total_data.total_difference_sum' },
+        { title: 'Общее количество', value: 'total_quantity', currency: 'ед' },
+        { title: 'Общее количество возврат ', value: 'total_quantity_returned', currency: 'ед' },
+        { title: 'Общее сумма', value: 'total_retail_price_sum', currency: 'сум' },
+        { title: 'Общее сумма возврат', value: 'total_retail_price_sum_returned', currency: 'сум' },
       ].map((stat) => (
-        <Grid sm='4' lg='4' md='4' item sx={{}}>
+        <Grid sm='3' lg='3' md='3' item sx={{}}>
           <Box
             sx={{
               boxShadow: ' 0px 0px 16px rgba(0, 0, 0, 0.08)',
@@ -73,7 +51,7 @@ function InventoryDashboard({ data: stats, setHasChange }) {
                 }}
               >
                 {stats?.[stat.value] < 0 && <BigWarningIcon />}
-                {thousandDivider(get(stats, stat.value), 'сум')}
+                {thousandDivider(get(stats, stat.value), get(stat, 'currency'))}
               </Typography>
             </>
           </Box>
@@ -83,4 +61,4 @@ function InventoryDashboard({ data: stats, setHasChange }) {
   )
 }
 
-export default InventoryDashboard
+export default ProductReportDashboard

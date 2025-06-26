@@ -31,21 +31,21 @@ const columns = [
     field: 'received_count',
     hide: false,
     minWidth: 70,
-    width: 170,
+    width: 230,
   },
 
   {
     field: 'accepted_amount',
     hide: false,
     minWidth: 70,
-    width: 170,
+    width: 230,
   },
 
   {
     field: 'status',
     hide: false,
     minWidth: 70,
-    width: 170,
+    width: 230,
   },
   {
     field: 'created_at',

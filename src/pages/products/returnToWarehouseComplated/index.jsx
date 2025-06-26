@@ -26,7 +26,7 @@ import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function ReturnToWarehouseCompletedPage() {
+export default function ReturnToWarehouseGetScanWithCheckingPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
@@ -38,10 +38,9 @@ export default function ReturnToWarehouseCompletedPage() {
   const methods = useForm()
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
-  const [manualNumber, setManualNumber] = useState(1)
-
-  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedWriteOffNumber, {
+  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedReturnToWarehouseNumber, {
     onSuccess: ({ data }) => {
+      refetchgetReturnToWarehouseDashBoard()
       setBarcode('')
     },
     onError: (err) => {
@@ -51,9 +50,9 @@ export default function ReturnToWarehouseCompletedPage() {
     },
   })
 
-  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.finishWriteOffChecking, {
+  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.finishReturnToWarehouseChecking, {
     onSuccess: ({ data }) => {
-      navigate('/products/writeoff')
+      navigate('/products/return-to-warehouse')
     },
     onError: (err) => {
       error('Ошибка при завершение импорта!')
@@ -67,7 +66,7 @@ export default function ReturnToWarehouseCompletedPage() {
     id,
     setScanedNumber,
   })
-  const WriteOffWithCheckingDetailsFilter = useMemo(() => {
+  const returnToWarehouseWithCheckingDetailsFilter = useMemo(() => {
     return {
       return_id: id,
       limit: values?.limit || 10,
@@ -76,13 +75,17 @@ export default function ReturnToWarehouseCompletedPage() {
     }
   }, [id, barcode, values?.limit, values?.offset])
 
+  const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
+    requests.getReturnToWarehouseDashBoard(id)
+  )
+
   const {
-    data: WriteOffWithCheckingDetails,
-    isLoading: WriteOffWithCheckingDetailsLoading,
-    isFetching: isFetchingWriteOffWithCheckingDetails,
+    data: returnToWarehouseWithCheckingDetails,
+    isLoading: returnToWarehouseWithCheckingDetailsLoading,
+    isFetching: isFetchingreturnToWarehouseWithCheckingDetails,
     refetch,
-  } = useQuery(['WriteOffWithCheckingDetails', WriteOffWithCheckingDetailsFilter], () =>
-    requests.getReturnToWarehouseDetails(WriteOffWithCheckingDetailsFilter)
+  } = useQuery(['returnToWarehouseWithCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
+    requests.getReturnToWarehouseDetails(returnToWarehouseWithCheckingDetailsFilter)
   )
 
   useEffect(() => {
@@ -102,28 +105,18 @@ export default function ReturnToWarehouseCompletedPage() {
 
   useEffect(() => {
     refetch()
-  }, [WriteOffWithCheckingDetailsFilter])
+  }, [returnToWarehouseWithCheckingDetailsFilter])
 
   useEffect(() => {
-    const count = WriteOffWithCheckingDetails?.data?.data?._meta?.total_count
+    const count = returnToWarehouseWithCheckingDetails?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
 
-    get(WriteOffWithCheckingDetails, 'data.data.data', []).map((importData) => {
+    get(returnToWarehouseWithCheckingDetails, 'data.data.data', []).map((importData) => {
       methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
     })
-  }, [WriteOffWithCheckingDetails?.data, values?.limit])
-
-  const sendScannedImport = () => {
-    if (barcode === '') return
-    setScanedNumber({
-      id,
-      barcode: barcode,
-      type: 'SCAN',
-      scanned_count: Number(manualNumber),
-    })
-  }
+  }, [returnToWarehouseWithCheckingDetails?.data, values?.limit])
   const { mutate: getReturnToWarehouseDetailsExcelReport, isLoading: isgetReturnToWarehouseDetailsExcelReport } = useMutation(
     requests.getReturnToWarehouseDetailsExcelReport,
     {
@@ -137,23 +130,13 @@ export default function ReturnToWarehouseCompletedPage() {
       },
     }
   )
-  const { mutate: send1c, isLoading: isSend1c } = useMutation(requests.resend1cReturnTOwarehouse, {
-    onSuccess: ({ data }) => {
-      success('Повторно отправлено в 1с')
-    },
-    onError: (err) => {
-      console.log(err)
-
-      error('Ошибка при Повторно отправлено в 1с!')
-    },
-  })
   return (
     <LoadingContainer readyState={!isfinishWriteOffChecking}>
       <FormProvider {...methods}>
         <Header
-          onSubmit={() => send1c(id)}
-          buttonText='Повторно отправлено в 1с'
+          onSubmit={() => setOpenFinishConfirmDialog(true)}
           isLoading={false}
+          buttonText='Принятие'
           backIcon
           backHref='/products/return-to-warehouse'
           text={'Возврат с проверкой'}
@@ -177,7 +160,7 @@ export default function ReturnToWarehouseCompletedPage() {
             {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
-          {isOpenStatDashboard && <WriteOffDashboard data={get(WriteOffWithCheckingDetails, 'data.data.stats_count')} />}
+          {isOpenStatDashboard && <WriteOffDashboard data={get(getReturnToWarehouseDashBoard, 'data.data')} />}
 
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -195,7 +178,6 @@ export default function ReturnToWarehouseCompletedPage() {
                 >
                   <InputSearch
                     icon={<BarcodeIcon />}
-                    onKeyDown={({ code }) => code === 'Enter' && sendScannedImport()}
                     onChange={({ target }) => setBarcode(get(target, 'value'))}
                     id='producrs-search'
                     name='search'
@@ -221,13 +203,13 @@ export default function ReturnToWarehouseCompletedPage() {
             <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' } }}>
               <AgGridTable
                 id='imports-main-table'
-                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...WriteOffWithCheckingDetailsFilter, limit: 1000000 })}
-                downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(WriteOffWithCheckingDetailsFilter)}
                 tableSettings
                 columns={tableColumns}
-                data={WriteOffWithCheckingDetails?.data?.data?.data || []}
-                totalCount={WriteOffWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
-                isDataLoading={isFetchingWriteOffWithCheckingDetails || WriteOffWithCheckingDetailsLoading}
+                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...returnToWarehouseWithCheckingDetailsFilter, limit: 1000000 })}
+                downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(returnToWarehouseWithCheckingDetailsFilter)}
+                data={returnToWarehouseWithCheckingDetails?.data?.data?.data || []}
+                totalCount={returnToWarehouseWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                isDataLoading={isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
@@ -238,7 +220,8 @@ export default function ReturnToWarehouseCompletedPage() {
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
-                isRefreshing={loading || isFetchingWriteOffWithCheckingDetails || WriteOffWithCheckingDetailsLoading}
+                status={'ALL'}
+                isRefreshing={loading || isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
