@@ -33,6 +33,7 @@ export default function ProductReportPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const [selectedShops, setSelectedShops] = useState('all')
+  const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
 
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.productReportTableColumns)
@@ -57,6 +58,8 @@ export default function ProductReportPage() {
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     selectClientsFunc,
+    setOrderStoring,
+    orderStoring,
   })
 
   useEffect(() => {
@@ -82,6 +85,8 @@ export default function ProductReportPage() {
       search: values?.search,
       store_ids: selectedShops != 'all' ? selectedShops.map(({ id }) => id) : undefined,
       producer_id: values?.producer_id,
+      order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
+
       employee_id: values?.employee_id,
       start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
       end_date: values?.start_date == values?.end_date ? null : values?.end_date,
@@ -93,6 +98,7 @@ export default function ProductReportPage() {
     values?.producer_id,
     values?.search,
     values?.store_id,
+    orderStoring,
     values?.employee_id,
     values?.start_date,
     values?.end_date,
@@ -141,7 +147,7 @@ export default function ProductReportPage() {
   return (
     <LoadingContainer readyState={true}>
       {isgetPorductReportExcelReport && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
-      <Header noActions isLoading={false} backIcon backHref='/reports/product' text={'Отчет о продукте '} />
+      <Header noActions isLoading={false} backIcon backHref='/reports/product' text={'Продажи по товарам '} />
       <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'24px'} px={'50px'} pb={'20px'}>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>

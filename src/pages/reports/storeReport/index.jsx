@@ -32,6 +32,7 @@ export default function StoreReportPage() {
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.storeReportTableColumns)
   const { values } = useQueryParams()
+  const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
 
   const [offsetCount, setOffsetCount] = useState(0)
 
@@ -39,6 +40,8 @@ export default function StoreReportPage() {
     clientsColumns: columns,
     t,
     values,
+    setOrderStoring,
+    orderStoring,
   })
 
   useEffect(() => {
@@ -62,11 +65,13 @@ export default function StoreReportPage() {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
+      order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
+
       store_id: values?.store_id || undefined,
       start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
       end_date: values?.start_date == values?.end_date ? null : values?.end_date,
     }
-  }, [values?.offset, values?.limit, values?.store_id, values?.search, values?.start_date, values?.end_date])
+  }, [values?.offset, values?.limit, orderStoring, values?.store_id, values?.search, values?.start_date, values?.end_date])
   const {
     data: storeReportList,
     isLoading: storeReportListLoading,
