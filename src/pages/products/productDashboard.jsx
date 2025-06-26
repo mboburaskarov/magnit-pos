@@ -1,5 +1,4 @@
 import { Box, Grid, Typography } from '@mui/material'
-import React from 'react'
 import thousandDivider from '../../../utils/thousandDivider'
 import BigWarningIcon from '../../assets/icons/BigWarningIcon'
 import DownloadIcon from '../../assets/icons/DownloadIcon'
@@ -16,8 +15,9 @@ function ProductDashboard({ data }) {
       {[
         { title: 'Наименований', value: 'total_count', endText: 'шт' },
         { title: 'Товарных единиц', value: 'total_quantity', endText: 'ед.' },
+        { title: 'Oбщая суммa', value: 'total_stock_amount', endText: 'ед.' },
       ].map((stat) => (
-        <Grid sm='6' lg='6' md='6' item sx={{}}>
+        <Grid sm='4' lg='4' md='4' item sx={{}}>
           <Box
             sx={{
               boxShadow: ' 0px 0px 16px rgba(0, 0, 0, 0.08)',
