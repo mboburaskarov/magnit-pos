@@ -19,6 +19,8 @@ import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
+import ArrowDown from '../../../assets/icons/ArrowDown'
+import ArrowUp from '../../../assets/icons/ArrowUp'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
@@ -26,6 +28,7 @@ import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/productReportTableColumns'
 import FilterMenu from './FilterMenu'
+import ProductReportDashboard from './productReportDashboard'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
@@ -34,6 +37,7 @@ export default function ProductReportPage() {
   const dispatch = useDispatch()
   const [selectedShops, setSelectedShops] = useState('all')
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
+  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
 
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.productReportTableColumns)
@@ -110,6 +114,11 @@ export default function ProductReportPage() {
     refetch,
   } = useQuery(['productReportList', productReportListFilter], () => requests.getProductReport(productReportListFilter))
 
+  const { data: productReportDashboard, refetch: fetchProductReportDashboard } = useQuery(
+    ['productReportDashboard', values?.search, productReportListFilter],
+    () => requests.getProductReportStat(productReportListFilter)
+  )
+
   const { mutate: deleteClient, isLoading: isDeletingProduct } = useMutation(requests.deleteClient, {
     onSuccess: () => {
       refetch()
@@ -148,8 +157,26 @@ export default function ProductReportPage() {
     <LoadingContainer readyState={true}>
       {isgetPorductReportExcelReport && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
       <Header noActions isLoading={false} backIcon backHref='/reports/product' text={'Продажи по товарам '} />
-      <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'24px'} px={'50px'} pb={'20px'}>
-        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
+
+      <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'0px'} px={'50px'} pb={'20px'}>
+        <Box
+          sx={{
+            m: ' 0 0 20px',
+            userSelect: 'none !important',
+            cursor: 'pointer',
+            '& > p': {
+              cursor: 'pointer',
+              userSelect: 'none !important',
+            },
+          }}
+          display={'flex'}
+          onClick={() => setIsOpenStatDashboard((p) => !p)}
+        >
+          {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
+          <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
+        </Box>
+        {isOpenStatDashboard && <ProductReportDashboard data={get(productReportDashboard, 'data.data')} />}
+        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'24px'} width='100%'>
           <Box display={'flex'}>
             <Box
               width='100%'

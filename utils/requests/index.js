@@ -69,6 +69,7 @@ export const requests = {
   // / report product
   getProductReport: ({ store_ids, ...filter }) => request.post(`v1/report/product${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   getPorductReportExcelReport: (filter) => requestEXCEL.post(`v1/report/product-export${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getProductReportStat: (filter) => request.post(`v1/report/product-status${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   // / report store
   getStoreReport: (filter) => request.post(`v1/report/store-amount${qs.stringify(filter, { addQueryPrefix: true })}`),

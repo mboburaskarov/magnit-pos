@@ -72,7 +72,9 @@ export default function UserLogOutDrawer({ isOpen, closeDrawer, goBack }) {
   const navigate = useNavigate()
 
   const logout = () => {
-    localStorage.clear()
+    // localStorage.clear()
+    localStorage.removeItem('access_token')
+
     window.location.replace('/login')
     navigate('/login')
   }

@@ -292,7 +292,13 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         setOrderStoring,
         headerName: 'ID ЧЕКА ',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='sale_number' />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography color={'orange.500'}>
+              {get(p, 'data.sale_type', 'SALE') == 'SALE' ? 'Продажа' : 'Возврат'} #{get(p, 'data.sale_number')}
+            </Typography>
+          </Box>
+        )),
       }
     }
     if (el.field === 'marking_count') {
