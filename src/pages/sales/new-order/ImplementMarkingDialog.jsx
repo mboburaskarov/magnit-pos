@@ -95,7 +95,8 @@ function ImplementMarkingDialog({
         error("Заполните маркировку (uz: bo'sh joyni to'ldiring)")
         return
       }
-      if (e.target.value.length != 83 && e.target.value.length != 37 && e.target.value.length != 53 && e.target.value.length != 94) {
+      let validLength = [83, 37, 53, 94, 93]
+      if (!validLength.includes(e.target.value.length)) {
         console.log('#5')
 
         // markirofka uzunligi mos emas
