@@ -15,7 +15,7 @@ function ProductDashboard({ data }) {
       {[
         { title: 'Наименований', value: 'total_count', endText: 'шт' },
         { title: 'Товарных единиц', value: 'total_quantity', endText: 'ед.' },
-        { title: 'Oбщая суммa', value: 'total_stock_amount', endText: 'ед.' },
+        { title: 'Oбщая суммa', value: 'total_stock_amount', endText: 'сум' },
       ].map((stat) => (
         <Grid sm='4' lg='4' md='4' item sx={{}}>
           <Box
