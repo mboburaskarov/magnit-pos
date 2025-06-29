@@ -1,20 +1,20 @@
-import { Box, Tooltip, Typography, Button } from '@mui/material'
+import { Box, Button, Tooltip, Typography } from '@mui/material'
 import InputSimple from '../components/Inputs/InputSimple'
 import LoadingContainer from '../components/LoadingContainer'
 import SectionDrawer from '../components/SectionDrawer'
 import useDeepCompareEffect from '../src/hooks/useDeepCompareEffect'
 import { useQueryParams } from '../src/hooks/useQueryParams'
 // import useWebsocketMutation from '../src/hooks/useDebounce'
-import PlusIconBlue from '../src/assets/icons/PlusIcon'
+import { makeStyles } from '@mui/styles'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import { error, success } from '../utils/toast'
 import ConfirmDialog from '../components/ConfirmDialog'
 import BigWarningCircleIcon from '../src/assets/icons/BigWarningCircleIcon'
-import { makeStyles } from '@mui/styles'
+import PlusIconBlue from '../src/assets/icons/PlusIcon'
 import { requests } from '../utils/requests'
+import { error, success } from '../utils/toast'
 
 const DeleteIcon = (
   <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -191,6 +191,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
     subRows: [],
   }
   const [inputTree, setInputTree] = useState(subRowObj)
+  console.log(inputTree)
 
   const [duplicateName, setDuplicateName] = useState(false)
   const { t } = useTranslation()

@@ -1,6 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -36,9 +37,22 @@ export default function ReturnToWarehousePage() {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
   const [filterMenu, setFilterMenu] = useState(false)
+
+  const { mutate: downloadNakladnoy, isLoading: isDownloadNakladnoy } = useMutation(requests.downloadReturnNakladnoy, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.log(err)
+
+      error('Ошибка при скачать excel!')
+    },
+  })
+
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
+    downloadNakladnoy: downloadNakladnoy,
     values,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog: setOpenConfirmDialog,
@@ -126,6 +140,7 @@ export default function ReturnToWarehousePage() {
       error('Ошибка при скачать excel!')
     },
   })
+
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>

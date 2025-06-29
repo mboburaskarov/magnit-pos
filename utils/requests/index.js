@@ -119,6 +119,7 @@ export const requests = {
   //import
   getAllImports: (filter) => request.get(`v1/import/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getImportsExcelReport: (filter) => requestEXCEL.get(`v1/import/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getImportStatusCount: (filter) => request.get(`v1/import/list-status${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //import-details
   getAllImportsDetailStatusCount: ({ id, filter }) =>
@@ -144,6 +145,7 @@ export const requests = {
   deleteWriteOff: ({ id }) => request.post(`v1/write-off/cancel/${id}`),
   //return to warehouse
   resend1cReturnTOwarehouse: (id) => request.post(`v1/return/send1c/${id}`),
+  downloadReturnNakladnoy: (filter) => requestEXCEL.get(`v1/return/export-nakladnoy${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   createReturnToWarehouse: (data) => request.post(`v1/return`, data),
   getAllReturnToWarehouse: (filter) => request.get(`v1/return/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -205,6 +207,7 @@ export const requests = {
   deleteTransfer: ({ id }) => request.post(`v1/transfer/cancel/${id}`),
   getTransferExcelReport: (filter) => requestEXCEL.get(`v1/transfer/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   getTransferDetailsExcelReport: (filter) => requestEXCEL.get(`v1/transfer-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+  downloadTransferNakladnoy: (filter) => requestEXCEL.get(`v1/transfer/export-nakladnoy${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   // autoOrder
   createAutoOrder: (data) => request.post(`v1/auto-order`, data),
