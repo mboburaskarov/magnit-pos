@@ -529,7 +529,7 @@ function NewSale() {
     data: cartItemsList,
     refetch: refetchcartItemsList,
     isLoading: isCartItemsLIstLoading,
-  } = useQuery(['cartItemsList', id], () => requests.getCartItemList({ sale_id: id, limit: 30, offset: 0 }), {
+  } = useQuery(['cartItemsList', id], () => requests.getCartItemList({ sale_id: id, limit: 100, offset: 0 }), {
     onSuccess: () => {
       setHasChange(false)
     },
