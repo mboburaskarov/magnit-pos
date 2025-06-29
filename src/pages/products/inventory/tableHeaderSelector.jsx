@@ -192,7 +192,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
 
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={'сум'} type={'current_count'} />
+              <SimpleText {...p} withDevider currency={''} type={'current_count'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <StyledTooltip title={'Факт'}>
@@ -235,7 +235,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
               </StyledTooltip>
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={'сум'} type={'difference_count'} />
+              <SimpleText {...p} withDevider currency={''} type={'difference_count'} />
             </Box>
           </>
         )),

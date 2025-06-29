@@ -19,6 +19,12 @@ const columns = [
     minWidth: 60,
     width: 400,
   },
+  {
+    field: 'total_amount',
+    hide: false,
+    minWidth: 220,
+    flex: 1,
+  },
 
   {
     field: 'sale_date',
@@ -56,12 +62,7 @@ const columns = [
     minWidth: 70,
     width: 158,
   },
-  {
-    field: 'total_amount',
-    hide: false,
-    minWidth: 220,
-    flex: 1,
-  },
+
   {
     field: 'cheque_count',
     hide: false,
