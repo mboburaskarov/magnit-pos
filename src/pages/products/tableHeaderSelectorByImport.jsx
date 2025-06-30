@@ -374,6 +374,7 @@ export default function tableHeaderSelector({
         ...el,
         headerName: t('table_columns.expire_date'),
         colId: el.field,
+        editable: editable,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             {p.data?.['expire_date'] ? (
