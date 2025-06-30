@@ -298,6 +298,7 @@ function CartSearchBar({
     },
     { enableOnFormTags: true }
   )
+
   useHotkeys('ArrowDown', (event) => selectDownItems(event), { enableOnFormTags: true })
   useHotkeys(
     'Enter',

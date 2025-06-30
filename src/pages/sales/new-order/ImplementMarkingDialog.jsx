@@ -95,7 +95,7 @@ function ImplementMarkingDialog({
         error("Заполните маркировку (uz: bo'sh joyni to'ldiring)")
         return
       }
-      let validLength = [83, 37, 53, 94, 93]
+      let validLength = [83, 37, 53, 94, 93, 51]
       if (!validLength.includes(e.target.value.length)) {
         console.log('#5')
 
