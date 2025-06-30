@@ -303,8 +303,6 @@ const AgGridSimpleTable = ({
 
   const onGridReady = useCallback(
     (params) => {
-      console.log(params)
-
       setGridApi(params.api) // ✅ only the API, not the full params
       gridApiRef.current = params.api
       columnApiRef.current = params.columnApi

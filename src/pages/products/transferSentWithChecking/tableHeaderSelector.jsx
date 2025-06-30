@@ -148,7 +148,6 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            {console.log(p)}
             <NumberFormatInput
               uncontrolled
               setValue={() => {}}

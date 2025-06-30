@@ -155,7 +155,6 @@ export default function ImagePreview({
             </Button> */}
           </Box>
           <input id={id} {...getInputProps()} data-test='upload-photo' />
-          {console.log(uploadedImages)}
           {uploadedImages.slice(0, 3).map((el, ind) => (
             <Box
               id={`upload-img-preview`}

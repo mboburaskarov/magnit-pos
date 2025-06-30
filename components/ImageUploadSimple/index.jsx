@@ -22,7 +22,6 @@ export default function ImageUploadSimple({ id, images, onChange, label, width, 
 
   const { mutate: uploadImage, isLoading: isUploadingImage } = useMutation(requests.imageUpload, {
     onSuccess: ({ data }) => {
-      console.log(data)
       onChange(data)
       filterAndSetImages(data)
       setEditingImage(null)

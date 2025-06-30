@@ -20,12 +20,9 @@ function InventoryDashboard({ data: stats, setHasChange }) {
     onError: (err) => {
       setHasChange(false)
 
-      console.log(err)
-
       error('Ошибка при скачать excel!')
     },
   })
-  console.log(stats)
 
   return (
     <Grid

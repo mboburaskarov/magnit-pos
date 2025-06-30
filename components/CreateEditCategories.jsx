@@ -215,7 +215,6 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
     subRows: [],
   }
   const [inputTree, setInputTree] = useState(subRowObj)
-  console.log(inputTree)
 
   const [duplicateName, setDuplicateName] = useState(false)
   const { t } = useTranslation()
