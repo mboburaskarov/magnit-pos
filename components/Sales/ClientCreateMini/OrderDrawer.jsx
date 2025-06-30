@@ -332,7 +332,6 @@ export default function OrderDrawer({
     onSuccess: ({ data }) => {
       if (false) {
         // disabling epos
-
         navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
         setIsOrderDrower(false)
         handlePrint()
