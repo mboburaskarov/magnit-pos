@@ -4,8 +4,6 @@ import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DownloadIcon from '../../../assets/icons/DownloadIcon'
 
 function ImportDashboard({ data }) {
-  console.log(data)
-
   return (
     <Grid
       container

@@ -28,7 +28,6 @@ export default function ChangeAdditionalsModal({ open, selectedIndex, selectedCe
   const [newRtailPrice, setNewRetailPrice] = useState('')
   const [newBarcode, setNewBarcode] = useState('')
   const [newBarcodeRef, setNewBarcodeRef] = useState(null)
-  console.log(get(open, 'data.id'))
 
   let currentOffset = Math.floor(selectedIndex / 50) * 50
   const { data: priceOptionList, refetch: refetchInverStatus } = useQuery(
