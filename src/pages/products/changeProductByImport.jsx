@@ -260,7 +260,11 @@ export default function ProductsPageByStore() {
 
   const onCellValueChanged = (params) => {
     const { data, colDef, newValue, oldValue } = params
-
+    if (colDef?.field === 'expire_date' && newValue !== oldValue) {
+      const id = data?.id
+      const expireDate = newValue
+      changeBarcode({ id, expire_date: expireDate })
+    }
     if (colDef?.field === 'barcode' && newValue !== oldValue) {
       const id = data?.id
       const barcode = newValue

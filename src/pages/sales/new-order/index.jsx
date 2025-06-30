@@ -315,7 +315,10 @@ function NewSale() {
   const cartRef = cartItemRef.current
   const { mutate: addDiscountCard, isLoading: isaddDiscountCard } = useMutation(requests.addDiscountCard, {
     onSuccess: ({ data }) => {
-      success('Карта скидки успешно добавлена')
+      console.log(data)
+
+      refetchcartItemsList()
+      success(`Карта скидки успешно добавлена - ${data?.data?.discount_percent}%`)
     },
     onError: (err) => {
       error('Ошибка при добавлении карты скидки')
@@ -325,6 +328,8 @@ function NewSale() {
   const { mutate: removeDiscountCard, isLoading: isremoveDiscountCard } = useMutation(requests.removeDiscountCard, {
     onSuccess: ({ data }) => {
       setCustomerId('')
+      refetchcartItemsList()
+
       success('Карта скидки успешно удалена')
     },
     onError: (err) => {
@@ -333,9 +338,7 @@ function NewSale() {
     },
   })
   useEffect(() => {
-    console.log(customerId)
-
-    if (customerId?.id) {
+    if (customerId?.id && customerId?.new != false) {
       addDiscountCard({
         customer_id: customerId?.id,
         barcode: customerId?.barcode,
@@ -596,7 +599,12 @@ function NewSale() {
       method: 'checkStatus',
     })
   }, [])
-
+  useEffect(() => {
+    const customer = get(cashBoxDetails, 'data.data.customer')
+    if (customer) {
+      setCustomerId({ id: customer?.id, name: customer?.first_name + ' ' + customer?.first_name, balance: 0, barcode: '', new: false })
+    }
+  }, [cashBoxDetails])
   useEffect(() => {
     const cartList = cartItemsList?.data?.data?.data
 
