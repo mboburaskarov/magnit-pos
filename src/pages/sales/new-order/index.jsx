@@ -315,8 +315,10 @@ function NewSale() {
   const cartRef = cartItemRef.current
   const { mutate: addDiscountCard, isLoading: isaddDiscountCard } = useMutation(requests.addDiscountCard, {
     onSuccess: ({ data }) => {
+      console.log(data)
+
       refetchcartItemsList()
-      success('Карта скидки успешно добавлена')
+      success(`Карта скидки успешно добавлена - ${data?.data?.discount_percent}%`)
     },
     onError: (err) => {
       error('Ошибка при добавлении карты скидки')
