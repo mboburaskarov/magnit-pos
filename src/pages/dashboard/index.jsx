@@ -86,7 +86,7 @@ export default function DashboarPage() {
         old: before_sale_amount,
       },
       {
-        title: t('Сумма импорта'),
+        title: t('Импорт в ожидании'),
         icon: <RevenueIcon color='#fe5000' />,
         count: import_amount,
         percent: calculatePercentage(before_import_amount || 1, import_amount),
