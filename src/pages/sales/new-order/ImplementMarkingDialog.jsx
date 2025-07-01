@@ -96,7 +96,7 @@ function ImplementMarkingDialog({
         return
       }
       let validLength = [83, 37, 53, 94, 93, 51]
-      if (!validLength.includes(e.target.value.length) && get(item, 'is_checking', false)) {
+      if (!validLength.includes(e.target.value.length) && get(item, 'is_checking', true)) {
         console.log('#5')
 
         // markirofka uzunligi mos emas
