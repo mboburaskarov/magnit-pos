@@ -250,6 +250,7 @@ export default function OrderDrawer({
   cashBoxDetails,
   setMarkingList,
   setMarkingCount,
+  setCustomerId,
   markingCount,
   half,
 
@@ -339,6 +340,8 @@ export default function OrderDrawer({
         setMarkingList({})
         setMarkingCount({})
       } else {
+        setCustomerId('')
+
         //send to epos
         const mockData = get(cartItemsList, 'data', []).map((el) => {
           return Object.values(markingsList[el.id] || {}).map((marking, index) => ({

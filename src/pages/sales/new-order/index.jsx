@@ -1122,6 +1122,7 @@ function NewSale() {
         cartItemsList={get(cartItemsList, 'data.data')}
         printContainer={printContainer}
         isOrderDrower={isOrderDrower}
+        setCustomerId={setCustomerId}
         setInputDiscount={setInputDiscount}
         cashBoxDetails={cashBoxDetails}
         customerId={customerId}

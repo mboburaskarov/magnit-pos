@@ -22,6 +22,7 @@ function OrderLite({
   cartItemsList,
   markingsList,
   childRef,
+  setCustomerId,
   setMarkingList,
   setHasChange,
   maxAmount,
@@ -485,6 +486,7 @@ function OrderLite({
         // setMarkingList({})
         setMarkingCount({})
       } else {
+        setCustomerId('')
         //send to epos
         const mockData = get(cartItemsList, 'data', []).map((el) => {
           return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
