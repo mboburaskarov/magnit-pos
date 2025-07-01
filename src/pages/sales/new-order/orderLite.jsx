@@ -486,7 +486,6 @@ function OrderLite({
         // setMarkingList({})
         setMarkingCount({})
       } else {
-        setCustomerId('')
         //send to epos
         const mockData = get(cartItemsList, 'data', []).map((el) => {
           return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
@@ -567,6 +566,8 @@ function OrderLite({
   const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
       if (!get(data, 'error', true)) {
+        setCustomerId('')
+
         setQrcodeUrl({ qr: get(data, 'info.qrCodeURL', 'pending'), fiscal: get(data, 'info.fiscalSign', 'pending') })
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
         return
