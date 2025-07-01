@@ -65,7 +65,13 @@ const columns = [
     minWidth: 200,
   },
   {
-    field: 'required_marking',
+    field: 'is_marking',
+    hide: false,
+    minWidth: 70,
+    width: 176,
+  },
+  {
+    field: 'is_checking',
     hide: false,
     minWidth: 70,
     width: 176,

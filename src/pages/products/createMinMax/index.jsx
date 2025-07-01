@@ -169,7 +169,6 @@ export default function CreateMinMaxPage() {
                   </CheckAccess>
                 </Box>
               </Box>
-              {console.log(minMaxProductList)}
               <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
               <CreateBonusProduct refetch={refetch} open={openCreateMinMaxModal} setOpen={setOpenCreateMinMaxModal} />
               <EditBonusProduct refetch={refetch} open={openEditMinMaxModal} setOpen={setOpenEditMinMaxModal} />

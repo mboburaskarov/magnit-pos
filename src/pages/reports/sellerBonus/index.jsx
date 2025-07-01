@@ -31,7 +31,6 @@ export default function SellerBonus() {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [selectedBonusType, setSelectedBonusType] = useState({ id: 'default', name: 'По умолчанию' })
-  const [filterMenu, setFilterMenu] = useState(false)
   const sortTypes = [
     { id: 'default', name: 'По умолчанию' },
     { id: 'max_amount', name: 'Топ продажи сум' },

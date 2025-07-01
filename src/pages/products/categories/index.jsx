@@ -30,10 +30,10 @@ export default function CatalogManagement() {
   const categoryFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      search: values?.search,
+      search: searchTerm,
       offset: values?.search ? 0 : values?.offset || 0,
     }
-  }, [values?.offset, values?.limit, values?.search])
+  }, [values?.offset, values?.limit, values?.search, searchTerm])
   const {
     data: categories,
     refetch: categoriesRefetch,

@@ -89,7 +89,8 @@ request.interceptors.response.use(
     }
 
     if (err.response.status === 401 || err.response.status === 403) {
-      localStorage.clear()
+      // localStorage.clear()
+      localStorage.removeItem('access_token')
       window.location.replace('/login')
     }
 

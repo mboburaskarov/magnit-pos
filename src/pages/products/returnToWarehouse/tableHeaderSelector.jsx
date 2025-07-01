@@ -10,7 +10,7 @@ import StyledTooltip from '../../../../components/StyledTooltip'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { returns_list_statuses } from '../../../assets/data/return-statuses'
 import ArrowRight from '../../../assets/icons/ArrowRight'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import DownloadIcon from '../../../assets/icons/DownloadIcon'
 import LeftArrowIcon from '../../../assets/icons/LeftArrow'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
@@ -24,7 +24,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmDialog }) {
+export default function tableHeaderSelector({ importsColumns, t, downloadNakladnoy, setOpenConfirmDialog }) {
   const { values } = useQueryParams()
 
   const columns = importsColumns?.map((el) => {
@@ -311,11 +311,23 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          <Box width={'100%'} display='flex' justifyContent={'center'} alignItems={'center'}>
-            <CheckAccess id={'delete-product'}>
-              <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 40, height: 40, borderRadius: 3, p: '8px' }}>
-                <DeleteIcon width='18px' />
-              </IconButton>
+          <Box
+            width={'100%'}
+            display='flex'
+            justifyContent={'center'}
+            sx={{
+              '& svg': {
+                fill: 'rgb(254, 80, 0) !important',
+              },
+            }}
+            alignItems={'center'}
+          >
+            <CheckAccess id={'can-download-return-nakladnoy'}>
+              {(data.status == 'completed' || data.status == 'sent') && (
+                <IconButton onClick={() => downloadNakladnoy({ transfer_id: data.id })} sx={{ width: 40, height: 40, borderRadius: 3, p: '8px' }}>
+                  <DownloadIcon />
+                </IconButton>
+              )}
             </CheckAccess>
           </Box>
         )),

@@ -374,6 +374,7 @@ export default function tableHeaderSelector({
         ...el,
         headerName: t('table_columns.expire_date'),
         colId: el.field,
+        editable: editable,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             {p.data?.['expire_date'] ? (
@@ -406,7 +407,7 @@ export default function tableHeaderSelector({
         )),
       }
     }
-    if (el.field === 'required_marking') {
+    if (el.field === 'is_marking') {
       return {
         ...el,
         headerName: 'Маркировка',
@@ -418,6 +419,25 @@ export default function tableHeaderSelector({
               onChange={(e) => setMarkingRequired({ is_marking: e.target.checked, product_id: p.data.product_id, id: p.data.id })}
               defaultChecked={get(p, 'data.is_marking', false)}
               name='checkbox_zero'
+              className='customCheckbox'
+              type='checkbox'
+            />
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'is_checking') {
+      return {
+        ...el,
+        headerName: 'Проверка',
+        colId: el.field,
+
+        cellRenderer: memo((p) => (
+          <Box sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <input
+              onChange={(e) => setMarkingRequired({ is_checking: e.target.checked, product_id: p.data.product_id, id: p.data.id })}
+              defaultChecked={get(p, 'data.is_checking', false)}
+              name='checkbox_zero2'
               className='customCheckbox'
               type='checkbox'
             />

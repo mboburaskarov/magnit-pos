@@ -22,6 +22,7 @@ function OrderLite({
   cartItemsList,
   markingsList,
   childRef,
+  setCustomerId,
   setMarkingList,
   setHasChange,
   maxAmount,
@@ -492,7 +493,10 @@ function OrderLite({
             amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
             price:
               el.quantity > index ? parseFloat((el.unit_price * 100).toFixed(2)) : parseFloat((el.unit_quantity_price * el.unit_quantity * 100).toFixed(2)),
-            discount: parseFloat((el.discount_amount * 100).toFixed(2)),
+            discount:
+              el.quantity > index
+                ? parseFloat((get(el, 'discount_amount') * 100).toFixed(2))
+                : parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2)),
             vatPercent: get(el, 'vat_percent'),
             vat:
               el.quantity > index ? parseFloat((get(el, 'vat_price') * 100).toFixed(2)) : parseFloat((el.unit_vat_price * el.unit_quantity * 100).toFixed(2)),
@@ -562,6 +566,8 @@ function OrderLite({
   const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
       if (!get(data, 'error', true)) {
+        setCustomerId('')
+
         setQrcodeUrl({ qr: get(data, 'info.qrCodeURL', 'pending'), fiscal: get(data, 'info.fiscalSign', 'pending') })
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
         return

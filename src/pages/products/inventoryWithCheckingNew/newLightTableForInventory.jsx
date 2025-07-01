@@ -44,7 +44,6 @@ function NewLightTableForInventory({
   const position = orderStoring?.position || 0
   const ordercolId = orderStoring?.colId || 0
   const onClick = (id) => {
-    console.log(id)
     let newOrder = { position: 0, colId: '' }
     if (orderStoring) {
       if (position == 2 && ordercolId == id) {

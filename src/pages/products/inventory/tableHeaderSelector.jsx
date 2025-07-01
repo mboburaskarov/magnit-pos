@@ -5,6 +5,7 @@ import * as qs from 'qs'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
+import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import CheckAccess from '../../../../components/CheckAccess'
 import CustomImg from '../../../../components/CustomImg'
 import StyledTooltip from '../../../../components/StyledTooltip'
@@ -13,6 +14,7 @@ import { imports_list_statuses } from '../../../assets/data/imports-list-statuse
 import ArrowRight from '../../../assets/icons/ArrowRight'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import DownloadIcon from '../../../assets/icons/DownloadIcon'
 import LeftArrowIcon from '../../../assets/icons/LeftArrow'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
@@ -172,7 +174,28 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Недостачи'}>
+              <StyledTooltip title={'Програм'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'green.500',
+                  }}
+                >
+                  <ArrowRight fill='transparent' color='#fff' />
+                </Box>
+              </StyledTooltip>
+
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={''} type={'current_count'} />
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <StyledTooltip title={'Факт'}>
                 <Box
                   sx={{
                     display: 'flex',
@@ -192,10 +215,10 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
 
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={''} type={'surplus'} />
+              <SimpleText {...p} withDevider currency={''} type={'fact_count'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Недостачи'}>
+              <StyledTooltip title={'Разница'}>
                 <Box
                   sx={{
                     display: 'flex',
@@ -210,30 +233,9 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
                   <LeftArrowIcon fill='transparent' color='#fff' />
                 </Box>
               </StyledTooltip>
-
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={''} type={'measurement_count'} />
-            </Box>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Излишек'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'green.500',
-                  }}
-                >
-                  <ArrowRight color='#fff' />
-                </Box>
-              </StyledTooltip>
-              <Box width={'10px'} />
-
-              <SimpleText {...p} withDevider currency={''} type={'shortage'} />
+              <SimpleText {...p} withDevider currency={''} type={'difference_count'} />
             </Box>
           </>
         )),
@@ -249,7 +251,51 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Недостачи'}>
+              <StyledTooltip title={'Програм'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'green.500',
+                  }}
+                >
+                  <ArrowRight fill='transparent' color='#fff' />
+                </Box>
+              </StyledTooltip>
+
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={'сум'} type={'current_sum'} />
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <StyledTooltip title={'Факт'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    bgcolor: 'red.500',
+                  }}
+                >
+                  <Typography textAlign={'center'} width={'20px'} height={'20px'} color={'#fff'}>
+                    +
+                  </Typography>
+                </Box>
+              </StyledTooltip>
+
+              <Box width={'10px'} />
+
+              <SimpleText {...p} withDevider currency={''} type={'fact_sum'} />
+            </Box>
+            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+              <StyledTooltip title={'Разница'}>
                 <Box
                   sx={{
                     display: 'flex',
@@ -264,30 +310,9 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
                   <LeftArrowIcon fill='transparent' color='#fff' />
                 </Box>
               </StyledTooltip>
-
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={'сум'} type={'current_sum'} />
-            </Box>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Излишек'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'green.500',
-                  }}
-                >
-                  <ArrowRight color='#fff' />
-                </Box>
-              </StyledTooltip>
-              <Box width={'10px'} />
-
-              <SimpleText {...p} withDevider currency={'сум'} type={'fact_sum'} />
+              <SimpleText {...p} withDevider currency={'сум'} type={'difference_sum'} />
             </Box>
           </>
         )),
@@ -313,11 +338,51 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         colId: el.field,
         cellRenderer: memo(({ data }) => (
           <Box width={'100%'} display='flex' justifyContent={'center'} alignItems={'center'}>
-            <CheckAccess id={'delete-product'}>
+            <CheckAccess id={'delete-inventory'}>
               <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 40, height: 40, borderRadius: 3, p: '8px' }}>
                 <DeleteIcon width='18px' />
               </IconButton>
             </CheckAccess>
+            <ButtonWithPopup
+              id={'ff'}
+              noArrow
+              // ml={'16px'}
+              sx={{
+                height: '38px',
+                padding: '0px !important',
+                borderRadius: '8px !important',
+                marginLeft: '5px',
+                width: '38px',
+                border: '1px solid transparent !important',
+              }}
+              popperStyle={{
+                '& .pop-up-options': {
+                  minWidth: '200px !important',
+                },
+              }}
+              noMarginSvg
+              placement='bottom-end'
+              onClick={() => refetch()}
+              buttonLabel={
+                <Box
+                  sx={{
+                    display: 'flex',
+                    cursor: 'pointer',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+
+                    '&:hover': { bgcolor: 'transparent !important' },
+                  }}
+                  className='cash_register_icon_wrapper'
+                >
+                  <DownloadIcon />
+                </Box>
+              }
+              popperData={[
+                { title: 'Излишек', soon: false, clickHandler: () => setIsOpenChangeShift(true) },
+                { title: 'Излишек', soon: false, clickHandler: () => setIsOpenChangeShift(true) },
+              ]}
+            />
           </Box>
         )),
       }

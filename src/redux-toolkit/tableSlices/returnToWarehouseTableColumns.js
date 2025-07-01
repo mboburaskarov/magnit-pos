@@ -64,12 +64,12 @@ const columns = [
     minWidth: 70,
     width: 370,
   },
-  // {
-  //   field: 'actions',
-  //   hide: false,
-  //   minWidth: 120,
-  //   width: 120,
-  // },
+  {
+    field: 'actions',
+    hide: false,
+    minWidth: 120,
+    width: 120,
+  },
 ]
 
 const returnToWarehouseTableColumns = createSlice({

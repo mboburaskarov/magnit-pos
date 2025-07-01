@@ -1,9 +1,9 @@
 import { Box, Grid, Typography } from '@mui/material'
-import thousandDivider from '../../../utils/thousandDivider'
-import BigWarningIcon from '../../assets/icons/BigWarningIcon'
-import DownloadIcon from '../../assets/icons/DownloadIcon'
+import thousandDivider from '../../../../utils/thousandDivider'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
+import DownloadIcon from '../../../assets/icons/DownloadIcon'
 
-function ProductDashboard({ data }) {
+function ImportDashboard({ data }) {
   return (
     <Grid
       container
@@ -13,11 +13,12 @@ function ProductDashboard({ data }) {
       }}
     >
       {[
-        { title: 'Наименований', value: 'total_count', endText: 'шт' },
-        { title: 'Товарных единиц', value: 'total_quantity', endText: 'ед.' },
-        { title: 'Oбщая суммa', value: 'total_stock_amount', endText: 'сум' },
+        { title: 'Завершено принято количество', value: 'completed_accepted_count', endText: 'ед.' },
+        { title: 'Завершенная полученная сумма НДС', value: 'completed_received_vat_amount', endText: 'сум' },
+        { title: 'Новое полученное количество', value: 'new_received_count', endText: 'ед.' },
+        { title: 'Новая принятая сумма НДС', value: 'new_accepted_vat_amount', endText: 'сум' },
       ].map((stat) => (
-        <Grid sm='4' lg='4' md='4' item sx={{}}>
+        <Grid sm='3' lg='3' md='3' item sx={{}}>
           <Box
             sx={{
               boxShadow: ' 0px 0px 16px rgba(0, 0, 0, 0.08)',
@@ -88,4 +89,4 @@ function ProductDashboard({ data }) {
   )
 }
 
-export default ProductDashboard
+export default ImportDashboard

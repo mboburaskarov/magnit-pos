@@ -353,6 +353,7 @@ function CartDetailSide({
           childRef={childRef}
           maxAmount={maxAmount}
           setLiteOrder={setLiteOrder}
+          setCustomerId={setCustomerId}
           setMarkingList={setMarkingList}
           setHasChange={setHasChange}
           cartItemsList={get(cartItemsList, 'data.data')}

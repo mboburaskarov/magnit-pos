@@ -41,7 +41,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
     if (el.field === 'count') {
       return {
         ...el,
-        headerName: 'Заказ',
+        headerName: 'Количество',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='count' />),
       }
