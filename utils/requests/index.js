@@ -259,7 +259,8 @@ export const requests = {
   getProductListForSelect: (filter) => request.get(`v1/product/product-list${qs.stringify(filter, { addQueryPrefix: true })}`),
   deleteBonusProduct: (id) => request.delete(`v1/product-bonus`, id),
   setMarkingRequired: ({ product_id, is_marking }) => request.patch(`v1/product/is-marking`, { product_id, is_marking }),
-  setImportMarkingRequired: ({ product_id, id, is_marking }) => request.patch(`v1/product/store-is-marking`, { product_id, id, is_marking }),
+  setImportMarkingRequired: ({ product_id, id, is_marking, is_checking }) =>
+    request.patch(`v1/product/store-is-marking`, { product_id, id, is_checking, is_marking }),
   getProductsExcelReport: (filter) => requestEXCEL.get(`v1/product/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   getProductsExcelReportForAA: (filter) => requestEXCEL.get(`v1/product/export-arzon${qs.stringify(filter, { addQueryPrefix: true })}`),
 

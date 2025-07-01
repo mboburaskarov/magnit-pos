@@ -90,6 +90,7 @@ export default function ProductsPageByStore() {
     orderStoring,
   })
   const routeString = []
+  console.log(routeString, user_data)
 
   user_data?.role_actions?.forEach((item) => {
     if (item.type == 'TABLE') {

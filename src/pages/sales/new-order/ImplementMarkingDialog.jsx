@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import TextField from '../../../../components/Inputs/TextField'
-import { checkBarcodeWithMarking, extractNumbers } from '../../../../utils/checkingMarkingWithBarcode'
+import { checkBarcodeWithMarking } from '../../../../utils/checkingMarkingWithBarcode'
 import { containsCyrillic } from '../../../../utils/convertoRuOrEngToEng'
 import { error } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
@@ -68,7 +68,7 @@ function ImplementMarkingDialog({
     }
   }, [markingsList]) // Replace with actual marking state dependency
 
-  const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex) => {
+  const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex, item) => {
     console.log('#1')
 
     if (e.key === 'Enter') {
@@ -96,7 +96,7 @@ function ImplementMarkingDialog({
         return
       }
       let validLength = [83, 37, 53, 94, 93, 51]
-      if (!validLength.includes(e.target.value.length)) {
+      if (!validLength.includes(e.target.value.length) && get(item, 'is_checking', false)) {
         console.log('#5')
 
         // markirofka uzunligi mos emas
@@ -113,12 +113,11 @@ function ImplementMarkingDialog({
         error('Повторение маркировки (uz: takrorlangan markirovka)')
         return
       }
-      if (!checkBarcodeWithMarking(productBarcode, e.target.value)) {
+      if (!checkBarcodeWithMarking(productBarcode, e.target.value) && get(item, 'is_checking', true)) {
         //markirofkadagi barcode mahsulotniki bilan mos kelmadi
-        inputsRef.current[flatIndex].value = ''
-        console.log('#8')
 
-        error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl:${extractNumbers(e.target.value)}))`)
+        error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl: ${productBarcode} | Sizniki:  ${e.target.value} ))`)
+        inputsRef.current[flatIndex].value = ''
         return
       }
       //hammasi ok
@@ -230,7 +229,7 @@ function ImplementMarkingDialog({
                         onBlur={(e) => {}}
                         defaultValue={markingsList?.[item.id]?.[childIndex]}
                         required={get(item, 'is_marking')}
-                        onKeyDown={(e) => handleKeyDown(e, flatIndex, item.barcode, item.id, childIndex)}
+                        onKeyDown={(e) => handleKeyDown(e, flatIndex, item.barcode, item.id, childIndex, item)}
                         fullWidth
                         inputRef={(el) => get(item, 'is_marking') && (inputsRef.current[flatIndex] = el)}
                         borderRadius={'40px'}
