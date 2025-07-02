@@ -18,9 +18,8 @@ import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 
 import { get } from 'lodash'
+import HeaderWithDashboardWrapper from '../../../../components/HeaderWithDashboard'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
-import ArrowDown from '../../../assets/icons/ArrowDown'
-import ArrowUp from '../../../assets/icons/ArrowUp'
 import ImportDashboard from './importantDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 
@@ -32,7 +31,6 @@ export default function ImportPage() {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(false)
 
   const [filterMenu, setFilterMenu] = useState(false)
   const tableColumns = tableHeaderSelector({
@@ -116,28 +114,8 @@ export default function ImportPage() {
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <Box display={'flex'} mb={'10px'} justifyContent={'space-between'}>
-          <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-            {'Импорт'}
-          </Typography>
-          <Box
-            sx={{
-              m: 'auto 0',
-              userSelect: 'none !important',
-              cursor: 'pointer',
-              '& > p': {
-                cursor: 'pointer',
-                userSelect: 'none !important',
-              },
-            }}
-            display={'flex'}
-            onClick={() => setIsOpenStatDashboard((p) => !p)}
-          >
-            {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
-            <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
-          </Box>
-        </Box>
-        {isOpenStatDashboard && <ImportDashboard data={get(statusCountList, 'data.data', 0)} />}
+        <HeaderWithDashboardWrapper title={'Импорт'} component={<ImportDashboard data={get(statusCountList, 'data.data', 0)} />} />
+
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box

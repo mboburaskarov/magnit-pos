@@ -324,7 +324,7 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
           >
             <CheckAccess id={'can-download-return-nakladnoy'}>
               {(data.status == 'completed' || data.status == 'sent') && (
-                <IconButton onClick={() => downloadNakladnoy({ transfer_id: data.id })} sx={{ width: 40, height: 40, borderRadius: 3, p: '8px' }}>
+                <IconButton onClick={() => downloadNakladnoy({ return_id: data.id })} sx={{ width: 40, height: 40, borderRadius: 3, p: '8px' }}>
                   <DownloadIcon />
                 </IconButton>
               )}

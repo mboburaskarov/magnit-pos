@@ -18,6 +18,7 @@ import LoadingOverflow from '../../../../components/LoadingOverflow'
 import ClientCreateMini from '../../../../components/Sales/ClientCreateMini'
 import OrderDrawer from '../../../../components/Sales/ClientCreateMini/OrderDrawer'
 import DraftDrawer from '../../../../components/Sales/DraftDrawer'
+import OnlineSaleDrawer from '../../../../components/Sales/OnlineSaleNoor/DraftDrawer'
 import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchange/ReturnExchangeDrawer'
 import ShortcutsDrawer from '../../../../components/Sales/ShortcutsDrawer'
 import StyledTooltip from '../../../../components/StyledTooltip'
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '40px !important',
   },
   avatarPlaceholder: {
-    position: 'relative',
+    // position: 'relative',
     height: 40,
     width: 40,
     borderRadius: 20,
@@ -283,6 +284,7 @@ function NewSale() {
   const [isEposTurnOn, setisEposTurnOn] = useState(true)
 
   const [isOpenDraft, setIsOpenDraft] = useState(false)
+  const [isOpenNoorDrawer, setIsOpenNoorDrawer] = useState(false)
   const [isOpenReturnExchange, setIsOpenReturnExchange] = useState(false)
   const [isCreateOpenDraft, setIsCreateOpenDraft] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
@@ -968,21 +970,72 @@ function NewSale() {
                     <Refresh />
                   </Box>
                 </Box>
-                <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
-                  <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
-                    <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
-                      <Typography id='user-username' className={classes.username}>
-                        {get(userData, 'first_name')}
-                      </Typography>
-                      <p id='user-shopname' className={`${classes.bonus_amount} `}>
-                        +{thousandDivider(get(sellerBonusInOneSale, 'data.data.bonus', 0), 'сум')}
-                      </p>
+                <Box display={'flex'}>
+                  {/* <ListItem sx={{ mr: '20px' }} className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsOpenNoorDrawer(true)}>
+                    <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
+                      <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
+                        <Typography id='user-username' className={classes.username}>
+                          Онлайн-продажи
+                        </Typography>
+                        <p id='user-shopname' className={`${classes.bonus_amount} `}>
+                          Noor
+                        </p>
+                      </Box>
+                      <Box
+                        sx={{
+                          ml: '12px',
+                          backgroundColor: '#fff',
+                          width: '40px',
+                          height: '40px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          borderRadius: '50%',
+                          justifyContent: 'center',
+                          '& img': {
+                            width: '40px',
+                          },
+                        }}
+                      >
+                        <img src={'/noor-black.png'} />
+                        <Box>
+                          <Typography
+                            sx={{
+                              position: 'absolute',
+                              right: -5,
+                              top: -8,
+                              backgroundColor: '#f33',
+                              color: '#fff',
+                              width: '25px',
+                              height: '25px',
+                              borderRadius: '50%',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontWeight: '600',
+                            }}
+                          >
+                            3
+                          </Typography>
+                        </Box>
+                      </Box>
                     </Box>
-                    <div className={classes.avatarPlaceholder}>
-                      <CustomImg src={get(userData, 'photo')} />
-                    </div>
-                  </Box>
-                </ListItem>
+                  </ListItem> */}
+                  <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
+                    <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
+                      <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
+                        <Typography id='user-username' className={classes.username}>
+                          {get(userData, 'first_name')}
+                        </Typography>
+                        <p id='user-shopname' className={`${classes.bonus_amount} `}>
+                          +{thousandDivider(get(sellerBonusInOneSale, 'data.data.bonus', 0), 'сум')}
+                        </p>
+                      </Box>
+                      <div className={classes.avatarPlaceholder}>
+                        <CustomImg src={get(userData, 'photo')} />
+                      </div>
+                    </Box>
+                  </ListItem>
+                </Box>
               </Box>
               <LoadingContainer noHeight readyState={!isCartItemsLIstLoading}>
                 {!size(get(cartItemsList, 'data.data.data')) ? (
@@ -1170,6 +1223,7 @@ function NewSale() {
       />
       <ChangeShift open={isOpenChangeShift} setOpen={setIsOpenChangeShift} />
       <DraftDrawer cashBoxDetails={cashBoxDetails} open={isOpenDraft} setOpen={setIsOpenDraft} />
+      <OnlineSaleDrawer cashBoxDetails={cashBoxDetails} open={isOpenNoorDrawer} setOpen={setIsOpenNoorDrawer} />
       <ReturnExchangeDrawer cashBoxDetails={cashBoxDetails} open={isOpenReturnExchange} setOpen={setIsOpenReturnExchange} />
       <ClientCreateMini
         setCustomerId={setCustomerId}
