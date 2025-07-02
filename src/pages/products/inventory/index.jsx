@@ -13,6 +13,8 @@ import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 // import SoonPage from '../../../../components/soon'
+import { get } from 'lodash'
+import HeaderWithDashboardWrapper from '../../../../components/HeaderWithDashboard'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
@@ -23,6 +25,7 @@ import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/inventoryTableColumns'
 import CreateInventory from './createInventory'
 import FilterMenu from './FilterMenu'
+import InventoryDashboard from './inventoryDashboard'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
@@ -128,12 +131,13 @@ export default function InventoryPage() {
       console.log('err', err)
     },
   })
+  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['inventoryStatusCountList', values?.search, inventoryListFilter], () =>
+    requests.getInventoryStatusCount(inventoryListFilter)
+  )
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {'Инвентаризация'}
-        </Typography>
+        <HeaderWithDashboardWrapper title={'Инвентаризация'} component={<InventoryDashboard data={get(statusCountList, 'data.data', 0)} />} />
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>

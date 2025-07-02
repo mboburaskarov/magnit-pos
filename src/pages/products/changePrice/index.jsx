@@ -1,5 +1,6 @@
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -8,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../../components/CheckAccess'
+import HeaderWithDashboardWrapper from '../../../../components/HeaderWithDashboard'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -15,6 +17,7 @@ import { requests } from '../../../../utils/requests'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/changePriceTableColumns'
+import ChangePriceDashboard from './changePriceDashboard'
 import CreateAutoOrder from './createAutoOrder'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
@@ -102,14 +105,14 @@ export default function ChangePricePage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [revaluationList?.data, values?.limit])
-
+  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['revaluationStatusCountList', values?.search, revaluationListFilter], () =>
+    requests.getChnagePriceCount(revaluationListFilter)
+  )
   return (
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-          <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-            Переоценка
-          </Typography>
+          <HeaderWithDashboardWrapper title={'Переоценка'} component={<ChangePriceDashboard data={get(statusCountList, 'data.data', 0)} />} />
 
           <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
             <Box display={'flex'}>

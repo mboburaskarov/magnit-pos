@@ -162,17 +162,29 @@ export default function DashboarPage() {
   }
 
   const dashboard_filter = useMemo(() => {
+    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
+    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
+    console.log(dayjs(new Date()).format('YYYY-MM-DDTHH:mm:ss+05:00'))
+
     return {
       limit: values?.limit || 15,
       search: values?.search,
-      start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
+      start_date: values?.start_date ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDTHH:mm:ss+05:00'),
+      end_date: values?.end_date
+        ? ready_start_date?.isSame(ready_end_date)
+          ? dayjs(`${values?.start_date} 23:59:59`).format()
+          : ready_end_date.format()
+        : null,
       store_ids: selectedShops.length <= 63 && selectedShops != 'all' ? [...selectedShops?.map((a) => a.id)] : null || null,
       type: dataTypeFilter(detalization),
-      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
       offset: values?.search ? 0 : values?.offset || 0,
     }
   }, [values?.offset, detalization, selectedShops, values?.start_date, values?.end_date, values?.limit, values?.search])
-  const { data: chartData } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
+  const { data: chartData } = useQuery(['chartData', dashboard_filter], () =>
+    requests.dashboradChart(
+      dashboard_filter.map(({ start_data, end_date, ...others }) => ({ ...others, start_dat: values?.start_data, end_date: values?.end_date }))
+    )
+  )
   const { data: countStats } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
   const { data: topStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
   const { data: payments } = useQuery(['payments', dashboard_filter], () => requests.dashboradPayments(dashboard_filter))

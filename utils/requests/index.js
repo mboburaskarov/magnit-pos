@@ -21,6 +21,7 @@ export const requests = {
   getComanyInfo: () => request.get(`v1/company/info`),
 
   //dashboard
+
   dashboradChart: ({ store_ids, ...filter }) => request.post(`v1/dashboard/chart${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   dashboradCountStats: ({ store_ids, ...filter }) => request.post(`v1/dashboard/count-stats${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   dashboradTopStores: ({ store_ids, ...filter }) => request.post(`v1/dashboard/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
@@ -143,9 +144,12 @@ export const requests = {
   getWriteOffScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
   finishWriteOffChecking: (id) => request.post(`v1/write-off/confirm/${id}`),
   deleteWriteOff: ({ id }) => request.post(`v1/write-off/cancel/${id}`),
+  getWriteOffStatusCount: (filter) => request.get(`v1/write-off/list-status${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   //return to warehouse
   resend1cReturnTOwarehouse: (id) => request.post(`v1/return/send1c/${id}`),
   downloadReturnNakladnoy: (filter) => requestEXCEL.get(`v1/return/export-nakladnoy${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getReturnStatusCount: (filter) => request.get(`v1/return/list-status${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   createReturnToWarehouse: (data) => request.post(`v1/return`, data),
   getAllReturnToWarehouse: (filter) => request.get(`v1/return/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -193,6 +197,7 @@ export const requests = {
   getInventoryStat: (id, filter) => request.get(`v1/inventory/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   getInventoryExcelReport: (filter) => requestEXCEL.get(`v1/inventory-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   getPriceOptions: (filter) => request.get(`v1/inventory-detail/price-option${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getInventoryStatusCount: (filter) => request.get(`v1/inventory/list-status${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //transfer
   createTransfer: (data) => request.post(`v1/transfer`, data),
@@ -208,6 +213,7 @@ export const requests = {
   getTransferExcelReport: (filter) => requestEXCEL.get(`v1/transfer/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   getTransferDetailsExcelReport: (filter) => requestEXCEL.get(`v1/transfer-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   downloadTransferNakladnoy: (filter) => requestEXCEL.get(`v1/transfer/export-nakladnoy${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getTransferStatusCount: (filter) => request.get(`v1/transfer/list-status${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   // autoOrder
   createAutoOrder: (data) => request.post(`v1/auto-order`, data),
@@ -230,6 +236,8 @@ export const requests = {
       store_product_id,
       id: product_id,
     }),
+  getChnagePriceCount: (filter) => request.get(`v1/repricing/list-status${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   //category
   getAllCategories: (filter) => request.get(`v1/category/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getCategory: (id) => request.get(`v1/category/${id}`),
