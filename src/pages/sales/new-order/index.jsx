@@ -996,7 +996,7 @@ function NewSale() {
                   </Box>
                 </Box>
                 <Box display={'flex'}>
-                  {/* <ListItem sx={{ mr: '20px' }} className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsOpenNoorDrawer(true)}>
+                  <ListItem sx={{ mr: '20px' }} className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsOpenNoorDrawer(true)}>
                     <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
                       <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
                         <Typography id='user-username' className={classes.username}>
@@ -1017,7 +1017,7 @@ function NewSale() {
                           borderRadius: '50%',
                           justifyContent: 'center',
                           '& img': {
-                            width: '40px',
+                            width: '38px',
                           },
                         }}
                       >
@@ -1044,7 +1044,7 @@ function NewSale() {
                         </Box>
                       </Box>
                     </Box>
-                  </ListItem> */}
+                  </ListItem>
                   <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
                     <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
                       <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>

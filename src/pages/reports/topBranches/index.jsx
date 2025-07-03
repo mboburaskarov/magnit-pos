@@ -84,14 +84,20 @@ export default function TopBranchesPage() {
     { id: 'min_count', name: 'Меньше продаж шт' },
   ]
   const topBranchesReportListFilter = useMemo(() => {
+    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
+    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
     return {
+      start_date: values?.start_date ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
+      end_date: values?.end_date
+        ? ready_start_date?.isSame(ready_end_date)
+          ? dayjs(`${values?.start_date} 23:59:59`).format()
+          : ready_end_date.format()
+        : null,
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       order: selectedBonusType == 'default' ? undefined : selectedBonusType?.id,
       store_ids: selectedShops === 'all' ? [] : selectedShops.map((el) => el.id),
-      start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
-      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
     }
   }, [values?.offset, values?.limit, selectedBonusType, values?.search, selectedShops, values?.start_date, values?.end_date])
   const {
