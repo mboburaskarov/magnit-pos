@@ -164,14 +164,13 @@ export default function DashboarPage() {
   const dashboard_filter = useMemo(() => {
     const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
     const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
-    console.log(dayjs(new Date()).format('YYYY-MM-DDTHH:mm:ss+05:00'))
 
     return {
       limit: values?.limit || 15,
       search: values?.search,
       // start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
       // end_date: values?.start_date == values?.end_date ? null : values?.end_date,
-      start_date: values?.start_date ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DD'),
+      start_date: values?.start_date ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDTHH:mm:ss+05:00'),
       end_date: values?.end_date
         ? ready_start_date?.isSame(ready_end_date)
           ? dayjs(`${values?.start_date} 23:59:59`).format()
