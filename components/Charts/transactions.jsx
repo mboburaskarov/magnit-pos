@@ -11,7 +11,7 @@ export default function Transactions({ data, title, subTitle }) {
         border: '1px solid #A4A5AB33',
         borderRadius: '24px',
         padding: '32px 25px',
-        backgroundColor: '#fff',
+        backgroundColor: 'bg.10',
         width: '100%',
       }}
     >

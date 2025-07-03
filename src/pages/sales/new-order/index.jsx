@@ -27,6 +27,7 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import { useSocket } from '../../../context/SocketContext'
 import useDebouncedValue from '../../../hooks/useDebouncedValue'
 import CartItem from './CartItem'
 import CartSearchBar from './CartSearchBar'
@@ -114,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
   cart_detail_id: {
     borderRadius: '40px',
     border: '1px dashed',
-    borderColor: 'bunker.300',
+    borderColor: theme.palette.black,
     padding: '10px 16px',
     width: '100%',
     display: 'flex',
@@ -315,6 +316,30 @@ function NewSale() {
   const searchResetRef = useRef('')
   const printContainer = useRef()
   const cartRef = cartItemRef.current
+
+  // socket implementation
+  const socket = useSocket()
+
+  useEffect(() => {
+    if (!socket) return
+
+    socket.on('new-noor-order', (data) => {
+      console.log('New message:', data)
+    })
+
+    // Optional cleanup
+    return () => {
+      socket.off('message')
+    }
+  }, [socket])
+
+  // const sendMessage = () => {
+  //   if (socket) {
+  //     socket.emit('message', 'Hello from client!')
+  //   }
+  // }
+  // socket implementation
+
   const { mutate: addDiscountCard, isLoading: isaddDiscountCard } = useMutation(requests.addDiscountCard, {
     onSuccess: ({ data }) => {
       console.log(data)
@@ -971,7 +996,7 @@ function NewSale() {
                   </Box>
                 </Box>
                 <Box display={'flex'}>
-                  {/* <ListItem sx={{ mr: '20px' }} className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsOpenNoorDrawer(true)}>
+                  <ListItem sx={{ mr: '20px' }} className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsOpenNoorDrawer(true)}>
                     <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
                       <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
                         <Typography id='user-username' className={classes.username}>
@@ -1019,7 +1044,7 @@ function NewSale() {
                         </Box>
                       </Box>
                     </Box>
-                  </ListItem> */}
+                  </ListItem>
                   <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
                     <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
                       <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
