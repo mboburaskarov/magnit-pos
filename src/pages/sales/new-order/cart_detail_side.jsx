@@ -1,3 +1,4 @@
+import { useTheme } from '@emotion/react'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Print } from '@mui/icons-material'
@@ -58,6 +59,7 @@ function CartDetailSide({
   setLiteOrder,
 }) {
   const { t } = useTranslation()
+  const theme = useTheme()
   const [maxAmount, setMaxAmount] = useState(0)
   const [collapseDiscount, setCollapseDiscount] = useState(false)
   const childRef = useRef()
@@ -79,19 +81,19 @@ function CartDetailSide({
           className={classes.cart_detail_icon}
         >
           <StyledTooltip title={'Открыть новое окно продаж'}>
-            <FileIcon color='#000' />
+            <FileIcon color={theme.palette.black} />
           </StyledTooltip>
         </Box>
         <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
           <StyledTooltip title={'Черновики'}>
-            <TimeAndDate />
+            <TimeAndDate color={theme.palette.black} />
           </StyledTooltip>
         </Box>
 
         <CheckAccess id={'can-return-product'}>
           <Box onClick={() => setIsOpenReturnExchange(true)} className={classes.cart_detail_icon}>
             <StyledTooltip title={'Возврат'}>
-              <FontAwesomeIcon color='black' icon={faExchangeAlt} />
+              <FontAwesomeIcon color={theme.palette.black} icon={faExchangeAlt} />
             </StyledTooltip>
           </Box>
         </CheckAccess>
@@ -100,12 +102,12 @@ function CartDetailSide({
           className={classes.cart_detail_icon}
           sx={{
             path: {
-              color: '#000',
+              color: theme.palette.black,
             },
           }}
         >
           <StyledTooltip title={'Распечатать не товарный чек'}>
-            <Print color='#000' />
+            <Print color={theme.palette.black} />
           </StyledTooltip>
         </Box>
       </Box>

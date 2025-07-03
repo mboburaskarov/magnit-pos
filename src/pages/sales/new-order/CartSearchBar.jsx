@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     display: 'flex',
     maxHeight: '90px',
-    backgroundColor: '#fff',
+    backgroundColor: theme.palette.gray[50],
     padding: '12px 12px 12px 16px',
   },
   searchItem: {

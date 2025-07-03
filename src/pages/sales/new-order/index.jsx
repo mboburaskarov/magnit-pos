@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
   cart_detail_id: {
     borderRadius: '40px',
     border: '1px dashed',
-    borderColor: 'bunker.300',
+    borderColor: theme.palette.black,
     padding: '10px 16px',
     width: '100%',
     display: 'flex',

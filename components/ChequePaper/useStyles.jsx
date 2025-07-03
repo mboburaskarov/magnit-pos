@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   inner: {
     position: 'relative',
     padding: '0',
-    background: 'white',
+    background: theme.palette.gray[50],
     '@media print': {
       width: '100%',
     },
@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   bold: {
-    color: 'black',
+    color: theme.palette.black,
     fontWeight: 'bold',
     '@media print': {
       color: 'black',
@@ -129,11 +129,11 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: 8,
       fontSize: 12,
       lineHeight: '15px',
-      color: 'black',
+      color: theme.palette.black,
       fontWeight: 500,
       '@media print': {
         fontSize: 14,
-        color: 'black',
+        color: theme.palette.black,
         fontWeight: 400,
         lineHeight: '20px',
       },
