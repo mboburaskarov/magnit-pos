@@ -27,6 +27,7 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import { useSocket } from '../../../context/SocketContext'
 import useDebouncedValue from '../../../hooks/useDebouncedValue'
 import CartItem from './CartItem'
 import CartSearchBar from './CartSearchBar'
@@ -315,6 +316,30 @@ function NewSale() {
   const searchResetRef = useRef('')
   const printContainer = useRef()
   const cartRef = cartItemRef.current
+
+  // socket implementation
+  const socket = useSocket()
+
+  useEffect(() => {
+    if (!socket) return
+
+    socket.on('new-noor-order', (data) => {
+      console.log('New message:', data)
+    })
+
+    // Optional cleanup
+    return () => {
+      socket.off('message')
+    }
+  }, [socket])
+
+  // const sendMessage = () => {
+  //   if (socket) {
+  //     socket.emit('message', 'Hello from client!')
+  //   }
+  // }
+  // socket implementation
+
   const { mutate: addDiscountCard, isLoading: isaddDiscountCard } = useMutation(requests.addDiscountCard, {
     onSuccess: ({ data }) => {
       console.log(data)
