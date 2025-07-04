@@ -1,6 +1,5 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button } from '@mui/material'
-import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
@@ -30,12 +29,10 @@ import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function TopVendorsPage() {
-  const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.topReportsTableColumns)
   const { values } = useQueryParams()
-  const [appType, setAppType] = useState('ALL')
   const [selectedShops, setSelectedShops] = useState('all')
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
   const [selectClients, setselectClients] = useState([])
@@ -136,7 +133,6 @@ export default function TopVendorsPage() {
     },
     onError: (err) => {
       console.log(err)
-
       error('Ошибка при скачать excel!')
     },
   })

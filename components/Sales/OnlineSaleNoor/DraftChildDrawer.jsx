@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
@@ -6,10 +5,10 @@ import { get } from 'lodash'
 import { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
-import DeleteIcon from '../../../src/assets/icons/DeleteIcon'
 import LeftArrowIcon from '../../../src/assets/icons/LeftArrow'
 import MarkRectangleIcon from '../../../src/assets/icons/MarkRectangleIcon'
 import { requests } from '../../../utils/requests'
@@ -56,8 +55,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
+  console.log(open)
+
   const reactToPrintContent = useCallback(() => printContainer.current, [])
   const printContainer = useRef()
+  const userData = useSelector((state) => state.user)
+
   const documentName = useRef('Cheque')
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -79,7 +82,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
       console.log('err', err)
     },
   })
-  const { mutate: completeDraft, isLoading: isCompleteDraft } = useMutation(requests.completeDraft, {
+  const { mutate: completeOnlineOrder, isLoading: isCompleteDraft } = useMutation(requests.completeOnlineOrder, {
     onSuccess: ({ data }) => {
       // refetchDraftList()
       setChildOpen(false)
@@ -91,7 +94,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
       console.log('err', err)
     },
   })
-  const { data: darftChildList, refetch, isDarftChildList } = useQuery('darftChildList', () => requests.getDarftChildList(get(open, 'item.id')))
+  const { data: darftChildList, refetch, isDarftChildList } = useQuery('darftChildList', () => requests.getCashBoxDetaildWithSaleId(get(open, 'item.id')))
   useEffect(() => {
     refetch()
   }, [open])
@@ -139,7 +142,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
             </Box>
           </Box>
           <Box maxHeight={'calc(100vh - 485px)'} sx={{ overflowY: 'auto' }} padding={'0px 40px'}>
-            {get(darftChildList, 'data.data.cart_items', [])?.map((el) => (
+            {get(darftChildList, 'data.data.products', [])?.map((el) => (
               <DraftChildItemsBox key={el.id} item={el} />
             ))}
           </Box>
@@ -191,19 +194,56 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
             width='100%'
             mt={4}
           >
-            <LoadingButton loading={isDeleteDraft} onClick={() => deleteDraft(get(open, 'item.id'))} fullWidth color='secondary' variant='contained'>
+            {/* <LoadingButton
+              loading={isDeleteDraft}
+              onClick={() => deleteDraft({ gcash_box_operation_id: et(open, 'item.id'), cashbox_id: 1, sale_id: id })}
+              fullWidth
+              color='secondary'
+              variant='contained'
+            >
               <DeleteIcon width='24px' />
 
               <Typography fontSize={16} ml={'12px'} color={'red.500'} lineHeight={'24px'} fontWeight={600}>
                 {t('delete')}
               </Typography>
-            </LoadingButton>
-            <Button onClick={() => completeDraft(get(open, 'item.id'))} fullWidth variant='contained' type='submit'>
-              <MarkRectangleIcon />
-              <Typography fontSize={16} ml={'12px'} color={'white'} lineHeight={'24px'} fontWeight={600}>
-                {t('Передал курьер ')}
-              </Typography>
-            </Button>
+            </LoadingButton> */}
+            {get(darftChildList, 'data.data.online_status') === 3 ? (
+              <Button
+                onClick={() =>
+                  completeOnlineOrder({
+                    gcash_box_operation_id: get(userData, 'cashbox.cashbox_operation_id'),
+                    cashbox_id: get(userData, 'cashbox.id'),
+                    sale_id: get(open, 'item.id'),
+                  })
+                }
+                fullWidth
+                variant='contained'
+                type='submit'
+              >
+                <MarkRectangleIcon />
+                <Typography fontSize={16} ml={'12px'} color={'white'} lineHeight={'24px'} fontWeight={600}>
+                  {t('Передал курьер ')}
+                </Typography>
+              </Button>
+            ) : (
+              <Button
+                onClick={() =>
+                  completeOnlineOrder({
+                    gcash_box_operation_id: get(userData, 'cashbox.cashbox_operation_id'),
+                    cashbox_id: get(userData, 'cashbox.id'),
+                    sale_id: get(open, 'item.id'),
+                  })
+                }
+                fullWidth
+                variant='contained'
+                type='submit'
+              >
+                <MarkRectangleIcon />
+                <Typography fontSize={16} ml={'12px'} color={'white'} lineHeight={'24px'} fontWeight={600}>
+                  {t('Принять ')}
+                </Typography>
+              </Button>
+            )}
           </Box>
         </Box>
       </Box>

@@ -302,6 +302,11 @@ export const requests = {
   deleteAll: (ids) => request.post(`v1/cart_item/multiple`, ids),
   getCartItemList: (filter) => request.get(`v1/cart_item/list${qs.stringify(filter, { addQueryPrefix: true })}`),
 
+  //noor
+  getNoorOrderCount: (filter) => request.get(`v1/sale/online-count${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getOnlineOrderList: (filter) => request.get(`v1/sale/online-list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  completeOnlineOrder: (data) => request.post(`v1/sale/online-accept`, data),
+
   //store
   getAllStores: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   deleteStore: (id) => request.delete(`v1/store/${id}`),

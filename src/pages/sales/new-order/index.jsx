@@ -11,6 +11,7 @@ import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
+import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import CustomImg from '../../../../components/CustomImg'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -25,6 +26,7 @@ import StyledTooltip from '../../../../components/StyledTooltip'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
+import notificationAudio from '../../../assets/audio/notification.mp3'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import { useSocket } from '../../../context/SocketContext'
@@ -36,6 +38,7 @@ import ImplementMarkingDialog from './ImplementMarkingDialog'
 import ProductDrawer from './ProductDrawer'
 import CartDetailSide from './cart_detail_side'
 import CreateDraftDrawer from './createDraftDrawer'
+
 import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck'
 const useStyles = makeStyles((theme) => ({
   currentUser: {
@@ -272,6 +275,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 let a = -1
 function NewSale() {
+  const NotificationAudio = new Audio(notificationAudio)
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
@@ -295,7 +299,7 @@ function NewSale() {
   const [isOpenImplementMarkingDialog, setIsOpenImplementMarkingDialog] = useState(false)
   const [input, setInput] = useState('')
   const lastKeyPressTime = useRef(Date.now())
-
+  const [lastNoorOrderCount, setLastNoorOrderCount] = useState(0)
   // const [searchTerm, setSearchTerm] = useState('')
   const [markingsList, setMarkingList] = useState({})
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
@@ -917,6 +921,23 @@ function NewSale() {
     () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
     { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
   )
+  const { data: noorOrderCount, refetch: refetchNoorOrderCount } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
+    onSuccess: ({ data }) => {
+      setLastNoorOrderCount(get(data, 'data.count', 0))
+      if (lastNoorOrderCount < get(data, 'data.count', 0)) {
+        NotificationAudio.play()
+      }
+    },
+  })
+  useEffect(() => {
+    const noorTimeout = setInterval(() => {
+      refetchNoorOrderCount()
+    }, 5000)
+
+    return () => clearInterval(noorTimeout)
+  }, [])
+  console.log(noorOrderCount)
+
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />
@@ -996,55 +1017,59 @@ function NewSale() {
                   </Box>
                 </Box>
                 <Box display={'flex'}>
-                  <ListItem sx={{ mr: '20px' }} className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsOpenNoorDrawer(true)}>
-                    <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
-                      <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
-                        <Typography id='user-username' className={classes.username}>
-                          Онлайн-продажи
-                        </Typography>
-                        <p id='user-shopname' className={`${classes.bonus_amount} `}>
-                          Noor
-                        </p>
-                      </Box>
-                      <Box
-                        sx={{
-                          ml: '12px',
-                          backgroundColor: '#fff',
-                          width: '40px',
-                          height: '40px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          borderRadius: '50%',
-                          justifyContent: 'center',
-                          '& img': {
-                            width: '38px',
-                          },
-                        }}
-                      >
-                        <img src={'/noor-black.png'} />
-                        <Box>
-                          <Typography
-                            sx={{
-                              position: 'absolute',
-                              right: -5,
-                              top: -8,
-                              backgroundColor: '#f33',
-                              color: '#fff',
-                              width: '25px',
-                              height: '25px',
-                              borderRadius: '50%',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              fontWeight: '600',
-                            }}
-                          >
-                            3
+                  <CheckAccess id={'noor-order'}>
+                    <ListItem sx={{ mr: '20px' }} className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsOpenNoorDrawer(true)}>
+                      <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
+                        <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
+                          <Typography id='user-username' className={classes.username}>
+                            Онлайн-продажи
                           </Typography>
+                          <p id='user-shopname' className={`${classes.bonus_amount} `}>
+                            Noor
+                          </p>
+                        </Box>
+                        <Box
+                          sx={{
+                            ml: '12px',
+                            backgroundColor: '#fff',
+                            width: '40px',
+                            height: '40px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            borderRadius: '50%',
+                            justifyContent: 'center',
+                            '& img': {
+                              width: '38px',
+                            },
+                          }}
+                        >
+                          <img src={'/noor-black.png'} />
+                          {get(noorOrderCount, 'data.data.count') > 0 && (
+                            <Box>
+                              <Typography
+                                sx={{
+                                  position: 'absolute',
+                                  right: -5,
+                                  top: -8,
+                                  backgroundColor: '#f33',
+                                  color: '#fff',
+                                  width: '25px',
+                                  height: '25px',
+                                  borderRadius: '50%',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  fontWeight: '600',
+                                }}
+                              >
+                                {get(noorOrderCount, 'data.data.count', 0)}
+                              </Typography>
+                            </Box>
+                          )}
                         </Box>
                       </Box>
-                    </Box>
-                  </ListItem>
+                    </ListItem>
+                  </CheckAccess>
                   <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
                     <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
                       <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>

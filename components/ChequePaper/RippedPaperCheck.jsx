@@ -62,7 +62,7 @@ function RippedPaperCheck({
                 style={{
                   fontSize: '20px',
                   fontWeight: '600',
-                  color: palette.gray[50],
+                  color: palette.black,
                   textAlign: 'center',
                 }}
               >
@@ -75,7 +75,7 @@ function RippedPaperCheck({
               style={{
                 fontSize: '18px',
                 fontWeight: '600',
-                color: palette.gray[50],
+                color: palette.black,
                 textAlign: 'center',
               }}
             >
