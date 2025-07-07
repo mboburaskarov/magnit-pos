@@ -58,7 +58,7 @@ function DraftChildItemsBox({ item, setIsOpenChild }) {
         </Typography>
         <Box mt={'4px'} display={'flex'} justifyContent={'space-between'} width={'100%'}>
           <Typography fontSize={'14px'} fontWeight={'500'} color={'purple.500'} lineHeight={'20px'}>
-            {get(item, 'bonus_percent')} %{/* {get(item, 'discount_type') === 'percent' ? '%' : "so'm"} */}
+            {get(item, 'bonus_amount')} %{/* {get(item, 'discount_type') === 'percent' ? '%' : "so'm"} */}
           </Typography>
           <Typography fontSize={'14px'} fontWeight={'500'} color={'purple.500'} lineHeight={'20px'}>
             {thousandDivider(get(item, 'bonus_amount'), 'сум')}

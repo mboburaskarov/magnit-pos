@@ -110,10 +110,10 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
             </Box>
             <Box ml={'16px'}>
               <Typography fontSize={24} lineHeight={'32px'} fontWeight={700}>
-                {t('Онлайн-продажи')} #{get(darftChildList, 'data.data.draft_number')}
+                {t('Онлайн-продажи')} #{get(darftChildList, 'data.data.sale_number')}
               </Typography>
               <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
-                {thousandDivider(get(darftChildList, 'data.data.total_price', 0), 'сум')}
+                {thousandDivider(get(darftChildList, 'data.data.total_amount', 0), 'сум')}
               </Typography>
             </Box>
           </Box>
@@ -156,7 +156,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
                   Дата создания
                 </Typography>
                 <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                  {dayjs(get(darftChildList, 'data.data.draft_time')).format('DD.MM.YYYY | HH:mm:ss')}
+                  {dayjs(get(darftChildList, 'data.data.created_at')).format('DD.MM.YYYY | HH:mm:ss')}
                 </Typography>
               </Box>
               <Box width={'100%'} bgcolor={'bg.10'} borderRadius={'16px'} padding={'16px'}>
@@ -207,7 +207,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
                 {t('delete')}
               </Typography>
             </LoadingButton> */}
-            {get(darftChildList, 'data.data.online_status') === 3 ? (
+            {get(darftChildList, 'data.data.online_status') === 2 ? (
               <Button
                 onClick={() =>
                   completeOnlineOrder({
@@ -225,7 +225,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
                   {t('Передал курьер ')}
                 </Typography>
               </Button>
-            ) : (
+            ) : get(darftChildList, 'data.data.online_status') === 1 ? (
               <Button
                 onClick={() =>
                   completeOnlineOrder({
@@ -243,6 +243,8 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
                   {t('Принять ')}
                 </Typography>
               </Button>
+            ) : (
+              <></>
             )}
           </Box>
         </Box>
