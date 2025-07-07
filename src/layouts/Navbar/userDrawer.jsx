@@ -1,5 +1,6 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
 import { useState } from 'react'
 import CustomImg from '../../../components/CustomImg'
 import CloseIcon from '../../assets/icons/CloseIcon'
@@ -109,7 +110,7 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
                 </IconButton> */}
               </Box>
               <Box display='flex' alignItems='center' mt={4}>
-                <Box width={40} height={40} borderRadius={2} overflow='hidden'>
+                <Box width={70} height={70} borderRadius={2} overflow='hidden'>
                   {!userData?.photo ? (
                     <div className={classes.avatarPlaceholder}>
                       {firstName?.charAt(0)}
@@ -123,6 +124,14 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
                   <Typography>
                     {firstName} {lastName}
                   </Typography>
+                  <Box maxWidth='100%'>
+                    <Typography id='user-username' sx={{ flexWrap: 'nowrap', fontSize: '14px', width: '100%' }}>
+                      {get(userData, 'store.name')}
+                    </Typography>
+                    <Typography sx={{ flexWrap: 'nowrap', fontSize: '14px', width: '100%' }}>
+                      ({localStorage.getItem('leftZreportCount')}) {get(userData, 'cashbox.name', '-')}
+                    </Typography>
+                  </Box>
                   {/* <Typography className={classes.shopname}>{data?.shops?.find((item) => item.store_id === data?.current_shop_id)?.shop?.name}</Typography> */}
                 </Box>
               </Box>

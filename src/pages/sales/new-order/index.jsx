@@ -936,7 +936,6 @@ function NewSale() {
 
     return () => clearInterval(noorTimeout)
   }, [])
-  console.log(noorOrderCount)
 
   return (
     <FormProvider {...method}>
