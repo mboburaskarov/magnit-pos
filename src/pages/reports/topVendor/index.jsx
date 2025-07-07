@@ -1,6 +1,5 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button } from '@mui/material'
-import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
@@ -30,12 +29,10 @@ import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function TopVendorsPage() {
-  const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.topReportsTableColumns)
   const { values } = useQueryParams()
-  const [appType, setAppType] = useState('ALL')
   const [selectedShops, setSelectedShops] = useState('all')
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
   const [selectClients, setselectClients] = useState([])
@@ -83,14 +80,20 @@ export default function TopVendorsPage() {
     { id: 'min_count', name: 'Меньше продаж шт' },
   ]
   const topVendorsReportListFilter = useMemo(() => {
+    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
+    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
     return {
+      start_date: values?.start_date ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
+      end_date: values?.end_date
+        ? ready_start_date?.isSame(ready_end_date)
+          ? dayjs(`${values?.start_date} 23:59:59`).format()
+          : ready_end_date.format()
+        : null,
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       order: selectedBonusType == 'default' ? undefined : selectedBonusType?.id,
       store_ids: selectedShops === 'all' ? [] : selectedShops.map((el) => el.id),
-      start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
-      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
     }
   }, [values?.offset, values?.limit, selectedBonusType, values?.search, selectedShops, values?.start_date, values?.end_date])
   const {
@@ -130,7 +133,6 @@ export default function TopVendorsPage() {
     },
     onError: (err) => {
       console.log(err)
-
       error('Ошибка при скачать excel!')
     },
   })

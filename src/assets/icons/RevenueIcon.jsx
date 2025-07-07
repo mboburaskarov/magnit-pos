@@ -22,7 +22,7 @@ export default function RevenueIcon({ color = '#000' }) {
       </g>
       <defs>
         <clipPath id='clip0_3647_2114'>
-          <rect width='20' height='20' fill='white' />
+          <rect width='20' height='20' className='fill-icon' fill='white' />
         </clipPath>
       </defs>
     </svg>

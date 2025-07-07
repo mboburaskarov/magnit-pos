@@ -1,6 +1,5 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -49,7 +48,7 @@ function OnlineSaleDrawer({ open, setOpen, cashBoxDetails }) {
       store_id: get(userData, 'store.id'),
       cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
       customer_id: values?.customer_id,
-      draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : '',
+      // draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : '',
     }
   }, [values?.customer_id, values?.draft_date, values?.search, controlleroffset])
 
@@ -95,7 +94,7 @@ function OnlineSaleDrawer({ open, setOpen, cashBoxDetails }) {
           </Box>
           <Box py={'0px'} px={'40px'}>
             <ListWithPagination
-              request={(filter) => requests.getDarftList(filter)}
+              request={(filter) => requests.getOnlineOrderList(filter)}
               renderItem={(item) => <DraftParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}
               customFilter={draftsListFilter}
             />
