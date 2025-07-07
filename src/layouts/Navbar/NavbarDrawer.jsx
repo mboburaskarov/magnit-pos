@@ -176,7 +176,7 @@ function NavbarDrawer({
                   {get(userData, 'store.name')}
                 </Typography>
                 <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                  {get(userData, 'cashbox.name', '-')}
+                  ({localStorage.getItem('leftZreportCount')}) {get(userData, 'cashbox.name', '-')}
                 </p>
               </Box>
             )}

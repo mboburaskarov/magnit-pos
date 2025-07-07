@@ -155,9 +155,8 @@ function NewCashRegister() {
   const { mutate: openZReport, isLoading: isopenZReport } = useMutation(requests.openZReport, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true) == false || get(data, 'message', '').includes('ERROR_ZREPORT_IS_ALREADY_OPEN')) {
-        localStorage.setItem('leftZreportCount', get(data, 'leftZreportCount', 0))
-        methods.handleSubmit(onSubmit, onError)()
-
+        localStorage.setItem('leftZreportCount', get(data, 'leftZreportCount', 999))
+        methods.handleSubmit((data) => onSubmit(data), onError)()
         return
       } else {
         error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
