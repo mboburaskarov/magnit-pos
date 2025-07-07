@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage'
 import { sidebarSettingsSlice } from './sidebarSettingsSlice'
 import { autoOrderDetailSlice } from './tableSlices/autoOrderDetailTableColumns'
 import { autoOrderTableColumnsSlice } from './tableSlices/autoOrderTableColumns'
+import { bannedProductTableColumnsSlice } from './tableSlices/bannedProductTableColumns'
 import { bonusProductTableColumnsSlice } from './tableSlices/bonusProductTableColumns'
 import { cardShiftTableColumnsSlice } from './tableSlices/cardShiftTableColumns'
 import { cashBoxShiftHistoryTableColumnsSlice } from './tableSlices/cashBoxShiftHistoryTableColumns'
@@ -46,7 +47,7 @@ import { userSlice } from './userSlice'
 // Define your migration function here
 const migrations = {
   // Example migration
-  319: (state) => {
+  322: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -64,7 +65,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 319, // Current version of the persisted state
+  version: 322, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -83,6 +84,7 @@ const reducer = combineReducers({
   autoOrderTableColumns: autoOrderTableColumnsSlice,
   revaluationTableColumns: revaluationTableColumnsSlice,
   bonusProductTableColumns: bonusProductTableColumnsSlice,
+  bannedProductTableColumns: bannedProductTableColumnsSlice,
   minMaxTableColumns: minMaxTableColumnsSlice,
   autoOrderTableDetailColumns: autoOrderDetailSlice,
   changePriceTableDetailColumns: changePriceDetailSlice,

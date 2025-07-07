@@ -279,6 +279,12 @@ export const requests = {
   updateProduct: ({ id, data }) => request.put(`v1/product/${id}`, data),
   deleteProduct: (id) => request.delete(`v1/product/soft-delete`, id),
 
+  //banned products
+  getProductBannedList: (filter) => request.get(`v1/product/excluded-list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  createBannedProduct: (data) => request.post(`v1/product/exclude`, data),
+  editBannedProduct: ({ data, id }) => request.put(`v1/product/exclude/${id}`, data),
+  deleteBannedProduct: (id) => request.delete(`v1/product/exclude/${id}`),
+
   //customers
   createCustomer: (data) => request.post(`v1/customer`, data),
   getAllCustomers: (filter) => request.get(`v1/customer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
