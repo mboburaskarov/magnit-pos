@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
 }))
-function DraftParentItemsBox({ setIsOpenChild, item }) {
+function OnlineOrderParentItemsBox({ setIsOpenChild, item }) {
   const { t } = useTranslation()
   const classes = useStyles()
   return (
@@ -87,4 +87,4 @@ function DraftParentItemsBox({ setIsOpenChild, item }) {
   )
 }
 
-export default DraftParentItemsBox
+export default OnlineOrderParentItemsBox

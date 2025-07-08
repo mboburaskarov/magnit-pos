@@ -19,7 +19,7 @@ import LoadingOverflow from '../../../../components/LoadingOverflow'
 import ClientCreateMini from '../../../../components/Sales/ClientCreateMini'
 import OrderDrawer from '../../../../components/Sales/ClientCreateMini/OrderDrawer'
 import DraftDrawer from '../../../../components/Sales/DraftDrawer'
-import OnlineSaleDrawer from '../../../../components/Sales/OnlineSaleNoor/DraftDrawer'
+import OnlineSaleDrawer from '../../../../components/Sales/OnlineSaleNoor/OnlineSaleDrawer'
 import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchange/ReturnExchangeDrawer'
 import ShortcutsDrawer from '../../../../components/Sales/ShortcutsDrawer'
 import StyledTooltip from '../../../../components/StyledTooltip'
@@ -751,7 +751,6 @@ function NewSale() {
       if (typeof debouncedDiscount !== 'number' && size(get(cartItemsList, 'data.data.data', [])) > 0) {
         changeDiscount(0)
         setInputDiscount(0)
-
         return
       }
       if (typeof debouncedDiscount !== 'number' || size(get(cartItemsList, 'data.data.data', [])) <= 0) {

@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '8px',
   },
 }))
-function DraftChildItemsBox({ item, setIsOpenChild }) {
+function OnlineOrderChildItemsBox({ item, setIsOpenChild }) {
   const classes = useStyles()
   return (
     <Box display={'flex'} mb={'10px'} height={'80px'} justifyContent={'space-between'}>
@@ -69,4 +69,4 @@ function DraftChildItemsBox({ item, setIsOpenChild }) {
   )
 }
 
-export default DraftChildItemsBox
+export default OnlineOrderChildItemsBox

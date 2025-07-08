@@ -16,7 +16,7 @@ import thousandDivider from '../../../utils/thousandDivider'
 import { error, success } from '../../../utils/toast'
 import CustomImg from '../../CustomImg'
 import LoadingContainer from '../../LoadingContainer'
-import DraftChildItemsBox from './DraftChildItemsBox'
+import OnlineOrderChildItemsBox from './OnlineOrderChildItemsBox'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 4px',
   },
 }))
-function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
+function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   console.log(open)
 
   const reactToPrintContent = useCallback(() => printContainer.current, [])
@@ -143,7 +143,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
           </Box>
           <Box maxHeight={'calc(100vh - 485px)'} sx={{ overflowY: 'auto' }} padding={'0px 40px'}>
             {get(darftChildList, 'data.data.products', [])?.map((el) => (
-              <DraftChildItemsBox key={el.id} item={el} />
+              <OnlineOrderChildItemsBox key={el.id} item={el} />
             ))}
           </Box>
           <Box p={'24px 40px'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
@@ -196,7 +196,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
           >
             {/* <LoadingButton
               loading={isDeleteDraft}
-              onClick={() => deleteDraft({ gcash_box_operation_id: et(open, 'item.id'), cashbox_id: 1, sale_id: id })}
+              onClick={() => deleteDraft({ cash_box_operation_id: et(open, 'item.id'), cashbox_id: 1, sale_id: id })}
               fullWidth
               color='secondary'
               variant='contained'
@@ -211,7 +211,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
               <Button
                 onClick={() =>
                   completeOnlineOrder({
-                    gcash_box_operation_id: get(userData, 'cashbox.cashbox_operation_id'),
+                    cash_box_operation_id: get(userData, 'cashbox.cashbox_operation_id'),
                     cashbox_id: get(userData, 'cashbox.id'),
                     sale_id: get(open, 'item.id'),
                   })
@@ -229,7 +229,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
               <Button
                 onClick={() =>
                   completeOnlineOrder({
-                    gcash_box_operation_id: get(userData, 'cashbox.cashbox_operation_id'),
+                    cash_box_operation_id: get(userData, 'cashbox.cashbox_operation_id'),
                     cashbox_id: get(userData, 'cashbox.id'),
                     sale_id: get(open, 'item.id'),
                   })
@@ -253,4 +253,4 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   )
 }
 
-export default DraftChildDrawer
+export default OnlineOrderChildDrawer

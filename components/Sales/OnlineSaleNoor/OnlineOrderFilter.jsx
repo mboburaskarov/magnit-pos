@@ -13,7 +13,7 @@ import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import { useQueryParams } from '../../../src/hooks/useQueryParams'
 import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
 import { requests } from '../../../utils/requests'
-export default function DraftFilter({ open, setOpen, setRegions }) {
+export default function OnlineOrderFilter({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const { id } = useParams()
@@ -28,7 +28,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
 
     const requestBody = {
       customer_id: data.customers?.id || undefined,
-      draft_date: data.expired_date || undefined,
+      online_order_date: data.expired_date || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
@@ -41,12 +41,12 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { customer_id, draft_date } = values
+    const { customer_id, online_order_date } = values
 
     reset(
       {
         customer_id: customer_id ? getOptionsFromUrlParam(customer_id, customers?.data?.data?.data)[0] : null,
-        expired_date: draft_date ? new Date(draft_date) : new Date(),
+        expired_date: online_order_date ? new Date(online_order_date) : new Date(),
       },
       { keepDirty: true }
     )

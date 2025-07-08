@@ -79,6 +79,7 @@ export default function ProductsPage() {
       error('Ошибка при сканирование!')
     },
   })
+
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
@@ -98,6 +99,7 @@ export default function ProductsPage() {
       routeString.push(item.route)
     }
   })
+
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
