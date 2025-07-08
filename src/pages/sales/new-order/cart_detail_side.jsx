@@ -85,7 +85,7 @@ function CartDetailSide({
           </StyledTooltip>
         </Box>
         <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
-          <StyledTooltip title={'Черновики'}>
+          <StyledTooltip title={'Черновик / Отложки'}>
             <TimeAndDate color={theme.palette.black} />
           </StyledTooltip>
         </Box>

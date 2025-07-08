@@ -42,6 +42,8 @@ export const requests = {
   getPaymentTypesList: (filter) => request.get(`v1/payment-type/list${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //sale
+  getPendingSales: (filter) => request.get(`v1/sale/pending-list${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   getAllSalesExcelReport: (filter) => requestEXCEL.get(`v1/sale/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getAllSales: (filter) => request.get(`v1/sale/list${qs.stringify(filter, { addQueryPrefix: true })}`),
