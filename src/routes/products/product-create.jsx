@@ -1,5 +1,6 @@
 import MainLayout from '../../layouts/MainLayout'
 import AutoOrderDetailPage from '../../pages/products/autoOrderDetail'
+import BannedProductPage from '../../pages/products/bannedProduct'
 import BonusProductPage from '../../pages/products/bonusProduct'
 import CatalogManagement from '../../pages/products/categories/index'
 import ChangePriceDetailPage from '../../pages/products/changePriceDetail'
@@ -168,6 +169,10 @@ const productsCreateRoutes = {
     {
       path: 'bonus-product',
       element: <BonusProductPage />,
+    },
+    {
+      path: 'banned-product',
+      element: <BannedProductPage />,
     },
     {
       path: 'min-max-create',
