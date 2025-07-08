@@ -68,6 +68,7 @@ export default function DashboarPage() {
     before_product_count,
     before_sale_count,
     before_expiring_soon_amount,
+    before_expired_soon_amount,
     import_amount,
     before_import_amount,
     before_total_net_income,
@@ -137,7 +138,7 @@ export default function DashboarPage() {
         amount: expired_soon_amount,
         id: 'expired_soon_amount',
         percent: calculatePercentage(before_expiring_soon_count || 1, expired_soon_count),
-        old: before_expiring_soon_count,
+        old: before_expired_soon_amount,
       },
       {
         title: t('Истекающий срок'),
@@ -146,7 +147,7 @@ export default function DashboarPage() {
         amount: expiring_soon_amount,
         id: 'expiring_soon_amount',
         percent: calculatePercentage(before_expiring_soon_count || 1, expiring_soon_count),
-        old: before_expiring_soon_count,
+        old: before_expiring_soon_amount,
       },
 
       {

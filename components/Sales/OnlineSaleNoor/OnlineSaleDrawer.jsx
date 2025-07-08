@@ -10,9 +10,9 @@ import { useQueryParams } from '../../../src/hooks/useQueryParams'
 import { requests } from '../../../utils/requests'
 import ListWithPagination from '../../AgGridTable/ListWithPagination'
 import InputSearch from '../../Inputs/InputSearch'
-import DraftChildDrawer from './DraftChildDrawer'
-import DraftFilter from './DraftFilter'
-import DraftParentItemsBox from './DraftParentItemsBox'
+import OnlineOrderChildDrawer from './OnlineOrderChildDrawer'
+import OnlineOrderFilter from './OnlineOrderFilter'
+import OnlineOrderParentItemsBox from './OnlineOrderParentItemsBox'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -42,15 +42,14 @@ function OnlineSaleDrawer({ open, setOpen, cashBoxDetails }) {
   useEffect(() => {
     setControllerOffset(0)
   }, [values?.search])
-  const draftsListFilter = useMemo(() => {
+  const ordersListFilter = useMemo(() => {
     return {
       search: values?.search || null,
       store_id: get(userData, 'store.id'),
       cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
       customer_id: values?.customer_id,
-      // draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : '',
     }
-  }, [values?.customer_id, values?.draft_date, values?.search, controlleroffset])
+  }, [values?.customer_id, values?.online_order_date, values?.search, controlleroffset])
 
   const theme = useTheme()
   return (
@@ -95,18 +94,18 @@ function OnlineSaleDrawer({ open, setOpen, cashBoxDetails }) {
           <Box py={'0px'} px={'40px'}>
             <ListWithPagination
               request={(filter) => requests.getOnlineOrderList(filter)}
-              renderItem={(item) => <DraftParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}
-              customFilter={draftsListFilter}
+              renderItem={(item) => <OnlineOrderParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}
+              customFilter={ordersListFilter}
             />
             {/* {draftListData.map((item, index) => {
-              return <DraftParentItemsBox key={index} item={item} setIsOpenChild={setIsOpenChild} />
+              return <OnlineOrderParentItemsBox key={index} item={item} setIsOpenChild={setIsOpenChild} />
             })} */}
           </Box>
         </Box>
       ) : (
-        <DraftChildDrawer setChildOpen={setIsOpenChild} open={isOpenChild} setOpen={setOpen} />
+        <OnlineOrderChildDrawer setChildOpen={setIsOpenChild} open={isOpenChild} setOpen={setOpen} />
       )}
-      <DraftFilter setRegions={() => {}} open={draftfilter} setOpen={setDraftFilter} />
+      <OnlineOrderFilter setRegions={() => {}} open={draftfilter} setOpen={setDraftFilter} />
     </Drawer>
   )
 }

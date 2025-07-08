@@ -33,12 +33,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
 }))
-function DraftParentItemsBox({ setIsOpenChild, item }) {
+function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
   const { t } = useTranslation()
   const classes = useStyles()
   return (
     <Box
-      onClick={() => setIsOpenChild({ item, type: 'draft' })}
+      onClick={() => setIsOpenChild({ item, type: 'sale' })}
       display={'flex'}
       height={'84px'}
       borderRadius={'16px'}
@@ -56,15 +56,15 @@ function DraftParentItemsBox({ setIsOpenChild, item }) {
         <Box className={classes.productsNumsWrapper}>
           <BagOutline />
           <Typography ml={'12px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-            {get(item, 'quantity')}
+            {get(item, 'product_count')}
           </Typography>
         </Box>
         <Box>
           <Typography mb={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
-            {t('draft')} #{get(item, 'draft_number')}
+            {t('Отложка')} #{get(item, 'sale_number')}
           </Typography>
           <Typography fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'} color={'bunker.500'}>
-            {dayjs(get(item, 'draft_time')).format('DD.MM.YYYY | HH:mm:ss')}
+            {dayjs(get(item, 'created_at')).format('DD.MM.YYYY | HH:mm:ss')}
           </Typography>
         </Box>
       </Box>
@@ -77,7 +77,7 @@ function DraftParentItemsBox({ setIsOpenChild, item }) {
             </Typography>
           </Box>
           <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-            {thousandDivider(get(item, 'total_price'), 'сум')}
+            {thousandDivider(get(item, 'total_amount'), 'сум')}
           </Typography>
         </Box>
         <Box className={classes.rightArrowIcon}>
@@ -88,4 +88,4 @@ function DraftParentItemsBox({ setIsOpenChild, item }) {
   )
 }
 
-export default DraftParentItemsBox
+export default PendingSaleParentItemsBox

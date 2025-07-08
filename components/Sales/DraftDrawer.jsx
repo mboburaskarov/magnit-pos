@@ -2,7 +2,7 @@ import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
@@ -11,9 +11,11 @@ import { useQueryParams } from '../../src/hooks/useQueryParams'
 import { requests } from '../../utils/requests'
 import ListWithPagination from '../AgGridTable/ListWithPagination'
 import InputSearch from '../Inputs/InputSearch'
+import InputSwitch from '../Inputs/InputSwitch'
 import DraftChildDrawer from './DraftChildDrawer'
 import DraftFilter from './DraftFilter'
 import DraftParentItemsBox from './DraftParentItemsBox'
+import PendingSaleParentItemsBox from './PendingSaleParentItemsBox'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -34,7 +36,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
   const [draftfilter, setDraftFilter] = useState(false)
   const userData = useSelector((state) => state.user)
   const { values } = useQueryParams()
-
+  const [appType, setAppType] = useState('draft')
   const [isOpenChild, setIsOpenChild] = useState(false)
   const [controlleroffset, setControllerOffset] = useState(0)
   useEffect(() => {
@@ -60,9 +62,40 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
         <Box>
           <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
             <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
-              {t('draft')}
+              {t('draft')} / Отложки
             </Typography>
             <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
+          </Box>
+          <Box
+            sx={{
+              width: '100%',
+              padding: '0 40px',
+              display: 'flex',
+              width: '100%',
+              '& .slider': {
+                width: '100%',
+              },
+              '& .slider_box': {
+                width: '100%',
+              },
+              '& .slider_box_wrapper': {
+                width: '100%',
+              },
+            }}
+          >
+            <InputSwitch
+              uncontrolled
+              id='app-type'
+              style={{ width: '100%' }}
+              name='app-type'
+              value={appType}
+              defaultValue={appType}
+              onChange={(e) => setAppType(e)}
+              options={[
+                { title: 'Черновики', value: 'draft' },
+                { title: 'Отложки', value: 'sale' },
+              ]}
+            />
           </Box>
           <Box display={'flex'} py={'24px'} px={'40px'}>
             <InputSearch fullWidth uncontrolled placeholder={'Поиск: ID'} />
@@ -94,11 +127,20 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
             </Box>
           </Box>
           <Box py={'0px'} px={'40px'}>
-            <ListWithPagination
-              request={(filter) => requests.getDarftList(filter)}
-              renderItem={(item) => <DraftParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}
-              customFilter={draftsListFilter}
-            />
+            {appType === 'draft' ? (
+              <ListWithPagination
+                request={(filter) => requests.getDarftList(filter)}
+                renderItem={(item) => <DraftParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}
+                customFilter={draftsListFilter}
+              />
+            ) : (
+              <ListWithPagination
+                statePath='pendingSaleList'
+                request={(filter) => requests.getPendingSales(filter)}
+                renderItem={(item) => <PendingSaleParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}
+                customFilter={draftsListFilter}
+              />
+            )}
             {/* {draftListData.map((item, index) => {
               return <DraftParentItemsBox key={index} item={item} setIsOpenChild={setIsOpenChild} />
             })} */}
