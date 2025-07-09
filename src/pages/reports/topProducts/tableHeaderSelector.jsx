@@ -43,7 +43,18 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Количество',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='count' />),
+        cellRenderer: memo((p) => {
+          const item = get(p, 'data')
+          return (
+            <Typography>
+              {item.unit_per_pack > 1
+                ? item.count > 0
+                  ? `${item.count}(${item.unit_quantity}/${item.unit_per_pack})`
+                  : `(${item.unit_quantity}/${item.unit_per_pack})`
+                : item.count}
+            </Typography>
+          )
+        }),
       }
     }
     if (el.field === 'sale') {
