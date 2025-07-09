@@ -57,6 +57,9 @@ export const requests = {
   returnSaleItem: (data) => request.post(`v1/sale/return`, data),
   addDiscountCard: (data) => request.post(`v1/sale/discount-card`, data),
   removeDiscountCard: (data) => request.delete(`v1/sale/discount-card`, data),
+
+  changeSalePaymentTypeId: (data) => request.put(`v1/payment-type/change-payment-type`, data),
+
   //producer
   createProducer: (data) => request.post(`v1/producer`, data),
   getProducer: (filter) => request.get(`v1/producer/list${qs.stringify(filter, { addQueryPrefix: true })}`),

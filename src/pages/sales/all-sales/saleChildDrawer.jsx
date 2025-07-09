@@ -1,3 +1,4 @@
+import { ChangeCircle } from '@mui/icons-material'
 import { Box, Grid, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
@@ -8,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useReactToPrint } from 'react-to-print'
 import { useDebounce } from 'use-debounce'
+import CheckAccess from '../../../../components/CheckAccess'
 import RippedPaperCheckReturn from '../../../../components/ChequePaper/RippedPaperCheckReturn'
 import CustomImg from '../../../../components/CustomImg'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -17,6 +19,7 @@ import { error } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import SaleChildItemsBox from './SaleChildItemsBox'
+import ChangePaymentType from './changePaymentType'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -68,6 +71,7 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
   const printContainerEmpty = useRef()
   const documentName = useRef('Pharma CHEQUE')
   const reactToPrintContentEmpty = useCallback(() => printContainerEmpty.current, [])
+  const [openCreateBonusModal, setopenCreateBonusModal] = useState(false)
 
   const emptyHandlePrint = useReactToPrint({
     content: reactToPrintContentEmpty,
@@ -196,13 +200,34 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
             <Grid container display={'flex'}>
               {get(saleDetailsList, 'data.data.sale_payments', [])?.map((pays) => (
                 <Grid item xl={6} xs={6} sm={6} md={6} lg={6} width={'100%'} padding={'4px'}>
-                  <Box minWidth={'180px'} bgcolor={'bg.10'} borderRadius={'16px'} padding={'12px 16px'}>
-                    <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                      {get(pays, 'payment_type.name')}
-                    </Typography>
-                    <Typography fontSize={16} mt={'4px'} flexShrink={'none'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                      {thousandDivider(get(pays, 'amount'), 'сум')}
-                    </Typography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      minWidth: '180px',
+                      borderRadius: '16px',
+                      padding: '12px 16px',
+                    }}
+                    bgcolor={'bg.10'}
+                  >
+                    <Box>
+                      <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                        {get(pays, 'payment_type.name')}
+                      </Typography>
+                      <Typography fontSize={16} mt={'4px'} flexShrink={'none'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                        {thousandDivider(get(pays, 'amount'), 'сум')}
+                      </Typography>
+                    </Box>
+                    <CheckAccess id={'can-chnage-payment-type'}>
+                      <Box
+                        onClick={() => {
+                          setopenCreateBonusModal({ types: get(saleDetailsList, 'data.data.sale_payments', []), sale_payment_id: pays.id })
+                        }}
+                      >
+                        <ChangeCircle sx={{ color: '#fff', fontSize: '30px', mt: '10px' }} />
+                      </Box>
+                    </CheckAccess>
                   </Box>
                 </Grid>
               ))}
@@ -243,6 +268,7 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
           </Box>
         </Box>
       </Box>
+      <ChangePaymentType refetch={refetch} open={openCreateBonusModal} setOpen={setopenCreateBonusModal} />
 
       <Box
         maxWidth='400px'
