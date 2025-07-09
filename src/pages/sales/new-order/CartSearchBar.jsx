@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get, head, size } from 'lodash'
@@ -504,7 +503,7 @@ function CartSearchBar({
             setOpen={setCloseCashBox}
             icon={<BigWarningIcon />}
             title={'Закрыть кассу?'}
-            desc={'Сначала очистите черновики, а затем закройте кассу или нажмите «Продолжить», чтобы оставить черновики без изменений.'}
+            desc={'Сначала очистите черновики, а затем закройте кассу.'}
             supDesc={'Есть черновики.'}
             actions={
               <>
@@ -520,7 +519,7 @@ function CartSearchBar({
                 >
                   Просмотреть черновики
                 </Button>
-                <LoadingButton
+                {/* <LoadingButton
                   variant='contained'
                   type='button'
                   // loading={isdeleteCartItem}
@@ -529,7 +528,7 @@ function CartSearchBar({
                   }}
                 >
                   Продолжить
-                </LoadingButton>
+                </LoadingButton> */}
               </>
             }
           />

@@ -1,10 +1,11 @@
-import { Box, IconButton, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import * as qs from 'qs'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
+import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import CheckAccess from '../../../../components/CheckAccess'
 import StyledTooltip from '../../../../components/StyledTooltip'
 import thousandDivider from '../../../../utils/thousandDivider'
@@ -324,9 +325,48 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
           >
             <CheckAccess id={'can-download-return-nakladnoy'}>
               {(data.status == 'completed' || data.status == 'sent') && (
-                <IconButton onClick={() => downloadNakladnoy({ return_id: data.id })} sx={{ width: 40, height: 40, borderRadius: 3, p: '8px' }}>
-                  <DownloadIcon />
-                </IconButton>
+                <>
+                  <ButtonWithPopup
+                    id={'ff'}
+                    noArrow
+                    // ml={'16px'}
+                    sx={{
+                      height: '38px',
+                      padding: '0px !important',
+                      borderRadius: '8px !important',
+                      marginLeft: '5px',
+                      width: '38px',
+                      border: '1px solid transparent !important',
+                    }}
+                    popperStyle={{
+                      '& .pop-up-options': {
+                        minWidth: '200px !important',
+                      },
+                    }}
+                    noMarginSvg
+                    placement='bottom-end'
+                    onClick={() => refetch()}
+                    buttonLabel={
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          cursor: 'pointer',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+
+                          '&:hover': { bgcolor: 'transparent !important' },
+                        }}
+                        className='cash_register_icon_wrapper'
+                      >
+                        <DownloadIcon />
+                      </Box>
+                    }
+                    popperData={[
+                      { title: 'От аптеки на склад', soon: false, clickHandler: () => downloadNakladnoy({ return_id: data.id }) },
+                      { title: 'От склада в аптеку', soon: false, clickHandler: () => downloadNakladnoy({ return_id: data.id, type: 'return' }) },
+                    ]}
+                  />
+                </>
               )}
             </CheckAccess>
           </Box>
