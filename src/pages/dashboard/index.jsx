@@ -171,12 +171,13 @@ export default function DashboarPage() {
       search: values?.search,
       // start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
       // end_date: values?.start_date == values?.end_date ? null : values?.end_date,
-      start_date: values?.start_date ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
-      end_date: values?.end_date
-        ? ready_start_date?.isSame(ready_end_date)
-          ? dayjs(`${values?.start_date} 23:59:59`).format()
-          : ready_end_date.format()
-        : null,
+      start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
+      end_date:
+        values?.end_date && values?.end_time
+          ? ready_start_date?.isSame(ready_end_date)
+            ? dayjs(`${values?.start_date} 23:59:59`).format()
+            : ready_end_date.format()
+          : null,
       store_ids: selectedShops.length <= 63 && selectedShops != 'all' ? [...selectedShops?.map((a) => a.id)] : null || null,
       type: dataTypeFilter(detalization),
       offset: values?.search ? 0 : values?.offset || 0,
