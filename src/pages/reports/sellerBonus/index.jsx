@@ -13,7 +13,6 @@ import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRan
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelectNew'
-import SelectSimple from '../../../../components/Select/SelectSimple'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
@@ -30,6 +29,8 @@ export default function SellerBonus() {
   const { columns, loading } = useSelector((state) => state.sellerBonusTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
+  const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
+
   const [selectedBonusType, setSelectedBonusType] = useState({ id: 'default', name: 'По умолчанию' })
   const sortTypes = [
     { id: 'default', name: 'По умолчанию' },
@@ -40,6 +41,8 @@ export default function SellerBonus() {
   ]
   const tableColumns = tableHeaderSelector({
     vendorsColumns: columns,
+    setOrderStoring,
+    orderStoring,
     t,
   })
   useEffect(() => {
@@ -77,9 +80,9 @@ export default function SellerBonus() {
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       store_id: values?.store_id,
-      order: selectedBonusType == 'default' ? undefined : selectedBonusType?.id,
+      order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
     }
-  }, [values?.offset, selectedBonusType, selectedShops, values?.limit, values?.search, values?.store_id, values?.start_date, values?.end_date])
+  }, [values?.offset, orderStoring, selectedBonusType, selectedShops, values?.limit, values?.search, values?.store_id, values?.start_date, values?.end_date])
 
   const {
     data: sellerBonnus,
@@ -132,21 +135,7 @@ export default function SellerBonus() {
               <InputSearch fullWidth id='producrs-search' name='search' placeholder={'ID, имя, телефон'} uncontrolled />
             </Box>
           </Box>
-          <SelectSimple
-            name='customer_id'
-            placeholder={t('placeholders.enterSortType')}
-            isClearable={false}
-            options={sortTypes}
-            small
-            beforeContent={t('placeholders.SortType')}
-            minWidth='185px'
-            white
-            maxWidth={'255px'}
-            isSearchable={false}
-            uncontrolled
-            value={selectedBonusType}
-            onChange={(e) => setSelectedBonusType(e)}
-          />
+
           <Box
             width={956}
             display={'flex'}

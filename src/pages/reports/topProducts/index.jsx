@@ -15,7 +15,6 @@ import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRan
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelectNew'
-import SelectSimple from '../../../../components/Select/SelectSimple'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
@@ -37,6 +36,7 @@ export default function TopProductsPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
+  const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
 
   const [selectedShops, setSelectedShops] = useState('all')
 
@@ -56,6 +56,8 @@ export default function TopProductsPage() {
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     selectClientsFunc,
+    setOrderStoring,
+    orderStoring,
   })
 
   useEffect(() => {
@@ -95,10 +97,11 @@ export default function TopProductsPage() {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      order: selectedBonusType == 'default' ? undefined : selectedBonusType?.id,
+      order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
+
       store_ids: selectedShops === 'all' ? [] : selectedShops.map((el) => el.id),
     }
-  }, [values?.offset, values?.limit, selectedBonusType, values?.search, selectedShops, values?.start_date, values?.end_date])
+  }, [values?.offset, orderStoring, values?.limit, selectedBonusType, values?.search, selectedShops, values?.start_date, values?.end_date])
   const {
     data: topProductsReportList,
     isLoading: topProductsReportListLoading,
@@ -197,23 +200,6 @@ export default function TopProductsPage() {
                   },
                 }}
               >
-                <Box width={'15px'} />
-
-                <SelectSimple
-                  name='customer_id'
-                  placeholder={t('placeholders.enterSortType')}
-                  isClearable={false}
-                  options={sortTypes}
-                  small
-                  beforeContent={t('placeholders.SortType')}
-                  minWidth='285px'
-                  white
-                  maxWidth={'355px'}
-                  isSearchable={false}
-                  uncontrolled
-                  value={selectedBonusType}
-                  onChange={(e) => setSelectedBonusType(e)}
-                />
                 <Box width={'15px'} />
                 <DateRangeInput
                   minHeight={'48px'}

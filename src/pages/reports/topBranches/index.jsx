@@ -16,7 +16,6 @@ import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRan
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelectNew'
-import SelectSimple from '../../../../components/Select/SelectSimple'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
@@ -44,6 +43,8 @@ export default function TopBranchesPage() {
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
+
   const selectClientsFunc = (isChecked, id) => {
     if (isChecked) {
       setselectClients((p) => [...p, id])
@@ -58,6 +59,8 @@ export default function TopBranchesPage() {
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     selectClientsFunc,
+    setOrderStoring,
+    orderStoring,
   })
 
   useEffect(() => {
@@ -97,10 +100,11 @@ export default function TopBranchesPage() {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      order: selectedBonusType == 'default' ? undefined : selectedBonusType?.id,
+      order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
+
       store_ids: selectedShops === 'all' ? [] : selectedShops.map((el) => el.id),
     }
-  }, [values?.offset, values?.limit, selectedBonusType, values?.search, selectedShops, values?.start_date, values?.end_date])
+  }, [values?.offset, orderStoring, values?.limit, selectedBonusType, values?.search, selectedShops, values?.start_date, values?.end_date])
   const {
     data: topBranchesReportList,
     isLoading: topBranchesReportListLoading,
@@ -199,23 +203,6 @@ export default function TopBranchesPage() {
                   },
                 }}
               >
-                <Box width={'15px'} />
-
-                <SelectSimple
-                  name='customer_id'
-                  placeholder={t('placeholders.enterSortType')}
-                  isClearable={false}
-                  options={sortTypes}
-                  small
-                  beforeContent={t('placeholders.SortType')}
-                  minWidth='285px'
-                  white
-                  maxWidth={'355px'}
-                  isSearchable={false}
-                  uncontrolled
-                  value={selectedBonusType}
-                  onChange={(e) => setSelectedBonusType(e)}
-                />
                 <Box width={'15px'} />
                 <DateRangeInput
                   minHeight={'48px'}

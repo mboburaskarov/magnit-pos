@@ -8,7 +8,7 @@ const columns = [
     width: 60,
   },
   {
-    field: 'store',
+    field: 'name',
     hide: false,
     minWidth: 60,
     flex: 1,
@@ -20,7 +20,7 @@ const columns = [
     width: 300,
   },
   {
-    field: 'sale',
+    field: 'total_amount',
     hide: false,
     minWidth: 70,
     width: 300,

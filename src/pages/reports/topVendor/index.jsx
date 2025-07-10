@@ -39,6 +39,8 @@ export default function TopVendorsPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
+  const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
+
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const selectClientsFunc = (isChecked, id) => {
     if (isChecked) {
@@ -54,6 +56,8 @@ export default function TopVendorsPage() {
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     selectClientsFunc,
+    setOrderStoring,
+    orderStoring,
   })
 
   useEffect(() => {
@@ -93,10 +97,11 @@ export default function TopVendorsPage() {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      order: selectedBonusType == 'default' ? undefined : selectedBonusType?.id,
+      order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
+
       store_ids: selectedShops === 'all' ? [] : selectedShops.map((el) => el.id),
     }
-  }, [values?.offset, values?.limit, selectedBonusType, values?.search, selectedShops, values?.start_date, values?.end_date])
+  }, [values?.offset, orderStoring, values?.limit, selectedBonusType, values?.search, selectedShops, values?.start_date, values?.end_date])
   const {
     data: topVendorsReportList,
     isLoading: topVendorsReportListLoading,
