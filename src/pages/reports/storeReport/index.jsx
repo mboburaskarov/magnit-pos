@@ -66,7 +66,7 @@ export default function StoreReportPage() {
     return {
       start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
       end_date:
-        values?.end_date && values?.end_time
+        values?.end_date && values?.to_time
           ? ready_start_date?.isSame(ready_end_date)
             ? dayjs(`${values?.start_date} 23:59:59`).format()
             : ready_end_date.format()
