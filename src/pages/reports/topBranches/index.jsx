@@ -16,7 +16,6 @@ import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRan
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelectNew'
-import SelectSimple from '../../../../components/Select/SelectSimple'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
@@ -44,6 +43,8 @@ export default function TopBranchesPage() {
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
+
   const selectClientsFunc = (isChecked, id) => {
     if (isChecked) {
       setselectClients((p) => [...p, id])
@@ -58,6 +59,8 @@ export default function TopBranchesPage() {
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     selectClientsFunc,
+    setOrderStoring,
+    orderStoring,
   })
 
   useEffect(() => {
@@ -87,19 +90,21 @@ export default function TopBranchesPage() {
     const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
     const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
     return {
-      start_date: values?.start_date ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
-      end_date: values?.end_date
-        ? ready_start_date?.isSame(ready_end_date)
-          ? dayjs(`${values?.start_date} 23:59:59`).format()
-          : ready_end_date.format()
-        : null,
+      start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
+      end_date:
+        values?.end_date && values?.end_time
+          ? ready_start_date?.isSame(ready_end_date)
+            ? dayjs(`${values?.start_date} 23:59:59`).format()
+            : ready_end_date.format()
+          : null,
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      order: selectedBonusType == 'default' ? undefined : selectedBonusType?.id,
+      order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
+
       store_ids: selectedShops === 'all' ? [] : selectedShops.map((el) => el.id),
     }
-  }, [values?.offset, values?.limit, selectedBonusType, values?.search, selectedShops, values?.start_date, values?.end_date])
+  }, [values?.offset, orderStoring, values?.limit, selectedBonusType, values?.search, selectedShops, values?.start_date, values?.end_date])
   const {
     data: topBranchesReportList,
     isLoading: topBranchesReportListLoading,
@@ -198,23 +203,6 @@ export default function TopBranchesPage() {
                   },
                 }}
               >
-                <Box width={'15px'} />
-
-                <SelectSimple
-                  name='customer_id'
-                  placeholder={t('placeholders.enterSortType')}
-                  isClearable={false}
-                  options={sortTypes}
-                  small
-                  beforeContent={t('placeholders.SortType')}
-                  minWidth='285px'
-                  white
-                  maxWidth={'355px'}
-                  isSearchable={false}
-                  uncontrolled
-                  value={selectedBonusType}
-                  onChange={(e) => setSelectedBonusType(e)}
-                />
                 <Box width={'15px'} />
                 <DateRangeInput
                   minHeight={'48px'}

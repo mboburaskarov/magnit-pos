@@ -703,7 +703,7 @@ export default function OrderDrawer({
                   </Typography>
                   <Grid container display={'flex'}>
                     {get(paymentTypesList, 'data.data', []).map((item) => (
-                      <Grid key={item.id} item sx='3' sm='3' lg='3' xl='3' xs='3' p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
+                      <Grid key={item.id} item xs={3} sm={3} lg={3} xl={3} p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
                         <Box
                           display={'flex'}
                           p={'20px'}
@@ -746,7 +746,7 @@ export default function OrderDrawer({
                 <Box>
                   <Grid container width={'100%'} display={'flex'}>
                     {mpaddedPaymentsList?.map((el, index) => (
-                      <Grid item sx='3' sm='3' lg='3' xl='3' xs='3' m={'3'} key={el.id}>
+                      <Grid item sm={3} lg={3} xl={3} xs={3} m={'3'} key={el.id}>
                         {el?.name ? (
                           <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.box}>
                             <div className={classes.boxHeader}>

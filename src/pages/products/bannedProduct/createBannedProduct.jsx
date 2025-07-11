@@ -12,9 +12,8 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 
 export default function CreateBannedProduct({ open, refetch, setOpen }) {
   const methods = useForm()
-  const { reset, control } = methods
-  const [startDate, setStartDate] = useState(0)
-  const [endDate, setEndDate] = useState(0)
+  const { reset, control, getValues, watch } = methods
+  const [hideProduct, setHideProduct] = useState(false)
   const { mutate: createBannedProduct, isLoading: iscreateBannedProduct } = useMutation(requests.createBannedProduct, {
     onSuccess: () => {
       setOpen(false)
@@ -26,10 +25,16 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
       console.log('err', err)
     },
   })
+  useEffect(() => {
+    setHideProduct(getValues('producer')?.name)
+  }, [watch('producer')])
   const onSubmit = (data) => {
+    console.log(data)
+
     const requestBody = {
-      product_id: data.product.value,
-      store_id: data.store_id.value,
+      producer_id: data.producer.value,
+      product_id: hideProduct ? undefined : data.product.map((product) => product.id),
+      store_id: data.store_id.map((store) => store.id),
     }
     createBannedProduct(requestBody)
   }
@@ -43,6 +48,7 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
     reset({}, { keepDirty: true })
   }, [open])
   const theme = useTheme()
+  console.log(getValues('producer'))
 
   const { t } = useTranslation()
   return (
@@ -72,16 +78,16 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
             <LazySelect
               boxStyle={{ width: '100%' }}
-              slug='product'
-              id='product'
-              name='product'
+              slug='producer'
+              id='producer'
+              name='producer'
               isMulti={false}
               required
-              label={t('Продукт')}
-              placeholder={t('Выберите Продукт')}
+              label={t('Производитель')}
+              placeholder={t('Выберите Производитель')}
               minWidth='auto'
               isClearable={true}
-              request={requests.getProductListForSelect}
+              request={requests.getProducer}
               filters={{ limit: 10 }}
               control={control}
               getOptionLabel={(option) => {
@@ -89,12 +95,33 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
               }}
               filterOption={() => true}
             />
+            {!hideProduct && (
+              <LazySelect
+                boxStyle={{ width: '100%' }}
+                slug='product'
+                id='product'
+                name='product'
+                isMulti={true}
+                required
+                label={t('Продукт')}
+                placeholder={t('Выберите Продукт')}
+                minWidth='auto'
+                isClearable={true}
+                request={requests.getProductListForSelect}
+                filters={{ limit: 10 }}
+                control={control}
+                getOptionLabel={(option) => {
+                  return option.name
+                }}
+                filterOption={() => true}
+              />
+            )}
             <LazySelect
               boxStyle={{ width: '100%' }}
               slug='store_id'
               id='store_id'
               name='store_id'
-              isMulti={false}
+              isMulti={true}
               label={t('store')}
               placeholder={t('Выберите Магазин')}
               minWidth='auto'

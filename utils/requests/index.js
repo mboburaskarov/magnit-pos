@@ -57,6 +57,9 @@ export const requests = {
   returnSaleItem: (data) => request.post(`v1/sale/return`, data),
   addDiscountCard: (data) => request.post(`v1/sale/discount-card`, data),
   removeDiscountCard: (data) => request.delete(`v1/sale/discount-card`, data),
+
+  changeSalePaymentTypeId: (data) => request.put(`v1/payment-type/change-payment-type`, data),
+
   //producer
   createProducer: (data) => request.post(`v1/producer`, data),
   getProducer: (filter) => request.get(`v1/producer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -155,8 +158,8 @@ export const requests = {
 
   createReturnToWarehouse: (data) => request.post(`v1/return`, data),
   getAllReturnToWarehouse: (filter) => request.get(`v1/return/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  sendScannedReturnToWarehouseNumber: ({ id, barcode, product_id, type, scanned_unit, scanned_pack }) =>
-    request.patch(`v1/return/${id}/add-product-by-barcode`, { scanned_pack, scanned_unit, type, id: product_id }),
+  sendScannedReturnToWarehouseNumber: ({ id, barcode, product_id, type, status, scanned_unit, scanned_pack }) =>
+    request.patch(`v1/return/${id}/add-product-by-barcode`, { scanned_pack, status, scanned_unit, type, id: product_id }),
   getReturnToWarehouseDetails: (filter) => request.get(`v1/return-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getReturnToWarehouseDashBoard: (id) => request.get(`v1/return/${id}`),
   getReturnToWarehouseScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
