@@ -568,7 +568,7 @@ function OrderLite({
       if (!get(data, 'error', true)) {
         setCustomerId('')
 
-        setQrcodeUrl({ qr: get(data, 'message.qrCodeUrl', 'pending'), fiscal: get(data, 'message.fiscalSign', 'pending') })
+        setQrcodeUrl({ qr: get(data, 'message.qrCodeURL', 'pending'), fiscal: get(data, 'message.fiscalSign', 'pending') })
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
         return
       } else {
