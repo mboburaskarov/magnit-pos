@@ -299,7 +299,7 @@ function NewSale() {
   const [isOpenImplementMarkingDialog, setIsOpenImplementMarkingDialog] = useState(false)
   const [input, setInput] = useState('')
   const lastKeyPressTime = useRef(Date.now())
-  const [lastNoorOrderCount, setLastNoorOrderCount] = useState(0)
+  // const [lastNoorOrderCount, setLastNoorOrderCount] = useState(0)
   // const [searchTerm, setSearchTerm] = useState('')
   const [markingsList, setMarkingList] = useState({})
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
@@ -920,21 +920,21 @@ function NewSale() {
     () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
     { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
   )
-  const { data: noorOrderCount, refetch: refetchNoorOrderCount } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
-    onSuccess: ({ data }) => {
-      setLastNoorOrderCount(get(data, 'data.count', 0))
-      if (lastNoorOrderCount < get(data, 'data.count', 0)) {
-        NotificationAudio.play()
-      }
-    },
-  })
-  useEffect(() => {
-    const noorTimeout = setInterval(() => {
-      refetchNoorOrderCount()
-    }, 5000)
+  // const { data: noorOrderCount, refetch: refetchNoorOrderCount } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
+  //   onSuccess: ({ data }) => {
+  //     setLastNoorOrderCount(get(data, 'data.count', 0))
+  //     if (lastNoorOrderCount < get(data, 'data.count', 0)) {
+  //       NotificationAudio.play()
+  //     }
+  //   },
+  // })
+  // useEffect(() => {
+  //   const noorTimeout = setInterval(() => {
+  //     refetchNoorOrderCount()
+  //   }, 5000)
 
-    return () => clearInterval(noorTimeout)
-  }, [])
+  //   return () => clearInterval(noorTimeout)
+  // }, [])
 
   return (
     <FormProvider {...method}>
@@ -1026,7 +1026,7 @@ function NewSale() {
                             Noor
                           </p>
                         </Box>
-                        <Box
+                        {/* <Box
                           sx={{
                             ml: '12px',
                             backgroundColor: '#fff',
@@ -1060,11 +1060,11 @@ function NewSale() {
                                   fontWeight: '600',
                                 }}
                               >
-                                {get(noorOrderCount, 'data.data.count', 0)}
+                                 {get(noorOrderCount, 'data.data.count', 0)}
                               </Typography>
                             </Box>
                           )}
-                        </Box>
+                        </Box> */}
                       </Box>
                     </ListItem>
                   </CheckAccess>
