@@ -237,7 +237,7 @@ function CartSearchBar({
     () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
     { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
   )
-  const { data: darftList, refetch, isDarftList } = useQuery(['darftList'], () => requests.getDarftList())
+  const { data: darftList, refetch, isDarftList } = useQuery(['darftList'], () => requests.getDarftList({ store_id: get(userData, 'store.id') }))
 
   const methods = useForm()
   const classes = useStyles()
@@ -451,6 +451,9 @@ function CartSearchBar({
                   title: 'Закрыть кассу',
                   icon: <UnlockIcon />,
                   clickHandler: () => {
+                    {
+                      console.log(darftList)
+                    }
                     if (size(get(darftList, 'data.data.data')) > 0) {
                       setCloseCashBox(true)
                     } else {

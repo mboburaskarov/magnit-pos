@@ -14,7 +14,6 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
   const methods = useForm()
   const { reset, control, getValues, watch } = methods
   const [hideProduct, setHideProduct] = useState(false)
-  const [endDate, setEndDate] = useState(0)
   const { mutate: createBannedProduct, isLoading: iscreateBannedProduct } = useMutation(requests.createBannedProduct, {
     onSuccess: () => {
       setOpen(false)
