@@ -18,6 +18,7 @@ import Header from '../../../../components/Header'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
@@ -98,7 +99,7 @@ export default function ChangePriceDetailPage() {
   }, [values?.search])
   const revaluationDetailListFilter = useMemo(() => {
     return {
-      auto_order_id: id,
+      repricing_id: id,
       limit: values?.limit || 10,
       offset: controlleroffset || 0,
       search: values?.search,
@@ -207,6 +208,17 @@ export default function ChangePriceDetailPage() {
       // setBarcode('')
     }
   }, [repricingModalOpen])
+
+  const { mutate: revaluationExcelReport, isLoading: isrevaluationExcelReport } = useMutation(requests.getREvaluationExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.log(err)
+
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={!isfinalAutoOrder}>
       <FormProvider {...methods}>
@@ -279,6 +291,9 @@ export default function ChangePriceDetailPage() {
             <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
             <Box>
               <AgGridTable
+                downloadByFilter={() => revaluationExcelReport(revaluationDetailListFilter)}
+                fullDownload={() => revaluationExcelReport({ ...revaluationDetailListFilter, limit: 1000000 })}
+                isDownloading={isrevaluationExcelReport}
                 id='revaluation-main-table'
                 tableSettings
                 gettingId='id'
