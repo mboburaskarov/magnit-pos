@@ -231,6 +231,7 @@ export const requests = {
   //repricing
   createRevaluation: (data) => request.post(`v1/repricing`, data),
   finishRevaluation: (id) => request.post(`v1/repricing/confirm/${id}`),
+  getREvaluationExcelReport: (filter) => requestEXCEL.get(`v1/repricing-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getRevaluationList: (filter) => request.get(`v1/repricing/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getRevaluationDetailList: (id) => request.get(`v1/repricing-detail/list/${id}`),
