@@ -393,7 +393,7 @@ export default function OrderDrawer({
           ...(SALE_TYPE === 'RETURN' && {
             refundInfo: (() => {
               const info = JSON.parse(get(cashBoxDetails, 'data.data.epos_response.response', '{}'))?.info
-              const { qrCodeURL, ...rest } = info // Exclude qrCodeURL
+              const { qrCodeURL, qrcodeUrl, ...rest } = info ?? {} // Exclude qrCodeURL
               return rest
             })(),
           }),
@@ -422,8 +422,8 @@ export default function OrderDrawer({
     onSuccess: ({ data }) => {
       if (!get(data, 'error', true)) {
         setCustomerId('')
-
-        setQrcodeUrl({ qr: get(data, 'message.qrCodeURL', 'pending'), fiscal: get(data, 'message.fiscalSign', 'pending') })
+        let qrCodeURL = get(data, 'message.qrCodeURL') || get(data, 'message.qrCodeUrl') || 'pending'
+        setQrcodeUrl({ qr: qrCodeURL, fiscal: get(data, 'message.fiscalSign', 'pending') })
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
 
         return
