@@ -26,7 +26,7 @@ import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function TransferGetScanWithCheckingPage() {
+export default function TransferRecheckScanWithCheckingPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
@@ -61,7 +61,7 @@ export default function TransferGetScanWithCheckingPage() {
     },
   })
 
-  const { mutate: acceptTransferChecking, isLoading: isacceptTransferChecking } = useMutation(requests.acceptTransferChecking, {
+  const { mutate: finishTransferChecking, isLoading: isfinishTransferChecking } = useMutation(requests.finishTransferChecking, {
     onSuccess: ({ data }) => {
       navigate('/products/transfer')
     },
@@ -142,12 +142,12 @@ export default function TransferGetScanWithCheckingPage() {
     }
   )
   return (
-    <LoadingContainer readyState={!isacceptTransferChecking}>
+    <LoadingContainer readyState={!isfinishTransferChecking}>
       <FormProvider {...methods}>
         <Header
           onSubmit={() => setOpenFinishConfirmDialog(true)}
           isLoading={false}
-          buttonText='Принятие'
+          buttonText='Заканчивать'
           backIcon
           backHref='/products/transfer'
           text={'Перемещение с проверкой'}
@@ -266,7 +266,7 @@ export default function TransferGetScanWithCheckingPage() {
               variant='contained'
               onClick={() => {
                 setOpenFinishConfirmDialog(false)
-                acceptTransferChecking({ id, type: 'transfer' })
+                finishTransferChecking(id)
               }}
               isLoading={false}
             >

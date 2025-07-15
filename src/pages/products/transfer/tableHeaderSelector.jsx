@@ -75,6 +75,11 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
                     previusLimit: values?.limit,
                     previusOffset: values?.offset,
                   })}`
+                : p.data.status == 'checking'
+                ? `/products/transfer-recheck-with-checking/${p.data.id}?${qs.stringify({
+                    previusLimit: values?.limit,
+                    previusOffset: values?.offset,
+                  })}`
                 : '#'
             }
           >
