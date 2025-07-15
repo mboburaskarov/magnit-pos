@@ -16,7 +16,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, values, t, setScanedNumber }) {
+export default function tableHeaderSelector({ importsColumns, values, t, setScanedNumber, updateByBarcode }) {
   const { id } = useParams()
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {
@@ -145,7 +145,26 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         ...el,
         headerName: 'Принятое кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText data={p?.data} type={'accepted_count'} />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <NumberFormatInput
+              uncontrolled
+              onBlur={({ target }) => {
+                if (p?.data?.accepted_count == get(target, 'value')) return
+
+                updateByBarcode({ id, barcode: p?.data?.barcode, accepted_count: Number(get(target, 'value').replace(/\s+/g, '')), type: 'transfer' })
+              }}
+              setValue={() => {}}
+              placeholder={'0'}
+              value={p?.data?.accepted_count}
+              defaultValue={p?.data?.accepted_count}
+              id={`scanned_quantity_unit_${p?.data?.id}`}
+              name={`scanned_quantity_unit_${p?.data?.id}`}
+              type='number'
+              fullWidth
+            />
+          </Box>
+        )),
       }
     }
     if (el.field === 'scanned_unit') {

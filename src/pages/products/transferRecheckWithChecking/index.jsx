@@ -58,12 +58,26 @@ export default function TransferRecheckScanWithCheckingPage() {
       error('Ошибка при завершение импорта!')
     },
   })
+  const { mutate: updateByBarcode } = useMutation(requests.updateByBarcode, {
+    onSuccess: ({ data }) => {
+      refetchgetReturnToWarehouseDashBoard()
+      setBarcode('')
+      refetch()
+    },
+    onError: (err) => {
+      refetch()
+
+      error('Ошибка при сканирование!')
+    },
+  })
+
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
     values,
 
     id,
+    updateByBarcode,
     setScanedNumber,
   })
   const returnToWarehouseWithCheckingDetailsFilter = useMemo(() => {
