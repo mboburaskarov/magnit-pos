@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useCallback, useRef } from 'react'
 import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
 import CheckAccess from '../../../../components/CheckAccess'
@@ -72,11 +73,13 @@ const Image = ({ data, setImages }) => {
 }
 
 export default function ProductDrawer({ open: id, onClose, setImages, setOpenConfirmDialog, setRejectComment }) {
+  const userData = useSelector((state) => state.user)
+
   const {
     data: productData,
     isLoading: productDataLoading,
     isFetching: isFetchingproductData,
-  } = useQuery(['productData', id], () => requests.getSingleProduct(id), { enabled: !!id })
+  } = useQuery(['productData', id], () => requests.getSingleProduct({ id, store_id: userData?.store?.id }), { enabled: !!id })
   //
   const printContainer = useRef()
   const documentName = useRef('Pharma CHEQUE')
