@@ -65,8 +65,8 @@ export default function ReturnToWarehouseRecheckScanWithCheckingPage() {
       refetch()
     },
     onError: (err) => {
+      console.log(err)
       refetch()
-
       error('Ошибка при сканирование!')
     },
   })

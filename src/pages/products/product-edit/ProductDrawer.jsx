@@ -8,6 +8,7 @@ import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
+import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
 import CheckAccess from '../../../../components/CheckAccess'
 import RippedPaperProductPriceCheck from '../../../../components/ChequePaper/RippedPaperProductPriceCheck'
 import CustomImg from '../../../../components/CustomImg'
@@ -90,6 +91,16 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     removeAfterPrint: true,
     onAfterPrint: () => {},
   })
+  const printUnitContainer = useRef()
+
+  const reactToPrintUnitContent = useCallback(() => printUnitContainer.current, [])
+  const handleUnitPrint = useReactToPrint({
+    content: reactToPrintUnitContent,
+    documentTitle: documentName.current,
+    removeAfterPrint: true,
+    onAfterPrint: () => {},
+  })
+
   //
   const navigate = useNavigate()
   return (
@@ -190,7 +201,46 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         width='1000px'
         display='inline-flex'
       >
-        <Button
+        <ButtonWithPopup
+          boxStyles={{ width: '100%' }}
+          id={'ff'}
+          noArrow
+          // ml={'16px'}
+          sx={{
+            height: '48px',
+            padding: '0px 16px !important',
+            width: '100%',
+            // border: '1px solid transparent !important',
+          }}
+          popperStyle={{
+            '& .pop-up-options': {
+              minWidth: '200px !important',
+            },
+          }}
+          noMarginSvg
+          placement='bottom-end'
+          onClick={() => refetch()}
+          buttonLabel={
+            <Box
+              sx={{
+                display: 'flex',
+                cursor: 'pointer',
+                justifyContent: 'center',
+                alignItems: 'center',
+
+                '&:hover': { bgcolor: 'transparent !important' },
+              }}
+              className='cash_register_icon_wrapper'
+            >
+              Печать ценников
+            </Box>
+          }
+          popperData={[
+            { title: 'Пачка', soon: false, clickHandler: () => handlePrint('pack') },
+            { title: 'Штук', soon: false, clickHandler: () => handleUnitPrint('unit') },
+          ]}
+        />
+        {/* <Button
           sx={{
             height: '48px',
           }}
@@ -199,7 +249,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
           fullWidth
         >
           Печать ценников
-        </Button>
+        </Button> */}
         <Button
           sx={{
             height: '48px',
@@ -216,7 +266,15 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         printContainer={printContainer}
         data={{
           name: get(productData, 'data.data.name'),
-          price: get(productData, 'data.data.retail_price'),
+          price: 3,
+          barcode: get(productData, 'data.data.barcode'),
+        }}
+      />
+      <RippedPaperProductPriceCheck
+        printContainer={printUnitContainer}
+        data={{
+          name: get(productData, 'data.data.name'),
+          price: 2,
           barcode: get(productData, 'data.data.barcode'),
         }}
       />

@@ -391,5 +391,7 @@
   "menu.products.import.nav.table_fields": "Поля таблицы",
   "menu.products.import.nav.waiting": "В ожидании",
   "menu.products.import.use_current_import_price": "Применить цены текущего импорта",
-  "menu.products.import.use_current_import_properties": "Применить свойства текущего импорта"
+  "menu.products.import.use_current_import_properties": "Применить свойства текущего импорта",
+
+  "error.transfer.surplus.accepted_count": "Введено избыточное количество"
 }
