@@ -90,12 +90,20 @@ export default function DashboarPage() {
       {
         title: t('Импорт в ожидании'),
         icon: <RevenueIcon color='#fe5000' />,
-        count: last_24h_import_amount,
+        count: import_amount,
         percent: calculatePercentage(before_import_amount || 1, import_amount),
         id: 'import_amount',
-        amount: import_amount,
         endText: 'сум',
         old: before_import_amount,
+      },
+      {
+        title: t('Текущий импорт'),
+        icon: <RevenueIcon color='#fe5000' />,
+        count: last_24h_import_amount,
+        percent: 0,
+        id: 'current_import_amount',
+        endText: 'сум',
+        old: 0,
       },
       {
         title: t('Общая сумма баланса'),
