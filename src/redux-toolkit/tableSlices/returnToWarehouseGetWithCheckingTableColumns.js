@@ -46,6 +46,12 @@ const columns = [
     width: 170,
   },
   {
+    field: 'accepted_count',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
     field: 'scanned_pack',
     hide: false,
     minWidth: 70,

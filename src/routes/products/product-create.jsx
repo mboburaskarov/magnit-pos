@@ -16,6 +16,7 @@ import ProductCreatePage from '../../pages/products/product-create'
 import ProductEditPage from '../../pages/products/product-edit'
 import ReturnToWarehouseCompletedPage from '../../pages/products/returnToWarehouseComplated'
 import ReturnToWarehouseGetScanWithCheckingPage from '../../pages/products/returnToWarehouseGetWithChecking'
+import ReturnToWarehouseRecheckScanWithCheckingPage from '../../pages/products/returnToWarehouseRecheckWithChecking'
 import ReturnToWarehouseSentScanWithCheckingPage from '../../pages/products/returnToWarehouseSentWithChecking'
 import TransferCompletedPage from '../../pages/products/transferComplated'
 import TransferGetScanWithCheckingPage from '../../pages/products/transferGetWithChecking'
@@ -132,6 +133,15 @@ const productsCreateRoutes = {
         {
           path: '',
           element: <TransferRecheckScanWithCheckingPage />,
+        },
+      ],
+    },
+    {
+      path: 'return-to-warehouse-recheck-with-checking/:id',
+      children: [
+        {
+          path: '',
+          element: <ReturnToWarehouseRecheckScanWithCheckingPage />,
         },
       ],
     },

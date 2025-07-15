@@ -13,6 +13,7 @@ import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/Column
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
@@ -31,6 +32,8 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
+  const [inputType, setInputType] = useState('scanner')
+
   const { columns, loading } = useSelector((state) => state.returnToWarehouseGetWithCheckingColumns)
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
@@ -49,8 +52,18 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
       error('Ошибка при сканирование!')
     },
   })
+  const { mutate: updateByBarcode } = useMutation(requests.updateByBarcode, {
+    onSuccess: ({ data }) => {
+      refetchgetReturnToWarehouseDashBoard()
+      setBarcode('')
+    },
+    onError: (err) => {
+      refetch()
 
-  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.finishReturnToWarehouseChecking, {
+      error('Ошибка при сканирование!')
+    },
+  })
+  const { mutate: acceptTransferChecking, isLoading: isacceptTransferChecking } = useMutation(requests.acceptTransferChecking, {
     onSuccess: ({ data }) => {
       navigate('/products/return-to-warehouse')
     },
@@ -131,7 +144,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
     }
   )
   return (
-    <LoadingContainer readyState={!isfinishWriteOffChecking}>
+    <LoadingContainer readyState={!isacceptTransferChecking}>
       <FormProvider {...methods}>
         <Header
           onSubmit={() => setOpenFinishConfirmDialog(true)}
@@ -168,6 +181,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
                 <Box
                   width='100%'
                   sx={{
+                    display: 'flex',
                     '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                     '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                       background: 'transparent',
@@ -184,6 +198,26 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
                     value={barcode}
                     setSearchTerm={setBarcode}
                     placeholder={t('input.search.product.multi')}
+                  />
+                  <Box mr={'20px'} />
+                  <InputSwitch
+                    id='client-scanner'
+                    noMarginTop
+                    uncontrolled
+                    required
+                    name='scanner'
+                    onChange={(e) => setInputType(e)}
+                    defaultValue='sanner'
+                    options={[
+                      {
+                        title: 'Сканер',
+                        value: 'scanner',
+                      },
+                      {
+                        title: 'Поиск',
+                        value: 'search',
+                      },
+                    ]}
                   />
                 </Box>
               </Box>
@@ -252,7 +286,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
               variant='contained'
               onClick={() => {
                 setOpenFinishConfirmDialog(false)
-                finishWriteOffChecking(id)
+                acceptTransferChecking({ id, type: 'return' })
               }}
               isLoading={false}
             >

@@ -21,24 +21,24 @@ import ArrowDown from '../../../assets/icons/ArrowDown'
 import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/transferGetWithCheckingTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/returnToWarehouseGetWithCheckingTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function TransferRecheckScanWithCheckingPage() {
+export default function ReturnToWarehouseRecheckScanWithCheckingPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.transferGetWithCheckingColumns)
+  const { columns, loading } = useSelector((state) => state.returnToWarehouseGetWithCheckingColumns)
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
-  const { mutate: setScanedNumber } = useMutation(requests.sendScannedTransferNumber, {
+  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedReturnToWarehouseNumber, {
     onSuccess: ({ data }) => {
       refetchgetReturnToWarehouseDashBoard()
       setBarcode('')
@@ -50,9 +50,9 @@ export default function TransferRecheckScanWithCheckingPage() {
     },
   })
 
-  const { mutate: finishTransferChecking, isLoading: isfinishTransferChecking } = useMutation(requests.finishTransferChecking, {
+  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.finishReturnToWarehouseChecking, {
     onSuccess: ({ data }) => {
-      navigate('/products/transfer')
+      navigate('/products/return-to-warehouse')
     },
     onError: (err) => {
       error('Ошибка при завершение импорта!')
@@ -68,7 +68,7 @@ export default function TransferRecheckScanWithCheckingPage() {
   })
   const returnToWarehouseWithCheckingDetailsFilter = useMemo(() => {
     return {
-      transfer_id: id,
+      return_id: id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: barcode,
@@ -76,7 +76,7 @@ export default function TransferRecheckScanWithCheckingPage() {
   }, [id, barcode, values?.limit, values?.offset])
 
   const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
-    requests.getTransferDashBoard(id)
+    requests.getReturnToWarehouseDashBoard(id)
   )
 
   const {
@@ -85,7 +85,7 @@ export default function TransferRecheckScanWithCheckingPage() {
     isFetching: isFetchingreturnToWarehouseWithCheckingDetails,
     refetch,
   } = useQuery(['returnToWarehouseWithCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
-    requests.getTransferDetails(returnToWarehouseWithCheckingDetailsFilter)
+    requests.getReturnToWarehouseDetails(returnToWarehouseWithCheckingDetailsFilter)
   )
 
   useEffect(() => {
@@ -118,7 +118,7 @@ export default function TransferRecheckScanWithCheckingPage() {
     })
   }, [returnToWarehouseWithCheckingDetails?.data, values?.limit])
   const { mutate: getReturnToWarehouseDetailsExcelReport, isLoading: isgetReturnToWarehouseDetailsExcelReport } = useMutation(
-    requests.getTransferDetailsExcelReport,
+    requests.getReturnToWarehouseDetailsExcelReport,
     {
       onSuccess: ({ data }) => {
         downloadLinkExcel(get(data, 'data.file_name'))
@@ -131,15 +131,15 @@ export default function TransferRecheckScanWithCheckingPage() {
     }
   )
   return (
-    <LoadingContainer readyState={!isfinishTransferChecking}>
+    <LoadingContainer readyState={!isfinishWriteOffChecking}>
       <FormProvider {...methods}>
         <Header
           onSubmit={() => setOpenFinishConfirmDialog(true)}
           isLoading={false}
           buttonText='Заканчивать'
           backIcon
-          backHref='/products/transfer'
-          text={'Перемещение с проверкой'}
+          backHref='/products/return-to-warehouse'
+          text={'Возврат с проверкой'}
           checkAccessId={'product-create'}
         />
 
@@ -164,26 +164,28 @@ export default function TransferRecheckScanWithCheckingPage() {
 
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-              <Box
-                width='80%'
-                sx={{
-                  '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                  '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                    background: 'transparent',
-                    width: '100%',
-                    height: 48,
-                  },
-                }}
-              >
-                <InputSearch
-                  icon={<BarcodeIcon />}
-                  onChange={({ target }) => setBarcode(get(target, 'value'))}
-                  id='producrs-search'
-                  name='search'
-                  value={barcode}
-                  setSearchTerm={setBarcode}
-                  placeholder={t('input.search.product.multi')}
-                />
+              <Box display={'flex'}>
+                <Box
+                  width='100%'
+                  sx={{
+                    '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+                    '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                      background: 'transparent',
+                      width: '400px',
+                      height: 48,
+                    },
+                  }}
+                >
+                  <InputSearch
+                    icon={<BarcodeIcon />}
+                    onChange={({ target }) => setBarcode(get(target, 'value'))}
+                    id='producrs-search'
+                    name='search'
+                    value={barcode}
+                    setSearchTerm={setBarcode}
+                    placeholder={t('input.search.product.multi')}
+                  />
+                </Box>
               </Box>
               <Box display={'flex'} alignItems={'center'}>
                 <Box>
@@ -250,7 +252,7 @@ export default function TransferRecheckScanWithCheckingPage() {
               variant='contained'
               onClick={() => {
                 setOpenFinishConfirmDialog(false)
-                finishTransferChecking(id)
+                finishWriteOffChecking(id)
               }}
               isLoading={false}
             >

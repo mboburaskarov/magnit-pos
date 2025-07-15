@@ -146,7 +146,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         ...el,
         headerName: 'Принятое кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText data={p?.data} type={'accepted_count'} />),
+        cellRenderer: memo((p) => <SimpleText withDevider type={'accepted_count'} />),
       }
     }
     if (el.field === 'scanned_unit') {

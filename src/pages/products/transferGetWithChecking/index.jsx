@@ -13,6 +13,7 @@ import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/Column
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
@@ -35,6 +36,7 @@ export default function TransferGetScanWithCheckingPage() {
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
+  const [inputType, setInputType] = useState('scanner')
   const methods = useForm()
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
@@ -53,6 +55,7 @@ export default function TransferGetScanWithCheckingPage() {
     onSuccess: ({ data }) => {
       refetchgetReturnToWarehouseDashBoard()
       setBarcode('')
+      refetch()
     },
     onError: (err) => {
       refetch()
@@ -82,9 +85,9 @@ export default function TransferGetScanWithCheckingPage() {
       transfer_id: id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
-      search: barcode,
+      search: inputType == 'search' ? barcode : '',
     }
-  }, [id, barcode, values?.limit, values?.offset])
+  }, [id, inputType == 'search' ? barcode : null, values?.limit, values?.offset])
 
   const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
     requests.getTransferDashBoard(id)
@@ -178,6 +181,8 @@ export default function TransferGetScanWithCheckingPage() {
               <Box
                 width='80%'
                 sx={{
+                  display: 'flex',
+
                   '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                   '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                     background: 'transparent',
@@ -199,6 +204,26 @@ export default function TransferGetScanWithCheckingPage() {
                   value={barcode}
                   setSearchTerm={setBarcode}
                   placeholder={t('input.search.product.multi')}
+                />
+                <Box mr={'20px'} />
+                <InputSwitch
+                  id='client-scanner'
+                  noMarginTop
+                  uncontrolled
+                  required
+                  name='scanner'
+                  onChange={(e) => setInputType(e)}
+                  defaultValue='sanner'
+                  options={[
+                    {
+                      title: 'Сканер',
+                      value: 'scanner',
+                    },
+                    {
+                      title: 'Поиск',
+                      value: 'search',
+                    },
+                  ]}
                 />
               </Box>
               <Box display={'flex'} alignItems={'center'}>
