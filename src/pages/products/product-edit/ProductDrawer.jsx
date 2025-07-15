@@ -266,7 +266,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         printContainer={printContainer}
         data={{
           name: get(productData, 'data.data.name'),
-          price: 3,
+          price: get(productData, 'data.data.retail_price'),
           barcode: get(productData, 'data.data.barcode'),
         }}
       />
@@ -274,7 +274,8 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         printContainer={printUnitContainer}
         data={{
           name: get(productData, 'data.data.name'),
-          price: 2,
+          price: get(productData, 'data.data.retail_unit_price'),
+
           barcode: get(productData, 'data.data.barcode'),
         }}
       />
