@@ -128,6 +128,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
                   // scanned_unit: p?.data?.scanned_unit,
                 })
               }}
+              disabled={true}
               setValue={() => {}}
               placeholder={'0'}
               defaultValue={p?.data?.scanned_pack}
