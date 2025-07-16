@@ -213,7 +213,7 @@ export default function TransferGetScanWithCheckingPage() {
                   required
                   name='scanner'
                   onChange={(e) => setInputType(e)}
-                  defaultValue='sanner'
+                  defaultValue='scanner'
                   options={[
                     {
                       title: 'Сканер',

@@ -86,7 +86,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
       offset: values?.offset || 0,
       search: barcode,
     }
-  }, [id, barcode, values?.limit, values?.offset])
+  }, [id, inputType == 'search' ? barcode : null, barcode, values?.limit, values?.offset])
 
   const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
     requests.getReturnToWarehouseDashBoard(id)
@@ -143,6 +143,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
       },
     }
   )
+
   return (
     <LoadingContainer readyState={!isacceptTransferChecking}>
       <FormProvider {...methods}>
@@ -195,6 +196,11 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
                     onChange={({ target }) => setBarcode(get(target, 'value'))}
                     id='producrs-search'
                     name='search'
+                    onKeyDown={(e) => {
+                      if (e.key == 'Enter') {
+                        updateByBarcode({ id, barcode: get(e, 'target.value'), type: 'return' })
+                      }
+                    }}
                     value={barcode}
                     setSearchTerm={setBarcode}
                     placeholder={t('input.search.product.multi')}
@@ -207,7 +213,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
                     required
                     name='scanner'
                     onChange={(e) => setInputType(e)}
-                    defaultValue='sanner'
+                    defaultValue='scanner'
                     options={[
                       {
                         title: 'Сканер',
