@@ -537,7 +537,7 @@ function OrderLite({
           },
           ...(SALE_TYPE === 'RETURN' && {
             refundInfo: (() => {
-              const info = JSON.parse(get(cashBoxDetails, 'data.data.epos_response.response', '{}'))?.info
+              const info = JSON.parse(get(cashBoxDetails, 'data.data.epos_response.response', '{}'))?.message
               const { qrCodeURL, qrcodeUrl, ...rest } = info ?? {} // Exclude qrCodeURL
               return rest
             })(),
