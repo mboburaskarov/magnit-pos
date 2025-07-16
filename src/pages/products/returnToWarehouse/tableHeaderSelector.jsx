@@ -329,7 +329,7 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
             alignItems={'center'}
           >
             <CheckAccess id={'can-download-return-nakladnoy'}>
-              {(data.status == 'completed' || data.status == 'sent') && (
+              {(data.status == 'completed' || data.status == 'checking' || data.status == 'sent') && (
                 <>
                   <ButtonWithPopup
                     id={'ff'}
