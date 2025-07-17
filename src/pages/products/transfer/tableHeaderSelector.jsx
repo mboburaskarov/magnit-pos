@@ -104,6 +104,30 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
         cellRenderer: memo((p) => <Typography whiteSpace={'pre-wrap'}>{p.data?.to_store?.name}</Typography>),
       }
     }
+    if (el.field === 'created_by') {
+      return {
+        ...el,
+        headerName: 'Создал',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.created_by} type='full_name' />),
+      }
+    }
+    if (el.field === 'updated_by') {
+      return {
+        ...el,
+        headerName: 'Отправитель',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.updated_by} type='full_name' />),
+      }
+    }
+    if (el.field === 'accepted_by') {
+      return {
+        ...el,
+        headerName: 'Завершил',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.accepted_by} type='full_name' />),
+      }
+    }
     if (el.field === 'from_store_name') {
       return {
         ...el,
