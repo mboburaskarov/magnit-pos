@@ -87,7 +87,7 @@ export default function TransferGetScanWithCheckingPage() {
     id,
     setScanedNumber,
   })
-  const returnToWarehouseWithCheckingDetailsFilter = useMemo(() => {
+  const transferWithCheckingDetailsFilter = useMemo(() => {
     return {
       transfer_id: id,
       limit: values?.limit || 10,
@@ -101,13 +101,11 @@ export default function TransferGetScanWithCheckingPage() {
   )
 
   const {
-    data: returnToWarehouseWithCheckingDetails,
-    isLoading: returnToWarehouseWithCheckingDetailsLoading,
-    isFetching: isFetchingreturnToWarehouseWithCheckingDetails,
+    data: transferWithCheckingDetails,
+    isLoading: transferWithCheckingDetailsLoading,
+    isFetching: isFetchingtransferWithCheckingDetails,
     refetch,
-  } = useQuery(['returnToWarehouseWithCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
-    requests.getTransferDetails(returnToWarehouseWithCheckingDetailsFilter)
-  )
+  } = useQuery(['transferWithGetCheckingDetails', transferWithCheckingDetailsFilter], () => requests.getTransferDetails(transferWithCheckingDetailsFilter))
 
   useEffect(() => {
     if (tableColumns) {
@@ -126,18 +124,18 @@ export default function TransferGetScanWithCheckingPage() {
 
   useEffect(() => {
     refetch()
-  }, [returnToWarehouseWithCheckingDetailsFilter])
+  }, [transferWithCheckingDetailsFilter])
 
   useEffect(() => {
-    const count = returnToWarehouseWithCheckingDetails?.data?.data?._meta?.total_count
+    const count = transferWithCheckingDetails?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
 
-    get(returnToWarehouseWithCheckingDetails, 'data.data.data', []).map((importData) => {
+    get(transferWithCheckingDetails, 'data.data.data', []).map((importData) => {
       methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
     })
-  }, [returnToWarehouseWithCheckingDetails?.data, values?.limit])
+  }, [transferWithCheckingDetails?.data, values?.limit])
   const { mutate: getReturnToWarehouseDetailsExcelReport, isLoading: isgetReturnToWarehouseDetailsExcelReport } = useMutation(
     requests.getTransferDetailsExcelReport,
     {
@@ -252,11 +250,11 @@ export default function TransferGetScanWithCheckingPage() {
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
-                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...returnToWarehouseWithCheckingDetailsFilter, limit: 1000000 })}
-                downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(returnToWarehouseWithCheckingDetailsFilter)}
-                data={returnToWarehouseWithCheckingDetails?.data?.data?.data || []}
-                totalCount={returnToWarehouseWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
-                isDataLoading={isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
+                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...transferWithCheckingDetailsFilter, limit: 1000000 })}
+                downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(transferWithCheckingDetailsFilter)}
+                data={transferWithCheckingDetails?.data?.data?.data || []}
+                totalCount={transferWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                isDataLoading={isFetchingtransferWithCheckingDetails || transferWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
@@ -268,7 +266,7 @@ export default function TransferGetScanWithCheckingPage() {
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
                 status={'ALL'}
-                isRefreshing={loading || isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
+                isRefreshing={loading || isFetchingtransferWithCheckingDetails || transferWithCheckingDetailsLoading}
               />
             </Box>
           </Box>

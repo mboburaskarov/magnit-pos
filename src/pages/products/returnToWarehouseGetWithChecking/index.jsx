@@ -103,7 +103,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
     isLoading: returnToWarehouseWithCheckingDetailsLoading,
     isFetching: isFetchingreturnToWarehouseWithCheckingDetails,
     refetch,
-  } = useQuery(['returnToWarehouseWithCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
+  } = useQuery(['returnToWarehouseWithGetCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
     requests.getReturnToWarehouseDetails(returnToWarehouseWithCheckingDetailsFilter)
   )
 
