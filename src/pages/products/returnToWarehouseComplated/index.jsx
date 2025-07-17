@@ -21,7 +21,7 @@ import ArrowDown from '../../../assets/icons/ArrowDown'
 import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/returnToWarehouseGetWithCheckingTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/returnToWarehouseRecheckWithCheckingTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -31,7 +31,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.returnToWarehouseGetWithCheckingColumns)
+  const { columns, loading } = useSelector((state) => state.returnToWarehouseRecheckWithCheckingColumns)
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
@@ -136,7 +136,8 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
         <Header
           onSubmit={() => setOpenFinishConfirmDialog(true)}
           isLoading={false}
-          buttonText='Принятие'
+          noActions
+          // buttonText='Принятие'
           backIcon
           backHref='/products/return-to-warehouse'
           text={'Возврат с проверкой'}

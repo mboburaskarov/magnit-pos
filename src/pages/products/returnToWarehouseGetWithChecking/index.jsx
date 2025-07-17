@@ -23,6 +23,7 @@ import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/returnToWarehouseGetWithCheckingTableColumns'
+import DublicateProductBarcode from './dublicateBarcode'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -33,6 +34,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [inputType, setInputType] = useState('scanner')
+  const [openDublicateBarcodeModal, setopenDublicateBarcodeModal] = useState(false)
 
   const { columns, loading } = useSelector((state) => state.returnToWarehouseGetWithCheckingColumns)
   const { values } = useQueryParams()
@@ -53,9 +55,13 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
     },
   })
   const { mutate: updateByBarcode } = useMutation(requests.updateByBarcode, {
-    onSuccess: ({ data }) => {
-      refetchgetReturnToWarehouseDashBoard()
-      setBarcode('')
+    onSuccess: ({ data, ...other }) => {
+      if (get(other, 'status') == 207) {
+        setopenDublicateBarcodeModal(data)
+      } else {
+        refetchgetReturnToWarehouseDashBoard()
+        setBarcode('')
+      }
     },
     onError: (err) => {
       refetch()
@@ -86,7 +92,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
       offset: values?.offset || 0,
       search: barcode,
     }
-  }, [id, inputType == 'search' ? barcode : null, barcode, values?.limit, values?.offset])
+  }, [id, inputType == 'search' ? barcode : null, values?.limit, values?.offset])
 
   const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
     requests.getReturnToWarehouseDashBoard(id)
@@ -175,6 +181,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
           {isOpenStatDashboard && <WriteOffDashboard data={get(getReturnToWarehouseDashBoard, 'data.data')} />}
+          <DublicateProductBarcode refetch={refetch} open={openDublicateBarcodeModal} setOpen={setopenDublicateBarcodeModal} />
 
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -198,7 +205,8 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
                     name='search'
                     onKeyDown={(e) => {
                       if (e.key == 'Enter') {
-                        updateByBarcode({ id, barcode: get(e, 'target.value'), type: 'return' })
+                        if (inputType == 'search') return
+                        updateByBarcode({ returnId: id, barcode: get(e, 'target.value'), type: 'return' })
                       }
                     }}
                     value={barcode}

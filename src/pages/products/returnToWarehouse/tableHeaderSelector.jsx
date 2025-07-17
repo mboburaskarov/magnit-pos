@@ -45,12 +45,37 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
         }),
       }
     }
+
     if (el.field === 'public_id') {
       return {
         ...el,
         headerName: 'Номер',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='' {...p} type='public_id' />),
+      }
+    }
+    if (el.field === 'created_by') {
+      return {
+        ...el,
+        headerName: 'Создал',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.created_by} type='full_name' />),
+      }
+    }
+    if (el.field === 'updated_by') {
+      return {
+        ...el,
+        headerName: 'Отправитель',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.updated_by} type='full_name' />),
+      }
+    }
+    if (el.field === 'accepted_by') {
+      return {
+        ...el,
+        headerName: 'Завершил',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.accepted_by} type='full_name' />),
       }
     }
     if (el.field === 'document_number') {

@@ -8,91 +8,71 @@ const columns = [
     width: 60,
   },
   {
-    field: 'public_id',
+    field: 'name',
     hide: false,
-    minWidth: 60,
+    minWidth: 200,
+    flex: 1,
+    resizable: true,
+  },
+  {
+    field: 'material_code',
+    hide: false,
+    minWidth: 70,
+    width: 158,
+  },
+  {
+    field: 'barcode',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'export_date',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'serial_number',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'stock_count',
+    hide: false,
+    minWidth: 70,
+    width: 170,
+  },
+  {
+    field: 'expected_count',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'scanned_pack',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'accepted_count',
+    hide: false,
+    minWidth: 70,
     width: 200,
   },
 
-  {
-    field: 'document_number',
-    hide: false,
-    minWidth: 280,
-    flex: 1,
-  },
-  {
-    field: 'store_name',
-    hide: false,
-    minWidth: 70,
-    width: 250,
-  },
-
-  {
-    field: 'received_count',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
-  {
-    field: 'retail_price',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
-  {
-    field: 'supply_price',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
-
-  {
-    field: 'status',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
-
-  {
-    field: 'created_by',
-    hide: false,
-    minWidth: 70,
-    width: 350,
-  },
-  {
-    field: 'updated_by',
-    hide: false,
-    minWidth: 70,
-    width: 350,
-  },
-  {
-    field: 'accepted_by',
-    hide: false,
-    minWidth: 70,
-    width: 350,
-  },
-  {
-    field: 'created_at',
-    hide: false,
-    minWidth: 70,
-    width: 350,
-  },
-  {
-    field: 'import_date',
-    hide: false,
-    minWidth: 70,
-    width: 370,
-  },
-  {
-    field: 'actions',
-    hide: false,
-    minWidth: 120,
-    width: 120,
-  },
+  // {
+  //   field: 'scanned_unit',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 200,
+  // },
 ]
 
-const returnToWarehouseTableColumns = createSlice({
-  name: 'returnToWarehouseTableColumns',
+const returnToWarehouseRecheckWithCheckingTableColumns = createSlice({
+  name: 'returnToWarehouseRecheckWithCheckingTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -132,5 +112,5 @@ const returnToWarehouseTableColumns = createSlice({
 })
 
 export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
-  returnToWarehouseTableColumns.actions
-export const returnToWarehouseTableColumnsSlice = returnToWarehouseTableColumns.reducer
+  returnToWarehouseRecheckWithCheckingTableColumns.actions
+export const returnToWarehouseRecheckWithCheckingTableColumnsSlice = returnToWarehouseRecheckWithCheckingTableColumns.reducer

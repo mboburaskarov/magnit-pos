@@ -158,8 +158,8 @@ export const requests = {
 
   createReturnToWarehouse: (data) => request.post(`v1/return`, data),
   getAllReturnToWarehouse: (filter) => request.get(`v1/return/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  sendScannedReturnToWarehouseNumber: ({ id, barcode, product_id, type, status, scanned_unit, scanned_pack }) =>
-    request.patch(`v1/return/${id}/add-product-by-barcode`, { scanned_pack, status, scanned_unit, type, id: product_id }),
+  sendScannedReturnToWarehouseNumber: ({ returnId, id, barcode, product_id, type, status, scanned_unit, scanned_pack }) =>
+    request.patch(`v1/return/${returnId}/add-product-by-barcode`, { scanned_pack, status, scanned_unit, type, id: product_id }),
   getReturnToWarehouseDetails: (filter) => request.get(`v1/return-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getReturnToWarehouseDashBoard: (id) => request.get(`v1/return/${id}`),
   getReturnToWarehouseScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -214,7 +214,7 @@ export const requests = {
   getTransferScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
   finishTransferChecking: (id) => request.post(`v1/transfer/confirm/${id}`),
   acceptTransferChecking: ({ id, ...filter }) => request.put(`v1/return/edit-status-to-checking/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
-  updateByBarcode: ({ id, ...filter }) => request.put(`v1/return/update-by-barcode/${id}`, filter),
+  updateByBarcode: ({ returnId, ...filter }) => request.put(`v1/return/update-by-barcode/${returnId}`, filter),
   SentTransferChecking: (id) => request.post(`v1/transfer/send/${id}`),
   deleteTransfer: ({ id }) => request.post(`v1/transfer/cancel/${id}`),
   getTransferExcelReport: (filter) => requestEXCEL.get(`v1/transfer/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),

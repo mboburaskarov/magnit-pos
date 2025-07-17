@@ -106,7 +106,23 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         )),
       }
     }
-    if (el.field === 'scanned_pack') {
+    // if (el.field === 'scanned_pack') {
+    //   return {
+    //     ...el,
+    //     headerName: 'Скан кол-во',
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText data={p?.data} type={'scanned_pack'} />),
+    //   }
+    // }
+    // if (el.field === 'expected_count') {
+    //   return {
+    //     ...el,
+    //     headerName: 'Отп кол-во',
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText data={p?.data} type={'expected_count'} />),
+    //   }
+    // }
+    if (el.field === 'expected_count') {
       return {
         ...el,
         headerName: 'Упакофка',
@@ -116,12 +132,12 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
             <NumberFormatInput
               uncontrolled
               setValue={() => {}}
-              value={p?.data?.scanned_pack}
+              value={p?.data?.expected_count}
               onBlur={({ target }) => {
-                if (p?.data?.scanned_pack == get(target, 'value')) return
+                if (p?.data?.expected_count == get(target, 'value')) return
 
                 setScanedNumber({
-                  id,
+                  returnId: id,
                   product_id: get(p, 'data.id'),
                   barcode: get(p, 'data.barcode'),
                   type: 'MANUAL',
@@ -130,7 +146,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
                 })
               }}
               placeholder={'0'}
-              defaultValue={p?.data?.scanned_pack}
+              defaultValue={p?.data?.expected_count}
               id={`scanned_quantity_pack_${p?.data?.id}`}
               name={`scanned_quantity_pack_${p?.data?.id}`}
               type='number'

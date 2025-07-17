@@ -45,8 +45,9 @@ const columns = [
     minWidth: 70,
     width: 170,
   },
+
   {
-    field: 'accepted_count',
+    field: 'expected_count',
     hide: false,
     minWidth: 70,
     width: 200,
@@ -57,12 +58,12 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
-  {
-    field: 'scanned_unit',
-    hide: false,
-    minWidth: 70,
-    width: 200,
-  },
+  // {
+  //   field: 'scanned_unit',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 200,
+  // },
   // {
   //   field: 'new_pack',
   //   hide: false,
