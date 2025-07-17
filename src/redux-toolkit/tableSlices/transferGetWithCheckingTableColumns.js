@@ -46,13 +46,13 @@ const columns = [
     width: 170,
   },
   {
-    field: 'scanned_pack',
+    field: 'expected_count',
     hide: false,
     minWidth: 70,
     width: 200,
   },
   {
-    field: 'scanned_unit',
+    field: 'scanned_pack',
     hide: false,
     minWidth: 70,
     width: 200,

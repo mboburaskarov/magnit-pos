@@ -8,11 +8,12 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridUnSelectableSimpleTable from '../../../../components/AgGridTable/AgGridTable'
+import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
@@ -21,28 +22,31 @@ import ArrowDown from '../../../assets/icons/ArrowDown'
 import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/returnToWarehouseSentWithCheckingTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/transferRecheckWithCheckingTableColumns'
+import DublicateProductBarcode from './dublicateBarcode'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function ReturnToWarehouseSentScanWithCheckingPage() {
+export default function TransferRecheckScanWithCheckingPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.returnToWarehouseSentWithCheckingColumns)
+  const { columns, loading } = useSelector((state) => state.transferRecheckWithCheckingColumns)
   const { values } = useQueryParams()
+  const [inputType, setInputType] = useState('scanner')
+  const [openDublicateBarcodeModal, setopenDublicateBarcodeModal] = useState(false)
+
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
-  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedReturnToWarehouseNumber, {
+  const { mutate: setScanedNumber } = useMutation(requests.sendScannedTransferNumber, {
     onSuccess: ({ data }) => {
-      // refetchgetReturnToWarehouseDashBoard()
-      // setBarcode('')
-      refetch()
+      refetchgetReturnToWarehouseDashBoard()
+      setBarcode('')
     },
     onError: (err) => {
       refetch()
@@ -51,48 +55,60 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
     },
   })
 
-  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.SentReturnToWarehouseChecking, {
+  const { mutate: finishTransferChecking, isLoading: isfinishTransferChecking } = useMutation(requests.finishTransferChecking, {
     onSuccess: ({ data }) => {
-      navigate('/products/return-to-warehouse')
+      navigate('/products/transfer')
     },
     onError: (err) => {
       error('Ошибка при завершение импорта!')
     },
   })
+  const { mutate: updateByBarcode } = useMutation(requests.updateTransferByBarcode, {
+    onSuccess: ({ data, ...other }) => {
+      if (get(other, 'status') == 207) {
+        setopenDublicateBarcodeModal(data)
+      } else {
+        refetchgetReturnToWarehouseDashBoard()
+        setBarcode('')
+        refetch()
+      }
+    },
+    onError: (err) => {
+      refetch()
+
+      error('Ошибка при сканирование!')
+    },
+  })
+
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
     values,
 
     id,
+    updateByBarcode,
     setScanedNumber,
   })
-  const returnToWarehouseWithCheckingDetailsFilter = useMemo(() => {
+  const transferWithCheckingDetailsFilter = useMemo(() => {
     return {
-      return_id: id,
+      transfer_id: id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: barcode,
     }
-  }, [id, values?.limit, values?.offset, barcode])
+  }, [id, inputType == 'search' ? barcode : null, values?.limit, values?.offset])
 
-  const {
-    data: getReturnToWarehouseDashBoard,
-    isLoading: getReturnToWarehouseDashBoardLoading,
-    isFetching: isFetchinggetReturnToWarehouseDashBoard,
-    refetch: refetchgetReturnToWarehouseDashBoard,
-  } = useQuery(['getReturnToWarehouseDashBoard', id], () => requests.getReturnToWarehouseDashBoard(id))
-
-  const {
-    data: returnToWarehouseWithCheckingDetails,
-    isLoading: returnToWarehouseWithCheckingDetailsLoading,
-    isFetching: isFetchingreturnToWarehouseWithCheckingDetails,
-    refetch,
-  } = useQuery(['returnToWarehouseWithSentCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
-    requests.getReturnToWarehouseDetails(returnToWarehouseWithCheckingDetailsFilter)
+  const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
+    requests.getTransferDashBoard(id)
   )
 
-  /// filter table columns with permission
+  const {
+    data: transferWithCheckingDetails,
+    isLoading: transferWithCheckingDetailsLoading,
+    isFetching: isFetchingtransferWithCheckingDetails,
+    refetch,
+  } = useQuery(['transferWithRecheckCheckingDetails', transferWithCheckingDetailsFilter], () => requests.getTransferDetails(transferWithCheckingDetailsFilter))
+
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
@@ -110,20 +126,20 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
 
   useEffect(() => {
     refetch()
-  }, [returnToWarehouseWithCheckingDetailsFilter])
+  }, [transferWithCheckingDetailsFilter])
 
   useEffect(() => {
-    const count = returnToWarehouseWithCheckingDetails?.data?.data?._meta?.total_count
+    const count = transferWithCheckingDetails?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
 
-    get(returnToWarehouseWithCheckingDetails, 'data.data.data', []).map((importData) => {
+    get(transferWithCheckingDetails, 'data.data.data', []).map((importData) => {
       methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
     })
-  }, [returnToWarehouseWithCheckingDetails?.data, values?.limit])
+  }, [transferWithCheckingDetails?.data, values?.limit])
   const { mutate: getReturnToWarehouseDetailsExcelReport, isLoading: isgetReturnToWarehouseDetailsExcelReport } = useMutation(
-    requests.getReturnToWarehouseDetailsExcelReport,
+    requests.getTransferDetailsExcelReport,
     {
       onSuccess: ({ data }) => {
         downloadLinkExcel(get(data, 'data.file_name'))
@@ -136,15 +152,15 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
     }
   )
   return (
-    <LoadingContainer readyState={!isfinishWriteOffChecking}>
+    <LoadingContainer readyState={!isfinishTransferChecking}>
       <FormProvider {...methods}>
         <Header
           onSubmit={() => setOpenFinishConfirmDialog(true)}
           isLoading={false}
-          buttonText='Отправил'
+          buttonText='Завершить'
           backIcon
-          backHref='/products/return-to-warehouse'
-          text={'Возврат с проверкой'}
+          backHref='/products/transfer'
+          text={'Перемещение с проверкой'}
           checkAccessId={'product-create'}
         />
 
@@ -166,31 +182,57 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
           {isOpenStatDashboard && <WriteOffDashboard data={get(getReturnToWarehouseDashBoard, 'data.data')} />}
+          <DublicateProductBarcode refetch={refetch} open={openDublicateBarcodeModal} setOpen={setopenDublicateBarcodeModal} />
 
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-              <Box display={'flex'}>
-                <Box
-                  width='100%'
-                  sx={{
-                    '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                    '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                      background: 'transparent',
-                      width: '400px',
-                      height: 48,
-                    },
+              <Box
+                width='80%'
+                sx={{
+                  display: 'flex',
+
+                  '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+                  '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                    background: 'transparent',
+                    width: '100%',
+                    height: 48,
+                  },
+                }}
+              >
+                <InputSearch
+                  icon={<BarcodeIcon />}
+                  onChange={({ target }) => setBarcode(get(target, 'value'))}
+                  id='producrs-search'
+                  name='search'
+                  onKeyDown={(e) => {
+                    if (e.key == 'Enter') {
+                      updateByBarcode({ transferId: id, barcode: get(e, 'target.value'), status: 'checking', type: 'transfer' })
+                    }
                   }}
-                >
-                  <InputSearch
-                    icon={<BarcodeIcon />}
-                    onChange={({ target }) => setBarcode(get(target, 'value'))}
-                    id='producrs-search'
-                    name='search'
-                    value={barcode}
-                    setSearchTerm={setBarcode}
-                    placeholder={t('input.search.product.multi')}
-                  />
-                </Box>
+                  value={barcode}
+                  setSearchTerm={setBarcode}
+                  placeholder={t('input.search.product.multi')}
+                />
+                <Box mr={'20px'} />
+                <InputSwitch
+                  id='client-scanner'
+                  noMarginTop
+                  uncontrolled
+                  required
+                  name='scanner'
+                  onChange={(e) => setInputType(e)}
+                  defaultValue='scanner'
+                  options={[
+                    {
+                      title: 'Сканер',
+                      value: 'scanner',
+                    },
+                    {
+                      title: 'Поиск',
+                      value: 'search',
+                    },
+                  ]}
+                />
               </Box>
               <Box display={'flex'} alignItems={'center'}>
                 <Box>
@@ -206,15 +248,15 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
             </Box>
 
             <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' } }}>
-              <AgGridUnSelectableSimpleTable
+              <AgGridTable
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
-                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...returnToWarehouseWithCheckingDetailsFilter, limit: 1000000 })}
-                downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(returnToWarehouseWithCheckingDetailsFilter)}
-                data={returnToWarehouseWithCheckingDetails?.data?.data?.data || []}
-                totalCount={returnToWarehouseWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
-                isDataLoading={isFetchingreturnToWarehouseWithCheckingDetails || isSetScannedNumber || returnToWarehouseWithCheckingDetailsLoading}
+                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...transferWithCheckingDetailsFilter, limit: 1000000 })}
+                downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(transferWithCheckingDetailsFilter)}
+                data={transferWithCheckingDetails?.data?.data?.data || []}
+                totalCount={transferWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                isDataLoading={isFetchingtransferWithCheckingDetails || transferWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
@@ -226,7 +268,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
                 status={'ALL'}
-                isRefreshing={loading || isSetScannedNumber || isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
+                isRefreshing={loading || isFetchingtransferWithCheckingDetails || transferWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
@@ -236,14 +278,14 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
         open={openFinishConfirmDialog}
         setOpen={() => setOpenFinishConfirmDialog(false)}
         icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
-        title={'Отправит возрат?'}
+        title={t('alerts.finish_return')}
         desc={
           <>
             <Typography fontWeight={'600'} fontSize={'20px'}>
-              {'Вы уверены что хотите отправит возрат?'}
+              {t('alerts.finish_return_desc')}
             </Typography>
             <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
-              {'Не сканированные товары будут списаны'}
+              {t('alerts.finish_return_warning')}
             </Typography>
           </>
         }
@@ -257,11 +299,11 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
               variant='contained'
               onClick={() => {
                 setOpenFinishConfirmDialog(false)
-                finishWriteOffChecking(id)
+                finishTransferChecking(id)
               }}
               isLoading={false}
             >
-              Да, отправит
+              {t('buttons.yes_complete')}
             </Button>
           </>
         }

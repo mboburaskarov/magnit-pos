@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridUnSelectableSimpleTable from '../../../../components/AgGridTable/AgGridTable'
+import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
@@ -21,17 +21,17 @@ import ArrowDown from '../../../assets/icons/ArrowDown'
 import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/returnToWarehouseSentWithCheckingTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/returnToWarehouseRecheckWithCheckingTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 
-export default function ReturnToWarehouseSentScanWithCheckingPage() {
+export default function ReturnToWarehouseRecheckScanWithCheckingPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.returnToWarehouseSentWithCheckingColumns)
+  const { columns, loading } = useSelector((state) => state.returnToWarehouseRecheckWithCheckingColumns)
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
@@ -40,9 +40,8 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedReturnToWarehouseNumber, {
     onSuccess: ({ data }) => {
-      // refetchgetReturnToWarehouseDashBoard()
-      // setBarcode('')
-      refetch()
+      refetchgetReturnToWarehouseDashBoard()
+      setBarcode('')
     },
     onError: (err) => {
       refetch()
@@ -51,7 +50,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
     },
   })
 
-  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.SentReturnToWarehouseChecking, {
+  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.finishReturnToWarehouseChecking, {
     onSuccess: ({ data }) => {
       navigate('/products/return-to-warehouse')
     },
@@ -59,10 +58,23 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
       error('Ошибка при завершение импорта!')
     },
   })
+  const { mutate: updateByBarcode } = useMutation(requests.updateByBarcode, {
+    onSuccess: ({ data }) => {
+      refetchgetReturnToWarehouseDashBoard()
+      setBarcode('')
+      refetch()
+    },
+    onError: (err) => {
+      console.log(err)
+      refetch()
+      error('Ошибка при сканирование!')
+    },
+  })
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
     values,
+    updateByBarcode,
 
     id,
     setScanedNumber,
@@ -74,25 +86,21 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
       offset: values?.offset || 0,
       search: barcode,
     }
-  }, [id, values?.limit, values?.offset, barcode])
+  }, [id, barcode, values?.limit, values?.offset])
 
-  const {
-    data: getReturnToWarehouseDashBoard,
-    isLoading: getReturnToWarehouseDashBoardLoading,
-    isFetching: isFetchinggetReturnToWarehouseDashBoard,
-    refetch: refetchgetReturnToWarehouseDashBoard,
-  } = useQuery(['getReturnToWarehouseDashBoard', id], () => requests.getReturnToWarehouseDashBoard(id))
+  const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
+    requests.getReturnToWarehouseDashBoard(id)
+  )
 
   const {
     data: returnToWarehouseWithCheckingDetails,
     isLoading: returnToWarehouseWithCheckingDetailsLoading,
     isFetching: isFetchingreturnToWarehouseWithCheckingDetails,
     refetch,
-  } = useQuery(['returnToWarehouseWithSentCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
+  } = useQuery(['returnToWarehouseWithRecheckCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
     requests.getReturnToWarehouseDetails(returnToWarehouseWithCheckingDetailsFilter)
   )
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
@@ -141,7 +149,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
         <Header
           onSubmit={() => setOpenFinishConfirmDialog(true)}
           isLoading={false}
-          buttonText='Отправил'
+          buttonText='Завершить'
           backIcon
           backHref='/products/return-to-warehouse'
           text={'Возврат с проверкой'}
@@ -206,7 +214,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
             </Box>
 
             <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' } }}>
-              <AgGridUnSelectableSimpleTable
+              <AgGridTable
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
@@ -214,7 +222,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
                 downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(returnToWarehouseWithCheckingDetailsFilter)}
                 data={returnToWarehouseWithCheckingDetails?.data?.data?.data || []}
                 totalCount={returnToWarehouseWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
-                isDataLoading={isFetchingreturnToWarehouseWithCheckingDetails || isSetScannedNumber || returnToWarehouseWithCheckingDetailsLoading}
+                isDataLoading={isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
@@ -226,7 +234,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
                 status={'ALL'}
-                isRefreshing={loading || isSetScannedNumber || isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
+                isRefreshing={loading || isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
@@ -236,14 +244,14 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
         open={openFinishConfirmDialog}
         setOpen={() => setOpenFinishConfirmDialog(false)}
         icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
-        title={'Отправит возрат?'}
+        title={t('alerts.finish_return')}
         desc={
           <>
             <Typography fontWeight={'600'} fontSize={'20px'}>
-              {'Вы уверены что хотите отправит возрат?'}
+              {t('alerts.finish_return_desc')}
             </Typography>
             <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
-              {'Не сканированные товары будут списаны'}
+              {t('alerts.finish_return_warning')}
             </Typography>
           </>
         }
@@ -261,7 +269,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
               }}
               isLoading={false}
             >
-              Да, отправит
+              {t('buttons.yes_complete')}
             </Button>
           </>
         }

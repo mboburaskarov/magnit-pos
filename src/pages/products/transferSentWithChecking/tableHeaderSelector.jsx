@@ -106,7 +106,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
         )),
       }
     }
-    if (el.field === 'scanned_pack') {
+    if (el.field === 'expected_count') {
       return {
         ...el,
         headerName: 'Упакофка',
@@ -114,11 +114,11 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <NumberFormatInput
-              value={p?.data?.scanned_pack}
+              value={p?.data?.expected_count}
               uncontrolled
               setValue={() => {}}
               onBlur={({ target }) => {
-                if (p?.data?.scanned_pack == get(target, 'value')) return
+                if (p?.data?.expected_count == get(target, 'value')) return
                 methods.setValue(`scanned_quantity_pack_${p?.data?.id}`, Number(get(target, 'value').replace(/\s+/g, '')))
 
                 setScanedNumber({
@@ -131,7 +131,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
                 })
               }}
               placeholder={'0'}
-              defaultValue={p?.data?.scanned_pack}
+              defaultValue={p?.data?.expected_count}
               id={`scanned_quantity_pack_${p?.data?.id}`}
               name={`scanned_quantity_pack_${p?.data?.id}`}
               type='number'

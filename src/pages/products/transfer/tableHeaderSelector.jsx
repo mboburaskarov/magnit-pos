@@ -75,6 +75,11 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
                     previusLimit: values?.limit,
                     previusOffset: values?.offset,
                   })}`
+                : p.data.status == 'checking'
+                ? `/products/transfer-recheck-with-checking/${p.data.id}?${qs.stringify({
+                    previusLimit: values?.limit,
+                    previusOffset: values?.offset,
+                  })}`
                 : '#'
             }
           >
@@ -97,6 +102,30 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
         headerName: 'До Магазин',
         colId: el.field,
         cellRenderer: memo((p) => <Typography whiteSpace={'pre-wrap'}>{p.data?.to_store?.name}</Typography>),
+      }
+    }
+    if (el.field === 'created_by') {
+      return {
+        ...el,
+        headerName: 'Создал',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.created_by} type='full_name' />),
+      }
+    }
+    if (el.field === 'updated_by') {
+      return {
+        ...el,
+        headerName: 'Отправитель',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.updated_by} type='full_name' />),
+      }
+    }
+    if (el.field === 'accepted_by') {
+      return {
+        ...el,
+        headerName: 'Завершил',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.accepted_by} type='full_name' />),
       }
     }
     if (el.field === 'from_store_name') {
@@ -375,7 +404,7 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
             alignItems={'center'}
           >
             <CheckAccess id={'can-download-transfer-nakladnoy'}>
-              {(data.status == 'completed' || data.status == 'sent') && (
+              {(data.status == 'completed' || data.status == 'sent' || data.status == 'checking') && (
                 <IconButton onClick={() => downloadNakladnoy({ transfer_id: data.id })} sx={{ width: 40, height: 40, borderRadius: 3, p: '8px' }}>
                   <DownloadIcon />
                 </IconButton>

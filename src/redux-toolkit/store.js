@@ -27,6 +27,7 @@ import { productReportTableColumnsSlice } from './tableSlices/productReportTable
 import { productsTableColumnsSlice } from './tableSlices/productsTableColumns'
 import { productsTableForChangeByStoreColumnsSlice } from './tableSlices/productsTableForChangeByStoreColumns'
 import { returnToWarehouseGetWithCheckingTableColumnsSlice } from './tableSlices/returnToWarehouseGetWithCheckingTableColumns'
+import { returnToWarehouseRecheckWithCheckingTableColumnsSlice } from './tableSlices/returnToWarehouseRecheckWithCheckingTableColumns'
 import { returnToWarehouseSentWithCheckingTableColumnsSlice } from './tableSlices/returnToWarehouseSentWithCheckingTableColumns'
 import { returnToWarehouseTableColumnsSlice } from './tableSlices/returnToWarehouseTableColumns'
 import { rolesTableColumnsSlice } from './tableSlices/rolesTableColumns'
@@ -37,6 +38,7 @@ import { storeTableColumnsSlice } from './tableSlices/storeTableColumns'
 import { storesListTableColumnsForProductSlice } from './tableSlices/storesListTableColumnsForProduct'
 import { topReportTableColumnsSlice } from './tableSlices/topReportsTableColumns'
 import { taransferGetWithCheckingTableColumnsSlice } from './tableSlices/transferGetWithCheckingTableColumns'
+import { transferRecheckWithCheckingTableColumnsSlice } from './tableSlices/transferRecheckWithCheckingTableColumns'
 import { transferSentWithCheckingTableColumnsSlice } from './tableSlices/transferSentWithCheckingTableColumns'
 import { transferTableColumnsSlice } from './tableSlices/transferTableColumns'
 import { vendorsTableColumnsSlice } from './tableSlices/vendorsTableColumns'
@@ -47,7 +49,7 @@ import { userSlice } from './userSlice'
 // Define your migration function here
 const migrations = {
   // Example migration
-  326: (state) => {
+  355: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -65,7 +67,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 326, // Current version of the persisted state
+  version: 355, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -94,6 +96,8 @@ const reducer = combineReducers({
   inventoryWithCheckingColumns: inventoryWithCheckingTableColumnsSlice,
   writeOffWithCheckingColumns: writeOffWithCheckingTableColumnsSlice,
   returnToWarehouseGetWithCheckingColumns: returnToWarehouseGetWithCheckingTableColumnsSlice,
+  returnToWarehouseRecheckWithCheckingColumns: returnToWarehouseRecheckWithCheckingTableColumnsSlice,
+  transferRecheckWithCheckingColumns: transferRecheckWithCheckingTableColumnsSlice,
   returnToWarehouseSentWithCheckingColumns: returnToWarehouseSentWithCheckingTableColumnsSlice,
   returnToWarehouseTableColumns: returnToWarehouseTableColumnsSlice,
   transferGetWithCheckingColumns: taransferGetWithCheckingTableColumnsSlice,

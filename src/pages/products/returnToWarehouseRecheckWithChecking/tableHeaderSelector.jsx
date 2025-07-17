@@ -209,6 +209,7 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
+import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 import thousandDivider from '../../../../utils/thousandDivider'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -314,7 +315,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, updateB
     if (el.field === 'expected_count') {
       return {
         ...el,
-        headerName: 'План кол-во',
+        headerName: 'Отп кол-во',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText data={p?.data} type={'expected_count'} />),
       }
@@ -323,7 +324,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, updateB
     if (el.field === 'scanned_pack') {
       return {
         ...el,
-        headerName: 'Отп кол-во',
+        headerName: 'Скан кол-во',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText data={p?.data} type={'scanned_pack'} />),
       }
@@ -333,7 +334,32 @@ export default function tableHeaderSelector({ importsColumns, values, t, updateB
         ...el,
         headerName: 'Принятое кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText data={p?.data} type={'accepted_count'} />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <NumberFormatInput
+              uncontrolled
+              onBlur={({ target }) => {
+                if (p?.data?.accepted_count == get(target, 'value')) return
+
+                setScanedNumber({
+                  status: 'checking',
+                  returnId: id,
+                  product_id: p?.data?.id,
+                  scanned_pack: Number(get(target, 'value').replace(/\s+/g, '')),
+                  type: 'return',
+                })
+              }}
+              setValue={() => {}}
+              placeholder={'0'}
+              value={p?.data?.accepted_count}
+              defaultValue={p?.data?.accepted_count}
+              id={`scanned_quantity_unit_${p?.data?.id}`}
+              name={`scanned_quantity_unit_${p?.data?.id}`}
+              type='number'
+              fullWidth
+            />
+          </Box>
+        )),
       }
     }
   })
