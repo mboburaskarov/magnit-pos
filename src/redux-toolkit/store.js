@@ -38,6 +38,7 @@ import { storeTableColumnsSlice } from './tableSlices/storeTableColumns'
 import { storesListTableColumnsForProductSlice } from './tableSlices/storesListTableColumnsForProduct'
 import { topReportTableColumnsSlice } from './tableSlices/topReportsTableColumns'
 import { taransferGetWithCheckingTableColumnsSlice } from './tableSlices/transferGetWithCheckingTableColumns'
+import { transferRecheckWithCheckingTableColumnsSlice } from './tableSlices/transferRecheckWithCheckingTableColumns'
 import { transferSentWithCheckingTableColumnsSlice } from './tableSlices/transferSentWithCheckingTableColumns'
 import { transferTableColumnsSlice } from './tableSlices/transferTableColumns'
 import { vendorsTableColumnsSlice } from './tableSlices/vendorsTableColumns'
@@ -48,7 +49,7 @@ import { userSlice } from './userSlice'
 // Define your migration function here
 const migrations = {
   // Example migration
-  347: (state) => {
+  352: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -66,7 +67,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 347, // Current version of the persisted state
+  version: 352, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -96,6 +97,7 @@ const reducer = combineReducers({
   writeOffWithCheckingColumns: writeOffWithCheckingTableColumnsSlice,
   returnToWarehouseGetWithCheckingColumns: returnToWarehouseGetWithCheckingTableColumnsSlice,
   returnToWarehouseRecheckWithCheckingColumns: returnToWarehouseRecheckWithCheckingTableColumnsSlice,
+  transferRecheckWithCheckingColumns: transferRecheckWithCheckingTableColumnsSlice,
   returnToWarehouseSentWithCheckingColumns: returnToWarehouseSentWithCheckingTableColumnsSlice,
   returnToWarehouseTableColumns: returnToWarehouseTableColumnsSlice,
   transferGetWithCheckingColumns: taransferGetWithCheckingTableColumnsSlice,

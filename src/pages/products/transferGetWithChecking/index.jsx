@@ -23,6 +23,7 @@ import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/transferGetWithCheckingTableColumns'
+import DublicateProductBarcode from './dublicateBarcode'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -37,6 +38,8 @@ export default function TransferGetScanWithCheckingPage() {
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
   const [inputType, setInputType] = useState('scanner')
+  const [openDublicateBarcodeModal, setopenDublicateBarcodeModal] = useState(false)
+
   const methods = useForm()
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
@@ -51,11 +54,15 @@ export default function TransferGetScanWithCheckingPage() {
       error('Ошибка при сканирование!')
     },
   })
-  const { mutate: updateByBarcode } = useMutation(requests.updateByBarcode, {
-    onSuccess: ({ data }) => {
-      refetchgetReturnToWarehouseDashBoard()
-      setBarcode('')
-      refetch()
+  const { mutate: updateByBarcode } = useMutation(requests.updateTransferByBarcode, {
+    onSuccess: ({ data, ...other }) => {
+      if (get(other, 'status') == 207) {
+        setopenDublicateBarcodeModal(data)
+      } else {
+        refetchgetReturnToWarehouseDashBoard()
+        setBarcode('')
+        refetch()
+      }
     },
     onError: (err) => {
       refetch()
@@ -175,6 +182,7 @@ export default function TransferGetScanWithCheckingPage() {
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
           {isOpenStatDashboard && <WriteOffDashboard data={get(getReturnToWarehouseDashBoard, 'data.data')} />}
+          <DublicateProductBarcode refetch={refetch} open={openDublicateBarcodeModal} setOpen={setopenDublicateBarcodeModal} />
 
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -198,7 +206,7 @@ export default function TransferGetScanWithCheckingPage() {
                   name='search'
                   onKeyDown={(e) => {
                     if (e.key == 'Enter') {
-                      updateByBarcode({ id, barcode: get(e, 'target.value'), type: 'transfer' })
+                      updateByBarcode({ transferId: id, barcode: get(e, 'target.value'), type: 'transfer' })
                     }
                   }}
                   value={barcode}

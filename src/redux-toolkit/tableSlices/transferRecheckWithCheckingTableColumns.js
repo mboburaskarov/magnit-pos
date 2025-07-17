@@ -44,13 +44,25 @@ const columns = [
     minWidth: 70,
     width: 170,
   },
-
   {
     field: 'expected_count',
     hide: false,
     minWidth: 70,
     width: 200,
   },
+  {
+    field: 'scanned_pack',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'accepted_count',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+
   // {
   //   field: 'scanned_unit',
   //   hide: false,
@@ -59,8 +71,8 @@ const columns = [
   // },
 ]
 
-const transferSentWithCheckingTableColumns = createSlice({
-  name: 'transferSentWithCheckingTableColumns',
+const transferRecheckWithCheckingTableColumns = createSlice({
+  name: 'transferRecheckWithCheckingTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -100,5 +112,5 @@ const transferSentWithCheckingTableColumns = createSlice({
 })
 
 export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
-  transferSentWithCheckingTableColumns.actions
-export const transferSentWithCheckingTableColumnsSlice = transferSentWithCheckingTableColumns.reducer
+  transferRecheckWithCheckingTableColumns.actions
+export const transferRecheckWithCheckingTableColumnsSlice = transferRecheckWithCheckingTableColumns.reducer

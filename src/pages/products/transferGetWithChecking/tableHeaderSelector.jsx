@@ -3,7 +3,6 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 import thousandDivider from '../../../../utils/thousandDivider'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -100,6 +99,22 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type={'serial_number'} />),
       }
     }
+    if (el.field === 'expected_count') {
+      return {
+        ...el,
+        headerName: 'План кол-во',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type={'expected_count'} />),
+      }
+    }
+    if (el.field === 'scanned_pack') {
+      return {
+        ...el,
+        headerName: 'Oтп кол-во',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='' withDevider {...p} type={'scanned_pack'} />),
+      }
+    }
     if (el.field === 'stock_count') {
       return {
         ...el,
@@ -110,76 +125,6 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
             <Typography>
               {p.data?.received_count} {p.data?.short_name}
             </Typography>
-          </Box>
-        )),
-      }
-    }
-    if (el.field === 'scanned_pack') {
-      return {
-        ...el,
-        headerName: 'Упакофка',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <NumberFormatInput
-              uncontrolled
-              value={p?.data?.scanned_pack}
-              onBlur={({ target }) => {
-                if (p?.data?.scanned_pack == get(target, 'value')) return
-
-                setScanedNumber({
-                  id,
-                  product_id: get(p, 'data.id'),
-                  barcode: get(p, 'data.barcode'),
-                  type: 'MANUAL',
-                  scanned_pack: Number(get(target, 'value').replace(/\s+/g, '')),
-                  // scanned_unit: p?.data?.scanned_unit,
-                })
-              }}
-              setValue={() => {}}
-              disabled={true}
-              placeholder={'0'}
-              defaultValue={p?.data?.scanned_pack}
-              id={`scanned_quantity_pack_${p?.data?.id}`}
-              name={`scanned_quantity_pack_${p?.data?.id}`}
-              type='number'
-              fullWidth
-            />
-          </Box>
-        )),
-      }
-    }
-    if (el.field === 'scanned_unit') {
-      return {
-        ...el,
-        headerName: 'Штук',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <NumberFormatInput
-              uncontrolled
-              onBlur={({ target }) => {
-                if (p?.data?.scanned_unit == get(target, 'value')) return
-
-                setScanedNumber({
-                  id,
-                  product_id: get(p, 'data.id'),
-                  barcode: get(p, 'data.barcode'),
-                  type: 'MANUAL',
-                  // scanned_pack: p?.data?.scanned_pack,
-                  scanned_unit: Number(get(target, 'value').replace(/\s+/g, '')),
-                })
-              }}
-              setValue={() => {}}
-              disabled={true}
-              placeholder={'0'}
-              value={p?.data?.scanned_unit}
-              defaultValue={p?.data?.scanned_unit}
-              id={`scanned_quantity_unit_${p?.data?.id}`}
-              name={`scanned_quantity_unit_${p?.data?.id}`}
-              type='number'
-              fullWidth
-            />
           </Box>
         )),
       }

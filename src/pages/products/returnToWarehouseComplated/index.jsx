@@ -140,7 +140,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
           // buttonText='Принятие'
           backIcon
           backHref='/products/return-to-warehouse'
-          text={'Возврат с проверкой'}
+          text={'Возврат'}
           checkAccessId={'product-create'}
         />
 

@@ -215,6 +215,7 @@ export const requests = {
   finishTransferChecking: (id) => request.post(`v1/transfer/confirm/${id}`),
   acceptTransferChecking: ({ id, ...filter }) => request.put(`v1/return/edit-status-to-checking/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateByBarcode: ({ returnId, ...filter }) => request.put(`v1/return/update-by-barcode/${returnId}`, filter),
+  updateTransferByBarcode: ({ transferId, ...filter }) => request.put(`v1/transfer/update-by-barcode/${transferId}`, filter),
   SentTransferChecking: (id) => request.post(`v1/transfer/send/${id}`),
   deleteTransfer: ({ id }) => request.post(`v1/transfer/cancel/${id}`),
   getTransferExcelReport: (filter) => requestEXCEL.get(`v1/transfer/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),

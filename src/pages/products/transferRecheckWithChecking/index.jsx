@@ -13,6 +13,7 @@ import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/Column
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
@@ -21,7 +22,8 @@ import ArrowDown from '../../../assets/icons/ArrowDown'
 import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/transferGetWithCheckingTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/transferRecheckWithCheckingTableColumns'
+import DublicateProductBarcode from './dublicateBarcode'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -31,8 +33,11 @@ export default function TransferRecheckScanWithCheckingPage() {
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.transferGetWithCheckingColumns)
+  const { columns, loading } = useSelector((state) => state.transferRecheckWithCheckingColumns)
   const { values } = useQueryParams()
+  const [inputType, setInputType] = useState('scanner')
+  const [openDublicateBarcodeModal, setopenDublicateBarcodeModal] = useState(false)
+
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
@@ -58,11 +63,15 @@ export default function TransferRecheckScanWithCheckingPage() {
       error('Ошибка при завершение импорта!')
     },
   })
-  const { mutate: updateByBarcode } = useMutation(requests.updateByBarcode, {
-    onSuccess: ({ data }) => {
-      refetchgetReturnToWarehouseDashBoard()
-      setBarcode('')
-      refetch()
+  const { mutate: updateByBarcode } = useMutation(requests.updateTransferByBarcode, {
+    onSuccess: ({ data, ...other }) => {
+      if (get(other, 'status') == 207) {
+        setopenDublicateBarcodeModal(data)
+      } else {
+        refetchgetReturnToWarehouseDashBoard()
+        setBarcode('')
+        refetch()
+      }
     },
     onError: (err) => {
       refetch()
@@ -87,7 +96,7 @@ export default function TransferRecheckScanWithCheckingPage() {
       offset: values?.offset || 0,
       search: barcode,
     }
-  }, [id, barcode, values?.limit, values?.offset])
+  }, [id, inputType == 'search' ? barcode : null, values?.limit, values?.offset])
 
   const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
     requests.getTransferDashBoard(id)
@@ -150,7 +159,7 @@ export default function TransferRecheckScanWithCheckingPage() {
         <Header
           onSubmit={() => setOpenFinishConfirmDialog(true)}
           isLoading={false}
-          buttonText='Заканчивать'
+          buttonText='Завершить'
           backIcon
           backHref='/products/transfer'
           text={'Перемещение с проверкой'}
@@ -175,12 +184,15 @@ export default function TransferRecheckScanWithCheckingPage() {
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
           {isOpenStatDashboard && <WriteOffDashboard data={get(getReturnToWarehouseDashBoard, 'data.data')} />}
+          <DublicateProductBarcode refetch={refetch} open={openDublicateBarcodeModal} setOpen={setopenDublicateBarcodeModal} />
 
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
               <Box
                 width='80%'
                 sx={{
+                  display: 'flex',
+
                   '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                   '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                     background: 'transparent',
@@ -194,9 +206,34 @@ export default function TransferRecheckScanWithCheckingPage() {
                   onChange={({ target }) => setBarcode(get(target, 'value'))}
                   id='producrs-search'
                   name='search'
+                  onKeyDown={(e) => {
+                    if (e.key == 'Enter') {
+                      updateByBarcode({ transferId: id, barcode: get(e, 'target.value'), status: 'checking', type: 'transfer' })
+                    }
+                  }}
                   value={barcode}
                   setSearchTerm={setBarcode}
                   placeholder={t('input.search.product.multi')}
+                />
+                <Box mr={'20px'} />
+                <InputSwitch
+                  id='client-scanner'
+                  noMarginTop
+                  uncontrolled
+                  required
+                  name='scanner'
+                  onChange={(e) => setInputType(e)}
+                  defaultValue='scanner'
+                  options={[
+                    {
+                      title: 'Сканер',
+                      value: 'scanner',
+                    },
+                    {
+                      title: 'Поиск',
+                      value: 'search',
+                    },
+                  ]}
                 />
               </Box>
               <Box display={'flex'} alignItems={'center'}>
