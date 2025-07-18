@@ -40,6 +40,13 @@ const columns = [
     minWidth: 70,
     width: 170,
   },
+  {
+    field: 'actions',
+    hide: false,
+    minWidth: 96,
+    width: 96,
+    pinned: 'right',
+  },
 ]
 
 const autoOrderTableColumns = createSlice({

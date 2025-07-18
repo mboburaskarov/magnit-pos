@@ -1,6 +1,6 @@
 import { faArrowCircleDown, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Box, Typography } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import * as qs from 'qs'
@@ -12,6 +12,7 @@ import palette from '../../../../src/assets/theme/mui.config'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -72,7 +73,7 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, t }) {
+export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmDialog }) {
   const { values } = useQueryParams()
 
   const columns = importsColumns?.map((el) => {
@@ -179,6 +180,23 @@ export default function tableHeaderSelector({ importsColumns, t }) {
               <SimpleText {...p} withDevider type={'response_order_quantity'} />
             </Box>
           </>
+        )),
+      }
+    }
+    if (el.field === 'actions') {
+      return {
+        ...el,
+        headerName: t('table_columns.actions'),
+        colId: el.field,
+        cellRenderer: memo(({ data }) => (
+          <Box display='inline-flex' columnGap={'8px'}>
+            <IconButton
+              onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: data.name })}
+              sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
         )),
       }
     }

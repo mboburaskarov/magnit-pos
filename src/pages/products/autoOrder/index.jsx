@@ -3,12 +3,13 @@ import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../../components/CheckAccess'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -17,6 +18,11 @@ import { requests } from '../../../../utils/requests'
 import CategoryIcon from '../../../assets/icons/CategoryIcon'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
+
+import { LoadingButton } from '@mui/lab'
+import { error, success } from '../../../../utils/toast'
+import BigTickIcon from '../../../assets/icons/BigTickIcon'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/autoOrderTableColumns'
 import CreateAutoOrder from './createAutoOrder'
 import FilterMenu from './FilterMenu'
@@ -30,15 +36,31 @@ export default function AutoOrderPage() {
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.autoOrderTableColumns)
   const { values } = useQueryParams()
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [orderModel, setOrderModel] = useState(false)
+  const { mutate: deleteAutoOrder, isLoading: isdeleteAutoOrder } = useMutation(requests.deleteAutoOrder, {
+    onSuccess: () => {
+      refetch()
+      success('Авто заказ успешно удален!')
+      setOpenConfirmDialog(null)
+    },
+    onError: (err) => {
+      refetch()
+      error('Ошибка при удалении Авто заказ!')
+      setOpenConfirmDialog(null)
+      console.log('err', err)
+    },
+  })
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
     values,
     setImages: setOpenImageGallery,
+    setOpenConfirmDialog,
   })
 
   useEffect(() => {
@@ -232,6 +254,32 @@ export default function AutoOrderPage() {
 
         <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       </FormProvider>
+      {openConfirmDialog && (
+        <ConfirmDialog
+          open={!!openConfirmDialog}
+          setOpen={setOpenConfirmDialog}
+          icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
+          title={'Удалить aвто заказ?'}
+          desc={'хотите удалить авто заказ?'}
+          supDesc={openConfirmDialog.name}
+          actions={
+            <>
+              <Button
+                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                fullWidth
+                color='secondary'
+                variant='contained'
+                onClick={() => setOpenConfirmDialog(null)}
+              >
+                Нет
+              </Button>
+              <LoadingButton variant='contained' type='button' loading={isdeleteAutoOrder} onClick={() => deleteAutoOrder(openConfirmDialog.id)}>
+                Да, удалить
+              </LoadingButton>
+            </>
+          }
+        />
+      )}
     </LoadingContainer>
   )
 }
