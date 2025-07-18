@@ -226,6 +226,7 @@ export const requests = {
   // autoOrder
   createAutoOrder: (data) => request.post(`v1/auto-order`, data),
   finalAutoOrder: (id) => request.post(`v1/auto-order/send/${id}`),
+  deleteAutoOrder: (id) => request.delete(`v1/auto-order/${id}`),
   autoOrderChangeQuantity: ({ id, ...adjusted_order_quantity }) => request.put(`v1/auto-order-detail/change-quantity/${id}`, { ...adjusted_order_quantity }),
   getAutoOrderDetailList: (filter) => request.get(`v1/auto-order-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAutoOrderList: (filter) => request.get(`v1/auto-order/list${qs.stringify(filter, { addQueryPrefix: true })}`),
