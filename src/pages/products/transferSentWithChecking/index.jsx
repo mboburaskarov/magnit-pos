@@ -67,7 +67,7 @@ export default function TransferSentScanWithCheckingPage() {
     id,
     setScanedNumber,
   })
-  const returnToWarehouseWithCheckingDetailsFilter = useMemo(() => {
+  const transferWithCheckingDetailsFilter = useMemo(() => {
     return {
       transfer_id: id,
       limit: values?.limit || 10,
@@ -81,13 +81,11 @@ export default function TransferSentScanWithCheckingPage() {
   )
 
   const {
-    data: returnToWarehouseWithCheckingDetails,
-    isLoading: returnToWarehouseWithCheckingDetailsLoading,
-    isFetching: isFetchingreturnToWarehouseWithCheckingDetails,
+    data: transferWithCheckingDetails,
+    isLoading: transferWithCheckingDetailsLoading,
+    isFetching: isFetchingtransferWithCheckingDetails,
     refetch,
-  } = useQuery(['returnToWarehouseWithCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
-    requests.getTransferDetails(returnToWarehouseWithCheckingDetailsFilter)
-  )
+  } = useQuery(['transferWithSentCheckingDetails', transferWithCheckingDetailsFilter], () => requests.getTransferDetails(transferWithCheckingDetailsFilter))
 
   useEffect(() => {
     if (tableColumns) {
@@ -106,18 +104,18 @@ export default function TransferSentScanWithCheckingPage() {
 
   useEffect(() => {
     refetch()
-  }, [returnToWarehouseWithCheckingDetailsFilter])
+  }, [transferWithCheckingDetailsFilter])
 
   useEffect(() => {
-    const count = returnToWarehouseWithCheckingDetails?.data?.data?._meta?.total_count
+    const count = transferWithCheckingDetails?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
 
-    get(returnToWarehouseWithCheckingDetails, 'data.data.data', []).map((importData) => {
+    get(transferWithCheckingDetails, 'data.data.data', []).map((importData) => {
       methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
     })
-  }, [returnToWarehouseWithCheckingDetails?.data, values?.limit])
+  }, [transferWithCheckingDetails?.data, values?.limit])
   const { mutate: getTransferDetailsExcelReport, isLoading: isgetTransferDetailsExcelReport } = useMutation(requests.getTransferDetailsExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
@@ -201,11 +199,11 @@ export default function TransferSentScanWithCheckingPage() {
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
-                fullDownload={() => getTransferDetailsExcelReport({ ...returnToWarehouseWithCheckingDetailsFilter, limit: 1000000 })}
-                downloadByFilter={() => getTransferDetailsExcelReport(returnToWarehouseWithCheckingDetailsFilter)}
-                data={returnToWarehouseWithCheckingDetails?.data?.data?.data || []}
-                totalCount={returnToWarehouseWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
-                isDataLoading={isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
+                fullDownload={() => getTransferDetailsExcelReport({ ...transferWithCheckingDetailsFilter, limit: 1000000 })}
+                downloadByFilter={() => getTransferDetailsExcelReport(transferWithCheckingDetailsFilter)}
+                data={transferWithCheckingDetails?.data?.data?.data || []}
+                totalCount={transferWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                isDataLoading={isFetchingtransferWithCheckingDetails || transferWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
@@ -217,7 +215,7 @@ export default function TransferSentScanWithCheckingPage() {
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
                 status={'ALL'}
-                isRefreshing={loading || isSetScannedNumber || isFetchingreturnToWarehouseWithCheckingDetails || returnToWarehouseWithCheckingDetailsLoading}
+                isRefreshing={loading || isSetScannedNumber || isFetchingtransferWithCheckingDetails || transferWithCheckingDetailsLoading}
               />
             </Box>
           </Box>

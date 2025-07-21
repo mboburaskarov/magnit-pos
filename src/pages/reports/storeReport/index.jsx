@@ -61,15 +61,22 @@ export default function StoreReportPage() {
   }, [])
 
   const storeReportListFilter = useMemo(() => {
+    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
+    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
     return {
+      start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
+      end_date:
+        values?.end_date && values?.to_time
+          ? ready_start_date?.isSame(ready_end_date)
+            ? dayjs(`${values?.start_date} 23:59:59`).format()
+            : ready_end_date.format()
+          : null,
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
 
       store_id: values?.store_id || undefined,
-      start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
-      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
     }
   }, [values?.offset, values?.limit, orderStoring, values?.store_id, values?.search, values?.start_date, values?.end_date])
   const {

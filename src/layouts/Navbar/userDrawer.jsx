@@ -1,5 +1,6 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
 import { useState } from 'react'
 import CustomImg from '../../../components/CustomImg'
 import CloseIcon from '../../assets/icons/CloseIcon'
@@ -102,14 +103,9 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
                   </Typography>
                 </Box>
                 <CloseIcon color={'#111217'} onClick={closeDrawer} />
-                {/* <IconButton onClick={closeDrawer}>
-                  <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                    <path d='M14 2.00005L2 14M1.99995 2L13.9999 14' stroke='#111217' strokeWidth='2.5' strokeLinecap='round' />
-                  </svg>
-                </IconButton> */}
               </Box>
               <Box display='flex' alignItems='center' mt={4}>
-                <Box width={40} height={40} borderRadius={2} overflow='hidden'>
+                <Box width={70} height={70} borderRadius={2} overflow='hidden'>
                   {!userData?.photo ? (
                     <div className={classes.avatarPlaceholder}>
                       {firstName?.charAt(0)}
@@ -123,7 +119,14 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
                   <Typography>
                     {firstName} {lastName}
                   </Typography>
-                  {/* <Typography className={classes.shopname}>{data?.shops?.find((item) => item.store_id === data?.current_shop_id)?.shop?.name}</Typography> */}
+                  <Box maxWidth='100%'>
+                    <Typography id='user-username' sx={{ flexWrap: 'nowrap', fontSize: '14px', width: '100%' }}>
+                      {get(userData, 'store.name')}
+                    </Typography>
+                    <Typography sx={{ flexWrap: 'nowrap', fontSize: '14px', width: '100%' }}>
+                      ({localStorage.getItem('leftZreportCount')}) {get(userData, 'cashbox.name', '-')}
+                    </Typography>
+                  </Box>
                 </Box>
               </Box>
               <Box mt={4}>
@@ -132,14 +135,6 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
                 </Button>
               </Box>
             </Box>
-            {/* <Box>
-              <Button color='secondary' fullWidth adornmentEnd={<FontAwesomeIcon icon={faArrowRight} />} className={classes.actionBtn}>
-                <FontAwesomeIcon icon={faBell} />
-                <Box width={16} />
-                Уведомления
-              </Button>
-              <Box pb={2} />
-            </Box> */}
           </Box>
         </Box>
       </Drawer>

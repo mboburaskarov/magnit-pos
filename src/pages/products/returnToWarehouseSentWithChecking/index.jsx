@@ -40,8 +40,8 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedReturnToWarehouseNumber, {
     onSuccess: ({ data }) => {
-      refetchgetReturnToWarehouseDashBoard()
-      setBarcode('')
+      // refetchgetReturnToWarehouseDashBoard()
+      // setBarcode('')
       refetch()
     },
     onError: (err) => {
@@ -88,7 +88,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
     isLoading: returnToWarehouseWithCheckingDetailsLoading,
     isFetching: isFetchingreturnToWarehouseWithCheckingDetails,
     refetch,
-  } = useQuery(['returnToWarehouseWithCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
+  } = useQuery(['returnToWarehouseWithSentCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
     requests.getReturnToWarehouseDetails(returnToWarehouseWithCheckingDetailsFilter)
   )
 

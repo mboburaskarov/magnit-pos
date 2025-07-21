@@ -11,6 +11,7 @@ import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
+import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import CustomImg from '../../../../components/CustomImg'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -18,14 +19,17 @@ import LoadingOverflow from '../../../../components/LoadingOverflow'
 import ClientCreateMini from '../../../../components/Sales/ClientCreateMini'
 import OrderDrawer from '../../../../components/Sales/ClientCreateMini/OrderDrawer'
 import DraftDrawer from '../../../../components/Sales/DraftDrawer'
+import OnlineSaleDrawer from '../../../../components/Sales/OnlineSaleNoor/OnlineSaleDrawer'
 import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchange/ReturnExchangeDrawer'
 import ShortcutsDrawer from '../../../../components/Sales/ShortcutsDrawer'
 import StyledTooltip from '../../../../components/StyledTooltip'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
+import notificationAudio from '../../../assets/audio/notification.mp3'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import { useSocket } from '../../../context/SocketContext'
 import useDebouncedValue from '../../../hooks/useDebouncedValue'
 import CartItem from './CartItem'
 import CartSearchBar from './CartSearchBar'
@@ -34,6 +38,7 @@ import ImplementMarkingDialog from './ImplementMarkingDialog'
 import ProductDrawer from './ProductDrawer'
 import CartDetailSide from './cart_detail_side'
 import CreateDraftDrawer from './createDraftDrawer'
+
 import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck'
 const useStyles = makeStyles((theme) => ({
   currentUser: {
@@ -46,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '40px !important',
   },
   avatarPlaceholder: {
-    position: 'relative',
+    // position: 'relative',
     height: 40,
     width: 40,
     borderRadius: 20,
@@ -113,7 +118,7 @@ const useStyles = makeStyles((theme) => ({
   cart_detail_id: {
     borderRadius: '40px',
     border: '1px dashed',
-    borderColor: 'bunker.300',
+    borderColor: theme.palette.black,
     padding: '10px 16px',
     width: '100%',
     display: 'flex',
@@ -270,6 +275,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 let a = -1
 function NewSale() {
+  const NotificationAudio = new Audio(notificationAudio)
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
@@ -283,6 +289,7 @@ function NewSale() {
   const [isEposTurnOn, setisEposTurnOn] = useState(true)
 
   const [isOpenDraft, setIsOpenDraft] = useState(false)
+  const [isOpenNoorDrawer, setIsOpenNoorDrawer] = useState(false)
   const [isOpenReturnExchange, setIsOpenReturnExchange] = useState(false)
   const [isCreateOpenDraft, setIsCreateOpenDraft] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
@@ -292,7 +299,7 @@ function NewSale() {
   const [isOpenImplementMarkingDialog, setIsOpenImplementMarkingDialog] = useState(false)
   const [input, setInput] = useState('')
   const lastKeyPressTime = useRef(Date.now())
-
+  // const [lastNoorOrderCount, setLastNoorOrderCount] = useState(0)
   // const [searchTerm, setSearchTerm] = useState('')
   const [markingsList, setMarkingList] = useState({})
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
@@ -313,6 +320,30 @@ function NewSale() {
   const searchResetRef = useRef('')
   const printContainer = useRef()
   const cartRef = cartItemRef.current
+
+  // socket implementation
+  const socket = useSocket()
+
+  useEffect(() => {
+    if (!socket) return
+
+    socket.on('new-noor-order', (data) => {
+      console.log('New message:', data)
+    })
+
+    // Optional cleanup
+    return () => {
+      socket.off('message')
+    }
+  }, [socket])
+
+  // const sendMessage = () => {
+  //   if (socket) {
+  //     socket.emit('message', 'Hello from client!')
+  //   }
+  // }
+  // socket implementation
+
   const { mutate: addDiscountCard, isLoading: isaddDiscountCard } = useMutation(requests.addDiscountCard, {
     onSuccess: ({ data }) => {
       console.log(data)
@@ -720,7 +751,6 @@ function NewSale() {
       if (typeof debouncedDiscount !== 'number' && size(get(cartItemsList, 'data.data.data', [])) > 0) {
         changeDiscount(0)
         setInputDiscount(0)
-
         return
       }
       if (typeof debouncedDiscount !== 'number' || size(get(cartItemsList, 'data.data.data', [])) <= 0) {
@@ -890,6 +920,22 @@ function NewSale() {
     () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
     { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
   )
+  // const { data: noorOrderCount, refetch: refetchNoorOrderCount } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
+  //   onSuccess: ({ data }) => {
+  //     setLastNoorOrderCount(get(data, 'data.count', 0))
+  //     if (lastNoorOrderCount < get(data, 'data.count', 0)) {
+  //       NotificationAudio.play()
+  //     }
+  //   },
+  // })
+  // useEffect(() => {
+  //   const noorTimeout = setInterval(() => {
+  //     refetchNoorOrderCount()
+  //   }, 5000)
+
+  //   return () => clearInterval(noorTimeout)
+  // }, [])
+
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />
@@ -968,21 +1014,76 @@ function NewSale() {
                     <Refresh />
                   </Box>
                 </Box>
-                <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
-                  <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
-                    <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
-                      <Typography id='user-username' className={classes.username}>
-                        {get(userData, 'first_name')}
-                      </Typography>
-                      <p id='user-shopname' className={`${classes.bonus_amount} `}>
-                        +{thousandDivider(get(sellerBonusInOneSale, 'data.data.bonus', 0), 'сум')}
-                      </p>
+                <Box display={'flex'}>
+                  <CheckAccess id={'noor-order'}>
+                    <ListItem sx={{ mr: '20px' }} className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsOpenNoorDrawer(true)}>
+                      <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
+                        <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
+                          <Typography id='user-username' className={classes.username}>
+                            Онлайн-продажи
+                          </Typography>
+                          <p id='user-shopname' className={`${classes.bonus_amount} `}>
+                            Noor
+                          </p>
+                        </Box>
+                        {/* <Box
+                          sx={{
+                            ml: '12px',
+                            backgroundColor: '#fff',
+                            width: '40px',
+                            height: '40px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            borderRadius: '50%',
+                            justifyContent: 'center',
+                            '& img': {
+                              width: '38px',
+                            },
+                          }}
+                        >
+                          <img src={'/noor-black.png'} />
+                          {get(noorOrderCount, 'data.data.count') > 0 && (
+                            <Box>
+                              <Typography
+                                sx={{
+                                  position: 'absolute',
+                                  right: -5,
+                                  top: -8,
+                                  backgroundColor: '#f33',
+                                  color: '#fff',
+                                  width: '25px',
+                                  height: '25px',
+                                  borderRadius: '50%',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  fontWeight: '600',
+                                }}
+                              >
+                                 {get(noorOrderCount, 'data.data.count', 0)}
+                              </Typography>
+                            </Box>
+                          )}
+                        </Box> */}
+                      </Box>
+                    </ListItem>
+                  </CheckAccess>
+                  <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
+                    <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
+                      <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
+                        <Typography id='user-username' className={classes.username}>
+                          {get(userData, 'first_name')}
+                        </Typography>
+                        <p id='user-shopname' className={`${classes.bonus_amount} `}>
+                          +{thousandDivider(get(sellerBonusInOneSale, 'data.data.bonus', 0), 'сум')}
+                        </p>
+                      </Box>
+                      <div className={classes.avatarPlaceholder}>
+                        <CustomImg src={get(userData, 'photo')} />
+                      </div>
                     </Box>
-                    <div className={classes.avatarPlaceholder}>
-                      <CustomImg src={get(userData, 'photo')} />
-                    </div>
-                  </Box>
-                </ListItem>
+                  </ListItem>
+                </Box>
               </Box>
               <LoadingContainer noHeight readyState={!isCartItemsLIstLoading}>
                 {!size(get(cartItemsList, 'data.data.data')) ? (
@@ -1122,6 +1223,7 @@ function NewSale() {
         cartItemsList={get(cartItemsList, 'data.data')}
         printContainer={printContainer}
         isOrderDrower={isOrderDrower}
+        setCustomerId={setCustomerId}
         setInputDiscount={setInputDiscount}
         cashBoxDetails={cashBoxDetails}
         customerId={customerId}
@@ -1169,6 +1271,7 @@ function NewSale() {
       />
       <ChangeShift open={isOpenChangeShift} setOpen={setIsOpenChangeShift} />
       <DraftDrawer cashBoxDetails={cashBoxDetails} open={isOpenDraft} setOpen={setIsOpenDraft} />
+      <OnlineSaleDrawer cashBoxDetails={cashBoxDetails} open={isOpenNoorDrawer} setOpen={setIsOpenNoorDrawer} />
       <ReturnExchangeDrawer cashBoxDetails={cashBoxDetails} open={isOpenReturnExchange} setOpen={setIsOpenReturnExchange} />
       <ClientCreateMini
         setCustomerId={setCustomerId}

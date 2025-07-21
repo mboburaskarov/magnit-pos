@@ -1,6 +1,5 @@
 import { Box, Grid, Typography } from '@mui/material'
 import { get } from 'lodash'
-import React from 'react'
 import thousandDivider from '../../../../utils/thousandDivider'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DownloadIcon from '../../../assets/icons/DownloadIcon'
@@ -25,7 +24,7 @@ function WriteOffDashboard({ data }) {
           <Box
             sx={{
               boxShadow: ' 0px 0px 16px rgba(0, 0, 0, 0.08)',
-              backgroundColor: stat.title == 'result' ? '#dfdfdf' : '#fff',
+              backgroundColor: stat.title == 'result' ? 'bg.10' : 'bg.10',
               borderRadius: '24px',
               padding: '20px',
               minHeight: '110px',

@@ -58,16 +58,34 @@ const columns = [
     width: 170,
   },
   {
+    field: 'created_by',
+    hide: false,
+    minWidth: 70,
+    width: 300,
+  },
+  {
+    field: 'updated_by',
+    hide: false,
+    minWidth: 70,
+    width: 300,
+  },
+  {
+    field: 'accepted_by',
+    hide: false,
+    minWidth: 70,
+    width: 300,
+  },
+  {
     field: 'created_at',
     hide: false,
     minWidth: 70,
-    width: 350,
+    width: 250,
   },
   {
     field: 'import_date',
     hide: false,
     minWidth: 70,
-    width: 370,
+    width: 250,
   },
   {
     field: 'actions',

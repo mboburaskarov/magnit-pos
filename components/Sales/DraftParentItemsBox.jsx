@@ -2,7 +2,6 @@ import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import ArrowRightIcon from '../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../src/assets/icons/BagOutline'
@@ -39,7 +38,7 @@ function DraftParentItemsBox({ setIsOpenChild, item }) {
   const classes = useStyles()
   return (
     <Box
-      onClick={() => setIsOpenChild({ item })}
+      onClick={() => setIsOpenChild({ item, type: 'draft' })}
       display={'flex'}
       height={'84px'}
       borderRadius={'16px'}

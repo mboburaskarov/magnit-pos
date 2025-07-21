@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage'
 import { sidebarSettingsSlice } from './sidebarSettingsSlice'
 import { autoOrderDetailSlice } from './tableSlices/autoOrderDetailTableColumns'
 import { autoOrderTableColumnsSlice } from './tableSlices/autoOrderTableColumns'
+import { bannedProductTableColumnsSlice } from './tableSlices/bannedProductTableColumns'
 import { bonusProductTableColumnsSlice } from './tableSlices/bonusProductTableColumns'
 import { cardShiftTableColumnsSlice } from './tableSlices/cardShiftTableColumns'
 import { cashBoxShiftHistoryTableColumnsSlice } from './tableSlices/cashBoxShiftHistoryTableColumns'
@@ -26,6 +27,7 @@ import { productReportTableColumnsSlice } from './tableSlices/productReportTable
 import { productsTableColumnsSlice } from './tableSlices/productsTableColumns'
 import { productsTableForChangeByStoreColumnsSlice } from './tableSlices/productsTableForChangeByStoreColumns'
 import { returnToWarehouseGetWithCheckingTableColumnsSlice } from './tableSlices/returnToWarehouseGetWithCheckingTableColumns'
+import { returnToWarehouseRecheckWithCheckingTableColumnsSlice } from './tableSlices/returnToWarehouseRecheckWithCheckingTableColumns'
 import { returnToWarehouseSentWithCheckingTableColumnsSlice } from './tableSlices/returnToWarehouseSentWithCheckingTableColumns'
 import { returnToWarehouseTableColumnsSlice } from './tableSlices/returnToWarehouseTableColumns'
 import { rolesTableColumnsSlice } from './tableSlices/rolesTableColumns'
@@ -36,6 +38,7 @@ import { storeTableColumnsSlice } from './tableSlices/storeTableColumns'
 import { storesListTableColumnsForProductSlice } from './tableSlices/storesListTableColumnsForProduct'
 import { topReportTableColumnsSlice } from './tableSlices/topReportsTableColumns'
 import { taransferGetWithCheckingTableColumnsSlice } from './tableSlices/transferGetWithCheckingTableColumns'
+import { transferRecheckWithCheckingTableColumnsSlice } from './tableSlices/transferRecheckWithCheckingTableColumns'
 import { transferSentWithCheckingTableColumnsSlice } from './tableSlices/transferSentWithCheckingTableColumns'
 import { transferTableColumnsSlice } from './tableSlices/transferTableColumns'
 import { vendorsTableColumnsSlice } from './tableSlices/vendorsTableColumns'
@@ -46,7 +49,7 @@ import { userSlice } from './userSlice'
 // Define your migration function here
 const migrations = {
   // Example migration
-  318: (state) => {
+  356: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -64,7 +67,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 318, // Current version of the persisted state
+  version: 356, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -83,6 +86,7 @@ const reducer = combineReducers({
   autoOrderTableColumns: autoOrderTableColumnsSlice,
   revaluationTableColumns: revaluationTableColumnsSlice,
   bonusProductTableColumns: bonusProductTableColumnsSlice,
+  bannedProductTableColumns: bannedProductTableColumnsSlice,
   minMaxTableColumns: minMaxTableColumnsSlice,
   autoOrderTableDetailColumns: autoOrderDetailSlice,
   changePriceTableDetailColumns: changePriceDetailSlice,
@@ -92,6 +96,8 @@ const reducer = combineReducers({
   inventoryWithCheckingColumns: inventoryWithCheckingTableColumnsSlice,
   writeOffWithCheckingColumns: writeOffWithCheckingTableColumnsSlice,
   returnToWarehouseGetWithCheckingColumns: returnToWarehouseGetWithCheckingTableColumnsSlice,
+  returnToWarehouseRecheckWithCheckingColumns: returnToWarehouseRecheckWithCheckingTableColumnsSlice,
+  transferRecheckWithCheckingColumns: transferRecheckWithCheckingTableColumnsSlice,
   returnToWarehouseSentWithCheckingColumns: returnToWarehouseSentWithCheckingTableColumnsSlice,
   returnToWarehouseTableColumns: returnToWarehouseTableColumnsSlice,
   transferGetWithCheckingColumns: taransferGetWithCheckingTableColumnsSlice,

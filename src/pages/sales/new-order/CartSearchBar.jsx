@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get, head, size } from 'lodash'
@@ -109,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     display: 'flex',
     maxHeight: '90px',
-    backgroundColor: '#fff',
+    backgroundColor: theme.palette.gray[50],
     padding: '12px 12px 12px 16px',
   },
   searchItem: {
@@ -238,7 +237,7 @@ function CartSearchBar({
     () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
     { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
   )
-  const { data: darftList, refetch, isDarftList } = useQuery(['darftList'], () => requests.getDarftList())
+  const { data: darftList, refetch, isDarftList } = useQuery(['darftList'], () => requests.getDarftList({ store_id: get(userData, 'store.id') }))
 
   const methods = useForm()
   const classes = useStyles()
@@ -452,6 +451,9 @@ function CartSearchBar({
                   title: 'Закрыть кассу',
                   icon: <UnlockIcon />,
                   clickHandler: () => {
+                    {
+                      console.log(darftList)
+                    }
                     if (size(get(darftList, 'data.data.data')) > 0) {
                       setCloseCashBox(true)
                     } else {
@@ -504,7 +506,7 @@ function CartSearchBar({
             setOpen={setCloseCashBox}
             icon={<BigWarningIcon />}
             title={'Закрыть кассу?'}
-            desc={'Сначала очистите черновики, а затем закройте кассу или нажмите «Продолжить», чтобы оставить черновики без изменений.'}
+            desc={'Сначала очистите черновики, а затем закройте кассу.'}
             supDesc={'Есть черновики.'}
             actions={
               <>
@@ -520,7 +522,7 @@ function CartSearchBar({
                 >
                   Просмотреть черновики
                 </Button>
-                <LoadingButton
+                {/* <LoadingButton
                   variant='contained'
                   type='button'
                   // loading={isdeleteCartItem}
@@ -529,7 +531,7 @@ function CartSearchBar({
                   }}
                 >
                   Продолжить
-                </LoadingButton>
+                </LoadingButton> */}
               </>
             }
           />

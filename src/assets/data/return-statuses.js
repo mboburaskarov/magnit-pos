@@ -18,11 +18,19 @@ export const returns_list_statuses = [
     bgcolor: 'green.10',
     name: 'Завершенный',
   },
+
   {
     id: 'canceled',
     color: 'red.700',
     bgcolor: 'red.10',
     name: 'Отмененный',
+  },
+
+  {
+    id: 'checking',
+    color: 'teal.500',
+    bgcolor: 'teal.300',
+    name: 'Проверка',
   },
   {
     id: 'returned',

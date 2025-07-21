@@ -52,6 +52,25 @@ const columns = [
     minWidth: 70,
     width: 170,
   },
+
+  {
+    field: 'created_by',
+    hide: false,
+    minWidth: 70,
+    width: 30,
+  },
+  {
+    field: 'updated_by',
+    hide: false,
+    minWidth: 70,
+    width: 30,
+  },
+  {
+    field: 'accepted_by',
+    hide: false,
+    minWidth: 70,
+    width: 30,
+  },
   {
     field: 'created_at',
     hide: false,

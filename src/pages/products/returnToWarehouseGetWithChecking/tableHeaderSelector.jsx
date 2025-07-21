@@ -106,74 +106,84 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         )),
       }
     }
+    // if (el.field === 'scanned_pack') {
+    //   return {
+    //     ...el,
+    //     headerName: 'Отправленные кол-во',
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => (
+    //       <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+    //         <NumberFormatInput
+    //           onBlur={({ target }) => {
+    //             if (p?.data?.scanned_pack == get(target, 'value')) return
+
+    //             setScanedNumber({
+    //               id,
+    //               product_id: get(p, 'data.id'),
+    //               barcode: get(p, 'data.barcode'),
+    //               type: 'MANUAL',
+    //               scanned_pack: Number(get(target, 'value').replace(/\s+/g, '')),
+    //               // scanned_unit: p?.data?.scanned_unit,
+    //             })
+    //           }}
+    //           placeholder={'0'}
+    //           setValue={() => {}}
+    //           uncontrolled
+    //           value={p?.data?.scanned_pack}
+    //           disabled={true}
+    //           defaultValue={p?.data?.scanned_pack}
+    //           id={`scanned_quantity_pack_${p?.data?.id}`}
+    //           name={`scanned_quantity_pack_${p?.data?.id}`}
+    //           type='number'
+    //           fullWidth
+    //         />
+    //       </Box>
+    //     )),
+    //   }
+    // }
     if (el.field === 'scanned_pack') {
       return {
         ...el,
-        headerName: 'Упакофка',
+        headerName: 'Скан кол-во',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <NumberFormatInput
-              onBlur={({ target }) => {
-                if (p?.data?.scanned_pack == get(target, 'value')) return
+            {!p?.data?.barcode ? (
+              <NumberFormatInput
+                uncontrolled
+                onBlur={({ target }) => {
+                  if (p?.data?.scanned_pack == get(target, 'value')) return
 
-                setScanedNumber({
-                  id,
-                  product_id: get(p, 'data.id'),
-                  barcode: get(p, 'data.barcode'),
-                  type: 'MANUAL',
-                  scanned_pack: Number(get(target, 'value').replace(/\s+/g, '')),
-                  // scanned_unit: p?.data?.scanned_unit,
-                })
-              }}
-              placeholder={'0'}
-              setValue={() => {}}
-              uncontrolled
-              value={p?.data?.scanned_pack}
-              disabled={true}
-              defaultValue={p?.data?.scanned_pack}
-              id={`scanned_quantity_pack_${p?.data?.id}`}
-              name={`scanned_quantity_pack_${p?.data?.id}`}
-              type='number'
-              fullWidth
-            />
+                  setScanedNumber({
+                    returnId: id,
+                    status: 'get',
+                    product_id: p?.data?.id,
+                    scanned_pack: Number(get(target, 'value').replace(/\s+/g, '')),
+                    type: 'return',
+                  })
+                }}
+                setValue={() => {}}
+                placeholder={'0'}
+                value={p?.data?.scanned_pack}
+                defaultValue={p?.data?.scanned_pack}
+                id={`scanned_quantity_unit_${p?.data?.id}`}
+                name={`scanned_quantity_unit_${p?.data?.id}`}
+                type='number'
+                fullWidth
+              />
+            ) : (
+              <SimpleText data={p?.data} type={'scanned_pack'} />
+            )}
           </Box>
         )),
       }
     }
-    if (el.field === 'scanned_unit') {
+    if (el.field === 'expected_count') {
       return {
         ...el,
-        headerName: 'Штук',
+        headerName: 'Отп кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <NumberFormatInput
-              onBlur={({ target }) => {
-                if (p?.data?.scanned_unit == get(target, 'value')) return
-
-                setScanedNumber({
-                  id,
-                  product_id: get(p, 'data.id'),
-                  barcode: get(p, 'data.barcode'),
-                  type: 'MANUAL',
-                  // scanned_pack: p?.data?.scanned_pack,
-                  scanned_unit: Number(get(target, 'value').replace(/\s+/g, '')),
-                })
-              }}
-              uncontrolled
-              value={p?.data?.scanned_unit}
-              setValue={() => {}}
-              disabled={true}
-              placeholder={'0'}
-              defaultValue={p?.data?.scanned_unit}
-              id={`scanned_quantity_unit_${p?.data?.id}`}
-              name={`scanned_quantity_unit_${p?.data?.id}`}
-              type='number'
-              fullWidth
-            />
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText data={p?.data} type={'expected_count'} />),
       }
     }
   })

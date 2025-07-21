@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material'
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 
 import { QRCodeCanvas } from 'qrcode.react'
 import { useTranslation } from 'react-i18next'
@@ -195,7 +195,7 @@ function RippedPaperCheck({
                     },
                   }}
                 >
-                  <Typography>O'lchiv birligi: {get(el, 'package_name', '-')}</Typography>
+                  <Typography>O'lchov birligi: {get(el, 'package_name', '-')}</Typography>
                   <Typography>MXIK: {get(el, 'class_code', '-')}</Typography>
                   {get(el, 'is_marking') && (
                     <Box>

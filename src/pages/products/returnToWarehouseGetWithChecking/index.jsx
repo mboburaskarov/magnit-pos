@@ -13,6 +13,8 @@ import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/Column
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
+import InputSwitch from '../../../../components/Inputs/InputSwitch'
+import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
@@ -22,6 +24,7 @@ import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/returnToWarehouseGetWithCheckingTableColumns'
+import DublicateProductBarcode from './dublicateBarcode'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -31,10 +34,15 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
+  const [inputType, setInputType] = useState('scanner')
+  const [openDublicateBarcodeModal, setopenDublicateBarcodeModal] = useState(false)
+
   const { columns, loading } = useSelector((state) => state.returnToWarehouseGetWithCheckingColumns)
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
+  const [scanCount, setScanCount] = useState(1)
+
   const methods = useForm()
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
@@ -42,6 +50,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
     onSuccess: ({ data }) => {
       refetchgetReturnToWarehouseDashBoard()
       setBarcode('')
+      refetch()
     },
     onError: (err) => {
       refetch()
@@ -49,8 +58,23 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
       error('Ошибка при сканирование!')
     },
   })
+  const { mutate: updateByBarcode } = useMutation(requests.updateByBarcode, {
+    onSuccess: ({ data, ...other }) => {
+      refetch()
+      if (get(other, 'status') == 207) {
+        setopenDublicateBarcodeModal(data)
+      } else {
+        refetchgetReturnToWarehouseDashBoard()
+        setBarcode('')
+      }
+    },
+    onError: (err) => {
+      refetch()
 
-  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.finishReturnToWarehouseChecking, {
+      error('Ошибка при сканирование!')
+    },
+  })
+  const { mutate: acceptTransferChecking, isLoading: isacceptTransferChecking } = useMutation(requests.acceptTransferChecking, {
     onSuccess: ({ data }) => {
       navigate('/products/return-to-warehouse')
     },
@@ -73,7 +97,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
       offset: values?.offset || 0,
       search: barcode,
     }
-  }, [id, barcode, values?.limit, values?.offset])
+  }, [id, inputType == 'search' ? barcode : null, values?.limit, values?.offset])
 
   const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
     requests.getReturnToWarehouseDashBoard(id)
@@ -84,7 +108,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
     isLoading: returnToWarehouseWithCheckingDetailsLoading,
     isFetching: isFetchingreturnToWarehouseWithCheckingDetails,
     refetch,
-  } = useQuery(['returnToWarehouseWithCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
+  } = useQuery(['returnToWarehouseWithGetCheckingDetails', returnToWarehouseWithCheckingDetailsFilter], () =>
     requests.getReturnToWarehouseDetails(returnToWarehouseWithCheckingDetailsFilter)
   )
 
@@ -130,8 +154,9 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
       },
     }
   )
+
   return (
-    <LoadingContainer readyState={!isfinishWriteOffChecking}>
+    <LoadingContainer readyState={!isacceptTransferChecking}>
       <FormProvider {...methods}>
         <Header
           onSubmit={() => setOpenFinishConfirmDialog(true)}
@@ -161,6 +186,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
           {isOpenStatDashboard && <WriteOffDashboard data={get(getReturnToWarehouseDashBoard, 'data.data')} />}
+          <DublicateProductBarcode refetch={refetch} open={openDublicateBarcodeModal} setOpen={setopenDublicateBarcodeModal} />
 
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -168,6 +194,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
                 <Box
                   width='100%'
                   sx={{
+                    display: 'flex',
                     '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                     '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                       background: 'transparent',
@@ -181,9 +208,76 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
                     onChange={({ target }) => setBarcode(get(target, 'value'))}
                     id='producrs-search'
                     name='search'
+                    onKeyDown={(e) => {
+                      if (e.key == 'Enter') {
+                        if (inputType == 'search') return
+                        updateByBarcode({ returnId: id, barcode: get(e, 'target.value'), type: 'return', count: scanCount || 1 })
+                      }
+                    }}
                     value={barcode}
                     setSearchTerm={setBarcode}
                     placeholder={t('input.search.product.multi')}
+                  />
+                  <Box
+                    sx={{
+                      ml: '20px',
+                      '& .MuiInputBase-root': {
+                        backgroundColor: 'bg.10',
+                      },
+                    }}
+                  >
+                    <NumberFormatInput
+                      setValue={(e) => setScanCount(e)}
+                      value={scanCount}
+                      type={'number'}
+                      fullWidth
+                      name='scan-count'
+                      label={''}
+                      uncontrolled
+                      placeholder='кол-во'
+                    />
+                  </Box>
+
+                  {/* <Box mr={'20px'} />
+                  <InputSwitch
+                    id='client-scanner'
+                    noMarginTop
+                    uncontrolled
+                    required
+                    name='scanner'
+                    onChange={(e) => setInputType(e)}
+                    defaultValue='scanner'
+                    options={[
+                      {
+                        title: 'Сканер',
+                        value: 'scanner',
+                      },
+                      {
+                        title: 'Поиск',
+                        value: 'search',
+                      },
+                    ]}
+                  /> */}
+                  <Box mr={'20px'} />
+
+                  <InputSwitch
+                    id='client-scanner'
+                    noMarginTop
+                    uncontrolled
+                    required
+                    name='scanner'
+                    onChange={(e) => setInputType(e)}
+                    defaultValue='scanner'
+                    options={[
+                      {
+                        title: 'Сканер',
+                        value: 'scanner',
+                      },
+                      {
+                        title: 'Поиск',
+                        value: 'search',
+                      },
+                    ]}
                   />
                 </Box>
               </Box>
@@ -252,7 +346,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
               variant='contained'
               onClick={() => {
                 setOpenFinishConfirmDialog(false)
-                finishWriteOffChecking(id)
+                acceptTransferChecking({ id, type: 'return' })
               }}
               isLoading={false}
             >

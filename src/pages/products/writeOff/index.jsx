@@ -1,6 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -9,6 +10,7 @@ import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
+import HeaderWithDashboardWrapper from '../../../../components/HeaderWithDashboard'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -23,6 +25,7 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import CreateWriteOff from './createWriteOff'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
+import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function WriteOffPage() {
   const theme = useTheme()
@@ -31,6 +34,7 @@ export default function WriteOffPage() {
   const { columns, loading } = useSelector((state) => state.writeOffTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
+
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [orderModel, setOrderModel] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
@@ -125,12 +129,13 @@ export default function WriteOffPage() {
       console.log('err', err)
     },
   })
+  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['writeOffStatusCountList', values?.search, writeOffListFilter], () =>
+    requests.getWriteOffStatusCount(writeOffListFilter)
+  )
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {'Списание'}
-        </Typography>
+        <HeaderWithDashboardWrapper title={'Списание'} component={<WriteOffDashboard data={get(statusCountList, 'data.data', 0)} />} />
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>

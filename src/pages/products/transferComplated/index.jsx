@@ -21,7 +21,7 @@ import ArrowDown from '../../../assets/icons/ArrowDown'
 import ArrowUp from '../../../assets/icons/ArrowUp'
 import BarcodeIcon from '../../../assets/icons/BarcodeIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/transferGetWithCheckingTableColumns'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/transferRecheckWithCheckingTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
@@ -31,7 +31,7 @@ export default function TransferCompletedPage() {
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.transferGetWithCheckingColumns)
+  const { columns, loading } = useSelector((state) => state.transferRecheckWithCheckingColumns)
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
@@ -140,7 +140,7 @@ export default function TransferCompletedPage() {
   return (
     <LoadingContainer readyState={!isfinishWriteOffChecking}>
       <FormProvider {...methods}>
-        <Header isLoading={false} backIcon noActions backHref='/products/transfer' text={'Перемещение с проверкой'} checkAccessId={'product-create'} />
+        <Header isLoading={false} backIcon noActions backHref='/products/transfer' text={'Перемещение'} checkAccessId={'product-create'} />
 
         <Container>
           <Box

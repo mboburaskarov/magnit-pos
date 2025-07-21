@@ -4,7 +4,7 @@ import { useQuery } from 'react-query'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
 import Pagination from './Pagination'
 
-function ListWithPagination({ request, renderItem, customFilter }) {
+function ListWithPagination({ request, renderItem, statePath = 'productsList', customFilter }) {
   const { values } = useQueryParams()
 
   const [page, setPage] = useState(0)
@@ -24,7 +24,7 @@ function ListWithPagination({ request, renderItem, customFilter }) {
     isLoading: dataLoading,
     isFetching: isDataList,
     refetch,
-  } = useQuery(['productsList', dataFilter, customFilter], () => request({ ...dataFilter, ...customFilter }))
+  } = useQuery([statePath, dataFilter, customFilter], () => request({ ...dataFilter, ...customFilter }))
   return (
     <Box>
       <Box>{datList?.data?.data?.data.map((item) => renderItem(item))}</Box>

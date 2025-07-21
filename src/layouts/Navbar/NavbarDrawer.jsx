@@ -10,7 +10,6 @@ import BackArrowIcon from '../../assets/icons/BackArrow'
 import LogoLetters from '../../assets/icons/LogoLetters'
 import LogoMain from '../../assets/icons/LogoMain'
 import SidebarIcon from '../../assets/icons/SidebarIcon'
-import { useQueryParams } from '../../hooks/useQueryParams'
 import NavItem from './NavItem'
 import NavItemMini from './NavItemMini'
 function NavbarDrawer({
@@ -27,11 +26,8 @@ function NavbarDrawer({
 }) {
   const { t } = useTranslation()
   const location = useLocation()
-  const { values } = useQueryParams()
   const isNewSalePage = location?.pathname?.split('new-sale/')[0] == '/sales/'
   const userData = useSelector((state) => state.user)
-  const firstName = userData?.fullName?.split(' ')?.[0]
-  const lastName = userData?.fullName?.split(' ')?.[1]
 
   return (
     <div id='navbar' className={classes.container}>
@@ -43,15 +39,11 @@ function NavbarDrawer({
               '& a': {
                 padding: '2px 6px',
               },
-              // '& img': {
-              //   width: '180px',
-              // },
             }}
           >
             <Link to='/dashboard' className={classes.brandLogo}>
               <span className={classes.logo_main}>{<LogoMain />}</span>
               <span className={classes.logo_letter_main}> {<LogoLetters />}</span>
-              {/* <img src='/go-pos.png' /> */}
             </Link>
           </Box>
         )}
@@ -176,15 +168,11 @@ function NavbarDrawer({
                   {get(userData, 'store.name')}
                 </Typography>
                 <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                  {get(userData, 'cashbox.name', '-')}
+                  ({localStorage.getItem('leftZreportCount')}) {get(userData, 'cashbox.name', '-')}
                 </p>
               </Box>
             )}
           </Box>
-
-          {/* <Box display={'flex'} alignItems={'center'}>
-              <ArrowDown />
-            </Box> */}
         </ListItem>
       )}
     </div>

@@ -70,7 +70,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       order: orderStoring.position === 1 ? `+${orderStoring.colId}` : orderStoring.position === 2 ? `-${orderStoring.colId}` : undefined,
     }
     const res = await requests.getInventoryDetails(filter).then((res) => {
-      if (res.data?.data?.data?.length > 0) {
+      if (res.data?.data?.data?.length > 0 && status !== 'checking') {
         // setSelectedCellRowId(res.data.data.data[0].id)
         setLastSelectedCellRowId(res.data.data.data[0].id)
         setSelectedIndex(0)

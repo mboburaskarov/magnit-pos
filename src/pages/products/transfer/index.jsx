@@ -10,6 +10,7 @@ import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
+import HeaderWithDashboardWrapper from '../../../../components/HeaderWithDashboard'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
@@ -24,6 +25,7 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../..
 import CreateReturn from './createReturn'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
+import TransferDashboard from './transferDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function TransferPage() {
   const theme = useTheme()
@@ -140,13 +142,13 @@ export default function TransferPage() {
       error('Ошибка при скачать excel!')
     },
   })
+  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['transferStatusCountList', values?.search, transferListFilter], () =>
+    requests.getTransferStatusCount(transferListFilter)
+  )
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          {'Перемещение'}
-        </Typography>
-
+        <HeaderWithDashboardWrapper title={'Перемещение'} component={<TransferDashboard data={get(statusCountList, 'data.data', 0)} />} />
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box

@@ -1,5 +1,6 @@
 import MainLayout from '../../layouts/MainLayout'
 import AutoOrderDetailPage from '../../pages/products/autoOrderDetail'
+import BannedProductPage from '../../pages/products/bannedProduct'
 import BonusProductPage from '../../pages/products/bonusProduct'
 import CatalogManagement from '../../pages/products/categories/index'
 import ChangePriceDetailPage from '../../pages/products/changePriceDetail'
@@ -15,9 +16,11 @@ import ProductCreatePage from '../../pages/products/product-create'
 import ProductEditPage from '../../pages/products/product-edit'
 import ReturnToWarehouseCompletedPage from '../../pages/products/returnToWarehouseComplated'
 import ReturnToWarehouseGetScanWithCheckingPage from '../../pages/products/returnToWarehouseGetWithChecking'
+import ReturnToWarehouseRecheckScanWithCheckingPage from '../../pages/products/returnToWarehouseRecheckWithChecking'
 import ReturnToWarehouseSentScanWithCheckingPage from '../../pages/products/returnToWarehouseSentWithChecking'
 import TransferCompletedPage from '../../pages/products/transferComplated'
 import TransferGetScanWithCheckingPage from '../../pages/products/transferGetWithChecking'
+import TransferRecheckScanWithCheckingPage from '../../pages/products/transferRecheckWithChecking'
 import TransferSentScanWithCheckingPage from '../../pages/products/transferSentWithChecking'
 import WriteOffCompletedPage from '../../pages/products/writeOffComplated/index'
 import WriteOffScanWithCheckingPage from '../../pages/products/writeOffWithChecking'
@@ -125,6 +128,24 @@ const productsCreateRoutes = {
       ],
     },
     {
+      path: 'transfer-recheck-with-checking/:id',
+      children: [
+        {
+          path: '',
+          element: <TransferRecheckScanWithCheckingPage />,
+        },
+      ],
+    },
+    {
+      path: 'return-to-warehouse-recheck-with-checking/:id',
+      children: [
+        {
+          path: '',
+          element: <ReturnToWarehouseRecheckScanWithCheckingPage />,
+        },
+      ],
+    },
+    {
       path: 'transfer-sent-with-checking/:id',
       children: [
         {
@@ -168,6 +189,10 @@ const productsCreateRoutes = {
     {
       path: 'bonus-product',
       element: <BonusProductPage />,
+    },
+    {
+      path: 'banned-product',
+      element: <BannedProductPage />,
     },
     {
       path: 'min-max-create',

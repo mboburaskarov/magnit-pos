@@ -1,3 +1,4 @@
+import { Block } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
@@ -78,6 +79,7 @@ export default function ProductsPage() {
       error('Ошибка при сканирование!')
     },
   })
+
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
@@ -97,6 +99,7 @@ export default function ProductsPage() {
       routeString.push(item.route)
     }
   })
+
   useEffect(() => {
     if (tableColumns) {
       const formattedData = tableColumns
@@ -332,6 +335,29 @@ export default function ProductsPage() {
               ]}
             />
             <Box display={'flex'}>
+              <StyledTooltip title={'Запрещенный продукт'}>
+                <Box
+                  onClick={() => navigate('/products/banned-product')}
+                  sx={{
+                    backgroundColor: 'bg.10',
+                    padding: '10px',
+                    borderRadius: '10px',
+                    mr: '10px',
+                    display: 'flex',
+                    width: '38px',
+                    height: '38px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Block
+                    sx={(theme) => ({
+                      fill: theme.palette.orange[500],
+                      fontSize: 23,
+                    })}
+                  />
+                </Box>
+              </StyledTooltip>
               <StyledTooltip title={'Управление каталогом'}>
                 <Box
                   onClick={() => navigate('/products/categories')}
@@ -368,7 +394,7 @@ export default function ProductsPage() {
                     },
                   }}
                 >
-                  <PrizeBoxIcon color='#fe5000' />
+                  <PrizeBoxIcon color='#FF6018' />
                 </Box>
               </StyledTooltip>
             </Box>

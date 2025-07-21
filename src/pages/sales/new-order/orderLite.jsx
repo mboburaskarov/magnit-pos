@@ -22,6 +22,7 @@ function OrderLite({
   cartItemsList,
   markingsList,
   childRef,
+  setCustomerId,
   setMarkingList,
   setHasChange,
   maxAmount,
@@ -511,7 +512,7 @@ function OrderLite({
 
         sendToEPOS({
           token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
-          method: SALE_TYPE === 'SALE' ? 'sale' : 'refund', // Название метода, Обязательное поле, String
+          method: SALE_TYPE === 'SALE' ? 'fastSale' : 'refund', // Название метода, Обязательное поле, String
           companyName: 'Pharma Cosmos OOO', // Поле для ввода названия компании, будет напечатано на чеке, Обязательное поле, String
           companyAddress: get(userData, 'store.address'), // Поле для ввода адреса компании, убедитесь в верности, будет напечатано на чеке, Обязательное поле, String
           companyINN: '303970073', // Поле для ввода ИНН компании, будет напечатано на чеке, Обязательное поле, String
@@ -536,8 +537,8 @@ function OrderLite({
           },
           ...(SALE_TYPE === 'RETURN' && {
             refundInfo: (() => {
-              const info = JSON.parse(get(cashBoxDetails, 'data.data.epos_response.response', '{}'))?.info
-              const { qrCodeURL, ...rest } = info // Exclude qrCodeURL
+              const info = JSON.parse(get(cashBoxDetails, 'data.data.epos_response.response', '{}'))?.message
+              const { qrCodeURL, qrcodeUrl, ...rest } = info ?? {} // Exclude qrCodeURL
               return rest
             })(),
           }),
@@ -565,7 +566,10 @@ function OrderLite({
   const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
       if (!get(data, 'error', true)) {
-        setQrcodeUrl({ qr: get(data, 'info.qrCodeURL', 'pending'), fiscal: get(data, 'info.fiscalSign', 'pending') })
+        setCustomerId('')
+
+        let qrCodeURL = get(data, 'message.qrCodeURL') || get(data, 'message.qrCodeUrl') || 'pending'
+        setQrcodeUrl({ qr: qrCodeURL, fiscal: get(data, 'message.fiscalSign', 'pending') })
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
         return
       } else {

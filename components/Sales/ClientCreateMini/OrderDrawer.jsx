@@ -250,6 +250,7 @@ export default function OrderDrawer({
   cashBoxDetails,
   setMarkingList,
   setMarkingCount,
+  setCustomerId,
   markingCount,
   half,
 
@@ -365,7 +366,7 @@ export default function OrderDrawer({
 
         sendToEPOS({
           token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
-          method: SALE_TYPE === 'SALE' ? 'sale' : 'refund', // Название метода, Обязательное поле, String
+          method: SALE_TYPE === 'SALE' ? 'fastSale' : 'refund', // Название метода, Обязательное поле, String
           companyName: 'Pharma Cosmos OOO', // Поле для ввода названия компании, будет напечатано на чеке, Обязательное поле, String
           companyAddress: get(userData, 'store.address'), // Поле для ввода адреса компании, убедитесь в верности, будет напечатано на чеке, Обязательное поле, String
           companyINN: '303970073', // Поле для ввода ИНН компании, будет напечатано на чеке, Обязательное поле, String
@@ -391,8 +392,8 @@ export default function OrderDrawer({
 
           ...(SALE_TYPE === 'RETURN' && {
             refundInfo: (() => {
-              const info = JSON.parse(get(cashBoxDetails, 'data.data.epos_response.response', '{}'))?.info
-              const { qrCodeURL, ...rest } = info // Exclude qrCodeURL
+              const info = JSON.parse(get(cashBoxDetails, 'data.data.epos_response.response', '{}'))?.message
+              const { qrCodeURL, qrcodeUrl, ...rest } = info ?? {} // Exclude qrCodeURL
               return rest
             })(),
           }),
@@ -420,7 +421,9 @@ export default function OrderDrawer({
   const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
       if (!get(data, 'error', true)) {
-        setQrcodeUrl({ qr: get(data, 'info.qrCodeURL', 'pending'), fiscal: get(data, 'info.fiscalSign', 'pending') })
+        setCustomerId('')
+        let qrCodeURL = get(data, 'message.qrCodeURL') || get(data, 'message.qrCodeUrl') || 'pending'
+        setQrcodeUrl({ qr: qrCodeURL, fiscal: get(data, 'message.fiscalSign', 'pending') })
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
 
         return
@@ -700,7 +703,7 @@ export default function OrderDrawer({
                   </Typography>
                   <Grid container display={'flex'}>
                     {get(paymentTypesList, 'data.data', []).map((item) => (
-                      <Grid key={item.id} item sx='3' sm='3' lg='3' xl='3' xs='3' p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
+                      <Grid key={item.id} item xs={3} sm={3} lg={3} xl={3} p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
                         <Box
                           display={'flex'}
                           p={'20px'}
@@ -743,7 +746,7 @@ export default function OrderDrawer({
                 <Box>
                   <Grid container width={'100%'} display={'flex'}>
                     {mpaddedPaymentsList?.map((el, index) => (
-                      <Grid item sx='3' sm='3' lg='3' xl='3' xs='3' m={'3'} key={el.id}>
+                      <Grid item sm={3} lg={3} xl={3} xs={3} m={'3'} key={el.id}>
                         {el?.name ? (
                           <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.box}>
                             <div className={classes.boxHeader}>

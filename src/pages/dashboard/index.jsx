@@ -67,7 +67,9 @@ export default function DashboarPage() {
     before_sale_amount,
     before_product_count,
     before_sale_count,
+    last_24h_import_amount,
     before_expiring_soon_amount,
+    before_expired_soon_amount,
     import_amount,
     before_import_amount,
     before_total_net_income,
@@ -86,13 +88,22 @@ export default function DashboarPage() {
         old: before_sale_amount,
       },
       {
-        title: t('Сумма импорта'),
+        title: t('Импорт в ожидании'),
         icon: <RevenueIcon color='#fe5000' />,
         count: import_amount,
         percent: calculatePercentage(before_import_amount || 1, import_amount),
         id: 'import_amount',
         endText: 'сум',
         old: before_import_amount,
+      },
+      {
+        title: t('Текущий импорт'),
+        icon: <RevenueIcon color='#fe5000' />,
+        count: last_24h_import_amount,
+        percent: 0,
+        id: 'current_import_amount',
+        endText: 'сум',
+        old: 0,
       },
       {
         title: t('Общая сумма баланса'),
@@ -117,6 +128,8 @@ export default function DashboarPage() {
         title: t('Общее количество продаж'),
         icon: <OrdersIcon />,
         count: total_sale_count,
+        endText: 'шт',
+
         id: 'total_sale_count',
         percent: calculatePercentage(before_sale_count || 1, total_sale_count),
         old: before_sale_count,
@@ -125,7 +138,8 @@ export default function DashboarPage() {
         title: t('Общее количество остатков'),
         icon: <ProductsIcon />,
         count: total_product_count,
-        endText: '',
+        endText: 'шт',
+
         percent: calculatePercentage(before_product_count || 1, total_product_count),
         id: 'total_product_count',
         old: before_product_count,
@@ -134,10 +148,12 @@ export default function DashboarPage() {
         title: t('Просроченные продукты'),
         icon: <VendorsIcon />,
         count: expired_soon_count,
+        endText: 'шт',
+
         amount: expired_soon_amount,
         id: 'expired_soon_amount',
         percent: calculatePercentage(before_expiring_soon_count || 1, expired_soon_count),
-        old: before_expiring_soon_count,
+        old: before_expired_soon_amount,
       },
       {
         title: t('Истекающий срок'),
@@ -145,8 +161,9 @@ export default function DashboarPage() {
         count: expiring_soon_count,
         amount: expiring_soon_amount,
         id: 'expiring_soon_amount',
+        endText: 'шт',
         percent: calculatePercentage(before_expiring_soon_count || 1, expiring_soon_count),
-        old: before_expiring_soon_count,
+        old: before_expiring_soon_amount,
       },
 
       {
@@ -162,13 +179,23 @@ export default function DashboarPage() {
   }
 
   const dashboard_filter = useMemo(() => {
+    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
+    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
+
     return {
       limit: values?.limit || 15,
       search: values?.search,
-      start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
+      // start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
+      // end_date: values?.start_date == values?.end_date ? null : values?.end_date,
+      start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
+      end_date:
+        values?.end_date && values?.to_time
+          ? ready_start_date?.isSame(ready_end_date)
+            ? dayjs(`${values?.start_date} 23:59:59`).format()
+            : ready_end_date.format()
+          : null,
       store_ids: selectedShops.length <= 63 && selectedShops != 'all' ? [...selectedShops?.map((a) => a.id)] : null || null,
       type: dataTypeFilter(detalization),
-      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
       offset: values?.search ? 0 : values?.offset || 0,
     }
   }, [values?.offset, detalization, selectedShops, values?.start_date, values?.end_date, values?.limit, values?.search])

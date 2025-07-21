@@ -62,7 +62,8 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
                   <>
                     {thousandDivider(Math.round(amount), 'сум')}
                     <Typography color='dark.500' fontSize={'20px'} lineHeight={'25px'} fontWeight='500' ml={'10px'}>
-                      ({withoutDivider ? count : thousandDivider(count, '')}шт)
+                      ({withoutDivider ? count : thousandDivider(count, '')}
+                      {endText})
                     </Typography>
                   </>
                 ) : withoutDivider ? (
