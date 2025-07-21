@@ -1,9 +1,9 @@
 import { Box } from '@mui/material'
-import { Outlet } from 'react-router-dom'
-import NavBar from '../Navbar'
 import { makeStyles } from '@mui/styles'
-import LayoutHeader from '../LayoutHeader'
 import { useSelector } from 'react-redux'
+import { Outlet } from 'react-router-dom'
+import LayoutHeader from '../LayoutHeader'
+import NavBar from '../Navbar'
 
 const useStyles = makeStyles((theme) => ({
   root: {

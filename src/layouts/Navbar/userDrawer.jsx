@@ -103,11 +103,6 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
                   </Typography>
                 </Box>
                 <CloseIcon color={'#111217'} onClick={closeDrawer} />
-                {/* <IconButton onClick={closeDrawer}>
-                  <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                    <path d='M14 2.00005L2 14M1.99995 2L13.9999 14' stroke='#111217' strokeWidth='2.5' strokeLinecap='round' />
-                  </svg>
-                </IconButton> */}
               </Box>
               <Box display='flex' alignItems='center' mt={4}>
                 <Box width={70} height={70} borderRadius={2} overflow='hidden'>
@@ -132,7 +127,6 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
                       ({localStorage.getItem('leftZreportCount')}) {get(userData, 'cashbox.name', '-')}
                     </Typography>
                   </Box>
-                  {/* <Typography className={classes.shopname}>{data?.shops?.find((item) => item.store_id === data?.current_shop_id)?.shop?.name}</Typography> */}
                 </Box>
               </Box>
               <Box mt={4}>
@@ -141,14 +135,6 @@ export default function UserDrawer({ isOpen: data, userData, closeDrawer }) {
                 </Button>
               </Box>
             </Box>
-            {/* <Box>
-              <Button color='secondary' fullWidth adornmentEnd={<FontAwesomeIcon icon={faArrowRight} />} className={classes.actionBtn}>
-                <FontAwesomeIcon icon={faBell} />
-                <Box width={16} />
-                Уведомления
-              </Button>
-              <Box pb={2} />
-            </Box> */}
           </Box>
         </Box>
       </Drawer>

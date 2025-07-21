@@ -14,6 +14,7 @@ import ConfirmDialog from '../../../../components/ConfirmDialog'
 import Header from '../../../../components/Header'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import InputSwitch from '../../../../components/Inputs/InputSwitch'
+import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
@@ -40,6 +41,8 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
+  const [scanCount, setScanCount] = useState(1)
+
   const methods = useForm()
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
@@ -47,6 +50,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
     onSuccess: ({ data }) => {
       refetchgetReturnToWarehouseDashBoard()
       setBarcode('')
+      refetch()
     },
     onError: (err) => {
       refetch()
@@ -56,6 +60,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
   })
   const { mutate: updateByBarcode } = useMutation(requests.updateByBarcode, {
     onSuccess: ({ data, ...other }) => {
+      refetch()
       if (get(other, 'status') == 207) {
         setopenDublicateBarcodeModal(data)
       } else {
@@ -206,14 +211,55 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
                     onKeyDown={(e) => {
                       if (e.key == 'Enter') {
                         if (inputType == 'search') return
-                        updateByBarcode({ returnId: id, barcode: get(e, 'target.value'), type: 'return' })
+                        updateByBarcode({ returnId: id, barcode: get(e, 'target.value'), type: 'return', count: scanCount || 1 })
                       }
                     }}
                     value={barcode}
                     setSearchTerm={setBarcode}
                     placeholder={t('input.search.product.multi')}
                   />
+                  <Box
+                    sx={{
+                      ml: '20px',
+                      '& .MuiInputBase-root': {
+                        backgroundColor: 'bg.10',
+                      },
+                    }}
+                  >
+                    <NumberFormatInput
+                      setValue={(e) => setScanCount(e)}
+                      value={scanCount}
+                      type={'number'}
+                      fullWidth
+                      name='scan-count'
+                      label={''}
+                      uncontrolled
+                      placeholder='кол-во'
+                    />
+                  </Box>
+
+                  {/* <Box mr={'20px'} />
+                  <InputSwitch
+                    id='client-scanner'
+                    noMarginTop
+                    uncontrolled
+                    required
+                    name='scanner'
+                    onChange={(e) => setInputType(e)}
+                    defaultValue='scanner'
+                    options={[
+                      {
+                        title: 'Сканер',
+                        value: 'scanner',
+                      },
+                      {
+                        title: 'Поиск',
+                        value: 'search',
+                      },
+                    ]}
+                  /> */}
                   <Box mr={'20px'} />
+
                   <InputSwitch
                     id='client-scanner'
                     noMarginTop
