@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
+import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
 import thousandDivider from '../../../../utils/thousandDivider'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -145,7 +146,36 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         ...el,
         headerName: 'Скан кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText data={p?.data} type={'scanned_pack'} />),
+        cellRenderer: memo((p) => (
+          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            {!p?.data?.barcode ? (
+              <NumberFormatInput
+                uncontrolled
+                onBlur={({ target }) => {
+                  if (p?.data?.scanned_pack == get(target, 'value')) return
+
+                  setScanedNumber({
+                    returnId: id,
+                    status: 'get',
+                    product_id: p?.data?.id,
+                    scanned_pack: Number(get(target, 'value').replace(/\s+/g, '')),
+                    type: 'return',
+                  })
+                }}
+                setValue={() => {}}
+                placeholder={'0'}
+                value={p?.data?.scanned_pack}
+                defaultValue={p?.data?.scanned_pack}
+                id={`scanned_quantity_unit_${p?.data?.id}`}
+                name={`scanned_quantity_unit_${p?.data?.id}`}
+                type='number'
+                fullWidth
+              />
+            ) : (
+              <SimpleText data={p?.data} type={'scanned_pack'} />
+            )}
+          </Box>
+        )),
       }
     }
     if (el.field === 'expected_count') {

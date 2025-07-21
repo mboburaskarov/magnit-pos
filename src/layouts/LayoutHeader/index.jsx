@@ -1,6 +1,5 @@
 import { Box, Skeleton, Typography } from '@mui/material'
 import { get } from 'lodash'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -35,19 +34,15 @@ const DialogRowBox = ({ children, onClick }) => (
 )
 function LayoutHeader() {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
-  const [isUserOpen, setIsUserOpen] = useState(null)
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
   const navigate = useNavigate()
   const firstName = userData?.first_name
   const lastName = userData?.last_name
-  const [isLogout, setIsLogout] = useState(false)
 
   const classes = headerStyles({ isOpen })
   const logout = () => {
-    // localStorage.clear()
     localStorage.removeItem('access_token')
-
     window.location.replace('/login')
     navigate('/login')
   }
@@ -92,19 +87,6 @@ function LayoutHeader() {
                   height: 48,
                   justifyContent: 'start',
                   border: '0px solid #ECEDF2 !important',
-                  // maxWidth: '200px',
-                  // backgroundColor: '#fe5000 !important',
-                  // '&:hover': {
-                  //   backgroundColor: '#fb923c !important',
-                  // },
-                  // '& p': {
-                  //   color: '#fff !important',
-                  // },
-                  // '& path': {
-                  //   fill: '#fff !important',
-                  // },
-
-                  // minHeight: '56px',
                 }}
                 placement='bottom-end'
                 buttonLabel={
@@ -170,9 +152,7 @@ function LayoutHeader() {
                       <UserFilledIcon />
                       <Typography sx={{ fontSize: '17px', lineHeight: '20px', fontWeight: '500', ml: '8px' }}>Профиль</Typography>
                     </DialogRowBox>
-                    {/* <DialogRowBox onClick={() => navigate('/settings/profile')}>
-                      <SettingsIcon /> <Typography sx={{ fontSize: '17px', lineHeight: '20px', fontWeight: '500', ml: '8px' }}>Настройки</Typography>
-                    </DialogRowBox> */}
+
                     <DialogRowBox onClick={() => logout()}>
                       <LogOutIcon /> <Typography sx={{ fontSize: '17px', lineHeight: '20px', fontWeight: '500', ml: '8px' }}>Выйти из системы</Typography>
                     </DialogRowBox>
@@ -217,14 +197,6 @@ function LayoutHeader() {
           </Typography>
         </Box>
       </Box>
-      {/* <UserLogOutDrawer
-        isOpen={isLogout}
-        closeDrawer={() => {
-          setIsLogout(false)
-        }}
-        goBack={() => setIsLogout(false)}
-      /> */}
-      {/* <UserDrawer isOpen={isUserOpen} userData={userData} closeDrawer={() => setIsUserOpen(null)} /> */}
     </Box>
   )
 }
