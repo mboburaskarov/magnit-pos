@@ -1,6 +1,5 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Container, Typography } from '@mui/material'
-import dayjs from 'dayjs'
 import * as qs from 'qs'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -14,7 +13,6 @@ import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 
 import ImageGallery from '../../../../components/ImageGallery'
-import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRangeInput'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
@@ -37,7 +35,6 @@ export default function DiscountCardPage() {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
   const [openCreateBonusModal, setopenCreateBonusModal] = useState(false)
@@ -85,25 +82,8 @@ export default function DiscountCardPage() {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-      store_id: values?.store_id,
-      start_date: values?.start_date,
-      end_date: values?.end_date,
-      status: values?.status,
-      import_date: values?.import_date,
-      received_amount_to: values?.received_amount_to,
-      received_amount_from: values?.received_amount_from,
     }
-  }, [
-    values?.offset,
-    values?.limit,
-    values?.end_date,
-    values?.start_date,
-    values?.search,
-    values?.status,
-    values?.store_id,
-    values?.received_amount_to,
-    values?.received_amount_from,
-  ])
+  }, [values?.offset, values?.limit, values?.search])
   const {
     data: discountCard,
     isLoading: discountCardLoading,
@@ -148,10 +128,6 @@ export default function DiscountCardPage() {
                   >
                     <InputSearch id='producrs-search' name='search' placeholder={t('table_columns.name')} uncontrolled />
                   </Box>
-                  <DateRangeInput
-                    defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }}
-                    id='accounting-report-date-range'
-                  />
                 </Box>
 
                 <Box display={'flex'} alignItems={'center'}>

@@ -58,7 +58,7 @@ export const requests = {
   addDiscountCard: (data) => request.post(`v1/sale/discount-card`, data),
   removeDiscountCard: (data) => request.delete(`v1/sale/discount-card`, data),
 
-  getAllDisountCardsList: () => request.get(`v1/customer/list-discount-cards`),
+  getAllDisountCardsList: (filter) => request.get(`v1/customer/list-discount-cards${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   changeSalePaymentTypeId: (data) => request.put(`v1/payment-type/change-payment-type`, data),
 
