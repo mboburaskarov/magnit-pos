@@ -190,6 +190,7 @@ const productsCreateRoutes = {
       path: 'bonus-product',
       element: <BonusProductPage />,
     },
+
     {
       path: 'banned-product',
       element: <BannedProductPage />,
