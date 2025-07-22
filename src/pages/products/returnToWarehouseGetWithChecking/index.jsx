@@ -237,29 +237,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
                       placeholder='кол-во'
                     />
                   </Box>
-
-                  {/* <Box mr={'20px'} />
-                  <InputSwitch
-                    id='client-scanner'
-                    noMarginTop
-                    uncontrolled
-                    required
-                    name='scanner'
-                    onChange={(e) => setInputType(e)}
-                    defaultValue='scanner'
-                    options={[
-                      {
-                        title: 'Сканер',
-                        value: 'scanner',
-                      },
-                      {
-                        title: 'Поиск',
-                        value: 'search',
-                      },
-                    ]}
-                  /> */}
                   <Box mr={'20px'} />
-
                   <InputSwitch
                     id='client-scanner'
                     noMarginTop

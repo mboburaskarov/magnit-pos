@@ -94,6 +94,12 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
+  {
+    field: 'created_at_time',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
 
   {
     field: 'store',

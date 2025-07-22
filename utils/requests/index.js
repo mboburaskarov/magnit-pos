@@ -58,6 +58,8 @@ export const requests = {
   addDiscountCard: (data) => request.post(`v1/sale/discount-card`, data),
   removeDiscountCard: (data) => request.delete(`v1/sale/discount-card`, data),
 
+  getAllDisountCardsList: () => request.get(`v1/customer/list-discount-cards`),
+
   changeSalePaymentTypeId: (data) => request.put(`v1/payment-type/change-payment-type`, data),
 
   //producer
@@ -270,6 +272,10 @@ export const requests = {
   getProductBonusList: (filter) => request.get(`v1/product-bonus/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getProductMinMaxList: (filter) => request.get(`v1/product/list-min-max${qs.stringify(filter, { addQueryPrefix: true })}`),
   createBonusProduct: (data) => request.post(`v1/product-bonus`, data),
+  createDiscountCard: (data) => request.post(`v1/discount-card`, data),
+  editDiscountCard: ({ data, id }) => request.put(`v1/discount-card/${id}`, data),
+  deleteDiscountCard: (id) => request.delete(`v1/discount-card/${id}`),
+
   editBonusProduct: ({ data, id }) => request.put(`v1/product-bonus/${id}`, data),
   createMinMax: (data) => request.post(`v1/product/min-max`, data),
   editMinMax: ({ id, data }) => request.put(`v1/product/min-max/${id}`, data),

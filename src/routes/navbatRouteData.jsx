@@ -115,11 +115,10 @@ export const navbatRouteData = [
       },
       {
         label: 'Дисконтная карта',
-        active: '/clients/discount-cards/*',
+        active: '/clients/discount-card/*',
         id: '91122',
-        soon: true,
 
-        href: '/clients/discount-cards',
+        href: '/clients/discount-card',
       },
     ],
   },
