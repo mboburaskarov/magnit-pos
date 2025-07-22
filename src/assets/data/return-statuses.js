@@ -12,6 +12,13 @@ export const returns_list_statuses = [
     bgcolor: 'lightblue.100',
     name: 'Новый',
   },
+
+  {
+    id: 'sent-to-1c',
+    color: 'orange.800',
+    bgcolor: 'orange.10',
+    name: 'Отправлено в 1с',
+  },
   {
     id: 'completed',
     color: 'green.700',
