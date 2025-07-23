@@ -1,6 +1,7 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Container, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -173,6 +174,7 @@ export default function InventoryCompleted() {
           buttonText='Повторно отправлено в 1с'
           isLoading={false}
           backIcon
+          subText={`${inventoryStat?.data?.data?.store?.name} - ${dayjs(inventoryStat?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
           backHref='/products/inventory'
           text={'Инвентаризация'}
           checkAccessId={'product-create'}
