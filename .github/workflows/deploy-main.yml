@@ -10,10 +10,10 @@ env:
   REPO_NAME: ${{ github.repository }}
   CONTAINER_NAME: pharma-frontend
   REGISTRY: ghcr.io
-  SSH_HOST: ${{ secrets.SSH_HOST_DEV }}
-  SSH_USER: ${{ secrets.SSH_USER_DEV }}
+  SSH_HOST: ${{ secrets.SSH_HOST }}
+  SSH_USER: ${{ secrets.SSH_USER }}
   SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  SSH_PASS: ${{ secrets.SSH_PASS_DEV }}
+  SSH_PASS: ${{ secrets.SSH_PASS }}
   PORT: 3000:3000
 
 jobs:
@@ -58,6 +58,7 @@ jobs:
           host: '${{ env.SSH_HOST }}'
           username: '${{ env.SSH_USER }}'
           key: '${{ env.SSH_KEY }}'
+          port: 2002
           script: |
             echo ${{ secrets.GITHUB_TOKEN }} | docker login -u ${{ github.actor }} --password-stdin ${{ env.REGISTRY }}
             docker pull "${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ github.sha }}"
