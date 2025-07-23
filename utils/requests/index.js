@@ -126,6 +126,7 @@ export const requests = {
 
   //import
   getAllImports: (filter) => request.get(`v1/import/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllExpiredImports: (filter) => request.post(`v1/dashboard/old-import${qs.stringify(filter, { addQueryPrefix: true })}`),
   getImportsExcelReport: (filter) => requestEXCEL.get(`v1/import/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   getImportStatusCount: (filter) => request.get(`v1/import/list-status${qs.stringify(filter, { addQueryPrefix: true })}`),
 

@@ -26,7 +26,7 @@ import VendorsIcon from '../../assets/icons/VendorsIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import DashboardHeader from './DashboardHeader'
 import DashboardInfoBox from './DashboardInfoBox'
-
+import ImportPage from './expiredImports/index'
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
   const { type } = useSelector((state) => state.user)
@@ -300,6 +300,11 @@ export default function DashboarPage() {
           </Box>
         </CheckAccess>
       </Box>
+      <CheckAccess id={'dashboard-expired-imports'}>
+        <Box>
+          <ImportPage />
+        </Box>
+      </CheckAccess>
     </LoadingContainer>
   )
 }
