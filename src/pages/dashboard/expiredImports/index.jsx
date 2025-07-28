@@ -1,24 +1,19 @@
 import { Box, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ImageGallery from '../../../../components/ImageGallery'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/expiredImportsTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
 
-import { get } from 'lodash'
-import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ImportPage() {
-  const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.expiredImportsTableColumns)
@@ -26,7 +21,6 @@ export default function ImportPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
 
-  const [filterMenu, setFilterMenu] = useState(false)
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
@@ -92,19 +86,7 @@ export default function ImportPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [importsList?.data, values?.limit])
-  const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
-    onSuccess: ({ data }) => {
-      downloadLinkExcel(get(data, 'data.file_name'))
-    },
-    onError: (err) => {
-      console.log(err)
 
-      error('Ошибка при скачать excel!')
-    },
-  })
-  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['statusCountList', values?.search, importsListFilter], () =>
-    requests.getImportStatusCount(importsListFilter)
-  )
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>

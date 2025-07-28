@@ -1,6 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -9,12 +10,10 @@ import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
+import HeaderWithDashboardWrapper from '../../../../components/HeaderWithDashboard'
 import ImageGallery from '../../../../components/ImageGallery'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../components/LoadingContainer'
-// import SoonPage from '../../../../components/soon'
-import { get } from 'lodash'
-import HeaderWithDashboardWrapper from '../../../../components/HeaderWithDashboard'
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
@@ -30,7 +29,6 @@ import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function InventoryPage() {
-  // return <SoonPage />
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -194,15 +192,7 @@ export default function InventoryPage() {
             </Box>
             <CheckAccess id={'create-inventory'}>
               <Box minWidth={156}>
-                <Button
-                  sx={{ height: '48px' }}
-                  type='submit'
-                  onClick={() => setOrderModel(true)}
-                  fullWidth
-                  // startIcon={<PlusIcon color='#fff' />}
-                  variant='contained'
-                  color='primary'
-                >
+                <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
                   Новая инвентаризация
                 </Button>
               </Box>
@@ -215,8 +205,6 @@ export default function InventoryPage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
-            // fullDownload={() => importsExcelReport({ ...inventoryListFilter, limit: 1000000 })}
-            // downloadByFilter={() => importsExcelReport(inventoryListFilter)}
             isDownloading={isimportsExcelReport}
             tableSettings
             columns={tableColumns}
@@ -247,7 +235,6 @@ export default function InventoryPage() {
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
           title={'Удалить инвентаризацию?'}
           desc={'Вы уверены что хотите удалить инвентаризацию?'}
-          // supDesc={'“Azitromitsin 250 mg”'}
           actions={
             <>
               <Button

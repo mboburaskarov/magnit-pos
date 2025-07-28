@@ -86,7 +86,7 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
         cellRenderer: memo((p) => (
           <Link
             to={
-              p.data.status == 'completed' || p.data.status == 'canceled'
+              p.data.status == 'completed' || p.data.status == 'canceled' || p.data.status == 'sent-to-1c'
                 ? `/products/return-to-warehouse-completed/${p.data.id}?${qs.stringify({
                     previusLimit: values?.limit,
                     previusOffset: values?.offset,

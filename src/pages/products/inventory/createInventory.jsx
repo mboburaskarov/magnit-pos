@@ -104,8 +104,6 @@ export default function CreateInventory({ open, refetch, setOpen }) {
               request={requests.getAllStores}
               filters={{ limit: 10 }}
               control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
               getOptionLabel={(option) => {
                 return option.name
               }}
