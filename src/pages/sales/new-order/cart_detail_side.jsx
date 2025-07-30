@@ -23,10 +23,13 @@ import FileIcon from '../../../assets/icons/FileIcon'
 import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
 import TimesSmallIcon from '../../../assets/icons/TimesSmallIcon'
 import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
+import DmedPrescriptionsList from './dmedPrescriptionsList'
 import OrderLite from './orderLite'
 
 function CartDetailSide({
   cashBoxDetails,
+  setDmedPrescriptionsList,
+  dmedPrescriptionsList,
   saleCreate,
   userData,
   classes,
@@ -58,6 +61,8 @@ function CartDetailSide({
   liteOrder,
   setLiteOrder,
 }) {
+  console.log(dmedPrescriptionsList)
+
   const { t } = useTranslation()
   const theme = useTheme()
   const [maxAmount, setMaxAmount] = useState(0)
@@ -148,6 +153,7 @@ function CartDetailSide({
             error={!!searchTerm && searchTerm?.length < 3}
           />
         )}
+
         {!!searchTerm && searchTerm?.length < 3 && (
           <Box display='flex' alignItems='center'>
             <Typography
@@ -163,6 +169,7 @@ function CartDetailSide({
             </Typography>
           </Box>
         )}
+
         {searchTerm?.length > 2 && (
           <OutsideClickHandler
             onOutsideClick={() => {
@@ -229,6 +236,7 @@ function CartDetailSide({
           </OutsideClickHandler>
         )}
       </Box>
+      <DmedPrescriptionsList data={dmedPrescriptionsList} setDmedPrescriptionsList={setDmedPrescriptionsList} />
 
       <CheckAccess id={'new-sale-discount'}>
         <Box onClick={() => setCollapseDiscount((p) => !p)} width={'100%'} display={'flex'} justifyContent={'space-between'}>
