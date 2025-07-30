@@ -72,7 +72,7 @@ export default function ProductHistory({ id }) {
               } else if (type == '2') {
                 navigate(`/products/inventory-completed/${get(data, 'id')}`)
               } else {
-                navigate(`/products/imports/${get(data, 'import.id')}?tab=details`)
+                navigate(`/products/imports/${get(data, 'id')}?tab=details`)
               }
             }}
           >
