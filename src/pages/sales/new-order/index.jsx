@@ -29,7 +29,6 @@ import { error, success } from '../../../../utils/toast'
 import notificationAudio from '../../../assets/audio/notification.mp3'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import { useSocket } from '../../../context/SocketContext'
 import useDebouncedValue from '../../../hooks/useDebouncedValue'
 import CartItem from './CartItem'
 import CartSearchBar from './CartSearchBar'
@@ -294,12 +293,13 @@ function NewSale() {
   const [isCreateOpenDraft, setIsCreateOpenDraft] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [isOpenChangeShift, setIsOpenChangeShift] = useState(false)
+  const [dmedPrescriptionsList, setDmedPrescriptionsList] = useState([])
   const [liteOrder, setLiteOrder] = useState(false)
 
   const [isOpenImplementMarkingDialog, setIsOpenImplementMarkingDialog] = useState(false)
   const [input, setInput] = useState('')
   const lastKeyPressTime = useRef(Date.now())
-  // const [lastNoorOrderCount, setLastNoorOrderCount] = useState(0)
+  const [lastNoorOrderCount, setLastNoorOrderCount] = useState(0)
   // const [searchTerm, setSearchTerm] = useState('')
   const [markingsList, setMarkingList] = useState({})
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
@@ -321,28 +321,38 @@ function NewSale() {
   const printContainer = useRef()
   const cartRef = cartItemRef.current
 
-  // socket implementation
-  const socket = useSocket()
+  const wsRef = useRef(null)
 
   useEffect(() => {
-    if (!socket) return
+    // Connect to backend
 
-    socket.on('new-noor-order', (data) => {
-      console.log('New message:', data)
-    })
+    const ws = new WebSocket(`ws://192.168.94.27:8080/ws?store_id=${userData?.store?.id}`) // or wss://your-domain.com/ws
+    wsRef.current = ws
 
-    // Optional cleanup
-    return () => {
-      socket.off('message')
+    ws.onopen = () => {
+      console.log('WebSocket connection established')
     }
-  }, [socket])
 
-  // const sendMessage = () => {
-  //   if (socket) {
-  //     socket.emit('message', 'Hello from client!')
-  //   }
-  // }
-  // socket implementation
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data)
+      if (data?.event == 'noor_order') {
+        refetchNoorOrderCount()
+      }
+      console.log('Received:', data)
+    }
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error)
+    }
+
+    ws.onclose = () => {
+      console.log('WebSocket closed')
+    }
+
+    return () => {
+      ws.close()
+    }
+  }, [])
 
   const { mutate: addDiscountCard, isLoading: isaddDiscountCard } = useMutation(requests.addDiscountCard, {
     onSuccess: ({ data }) => {
@@ -920,14 +930,14 @@ function NewSale() {
     () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
     { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
   )
-  // const { data: noorOrderCount, refetch: refetchNoorOrderCount } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
-  //   onSuccess: ({ data }) => {
-  //     setLastNoorOrderCount(get(data, 'data.count', 0))
-  //     if (lastNoorOrderCount < get(data, 'data.count', 0)) {
-  //       NotificationAudio.play()
-  //     }
-  //   },
-  // })
+  const { data: noorOrderCount, refetch: refetchNoorOrderCount } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
+    onSuccess: ({ data }) => {
+      setLastNoorOrderCount(get(data, 'data.count', 0))
+      if (lastNoorOrderCount < get(data, 'data.count', 0)) {
+        NotificationAudio.play()
+      }
+    },
+  })
   // useEffect(() => {
   //   const noorTimeout = setInterval(() => {
   //     refetchNoorOrderCount()
@@ -944,6 +954,7 @@ function NewSale() {
           <Box width={'calc(100% - 384px)'} position={'relative'} padding={'20px'}>
             <Box position={'relative'}>
               <CartSearchBar
+                setDmedPrescriptionsList={setDmedPrescriptionsList}
                 discount={{ type: discount, amount: inputDiscount }}
                 searchRef={searchRef}
                 openDraft={() => setIsOpenDraft(true)}
@@ -1026,7 +1037,7 @@ function NewSale() {
                             Noor
                           </p>
                         </Box>
-                        {/* <Box
+                        <Box
                           sx={{
                             ml: '12px',
                             backgroundColor: '#fff',
@@ -1060,11 +1071,11 @@ function NewSale() {
                                   fontWeight: '600',
                                 }}
                               >
-                                 {get(noorOrderCount, 'data.data.count', 0)}
+                                {get(noorOrderCount, 'data.data.count', 0)}
                               </Typography>
                             </Box>
                           )}
-                        </Box> */}
+                        </Box>
                       </Box>
                     </ListItem>
                   </CheckAccess>
@@ -1131,7 +1142,9 @@ function NewSale() {
           </Box>
 
           <CartDetailSide
+            dmedPrescriptionsList={dmedPrescriptionsList}
             cashBoxDetails={cashBoxDetails}
+            setDmedPrescriptionsList={setDmedPrescriptionsList}
             saleCreate={saleCreate}
             userData={userData}
             hasChange={hasChange}

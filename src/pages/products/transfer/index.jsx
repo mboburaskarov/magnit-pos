@@ -119,7 +119,7 @@ export default function TransferPage() {
     setOffsetCount(offsetsCount || 0)
   }, [transferList?.data, values?.limit])
 
-  const { mutate: deleteWriteOff, isLoading: isDeletingProduct } = useMutation(requests.deleteTransfer, {
+  const { mutate: deleteTransfer, isLoading: isDeletingProduct } = useMutation(requests.deleteTransferAndReturn, {
     onSuccess: () => {
       refetch()
       success('Возврат был успешно удален!')
@@ -247,8 +247,8 @@ export default function TransferPage() {
           open={!!openConfirmDialog}
           setOpen={setOpenConfirmDialog}
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={'Удалить инвентаризацию?'}
-          desc={'Вы уверены что хотите удалить инвентаризацию?'}
+          title={'Удалить Перемещение?'}
+          desc={'Вы уверены что хотите удалить Перемещение?'}
           actions={
             <>
               <Button
@@ -260,7 +260,7 @@ export default function TransferPage() {
               >
                 Нет
               </Button>
-              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteWriteOff({ id: openConfirmDialog.id })}>
+              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteTransfer({ id: openConfirmDialog.id })}>
                 Да, удалить
               </LoadingButton>
             </>

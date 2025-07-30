@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import * as qs from 'qs'
@@ -11,6 +11,7 @@ import StyledTooltip from '../../../../components/StyledTooltip'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { returns_list_statuses } from '../../../assets/data/return-statuses'
 import ArrowRight from '../../../assets/icons/ArrowRight'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import DownloadIcon from '../../../assets/icons/DownloadIcon'
 import LeftArrowIcon from '../../../assets/icons/LeftArrow'
 import { useQueryParams } from '../../../hooks/useQueryParams'
@@ -342,17 +343,7 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
         headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          <Box
-            width={'100%'}
-            display='flex'
-            justifyContent={'center'}
-            sx={{
-              '& svg': {
-                fill: 'rgb(254, 80, 0) !important',
-              },
-            }}
-            alignItems={'center'}
-          >
+          <Box width={'100%'} display='flex' justifyContent={'center'} alignItems={'center'}>
             <CheckAccess id={'can-download-return-nakladnoy'}>
               {data.status != 'new' && data.status != 'canceled' && (
                 <>
@@ -364,9 +355,12 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
                       height: '38px',
                       padding: '0px !important',
                       borderRadius: '8px !important',
-                      marginLeft: '5px',
+                      marginRight: '5px',
                       width: '38px',
                       border: '1px solid transparent !important',
+                      '& svg:first-child': {
+                        fill: '#07259c !important',
+                      },
                     }}
                     popperStyle={{
                       '& .pop-up-options': {
@@ -397,6 +391,24 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
                     ]}
                   />
                 </>
+              )}
+            </CheckAccess>
+            <CheckAccess id={'can-delete-transfer'}>
+              {data.status == 'new' && (
+                <IconButton
+                  onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: data.name })}
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 3,
+                    p: '8px',
+                    '& svg:first-child': {
+                      fill: '#fe5000 !important',
+                    },
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
               )}
             </CheckAccess>
           </Box>

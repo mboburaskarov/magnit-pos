@@ -57,6 +57,7 @@ export const requests = {
   returnSaleItem: (data) => request.post(`v1/sale/return`, data),
   addDiscountCard: (data) => request.post(`v1/sale/discount-card`, data),
   removeDiscountCard: (data) => request.delete(`v1/sale/discount-card`, data),
+  getDmedPrescriptions: (filter) => request.get(`v1/sale/dmed/prescriptions${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getAllDisountCardsList: (filter) => request.get(`v1/customer/list-discount-cards${qs.stringify(filter, { addQueryPrefix: true })}`),
 
@@ -210,8 +211,8 @@ export const requests = {
   //transfer
   createTransfer: (data) => request.post(`v1/transfer`, data),
   getAllTransfer: (filter) => request.get(`v1/transfer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  sendScannedTransferNumber: ({ id, barcode, product_id, type, scanned_unit, scanned_pack }) =>
-    request.patch(`v1/transfer/${id}/add-product-by-barcode`, { scanned_unit, scanned_pack, type, id: product_id }),
+  sendScannedTransferNumber: ({ transferId, id, barcode, product_id, type, status, scanned_unit, scanned_pack }) =>
+    request.patch(`v1/transfer/${transferId}/add-product-by-barcode`, { scanned_pack, status, scanned_unit, type, id: product_id }),
   getTransferDetails: (filter) => request.get(`v1/transfer-detail/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getTransferDashBoard: (id) => request.get(`v1/transfer/${id}`),
   getTransferScanDetails: (filter) => request.get(`v1/import-detail/list/by-last-updated${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -221,6 +222,7 @@ export const requests = {
   updateTransferByBarcode: ({ transferId, ...filter }) => request.put(`v1/transfer/update-by-barcode/${transferId}`, filter),
   SentTransferChecking: (id) => request.post(`v1/transfer/send/${id}`),
   deleteTransfer: ({ id }) => request.post(`v1/transfer/cancel/${id}`),
+  deleteTransferAndReturn: ({ id }) => request.delete(`v1/transfer/${id}`),
   getTransferExcelReport: (filter) => requestEXCEL.get(`v1/transfer/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   getTransferDetailsExcelReport: (filter) => requestEXCEL.get(`v1/transfer-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   downloadTransferNakladnoy: (filter) => requestEXCEL.get(`v1/transfer/export-nakladnoy${qs.stringify(filter, { addQueryPrefix: true })}`),

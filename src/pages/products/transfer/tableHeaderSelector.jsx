@@ -10,6 +10,7 @@ import StyledTooltip from '../../../../components/StyledTooltip'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { returns_list_statuses } from '../../../assets/data/return-statuses'
 import ArrowRight from '../../../assets/icons/ArrowRight'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import DownloadIcon from '../../../assets/icons/DownloadIcon'
 import LeftArrowIcon from '../../../assets/icons/LeftArrow'
 import { useQueryParams } from '../../../hooks/useQueryParams'
@@ -392,21 +393,41 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
         headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          <Box
-            width={'100%'}
-            display='flex'
-            justifyContent={'center'}
-            sx={{
-              '& svg': {
-                fill: 'rgb(254, 80, 0) !important',
-              },
-            }}
-            alignItems={'center'}
-          >
+          <Box width={'100%'} display='flex' justifyContent={'center'} alignItems={'center'}>
             <CheckAccess id={'can-download-transfer-nakladnoy'}>
               {(data.status == 'completed' || data.status == 'sent' || data.status == 'checking') && (
-                <IconButton onClick={() => downloadNakladnoy({ transfer_id: data.id })} sx={{ width: 40, height: 40, borderRadius: 3, p: '8px' }}>
-                  <DownloadIcon />
+                <IconButton
+                  onClick={() => downloadNakladnoy({ transfer_id: data.id })}
+                  sx={{
+                    width: 40,
+                    mr: '5px',
+                    height: 40,
+                    borderRadius: 3,
+                    p: '8px',
+                    '& svg:first-child': {
+                      fill: '#07259c !important',
+                    },
+                  }}
+                >
+                  <DownloadIcon color='#07259c' />
+                </IconButton>
+              )}
+            </CheckAccess>
+            <CheckAccess id={'can-delete-transfer'}>
+              {data.status == 'new' && (
+                <IconButton
+                  onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: data.name })}
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 3,
+                    p: '8px',
+                    '& svg:first-child': {
+                      fill: '#fe5000 !important',
+                    },
+                  }}
+                >
+                  <DeleteIcon />
                 </IconButton>
               )}
             </CheckAccess>

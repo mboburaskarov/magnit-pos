@@ -119,7 +119,7 @@ export default function ReturnToWarehousePage() {
     setOffsetCount(offsetsCount || 0)
   }, [returnsList?.data, values?.limit])
 
-  const { mutate: deleteWriteOff, isLoading: isDeletingProduct } = useMutation(requests.deleteReturnToWarehouse, {
+  const { mutate: deleteReturnToWarehouse, isLoading: isDeletingProduct } = useMutation(requests.deleteTransferAndReturn, {
     onSuccess: () => {
       refetch()
       success('Возврат был успешно удален!')
@@ -248,8 +248,8 @@ export default function ReturnToWarehousePage() {
           open={!!openConfirmDialog}
           setOpen={setOpenConfirmDialog}
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={'Удалить инвентаризацию?'}
-          desc={'Вы уверены что хотите удалить инвентаризацию?'}
+          title={'Удалить Возврат?'}
+          desc={'Вы уверены что хотите удалить Возврат?'}
           // supDesc={'“Azitromitsin 250 mg”'}
           actions={
             <>
@@ -262,7 +262,12 @@ export default function ReturnToWarehousePage() {
               >
                 Нет
               </Button>
-              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteWriteOff({ id: openConfirmDialog.id })}>
+              <LoadingButton
+                variant='contained'
+                type='button'
+                loading={isDeletingProduct}
+                onClick={() => deleteReturnToWarehouse({ id: openConfirmDialog.id })}
+              >
                 Да, удалить
               </LoadingButton>
             </>

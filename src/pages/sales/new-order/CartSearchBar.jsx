@@ -4,7 +4,7 @@ import { get, head, size } from 'lodash'
 import { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
@@ -15,6 +15,7 @@ import StyledTooltip from '../../../../components/StyledTooltip'
 import { convertEngToRu } from '../../../../utils/convertoEngToRu'
 import { convertoRuOrEngToEng } from '../../../../utils/convertoRuOrEngToEng'
 import { requests } from '../../../../utils/requests'
+import { error } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
 import UnlockIcon from '../../../assets/icons/UnlockIcon'
@@ -193,6 +194,7 @@ let a = -2
 function CartSearchBar({
   refetchcartItemsList,
   openDraft,
+  setDmedPrescriptionsList,
   discount,
 
   searchResetRef,
@@ -211,6 +213,32 @@ function CartSearchBar({
   const [debouncedSearchTerm] = useDebounce(searchTearm, 200)
   const searchItemRef = useRef([])
   const [inputlang, setInputLang] = useState('ru')
+
+  const { mutate: getDmedPrescriptions, isLoading: isgetDmedPrescriptions } = useMutation(requests.getDmedPrescriptions, {
+    onSuccess: ({ data }) => {
+      setDmedPrescriptionsList([
+        'Ацетилсалициловая кислота 14 мг',
+        'Ацетилсалициловая кислота 14 мг',
+        'Ацетилсалициловая кислота 14 мг',
+        'Ацетилсалициловая кислота 14 мг',
+        'Ацетилсалициловая кислота 14 мг',
+        'Ацетилсалициловая кислота 14 мг',
+        'Ацетилсалициловая кислота 14 мг',
+        'Ацетилсалициловая кислота 14 мг',
+        'Ацетилсалициловая кислота 14 мг',
+        'Ацетилсалициловая кислота 14 мг',
+        'Ацетилсалициловая кислота 14 мг',
+        'Ацетилсалициловая кислота 14 мг',
+      ])
+      // setDmedPrescriptionsList(data?.data)
+      setShowOverlay(false)
+    },
+    onError: (err) => {
+      error('Ошибка при DMED')
+      console.log('err', err)
+    },
+  })
+
   useEffect(() => {
     setInputLang(localStorage.getItem('inputlang') === 'ru' ? 'ru' : 'en')
   }, [])
@@ -361,6 +389,14 @@ function CartSearchBar({
                 setShowOverlay(false)
               }
               if (e.key == 'Enter') {
+                if (searchTearm.includes('prescriptions')) {
+                  let patient_id = searchTearm?.split('-')?.[1]
+                  let safe_code = searchTearm?.split('-')?.[2]
+
+                  getDmedPrescriptions({ patient_id, safe_code })
+                  return
+                }
+
                 if (searchTearm?.length < 50) return
 
                 setShowOverlay(false)
