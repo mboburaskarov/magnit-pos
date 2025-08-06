@@ -10,7 +10,7 @@ import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
 import CustomImg from '../../../../components/CustomImg'
 import palette from '../../../../src/assets/theme/mui.config'
 import thousandDivider from '../../../../utils/thousandDivider'
-import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
+import { autoorder_list_statuses } from '../../../assets/data/imports-list-statuses'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
@@ -138,9 +138,9 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         cellRenderer: memo((p) => (
           <StatusCell
             id={`products-status-${p.rowIndex}`}
-            color={imports_list_statuses.find((el) => el.id === p.data.status)?.color}
-            bgcolor={imports_list_statuses.find((el) => el.id === p.data.status)?.bgcolor}
-            title={imports_list_statuses.find((el) => el.id === p.data.status)?.name}
+            color={autoorder_list_statuses.find((el) => el.id === p.data.status)?.color}
+            bgcolor={autoorder_list_statuses.find((el) => el.id === p.data.status)?.bgcolor}
+            title={autoorder_list_statuses.find((el) => el.id === p.data.status)?.name}
           />
         )),
       }
