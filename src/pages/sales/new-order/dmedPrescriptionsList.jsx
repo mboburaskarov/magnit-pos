@@ -3,12 +3,16 @@ import { Box } from '@mui/material'
 import Label from '../../../../components/Label'
 
 function DmedPrescriptionsList({ data, setDmedPrescriptionsList }) {
+  console.log(data)
+  // return <></>
   return (
     <Box mb={'24px'}>
       {data?.length > 0 ? (
         <Box sx={{ border: '1px solid #fe5000', position: 'relative', padding: '20px', borderRadius: '20px' }}>
           <Box sx={{ display: 'flex', mb: '4px', justifyContent: 'space-between' }}>
-            <Label mb='0'>{'DMED'}</Label>
+            <Label mb='0'>
+              {'DMED'} ({data?.length})
+            </Label>
             <Box
               sx={{
                 position: 'absolute',
@@ -27,8 +31,17 @@ function DmedPrescriptionsList({ data, setDmedPrescriptionsList }) {
             </Box>
           </Box>
           <Box sx={{ maxHeight: '150px', display: 'flex', overflowY: 'auto', flexDirection: 'column' }}>
-            {data?.map((item) => (
-              <Box sx={{ bgcolor: 'bg.10', m: '5px 0', borderRadius: '10px', padding: '3px 10px' }}>{item}</Box>
+            {data?.map((item, index) => (
+              <Box
+                key={item.id} // optional: if `item.id` exists
+                sx={{ bgcolor: 'bg.10', m: '5px 0', borderRadius: '10px', padding: '3px 10px' }}
+              >
+                {index + 1}
+                {'. '}
+                {item?.drug_appointment?.medication
+                  ?.map((medican) => `${medican?.title} (${medican?.substance_dosage?.dosage}${medican?.substance_dosage?.measurement_unit?.title})`)
+                  .join(', ')}
+              </Box>
             ))}
           </Box>
         </Box>

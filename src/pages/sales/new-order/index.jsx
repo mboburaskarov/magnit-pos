@@ -1235,6 +1235,7 @@ function NewSale() {
       <OrderDrawer
         cartItemsList={get(cartItemsList, 'data.data')}
         printContainer={printContainer}
+        dmedPrescriptionsList={dmedPrescriptionsList}
         isOrderDrower={isOrderDrower}
         setCustomerId={setCustomerId}
         setInputDiscount={setInputDiscount}
@@ -1242,6 +1243,7 @@ function NewSale() {
         customerId={customerId}
         refetchcartItemsList={refetchcartItemsList}
         markingsList={markingsList}
+        setDmedPrescriptionsList={setDmedPrescriptionsList}
         markingCount={markingCount}
         setMarkingList={setMarkingList}
         setMarkingCount={setMarkingCount}

@@ -22,6 +22,7 @@ function OrderLite({
   cartItemsList,
   markingsList,
   childRef,
+  setDmedPrescriptionsList,
   setCustomerId,
   setMarkingList,
   setHasChange,
@@ -31,6 +32,7 @@ function OrderLite({
   cashBoxDetails,
   setLiteOrder,
   customerId,
+  dmedPrescriptionsList,
 }) {
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
   const theme = useTheme()
@@ -604,6 +606,7 @@ function OrderLite({
   const { mutate: sendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
     onSuccess: ({ data }) => {
       setNewSaleId(get(data, 'data.id', false))
+      setDmedPrescriptionsList([])
     },
     onError: (err) => {
       error('Ошибка при епосе')
@@ -644,6 +647,8 @@ function OrderLite({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
       payment_types: paymentTypes,
       sale_id: id,
+      service_type: dmedPrescriptionsList?.length > 0 ? 'dmed' : undefined,
+
       store_id: get(userData, 'store.id'),
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),

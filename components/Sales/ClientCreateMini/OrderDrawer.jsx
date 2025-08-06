@@ -244,8 +244,10 @@ export default function OrderDrawer({
   setIsOrderDrower,
   isOrderDrower,
   markingsList,
+  dmedPrescriptionsList,
   printContainer,
   cartItemsList,
+  setDmedPrescriptionsList,
   customerId,
   cashBoxDetails,
   setMarkingList,
@@ -312,6 +314,7 @@ export default function OrderDrawer({
   const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
     onSuccess: ({ data }) => {
       setNewSaleId(get(data, 'data.id', false))
+      setDmedPrescriptionsList([])
     },
     onError: (err) => {
       error('Ошибка при епосе')
@@ -562,6 +565,7 @@ export default function OrderDrawer({
       payment_types: paymentTypes,
       sale_id: id,
       store_id: get(userData, 'store.id'),
+      service_type: dmedPrescriptionsList?.length > 0 ? 'dmed' : undefined,
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
       marking_data: markingData,

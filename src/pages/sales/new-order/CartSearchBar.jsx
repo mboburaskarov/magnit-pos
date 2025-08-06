@@ -216,21 +216,21 @@ function CartSearchBar({
 
   const { mutate: getDmedPrescriptions, isLoading: isgetDmedPrescriptions } = useMutation(requests.getDmedPrescriptions, {
     onSuccess: ({ data }) => {
-      setDmedPrescriptionsList([
-        'Ацетилсалициловая кислота 14 мг',
-        'Ацетилсалициловая кислота 14 мг',
-        'Ацетилсалициловая кислота 14 мг',
-        'Ацетилсалициловая кислота 14 мг',
-        'Ацетилсалициловая кислота 14 мг',
-        'Ацетилсалициловая кислота 14 мг',
-        'Ацетилсалициловая кислота 14 мг',
-        'Ацетилсалициловая кислота 14 мг',
-        'Ацетилсалициловая кислота 14 мг',
-        'Ацетилсалициловая кислота 14 мг',
-        'Ацетилсалициловая кислота 14 мг',
-        'Ацетилсалициловая кислота 14 мг',
-      ])
-      // setDmedPrescriptionsList(data?.data)
+      // setDmedPrescriptionsList([
+      //   'Ацетилсалициловая кислота 14 мг',
+      //   'Ацетилсалициловая кислота 14 мг',
+      //   'Ацетилсалициловая кислота 14 мг',
+      //   'Ацетилсалициловая кислота 14 мг',
+      //   'Ацетилсалициловая кислота 14 мг',
+      //   'Ацетилсалициловая кислота 14 мг',
+      //   'Ацетилсалициловая кислота 14 мг',
+      //   'Ацетилсалициловая кислота 14 мг',
+      //   'Ацетилсалициловая кислота 14 мг',
+      //   'Ацетилсалициловая кислота 14 мг',
+      //   'Ацетилсалициловая кислота 14 мг',
+      //   'Ацетилсалициловая кислота 14 мг',
+      // ])
+      setDmedPrescriptionsList(data?.data)
       setShowOverlay(false)
     },
     onError: (err) => {
@@ -393,7 +393,7 @@ function CartSearchBar({
                   let patient_id = searchTearm?.split('-')?.[1]
                   let safe_code = searchTearm?.split('-')?.[2]
 
-                  getDmedPrescriptions({ patient_id, safe_code })
+                  getDmedPrescriptions({ patient_id, safe_code, sale_id: id })
                   return
                 }
 
