@@ -113,9 +113,9 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         headerComponent: CustomHeader,
         orderStoring,
         setOrderStoring,
-        headerName: 'Количество',
+        headerName: 'Общая сумма продаж',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='count' />),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='sale_amount' />),
       }
     }
     if (el.field === 'import_amount') {
@@ -124,9 +124,9 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         headerComponent: CustomHeader,
         orderStoring,
         setOrderStoring,
-        headerName: 'Количество',
+        headerName: 'Импорт в ожидании',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='count' />),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='import_amount' />),
       }
     }
     if (el.field === 'stock_amount') {
@@ -135,9 +135,9 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         headerComponent: CustomHeader,
         orderStoring,
         setOrderStoring,
-        headerName: 'Количество',
+        headerName: 'Общая сумма баланса',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='count' />),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='stock_amount' />),
       }
     }
     if (el.field === 'total') {
