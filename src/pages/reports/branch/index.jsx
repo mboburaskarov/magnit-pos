@@ -21,6 +21,13 @@ function BranchReportsList() {
           checkSlug='/reports/branch'
           color={palette.red[500]}
         />
+        <ReportBox
+          title={t('Остаток Аптека')}
+          desc={t('Отчёт показывает текущие остатки товаров в выбранной аптеке. Помогает контролировать наличие и своевременно пополнять запасы.')}
+          to='/reports/store-summary'
+          checkSlug='/reports/branch'
+          color={palette.red[500]}
+        />
       </Box>
     </Box>
   )
