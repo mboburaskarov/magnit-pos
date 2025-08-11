@@ -90,6 +90,8 @@ export const requests = {
   bonusProductsReport: ({ store_ids, ...filter }) => request.post(`v1/report/bonus-products${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   topVendorReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-seller${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   topBranchReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  storeSummaryReport: ({ store_ids, ...filter }) => request.post(`v1/report/store-summary${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  storeSummaryExcelReport: (filter) => requestEXCEL.post(`v1/report/store-summary/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //shift
   createShift: (data) => request.post(`v1/shift`, data),

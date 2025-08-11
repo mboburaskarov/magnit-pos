@@ -363,6 +363,8 @@ function CartDetailSide({
           childRef={childRef}
           maxAmount={maxAmount}
           setLiteOrder={setLiteOrder}
+          dmedPrescriptionsList={dmedPrescriptionsList}
+          setDmedPrescriptionsList={setDmedPrescriptionsList}
           setCustomerId={setCustomerId}
           setMarkingList={setMarkingList}
           setHasChange={setHasChange}

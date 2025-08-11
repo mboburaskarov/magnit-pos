@@ -4,6 +4,7 @@ import LFLReport from '../../pages/reports/lfl'
 import ProductReportPage from '../../pages/reports/productReport'
 import SellerBonus from '../../pages/reports/sellerBonus'
 import StoreReportPage from '../../pages/reports/storeReport'
+import StoreSummaryPage from '../../pages/reports/storeSummary'
 import TopBranchesPage from '../../pages/reports/topBranches'
 import TopProductsPage from '../../pages/reports/topProducts'
 import TopVendorsPage from '../../pages/reports/topVendor'
@@ -37,6 +38,10 @@ const reportsInsideRoutes = {
     {
       path: 'top-branchs',
       element: <TopBranchesPage />,
+    },
+    {
+      path: 'store-summary',
+      element: <StoreSummaryPage />,
     },
     {
       path: 'top-vendors',
