@@ -7,10 +7,12 @@ import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import AgGridTable from '../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '../../../components/CheckAccess'
 import ConfirmDialog from '../../../components/ConfirmDialog'
 import ImageGallery from '../../../components/ImageGallery'
 import InputSearch from '../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../components/LoadingContainer'
+import ClientCreateMini from '../../../components/Sales/ClientCreateMini/index'
 import { downloadLinkExcel } from '../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
@@ -18,6 +20,7 @@ import BigTickIcon from '../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
 import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
+import PlusIcon from '../../assets/icons/PlusIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/clientTableColumns'
 import FilterMenu from './FilterMenu'
@@ -30,6 +33,8 @@ export default function ClientsPage() {
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.clientTableColumns)
   const { values } = useQueryParams()
+  const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
+
   const [selectClients, setselectClients] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
@@ -203,6 +208,20 @@ export default function ClientsPage() {
                 resetTableHeader={resetTableHeader}
               />
             </Box>
+            <CheckAccess id={'product-create'}>
+              <Box minWidth={156}>
+                <Button
+                  sx={{ height: '48px' }}
+                  onClick={() => setOpenClientCreateMini(true)}
+                  fullWidth
+                  startIcon={<PlusIcon color='#fff' />}
+                  variant='contained'
+                  color='primary'
+                >
+                  {t('button.add_new.text')}
+                </Button>
+              </Box>
+            </CheckAccess>
           </Box>
         </Box>
         <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
@@ -231,7 +250,16 @@ export default function ClientsPage() {
           />
         </Box>
       </Box>
-
+      <ClientCreateMini
+        setCustomerId={() => {
+          refetch()
+        }}
+        quickCreateClientName={''}
+        openDrawer={openClientCreateMini}
+        closeDrawer={() => setOpenClientCreateMini(false)}
+        clientData={''}
+        afterCreate={(clientId) => {}}
+      />
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (
         <ConfirmDialog
