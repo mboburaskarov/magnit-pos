@@ -1,9 +1,8 @@
 import { Box, IconButton, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import * as qs from 'qs'
 import { memo } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
 import CheckAccess from '../../../../components/CheckAccess'
 import StyledTooltip from '../../../../components/StyledTooltip'
@@ -27,7 +26,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
 
 export default function tableHeaderSelector({ importsColumns, t, downloadNakladnoy, setOpenConfirmDialog }) {
   const { values } = useQueryParams()
-
+  const navigate = useNavigate()
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {
       return {
@@ -58,43 +57,42 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
         ...el,
         headerName: 'Наименование',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Link
-            to={
-              p.data.status == 'completed' || p.data.status == 'canceled'
-                ? `/products/transfer-completed/${p.data.id}?${qs.stringify({
-                    previusLimit: values?.limit,
-                    previusOffset: values?.offset,
-                  })}`
-                : p.data.status == 'new'
-                ? `/products/transfer-sent-with-checking/${p.data.id}?${qs.stringify({
-                    previusLimit: values?.limit,
-                    previusOffset: values?.offset,
-                  })}`
-                : p.data.status == 'sent'
-                ? `/products/transfer-get-with-checking/${p.data.id}?${qs.stringify({
-                    previusLimit: values?.limit,
-                    previusOffset: values?.offset,
-                  })}`
-                : p.data.status == 'checking'
-                ? `/products/transfer-recheck-with-checking/${p.data.id}?${qs.stringify({
-                    previusLimit: values?.limit,
-                    previusOffset: values?.offset,
-                  })}`
-                : '#'
-            }
-          >
+        cellRenderer: memo((p) => {
+          const targetPath =
+            p.data.status == 'completed' || p.data.status == 'canceled'
+              ? `/products/transfer-completed/${p.data.id}`
+              : p.data.status == 'new'
+              ? `/products/transfer-sent-with-checking/${p.data.id}`
+              : p.data.status == 'sent'
+              ? `/products/transfer-get-with-checking/${p.data.id}`
+              : p.data.status == 'checking'
+              ? `/products/transfer-recheck-with-checking/${p.data.id}`
+              : null
+
+          return (
             <Typography
               whiteSpace={'pre-wrap'}
               fontWeight={'600'}
               color={p.data.status !== 'canceled' ? 'orange.500' : 'red.500'}
               fontSize={'16px'}
               lineHeight={'24px'}
+              sx={{ cursor: targetPath ? 'pointer' : 'default' }}
+              onClick={() => {
+                console.log(values)
+
+                if (targetPath) {
+                  navigate(targetPath, {
+                    state: {
+                      prevFilter: values, // save current filter state here
+                    },
+                  })
+                }
+              }}
             >
               {p.data.name}
             </Typography>
-          </Link>
-        )),
+          )
+        }),
       }
     }
     if (el.field === 'store_name') {

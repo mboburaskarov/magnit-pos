@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLocation, useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '../../../../components/CheckAccess'
@@ -28,6 +29,9 @@ import tableHeaderSelector from './tableHeaderSelector'
 import TransferDashboard from './transferDashboard'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function TransferPage() {
+  const location = useLocation()
+  const navigate = useNavigate()
+
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()

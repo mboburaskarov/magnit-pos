@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles'
 import { createBrowserHistory } from 'history'
 import { Fragment, memo, useLayoutEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import LeftArrowIcon from '../src/assets/icons/LeftArrow'
 
 const useStyles = makeStyles((theme) => ({
@@ -95,11 +95,15 @@ function Header({
   const navigate = useNavigate()
   const classes = useStyles({ fullWidth, isOpen })
   const history = createBrowserHistory()
+  const backHistory = useRef()
   const headerComponentRef = useRef()
   const [headerComponentHeight, setHeaderComponentHeight] = useState(0)
-
+  const location = useLocation()
   useLayoutEffect(() => {
     setHeaderComponentHeight(headerComponentRef.current?.clientHeight || 0)
+    if (location.state?.prevFilter) {
+      backHistory.current = location.state?.prevFilter
+    }
   }, [])
 
   const backButtonClickHandler = (e) => {
@@ -112,7 +116,13 @@ function Header({
       return
     }
     if (backHref) {
-      navigate(backHref)
+      if (backHistory.current) {
+        const saved = backHistory.current
+        const searchParams = new URLSearchParams(saved).toString()
+        navigate(`${backHref}?${searchParams}`, { replace: true, state: {} }) // clear state to avoid loops
+      } else {
+        navigate(backHref)
+      }
       return
     }
   }
