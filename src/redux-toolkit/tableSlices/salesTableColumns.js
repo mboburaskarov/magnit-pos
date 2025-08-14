@@ -27,18 +27,6 @@ const columns = [
     width: 160,
   },
 
-  // {
-  //   field: 'type',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 160,
-  // },
-  // {
-  //   field: 'is_delivered',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 160,
-  // },
   {
     field: 'cash',
     hide: false,
@@ -57,12 +45,7 @@ const columns = [
     minWidth: 70,
     width: 160,
   },
-  // {
-  //   field: 'visa',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 160,
-  // },
+
   {
     field: 'payme',
     hide: false,
@@ -75,18 +58,6 @@ const columns = [
     minWidth: 70,
     width: 160,
   },
-  // {
-  //   field: 'uzumbank',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 160,
-  // },
-  // {
-  //   field: 'balance',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 160,
-  // },
 
   {
     field: 'created_at',

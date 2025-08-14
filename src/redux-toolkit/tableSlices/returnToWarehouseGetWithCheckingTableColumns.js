@@ -58,18 +58,6 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
-  // {
-  //   field: 'scanned_unit',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 200,
-  // },
-  // {
-  //   field: 'new_pack',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 200,
-  // },
 ]
 
 const returnToWarehouseGetWithCheckingTableColumns = createSlice({

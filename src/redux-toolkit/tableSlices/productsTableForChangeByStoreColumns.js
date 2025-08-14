@@ -35,13 +35,6 @@ const columns = [
     width: 200,
   },
 
-  // {
-  //   field: 'expire_date',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 250,
-  // },
-
   {
     field: 'quantity',
     hide: false,

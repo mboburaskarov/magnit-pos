@@ -39,12 +39,6 @@ const columns = [
     width: 180,
   },
 
-  // {
-  //   field: 'accepted_amount',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 170,
-  // },
   {
     field: 'accepted_amount_vat',
     hide: false,

@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import arrayMove from '../../../utils/arrayMove'
 
 const columns = [
   {
@@ -80,13 +79,6 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
-  // {
-  //   field: 'actions',
-  //   hide: false,
-  //   minWidth: 80,
-  //   width: 80,
-  //   pinned: 'right',
-  // },
 ]
 
 const clientTableColumns = createSlice({

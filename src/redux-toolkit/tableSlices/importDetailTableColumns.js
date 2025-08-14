@@ -47,18 +47,7 @@ const columns = [
     minWidth: 70,
     width: 158,
   },
-  // {
-  //   field: 'created_by',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 170,
-  // },
-  // {
-  //   field: 'accepted_by',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 170,
-  // },
+
   {
     field: 'status',
     hide: false,
@@ -93,24 +82,6 @@ const columns = [
     minWidth: 70,
     width: 170,
   },
-  // {
-  //   field: 'sender',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 170,
-  // },
-  // {
-  //   field: 'recivers',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 170,
-  // },
-  // {
-  //   field: 'stores',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 170,
-  // },
 ]
 
 const importDetailsTableColumns = createSlice({

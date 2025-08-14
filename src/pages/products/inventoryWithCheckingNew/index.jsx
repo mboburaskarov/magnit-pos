@@ -70,14 +70,14 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       order: orderStoring.position === 1 ? `+${orderStoring.colId}` : orderStoring.position === 2 ? `-${orderStoring.colId}` : undefined,
     }
     const res = await requests.getInventoryDetails(filter).then((res) => {
+      if (get(res, 'data.data.data', []).length === 1 && !shouldICleanSearchQuery) {
+        setQuantityModalOpen({ id: get(res, 'data.data.data.[0].id'), data: get(res, 'data.data.data.[0]') })
+        setshouldICleanSearchQuery(true)
+      }
       if (res.data?.data?.data?.length > 0 && status !== 'checking') {
         // setSelectedCellRowId(res.data.data.data[0].id)
         setLastSelectedCellRowId(res.data.data.data[0].id)
         setSelectedIndex(0)
-      }
-      if (get(res, 'data.data.data', []).length === 1 && !shouldICleanSearchQuery) {
-        setQuantityModalOpen({ id: get(res, 'data.data.data.[0].id'), data: get(res, 'data.data.data.[0]') })
-        setshouldICleanSearchQuery(true)
       }
       return res
       // setHasChange(false)
