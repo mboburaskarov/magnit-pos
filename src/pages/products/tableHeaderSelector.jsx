@@ -350,9 +350,7 @@ export default function tableHeaderSelector({
         colId: el.field,
         cellRenderer: memo((p) => (
           <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-            {p?.data?.unit_per_pack > 0 && p?.data?.unit_quantity > 0
-              ? `${p.data.quantity} (${p.data.unit_quantity}/${p.data.unit_per_pack})`
-              : `${thousandDivider(p?.data?.quantity)} ${p?.data?.short_name}`}
+            {p?.data?.units}
           </Typography>
         )),
       }
