@@ -1,7 +1,7 @@
 import { useTheme } from '@emotion/react'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Print } from '@mui/icons-material'
+import { Block, Print } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/material'
 import { get, size } from 'lodash'
 import { useRef, useState } from 'react'
@@ -29,6 +29,7 @@ import OrderLite from './orderLite'
 function CartDetailSide({
   cashBoxDetails,
   setDmedPrescriptionsList,
+  setIsOpenSendRejectedProduct,
   dmedPrescriptionsList,
   saleCreate,
   userData,
@@ -75,45 +76,52 @@ function CartDetailSide({
   }
   return (
     <Box className={classes.card_detail}>
-      <Box display={'flex'}>
+      <Box display={'flex'} flexDirection={'column'}>
+        <Box display={'flex'} justifyContent={'space-between'}>
+          <Box
+            onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })}
+            className={classes.cart_detail_icon}
+          >
+            <StyledTooltip title={'Открыть новое окно продаж'}>
+              <FileIcon color={theme.palette.black} />
+            </StyledTooltip>
+          </Box>
+          <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
+            <StyledTooltip title={'Черновик / Отложки'}>
+              <TimeAndDate color={theme.palette.black} />
+            </StyledTooltip>
+          </Box>
+          <Box onClick={() => setIsOpenSendRejectedProduct(true)} className={classes.cart_detail_icon}>
+            <StyledTooltip title={'Отказ'}>
+              <Block sx={(theme) => ({ color: theme.palette.black, fontSize: '25px' })} />
+            </StyledTooltip>
+          </Box>
+
+          <CheckAccess id={'can-return-product'}>
+            <Box onClick={() => setIsOpenReturnExchange(true)} className={classes.cart_detail_icon}>
+              <StyledTooltip title={'Возврат'}>
+                <FontAwesomeIcon color={theme.palette.black} icon={faExchangeAlt} />
+              </StyledTooltip>
+            </Box>
+          </CheckAccess>
+          <Box
+            onClick={() => size(get(cartItemsList, 'data.data.data')) !== 0 && printNoProductCheque()}
+            className={classes.cart_detail_icon}
+            sx={{
+              path: {
+                color: theme.palette.black,
+              },
+            }}
+          >
+            <StyledTooltip title={'Распечатать не товарный чек'}>
+              <Print color={theme.palette.black} />
+            </StyledTooltip>
+          </Box>
+        </Box>
         <Box className={classes.cart_detail_id}>
           <Typography fontWeight={'500'} fontSize={'18px'} color={'orange.500'} lineHeight={'26px'}>
             #{get(cashBoxDetails, 'data.data.sale_number')}
           </Typography>
-        </Box>
-        <Box
-          onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })}
-          className={classes.cart_detail_icon}
-        >
-          <StyledTooltip title={'Открыть новое окно продаж'}>
-            <FileIcon color={theme.palette.black} />
-          </StyledTooltip>
-        </Box>
-        <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
-          <StyledTooltip title={'Черновик / Отложки'}>
-            <TimeAndDate color={theme.palette.black} />
-          </StyledTooltip>
-        </Box>
-
-        <CheckAccess id={'can-return-product'}>
-          <Box onClick={() => setIsOpenReturnExchange(true)} className={classes.cart_detail_icon}>
-            <StyledTooltip title={'Возврат'}>
-              <FontAwesomeIcon color={theme.palette.black} icon={faExchangeAlt} />
-            </StyledTooltip>
-          </Box>
-        </CheckAccess>
-        <Box
-          onClick={() => size(get(cartItemsList, 'data.data.data')) !== 0 && printNoProductCheque()}
-          className={classes.cart_detail_icon}
-          sx={{
-            path: {
-              color: theme.palette.black,
-            },
-          }}
-        >
-          <StyledTooltip title={'Распечатать не товарный чек'}>
-            <Print color={theme.palette.black} />
-          </StyledTooltip>
         </Box>
       </Box>
       <Box mb={'24px'}>

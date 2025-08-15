@@ -66,6 +66,12 @@ export const navbatRouteData = [
         id: '32',
         href: '/products/write-off',
       },
+      {
+        label: 'Товары с отказом',
+        active: '/products/rejected-products/*',
+        id: '3255',
+        href: '/products/rejected-products',
+      },
 
       // {
       //   label: 'Бонусный продукт',

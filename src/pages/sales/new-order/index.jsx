@@ -38,6 +38,7 @@ import ProductDrawer from './ProductDrawer'
 import CartDetailSide from './cart_detail_side'
 import CreateDraftDrawer from './createDraftDrawer'
 
+import SendRejectedProductDrawer from '../../../../components/Sales/SendRejectedProduct/SendRejectedProductDrawer'
 import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck'
 const useStyles = makeStyles((theme) => ({
   currentUser: {
@@ -124,6 +125,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: '24px',
+    marginTop: '20px',
     // marginRight: '8px',
   },
   cart_detail_icon: {
@@ -290,6 +292,7 @@ function NewSale() {
   const [isOpenDraft, setIsOpenDraft] = useState(false)
   const [isOpenNoorDrawer, setIsOpenNoorDrawer] = useState(false)
   const [isOpenReturnExchange, setIsOpenReturnExchange] = useState(false)
+  const [isOpenSendRejectedProduct, setIsOpenSendRejectedProduct] = useState(false)
   const [isCreateOpenDraft, setIsCreateOpenDraft] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [isOpenChangeShift, setIsOpenChangeShift] = useState(false)
@@ -304,6 +307,7 @@ function NewSale() {
   const [markingsList, setMarkingList] = useState({})
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const [openRejectConfirmDialog, setOpenRejectConfirmDialog] = useState(null)
   const [markingCount, setMarkingCount] = useState({})
   const [customers, setCustomers] = useState([])
   const [discount, setDiscountType] = useState('percent')
@@ -565,6 +569,18 @@ function NewSale() {
     },
     onError: (err) => {
       error('Ошибка при Элемент корзины был удален')
+      console.log('err', err)
+    },
+  })
+  const { mutate: sendToRejectedProduct, isLoading: issendToRejectedProduct } = useMutation(requests.sendToRejectedProduct, {
+    onSuccess: () => {
+      setOpenRejectConfirmDialog(false)
+      setIsOpenSendRejectedProduct(false)
+      navigate(`/sales/new-sale/${id}`)
+      success('Продукт был отправлен в «Отказ»')
+    },
+    onError: (err) => {
+      error('Ошибка при Продукт был отправлен в «Отказ»')
       console.log('err', err)
     },
   })
@@ -954,6 +970,7 @@ function NewSale() {
           <Box width={'calc(100% - 384px)'} position={'relative'} padding={'20px'}>
             <Box position={'relative'}>
               <CartSearchBar
+                setOpenRejectConfirmDialog={setOpenRejectConfirmDialog}
                 setDmedPrescriptionsList={setDmedPrescriptionsList}
                 discount={{ type: discount, amount: inputDiscount }}
                 searchRef={searchRef}
@@ -1142,6 +1159,7 @@ function NewSale() {
           </Box>
 
           <CartDetailSide
+            setIsOpenSendRejectedProduct={setIsOpenSendRejectedProduct}
             dmedPrescriptionsList={dmedPrescriptionsList}
             cashBoxDetails={cashBoxDetails}
             setDmedPrescriptionsList={setDmedPrescriptionsList}
@@ -1232,6 +1250,43 @@ function NewSale() {
           }
         />
       )}
+      {openRejectConfirmDialog && (
+        <ConfirmDialog
+          open={!!openRejectConfirmDialog}
+          setOpen={setOpenRejectConfirmDialog}
+          icon={<BigWarningIcon />}
+          title={'Oтправить "Отказ" ?'}
+          desc={'Вы хотите отправить этот продукт, чтобы "Отказ"'}
+          supDesc={openRejectConfirmDialog.type === 'deleteAll' ? '' : openRejectConfirmDialog?.name}
+          actions={
+            <>
+              <Button
+                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
+                fullWidth
+                color='secondary'
+                variant='contained'
+                onClick={() => setOpenRejectConfirmDialog(null)}
+              >
+                Нет
+              </Button>
+              <LoadingButton
+                variant='contained'
+                type='button'
+                loading={isdeleteCartItem}
+                onClick={() => {
+                  sendToRejectedProduct({
+                    product_id: get(openRejectConfirmDialog, 'id'),
+                    store_id: get(userData, 'store.id'),
+                    product_name: get(openRejectConfirmDialog, 'product_name'),
+                  })
+                }}
+              >
+                Да
+              </LoadingButton>
+            </>
+          }
+        />
+      )}
       <OrderDrawer
         cartItemsList={get(cartItemsList, 'data.data')}
         printContainer={printContainer}
@@ -1288,6 +1343,12 @@ function NewSale() {
       <DraftDrawer cashBoxDetails={cashBoxDetails} open={isOpenDraft} setOpen={setIsOpenDraft} />
       <OnlineSaleDrawer cashBoxDetails={cashBoxDetails} open={isOpenNoorDrawer} setOpen={setIsOpenNoorDrawer} />
       <ReturnExchangeDrawer cashBoxDetails={cashBoxDetails} open={isOpenReturnExchange} setOpen={setIsOpenReturnExchange} />
+      <SendRejectedProductDrawer
+        setOpenRejectConfirmDialog={setOpenRejectConfirmDialog}
+        cashBoxDetails={cashBoxDetails}
+        open={isOpenSendRejectedProduct}
+        setOpen={setIsOpenSendRejectedProduct}
+      />
       <ClientCreateMini
         setCustomerId={setCustomerId}
         quickCreateClientName={quickCreateClientName}

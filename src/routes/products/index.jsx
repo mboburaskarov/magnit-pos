@@ -5,6 +5,7 @@ import ChangePricePage from '../../pages/products/changePrice'
 import ProductsPageByImport from '../../pages/products/changeProductByImport'
 import ImportPage from '../../pages/products/import'
 import InventoryPage from '../../pages/products/inventory'
+import RejectedProducts from '../../pages/products/rejectedProducts/RejectedProducts'
 import ReturnToWarehousePage from '../../pages/products/returnToWarehouse'
 import TransferPage from '../../pages/products/transfer'
 import WriteOffPage from '../../pages/products/writeOff'
@@ -15,6 +16,10 @@ const productsRoutes = {
     {
       path: 'all',
       element: <ProductsPage />,
+    },
+    {
+      path: 'rejected-products',
+      element: <RejectedProducts />,
     },
     {
       path: 'all-by-import',

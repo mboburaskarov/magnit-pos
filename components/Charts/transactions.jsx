@@ -1,6 +1,9 @@
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
+import FallIcon from '../../src/assets/icons/FallIcon'
+import GrowIcon from '../../src/assets/icons/GrowIcon'
 import Money from '../../src/assets/icons/Money'
+import { calculatePercentage } from '../../utils/calculatePercentage'
 import thousandDivider from '../../utils/thousandDivider'
 
 export default function Transactions({ data, title, subTitle }) {
@@ -44,25 +47,60 @@ export default function Transactions({ data, title, subTitle }) {
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
                 Продажи
               </TableCell>
+              <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
+                Прирост
+              </TableCell>
             </TableHead>
-            <TableBody sx={{ borderTop: '1px solid', borderColor: 'gray.200' }}>
-              {data?.map((item, index) => (
-                <TableRow key={item.name}>
-                  <TableCell
-                    sx={{ width: 'auto', fontSize: '16px', fontWeight: 600, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}
-                  >
-                    {index + 1}. {item.name}
-                  </TableCell>
-                  <TableCell sx={{ fontSize: '16px', fontWeight: 600, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}>
-                    {item.count}
-                  </TableCell>
-                  <TableCell
-                    sx={{ textAlign: 'start', fontSize: '16px', fontWeight: 600, lineHeight: '28px', border: 'none', p: '16px 0px 16px 0', color: 'dark.500' }}
-                  >
-                    {thousandDivider(item.amount, 'сум')}
-                  </TableCell>
-                </TableRow>
-              ))}
+            <TableBody>
+              {data?.map((item, index) => {
+                const isFall = calculatePercentage(item.previous_total_amount || 1, item.count) > 0
+                const percent = calculatePercentage(item.previous_total_amount || 1, item.count)
+                return (
+                  <TableRow key={item.name}>
+                    <TableCell
+                      sx={{ width: 'auto', fontSize: '16px', fontWeight: 600, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}
+                    >
+                      {index + 1}. {item.name}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: '16px', fontWeight: 600, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}>
+                      {item.count}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        textAlign: 'start',
+                        fontSize: '16px',
+                        fontWeight: 600,
+                        lineHeight: '28px',
+                        border: 'none',
+                        p: '16px 0px 16px 0',
+                        color: 'dark.500',
+                      }}
+                    >
+                      {thousandDivider(item.amount, 'сум')}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', border: 'none', p: '16px 0px 16px 0', color: 'dark.500' }}>
+                      <Box
+                        display='inline-flex'
+                        sx={{
+                          borderRadius: '5px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          padding: '4px 5px',
+                          margin: '5px',
+
+                          backgroundColor: !isFall ? '#30BE821A' : '#F45B691A',
+                        }}
+                        alignItems='center'
+                      >
+                        {!isFall ? <GrowIcon /> : <FallIcon />}{' '}
+                        <Typography color={isFall ? '#F45B69' : '#30BE82'} fontWeight='500' mr={0.5} fontSize={14} lineHeight={'18px'}>
+                          {percent}%
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
         </TableContainer>

@@ -3,6 +3,9 @@ import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, Ta
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import FallIcon from '../../src/assets/icons/FallIcon'
+import GrowIcon from '../../src/assets/icons/GrowIcon'
+import { calculatePercentage } from '../../utils/calculatePercentage'
 import thousandDivider from '../../utils/thousandDivider'
 
 export default function TopProducts({ data }) {
@@ -42,52 +45,78 @@ export default function TopProducts({ data }) {
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
                 Продажи
               </TableCell>
+              <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
+                Прирост
+              </TableCell>
             </TableHead>
             <TableBody>
-              {formattedData?.map((item, index) => (
-                <TableRow key={item.name}>
-                  <TableCell
-                    sx={{
-                      display: '-webkit-box',
-                      overflow: 'hidden',
-                      wordWrap: 'break-word',
-                      textOverflow: 'ellipsis',
-                      '-webkit-box-orient': 'vertical',
-                      '-webkit-line-clamp': '1',
-                      fontSize: '16px',
-                      fontWeight: 500,
-                      lineHeight: '28px',
-                      border: 'none',
-                      // maxWidth: '500px',
-                      p: '16px 16px 0px 0',
-                      color: 'dark.500',
-                    }}
-                  >
-                    {index + 1}. {item.name}
-                  </TableCell>
-                  <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}>
-                    {item.unit_per_pack > 1
-                      ? item.count > 0
-                        ? `${item.count}(${item.unit_quantity}/${item.unit_per_pack})`
-                        : `(${item.unit_quantity}/${item.unit_per_pack})`
-                      : item.count}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      flexShrink: 0,
-                      whiteSpace: 'nowrap',
-                      fontSize: '16px',
-                      fontWeight: 500,
-                      lineHeight: '28px',
-                      border: 'none',
-                      p: '16px 0px 16px 0',
-                      color: 'dark.500',
-                    }}
-                  >
-                    {thousandDivider(item.total_amount, 'сум')}
-                  </TableCell>
-                </TableRow>
-              ))}
+              {formattedData?.map((item, index) => {
+                const isFall = calculatePercentage(item.previous_total_amount || 1, item.count) > 0
+                const percent = calculatePercentage(item.previous_total_amount || 1, item.count)
+                return (
+                  <TableRow key={item.name}>
+                    <TableCell
+                      sx={{
+                        display: '-webkit-box',
+                        overflow: 'hidden',
+                        wordWrap: 'break-word',
+                        textOverflow: 'ellipsis',
+                        '-webkit-box-orient': 'vertical',
+                        '-webkit-line-clamp': '1',
+                        fontSize: '16px',
+                        fontWeight: 500,
+                        lineHeight: '28px',
+                        border: 'none',
+                        // maxWidth: '500px',
+                        p: '16px 16px 0px 0',
+                        color: 'dark.500',
+                      }}
+                    >
+                      {index + 1}. {item.name}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', border: 'none', p: '16px 16px 16px 0', color: 'dark.500' }}>
+                      {item.unit_per_pack > 1
+                        ? item.count > 0
+                          ? `${item.count}(${item.unit_quantity}/${item.unit_per_pack})`
+                          : `(${item.unit_quantity}/${item.unit_per_pack})`
+                        : item.count}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        flexShrink: 0,
+                        whiteSpace: 'nowrap',
+                        fontSize: '16px',
+                        fontWeight: 500,
+                        lineHeight: '28px',
+                        border: 'none',
+                        p: '16px 0px 16px 0',
+                        color: 'dark.500',
+                      }}
+                    >
+                      {thousandDivider(item.total_amount, 'сум')}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', border: 'none', p: '16px 0px 16px 0', color: 'dark.500' }}>
+                      <Box
+                        display='inline-flex'
+                        sx={{
+                          borderRadius: '5px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          padding: '4px 5px',
+                          margin: '5px',
+                          backgroundColor: !isFall ? '#30BE821A' : '#F45B691A',
+                        }}
+                        alignItems='center'
+                      >
+                        {!isFall ? <GrowIcon /> : <FallIcon />}{' '}
+                        <Typography color={isFall ? '#F45B69' : '#30BE82'} fontWeight='500' mr={0.5} fontSize={14} lineHeight={'18px'}>
+                          {percent}%
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
         </TableContainer>

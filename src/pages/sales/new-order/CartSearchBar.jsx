@@ -196,7 +196,7 @@ function CartSearchBar({
   openDraft,
   setDmedPrescriptionsList,
   discount,
-
+  setOpenRejectConfirmDialog,
   searchResetRef,
   searchRef,
 
@@ -525,6 +525,7 @@ function CartSearchBar({
                   product={product}
                   searchTerm={'searchTearm'}
                   classes={classes}
+                  setOpenRejectConfirmDialog={setOpenRejectConfirmDialog}
                 />
               ))
             ) : (

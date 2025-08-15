@@ -305,6 +305,10 @@ export const requests = {
   createBannedProduct: (data) => request.post(`v1/product/exclude`, data),
   editBannedProduct: ({ data, id }) => request.put(`v1/product/exclude/${id}`, data),
   deleteBannedProduct: (id) => request.delete(`v1/product/exclude/${id}`),
+  //rejected
+  getAllProductsList: (filter) => request.get(`v1/rejected-products/products${qs.stringify(filter, { addQueryPrefix: true })}`),
+  sendToRejectedProduct: (data) => request.post(`v1/rejected-products`, data),
+  getRejectedProductList: (filter) => request.get(`v1/rejected-products/list${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //customers
   createCustomer: (data) => request.post(`v1/customer`, data),
