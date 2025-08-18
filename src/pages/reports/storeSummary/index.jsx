@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
@@ -19,12 +19,15 @@ import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelec
 import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
+import ArrowDown from '../../../assets/icons/ArrowDown'
+import ArrowUp from '../../../assets/icons/ArrowUp'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/storeSummaryTableColumns'
 import FilterMenu from './FilterMenu'
+import StoreSummaryReportDashboard from './StoreSummaryReportDashboardReportDashboard'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
@@ -37,6 +40,7 @@ export default function StoreSummaryPage() {
   const [appType, setAppType] = useState('ALL')
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
   const [selectedShops, setSelectedShops] = useState('all')
+  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
 
   const [selectClients, setselectClients] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
@@ -146,10 +150,31 @@ export default function StoreSummaryPage() {
       error('Ошибка при скачать excel!')
     },
   })
+  const { data: storeSummaryReportStat, refetch: fetchstoreSummaryReportStat } = useQuery(
+    ['storeSummaryReportStat', values?.search, storeSummaryReportListFilter],
+    () => requests.getStoreSummaryReportStat(storeSummaryReportListFilter)
+  )
   return (
     <LoadingContainer readyState={true}>
       <Header noActions isLoading={false} backIcon backHref='/reports/branch' text={'Остаток Аптека '} />
       <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'0px'} px={'50px'} pb={'20px'}>
+        <Box
+          sx={{
+            m: ' 0 0 20px',
+            userSelect: 'none !important',
+            cursor: 'pointer',
+            '& > p': {
+              cursor: 'pointer',
+              userSelect: 'none !important',
+            },
+          }}
+          display={'flex'}
+          onClick={() => setIsOpenStatDashboard((p) => !p)}
+        >
+          {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
+          <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
+        </Box>
+        {isOpenStatDashboard && <StoreSummaryReportDashboard data={get(storeSummaryReportStat, 'data.data')} />}
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
             <Box

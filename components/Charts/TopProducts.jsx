@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import FallIcon from '../../src/assets/icons/FallIcon'
 import GrowIcon from '../../src/assets/icons/GrowIcon'
-import { calculatePercentage } from '../../utils/calculatePercentage'
 import thousandDivider from '../../utils/thousandDivider'
 
 export default function TopProducts({ data }) {
@@ -51,8 +50,8 @@ export default function TopProducts({ data }) {
             </TableHead>
             <TableBody>
               {formattedData?.map((item, index) => {
-                const isFall = calculatePercentage(item.previous_total_amount || 1, item.count) > 0
-                const percent = calculatePercentage(item.previous_total_amount || 1, item.count)
+                const isFall = item?.percent > 0
+                const percent = item?.percent
                 return (
                   <TableRow key={item.name}>
                     <TableCell

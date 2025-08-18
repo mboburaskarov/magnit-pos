@@ -1,5 +1,6 @@
 import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import BranchReportsList from '../../pages/reports/branch'
+import ClientReportsList from '../../pages/reports/client'
 import PoductReportsList from '../../pages/reports/product'
 import VendorReportsList from '../../pages/reports/vendor'
 
@@ -19,6 +20,10 @@ const reportsRoutes = {
     {
       path: 'vendor',
       children: [{ path: '', element: <VendorReportsList /> }],
+    },
+    {
+      path: 'client',
+      children: [{ path: '', element: <ClientReportsList /> }],
     },
   ],
 }

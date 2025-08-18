@@ -146,7 +146,7 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         headerComponent: CustomHeader,
         orderStoring,
         setOrderStoring,
-        headerName: 'Продажи',
+        headerName: 'Итог',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='total' />),
       }

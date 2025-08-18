@@ -1,5 +1,6 @@
 import MainLayout from '../../layouts/MainLayout'
 import BonusProductsPage from '../../pages/reports/bonusProducts'
+import DiscountCardReport from '../../pages/reports/client/discountCardReport'
 import LFLReport from '../../pages/reports/lfl'
 import ProductReportPage from '../../pages/reports/productReport'
 import SellerBonus from '../../pages/reports/sellerBonus'
@@ -50,6 +51,10 @@ const reportsInsideRoutes = {
     {
       path: 'store-report',
       children: [{ path: '', element: <StoreReportPage /> }],
+    },
+    {
+      path: 'discount-card-report',
+      children: [{ path: '', element: <DiscountCardReport /> }],
     },
   ],
 }

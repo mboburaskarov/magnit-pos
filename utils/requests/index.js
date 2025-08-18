@@ -93,6 +93,8 @@ export const requests = {
   storeSummaryReport: ({ store_ids, ...filter }) => request.post(`v1/report/store-summary${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   storeSummaryExcelReport: (filter) => requestEXCEL.post(`v1/report/store-summary/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
+  getStoreSummaryReportStat: (filter) => request.post(`v1/report/store-summary-stats${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   //shift
   createShift: (data) => request.post(`v1/shift`, data),
 
@@ -309,6 +311,9 @@ export const requests = {
   getAllProductsList: (filter) => request.get(`v1/rejected-products/products${qs.stringify(filter, { addQueryPrefix: true })}`),
   sendToRejectedProduct: (data) => request.post(`v1/rejected-products`, data),
   getRejectedProductList: (filter) => request.get(`v1/rejected-products/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+
+  //report
+  getDiscountCartReport: (filter) => request.post(`v1/report/discount-card${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //customers
   createCustomer: (data) => request.post(`v1/customer`, data),

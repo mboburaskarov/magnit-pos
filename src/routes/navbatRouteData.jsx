@@ -154,6 +154,12 @@ export const navbatRouteData = [
         // soon: true,
         href: '/reports/vendor',
       },
+      {
+        label: 'Клиенти',
+        active: '/reports/client/*',
+        id: '917',
+        href: '/reports/client',
+      },
     ],
   },
   {
