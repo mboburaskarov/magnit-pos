@@ -185,8 +185,6 @@ export default function DashboarPage() {
     return {
       limit: values?.limit || 15,
       search: values?.search,
-      // start_date: values?.start_date || dayjs().format('YYYY-MM-DD'),
-      // end_date: values?.start_date == values?.end_date ? null : values?.end_date,
       start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
       end_date:
         values?.end_date && values?.to_time

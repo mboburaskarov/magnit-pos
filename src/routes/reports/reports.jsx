@@ -1,14 +1,14 @@
 import MainLayout from '../../layouts/MainLayout'
-import BonusProductsPage from '../../pages/reports/bonusProducts'
+import StoreReportPage from '../../pages/reports/branch/storeReport'
+import StoreSummaryPage from '../../pages/reports/branch/storeSummary'
+import TopBranchesPage from '../../pages/reports/branch/topBranches'
 import DiscountCardReport from '../../pages/reports/client/discountCardReport'
-import LFLReport from '../../pages/reports/lfl'
-import ProductReportPage from '../../pages/reports/productReport'
-import SellerBonus from '../../pages/reports/sellerBonus'
-import StoreReportPage from '../../pages/reports/storeReport'
-import StoreSummaryPage from '../../pages/reports/storeSummary'
-import TopBranchesPage from '../../pages/reports/topBranches'
-import TopProductsPage from '../../pages/reports/topProducts'
-import TopVendorsPage from '../../pages/reports/topVendor'
+import BonusProductsPage from '../../pages/reports/product/bonusProducts'
+import LFLReport from '../../pages/reports/product/lfl'
+import ProductReportPage from '../../pages/reports/product/productReport'
+import TopProductsPage from '../../pages/reports/product/topProducts'
+import SellerBonus from '../../pages/reports/vendor/sellerBonus'
+import TopVendorsPage from '../../pages/reports/vendor/topVendor'
 
 const reportsInsideRoutes = {
   path: 'reports',

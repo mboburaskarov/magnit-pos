@@ -57,6 +57,12 @@ const columns = [
     width: 158,
   },
   {
+    field: 'payme',
+    hide: false,
+    minWidth: 70,
+    width: 158,
+  },
+  {
     field: 'return_amount',
     hide: false,
     minWidth: 70,
