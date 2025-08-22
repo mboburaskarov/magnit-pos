@@ -425,8 +425,10 @@ export default function OrderDrawer({
     onSuccess: ({ data }) => {
       if (!get(data, 'error', true)) {
         setCustomerId('')
-        let qrCodeURL = get(data, 'message.qrCodeURL') || get(data, 'message.qrCodeUrl') || 'pending'
-        setQrcodeUrl({ qr: qrCodeURL, fiscal: get(data, 'message.fiscalSign', 'pending') })
+        let qrCodeURL = get(data, 'message.qrCodeURL') || get(data, 'message.qrCodeUrl') || get(data, 'info.qrCodeURL') || 'pending'
+        let fiscalData = get(data, 'message.fiscalSign') || get(data, 'info.fiscalSign') || 'pending'
+
+        setQrcodeUrl({ qr: qrCodeURL, fiscal: fiscalData })
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
 
         return
@@ -559,7 +561,26 @@ export default function OrderDrawer({
       marking_list: Object.values(markingsList[el.id] || {}).filter((a) => a.length),
       marking_count: Object.values(markingsList[el.id] || {}).filter((a) => a.length)?.length,
     }))
-
+    const mockData = get(cartItemsList, 'data', []).map((el) => {
+      return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
+        barcode: el.barcode,
+        amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
+        price: el.quantity > index ? parseFloat((el.unit_price * 100).toFixed(2)) : parseFloat((el.unit_quantity_price * el.unit_quantity * 100).toFixed(2)),
+        discount:
+          el.quantity > index
+            ? parseFloat((get(el, 'discount_amount') * 100).toFixed(2))
+            : parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2)),
+        vatPercent: get(el, 'vat_percent'),
+        vat: el.quantity > index ? parseFloat((get(el, 'vat_price') * 100).toFixed(2)) : parseFloat((el.unit_vat_price * el.unit_quantity * 100).toFixed(2)),
+        label: marking,
+        name: el.name,
+        classCode: get(el, 'class_code'),
+        packageCode: get(el, 'package_code'),
+        // commissionTIN: '',
+        other: 0,
+        ownerType: 0,
+      }))
+    })
     finishSaleWithoutAppPaymentType({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
       payment_types: paymentTypes,
@@ -569,6 +590,7 @@ export default function OrderDrawer({
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
       marking_data: markingData,
+      epos_data: mockData,
     })
 
     return
