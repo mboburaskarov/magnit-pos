@@ -1,10 +1,10 @@
 import { useTheme } from '@emotion/react'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Block, Print } from '@mui/icons-material'
+import { Block, Print, ReceiptLong } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/material'
 import { get, size } from 'lodash'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Highlighter from 'react-highlight-words'
 import { useTranslation } from 'react-i18next'
 import OutsideClickHandler from 'react-outside-click-handler'
@@ -66,6 +66,7 @@ function CartDetailSide({
 
   const { t } = useTranslation()
   const theme = useTheme()
+  const [sendToEpos, setSendToEpos] = useState(null)
   const [maxAmount, setMaxAmount] = useState(0)
   const [collapseDiscount, setCollapseDiscount] = useState(false)
   const childRef = useRef()
@@ -74,6 +75,16 @@ function CartDetailSide({
   const printNoProductCheque = () => {
     childRef.current.printChildCheque()
   }
+  useEffect(() => {
+    let send_to_epos = localStorage.getItem('send_to_epos')
+    setSendToEpos(JSON.parse(send_to_epos) ?? true)
+  }, [])
+  useEffect(() => {
+    if (typeof sendToEpos == 'boolean') localStorage.setItem('send_to_epos', sendToEpos)
+    else localStorage.setItem('send_to_epos', true)
+  }, [sendToEpos])
+  console.log(sendToEpos)
+
   return (
     <Box className={classes.card_detail}>
       <Box display={'flex'} flexDirection={'column'}>
@@ -101,6 +112,18 @@ function CartDetailSide({
             <Box onClick={() => setIsOpenReturnExchange(true)} className={classes.cart_detail_icon}>
               <StyledTooltip title={'Возврат'}>
                 <FontAwesomeIcon color={theme.palette.black} icon={faExchangeAlt} />
+              </StyledTooltip>
+            </Box>
+          </CheckAccess>
+          <CheckAccess id={'can-disable-epos-cheque'}>
+            <Box
+              onClick={() => {
+                setSendToEpos((prev) => !prev)
+              }}
+              className={classes.cart_detail_icon}
+            >
+              <StyledTooltip title={'Без налогов'}>
+                <ReceiptLong sx={{ color: sendToEpos ? '#333' : '#fe5000' }} />
               </StyledTooltip>
             </Box>
           </CheckAccess>
@@ -403,7 +426,7 @@ function CartDetailSide({
             loading={hasChange}
             disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0 || hasChange}
             onClick={() => {
-              if (isAllMarkingFill()) {
+              if (isAllMarkingFill() || !sendToEpos) {
                 setLiteOrder(true)
               } else {
                 setLiteOrder(false)
@@ -471,7 +494,7 @@ function CartDetailSide({
                 },
               }}
               onClick={() => {
-                if (isAllMarkingFill()) {
+                if (isAllMarkingFill() || !sendToEpos) {
                   setIsOrderDrower(true)
                 } else {
                   setIsOpenImplementMarkingDialog({ mode: 'full' })

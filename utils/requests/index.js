@@ -231,6 +231,7 @@ export const requests = {
   getTransferDetailsExcelReport: (filter) => requestEXCEL.get(`v1/transfer-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   downloadTransferNakladnoy: (filter) => requestEXCEL.get(`v1/transfer/export-nakladnoy${qs.stringify(filter, { addQueryPrefix: true })}`),
   getTransferStatusCount: (filter) => request.get(`v1/transfer/list-status${qs.stringify(filter, { addQueryPrefix: true })}`),
+  resend1cTransfer: (id) => request.post(`v1/transfer/send1c/${id}`),
 
   // autoOrder
   createAutoOrder: (data) => request.post(`v1/auto-order`, data),

@@ -134,13 +134,26 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
       },
     }
   )
+
+  const { mutate: send1c, isLoading: isSend1c } = useMutation(requests.resend1cReturnTOwarehouse, {
+    onSuccess: ({ data }) => {
+      success('Повторно отправлено в 1с')
+    },
+    onError: (err) => {
+      console.log(err)
+
+      error('Ошибка при Повторно отправлено в 1с!')
+    },
+  })
   return (
     <LoadingContainer readyState={!isfinishWriteOffChecking}>
       <FormProvider {...methods}>
         <Header
-          onSubmit={() => setOpenFinishConfirmDialog(true)}
+          onSubmit={() => send1c(id)}
+          buttonText='Повторно отправлено в 1с'
+          // onSubmit={() => setOpenFinishConfirmDialog(true)}
           isLoading={false}
-          noActions
+          // noActions
           // buttonText='Принятие'
           backIcon
           backHref='/products/return-to-warehouse'

@@ -30,16 +30,17 @@ import notificationAudio from '../../../assets/audio/notification.mp3'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import useDebouncedValue from '../../../hooks/useDebouncedValue'
+import CartDetailSide from './cart_detail_side'
 import CartItem from './CartItem'
 import CartSearchBar from './CartSearchBar'
 import ChangeShift from './ChangeShift'
+import CreateDraftDrawer from './createDraftDrawer'
 import ImplementMarkingDialog from './ImplementMarkingDialog'
 import ProductDrawer from './ProductDrawer'
-import CartDetailSide from './cart_detail_side'
-import CreateDraftDrawer from './createDraftDrawer'
 
 import SendRejectedProductDrawer from '../../../../components/Sales/SendRejectedProduct/SendRejectedProductDrawer'
 import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck'
+import OrganizeDmedOrder from './OrganizeDmedOrder'
 const useStyles = makeStyles((theme) => ({
   currentUser: {
     // minWidth: '120px',
@@ -298,8 +299,10 @@ function NewSale() {
   const [isOpenChangeShift, setIsOpenChangeShift] = useState(false)
   const [dmedPrescriptionsList, setDmedPrescriptionsList] = useState([])
   const [liteOrder, setLiteOrder] = useState(false)
+  console.log(dmedPrescriptionsList)
 
   const [isOpenImplementMarkingDialog, setIsOpenImplementMarkingDialog] = useState(false)
+  const [isOpenOrganizeDmedOrderDialog, setIsOpenOrganizeDmedOrderDialog] = useState(true)
   const [input, setInput] = useState('')
   const lastKeyPressTime = useRef(Date.now())
   const [lastNoorOrderCount, setLastNoorOrderCount] = useState(0)
@@ -970,6 +973,8 @@ function NewSale() {
           <Box width={'calc(100% - 384px)'} position={'relative'} padding={'20px'}>
             <Box position={'relative'}>
               <CartSearchBar
+                cartItemsList={cartItemsList}
+                dmedPrescriptionsList={dmedPrescriptionsList}
                 setOpenRejectConfirmDialog={setOpenRejectConfirmDialog}
                 setDmedPrescriptionsList={setDmedPrescriptionsList}
                 discount={{ type: discount, amount: inputDiscount }}
@@ -1009,7 +1014,7 @@ function NewSale() {
                         alignItems={'center'}
                         onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}
                       >
-                        <Typography sx={{ mr: '12px', mt: '3px', fontSize: '22px', fontWeight: '600' }}>
+                        <Typography onClick={() => setIsOpenOrganizeDmedOrderDialog(true)} sx={{ mr: '12px', mt: '3px', fontSize: '22px', fontWeight: '600' }}>
                           {size(get(cartItemsList, 'data.data.data', 0))}
                         </Typography>
                         <DeleteIcon width={'20px'} />
@@ -1327,6 +1332,12 @@ function NewSale() {
         open={isOpenImplementMarkingDialog}
         implementMarkingList={implementMarkingList}
         handleClose={() => setIsOpenImplementMarkingDialog(false)}
+      />
+      <OrganizeDmedOrder
+        medicine={get(cartItemsList, 'data.data.data', [])}
+        dmedPrescriptionsList={dmedPrescriptionsList}
+        open={isOpenOrganizeDmedOrderDialog}
+        handleClose={() => setIsOpenOrganizeDmedOrderDialog(false)}
       />
       <DecreasedCartItemMarkingCheck
         markingCount={markingCount}
