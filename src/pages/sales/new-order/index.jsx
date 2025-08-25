@@ -302,7 +302,7 @@ function NewSale() {
   console.log(dmedPrescriptionsList)
 
   const [isOpenImplementMarkingDialog, setIsOpenImplementMarkingDialog] = useState(false)
-  const [isOpenOrganizeDmedOrderDialog, setIsOpenOrganizeDmedOrderDialog] = useState(true)
+  const [isOpenOrganizeDmedOrderDialog, setIsOpenOrganizeDmedOrderDialog] = useState(false)
   const [input, setInput] = useState('')
   const lastKeyPressTime = useRef(Date.now())
   const [lastNoorOrderCount, setLastNoorOrderCount] = useState(0)
