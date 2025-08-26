@@ -244,6 +244,7 @@ export default function OrderDrawer({
   setIsOrderDrower,
   isOrderDrower,
   dmedOrganizedList,
+  setDmedOrganizedList,
   markingsList,
   dmedPrescriptionsList,
   printContainer,
@@ -319,6 +320,7 @@ export default function OrderDrawer({
     onSuccess: ({ data }) => {
       setNewSaleId(get(data, 'data.id', false))
       setDmedPrescriptionsList([])
+      setDmedOrganizedList([])
     },
     onError: (err) => {
       error('Ошибка при епосе')

@@ -1164,6 +1164,7 @@ function NewSale() {
           </Box>
 
           <CartDetailSide
+            setDmedOrganizedList={setDmedOrganizedList}
             setIsOpenOrganizeDmedOrderDialog={setIsOpenOrganizeDmedOrderDialog}
             dmedOrganizedList={dmedOrganizedList}
             setIsOpenSendRejectedProduct={setIsOpenSendRejectedProduct}
@@ -1295,6 +1296,7 @@ function NewSale() {
         />
       )}
       <OrderDrawer
+        setDmedOrganizedList={setDmedOrganizedList}
         dmedOrganizedList={dmedOrganizedList}
         cartItemsList={get(cartItemsList, 'data.data')}
         printContainer={printContainer}

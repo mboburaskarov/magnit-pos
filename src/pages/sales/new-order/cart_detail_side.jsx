@@ -388,6 +388,7 @@ function CartDetailSide({
         })}
       >
         <OrderLite
+          setDmedOrganizedList={setDmedOrganizedList}
           liteOrder={liteOrder}
           setMaxAmount={setMaxAmount}
           dmedOrganizedList={dmedOrganizedList}

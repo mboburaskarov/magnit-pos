@@ -20,6 +20,7 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
 function OrderLite({
   cartItemsList,
+  setDmedOrganizedList,
   markingsList,
   childRef,
   setDmedPrescriptionsList,
@@ -614,6 +615,7 @@ function OrderLite({
     onSuccess: ({ data }) => {
       setNewSaleId(get(data, 'data.id', false))
       setDmedPrescriptionsList([])
+      setDmedOrganizedList([])
     },
     onError: (err) => {
       error('Ошибка при епосе')
