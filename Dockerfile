@@ -16,7 +16,7 @@ FROM nginx:stable-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # Expose nginx default port
-EXPOSE 80
+EXPOSE 3000
 
 # Run nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]
