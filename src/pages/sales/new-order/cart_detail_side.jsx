@@ -27,6 +27,7 @@ import DmedPrescriptionsList from './dmedPrescriptionsList'
 import OrderLite from './orderLite'
 
 function CartDetailSide({
+  setDmedOrganizedList,
   cashBoxDetails,
   dmedOrganizedList,
   setIsOpenOrganizeDmedOrderDialog,
