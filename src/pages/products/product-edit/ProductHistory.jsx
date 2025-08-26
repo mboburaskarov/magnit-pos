@@ -20,7 +20,7 @@ export default function ProductHistory({ id }) {
       offset: values?.offsetHistory || 0,
     }
   }, [values?.limitHistory, values?.offsetHistory])
-
+  // salom
   const {
     data: productDataHistory,
     isLoading: isproductDataLoadingHistory,
