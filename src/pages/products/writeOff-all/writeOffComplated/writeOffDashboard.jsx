@@ -15,7 +15,7 @@ function WriteOffDashboard({ data }) {
       }}
     >
       {[
-        { title: 'Магазин', value: 'store' },
+        { title: 'APTEKA', value: 'store' },
         { title: 'Кол-во товаров', value: 'writeoff_count' },
         { title: 'Сумма к списанию по цене поставки', value: 'supply_price_sum' },
         { title: 'Причина', value: 'comment' },

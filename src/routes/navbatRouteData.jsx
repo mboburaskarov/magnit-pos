@@ -142,7 +142,7 @@ export const navbatRouteData = [
         href: '/reports/product',
       },
       {
-        label: 'Магазин',
+        label: 'APTEKA',
         active: '/reports/branch/*',
         id: '9189',
         href: '/reports/branch',

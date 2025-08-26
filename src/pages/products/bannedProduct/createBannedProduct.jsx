@@ -29,8 +29,6 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
     setHideProduct(getValues('producer')?.name)
   }, [watch('producer')])
   const onSubmit = (data) => {
-    console.log(data)
-
     const requestBody = {
       producer_id: data.producer.value,
       product_id: hideProduct ? undefined : data.product.map((product) => product.id),
@@ -48,7 +46,6 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
     reset({}, { keepDirty: true })
   }, [open])
   const theme = useTheme()
-  console.log(getValues('producer'))
 
   const { t } = useTranslation()
   return (

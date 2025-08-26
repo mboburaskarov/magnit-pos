@@ -14,7 +14,7 @@ function WriteOffDashboard({ data }) {
       }}
     >
       {[
-        { title: 'Магазин', value: 'store' },
+        { title: 'APTEKA', value: 'store' },
         { title: 'Kоличество возвратa', value: 'scanned_count' },
         { title: 'Принятое количество', value: 'return_count' },
       ].map((stat) => (

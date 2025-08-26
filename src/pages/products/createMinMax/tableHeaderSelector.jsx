@@ -60,7 +60,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenEditMinM
     if (el.field === 'store_name') {
       return {
         ...el,
-        headerName: 'Магазин',
+        headerName: 'APTEKA',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),
       }

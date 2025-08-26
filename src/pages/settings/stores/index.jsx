@@ -101,7 +101,7 @@ export default function ProductsPage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          Магазины
+          Аптеки
         </Typography>
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -171,8 +171,8 @@ export default function ProductsPage() {
             tableSettings
             columns={tableColumns}
             emptyTableText={{
-              title: 'Магазины недоступен',
-              description: 'Если вы не можете найти искомый Магазины, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+              title: 'Аптеки недоступен',
+              description: 'Если вы не можете найти искомый Аптеки, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
             }}
             data={storesList?.data?.data?.data || []}
             totalCount={storesList?.data?.data?._meta?.total_count || 0}

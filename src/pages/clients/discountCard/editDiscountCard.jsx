@@ -76,28 +76,6 @@ export default function EditDiscountCard({ open, refetch, setOpen }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            {/* <LazySelect
-              boxStyle={{ width: '100%' }}
-              slug='customer_id'
-              id='customer_id'
-              name='customer_id'
-              isMulti={false}
-              customLabel='full_name'
-              label={t('Клиент')}
-              placeholder={t('Выберите Клиент')}
-              minWidth='auto'
-              isClearable={true}
-              request={requests.getAllCustomers}
-              filters={{ limit: 10 }}
-              control={control}
-              getOptionLabel={(option) => {
-                console.log(option)
-
-                return option.name
-              }}
-              filterOption={() => true}
-            /> */}
-            {/* <NumberFormatInput label={'Баркод'} id={`barcode`} name={`barcode`} fullWidth required type='number' defaultValue={0} disabled={false} /> */}
             <NumberFormatInput label={'Процент'} id={`percent`} name={`percent`} fullWidth required type='number' defaultValue={0} disabled={false} />
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button fullWidth variant='contained' type='submit'>

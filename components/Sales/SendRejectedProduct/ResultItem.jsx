@@ -508,7 +508,6 @@ export default function ResultItem({
                   setOpenRejectConfirmDialog({
                     id: product?.id,
                   })
-                  console.log('Typography clicked only')
                 }}
                 sx={{
                   bgcolor: '#f22',

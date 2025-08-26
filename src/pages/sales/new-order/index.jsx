@@ -299,7 +299,6 @@ function NewSale() {
   const [isOpenChangeShift, setIsOpenChangeShift] = useState(false)
   const [dmedPrescriptionsList, setDmedPrescriptionsList] = useState([])
   const [liteOrder, setLiteOrder] = useState(false)
-  console.log(dmedPrescriptionsList)
 
   const [isOpenImplementMarkingDialog, setIsOpenImplementMarkingDialog] = useState(false)
   const [isOpenOrganizeDmedOrderDialog, setIsOpenOrganizeDmedOrderDialog] = useState(false)
@@ -308,6 +307,7 @@ function NewSale() {
   const [lastNoorOrderCount, setLastNoorOrderCount] = useState(0)
   // const [searchTerm, setSearchTerm] = useState('')
   const [markingsList, setMarkingList] = useState({})
+  const [dmedOrganizedList, setDmedOrganizedList] = useState([])
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [openRejectConfirmDialog, setOpenRejectConfirmDialog] = useState(null)
@@ -1164,6 +1164,8 @@ function NewSale() {
           </Box>
 
           <CartDetailSide
+            setIsOpenOrganizeDmedOrderDialog={setIsOpenOrganizeDmedOrderDialog}
+            dmedOrganizedList={dmedOrganizedList}
             setIsOpenSendRejectedProduct={setIsOpenSendRejectedProduct}
             dmedPrescriptionsList={dmedPrescriptionsList}
             cashBoxDetails={cashBoxDetails}
@@ -1293,6 +1295,7 @@ function NewSale() {
         />
       )}
       <OrderDrawer
+        dmedOrganizedList={dmedOrganizedList}
         cartItemsList={get(cartItemsList, 'data.data')}
         printContainer={printContainer}
         dmedPrescriptionsList={dmedPrescriptionsList}
@@ -1334,6 +1337,7 @@ function NewSale() {
         handleClose={() => setIsOpenImplementMarkingDialog(false)}
       />
       <OrganizeDmedOrder
+        setDmedOrganizedList={setDmedOrganizedList}
         medicine={get(cartItemsList, 'data.data.data', [])}
         dmedPrescriptionsList={dmedPrescriptionsList}
         open={isOpenOrganizeDmedOrderDialog}

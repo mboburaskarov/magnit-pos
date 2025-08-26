@@ -105,7 +105,7 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
               name='store_id'
               isMulti={false}
               required
-              label={t('Магазин')}
+              label={t('APTEKA')}
               placeholder={t('Выберите Магазин')}
               minWidth='auto'
               isClearable={true}

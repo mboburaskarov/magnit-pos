@@ -3,8 +3,6 @@ import { Box } from '@mui/material'
 import Label from '../../../../components/Label'
 
 function DmedPrescriptionsList({ data, setDmedPrescriptionsList }) {
-  console.log(data)
-  // return <></>
   return (
     <Box mb={'24px'}>
       {data?.length > 0 ? (

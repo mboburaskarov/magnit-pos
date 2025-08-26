@@ -43,7 +43,7 @@ export default function RejectedProducts({ id }) {
   const columns = useMemo(
     () => [
       {
-        headerName: 'Магазин',
+        headerName: 'APTEKA',
         colId: 'store_name',
         minWidth: 300,
         maxWidth: 300,

@@ -139,7 +139,6 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
 
     const selectedRow = allRows[selectedIndex]
     if (selectedRow) {
-      console.log('Selected Row ID:', selectedRow.id, selectedRow.name)
       onSelectRow(selectedRow)
       setLastSelectedCellRowId(selectedRow.id)
       setQuantityModalOpen({ id: selectedRow.id, data: selectedRow })
@@ -300,7 +299,6 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
 
       const selectedRow = allRows[selectedIndex]
       if (selectedRow) {
-        console.log('Selected Row ID:', selectedRow.id, selectedRow.name)
         onSelectRow(selectedRow)
         setLastSelectedCellRowId(selectedRow.id)
         setOpenChangeAdditionalsModel({ id: selectedRow.id, data: selectedRow })

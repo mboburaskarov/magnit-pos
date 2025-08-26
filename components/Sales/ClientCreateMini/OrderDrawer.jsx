@@ -243,6 +243,7 @@ const MAX_F_BUTTONS_QUANTITY = 10
 export default function OrderDrawer({
   setIsOrderDrower,
   isOrderDrower,
+  dmedOrganizedList,
   markingsList,
   dmedPrescriptionsList,
   printContainer,
@@ -555,7 +556,6 @@ export default function OrderDrawer({
       }
     },
   })
-  console.log(dmedPrescriptionsList)
 
   const onSubmit = async (data) => {
     setHasChange(true)
@@ -574,6 +574,7 @@ export default function OrderDrawer({
 
     const markingData = get(cartItemsList, 'data', []).map((el) => ({
       id: el.id,
+      dmed_id: dmedOrganizedList.find((dmed) => dmed.id == el.id)?.dmedId,
       marking_list: Object.values(markingsList[el.id] || {}).filter((a) => a.length),
       marking_count: Object.values(markingsList[el.id] || {}).filter((a) => a.length)?.length,
     }))

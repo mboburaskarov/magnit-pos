@@ -120,7 +120,7 @@ export default function ProductHistory({ id }) {
         ),
       },
       {
-        headerName: 'Магазин',
+        headerName: 'APTEKA',
         colId: 'store',
         minWidth: 185,
         maxWidth: 285,

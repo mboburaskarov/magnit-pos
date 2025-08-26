@@ -78,8 +78,6 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
               lineHeight={'24px'}
               sx={{ cursor: targetPath ? 'pointer' : 'default' }}
               onClick={() => {
-                console.log(values)
-
                 if (targetPath) {
                   navigate(targetPath, {
                     state: {

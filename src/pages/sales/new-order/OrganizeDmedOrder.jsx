@@ -54,10 +54,9 @@ function Droppable({ id, items, children }) {
     </div>
   )
 }
-function OrganizeDmedOrder({ open, handleClose, medicine, dmedPrescriptionsList }) {
+function OrganizeDmedOrder({ open, handleClose, setDmedOrganizedList, medicine, dmedPrescriptionsList }) {
   const { t } = useTranslation()
   const [containers, setContainers] = useState({ outside: [] })
-  console.log(medicine)
   useEffect(() => {
     if (dmedPrescriptionsList) {
       setContainers({
@@ -84,7 +83,6 @@ function OrganizeDmedOrder({ open, handleClose, medicine, dmedPrescriptionsList 
       })
     }
   }
-  console.log(containers, 'gg')
 
   return (
     <Dialog
@@ -116,11 +114,11 @@ function OrganizeDmedOrder({ open, handleClose, medicine, dmedPrescriptionsList 
       <Box p={'0 20px'}>
         <DndContext onDragEnd={handleDragEnd}>
           {/* Outside items */}
-          <h2 style={{ margin: '16px 0' }}>Outside Items</h2>
+          <h2 style={{ margin: '16px 0' }}>Лекарства</h2>
           <Droppable id='outside' items={containers.outside} />
 
           {/* Containers */}
-          <h2 style={{ margin: '16px 0' }}>Containers</h2>
+          <h2 style={{ margin: '16px 0' }}>Рецепты</h2>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {dmedPrescriptionsList?.map((item, ind) => (
               <Droppable key={item.id} id={item.id} items={containers[item.id] || []}>
@@ -149,7 +147,20 @@ function OrganizeDmedOrder({ open, handleClose, medicine, dmedPrescriptionsList 
           {t('cancel')}
         </Button>
         <Box width={'20px'} />
-        <Button onClick={() => {}} disabled={containers.outside.length} fullWidth>
+        <Button
+          onClick={() => {
+            setDmedOrganizedList(
+              Object.entries(containers).flatMap(([key, arr]) =>
+                key === 'outside' // skip "outside"
+                  ? [] // ignore outside
+                  : arr.map((item) => ({ dmedId: Number(key), ...item }))
+              )
+            )
+            handleClose()
+          }}
+          disabled={containers.outside.length}
+          fullWidth
+        >
           {t('continue')}
         </Button>
       </Box>

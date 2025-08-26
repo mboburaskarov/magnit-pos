@@ -29,6 +29,7 @@ function OrderLite({
   maxAmount,
   setMaxAmount,
   liteOrder,
+  dmedOrganizedList,
   cashBoxDetails,
   setLiteOrder,
   customerId,
@@ -645,6 +646,8 @@ function OrderLite({
 
     const markingData = get(cartItemsList, 'data', []).map((el) => ({
       id: el.id,
+      dmed_id: dmedOrganizedList.find((dmed) => dmed.id == el.id)?.dmedId,
+
       marking_list: Object.values(markingsList[el.id] || {}).filter((a) => a.length),
       marking_count: Object.values(markingsList[el.id] || {}).filter((a) => a.length)?.length,
     }))

@@ -196,7 +196,7 @@ export default function DashboarPage() {
       type: dataTypeFilter(detalization),
       offset: values?.search ? 0 : values?.offset || 0,
     }
-  }, [values?.offset, detalization, selectedShops, values?.start_date, values?.end_date, values?.limit, values?.search])
+  }, [values?.offset, detalization, selectedShops, values?.start_date, values?.end_date, values?.from_time, values?.to_time, values?.limit, values?.search])
   const { data: chartData } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
   const { data: countStats } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
   const { data: topStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))

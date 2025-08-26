@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import getShorterNumber from '../../utils/getShorterNumber'
 import { getDateFromDateTime } from '../../utils/parseDateTime'
+import thousandDivider from '../../utils/thousandDivider'
 import LoadingBlurry from '../LoadingBlurry'
 import SelectSimple from '../Select/SelectSimple'
 import CustomizedAxisTick from './ChartAxisTick'
@@ -80,6 +81,10 @@ export default function SingleBarChart({
     }
   }, [data, detalization])
   const maxValue = Math.max(...chartData.slice(sliderValue[0], sliderValue[1]).map((item) => item?.count))
+  const maxValue2 = chartData
+    .slice(sliderValue[0], sliderValue[1])
+    .map((item) => item?.all_orders)
+    ?.reduce((sum, num) => sum + num, 0)
 
   return (
     <Box
@@ -114,7 +119,7 @@ export default function SingleBarChart({
                   color: theme.palette.dark[500],
                 })}
               >
-                {t('all_sales')}
+                {t('all_sales')} ({thousandDivider(Math.round(maxValue2), 'сум')})
               </Typography>
             </Box>
           )}

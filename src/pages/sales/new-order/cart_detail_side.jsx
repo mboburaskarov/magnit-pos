@@ -28,6 +28,8 @@ import OrderLite from './orderLite'
 
 function CartDetailSide({
   cashBoxDetails,
+  dmedOrganizedList,
+  setIsOpenOrganizeDmedOrderDialog,
   setDmedPrescriptionsList,
   setIsOpenSendRejectedProduct,
   dmedPrescriptionsList,
@@ -62,8 +64,6 @@ function CartDetailSide({
   liteOrder,
   setLiteOrder,
 }) {
-  console.log(dmedPrescriptionsList)
-
   const { t } = useTranslation()
   const theme = useTheme()
   const [sendToEpos, setSendToEpos] = useState(null)
@@ -83,7 +83,6 @@ function CartDetailSide({
     if (typeof sendToEpos == 'boolean') localStorage.setItem('send_to_epos', sendToEpos)
     else localStorage.setItem('send_to_epos', true)
   }, [sendToEpos])
-  console.log(sendToEpos)
 
   return (
     <Box className={classes.card_detail}>
@@ -391,6 +390,7 @@ function CartDetailSide({
         <OrderLite
           liteOrder={liteOrder}
           setMaxAmount={setMaxAmount}
+          dmedOrganizedList={dmedOrganizedList}
           childRef={childRef}
           maxAmount={maxAmount}
           setLiteOrder={setLiteOrder}
@@ -426,6 +426,10 @@ function CartDetailSide({
             loading={hasChange}
             disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0 || hasChange}
             onClick={() => {
+              if (dmedPrescriptionsList.length && dmedOrganizedList.length != size(get(cartItemsList, 'data.data.data'))) {
+                setIsOpenOrganizeDmedOrderDialog(true)
+                return
+              }
               if (isAllMarkingFill() || !sendToEpos) {
                 setLiteOrder(true)
               } else {
@@ -494,6 +498,10 @@ function CartDetailSide({
                 },
               }}
               onClick={() => {
+                if (dmedPrescriptionsList.length && dmedOrganizedList.length != size(get(cartItemsList, 'data.data.data'))) {
+                  setIsOpenOrganizeDmedOrderDialog(true)
+                  return
+                }
                 if (isAllMarkingFill() || !sendToEpos) {
                   setIsOrderDrower(true)
                 } else {
