@@ -1,24 +1,22 @@
+# Stage 1 - build the app
 FROM node:20.11-alpine AS build
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN yarn install 
+RUN yarn install --frozen-lockfile
 
 COPY . .
 RUN yarn build
 
-FROM node:20.11-alpine
+# Stage 2 - production server
+FROM nginx:stable-alpine
 
-WORKDIR /app
+# Copy build output to nginx html directory
+COPY --from=build /app/dist /usr/share/nginx/html
 
-COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/dist ./dist
+# Expose nginx default port
+EXPOSE 80
 
-# Install a simple server to serve static files
-RUN npm install -g serve
-
-EXPOSE 3000
-
-CMD ["serve", "-s", "dist", "-l", "3000"]
+# Run nginx in foreground
+CMD ["nginx", "-g", "daemon off;"]
