@@ -78,7 +78,7 @@ export default function StoreReportPage() {
 
       store_id: values?.store_id || undefined,
     }
-  }, [values?.offset, values?.limit, orderStoring, values?.store_id, values?.search, values?.start_date, values?.end_date])
+  }, [values?.offset, values?.from_time, values?.to_time, values?.limit, orderStoring, values?.store_id, values?.search, values?.start_date, values?.end_date])
   const {
     data: storeReportList,
     isLoading: storeReportListLoading,

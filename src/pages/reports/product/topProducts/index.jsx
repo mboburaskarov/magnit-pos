@@ -101,7 +101,18 @@ export default function TopProductsPage() {
 
       store_ids: selectedShops === 'all' ? [] : selectedShops.map((el) => el.id),
     }
-  }, [values?.offset, orderStoring, values?.limit, selectedBonusType, values?.search, selectedShops, values?.start_date, values?.end_date])
+  }, [
+    values?.offset,
+    values?.from_time,
+    values?.to_time,
+    orderStoring,
+    values?.limit,
+    selectedBonusType,
+    values?.search,
+    selectedShops,
+    values?.start_date,
+    values?.end_date,
+  ])
   const {
     data: topProductsReportList,
     isLoading: topProductsReportListLoading,

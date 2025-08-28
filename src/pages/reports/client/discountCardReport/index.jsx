@@ -45,7 +45,7 @@ export default function DiscountCardReport({ id }) {
   const columns = useMemo(
     () => [
       {
-        headerName: 'APTEKA',
+        headerName: 'Aптека',
         colId: 'store_name',
         minWidth: 300,
         maxWidth: 300,

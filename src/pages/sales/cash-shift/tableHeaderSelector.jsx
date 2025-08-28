@@ -67,7 +67,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'store_name') {
       return {
         ...el,
-        headerName: 'APTEKA',
+        headerName: 'Aптека',
         colId: el.field,
 
         cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),

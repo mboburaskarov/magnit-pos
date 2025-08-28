@@ -101,7 +101,18 @@ export default function TopVendorsPage() {
 
       store_ids: selectedShops === 'all' ? [] : selectedShops.map((el) => el.id),
     }
-  }, [values?.offset, orderStoring, values?.limit, selectedBonusType, values?.search, selectedShops, values?.start_date, values?.end_date])
+  }, [
+    values?.offset,
+    orderStoring,
+    values?.from_time,
+    values?.to_time,
+    values?.limit,
+    selectedBonusType,
+    values?.search,
+    selectedShops,
+    values?.start_date,
+    values?.end_date,
+  ])
   const {
     data: topVendorsReportList,
     isLoading: topVendorsReportListLoading,

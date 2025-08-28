@@ -128,7 +128,7 @@ export default function ProductHistory({ id }) {
         ),
       },
       {
-        headerName: 'APTEKA',
+        headerName: 'Aптека',
         colId: 'store',
         minWidth: 185,
         maxWidth: 285,

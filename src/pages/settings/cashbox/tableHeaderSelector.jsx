@@ -100,7 +100,7 @@ export default function tableHeaderSelector({ setopenCreateVendorDrawer, values,
     if (el.field === 'store_name') {
       return {
         ...el,
-        headerName: 'APTEKA',
+        headerName: 'Aптека',
         colId: el.field,
         cellRenderer: memo((p) => <Typography>{get(p, 'data.store_name')}</Typography>),
       }
