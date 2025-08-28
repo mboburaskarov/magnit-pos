@@ -93,7 +93,7 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
               filterOption={() => true}
             />
             <Box width={'100%'}>
-              <Label>Магазин</Label>
+              <Label>Аптека</Label>
               <MultiOptionSelectNew
                 zIndex={999}
                 placeholder={t('placeholders.select_shops')}

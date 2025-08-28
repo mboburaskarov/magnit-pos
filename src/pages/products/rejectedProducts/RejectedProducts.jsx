@@ -1,25 +1,31 @@
 import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
+import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import InputSearch from '../../../../components/Inputs/InputSearch'
+import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelectNew'
 import { requests } from '../../../../utils/requests'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 
 export default function RejectedProducts({ id }) {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
+  const [selectedShops, setSelectedShops] = useState('all')
+  const { t } = useTranslation()
+
   const navigate = useNavigate()
   const productHistoryFilter = useMemo(() => {
     return {
       limit: values?.limitHistory || 5,
-      store_id: values?.store_id,
+      store_id: selectedShops == 'all' ? undefined : selectedShops?.id,
       offset: values?.offsetHistory || 0,
       search: values?.search,
     }
-  }, [values?.limitHistory, values?.offsetHistory, values?.search])
+  }, [values?.limitHistory, selectedShops, values?.offsetHistory, values?.search])
 
   const {
     data: productDataHistory,
@@ -27,6 +33,7 @@ export default function RejectedProducts({ id }) {
     isFetching: isFetchingproductDataHistory,
     refetch,
   } = useQuery(['productDataHistory', productHistoryFilter], () => requests.getRejectedProductList(productHistoryFilter, id))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
 
   useEffect(() => {
     const count = productDataHistory?.data?.data?._meta?.total_count
@@ -39,6 +46,7 @@ export default function RejectedProducts({ id }) {
   useEffect(() => {
     refetch()
   }, [productHistoryFilter])
+  console.log(selectedShops)
 
   const columns = useMemo(
     () => [
@@ -106,6 +114,10 @@ export default function RejectedProducts({ id }) {
         width='100%'
         sx={{
           mb: '20px',
+          display: 'flex',
+          '& .MuiBox-root': {
+            width: 'auto',
+          },
           '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
           '& .MuiFormControl-root, .MuiFormControl-root:hover': {
             background: 'transparent',
@@ -114,7 +126,26 @@ export default function RejectedProducts({ id }) {
           },
         }}
       >
-        <InputSearch fullWidth={true} id='producrs-search' name='search' placeholder={'Магазин, наименование'} uncontrolled />
+        <InputSearch fullWidth={false} id='producrs-search' name='search' placeholder={'Аптека, наименование'} uncontrolled />
+
+        <Box maxWidth={'300px'} ml={2} mr={2}>
+          <MultiOptionSelectNew
+            zIndex={999}
+            placeholder={'placeholders.select_shops'}
+            // multiple
+            defaultSelectedAll
+            beforeContent={t('placeholders.select_shops')}
+            value={selectedShops}
+            allOptions={get(shopList, 'data.data.ids', [])}
+            selectAllLabel={'Все филиалы'}
+            options={get(shopList, 'data.data.data', [])}
+            isLoading={false}
+            onChange={(val) => {
+              setSelectedShops(val)
+            }}
+            request={requests.getAllStores}
+          />
+        </Box>
       </Box>
       <Box>
         <AgGridTable

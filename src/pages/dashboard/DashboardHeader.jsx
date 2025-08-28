@@ -18,7 +18,7 @@ export default function DashboardHeader({ selectedShops, setSelectedShops }) {
           {t('greeting')}, {get(userData, 'first_name')}!
         </Typography>
         <Typography variant='h1' fontWeight={300} fontSize={'16px'} lineHeight={'24px'} color={'gray.500'}>
-          Добро пожаловать в магазин. Управляйте своим магазином с помощью магазина
+          Добро пожаловать в Аптека. Управляйте своим Аптекаом с помощью Аптекаа
         </Typography>
       </Box>
       <Box display='inline-flex' padding={'11px 0'} columnGap={3}>

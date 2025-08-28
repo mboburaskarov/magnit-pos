@@ -88,7 +88,7 @@ export default function DashboarPage() {
         old: before_sale_amount,
       },
       {
-        title: t('Импорт в ожидании'),
+        title: t('Импорт в ожидании (за весь период)'),
         icon: <RevenueIcon color='#fe5000' />,
         count: import_amount,
         percent: calculatePercentage(before_import_amount || 1, import_amount),
@@ -117,7 +117,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Чистая прибыль'),
-        icon: <VendorsIcon />,
+        icon: <VendorsIcon color='#fe5000' />,
         count: total_net_income,
         endText: 'сум',
         percent: calculatePercentage(before_total_net_income || 1, total_net_income),
@@ -126,7 +126,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Общее количество продаж'),
-        icon: <OrdersIcon />,
+        icon: <OrdersIcon color='#fe5000' />,
         count: total_sale_count,
         endText: 'шт',
 
@@ -136,7 +136,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Общее количество остатков'),
-        icon: <ProductsIcon />,
+        icon: <ProductsIcon color='#fe5000' />,
         count: total_product_count,
         endText: 'шт',
 
@@ -146,7 +146,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Просроченные продукты'),
-        icon: <VendorsIcon />,
+        icon: <VendorsIcon color='#fe5000' />,
         count: expired_soon_count,
         endText: 'шт',
 
@@ -157,7 +157,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Истекающий срок'),
-        icon: <VendorsIcon />,
+        icon: <VendorsIcon color='#fe5000' />,
         count: expiring_soon_count,
         amount: expiring_soon_amount,
         id: 'expiring_soon_amount',
@@ -168,7 +168,7 @@ export default function DashboarPage() {
 
       {
         title: t('Ваш бонус'),
-        icon: <VendorsIcon />,
+        icon: <VendorsIcon color='#fe5000' />,
         count: bonus_amount,
         id: 'bonus_amount',
         percent: calculatePercentage(before_bonus_amount || 1, bonus_amount),

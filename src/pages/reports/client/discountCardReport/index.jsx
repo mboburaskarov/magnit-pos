@@ -150,7 +150,7 @@ export default function DiscountCardReport({ id }) {
             },
           }}
         >
-          <InputSearch fullWidth={true} id='producrs-search' name='search' placeholder={'Магазин, наименование'} uncontrolled />
+          <InputSearch fullWidth={true} id='producrs-search' name='search' placeholder={'Аптека, наименование'} uncontrolled />
         </Box>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <AgGridTable

@@ -19,6 +19,7 @@ import './table.css'
 import { Download } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { useMutation, useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
 import ConfirmDialog from '../../../../../components/ConfirmDialog'
 import Header from '../../../../../components/Header'
 import InputSearch from '../../../../../components/Inputs/InputSearch'
@@ -39,6 +40,8 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   const successScanAudio = new Audio(successAudio)
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const userData = useSelector((state) => state.user)
+
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
@@ -100,6 +103,36 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   )
 
+  useEffect(() => {
+    // Connect to backend
+
+    const ws = new WebSocket(`ws://api-pharma.noor.uz/ws?store_id=${userData?.id}`) // or wss://your-domain.com/ws
+    wsRef.current = ws
+
+    ws.onopen = () => {
+      console.log('WebSocket connection established')
+    }
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data)
+      if (data?.event == 'your_invertry_qty_is_change') {
+        refetch()
+      }
+      console.log('Received:', data)
+    }
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error)
+    }
+
+    ws.onclose = () => {
+      console.log('WebSocket closed')
+    }
+
+    return () => {
+      ws.close()
+    }
+  }, [])
   const allRows = data?.pages?.flatMap((page) => page.rows) || []
   const rowCount = allRows.length
 

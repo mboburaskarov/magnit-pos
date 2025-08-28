@@ -357,7 +357,7 @@ const MultiOptionSelectNew = ({
       )
     }
 
-    return <div className='multiple value'>{values[0]?.name}</div>
+    return <div className='multiple value'>{values[0]?.name || t('placeholders.select_shops')}</div>
   }
 
   const renderOption = (option, index) => {

@@ -76,7 +76,7 @@ export default function CrreatePaymentAssetBody({ isOpen }) {
           id='store'
           name='store_id'
           isMulti={false}
-          placeholder={t('Выберите Магазин')}
+          placeholder={t('Выберите Аптека')}
           minWidth='auto'
           isClearable={true}
           label={t('input.store.label')}

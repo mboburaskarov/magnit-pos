@@ -75,12 +75,12 @@ export default function ProductsPage() {
   const { mutate: deleteStore, isLoading: isDeletingProduct } = useMutation(requests.deleteStore, {
     onSuccess: () => {
       refetch()
-      success('Магазин успешно удален!')
+      success('Аптека успешно удален!')
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
-      error('Ошибка при удалении магазин!')
+      error('Ошибка при удалении Аптека!')
       setOpenConfirmDialog(null)
       console.log('err', err)
     },
@@ -193,8 +193,8 @@ export default function ProductsPage() {
           open={!!openConfirmDialog}
           setOpen={setOpenConfirmDialog}
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={'Удалить магазин?'}
-          desc={'хотите удалить свой магазин?'}
+          title={'Удалить Аптека?'}
+          desc={'хотите удалить свой Аптека?'}
           supDesc={openConfirmDialog.name}
           actions={
             <>

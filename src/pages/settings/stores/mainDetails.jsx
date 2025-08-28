@@ -116,7 +116,7 @@ export default function MainDetails({ clientData, openDrawer }) {
 
       <Grid container spacing={3}>
         <Grid item xs={6}>
-          <Label mb='4px'>{t('В магазине код')}</Label>
+          <Label mb='4px'>{t('В Аптекае код')}</Label>
 
           <TextField
             id='client-name'
@@ -124,7 +124,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             control={control}
             fullWidth
             error={errors?.store_code}
-            placeholder={'В магазине код'}
+            placeholder={'В Аптекае код'}
             type={'number'}
             asteriks
           />
@@ -147,7 +147,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             placeholder='HH:MM - HH:MM'
           >
             {(inputProps) => (
-              <TextField {...inputProps} setValue={() => {}} id='client-name' name='ranged-time' fullWidth uncontrolled placeholder={'В магазине код'} />
+              <TextField {...inputProps} setValue={() => {}} id='client-name' name='ranged-time' fullWidth uncontrolled placeholder={'В Аптекае код'} />
             )}
           </ReactInputMask>
         </Grid>
