@@ -362,7 +362,9 @@ const MultiOptionSelectNew = ({
 
   const renderOption = (option, index) => {
     const { name, id } = option
-    const selected = values == 'all' ? 'all' : Boolean(values.find((el) => el?.id === id))
+    console.log(values)
+
+    const selected = values == 'all' ? 'all' : multiple ? Boolean(values?.find((el) => el?.id === id)) : Boolean(values?.id === id)
 
     let className = 'option'
     if (selected) className += ' selected'

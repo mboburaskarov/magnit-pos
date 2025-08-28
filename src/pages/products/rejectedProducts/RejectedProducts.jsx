@@ -1,8 +1,8 @@
 import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
+import { t } from 'i18next'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
@@ -15,7 +15,6 @@ export default function RejectedProducts({ id }) {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [selectedShops, setSelectedShops] = useState('all')
-  const { t } = useTranslation()
 
   const navigate = useNavigate()
   const productHistoryFilter = useMemo(() => {
@@ -131,7 +130,7 @@ export default function RejectedProducts({ id }) {
         <Box maxWidth={'300px'} ml={2} mr={2}>
           <MultiOptionSelectNew
             zIndex={999}
-            placeholder={'placeholders.select_shops'}
+            placeholder={t('placeholders.select_shops')}
             // multiple
             defaultSelectedAll
             beforeContent={t('placeholders.select_shops')}
