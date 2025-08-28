@@ -125,7 +125,7 @@ export default function RejectedProducts({ id }) {
           },
         }}
       >
-        <InputSearch fullWidth={false} id='producrs-search' name='search' placeholder={'Аптека, наименование'} uncontrolled />
+        <InputSearch fullWidth={false} id='producrs-search' name='search' placeholder={'Наименование'} uncontrolled />
 
         <Box maxWidth={'300px'} ml={2} mr={2}>
           <MultiOptionSelectNew
