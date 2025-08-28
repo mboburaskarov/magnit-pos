@@ -333,7 +333,7 @@ function NewSale() {
   useEffect(() => {
     // Connect to backend
 
-    const ws = new WebSocket(`ws://api-pharma.noor.uz/ws?store_id=${userData?.store?.id}`) // or wss://your-domain.com/ws
+    const ws = new WebSocket(`wss://api-pharma.noor.uz/ws?store_id=${userData?.store?.id}`) // or wss://your-domain.com/ws
     wsRef.current = ws
 
     ws.onopen = () => {

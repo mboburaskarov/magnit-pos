@@ -43,7 +43,11 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
   const theme = useTheme()
 
   const resetFilter = () => {
-    reset()
+    reset({
+      employee_id: null,
+      producer_id: null,
+    })
+    setSelectedShops('all')
     setOpen(false)
     navigate(`/reports/product-report?offset=0&limit=${values?.limit || 5}`)
   }
@@ -136,7 +140,7 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
                 fullWidth
                 color='secondary'
                 variant='contained'
-                disabled={!formState.isDirty}
+                disabled={!formState.isDirty && !selectedShops}
                 onClick={resetFilter}
               >
                 <Typography fontWeight={600} lineHeight={'24px'} fontSize={'16px'}>
