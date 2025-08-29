@@ -82,7 +82,19 @@ export default function SellerBonus() {
       store_id: values?.store_id,
       order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
     }
-  }, [values?.offset, orderStoring, selectedBonusType, selectedShops, values?.limit, values?.search, values?.store_id, values?.start_date, values?.end_date])
+  }, [
+    values?.offset,
+    values?.from_time,
+    values?.to_time,
+    orderStoring,
+    selectedBonusType,
+    selectedShops,
+    values?.limit,
+    values?.search,
+    values?.store_id,
+    values?.start_date,
+    values?.end_date,
+  ])
 
   const {
     data: sellerBonnus,

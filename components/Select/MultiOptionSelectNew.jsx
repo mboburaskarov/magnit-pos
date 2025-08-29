@@ -100,12 +100,6 @@ const MultiOptionSelectNew = ({
     }
 
     try {
-      console.log('Fetching data with:', {
-        limit: pagination.limit,
-        offset: pagination.offset,
-        search: searchTerm || serachParams?.search,
-      })
-
       const response = await request({
         limit: pagination.limit,
         offset: pagination.offset,
@@ -113,7 +107,6 @@ const MultiOptionSelectNew = ({
       })
 
       const newData = get(response, 'data.data.data', [])
-      console.log('Received data:', newData.length, 'items')
 
       if (pagination.offset === 0) {
         setOptions(newData) // Replace options for new search
@@ -147,13 +140,6 @@ const MultiOptionSelectNew = ({
   // Load more when bottom is reached
   useEffect(() => {
     if (inView && !isLoading && pagination.hasMore && isOpen) {
-      console.log('Loading more data...', {
-        inView,
-        isLoading,
-        hasMore: pagination.hasMore,
-        currentOffset: pagination.offset,
-      })
-
       setPagination((prev) => ({
         ...prev,
         offset: prev.offset + prev.limit,
@@ -334,7 +320,6 @@ const MultiOptionSelectNew = ({
   // Handle search input change
   const handleSearchChange = (e) => {
     const value = e.target.value
-    console.log('Search term changed:', value)
     setSearchTerm(value)
   }
 
@@ -372,12 +357,14 @@ const MultiOptionSelectNew = ({
       )
     }
 
-    return <div className='multiple value'>{values[0]?.name}</div>
+    return <div className='multiple value'>{values[0]?.name || t('placeholders.select_shops')}</div>
   }
 
   const renderOption = (option, index) => {
     const { name, id } = option
-    const selected = values == 'all' ? 'all' : Boolean(values.find((el) => el?.id === id))
+    console.log(values)
+
+    const selected = values == 'all' ? 'all' : multiple ? Boolean(values?.find((el) => el?.id === id)) : Boolean(values?.id === id)
 
     let className = 'option'
     if (selected) className += ' selected'

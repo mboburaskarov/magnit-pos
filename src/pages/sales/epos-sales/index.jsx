@@ -148,7 +148,7 @@ export default function EposSales({ id }) {
         // <Typography>{get(data, 'import.accepted_count')}</Typography>,
       },
       {
-        headerName: 'Магазин',
+        headerName: 'Aптека',
         colId: 'store',
         minWidth: 185,
         maxWidth: 285,

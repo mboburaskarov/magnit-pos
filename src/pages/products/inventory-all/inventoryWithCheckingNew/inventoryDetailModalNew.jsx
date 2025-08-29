@@ -88,7 +88,6 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
     if (!open) return
     const selectedRow = allRows[selectedIndex]
     if (selectedRow) {
-      console.log('Selected Row ID:', selectedRow.id, selectedRow.name)
       onSelectRow(selectedRow)
       setLastSelectedCellRowId(selectedRow.id)
       setQuantityModalOpen({ id: selectedRow.id, data: selectedRow })
@@ -169,7 +168,6 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
 
       const selectedRow = allRows[selectedIndex]
       if (selectedRow) {
-        console.log('Selected Row ID:', selectedRow.id, selectedRow.name)
         onSelectRow(selectedRow)
         setLastSelectedCellRowId(selectedRow.id)
         setOpenChangeAdditionalsModel({ id: selectedRow.id, data: selectedRow })

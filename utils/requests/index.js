@@ -78,7 +78,7 @@ export const requests = {
   // / report product
   getProductReport: ({ store_ids, ...filter }) => request.post(`v1/report/product${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   getPorductReportExcelReport: (filter) => requestEXCEL.post(`v1/report/product-export${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getProductReportStat: (filter) => request.post(`v1/report/product-status${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getProductReportStat: ({ store_ids, ...filter }) => request.post(`v1/report/product-status${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
 
   // / report store
   getStoreReport: (filter) => request.post(`v1/report/store-amount${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -231,6 +231,7 @@ export const requests = {
   getTransferDetailsExcelReport: (filter) => requestEXCEL.get(`v1/transfer-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   downloadTransferNakladnoy: (filter) => requestEXCEL.get(`v1/transfer/export-nakladnoy${qs.stringify(filter, { addQueryPrefix: true })}`),
   getTransferStatusCount: (filter) => request.get(`v1/transfer/list-status${qs.stringify(filter, { addQueryPrefix: true })}`),
+  resend1cTransfer: (id) => request.post(`v1/transfer/send1c/${id}`),
 
   // autoOrder
   createAutoOrder: (data) => request.post(`v1/auto-order`, data),

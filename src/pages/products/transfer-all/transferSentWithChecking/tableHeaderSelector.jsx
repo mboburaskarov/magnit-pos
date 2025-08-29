@@ -18,7 +18,6 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
 
 export default function tableHeaderSelector({ importsColumns, values, t, methods, setScanedNumber }) {
   const { id } = useParams()
-  console.log(id)
 
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {

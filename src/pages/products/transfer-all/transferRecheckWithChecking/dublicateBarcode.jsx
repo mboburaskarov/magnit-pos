@@ -23,7 +23,6 @@ export default function DublicateProductBarcode({ open, refetch, setOpen }) {
     },
   })
   const theme = useTheme()
-  console.log(open)
 
   const { t } = useTranslation()
   return (

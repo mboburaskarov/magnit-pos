@@ -98,7 +98,7 @@ export default function CreateInventory({ open, refetch, setOpen }) {
               isMulti={false}
               required
               label={t('input.store.label')}
-              placeholder={t('Выберите Магазин')}
+              placeholder={t('Выберите Аптека')}
               minWidth='auto'
               isClearable={true}
               request={requests.getAllStores}

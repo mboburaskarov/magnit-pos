@@ -193,7 +193,9 @@ const useStyles = makeStyles((theme) => ({
 let a = -2
 function CartSearchBar({
   refetchcartItemsList,
+  cartItemsList,
   openDraft,
+  dmedPrescriptionsList,
   setDmedPrescriptionsList,
   discount,
   setOpenRejectConfirmDialog,
@@ -360,7 +362,10 @@ function CartSearchBar({
             inputRef={searchRef}
             id='product-search'
             hasShortCut
-            disabled={get(cashBoxDetails, 'data.data.sale_type') == 'RETURN'}
+            disabled={
+              get(cashBoxDetails, 'data.data.sale_type') == 'RETURN' ||
+              (dmedPrescriptionsList.length == size(get(cartItemsList, 'data.data.data', 0)) && size(get(cartItemsList, 'data.data.data', 0) != 0))
+            }
             style={{ zIndex: showOverlay ? 25 : 10 }}
             sx={{ width: '100%', marginRight: '16px !important', height: '48px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
             name='search'

@@ -160,17 +160,7 @@ function RippedPaperCheck({
                     {index + 1}. {get(el, 'name')}
                   </b>
                 </p>
-                {/* {disableSumsOnGoods() && (
-                  <DashedRow
-                    id={`return-price-${'index'}`}
-                    rowData={{
-                      type: `${get(el, 'quantity') > 0 ? get(el, 'quantity') : ''}${
-                        get(el, 'unit_quantity') > 0 ? `(${get(el, 'unit_quantity')}/${get(el, 'unit_per_pack')})` : ''
-                      } X`,
-                      value: `${thousandDivider(get(el, 'total_price'))} so'm`,
-                    }}
-                  />
-                )} */}
+
                 <Box mt={'15px'} mb={'10px'} display={'flex'} alignItems={'center'} justifyContent={'end'}>
                   <Typography sx={{ fontSize: '17px !important', fontWeight: '600 !important' }}>
                     {`${get(el, 'quantity') > 0 ? get(el, 'quantity') : ''}${
@@ -293,17 +283,14 @@ function RippedPaperCheck({
                 }}
               >
                 <Typography>
-                  Chek turi: {qrcodeUrl == false ? 'Не товарный чек' : get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}
+                  Chek turi: {qrcodeUrl?.qr == 'pending' ? 'Не товарный чек' : get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}
                 </Typography>
-                {qrcodeUrl.qr !== false && <FiskalText data={qrcodeUrl.fiscal} />}
+                {qrcodeUrl?.qr !== 'pending' && <FiskalText data={qrcodeUrl.fiscal} />}
               </Box>
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-              {/* {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? ( */}
-              {/* <> */}
-
-              {qrcodeUrl == false ? (
+              {qrcodeUrl?.qr == 'pending' ? (
                 ''
               ) : (
                 <>
@@ -320,10 +307,6 @@ function RippedPaperCheck({
                   </Typography>
                 </>
               )}
-              {/* </> */}
-              {/* ) : ( */}
-              {/* <></> */}
-              {/* )} */}
             </Box>
           </Fragment>
         </Box>

@@ -50,7 +50,7 @@ export default function DashboardTopStore({ data, sortBy }) {
     >
       <Box justifyContent='space-between' width='100%' display='inline-flex'>
         <Box pb={2.5} borderBottom='1px solid' borderColor='gray.200' width='100%' mt={1} justifyContent='space-between' display='inline-flex'>
-          <Typography fontSize={24}>Топ магазины</Typography>
+          <Typography fontSize={24}>Топ Аптекаы</Typography>
           <ClientsIcon />
         </Box>
       </Box>

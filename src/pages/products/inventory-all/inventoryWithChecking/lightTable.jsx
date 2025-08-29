@@ -54,7 +54,6 @@ const TableComponent = ({ onSelectRow = () => {}, hasChange, orderStoring, barco
   useHotkeys('enter', () => {
     const selectedRow = allRows[selectedIndex]
     if (selectedRow) {
-      console.log('Selected Row ID:', selectedRow.id, selectedRow.name)
       onSelectRow(selectedRow)
     }
   })

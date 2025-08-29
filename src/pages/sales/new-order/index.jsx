@@ -30,16 +30,17 @@ import notificationAudio from '../../../assets/audio/notification.mp3'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import DeleteIcon from '../../../assets/icons/DeleteIcon'
 import useDebouncedValue from '../../../hooks/useDebouncedValue'
+import CartDetailSide from './cart_detail_side'
 import CartItem from './CartItem'
 import CartSearchBar from './CartSearchBar'
 import ChangeShift from './ChangeShift'
+import CreateDraftDrawer from './createDraftDrawer'
 import ImplementMarkingDialog from './ImplementMarkingDialog'
 import ProductDrawer from './ProductDrawer'
-import CartDetailSide from './cart_detail_side'
-import CreateDraftDrawer from './createDraftDrawer'
 
 import SendRejectedProductDrawer from '../../../../components/Sales/SendRejectedProduct/SendRejectedProductDrawer'
 import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck'
+import OrganizeDmedOrder from './OrganizeDmedOrder'
 const useStyles = makeStyles((theme) => ({
   currentUser: {
     // minWidth: '120px',
@@ -300,11 +301,13 @@ function NewSale() {
   const [liteOrder, setLiteOrder] = useState(false)
 
   const [isOpenImplementMarkingDialog, setIsOpenImplementMarkingDialog] = useState(false)
+  const [isOpenOrganizeDmedOrderDialog, setIsOpenOrganizeDmedOrderDialog] = useState(false)
   const [input, setInput] = useState('')
   const lastKeyPressTime = useRef(Date.now())
   const [lastNoorOrderCount, setLastNoorOrderCount] = useState(0)
   // const [searchTerm, setSearchTerm] = useState('')
   const [markingsList, setMarkingList] = useState({})
+  const [dmedOrganizedList, setDmedOrganizedList] = useState([])
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [openRejectConfirmDialog, setOpenRejectConfirmDialog] = useState(null)
@@ -327,36 +330,36 @@ function NewSale() {
 
   const wsRef = useRef(null)
 
-  // useEffect(() => {
-  //   // Connect to backend
+  useEffect(() => {
+    // Connect to backend
 
-  //   const ws = new WebSocket(`ws://192.168.94.27:8080/ws?store_id=${userData?.store?.id}`) // or wss://your-domain.com/ws
-  //   wsRef.current = ws
+    const ws = new WebSocket(`wss://api-pharma.noor.uz/ws?store_id=${userData?.store?.id}`) // or wss://your-domain.com/ws
+    wsRef.current = ws
 
-  //   ws.onopen = () => {
-  //     console.log('WebSocket connection established')
-  //   }
+    ws.onopen = () => {
+      console.log('WebSocket connection established')
+    }
 
-  //   ws.onmessage = (event) => {
-  //     const data = JSON.parse(event.data)
-  //     if (data?.event == 'noor_order') {
-  //       refetchNoorOrderCount()
-  //     }
-  //     console.log('Received:', data)
-  //   }
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data)
+      if (data?.event == 'noor_order') {
+        refetchNoorOrderCount()
+      }
+      console.log('Received:', data)
+    }
 
-  //   ws.onerror = (error) => {
-  //     console.error('WebSocket error:', error)
-  //   }
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error)
+    }
 
-  //   ws.onclose = () => {
-  //     console.log('WebSocket closed')
-  //   }
+    ws.onclose = () => {
+      console.log('WebSocket closed')
+    }
 
-  //   return () => {
-  //     ws.close()
-  //   }
-  // }, [])
+    return () => {
+      ws.close()
+    }
+  }, [])
 
   const { mutate: addDiscountCard, isLoading: isaddDiscountCard } = useMutation(requests.addDiscountCard, {
     onSuccess: ({ data }) => {
@@ -970,6 +973,8 @@ function NewSale() {
           <Box width={'calc(100% - 384px)'} position={'relative'} padding={'20px'}>
             <Box position={'relative'}>
               <CartSearchBar
+                cartItemsList={cartItemsList}
+                dmedPrescriptionsList={dmedPrescriptionsList}
                 setOpenRejectConfirmDialog={setOpenRejectConfirmDialog}
                 setDmedPrescriptionsList={setDmedPrescriptionsList}
                 discount={{ type: discount, amount: inputDiscount }}
@@ -1009,7 +1014,7 @@ function NewSale() {
                         alignItems={'center'}
                         onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}
                       >
-                        <Typography sx={{ mr: '12px', mt: '3px', fontSize: '22px', fontWeight: '600' }}>
+                        <Typography onClick={() => setIsOpenOrganizeDmedOrderDialog(true)} sx={{ mr: '12px', mt: '3px', fontSize: '22px', fontWeight: '600' }}>
                           {size(get(cartItemsList, 'data.data.data', 0))}
                         </Typography>
                         <DeleteIcon width={'20px'} />
@@ -1159,6 +1164,9 @@ function NewSale() {
           </Box>
 
           <CartDetailSide
+            setDmedOrganizedList={setDmedOrganizedList}
+            setIsOpenOrganizeDmedOrderDialog={setIsOpenOrganizeDmedOrderDialog}
+            dmedOrganizedList={dmedOrganizedList}
             setIsOpenSendRejectedProduct={setIsOpenSendRejectedProduct}
             dmedPrescriptionsList={dmedPrescriptionsList}
             cashBoxDetails={cashBoxDetails}
@@ -1288,6 +1296,8 @@ function NewSale() {
         />
       )}
       <OrderDrawer
+        setDmedOrganizedList={setDmedOrganizedList}
+        dmedOrganizedList={dmedOrganizedList}
         cartItemsList={get(cartItemsList, 'data.data')}
         printContainer={printContainer}
         dmedPrescriptionsList={dmedPrescriptionsList}
@@ -1327,6 +1337,13 @@ function NewSale() {
         open={isOpenImplementMarkingDialog}
         implementMarkingList={implementMarkingList}
         handleClose={() => setIsOpenImplementMarkingDialog(false)}
+      />
+      <OrganizeDmedOrder
+        setDmedOrganizedList={setDmedOrganizedList}
+        medicine={get(cartItemsList, 'data.data.data', [])}
+        dmedPrescriptionsList={dmedPrescriptionsList}
+        open={isOpenOrganizeDmedOrderDialog}
+        handleClose={() => setIsOpenOrganizeDmedOrderDialog(false)}
       />
       <DecreasedCartItemMarkingCheck
         markingCount={markingCount}

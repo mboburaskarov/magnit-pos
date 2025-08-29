@@ -474,7 +474,7 @@ export default function ResultItem({
                 textOverflow={'ellipsis'}
                 maxWidth={'calc(100% - 1px)'}
                 whiteSpace={'nowrap'}
-                style={{ textDecoration: get(product, 'expire_day', 0) <= 0 ? 'line-through' : 'none' }}
+                // style={{ textDecoration: get(product, 'expire_day', 0) <= 0 ? 'line-through' : 'none' }}
                 overflow={'hidden'}
                 id='product-name'
                 className={classes.itemName}
@@ -508,11 +508,11 @@ export default function ResultItem({
                   setOpenRejectConfirmDialog({
                     id: product?.id,
                   })
-                  console.log('Typography clicked only')
                 }}
                 sx={{
                   bgcolor: '#f22',
                   padding: '5px 10px',
+                  color: '#fff',
                   borderRadius: '10px',
                   mr: '10px',
                   fontSize: '17px',

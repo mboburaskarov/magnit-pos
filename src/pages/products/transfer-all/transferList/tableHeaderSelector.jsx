@@ -78,8 +78,6 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
               lineHeight={'24px'}
               sx={{ cursor: targetPath ? 'pointer' : 'default' }}
               onClick={() => {
-                console.log(values)
-
                 if (targetPath) {
                   navigate(targetPath, {
                     state: {
@@ -98,7 +96,7 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
     if (el.field === 'store_name') {
       return {
         ...el,
-        headerName: 'До Магазин',
+        headerName: 'До Аптека',
         colId: el.field,
         cellRenderer: memo((p) => <Typography whiteSpace={'pre-wrap'}>{p.data?.to_store?.name}</Typography>),
       }
@@ -130,7 +128,7 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
     if (el.field === 'from_store_name') {
       return {
         ...el,
-        headerName: 'От Магазин',
+        headerName: 'От Аптека',
         colId: el.field,
         cellRenderer: memo((p) => <Typography whiteSpace={'pre-wrap'}>{p.data?.store?.name}</Typography>),
       }

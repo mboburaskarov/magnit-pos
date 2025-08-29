@@ -1,20 +1,8 @@
-import { Box, IconButton, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
-import StyledTooltip from '../../../../components/StyledTooltip'
-import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
-import getImageUrl from '../../../../utils/getImageUrl'
 import thousandDivider from '../../../../utils/thousandDivider'
-import DefaultUserImgIcon from '../../../assets/icons/defaultUserImgIcon'
-import StyledSwitch from '../../../../components/Switch/StyledSwitch'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import CheckAccess from '../../../../components/CheckAccess'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import EditIcon from '../../../assets/icons/EditIcon'
-import palette from '../../../assets/theme/mui.config'
-import { faArrowCircleDown, faArrowCircleUp } from '@fortawesome/free-solid-svg-icons'
-import LockIcon from '../../../assets/icons/LockIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -49,7 +37,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'store_name') {
       return {
         ...el,
-        headerName: 'Магазин',
+        headerName: 'Aптека',
         colId: el.field,
 
         cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),

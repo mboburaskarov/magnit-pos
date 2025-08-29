@@ -160,8 +160,6 @@ const InputCustom = ({
           withoutTextBox
           height={50}
           onChange={(images) => {
-            console.log(images)
-
             addImg(images?.file_url)
           }}
           name={'image_uz'}
@@ -296,7 +294,6 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
 
   const onSubmit = () => {
     const data = { ...renameSubRows(inputTree) }
-    console.log(inputTree, data)
 
     if (editId) {
       updateCategory({ id: editId, data })
@@ -356,8 +353,6 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                         })
                       }
                       addImg={(img) => {
-                        console.log(img)
-
                         setInputTree({
                           ...inputTree,
                           photo: img,

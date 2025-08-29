@@ -20,6 +20,7 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
 function OrderLite({
   cartItemsList,
+  setDmedOrganizedList,
   markingsList,
   childRef,
   setDmedPrescriptionsList,
@@ -29,6 +30,7 @@ function OrderLite({
   maxAmount,
   setMaxAmount,
   liteOrder,
+  dmedOrganizedList,
   cashBoxDetails,
   setLiteOrder,
   customerId,
@@ -464,7 +466,11 @@ function OrderLite({
       setHasChange(false)
       setPaymentsList(defultPaymentTypes)
       setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
-      navigate(`/sales/new-sale/${newSaleId}`)
+      if (JSON.parse(send_to_epos)) {
+        navigate(`/sales/new-sale/${newSaleId}`)
+      } else {
+        navigate(`/sales/create`)
+      }
     },
   })
   const emptyHandlePrint = useReactToPrint({
@@ -476,17 +482,18 @@ function OrderLite({
     },
     onAfterPrint: () => {},
   })
+  let send_to_epos = localStorage.getItem('send_to_epos')
 
   const { mutate: finishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
-      if (false) {
+      if (!JSON.parse(send_to_epos)) {
         // disabling epos
 
-        navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
+        // navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
         handlePrint()
         success('Продажа завершена!')
         // setMarkingList({})
-        setMarkingCount({})
+        // setMarkingCount({})
       } else {
         //send to epos
         const mockData = get(cartItemsList, 'data', []).map((el) => {
@@ -608,6 +615,7 @@ function OrderLite({
     onSuccess: ({ data }) => {
       setNewSaleId(get(data, 'data.id', false))
       setDmedPrescriptionsList([])
+      setDmedOrganizedList([])
     },
     onError: (err) => {
       error('Ошибка при епосе')
@@ -640,29 +648,11 @@ function OrderLite({
 
     const markingData = get(cartItemsList, 'data', []).map((el) => ({
       id: el.id,
+      dmed_id: dmedOrganizedList.find((dmed) => dmed.id == el.id)?.dmedId,
+
       marking_list: Object.values(markingsList[el.id] || {}).filter((a) => a.length),
       marking_count: Object.values(markingsList[el.id] || {}).filter((a) => a.length)?.length,
     }))
-    const mockData = get(cartItemsList, 'data', []).map((el) => {
-      return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
-        barcode: el.barcode,
-        amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
-        price: el.quantity > index ? parseFloat((el.unit_price * 100).toFixed(2)) : parseFloat((el.unit_quantity_price * el.unit_quantity * 100).toFixed(2)),
-        discount:
-          el.quantity > index
-            ? parseFloat((get(el, 'discount_amount') * 100).toFixed(2))
-            : parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2)),
-        vatPercent: get(el, 'vat_percent'),
-        vat: el.quantity > index ? parseFloat((get(el, 'vat_price') * 100).toFixed(2)) : parseFloat((el.unit_vat_price * el.unit_quantity * 100).toFixed(2)),
-        label: marking,
-        name: el.name,
-        classCode: get(el, 'class_code'),
-        packageCode: get(el, 'package_code'),
-        // commissionTIN: '',
-        other: 0,
-        ownerType: 0,
-      }))
-    })
 
     finishSaleWithoutAppPaymentType({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
@@ -675,7 +665,6 @@ function OrderLite({
       total_amount: get(cartItemsList, 'total_amount'),
 
       marking_data: markingData,
-      epos_data: mockData,
     })
 
     return
@@ -1014,7 +1003,7 @@ function OrderLite({
           ref={printContainerEmpty}
         >
           <RippedPaperItem
-            qrcodeUrl={false}
+            qrcodeUrl={'pending'}
             qrcode='pending'
             markingsList={markingsList}
             paymentsList={paymentsList}

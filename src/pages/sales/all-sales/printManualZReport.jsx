@@ -93,7 +93,7 @@ export default function PrintManualZReport({ open, setManualZreportData, refetch
                 white
                 name='store_id'
                 isMulti={false}
-                placeholder={t('Выберите Магазин')}
+                placeholder={t('Выберите Аптека')}
                 minWidth='auto'
                 isClearable={true}
                 label={t('input.store.label')}

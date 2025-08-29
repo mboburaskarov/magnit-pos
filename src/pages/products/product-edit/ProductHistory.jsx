@@ -20,7 +20,7 @@ export default function ProductHistory({ id }) {
       offset: values?.offsetHistory || 0,
     }
   }, [values?.limitHistory, values?.offsetHistory])
-
+  // salom
   const {
     data: productDataHistory,
     isLoading: isproductDataLoadingHistory,
@@ -67,6 +67,10 @@ export default function ProductHistory({ id }) {
               const type = get(data, 'entry_type')
               if (type == '4') {
                 navigate(`/sales/all-sales?limit=10&offset=0&search=${get(data, 'public_id')}&sale_id=${get(data, 'id')}`)
+              } else if (type == '6') {
+                navigate(`/products/transfer-completed/${get(data, 'id')}`)
+              } else if (type == '5') {
+                navigate(`/products/return-to-warehouse-completed/${get(data, 'id')}`)
               } else if (type == '3') {
                 navigate(`/products/write-off-completed/${get(data, 'id')}`)
               } else if (type == '2') {
@@ -76,7 +80,11 @@ export default function ProductHistory({ id }) {
               }
             }}
           >
-            {get(data, 'entry_type') == '3'
+            {get(data, 'entry_type') == '6'
+              ? 'Перемещение '
+              : get(data, 'entry_type') == '5'
+              ? 'Возврат на склад '
+              : get(data, 'entry_type') == '3'
               ? 'Списание '
               : get(data, 'entry_type') == '1'
               ? 'Импорт '
@@ -120,7 +128,7 @@ export default function ProductHistory({ id }) {
         ),
       },
       {
-        headerName: 'Магазин',
+        headerName: 'Aптека',
         colId: 'store',
         minWidth: 185,
         maxWidth: 285,

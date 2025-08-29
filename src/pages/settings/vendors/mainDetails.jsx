@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from '@mui/material'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import InputSwitchNew from '../../../../components/Inputs/InputSwitch'
@@ -135,7 +135,7 @@ export default function MainDetails({ clientData, openDrawer }) {
 
       <Box mb={4} />
       <Typography fontSize={'20px'} lineHeight={'32px'} mb='24px' fontWeight={'600'} color={'#000'}>
-        Магазин и роли
+        Аптека и роли
       </Typography>
 
       <Grid container spacing={4}>
@@ -146,7 +146,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             id='store'
             name='store_id'
             isMulti={false}
-            placeholder={t('Выберите Магазин')}
+            placeholder={t('Выберите Аптека')}
             minWidth='auto'
             isClearable={true}
             request={requests.getAllStores}

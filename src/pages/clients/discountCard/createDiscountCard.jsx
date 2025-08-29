@@ -85,8 +85,6 @@ export default function CreateDiscountCard({ open, refetch, setOpen }) {
               filters={{ limit: 10 }}
               control={control}
               getOptionLabel={(option) => {
-                console.log(option)
-
                 return option.name
               }}
               filterOption={() => true}

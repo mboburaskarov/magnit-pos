@@ -55,8 +55,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
-  console.log(open)
-
   const reactToPrintContent = useCallback(() => printContainer.current, [])
   const printContainer = useRef()
   const userData = useSelector((state) => state.user)

@@ -143,7 +143,7 @@ export default function ReportLfl() {
 
   return (
     <LoadingContainer readyState={true}>
-      <Header noActions isLoading={false} backIcon backHref='/reports/product' text={'Отчет: бонусах продавца '} />
+      <Header noActions isLoading={false} backIcon backHref='/reports/product' text={'Oтчет LFL '} />
 
       <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'24px'} px={'50px'} pb={'20px'}>
         <Box

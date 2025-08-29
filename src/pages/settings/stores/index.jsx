@@ -75,12 +75,12 @@ export default function ProductsPage() {
   const { mutate: deleteStore, isLoading: isDeletingProduct } = useMutation(requests.deleteStore, {
     onSuccess: () => {
       refetch()
-      success('Магазин успешно удален!')
+      success('Аптека успешно удален!')
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
-      error('Ошибка при удалении магазин!')
+      error('Ошибка при удалении Аптека!')
       setOpenConfirmDialog(null)
       console.log('err', err)
     },
@@ -101,7 +101,7 @@ export default function ProductsPage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          Магазины
+          Аптеки
         </Typography>
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -171,8 +171,8 @@ export default function ProductsPage() {
             tableSettings
             columns={tableColumns}
             emptyTableText={{
-              title: 'Магазины недоступен',
-              description: 'Если вы не можете найти искомый Магазины, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+              title: 'Аптеки недоступен',
+              description: 'Если вы не можете найти искомый Аптеки, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
             }}
             data={storesList?.data?.data?.data || []}
             totalCount={storesList?.data?.data?._meta?.total_count || 0}
@@ -193,8 +193,8 @@ export default function ProductsPage() {
           open={!!openConfirmDialog}
           setOpen={setOpenConfirmDialog}
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={'Удалить магазин?'}
-          desc={'хотите удалить свой магазин?'}
+          title={'Удалить Аптека?'}
+          desc={'хотите удалить свой Аптека?'}
           supDesc={openConfirmDialog.name}
           actions={
             <>

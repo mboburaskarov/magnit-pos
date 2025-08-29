@@ -74,7 +74,7 @@ export default function MainDetails({ clientData, paymentTypes, setPaymentTypes,
             id='store'
             name='store_id'
             isMulti={false}
-            placeholder={t('Выберите Магазин')}
+            placeholder={t('Выберите Аптека')}
             minWidth='auto'
             isClearable={true}
             request={requests.getAllStores}

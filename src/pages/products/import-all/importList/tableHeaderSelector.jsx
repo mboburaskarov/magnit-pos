@@ -59,8 +59,6 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         cellRenderer: memo((p) => (
           <Typography
             onClick={() => {
-              console.log(values)
-
               navigate(
                 `/products/imports/${p.data.id}?${qs.stringify({
                   previusLimit: values?.limit,

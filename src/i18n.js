@@ -38,4 +38,7 @@ i18n
     },
   })
 
+// global helper function
+// export const t = (key, options) => i18n.t(key, options)
+
 export default i18n

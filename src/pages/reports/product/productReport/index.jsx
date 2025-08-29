@@ -110,6 +110,8 @@ export default function ProductReportPage() {
     values?.search,
     values?.store_id,
     orderStoring,
+    values?.from_time,
+    values?.to_time,
     values?.employee_id,
     values?.start_date,
     values?.end_date,
