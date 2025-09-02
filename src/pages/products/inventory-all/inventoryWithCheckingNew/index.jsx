@@ -103,36 +103,36 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   )
 
-  useEffect(() => {
-    // Connect to backend
+  // useEffect(() => {
+  //   // Connect to backend
 
-    const ws = new WebSocket(`wss://api-pharma.noor.uz/ws?store_id=${userData?.id}`) // or wss://your-domain.com/ws
-    wsRef.current = ws
+  //   const ws = new WebSocket(`wss://api-pharma.noor.uz/ws?store_id=${userData?.id}`) // or wss://your-domain.com/ws
+  //   wsRef.current = ws
 
-    ws.onopen = () => {
-      console.log('WebSocket connection established')
-    }
+  //   ws.onopen = () => {
+  //     console.log('WebSocket connection established')
+  //   }
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data)
-      if (data?.event == 'your_invertry_qty_is_change') {
-        refetch()
-      }
-      console.log('Received:', data)
-    }
+  //   ws.onmessage = (event) => {
+  //     const data = JSON.parse(event.data)
+  //     if (data?.event == 'your_invertry_qty_is_change') {
+  //       refetch()
+  //     }
+  //     console.log('Received:', data)
+  //   }
 
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error)
-    }
+  //   ws.onerror = (error) => {
+  //     console.error('WebSocket error:', error)
+  //   }
 
-    ws.onclose = () => {
-      console.log('WebSocket closed')
-    }
+  //   ws.onclose = () => {
+  //     console.log('WebSocket closed')
+  //   }
 
-    return () => {
-      ws.close()
-    }
-  }, [])
+  //   return () => {
+  //     ws.close()
+  //   }
+  // }, [])
   const allRows = data?.pages?.flatMap((page) => page.rows) || []
   const rowCount = allRows.length
 
