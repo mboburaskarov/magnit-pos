@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-
 const columns = [
   {
     field: 'number',
@@ -7,84 +6,78 @@ const columns = [
     minWidth: 60,
     width: 60,
   },
-  {
-    field: 'material_code',
-    hide: false,
-    minWidth: 80,
-    width: 80,
-  },
-  {
-    field: 'store_name',
-    hide: false,
-    minWidth: 60,
-    width: 400,
-  },
-  {
-    field: 'total_amount',
-    hide: false,
-    minWidth: 220,
-    flex: 1,
-  },
 
   {
-    field: 'sale_date',
+    field: 'name',
     hide: false,
-    minWidth: 60,
+    minWidth: 380,
+    flex: 1,
+  },
+  {
+    field: 'email',
+    hide: false,
+    minWidth: 70,
+    width: 194,
+  },
+  {
+    field: 'phone',
+    hide: false,
+    minWidth: 70,
+    width: 192,
+  },
+  {
+    field: 'country',
+    hide: false,
+    minWidth: 70,
+    width: 192,
+  },
+  {
+    field: 'city',
+    hide: false,
+    minWidth: 70,
+    width: 192,
+  },
+  {
+    field: 'postal_code',
+    hide: false,
+    minWidth: 70,
     width: 200,
   },
   {
-    field: 'cash',
-    hide: false,
-    minWidth: 70,
-    width: 220,
-  },
-  {
-    field: 'humo',
+    field: 'legal_name',
     hide: false,
     minWidth: 70,
     width: 200,
   },
   {
-    field: 'uzcard',
+    field: 'legal_address',
     hide: false,
     minWidth: 70,
-    width: 180,
+    width: 280,
   },
   {
-    field: 'click',
+    field: 'company_inn',
     hide: false,
     minWidth: 70,
-    width: 158,
+    width: 192,
   },
   {
-    field: 'payme',
+    field: 'company_mfo',
     hide: false,
     minWidth: 70,
-    width: 158,
-  },
-
-  {
-    field: 'return_amount',
-    hide: false,
-    minWidth: 70,
-    width: 158,
+    width: 192,
   },
   {
-    field: 'discount_amount',
+    field: 'actions',
     hide: false,
-    minWidth: 70,
-    width: 158,
-  },
-  {
-    field: 'cheque_count',
-    hide: false,
-    minWidth: 220,
-    flex: 1,
+    minWidth: 96,
+    width: 96,
+    pinned: 'right',
   },
 ]
 
-const storeReportTableColumns = createSlice({
-  name: 'storeReportTableColumns',
+const companiesTableColumns = createSlice({
+  name: 'companiesTableColumns',
   initialState: {
     columns,
     loading: false,
@@ -124,5 +117,5 @@ const storeReportTableColumns = createSlice({
 })
 
 export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } =
-  storeReportTableColumns.actions
-export const storeReportTableColumnsSlice = storeReportTableColumns.reducer
+  companiesTableColumns.actions
+export const companiesTableColumnsSlice = companiesTableColumns.reducer

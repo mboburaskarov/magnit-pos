@@ -43,6 +43,12 @@ function StoreReposrMiniDashboardHeader({ saleStatsData }) {
       type: 'card',
       sum: get(saleStatsData, 'return_amount'),
     },
+    {
+      id: '6033df02-7458-4ed3-aa07-2f289c92701a',
+      name: 'Сумма скидки',
+      type: 'card',
+      sum: get(saleStatsData, 'discount_amount'),
+    },
   ]
   return (
     <Box

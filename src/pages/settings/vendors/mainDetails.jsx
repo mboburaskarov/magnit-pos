@@ -59,6 +59,7 @@ export default function MainDetails({ clientData, openDrawer }) {
       setValue('gender', get(employeeInfo, 'data.data.gender'))
       setValue('role', getOptionsSchema(get(employeeInfo, 'data.data.roles', []), false, 'name'))
       setValue('store_id', getOptionsSchema(get(employeeInfo, 'data.data.store', []), Object, 'name'))
+      setValue('company_id', getOptionsSchema(get(employeeInfo, 'data.data.company_id', []), Object, 'name'))
     }
   }, [employeeInfo])
 
@@ -150,6 +151,25 @@ export default function MainDetails({ clientData, openDrawer }) {
             minWidth='auto'
             isClearable={true}
             request={requests.getAllStores}
+            filters={{ limit: 10 }}
+            control={control}
+            getOptionLabel={(option) => {
+              return option.name
+            }}
+            filterOption={() => true}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Label mb='4px'>{t('Компания')}</Label>
+          <LazySelect
+            slug='company'
+            id='company'
+            name='company_id'
+            isMulti={false}
+            placeholder={t('role.placeholder')}
+            minWidth='auto'
+            isClearable={true}
+            request={requests.getAllCompanies}
             filters={{ limit: 10 }}
             control={control}
             getOptionLabel={(option) => {

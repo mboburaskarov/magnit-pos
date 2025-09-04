@@ -2,6 +2,7 @@ import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import SettingsPage from '../../pages/settings'
 
 import CashBoxsPage from '../../pages/settings/cashbox'
+import CompaniesPage from '../../pages/settings/companies/index'
 import CompanyPage from '../../pages/settings/company'
 import PaymentsAssetsList from '../../pages/settings/paymentsAssets/actions'
 import Profile from '../../pages/settings/profile'
@@ -26,6 +27,10 @@ const settingsRoutes = {
     {
       path: 'company',
       element: <CompanyPage />,
+    },
+    {
+      path: 'companies',
+      element: <CompaniesPage />,
     },
     {
       path: 'stores',

@@ -17,8 +17,9 @@ function StoreSummaryReportDashboard({ data: stats, setHasChange }) {
         { title: 'Импорт в ожидании ', value: 'total_import_amount', currency: 'сум' },
         { title: 'Общая сумма баланса', value: 'total_stock_amount', currency: 'сум' },
         { title: 'Общее итог', value: 'total', currency: 'сум' },
+        { title: 'Общее сумма скидки', value: 'total_discount_amount', currency: 'сум' },
       ].map((stat) => (
-        <Grid sm='3' lg='3' md='3' item sx={{}}>
+        <Grid sm='2.4' lg='2.4' md='2.4' item sx={{}}>
           <Box
             sx={{
               backgroundColor: stat.title == 'result' ? 'bg.10' : 'bg.10',

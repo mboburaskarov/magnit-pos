@@ -181,6 +181,13 @@ export const navbatRouteData = [
         href: '/settings/company',
       },
       {
+        label: 'Компании',
+        active: '/settings/companies/*',
+        id: '91',
+        href: '/settings/companies',
+      },
+
+      {
         label: 'navbar.vendors',
         id: '92',
         active: '/settings/vendors/*',

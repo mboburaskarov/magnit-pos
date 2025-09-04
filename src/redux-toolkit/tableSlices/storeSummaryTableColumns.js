@@ -32,6 +32,13 @@ const columns = [
     width: 270,
   },
   {
+    field: 'discount_amount',
+    hide: false,
+    minWidth: 70,
+    width: 270,
+  },
+
+  {
     field: 'total',
     hide: false,
     minWidth: 70,

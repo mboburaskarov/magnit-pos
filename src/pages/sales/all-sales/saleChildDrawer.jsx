@@ -149,7 +149,12 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
       console.log('err', err)
     },
   })
-
+  function maskNumber(num) {
+    const str = String(num)
+    const visible = str.slice(-4) // last 4 digits
+    const hidden = '*'.repeat(str.length - 4) // mask the rest
+    return hidden + visible
+  }
   return (
     <LoadingContainer noHeight readyState={debouncedCurrentSaleId || !isLoading}>
       <Box className={classes.drawer}>
@@ -231,6 +236,30 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
                   </Box>
                 </Grid>
               ))}
+              {get(saleDetailsList, 'data.data.total_discount', 0) > 0 && (
+                <Grid item xl={6} xs={6} sm={6} md={6} lg={6} width={'100%'} padding={'4px'}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      minWidth: '180px',
+                      borderRadius: '16px',
+                      padding: '12px 16px',
+                    }}
+                    bgcolor={'bg.10'}
+                  >
+                    <Box>
+                      <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                        Сумма скидки {maskNumber(get(saleDetailsList, 'data.data.discount_barcode'))}
+                      </Typography>
+                      <Typography fontSize={16} mt={'4px'} flexShrink={'none'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                        {thousandDivider(get(saleDetailsList, 'data.data.total_discount'), 'сум')}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+              )}
             </Grid>
           </Box>
           <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>

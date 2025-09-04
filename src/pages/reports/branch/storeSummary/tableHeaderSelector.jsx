@@ -140,6 +140,17 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='stock_amount' />),
       }
     }
+    if (el.field === 'discount_amount') {
+      return {
+        ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
+        headerName: 'Общая сумма скидки',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='stock_amount' />),
+      }
+    }
     if (el.field === 'total') {
       return {
         ...el,

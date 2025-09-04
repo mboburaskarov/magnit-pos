@@ -119,6 +119,38 @@ function SaleMiniDashboardHeader({ saleStatsData }) {
             </Typography>
           </Box>
         )}
+        {get(saleStatsData, 'total_returnals_sum') > 0 && (
+          <Box
+            sx={{
+              flexShrink: 0,
+              padding: '10px 15px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              borderRight: '1px dashed #ccc',
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: '16px',
+                color: 'bunker.950',
+                fontWeight: '500',
+                mb: '5px',
+              }}
+            >
+              Сумма скидки
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: '18px',
+                color: 'orange.500',
+                fontWeight: '700',
+              }}
+            >
+              {thousandDivider(get(saleStatsData, 'total_discount_amount'), 'сум')}
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Box>
   )
