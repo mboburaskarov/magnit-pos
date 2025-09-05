@@ -16,8 +16,9 @@ export default function ProductRemainsHistory({ id }) {
     return {
       limit: values?.remainsLimit || 5,
       offset: values?.remainsOffset || 0,
+      store_id: values?.store_id,
     }
-  }, [values?.remainsLimit, values?.remainsOffset])
+  }, [values?.remainsLimit, values?.store_id, values?.remainsOffset])
 
   const {
     data: productReaminsDataHistory,

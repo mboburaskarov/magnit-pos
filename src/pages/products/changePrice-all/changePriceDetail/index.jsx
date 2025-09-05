@@ -145,7 +145,7 @@ export default function ChangePriceDetailPage() {
 
   const { mutate: finishRevaluation, isLoading: isfinishRevaluation } = useMutation(requests.finishRevaluation, {
     onSuccess: ({ data }) => {
-      navigate('/products/inventory')
+      navigate('/products/revaluation')
     },
     onError: (err) => {
       error('Ошибка при завершение импорта!')

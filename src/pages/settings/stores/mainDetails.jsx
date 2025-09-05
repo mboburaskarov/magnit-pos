@@ -8,6 +8,8 @@ import InputSwitchNew from '../../../../components/Inputs/InputSwitch'
 import InputPhone from '../../../../components/Inputs/PhoneNumber'
 import TextField from '../../../../components/Inputs/TextField'
 import Label from '../../../../components/Label'
+import LazySelect from '../../../../components/Select/LazySelect'
+import { requests } from '../../../../utils/requests'
 export default function MainDetails({ clientData, openDrawer }) {
   const { control, errors, setValue, register, reset, getValues, watch } = useFormContext()
   const { t } = useTranslation()
@@ -24,6 +26,8 @@ export default function MainDetails({ clientData, openDrawer }) {
 
       setValue('work-time', get(clientData, 'work_hours'))
       setValue('time-type', get(clientData, 'work_hours') == '24' ? '24' : 'range')
+      setValue('company_id', getOptionsSchema(get(employeeInfo, 'data.data.company_id', []), Object, 'name'))
+
       setDate(get(clientData, 'work_hours'))
     } else {
       reset()
@@ -109,6 +113,25 @@ export default function MainDetails({ clientData, openDrawer }) {
             error={errors?.cash_box_count}
             placeholder={'Количество касса'}
             asteriks
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Label mb='4px'>{t('Компания')}</Label>
+          <LazySelect
+            slug='company'
+            id='company'
+            name='company_id'
+            isMulti={false}
+            placeholder={t('role.placeholder')}
+            minWidth='auto'
+            isClearable={true}
+            request={requests.getAllCompanies}
+            filters={{ limit: 10 }}
+            control={control}
+            getOptionLabel={(option) => {
+              return option.name
+            }}
+            filterOption={() => true}
           />
         </Grid>
       </Grid>

@@ -89,6 +89,8 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
       employee_count: Number(get(data, 'employee_count')),
       cash_box_count: Number(get(data, 'cash_box_count')),
       store_code: Number(get(data, 'store_code')),
+      company_id: data?.company_id?.id,
+
       work_hours: get(data, 'time-type') == '24' ? '00:00-00:00' : get(data, 'work-time'),
     }
     if (openDrawer?.mode === 'edit') {
