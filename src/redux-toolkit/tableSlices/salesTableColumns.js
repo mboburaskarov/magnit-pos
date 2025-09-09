@@ -58,6 +58,12 @@ const columns = [
     minWidth: 70,
     width: 160,
   },
+  {
+    field: 'alif',
+    hide: false,
+    minWidth: 70,
+    width: 160,
+  },
 
   {
     field: 'created_at',

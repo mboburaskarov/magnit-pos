@@ -67,7 +67,7 @@ export default function tableHeaderSelector({ setopenCreateVendorDrawer, values,
         ...el,
         headerName: t('branch'),
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{get(p, 'data.[store].name')}</Typography>),
+        cellRenderer: memo((p) => <SimpleText data={get(p, 'data.[store]')} type={'name'} />),
       }
     }
     if (el.field === 'phone') {

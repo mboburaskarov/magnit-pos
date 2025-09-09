@@ -1,9 +1,10 @@
-import { Box, Typography } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
 import CustomImg from '../../../../components/CustomImg'
 import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 import thousandDivider from '../../../../utils/thousandDivider'
+import EditIcon from '../../../assets/icons/EditIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -169,9 +170,9 @@ export default function tableHeaderSelector({ productsColumns, values, t, setOpe
         colId: el.field,
         cellRenderer: memo(({ data }) => (
           <Box display='inline-flex' columnGap={'8px'}>
-            {/* <IconButton onClick={() => setopenCreateLocationDrawer({ mode: 'edit', data })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+            <IconButton onClick={() => setopenCreateLocationDrawer({ mode: 'edit', data })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
               <EditIcon />
-            </IconButton> */}
+            </IconButton>
             {/* <IconButton
               onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: data.name })}
               sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}

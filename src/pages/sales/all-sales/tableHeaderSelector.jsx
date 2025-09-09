@@ -213,6 +213,23 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         )),
       }
     }
+    if (el.field === 'alif') {
+      return {
+        ...el,
+        headerName: 'Alif',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <SimpleText
+            currency='сум'
+            withDevider
+            {...p}
+            data={get(p, 'data', 0)}
+            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'UzumBank')}
+            type='alif'
+          />
+        )),
+      }
+    }
     if (el.field === 'balance') {
       return {
         ...el,

@@ -283,7 +283,7 @@ function RippedPaperCheck({
                 }}
               >
                 <Typography>
-                  Chek turi: {qrcodeUrl?.qr == 'pending' ? 'Не товарный чек' : get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}
+                  Chek turi: {qrcodeUrl?.qr == 'pending' ? '' : get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}
                 </Typography>
                 {qrcodeUrl?.qr !== 'pending' && <FiskalText data={qrcodeUrl.fiscal} />}
               </Box>
@@ -291,7 +291,16 @@ function RippedPaperCheck({
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
               {qrcodeUrl?.qr == 'pending' ? (
-                ''
+                <>
+                  <QRCodeCanvas size={200} value={'https://pharma-cosmos.uz'} />
+
+                  <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
+                    SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
+                  </Typography>
+                  <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
+                    XARIDINGIZ UCHUN RAHMAT!!!
+                  </Typography>
+                </>
               ) : (
                 <>
                   <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>

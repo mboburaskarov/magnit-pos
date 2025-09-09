@@ -1,175 +1,234 @@
 import { Box, Grid } from '@mui/material'
-import { get } from 'lodash'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import ReactInputMask from 'react-input-mask'
-import InputSwitchNew from '../../../../components/Inputs/InputSwitch'
 import InputPhone from '../../../../components/Inputs/PhoneNumber'
+
+import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
+import { useQuery } from 'react-query'
 import TextField from '../../../../components/Inputs/TextField'
 import Label from '../../../../components/Label'
-export default function MainDetails({ clientData, openDrawer }) {
-  const { control, errors, setValue, register, reset, getValues, watch } = useFormContext()
-  const { t } = useTranslation()
-  const [time, setDate] = useState('08:00 - 23:00')
-  useEffect(() => {
-    if (get(openDrawer, 'mode') === 'edit') {
-      setValue('name', get(clientData, 'name'))
-      setValue('detailed_name', get(clientData, 'detailed_name'))
-      setValue('location', get(clientData, 'location'))
-      setValue('employee_count', get(clientData, 'employee_count'))
-      setValue('cash_box_count', get(clientData, 'cash_box_count'))
-      setValue('store_code', get(clientData, 'store_code'))
-      setValue('address', get(clientData, 'address'))
+import { requests } from '../../../../utils/requests'
 
-      setValue('work-time', get(clientData, 'work_hours'))
-      setValue('time-type', get(clientData, 'work_hours') == '24' ? '24' : 'range')
-      setDate(get(clientData, 'work_hours'))
-    } else {
-      reset()
+const useStyles = makeStyles((theme) => ({
+  card: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: theme.palette.gray[100],
+    padding: 16,
+    borderRadius: 24,
+    marginTop: 16,
+  },
+  required: {
+    '&::after': {
+      content: '" *"',
+      color: theme.palette.red[500],
+    },
+  },
+  label: {
+    marginRight: 255,
+  },
+}))
+
+export default function MainDetails({ clientData, openDrawer }) {
+  const classes = useStyles()
+  console.log(openDrawer)
+
+  const { data: companyInfo, refetch: refetcompanyInfo } = useQuery(
+    ['companyInfo', openDrawer],
+    () => requests.getSingleComapny(get(openDrawer, 'data.id', 'no')),
+    {
+      enabled: !!get(openDrawer, 'data.id', false),
     }
-  }, [clientData, openDrawer])
+  )
+  const mode = openDrawer?.mode
+  console.log(companyInfo)
+
+  const { control, errors, setValue } = useFormContext()
+  const { t } = useTranslation()
   useEffect(() => {
-    setDate('00:00 - 00:00')
-    setValue('time-type', getValues('time-type'))
-  }, [watch('time-type')])
+    refetcompanyInfo
+  }, [openDrawer])
   useEffect(() => {
-    setValue('work-time', time)
-  }, [time])
+    if (mode === 'edit') {
+      setValue('name', get(companyInfo, 'data.data.name'))
+      setValue('email', get(companyInfo, 'data.data.email'))
+      setValue('phone', get(companyInfo, 'data.data.phone', '').replace('998', ''))
+      setValue('country', get(companyInfo, 'data.data.country'))
+      setValue('city', get(companyInfo, 'data.data.city'))
+      setValue('postal_code', get(companyInfo, 'data.data.postal_code'))
+      setValue('legal_name', get(companyInfo, 'data.data.legal_name'))
+      setValue('legal_address', get(companyInfo, 'data.data.legal_address'))
+      setValue('company_inn', get(companyInfo, 'data.data.company_inn'))
+      setValue('company_mfo', get(companyInfo, 'data.data.company_mfo'))
+    }
+  }, [companyInfo])
 
   return (
     <Box mt={'24px'}>
-      <Grid container mb={'20px'} spacing={3}>
+      <Grid container spacing={3}>
         <Grid item xs={6}>
-          <Label mb='4px'>{t('Наименование полное')}</Label>
+          <Label mb='4px'>{t('name')}</Label>
 
           <TextField
-            id='client-detailed_name'
-            name='detailed_name'
+            id='client-name'
+            name='name'
             control={control}
             fullWidth
-            error={errors?.detailed_name}
-            placeholder={'Наименование полное'}
+            error={errors?.name}
+            placeholder={t('Название')}
             required
+            defaultValue={clientData?.name || ''}
             asteriks
           />
         </Grid>
         <Grid item xs={6}>
-          <Label mb='4px'>{t('phone_number')}</Label>
+          <Label mb='4px'>{t('Электронная почта')}</Label>
 
+          <TextField id='last-name' name='email' control={control} required fullWidth error={errors?.email} placeholder={t('Электронная почта')} asteriks />
+        </Grid>
+      </Grid>
+      <Box mb={4} />
+
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <Box>
+            <Label mb={'4px'} className={classes.required}>
+              {t('phone_number')}
+            </Label>
+          </Box>
           <InputPhone
             login={false}
-            id='phone'
             disabled
+            id='phone'
             name='phone'
+            defaultValue={get(companyInfo, 'data.data.phone', '').replace('998', '')}
+            placeholder={t('menu.settings.shops.shop_create.phone_placeholder')}
             control={control}
             fullWidth
             boxStyle={{ marginBottom: '0', marginTop: 'auto' }}
+            required
             setCountry={({ dial_code }) => setValue('dial_code', dial_code)}
             error={errors?.phone}
           />
         </Grid>
-      </Grid>
-      <Grid container spacing={3}>
         <Grid item xs={6}>
-          <Label mb='4px'>{t('Название')}</Label>
-
-          <TextField id='client-name' name='name' control={control} fullWidth error={errors?.name} placeholder={'Название'} asteriks />
-        </Grid>
-        <Grid item xs={6}>
-          <Label mb='4px'>{'Адрес'}</Label>
-
-          <TextField id='last-name' name='address' control={control} fullWidth error={errors?.address} placeholder={'Адрес'} asteriks />
-        </Grid>
-      </Grid>
-      <Box height={'20px'} />
-      <Grid container spacing={3}>
-        <Grid item xs={6}>
-          <Label mb='4px'>{'Количество сотрудников'}</Label>
+          <Box>
+            <Label className={classes.required} mb='4px'>
+              {t('Страна')}
+            </Label>
+          </Box>
           <TextField
-            id='client-name'
-            name='employee_count'
+            id='country'
+            name='country'
             control={control}
             fullWidth
-            error={errors?.employee_count}
-            placeholder={'Количество сотрудников'}
-            type={'number'}
-            asteriks
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <Label mb='4px'>{'Количество касса'}</Label>
-
-          <TextField
-            id='last-name'
-            type={'number'}
-            name='cash_box_count'
-            control={control}
-            fullWidth
-            error={errors?.cash_box_count}
-            placeholder={'Количество касса'}
+            required={mode === 'edit' ? false : true}
+            error={errors?.Страна}
+            placeholder={t('Страна')}
+            defaultValue={'Uzbekistan'}
             asteriks
           />
         </Grid>
       </Grid>
-      <Box height={'20px'} />
+      <Box mb={4} />
 
       <Grid container spacing={3}>
         <Grid item xs={6}>
-          <Label mb='4px'>{t('В Аптекае код')}</Label>
+          <Label mb='4px'>{t('Город')}</Label>
 
           <TextField
             id='client-name'
-            name='store_code'
+            name='city'
             control={control}
             fullWidth
-            error={errors?.store_code}
-            placeholder={'В Аптекае код'}
-            type={'number'}
+            error={errors?.city}
+            placeholder={t('Город')}
+            required
+            defaultValue={clientData?.city || 'Tashkent'}
             asteriks
           />
         </Grid>
         <Grid item xs={6}>
-          <Label mb='4px'>{'Локация'}</Label>
+          <Label mb='4px'>{t('Почтовый индексc')}</Label>
 
-          <TextField id='last-name' name='location' control={control} fullWidth error={errors?.location} placeholder={'Локация'} asteriks />
+          <TextField
+            id='last-postal_code'
+            name='postal_code'
+            control={control}
+            required
+            fullWidth
+            error={errors?.postal_code}
+            placeholder={t('Почтовый индексc')}
+            asteriks
+          />
         </Grid>
       </Grid>
-      <Grid mt={'5px'} container spacing={3}>
-        <Grid item xs={6}>
-          <Label mb='4px'>{'Режим работа '}</Label>
+      <Box mb={4} />
 
-          <ReactInputMask
-            disabled={getValues('time-type') == '24'}
-            mask='99:99 - 99:99'
-            value={time}
-            onChange={(e) => getValues('time-type') !== '24' && setDate(e.target.value)}
-            placeholder='HH:MM - HH:MM'
-          >
-            {(inputProps) => (
-              <TextField {...inputProps} setValue={() => {}} id='client-name' name='ranged-time' fullWidth uncontrolled placeholder={'В Аптекае код'} />
-            )}
-          </ReactInputMask>
+      <Grid container spacing={3}>
+        <Grid item xs={6}>
+          <Label mb='4px'>{t('Юридическое название')}</Label>
+
+          <TextField
+            id='client-legal_name'
+            name='legal_name'
+            control={control}
+            fullWidth
+            error={errors?.legal_name}
+            placeholder={t('Юридическое название')}
+            required
+            defaultValue={clientData?.legal_name || ''}
+            asteriks
+          />
         </Grid>
         <Grid item xs={6}>
-          <Box height={'25px'} />
-          <InputSwitchNew
-            id='client-time-type'
-            noMarginTop
-            name='time-type'
+          <Label mb='4px'>{t('Юридический адрес')}</Label>
+
+          <TextField
+            id='last-legal_address'
+            name='legal_address'
             control={control}
-            defaultValue='24'
-            error={errors?.gender}
-            options={[
-              {
-                title: '24 часа',
-                value: '24',
-              },
-              {
-                title: 'Своботна',
-                value: 'range',
-              },
-            ]}
+            required
+            fullWidth
+            error={errors?.legal_address}
+            placeholder={t('Юридический адрес')}
+            asteriks
+          />
+        </Grid>
+      </Grid>
+      <Box mb={4} />
+
+      <Grid container spacing={3}>
+        <Grid item xs={6}>
+          <Label mb='4px'>{t('ИНН компании')}</Label>
+
+          <TextField
+            id='client-company_inn'
+            name='company_inn'
+            control={control}
+            fullWidth
+            error={errors?.company_inn}
+            placeholder={t('ИНН компании')}
+            required
+            defaultValue={clientData?.company_inn || ''}
+            asteriks
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Label mb='4px'>{t('Компания МФО ')}</Label>
+
+          <TextField
+            id='last-company_mfo'
+            name='company_mfo'
+            control={control}
+            required
+            fullWidth
+            error={errors?.company_mfo}
+            placeholder={t('Компания МФО ')}
+            asteriks
           />
         </Grid>
       </Grid>

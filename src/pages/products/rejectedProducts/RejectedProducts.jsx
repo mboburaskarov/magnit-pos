@@ -45,7 +45,6 @@ export default function RejectedProducts({ id }) {
   useEffect(() => {
     refetch()
   }, [productHistoryFilter])
-  console.log(selectedShops)
 
   const columns = useMemo(
     () => [

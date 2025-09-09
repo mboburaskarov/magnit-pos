@@ -26,7 +26,7 @@ export default function MainDetails({ clientData, openDrawer }) {
 
       setValue('work-time', get(clientData, 'work_hours'))
       setValue('time-type', get(clientData, 'work_hours') == '24' ? '24' : 'range')
-      setValue('company_id', getOptionsSchema(get(employeeInfo, 'data.data.company_id', []), Object, 'name'))
+      // setValue('company_id', getOptionsSchema(get(employeeInfo, 'data.data.company_id', []), Object, 'name'))
 
       setDate(get(clientData, 'work_hours'))
     } else {
