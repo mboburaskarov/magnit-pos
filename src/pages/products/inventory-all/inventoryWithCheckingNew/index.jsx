@@ -80,7 +80,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       if (res.data?.data?.data?.length > 0 && status !== 'checking') {
         // setSelectedCellRowId(res.data.data.data[0].id)
         setLastSelectedCellRowId(res.data.data.data[0].id)
-        // setSelectedIndex(0)
+        setSelectedIndex(0)
       }
       return res
       // setHasChange(false)
