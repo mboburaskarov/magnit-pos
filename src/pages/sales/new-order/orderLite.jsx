@@ -20,6 +20,7 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
 function OrderLite({
   cartItemsList,
+  collapsedSale,
   sendToEpos,
   setDmedOrganizedList,
   markingsList,
@@ -674,6 +675,7 @@ function OrderLite({
   return (
     <Box
       sx={{
+        display: collapsedSale ? 'block' : 'none',
         mb: '24px',
         '& .MuiOutlinedInput-root': {
           backgroundColor: 'bg.10',
