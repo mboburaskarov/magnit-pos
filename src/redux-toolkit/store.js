@@ -26,6 +26,7 @@ import { minMaxTableColumnsSlice } from './tableSlices/minMaxTableColumns'
 import { orderTableColumnsSlice } from './tableSlices/orderTableColumns'
 import { paymentAssetsTableColumnsSlice } from './tableSlices/paymentAssetsTableColumns'
 import { productPriceListTableColumnsForProductSlice } from './tableSlices/productPriceListTableColumnsForProduct'
+import { productQuantityByDateReportTableColumnsSlice } from './tableSlices/productQuantityByDateReportTableColumns'
 import { productReportTableColumnsSlice } from './tableSlices/productReportTableColumns'
 import { productsTableColumnsSlice } from './tableSlices/productsTableColumns'
 import { productsTableForChangeByStoreColumnsSlice } from './tableSlices/productsTableForChangeByStoreColumns'
@@ -53,7 +54,7 @@ import { userSlice } from './userSlice'
 // Define your migration function here
 const migrations = {
   // Example migration
-  373: (state) => {
+  374: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -71,7 +72,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 373, // Current version of the persisted state
+  version: 374, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -121,6 +122,7 @@ const reducer = combineReducers({
   clientTableColumns: clientTableColumnsSlice,
   topReportsTableColumns: topReportTableColumnsSlice,
   productReportTableColumns: productReportTableColumnsSlice,
+  productQuantityByDateReportTableColumns: productQuantityByDateReportTableColumnsSlice,
   storeReportTableColumns: storeReportTableColumnsSlice,
   companiesTableColumns: companiesTableColumnsSlice,
   user: userSlice,

@@ -5,6 +5,7 @@ import TopBranchesPage from '../../pages/reports/branch/topBranches'
 import DiscountCardReport from '../../pages/reports/client/discountCardReport'
 import BonusProductsPage from '../../pages/reports/product/bonusProducts'
 import LFLReport from '../../pages/reports/product/lfl'
+import ProductQtyByDateReportPage from '../../pages/reports/product/productQtyByDateReport'
 import ProductReportPage from '../../pages/reports/product/productReport'
 import TopProductsPage from '../../pages/reports/product/topProducts'
 import SellerBonus from '../../pages/reports/vendor/sellerBonus'
@@ -48,9 +49,14 @@ const reportsInsideRoutes = {
       path: 'top-vendors',
       element: <TopVendorsPage />,
     },
+
     {
       path: 'store-report',
       children: [{ path: '', element: <StoreReportPage /> }],
+    },
+    {
+      path: 'product-qty-by-date',
+      children: [{ path: '', element: <ProductQtyByDateReportPage /> }],
     },
     {
       path: 'discount-card-report',

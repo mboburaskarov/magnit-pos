@@ -40,6 +40,16 @@ function PoductReportsList() {
           checkSlug='/reports/product'
           color={palette.blue[600]}
         />
+        <ReportBox
+          title={t('Остаток по дате ')}
+          desc={t(
+            'Отчёт показывает остатки товаров на выбранную дату. Позволяет анализировать доступное количество продукции на складе и контролировать наличие.'
+          )}
+          to='/reports/product-qty-by-date'
+          checkSlug='/reports/product'
+          color={palette.blue[600]}
+        />
+
         {/* )} */}
       </Box>
     </Box>
