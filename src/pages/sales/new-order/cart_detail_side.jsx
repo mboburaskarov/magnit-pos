@@ -27,6 +27,8 @@ import DmedPrescriptionsList from './dmedPrescriptionsList'
 import OrderLite from './orderLite'
 
 function CartDetailSide({
+  setSendToEpos,
+  sendToEpos,
   setDmedOrganizedList,
   cashBoxDetails,
   dmedOrganizedList,
@@ -67,7 +69,6 @@ function CartDetailSide({
 }) {
   const { t } = useTranslation()
   const theme = useTheme()
-  const [sendToEpos, setSendToEpos] = useState(null)
   const [maxAmount, setMaxAmount] = useState(0)
   const [collapseDiscount, setCollapseDiscount] = useState(false)
   const [collapsedSale, setCollapsedSale] = useState(false)
@@ -402,6 +403,7 @@ function CartDetailSide({
             setDmedOrganizedList={setDmedOrganizedList}
             liteOrder={liteOrder}
             setMaxAmount={setMaxAmount}
+            sendToEpos={sendToEpos}
             dmedOrganizedList={dmedOrganizedList}
             childRef={childRef}
             maxAmount={maxAmount}

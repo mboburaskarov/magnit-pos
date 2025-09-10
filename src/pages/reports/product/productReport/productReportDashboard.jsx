@@ -17,8 +17,9 @@ function ProductReportDashboard({ data: stats, setHasChange }) {
         { title: 'Общее количество возврат ', value: 'total_quantity_returned', currency: 'ед' },
         { title: 'Общее сумма', value: 'total_retail_price_sum', currency: 'сум' },
         { title: 'Общее сумма возврат', value: 'total_retail_price_sum_returned', currency: 'сум' },
+        { title: 'Общее сумма скидки', value: 'total_discount_sum', currency: 'сум' },
       ].map((stat) => (
-        <Grid sm='3' lg='3' md='3' item sx={{}}>
+        <Grid sm='2.4' lg='2.4' md='2.4' item sx={{}}>
           <Box
             sx={{
               backgroundColor: stat.title == 'result' ? 'bg.10' : 'bg.10',

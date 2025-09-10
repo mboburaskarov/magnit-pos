@@ -299,6 +299,7 @@ function NewSale() {
   const [isOpenChangeShift, setIsOpenChangeShift] = useState(false)
   const [dmedPrescriptionsList, setDmedPrescriptionsList] = useState([])
   const [liteOrder, setLiteOrder] = useState(false)
+  const [sendToEpos, setSendToEpos] = useState(null)
 
   const [isOpenImplementMarkingDialog, setIsOpenImplementMarkingDialog] = useState(false)
   const [isOpenOrganizeDmedOrderDialog, setIsOpenOrganizeDmedOrderDialog] = useState(false)
@@ -1164,6 +1165,8 @@ function NewSale() {
           </Box>
 
           <CartDetailSide
+            setSendToEpos={setSendToEpos}
+            sendToEpos={sendToEpos}
             setDmedOrganizedList={setDmedOrganizedList}
             setIsOpenOrganizeDmedOrderDialog={setIsOpenOrganizeDmedOrderDialog}
             dmedOrganizedList={dmedOrganizedList}
@@ -1304,6 +1307,7 @@ function NewSale() {
         isOrderDrower={isOrderDrower}
         setCustomerId={setCustomerId}
         setInputDiscount={setInputDiscount}
+        sendToEpos={sendToEpos}
         cashBoxDetails={cashBoxDetails}
         customerId={customerId}
         refetchcartItemsList={refetchcartItemsList}

@@ -243,6 +243,7 @@ const MAX_F_BUTTONS_QUANTITY = 10
 export default function OrderDrawer({
   setIsOrderDrower,
   isOrderDrower,
+  sendToEpos,
   dmedOrganizedList,
   setDmedOrganizedList,
   markingsList,
@@ -590,6 +591,7 @@ export default function OrderDrawer({
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
       marking_data: markingData,
+      tax_free: sendToEpos,
     })
 
     return
