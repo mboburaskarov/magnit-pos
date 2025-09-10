@@ -148,7 +148,7 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         setOrderStoring,
         headerName: 'Общая сумма скидки',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='stock_amount' />),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='discount_amount' />),
       }
     }
     if (el.field === 'total') {

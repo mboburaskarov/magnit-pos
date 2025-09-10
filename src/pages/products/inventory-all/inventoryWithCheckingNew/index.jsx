@@ -80,7 +80,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       if (res.data?.data?.data?.length > 0 && status !== 'checking') {
         // setSelectedCellRowId(res.data.data.data[0].id)
         setLastSelectedCellRowId(res.data.data.data[0].id)
-        setSelectedIndex(0)
+        // setSelectedIndex(0)
       }
       return res
       // setHasChange(false)
@@ -268,7 +268,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       const key = event.key.toLowerCase()
       const isCtrlOrCmd = event.ctrlKey || event.metaKey
       if (isCtrlOrCmd) return
-      if (/^[a-zа-яё0-9]$/i.test(key)) {
+      if (/^[a-zа-яё0-9+\-=!?"'.,]$/i.test(key)) {
         if (shouldICleanSearchQuery) {
           setBarcode('')
           setBarcode((prev) => prev + key)

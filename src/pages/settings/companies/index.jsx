@@ -18,6 +18,7 @@ import { error, success } from '../../../../utils/toast'
 import BigTickIcon from '../../../assets/icons/BigTickIcon'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import CategoryIcon from '../../../assets/icons/CategoryIcon'
+import PlusIcon from '../../../assets/icons/PlusIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/companiesTableColumns'
 import CreateLocationDrawer from './createLocationDrawer'
@@ -150,7 +151,7 @@ export default function CompaniesPage() {
                 resetTableHeader={resetTableHeader}
               />
             </Box>
-            {/* <Box minWidth={156}>
+            <Box minWidth={156}>
               <Button
                 sx={{ height: '48px' }}
                 onClick={() => setopenCreateLocationDrawer({ mode: 'create' })}
@@ -161,7 +162,7 @@ export default function CompaniesPage() {
               >
                 {t('button.add_new.text')}
               </Button>
-            </Box> */}
+            </Box>
           </Box>
         </Box>
         <Box>
@@ -215,7 +216,7 @@ export default function CompaniesPage() {
       )}
 
       <CreateLocationDrawer
-        refetchVendorList={refetch}
+        refetchCompanyList={refetch}
         setCustomerId={'setCustomerId'}
         quickCreateClientName={'quickCreateClientName'}
         openDrawer={openCreateLocationDrawer}

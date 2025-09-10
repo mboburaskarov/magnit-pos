@@ -27,6 +27,8 @@ import DmedPrescriptionsList from './dmedPrescriptionsList'
 import OrderLite from './orderLite'
 
 function CartDetailSide({
+  setSendToEpos,
+  sendToEpos,
   setDmedOrganizedList,
   cashBoxDetails,
   dmedOrganizedList,
@@ -67,9 +69,9 @@ function CartDetailSide({
 }) {
   const { t } = useTranslation()
   const theme = useTheme()
-  const [sendToEpos, setSendToEpos] = useState(null)
   const [maxAmount, setMaxAmount] = useState(0)
   const [collapseDiscount, setCollapseDiscount] = useState(false)
+  const [collapsedSale, setCollapsedSale] = useState(false)
   const childRef = useRef()
   const { id } = useParams()
   const leftZreportCount = localStorage.getItem('leftZreportCount')
@@ -371,6 +373,7 @@ function CartDetailSide({
       ) : (
         <Box></Box>
       )}
+
       <Box
         sx={(theme) => ({
           position: 'absolute',
@@ -388,25 +391,35 @@ function CartDetailSide({
           boxShadow: '0px 4px 12px 0px #00000014',
         })}
       >
-        <OrderLite
-          setDmedOrganizedList={setDmedOrganizedList}
-          liteOrder={liteOrder}
-          setMaxAmount={setMaxAmount}
-          dmedOrganizedList={dmedOrganizedList}
-          childRef={childRef}
-          maxAmount={maxAmount}
-          setLiteOrder={setLiteOrder}
-          dmedPrescriptionsList={dmedPrescriptionsList}
-          setDmedPrescriptionsList={setDmedPrescriptionsList}
-          setCustomerId={setCustomerId}
-          setMarkingList={setMarkingList}
-          setHasChange={setHasChange}
-          cartItemsList={get(cartItemsList, 'data.data')}
-          markingsList={markingsList}
-          cashBoxDetails={cashBoxDetails}
-          customerId={customerId}
-          printContainer={printContainer}
-        />
+        <Box
+          sx={{ cursor: 'pointer', display: 'flex', my: '20px', justifyContent: 'space-between', alignItems: 'center' }}
+          onClick={() => setCollapsedSale((a) => !a)}
+        >
+          <Typography>Лайт продажа</Typography>
+          {!collapsedSale ? <ArrowUp color='#111217' /> : <ArrowDown />}
+        </Box>
+        {collapsedSale && (
+          <OrderLite
+            setDmedOrganizedList={setDmedOrganizedList}
+            liteOrder={liteOrder}
+            setMaxAmount={setMaxAmount}
+            sendToEpos={sendToEpos}
+            dmedOrganizedList={dmedOrganizedList}
+            childRef={childRef}
+            maxAmount={maxAmount}
+            setLiteOrder={setLiteOrder}
+            dmedPrescriptionsList={dmedPrescriptionsList}
+            setDmedPrescriptionsList={setDmedPrescriptionsList}
+            setCustomerId={setCustomerId}
+            setMarkingList={setMarkingList}
+            setHasChange={setHasChange}
+            cartItemsList={get(cartItemsList, 'data.data')}
+            markingsList={markingsList}
+            cashBoxDetails={cashBoxDetails}
+            customerId={customerId}
+            printContainer={printContainer}
+          />
+        )}
         <Box className={classes.priceDetails}>
           <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
             <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>
@@ -424,48 +437,50 @@ function CartDetailSide({
               -{thousandDivider(get(cartItemsList, 'data.data.discount_amount'), 'сум')}
             </Typography>
           </Box>
-          <Button
-            loading={hasChange}
-            disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0 || hasChange}
-            onClick={() => {
-              if (dmedPrescriptionsList.length && dmedOrganizedList.length != size(get(cartItemsList, 'data.data.data'))) {
-                setIsOpenOrganizeDmedOrderDialog(true)
-                return
-              }
-              if (isAllMarkingFill() || !sendToEpos) {
-                setLiteOrder(true)
-              } else {
-                setLiteOrder(false)
-                setIsOpenImplementMarkingDialog({ mode: 'lite' })
-              }
-            }}
-            color='primary'
-            sx={{ mb: '16px', height: '48px', borderRadius: '16px', display: 'flex', justifyContent: 'space-between' }}
-          >
-            <Typography display={'flex'} alignItems={'center'} fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
-              {t('pay')}
-              <Box
-                sx={{
-                  color: '#fff',
-                  border: '2px solid #fff',
-                  height: '34px',
-                  display: 'flex',
-                  padding: '2px',
-                  ml: '15px',
-                  fontSize: '12px',
-                  minWidth: '34px',
-                  alignItems: 'center',
-                  borderRadius: '8px',
-                  justifyContent: 'center',
-                }}
-              >
-                F10
-              </Box>
-            </Typography>
-            <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
-              {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
-            </Typography>
-          </Button>
+          {collapsedSale && (
+            <Button
+              loading={hasChange}
+              disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0 || hasChange}
+              onClick={() => {
+                if (dmedPrescriptionsList.length && dmedOrganizedList.length != size(get(cartItemsList, 'data.data.data'))) {
+                  setIsOpenOrganizeDmedOrderDialog(true)
+                  return
+                }
+                if (isAllMarkingFill() || !sendToEpos) {
+                  setLiteOrder(true)
+                } else {
+                  setLiteOrder(false)
+                  setIsOpenImplementMarkingDialog({ mode: 'lite' })
+                }
+              }}
+              color='primary'
+              sx={{ mb: '16px', height: '48px', borderRadius: '16px', display: 'flex', justifyContent: 'space-between' }}
+            >
+              <Typography display={'flex'} alignItems={'center'} fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
+                {t('pay')}
+                <Box
+                  sx={{
+                    color: '#fff',
+                    border: '2px solid #fff',
+                    height: '34px',
+                    display: 'flex',
+                    padding: '2px',
+                    ml: '15px',
+                    fontSize: '12px',
+                    minWidth: '34px',
+                    alignItems: 'center',
+                    borderRadius: '8px',
+                    justifyContent: 'center',
+                  }}
+                >
+                  F10
+                </Box>
+              </Typography>
+              <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
+                {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
+              </Typography>
+            </Button>
+          )}
           <Box display={'flex'}>
             <Button
               sx={{

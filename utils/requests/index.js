@@ -92,6 +92,7 @@ export const requests = {
   topBranchReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   storeSummaryReport: ({ store_ids, ...filter }) => request.post(`v1/report/store-summary${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   storeSummaryExcelReport: (filter) => requestEXCEL.post(`v1/report/store-summary/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+  topProductsExcelReport: (filter) => requestEXCEL.post(`v1/report/top-products/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getStoreSummaryReportStat: (filter) => request.post(`v1/report/store-summary-stats${qs.stringify(filter, { addQueryPrefix: true })}`),
 
@@ -373,9 +374,15 @@ export const requests = {
 
   // roles
   getAllRoles: (filter) => request.get(`v1/role/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getAllCompanies: (filter) => request.post(`v1/company/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   getSingleRole: (id) => request.get(`v1/role/${id}`),
   createRole: (data) => request.post('v1/role', data),
   deleteRole: (id) => request.delete(`v1/role/multiple/delete`, id),
   editRole: ({ id, data }) => request.put(`v1/role/${id}`, data),
+
+  //company
+  getAllCompanies: (filter) => request.post(`v1/company/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  createComapny: (data) => request.post(`v1/company`, data),
+  updateCompany: ({ id, data }) => request.put(`v1/company/${id}`, data),
+  getSingleComapny: (id) => request.get(`v1/company/${id}`),
 }

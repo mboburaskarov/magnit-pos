@@ -1,6 +1,5 @@
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
-import { get } from 'lodash'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -40,61 +39,60 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function CreateLocationDrawer({ refetchVendorList, quickCreateClientName, openDrawer, closeDrawer, setCustomerId, clientData }) {
+export default function CreateVendorDrawer({ refetchCompanyList, quickCreateClientName, openDrawer, closeDrawer, setCustomerId, clientData }) {
   const { t } = useTranslation()
   const classes = useStyles()
   const methods = useForm()
 
   useEffect(() => {
-    methods.register('dial_code')
-  }, [])
-
-  useEffect(() => {
     methods.reset()
   }, [])
 
-  const { mutate: handleStoreCreate, isLoading: isCreateCustomer } = useMutation(requests.createStore, {
+  const { mutate: createComapny, isLoading: isCreateCustomer } = useMutation(requests.createComapny, {
     onSuccess: ({ data }) => {
       closeDrawer(false)
       methods.reset()
-      refetchVendorList()
-      success('Аптека создан!')
+      refetchCompanyList()
+      success('Вендор создан!')
     },
     onError: (err) => {
-      error('Ошибка при Аптека создан!')
+      error('Ошибка при Вендор создан!')
       console.log('err', err)
     },
   })
 
-  const { mutate: handleUpdateStore, isLoading: isUpdateVendor } = useMutation(requests.updateStore, {
+  const { mutate: handleUpdateCompany, isLoading: isUpdateCompany } = useMutation(requests.updateCompany, {
     onSuccess: ({ data }) => {
       closeDrawer(false)
       methods.reset()
-      refetchVendorList()
-      success('Аптека был отредактирован!')
+      refetchCompanyList()
+
+      success('Вендор успешно редактирование!')
     },
     onError: (err) => {
-      error('Ошибка редактирования Аптекаа.!')
+      error('Ошибка при редактирование Вендор!')
       console.log('err', err)
     },
   })
 
   const onSubmit = (data) => {
     const requestBody = {
-      name: get(data, 'name'),
-      detailed_name: get(data, 'detailed_name'),
-      location: get(data, 'location'),
-      ...(data?.phone && { phone: '998' + data.phone.replace(/[()\s]/g, '') }),
-      address: get(data, 'address'),
-      employee_count: Number(get(data, 'employee_count')),
-      cash_box_count: Number(get(data, 'cash_box_count')),
-      store_code: Number(get(data, 'store_code')),
-      work_hours: get(data, 'time-type') == '24' ? '00:00-00:00' : get(data, 'work-time'),
+      name: data?.name,
+      phone: '998' + data?.phone?.replace(/[()\s]/g, ''),
+
+      email: data?.email,
+      country: data?.country,
+      city: data?.city,
+      postal_code: data?.postal_code,
+      legal_name: data?.legal_name,
+      legal_address: data?.legal_address,
+      company_inn: data?.company_inn,
+      company_mfo: data?.company_mfo,
     }
     if (openDrawer?.mode === 'edit') {
-      handleUpdateStore({ data: requestBody, id: openDrawer?.data?.id })
+      handleUpdateCompany({ data: requestBody, id: openDrawer?.data?.id })
     } else {
-      handleStoreCreate(requestBody)
+      createComapny(requestBody)
     }
   }
 
@@ -108,28 +106,36 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
       <Box height={'100%'}>
         <Box className={classes.header}>
           <Typography variant='h4' className={classes.title}>
-            {openDrawer?.mode === 'edit' ? 'Редактировать филиал' : 'Новый филиал'}
+            {openDrawer?.mode === 'edit' ? 'Редактировать Компании' : 'Новый Компании'}
           </Typography>
           <CloseIcon color={theme.palette.black} onClick={() => closeDrawer(false)} />
         </Box>
         <FormProvider {...methods}>
-          <form id='create-client-form-mini' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <Box
-              sx={{
-                padding: '0 24px',
-              }}
-            >
-              <MainDetails openDrawer={openDrawer} quickCreateClientName={quickCreateClientName} clientData={clientData} />
-            </Box>
+          <Box
+            minHeight={'calc(100vh - 80px)'}
+            maxHeight={'100vh'}
+            display={'flex'}
+            justifyContent={'space-between'}
+            flexDirection={'column'}
+            position={'relative'}
+            overflow={'auto'}
+          >
+            <form id='create-client-form-mini' onSubmit={methods.handleSubmit(onSubmit, onError)}>
+              <Box
+                sx={{
+                  padding: '0 24px',
+                }}
+              >
+                <MainDetails openDrawer={openDrawer} quickCreateClientName={quickCreateClientName} clientData={clientData} />
+              </Box>
+            </form>
             <Box
               width={196}
               sx={{
                 padding: '24px',
                 width: '100%',
+                left: 0,
                 display: 'flex',
-                justifyContent: 'end',
-                position: 'absolute',
-                bottom: 0,
               }}
             >
               <Button
@@ -142,10 +148,10 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
                 form='create-client-form-mini'
                 type='submit'
               >
-                {t('create')}
+                {openDrawer?.mode === 'edit' ? t('edit') : t('create')}
               </Button>
             </Box>
-          </form>
+          </Box>
         </FormProvider>
       </Box>
     </Drawer>

@@ -71,8 +71,6 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
 
           ;<Typography
             onClick={() => {
-              console.log(values)
-
               if (targetPath) {
                 navigate(targetPath, {
                   state: {

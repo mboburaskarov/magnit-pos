@@ -20,6 +20,7 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
 function OrderLite({
   cartItemsList,
+  sendToEpos,
   setDmedOrganizedList,
   markingsList,
   childRef,
@@ -663,6 +664,7 @@ function OrderLite({
       store_id: get(userData, 'store.id'),
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
+      tax_free: sendToEpos,
 
       marking_data: markingData,
     })
