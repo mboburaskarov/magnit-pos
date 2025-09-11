@@ -11,7 +11,7 @@ const columns = [
     field: 'name',
     hide: false,
     minWidth: 80,
-    width: 80,
+    width: 220,
   },
   {
     field: 'store_name',

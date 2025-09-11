@@ -148,19 +148,22 @@ export default function ProductQtyByDateReportPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [productQtyByDateReportList?.data, values?.limit])
-  const { mutate: getPorductReportExcelReport, isLoading: isgetPorductReportExcelReport } = useMutation(requests.getPorductReportExcelReport, {
-    onSuccess: ({ data }) => {
-      downloadLinkExcel(get(data, 'data.file_name'))
-    },
-    onError: (err) => {
-      console.log(err)
+  const { mutate: getProductQuantityByDateExcelReport, isLoading: isGetProductQuantityByDateExcelReport } = useMutation(
+    requests.getProductQuantityByDateExcelReport,
+    {
+      onSuccess: ({ data }) => {
+        downloadLinkExcel(get(data, 'data.file_name'))
+      },
+      onError: (err) => {
+        console.log(err)
 
-      error('Ошибка при скачать excel!')
-    },
-  })
+        error('Ошибка при скачать excel!')
+      },
+    }
+  )
   return (
     <LoadingContainer readyState={true}>
-      {isgetPorductReportExcelReport && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
+      {isGetProductQuantityByDateExcelReport && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
       <Header noActions isLoading={false} backIcon backHref='/reports/product' text={'Остаток по дате '} />
 
       <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'0px'} px={'50px'} pb={'20px'}>
@@ -254,9 +257,9 @@ export default function ProductQtyByDateReportPage() {
             id='clients-main-table'
             tableSettings
             uniqId='product_id'
-            // fullDownload={() => getPorductReportExcelReport({ ...productQtyByDateReportListFilter, limit: 1000000 })}
-            // downloadByFilter={() => getPorductReportExcelReport(productQtyByDateReportListFilter)}
-            // isDownloading={isgetPorductReportExcelReport}
+            fullDownload={() => getProductQuantityByDateExcelReport({ ...productQtyByDateReportListFilter, limit: 1000000 })}
+            downloadByFilter={() => getProductQuantityByDateExcelReport(productQtyByDateReportListFilter)}
+            isDownloading={isGetProductQuantityByDateExcelReport}
             columns={tableColumns}
             totalCount={productQtyByDateReportList?.data?.data?._meta?.total_count || 0}
             data={productQtyByDateReportList?.data?.data?.data || []}

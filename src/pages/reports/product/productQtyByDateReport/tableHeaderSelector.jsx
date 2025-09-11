@@ -114,7 +114,7 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         headerComponent: CustomHeader,
         orderStoring,
         setOrderStoring,
-        headerName: 'Итог (уп)',
+        headerName: 'Aптека',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),
       }
@@ -125,7 +125,7 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         headerComponent: CustomHeader,
         orderStoring,
         setOrderStoring,
-        headerName: 'Итог (шт)',
+        headerName: 'Итог (уп)',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} withDevider={true} type='final_pack_quantity' />),
       }
@@ -136,7 +136,7 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         headerComponent: CustomHeader,
         orderStoring,
         setOrderStoring,
-        headerName: 'Ткщ остаток (уп)',
+        headerName: 'Итог (шт)',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} withDevider={true} type='final_unit_quantity' />),
       }
