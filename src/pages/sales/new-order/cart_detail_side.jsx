@@ -398,28 +398,27 @@ function CartDetailSide({
           <Typography>Лайт продажа</Typography>
           {!collapsedSale ? <ArrowUp color='#111217' /> : <ArrowDown />}
         </Box>
-        {collapsedSale && (
-          <OrderLite
-            setDmedOrganizedList={setDmedOrganizedList}
-            liteOrder={liteOrder}
-            setMaxAmount={setMaxAmount}
-            sendToEpos={sendToEpos}
-            dmedOrganizedList={dmedOrganizedList}
-            childRef={childRef}
-            maxAmount={maxAmount}
-            setLiteOrder={setLiteOrder}
-            dmedPrescriptionsList={dmedPrescriptionsList}
-            setDmedPrescriptionsList={setDmedPrescriptionsList}
-            setCustomerId={setCustomerId}
-            setMarkingList={setMarkingList}
-            setHasChange={setHasChange}
-            cartItemsList={get(cartItemsList, 'data.data')}
-            markingsList={markingsList}
-            cashBoxDetails={cashBoxDetails}
-            customerId={customerId}
-            printContainer={printContainer}
-          />
-        )}
+        <OrderLite
+          collapsedSale={collapsedSale}
+          setDmedOrganizedList={setDmedOrganizedList}
+          liteOrder={liteOrder}
+          setMaxAmount={setMaxAmount}
+          sendToEpos={sendToEpos}
+          dmedOrganizedList={dmedOrganizedList}
+          childRef={childRef}
+          maxAmount={maxAmount}
+          setLiteOrder={setLiteOrder}
+          dmedPrescriptionsList={dmedPrescriptionsList}
+          setDmedPrescriptionsList={setDmedPrescriptionsList}
+          setCustomerId={setCustomerId}
+          setMarkingList={setMarkingList}
+          setHasChange={setHasChange}
+          cartItemsList={get(cartItemsList, 'data.data')}
+          markingsList={markingsList}
+          cashBoxDetails={cashBoxDetails}
+          customerId={customerId}
+          printContainer={printContainer}
+        />
         <Box className={classes.priceDetails}>
           <Box display={'flex'} justifyContent={'space-between'} mb={'16px'}>
             <Typography fontWeight={'600'} fontSize={'18px'} color={'bunker.950'} lineHeight={'28px'}>

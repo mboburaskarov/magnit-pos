@@ -77,6 +77,11 @@ export const requests = {
   getsellerBonusExcelReport: (filter) => requestEXCEL.post(`v1/report/bonus-export${qs.stringify(filter, { addQueryPrefix: true })}`),
   // / report product
   getProductReport: ({ store_ids, ...filter }) => request.post(`v1/report/product${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  getProductQuantityByDateReport: ({ store_ids, ...filter }) =>
+    request.post(`v1/report/store-products-given-day${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  getProductQuantityByDateExcelReport: (filter) =>
+    requestEXCEL.post(`v1/report/store-products-given-day/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   getPorductReportExcelReport: (filter) => requestEXCEL.post(`v1/report/product-export${qs.stringify(filter, { addQueryPrefix: true })}`),
   getProductReportStat: ({ store_ids, ...filter }) => request.post(`v1/report/product-status${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
 
@@ -247,6 +252,7 @@ export const requests = {
   createRevaluation: (data) => request.post(`v1/repricing`, data),
   finishRevaluation: (id) => request.post(`v1/repricing/confirm/${id}`),
   getREvaluationExcelReport: (filter) => requestEXCEL.get(`v1/repricing-detail/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getRevaluationDashBoard: (id) => request.get(`v1/repricing-detail/detail-status/${id}`),
 
   getRevaluationList: (filter) => request.get(`v1/repricing/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getRevaluationDetailList: (id) => request.get(`v1/repricing-detail/list/${id}`),

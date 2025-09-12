@@ -234,8 +234,11 @@ function CartSearchBar({
       // ])
       setDmedPrescriptionsList(data?.data)
       setShowOverlay(false)
+      setSearchTerm('')
     },
     onError: (err) => {
+      setSearchTerm('')
+
       error('Ошибка при DMED')
       console.log('err', err)
     },
@@ -397,7 +400,6 @@ function CartSearchBar({
                 if (searchTearm.includes('prescriptions')) {
                   let patient_id = searchTearm?.split('-')?.[1]
                   let safe_code = searchTearm?.split('-')?.[2]
-
                   getDmedPrescriptions({ patient_id, safe_code, sale_id: id })
                   return
                 }
