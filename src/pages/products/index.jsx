@@ -34,6 +34,7 @@ import PlusIcon from '../../assets/icons/PlusIcon'
 import PrizeBoxIcon from '../../assets/icons/PrizeBoxIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
+import ChangeUnitPerPack from './changeUnitPerPack'
 import FilterMenu from './FilterMenu'
 import ProductDrawer from './product-edit/ProductDrawer'
 import ProductDashboard from './productDashboard'
@@ -56,6 +57,7 @@ export default function ProductsPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [controlleroffset, setControllerOffset] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
+  const [openPerPack, setOpenPerPack] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
@@ -83,6 +85,7 @@ export default function ProductsPage() {
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
+    setOpenPerPack,
     values,
     setOpenProductDrawer,
     setMarkingRequired,
@@ -502,7 +505,7 @@ export default function ProductsPage() {
           </Box>
         </Box>
         <ProductDrawer open={openProductDrawer} setImages={setOpenImageGallery} onClose={setOpenProductDrawer} />
-
+        <ChangeUnitPerPack open={openPerPack} setOpen={setOpenPerPack} />
         <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
         {openConfirmDialog && (
           <ConfirmDialog

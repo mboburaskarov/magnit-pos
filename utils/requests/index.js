@@ -308,6 +308,7 @@ export const requests = {
   // getSingleProductHistory: (filter, id) => request.get(`v1/product/import/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleProductRemainsHistory: (filter, id) => request.get(`v1/product/store-product/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateProduct: ({ id, data }) => request.put(`v1/product/${id}`, data),
+  updateUnitPerPack: (data) => request.put(`v1/product/update-packaging`, data),
   deleteProduct: (id) => request.delete(`v1/product/soft-delete`, id),
 
   //banned products

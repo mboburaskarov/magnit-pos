@@ -1,4 +1,5 @@
 import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
+import AccountTreeIcon from '@mui/icons-material/AccountTree'
 import { Box, IconButton, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
@@ -122,6 +123,7 @@ const CustomHeader = (props) => {
 export default function tableHeaderSelector({
   productsColumns,
   values,
+  setOpenPerPack,
   setImages,
   editable = false,
   t,
@@ -419,11 +421,19 @@ export default function tableHeaderSelector({
         colId: el.field,
         cellRenderer: memo(({ data }) => (
           <Box display='inline-flex' columnGap={'8px'}>
+            {data?.unit_per_pack > 1 && (
+              <CheckAccess id={'edit-product-unitperpaack'}>
+                <IconButton onClick={() => setOpenPerPack({ id: data?.id, name: data?.name })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                  <AccountTreeIcon style={{ color: 'red', fill: 'green', width: 40 }} />
+                </IconButton>
+              </CheckAccess>
+            )}
             <CheckAccess id={'edit-product'}>
               <IconButton onClick={() => navigate(`/products/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                 <EditIcon />
               </IconButton>
             </CheckAccess>
+
             <CheckAccess id={'delete-product'}>
               <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                 <DeleteIcon />
