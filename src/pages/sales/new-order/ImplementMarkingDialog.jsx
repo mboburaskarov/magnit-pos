@@ -10,7 +10,7 @@ import { containsCyrillic } from '../../../../utils/convertoRuOrEngToEng'
 import { requests } from '../../../../utils/requests'
 import { error, success } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import ReChangeMarkingDialog from './reChangeMarkingDialog'
+import ReChangeMarkingDialog from './ReChangeMarkingDialog'
 function ImplementMarkingDialog({
   open,
   setIsOrderDrower,
