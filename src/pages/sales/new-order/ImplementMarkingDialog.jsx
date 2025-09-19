@@ -2,15 +2,19 @@ import { Box, Button, Dialog, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useMutation } from 'react-query'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import TextField from '../../../../components/Inputs/TextField'
 import { checkBarcodeWithMarking } from '../../../../utils/checkingMarkingWithBarcode'
 import { containsCyrillic } from '../../../../utils/convertoRuOrEngToEng'
-import { error } from '../../../../utils/toast'
+import { requests } from '../../../../utils/requests'
+import { error, success } from '../../../../utils/toast'
 import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
+import ReChangeMarkingDialog from './reChangeMarkingDialog'
 function ImplementMarkingDialog({
   open,
   setIsOrderDrower,
+  refetchcartItemsList,
   isAllMarkingFill,
   markingCount,
   handleClose,
@@ -22,6 +26,7 @@ function ImplementMarkingDialog({
   setMarkingList,
 }) {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const [openRechangeDialog, setOpenRechangeDialog] = useState(false)
   const inputsRef = useRef([])
   const { t } = useTranslation()
 
@@ -98,8 +103,8 @@ function ImplementMarkingDialog({
       let validLength = [83, 37, 53, 94, 93, 51]
       if (!validLength.includes(e.target.value.length) && get(item, 'is_checking', true)) {
         console.log('#5')
-
         // markirofka uzunligi mos emas
+
         inputsRef.current[flatIndex].value = ''
         error("Неверная маркировка (uz: noto'g'ri uzunlikdagi markirovka)")
         return
@@ -115,7 +120,11 @@ function ImplementMarkingDialog({
       }
       if (!checkBarcodeWithMarking(productBarcode, e.target.value) && get(item, 'is_checking', true)) {
         //markirofkadagi barcode mahsulotniki bilan mos kelmadi
-
+        checkingAslName({
+          markirovka: e.target.value,
+          productId: item?.product_id,
+          productName: item?.name,
+        })
         error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl: ${productBarcode} | Sizniki:  ${e.target.value} ))`)
         inputsRef.current[flatIndex].value = ''
         return
@@ -159,7 +168,19 @@ function ImplementMarkingDialog({
     }
     return flatIndex + childIndex
   }
-
+  const { mutate: checkingAslName, isLoading: ischeckingAslName } = useMutation(requests.checkingAslName, {
+    onSuccess: ({ data }) => {
+      if (data?.data?.status == 'pending') {
+        setOpenRechangeDialog(data?.data)
+      } else {
+        success('uzgartirildi')
+      }
+    },
+    onError: (err) => {
+      error('errr')
+      console.log('err', err)
+    },
+  })
   return (
     <Dialog
       sx={{
@@ -312,6 +333,7 @@ function ImplementMarkingDialog({
           </>
         }
       />
+      <ReChangeMarkingDialog refetchcartItemsList={refetchcartItemsList} open={openRechangeDialog} handleClose={() => setOpenRechangeDialog(false)} />
     </Dialog>
   )
 }

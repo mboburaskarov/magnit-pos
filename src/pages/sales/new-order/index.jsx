@@ -1337,6 +1337,7 @@ function NewSale() {
         cartItems={get(cartItemsList, 'data.data.data', [])}
         markingsList={markingsList}
         setMarkingList={setMarkingList}
+        refetchcartItemsList={refetchcartItemsList}
         setIsOrderDrower={setIsOrderDrower}
         open={isOpenImplementMarkingDialog}
         implementMarkingList={implementMarkingList}

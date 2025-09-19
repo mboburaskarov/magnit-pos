@@ -43,7 +43,8 @@ export const requests = {
 
   //sale
   getPendingSales: (filter) => request.get(`v1/sale/pending-list${qs.stringify(filter, { addQueryPrefix: true })}`),
-
+  checkingAslName: (data) => request.post(`v1/sale/asil-belgi-barcode`, data),
+  confirmAslName: (data) => request.post(`v1/sale/asil-belgi-barcode-confirm/${data}`),
   getAllSalesExcelReport: (filter) => requestEXCEL.get(`v1/sale/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getAllSales: (filter) => request.get(`v1/sale/list${qs.stringify(filter, { addQueryPrefix: true })}`),
