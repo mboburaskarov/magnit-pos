@@ -173,7 +173,7 @@ function ImplementMarkingDialog({
       if (data?.data?.status == 'pending') {
         setOpenRechangeDialog(data?.data)
       } else {
-        success('uzgartirildi')
+        success('Маркировка обновлён. Пожалуйста, войдите снова.')
       }
     },
     onError: (err) => {

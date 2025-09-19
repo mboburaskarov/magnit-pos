@@ -11,7 +11,7 @@ function ReChangeMarkingDialog({ open, handleClose, refetchcartItemsList }) {
     onSuccess: ({ data }) => {
       refetchcartItemsList()
       handleClose()
-      success('uzgartirildi')
+      success('Маркировка обновлён. Пожалуйста, войдите снова.')
     },
     onError: (err) => {
       error('errr')
