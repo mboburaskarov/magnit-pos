@@ -27,6 +27,7 @@ function ImplementMarkingDialog({
 }) {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [openRechangeDialog, setOpenRechangeDialog] = useState(false)
+  const [changeingMarkingData, setChangeingMarkingData] = useState(false)
   const inputsRef = useRef([])
   const { t } = useTranslation()
 
@@ -125,8 +126,8 @@ function ImplementMarkingDialog({
           productId: item?.product_id,
           productName: item?.name,
         })
+        setChangeingMarkingData({ value: e.target.value, id, childIndex, flatIndex })
         error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl: ${productBarcode} | Sizniki:  ${e.target.value} ))`)
-        inputsRef.current[flatIndex].value = ''
         return
       }
       //hammasi ok
@@ -160,7 +161,37 @@ function ImplementMarkingDialog({
       }
     }
   }
+  const saveNewChangedMarking = () => {
+    const value = changeingMarkingData?.value
+    const id = changeingMarkingData?.id
+    const childIndex = changeingMarkingData?.childIndex
+    implementMarkingList(value, id, childIndex)
+    console.log('#10')
 
+    const values = inputsRef.current
+      .map((input) => input?.value || '') // Ensure input and value are safe
+      .filter((val) => val.length > 0)
+
+    if (cartmarkingCount() != values.length) {
+      inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
+      console.log('#11')
+
+      return
+    } else {
+      if (get(open, 'mode', 'lite') === 'lite') {
+        setLiteOrder(true)
+        console.log('#12')
+      } else {
+        console.log('#13')
+
+        setIsOrderDrower(true)
+      }
+      console.log('#14')
+
+      handleClose()
+      return
+    }
+  }
   const getFlatIndex = (parentIndex, childIndex, markingCounts) => {
     let flatIndex = 0
     for (let i = 0; i < parentIndex; i++) {
@@ -173,10 +204,13 @@ function ImplementMarkingDialog({
       if (data?.data?.status == 'pending') {
         setOpenRechangeDialog(data?.data)
       } else {
-        success('Маркировка обновлён. Пожалуйста, войдите снова.')
+        saveNewChangedMarking()
+        success('Маркировка обновлён.')
       }
     },
     onError: (err) => {
+      inputsRef.current[changeingMarkingData?.flatIndex].value = ''
+
       error('errr')
       console.log('err', err)
     },
@@ -333,7 +367,12 @@ function ImplementMarkingDialog({
           </>
         }
       />
-      <ReChangeMarkingDialog refetchcartItemsList={refetchcartItemsList} open={openRechangeDialog} handleClose={() => setOpenRechangeDialog(false)} />
+      <ReChangeMarkingDialog
+        saveNewChangedMarking={saveNewChangedMarking}
+        refetchcartItemsList={refetchcartItemsList}
+        open={openRechangeDialog}
+        handleClose={() => setOpenRechangeDialog(false)}
+      />
     </Dialog>
   )
 }
