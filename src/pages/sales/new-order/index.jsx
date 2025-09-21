@@ -394,7 +394,7 @@ function NewSale() {
         sale_id: id,
       })
     }
-    refetchcartItemsList()
+    // refetchcartItemsList()
   }, [customerId])
   for (const key in cartRef) {
     if (cartRef[key] === null) {
@@ -1337,6 +1337,7 @@ function NewSale() {
         cartItems={get(cartItemsList, 'data.data.data', [])}
         markingsList={markingsList}
         setMarkingList={setMarkingList}
+        refetchcartItemsList={refetchcartItemsList}
         setIsOrderDrower={setIsOrderDrower}
         open={isOpenImplementMarkingDialog}
         implementMarkingList={implementMarkingList}

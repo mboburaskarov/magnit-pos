@@ -18,6 +18,7 @@ import getImageUrl from '../../../../utils/getImageUrl'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
+import { useQueryParams } from '../../../hooks/useQueryParams'
 import ProductHistory from './ProductHistory'
 import ProductRemainsHistory from './ProductRemainsHistory'
 
@@ -75,12 +76,12 @@ const Image = ({ data, setImages }) => {
 
 export default function ProductDrawer({ open: id, onClose, setImages, setOpenConfirmDialog, setRejectComment }) {
   const userData = useSelector((state) => state.user)
-
+  const { values } = useQueryParams()
   const {
     data: productData,
     isLoading: productDataLoading,
     isFetching: isFetchingproductData,
-  } = useQuery(['productData', id], () => requests.getSingleProduct({ id, store_id: userData?.store?.id }), { enabled: !!id })
+  } = useQuery(['productData', id], () => requests.getSingleProduct({ id, store_id: values?.store_id || userData?.store?.id }), { enabled: !!id })
   //
   const printContainer = useRef()
   const documentName = useRef('Pharma CHEQUE')

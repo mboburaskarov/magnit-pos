@@ -25,7 +25,7 @@ export default function FilterMenu({ open, setOpen }) {
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
     setOpen(false)
-    navigate(`/settings/cashbox${requestParams}`)
+    navigate(`/settings/payments-assets${requestParams}`)
   }
 
   const onError = (err) => {
@@ -46,7 +46,7 @@ export default function FilterMenu({ open, setOpen }) {
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/settings/cashbox?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/settings/payments-assets?offset=0&limit=${values?.limit || 5}`)
   }
   const theme = useTheme()
   const { t } = useTranslation()

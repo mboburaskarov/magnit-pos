@@ -43,7 +43,8 @@ export const requests = {
 
   //sale
   getPendingSales: (filter) => request.get(`v1/sale/pending-list${qs.stringify(filter, { addQueryPrefix: true })}`),
-
+  checkingAslName: (data) => request.post(`v1/sale/asil-belgi-barcode`, data),
+  confirmAslName: (data) => request.post(`v1/sale/asil-belgi-barcode-confirm/${data}`),
   getAllSalesExcelReport: (filter) => requestEXCEL.get(`v1/sale/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getAllSales: (filter) => request.get(`v1/sale/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -308,6 +309,7 @@ export const requests = {
   // getSingleProductHistory: (filter, id) => request.get(`v1/product/import/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleProductRemainsHistory: (filter, id) => request.get(`v1/product/store-product/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateProduct: ({ id, data }) => request.put(`v1/product/${id}`, data),
+  updateUnitPerPack: (data) => request.put(`v1/product/update-packaging`, data),
   deleteProduct: (id) => request.delete(`v1/product/soft-delete`, id),
 
   //banned products

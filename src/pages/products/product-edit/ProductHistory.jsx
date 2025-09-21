@@ -20,7 +20,6 @@ export default function ProductHistory({ id }) {
       offset: values?.offsetHistory || 0,
     }
   }, [values?.limitHistory, values?.offsetHistory])
-  // salom
   const {
     data: productDataHistory,
     isLoading: isproductDataLoadingHistory,
@@ -90,6 +89,8 @@ export default function ProductHistory({ id }) {
               ? 'Импорт '
               : get(data, 'entry_type') == '2'
               ? 'Инвентаризация '
+              : get(data, 'entry_type') == '7'
+              ? 'Черновик '
               : 'Продажa '}
             #{get(data, 'public_id')}
           </Typography>
