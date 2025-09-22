@@ -53,6 +53,18 @@ export default function ProductRemainsHistory({ id }) {
         ),
       },
       {
+        headerName: 'Баркод',
+        colId: 'barcode',
+        minWidth: 200,
+        maxWidth: 350,
+        width: 300,
+        cellRenderer: ({ data, rowIndex }) => (
+          <Box id={`${'barcode'}-${rowIndex}-${data?.store_id}`}>
+            <Typography id={`${'barcode'}-${rowIndex}-${data?.store_id}`}>{data?.barcode}</Typography>
+          </Box>
+        ),
+      },
+      {
         headerName: 'Количество',
         colId: 'quantity',
         minWidth: 185,

@@ -9,6 +9,7 @@ import Highlighter from 'react-highlight-words'
 import { useNavigate } from 'react-router-dom'
 import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
 import CheckAccess from '../../../components/CheckAccess'
+import StyledTooltip from '../../../components/StyledTooltip'
 import thousandDivider from '../../../utils/thousandDivider'
 import { products_statuses } from '../../assets/data/products-statuses'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
@@ -283,12 +284,24 @@ export default function tableHeaderSelector({
     if (el.field === 'barcode') {
       return {
         ...el,
-        editable: editable,
+        // editable: editable,
 
         headerName: t('table_columns.barcode'),
         colId: el.field,
         cellRenderer: memo((p) => {
-          return <SimpleText currency='' {...p} type='barcode' />
+          return (
+            <StyledTooltip title={`${p?.data?.barcodes?.join(',')}`}>
+              <Typography sx={{ whiteSpace: 'pre-line' }}>
+                {(() => {
+                  const barcodes = p?.data?.barcodes || []
+                  if (barcodes.length > 3) {
+                    return barcodes.slice(0, 3).join(',') + ',...'
+                  }
+                  return barcodes.join(',')
+                })()}
+              </Typography>
+            </StyledTooltip>
+          )
         }),
       }
     }
