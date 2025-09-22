@@ -8,6 +8,8 @@ const hasAccess = (id, user_data) => {
   if (user_data?.type === 'SUPERADMIN') {
     return true
   }
+  console.log(user_data?.role_actions, id, has_access)
+
   return has_access ? true : false
 }
 
