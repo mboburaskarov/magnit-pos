@@ -3,6 +3,7 @@ import { get } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
+import { useSelector } from 'react-redux'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
 import TextField from '../../../../components/Inputs/TextField'
 import { checkBarcodeWithMarking } from '../../../../utils/checkingMarkingWithBarcode'
@@ -31,6 +32,7 @@ function ImplementMarkingDialog({
   const [changeingMarkingData, setChangeingMarkingData] = useState(false)
   const inputsRef = useRef([])
   const { t } = useTranslation()
+  const user_data = useSelector((state) => state.user)
 
   const implementMarkingList = (marking, id, index) => {
     setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
@@ -123,7 +125,7 @@ function ImplementMarkingDialog({
       if (!checkBarcodeWithMarking(productBarcode, e.target.value) && get(item, 'is_checking', true)) {
         //markirofkadagi barcode mahsulotniki bilan mos kelmadi
         //markirofkadagi barcode mahsulotniki bilan mos kelmadi
-        if (!hasAccess('can-change-markings-barcode-onsale')) {
+        if (!hasAccess('can-change-markings-barcode-onsale', user_data)) {
           error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl: ${productBarcode} | Sizniki:  ${e.target.value} ))`)
           inputsRef.current[flatIndex].value = ''
           return
