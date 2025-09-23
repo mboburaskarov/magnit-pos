@@ -968,7 +968,7 @@ function NewSale() {
   const { mutate: checkEposFlesh, isLoading: ischeckEposFlesh } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true)) {
-        error('Ошибка EPOS FlashCard')
+        error("EPOS Flash не установлен (EPOS qurulmasi su'g'irib qo'yilgan")
 
         setIsOrderDrower(false)
         setLiteOrder(false)
@@ -978,7 +978,7 @@ function NewSale() {
     onError: (err) => {
       setIsOrderDrower(false)
       setLiteOrder(false)
-      error('Ошибка EPOS FlashCard')
+      error("EPOS Flash не установлен (EPOS qurulmasi su'g'irib qo'yilgan")
       console.log('err', err)
     },
   })
