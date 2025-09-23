@@ -967,9 +967,8 @@ function NewSale() {
   // }, [])
   const { mutate: checkEposFlesh, isLoading: ischeckEposFlesh } = useMutation(requests.checkEposFlesh, {
     onSuccess: ({ data }) => {
-      if (get(data, 'error', true)) {
+      if (get(data, 'error', true) && get(data, 'message', '').includes('cannot connect card')) {
         error("EPOS Flash не установлен (EPOS qurulmasi su'g'irib qo'yilgan")
-
         setIsOrderDrower(false)
         setLiteOrder(false)
         return
@@ -978,7 +977,7 @@ function NewSale() {
     onError: (err) => {
       setIsOrderDrower(false)
       setLiteOrder(false)
-      error("EPOS Flash не установлен (EPOS qurulmasi su'g'irib qo'yilgan")
+      error('Ошибка EPOS getZreportInfo')
       console.log('err', err)
     },
   })
