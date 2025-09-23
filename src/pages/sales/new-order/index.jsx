@@ -968,6 +968,8 @@ function NewSale() {
   const { mutate: checkEposFlesh, isLoading: ischeckEposFlesh } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true)) {
+        error('Ошибка EPOS FlashCard')
+
         setIsOrderDrower(false)
         setLiteOrder(false)
         return
