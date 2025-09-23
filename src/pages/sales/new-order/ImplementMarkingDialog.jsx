@@ -130,12 +130,8 @@ function ImplementMarkingDialog({
           inputsRef.current[flatIndex].value = ''
           return
         } else {
-          setChangeingMarkingData({ value: e.target.value, id, childIndex, flatIndex })
-          checkingAslName({
-            markirovka: e.target.value,
-            productId: item?.product_id,
-            productName: item?.name,
-          })
+          setChangeingMarkingData({ value: e.target.value, id, childIndex, flatIndex, item })
+
           error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl: ${productBarcode} | Sizniki:  ${e.target.value} ))`)
           return
         }
@@ -171,6 +167,15 @@ function ImplementMarkingDialog({
       }
     }
   }
+  useEffect(() => {
+    if (changeingMarkingData) {
+      checkingAslName({
+        markirovka: changeingMarkingData?.value,
+        productId: changeingMarkingData?.item?.product_id,
+        productName: changeingMarkingData?.item?.name,
+      })
+    }
+  }, [changeingMarkingData])
   const saveNewChangedMarking = () => {
     const value = changeingMarkingData?.value
     const id = changeingMarkingData?.id
@@ -181,6 +186,7 @@ function ImplementMarkingDialog({
     const values = inputsRef.current
       .map((input) => input?.value || '') // Ensure input and value are safe
       .filter((val) => val.length > 0)
+    console.log(cartmarkingCount(), values)
 
     if (cartmarkingCount() != values.length) {
       inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
@@ -219,9 +225,13 @@ function ImplementMarkingDialog({
       }
     },
     onError: (err) => {
-      inputsRef.current[changeingMarkingData?.flatIndex].value = ''
+      if (get(err, 'response.data.data') == 'similarity.not.enough') {
+        inputsRef.current[changeingMarkingData?.flatIndex].value = ''
+        error('Недостаточно сходств')
+      } else {
+        error('err: Asl belgi')
+      }
 
-      error('errr')
       console.log('err', err)
     },
   })

@@ -843,6 +843,7 @@ function NewSale() {
       ?.map((e) => Object.values(e)?.filter((a) => a?.length))
       ?.map((e) => Object.keys(e).length)
       ?.reduce((acc, i) => acc + i, 0)
+    console.log(cartsMarkingCount, userIsFilledMarkingCount)
 
     return cartsMarkingCount === userIsFilledMarkingCount
   }
