@@ -225,8 +225,8 @@ function ImplementMarkingDialog({
       }
     },
     onError: (err) => {
+      inputsRef.current[changeingMarkingData?.flatIndex].value = ''
       if (get(err, 'response.data.data') == 'similarity.not.enough') {
-        inputsRef.current[changeingMarkingData?.flatIndex].value = ''
         error('Недостаточно сходств')
       } else {
         error('err: Asl belgi')
