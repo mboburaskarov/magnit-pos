@@ -130,12 +130,12 @@ function ImplementMarkingDialog({
           inputsRef.current[flatIndex].value = ''
           return
         } else {
+          setChangeingMarkingData({ value: e.target.value, id, childIndex, flatIndex })
           checkingAslName({
             markirovka: e.target.value,
             productId: item?.product_id,
             productName: item?.name,
           })
-          setChangeingMarkingData({ value: e.target.value, id, childIndex, flatIndex })
           error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl: ${productBarcode} | Sizniki:  ${e.target.value} ))`)
           return
         }
