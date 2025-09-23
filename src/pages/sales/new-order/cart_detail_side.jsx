@@ -124,7 +124,7 @@ function CartDetailSide({
               }}
               className={classes.cart_detail_icon}
             >
-              <StyledTooltip title={'Без налогов'}>
+              <StyledTooltip title={'EPOS'}>
                 <ReceiptLong sx={{ color: sendToEpos ? '#333' : '#fe5000' }} />
               </StyledTooltip>
             </Box>

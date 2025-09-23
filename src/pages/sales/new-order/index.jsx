@@ -965,7 +965,7 @@ function NewSale() {
 
   //   return () => clearInterval(noorTimeout)
   // }, [])
-  const { mutate: checkEposFlesh, isLoading: ischeckEposFlesh } = useMutation(requests.closeCheckZReport, {
+  const { mutate: checkEposFlesh, isLoading: ischeckEposFlesh } = useMutation(requests.checkEposFlesh, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true)) {
         error("EPOS Flash не установлен (EPOS qurulmasi su'g'irib qo'yilgan")
