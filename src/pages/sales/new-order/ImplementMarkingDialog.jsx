@@ -140,13 +140,36 @@ function ImplementMarkingDialog({
       console.log('#9')
 
       implementMarkingList(e.target.value, id, childIndex)
-      console.log('#10')
+      console.log('#10', markingsList, isAllMarkingFill())
 
-      const values = inputsRef.current
-        .map((input) => input?.value || '') // Ensure input and value are safe
-        .filter((val) => val.length > 0)
+      // const values = inputsRef.current
+      //   .map((input) => input?.value || '') // Ensure input and value are safe
+      //   .filter((val) => val.length > 0)
 
-      if (cartmarkingCount() != values.length) {
+      // if (cartmarkingCount() != values.length) {
+      //   inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
+      //   console.log('#11')
+
+      //   return
+      // } else {
+      //   if (get(open, 'mode', 'lite') === 'lite') {
+      //     setLiteOrder(true)
+      //     console.log('#12')
+      //   } else {
+      //     console.log('#13')
+
+      //     setIsOrderDrower(true)
+      //   }
+      //   console.log('#14')
+
+      //   handleClose()
+      //   return
+      // }
+    }
+  }
+  useEffect(() => {
+    if (markingsList) {
+      if (!isAllMarkingFill()) {
         inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
         console.log('#11')
 
@@ -166,7 +189,7 @@ function ImplementMarkingDialog({
         return
       }
     }
-  }
+  }, [markingsList])
   useEffect(() => {
     if (changeingMarkingData) {
       checkingAslName({
@@ -181,32 +204,32 @@ function ImplementMarkingDialog({
     const id = changeingMarkingData?.id
     const childIndex = changeingMarkingData?.childIndex
     implementMarkingList(value, id, childIndex)
-    console.log('#10')
+    console.log('#10', markingsList)
 
     const values = inputsRef.current
       .map((input) => input?.value || '') // Ensure input and value are safe
       .filter((val) => val.length > 0)
     console.log(cartmarkingCount(), values)
 
-    if (cartmarkingCount() != values.length) {
-      inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
-      console.log('#11')
+    // if (cartmarkingCount() != values.length) {
+    //   inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
+    //   console.log('#11')
 
-      return
-    } else {
-      if (get(open, 'mode', 'lite') === 'lite') {
-        setLiteOrder(true)
-        console.log('#12')
-      } else {
-        console.log('#13')
+    //   return
+    // } else {
+    //   if (get(open, 'mode', 'lite') === 'lite') {
+    //     setLiteOrder(true)
+    //     console.log('#12')
+    //   } else {
+    //     console.log('#13')
 
-        setIsOrderDrower(true)
-      }
-      console.log('#14')
+    //     setIsOrderDrower(true)
+    //   }
+    //   console.log('#14')
 
-      handleClose()
-      return
-    }
+    //   handleClose()
+    //   return
+    // }
   }
   const getFlatIndex = (parentIndex, childIndex, markingCounts) => {
     let flatIndex = 0
