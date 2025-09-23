@@ -977,7 +977,7 @@ function NewSale() {
     onError: (err) => {
       setIsOrderDrower(false)
       setLiteOrder(false)
-      error('Ошибка EPOS getZreportInfo')
+      error('Ошибка EPOS getZReportsStatus')
       console.log('err', err)
     },
   })
@@ -985,7 +985,7 @@ function NewSale() {
     if (isOrderDrower || liteOrder) {
       checkEposFlesh({
         token: 'DXJFX32CN1296678504F2',
-        method: 'getZreportInfo',
+        method: 'getZReportsStatus',
         printerSize: 80,
         zReportId: 1,
       })
