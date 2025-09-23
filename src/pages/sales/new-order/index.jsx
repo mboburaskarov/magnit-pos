@@ -965,7 +965,31 @@ function NewSale() {
 
   //   return () => clearInterval(noorTimeout)
   // }, [])
-
+  const { mutate: checkEposFlesh, isLoading: ischeckEposFlesh } = useMutation(requests.closeCheckZReport, {
+    onSuccess: ({ data }) => {
+      if (get(data, 'error', true)) {
+        setIsOrderDrower(false)
+        setLiteOrder(false)
+        return
+      }
+    },
+    onError: (err) => {
+      setIsOrderDrower(false)
+      setLiteOrder(false)
+      error('Ошибка EPOS FlashCard')
+      console.log('err', err)
+    },
+  })
+  useEffect(() => {
+    if (isOrderDrower || liteOrder) {
+      checkEposFlesh({
+        token: 'DXJFX32CN1296678504F2',
+        method: 'getZreportInfo',
+        printerSize: 80,
+        zReportId: 1,
+      })
+    }
+  }, [isOrderDrower, liteOrder])
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />
