@@ -52,6 +52,8 @@ export default function MainDetails({ clientData, openDrawer }) {
   }, [openDrawer])
   useEffect(() => {
     if (mode === 'edit') {
+      console.log(getOptionsSchema(get(employeeInfo, 'data.data.store', []), Object, 'name'))
+
       setValue('first_name', get(employeeInfo, 'data.data.first_name'))
       setValue('last_name', get(employeeInfo, 'data.data.last_name'))
       setValue('phone', get(employeeInfo, 'data.data.phone', '').replace('998', ''))

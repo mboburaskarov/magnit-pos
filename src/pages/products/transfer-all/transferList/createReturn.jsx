@@ -112,7 +112,12 @@ export default function CreateReturn({ open, refetch, setOpen }) {
               getOptionLabel={(option) => {
                 return option.name
               }}
-              filterOption={() => true}
+              filterOption={({ value }) => {
+                if (value == methods.getValues('store_id_to')?.value) {
+                  return false
+                }
+                return true
+              }}
             />
 
             <LazySelect
@@ -132,7 +137,12 @@ export default function CreateReturn({ open, refetch, setOpen }) {
               getOptionLabel={(option) => {
                 return option.name
               }}
-              filterOption={() => true}
+              filterOption={({ value }) => {
+                if (value == methods.getValues('store_id_from')?.value) {
+                  return false
+                }
+                return true
+              }}
             />
 
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>

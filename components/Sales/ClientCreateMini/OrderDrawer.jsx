@@ -353,13 +353,8 @@ export default function OrderDrawer({
       } else {
         //send to epos
         const mockData = get(cartItemsList, 'data', []).map((el) => {
-          console.log(
-            data,
-            data?.data.items,
-            data?.data.items?.find((it) => it?.id == el?.id)
-          )
           return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
-            barcode: el.barcode,
+            barcode: data?.data.items?.find((it) => it?.cart_item_id == el?.id)?.barcode,
             amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
             price:
               el.quantity > index ? parseFloat((el.unit_price * 100).toFixed(2)) : parseFloat((el.unit_quantity_price * el.unit_quantity * 100).toFixed(2)),
@@ -372,10 +367,9 @@ export default function OrderDrawer({
               el.quantity > index ? parseFloat((get(el, 'vat_price') * 100).toFixed(2)) : parseFloat((el.unit_vat_price * el.unit_quantity * 100).toFixed(2)),
             label: marking,
             name: el.name,
-            classCode: data?.data.items?.find((it) => it?.id == el?.id)?.classCode,
-            // classCode: get(data, 'data.items.[el.id].class_code'),
+            classCode: data?.data.items?.find((it) => it?.cart_item_id == el?.id)?.classCode,
 
-            packageCode: get(el, 'package_code'),
+            packageCode: data?.data.items?.find((it) => it?.cart_item_id == el?.id)?.packageCode,
             // commissionTIN: '',
             other: 0,
             ownerType: 0,
