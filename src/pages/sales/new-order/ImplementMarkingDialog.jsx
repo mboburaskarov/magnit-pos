@@ -168,8 +168,6 @@ function ImplementMarkingDialog({
     }
   }
   useEffect(() => {
-    console.log(cartItems, markingsList)
-
     if ((markingsList, cartItems.length)) {
       if (!isAllMarkingFill()) {
         inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
