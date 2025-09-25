@@ -133,7 +133,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Старая цена продажи</Typography>
               <TextField type='number' name='pack' value={get(open, 'data.old_retail_price')} disabled={true} />
             </Box>
-            <ArrowCircleRight sx={{ m: '20px 10px 0', fontSize: '25px', color: '#fe5000 !important' }} />
+            <ArrowCircleRight sx={{ m: '35px 10px 0', fontSize: '25px', color: '#fe5000 !important' }} />
 
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Процент новых продаж</Typography>
@@ -186,7 +186,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
                 </Typography>
               </Box>
             </Box>
-            <ArrowCircleRight sx={{ m: '20px 10px 0', fontSize: '25px', color: '#fe5000 !important' }} />
+            <ArrowCircleRight sx={{ m: '35px 10px 0', fontSize: '25px', color: '#fe5000 !important' }} />
 
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Новая цена продажи</Typography>
