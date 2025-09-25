@@ -107,7 +107,7 @@ export default function ChangePriceDetailPage() {
     return {
       repricing_id: id,
       limit: values?.limit || 10,
-      offset: controlleroffset || 0,
+      offset: values?.offset || 0,
       search: values?.search,
       store_id: values?.store_id,
       start_date: values?.start_date,
@@ -133,14 +133,26 @@ export default function ChangePriceDetailPage() {
     isLoading: revaluationDetailListLoading,
     isFetching: isFetchingrevaluationDetailList,
     refetch,
-  } = useQuery(['revaluationDetailList', revaluationDetailListFilter], () => requests.getRevaluationDetailList(id))
+  } = useQuery(['revaluationDetailList', revaluationDetailListFilter], () =>
+    requests.getRevaluationDetailList(id, {
+      limit: values?.limit || 10,
+      offset: values?.offset || 0,
+      search: values?.search,
+    })
+  )
 
   const {
     data: revaluationById,
     isLoading: revaluationByIdLoading,
     isFetching: isFetchingrevaluationById,
     refetch: refetchRevaluationById,
-  } = useQuery(['revaluationById', revaluationDetailListFilter], () => requests.getRevaluation(id))
+  } = useQuery(['revaluationById', revaluationDetailListFilter], () =>
+    requests.getRevaluation(id, {
+      limit: values?.limit || 10,
+      offset: values?.offset || 0,
+      search: values?.search,
+    })
+  )
 
   useEffect(() => {
     refetch()

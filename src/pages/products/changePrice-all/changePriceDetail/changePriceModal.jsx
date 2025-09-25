@@ -25,18 +25,16 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
   const qtyRef = useRef([])
-  const [newPrice, setNewPrice] = useState(0)
-  const [newPercent, setNewPercent] = useState(0)
+
+  const [newPrice, setNewPrice] = useState('')
+  const [newPercent, setNewPercent] = useState('')
+  const [isUpdatingFromPercent, setIsUpdatingFromPercent] = useState(false)
+  const [isUpdatingFromPrice, setIsUpdatingFromPrice] = useState(false)
 
   const { mutate: setScanedNumber, isLoading: issetScanedNumber } = useMutation(requests.changePriceNew, {
     onSuccess: ({ data }) => {
       refetch()
       setOpen(false)
-      // if (gridApi) {
-      //   gridApi.refreshCells({ force: true })
-      //   // Alternative: Refresh specific rows if you have the row ID
-      //   // gridApi.getRowNode(get(open, 'data.id'))?.setData(updatedRowData)
-      // }
       successScanAudio.play()
     },
     onError: () => {
@@ -46,16 +44,72 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
     },
   })
 
+  // Calculate new price from percentage
+  const calculatePriceFromPercent = (percent) => {
+    const oldPrice = get(open, 'data.old_retail_price', 0)
+    if (percent && oldPrice) {
+      return (oldPrice * percent) / 100 + oldPrice
+    }
+    return ''
+  }
+
+  // Calculate percentage from new price
+  const calculatePercentFromPrice = (price) => {
+    const oldPrice = get(open, 'data.old_retail_price', 0)
+    if (price && oldPrice) {
+      return ((price - oldPrice) / oldPrice) * 100
+    }
+    return ''
+  }
+
+  // Handle percentage change
+  const handlePercentChange = (value) => {
+    const numValue = value === '' ? '' : Number(value)
+    setNewPercent(numValue)
+
+    if (!isUpdatingFromPrice) {
+      setIsUpdatingFromPercent(true)
+      const calculatedPrice = calculatePriceFromPercent(numValue)
+      setNewPrice(calculatedPrice)
+      setTimeout(() => setIsUpdatingFromPercent(false), 0)
+    }
+  }
+
+  // Handle price change
+  const handlePriceChange = (value) => {
+    const numValue = value === '' ? '' : Number(value)
+    setNewPrice(numValue)
+
+    if (!isUpdatingFromPercent) {
+      setIsUpdatingFromPrice(true)
+      const calculatedPercent = calculatePercentFromPrice(numValue)
+      setNewPercent(calculatedPercent)
+      setTimeout(() => setIsUpdatingFromPrice(false), 0)
+    }
+  }
+
+  // Handle preset percentage buttons
+  const handlePresetPercent = (percent) => {
+    setNewPercent(percent)
+    const calculatedPrice = calculatePriceFromPercent(percent)
+    setNewPrice(calculatedPrice)
+  }
+
+  // Reset form when modal opens/closes
   useEffect(() => {
     reset({}, { keepDirty: true })
     if (open) {
       setNewPrice('')
+      setNewPercent('')
+      setIsUpdatingFromPercent(false)
+      setIsUpdatingFromPrice(false)
       setTimeout(() => {
         qtyRef.current?.[0]?.focus()
       }, 10)
     }
-  }, [open])
+  }, [open, reset])
 
+  // Handle keyboard shortcuts
   useHotkeys(
     '*',
     (event) => {
@@ -64,10 +118,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
           setOpen(false)
           return
         }
-        // if (issetScanedNumber) {
-        //   setOpen(false)
-        //   return
-        // }
+
         setScanedNumber({
           id,
           product_id: get(open, 'data.id'),
@@ -82,28 +133,10 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
-  useEffect(() => {
-    const oldPrice = get(open, 'data.old_retail_price')
-    if (newPercent > 0) {
-      const newVal = (oldPrice * newPercent) / 100
-      setNewPrice(newVal)
-    } else {
-      setNewPrice('')
-    }
-  }, [newPercent])
-  useEffect(() => {
-    const oldPrice = get(open, 'data.old_retail_price')
-    if (newPrice > 0) {
-      const newVal = (newPrice * 100) / oldPrice
-      setNewPercent(newVal)
-    } else {
-      setNewPercent('')
-    }
-  }, [newPrice])
+
   return (
     <StyledEmptyDialog
       overflowVisible
-      // maxWidth='600px'
       onClose={() => setOpen(false)}
       open={open}
       noHeader
@@ -119,34 +152,34 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
             borderColor: 'bunker.100',
             height: '48px',
           },
-          '& svg': {
-            // fill: '#868FAA',
-            // stroke: '#868FAA',
-          },
         }}
       >
         <Typography sx={{ m: 'auto', width: '100%', textAlign: 'center', mb: '20px', fontWeight: '600' }}>{get(open, 'data.name')}</Typography>
 
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ display: 'flex', mb: '20px', alignItems: 'start', justifyContent: 'space-between' }}>
+            {/* Old Price */}
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Старая цена продажи</Typography>
-              <TextField type='number' name='pack' value={get(open, 'data.old_retail_price')} disabled={true} />
+              <TextField type='number' name='pack' value={get(open, 'data.old_retail_price', '')} disabled={true} />
             </Box>
+
             <ArrowCircleRight sx={{ m: '35px 10px 0', fontSize: '25px', color: '#fe5000 !important' }} />
 
+            {/* Percentage */}
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Процент новых продаж</Typography>
               <TextField
                 type='number'
                 name='percent'
                 value={newPercent}
-                onChange={(e) => setNewPercent(e.target.value)}
+                onChange={(e) => handlePercentChange(e.target.value)}
                 inputRef={(e) => (qtyRef.current[0] = e)}
                 onKeyDown={(e) => {
                   const invalidKeys = ['e', 'E', '+', '-']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
+                placeholder='0'
               />
               <Box
                 sx={(theme) => ({
@@ -154,52 +187,41 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   mt: '10px',
-
                   '& p': {
                     cursor: 'pointer',
                     padding: '5px 10px',
                     backgroundColor: theme.palette.bg[10],
                     borderRadius: 5,
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      backgroundColor: theme.palette.primary.main,
+                      color: 'white',
+                    },
                   },
                 })}
               >
-                <Typography
-                  onClick={() => {
-                    setNewPercent(15)
-                  }}
-                >
-                  15%
-                </Typography>
-                <Typography
-                  onClick={() => {
-                    setNewPercent(20)
-                  }}
-                >
-                  20%
-                </Typography>
-                <Typography
-                  onClick={() => {
-                    setNewPercent(25)
-                  }}
-                >
-                  25%
-                </Typography>
+                <Typography onClick={() => handlePresetPercent(15)}>15%</Typography>
+                <Typography onClick={() => handlePresetPercent(20)}>20%</Typography>
+                <Typography onClick={() => handlePresetPercent(25)}>25%</Typography>
               </Box>
             </Box>
+
             <ArrowCircleRight sx={{ m: '35px 10px 0', fontSize: '25px', color: '#fe5000 !important' }} />
 
+            {/* New Price */}
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Новая цена продажи</Typography>
               <TextField
                 type='number'
                 name='unit'
                 value={newPrice}
-                onChange={(e) => setNewPrice(e.target.value)}
+                onChange={(e) => handlePriceChange(e.target.value)}
                 inputRef={(e) => (qtyRef.current[1] = e)}
                 onKeyDown={(e) => {
                   const invalidKeys = ['e', 'E', '+', '-']
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
+                placeholder='0'
               />
             </Box>
           </Box>

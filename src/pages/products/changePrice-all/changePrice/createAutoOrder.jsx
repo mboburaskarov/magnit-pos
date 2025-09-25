@@ -40,7 +40,7 @@ export default function CreateInventory({ open, refetch, setOpen }) {
       name: data.name || undefined,
       // Add additional fields based on revaluation type
       ...(revaluationType === 'import' && data.import_id && { import_id: data.import_id.id }),
-      ...(revaluationType === 'medicine' && data.medicine_id && { medicine_id: data.medicine_id.id }),
+      ...(revaluationType === 'medicine' && data.medicine_id && { store_product_id: data.medicine_id.id }),
       type: revaluationType.toUpperCase(),
     }
     createInventory(requestBody)
@@ -221,7 +221,6 @@ export default function CreateInventory({ open, refetch, setOpen }) {
                 request={requests.getAllImports}
                 filters={{ limit: 10, store_id: storeId }}
                 control={control}
-                getOptionLabel={(option) => option.document_number || option.name}
                 filterOption={() => true}
               />
             )}
@@ -236,12 +235,12 @@ export default function CreateInventory({ open, refetch, setOpen }) {
                 name='medicine_id'
                 isMulti={false}
                 required
-                customLabel='name'
+                customLabel='product_name'
                 label={t('Лекарство')}
                 placeholder={t('Выберите Лекарство')}
                 minWidth='auto'
                 isClearable={true}
-                request={requests.getAllProducts}
+                request={requests.getStoreProducts}
                 filters={{ limit: 10, store_id: storeId }}
                 control={control}
                 getOptionLabel={(option) => option.name}

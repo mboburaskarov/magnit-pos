@@ -258,8 +258,8 @@ export const requests = {
   getRevaluationDashBoard: (id) => request.get(`v1/repricing-detail/detail-status/${id}`),
 
   getRevaluationList: (filter) => request.get(`v1/repricing/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getRevaluationDetailList: (id) => request.get(`v1/repricing-detail/list/${id}`),
-  getRevaluation: (id) => request.get(`v1/repricing/${id}`),
+  getRevaluationDetailList: (id, filter) => request.get(`v1/repricing-detail/list/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getRevaluation: (id, filter) => request.get(`v1/repricing/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   changePriceNew: ({ id, new_retail_price, product_id, store_product_id }) =>
     request.post(`v1/repricing/new-price/${id}`, {
       new_retail_price,
@@ -280,6 +280,8 @@ export const requests = {
   generateBarcode: () => request.post(`v1/product/generate-barcode`),
   getAllSimilarStoreProducts: (id) => request.get(`v1/product/similar/${id}`),
   getAllProducts: (filter) => request.get(`v1/product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getStoreProducts: (filter) => request.post(`v1/product/list-store-products${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   getAllProductsByImport: (filter) => request.get(`v1/product/list-by-import${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllProductsStatusCount: (filter) => request.get(`v1/product/total-status-count${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllStoreProducts: (data, filter) => request.get(`v1/product/store/${get(data, 'id')}${qs.stringify(filter, { addQueryPrefix: true })}`),
