@@ -17,7 +17,7 @@ import CloseIcon from '../../../../assets/icons/CloseIcon'
 
 export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
   const methods = useForm()
-  const { reset } = methods
+  const { reset, setValue } = methods
   const { id } = useParams()
   const theme = useTheme()
   const { t } = useTranslation()
@@ -26,16 +26,17 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
   const successScanAudio = new Audio(successAudio)
   const qtyRef = useRef([])
   const [newPrice, setNewPrice] = useState(0)
+  const [newPercent, setNewPercent] = useState(0)
 
   const { mutate: setScanedNumber, isLoading: issetScanedNumber } = useMutation(requests.changePriceNew, {
     onSuccess: ({ data }) => {
-      if (gridApi) {
-        gridApi.refreshCells({ force: true })
-        // Alternative: Refresh specific rows if you have the row ID
-        // gridApi.getRowNode(get(open, 'data.id'))?.setData(updatedRowData)
-      }
       refetch()
       setOpen(false)
+      // if (gridApi) {
+      //   gridApi.refreshCells({ force: true })
+      //   // Alternative: Refresh specific rows if you have the row ID
+      //   // gridApi.getRowNode(get(open, 'data.id'))?.setData(updatedRowData)
+      // }
       successScanAudio.play()
     },
     onError: () => {
@@ -63,10 +64,10 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
           setOpen(false)
           return
         }
-        if (issetScanedNumber) {
-          setOpen(false)
-          return
-        }
+        // if (issetScanedNumber) {
+        //   setOpen(false)
+        //   return
+        // }
         setScanedNumber({
           id,
           product_id: get(open, 'data.id'),
@@ -81,11 +82,28 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
-
+  useEffect(() => {
+    const oldPrice = get(open, 'data.old_retail_price')
+    if (newPercent > 0) {
+      const newVal = (oldPrice * newPercent) / 100
+      setNewPrice(newVal)
+    } else {
+      setNewPrice('')
+    }
+  }, [newPercent])
+  useEffect(() => {
+    const oldPrice = get(open, 'data.old_retail_price')
+    if (newPrice > 0) {
+      const newVal = (newPrice * 100) / oldPrice
+      setNewPercent(newVal)
+    } else {
+      setNewPercent('')
+    }
+  }, [newPrice])
   return (
     <StyledEmptyDialog
       overflowVisible
-      maxWidth='500px'
+      // maxWidth='600px'
       onClose={() => setOpen(false)}
       open={open}
       noHeader
@@ -110,10 +128,63 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
         <Typography sx={{ m: 'auto', width: '100%', textAlign: 'center', mb: '20px', fontWeight: '600' }}>{get(open, 'data.name')}</Typography>
 
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ display: 'flex', mb: '20px', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', mb: '20px', alignItems: 'start', justifyContent: 'space-between' }}>
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Старая цена продажи</Typography>
               <TextField type='number' name='pack' value={get(open, 'data.old_retail_price')} disabled={true} />
+            </Box>
+            <ArrowCircleRight sx={{ m: '20px 10px 0', fontSize: '25px', color: '#fe5000 !important' }} />
+
+            <Box>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Процент новых продаж</Typography>
+              <TextField
+                type='number'
+                name='percent'
+                value={newPercent}
+                onChange={(e) => setNewPercent(e.target.value)}
+                inputRef={(e) => (qtyRef.current[0] = e)}
+                onKeyDown={(e) => {
+                  const invalidKeys = ['e', 'E', '+', '-']
+                  if (invalidKeys.includes(e.key)) e.preventDefault()
+                }}
+              />
+              <Box
+                sx={(theme) => ({
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  mt: '10px',
+
+                  '& p': {
+                    cursor: 'pointer',
+                    padding: '5px 10px',
+                    backgroundColor: theme.palette.bg[10],
+                    borderRadius: 5,
+                  },
+                })}
+              >
+                <Typography
+                  onClick={() => {
+                    setNewPercent(15)
+                  }}
+                >
+                  15%
+                </Typography>
+                <Typography
+                  onClick={() => {
+                    setNewPercent(20)
+                  }}
+                >
+                  20%
+                </Typography>
+                <Typography
+                  onClick={() => {
+                    setNewPercent(25)
+                  }}
+                >
+                  25%
+                </Typography>
+              </Box>
             </Box>
             <ArrowCircleRight sx={{ m: '20px 10px 0', fontSize: '25px', color: '#fe5000 !important' }} />
 
@@ -124,7 +195,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
                 name='unit'
                 value={newPrice}
                 onChange={(e) => setNewPrice(e.target.value)}
-                inputRef={(e) => (qtyRef.current[0] = e)}
+                inputRef={(e) => (qtyRef.current[1] = e)}
                 onKeyDown={(e) => {
                   const invalidKeys = ['e', 'E', '+', '-']
                   if (invalidKeys.includes(e.key)) e.preventDefault()

@@ -357,7 +357,9 @@ export default function ChangePriceDetailPage() {
         <ChangePriceModal
           // setshouldICleanSearchQuery={false}
           // setBarcode={setBarcode}
-          refetch={{ refetch, refetchRevaluationById }}
+          refetch={() => {
+            refetch(), refetchRevaluationById(), refetchgetRevaluationDashBoard()
+          }}
           open={repricingModalOpen}
           setOpen={setrepricingModalOpen}
           gridApi={gridApi}
