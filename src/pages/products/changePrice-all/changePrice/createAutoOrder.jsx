@@ -137,6 +137,9 @@ export default function CreateInventory({ open, refetch, setOpen }) {
             <Box
               width={'100%'}
               sx={{
+                '& .slider_box_wrapper': {
+                  width: 'auto',
+                },
                 '& .slider_box': {
                   flex: 1,
                 },
