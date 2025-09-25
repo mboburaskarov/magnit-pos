@@ -344,6 +344,7 @@ export default function ChangePriceDetailPage() {
                 onChangeSelectedCellRowId={(id) => {
                   setLastSelectedCellRowId(id)
                 }}
+                canCellClick={true}
                 childRef={childRef}
                 selectedCellRowId={setSelectedCellRowId}
                 columns={tableColumns}

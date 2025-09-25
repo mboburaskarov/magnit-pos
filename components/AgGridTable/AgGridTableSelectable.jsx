@@ -225,7 +225,6 @@ const AgGridSimpleTable = ({
   const onCellClicked = useCallback(
     (params) => {
       // return
-
       if (params.column.colId === 'checkboxSelectionField') return // Ignore clicks on checkbox column
       const rowId = params.data[uniqId]
       const colId = params.column.colId

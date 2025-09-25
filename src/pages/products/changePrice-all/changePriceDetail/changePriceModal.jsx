@@ -64,6 +64,10 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
 
   // Handle percentage change
   const handlePercentChange = (value) => {
+    if (value < 0) {
+      setNewPercent('')
+      return
+    }
     const numValue = value === '' ? '' : Number(value)
     setNewPercent(numValue)
 
@@ -77,12 +81,17 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
 
   // Handle price change
   const handlePriceChange = (value) => {
+    if (value < 0) {
+      setNewPrice('')
+      return
+    }
     const numValue = value === '' ? '' : Number(value)
     setNewPrice(numValue)
-
     if (!isUpdatingFromPercent) {
       setIsUpdatingFromPrice(true)
       const calculatedPercent = calculatePercentFromPrice(numValue)
+      console.log(calculatedPercent)
+
       setNewPercent(calculatedPercent)
       setTimeout(() => setIsUpdatingFromPrice(false), 0)
     }
