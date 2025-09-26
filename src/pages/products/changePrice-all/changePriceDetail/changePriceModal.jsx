@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
 import { useParams } from 'react-router-dom'
 import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
+import OutLineTextFieldThousand from '../../../../../components/Inputs/OutLineTextFieldThousand'
 import { requests } from '../../../../../utils/requests'
 import { error } from '../../../../../utils/toast'
 import errorAudio from '../../../../assets/audio/error.mp3'
@@ -175,7 +176,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
           <Box sx={{ display: 'flex', mb: '20px', alignItems: 'start', justifyContent: 'space-between' }}>
             {/* Old Price */}
             <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Старая цена поставщика</Typography>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Цена поставщика</Typography>
               <TextField type='number' name='pack' value={get(open, 'data.old_supply_price', '')} disabled={true} />
             </Box>
 
@@ -184,7 +185,19 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
             {/* Percentage */}
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Процент новых продаж</Typography>
-              <TextField
+              <OutLineTextFieldThousand
+                setValue={(e) => handlePercentChange(e)}
+                value={Math.round(newPercent)}
+                type={'number'}
+                fullWidth
+                name='percent'
+                inputRef={(e) => (qtyRef.current[0] = e)}
+                defaultValue={get(open, 'data.new_markup', '')}
+                label={''}
+                uncontrolled
+                placeholder='0'
+              />
+              {/* <TextField
                 type='number'
                 name='percent'
                 value={newPercent}
@@ -196,7 +209,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
                 placeholder='0'
-              />
+              /> */}
               <Box
                 sx={(theme) => ({
                   display: 'flex',
@@ -227,7 +240,19 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
             {/* New Price */}
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Новая цена продажи</Typography>
-              <TextField
+              <OutLineTextFieldThousand
+                setValue={(e) => handlePriceChange(e)}
+                value={newPrice}
+                type={'number'}
+                fullWidth
+                defaultValue={get(open, 'data.new_retail_price', '')}
+                name='unit'
+                label={''}
+                inputRef={(e) => (qtyRef.current[1] = e)}
+                uncontrolled
+                placeholder='0'
+              />
+              {/* <TextField
                 type='number'
                 name='unit'
                 value={newPrice}
@@ -239,7 +264,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
                   if (invalidKeys.includes(e.key)) e.preventDefault()
                 }}
                 placeholder='0'
-              />
+              /> */}
             </Box>
           </Box>
         </Box>
