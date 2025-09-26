@@ -164,6 +164,7 @@ export default function CreateInventory({ open, refetch, setOpen }) {
                   {
                     title: t('Лекарство'),
                     value: 'medicine',
+                    soon: true,
                   },
                 ]}
               />
@@ -211,7 +212,7 @@ export default function CreateInventory({ open, refetch, setOpen }) {
                 slug='import_id'
                 id='import_id'
                 name='import_id'
-                customLabel='document_number'
+                customLabel={(option) => `${option.document_number} (${dayjs(option.created_at).format('DD.MM.YYYY HH:mm')})`}
                 isMulti={false}
                 required
                 label={t('Импорт')}
@@ -226,7 +227,7 @@ export default function CreateInventory({ open, refetch, setOpen }) {
             )}
 
             {/* Medicine Selection - Only show when type is 'medicine' and store is selected */}
-            {revaluationType === 'medicine' && storeId && (
+            {revaluationType === 'medicineee' && storeId && (
               <LazySelect
                 key={getSelectKey('medicine')}
                 boxStyle={{ width: '100%' }}

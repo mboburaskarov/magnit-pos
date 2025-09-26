@@ -305,7 +305,7 @@ function LazySelect({
                 getOptionValue={(option) => option.id}
                 options={
                   response?.data?.data?.data?.map((option) => ({
-                    name: option?.[customLabel],
+                    name: typeof customLabel === 'function' ? customLabel(option) : option?.[customLabel],
                     value: option?.id,
                     id: option?.id,
                   })) || []

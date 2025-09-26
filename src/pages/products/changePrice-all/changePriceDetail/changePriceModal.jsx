@@ -142,7 +142,13 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
-
+  useEffect(() => {
+    const markup = get(open, 'data.new_markup', '')
+    if (markup != -100 && markup != 0) {
+      setNewPercent(markup)
+    }
+    setNewPrice(get(open, 'data.new_retail_price', ''))
+  }, [open])
   return (
     <StyledEmptyDialog
       overflowVisible
@@ -169,7 +175,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
           <Box sx={{ display: 'flex', mb: '20px', alignItems: 'start', justifyContent: 'space-between' }}>
             {/* Old Price */}
             <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Старая цена продажи</Typography>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Старая цена поставщика</Typography>
               <TextField type='number' name='pack' value={get(open, 'data.old_retail_price', '')} disabled={true} />
             </Box>
 
@@ -182,6 +188,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
                 type='number'
                 name='percent'
                 value={newPercent}
+                defaultValue={get(open, 'data.new_markup', '')}
                 onChange={(e) => handlePercentChange(e.target.value)}
                 inputRef={(e) => (qtyRef.current[0] = e)}
                 onKeyDown={(e) => {
@@ -224,6 +231,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
                 type='number'
                 name='unit'
                 value={newPrice}
+                defaultValue={get(open, 'data.new_retail_price', '')}
                 onChange={(e) => handlePriceChange(e.target.value)}
                 inputRef={(e) => (qtyRef.current[1] = e)}
                 onKeyDown={(e) => {

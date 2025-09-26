@@ -13,7 +13,7 @@ function ChangePriceDashboard({ data }) {
       }}
     >
       {[
-        { title: 'Kолво элементов в документе', value: 'count', endText: 'ед' },
+        { title: 'Kолво измененные элементов в документе', value: 'count', endText: 'ед' },
         { title: 'Общая предыдущая цена продажи', value: 'total_old_retail_price', endText: 'сум' },
         { title: 'Общая новая цена продажи', value: 'total_new_retail_price', endText: 'сум' },
         { title: 'Общая цена поставщика', value: 'total_old_supply_price', endText: 'сум' },

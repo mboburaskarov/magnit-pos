@@ -114,6 +114,7 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
               whiteSpace: 'pre-line',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'space-between',
             }}
             id={`product-retail_price-${p?.rowIndex}`}
           >
