@@ -1,5 +1,5 @@
 import { ArrowCircleRight } from '@mui/icons-material'
-import { Box, TextField, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { get } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
@@ -177,7 +177,16 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
             {/* Old Price */}
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Цена поставщика</Typography>
-              <TextField type='number' name='pack' value={get(open, 'data.old_supply_price', '')} disabled={true} />
+              <OutLineTextFieldThousand
+                type={'number'}
+                fullWidth
+                name='pack'
+                defaultValue={get(open, 'data.old_supply_price', '')}
+                label={''}
+                uncontrolled
+                disabled={true}
+                placeholder='0'
+              />
             </Box>
 
             <ArrowCircleRight sx={{ m: '35px 10px 0', fontSize: '25px', color: '#fe5000 !important' }} />
