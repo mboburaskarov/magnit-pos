@@ -219,7 +219,7 @@ export default function CreateInventory({ open, refetch, setOpen }) {
                 minWidth='auto'
                 isClearable={true}
                 request={requests.getAllImports}
-                filters={{ limit: 10, store_id: storeId }}
+                filters={{ limit: 10, store_id: storeId, status: 'completed' }}
                 control={control}
                 filterOption={() => true}
               />

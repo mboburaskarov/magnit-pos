@@ -171,7 +171,7 @@ export default function BonusProductPage() {
                       changeColumnSequence={changeColumnSequence}
                     />
                   </Box>
-                  <CheckAccess id={'create-auto-order'}>
+                  <CheckAccess id={'create-bonus-product'}>
                     <Box minWidth={156}>
                       <Button sx={{ height: '48px' }} type='submit' onClick={() => setopenCreateBonusModal(true)} fullWidth variant='contained' color='primary'>
                         Создать
