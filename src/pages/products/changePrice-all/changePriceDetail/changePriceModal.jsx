@@ -46,7 +46,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
 
   // Calculate new price from percentage
   const calculatePriceFromPercent = (percent) => {
-    const oldPrice = get(open, 'data.old_retail_price', 0)
+    const oldPrice = get(open, 'data.old_supply_price', 0)
     if (percent && oldPrice) {
       return (oldPrice * percent) / 100 + oldPrice
     }
@@ -55,7 +55,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
 
   // Calculate percentage from new price
   const calculatePercentFromPrice = (price) => {
-    const oldPrice = get(open, 'data.old_retail_price', 0)
+    const oldPrice = get(open, 'data.old_supply_price', 0)
     if (price && oldPrice) {
       return ((price - oldPrice) / oldPrice) * 100
     }
@@ -176,7 +176,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
             {/* Old Price */}
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Старая цена поставщика</Typography>
-              <TextField type='number' name='pack' value={get(open, 'data.old_retail_price', '')} disabled={true} />
+              <TextField type='number' name='pack' value={get(open, 'data.old_supply_price', '')} disabled={true} />
             </Box>
 
             <ArrowCircleRight sx={{ m: '35px 10px 0', fontSize: '25px', color: '#fe5000 !important' }} />
