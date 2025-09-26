@@ -86,9 +86,9 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
             }}
             id={`product-retail_price-${p?.rowIndex}`}
           >
-            {thousandDivider(get(p, 'data.old_retail_price'), 'сум')}
+            {thousandDivider(Math.ceil(get(p, 'data.old_retail_price') / 100) * 100, 'сум')}
             <ArrowCircleRight sx={{ m: '0 10px', fontSize: '25px', color: '#fe5000' }} />
-            {thousandDivider(get(p, 'data.new_retail_price'), 'сум')}
+            {thousandDivider(Math.ceil(get(p, 'data.new_retail_price') / 100) * 100, 'сум')}
           </Typography>
         )),
       }
@@ -114,6 +114,7 @@ export default function tableHeaderSelector({ importsColumns, t, setValue, getVa
               whiteSpace: 'pre-line',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'space-between',
             }}
             id={`product-retail_price-${p?.rowIndex}`}
           >

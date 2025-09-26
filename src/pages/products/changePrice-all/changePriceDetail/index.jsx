@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Container, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
+import OutLineTextFieldThousand from '../../../../../components/Inputs/OutLineTextFieldThousand'
 
 import { get } from 'lodash'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -18,6 +19,7 @@ import ConfirmDialog from '../../../../../components/ConfirmDialog'
 import Header from '../../../../../components/Header'
 import ImageGallery from '../../../../../components/ImageGallery'
 import InputSearch from '../../../../../components/Inputs/InputSearch'
+import InputSwitchNew from '../../../../../components/Inputs/InputSwitch'
 import LoadingContainer from '../../../../../components/LoadingContainer'
 import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../../utils/requests'
@@ -49,9 +51,12 @@ export default function ChangePriceDetailPage() {
   const [lastSelectedCellRowId, setLastSelectedCellRowId] = useState(false)
   const [repricingModalOpen, setrepricingModalOpen] = useState(false)
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
+  const [openTotalPercentConfirmDialog, setOpenTotalPercentConfirmDialog] = useState(false)
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
 
   const [openImageGallery, setOpenImageGallery] = useState(false)
+  const [openFullQtyInput, setOpenFullQtyInput] = useState(false)
+  const [fullQtyInput, setFullQtyInput] = useState(0)
   const [gridApi, setGridApi] = useState(null) // Add this state
   const [filterMenu, setFilterMenu] = useState(false)
   const { mutate: autoOrderChangeQuantity, isLoading: isautoOrderChangeQuantity } = useMutation(requests.autoOrderChangeQuantity, {
@@ -107,7 +112,7 @@ export default function ChangePriceDetailPage() {
     return {
       repricing_id: id,
       limit: values?.limit || 10,
-      offset: controlleroffset || 0,
+      offset: values?.offset || 0,
       search: values?.search,
       store_id: values?.store_id,
       start_date: values?.start_date,
@@ -133,14 +138,26 @@ export default function ChangePriceDetailPage() {
     isLoading: revaluationDetailListLoading,
     isFetching: isFetchingrevaluationDetailList,
     refetch,
-  } = useQuery(['revaluationDetailList', revaluationDetailListFilter], () => requests.getRevaluationDetailList(id))
+  } = useQuery(['revaluationDetailList', revaluationDetailListFilter], () =>
+    requests.getRevaluationDetailList(id, {
+      limit: values?.limit || 10,
+      offset: values?.offset || 0,
+      search: values?.search,
+    })
+  )
 
   const {
     data: revaluationById,
     isLoading: revaluationByIdLoading,
     isFetching: isFetchingrevaluationById,
     refetch: refetchRevaluationById,
-  } = useQuery(['revaluationById', revaluationDetailListFilter], () => requests.getRevaluation(id))
+  } = useQuery(['revaluationById', revaluationDetailListFilter], () =>
+    requests.getRevaluation(id, {
+      limit: values?.limit || 10,
+      offset: values?.offset || 0,
+      search: values?.search,
+    })
+  )
 
   useEffect(() => {
     refetch()
@@ -155,6 +172,21 @@ export default function ChangePriceDetailPage() {
       error('Ошибка при завершение импорта!')
     },
   })
+  const { mutate: giveToAllProductsPercentRevaluation, isLoading: isGiveToAllProductsPercentRevaluation } = useMutation(
+    requests.giveToAllProductsPercentRevaluation,
+    {
+      onSuccess: ({ data }) => {
+        refetch()
+        refetchRevaluationById()
+        refetchgetRevaluationDashBoard()
+        setFullQtyInput(0)
+        // navigate('/products/revaluation')
+      },
+      onError: (err) => {
+        error('Ошибка!')
+      },
+    }
+  )
   useEffect(() => {
     const count = revaluationDetailList?.data?.data?._meta?.total_count
 
@@ -228,7 +260,13 @@ export default function ChangePriceDetailPage() {
   const { data: getRevaluationDashBoard, refetch: refetchgetRevaluationDashBoard } = useQuery(['getRevaluationDashBoard', id], () =>
     requests.getRevaluationDashBoard(id)
   )
-
+  useEffect(() => {
+    if (methods.getValues('separated-type') == 'full') {
+      setOpenFullQtyInput(true)
+    } else {
+      setOpenFullQtyInput(false)
+    }
+  }, [methods.watch('separated-type')])
   return (
     <LoadingContainer readyState={!isfinalAutoOrder}>
       <FormProvider {...methods}>
@@ -277,32 +315,85 @@ export default function ChangePriceDetailPage() {
                 >
                   <InputSearch id='producrs-search' name='search' placeholder={'Наименование'} uncontrolled />
                 </Box>
-
-                <Box minWidth={113} ml={'16px'}>
-                  <Button
+                <Box minWidth={'580px'} display={'flex'}>
+                  <Box minWidth={113} ml={'16px'}>
+                    <Button
+                      sx={{
+                        height: '48px',
+                        padding: 0,
+                        bgcolor: '#fff',
+                        border: '1px solid #ECEDF2',
+                        color: 'dark.500',
+                        fontWeight: '500',
+                        fontSize: '16px',
+                        lineHeight: '24px',
+                        '& span': {
+                          mr: '12px',
+                        },
+                      }}
+                      fullWidth
+                      startIcon={<FilterMenuIcon color={theme.palette.black} />}
+                      variant='contained'
+                      color='secondary'
+                      onClick={() => setFilterMenu((prev) => !prev)}
+                    >
+                      <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
+                        {t('filter_dialog.label')}
+                      </Typography>
+                    </Button>
+                  </Box>
+                  <Box
                     sx={{
-                      height: '48px',
-                      padding: 0,
-                      bgcolor: '#fff',
-                      border: '1px solid #ECEDF2',
-                      color: 'dark.500',
-                      fontWeight: '500',
-                      fontSize: '16px',
-                      lineHeight: '24px',
-                      '& span': {
-                        mr: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      minWidth: '300px',
+                      ml: '20px',
+                      '& #separated-type': {
+                        width: 'auto',
                       },
                     }}
-                    fullWidth
-                    startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => setFilterMenu((prev) => !prev)}
                   >
-                    <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                      {t('filter_dialog.label')}
-                    </Typography>
-                  </Button>
+                    <InputSwitchNew
+                      id='separated-type'
+                      noMarginTop
+                      name='separated-type'
+                      control={methods.control}
+                      defaultValue='separated'
+                      options={[
+                        {
+                          title: t('Штук'),
+                          value: 'separated',
+                        },
+                        {
+                          title: t('Полный'),
+                          value: 'full',
+                        },
+                      ]}
+                    />
+                    {openFullQtyInput && (
+                      <>
+                        <Box width={'20px'} />
+                        <OutLineTextFieldThousand
+                          setValue={(e) => setFullQtyInput(e)}
+                          value={fullQtyInput}
+                          type={'number'}
+                          fullWidth
+                          sx={{
+                            ml: 0,
+                          }}
+                          name='fullQty'
+                          onKeyDown={(e) => {
+                            if (e?.code == 'Enter') {
+                              setOpenTotalPercentConfirmDialog(true)
+                            }
+                          }}
+                          label={''}
+                          uncontrolled
+                          placeholder='Общ Процент (%)'
+                        />
+                      </>
+                    )}
+                  </Box>
                 </Box>
               </Box>
               <Box display={'flex'} alignItems={'center'}>
@@ -332,6 +423,7 @@ export default function ChangePriceDetailPage() {
                 onChangeSelectedCellRowId={(id) => {
                   setLastSelectedCellRowId(id)
                 }}
+                canCellClick={true}
                 childRef={childRef}
                 selectedCellRowId={setSelectedCellRowId}
                 columns={tableColumns}
@@ -357,7 +449,9 @@ export default function ChangePriceDetailPage() {
         <ChangePriceModal
           // setshouldICleanSearchQuery={false}
           // setBarcode={setBarcode}
-          refetch={{ refetch, refetchRevaluationById }}
+          refetch={() => {
+            refetch(), refetchRevaluationById(), refetchgetRevaluationDashBoard()
+          }}
           open={repricingModalOpen}
           setOpen={setrepricingModalOpen}
           gridApi={gridApi}
@@ -392,6 +486,37 @@ export default function ChangePriceDetailPage() {
                 isLoading={false}
               >
                 {t('buttons.yes_complete')}
+              </Button>
+            </>
+          }
+        />
+        <ConfirmDialog
+          open={openTotalPercentConfirmDialog}
+          setOpen={() => setOpenTotalPercentConfirmDialog(false)}
+          icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
+          title={'Изменить цены на все лекарства'}
+          desc={
+            <>
+              <Typography fontWeight={'600'} fontSize={'20px'}>
+                Вы уверены, что хотите изменить цену всех лекарств на этот процент?
+              </Typography>
+            </>
+          }
+          actions={
+            <>
+              <Button secondary onClick={() => setOpenTotalPercentConfirmDialog(false)}>
+                {t('Нет')}
+              </Button>
+              <Button
+                size='medium'
+                variant='contained'
+                onClick={() => {
+                  setOpenTotalPercentConfirmDialog(false)
+                  giveToAllProductsPercentRevaluation({ id: id, percent: fullQtyInput })
+                }}
+                isLoading={false}
+              >
+                {t('Да')}
               </Button>
             </>
           }
