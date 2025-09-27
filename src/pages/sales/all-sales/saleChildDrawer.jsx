@@ -150,9 +150,10 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
     },
   })
   function maskNumber(num) {
+    if (num.length == 0) return '*****'
     const str = String(num)
     const visible = str.slice(-4) // last 4 digits
-    const hidden = '*'.repeat(str.length - 4) // mask the rest
+    const hidden = '*'?.repeat(str?.length - 4) // mask the rest
     return hidden + visible
   }
   return (
