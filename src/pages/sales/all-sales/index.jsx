@@ -108,6 +108,7 @@ export default function AllSalesPage() {
       employee_id: values?.employee_id,
       cashbox_id: values?.cashbox_id,
       sale_type: values?.sale_type,
+      type: values?.type,
       total_amount_to: values?.total_amount_to,
       total_amount_from: values?.total_amount_from,
     }
@@ -115,6 +116,7 @@ export default function AllSalesPage() {
     controlleroffset,
     values?.limit,
     values?.sale_type,
+    values?.type,
     values?.from_time,
     values?.to_time,
     values?.search,

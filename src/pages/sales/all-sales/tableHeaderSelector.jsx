@@ -43,7 +43,14 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         headerName: 'ID',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box sx={{ whiteSpace: 'pre-line', '& p': { color: 'orange.500' }, cursor: 'pointer' }} onClick={() => setOpenSaleDrawer({ id: p.data?.id })}>
+          <Box
+            sx={{
+              whiteSpace: 'pre-line',
+              '& p': { color: p?.data?.service_type == 'tax_free' ? 'green.500' : p?.data?.fiscal_sign?.length == 0 ? 'yellow.500' : 'orange.500' },
+              cursor: 'pointer',
+            }}
+            onClick={() => setOpenSaleDrawer({ id: p.data?.id })}
+          >
             <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
               {get(p, 'data.sale_type', 'SALE') === 'SALE' ? 'Продажа' : 'Возврат'} #{get(p, 'data.sale_number', '-')}
             </Typography>

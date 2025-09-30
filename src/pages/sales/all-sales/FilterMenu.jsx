@@ -37,6 +37,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       vendor_id: data.vendor_id?.value || undefined,
       vendor_name: data.vendor_id?.name || undefined,
       sale_type: data?.sale_type?.value || undefined,
+      type: data?.type?.value || undefined,
       cashbox_id: data.cashbox_id?.value || undefined,
       cashbox_name: data.cashbox_id?.name || undefined,
       payment_type_id: data?.payment_type_id?.id || undefined,
@@ -52,7 +53,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { total_amount_to, total_amount_from, store_id, payment_type_id, sale_type, cashbox_id, vendor_id } = values
+    const { total_amount_to, total_amount_from, store_id, payment_type_id, sale_type, type, cashbox_id, vendor_id } = values
 
     reset(
       {
@@ -63,6 +64,16 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
               [
                 { id: 'SALE', name: 'Продажа' },
                 { id: 'RETURN', name: 'Возврат' },
+              ],
+              'name'
+            )[0]
+          : null,
+        type: type
+          ? getOptionsFromUrlParam(
+              type,
+              [
+                { value: 'FiscalSign', name: 'Незаконченный' },
+                { value: 'TaxFree', name: 'Направленный' },
               ],
               'name'
             )[0]
@@ -119,6 +130,21 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
             <Box maxHeight={'calc(100vh - 280px)'} px={'5px'} width={'100%'} overflow={'visible'}>
+              <SelectSimple
+                fullWidth
+                id='sto'
+                name='type'
+                white
+                minWidth='auto'
+                label={'Статус продаж'}
+                placeholder={t('Выберите статус продаж')}
+                getOptionLabel={(el) => el.name}
+                options={[
+                  { value: 'FiscalSign', name: 'Незаконченный' },
+                  { value: 'TaxFree', name: 'Направленный' },
+                ]}
+              />
+              <Box height={'20px'} />
               <SelectSimple
                 fullWidth
                 id='sto'
