@@ -90,6 +90,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
     values?.payment_type_id,
     values?.vendor_id,
     values?.sale_type,
+    values?.type,
     values?.cashbox_id,
     values?.category_id,
     values?.store_id,
