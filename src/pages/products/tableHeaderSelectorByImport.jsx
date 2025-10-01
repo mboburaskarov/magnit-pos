@@ -3,7 +3,7 @@ import { Box, IconButton, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get, head } from 'lodash'
-import { memo } from 'react'
+import { memo, useState } from 'react'
 import Highlighter from 'react-highlight-words'
 import { useNavigate } from 'react-router-dom'
 import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
@@ -12,7 +12,6 @@ import thousandDivider from '../../../utils/thousandDivider'
 import { products_statuses } from '../../assets/data/products-statuses'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
 import EditIcon from '../../assets/icons/EditIcon'
-
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography
@@ -134,6 +133,7 @@ export default function tableHeaderSelector({
 }) {
   const theme = useTheme()
   const navigate = useNavigate()
+  const [eidtingDate, setEditingDate] = useState(false)
   const getDateColor = (date) => {
     if (date >= 90) return { color: theme.palette.green[700] }
     if (date > 60 && date < 90) return { color: theme.palette.orange[400] }
@@ -375,12 +375,21 @@ export default function tableHeaderSelector({
         headerName: t('table_columns.expire_date'),
         colId: el.field,
         editable: editable,
+        valueGetter: (params) => {
+          // Option 1: Transform the raw value
+          const rawDate = params.data?.expire_date
+          if (!rawDate) return ''
+
+          // Example: Convert ISO string to local date format
+          const date = new Date(rawDate)
+          return dayjs(date).format('YYYY.MM.DD')
+        },
         cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+          <Box id={`${'expire_date'}-${p.rowIndex}`} onClick={() => setEditingDate(p?.data)} whiteSpace='pre-wrap'>
             {p.data?.['expire_date'] ? (
               <>
-                <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')}</Typography>
-                <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography>
+                <Typography>{dayjs(p.data?.['expire_date']).format('YYYY.MM.DD')}</Typography>
+                {/* <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography> */}
               </>
             ) : (
               <Typography>Выберите филиал</Typography>
