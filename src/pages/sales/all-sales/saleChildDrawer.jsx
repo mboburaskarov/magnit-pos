@@ -7,6 +7,7 @@ import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'r
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
+import { useNavigate } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
 import { useDebounce } from 'use-debounce'
 import CheckAccess from '../../../../components/CheckAccess'
@@ -63,6 +64,8 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
   const { t } = useTranslation()
   const { values } = useQueryParams()
   const classes = useStyles()
+  const navigate = useNavigate()
+
   const [currentSaleId, setCurrentSaleId] = useState(get(values, 'sale_id', ''))
   const [currentIndex, setcurrentIndex] = useState(0)
   const [qrCodeUrl, setQrcodeUrl] = useState('pending')
@@ -136,12 +139,21 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
     }
   })
   const theme = useTheme()
-
+  const { mutate: saleMoveToPending, isLoading: isSaleMoveToPending } = useMutation(requests.saleMoveToPending, {
+    onSuccess: ({ data }) => {
+      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+    },
+    onError: (err) => {
+      console.log(err)
+      error('Ошибка: Продажа переведена в режим ожидания!')
+    },
+  })
   const { mutate: getQrCodeWithFiscal, isLoading: isgetQrCodeWithFiscal } = useMutation(requests.closeZReport, {
     onSuccess: ({ data }) => {
       if (!get(data, 'error', true)) {
         setQrcodeUrl(get(data, 'message.qrCodeURL', 'pending'))
       } else {
+        saleMoveToPending(get(open, 'id'))
         error(`FISCAL: ${data?.message}`)
       }
     },

@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useMutation } from 'react-query'
+import CustomImg from '../../../../components/CustomImg'
 import InputQuantity from '../../../../components/Inputs/InputQuantity'
 import StyledTooltip from '../../../../components/StyledTooltip'
 import { requests } from '../../../../utils/requests'
@@ -141,6 +142,19 @@ export const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     color: theme.palette.red[500],
   },
+  searchImage: {
+    '& img': {
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+    },
+    width: '48px',
+    marginRight: '20px',
+    minWidth: '48px',
+    height: '48px',
+    borderRadius: '6px',
+    overflow: 'hidden',
+  },
   oldPrice: {
     display: 'block',
     fontSize: 14,
@@ -257,6 +271,9 @@ const CartItem = ({
       <Box id={`cartItem${index}`} tabIndex={index} className={cls.root}>
         <Box className={cls.content}>
           <Box className={cls.details}>
+            <div className={cls.searchImage}>
+              <CustomImg src={item?.main_photo || '65eb3e64-185f-4642-8261-1aeec7379760.jpg'} />
+            </div>
             <Box display={'flex'}>
               {get(item, 'unit_per_pack') >= 0 && (
                 <Box
