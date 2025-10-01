@@ -200,38 +200,9 @@ export default function DashboarPage() {
       offset: values?.search ? 0 : values?.offset || 0,
     }
   }, [values?.offset, detalization, selectedShops, values?.start_date, values?.end_date, values?.from_time, values?.to_time, values?.limit, values?.search])
-  const dashboard_company_filter = useMemo(() => {
-    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
-    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
 
-    return {
-      limit: values?.limit || 15,
-      search: values?.search,
-      start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
-      end_date:
-        values?.end_date && values?.to_time
-          ? ready_start_date?.isSame(ready_end_date)
-            ? dayjs(`${values?.start_date} 23:59:59`).format()
-            : ready_end_date.format()
-          : null,
-      company_ids: selectedComapanies.length <= 63 && selectedComapanies != 'all' ? [...selectedComapanies?.map((a) => a.id)] : null || null,
-      type: dataTypeFilter(detalization),
-      offset: values?.search ? 0 : values?.offset || 0,
-    }
-  }, [
-    values?.offset,
-    detalization,
-    selectedComapanies,
-    values?.start_date,
-    values?.end_date,
-    values?.from_time,
-    values?.to_time,
-    values?.limit,
-    values?.search,
-  ])
   const { data: chartData } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
   const { data: countStats } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
-  const { data: companyCountStats } = useQuery(['companyCountStats', dashboard_company_filter], () => requests.dashboradCountStats(dashboard_company_filter))
   const { data: topStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
   const { data: payments } = useQuery(['payments', dashboard_filter], () => requests.dashboradPayments(dashboard_filter))
   const { data: transaction } = useQuery(['transaction', dashboard_filter], () => requests.dashboradTransaction(dashboard_filter))
