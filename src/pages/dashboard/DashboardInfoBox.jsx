@@ -73,22 +73,24 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
                 )}
               </Typography>
             </Box>
-            <Box
-              display='inline-flex'
-              sx={{
-                borderRadius: '5px',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '4px 5px',
-                backgroundColor: !isFall ? '#30BE821A' : '#F45B691A',
-              }}
-              alignItems='center'
-            >
-              {!isFall ? <GrowIcon /> : <FallIcon />}{' '}
-              <Typography color={isFall ? '#F45B69' : '#30BE82'} fontWeight='500' mr={0.5} fontSize={14} lineHeight={'18px'}>
-                {percent}%
-              </Typography>
-            </Box>
+            {percent < 1000 && (
+              <Box
+                display='inline-flex'
+                sx={{
+                  borderRadius: '5px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '4px 5px',
+                  backgroundColor: !isFall ? '#30BE821A' : '#F45B691A',
+                }}
+                alignItems='center'
+              >
+                {!isFall ? <GrowIcon /> : <FallIcon />}{' '}
+                <Typography color={isFall ? '#F45B69' : '#30BE82'} fontWeight='500' mr={0.5} fontSize={14} lineHeight={'18px'}>
+                  {percent}%
+                </Typography>
+              </Box>
+            )}
           </Box>
         }
       </Box>

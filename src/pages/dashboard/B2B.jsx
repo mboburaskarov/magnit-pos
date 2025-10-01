@@ -1,5 +1,4 @@
-import { ArrowRightRounded } from '@mui/icons-material'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import dayjs from 'dayjs'
 import isoWeek from 'dayjs/plugin/isoWeek'
 import { get } from 'lodash'
@@ -7,36 +6,27 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import TotalOrdersByCity from '../../../components/Charts/SingleBarChart'
-import SingleLineChart from '../../../components/Charts/SingleLineChart'
-import TopBonusProducts from '../../../components/Charts/TopBonusProducts'
-import TopProducts from '../../../components/Charts/TopProducts'
-import TopSellers from '../../../components/Charts/TopSellers'
-import Transactions from '../../../components/Charts/transactions'
 import CheckAccess from '../../../components/CheckAccess'
 import LoadingContainer from '../../../components/LoadingContainer'
 import { calculatePercentage } from '../../../utils/calculatePercentage'
 import dataTypeFilter from '../../../utils/dataTypeFilter'
 import { getDetaling } from '../../../utils/getDetaling'
 import { requests } from '../../../utils/requests'
-import thousandDivider from '../../../utils/thousandDivider'
 import OrdersIcon from '../../assets/icons/OrdersIcon'
 import ProductsIcon from '../../assets/icons/ProductsIcon'
 import RevenueIcon from '../../assets/icons/RevenueIcon'
 import VendorsIcon from '../../assets/icons/VendorsIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
-import DashboardHeader from './DashboardHeader'
+import Dashboard_B2B from './Dashboard_B2B'
 import DashboardInfoBox from './DashboardInfoBox'
-import ImportPage from './expiredImports/index'
-export default function DashboarPage() {
+export default function DashboarB2BPage() {
   dayjs.extend(isoWeek)
   const { type } = useSelector((state) => state.user)
   const { values } = useQueryParams()
   const [detailing, setDetaling] = useState('week')
   const [selectedShops, setSelectedShops] = useState('all')
   const [selectedComapanies, setSelectedComapanies] = useState('all')
-  const navigate = useNavigate()
+
   const [detalization, setDetalization] = useState({ name: 'по дням', value: 'day' })
   const [chartType, setchartType] = useState({ name: 'Продажи', value: 'sale' })
   const check = type === 'SUPERADMIN' || type === 'ACCOUNTANT'
@@ -257,13 +247,13 @@ export default function DashboarPage() {
 
   return (
     <LoadingContainer readyState={true}>
-      <DashboardHeader setSelectedShops={setSelectedShops} selectedShops={selectedShops} />
-
       <Box display='flex' flexDirection='column' position='relative' pt={0} px={'20px'} pb={3} width={'100%'}>
         <Grid width={'100%'} container>
           <Grid width={'100%'} item>
+            <Dashboard_B2B setSelectedShops={setSelectedComapanies} selectedShops={selectedComapanies} />
             <Grid container mt={0} spacing={2}>
-              {OrdersStatistics(get(countStats, 'data.data', {}))
+              {OrdersStatistics(get(companyCountStats, 'data.data', {}))
+                ?.filter((el) => el?.id != 'bonus_amount')
                 ?.filter((el) => (check ? el : el.title !== 'Общая сумма заказов'))
                 ?.map((el, ind) => (
                   <CheckAccess id={`dashboard-box-${el.id}`}>
@@ -272,113 +262,10 @@ export default function DashboarPage() {
                     </Grid>
                   </CheckAccess>
                 ))}
-              <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
-                <Box
-                  onClick={() => navigate('/dashboard/b2b')}
-                  sx={(theme) => ({
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: 1,
-                    borderRadius: '16px',
-                    borderColor: '#A4A5AB33',
-                    cursor: 'pointer',
-                    bgcolor: 'bg.10',
-                    minHeight: '154px',
-                    width: '100%',
-                  })}
-                >
-                  <Box
-                    key={1}
-                    sx={(theme) => ({
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      pr: '26px',
-                      pl: '16px',
-                      minHeight: '115px',
-                      pt: '16px',
-                      pb: '10px',
-                      m: 0,
-                    })}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: 25,
-                        fontWeight: '600',
-                      }}
-                    >
-                      Перейти к панели управления франшизой
-                    </Typography>
-                    <ArrowRightRounded sx={{ fontSize: '40px', color: '#fe5000' }} />
-                  </Box>
-                </Box>
-              </Grid>
             </Grid>
-
-            <CheckAccess id={'dashboard-chart'}>
-              <Box mt={'32px'} display='inline-flex' columnGap={3} width='100%'>
-                <SingleLineChart
-                  width='100%'
-                  id='dashboard-chart'
-                  period={detailing}
-                  detalization={detalization}
-                  setDetalization={setDetalization}
-                  chartType={chartType}
-                  setchartType={setchartType}
-                  sortBy={sortBy}
-                  dataKey={sortBy === 'SUM' ? 'all_orders' : 'count'}
-                  data={{
-                    values: toFixData,
-                    total: sortBy === 'SUM' ? totalSum : totalCount,
-                  }}
-                  measurmentUnit={sortBy === 'SUM' ? ' сум' : ' шт'}
-                />
-              </Box>
-            </CheckAccess>
           </Grid>
         </Grid>
-        <CheckAccess id={'dashboard-transactions-vendor'}>
-          <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-            <Transactions
-              id='dashboard-chart'
-              data={get(payments, 'data.data')}
-              title={'Платежи'}
-              subTitle={thousandDivider(Math.round(get(payments, 'data.data', [])?.reduce((a, b) => a + b.amount, 0)), 'сум')}
-            />
-            <Transactions
-              id='dashboard-chart'
-              data={get(transaction, 'data.data')}
-              title={'Транзакции'}
-              subTitle={thousandDivider(
-                get(transaction, 'data.data', [])?.reduce((a, b) => {
-                  const count = parseFloat((b.count || '0').replace(',', '.'))
-                  return a + count
-                }, 0),
-
-                'шт'
-              )}
-            />
-          </Box>
-        </CheckAccess>
-        <CheckAccess id={'dashboard-vendor'}>
-          <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-            <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
-            <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} />
-          </Box>
-        </CheckAccess>
-        <CheckAccess id={'dashboard-seller'}>
-          <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-            <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} />
-            <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} />
-          </Box>
-        </CheckAccess>
       </Box>
-      <CheckAccess id={'dashboard-expired-imports'}>
-        <Box>
-          <ImportPage />
-        </Box>
-      </CheckAccess>
     </LoadingContainer>
   )
 }
