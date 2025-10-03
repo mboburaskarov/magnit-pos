@@ -664,7 +664,8 @@ function OrderLite({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
       payment_types: paymentTypes,
       sale_id: id,
-      service_type: dmedPrescriptionsList?.length > 0 ? 'dmed' : serviceType == 'other' ? undefined : serviceType,
+      service_type: dmedPrescriptionsList?.length > 0 ? 'dmed' : undefined,
+      referral: serviceType == 'other' ? undefined : serviceType,
 
       store_id: get(userData, 'store.id'),
       customer_id: get(customerId, 'id'),
