@@ -96,6 +96,9 @@ export const requests = {
   // report product
   topProductsReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-products${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   bonusProductsReport: ({ store_ids, ...filter }) => request.post(`v1/report/bonus-products${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  getBonusProductsReportStat: ({ store_ids, ...filter }) =>
+    request.post(`v1/report/bonus-products-stats${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
+
   topVendorReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-seller${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   topBranchReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   storeSummaryReport: ({ store_ids, ...filter }) => request.post(`v1/report/store-summary${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
@@ -311,6 +314,9 @@ export const requests = {
 
   getSingleProduct: ({ id, ...filter }) => request.get(`v1/product/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleProductMovement: (filter, id) => request.get(`v1/product/${id}/product-movement${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getSingleProductMovementExcel: ({ id, ...filter }) =>
+    requestEXCEL.get(`v1/product/${id}/product-movement/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   // getSingleProductHistory: (filter, id) => request.get(`v1/product/import/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleProductRemainsHistory: (filter, id) => request.get(`v1/product/store-product/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateProduct: ({ id, data }) => request.put(`v1/product/${id}`, data),
@@ -329,6 +335,7 @@ export const requests = {
 
   //report
   getDiscountCartReport: (filter) => request.post(`v1/report/discount-card${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getDiscountCartReportExcel: (filter) => requestEXCEL.post(`v1/report/discount-card/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //customers
   createCustomer: (data) => request.post(`v1/customer`, data),

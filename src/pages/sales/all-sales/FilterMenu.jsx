@@ -28,6 +28,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])
+    console.log(data)
 
     const requestBody = {
       total_amount_from: data.total_amount_from || undefined,
@@ -36,8 +37,9 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       store_name: data.store_id?.name || undefined,
       vendor_id: data.vendor_id?.value || undefined,
       vendor_name: data.vendor_id?.name || undefined,
-      sale_type: data?.sale_type?.value || undefined,
-      type: data?.type?.value || undefined,
+      sale_type: data?.sale_type?.id || undefined,
+      type: data?.type?.id || undefined,
+      referral: data?.referral?.id || undefined,
       cashbox_id: data.cashbox_id?.value || undefined,
       cashbox_name: data.cashbox_id?.name || undefined,
       payment_type_id: data?.payment_type_id?.id || undefined,
@@ -53,7 +55,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { total_amount_to, total_amount_from, store_id, payment_type_id, sale_type, type, cashbox_id, vendor_id } = values
+    const { total_amount_to, total_amount_from, store_id, payment_type_id, sale_type, type, referral, cashbox_id, vendor_id } = values
 
     reset(
       {
@@ -72,8 +74,18 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
           ? getOptionsFromUrlParam(
               type,
               [
-                { value: 'FiscalSign', name: 'Незаконченный' },
-                { value: 'TaxFree', name: 'Направленный' },
+                { id: 'FiscalSign', name: 'Незаконченный' },
+                { id: 'TaxFree', name: 'Направленный' },
+              ],
+              'name'
+            )[0]
+          : null,
+        referral: referral
+          ? getOptionsFromUrlParam(
+              referral,
+              [
+                { name: 'Oson apteka', id: 'oson-apteka' },
+                { name: 'Arzon apteka', id: 'arzon-apteka' },
               ],
               'name'
             )[0]
@@ -91,6 +103,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
     values?.vendor_id,
     values?.sale_type,
     values?.type,
+    values?.referral,
     values?.cashbox_id,
     values?.category_id,
     values?.store_id,
@@ -130,49 +143,70 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <Box maxHeight={'calc(100vh - 280px)'} px={'5px'} width={'100%'} overflow={'visible'}>
-              <SelectSimple
-                fullWidth
-                id='sto'
-                name='type'
-                white
-                minWidth='auto'
-                label={'Статус продаж'}
-                placeholder={t('Выберите статус продаж')}
-                getOptionLabel={(el) => el.name}
-                options={[
-                  { value: 'FiscalSign', name: 'Незаконченный' },
-                  { value: 'TaxFree', name: 'Направленный' },
-                ]}
-              />
-              <Box height={'20px'} />
-              <SelectSimple
-                fullWidth
-                id='sto'
-                name='sale_type'
-                white
-                minWidth='auto'
-                label={'Тип продажа'}
-                placeholder={t('Выберите тип продажа')}
-                getOptionLabel={(el) => el.name}
-                options={[
-                  { value: 'SALE', name: 'Продажа' },
-                  { value: 'RETURN', name: 'Возврат' },
-                ]}
-              />
-              <Box height={'20px'} />
+            <Box px={'5px'} width={'100%'} overflow={'visible'}>
+              <Box sx={{ display: 'flex' }}>
+                <SelectSimple
+                  fullWidth
+                  id='sto'
+                  name='type'
+                  white
+                  minWidth='auto'
+                  label={'Статус продаж'}
+                  placeholder={t('Выберите статус продаж')}
+                  getOptionLabel={(el) => el.name}
+                  options={[
+                    { id: 'FiscalSign', name: 'Незаконченный' },
+                    { id: 'TaxFree', name: 'Направленный' },
+                  ]}
+                />
+                <Box width={'20px'} />
 
-              <SelectSimple
-                fullWidth
-                id='sto'
-                name='payment_type_id'
-                white
-                minWidth='auto'
-                label={'Тип оплаты'}
-                placeholder={t('Выберите тип оплаты')}
-                getOptionLabel={(el) => el.name}
-                options={paymentTypeList?.data?.data}
-              />
+                <SelectSimple
+                  fullWidth
+                  id='referral'
+                  name='referral'
+                  white
+                  minWidth='auto'
+                  label={'Направление'}
+                  placeholder={t('Выберите направление')}
+                  getOptionLabel={(el) => el.name}
+                  options={[
+                    { name: 'Oson apteka', id: 'oson-apteka' },
+                    { name: 'Arzon apteka', id: 'arzon-apteka' },
+                  ]}
+                />
+              </Box>
+
+              <Box height={'20px'} />
+              <Box sx={{ display: 'flex' }}>
+                <SelectSimple
+                  fullWidth
+                  id='sto'
+                  name='sale_type'
+                  white
+                  minWidth='auto'
+                  label={'Тип продажа'}
+                  placeholder={t('Выберите тип продажа')}
+                  getOptionLabel={(el) => el.name}
+                  options={[
+                    { id: 'SALE', name: 'Продажа' },
+                    { id: 'RETURN', name: 'Возврат' },
+                  ]}
+                />
+                <Box width={'20px'} />
+
+                <SelectSimple
+                  fullWidth
+                  id='sto'
+                  name='payment_type_id'
+                  white
+                  minWidth='auto'
+                  label={'Тип оплаты'}
+                  placeholder={t('Выберите тип оплаты')}
+                  getOptionLabel={(el) => el.name}
+                  options={paymentTypeList?.data?.data}
+                />
+              </Box>
               <CheckAccess id={'can-filter-salaes-by-store'}>
                 <Box height={'20px'} />
                 <LazySelect

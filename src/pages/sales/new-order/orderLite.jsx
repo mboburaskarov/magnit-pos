@@ -19,6 +19,7 @@ import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
 function OrderLite({
+  serviceType,
   cartItemsList,
   collapsedSale,
   sendToEpos,
@@ -663,12 +664,12 @@ function OrderLite({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
       payment_types: paymentTypes,
       sale_id: id,
-      service_type: dmedPrescriptionsList?.length > 0 ? 'dmed' : undefined,
+      service_type: dmedPrescriptionsList?.length > 0 ? 'dmed' : serviceType == 'other' ? undefined : serviceType,
 
       store_id: get(userData, 'store.id'),
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
-      tax_free: sendToEpos,
+      tax_free: !sendToEpos,
 
       marking_data: markingData,
     })

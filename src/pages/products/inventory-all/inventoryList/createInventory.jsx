@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
+import { get } from 'lodash'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -24,6 +25,11 @@ export default function CreateInventory({ open, refetch, setOpen }) {
       refetch()
     },
     onError: (err) => {
+      if (get(err, 'response.data.data') == 'open.import.exists') {
+        error('В этой аптеке есть импортный товар, который не принимается!')
+
+        return
+      }
       error('Ошибка Создать инвентаризация!')
       console.log('err', err)
     },

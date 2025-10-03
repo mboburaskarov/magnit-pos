@@ -1,11 +1,13 @@
 import { Box, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
+import { useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import { useQueryParams } from '../../../src/hooks/useQueryParams'
 import { requests } from '../../../utils/requests'
 import InputSearch from '../../Inputs/InputSearch'
+import OutLineTextFieldThousand from '../../Inputs/OutLineTextFieldThousand'
 import ResultItem from './ResultItem'
 
 const useStyles = makeStyles((theme) => ({
@@ -25,7 +27,10 @@ function SendRejectedProductDrawer({ open, setOpen, setOpenRejectConfirmDialog, 
   const classes = useStyles()
   const userData = useSelector((state) => state.user)
   const { values } = useQueryParams()
-
+  const [itemCount, setItemcount] = useState(1)
+  useEffect(() => {
+    setItemcount(1)
+  }, [values?.search])
   const { data } = useQuery(['searchCustomers', values?.search], () =>
     requests.getAllProductsList({
       search: values?.search,
@@ -83,15 +88,38 @@ function SendRejectedProductDrawer({ open, setOpen, setOpenRejectConfirmDialog, 
             >
               <Typography>"{values?.search}" - продукт не найден</Typography>
               <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
+                <OutLineTextFieldThousand
+                  setValue={(e) => {
+                    if (e < 1) {
+                      setItemcount(1)
+                    } else {
+                      setItemcount(e)
+                    }
+                  }}
+                  value={itemCount}
+                  type={'number'}
+                  fullWidth
+                  name='discount'
+                  label={''}
+                  minNumber={1}
+                  uncontrolled
+                  sx={{
+                    width: '80px',
+                    m: '0 10px',
+                  }}
+                  placeholder='Введите скидку'
+                />
                 <Typography
                   onClick={(e) => {
                     e.stopPropagation() // Prevent click from reaching Box
                     setOpenRejectConfirmDialog({
                       product_name: values?.search,
+                      count: itemCount,
                     })
                   }}
                   sx={{
                     bgcolor: '#f22',
+                    color: '#fff',
                     padding: '5px 10px',
                     borderRadius: '10px',
                     mr: '10px',

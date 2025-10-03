@@ -6,11 +6,12 @@ import { Box, Button, Typography } from '@mui/material'
 import { get, size } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import Highlighter from 'react-highlight-words'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import OutsideClickHandler from 'react-outside-click-handler'
 import { useParams } from 'react-router-dom'
 import CheckAccess from '../../../../components/CheckAccess'
-import InputSwitch from '../../../../components/Inputs/InputSwitch'
+import { default as InputSwitch, default as InputSwitchNew } from '../../../../components/Inputs/InputSwitch'
 import OutLineTextFieldThousand from '../../../../components/Inputs/OutLineTextFieldThousand'
 import SearchInput from '../../../../components/Inputs/SearchInput'
 import Label from '../../../../components/Label'
@@ -27,6 +28,8 @@ import DmedPrescriptionsList from './dmedPrescriptionsList'
 import OrderLite from './orderLite'
 
 function CartDetailSide({
+  setServiceType,
+  serviceType,
   setSendToEpos,
   sendToEpos,
   setDmedOrganizedList,
@@ -86,9 +89,19 @@ function CartDetailSide({
     if (typeof sendToEpos == 'boolean') localStorage.setItem('send_to_epos', sendToEpos)
     else localStorage.setItem('send_to_epos', true)
   }, [sendToEpos])
+  const methods = useForm()
+
+  const { control } = methods
 
   return (
-    <Box className={classes.card_detail}>
+    <Box
+      className={classes.card_detail}
+      sx={{
+        '& .slider_box_wrapper': {
+          width: '100%',
+        },
+      }}
+    >
       <Box display={'flex'} flexDirection={'column'}>
         <Box display={'flex'} justifyContent={'space-between'}>
           <Box
@@ -269,8 +282,32 @@ function CartDetailSide({
           </OutsideClickHandler>
         )}
       </Box>
-      <DmedPrescriptionsList data={dmedPrescriptionsList} setDmedPrescriptionsList={setDmedPrescriptionsList} />
+      <Label>{t('Тип клиента')}</Label>
 
+      <InputSwitchNew
+        id='service-type-id'
+        noMarginTop
+        name='service-type'
+        control={control}
+        uncontrolled
+        defaultValue={serviceType || 'other'}
+        onChange={(value) => setServiceType(value)} // Add this line
+        options={[
+          {
+            title: t('Другой'),
+            value: 'other',
+          },
+          {
+            title: t('Arzon Apteka'),
+            value: 'arzon-apteka',
+          },
+          {
+            title: t('Oson Apteka'),
+            value: 'oson-apteka',
+          },
+        ]}
+      />
+      <DmedPrescriptionsList data={dmedPrescriptionsList} setDmedPrescriptionsList={setDmedPrescriptionsList} />
       <CheckAccess id={'new-sale-discount'}>
         <Box onClick={() => setCollapseDiscount((p) => !p)} width={'100%'} display={'flex'} justifyContent={'space-between'}>
           <Label>{t('discount')}</Label>
@@ -373,7 +410,6 @@ function CartDetailSide({
       ) : (
         <Box></Box>
       )}
-
       <Box
         sx={(theme) => ({
           position: 'absolute',
@@ -399,6 +435,7 @@ function CartDetailSide({
           {!collapsedSale ? <ArrowUp color='#111217' /> : <ArrowDown />}
         </Box>
         <OrderLite
+          serviceType={serviceType}
           collapsedSale={collapsedSale}
           setDmedOrganizedList={setDmedOrganizedList}
           liteOrder={liteOrder}

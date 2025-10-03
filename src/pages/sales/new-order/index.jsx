@@ -323,6 +323,7 @@ function NewSale() {
   const [quickCreateClientName, setQuickCreateClientName] = useState(null)
   const [inputDiscount, setInputDiscount] = useState(NaN)
   const [isOrderDrower, setIsOrderDrower] = useState(false)
+  const [serviceType, setServiceType] = useState('')
   const [isOpenRemoveMarkingDialog, setIsOpenRemoveMarkingDialog] = useState(false)
   const searchRef = useRef('')
   const searchResetRef = useRef('')
@@ -1191,6 +1192,8 @@ function NewSale() {
           </Box>
 
           <CartDetailSide
+            setServiceType={setServiceType}
+            serviceType={serviceType}
             setSendToEpos={setSendToEpos}
             sendToEpos={sendToEpos}
             setDmedOrganizedList={setDmedOrganizedList}
@@ -1312,6 +1315,7 @@ function NewSale() {
                 loading={isdeleteCartItem}
                 onClick={() => {
                   sendToRejectedProduct({
+                    rejected_times: get(openRejectConfirmDialog, 'count'),
                     product_id: get(openRejectConfirmDialog, 'id'),
                     store_id: get(userData, 'store.id'),
                     product_name: get(openRejectConfirmDialog, 'product_name'),
@@ -1325,6 +1329,7 @@ function NewSale() {
         />
       )}
       <OrderDrawer
+        serviceType={serviceType}
         setDmedOrganizedList={setDmedOrganizedList}
         dmedOrganizedList={dmedOrganizedList}
         cartItemsList={get(cartItemsList, 'data.data')}

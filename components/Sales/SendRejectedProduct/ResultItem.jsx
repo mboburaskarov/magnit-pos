@@ -3,7 +3,11 @@ import Highlighter from 'react-highlight-words'
 
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
+import { useEffect, useState } from 'react'
+import { useQueryParams } from '../../../src/hooks/useQueryParams'
 import CustomImg from '../../CustomImg'
+import OutLineTextFieldThousand from '../../Inputs/OutLineTextFieldThousand'
+
 const useStyles = makeStyles((theme) => ({
   currentUser: {
     // minWidth: '120px',
@@ -423,7 +427,12 @@ export default function ResultItem({
   product,
 }) {
   const classes = useStyles()
+  const [itemCount, setItemcount] = useState(1)
+  const { values } = useQueryParams()
 
+  useEffect(() => {
+    setItemcount(1)
+  }, [values?.search])
   return (
     // <Box className={classes.searchResult}>
     <Box
@@ -502,11 +511,26 @@ export default function ResultItem({
           </Box>
           {item?.quantity == 0 && (
             <Box flex='0 0 22%' display={'flex'} justifyContent={'end'} alignItems={'center'}>
+              <OutLineTextFieldThousand
+                setValue={(e) => setItemcount(e)}
+                value={itemCount}
+                type={'number'}
+                fullWidth
+                name='discount'
+                label={''}
+                uncontrolled
+                sx={{
+                  width: '80px',
+                  m: '0 10px',
+                }}
+                placeholder='Введите скидку'
+              />
               <Typography
                 onClick={(e) => {
                   e.stopPropagation() // Prevent click from reaching Box
                   setOpenRejectConfirmDialog({
                     id: product?.id,
+                    count: itemCount,
                   })
                 }}
                 sx={{

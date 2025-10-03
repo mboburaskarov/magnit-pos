@@ -2,11 +2,13 @@ import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
+import { error } from '../../../../utils/toast'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 
 export default function ProductHistory({ id }) {
@@ -141,10 +143,23 @@ export default function ProductHistory({ id }) {
   )
 
   const formattedData = productDataHistory?.data?.data?.data
+  const { mutate: getSingleProductMovementExcel, isLoading: isgetSingleProductMovementExcel } = useMutation(requests.getSingleProductMovementExcel, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.log(err)
 
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <Box mt={'16px'}>
       <AgGridTable
+        fullDownload={() => getSingleProductMovementExcel({ ...productHistoryFilter, id, limit: 1000000 })}
+        downloadByFilter={() => getSingleProductMovementExcel({ ...productHistoryFilter, id })}
+        isDownloading={isgetSingleProductMovementExcel}
+        //
         isDataLoading={isproductDataLoadingHistory || isFetchingproductDataHistory}
         offsetQuery='offsetHistory'
         limitQuery='limitHistory'

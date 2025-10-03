@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
 import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
@@ -19,6 +20,7 @@ import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
 import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
+import LeftArrowIcon from '../../../assets/icons/LeftArrow'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/salesTableColumns'
 import FilterMenu from './FilterMenu'
@@ -35,7 +37,7 @@ export default function AllSalesPage() {
   const { columns, loading } = useSelector((state) => state.salesTableColumns)
   const { values } = useQueryParams()
   const [orderModel, setOrderModel] = useState(false)
-
+  const navigate = useNavigate()
   const [regions, setRegions] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
@@ -43,6 +45,7 @@ export default function AllSalesPage() {
   const [hasFilter, setHasFilter] = useState(Object.keys(values).length > 2)
   const [openSaleDrawer, setOpenSaleDrawer] = useState(false)
   const [manualZreportData, setManualZreportData] = useState([])
+  const [isCustomersSales, setIsCustomersSales] = useState(false)
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
@@ -85,6 +88,7 @@ export default function AllSalesPage() {
     setControllerOffset(0)
   }, [values?.search])
   const salesListFilter = useMemo(() => {
+    setIsCustomersSales(values?.customer_id ? true : false)
     setHasFilter(Object.keys(values).length > 2)
     const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
     const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
@@ -109,12 +113,16 @@ export default function AllSalesPage() {
       cashbox_id: values?.cashbox_id,
       sale_type: values?.sale_type,
       type: values?.type,
+      refferal: values?.referral,
+
       total_amount_to: values?.total_amount_to,
       total_amount_from: values?.total_amount_from,
+      customer_id: values?.customer_id,
     }
   }, [
     controlleroffset,
     values?.limit,
+    values?.referral,
     values?.sale_type,
     values?.type,
     values?.from_time,
@@ -124,6 +132,7 @@ export default function AllSalesPage() {
     values?.producer,
     values?.employee_id,
     values?.cashbox_id,
+    values?.customer_id,
 
     values?.category_id,
     values?.vendor_id,
@@ -170,9 +179,39 @@ export default function AllSalesPage() {
 
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-          <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-            {t('sales')}
-          </Typography>
+          <Box
+            onClick={() =>
+              isCustomersSales &&
+              navigate(
+                `/reports/discount-card-report?start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`
+              )
+            }
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            {isCustomersSales && (
+              <Box
+                sx={{
+                  width: '48px',
+                  height: '48px',
+                  padding: '0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '50%',
+                  backgroundColor: 'bunker.100',
+                  '&:hover': {
+                    backgroundColor: 'gray.10',
+                  },
+                }}
+              >
+                <LeftArrowIcon />
+              </Box>
+            )}
+            <Typography ml={'20px'} variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+              {t('sales')} {values?.customer_name && `(${values?.customer_name})`}
+            </Typography>
+          </Box>
+
           <Button sx={{ height: '48px' }} onClick={() => setOrderModel(true)}>
             Распечатать отчет
           </Button>

@@ -72,7 +72,7 @@ export default function RejectedProducts({ id }) {
         ),
       },
       {
-        headerName: 'Количество',
+        headerName: 'Кол-во запросов',
         colId: 'count',
         minWidth: 185,
         maxWidth: 185,
@@ -80,6 +80,18 @@ export default function RejectedProducts({ id }) {
         cellRenderer: ({ data, rowIndex }) => (
           <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
             <Typography>{data?.count}</Typography>
+          </Box>
+        ),
+      },
+      {
+        headerName: 'Кол-во',
+        colId: 'rejected_times',
+        minWidth: 185,
+        maxWidth: 185,
+        width: 185,
+        cellRenderer: ({ data, rowIndex }) => (
+          <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{data?.rejected_times}</Typography>
           </Box>
         ),
       },

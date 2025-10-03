@@ -242,6 +242,8 @@ const MAX_F_BUTTONS_QUANTITY = 10
 
 export default function OrderDrawer({
   setIsOrderDrower,
+  serviceType,
+
   isOrderDrower,
   sendToEpos,
   dmedOrganizedList,
@@ -262,6 +264,8 @@ export default function OrderDrawer({
   setOpenDebt,
 }) {
   const methods = useForm()
+  console.log(methods.getValues('service-type'))
+
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
   const addEmptyStringMarkToMarkinglessProduct = (markings, shouldHaveMarkings) => {
     let newMarkingList = { ...markings }
@@ -588,11 +592,11 @@ export default function OrderDrawer({
       payment_types: paymentTypes,
       sale_id: id,
       store_id: get(userData, 'store.id'),
-      service_type: dmedPrescriptionsList?.length > 0 ? 'dmed' : undefined,
+      service_type: dmedPrescriptionsList?.length > 0 ? 'dmed' : serviceType == 'other' ? undefined : serviceType,
       customer_id: get(customerId, 'id'),
       total_amount: get(cartItemsList, 'total_amount'),
       marking_data: markingData,
-      tax_free: sendToEpos,
+      tax_free: !sendToEpos,
     })
 
     return
