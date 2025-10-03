@@ -73,6 +73,7 @@ export const requests = {
   //shelf
   getShelf: (filter) => request.get(`v1/shelf/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createShelf: (data) => request.post(`v1/shelf`, data),
+  getBonusProductSold: (filter) => request.post(`v1/product-bonus/sold${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //report seller bonus
   getSellerBonus: (filter, storeId) =>

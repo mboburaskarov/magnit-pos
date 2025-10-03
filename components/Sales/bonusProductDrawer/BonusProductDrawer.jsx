@@ -1,13 +1,9 @@
-import { Box, Button, Drawer, Typography } from '@mui/material'
+import { Box, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
-import FilterMenuIcon from '../../../src/assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../src/hooks/useQueryParams'
 import { requests } from '../../../utils/requests'
 import ListWithPagination from '../../AgGridTable/ListWithPagination'
@@ -37,7 +33,7 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
   const [draftfilter, setDraftFilter] = useState(false)
   const userData = useSelector((state) => state.user)
   const { values } = useQueryParams()
-  const [appType, setAppType] = useState('draft')
+  const [appType, setAppType] = useState('all')
   const [isOpenChild, setIsOpenChild] = useState(false)
   const [controlleroffset, setControllerOffset] = useState(0)
   useEffect(() => {
@@ -49,18 +45,8 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
   const draftsListFilter = useMemo(() => {
     return {
       search: values?.search || null,
-      store_id: get(userData, 'store.id'),
-      cash_box_id: get(cashBoxDetails, 'data.data.cash_box_id'),
-      customer_id: values?.customer_id,
-      draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : '',
     }
   }, [values?.customer_id, values?.draft_date, values?.search, controlleroffset])
-  const {
-    data: bonusProductList,
-    isLoading: bonusProductListLoading,
-    isFetching: isFetchingbonusProductList,
-    refetch,
-  } = useQuery(['bonusProductList', draftsListFilter], () => requests.getProductBonusList(draftsListFilter))
 
   const theme = useTheme()
   return (
@@ -69,7 +55,7 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
         <Box>
           <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
             <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
-              {t('draft')} / Отложки
+              Все / Мои бонусные продукты
             </Typography>
             <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
           </Box>
@@ -99,14 +85,14 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
               defaultValue={appType}
               onChange={(e) => setAppType(e)}
               options={[
-                { title: 'Черновики', value: 'draft' },
-                { title: 'Отложки', value: 'sale' },
+                { title: 'Все', value: 'all' },
+                { title: 'Мои', value: 'my' },
               ]}
             />
           </Box>
           <Box display={'flex'} py={'24px'} px={'40px'}>
             <InputSearch fullWidth uncontrolled placeholder={'Поиск: ID'} />
-            <Box minWidth={113} ml={'16px'}>
+            {/* <Box minWidth={113} ml={'16px'}>
               <Button
                 sx={{
                   height: '48px',
@@ -131,10 +117,10 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
                   {t('filter')}
                 </Typography>
               </Button>
-            </Box>
+            </Box> */}
           </Box>
           <Box py={'0px'} px={'40px'}>
-            {appType === 'draft' ? (
+            {appType === 'all' ? (
               <ListWithPagination
                 limit={10}
                 request={(filter) => requests.getProductBonusList(filter)}
@@ -158,9 +144,9 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
             ) : (
               <ListWithPagination
                 statePath='pendingSaleList'
-                request={(filter) => requests.getPendingSales(filter)}
+                request={(filter) => requests.getBonusProductSold(filter)}
                 renderItem={(item) => <PendingSaleParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}
-                customFilter={draftsListFilter}
+                customFilter={{ ...draftsListFilter, employee_id: userData?.id }}
               />
             )}
             {/* {draftListData.map((item, index) => {

@@ -21,6 +21,7 @@ import ArrowDown from '../../../assets/icons/ArrowDown'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import ArrowUp from '../../../assets/icons/ArrowUp'
 import FileIcon from '../../../assets/icons/FileIcon'
+import PrizeBoxIcon from '../../../assets/icons/PrizeBoxIcon'
 import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
 import TimesSmallIcon from '../../../assets/icons/TimesSmallIcon'
 import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
@@ -101,6 +102,9 @@ function CartDetailSide({
         '& .slider_box_wrapper': {
           width: '100%',
         },
+        '& .slider_box': {
+          width: '100%',
+        },
       }}
     >
       <Box display={'flex'} flexDirection={'column'}>
@@ -118,9 +122,18 @@ function CartDetailSide({
               <TimeAndDate color={theme.palette.black} />
             </StyledTooltip>
           </Box>
-          <Box onClick={() => setIsOpenBonusProductDrawer(true)} className={classes.cart_detail_icon}>
-            <StyledTooltip title={'Черновик / Отложки'}>
-              <TimeAndDate color={theme.palette.black} />
+          <Box
+            sx={{
+              '& svg': {
+                width: '20px',
+                height: '20px',
+              },
+            }}
+            onClick={() => setIsOpenBonusProductDrawer(true)}
+            className={classes.cart_detail_icon}
+          >
+            <StyledTooltip title={'Все / Мои бонусные продукты'}>
+              <PrizeBoxIcon color={theme.palette.black} />
             </StyledTooltip>
           </Box>
           <Box onClick={() => setIsOpenSendRejectedProduct(true)} className={classes.cart_detail_icon}>
@@ -530,7 +543,8 @@ function CartDetailSide({
                 mr: '4px',
                 p: '12px',
                 height: '48px',
-                width: '140px',
+                width: '100%',
+
                 '& svg': {
                   flexShrink: 0,
                 },
@@ -550,7 +564,7 @@ function CartDetailSide({
                 borderRadius: '16px',
                 ml: '4px',
                 p: '12px',
-                width: '140px',
+                width: '100%',
                 height: '48px',
                 '& svg > path': {
                   stroke: '#fff',

@@ -3,10 +3,8 @@ import { makeStyles } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import ArrowRightIcon from '../../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../../src/assets/icons/BagOutline'
 import thousandDivider from '../../../utils/thousandDivider'
-import CustomImg from '../../CustomImg'
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {
     backgroundColor: '#fff ',
@@ -36,9 +34,10 @@ const useStyles = makeStyles((theme) => ({
 function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
   const { t } = useTranslation()
   const classes = useStyles()
+  console.log(item)
+
   return (
     <Box
-      onClick={() => setIsOpenChild({ item, type: 'sale' })}
       display={'flex'}
       height={'84px'}
       borderRadius={'16px'}
@@ -52,36 +51,37 @@ function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
         },
       }}
     >
-      <Box display={'flex'}>
+      <Box display={'flex'} maxWidth={'calc(100% - 100px)'}>
         <Box className={classes.productsNumsWrapper}>
           <BagOutline />
           <Typography ml={'12px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-            {get(item, 'product_count')}
+            {get(item, 'quantity')}
           </Typography>
         </Box>
-        <Box>
-          <Typography mb={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
-            {t('Отложка')} #{get(item, 'sale_number')}
+        <Box maxWidth={'calc(100% - 10px)'}>
+          <Typography
+            mb={'4px'}
+            textOverflow={'ellipsis'}
+            maxWidth={'calc(100% - 100px)'}
+            whiteSpace={'nowrap'}
+            overflow={'hidden'}
+            fontSize={'14px'}
+            fontWeight={'600'}
+            lineHeight={'24px'}
+            color={'bunker.950'}
+          >
+            {get(item, 'product_name')}
           </Typography>
           <Typography fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'} color={'bunker.500'}>
             {dayjs(get(item, 'created_at')).format('DD.MM.YYYY | HH:mm:ss')}
           </Typography>
         </Box>
       </Box>
-      <Box display={'flex'}>
+      <Box display={'flex'} width={'100px'}>
         <Box mr={'16px'}>
-          <Box display={'flex'} mb={'4px'}>
-            <CustomImg className={classes.usrImg} src='/default-user-img.png' />
-            <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
-              {get(item, 'customer.first_name') == null ? 'Unknown' : get(item, 'customer.first_name')}
-            </Typography>
-          </Box>
           <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-            {thousandDivider(get(item, 'total_amount'), 'сум')}
+            {thousandDivider(get(item, 'bonus_amount'), 'сум')}
           </Typography>
-        </Box>
-        <Box className={classes.rightArrowIcon}>
-          <ArrowRightIcon />
         </Box>
       </Box>
     </Box>
