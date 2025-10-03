@@ -38,6 +38,7 @@ import CreateDraftDrawer from './createDraftDrawer'
 import ImplementMarkingDialog from './ImplementMarkingDialog'
 import ProductDrawer from './ProductDrawer'
 
+import BonusProductDrawer from '../../../../components/Sales/bonusProductDrawer/BonusProductDrawer'
 import SendRejectedProductDrawer from '../../../../components/Sales/SendRejectedProduct/SendRejectedProductDrawer'
 import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck'
 import OrganizeDmedOrder from './OrganizeDmedOrder'
@@ -107,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
   card_detail: {
-    width: '384px',
+    width: '450px',
     borderLeft: `1px solid ${theme.palette.bunker[100]}`,
     minHeight: '100vh',
     padding: '20px',
@@ -291,6 +292,7 @@ function NewSale() {
   const [isEposTurnOn, setisEposTurnOn] = useState(true)
 
   const [isOpenDraft, setIsOpenDraft] = useState(false)
+  const [isOpenBonusProductDrawer, setIsOpenBonusProductDrawer] = useState(false)
   const [isOpenNoorDrawer, setIsOpenNoorDrawer] = useState(false)
   const [isOpenReturnExchange, setIsOpenReturnExchange] = useState(false)
   const [isOpenSendRejectedProduct, setIsOpenSendRejectedProduct] = useState(false)
@@ -1192,6 +1194,7 @@ function NewSale() {
           </Box>
 
           <CartDetailSide
+            setIsOpenBonusProductDrawer={setIsOpenBonusProductDrawer}
             setServiceType={setServiceType}
             serviceType={serviceType}
             setSendToEpos={setSendToEpos}
@@ -1394,6 +1397,7 @@ function NewSale() {
       />
       <ChangeShift open={isOpenChangeShift} setOpen={setIsOpenChangeShift} />
       <DraftDrawer cashBoxDetails={cashBoxDetails} open={isOpenDraft} setOpen={setIsOpenDraft} />
+      <BonusProductDrawer cashBoxDetails={cashBoxDetails} open={isOpenBonusProductDrawer} setOpen={setIsOpenBonusProductDrawer} />
       <OnlineSaleDrawer cashBoxDetails={cashBoxDetails} open={isOpenNoorDrawer} setOpen={setIsOpenNoorDrawer} />
       <ReturnExchangeDrawer cashBoxDetails={cashBoxDetails} open={isOpenReturnExchange} setOpen={setIsOpenReturnExchange} />
       <SendRejectedProductDrawer

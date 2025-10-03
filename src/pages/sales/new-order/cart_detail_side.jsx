@@ -29,6 +29,7 @@ import OrderLite from './orderLite'
 
 function CartDetailSide({
   setServiceType,
+  setIsOpenBonusProductDrawer,
   serviceType,
   setSendToEpos,
   sendToEpos,
@@ -113,6 +114,11 @@ function CartDetailSide({
             </StyledTooltip>
           </Box>
           <Box onClick={() => setIsOpenDraft(true)} className={classes.cart_detail_icon}>
+            <StyledTooltip title={'Черновик / Отложки'}>
+              <TimeAndDate color={theme.palette.black} />
+            </StyledTooltip>
+          </Box>
+          <Box onClick={() => setIsOpenBonusProductDrawer(true)} className={classes.cart_detail_icon}>
             <StyledTooltip title={'Черновик / Отложки'}>
               <TimeAndDate color={theme.palette.black} />
             </StyledTooltip>

@@ -66,7 +66,9 @@ export default function DiscountCardReport({ id }) {
         minWidth: 60,
         width: 60,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
-          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+          console.log(rowIndex, p)
+
+          const absoluteIndex = Number(get(values, 'offsetHistory', 0)) + 1 + rowIndex
 
           return (
             <Typography fontWeight={'600'} fontSize={'16px'} textAlign={'start'} lineHeight={'24px'}>
@@ -213,6 +215,7 @@ export default function DiscountCardReport({ id }) {
             offsetQuery='offsetHistory'
             limitQuery='limitHistory'
             id='products-history-table'
+            fullInfoAboutCurrentPage
             totalCount={productDataHistory?.data?.data?._meta?.total_count || 0}
             columns={columns}
             updaterAction={() => {}}

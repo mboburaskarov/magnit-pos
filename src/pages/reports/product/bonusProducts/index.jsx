@@ -15,7 +15,6 @@ import ImageGallery from '../../../../../components/ImageGallery'
 import DateRangeInput from '../../../../../components/Inputs/DateRangeInput/DateRangeInput'
 import InputSearch from '../../../../../components/Inputs/InputSearch'
 import LoadingContainer from '../../../../../components/LoadingContainer'
-import MultiOptionSelectNew from '../../../../../components/Select/MultiOptionSelectNew'
 import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
 import { requests } from '../../../../../utils/requests'
 import { error, success } from '../../../../../utils/toast'
@@ -248,7 +247,7 @@ export default function BonusProductsPage() {
                   defaultFilterData={{ end_date: dayjs().endOf('month').format('YYYY-MM-DD'), start_date: dayjs().startOf('month').format('YYYY-MM-DD') }}
                 />
                 <Box width={'15px'} />
-                <MultiOptionSelectNew
+                {/* <MultiOptionSelectNew
                   zIndex={999}
                   placeholder={t('placeholders.select_shops')}
                   multiple
@@ -263,7 +262,7 @@ export default function BonusProductsPage() {
                     setSelectedShops(val)
                   }}
                   request={requests.getAllStores}
-                />
+                /> */}
                 <Box width={'15px'} />
               </Box>
             </Box>
