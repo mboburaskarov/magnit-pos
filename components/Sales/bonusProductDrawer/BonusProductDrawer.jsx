@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import FilterMenuIcon from '../../../src/assets/icons/FilterMenuIcon'
@@ -14,7 +15,7 @@ import InputSearch from '../../Inputs/InputSearch'
 import InputSwitch from '../../Inputs/InputSwitch'
 import DraftChildDrawer from './DraftChildDrawer'
 import DraftFilter from './DraftFilter'
-import DraftParentItemsBox from './DraftParentItemsBox'
+import ResultItem from './DraftParentItemsBox'
 import PendingSaleParentItemsBox from './PendingSaleParentItemsBox'
 
 const useStyles = makeStyles((theme) => ({
@@ -54,6 +55,12 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
       draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : '',
     }
   }, [values?.customer_id, values?.draft_date, values?.search, controlleroffset])
+  const {
+    data: bonusProductList,
+    isLoading: bonusProductListLoading,
+    isFetching: isFetchingbonusProductList,
+    refetch,
+  } = useQuery(['bonusProductList', draftsListFilter], () => requests.getProductBonusList(draftsListFilter))
 
   const theme = useTheme()
   return (
@@ -129,8 +136,23 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
           <Box py={'0px'} px={'40px'}>
             {appType === 'draft' ? (
               <ListWithPagination
-                request={(filter) => requests.getDarftList(filter)}
-                renderItem={(item) => <DraftParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}
+                limit={10}
+                request={(filter) => requests.getProductBonusList(filter)}
+                renderItem={(item) => (
+                  <ResultItem
+                    isChild={false}
+                    discount={0}
+                    index={item?.id}
+                    // setOpenRejectConfirmDialog={setOpenRejectConfirmDialog}
+                    handleAddProduct={(handleAddProduct) => {}}
+                    setSearchTerm={values?.search}
+                    item={item}
+                    // itemRef={(el) => (searchItemRef.current[index] = el)}
+                    product={item?.product}
+                    searchTerm={'searchTearm'}
+                    classes={classes}
+                  />
+                )}
                 customFilter={draftsListFilter}
               />
             ) : (

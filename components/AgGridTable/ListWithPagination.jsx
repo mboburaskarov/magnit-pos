@@ -4,7 +4,7 @@ import { useQuery } from 'react-query'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
 import Pagination from './Pagination'
 
-function ListWithPagination({ request, renderItem, statePath = 'productsList', customFilter }) {
+function ListWithPagination({ request, limit = 5, renderItem, statePath = 'productsList', customFilter }) {
   const { values } = useQueryParams()
 
   const [page, setPage] = useState(0)
@@ -14,7 +14,7 @@ function ListWithPagination({ request, renderItem, statePath = 'productsList', c
 
   const dataFilter = useMemo(() => {
     return {
-      limit: 5,
+      limit: limit,
       offset: page > 0 ? page * 5 - 5 : 0,
     }
   }, [values?.offset, page])
@@ -27,7 +27,7 @@ function ListWithPagination({ request, renderItem, statePath = 'productsList', c
   } = useQuery([statePath, dataFilter, customFilter], () => request({ ...dataFilter, ...customFilter }))
   return (
     <Box>
-      <Box>{datList?.data?.data?.data.map((item) => renderItem(item))}</Box>
+      <Box sx={{ padding: '0 0 10px 0', borderRadius: '10px', overflow: 'hidden' }}>{datList?.data?.data?.data.map((item) => renderItem(item))}</Box>
       <Box display={'flex'} justifyContent={'end'}>
         <Pagination count={Math.ceil(datList?.data?.data?._meta?.total_count / 5)} handleChangeOffset={handleChange} page={page + 1} pageQuery='page' />
       </Box>

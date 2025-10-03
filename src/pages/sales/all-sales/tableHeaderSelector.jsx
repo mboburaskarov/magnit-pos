@@ -46,7 +46,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
           <Box
             sx={{
               whiteSpace: 'pre-line',
-              '& p': { color: p?.data?.service_type == 'tax_free' ? 'green.500' : p?.data?.fiscal_sign?.length == 0 ? 'yellow.500' : 'orange.500' },
+              '& p': { color: p?.data?.tax_free ? 'green.500' : p?.data?.fiscal_sign?.length == 0 ? 'yellow.500' : 'orange.500' },
               cursor: 'pointer',
             }}
             onClick={() => setOpenSaleDrawer({ id: p.data?.id })}
