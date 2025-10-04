@@ -14,6 +14,7 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
   const methods = useForm()
   const { reset, control, getValues, watch } = methods
   const [hideProduct, setHideProduct] = useState(false)
+  const [hideProducer, setHideProducer] = useState(false)
   const { mutate: createBannedProduct, isLoading: iscreateBannedProduct } = useMutation(requests.createBannedProduct, {
     onSuccess: () => {
       setOpen(false)
@@ -28,6 +29,9 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
   useEffect(() => {
     setHideProduct(getValues('producer')?.name)
   }, [watch('producer')])
+  useEffect(() => {
+    setHideProducer(getValues('product')?.[0]?.name)
+  }, [watch('product')])
   const onSubmit = (data) => {
     const requestBody = {
       producer_id: data.producer.value,
@@ -73,25 +77,27 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <LazySelect
-              boxStyle={{ width: '100%' }}
-              slug='producer'
-              id='producer'
-              name='producer'
-              isMulti={false}
-              required
-              label={t('Производитель')}
-              placeholder={t('Выберите Производитель')}
-              minWidth='auto'
-              isClearable={true}
-              request={requests.getProducer}
-              filters={{ limit: 10 }}
-              control={control}
-              getOptionLabel={(option) => {
-                return option.name
-              }}
-              filterOption={() => true}
-            />
+            {!hideProducer && (
+              <LazySelect
+                boxStyle={{ width: '100%' }}
+                slug='producer'
+                id='producer'
+                name='producer'
+                isMulti={false}
+                required
+                label={t('Производитель')}
+                placeholder={t('Выберите Производитель')}
+                minWidth='auto'
+                isClearable={true}
+                request={requests.getProducer}
+                filters={{ limit: 10 }}
+                control={control}
+                getOptionLabel={(option) => {
+                  return option.name
+                }}
+                filterOption={() => true}
+              />
+            )}
             {!hideProduct && (
               <LazySelect
                 boxStyle={{ width: '100%' }}
