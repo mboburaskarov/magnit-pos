@@ -66,7 +66,7 @@ export default function CrreatePaymentAssetBody({ isOpen }) {
             options={[
               { title: 'Payme', value: 'payme' },
               { title: 'Click', value: 'click' },
-              // { title: 'Alif', value: 'alif' },
+              { title: 'Alif', value: 'alif' },
             ]}
           />
         </Box>
@@ -107,6 +107,24 @@ export default function CrreatePaymentAssetBody({ isOpen }) {
                 <TextField required fullWidth name='service_id' label='Service ID' placeholder='Введите ID' />
                 <TextField required fullWidth name='secret_key' label='Secret Key' placeholder='Введите ID' />
                 <TextField required fullWidth name='merchant_user_id' label='Merchant User ID' placeholder='Введите ID' />
+                {/* <TextField
+                  required
+                  multiline
+                  fullWidth
+                  name='description'
+                  label='Описание'
+                  borderRadius={'20px'}
+                  placeholder='Введите Описание'
+                  sx={{ mb: 2 }}
+                /> */}
+              </Box>
+              <Box height={'20px'} />
+            </>
+          ) : type_action === 'alif' ? (
+            <>
+              <Box display={'flex'} flexDirection={'column'} gap={2}>
+                <TextField required fullWidth name='merchant_id' label='Тoken' placeholder='Введите token' />
+                <TextField required fullWidth name='metchant_key' label='Secret Key' placeholder='Введите key' />
                 {/* <TextField
                   required
                   multiline

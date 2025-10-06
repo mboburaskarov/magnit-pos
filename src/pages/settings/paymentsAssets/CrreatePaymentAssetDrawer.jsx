@@ -48,6 +48,7 @@ export default function CrreatePaymentAsset({ isOpen, onClose, categoriesRefetch
           cashbox_id: get(data, 'merchant_id'),
           secret_key: get(data, 'metchant_key'),
         }),
+
         ...(get(data, 'type_action') === 'click' && {
           service_id: Number(get(data, 'service_id')),
           secret_key: get(data, 'secret_key'),
