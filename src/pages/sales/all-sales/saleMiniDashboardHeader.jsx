@@ -115,11 +115,11 @@ function SaleMiniDashboardHeader({ saleStatsData }) {
                 fontWeight: '700',
               }}
             >
-              {thousandDivider(get(saleStatsData, 'total_returnals_sum'), 'сум')}
+              {thousandDivider(get(saleStatsData, 'total_discount_amount'), 'сум')}
             </Typography>
           </Box>
         )}
-        {get(saleStatsData, 'total_returnals_sum') > 0 && (
+        {get(saleStatsData, 'total_discount_amount') > 0 && (
           <Box
             sx={{
               flexShrink: 0,
