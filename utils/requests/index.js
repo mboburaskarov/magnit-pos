@@ -24,7 +24,8 @@ export const requests = {
   //dashboard
 
   dashboradChart: ({ store_ids, ...filter }) => request.post(`v1/dashboard/chart${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
-  dashboradCountStats: ({ store_ids, ...filter }) => request.post(`v1/dashboard/count-stats${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  dashboradCountStats: ({ store_ids, company_ids, ...filter }) =>
+    request.post(`v1/dashboard/count-stats${qs.stringify(filter, { addQueryPrefix: true })}`, { company_ids, store_ids }),
   dashboradTopStores: ({ store_ids, ...filter }) => request.post(`v1/dashboard/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   dashboradPayments: ({ store_ids, ...filter }) => request.post(`v1/dashboard/payments${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   dashboradTransaction: ({ store_ids, ...filter }) => request.post(`v1/dashboard/transaction${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
