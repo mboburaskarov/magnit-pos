@@ -35,8 +35,15 @@ export default function CrreatePaymentAssetBody({ isOpen }) {
         actions?.data?.data?.filter((e) => e.id == get(onePermission, 'data.data.parent_id')).flatMap((item) => ({ name: item?.name, value: item?.id }))[0]
       )
       if (get(onePermission, 'data.data.type') == 'payme') {
+        setValue('payment_type_id', { name: get(onePermission, 'data.data.name'), value: get(onePermission, 'data.data.payment_type_id') })
+        setValue('store_id', { name: get(onePermission, 'data.data.store.name'), value: get(onePermission, 'data.data.store.id') })
         setValue('merchant_id', get(onePermission, 'data.data.cashbox_id'))
-        setValue('metchant_key', get(onePermission, 'data.data.secret_key'))
+        setValue('merchant_key', get(onePermission, 'data.data.secret_key'))
+      } else if (get(onePermission, 'data.data.type') == 'alif') {
+        setValue('payment_type_id', { name: get(onePermission, 'data.data.name'), value: get(onePermission, 'data.data.payment_type_id') })
+        setValue('store_id', { name: get(onePermission, 'data.data.store.name'), value: get(onePermission, 'data.data.store.id') })
+        setValue('merchant_id', get(onePermission, 'data.data.cashbox_id'))
+        setValue('merchant_key', get(onePermission, 'data.data.secret_key'))
       } else {
         setValue('merchant_id', get(onePermission, 'data.data.merchant_id'))
         setValue('merchant_user_id', get(onePermission, 'data.data.merchant_user_id'))
@@ -66,7 +73,7 @@ export default function CrreatePaymentAssetBody({ isOpen }) {
             options={[
               { title: 'Payme', value: 'payme' },
               { title: 'Click', value: 'click' },
-              // { title: 'Alif', value: 'alif' },
+              { title: 'Alif', value: 'alif' },
             ]}
           />
         </Box>
@@ -120,11 +127,29 @@ export default function CrreatePaymentAssetBody({ isOpen }) {
               </Box>
               <Box height={'20px'} />
             </>
+          ) : type_action === 'alif' ? (
+            <>
+              <Box display={'flex'} flexDirection={'column'} gap={2}>
+                <TextField required fullWidth name='merchant_id' label='Тoken' placeholder='Введите token' />
+                <TextField required fullWidth name='merchant_key' label='Secret Key' placeholder='Введите key' />
+                {/* <TextField
+                  required
+                  multiline
+                  fullWidth
+                  name='description'
+                  label='Описание'
+                  borderRadius={'20px'}
+                  placeholder='Введите Описание'
+                  sx={{ mb: 2 }}
+                /> */}
+              </Box>
+              <Box height={'20px'} />
+            </>
           ) : (
             <>
               <Box display={'flex'} flexDirection={'column'} gap={2}>
                 <TextField required fullWidth name='merchant_id' label='Metchant ID' placeholder='Введите ID' />
-                <TextField required fullWidth name='metchant_key' label='Metchant Key' placeholder='Введите ID' />
+                <TextField required fullWidth name='merchant_key' label='Metchant Key' placeholder='Введите ID' />
                 {/* <TextField required multiline fullWidth name='description' label='Описание' borderRadius={'20px'} placeholder='Введите Описание' /> */}
               </Box>
               <Box height={'20px'} />
