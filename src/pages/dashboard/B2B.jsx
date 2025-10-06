@@ -148,6 +148,7 @@ export default function DashboarB2BPage() {
     return {
       limit: values?.limit || 15,
       search: values?.search,
+      is_franchise: true,
       start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
       end_date:
         values?.end_date && values?.to_time
