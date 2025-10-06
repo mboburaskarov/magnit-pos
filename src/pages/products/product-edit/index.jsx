@@ -17,10 +17,11 @@ export default function ProductEditPage() {
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
 
-  const { data: productData, isLoading: productDataLoading } = useQuery(['productData', id], () => requests.getSingleProduct(id), { enabled: !!id })
+  const { data: productData, isLoading: productDataLoading } = useQuery(['productData', id], () => requests.getSingleProduct({ id }), { enabled: !!id })
 
   const { mutate: updateProduct, isLoading: isUpdatingProduct } = useMutation(requests.updateProduct, {
     onSuccess: () => {
+      methods.reset({})
       navigate('/products/all')
       success('Продукт успешно изменен!')
     },

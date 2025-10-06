@@ -6,6 +6,7 @@ import { get } from 'lodash'
 import { useEffect, useState } from 'react'
 import PrizeBoxIcon from '../../../src/assets/icons/PrizeBoxIcon'
 import { useQueryParams } from '../../../src/hooks/useQueryParams'
+import thousandDivider from '../../../utils/thousandDivider'
 import CustomImg from '../../CustomImg'
 
 const useStyles = makeStyles((theme) => ({
@@ -517,7 +518,7 @@ export default function ResultItem({
             >
               <PrizeBoxIcon />
               <Typography ml='4px' color={'white'} fontSize={'10px'} fontWeight={'600'}>
-                {item.bonus_amount}сум
+                {thousandDivider(item.bonus_amount, 'сум')}
               </Typography>
             </Box>
           )}

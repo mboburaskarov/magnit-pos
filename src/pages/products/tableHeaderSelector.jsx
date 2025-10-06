@@ -1,4 +1,4 @@
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
+import { ArrowDownward, ArrowUpward, Report } from '@mui/icons-material'
 import AccountTreeIcon from '@mui/icons-material/AccountTree'
 import { Box, IconButton, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
@@ -26,17 +26,29 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-const Image = ({ data, rowIndex, setImages }) => {
+const Image = ({ data, rowIndex, setImages, setOpenErrorReason }) => {
   return (
     <Box
+      onClick={() => setImages({ data: data?.photos })}
       sx={{
         position: 'relative',
         width: '40px',
         height: '40px',
         borderRadius: 2,
+        '& .hover-option': {
+          display: 'none',
+          background: '#fe5000',
+          padding: ' 5px 10px',
+          position: 'absolute',
+          borderRadius: '10px',
+          zIndex: 99999999,
+        },
         '&:hover': {
           '#overlay_image': {
             opacity: 0.5,
+          },
+          '& .hover-option': {
+            display: 'flex',
           },
         },
         img: {
@@ -52,6 +64,17 @@ const Image = ({ data, rowIndex, setImages }) => {
       ) : (
         <img src='/no-img.png' />
       )}
+      {/* <Box
+        className='hover-option'
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          setOpenErrorReason(data)
+        }}
+      >
+        <Report color='#fff' />
+        <Typography color={'#fff'}> Ошибка</Typography>
+      </Box> */}
     </Box>
   )
 }
@@ -131,6 +154,7 @@ export default function tableHeaderSelector({
   setOrderStoring,
   orderStoring,
   setMarkingRequired,
+  setOpenErrorReason,
   setOpenConfirmDialog,
   setOpenProductDrawer,
   changeBarcode,
@@ -150,7 +174,7 @@ export default function tableHeaderSelector({
         headerName: t('table_columns.photo'),
         colId: el.field,
         suppressCellFlash: true,
-        cellRenderer: memo((p) => <Image {...p} setImages={setImages} />),
+        cellRenderer: memo((p) => <Image setOpenErrorReason={setOpenErrorReason} {...p} setImages={setImages} />),
       }
     }
     if (el.field === 'name') {
@@ -450,6 +474,11 @@ export default function tableHeaderSelector({
             <CheckAccess id={'delete-product'}>
               <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                 <DeleteIcon />
+              </IconButton>
+            </CheckAccess>
+            <CheckAccess id={'can-alert-error'}>
+              <IconButton onClick={() => setOpenErrorReason(data)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <Report color='#fe5000' sx={{ fill: '#fe5000 !important' }} />
               </IconButton>
             </CheckAccess>
           </Box>

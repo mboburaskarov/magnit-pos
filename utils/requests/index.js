@@ -323,6 +323,9 @@ export const requests = {
   updateProduct: ({ id, data }) => request.put(`v1/product/${id}`, data),
   updateUnitPerPack: (data) => request.put(`v1/product/update-packaging`, data),
   deleteProduct: (id) => request.delete(`v1/product/soft-delete`, id),
+  //photo alert
+  photoAlert: (data) => request.post(`v1/product/photo-alert`, data),
+  getProductErrors: (filter) => request.post(`v1/product/photo-alert/list${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //banned products
   getProductBannedList: (filter) => request.get(`v1/product/excluded-list${qs.stringify(filter, { addQueryPrefix: true })}`),

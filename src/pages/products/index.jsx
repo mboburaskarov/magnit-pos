@@ -1,8 +1,7 @@
-import { Block } from '@mui/icons-material'
+import { Block, Report } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -38,6 +37,7 @@ import ChangeUnitPerPack from './changeUnitPerPack'
 import FilterMenu from './FilterMenu'
 import ProductDrawer from './product-edit/ProductDrawer'
 import ProductDashboard from './productDashboard'
+import SendToErrorWithReason from './sendToErrorWithReason'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function ProductsPage() {
@@ -58,6 +58,7 @@ export default function ProductsPage() {
   const [controlleroffset, setControllerOffset] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [openPerPack, setOpenPerPack] = useState(false)
+  const [openErrorReason, setOpenErrorReason] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
@@ -94,6 +95,7 @@ export default function ProductsPage() {
     setOpenConfirmDialog,
     setOrderStoring,
     orderStoring,
+    setOpenErrorReason,
   })
   const routeString = []
 
@@ -144,8 +146,8 @@ export default function ProductsPage() {
       retail_price_from: values?.retail_price_from,
       no_barcode: values?.no_barcode == '1' ? true : false,
       isExpress: values?.isExpress,
-      start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
-      end_date: values?.start_date == values?.end_date ? null : values?.end_date,
+      // start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
+      // end_date: values?.start_date == values?.end_date ? null : values?.end_date,
       ...(appType !== 'ALL' && { status: appType }),
     }
   }, [
@@ -400,6 +402,28 @@ export default function ProductsPage() {
                   <PrizeBoxIcon color='#FF6018' />
                 </Box>
               </StyledTooltip>
+              <StyledTooltip title={'Ошибки'}>
+                <Box
+                  onClick={() => navigate('/products/errors')}
+                  sx={{
+                    ml: '10px',
+                    backgroundColor: 'bg.10',
+                    padding: '10px',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    width: '38px',
+                    height: '38px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    '& svg': {
+                      width: '18px',
+                      height: '18px',
+                    },
+                  }}
+                >
+                  <Report color='#FF6018' />
+                </Box>
+              </StyledTooltip>
             </Box>
           </Box>
           <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -506,6 +530,7 @@ export default function ProductsPage() {
         </Box>
         <ProductDrawer open={openProductDrawer} setImages={setOpenImageGallery} onClose={setOpenProductDrawer} />
         <ChangeUnitPerPack open={openPerPack} setOpen={setOpenPerPack} />
+        <SendToErrorWithReason open={openErrorReason} setOpen={setOpenErrorReason} />
         <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
         {openConfirmDialog && (
           <ConfirmDialog

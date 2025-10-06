@@ -113,7 +113,7 @@ export default function AllSalesPage() {
       cashbox_id: values?.cashbox_id,
       sale_type: values?.sale_type,
       type: values?.type,
-      refferal: values?.referral,
+      referral: values?.referral,
 
       total_amount_to: values?.total_amount_to,
       total_amount_from: values?.total_amount_from,

@@ -5,6 +5,7 @@ import ChangePricePage from '../../pages/products/changePrice-all/changePrice'
 import ProductsPageByImport from '../../pages/products/changeProductByImport'
 import ImportPage from '../../pages/products/import-all/importList'
 import InventoryPage from '../../pages/products/inventory-all/inventoryList'
+import ProductErrorsPage from '../../pages/products/productError'
 import RejectedProducts from '../../pages/products/rejectedProducts/RejectedProducts'
 import ReturnToWarehousePage from '../../pages/products/returnToWarehouse-all/returnToWarehouseList'
 import TransferPage from '../../pages/products/transfer-all/transferList'
@@ -38,6 +39,10 @@ const productsRoutes = {
     {
       path: 'revaluation',
       element: <ChangePricePage />,
+    },
+    {
+      path: 'errors',
+      element: <ProductErrorsPage />,
     },
 
     {

@@ -31,6 +31,7 @@ export default function ProductBody({ productData = null }) {
   const { values } = useQueryParams()
   const [storeSearchText, setStoreSearchText, debouncedValue] = useDebouncedValue(values?.search || '', 200)
   const [offsetCount, setOffsetCount] = useState(0)
+  const [canChangeFullData, setCanChangeFullData] = useState(false)
 
   const { t } = useTranslation()
   const [images, setImages] = useState([])
@@ -137,7 +138,14 @@ export default function ProductBody({ productData = null }) {
       error('Ошибка при генерировать штрих-код!')
     },
   })
-
+  useEffect(() => {
+    const { mode } = values
+    if (mode == 'full') {
+      setCanChangeFullData(true)
+    } else {
+      setCanChangeFullData(false)
+    }
+  }, [values])
   useEffect(() => {
     refetchShopList().then(({ data }) => {
       get(data, 'data.data.data', []).map((store) => {
@@ -178,6 +186,8 @@ export default function ProductBody({ productData = null }) {
   const { data: unitsList, refetch: refetchUnitList } = useQuery('unitsList', () => requests.getAllUnits({ limit: 20, offset: 0 }))
 
   useEffect(() => {
+    console.log(productData)
+
     if (productData) {
       setValue('name', productData?.name)
       setImages(productData?.photos?.map((item) => ({ file_name: item, file_url: item })))
@@ -237,161 +247,164 @@ export default function ProductBody({ productData = null }) {
         {t('create_new_product.main_section.label')}
       </SectionTitle>
       <Box mt={'24px'}>
-        <TextField
-          required
-          fullWidth
-          borderRadius={'40px'}
-          name='name'
-          label={t('create_new_product.product_name')}
-          placeholder={t('create_new_product.product_name.placeholder')}
-          sx={{ mb: 3 }}
-        />
-
+        {canChangeFullData && (
+          <TextField
+            required
+            fullWidth
+            borderRadius={'40px'}
+            name='name'
+            label={t('create_new_product.product_name')}
+            placeholder={t('create_new_product.product_name.placeholder')}
+            sx={{ mb: 3 }}
+          />
+        )}
         <Box mt={'24px'}>
           <Label>{t('create_new_product.products_set_section.image')}</Label>
           <UploadImage id='images' name='images' images={images} onChange={(imagesArr) => setValue('images', imagesArr)} />
         </Box>
         <Box height={'56px'} />
-        <SectionTitle noWrap withLine>
-          {t('create_new_product.features.label')}
-        </SectionTitle>
+        {canChangeFullData && (
+          <>
+            <SectionTitle noWrap withLine>
+              {t('create_new_product.features.label')}
+            </SectionTitle>
+            <Box height={'24px'} />
+            <Box display={'flex'} width={'100%'} mt={'24px'}>
+              <LazySelect
+                isCreatable={true}
+                slug='manufacturer'
+                boxStyle={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
+                id='manufacturer'
+                name='manufacturer'
+                isMulti={false}
+                label={t('create_new_product.features.manufacturer')}
+                placeholder={t('create_new_product.features.manufacturer.placeholder')}
+                minWidth='auto'
+                isClearable={true}
+                request={requests.getProducer}
+                filters={{ limit: 10 }}
+                createOptionRequest={requests.createProducer}
+                getOptionLabel={(option) => {
+                  return option.name
+                }}
+              />
 
-        <Box height={'24px'} />
-        <Box display={'flex'} width={'100%'} mt={'24px'}>
-          <LazySelect
-            isCreatable={true}
-            slug='manufacturer'
-            boxStyle={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
-            id='manufacturer'
-            name='manufacturer'
-            isMulti={false}
-            label={t('create_new_product.features.manufacturer')}
-            placeholder={t('create_new_product.features.manufacturer.placeholder')}
-            minWidth='auto'
-            isClearable={true}
-            request={requests.getProducer}
-            filters={{ limit: 10 }}
-            createOptionRequest={requests.createProducer}
-            getOptionLabel={(option) => {
-              return option.name
-            }}
-          />
-
-          {uniType === 'pack' && (
-            <>
+              {uniType === 'pack' && (
+                <>
+                  <Box width={'20px'} />
+                  <Box
+                    sx={{
+                      '& .MuiFormControl-root': {
+                        marginTop: '4px !important',
+                      },
+                    }}
+                  >
+                    <InputQuantity
+                      label={'Количество зерен'}
+                      id={`box_grain_count`}
+                      name={`box_grain_count`}
+                      fullWidth
+                      onFocus={({ target }) => {
+                        if (Number(get(target, 'value')) == 0) {
+                          setValue(`box_grain_count`, '')
+                          return
+                        }
+                      }}
+                      onBlur={(e) => {
+                        if (Number(get(e, 'target.value')) == '') {
+                          setValue(`box_grain_count`, '0')
+                          return
+                        }
+                      }}
+                      required
+                      type='number'
+                      defaultValue={0}
+                      disabled={false}
+                    />
+                  </Box>
+                </>
+              )}
               <Box width={'20px'} />
               <Box
                 sx={{
-                  '& .MuiFormControl-root': {
+                  '& .select': {
                     marginTop: '4px !important',
                   },
                 }}
               >
-                <InputQuantity
-                  label={'Количество зерен'}
-                  id={`box_grain_count`}
-                  name={`box_grain_count`}
-                  fullWidth
-                  onFocus={({ target }) => {
-                    if (Number(get(target, 'value')) == 0) {
-                      setValue(`box_grain_count`, '')
-                      return
-                    }
-                  }}
-                  onBlur={(e) => {
-                    if (Number(get(e, 'target.value')) == '') {
-                      setValue(`box_grain_count`, '0')
-                      return
-                    }
-                  }}
+                <SelectSimple
                   required
-                  type='number'
-                  defaultValue={0}
-                  disabled={false}
+                  white
+                  isClearable={false}
+                  label={'Единица измерения'}
+                  placeholder='Выберите единицу измерения'
+                  name={'product_unit'}
+                  options={get(unitsList, 'data.data', []).map((el) => ({ value: el.codename, name: el.unit_name, id: el.id }))}
                 />
               </Box>
-            </>
-          )}
-          <Box width={'20px'} />
-          <Box
-            sx={{
-              '& .select': {
-                marginTop: '4px !important',
-              },
-            }}
-          >
-            <SelectSimple
-              required
-              white
-              isClearable={false}
-              label={'Единица измерения'}
-              placeholder='Выберите единицу измерения'
-              name={'product_unit'}
-              options={get(unitsList, 'data.data', []).map((el) => ({ value: el.codename, name: el.unit_name, id: el.id }))}
-            />
-          </Box>
-        </Box>
-        <Box display={'flex'} width={'100%'} mt={'24px'}>
-          <Box width={'20px'} />
-          <LazySelect
-            isCreatable={true}
-            slug='shelf_id'
-            boxStyle={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
-            id='shelf_id'
-            name='shelf_id'
-            isMulti={false}
-            label={'Полка'}
-            placeholder={'A4'}
-            minWidth='auto'
-            isClearable={true}
-            request={requests.getShelf}
-            filters={{ limit: 10 }}
-            createOptionRequest={requests.createShelf}
-            getOptionLabel={(option) => {
-              return option.name
-            }}
-          />
-          <Box width={'20px'} />
+            </Box>
+            <Box display={'flex'} width={'100%'} mt={'24px'}>
+              <Box width={'20px'} />
+              <LazySelect
+                isCreatable={true}
+                slug='shelf_id'
+                boxStyle={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
+                id='shelf_id'
+                name='shelf_id'
+                isMulti={false}
+                label={'Полка'}
+                placeholder={'A4'}
+                minWidth='auto'
+                isClearable={true}
+                request={requests.getShelf}
+                filters={{ limit: 10 }}
+                createOptionRequest={requests.createShelf}
+                getOptionLabel={(option) => {
+                  return option.name
+                }}
+              />
+              <Box width={'20px'} />
 
-          <TextField
-            required
-            InputProps={{
-              endAdornment: (
-                <Button
-                  sx={{
-                    background: 'red',
-                    'margin-right': '4px',
-                    height: '35px',
-                    backgroundColor: 'orange.500',
-                    color: 'white',
-                    '&:hover': {
-                      backgroundColor: 'orange.400',
-                    },
-                  }}
-                  onClick={() => generateBarcode()}
-                  id={'buttonId'}
-                  variant='text'
-                >
-                  {'Создать'}
-                </Button>
-              ),
-            }}
-            fullWidth
-            borderRadius={'40px'}
-            name='barcode'
-            label={t('create_new_product.main_section.barcode')}
-            placeholder={t('create_new_product.main_section.enter_barcode')}
-            sx={{ mb: 3 }}
-          />
-        </Box>
-
-        <Box height={'56px'} />
-        <SectionTitle noWrap withLine>
-          {t('create_new_product.additional_information.category')}
-        </SectionTitle>
-        <CategoriesTree />
-        <Box height={'30px'} />
-        <TextField borderRadius={'20px'} required multiline fullWidth name='description' label='Описание' placeholder='Введите описание' />
+              <TextField
+                required
+                InputProps={{
+                  endAdornment: (
+                    <Button
+                      sx={{
+                        background: 'red',
+                        'margin-right': '4px',
+                        height: '35px',
+                        backgroundColor: 'orange.500',
+                        color: 'white',
+                        '&:hover': {
+                          backgroundColor: 'orange.400',
+                        },
+                      }}
+                      onClick={() => generateBarcode()}
+                      id={'buttonId'}
+                      variant='text'
+                    >
+                      {'Создать'}
+                    </Button>
+                  ),
+                }}
+                fullWidth
+                borderRadius={'40px'}
+                name='barcode'
+                label={t('create_new_product.main_section.barcode')}
+                placeholder={t('create_new_product.main_section.enter_barcode')}
+                sx={{ mb: 3 }}
+              />
+            </Box>
+            <Box height={'56px'} />
+            <SectionTitle noWrap withLine>
+              {t('create_new_product.additional_information.category')}
+            </SectionTitle>
+            <CategoriesTree />
+            <Box height={'30px'} />
+            <TextField borderRadius={'20px'} required multiline fullWidth name='description' label='Описание' placeholder='Введите описание' />
+          </>
+        )}
       </Box>
     </Box>
   )

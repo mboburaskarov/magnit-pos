@@ -1,6 +1,6 @@
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
@@ -187,6 +187,8 @@ const useStyles = makeStyles((theme) => ({
 export default function UploadImage({ id, images, onChange, showGuideList = true }) {
   const { t } = useTranslation()
   const classes = useStyles()
+  console.log(images)
+
   const [uploadedImages, setUploadedImages] = useState(images || [])
 
   const [editingImage, setEditingImage] = useState(null)
@@ -301,11 +303,15 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
     if (uploadedImages.length === 0 && !!images?.length) {
       setUploadedImages(images)
     }
+    if (uploadedImages.length !== images?.length) {
+      setUploadedImages(images)
+    }
   }, [images])
 
   useDidUpdate(() => {
     onChange(uploadedImages)
   }, [uploadedImages])
+  console.log(uploadedImages)
 
   return (
     <div className={classes.root}>

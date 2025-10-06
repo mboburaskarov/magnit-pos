@@ -7,6 +7,7 @@ import BonusProductsPage from '../../pages/reports/product/bonusProducts'
 import LFLReport from '../../pages/reports/product/lfl'
 import ProductQtyByDateReportPage from '../../pages/reports/product/productQtyByDateReport'
 import ProductReportPage from '../../pages/reports/product/productReport'
+import RemainingStockPage from '../../pages/reports/product/remainingStock/remainingStock'
 import TopProductsPage from '../../pages/reports/product/topProducts'
 import SellerBonus from '../../pages/reports/vendor/sellerBonus'
 import TopVendorsPage from '../../pages/reports/vendor/topVendor'
@@ -28,7 +29,10 @@ const reportsInsideRoutes = {
       path: 'product-report',
       children: [{ path: '', element: <ProductReportPage /> }],
     },
-
+    {
+      path: 'remaning-stock',
+      element: <RemainingStockPage />,
+    },
     {
       path: 'top-products',
       element: <TopProductsPage />,
