@@ -306,6 +306,16 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
                   {get(saleDetailsList, 'data.data.customer.first_name', 'Unknown')} {get(saleDetailsList, 'data.data.customer.last_name', '')}
                 </Typography>
               </Box>
+              {get(saleDetailsList, 'data.data.referral', 'Unknown').length && (
+                <Box width={'50%'} mt={'16px'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
+                  <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                    Направление
+                  </Typography>
+                  <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                    {get(saleDetailsList, 'data.data.referral', 'Unknown')}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </Box>
         </Box>

@@ -130,7 +130,8 @@ export default function tableHeaderSelector({ importsColumns, values, t, updateB
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            {!p?.data?.barcode ? (
+            {true ? (
+              // {!p?.data?.barcode ? (
               <NumberFormatInput
                 uncontrolled
                 onBlur={({ target }) => {

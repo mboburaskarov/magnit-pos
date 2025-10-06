@@ -301,6 +301,7 @@ export default function OrderDrawer({
   const scannedBarcodeRef = useRef()
 
   let send_to_epos = localStorage.getItem('send_to_epos')
+  console.log(send_to_epos)
 
   useEffect(() => {
     addEmptyStringMarkToMarkinglessProduct(markingsList, markingCount)
@@ -345,6 +346,7 @@ export default function OrderDrawer({
   const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
   const { mutate: finishSaleWithoutAppPaymentType, isLoading: isFinishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
+      debugger
       if (!JSON.parse(send_to_epos)) {
         // disabling epos
         // navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
