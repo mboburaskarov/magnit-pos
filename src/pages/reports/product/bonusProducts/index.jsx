@@ -151,7 +151,7 @@ export default function BonusProductsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [bonusProductsReportList?.data, values?.limit])
-  const { mutate: clientsExcelReport, isLoading: isclientsExcelReport } = useMutation(requests.getClientsExcelReport, {
+  const { mutate: bonusProductsExcelReport, isLoading: isbonusProductsExcelReport } = useMutation(requests.getBonusProductsExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
@@ -284,9 +284,9 @@ export default function BonusProductsPage() {
           <AgGridTable
             id='clients-main-table'
             tableSettings
-            fullDownload={() => clientsExcelReport({ ...bonusProductsReportListFilter, limit: 1000000 })}
-            downloadByFilter={() => clientsExcelReport(bonusProductsReportListFilter)}
-            isDownloading={isclientsExcelReport}
+            fullDownload={() => bonusProductsExcelReport({ ...bonusProductsReportListFilter, limit: 1000000 })}
+            downloadByFilter={() => bonusProductsExcelReport(bonusProductsReportListFilter)}
+            isDownloading={isbonusProductsExcelReport}
             columns={tableColumns}
             totalCount={bonusProductsReportList?.data?.data?._meta?.total_count || 0}
             data={bonusProductsReportList?.data?.data?.data || []}

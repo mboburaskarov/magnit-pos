@@ -11,6 +11,8 @@ const columns = [
     field: 'full_name',
     hide: false,
     minWidth: 230,
+    width: 200,
+
     flex: 1,
   },
 

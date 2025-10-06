@@ -94,6 +94,7 @@ export default function DiscountCardReport({ id }) {
         headerName: 'Клиенти',
         colId: 'customer_name',
         flex: 1,
+        minWidth: 200,
         cellRenderer: ({ data, rowIndex }) => (
           <Box
             onClick={() =>
@@ -200,7 +201,7 @@ export default function DiscountCardReport({ id }) {
               },
             }}
           >
-            <InputSearch fullWidth={true} id='producrs-search' name='search' placeholder={'Аптека, наименование'} uncontrolled />
+            <InputSearch fullWidth={true} id='producrs-search' name='search' placeholder={'Клиенти'} uncontrolled />
           </Box>
           <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
         </Box>

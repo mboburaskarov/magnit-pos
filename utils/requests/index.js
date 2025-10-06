@@ -99,6 +99,7 @@ export const requests = {
   bonusProductsReport: ({ store_ids, ...filter }) => request.post(`v1/report/bonus-products${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   getBonusProductsReportStat: ({ store_ids, ...filter }) =>
     request.post(`v1/report/bonus-products-stats${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
+  getBonusProductsExcelReport: (filter) => requestEXCEL.post(`v1/report/bonus-products/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   topVendorReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-seller${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   topBranchReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
@@ -346,6 +347,7 @@ export const requests = {
   getAllCustomers: (filter) => request.get(`v1/customer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleCustomers: (id) => request.get(`v1/customer/${id}`),
   deleteClient: (id) => request.delete(`v1/customer/soft-delete`, id),
+
   getClientsExcelReport: (filter) => requestEXCEL.get(`v1/customer/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   //draft
   getDarftList: (filter) => request.get(`v1/draft/list${qs.stringify(filter, { addQueryPrefix: true })}`),
