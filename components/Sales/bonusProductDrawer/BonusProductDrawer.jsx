@@ -1,11 +1,14 @@
-import { Box, Drawer, Typography } from '@mui/material'
+import { Box, Drawer, Grid, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
+import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import { useQueryParams } from '../../../src/hooks/useQueryParams'
 import { requests } from '../../../utils/requests'
+import thousandDivider from '../../../utils/thousandDivider'
 import ListWithPagination from '../../AgGridTable/ListWithPagination'
 import InputSearch from '../../Inputs/InputSearch'
 import InputSwitch from '../../Inputs/InputSwitch'
@@ -49,6 +52,13 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
   }, [values?.customer_id, values?.draft_date, values?.search, controlleroffset])
 
   const theme = useTheme()
+  const {
+    data: sellerBonus,
+    isLoading: sellerBonusLoading,
+    isFetching: isFetchingsellerBonus,
+    refetch,
+  } = useQuery(['sellerBonus'], () => requests.getSellerBonusData())
+
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
       {!isOpenChild ? (
@@ -92,6 +102,7 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
           </Box>
           <Box display={'flex'} py={'24px'} px={'40px'}>
             <InputSearch fullWidth uncontrolled placeholder={'Поиск: ID'} />
+
             {/* <Box minWidth={113} ml={'16px'}>
               <Button
                 sx={{
@@ -119,6 +130,42 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
               </Button>
             </Box> */}
           </Box>
+          {appType != 'all' && (
+            <Grid
+              padding={'0 40px'}
+              m={'0'}
+              spacing={2}
+              container
+              sx={{
+                '& .MuiGrid-item': {
+                  borderRadius: '20px',
+                  padding: '5px 20px',
+                  overflow: 'hidden',
+                  bgcolor: 'bg.10',
+                  '& p:nth-child(1)': {
+                    fontSize: '14px',
+                    fontWeight: '600',
+                  },
+                  '& p:nth-child(2)': {
+                    fontSize: '17px',
+                  },
+                },
+              }}
+            >
+              <Grid sm='4' lg='4' md='4' item>
+                <Typography>Общий бонус</Typography>
+                <Typography>{thousandDivider(get(sellerBonus, 'data.data.total_bonus'), 'сум')}</Typography>
+              </Grid>
+              <Grid sm='4' lg='4' md='4' item>
+                <Typography>Общий объем продаж</Typography>
+                <Typography>{thousandDivider(get(sellerBonus, 'data.data.total_sales'), 'ед.')}</Typography>
+              </Grid>
+              <Grid sm='4' lg='4' md='4' item>
+                <Typography>Общие продукты</Typography>
+                <Typography>{thousandDivider(get(sellerBonus, 'data.data.total_products'), 'ед.')}</Typography>
+              </Grid>
+            </Grid>
+          )}
           <Box py={'0px'} px={'40px'}>
             {appType === 'all' ? (
               <ListWithPagination
