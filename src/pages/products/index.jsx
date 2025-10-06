@@ -531,7 +531,7 @@ export default function ProductsPage() {
         <ProductDrawer open={openProductDrawer} setImages={setOpenImageGallery} onClose={setOpenProductDrawer} />
         <ChangeUnitPerPack open={openPerPack} setOpen={setOpenPerPack} />
         <SendToErrorWithReason open={openErrorReason} setOpen={setOpenErrorReason} />
-        <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
+        <ImageGallery canAlert={setOpenErrorReason} open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
         {openConfirmDialog && (
           <ConfirmDialog
             open={!!openConfirmDialog}

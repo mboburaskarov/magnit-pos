@@ -106,7 +106,6 @@ export default function ProductsPage() {
     if (tableColumns) {
       const formattedData = tableColumns
         ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.filter((el) => el?.colId !== 'actions')
         ?.map((el) => ({
           ...el,
           label: el.headerName,

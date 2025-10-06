@@ -251,19 +251,24 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
       data.is_main = false
       setUploadedImages((oldImages) => {
         const newImages = editingImage
-          ? oldImages.map((el) => {
+          ? oldImages?.map((el) => {
               if (el.file_name === editingImage) {
                 el.file_name = data.file_name
                 el.file_url = data.file_url
               }
               return el
             })
-          : [...oldImages, data].map((el, ind) => ({
+          : oldImages
+          ? [...oldImages, data].map((el, ind) => ({
+              ...el,
+              sequence_number: ind,
+            }))
+          : [data].map((el, ind) => ({
               ...el,
               sequence_number: ind,
             }))
 
-        const hasActiveImage = !!oldImages.filter((el) => el?.is_main === true)?.length
+        const hasActiveImage = !!oldImages?.filter((el) => el?.is_main === true)?.length
 
         const allImages = hasActiveImage
           ? newImages

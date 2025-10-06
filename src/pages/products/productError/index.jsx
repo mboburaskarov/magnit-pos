@@ -10,6 +10,7 @@ import CheckAccess from '../../../../components/CheckAccess'
 import InputSearch from '../../../../components/Inputs/InputSearch'
 import { requests } from '../../../../utils/requests'
 import EditIcon from '../../../assets/icons/EditIcon'
+import LeftArrowIcon from '../../../assets/icons/LeftArrow'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 
 export default function RejectedProducts({ id }) {
@@ -172,11 +173,38 @@ export default function RejectedProducts({ id }) {
 
   return (
     <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-      <Box display={'flex'} mb={'10px'} justifyContent={'space-between'}>
-        <Typography onClick={() => navigate('/products/all-by-import')} variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          Ошибки в информации о лекарствах
-        </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: '20px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+          onClick={() => navigate(`/products/all`)}
+        >
+          <Box
+            sx={{
+              width: '48px',
+              height: '48px',
+              padding: '0',
+              display: 'flex',
+              mr: '20px',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              backgroundColor: 'bunker.100',
+              '&:hover': {
+                backgroundColor: 'gray.10',
+              },
+            }}
+          >
+            <LeftArrowIcon />
+          </Box>
+          <Typography onClick={() => navigate('/products/all-by-import')} variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+            Ошибки в информации о лекарствах
+          </Typography>
+        </Box>
       </Box>
+
       <Box
         width='100%'
         sx={{
@@ -214,6 +242,7 @@ export default function RejectedProducts({ id }) {
           />
         </Box> */}
       </Box>
+
       <Box>
         <AgGridTable
           isDataLoading={isproductDataLoadingHistory || isFetchingproductErrorsList}

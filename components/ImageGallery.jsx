@@ -1,4 +1,6 @@
+import { Report } from '@mui/icons-material'
 import { Box, IconButton, Typography } from '@mui/material'
+import { get } from 'lodash'
 import { useState } from 'react'
 import ArrowDown from '../src/assets/icons/ArrowDown'
 import BackArrowIcon from '../src/assets/icons/BackArrow'
@@ -9,7 +11,7 @@ import getImageUrl from '../utils/getImageUrl'
 import CustomImg from './CustomImg'
 import StyledTooltip from './StyledTooltip'
 
-const ImageGallery = ({ open, setOpen, imagesArr, name }) => {
+const ImageGallery = ({ open, setOpen, imagesArr, name, canAlert = false }) => {
   const [count, setCount] = useState(0)
   if (!imagesArr?.length) {
     return null
@@ -127,7 +129,6 @@ const ImageGallery = ({ open, setOpen, imagesArr, name }) => {
         >
           <BackArrowIcon style={{ fill: '#000' }} fill='#000' width={12} height={12} />
         </IconButton>
-
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, userSelect: 'none', mt: 3 }}>
           {imagesArr?.length !== 0 &&
             imagesArr?.map((image, idx) => (
@@ -150,6 +151,25 @@ const ImageGallery = ({ open, setOpen, imagesArr, name }) => {
               </Box>
             ))}
         </Box>
+        {canAlert && (
+          <Typography
+            onClick={() => {
+              canAlert(get(open, 'product', {})), setOpen(false)
+            }}
+            sx={{
+              bgcolor: '#f22',
+              padding: '8px 20px 5px',
+              borderRadius: '10px',
+              display: 'flex',
+              justifyContent: 'center',
+              color: '#fff',
+            }}
+          >
+            <Report />
+            <Box width={'5px'} />
+            Сообщить об ошибке
+          </Typography>
+        )}
       </Box>
       <Box sx={{ position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, bottom: 40, right: 32 }}>
         <StyledTooltip placement='top' title='Скачать фото'>

@@ -1,4 +1,4 @@
-import { ArrowDownward, ArrowUpward, Report } from '@mui/icons-material'
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
 import AccountTreeIcon from '@mui/icons-material/AccountTree'
 import { Box, IconButton, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
@@ -9,6 +9,7 @@ import Highlighter from 'react-highlight-words'
 import { useNavigate } from 'react-router-dom'
 import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
 import CheckAccess from '../../../components/CheckAccess'
+import CustomImg from '../../../components/CustomImg'
 import StyledTooltip from '../../../components/StyledTooltip'
 import thousandDivider from '../../../utils/thousandDivider'
 import { products_statuses } from '../../assets/data/products-statuses'
@@ -29,7 +30,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
 const Image = ({ data, rowIndex, setImages, setOpenErrorReason }) => {
   return (
     <Box
-      onClick={() => setImages({ data: data?.photos })}
+      onClick={() => setImages({ data: data?.photos, product: data })}
       sx={{
         position: 'relative',
         width: '40px',
@@ -59,11 +60,13 @@ const Image = ({ data, rowIndex, setImages, setOpenErrorReason }) => {
         },
       }}
     >
-      {get(data, 'photos')?.length > 0 ? (
+      <CustomImg src={head(get(data, 'photos'))} alt={'main'} className='has-img' />
+
+      {/* {get(data, 'photos')?.length > 0 ? (
         <img className='has-img' src={import.meta.env.VITE_FILE_API_URL + '/v1/upload/' + head(get(data, 'photos'))} />
       ) : (
         <img src='/no-img.png' />
-      )}
+      )} */}
       {/* <Box
         className='hover-option'
         onClick={(e) => {
@@ -73,7 +76,10 @@ const Image = ({ data, rowIndex, setImages, setOpenErrorReason }) => {
         }}
       >
         <Report color='#fff' />
-        <Typography color={'#fff'}> Ошибка</Typography>
+        <Typography fontSize={'14px'} color={'#fff'}>
+          {' '}
+          Ошибка
+        </Typography>
       </Box> */}
     </Box>
   )
@@ -474,11 +480,6 @@ export default function tableHeaderSelector({
             <CheckAccess id={'delete-product'}>
               <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                 <DeleteIcon />
-              </IconButton>
-            </CheckAccess>
-            <CheckAccess id={'can-alert-error'}>
-              <IconButton onClick={() => setOpenErrorReason(data)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-                <Report color='#fe5000' sx={{ fill: '#fe5000 !important' }} />
               </IconButton>
             </CheckAccess>
           </Box>
