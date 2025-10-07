@@ -6,12 +6,15 @@ import { useNavigate } from 'react-router-dom'
 import FallIcon from '../../src/assets/icons/FallIcon'
 import GrowIcon from '../../src/assets/icons/GrowIcon'
 import thousandDivider from '../../utils/thousandDivider'
+import { useNavigateWithParams } from '../../src/hooks/useNavigateWithParams'
 
 export default function TotalOrdersByCity({ data }) {
   const { t } = useTranslation()
   const [isCollapse, setIsCollapse] = useState(false)
   const formattedData = isCollapse ? data : data?.slice(0, 5)
   const navigate = useNavigate()
+  const { navigateWithParams } = useNavigateWithParams()
+
   return (
     <Box
       sx={{
@@ -26,7 +29,7 @@ export default function TotalOrdersByCity({ data }) {
         <Typography lineHeight={'30px'} fontWeight={'600'} fontSize={'20px'}>
           Топ филиалам
         </Typography>
-        <Box onClick={() => navigate('/reports/top-branchs')}>
+        <Box onClick={() => navigateWithParams('/reports/top-branchs', { keep: true })}>
           <FormatLineSpacing sx={{ fontSize: '25px' }} />
         </Box>
       </Box>

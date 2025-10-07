@@ -2,16 +2,17 @@ import { FormatLineSpacing } from '@mui/icons-material'
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import FallIcon from '../../src/assets/icons/FallIcon'
 import GrowIcon from '../../src/assets/icons/GrowIcon'
 import thousandDivider from '../../utils/thousandDivider'
+import { useNavigateWithParams } from '../../src/hooks/useNavigateWithParams'
 
 export default function TopSellers({ data }) {
   const { t } = useTranslation()
   const [isCollapse, setIsCollapse] = useState(false)
   const formattedData = isCollapse ? data : data?.slice(0, 5)
-  const navigate = useNavigate()
+  const { navigateWithParams } = useNavigateWithParams()
   return (
     <Box
       sx={{
@@ -26,8 +27,8 @@ export default function TopSellers({ data }) {
         <Typography lineHeight={'30px'} fontWeight={'600'} fontSize={'20px'}>
           Топ продавцы
         </Typography>
-        <Box onClick={() => navigate('/reports/top-vendors')}>
-          <FormatLineSpacing sx={{ fontSize: '25px' }} />
+        <Box onClick={() => navigateWithParams('/reports/top-vendors', { keep: true })}>
+          <FormatLineSpacing sx={{ cursor: 'pointer', fontSize: '25px' }} />
         </Box>
       </Box>
       <Box sx={{ display: 'flex', height: 'calc(100% - 25px)', justifyContent: 'space-between', flexDirection: 'column' }}>
