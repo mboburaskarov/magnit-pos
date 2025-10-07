@@ -346,7 +346,6 @@ export default function OrderDrawer({
   const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
   const { mutate: finishSaleWithoutAppPaymentType, isLoading: isFinishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
-      debugger
       if (!JSON.parse(send_to_epos)) {
         // disabling epos
         // navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
