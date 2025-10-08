@@ -227,7 +227,7 @@ export default function DashboarPage() {
   )
 
   return (
-    <LoadingContainer readyState={!isLoading}>
+    <LoadingContainer readyState={true}>
       <DashboardHeader setSelectedShops={setSelectedShops} selectedShops={selectedShops} />
 
       <Box display='flex' flexDirection='column' position='relative' pt={0} px={'20px'} pb={3} width={'100%'}>
@@ -239,117 +239,125 @@ export default function DashboarPage() {
                 ?.map((el, ind) => (
                   <CheckAccess id={`dashboard-box-${el.id}`}>
                     <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
-                      <DashboardInfoBox key={ind} {...el} />
+                      <DashboardInfoBox key={ind} {...el} isLoading={isLoading} />
                     </Grid>
                   </CheckAccess>
                 ))}
-              <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
-                <Box
-                  onClick={() => navigate('/dashboard/b2b')}
-                  sx={(theme) => ({
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: 1,
-                    borderRadius: '16px',
-                    borderColor: '#A4A5AB33',
-                    cursor: 'pointer',
-                    bgcolor: 'bg.10',
-                    minHeight: '154px',
-                    width: '100%',
-                  })}
-                >
+              <CheckAccess id={`farchise-dashboard-box`}>
+                <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
                   <Box
-                    key={1}
+                    onClick={() => navigate('/dashboard/b2b')}
                     sx={(theme) => ({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      pr: '26px',
-                      pl: '16px',
-                      minHeight: '115px',
-                      pt: '16px',
-                      pb: '10px',
-                      m: 0,
+                      border: 1,
+                      borderRadius: '16px',
+                      borderColor: '#A4A5AB33',
+                      cursor: 'pointer',
+                      bgcolor: 'bg.10',
+                      minHeight: '154px',
+                      width: '100%',
                     })}
                   >
-                    <Typography
-                      sx={{
-                        fontSize: 25,
-                        fontWeight: '600',
-                      }}
+                    <Box
+                      key={1}
+                      sx={(theme) => ({
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        pr: '26px',
+                        pl: '16px',
+                        minHeight: '115px',
+                        pt: '16px',
+                        pb: '10px',
+                        m: 0,
+                      })}
                     >
-                      Перейти к панели управления франшизой
-                    </Typography>
-                    <ArrowRightRounded sx={{ fontSize: '40px', color: '#fe5000' }} />
+                      <Typography
+                        sx={{
+                          fontSize: 25,
+                          fontWeight: '600',
+                        }}
+                      >
+                        Перейти к панели управления франшизой
+                      </Typography>
+                      <ArrowRightRounded sx={{ fontSize: '40px', color: '#fe5000' }} />
+                    </Box>
                   </Box>
-                </Box>
-              </Grid>
+                </Grid>
+              </CheckAccess>
             </Grid>
 
-            <CheckAccess id={'dashboard-chart'}>
-              <Box mt={'32px'} display='inline-flex' columnGap={3} width='100%'>
-                <SingleLineChart
-                  width='100%'
-                  id='dashboard-chart'
-                  period={detailing}
-                  detalization={detalization}
-                  setDetalization={setDetalization}
-                  chartType={chartType}
-                  setchartType={setchartType}
-                  sortBy={sortBy}
-                  dataKey={sortBy === 'SUM' ? 'all_orders' : 'count'}
-                  data={{
-                    values: toFixData,
-                    total: sortBy === 'SUM' ? totalSum : totalCount,
-                  }}
-                  measurmentUnit={sortBy === 'SUM' ? ' сум' : ' шт'}
-                />
-              </Box>
-            </CheckAccess>
+            {!isLoading && (
+              <CheckAccess id={'dashboard-chart'}>
+                <Box mt={'32px'} display='inline-flex' columnGap={3} width='100%'>
+                  <SingleLineChart
+                    width='100%'
+                    id='dashboard-chart'
+                    period={detailing}
+                    detalization={detalization}
+                    setDetalization={setDetalization}
+                    chartType={chartType}
+                    setchartType={setchartType}
+                    sortBy={sortBy}
+                    dataKey={sortBy === 'SUM' ? 'all_orders' : 'count'}
+                    data={{
+                      values: toFixData,
+                      total: sortBy === 'SUM' ? totalSum : totalCount,
+                    }}
+                    measurmentUnit={sortBy === 'SUM' ? ' сум' : ' шт'}
+                  />
+                </Box>
+              </CheckAccess>
+            )}
           </Grid>
         </Grid>
-        <CheckAccess id={'dashboard-transactions-vendor'}>
-          <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-            <Transactions
-              id='dashboard-chart'
-              data={get(payments, 'data.data')}
-              title={'Платежи'}
-              subTitle={thousandDivider(Math.round(get(payments, 'data.data', [])?.reduce((a, b) => a + b.amount, 0)), 'сум')}
-            />
-            <Transactions
-              id='dashboard-chart'
-              data={get(transaction, 'data.data')}
-              title={'Транзакции'}
-              subTitle={thousandDivider(
-                get(transaction, 'data.data', [])?.reduce((a, b) => {
-                  const count = parseFloat((b.count || '0').replace(',', '.'))
-                  return a + count
-                }, 0),
-
-                'шт'
-              )}
-            />
-          </Box>
-        </CheckAccess>
-        <CheckAccess id={'dashboard-vendor'}>
-          <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-            <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
-            <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} />
-          </Box>
-        </CheckAccess>
-        <CheckAccess id={'dashboard-seller'}>
-          <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-            <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} />
-            <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} />
-          </Box>
-        </CheckAccess>
       </Box>
-      <CheckAccess id={'dashboard-expired-imports'}>
-        <Box>
-          <ImportPage />
-        </Box>
-      </CheckAccess>
+      {!isLoading && (
+        <>
+          <CheckAccess id={'dashboard-transactions-vendor'}>
+            <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
+              <Transactions
+                id='dashboard-chart'
+                data={get(payments, 'data.data')}
+                title={'Платежи'}
+                subTitle={thousandDivider(Math.round(get(payments, 'data.data', [])?.reduce((a, b) => a + b.amount, 0)), 'сум')}
+              />
+              <Transactions
+                id='dashboard-chart'
+                data={get(transaction, 'data.data')}
+                title={'Транзакции'}
+                subTitle={thousandDivider(
+                  get(transaction, 'data.data', [])?.reduce((a, b) => {
+                    const count = parseFloat((b.count || '0').replace(',', '.'))
+                    return a + count
+                  }, 0),
+
+                  'шт'
+                )}
+              />
+            </Box>
+          </CheckAccess>
+          <CheckAccess id={'dashboard-vendor'}>
+            <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
+              <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
+              <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} />
+            </Box>
+          </CheckAccess>
+          <CheckAccess id={'dashboard-seller'}>
+            <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
+              <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} />
+              <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} />
+            </Box>
+          </CheckAccess>
+          <CheckAccess id={'dashboard-expired-imports'}>
+            <Box>
+              <ImportPage />
+            </Box>
+          </CheckAccess>
+        </>
+      )}
     </LoadingContainer>
   )
 }
