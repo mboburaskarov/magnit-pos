@@ -392,6 +392,7 @@ export const requests = {
   // payment service assets
   getPaymentAssetsList: (filter) => request.get(`v1/payment-service/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getPaymentAsset: (id) => request.get(`v1/payment-service/${id}`),
+  deletePaymentAsset: (id) => request.delete(`v1/payment-service/${id}`),
 
   createPaymentAsset: (data) => request.post(`v1/payment-service`, data),
   editPaymentAsset: ({ id, data }) => request.put(`v1/payment-service/${id}`, data),
