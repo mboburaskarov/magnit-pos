@@ -83,7 +83,7 @@ export default function PaymentsAssetsList() {
     refetch,
   } = useQuery(['getPaymentAssetsList', getPaymentAssetsListFilter], () => requests.getPaymentAssetsList(getPaymentAssetsListFilter))
 
-  const { mutate: deleteCashBox, isLoading: isDeletingCashBox } = useMutation(requests.deleteCashBox, {
+  const { mutate: deletePaymentAsset, isLoading: isDeletingCashBox } = useMutation(requests.deletePaymentAsset, {
     onSuccess: () => {
       refetch()
       success('Продукт успешно удален!')
@@ -177,7 +177,7 @@ export default function PaymentsAssetsList() {
                     fullWidth
                     variant='contained'
                     color='secondary'
-                    onClick={() => deleteCashBox({ data: slectedVendors })}
+                    onClick={() => deletePaymentAsset({ data: slectedVendors })}
                   >
                     <DeleteIcon width='24px' />
                   </Button>
@@ -251,7 +251,7 @@ export default function PaymentsAssetsList() {
               >
                 Нет
               </Button>
-              <LoadingButton variant='contained' type='button' loading={isDeletingCashBox} onClick={() => deleteCashBox({ data: [openConfirmDialog.id] })}>
+              <LoadingButton variant='contained' type='button' loading={isDeletingCashBox} onClick={() => deletePaymentAsset(openConfirmDialog.id)}>
                 Да, удалить
               </LoadingButton>
             </>
