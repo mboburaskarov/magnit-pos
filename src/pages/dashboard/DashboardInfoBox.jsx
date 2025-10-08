@@ -1,9 +1,9 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, Skeleton } from '@mui/material'
 import thousandDivider from '../../../utils/thousandDivider'
 import FallIcon from '../../assets/icons/FallIcon'
 import GrowIcon from '../../assets/icons/GrowIcon'
 
-export default function DashboardInfoBox({ noDot, ind, title, icon, count, amount, percent, id, old, endText, withoutDivider, ...l }) {
+export default function DashboardInfoBox({ noDot, ind, title, icon, count, amount, percent, id, old, endText, withoutDivider, isLoading, ...l }) {
   const isFall = percent < 0
 
   return (
@@ -27,69 +27,83 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
                 '& > svg': { width: 18 },
               }}
             >
-              {icon}
+              {isLoading ? <Skeleton variant='circular' width={18} height={18} /> : icon}
             </Box>
           )}
-          <Box ml={'10px'}>
-            <Typography fontSize={18} fontWeight={'500'} lineHeight={'24px'} color={'dark.500'} mt={0.5}>
-              {title}
-            </Typography>
+          <Box ml={'10px'} flex={1}>
+            {isLoading ? (
+              <Skeleton variant='text' width='80%' height={24} />
+            ) : (
+              <Typography fontSize={18} fontWeight={'500'} lineHeight={'24px'} color={'dark.500'} mt={0.5}>
+                {title}
+              </Typography>
+            )}
           </Box>
         </Box>
 
         {
           <Box mt={icon ? '10px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
-            <Box>
-              <Typography
-                alignItems={'end'}
-                display={'flex'}
-                color='dark.500'
-                fontSize={'30px'}
-                lineHeight={'32px'}
-                fontWeight='600'
-                variant='h1'
-                sx={{
-                  '& > p': {
-                    fontSize: '30px',
-                    lineHeight: '32px',
-                    fontWeight: '600 !important',
-                    color: 'dark.500',
-                    ml: '10px',
-                  },
-                }}
-              >
-                {id === 'expiring_soon_amount' || id === 'expired_soon_amount' ? (
-                  <>
-                    {thousandDivider(Math.round(amount), 'сум')}
-                    <Typography color='dark.500' fontSize={'20px'} lineHeight={'25px'} fontWeight='500' ml={'10px'}>
-                      ({withoutDivider ? count : thousandDivider(count, '')}
-                      {endText})
-                    </Typography>
-                  </>
-                ) : withoutDivider ? (
-                  Math.round(count)
-                ) : (
-                  <Typography>{thousandDivider(Math.round(count), endText)}</Typography>
-                )}
-              </Typography>
+            <Box flex={1}>
+              {isLoading ? (
+                <Skeleton variant='text' width='60%' height={40} />
+              ) : (
+                <Typography
+                  alignItems={'end'}
+                  display={'flex'}
+                  color='dark.500'
+                  fontSize={'30px'}
+                  lineHeight={'32px'}
+                  fontWeight='600'
+                  variant='h1'
+                  sx={{
+                    '& > p': {
+                      fontSize: '30px',
+                      lineHeight: '32px',
+                      fontWeight: '600 !important',
+                      color: 'dark.500',
+                      ml: '10px',
+                    },
+                  }}
+                >
+                  {id === 'expiring_soon_amount' || id === 'expired_soon_amount' ? (
+                    <>
+                      {thousandDivider(Math.round(amount), 'сум')}
+                      <Typography color='dark.500' fontSize={'20px'} lineHeight={'25px'} fontWeight='500' ml={'10px'}>
+                        ({withoutDivider ? count : thousandDivider(count, '')}
+                        {endText})
+                      </Typography>
+                    </>
+                  ) : withoutDivider ? (
+                    Math.round(count)
+                  ) : (
+                    <Typography>{thousandDivider(Math.round(count), endText)}</Typography>
+                  )}
+                </Typography>
+              )}
             </Box>
             {percent < 1000 && (
-              <Box
-                display='inline-flex'
-                sx={{
-                  borderRadius: '5px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '4px 5px',
-                  backgroundColor: !isFall ? '#30BE821A' : '#F45B691A',
-                }}
-                alignItems='center'
-              >
-                {!isFall ? <GrowIcon /> : <FallIcon />}{' '}
-                <Typography color={isFall ? '#F45B69' : '#30BE82'} fontWeight='500' mr={0.5} fontSize={14} lineHeight={'18px'}>
-                  {percent}%
-                </Typography>
-              </Box>
+              <>
+                {isLoading ? (
+                  <Skeleton variant='rectangular' width={60} height={26} sx={{ borderRadius: '5px' }} />
+                ) : (
+                  <Box
+                    display='inline-flex'
+                    sx={{
+                      borderRadius: '5px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '4px 5px',
+                      backgroundColor: !isFall ? '#30BE821A' : '#F45B691A',
+                    }}
+                    alignItems='center'
+                  >
+                    {!isFall ? <GrowIcon /> : <FallIcon />}{' '}
+                    <Typography color={isFall ? '#F45B69' : '#30BE82'} fontWeight='500' mr={0.5} fontSize={14} lineHeight={'18px'}>
+                      {percent}%
+                    </Typography>
+                  </Box>
+                )}
+              </>
             )}
           </Box>
         }
@@ -97,9 +111,13 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
 
       <Box key={ind} sx={(theme) => ({ pt: '10px', pb: '8px', px: '16px', m: 0, height: 37, borderTop: 1, borderColor: '#A4A5AB33' })}>
         <Box>
-          <Typography color='gray.500' fontSize={'16px'} lineHeight={'20px'} fontWeight='500' variant='h1'>
-            {thousandDivider(old)} {endText} за прошедший период
-          </Typography>
+          {isLoading ? (
+            <Skeleton variant='text' width='70%' height={20} />
+          ) : (
+            <Typography color='gray.500' fontSize={'16px'} lineHeight={'20px'} fontWeight='500' variant='h1'>
+              {thousandDivider(old)} {endText} за прошедший период
+            </Typography>
+          )}
         </Box>
       </Box>
     </Box>

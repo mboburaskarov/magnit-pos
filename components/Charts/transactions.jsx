@@ -38,13 +38,13 @@ export default function Transactions({ data, title, subTitle }) {
           <Table size='small'>
             <TableHead sx={{ borderBottom: '1px solid', borderColor: 'gray.200', padding: '0' }}>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 16px 16px 0', border: 'none', color: 'dark.500' }}>
-                Продавец
+                Тип {title}
               </TableCell>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 16px 16px 0', border: 'none', color: 'dark.500' }}>
                 Количество
               </TableCell>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
-                Продажи
+                Сумма продажи
               </TableCell>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
                 Прирост
