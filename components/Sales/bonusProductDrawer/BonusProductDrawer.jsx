@@ -58,7 +58,35 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
     isFetching: isFetchingsellerBonus,
     refetch,
   } = useQuery(['sellerBonus'], () => requests.getSellerBonusData())
+  const miniDashboardMeta = [
+    {
+      id: 1,
+      title: 'Общий бонус',
+      prop: 'total_bonus',
+      endText: 'сум',
+    },
 
+    {
+      id: 3,
+      title: 'Общий объем продаж',
+      prop: 'total_sales',
+      endText: 'ед',
+    },
+    {
+      id: 2,
+      title: 'Общие продукты',
+      prop: 'total_products',
+      endText: 'ед',
+    },
+  ]
+  const GridItem = ({ title, sum, endText }) => (
+    <Grid sm={4} lg={4} md={4} item>
+      <Box className='item'>
+        <Typography sx={{ fontSize: '14px', fontWeight: 'bold' }}> {title}</Typography>
+        <Typography sx={{ fontSize: '16px' }}>{thousandDivider(sum, endText)}</Typography>
+      </Box>
+    </Grid>
+  )
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
       {!isOpenChild ? (
@@ -131,40 +159,29 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
             </Box> */}
           </Box>
           {appType != 'all' && (
-            <Grid
-              padding={'0 40px'}
-              m={'0'}
-              spacing={2}
-              container
+            <Box
+              padding={'0 40px 20px'}
               sx={{
                 '& .MuiGrid-item': {
-                  borderRadius: '20px',
-                  padding: '5px 20px',
-                  overflow: 'hidden',
+                  display: 'flex',
+                },
+                '& .MuiGrid-item:nth-child(1)': {
+                  paddingLeft: 0,
+                },
+                '& .item': {
+                  width: '100%',
                   bgcolor: 'bg.10',
-                  '& p:nth-child(1)': {
-                    fontSize: '14px',
-                    fontWeight: '600',
-                  },
-                  '& p:nth-child(2)': {
-                    fontSize: '17px',
-                  },
+                  borderRadius: '20px',
+                  padding: '10px 12px',
                 },
               }}
             >
-              <Grid sm='4' lg='4' md='4' item>
-                <Typography>Общий бонус</Typography>
-                <Typography>{thousandDivider(get(sellerBonus, 'data.data.total_bonus'), 'сум')}</Typography>
+              <Grid width={'100%'} m={'0'} spacing={1} container>
+                {miniDashboardMeta.map((item) => (
+                  <GridItem {...item} sum={sellerBonus?.data?.data?.[item?.prop]} />
+                ))}
               </Grid>
-              <Grid sm='4' lg='4' md='4' item>
-                <Typography>Общий объем продаж</Typography>
-                <Typography>{thousandDivider(get(sellerBonus, 'data.data.total_sales'), 'ед.')}</Typography>
-              </Grid>
-              <Grid sm='4' lg='4' md='4' item>
-                <Typography>Общие продукты</Typography>
-                <Typography>{thousandDivider(get(sellerBonus, 'data.data.total_products'), 'ед.')}</Typography>
-              </Grid>
-            </Grid>
+            </Box>
           )}
           <Box py={'0px'} px={'40px'}>
             {appType === 'all' ? (

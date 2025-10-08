@@ -202,7 +202,7 @@ export default function DashboarPage() {
   }, [values?.offset, detalization, selectedShops, values?.start_date, values?.end_date, values?.from_time, values?.to_time, values?.limit, values?.search])
 
   const { data: chartData } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
-  const { data: countStats } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
+  const { data: countStats, isLoading } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
   const { data: topStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
   const { data: payments } = useQuery(['payments', dashboard_filter], () => requests.dashboradPayments(dashboard_filter))
   const { data: transaction } = useQuery(['transaction', dashboard_filter], () => requests.dashboradTransaction(dashboard_filter))
@@ -227,7 +227,7 @@ export default function DashboarPage() {
   )
 
   return (
-    <LoadingContainer readyState={true}>
+    <LoadingContainer readyState={!isLoading}>
       <DashboardHeader setSelectedShops={setSelectedShops} selectedShops={selectedShops} />
 
       <Box display='flex' flexDirection='column' position='relative' pt={0} px={'20px'} pb={3} width={'100%'}>

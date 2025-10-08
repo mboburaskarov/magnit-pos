@@ -5,6 +5,7 @@ import { Fragment, memo, useLayoutEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import LeftArrowIcon from '../src/assets/icons/LeftArrow'
+import { useNavigateWithParams } from '../src/hooks/useNavigateWithParams'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -99,6 +100,7 @@ function Header({
   const headerComponentRef = useRef()
   const [headerComponentHeight, setHeaderComponentHeight] = useState(0)
   const location = useLocation()
+  const { navigateWithParams, goBackWithParams } = useNavigateWithParams()
   useLayoutEffect(() => {
     setHeaderComponentHeight(headerComponentRef.current?.clientHeight || 0)
     if (location.state?.prevFilter) {
@@ -107,6 +109,8 @@ function Header({
   }, [])
 
   const backButtonClickHandler = (e) => {
+    goBackWithParams(backHref)
+    return
     if (backButtonClick) {
       backButtonClick(e)
       return
