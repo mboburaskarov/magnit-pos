@@ -208,7 +208,7 @@ export default function DiscountCardReport({ id }) {
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <AgGridTable
-            fullDownload={() => getDiscountCartReportExcel({ ...productHistoryFilter, limit: 1000000 })}
+            fullDownload={() => getDiscountCartReportExcel({ ...productHistoryFilter, offset: 0, limit: 1000000 })}
             downloadByFilter={() => getDiscountCartReportExcel(productHistoryFilter)}
             isDownloading={isgetDiscountCartReportExcel}
             //

@@ -164,7 +164,7 @@ export default function CasShiftsPage() {
           <AgGridTable
             id='products-main-table'
             downloadByFilter={() => allSalesExcelReport(cashShiftsListFilter)}
-            fullDownload={() => allSalesExcelReport({ ...cashShiftsListFilter, limit: 1000000 })}
+            fullDownload={() => allSalesExcelReport({ ...cashShiftsListFilter, offset: 0, limit: 1000000 })}
             isDownloading={isallSalesExcelReport}
             tableSettings
             columns={tableColumns}

@@ -259,7 +259,7 @@ export default function ProductQtyByDateReportPage() {
             id='clients-main-table'
             tableSettings
             uniqId='product_id'
-            fullDownload={() => getProductQuantityByDateExcelReport({ ...productQtyByDateReportListFilter, limit: 1000000 })}
+            fullDownload={() => getProductQuantityByDateExcelReport({ ...productQtyByDateReportListFilter, offset: 0, limit: 1000000 })}
             downloadByFilter={() => getProductQuantityByDateExcelReport(productQtyByDateReportListFilter)}
             isDownloading={isGetProductQuantityByDateExcelReport}
             columns={tableColumns}

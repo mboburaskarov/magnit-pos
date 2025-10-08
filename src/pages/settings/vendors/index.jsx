@@ -300,7 +300,7 @@ export default function VendorsPage() {
             tableSettings
             columns={tableColumns}
             downloadByFilter={() => vendorsExcelReport(vendorsListFilter)}
-            fullDownload={() => vendorsExcelReport({ ...vendorsListFilter, limit: 1000000 })}
+            fullDownload={() => vendorsExcelReport({ ...vendorsListFilter, offset: 0, limit: 1000000 })}
             isDownloading={isvendorsExcelReport}
             data={vendorsList?.data?.data?.data || []}
             totalCount={vendorsList?.data?.data?._meta?.total_count || 0}

@@ -253,7 +253,7 @@ export default function TopProductsPage() {
           <AgGridTable
             id='clients-main-table'
             tableSettings
-            fullDownload={() => topProductsExcelReport({ ...topProductsReportListFilter, limit: 1000000 })}
+            fullDownload={() => topProductsExcelReport({ ...topProductsReportListFilter, offset: 0, limit: 1000000 })}
             downloadByFilter={() => topProductsExcelReport(topProductsReportListFilter)}
             isDownloading={istopProductsExcelReport}
             columns={tableColumns}

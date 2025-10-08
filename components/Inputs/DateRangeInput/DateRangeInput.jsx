@@ -109,33 +109,28 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
     [dateState, location.pathname, navigate, startDateQuery, endDateQuery, values]
   )
   const getLabelForDateRange = (startDate, endDate) => {
-    const today = dayjs()
+    const today = dayjs().startOf('day')
     const yesterday = today.subtract(1, 'day')
-    const start = dayjs(startDate)
-    const end = dayjs(endDate)
+    const start = dayjs(startDate).startOf('day')
+    const end = dayjs(endDate).startOf('day')
 
-    // **Today**
-    if (start.isSame(today, 'day') && end.isSame(today, 'day')) return 'Сегодня'
+    if (start.isSame(today) && end.isSame(today)) return 'Сегодня'
+    if (start.isSame(yesterday) && end.isSame(yesterday)) return 'Вчера'
 
-    // **Yesterday**
-    if (start.isSame(yesterday, 'day') && end.isSame(yesterday, 'day')) return 'Вчера'
-
-    // **This week (Monday - Sunday)**
-    const startOfWeek = today.startOf('week') // Monday start
-    const endOfWeek = today.endOf('week') // Sunday end
-    if (start.isSameOrAfter(startOfWeek, 'day')) {
+    // На этой неделе — оба дня в той же неделе, что и today
+    if (start.isSame(today, 'week') && end.isSame(today, 'week')) {
       return 'На этой неделе'
     }
 
-    // **This month**
+    // С начала месяца до сегодня
     const startOfMonth = today.startOf('month')
-    if (start.isSameOrAfter(startOfMonth, 'day') && end.isSameOrBefore(today, 'day')) {
-      return 'Это месяц'
+    if (start.isSame(startOfMonth) && end.isSame(today)) {
+      return 'В этом месяце'
     }
 
-    // **This year**
+    // С начала года до сегодня
     const startOfYear = today.startOf('year')
-    if (start.isSameOrAfter(startOfYear, 'day') && end.isSameOrBefore(today, 'day')) {
+    if (start.isSame(startOfYear) && end.isSame(today)) {
       return 'В этом году'
     }
 

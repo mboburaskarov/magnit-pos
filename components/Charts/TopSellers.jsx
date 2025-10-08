@@ -27,7 +27,7 @@ export default function TopSellers({ data }) {
         <Typography lineHeight={'30px'} fontWeight={'600'} fontSize={'20px'}>
           Топ продавцы
         </Typography>
-        <Box onClick={() => navigateWithParams('/reports/top-vendors', { keep: true })}>
+        <Box onClick={() => navigateWithParams('/reports/top-vendors?backHref=/dashboard', { keep: true })}>
           <FormatLineSpacing sx={{ cursor: 'pointer', fontSize: '25px' }} />
         </Box>
       </Box>

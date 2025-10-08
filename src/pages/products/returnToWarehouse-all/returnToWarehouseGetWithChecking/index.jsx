@@ -277,7 +277,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
-                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...returnToWarehouseWithCheckingDetailsFilter, limit: 1000000 })}
+                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...returnToWarehouseWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                 downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(returnToWarehouseWithCheckingDetailsFilter)}
                 data={returnToWarehouseWithCheckingDetails?.data?.data?.data || []}
                 totalCount={returnToWarehouseWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
@@ -303,14 +303,14 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
         open={openFinishConfirmDialog}
         setOpen={() => setOpenFinishConfirmDialog(false)}
         icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
-        title={t('alerts.finish_return')}
+        title={'Принять возврат?'}
         desc={
           <>
             <Typography fontWeight={'600'} fontSize={'20px'}>
-              {t('alerts.finish_return_desc')}
+              {'Вы уверены, что хотите принять возврат?'}
             </Typography>
             <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
-              {t('alerts.finish_return_warning')}
+              {'Не сканированные товары не будут добавлены'}
             </Typography>
           </>
         }

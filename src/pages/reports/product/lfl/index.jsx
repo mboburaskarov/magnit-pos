@@ -219,7 +219,7 @@ export default function ReportLfl() {
             tableSettings
             groupHeaderHeight={50}
             headerHeight={40}
-            fullDownload={() => clientsExcelReport({ ...ReportLFLFilter, limit: 1000000 })}
+            fullDownload={() => clientsExcelReport({ ...ReportLFLFilter, offset: 0, limit: 1000000 })}
             downloadByFilter={() => clientsExcelReport(ReportLFLFilter)}
             isDownloading={isclientsExcelReport}
             columns={dynamicColumnDefs}

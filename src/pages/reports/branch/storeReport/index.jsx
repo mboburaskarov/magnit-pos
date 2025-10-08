@@ -187,7 +187,7 @@ export default function StoreReportPage() {
             id='clients-main-table'
             uniqId='uid'
             tableSettings
-            fullDownload={() => getStoreReportExcelReport({ ...storeReportListFilter, limit: 1000000 })}
+            fullDownload={() => getStoreReportExcelReport({ ...storeReportListFilter, offset: 0, limit: 1000000 })}
             downloadByFilter={() => getStoreReportExcelReport(storeReportListFilter)}
             isDownloading={isgetStoreReportExcelReport}
             columns={tableColumns}

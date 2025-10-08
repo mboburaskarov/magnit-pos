@@ -54,6 +54,9 @@ export default function Dashboard_B2B({ selectedShops, setSelectedShops }) {
             zIndex={999}
             placeholder={t('placeholders.select_shops')}
             multiple
+            customFilter={{
+              is_franchise: true,
+            }}
             defaultSelectedAll
             beforeContent={t('placeholders.select_shops')}
             value={selectedShops}

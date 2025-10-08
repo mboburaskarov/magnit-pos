@@ -1,9 +1,11 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useRef, useEffect } from 'react'
+import { useQueryParams } from './useQueryParams'
 
 export function useNavigateWithParams() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { values } = useQueryParams()
 
   // Store previous full URL (pathname + search)
   const prevUrlRef = useRef(null)
@@ -37,7 +39,7 @@ export function useNavigateWithParams() {
     if (prevUrlRef.current) {
       navigate(prevUrlRef.current)
     } else {
-      navigate(backHref) // fallback to normal browser back
+      navigate(values?.backHref || backHref) // fallback to normal browser back
     }
   }
 

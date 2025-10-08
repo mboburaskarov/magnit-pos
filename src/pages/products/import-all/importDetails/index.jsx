@@ -236,7 +236,7 @@ export default function ImportDetailsPage() {
               tableSettings
               columns={tableColumns}
               downloadByFilter={() => importDetailsExcelReport(importWithCheckingDetailsFilter)}
-              fullDownload={() => importDetailsExcelReport({ ...importWithCheckingDetailsFilter, limit: 1000000 })}
+              fullDownload={() => importDetailsExcelReport({ ...importWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
               isDownloading={isimportDetailsExcelReport}
               data={importWithCheckingDetails?.data?.data?.data || []}
               totalCount={importWithCheckingDetails?.data?.data?._meta?.total_count || 0}

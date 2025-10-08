@@ -199,7 +199,7 @@ export default function TransferSentScanWithCheckingPage() {
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
-                fullDownload={() => getTransferDetailsExcelReport({ ...transferWithCheckingDetailsFilter, limit: 1000000 })}
+                fullDownload={() => getTransferDetailsExcelReport({ ...transferWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                 downloadByFilter={() => getTransferDetailsExcelReport(transferWithCheckingDetailsFilter)}
                 data={transferWithCheckingDetails?.data?.data?.data || []}
                 totalCount={transferWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}

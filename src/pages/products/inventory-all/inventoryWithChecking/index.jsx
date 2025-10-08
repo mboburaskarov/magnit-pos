@@ -511,7 +511,7 @@ export default function InventoryWithCheckingPage() {
                   onCellValueChanged={onCellValueChanged}
                   columns={tableColumns}
                   data={rowData || []}
-                  fullDownload={() => inventoryExcelReport({ ...inventoryWithCheckingDetailsFilter, limit: 1000000 })}
+                  fullDownload={() => inventoryExcelReport({ ...inventoryWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                   downloadByFilter={() => inventoryExcelReport(inventoryWithCheckingDetailsFilter)}
                   isDownloading={isinventoryExcelReport}
                   totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}

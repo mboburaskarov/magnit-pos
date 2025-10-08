@@ -217,7 +217,7 @@ export default function AutoOrderDetailPage({ isNew = true }) {
                 id='auto-order-main-table'
                 tableSettings
                 columns={tableColumns}
-                fullDownload={() => autoOrderExcelReport({ ...autoOrderDetailListFilter, limit: 1000000 })}
+                fullDownload={() => autoOrderExcelReport({ ...autoOrderDetailListFilter, offset: 0, limit: 1000000 })}
                 downloadByFilter={() => autoOrderExcelReport(autoOrderDetailListFilter)}
                 isDownloading={isAutoOrderExcelReport}
                 data={autoOrderDetailList?.data?.data?.data || []}

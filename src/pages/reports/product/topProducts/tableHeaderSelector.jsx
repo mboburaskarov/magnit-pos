@@ -105,11 +105,12 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         headerComponent: CustomHeader,
         orderStoring,
         setOrderStoring,
-        headerName: 'Филиал',
+        headerName: 'Наименование',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
       }
     }
+
     if (el.field === 'count') {
       return {
         ...el,

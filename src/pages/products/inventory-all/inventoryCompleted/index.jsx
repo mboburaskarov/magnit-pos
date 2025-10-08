@@ -279,7 +279,7 @@ export default function InventoryCompleted() {
                 totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
-                fullDownload={() => inventoryExcelReport({ ...inventoryWithCheckingDetailsFilter, limit: 1000000 })}
+                fullDownload={() => inventoryExcelReport({ ...inventoryWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                 downloadByFilter={() => inventoryExcelReport(inventoryWithCheckingDetailsFilter)}
                 isDownloading={isinventoryExcelReport}
                 updaterAction={(newData) => {

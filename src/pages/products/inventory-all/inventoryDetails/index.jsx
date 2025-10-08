@@ -226,7 +226,7 @@ export default function InventoryDetailPage() {
               tableSettings
               columns={tableColumns}
               downloadByFilter={() => importDetailsExcelReport(inventoryDetailsFilter)}
-              fullDownload={() => importDetailsExcelReport({ ...inventoryDetailsFilter, limit: 1000000 })}
+              fullDownload={() => importDetailsExcelReport({ ...inventoryDetailsFilter, offset: 0, limit: 1000000 })}
               isDownloading={isimportDetailsExcelReport}
               data={inventoryDetails?.data?.data?.data || []}
               totalCount={inventoryDetails?.data?.data?._meta?.total_count || 0}

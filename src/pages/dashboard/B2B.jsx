@@ -144,11 +144,12 @@ export default function DashboarB2BPage() {
   const dashboard_company_filter = useMemo(() => {
     const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
     const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
+    console.log(selectedComapanies)
 
     return {
       limit: values?.limit || 15,
       search: values?.search,
-      is_franchise: true,
+      is_franchise: selectedComapanies == 'all' ? true : undefined,
       start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
       end_date:
         values?.end_date && values?.to_time
@@ -160,7 +161,13 @@ export default function DashboarB2BPage() {
       offset: values?.search ? 0 : values?.offset || 0,
     }
   }, [values?.offset, selectedComapanies, values?.start_date, values?.end_date, values?.from_time, values?.to_time, values?.limit, values?.search])
-  const { data: companyCountStats } = useQuery(['companyCountStats', dashboard_company_filter], () => requests.dashboradCountStats(dashboard_company_filter))
+  const { data: companyCountStats, isLoading } = useQuery(
+    ['companyCountStats', dashboard_company_filter],
+    () => requests.dashboradCountStats(dashboard_company_filter),
+    {
+      staleTime: 1000 * 60 * 1, // 1 minutes — won’t refetch until 1 mins passed
+    }
+  )
 
   return (
     <LoadingContainer readyState={true}>
@@ -174,7 +181,7 @@ export default function DashboarB2BPage() {
                 ?.map((el, ind) => (
                   <CheckAccess id={`dashboard-box-${el.id}`}>
                     <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
-                      <DashboardInfoBox key={ind} {...el} />
+                      <DashboardInfoBox isLoading={isLoading} key={ind} {...el} />
                     </Grid>
                   </CheckAccess>
                 ))}
