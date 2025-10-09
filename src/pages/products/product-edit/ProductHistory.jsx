@@ -23,19 +23,19 @@ export default function ProductHistory({ id }) {
     }
   }, [values?.limitHistory, values?.offsetHistory])
   const {
-    data: productDataHistory,
+    data: singleProductMovement,
     isLoading: isproductDataLoadingHistory,
-    isFetching: isFetchingproductDataHistory,
+    isFetching: isFetchingsingleProductMovement,
     refetch,
-  } = useQuery(['productDataHistory', productHistoryFilter], () => requests.getSingleProductMovement(productHistoryFilter, id))
+  } = useQuery(['singleProductMovement', productHistoryFilter], () => requests.getSingleProductMovement(productHistoryFilter, id))
 
   useEffect(() => {
-    const count = productDataHistory?.data?.data?._meta?.total_count
+    const count = singleProductMovement?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limitHistory || 0))
 
     setOffsetCount(offsetsCount || 0)
-  }, [productDataHistory?.data, values?.limitHistory])
+  }, [singleProductMovement?.data, values?.limitHistory])
 
   useEffect(() => {
     refetch()
@@ -142,7 +142,7 @@ export default function ProductHistory({ id }) {
     []
   )
 
-  const formattedData = productDataHistory?.data?.data?.data
+  const formattedData = singleProductMovement?.data?.data?.data
   const { mutate: getSingleProductMovementExcel, isLoading: isgetSingleProductMovementExcel } = useMutation(requests.getSingleProductMovementExcel, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
@@ -160,11 +160,11 @@ export default function ProductHistory({ id }) {
         downloadByFilter={() => getSingleProductMovementExcel({ ...productHistoryFilter, id })}
         isDownloading={isgetSingleProductMovementExcel}
         //
-        isDataLoading={isproductDataLoadingHistory || isFetchingproductDataHistory}
+        isDataLoading={isproductDataLoadingHistory || isFetchingsingleProductMovement}
         offsetQuery='offsetHistory'
         limitQuery='limitHistory'
         id='products-history-table'
-        totalCount={productDataHistory?.data?.data?._meta?.total_count || 0}
+        totalCount={singleProductMovement?.data?.data?._meta?.total_count || 0}
         columns={columns}
         data={formattedData}
         offsetCount={offsetCount}

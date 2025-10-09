@@ -27,20 +27,20 @@ export default function RejectedProducts({ id }) {
   }, [values?.limitHistory, selectedShops, values?.offsetHistory, values?.search])
 
   const {
-    data: productDataHistory,
+    data: rejectedProductList,
     isLoading: isproductDataLoadingHistory,
-    isFetching: isFetchingproductDataHistory,
+    isFetching: isFetchingrejectedProductList,
     refetch,
-  } = useQuery(['productDataHistory', productHistoryFilter], () => requests.getRejectedProductList(productHistoryFilter, id))
+  } = useQuery(['rejectedProductList', productHistoryFilter], () => requests.getRejectedProductList(productHistoryFilter, id))
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
 
   useEffect(() => {
-    const count = productDataHistory?.data?.data?._meta?.total_count
+    const count = rejectedProductList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limitHistory || 0))
 
     setOffsetCount(offsetsCount || 0)
-  }, [productDataHistory?.data, values?.limitHistory])
+  }, [rejectedProductList?.data, values?.limitHistory])
 
   useEffect(() => {
     refetch()
@@ -111,7 +111,7 @@ export default function RejectedProducts({ id }) {
     []
   )
 
-  const formattedData = productDataHistory?.data?.data?.data
+  const formattedData = rejectedProductList?.data?.data?.data
 
   return (
     <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
@@ -159,11 +159,11 @@ export default function RejectedProducts({ id }) {
       </Box>
       <Box>
         <AgGridTable
-          isDataLoading={isproductDataLoadingHistory || isFetchingproductDataHistory}
+          isDataLoading={isproductDataLoadingHistory || isFetchingrejectedProductList}
           offsetQuery='offsetHistory'
           limitQuery='limitHistory'
           id='products-history-table'
-          totalCount={productDataHistory?.data?.data?._meta?.total_count || 0}
+          totalCount={rejectedProductList?.data?.data?._meta?.total_count || 0}
           columns={columns}
           data={formattedData}
           offsetCount={offsetCount}

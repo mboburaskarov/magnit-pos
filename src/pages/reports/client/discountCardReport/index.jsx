@@ -40,19 +40,19 @@ export default function DiscountCardReport({ id }) {
   }, [values?.limitHistory, values?.offsetHistory, values?.search, values?.start_date, values?.end_date, values?.from_time, values?.to_time])
 
   const {
-    data: productDataHistory,
+    data: discountCartReport,
     isLoading: isproductDataLoadingHistory,
-    isFetching: isFetchingproductDataHistory,
+    isFetching: isFetchingdiscountCartReport,
     refetch,
-  } = useQuery(['productDataHistory', productHistoryFilter], () => requests.getDiscountCartReport(productHistoryFilter, id))
+  } = useQuery(['discountCartReport', productHistoryFilter], () => requests.getDiscountCartReport(productHistoryFilter, id))
 
   useEffect(() => {
-    const count = productDataHistory?.data?.data?._meta?.total_count
+    const count = discountCartReport?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limitHistory || 0))
 
     setOffsetCount(offsetsCount || 0)
-  }, [productDataHistory?.data, values?.limitHistory])
+  }, [discountCartReport?.data, values?.limitHistory])
 
   useEffect(() => {
     refetch()
@@ -173,7 +173,7 @@ export default function DiscountCardReport({ id }) {
     [values]
   )
 
-  const formattedData = productDataHistory?.data?.data?.data
+  const formattedData = discountCartReport?.data?.data?.data
   const { mutate: getDiscountCartReportExcel, isLoading: isgetDiscountCartReportExcel } = useMutation(requests.getDiscountCartReportExcel, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
@@ -212,12 +212,12 @@ export default function DiscountCardReport({ id }) {
             downloadByFilter={() => getDiscountCartReportExcel(productHistoryFilter)}
             isDownloading={isgetDiscountCartReportExcel}
             //
-            isDataLoading={isproductDataLoadingHistory || isFetchingproductDataHistory}
+            isDataLoading={isproductDataLoadingHistory || isFetchingdiscountCartReport}
             offsetQuery='offsetHistory'
             limitQuery='limitHistory'
             id='products-history-table'
             fullInfoAboutCurrentPage
-            totalCount={productDataHistory?.data?.data?._meta?.total_count || 0}
+            totalCount={discountCartReport?.data?.data?._meta?.total_count || 0}
             columns={columns}
             updaterAction={() => {}}
             data={formattedData}
