@@ -457,7 +457,7 @@ export default function InventoryWithCheckingPage() {
                 onCellValueChanged={onCellValueChanged}
                 columns={tableColumns}
                 data={rowData || []}
-                totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                totalCount={inventoryWithCheckingDetails?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {

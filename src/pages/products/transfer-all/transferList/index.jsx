@@ -228,7 +228,7 @@ export default function TransferPage() {
             columns={tableColumns}
             defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
             data={transferList?.data?.data?.data || []}
-            totalCount={transferList?.data?.data?._meta?.total_count || 0}
+            totalCount={transferList?.data?._meta?.total_count || 0}
             isDataLoading={isFetchingtransferList || transferListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {

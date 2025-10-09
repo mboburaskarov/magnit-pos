@@ -213,7 +213,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
                 fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...returnToWarehouseWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                 downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(returnToWarehouseWithCheckingDetailsFilter)}
                 data={returnToWarehouseWithCheckingDetails?.data?.data?.data || []}
-                totalCount={returnToWarehouseWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                totalCount={returnToWarehouseWithCheckingDetails?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchingreturnToWarehouseWithCheckingDetails || isSetScannedNumber || returnToWarehouseWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {

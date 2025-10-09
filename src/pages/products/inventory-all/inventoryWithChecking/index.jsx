@@ -514,7 +514,7 @@ export default function InventoryWithCheckingPage() {
                   fullDownload={() => inventoryExcelReport({ ...inventoryWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                   downloadByFilter={() => inventoryExcelReport(inventoryWithCheckingDetailsFilter)}
                   isDownloading={isinventoryExcelReport}
-                  totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                  totalCount={inventoryWithCheckingDetails?.data?.data?._meta?.total_count || 0}
                   isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
                   offsetCount={offsetCount}
                   updaterAction={(newData) => {

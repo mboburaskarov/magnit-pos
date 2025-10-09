@@ -204,7 +204,7 @@ export default function ImportWithCheckingPage() {
                 tableSettings
                 columns={tableColumns}
                 data={importWithCheckingDetails?.data?.data?.data || []}
-                totalCount={importWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                totalCount={importWithCheckingDetails?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {

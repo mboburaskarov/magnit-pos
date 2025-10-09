@@ -202,7 +202,7 @@ export default function TransferSentScanWithCheckingPage() {
                 fullDownload={() => getTransferDetailsExcelReport({ ...transferWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                 downloadByFilter={() => getTransferDetailsExcelReport(transferWithCheckingDetailsFilter)}
                 data={transferWithCheckingDetails?.data?.data?.data || []}
-                totalCount={transferWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                totalCount={transferWithCheckingDetails?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchingtransferWithCheckingDetails || transferWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {

@@ -276,7 +276,7 @@ export default function InventoryCompleted() {
                 tableSettings
                 columns={tableColumns}
                 data={inventoryWithCheckingDetails?.data?.data?.data || []}
-                totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                totalCount={inventoryWithCheckingDetails?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 fullDownload={() => inventoryExcelReport({ ...inventoryWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
