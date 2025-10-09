@@ -262,8 +262,8 @@ export default function TransferRecheckScanWithCheckingPage() {
                   if (newData) dispatch(updateTableHeader(newData))
                 }}
                 emptyTableText={{
-                  title: 'Импорт недоступен',
-                  description: 'Если вы не можете найти искомый Импорт, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+                  title: 'Перемещение недоступен',
+                  description: 'Если вы не можете найти искомый Перемещение, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}

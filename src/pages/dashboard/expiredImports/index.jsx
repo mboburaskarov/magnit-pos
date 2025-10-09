@@ -108,8 +108,8 @@ export default function ImportPage() {
               if (newData) dispatch(updateTableHeader(newData))
             }}
             emptyTableText={{
-              title: 'Импорт недоступен',
-              description: 'Если вы не можете найти искомый Импорт',
+              title: 'Просроченные импорт недоступен',
+              description: 'Если вы не можете найти искомый Просроченные импорт',
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}

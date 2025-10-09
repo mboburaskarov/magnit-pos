@@ -233,8 +233,8 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
                   if (newData) dispatch(updateTableHeader(newData))
                 }}
                 emptyTableText={{
-                  title: 'Импорт недоступен',
-                  description: 'Если вы не можете найти искомый Импорт, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+                  title: 'Возврат недоступен',
+                  description: 'Если вы не можете найти искомый Возврат, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
