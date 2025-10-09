@@ -23,6 +23,8 @@ import QrScanIcon from '../../../src/assets/icons/QrScanIcon'
 import thousandDivider from '../../../utils/thousandDivider'
 import TextField from '../../Inputs/TextField'
 import LoadingBlock from '../../LoadingBlock'
+import PreventRefresh from '../../../src/pages/sales/new-order/preventRefresh'
+import PreventRefreshDialog from '../../../src/pages/sales/new-order/preventRefreshDialog'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -292,6 +294,7 @@ export default function OrderDrawer({
   const [hasChange, setHasChange] = useState(false)
   const [qrcodeUrl, setQrcodeUrl] = useState({ qr: 'pending', fiscal: 'pending' })
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
+  const [isOpenRefreshDialog, setOpenRefreshDialog] = useState(false)
   const [payme, setPayme] = useState(false)
   const { id } = useParams()
   const theme = useTheme()
@@ -324,11 +327,15 @@ export default function OrderDrawer({
 
   const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
     onSuccess: ({ data }) => {
+      setOpenRefreshDialog(false)
+
       setNewSaleId(get(data, 'data.id', false))
       setDmedPrescriptionsList([])
       setDmedOrganizedList([])
     },
     onError: (err) => {
+      setOpenRefreshDialog(false)
+
       error('Ошибка при епосе')
     },
   })
@@ -422,6 +429,7 @@ export default function OrderDrawer({
     },
     onError: (err) => {
       setHasChange(false)
+      setOpenRefreshDialog(false)
 
       if (get(err, 'response.status') == 409) {
         saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), error('Эта продажа уже закрыта.')
@@ -448,6 +456,8 @@ export default function OrderDrawer({
 
         return
       } else {
+        setOpenRefreshDialog(false)
+
         setHasChange(false)
 
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
@@ -457,6 +467,7 @@ export default function OrderDrawer({
     onError: (err) => {
       sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
       setHasChange(false)
+      setOpenRefreshDialog(false)
 
       error('Ошибка при EPOS')
       console.log('err', err)
@@ -662,6 +673,10 @@ export default function OrderDrawer({
 
   return (
     <Box hidden>
+      <PreventRefresh
+        isDirty={isFinishSaleWithoutAppPaymentType || isSendToEPOS || isSendEPOSresponseToBackend}
+        setShowModal={() => setOpenRefreshDialog(true)}
+      />
       <Box width='calc(100% + 32px)' mx={-2} mt={-4}>
         <Drawer
           open={isOrderDrower}
@@ -941,6 +956,7 @@ export default function OrderDrawer({
           </Box>
         </Box>
       </StyledDialog>
+      <PreventRefreshDialog isOpenRefreshDialog={isOpenRefreshDialog} setOpenRefreshDialog={setOpenRefreshDialog} />
     </Box>
   )
 }

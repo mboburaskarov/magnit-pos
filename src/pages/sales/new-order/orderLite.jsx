@@ -18,6 +18,8 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
+import PreventRefreshDialog from './preventRefreshDialog'
+import PreventRefresh from './preventRefresh'
 function OrderLite({
   serviceType,
   cartItemsList,
@@ -44,6 +46,8 @@ function OrderLite({
   const { id } = useParams()
   const scannedBarcodeRef = useRef()
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
+  const [isOpenRefreshDialog, setOpenRefreshDialog] = useState(false)
+
   const [newSaleId, setNewSaleId] = useState(false)
   const [paymentAmount, setPaymentAmount] = useState(0)
   const userData = useSelector((state) => state.user)
@@ -487,7 +491,7 @@ function OrderLite({
   })
   let send_to_epos = localStorage.getItem('send_to_epos')
 
-  const { mutate: finishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
+  const { mutate: finishSaleWithoutAppPaymentType, isLoading: isFinishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
       if (!JSON.parse(send_to_epos)) {
         // disabling epos
@@ -559,6 +563,7 @@ function OrderLite({
     },
     onError: (err) => {
       setHasChange(false)
+      setOpenRefreshDialog(false)
 
       if (get(err, 'response.status') == 409) {
         saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }),
@@ -586,12 +591,16 @@ function OrderLite({
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
         return
       } else {
+        setOpenRefreshDialog(false)
+
         setHasChange(false)
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
         error(`EPOS: ${get(data, 'message')}`)
       }
     },
     onError: (err) => {
+      setOpenRefreshDialog(false)
+
       sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
       setHasChange(false)
 
@@ -614,13 +623,16 @@ function OrderLite({
       }, 100)
     }
   }, [isOpenScanDialog, scannedBarcodeRef])
-  const { mutate: sendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
+  const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
     onSuccess: ({ data }) => {
+      setOpenRefreshDialog(false)
       setNewSaleId(get(data, 'data.id', false))
       setDmedPrescriptionsList([])
       setDmedOrganizedList([])
     },
     onError: (err) => {
+      setOpenRefreshDialog(false)
+
       error('Ошибка при епосе')
     },
   })
@@ -690,6 +702,10 @@ function OrderLite({
         },
       }}
     >
+      <PreventRefresh
+        isDirty={isFinishSaleWithoutAppPaymentType || isSendToEPOS || isSendEPOSresponseToBackend}
+        setShowModal={() => setOpenRefreshDialog(true)}
+      />
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: '12px' }}>
         <Box
           sx={{
@@ -1071,6 +1087,7 @@ function OrderLite({
           </Box>
         </Box>
       </StyledDialog>
+      <PreventRefreshDialog isOpenRefreshDialog={isOpenRefreshDialog} setOpenRefreshDialog={setOpenRefreshDialog} />
     </Box>
   )
 }
