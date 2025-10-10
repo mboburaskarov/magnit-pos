@@ -549,13 +549,35 @@ function CartDetailSide({
                   flexShrink: 0,
                 },
               }}
-              disabled={size(get(cartItemsList, 'data.data.data')) == 0}
+              disabled={true}
+              // disabled={size(get(cartItemsList, 'data.data.data')) == 0}
               color='secondary'
               onClick={() => setIsCreateOpenDraft(true)}
             >
               <TimeAndDate disabled={size(get(cartItemsList, 'data.data.data'))} />
               <Typography ml={'8px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
                 {t('draft')}
+              </Typography>
+              <Typography
+                sx={{
+                  height: '20px',
+                  padding: '5px 10px',
+                  backgroundColor: '#000',
+                  color: '#fff !important',
+                  fontSize: '10px',
+                  fontWeight: '600',
+                  borderRadius: '24px',
+                  display: 'flex',
+                  top: '-5px',
+                  right: '-2px',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'absolute',
+
+                  ml: '5px',
+                }}
+              >
+                Доработка
               </Typography>
             </Button>
             <Button

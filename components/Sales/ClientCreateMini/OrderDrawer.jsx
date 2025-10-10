@@ -15,7 +15,7 @@ import { error, success } from '../../../utils/toast'
 import StyledDialog from '../../Dialogs/StyledeEmptyDialog'
 import { RippedPaperItem } from '../../RippedPaperList'
 import PaymentMethodInput from './PaymentMethodInput'
-
+import SaleProgressSteps from '../../../src/pages/sales/new-order/saleStepLoading'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useSelector } from 'react-redux'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
@@ -325,7 +325,11 @@ export default function OrderDrawer({
     }
   }, [paymentsList, cartItemsList])
 
-  const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
+  const {
+    mutate: sendEPOSresponseToBackend,
+    isLoading: isSendEPOSresponseToBackend,
+    isError: isSaleResponseError,
+  } = useMutation(requests.sendEPOSresponseToBackend, {
     onSuccess: ({ data }) => {
       setOpenRefreshDialog(false)
 
@@ -351,7 +355,11 @@ export default function OrderDrawer({
   })
 
   const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
-  const { mutate: finishSaleWithoutAppPaymentType, isLoading: isFinishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
+  const {
+    mutate: finishSaleWithoutAppPaymentType,
+    isLoading: isFinishSaleWithoutAppPaymentType,
+    isError: isSaleError,
+  } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
       if (!JSON.parse(send_to_epos)) {
         // disabling epos
@@ -444,7 +452,11 @@ export default function OrderDrawer({
       console.log('err', err)
     },
   })
-  const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
+  const {
+    mutate: sendToEPOS,
+    isLoading: isSendToEPOS,
+    isError: isEposError,
+  } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
       if (!get(data, 'error', true)) {
         setCustomerId('')
@@ -457,7 +469,7 @@ export default function OrderDrawer({
         return
       } else {
         setOpenRefreshDialog(false)
-
+        isEposError = true
         setHasChange(false)
 
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
@@ -709,7 +721,7 @@ export default function OrderDrawer({
           className={`${classes.drawer} ${half ? classes.half : ''}`}
         >
           <FormProvider {...methods}>
-            {hasChange && <LoadingBlock position={'absolute'} bgColor={'#ffffff99'} width={'100%'} left='0' />}
+            {/* {hasChange && <LoadingBlock position={'absolute'} bgColor={'#ffffff99'} width={'100%'} left='0' />} */}
             <Box className={classes.wrapper}>
               <Box width='calc(75% - 64px)' padding={'0 40px 0 0'}>
                 <Box mb={'40px'} display='flex' width={'100%'} justifyContent={'space-between'}>
@@ -907,6 +919,14 @@ export default function OrderDrawer({
               </Box>
             </LoadingButton>
           </FormProvider>
+          <SaleProgressSteps
+            isFinishSaleWithoutAppPaymentType={isFinishSaleWithoutAppPaymentType}
+            isSendToEPOS={isSendToEPOS}
+            isSendEPOSresponseToBackend={isSendEPOSresponseToBackend}
+            isSaleResponseError={isSaleResponseError}
+            isEposError={isEposError}
+            isSaleError={isSaleError}
+          />
         </Drawer>
       </Box>
       <StyledDialog
@@ -956,6 +976,7 @@ export default function OrderDrawer({
           </Box>
         </Box>
       </StyledDialog>
+
       <PreventRefreshDialog isOpenRefreshDialog={isOpenRefreshDialog} setOpenRefreshDialog={setOpenRefreshDialog} />
     </Box>
   )
