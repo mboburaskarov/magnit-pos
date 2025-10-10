@@ -52,7 +52,7 @@ const customDateRanges = () => [
 const today = dayjs().toDate()
 const tomorrow = dayjs().add(1, 'day').toDate()
 
-export default function DateRangeInput({ id, name, minHeight = '48px', startDateQuery = 'start_date', endDateQuery = 'end_date', defaultFilterData }) {
+export default function DateRangeInput({ id, name, minHeight = '56px', startDateQuery = 'start_date', endDateQuery = 'end_date', defaultFilterData }) {
   const defaultState = {
     from: dayjs(defaultFilterData?.start_date).isValid() ? dayjs(defaultFilterData?.start_date).toDate() : today,
     to: dayjs(defaultFilterData?.end_date).isValid() ? dayjs(defaultFilterData?.end_date).toDate() : today,
@@ -114,8 +114,8 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
     const start = dayjs(startDate).startOf('day')
     const end = dayjs(endDate).startOf('day')
 
-    if (start.isSame(today) && end.isSame(today)) return `Сегодня \n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
-    if (start.isSame(yesterday) && end.isSame(yesterday)) return `Вчера \n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
+    if (start.isSame(today) && end.isSame(today)) return `Сегодня \n ${start.format('DD.MM.YYYY')}`
+    if (start.isSame(yesterday) && end.isSame(yesterday)) return `Вчера \n ${end.format('DD.MM.YYYY')}`
 
     // На этой неделе — оба дня в той же неделе, что и today
     if (start.isSame(today, 'week') && end.isSame(today, 'week')) {

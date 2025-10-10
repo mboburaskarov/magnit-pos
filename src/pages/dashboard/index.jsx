@@ -33,6 +33,12 @@ import ImportPage from './expiredImports/index'
 import ChartArrowUp from '../../assets/icons/dashboard/ChartArrowUp'
 import TimeForward from '../../assets/icons/dashboard/TimeForward'
 import Time24 from '../../assets/icons/dashboard/Time24'
+import Wallet from '../../assets/icons/dashboard/Wallet'
+import ShoppingBasketArrow from '../../assets/icons/dashboard/ShoppingBasketArrow'
+import ShoppingBasketCheck from '../../assets/icons/dashboard/ShoppingBasketCheck'
+import StopWatchMinus from '../../assets/icons/dashboard/StopWatchMinus'
+import HourglassEnd from '../../assets/icons/dashboard/HourglassEnd'
+import Gift from '../../assets/icons/dashboard/Gift'
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
   const { type } = useSelector((state) => state.user)
@@ -134,7 +140,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Общая сумма баланса'),
-        icon: <RevenueIcon color='#fe5000' />,
+        icon: <Wallet color='#fe5000' />,
 
         count: stock_total_amount,
         endText: 'сум',
@@ -145,7 +151,7 @@ export default function DashboarPage() {
 
       {
         title: t('Общее количество продаж'),
-        icon: <OrdersIcon color='#fe5000' />,
+        icon: <ShoppingBasketArrow color='#fe5000' />,
         count: total_sale_count,
         endText: 'шт',
 
@@ -155,7 +161,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Общее количество остатков'),
-        icon: <ProductsIcon color='#fe5000' />,
+        icon: <ShoppingBasketCheck color='#fe5000' />,
         count: total_product_count,
         endText: 'шт',
 
@@ -165,7 +171,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Просроченные продукты'),
-        icon: <VendorsIcon color='#fe5000' />,
+        icon: <StopWatchMinus color='#fe5000' />,
         count: expired_soon_count,
         endText: 'шт',
 
@@ -176,7 +182,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Истекающий срок'),
-        icon: <VendorsIcon color='#fe5000' />,
+        icon: <HourglassEnd color='#fe5000' />,
         count: expiring_soon_count,
         amount: expiring_soon_amount,
         id: 'expiring_soon_amount',
@@ -187,7 +193,7 @@ export default function DashboarPage() {
 
       {
         title: t('Ваш бонус'),
-        icon: <VendorsIcon color='#fe5000' />,
+        icon: <Gift color='#fe5000' />,
         count: bonus_amount,
         id: 'bonus_amount',
         percent: calculatePercentage(before_bonus_amount || 1, bonus_amount),
@@ -278,6 +284,7 @@ export default function DashboarPage() {
                       bgcolor: 'bg.10',
                       minHeight: '154px',
                       width: '100%',
+                      height: '100%',
                     })}
                   >
                     <Box
@@ -335,7 +342,7 @@ export default function DashboarPage() {
         </Grid>
       </Box>
       {!isLoading && (
-        <>
+        <Box sx={{ padding: '0 20px' }}>
           <CheckAccess id={'dashboard-transactions-vendor'}>
             <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
               <Transactions
@@ -371,13 +378,14 @@ export default function DashboarPage() {
               <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} />
             </Box>
           </CheckAccess>
-          <CheckAccess id={'dashboard-expired-imports'}>
-            <Box>
-              import MoneyArrowDown from '../../assets/icons/dashboard/MoneyArrowDown';
-              <ImportPage />
-            </Box>
-          </CheckAccess>
-        </>
+        </Box>
+      )}
+      {!isLoading && (
+        <CheckAccess id={'dashboard-expired-imports'}>
+          <Box>
+            <ImportPage />
+          </Box>
+        </CheckAccess>
       )}
     </LoadingContainer>
   )
