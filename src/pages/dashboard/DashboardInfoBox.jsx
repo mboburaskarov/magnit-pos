@@ -12,20 +12,22 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
         <Box width='100%' alignItems={'center'} display='inline-flex'>
           {!noDot && (
             <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: icon ? 40 : 24,
-                minWidth: icon ? 40 : 24,
-                minHeight: icon ? 40 : 24,
-                height: icon ? 40 : 24,
-                backgroundColor: 'orange.100',
-                borderRadius: icon ? 3 : 6,
-                '& > svg > path': { stroke: '#FE5000' },
-                '& > svg > circle': { stroke: '#FE5000' },
-                '& > svg': { width: 18 },
-              }}
+              sx={
+                {
+                  // display: 'flex',
+                  // justifyContent: 'center',
+                  // alignItems: 'center',
+                  // width: icon ? 40 : 24,
+                  // minWidth: icon ? 40 : 24,
+                  // minHeight: icon ? 40 : 24,
+                  // height: icon ? 40 : 24,
+                  // backgroundColor: 'orange.100',
+                  // borderRadius: icon ? 3 : 6,
+                  // '& > svg > path': { stroke: '#FE5000' },
+                  // '& > svg > circle': { stroke: '#FE5000' },
+                  // '& > svg': { width: 18 },
+                }
+              }
             >
               {isLoading ? <Skeleton variant='circular' width={18} height={18} /> : icon}
             </Box>

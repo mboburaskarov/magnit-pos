@@ -25,10 +25,14 @@ import OrdersIcon from '../../assets/icons/OrdersIcon'
 import ProductsIcon from '../../assets/icons/ProductsIcon'
 import RevenueIcon from '../../assets/icons/RevenueIcon'
 import VendorsIcon from '../../assets/icons/VendorsIcon'
+import MoneyArrowDown from '../../assets/icons/dashboard/MoneyArrowDown'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import DashboardHeader from './DashboardHeader'
 import DashboardInfoBox from './DashboardInfoBox'
 import ImportPage from './expiredImports/index'
+import ChartArrowUp from '../../assets/icons/dashboard/ChartArrowUp'
+import TimeForward from '../../assets/icons/dashboard/TImeForward'
+import Time24 from '../../assets/icons/dashboard/Time24'
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
   const { type } = useSelector((state) => state.user)
@@ -85,7 +89,7 @@ export default function DashboarPage() {
     return [
       {
         title: t('Общая сумма продаж'),
-        icon: <RevenueIcon color='#fe5000' />,
+        icon: <MoneyArrowDown color='#fe5000' />,
         count: total_sale_amount,
         percent: calculatePercentage(before_sale_amount || 1, total_sale_amount),
         id: 'total_sale_amount',
@@ -94,7 +98,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Себестоимость'),
-        icon: <RevenueIcon color='#fe5000' />,
+        icon: <ChartArrowUp color='#fe5000' />,
         count: product_turnover,
         percent: calculatePercentage(before_sale_amount || 1, product_turnover),
         id: 'product_turnover',
@@ -103,7 +107,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Чистая прибыль'),
-        icon: <VendorsIcon color='#fe5000' />,
+        icon: <ChartArrowUp color='#fe5000' />,
         count: total_net_income,
         endText: 'сум',
         percent: calculatePercentage(before_total_net_income || 1, total_net_income),
@@ -112,7 +116,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Импорт в ожидании (за весь период)'),
-        icon: <RevenueIcon color='#fe5000' />,
+        icon: <TimeForward color='#fe5000' />,
         count: import_amount,
         percent: calculatePercentage(before_import_amount || 1, import_amount),
         id: 'import_amount',
@@ -121,7 +125,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Импорты старше 24 часов'),
-        icon: <RevenueIcon color='#fe5000' />,
+        icon: <Time24 color='#fe5000' />,
         count: not_last_24h_import_amount,
         percent: 0,
         id: 'current_import_amount',
@@ -369,6 +373,7 @@ export default function DashboarPage() {
           </CheckAccess>
           <CheckAccess id={'dashboard-expired-imports'}>
             <Box>
+              import MoneyArrowDown from '../../assets/icons/dashboard/MoneyArrowDown';
               <ImportPage />
             </Box>
           </CheckAccess>

@@ -29,6 +29,7 @@ export default function ChangePaymentType({ open, refetch, setOpen }) {
     const requestBody = {
       payment_type_id: data.payment_type_id.value,
       sale_payment_id: get(open, 'sale_payment_id'),
+      sale_id: get(open, 'sale_id'),
     }
     changeTypeId(requestBody)
   }

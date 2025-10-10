@@ -230,7 +230,11 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
                     <CheckAccess id={'can-chnage-payment-type'}>
                       <Box
                         onClick={() => {
-                          setopenCreateBonusModal({ types: get(saleDetailsList, 'data.data.sale_payments', []), sale_payment_id: pays.id })
+                          setopenCreateBonusModal({
+                            types: get(saleDetailsList, 'data.data.sale_payments', []),
+                            sale_payment_id: pays.id,
+                            sale_id: get(open, 'id'),
+                          })
                         }}
                       >
                         <ChangeCircle sx={{ color: '#fff', fontSize: '30px', mt: '10px' }} />

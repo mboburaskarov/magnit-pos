@@ -96,7 +96,24 @@ export default function FilterMenu({ open, setOpen }) {
               }}
               filterOption={() => true}
             />
-
+            <LazySelect
+              slug='role_id'
+              boxStyle={{ width: '100%' }}
+              id='role_id'
+              name='role_id'
+              isMulti={false}
+              placeholder={t('role.placeholder')}
+              minWidth='auto'
+              isClearable={true}
+              label={t('Роль')}
+              request={requests.getAllRoles}
+              filters={{ limit: 10 }}
+              control={control}
+              getOptionLabel={(option) => {
+                return option.name
+              }}
+              filterOption={() => true}
+            />
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
                 sx={{ bgcolor: '#fff !important', border: '1px solid #ECEDF2' }}
