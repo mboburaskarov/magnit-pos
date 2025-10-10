@@ -225,14 +225,14 @@ export default function TransferSentScanWithCheckingPage() {
         open={openFinishConfirmDialog}
         setOpen={() => setOpenFinishConfirmDialog(false)}
         icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
-        title={t('alerts.finish_return')}
+        title={'Отправил перемещение?'}
         desc={
           <>
             <Typography fontWeight={'600'} fontSize={'20px'}>
-              {t('alerts.finish_return_desc')}
+              {'Вы уверены что хотите отправил перемещение?'}
             </Typography>
             <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
-              {t('alerts.finish_return_warning')}
+              {'Не сканированные товары будут списаны'}
             </Typography>
           </>
         }

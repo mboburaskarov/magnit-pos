@@ -1,9 +1,14 @@
-import { Button, Drawer } from '@mui/material'
+import { Box, Button, Drawer } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import CheckAccess from '../../../../components/CheckAccess'
 import SaleChildDrawer from './saleChildDrawer'
+import { get, size } from 'lodash'
+import { error } from '../../../../utils/toast'
+import { useMutation } from 'react-query'
+import { useNavigate } from 'react-router-dom'
+import { requests } from '../../../../utils/requests'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -29,10 +34,22 @@ function SaleDrawer({ open, setOpen, ids }) {
   const { t } = useTranslation()
   const classes = useStyles()
   const childRef = useRef()
+  const navigate = useNavigate()
 
   const printNoProductCheque = () => {
     childRef.current.printChildCheque()
   }
+  const { mutate: saleMoveToPending, isLoading: isSaleMoveToPending } = useMutation(requests.saleMoveToPending, {
+    onSuccess: ({ data }) => {
+      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+    },
+    onError: (err) => {
+      console.log(err)
+      error('Ошибка: Продажа переведена в режим ожидания!')
+    },
+  })
+  console.log(open)
+
   return (
     <Drawer
       ModalProps={{
@@ -49,11 +66,28 @@ function SaleDrawer({ open, setOpen, ids }) {
       className={classes.drawer}
     >
       <SaleChildDrawer childRef={childRef} ids={ids} open={open} setOpen={setOpen} />
-      <CheckAccess id='can-reprint'>
-        <Button sx={{ minHeight: '56px', mx: '10px' }} onClick={() => printNoProductCheque()}>
-          Повторный чек
-        </Button>
-      </CheckAccess>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          mb: '20px',
+        }}
+      >
+        <CheckAccess id='can-reprint'>
+          <Button sx={{ minHeight: '56px', flex: '1', ml: '20px' }} onClick={() => printNoProductCheque()}>
+            Повторный чек
+          </Button>
+        </CheckAccess>
+        {size(get(open, 'data.fiscal_sign')) < 2 ? (
+          <CheckAccess id='can-sale-to-change-pending'>
+            <Button sx={{ minHeight: '56px', flex: '1', ml: '10px', mr: '20px' }} onClick={() => saleMoveToPending(get(open, 'id'))}>
+              Повторно отправить продажу
+            </Button>
+          </CheckAccess>
+        ) : (
+          ''
+        )}
+      </Box>
     </Drawer>
   )
 }

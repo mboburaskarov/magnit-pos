@@ -280,10 +280,10 @@ export default function TransferGetScanWithCheckingPage() {
         desc={
           <>
             <Typography fontWeight={'600'} fontSize={'20px'}>
-              {'Вы уверены, что хотите принять перемещение?'}
+              {'Вы уверены что хотите Принять перемещение?'}
             </Typography>
             <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
-              {'Не сканированные товары не будут добавлены'}
+              {'Не сканированные товары будут списаны'}
             </Typography>
           </>
         }

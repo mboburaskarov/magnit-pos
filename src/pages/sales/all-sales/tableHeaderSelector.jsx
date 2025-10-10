@@ -49,7 +49,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
               '& p': { color: 'orange.500' },
               cursor: 'pointer',
             }}
-            onClick={() => setOpenSaleDrawer({ id: p.data?.id })}
+            onClick={() => setOpenSaleDrawer({ id: p.data?.id, data: p?.data })}
           >
             <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
               {get(p, 'data.sale_type', 'SALE') === 'SALE' ? 'Продажа' : 'Возврат'} #{get(p, 'data.sale_number', '-')}

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ru' // Russian locale for correct week start
 import isBetween from 'dayjs/plugin/isBetween'
@@ -114,24 +114,24 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
     const start = dayjs(startDate).startOf('day')
     const end = dayjs(endDate).startOf('day')
 
-    if (start.isSame(today) && end.isSame(today)) return 'Сегодня'
-    if (start.isSame(yesterday) && end.isSame(yesterday)) return 'Вчера'
+    if (start.isSame(today) && end.isSame(today)) return `Сегодня \n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
+    if (start.isSame(yesterday) && end.isSame(yesterday)) return `Вчера \n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
 
     // На этой неделе — оба дня в той же неделе, что и today
     if (start.isSame(today, 'week') && end.isSame(today, 'week')) {
-      return 'На этой неделе'
+      return `На этой неделе \n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
     }
 
     // С начала месяца до сегодня
     const startOfMonth = today.startOf('month')
     if (start.isSame(startOfMonth) && end.isSame(today)) {
-      return 'В этом месяце'
+      return `В этом месяце \n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
     }
 
     // С начала года до сегодня
     const startOfYear = today.startOf('year')
     if (start.isSame(startOfYear) && end.isSame(today)) {
-      return 'В этом году'
+      return `В этом году \n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
     }
 
     return `${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
@@ -156,13 +156,29 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
         buttonLabel={
           <Box
             display='inline-flex'
+            flexDirection={'column'}
             whiteSpace={'pre'}
             sx={{
-              '&  > p': { fontWeight: 600, textAlign: 'left', color: 'dark.500', margin: '0 20px', lineHeight: '25px', fontSize: 16 },
               '& > span': { lineHeight: '19px', color: 'gray.600', fontWeight: 600, ml: 1, mr: '2px !important' },
             }}
           >
-            <p>{customDateRangeSelected || 'Выберите дату'}</p>
+            {customDateRangeSelected.split('\n').map((letter, index) => {
+              return (
+                <Typography
+                  key={index}
+                  sx={{
+                    fontWeight: 600,
+                    textAlign: 'center',
+                    color: index === 0 ? 'text.primary' : 'dark.500',
+                    margin: '0 20px',
+                    lineHeight: '17px',
+                    fontSize: 16,
+                  }}
+                >
+                  {letter}
+                </Typography>
+              )
+            }) || 'Выберите дату'}
           </Box>
         }
         popperContentProps={{
