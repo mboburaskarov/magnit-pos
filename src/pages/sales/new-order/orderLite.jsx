@@ -20,6 +20,7 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
 import PreventRefreshDialog from './preventRefreshDialog'
 import PreventRefresh from './preventRefresh'
+import SaleProgressSteps from './saleStepLoading'
 function OrderLite({
   serviceType,
   cartItemsList,
@@ -491,7 +492,11 @@ function OrderLite({
   })
   let send_to_epos = localStorage.getItem('send_to_epos')
 
-  const { mutate: finishSaleWithoutAppPaymentType, isLoading: isFinishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
+  const {
+    mutate: finishSaleWithoutAppPaymentType,
+    isLoading: isFinishSaleWithoutAppPaymentType,
+    isError: isSaleError,
+  } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
       if (!JSON.parse(send_to_epos)) {
         // disabling epos
@@ -580,7 +585,11 @@ function OrderLite({
     },
   })
 
-  const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
+  const {
+    mutate: sendToEPOS,
+    isLoading: isSendToEPOS,
+    isError: isEposError,
+  } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
       if (!get(data, 'error', true)) {
         setCustomerId('')
@@ -592,7 +601,7 @@ function OrderLite({
         return
       } else {
         setOpenRefreshDialog(false)
-
+        isEposError = true
         setHasChange(false)
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
         error(`EPOS: ${get(data, 'message')}`)
@@ -623,7 +632,11 @@ function OrderLite({
       }, 100)
     }
   }, [isOpenScanDialog, scannedBarcodeRef])
-  const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
+  const {
+    mutate: sendEPOSresponseToBackend,
+    isLoading: isSendEPOSresponseToBackend,
+    isError: isSaleResponseError,
+  } = useMutation(requests.sendEPOSresponseToBackend, {
     onSuccess: ({ data }) => {
       setOpenRefreshDialog(false)
       setNewSaleId(get(data, 'data.id', false))
@@ -648,7 +661,7 @@ function OrderLite({
   })
 
   const onSubmit = async (data) => {
-    setHasChange(true)
+    // setHasChange(true)
     setOpenScanDialog(false)
     const paymentTypes = paymentsList
       .filter((type) => get(type, 'amount', false))
@@ -705,6 +718,14 @@ function OrderLite({
       <PreventRefresh
         isDirty={isFinishSaleWithoutAppPaymentType || isSendToEPOS || isSendEPOSresponseToBackend}
         setShowModal={() => setOpenRefreshDialog(true)}
+      />
+      <SaleProgressSteps
+        isFinishSaleWithoutAppPaymentType={isFinishSaleWithoutAppPaymentType}
+        isSendToEPOS={isSendToEPOS}
+        isSendEPOSresponseToBackend={isSendEPOSresponseToBackend}
+        isSaleResponseError={isSaleResponseError}
+        isEposError={isEposError}
+        isSaleError={isSaleError}
       />
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: '12px' }}>
         <Box
