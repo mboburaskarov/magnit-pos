@@ -31,7 +31,7 @@ import DashboardHeader from './DashboardHeader'
 import DashboardInfoBox from './DashboardInfoBox'
 import ImportPage from './expiredImports/index'
 import ChartArrowUp from '../../assets/icons/dashboard/ChartArrowUp'
-import TimeForward from '../../assets/icons/dashboard/TImeForward'
+import TimeForward from '../../assets/icons/dashboard/TimeForward'
 import Time24 from '../../assets/icons/dashboard/Time24'
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
