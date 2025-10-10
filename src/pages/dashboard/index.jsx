@@ -79,6 +79,8 @@ export default function DashboarPage() {
     before_stock_amount,
     before_bonus_amount,
     before_expiring_soon_count,
+    before_product_turnover,
+    product_turnover,
   }) => {
     return [
       {
@@ -89,6 +91,24 @@ export default function DashboarPage() {
         id: 'total_sale_amount',
         endText: 'сум',
         old: before_sale_amount,
+      },
+      {
+        title: t('Себестоимость'),
+        icon: <RevenueIcon color='#fe5000' />,
+        count: product_turnover,
+        percent: calculatePercentage(before_sale_amount || 1, product_turnover),
+        id: 'product_turnover',
+        endText: 'сум',
+        old: before_product_turnover,
+      },
+      {
+        title: t('Чистая прибыль'),
+        icon: <VendorsIcon color='#fe5000' />,
+        count: total_net_income,
+        endText: 'сум',
+        percent: calculatePercentage(before_total_net_income || 1, total_net_income),
+        id: 'total_net_income',
+        old: before_total_net_income,
       },
       {
         title: t('Импорт в ожидании (за весь период)'),
@@ -118,15 +138,7 @@ export default function DashboarPage() {
         percent: calculatePercentage(before_stock_amount || 1, stock_total_amount),
         old: before_stock_amount,
       },
-      {
-        title: t('Чистая прибыль'),
-        icon: <VendorsIcon color='#fe5000' />,
-        count: total_net_income,
-        endText: 'сум',
-        percent: calculatePercentage(before_total_net_income || 1, total_net_income),
-        id: 'total_net_income',
-        old: before_total_net_income,
-      },
+
       {
         title: t('Общее количество продаж'),
         icon: <OrdersIcon color='#fe5000' />,
