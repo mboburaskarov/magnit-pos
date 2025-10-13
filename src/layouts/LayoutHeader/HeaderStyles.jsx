@@ -1,6 +1,6 @@
 import makeStyles from '@mui/styles/makeStyles'
 
-const drawerWidth = '296px'
+const drawerWidth = '272px'
 
 export const headerStyles = makeStyles((theme) => {
   return {

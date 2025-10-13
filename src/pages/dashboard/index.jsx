@@ -39,6 +39,7 @@ import ShoppingBasketCheck from '../../assets/icons/dashboard/ShoppingBasketChec
 import StopWatchMinus from '../../assets/icons/dashboard/StopWatchMinus'
 import HourglassEnd from '../../assets/icons/dashboard/HourglassEnd'
 import Gift from '../../assets/icons/dashboard/Gift'
+import DashboardTopsBox from '../../../components/Charts/DashboardTopsBox'
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
   const { type } = useSelector((state) => state.user)
@@ -345,7 +346,38 @@ export default function DashboarPage() {
         <Box sx={{ padding: '0 20px' }}>
           <CheckAccess id={'dashboard-transactions-vendor'}>
             <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-              <Transactions
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(payments, 'data.data')}
+                title={'Топ продавцы'}
+                subTitle={thousandDivider(Math.round(get(payments, 'data.data', [])?.reduce((a, b) => a + b.amount, 0)), 'сум')}
+                tableData={[
+                  { title: 'Тип Платежи	', colId: 'name' },
+                  { title: 'Кол-во', colId: 'count', sortable: true },
+                  { title: 'Сумма продажи', colId: 'amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(transaction, 'data.data')}
+                title={'Транзакции'}
+                subTitle={thousandDivider(
+                  get(transaction, 'data.data', [])?.reduce((a, b) => {
+                    const count = parseFloat((b.count || '0').replace(',', '.'))
+                    return a + count
+                  }, 0),
+
+                  'шт'
+                )}
+                tableData={[
+                  { title: 'Тип Платежи	', colId: 'name' },
+                  { title: 'Кол-во', colId: 'count', sortable: true },
+                  { title: 'Сумма продажи', colId: 'amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+              {/* <Transactions
                 id='dashboard-chart'
                 data={get(payments, 'data.data')}
                 title={'Платежи'}
@@ -363,19 +395,67 @@ export default function DashboarPage() {
 
                   'шт'
                 )}
-              />
+              /> */}
             </Box>
           </CheckAccess>
           <CheckAccess id={'dashboard-vendor'}>
             <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-              <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
-              <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} />
+              <DashboardTopsBox
+                id='dashboard-chart'
+                href='/reports/top-branchs?backHref=/dashboard'
+                data={get(topStores, 'data.data')}
+                title={'Топ филиалам'}
+                tableData={[
+                  { title: 'Филиал', colId: 'name' },
+                  { title: 'Кол-во чеков', colId: 'count', sortable: true },
+                  { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(topProducts, 'data.data')}
+                title={'Топ продукты'}
+                href='/reports/top-products?backHref=/dashboard'
+                tableData={[
+                  { title: 'Продукт', colId: 'name' },
+                  { title: 'Количество ', colId: 'count', sortable: true },
+                  { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+              {/* <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} /> */}
+              {/* <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} /> */}
             </Box>
           </CheckAccess>
           <CheckAccess id={'dashboard-seller'}>
             <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-              <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} />
-              <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} />
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(topSellers, 'data.data')}
+                title={'Топ продавцы'}
+                href='/reports/top-vendors?backHref=/dashboard'
+                tableData={[
+                  { title: 'Продавец	', colId: 'full_name' },
+                  { title: 'Кол-во чеков', colId: 'count', sortable: true },
+                  { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(topBonusProducts, 'data.data')}
+                title={'Бонусные продукты'}
+                href='/reports/bonus-products?backHref=/dashboard'
+                tableData={[
+                  { title: 'Продукт	', colId: 'name' },
+                  { title: 'Количество', colId: 'count', sortable: true },
+                  { title: 'Бонусная сумма', colId: 'bonus_amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+              {/* <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} /> */}
+              {/* <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} /> */}
             </Box>
           </CheckAccess>
         </Box>
