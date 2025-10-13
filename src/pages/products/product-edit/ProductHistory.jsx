@@ -68,6 +68,8 @@ export default function ProductHistory({ id }) {
               const type = get(data, 'entry_type')
               if (type == '4') {
                 navigate(`/sales/all-sales?limit=10&offset=0&search=${get(data, 'public_id')}&sale_id=${get(data, 'id')}`)
+              } else if (type == '8') {
+                navigate(`/sales/all-sales?limit=10&offset=0&search=${get(data, 'public_id')}&sale_id=${get(data, 'id')}`)
               } else if (type == '6') {
                 navigate(`/products/transfer-completed/${get(data, 'id')}`)
               } else if (type == '5') {
@@ -85,6 +87,8 @@ export default function ProductHistory({ id }) {
               ? 'Перемещение '
               : get(data, 'entry_type') == '5'
               ? 'Возврат на склад '
+              : get(data, 'entry_type') == '8'
+              ? 'Возврат '
               : get(data, 'entry_type') == '3'
               ? 'Списание '
               : get(data, 'entry_type') == '1'
