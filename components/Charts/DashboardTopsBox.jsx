@@ -1,7 +1,7 @@
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import thousandDivider from '../../utils/thousandDivider'
 import { useNavigateWithParams } from '../../src/hooks/useNavigateWithParams'
 import RightArrowRound from '../../src/assets/icons/dashboard/RightArrowROund'
@@ -37,22 +37,23 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
           </Typography>
         </Box>
         {href && (
-          <Box
-            onClick={() => navigateWithParams(href, { keep: true })}
-            sx={{
-              cursor: 'pointer',
-              '&:hover': {
-                '& rect': {
-                  stroke: '#333',
+          <Link to={href}>
+            <Box
+              sx={{
+                cursor: 'pointer',
+                '&:hover': {
+                  '& rect': {
+                    stroke: '#333',
+                  },
+                  '& path': {
+                    fill: '#333',
+                  },
                 },
-                '& path': {
-                  fill: '#333',
-                },
-              },
-            }}
-          >
-            <RightArrowRound sx={{ fontSize: '25px' }} />
-          </Box>
+              }}
+            >
+              <RightArrowRound sx={{ fontSize: '25px' }} />
+            </Box>
+          </Link>
         )}
       </Box>
       <Box
@@ -89,13 +90,14 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
                       borderTopLeftRadius: '8px',
                       borderBottomLeftRadius: '8px',
                     }),
+                    ...(el?.sortable && { cursor: 'pointer' }),
                     ...(index + 1 === tableData.length && {
                       borderTopRightRadius: '8px',
                       borderBottomRightRadius: '8px',
                     }),
                   }}
                 >
-                  <Box display={'flex'} alignItems={'center'}>
+                  <Box display={'flex'} color={'bunker.300'} alignItems={'center'}>
                     {el?.title}{' '}
                     {el?.sortable && (
                       <Box display={'inline-flex'} ml='2px'>
@@ -113,7 +115,7 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
                   fontWeight: 500,
                   lineHeight: '20px',
                   border: 'none',
-                  p: '16px 12px',
+                  p: '12px 8px',
                   color: 'dark.500',
                 },
               }}
@@ -159,14 +161,21 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                margin: '5px',
                                 textAlign: 'center',
                                 height: '20px',
+                                width: 'fit-content',
                                 backgroundColor: !isFall ? '#30BE821A' : '#F45B691A',
                               }}
                               alignItems='center'
                             >
-                              <Typography color={isFall ? '#F45B69' : '#30BE82'} textAlign={'center'} fontWeight='500' fontSize={12} lineHeight={'16px'}>
+                              <Typography
+                                padding={'3px 8px'}
+                                color={isFall ? '#F45B69' : '#30BE82'}
+                                textAlign={'center'}
+                                fontWeight='500'
+                                fontSize={12}
+                                lineHeight={'16px'}
+                              >
                                 {!isFall ? '+' : '-'} {percent}%
                               </Typography>
                             </Box>
