@@ -7,7 +7,7 @@ import FallIcon from '../../src/assets/icons/FallIcon'
 import GrowIcon from '../../src/assets/icons/GrowIcon'
 import thousandDivider from '../../utils/thousandDivider'
 import { useNavigateWithParams } from '../../src/hooks/useNavigateWithParams'
-import RightArrowRound from '../../src/assets/icons/dashboard/RightArrowROund'
+import RightArrowRound from '../../src/assets/icons/dashboard/RightArrowRound'
 import SortIcon from '../../src/assets/icons/dashboard/SortIcon'
 
 export default function TotalOrdersByCity({ data }) {
