@@ -129,7 +129,7 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
                       if (el?.colId == 'name' || el?.colId == 'full_name') {
                         return (
                           <TableCell
-                            sx={{ maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxLines: 1 }}
+                            sx={{ maxWidth: '280px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxLines: 1 }}
                             className='table-cell'
                           >
                             {index + 1}. {item[el?.colId]}
