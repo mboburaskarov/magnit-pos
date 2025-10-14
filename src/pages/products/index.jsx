@@ -340,90 +340,98 @@ export default function ProductsPage() {
               ]}
             />
             <Box display={'flex'}>
-              <StyledTooltip title={'Запрещенный продукт'}>
-                <Box
-                  onClick={() => navigate('/products/banned-product')}
-                  sx={{
-                    backgroundColor: 'bg.10',
-                    padding: '10px',
-                    borderRadius: '10px',
-                    mr: '10px',
-                    display: 'flex',
-                    width: '38px',
-                    height: '38px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Block
-                    sx={(theme) => ({
-                      fill: theme.palette.orange[500],
-                      fontSize: 23,
-                    })}
-                  />
-                </Box>
-              </StyledTooltip>
-              <StyledTooltip title={'Управление каталогом'}>
-                <Box
-                  onClick={() => navigate('/products/categories')}
-                  sx={{
-                    backgroundColor: 'bg.10',
-                    padding: '10px',
-                    borderRadius: '10px',
-                    mr: '10px',
-                    display: 'flex',
-                    width: '38px',
-                    height: '38px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <CategoryIcon />
-                </Box>
-              </StyledTooltip>
-              <StyledTooltip title={'Бонусный продукт'}>
-                <Box
-                  onClick={() => navigate('/products/bonus-product')}
-                  sx={{
-                    backgroundColor: 'bg.10',
-                    padding: '10px',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    width: '38px',
-                    height: '38px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    '& svg': {
-                      width: '18px',
-                      height: '18px',
-                    },
-                  }}
-                >
-                  <PrizeBoxIcon color='#FF6018' />
-                </Box>
-              </StyledTooltip>
-              <StyledTooltip title={'Ошибки'}>
-                <Box
-                  onClick={() => navigate('/products/errors')}
-                  sx={{
-                    ml: '10px',
-                    backgroundColor: 'bg.10',
-                    padding: '10px',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    width: '38px',
-                    height: '38px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    '& svg': {
-                      width: '18px',
-                      height: '18px',
-                    },
-                  }}
-                >
-                  <Report color='#FF6018' />
-                </Box>
-              </StyledTooltip>
+              <CheckAccess id={'banned-product'}>
+                <StyledTooltip title={'Запрещенный продукт'}>
+                  <Box
+                    onClick={() => navigate('/products/banned-product')}
+                    sx={{
+                      backgroundColor: 'bg.10',
+                      padding: '10px',
+                      borderRadius: '10px',
+                      mr: '10px',
+                      display: 'flex',
+                      width: '38px',
+                      height: '38px',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Block
+                      sx={(theme) => ({
+                        fill: theme.palette.orange[500],
+                        fontSize: 23,
+                      })}
+                    />
+                  </Box>
+                </StyledTooltip>
+              </CheckAccess>
+              <CheckAccess id={'products-categories'}>
+                <StyledTooltip title={'Управление каталогом'}>
+                  <Box
+                    onClick={() => navigate('/products/categories')}
+                    sx={{
+                      backgroundColor: 'bg.10',
+                      padding: '10px',
+                      borderRadius: '10px',
+                      mr: '10px',
+                      display: 'flex',
+                      width: '38px',
+                      height: '38px',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <CategoryIcon />
+                  </Box>
+                </StyledTooltip>
+              </CheckAccess>
+              <CheckAccess id={'products-bonus-product'}>
+                <StyledTooltip title={'Бонусный продукт'}>
+                  <Box
+                    onClick={() => navigate('/products/bonus-product')}
+                    sx={{
+                      backgroundColor: 'bg.10',
+                      padding: '10px',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      width: '38px',
+                      height: '38px',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      '& svg': {
+                        width: '18px',
+                        height: '18px',
+                      },
+                    }}
+                  >
+                    <PrizeBoxIcon color='#FF6018' />
+                  </Box>
+                </StyledTooltip>
+              </CheckAccess>
+              <CheckAccess id={'products-errors'}>
+                <StyledTooltip title={'Ошибки'}>
+                  <Box
+                    onClick={() => navigate('/products/errors')}
+                    sx={{
+                      ml: '10px',
+                      backgroundColor: 'bg.10',
+                      padding: '10px',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      width: '38px',
+                      height: '38px',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      '& svg': {
+                        width: '18px',
+                        height: '18px',
+                      },
+                    }}
+                  >
+                    <Report color='#FF6018' />
+                  </Box>
+                </StyledTooltip>
+              </CheckAccess>
             </Box>
           </Box>
           <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>

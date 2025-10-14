@@ -43,6 +43,8 @@ function OrderLite({
   dmedPrescriptionsList,
 }) {
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
+  const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
+
   const theme = useTheme()
   const { id } = useParams()
   const scannedBarcodeRef = useRef()
@@ -498,6 +500,10 @@ function OrderLite({
     isError: isSaleError,
   } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
+      if (SALE_STAGE == 6) {
+        sendEPOSresponseToBackend({ error: false, response_data: null, sale_id: id })
+        return
+      }
       if (!JSON.parse(send_to_epos)) {
         // disabling epos
 

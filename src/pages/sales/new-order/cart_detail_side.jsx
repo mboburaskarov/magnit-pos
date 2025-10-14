@@ -79,6 +79,8 @@ function CartDetailSide({
   const [collapsedSale, setCollapsedSale] = useState(false)
   const childRef = useRef()
   const { id } = useParams()
+  const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
+
   const leftZreportCount = localStorage.getItem('leftZreportCount')
   const printNoProductCheque = () => {
     childRef.current.printChildCheque()
@@ -446,13 +448,15 @@ function CartDetailSide({
           boxShadow: '0px 4px 12px 0px #00000014',
         })}
       >
-        <Box
-          sx={{ cursor: 'pointer', display: 'flex', my: '20px', justifyContent: 'space-between', alignItems: 'center' }}
-          onClick={() => setCollapsedSale((a) => !a)}
-        >
-          <Typography>Лайт продажа</Typography>
-          {!collapsedSale ? <ArrowUp color='#111217' /> : <ArrowDown />}
-        </Box>
+        {SALE_STAGE != 8 && (
+          <Box
+            sx={{ cursor: 'pointer', display: 'flex', my: '20px', justifyContent: 'space-between', alignItems: 'center' }}
+            onClick={() => setCollapsedSale((a) => !a)}
+          >
+            <Typography>Лайт продажа</Typography>
+            {!collapsedSale ? <ArrowUp color='#111217' /> : <ArrowDown />}
+          </Box>
+        )}
         <OrderLite
           serviceType={serviceType}
           collapsedSale={collapsedSale}

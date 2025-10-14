@@ -28,6 +28,7 @@ import CreateBonusProduct from './createBonusProduct'
 import EditBonusProduct from './editBonusProduct'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
+import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function BonusProductPage() {
@@ -123,7 +124,16 @@ export default function BonusProductPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [bonusProductList?.data, values?.limit])
+  const { mutate: productBonusExcel, isLoading: isproductBonusExcel } = useMutation(requests.getProductBonusExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.log(err)
 
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pb={'20px'}>
@@ -185,6 +195,9 @@ export default function BonusProductPage() {
               <EditBonusProduct refetch={refetch} open={openEditBonusModal} setOpen={setopenEditBonusModal} />
               <Box>
                 <AgGridTable
+                  fullDownload={() => productBonusExcel({ ...bonusProductListFilter, offset: 0, limit: 1000000 })}
+                  downloadByFilter={() => productBonusExcel(bonusProductListFilter)}
+                  isDownloading={isproductBonusExcel}
                   id='auto-order-main-table'
                   tableSettings
                   columns={tableColumns}

@@ -55,7 +55,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
       retail_price_from: null,
     })
     setOpen(false)
-    navigate(`/products/all${requestParams}`)
+    navigate(`/reports/product-qty-by-date${requestParams}`)
   }
 
   const onError = (err) => {
@@ -107,7 +107,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
     reset()
     methods.setValue('')
     setOpen(false)
-    navigate(`/products/all?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/reports/product-qty-by-date?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
   const barcodeFilterList = [
