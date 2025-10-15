@@ -9,7 +9,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
 import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
@@ -37,11 +37,16 @@ import ChangeShift from './ChangeShift'
 import CreateDraftDrawer from './createDraftDrawer'
 import ImplementMarkingDialog from './ImplementMarkingDialog'
 import ProductDrawer from './ProductDrawer'
-
+import PrinterIcon from '../../../assets/icons/PrinterIcon'
 import BonusProductDrawer from '../../../../components/Sales/bonusProductDrawer/BonusProductDrawer'
 import SendRejectedProductDrawer from '../../../../components/Sales/SendRejectedProduct/SendRejectedProductDrawer'
 import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck'
 import OrganizeDmedOrder from './OrganizeDmedOrder'
+import CartItems from './CartItems'
+import OrderLite from './orderLite'
+import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
+import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
+import TimeFast from '../../../assets/icons/TimeFast'
 const useStyles = makeStyles((theme) => ({
   currentUser: {
     // minWidth: '120px',
@@ -108,27 +113,20 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
   card_detail: {
-    width: '450px',
+    width: '360px',
     borderLeft: `1px solid ${theme.palette.bunker[100]}`,
     minHeight: '100vh',
-    padding: '20px',
     '& .MuiInputBase-root': {
       borderRadius: '40px ',
     },
     position: 'relative',
   },
   cart_detail_id: {
-    borderRadius: '40px',
-    border: '1px dashed',
-    borderColor: theme.palette.black,
-    padding: '10px 16px',
-    width: '100%',
+    backgroundColor: theme.palette.bg[10],
+    padding: '5px 20px 3px',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: '24px',
-    marginTop: '20px',
-    // marginRight: '8px',
+    justifyContent: 'space-between',
   },
   cart_detail_icon: {
     width: 48,
@@ -179,18 +177,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   priceDetails: {
-    // position: 'absolute',
-    // bottom: 20,
-    // right: 0,
-    // left: 0,
-    padding: '16px 12px',
+    minWidth: '292px',
     display: 'flex',
     flexDirection: 'column',
-    // border: '1px solid',
-    backgroundColor: theme.palette.white,
+    justifyContent: 'space-between',
     borderRadius: '24px',
-    // borderColor: theme.palette.bunker[100],
-    boxShadow: '0px 0px 12px 0px #0000000A',
   },
 
   searchItemList: {
@@ -277,7 +268,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 let a = -1
-function NewSale() {
+function NewSaleV2() {
   const NotificationAudio = new Audio(notificationAudio)
   const { t } = useTranslation()
   const { id } = useParams()
@@ -286,6 +277,7 @@ function NewSale() {
   const method = useForm()
   const classes = useStyles()
   const cartItemRef = useRef([])
+  const [maxAmount, setMaxAmount] = useState(0)
 
   const [showOverlay, setShowOverlay] = useState(false)
   const [hasChange, setHasChange] = useState(false)
@@ -995,12 +987,19 @@ function NewSale() {
       })
     }
   }, [isOrderDrower, liteOrder])
+
+  const childRef = useRef()
+  const printNoProductCheque = () => {
+    childRef.current.printChildCheque()
+  }
+  const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
+
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />
       {isEposTurnOn || get(userData, 'type') === 'SUPERADMIN' ? (
         <Box display={'flex'}>
-          <Box width={'calc(100% - 384px)'} position={'relative'} padding={'20px'}>
+          <Box width={'calc(100% - 360px)'} position={'relative'} padding={'20px'}>
             <Box position={'relative'}>
               <CartSearchBar
                 cartItemsList={cartItemsList}
@@ -1020,23 +1019,21 @@ function NewSale() {
                 handleAddProduct={handleAddProduct}
               />
             </Box>
-            <Box mt={8} />
+            <Box mt={'40px'} />
             <Box padding={'24px 0'}>
               <Box
                 sx={{
                   width: '100%',
                   display: 'flex',
-                  mb: '16px',
+                  mb: '32px',
                   alignItems: 'center',
                   justifyContent: 'space-between',
                 }}
               >
                 <Box display={'flex'} alignItems={'center'}>
-                  <Link to={'/sales/new-sale-v2/534b497f-14ee-497c-8c46-272aacea3861?page=1'}>
-                    <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
-                      {t('menu.orders.new_order.heading')}
-                    </Typography>
-                  </Link>
+                  <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
+                    {t('menu.orders.new_order.heading')}
+                  </Typography>
                   {get(cartItemsList, 'data.data.data', 0)?.length ? (
                     <StyledTooltip title={'Удалить все продукты'}>
                       <Box
@@ -1079,77 +1076,28 @@ function NewSale() {
                     <Refresh />
                   </Box>
                 </Box>
-                <Box display={'flex'}>
-                  <CheckAccess id={'noor-order'}>
-                    <ListItem sx={{ mr: '20px' }} className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsOpenNoorDrawer(true)}>
-                      <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
-                        <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
-                          <Typography id='user-username' className={classes.username}>
-                            Онлайн-продажи
-                          </Typography>
-                          <p id='user-shopname' className={`${classes.bonus_amount} `}>
-                            Noor
-                          </p>
-                        </Box>
-                        <Box
-                          sx={{
-                            ml: '12px',
-                            backgroundColor: '#fff',
-                            width: '40px',
-                            height: '40px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            borderRadius: '50%',
-                            justifyContent: 'center',
-                            '& img': {
-                              width: '38px',
-                            },
-                          }}
-                        >
-                          <img src={'/noor-black.png'} />
-                          {get(noorOrderCount, 'data.data.count') > 0 && (
-                            <Box>
-                              <Typography
-                                sx={{
-                                  position: 'absolute',
-                                  right: -5,
-                                  top: -8,
-                                  backgroundColor: '#f33',
-                                  color: '#fff',
-                                  width: '25px',
-                                  height: '25px',
-                                  borderRadius: '50%',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  fontWeight: '600',
-                                }}
-                              >
-                                {get(noorOrderCount, 'data.data.count', 0)}
-                              </Typography>
-                            </Box>
-                          )}
-                        </Box>
-                      </Box>
-                    </ListItem>
-                  </CheckAccess>
-                  <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar' onClick={() => setIsUserOpen(userData)}>
-                    <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
-                      <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
-                        <Typography id='user-username' className={classes.username}>
-                          {get(userData, 'first_name')}
-                        </Typography>
-                        <p id='user-shopname' className={`${classes.bonus_amount} `}>
-                          +{thousandDivider(get(sellerBonusInOneSale, 'data.data.bonus', 0), 'сум')}
-                        </p>
-                      </Box>
-                      <div className={classes.avatarPlaceholder}>
-                        <CustomImg src={get(userData, 'photo')} />
-                      </div>
-                    </Box>
-                  </ListItem>
+                <Box
+                  onClick={() => {
+                    size(get(cartItemsList, 'data.data.data')) !== 0 && printNoProductCheque()
+                  }}
+                  sx={{
+                    cursor: 'pointer',
+                    height: '44px',
+                    width: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    backgroundColor: 'bg.10',
+                    borderRadius: '40px',
+                    justifyContent: 'center',
+                    '&:hover': {
+                      backgroundColor: 'bunker.300',
+                    },
+                  }}
+                >
+                  <PrinterIcon />
                 </Box>
               </Box>
+
               <LoadingContainer noHeight readyState={!isCartItemsLIstLoading}>
                 {!size(get(cartItemsList, 'data.data.data')) ? (
                   <Box className={classes.empty_list}>
@@ -1171,31 +1119,203 @@ function NewSale() {
                       },
                     }}
                   >
-                    {get(cartItemsList, 'data.data.data', []).map((el, index) => (
-                      <CartItem
-                        markingsList={markingsList}
-                        removeMarking={removeMarking}
-                        searchRef={searchRef}
-                        setOpenProductDrawer={setOpenProductDrawer}
-                        // onKeyDown={(e) => handleTabSwitch(e, el?.id)}
-                        refetchcartItemsList={refetchcartItemsList}
-                        method={method}
-                        setOpenConfirmDialog={setOpenConfirmDialog}
-                        item={el}
-                        packRef={(els) => (cartItemRef.current[index] = els)}
-                        unitRef={(els) => (cartItemRef.current[el.id + 'unit'] = els)}
-                        key={el?.id}
-                        index={el?.id}
-                      />
-                    ))}
+                    <CartItems
+                      cartItemsList={cartItemsList}
+                      markingsList={markingsList}
+                      removeMarking={removeMarking}
+                      searchRef={searchRef}
+                      setOpenProductDrawer={setOpenProductDrawer}
+                      // onKeyDown={(e) => handleTabSwitch(e, el?.id)}
+                      refetchcartItemsList={refetchcartItemsList}
+                      method={method}
+                      setOpenConfirmDialog={setOpenConfirmDialog}
+                      cartItemRef={cartItemRef}
+                    />
                   </Box>
                 )}
               </LoadingContainer>
             </Box>
-            <ShortcutsDrawer />
+            <Box
+              sx={(theme) => ({
+                position: 'absolute',
+                bottom: 0,
+                right: 20,
+                height: '172px',
+                width: 'calc(100% - 40px)',
+                left: 20,
+                padding: '8px 8px 16px',
+                display: 'flex',
+                border: 'none',
+                backgroundColor: theme.palette.bg[10],
+                borderTopRightRadius: '20px',
+                borderTopLeftRadius: '20px',
+              })}
+            >
+              <OrderLite
+                serviceType={serviceType}
+                setDmedOrganizedList={setDmedOrganizedList}
+                liteOrder={liteOrder}
+                setMaxAmount={setMaxAmount}
+                sendToEpos={sendToEpos}
+                dmedOrganizedList={dmedOrganizedList}
+                childRef={childRef}
+                maxAmount={maxAmount}
+                setLiteOrder={setLiteOrder}
+                dmedPrescriptionsList={dmedPrescriptionsList}
+                setDmedPrescriptionsList={setDmedPrescriptionsList}
+                setCustomerId={setCustomerId}
+                setMarkingList={setMarkingList}
+                setHasChange={setHasChange}
+                cartItemsList={get(cartItemsList, 'data.data')}
+                markingsList={markingsList}
+                cashBoxDetails={cashBoxDetails}
+                customerId={customerId}
+                printContainer={printContainer}
+              />
+              <Box className={classes.priceDetails}>
+                <Box sx={{ display: 'flex', height: '44px', justifyContent: 'space-between' }}>
+                  <Box display={'flex'} width={'100%'} justifyContent={'space-between'} flexDirection={'column'}>
+                    <Typography fontWeight={'500'} fontSize={'12px'} color={'bunker.400'} lineHeight={'16px'}>
+                      {t('total_amount')}:
+                    </Typography>
+                    <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.950'} lineHeight={'24px'}>
+                      {thousandDivider(get(cartItemsList, 'data.data.sum'), 'сум')}
+                    </Typography>
+                  </Box>
+                  <Box display={'flex'} width={'100%'} justifyContent={'space-between'} flexDirection={'column'}>
+                    <Typography fontWeight={'500'} fontSize={'12px'} color={'bunker.400'} lineHeight={'16px'}>
+                      {t('discount')}:
+                    </Typography>
+                    <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.950'} lineHeight={'24px'}>
+                      -{thousandDivider(get(cartItemsList, 'data.data.discount_amount'), 'сум')}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Button
+                  loading={hasChange}
+                  disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0 || hasChange}
+                  onClick={() => {
+                    if (dmedPrescriptionsList.length && dmedOrganizedList.length != size(get(cartItemsList, 'data.data.data'))) {
+                      setIsOpenOrganizeDmedOrderDialog(true)
+                      return
+                    }
+                    if (isAllMarkingFill() || !sendToEpos) {
+                      setLiteOrder(true)
+                    } else {
+                      setLiteOrder(false)
+                      setIsOpenImplementMarkingDialog({ mode: 'lite' })
+                    }
+                  }}
+                  color='primary'
+                  sx={{ height: '44px', borderRadius: '16px', display: 'flex', justifyContent: 'space-between' }}
+                >
+                  <Typography display={'flex'} alignItems={'center'} fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
+                    {t('pay')}
+                    <Box
+                      sx={{
+                        color: '#fff',
+                        border: '2px solid #fff',
+                        height: '34px',
+                        display: 'flex',
+                        padding: '2px',
+                        ml: '15px',
+                        fontSize: '12px',
+                        minWidth: '34px',
+                        alignItems: 'center',
+                        borderRadius: '8px',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      F10
+                    </Box>
+                  </Typography>
+                  <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
+                    {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
+                  </Typography>
+                </Button>
+                <Box display={'flex'}>
+                  <Button
+                    sx={{
+                      borderRadius: '16px',
+                      mr: '4px',
+                      p: '12px',
+                      height: '44px',
+                      width: '100%',
+
+                      '& svg': {
+                        flexShrink: 0,
+                      },
+                    }}
+                    disabled={true}
+                    // disabled={size(get(cartItemsList, 'data.data.data')) == 0}
+                    color='secondary'
+                    onClick={() => setIsCreateOpenDraft(true)}
+                  >
+                    <TimeFast disabled={size(get(cartItemsList, 'data.data.data'))} />
+                    <Typography ml={'8px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
+                      {t('draft')}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        height: '20px',
+                        padding: '5px 10px',
+                        backgroundColor: '#000',
+                        color: '#fff !important',
+                        fontSize: '10px',
+                        fontWeight: '600',
+                        borderRadius: '24px',
+                        display: 'flex',
+                        top: '-5px',
+                        right: '-2px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        position: 'absolute',
+
+                        ml: '5px',
+                      }}
+                    >
+                      Доработка
+                    </Typography>
+                  </Button>
+                  <Button
+                    disabled={size(get(cartItemsList, 'data.data.data')) === 0}
+                    sx={{
+                      borderRadius: '16px',
+                      ml: '4px',
+                      p: '12px',
+                      width: '100%',
+                      height: '44px',
+                      '& svg > path': {
+                        stroke: '#fff',
+                      },
+                    }}
+                    onClick={() => {
+                      if (dmedPrescriptionsList.length && dmedOrganizedList.length != size(get(cartItemsList, 'data.data.data'))) {
+                        setIsOpenOrganizeDmedOrderDialog(true)
+                        return
+                      }
+                      if (isAllMarkingFill() || !sendToEpos) {
+                        setIsOrderDrower(true)
+                      } else {
+                        setIsOpenImplementMarkingDialog({ mode: 'full' })
+                      }
+                    }}
+                    color='primary'
+                  >
+                    <Typography mr={'20px'} fontWeight={'500'} fontSize={'18px'} color={'#fff'} lineHeight={'26px'}>
+                      {t('Полный')}
+                    </Typography>
+
+                    <ArrowRightIcon disabled={size(get(cartItemsList, 'data.data.data'))} />
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+            {/* <ShortcutsDrawer /> */}
           </Box>
 
           <CartDetailSide
+            childRef={childRef}
             setIsOpenBonusProductDrawer={setIsOpenBonusProductDrawer}
             setServiceType={setServiceType}
             serviceType={serviceType}
@@ -1239,6 +1359,8 @@ function NewSale() {
             cartItemsList={cartItemsList}
             setInputDiscount={setInputDiscount}
             setIsOpenDraft={setIsOpenDraft}
+            maxAmount={maxAmount}
+            setMaxAmount={setMaxAmount}
           />
         </Box>
       ) : (
@@ -1420,4 +1542,4 @@ function NewSale() {
   )
 }
 
-export default NewSale
+export default NewSaleV2

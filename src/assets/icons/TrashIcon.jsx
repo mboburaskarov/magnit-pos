@@ -1,0 +1,17 @@
+import React from 'react'
+
+function TrashIcon() {
+  return (
+    <svg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+      <path
+        d='M4.16667 6.66602V14.9993C4.16667 16.8403 5.65905 18.3327 7.5 18.3327H12.5C14.3409 18.3327 15.8333 16.8403 15.8333 14.9993V6.66602M11.6667 9.16602V14.166M8.33333 9.16602L8.33333 14.166M13.3333 4.16602L12.1614 2.40818C11.8523 1.94452 11.3319 1.66602 10.7747 1.66602H9.22531C8.66805 1.66602 8.14767 1.94452 7.83856 2.40818L6.66667 4.16602M13.3333 4.16602H6.66667M13.3333 4.16602H17.5M6.66667 4.16602H2.5'
+        stroke='#868FAA'
+        stroke-width='1.5'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+      />
+    </svg>
+  )
+}
+
+export default TrashIcon
