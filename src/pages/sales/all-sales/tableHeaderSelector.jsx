@@ -66,7 +66,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
               {get(p, 'data.sale_type', 'SALE') === 'SALE' ? 'Продажа' : 'Возврат'} #{get(p, 'data.sale_number', '-')}
             </Typography>
             <Box width={'10px'} />
-            {get(p, 'data.discount_barcode') != '' && (
+            {get(p, 'data.total_discount') > 0 && (
               <Box
                 sx={{
                   width: '20px',
@@ -260,6 +260,23 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
             data={get(p, 'data', 0)}
             // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'UzumBank')}
             type='alif'
+          />
+        )),
+      }
+    }
+    if (el.field === 'total_discount') {
+      return {
+        ...el,
+        headerName: 'Сумма скидки',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <SimpleText
+            currency='сум'
+            withDevider
+            {...p}
+            data={get(p, 'data', 0)}
+            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'UzumBank')}
+            type='total_discount'
           />
         )),
       }

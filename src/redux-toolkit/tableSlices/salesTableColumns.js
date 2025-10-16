@@ -64,7 +64,12 @@ const columns = [
     minWidth: 70,
     width: 160,
   },
-
+  {
+    field: 'total_discount',
+    hide: false,
+    minWidth: 70,
+    width: 160,
+  },
   {
     field: 'created_at',
     hide: false,
