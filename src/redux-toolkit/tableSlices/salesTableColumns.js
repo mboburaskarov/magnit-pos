@@ -11,7 +11,7 @@ const columns = [
     field: 'sale_number',
     hide: false,
     minWidth: 60,
-    width: 180,
+    width: 230,
   },
   {
     field: 'document',

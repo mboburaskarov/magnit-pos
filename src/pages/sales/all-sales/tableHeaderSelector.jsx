@@ -9,6 +9,8 @@ import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
 import getImageUrl from '../../../../utils/getImageUrl'
 import thousandDivider from '../../../../utils/thousandDivider'
 import DefaultUserImgIcon from '../../../assets/icons/defaultUserImgIcon'
+import PrizeBoxIcon from '../../../assets/icons/PrizeBoxIcon'
+import { Percent } from '@mui/icons-material'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -45,15 +47,38 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         cellRenderer: memo((p) => (
           <Box
             sx={{
+              display: 'flex',
+              alignItems: 'center',
               whiteSpace: 'pre-line',
               '& p': { color: 'orange.500' },
               cursor: 'pointer',
+              '& svg': {
+                width: '15px',
+                height: '15px',
+              },
+              '& svg > path': {
+                fill: '#fff',
+              },
             }}
             onClick={() => setOpenSaleDrawer({ id: p.data?.id, data: p?.data })}
           >
             <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
               {get(p, 'data.sale_type', 'SALE') === 'SALE' ? 'Продажа' : 'Возврат'} #{get(p, 'data.sale_number', '-')}
             </Typography>
+            <Box width={'10px'} />
+            <Box
+              sx={{
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'orange.500',
+              }}
+            >
+              <Percent sx={{ color: '#fff' }} />
+            </Box>
           </Box>
         )),
       }
