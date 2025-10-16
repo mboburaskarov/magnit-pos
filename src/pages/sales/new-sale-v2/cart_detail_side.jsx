@@ -43,6 +43,7 @@ function CartDetailSide({
   sendToEpos,
   setDmedOrganizedList,
   cashBoxDetails,
+  setIsOpenNoorDrawer,
   dmedOrganizedList,
   setIsOpenOrganizeDmedOrderDialog,
   setDmedPrescriptionsList,
@@ -101,7 +102,26 @@ function CartDetailSide({
   const methods = useForm()
 
   const { control } = methods
-
+  const CustomButtonRow = ({ onClick, leftIcon, title }) => (
+    <Box
+      onClick={onClick}
+      sx={{
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingY: '12px',
+        borderBottom: '1px solid',
+        borderColor: 'bunker.100',
+      }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {leftIcon}
+        <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>{title}</Typography>
+      </Box>
+      <RightArrow />
+    </Box>
+  )
   return (
     <Box
       className={classes.card_detail}
@@ -122,72 +142,15 @@ function CartDetailSide({
         </Box>
       </Box>
       <Box sx={{ padding: '8px 20px' }}>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingY: '12px',
-            borderBottom: '1px solid',
-            borderColor: 'bunker.100',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <MaximizeIcon />
-            <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>Открыть новое окно продаж</Typography>
-          </Box>
-          <RightArrow />
-        </Box>
+        <CustomButtonRow
+          leftIcon={<MaximizeIcon />}
+          title={'Открыть новое окно продаж'}
+          onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })}
+        />
+        <CustomButtonRow leftIcon={<TimeFast />} title={'Черновик / Отложки'} onClick={() => setIsOpenDraft(true)} />
+        <CustomButtonRow leftIcon={<ClearIcon />} title={'Отказ'} onClick={() => setIsOpenSendRejectedProduct(true)} />
+        <CustomButtonRow leftIcon={<ReturnExchangeIcon />} title={'Возврат / Обмен'} onClick={() => setIsOpenReturnExchange(true)} />
 
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingY: '12px',
-            borderBottom: '1px solid',
-            borderColor: 'bunker.100',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <TimeFast />
-            <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>Черновик / Отложки</Typography>
-          </Box>
-          <RightArrow />
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingY: '12px',
-            borderBottom: '1px solid',
-            borderColor: 'bunker.100',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <ClearIcon />
-            <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>Отказ</Typography>
-          </Box>
-          <RightArrow />
-        </Box>
-
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingY: '12px',
-            borderBottom: '1px solid',
-            borderColor: 'bunker.100',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <ReturnExchangeIcon />
-            <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>Возврат / Обмен</Typography>
-          </Box>
-          <RightArrow />
-        </Box>
         <Box
           sx={{
             display: 'flex',
@@ -202,22 +165,17 @@ function CartDetailSide({
             <ChequeIcon />
             <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>EPOS</Typography>
           </Box>
-          <CustomSwitch name='isActive' defaultValue={true} onChange={(checked) => console.log(checked)} />
+          <CustomSwitch
+            onChange={() => {
+              setSendToEpos((prev) => !prev)
+            }}
+            value={sendToEpos}
+            name='isActive'
+            defaultValue={true}
+            uncontrolled
+          />
         </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingY: '12px',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <OnlineSaleNoorIcon />
-            <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>Онлайн-продажи (Noor)</Typography>
-          </Box>
-          <RightArrow />
-        </Box>
+        <CustomButtonRow leftIcon={<OnlineSaleNoorIcon />} title={'Онлайн-продажи (Noor)'} onClick={() => setIsOpenNoorDrawer(true)} />
       </Box>
 
       <Box>

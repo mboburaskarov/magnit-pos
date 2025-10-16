@@ -265,7 +265,7 @@ export const requests = {
   getRevaluationDashBoard: (id) => request.get(`v1/repricing-detail/detail-status/${id}`),
 
   getRevaluationList: (filter) => request.get(`v1/repricing/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getRevaluationDetailList: (id, filter) => request.get(`v1/repricing-detail/list/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getRevaluationDetailList: ({ id, ...filter }) => request.get(`v1/repricing-detail/list/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   getRevaluation: (id, filter) => request.get(`v1/repricing/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   changePriceNew: ({ id, new_retail_price, product_id, store_product_id }) =>
     request.post(`v1/repricing/new-price/${id}`, {

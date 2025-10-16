@@ -93,6 +93,8 @@
   "table_columns.actions": "Действия",
   "table_columns.expire_date": "Срок",
   "navbar.dashboard": "Дашбоард",
+  "should_pay": "Должен платить",
+
   "navbar.catalog": "Каталог",
   "navbar.products": "Все товары",
   "placeholders.select_shops": "Выберите Аптекаы",

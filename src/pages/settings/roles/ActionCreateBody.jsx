@@ -35,6 +35,7 @@ export default function ActionCreateBody({ isOpen }) {
       )
       setValue('name', get(onePermission, 'data.data.name'))
       setValue('route', get(onePermission, 'data.data.route'))
+      setValue('key', get(onePermission, 'data.data.key'))
       setValue('description', get(onePermission, 'data.data.description'))
       setValue(
         'method',
@@ -91,7 +92,7 @@ export default function ActionCreateBody({ isOpen }) {
             <>
               <Box display={'flex'} flexDirection={'column'} gap={2}>
                 <TextField required fullWidth name='name' label='Название' placeholder='Введите название' />
-                <TextField required fullWidth name='key' label='Ключ' placeholder='Введите ключ' />
+                <TextField required fullWidth name='route' label='Ключ' placeholder='Введите ключ' />
                 <TextField
                   required
                   multiline

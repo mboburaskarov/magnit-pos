@@ -1032,7 +1032,7 @@ function NewSale() {
                 }}
               >
                 <Box display={'flex'} alignItems={'center'}>
-                  <Link to={'/sales/new-sale-v2/534b497f-14ee-497c-8c46-272aacea3861?page=1'}>
+                  <Link to={`/sales/new-sale-v2/${id}`}>
                     <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
                       {t('menu.orders.new_order.heading')}
                     </Typography>

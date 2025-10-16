@@ -21,6 +21,7 @@ import QrScanIcon from '../../../assets/icons/QrScanIcon'
 import PreventRefreshDialog from './preventRefreshDialog'
 import PreventRefresh from './preventRefresh'
 import SaleProgressSteps from './saleStepLoading'
+import ShortcutBox from '../../../../components/ShortcutBox'
 function OrderLite({
   serviceType,
   cartItemsList,
@@ -43,7 +44,7 @@ function OrderLite({
 }) {
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
   const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
-
+  const { t } = useTranslation()
   const theme = useTheme()
   const { id } = useParams()
   const scannedBarcodeRef = useRef()
@@ -423,7 +424,6 @@ function OrderLite({
       />
     )
   }
-  const { t } = useTranslation()
   const navigate = useNavigate()
   useEffect(() => {
     setPaymentsList(defultPaymentTypes)
@@ -752,9 +752,9 @@ function OrderLite({
         >
           <Typography
             sx={{
-              fontSize: '12px',
-              fontWeight: 600,
-              lineHeight: '16px',
+              fontSize: '14px',
+              fontWeight: 500,
+              lineHeight: '20px',
               color: 'bunker.500',
               mb: '4px',
             }}
@@ -763,9 +763,9 @@ function OrderLite({
           </Typography>
           <Typography
             sx={{
-              fontSize: '18px',
+              fontSize: '20px',
               fontWeight: 600,
-              lineHeight: '20px',
+              lineHeight: '32px',
               color: 'bunker.950',
             }}
           >
@@ -787,9 +787,9 @@ function OrderLite({
         >
           <Typography
             sx={{
-              fontSize: '12px',
-              fontWeight: 600,
-              lineHeight: '16px',
+              fontSize: '14px',
+              fontWeight: 500,
+              lineHeight: '20px',
               color: 'bunker.500',
               mb: '4px',
             }}
@@ -798,9 +798,9 @@ function OrderLite({
           </Typography>
           <Typography
             sx={{
-              fontSize: '18px',
+              fontSize: '20px',
               fontWeight: 600,
-              lineHeight: '20px',
+              lineHeight: '32px',
               color: 'orange.500',
             }}
           >
@@ -855,21 +855,10 @@ function OrderLite({
             borderRadius='18px'
             type='number'
             adornment={
-              <AdornmentSelect
-                options={[
-                  {
-                    from: 'UZS',
-                    to: 'UZS',
-                    name: 'UZS',
-                  },
-                ]}
-                name='aca_second'
-                value={{
-                  id: 'UZS',
-                  name: 'UZS',
-                }}
-                onChange={(val) => {}}
-              />
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 16px' }}>
+                <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>сум</Typography>
+                <ShortcutBox minWidth='27px' shortcut='N' height='20px' color='#D5D7E2' />
+              </Box>
             }
           />
         </Box>
@@ -919,26 +908,87 @@ function OrderLite({
             borderRadius='18px'
             type='number'
             adornment={
-              <AdornmentSelect
-                options={[
-                  {
-                    from: cardPaymentType?.from,
-                    to: cardPaymentType?.to,
-                    name: cardPaymentType?.to,
+              <Box
+                sx={{
+                  bgcolor: '#F6F7F9',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  m: '0 46px 0 10px',
+                  width: '148px',
+                  padding: '3px',
+                  '& img': {
+                    width: '32px',
+                    height: '32px',
                   },
-                ]}
-                name='aca_second'
-                value={{
-                  id: cardPaymentType?.from,
-                  name: cardPaymentType?.from,
                 }}
-                onChange={(val) => {
-                  setCardPaymentType({
-                    from: val?.to,
-                    to: val?.from,
-                  })
-                }}
-              />
+              >
+                <Box
+                  sx={{
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    pr: '6px',
+                    justifyContent: 'center',
+                    height: '32px',
+                    borderRadius: '10px',
+                    bgcolor: cardPaymentType?.from == 'Uzcard' ? '#fff' : 'transparent',
+
+                    mr: '2px',
+                  }}
+                  onClick={() => {
+                    setCardPaymentType({
+                      to: 'Humo',
+                      from: 'Uzcard',
+                    })
+                  }}
+                >
+                  <img style={{ width: '36px', height: '36px', margin: '0 6px' }} src='/images/uzcard.png' />
+                  <ShortcutBox minWidth='27px' shortcut='U' height='20px' color='#868FAA' />
+                </Box>
+                <Box
+                  sx={{
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    pr: '6px',
+                    justifyContent: 'center',
+                    height: '32px',
+                    borderRadius: '10px',
+                    bgcolor: cardPaymentType?.from == 'Humo' ? '#fff' : 'transparent',
+                  }}
+                  onClick={() => {
+                    setCardPaymentType({
+                      from: 'Humo',
+                      to: 'Uzcard',
+                    })
+                  }}
+                >
+                  <img style={{ width: '32px', height: '32px', margin: '0 6px' }} src='/images/humo.png' />
+                  <ShortcutBox minWidth='27px' shortcut='H' height='20px' color='#868FAA' />
+                </Box>
+              </Box>
+              // <AdornmentSelect
+              //   options={[
+              //     {
+              //       from: cardPaymentType?.from,
+              //       to: cardPaymentType?.to,
+              //       name: cardPaymentType?.to,
+              //     },
+              //   ]}
+              //   name='aca_second'
+              //   value={{
+              //     id: cardPaymentType?.from,
+              //     name: cardPaymentType?.from,
+              //   }}
+              //   onChange={(val) => {
+              //     setCardPaymentType({
+              //       from: val?.to,
+              //       to: val?.from,
+              //     })
+              //   }}
+              // />
             }
           />
         </Box>
@@ -993,26 +1043,89 @@ function OrderLite({
             borderRadius='18px'
             type='number'
             adornment={
-              <AdornmentSelect
-                options={[
-                  {
-                    from: onlinePaymentType?.from,
-                    to: onlinePaymentType?.to,
-                    name: onlinePaymentType?.to,
+              <Box
+                sx={{
+                  bgcolor: '#F6F7F9',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  m: '0 46px 0 10px',
+
+                  width: '148px',
+
+                  padding: '3px',
+                  '& img': {
+                    width: '32px',
+                    height: '32px',
                   },
-                ]}
-                name='aca_second'
-                value={{
-                  id: onlinePaymentType?.from,
-                  name: onlinePaymentType?.from,
                 }}
-                onChange={(val) => {
-                  setOnlinePaymentType({
-                    from: val?.to,
-                    to: val?.from,
-                  })
-                }}
-              />
+              >
+                <Box
+                  sx={{
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    pr: '6px',
+                    justifyContent: 'center',
+                    height: '32px',
+                    borderRadius: '10px',
+                    bgcolor: onlinePaymentType?.from == 'Payme' ? '#fff' : 'transparent',
+
+                    mr: '2px',
+                  }}
+                  onClick={() => {
+                    setCardPaymentType({
+                      to: 'Click',
+                      from: 'Payme',
+                    })
+                  }}
+                >
+                  <img style={{ width: '25px', height: '25px', margin: '0 6px' }} src='/images/payme.png' />
+                  <ShortcutBox minWidth='27px' shortcut='U' height='20px' color='#868FAA' />
+                </Box>
+                <Box
+                  sx={{
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    pr: '6px',
+                    justifyContent: 'center',
+                    height: '32px',
+                    borderRadius: '10px',
+                    bgcolor: onlinePaymentType?.from == 'Click' ? '#fff' : 'transparent',
+                  }}
+                  onClick={() => {
+                    setCardPaymentType({
+                      from: 'Click',
+                      to: 'Payme',
+                    })
+                  }}
+                >
+                  <img style={{ width: '25px', height: '25px', margin: '0 6px' }} src='/images/click.png' />
+                  <ShortcutBox minWidth='27px' shortcut='H' height='20px' color='#868FAA' />
+                </Box>
+              </Box>
+              // <AdornmentSelect
+              //   options={[
+              //     {
+              //       from: onlinePaymentType?.from,
+              //       to: onlinePaymentType?.to,
+              //       name: onlinePaymentType?.to,
+              //     },
+              //   ]}
+              //   name='aca_second'
+              //   value={{
+              //     id: onlinePaymentType?.from,
+              //     name: onlinePaymentType?.from,
+              //   }}
+              //   onChange={(val) => {
+              //     setOnlinePaymentType({
+              //       from: val?.to,
+              //       to: val?.from,
+              //     })
+              //   }}
+              // />
             }
           />
         </Box>

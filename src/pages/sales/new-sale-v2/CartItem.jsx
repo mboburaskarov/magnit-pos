@@ -29,6 +29,8 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import { useMutation } from 'react-query'
 import { requests } from '../../../../utils/requests'
 import { error } from '../../../../utils/toast'
+import PrizeBoxIcon from '../../../assets/icons/PrizeBoxIcon'
+import GiftIcon from '../../../assets/icons/GiftIcon'
 export const useStyles = makeStyles((theme) => ({
   root: {
     padding: 16,
@@ -290,7 +292,13 @@ export default function CartItem({
   return (
     <TableRow
       key={item.id}
-      sx={{ borderBottom: '1px solid', borderColor: 'bunker.100', '& td': { border: 'none' }, '& td': { textAlign: 'left', padding: '20px 0px' } }}
+      sx={{
+        height: '80px',
+        borderBottom: '1px solid',
+        borderColor: 'bunker.500',
+        '& td': { border: 'none' },
+        '& td': { textAlign: 'left', border: 'none', borderBottom: '1px solid', borderColor: 'bunker.100', padding: '0px' },
+      }}
     >
       <TableCell>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -314,7 +322,7 @@ export default function CartItem({
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Typography sx={{ fontWeight: 600, fontSize: 16, lineHeight: '24px', color: 'bunker.950' }}>{item?.name}</Typography>
             <Typography variant='caption' sx={{ fontWeight: 500, fontSize: 12, lineHeight: '16px', color: 'bunker.500' }}>
-              {item?.barcode} / Полка: 3ed
+              {item?.barcode} / Полка: {item?.shelf}
             </Typography>
           </Box>
         </Box>
@@ -420,8 +428,9 @@ export default function CartItem({
             },
             '& input': {
               textAlign: 'end',
-              padding: '7px 24px 6px 6px !important',
+              padding: '6px 24px 6px 6px !important',
               fontSize: '14px',
+
               lineHeight: '20px',
               fontWeight: '500',
               color: 'bunker.950',
@@ -497,14 +506,45 @@ export default function CartItem({
         </Box>
       </TableCell>
       <TableCell sx={{ textAlign: 'right' }}>
-        <Typography sx={{ color: 'orange.500', fontWeight: 600, fontSize: 16, lineHeight: '24px' }}>{thousandDivider(item?.total_price, 'сум')}</Typography>
-        <Typography variant='caption' sx={{ color: 'bunker.400', fontWeight: 500, fontSize: 12, lineHeight: '16px' }}>
-          {item?.discount_price > 0 ? (
-            <> {thousandDivider(item?.discount_price * item.quantity || item.unit_quantity, 'сум')}/шт</>
-          ) : (
-            <> {thousandDivider(item?.unit_price, 'сум')}/шт</>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography sx={{ color: 'orange.500', fontWeight: 600, fontSize: 16, lineHeight: '24px' }}>{thousandDivider(item?.total_price, 'сум')}</Typography>
+          <Typography variant='caption' sx={{ color: 'bunker.400', fontWeight: 500, fontSize: 12, lineHeight: '16px' }}>
+            {item?.discount_price > 0 ? (
+              <> {thousandDivider(item?.discount_price * item.quantity || item.unit_quantity, 'сум')}/шт</>
+            ) : (
+              <> {thousandDivider(item?.unit_price, 'сум')}/шт</>
+            )}
+          </Typography>
+          {item?.bonus_amount > 0 && (
+            <Box
+              sx={{
+                borderRadius: '24px',
+                padding: '0 9px 0 0',
+                display: 'flex',
+                mr: '10px',
+                mt: '2px',
+                alignItems: 'flex-start',
+              }}
+            >
+              <Box
+                sx={{
+                  borderRadius: '50%',
+                  backgroundColor: 'yellow.500',
+                  width: '16px',
+                  height: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <GiftIcon color='#fff' />
+              </Box>
+              <Typography ml='4px' color={'bunker.950'} fontSize={'12px'} lineHeight={'16px'} fontWeight={'500'}>
+                +{thousandDivider(item.bonus_amount, 'сум')}
+              </Typography>
+            </Box>
           )}
-        </Typography>
+        </Box>
       </TableCell>
       <TableCell>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>

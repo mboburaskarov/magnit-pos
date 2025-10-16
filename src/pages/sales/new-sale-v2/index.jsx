@@ -47,6 +47,7 @@ import OrderLite from './orderLite'
 import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import TimeFast from '../../../assets/icons/TimeFast'
+import ShortcutBox from '../../../../components/ShortcutBox'
 const useStyles = makeStyles((theme) => ({
   currentUser: {
     // minWidth: '120px',
@@ -1207,27 +1208,11 @@ function NewSaleV2() {
                     }
                   }}
                   color='primary'
-                  sx={{ height: '44px', borderRadius: '16px', display: 'flex', justifyContent: 'space-between' }}
+                  sx={{ height: '44px', borderRadius: '16px', display: 'flex', justifyContent: 'space-between', padding: '10px 12px' }}
                 >
                   <Typography display={'flex'} alignItems={'center'} fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
                     {t('pay')}
-                    <Box
-                      sx={{
-                        color: '#fff',
-                        border: '2px solid #fff',
-                        height: '34px',
-                        display: 'flex',
-                        padding: '2px',
-                        ml: '15px',
-                        fontSize: '12px',
-                        minWidth: '34px',
-                        alignItems: 'center',
-                        borderRadius: '8px',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      F10
-                    </Box>
+                    <ShortcutBox shortcut='F10' />
                   </Typography>
                   <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
                     {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
@@ -1279,14 +1264,16 @@ function NewSaleV2() {
                   </Button>
                   <Button
                     disabled={size(get(cartItemsList, 'data.data.data')) === 0}
+                    color='secondary'
                     sx={{
                       borderRadius: '16px',
                       ml: '4px',
                       p: '12px',
                       width: '100%',
                       height: '44px',
+                      borderColor: 'orange.500',
                       '& svg > path': {
-                        stroke: '#fff',
+                        stroke: '#fe5000',
                       },
                     }}
                     onClick={() => {
@@ -1300,9 +1287,8 @@ function NewSaleV2() {
                         setIsOpenImplementMarkingDialog({ mode: 'full' })
                       }
                     }}
-                    color='primary'
                   >
-                    <Typography mr={'20px'} fontWeight={'500'} fontSize={'18px'} color={'#fff'} lineHeight={'26px'}>
+                    <Typography mr={'20px'} fontWeight={'500'} fontSize={'18px'} color={'orange.500'} lineHeight={'26px'}>
                       {t('Полный')}
                     </Typography>
 
@@ -1315,6 +1301,7 @@ function NewSaleV2() {
           </Box>
 
           <CartDetailSide
+            setIsOpenNoorDrawer={setIsOpenNoorDrawer}
             childRef={childRef}
             setIsOpenBonusProductDrawer={setIsOpenBonusProductDrawer}
             setServiceType={setServiceType}
