@@ -66,19 +66,21 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
               {get(p, 'data.sale_type', 'SALE') === 'SALE' ? 'Продажа' : 'Возврат'} #{get(p, 'data.sale_number', '-')}
             </Typography>
             <Box width={'10px'} />
-            <Box
-              sx={{
-                width: '20px',
-                height: '20px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'orange.500',
-              }}
-            >
-              <Percent sx={{ color: '#fff' }} />
-            </Box>
+            {get(p, 'data.discount_barcode') != '' && (
+              <Box
+                sx={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: 'orange.500',
+                }}
+              >
+                <Percent sx={{ color: '#fff' }} />
+              </Box>
+            )}
           </Box>
         )),
       }
