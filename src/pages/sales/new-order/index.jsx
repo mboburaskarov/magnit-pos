@@ -665,7 +665,8 @@ function NewSale() {
   }, [])
   useEffect(() => {
     const customer = get(cashBoxDetails, 'data.data.customer')
-    if (customer) {
+
+    if (customer?.first_name) {
       setCustomerId({ id: customer?.id, name: customer?.first_name + ' ' + customer?.first_name, balance: 0, barcode: '', new: false })
     }
   }, [cashBoxDetails])

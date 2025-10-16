@@ -37,7 +37,24 @@ export default function RoleEditPage() {
   const { data: rolesAndPermissionList } = useQuery(['rolesAndPermissionListForEdit', id], () =>
     requests.getAllRolesWithPermissions({ role_id: id, limit: 20, offset: 0 })
   )
+  function getSelectedChildrenRecursive(permission, selected) {
+    let selectedChildren = []
 
+    if (!permission.children) return selectedChildren
+    console.log(permission, selected)
+
+    for (const child of permission.children) {
+      // If child itself is selected
+      if (selected.includes(child.id)) {
+        selectedChildren.push(child.id)
+      }
+
+      // Recursively check deeper levels
+      selectedChildren = selectedChildren.concat(getSelectedChildrenRecursive(child, selected))
+    }
+
+    return selectedChildren
+  }
   const onSubmit = (data) => {
     const permissions = []
     get(rolesAndPermissionList, 'data.data', [])
@@ -48,8 +65,8 @@ export default function RoleEditPage() {
             ? {}
             : permissions.push({
                 parent_id: permission?.id || '',
-                children_ids: selected.filter((el) => permission.children.find((child) => child.id === el)),
-                is_active: !!selected?.includes(permission?.id) || size(selected.filter((el) => permission.children.find((child) => child.id === el))) > 0,
+                children_ids: getSelectedChildrenRecursive(permission, selected),
+                is_active: !!selected?.includes(permission?.id) || getSelectedChildrenRecursive(permission, selected).length > 0,
               })
         })
       })

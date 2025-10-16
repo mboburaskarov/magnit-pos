@@ -779,7 +779,6 @@ function OrderLite({
             width: '100%',
             padding: '8px 16px',
             display: 'flex',
-            ml: '4px',
             flexDirection: 'column',
             borderRadius: '16px',
             bgcolor: 'white',
@@ -811,6 +810,9 @@ function OrderLite({
       <Box sx={{ width: '100%' }}>
         <Box
           sx={{
+            '& .MuiInputBase-root .MuiInputAdornment-root': {
+              width: 'auto !important',
+            },
             '& .react-select__control': {
               width: '65px',
             },
@@ -864,6 +866,9 @@ function OrderLite({
         </Box>
         <Box
           sx={{
+            '& .MuiInputBase-root .MuiInputAdornment-root': {
+              width: 'auto !important',
+            },
             '& .react-select__control': {
               width: '85px',
             },
@@ -910,12 +915,14 @@ function OrderLite({
             adornment={
               <Box
                 sx={{
+                  width: '100%',
+
                   bgcolor: '#F6F7F9',
                   borderRadius: '12px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  m: '0 46px 0 10px',
+                  m: '0 2px 0',
                   width: '148px',
                   padding: '3px',
                   '& img': {
@@ -930,11 +937,11 @@ function OrderLite({
                     display: 'flex',
                     alignItems: 'center',
                     pr: '6px',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
                     height: '32px',
                     borderRadius: '10px',
                     bgcolor: cardPaymentType?.from == 'Uzcard' ? '#fff' : 'transparent',
-
+                    p: '6px',
                     mr: '2px',
                   }}
                   onClick={() => {
@@ -944,16 +951,18 @@ function OrderLite({
                     })
                   }}
                 >
-                  <img style={{ width: '36px', height: '36px', margin: '0 6px' }} src='/images/uzcard.png' />
+                  <img style={{ width: '36px', height: '36px' }} src='/images/uzcard.png' />
                   <ShortcutBox minWidth='27px' shortcut='U' height='20px' color='#868FAA' />
                 </Box>
                 <Box
                   sx={{
+                    width: '100%',
+                    p: '6px 3px',
+
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    pr: '6px',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
                     height: '32px',
                     borderRadius: '10px',
                     bgcolor: cardPaymentType?.from == 'Humo' ? '#fff' : 'transparent',
@@ -965,7 +974,7 @@ function OrderLite({
                     })
                   }}
                 >
-                  <img style={{ width: '32px', height: '32px', margin: '0 6px' }} src='/images/humo.png' />
+                  <img style={{ width: '32px', height: '32px' }} src='/images/humo.png' />
                   <ShortcutBox minWidth='27px' shortcut='H' height='20px' color='#868FAA' />
                 </Box>
               </Box>
@@ -994,6 +1003,9 @@ function OrderLite({
         </Box>
         <Box
           sx={{
+            '& .MuiInputBase-root .MuiInputAdornment-root': {
+              width: 'auto !important',
+            },
             '& .react-select__control': {
               width: '85px',
             },
@@ -1050,7 +1062,7 @@ function OrderLite({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  m: '0 46px 0 10px',
+                  m: '0 2px 0',
 
                   width: '148px',
 
@@ -1063,14 +1075,16 @@ function OrderLite({
               >
                 <Box
                   sx={{
+                    width: '100%',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     pr: '6px',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
                     height: '32px',
                     borderRadius: '10px',
                     bgcolor: onlinePaymentType?.from == 'Payme' ? '#fff' : 'transparent',
+                    p: '6px',
 
                     mr: '2px',
                   }}
@@ -1081,16 +1095,19 @@ function OrderLite({
                     })
                   }}
                 >
-                  <img style={{ width: '25px', height: '25px', margin: '0 6px' }} src='/images/payme.png' />
+                  <img style={{ width: '25px', height: '25px' }} src='/images/payme.png' />
                   <ShortcutBox minWidth='27px' shortcut='U' height='20px' color='#868FAA' />
                 </Box>
                 <Box
                   sx={{
+                    width: '100%',
+                    p: '6px',
+
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     pr: '6px',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
                     height: '32px',
                     borderRadius: '10px',
                     bgcolor: onlinePaymentType?.from == 'Click' ? '#fff' : 'transparent',
@@ -1102,7 +1119,7 @@ function OrderLite({
                     })
                   }}
                 >
-                  <img style={{ width: '25px', height: '25px', margin: '0 6px' }} src='/images/click.png' />
+                  <img style={{ width: '25px', height: '25px' }} src='/images/click.png' />
                   <ShortcutBox minWidth='27px' shortcut='H' height='20px' color='#868FAA' />
                 </Box>
               </Box>
