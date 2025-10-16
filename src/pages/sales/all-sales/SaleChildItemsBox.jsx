@@ -200,7 +200,7 @@ function SaleChildItemsBox({ item, key }) {
             <Typography display={'flex'} alignItems={'center'} color={'bunker.400'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'}>
               Бонус:
               <Typography whiteSpace={'pre'} ml={'5px'} mt={'2px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'20px'} color={'orange.500'}>
-                {thousandDivider(get(item, 'bonus_amount'))} сум
+                {thousandDivider(get(item, 'bonus_amount')?.toFixed(2))} сум
               </Typography>
             </Typography>
           </Box>
