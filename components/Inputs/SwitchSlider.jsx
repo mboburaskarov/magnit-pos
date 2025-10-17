@@ -73,6 +73,19 @@ export default function SwitchSlider({ name, options, onChange, defaultValue, no
     }
   }, [])
 
+  // Count render qilish funksiyasi
+  const renderCount = (option) => {
+    if (option.count === undefined || option.count === null) return null
+
+    // Agar count React elementi bo'lsa, to'g'ridan-to'g'ri render qil
+    if (typeof option.count === 'object' && option.count.$$typeof) {
+      return option.count
+    }
+
+    // Aks holda qavs ichida ko'rsat
+    return `(${option.count})`
+  }
+
   return (
     options?.length !== 0 && (
       <Box style={style} className='slider' sx={{ width: '100%', marginTop: !noMarginTop && 2, borderRadius: 4, boxShadow: error && '0 0 0 2px red' }}>
@@ -108,12 +121,11 @@ export default function SwitchSlider({ name, options, onChange, defaultValue, no
                       color={value === option.value ? 'orange.500' : 'dark.500'}
                       id={value + index}
                     >
-                      {option.title} {option.count ? `(${get(option, 'count', 0)})` : ''}{' '}
+                      {option.title} {renderCount(option)}{' '}
                       {option.soon && (
                         <Typography
                           sx={{
                             width: '40px',
-
                             height: '20px',
                             backgroundColor: '#A53EFF',
                             color: '#fff',

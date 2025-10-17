@@ -105,7 +105,7 @@ function ImplementMarkingDialog({
         return
       }
       let validLength = [83, 37, 53, 94, 93, 51]
-      if (!validLength.includes(e.target.value.length) && get(item, 'is_checking', true)) {
+      if (!validLength.includes(e.target.value.length)) {
         console.log('#5')
         // markirofka uzunligi mos emas
 
@@ -122,7 +122,7 @@ function ImplementMarkingDialog({
         error('Повторение маркировки (uz: takrorlangan markirovka)')
         return
       }
-      if (!checkBarcodeWithMarking(productBarcode, e.target.value) && get(item, 'is_checking', true)) {
+      if (!checkBarcodeWithMarking(productBarcode, e.target.value)) {
         //markirofkadagi barcode mahsulotniki bilan mos kelmadi
         //markirofkadagi barcode mahsulotniki bilan mos kelmadi
         if (!hasAccess('can-change-markings-barcode-onsale', user_data)) {

@@ -29,7 +29,7 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
     >
       <Box display='flex' justifyContent='space-between' alignItems='center' mb={'8px'}>
         <Box>
-          <Typography lineHeight={'30px'} fontWeight={'600'} fontSize={'20px'}>
+          <Typography lineHeight={'32px'} fontWeight={'700'} fontSize={'24px'}>
             {title}
           </Typography>
           <Typography color='orange.500' lineHeight={'24px'} fontWeight={600} fontSize={'16px'}>
