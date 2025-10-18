@@ -178,8 +178,9 @@ export default function ProductsPage() {
     refetch,
   } = useQuery(['productsList', productsListFilter], () => requests.getAllProducts(productsListFilter))
 
-  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['statusCountList', values?.search, productsListFilter], () =>
-    requests.getAllProductsStatusCount(productsListFilter)
+  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(
+    ['statusCountList', values?.search, { ...productsListFilter, status: undefined }],
+    () => requests.getAllProductsStatusCount(productsListFilter)
   )
 
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
@@ -346,7 +347,19 @@ export default function ProductsPage() {
                     </Box>
                   ),
                 },
-                { title: t('switch.title.empty'), value: 'zero-stock', count: thousandDivider(get(statusCountList, 'data.data.zero_stock_count', 0)) },
+                {
+                  title: t('switch.title.empty'),
+                  value: 'zero-stock',
+                  count: (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <Box />
+                      {thousandDivider(get(statusCountList, 'data.data.zero_stock_count', 0))}
+                      <StyledTooltip title={'Продукты без астатики'}>
+                        <Info sx={{ color: 'bunker.300' }} />
+                      </StyledTooltip>
+                    </Box>
+                  ),
+                },
                 {
                   title: t('switch.title.less_date'),
                   value: 'imminent',

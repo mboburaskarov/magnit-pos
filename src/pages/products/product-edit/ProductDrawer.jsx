@@ -163,7 +163,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
             { title: 'Наименование товара', info: productData?.data?.data?.name },
             { title: 'Тип', info: productData?.data?.data?.type === 'BUCHET' ? 'Buchet' : 'Market' },
             { title: 'Описание', info: productData?.data?.data?.description, fullWidth: true },
-            { title: 'Категории', info: productData?.data?.data?.categories.map((item) => item.name).join('<br>'), fullWidth: true },
+            { title: 'Категории', info: productData?.data?.data?.categories?.map((item) => item.name).join('<br>'), fullWidth: true },
           ]}
         />
         <CheckAccess id={'can-view-markinglist'}>
