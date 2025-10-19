@@ -319,7 +319,7 @@ export default function ChangePriceDetailPage() {
             <Box>
               <AgGridTable
                 downloadByFilter={() => revaluationExcelReport(revaluationDetailListFilter)}
-                fullDownload={() => revaluationExcelReport({ ...revaluationDetailListFilter, limit: 1000000 })}
+                fullDownload={() => revaluationExcelReport({ ...revaluationDetailListFilter, offset: 0, limit: 1000000 })}
                 isDownloading={isrevaluationExcelReport}
                 id='revaluation-main-table'
                 tableSettings

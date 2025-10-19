@@ -284,7 +284,7 @@ export default function StoreSummaryPage() {
             uniqId='name'
             id='clients-main-table'
             tableSettings
-            fullDownload={() => clientsExcelReport({ ...storeSummaryReportListFilter, limit: 1000000 })}
+            fullDownload={() => clientsExcelReport({ ...storeSummaryReportListFilter, offset: 0, limit: 1000000 })}
             downloadByFilter={() => clientsExcelReport(storeSummaryReportListFilter)}
             isDownloading={isclientsExcelReport}
             columns={tableColumns}

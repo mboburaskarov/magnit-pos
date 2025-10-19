@@ -216,7 +216,7 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         setOrderStoring,
         headerName: 'Сумма скидки',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='payme' />),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='discount_amount' />),
       }
     }
     if (el.field === 'cheque_count') {

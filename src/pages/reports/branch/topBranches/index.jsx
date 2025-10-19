@@ -159,7 +159,7 @@ export default function TopBranchesPage() {
   })
   return (
     <LoadingContainer readyState={true}>
-      <Header historyBack={true} noActions isLoading={false} backIcon backHref='/reports/branch' text={'Топ филиалам '} />
+      <Header historyBack={true} noActions isLoading={false} backIcon backHref={'/reports/branch'} text={'Топ филиалам '} />
       <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'0px'} px={'50px'} pb={'20px'}>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
@@ -258,7 +258,7 @@ export default function TopBranchesPage() {
           <AgGridTable
             id='clients-main-table'
             tableSettings
-            fullDownload={() => clientsExcelReport({ ...topBranchesReportListFilter, limit: 1000000 })}
+            fullDownload={() => clientsExcelReport({ ...topBranchesReportListFilter, offset: 0, limit: 1000000 })}
             downloadByFilter={() => clientsExcelReport(topBranchesReportListFilter)}
             isDownloading={isclientsExcelReport}
             columns={tableColumns}

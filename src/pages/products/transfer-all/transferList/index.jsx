@@ -221,7 +221,7 @@ export default function TransferPage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
-            fullDownload={() => getReturnToWarehouseExcelReport({ ...transferListFilter, limit: 1000000 })}
+            fullDownload={() => getReturnToWarehouseExcelReport({ ...transferListFilter, offset: 0, limit: 1000000 })}
             downloadByFilter={() => getReturnToWarehouseExcelReport(transferListFilter)}
             isDownloading={isgetReturnToWarehouseExcelReport}
             tableSettings
@@ -235,8 +235,8 @@ export default function TransferPage() {
               if (newData) dispatch(updateTableHeader(newData))
             }}
             emptyTableText={{
-              title: 'Возврат недоступен',
-              description: 'Если вы не можете найти искомый Возврат',
+              title: 'Перемещение недоступен',
+              description: 'Если вы не можете найти искомый Перемещение',
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}

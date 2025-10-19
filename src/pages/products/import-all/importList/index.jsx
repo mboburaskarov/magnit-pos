@@ -175,7 +175,7 @@ export default function ImportPage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
-            fullDownload={() => importsExcelReport({ ...importsListFilter, limit: 1000000 })}
+            fullDownload={() => importsExcelReport({ ...importsListFilter, offset: 0, limit: 1000000 })}
             downloadByFilter={() => importsExcelReport(importsListFilter)}
             isDownloading={isimportsExcelReport}
             tableSettings

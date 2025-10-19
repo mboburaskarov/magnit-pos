@@ -252,7 +252,7 @@ export default function TransferRecheckScanWithCheckingPage() {
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
-                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...transferWithCheckingDetailsFilter, limit: 1000000 })}
+                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...transferWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                 downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(transferWithCheckingDetailsFilter)}
                 data={transferWithCheckingDetails?.data?.data?.data || []}
                 totalCount={transferWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}

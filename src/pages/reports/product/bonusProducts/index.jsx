@@ -284,7 +284,7 @@ export default function BonusProductsPage() {
           <AgGridTable
             id='clients-main-table'
             tableSettings
-            fullDownload={() => bonusProductsExcelReport({ ...bonusProductsReportListFilter, limit: 1000000 })}
+            fullDownload={() => bonusProductsExcelReport({ ...bonusProductsReportListFilter, offset: 0, limit: 1000000 })}
             downloadByFilter={() => bonusProductsExcelReport(bonusProductsReportListFilter)}
             isDownloading={isbonusProductsExcelReport}
             columns={tableColumns}

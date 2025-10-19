@@ -250,7 +250,7 @@ export default function TransferGetScanWithCheckingPage() {
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
-                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...transferWithCheckingDetailsFilter, limit: 1000000 })}
+                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...transferWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                 downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(transferWithCheckingDetailsFilter)}
                 data={transferWithCheckingDetails?.data?.data?.data || []}
                 totalCount={transferWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
@@ -276,14 +276,14 @@ export default function TransferGetScanWithCheckingPage() {
         open={openFinishConfirmDialog}
         setOpen={() => setOpenFinishConfirmDialog(false)}
         icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
-        title={t('alerts.finish_return')}
+        title={'Принять перемещение?'}
         desc={
           <>
             <Typography fontWeight={'600'} fontSize={'20px'}>
-              {t('alerts.finish_return_desc')}
+              {'Вы уверены, что хотите принять перемещение?'}
             </Typography>
             <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
-              {t('alerts.finish_return_warning')}
+              {'Не сканированные товары не будут добавлены'}
             </Typography>
           </>
         }

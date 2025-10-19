@@ -453,8 +453,8 @@ export default function ProductsPage() {
               hasAADownload={productsListFilter?.store_id}
               enableFillHandle={true}
               onCellValueChanged={onCellValueChanged}
-              downloadForAA={() => productsExcelReportForAA({ ...productsListFilter, limit: 1000000 })}
-              fullDownload={() => productsExcelReport({ ...productsListFilter, limit: 1000000 })}
+              downloadForAA={() => productsExcelReportForAA({ ...productsListFilter, offset: 0, limit: 1000000 })}
+              fullDownload={() => productsExcelReport({ ...productsListFilter, offset: 0, limit: 1000000 })}
               downloadByFilter={() => productsExcelReport(productsListFilter)}
               isDownloading={isproductsExcelReport}
               columns={tableColumns}

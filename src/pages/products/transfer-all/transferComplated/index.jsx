@@ -217,16 +217,15 @@ export default function TransferCompletedPage() {
                 </Box>
               </Box>
             </Box>
-
             <Box sx={{ '& .MuiTextField-root': { bgcolor: 'transparent !important' } }}>
               <AgGridTable
                 id='imports-main-table'
-                fullDownload={() => getTransferDetailsExcelReport({ ...WriteOffWithCheckingDetailsFilter, limit: 1000000 })}
+                fullDownload={() => getTransferDetailsExcelReport({ ...WriteOffWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                 downloadByFilter={() => getTransferDetailsExcelReport(WriteOffWithCheckingDetailsFilter)}
                 tableSettings
                 columns={tableColumns}
                 data={WriteOffWithCheckingDetails?.data?.data?.data || []}
-                totalCount={WriteOffWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                totalCount={WriteOffWithCheckingDetails?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchingWriteOffWithCheckingDetails || WriteOffWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {

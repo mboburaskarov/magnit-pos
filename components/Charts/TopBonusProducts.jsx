@@ -29,7 +29,22 @@ export default function TopBonusProducts({ data }) {
         <Typography lineHeight={'30px'} fontWeight={'600'} fontSize={'20px'}>
           Бонусные продукты
         </Typography>
-        <Box onClick={() => navigateWithParams('/reports/bonus-products', { keep: true })}>
+        <Box
+          sx={{
+            padding: '10px',
+            position: 'absolute',
+            right: '20px',
+            borderRadius: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            '&:hover': {
+              background: '#ebebeb',
+            },
+          }}
+          onClick={() => navigateWithParams('/reports/bonus-products?backHref=/dashboard', { keep: true })}
+        >
           <FormatLineSpacing sx={{ fontSize: '25px' }} />
         </Box>
       </Box>
@@ -44,7 +59,7 @@ export default function TopBonusProducts({ data }) {
                 Количество
               </TableCell>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
-                Сумма продажи
+                Бонусная сумма
               </TableCell>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
                 Прирост

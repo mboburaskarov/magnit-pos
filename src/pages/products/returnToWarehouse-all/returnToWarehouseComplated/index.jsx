@@ -223,7 +223,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
-                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...returnToWarehouseWithCheckingDetailsFilter, limit: 1000000 })}
+                fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...returnToWarehouseWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                 downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(returnToWarehouseWithCheckingDetailsFilter)}
                 data={returnToWarehouseWithCheckingDetails?.data?.data?.data || []}
                 totalCount={returnToWarehouseWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}

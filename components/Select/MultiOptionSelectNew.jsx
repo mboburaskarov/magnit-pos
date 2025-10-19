@@ -23,6 +23,7 @@ const MultiOptionSelectNew = ({
   label,
   zIndex,
   menuMinWidth,
+  customFilter,
   required,
   request, // API request function
   initialLimit = 20, // Default limit
@@ -104,6 +105,7 @@ const MultiOptionSelectNew = ({
         limit: pagination.limit,
         offset: pagination.offset,
         search: searchTerm || serachParams?.search,
+        ...customFilter,
       })
 
       const newData = get(response, 'data.data.data', [])

@@ -218,7 +218,7 @@ export default function ReturnToWarehousePage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
-            fullDownload={() => getReturnToWarehouseExcelReport({ ...returnsListFilter, limit: 1000000 })}
+            fullDownload={() => getReturnToWarehouseExcelReport({ ...returnsListFilter, offset: 0, limit: 1000000 })}
             downloadByFilter={() => getReturnToWarehouseExcelReport(returnsListFilter)}
             isDownloading={isgetReturnToWarehouseExcelReport}
             tableSettings

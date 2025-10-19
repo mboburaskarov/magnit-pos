@@ -198,7 +198,7 @@ export default function SellerBonus() {
             tableSettings
             columns={tableColumns}
             downloadByFilter={() => sellerBonusExcelReport(sellerBonnusFilter)}
-            fullDownload={() => sellerBonusExcelReport({ ...sellerBonnusFilter, limit: 1000000 })}
+            fullDownload={() => sellerBonusExcelReport({ ...sellerBonnusFilter, offset: 0, limit: 1000000 })}
             isDownloading={issellerBonusExcelReport}
             data={sellerBonnus?.data?.data?.data || []}
             totalCount={sellerBonnus?.data?.data?._meta?.total_count || 0}

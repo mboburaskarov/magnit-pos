@@ -47,7 +47,7 @@ export default function FilterMenu({ open, setOpen }) {
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/products/auto-order?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/products/revaluation?offset=0&limit=${values?.limit || 5}`)
   }
   const { t } = useTranslation()
   return (

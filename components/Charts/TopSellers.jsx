@@ -21,14 +21,30 @@ export default function TopSellers({ data }) {
         padding: '32px 25px',
         backgroundColor: 'bg.10',
         width: '100%',
+        position: 'relative',
       }}
     >
       <Box display='flex' justifyContent='space-between' alignItems='center' mb={'8px'}>
         <Typography lineHeight={'30px'} fontWeight={'600'} fontSize={'20px'}>
           Топ продавцы
         </Typography>
-        <Box onClick={() => navigateWithParams('/reports/top-vendors', { keep: true })}>
-          <FormatLineSpacing sx={{ cursor: 'pointer', fontSize: '25px' }} />
+        <Box
+          sx={{
+            padding: '10px',
+            position: 'absolute',
+            right: '20px',
+            borderRadius: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            '&:hover': {
+              background: '#ebebeb',
+            },
+          }}
+          onClick={() => navigateWithParams('/reports/top-vendors?backHref=/dashboard', { keep: true })}
+        >
+          <FormatLineSpacing sx={{ fontSize: '25px' }} />
         </Box>
       </Box>
       <Box sx={{ display: 'flex', height: 'calc(100% - 25px)', justifyContent: 'space-between', flexDirection: 'column' }}>

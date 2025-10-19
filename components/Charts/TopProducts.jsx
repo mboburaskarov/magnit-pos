@@ -29,7 +29,22 @@ export default function TopProducts({ data }) {
         <Typography lineHeight={'30px'} fontWeight={'600'} fontSize={'20px'}>
           Топ продукты
         </Typography>
-        <Box onClick={() => navigateWithParams('/reports/top-products', { keep: true })}>
+        <Box
+          sx={{
+            padding: '10px',
+            position: 'absolute',
+            right: '20px',
+            borderRadius: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            '&:hover': {
+              background: '#ebebeb',
+            },
+          }}
+          onClick={() => navigateWithParams('/reports/top-products?backHref=/dashboard', { keep: true })}
+        >
           <FormatLineSpacing sx={{ fontSize: '25px' }} />
         </Box>
       </Box>

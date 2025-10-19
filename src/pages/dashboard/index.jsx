@@ -186,6 +186,8 @@ export default function DashboarPage() {
     const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
 
     return {
+      is_franchise: selectedShops == 'all' ? false : undefined,
+
       limit: values?.limit || 15,
       search: values?.search,
       start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
@@ -202,7 +204,9 @@ export default function DashboarPage() {
   }, [values?.offset, detalization, selectedShops, values?.start_date, values?.end_date, values?.from_time, values?.to_time, values?.limit, values?.search])
 
   const { data: chartData } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
-  const { data: countStats, isLoading } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter))
+  const { data: countStats, isLoading } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter), {
+    staleTime: 1000 * 60 * 1, // 1 minutes — won’t refetch until 1 mins passed
+  })
   const { data: topStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
   const { data: payments } = useQuery(['payments', dashboard_filter], () => requests.dashboradPayments(dashboard_filter))
   const { data: transaction } = useQuery(['transaction', dashboard_filter], () => requests.dashboradTransaction(dashboard_filter))
@@ -243,7 +247,7 @@ export default function DashboarPage() {
                     </Grid>
                   </CheckAccess>
                 ))}
-              <CheckAccess id={`farchise-dashboard-box`}>
+              <CheckAccess id={`franchise-dashboard-box`}>
                 <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
                   <Box
                     onClick={() => navigate('/dashboard/b2b')}
