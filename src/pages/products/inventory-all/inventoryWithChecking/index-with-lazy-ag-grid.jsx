@@ -457,15 +457,15 @@ export default function InventoryWithCheckingPage() {
                 onCellValueChanged={onCellValueChanged}
                 columns={tableColumns}
                 data={rowData || []}
-                totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                totalCount={inventoryWithCheckingDetails?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
                 }}
                 emptyTableText={{
-                  title: 'Импорт недоступен',
-                  description: 'Если вы не можете найти искомый Импорт, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+                  title: 'Инвентаризация недоступен',
+                  description: 'Если вы не можете найти искомый Инвентаризация, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}

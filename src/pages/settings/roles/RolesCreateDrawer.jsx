@@ -26,7 +26,7 @@ export default function RolesCreateDrawer({ isOpen, onClose, categoriesRefetch }
 
   const { mutate: editPermission, isLoading: editPermissionLoading } = useMutation(requests.editPermission, {
     onSuccess: () => {
-      categoriesRefetch()
+      // categoriesRefetch()
       success('Действие успешно создано!')
       onClose()
     },

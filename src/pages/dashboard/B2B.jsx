@@ -17,6 +17,15 @@ import VendorsIcon from '../../assets/icons/VendorsIcon'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import Dashboard_B2B from './Dashboard_B2B'
 import DashboardInfoBox from './DashboardInfoBox'
+import MoneyArrowDown from '../../assets/icons/dashboard/MoneyArrowDown'
+import ChartArrowUp from '../../assets/icons/dashboard/ChartArrowUp'
+import TimeForward from '../../assets/icons/dashboard/TimeForward'
+import Time24 from '../../assets/icons/dashboard/Time24'
+import Wallet from '../../assets/icons/dashboard/Wallet'
+import ShoppingBasketArrow from '../../assets/icons/dashboard/ShoppingBasketArrow'
+import ShoppingBasketCheck from '../../assets/icons/dashboard/ShoppingBasketCheck'
+import StopWatchMinus from '../../assets/icons/dashboard/StopWatchMinus'
+import HourglassEnd from '../../assets/icons/dashboard/HourglassEnd'
 export default function DashboarB2BPage() {
   dayjs.extend(isoWeek)
   const { type } = useSelector((state) => state.user)
@@ -49,11 +58,13 @@ export default function DashboarB2BPage() {
     before_stock_amount,
     before_bonus_amount,
     before_expiring_soon_count,
+    before_product_turnover,
+    product_turnover,
   }) => {
     return [
       {
         title: t('Общая сумма продаж'),
-        icon: <RevenueIcon color='#fe5000' />,
+        icon: <MoneyArrowDown color='#fe5000' />,
         count: total_sale_amount,
         percent: calculatePercentage(before_sale_amount || 1, total_sale_amount),
         id: 'total_sale_amount',
@@ -61,8 +72,26 @@ export default function DashboarB2BPage() {
         old: before_sale_amount,
       },
       {
+        title: t('Себестоимость'),
+        icon: <ChartArrowUp color='#fe5000' />,
+        count: product_turnover,
+        percent: calculatePercentage(before_sale_amount || 1, product_turnover),
+        id: 'product_turnover',
+        endText: 'сум',
+        old: before_product_turnover,
+      },
+      {
+        title: t('Чистая прибыль'),
+        icon: <ChartArrowUp color='#fe5000' />,
+        count: total_net_income,
+        endText: 'сум',
+        percent: calculatePercentage(before_total_net_income || 1, total_net_income),
+        id: 'total_net_income',
+        old: before_total_net_income,
+      },
+      {
         title: t('Импорт в ожидании (за весь период)'),
-        icon: <RevenueIcon color='#fe5000' />,
+        icon: <TimeForward color='#fe5000' />,
         count: import_amount,
         percent: calculatePercentage(before_import_amount || 1, import_amount),
         id: 'import_amount',
@@ -71,7 +100,7 @@ export default function DashboarB2BPage() {
       },
       {
         title: t('Импорты старше 24 часов'),
-        icon: <RevenueIcon color='#fe5000' />,
+        icon: <Time24 color='#fe5000' />,
         count: not_last_24h_import_amount,
         percent: 0,
         id: 'current_import_amount',
@@ -80,7 +109,7 @@ export default function DashboarB2BPage() {
       },
       {
         title: t('Общая сумма баланса'),
-        icon: <RevenueIcon color='#fe5000' />,
+        icon: <Wallet color='#fe5000' />,
 
         count: stock_total_amount,
         endText: 'сум',
@@ -88,18 +117,10 @@ export default function DashboarB2BPage() {
         percent: calculatePercentage(before_stock_amount || 1, stock_total_amount),
         old: before_stock_amount,
       },
-      {
-        title: t('Чистая прибыль'),
-        icon: <VendorsIcon color='#fe5000' />,
-        count: total_net_income,
-        endText: 'сум',
-        percent: calculatePercentage(before_total_net_income || 1, total_net_income),
-        id: 'total_net_income',
-        old: before_total_net_income,
-      },
+
       {
         title: t('Общее количество продаж'),
-        icon: <OrdersIcon color='#fe5000' />,
+        icon: <ShoppingBasketArrow color='#fe5000' />,
         count: total_sale_count,
         endText: 'шт',
 
@@ -109,7 +130,7 @@ export default function DashboarB2BPage() {
       },
       {
         title: t('Общее количество остатков'),
-        icon: <ProductsIcon color='#fe5000' />,
+        icon: <ShoppingBasketCheck color='#fe5000' />,
         count: total_product_count,
         endText: 'шт',
 
@@ -119,7 +140,7 @@ export default function DashboarB2BPage() {
       },
       {
         title: t('Просроченные продукты'),
-        icon: <VendorsIcon color='#fe5000' />,
+        icon: <StopWatchMinus color='#fe5000' />,
         count: expired_soon_count,
         endText: 'шт',
 
@@ -130,7 +151,7 @@ export default function DashboarB2BPage() {
       },
       {
         title: t('Истекающий срок'),
-        icon: <VendorsIcon color='#fe5000' />,
+        icon: <HourglassEnd color='#fe5000' />,
         count: expiring_soon_count,
         amount: expiring_soon_amount,
         id: 'expiring_soon_amount',

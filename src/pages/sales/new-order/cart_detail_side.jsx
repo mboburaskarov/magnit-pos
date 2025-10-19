@@ -1,7 +1,7 @@
 import { useTheme } from '@emotion/react'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Block, Print, ReceiptLong } from '@mui/icons-material'
+import { Block, Construction, Print, ReceiptLong } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/material'
 import { get, size } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
@@ -79,6 +79,8 @@ function CartDetailSide({
   const [collapsedSale, setCollapsedSale] = useState(false)
   const childRef = useRef()
   const { id } = useParams()
+  const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
+
   const leftZreportCount = localStorage.getItem('leftZreportCount')
   const printNoProductCheque = () => {
     childRef.current.printChildCheque()
@@ -446,13 +448,15 @@ function CartDetailSide({
           boxShadow: '0px 4px 12px 0px #00000014',
         })}
       >
-        <Box
-          sx={{ cursor: 'pointer', display: 'flex', my: '20px', justifyContent: 'space-between', alignItems: 'center' }}
-          onClick={() => setCollapsedSale((a) => !a)}
-        >
-          <Typography>Лайт продажа</Typography>
-          {!collapsedSale ? <ArrowUp color='#111217' /> : <ArrowDown />}
-        </Box>
+        {SALE_STAGE != 8 && (
+          <Box
+            sx={{ cursor: 'pointer', display: 'flex', my: '20px', justifyContent: 'space-between', alignItems: 'center' }}
+            onClick={() => setCollapsedSale((a) => !a)}
+          >
+            <Typography>Лайт продажа</Typography>
+            {!collapsedSale ? <ArrowUp color='#111217' /> : <ArrowDown />}
+          </Box>
+        )}
         <OrderLite
           serviceType={serviceType}
           collapsedSale={collapsedSale}
@@ -537,27 +541,52 @@ function CartDetailSide({
             </Button>
           )}
           <Box display={'flex'}>
-            <Button
-              sx={{
-                borderRadius: '16px',
-                mr: '4px',
-                p: '12px',
-                height: '48px',
-                width: '100%',
+            <StyledTooltip sx={{ width: '100%' }} title={'Доработка...'}>
+              <Button
+                sx={{
+                  borderRadius: '16px',
+                  mr: '4px',
+                  p: '12px',
+                  height: '48px',
+                  width: '100%',
 
-                '& svg': {
-                  flexShrink: 0,
-                },
-              }}
-              disabled={size(get(cartItemsList, 'data.data.data')) == 0}
-              color='secondary'
-              onClick={() => setIsCreateOpenDraft(true)}
-            >
-              <TimeAndDate disabled={size(get(cartItemsList, 'data.data.data'))} />
-              <Typography ml={'8px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
-                {t('draft')}
-              </Typography>
-            </Button>
+                  '& svg': {
+                    flexShrink: 0,
+                  },
+                }}
+                disabled={true}
+                // disabled={size(get(cartItemsList, 'data.data.data')) == 0}
+                color='secondary'
+                onClick={() => setIsCreateOpenDraft(true)}
+              >
+                <TimeAndDate disabled={size(get(cartItemsList, 'data.data.data'))} />
+                <Typography ml={'8px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
+                  {t('draft')}
+                </Typography>
+                <Typography
+                  sx={{
+                    height: '24px',
+                    width: '24px',
+                    padding: '5px 10px',
+                    backgroundColor: 'orange.500',
+                    color: '#fff !important',
+                    fontSize: '10px',
+                    fontWeight: '600',
+                    borderRadius: '24px',
+                    display: 'flex',
+                    top: '10px',
+                    left: '16px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'absolute',
+
+                    ml: '5px',
+                  }}
+                >
+                  <Construction sx={{ color: 'white' }} />
+                </Typography>
+              </Button>
+            </StyledTooltip>
             <Button
               disabled={size(get(cartItemsList, 'data.data.data')) === 0}
               sx={{

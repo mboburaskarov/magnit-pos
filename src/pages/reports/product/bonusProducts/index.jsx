@@ -242,10 +242,10 @@ export default function BonusProductsPage() {
               >
                 <Box width={'15px'} />
                 <DateRangeInput
-                  minHeight={'48px'}
+                  defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }}
                   id='accounting-report-date-range'
-                  defaultFilterData={{ end_date: dayjs().endOf('month').format('YYYY-MM-DD'), start_date: dayjs().startOf('month').format('YYYY-MM-DD') }}
                 />
+
                 <Box width={'15px'} />
                 {/* <MultiOptionSelectNew
                   zIndex={999}

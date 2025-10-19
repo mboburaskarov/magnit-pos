@@ -16,13 +16,18 @@ export const filterNavData = (routes, urls, user_data) => {
   if (user_data?.type === 'SUPERADMIN') {
     return routes
   }
+  console.log(routes, urls, user_data)
 
   return routes.reduce((acc, route) => {
     const parentMatches = urls.includes(route.href) || route.href === '/dashboard'
     const matchingChildren =
       route.children?.filter((child) => {
         const childHref = child.href.replace(route.href, '')
+        console.log(childHref)
 
+        if (childHref == '/products/revaluation') {
+          console.log(urls.includes(childHref))
+        }
         return urls.includes(childHref) || urls.some((url) => url.startsWith(childHref + '/'))
       }) || []
 
@@ -32,6 +37,7 @@ export const filterNavData = (routes, urls, user_data) => {
         children: matchingChildren.length > 0 ? matchingChildren : parentMatches ? route.children : [],
       })
     }
+
     return acc
   }, [])
 }

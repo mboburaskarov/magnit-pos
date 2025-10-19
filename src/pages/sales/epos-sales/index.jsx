@@ -29,7 +29,7 @@ export default function EposSales({ id }) {
     isLoading: isproductDataLoadingHistory,
     isFetching: isFetchingproductDataHistory,
     refetch,
-  } = useQuery(['productDataHistory', productHistoryFilter], () => requests.getSingleProductMovement(productHistoryFilter, id))
+  } = useQuery(['epos-sales-productDataHistory', productHistoryFilter], () => requests.getSingleProductMovement(productHistoryFilter, id))
 
   useEffect(() => {
     const count = productDataHistory?.data?.data?._meta?.total_count

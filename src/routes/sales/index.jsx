@@ -4,6 +4,7 @@ import CardShiftDetails from '../../pages/sales/card-shift-details'
 import NewCashRegister from '../../pages/sales/create-cash-register'
 import EposSales from '../../pages/sales/epos-sales'
 import NewSale from '../../pages/sales/new-order'
+import NewSaleV2 from '../../pages/sales/new-sale-v2'
 
 const salesRoutes = {
   path: 'sales',
@@ -17,6 +18,10 @@ const salesRoutes = {
     {
       path: 'new-sale',
       children: [{ path: ':id', element: <NewSale /> }],
+    },
+    {
+      path: 'new-sale-v2',
+      children: [{ path: ':id', element: <NewSaleV2 /> }],
     },
     {
       path: 'cash-shift-detail',

@@ -9,7 +9,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
 import CheckAccess from '../../../../components/CheckAccess'
 import ConfirmDialog from '../../../../components/ConfirmDialog'
@@ -665,7 +665,8 @@ function NewSale() {
   }, [])
   useEffect(() => {
     const customer = get(cashBoxDetails, 'data.data.customer')
-    if (customer) {
+
+    if (customer?.first_name) {
       setCustomerId({ id: customer?.id, name: customer?.first_name + ' ' + customer?.first_name, balance: 0, barcode: '', new: false })
     }
   }, [cashBoxDetails])
@@ -1032,9 +1033,11 @@ function NewSale() {
                 }}
               >
                 <Box display={'flex'} alignItems={'center'}>
-                  <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
-                    {t('menu.orders.new_order.heading')}
-                  </Typography>
+                  <Link to={`/sales/new-sale-v2/${id}`}>
+                    <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
+                      {t('menu.orders.new_order.heading')}
+                    </Typography>
+                  </Link>
                   {get(cartItemsList, 'data.data.data', 0)?.length ? (
                     <StyledTooltip title={'Удалить все продукты'}>
                       <Box

@@ -248,7 +248,7 @@ export const theme = ({ mode, palette }) => {
           },
 
           thumb: {
-            marginTop: 4,
+            // marginTop: 4,
             width: 24,
             height: 24,
             boxShadow: 'none',

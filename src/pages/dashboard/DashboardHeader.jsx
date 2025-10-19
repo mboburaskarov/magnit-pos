@@ -14,19 +14,15 @@ export default function DashboardHeader({ selectedShops, setSelectedShops }) {
   return (
     <Box p={'24px 20px 13px 20px'} bgcolor='background.default' top={0} display='inline-flex' justifyContent='space-between'>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography variant='h1' fontWeight={600} mb={'5px'} fontSize={'40px'} lineHeight={'50px'} color={'dark.500'}>
+        <Typography variant='h1' fontWeight={700} mb={'5px'} fontSize={'28px'} lineHeight={'40px'} color={'dark.500'}>
           {t('greeting')}, {get(userData, 'first_name')}!
         </Typography>
-        <Typography variant='h1' fontWeight={300} fontSize={'16px'} lineHeight={'24px'} color={'gray.500'}>
-          Добро пожаловать в Аптека. Управляйте своим Аптекаом с помощью Аптекаа
+        <Typography variant='h1' fontWeight={500} fontSize={'14px'} lineHeight={'20px'} color={'bunker.500'}>
+          Добро пожаловать в Аптека. Управляйте своим Аптекаом с помощью PharmaCosmos CRM
         </Typography>
       </Box>
       <Box display='inline-flex' padding={'11px 0'} columnGap={3}>
-        <DateRangeInput
-          minHeight={'56px'}
-          defaultFilterData={{ label: 'Это час', start_date: dayjs().tz().startOf('week'), end_date: dayjs().tz() }}
-          id='accounting-report-date-range'
-        />
+        <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
 
         <Box
           sx={{
@@ -37,7 +33,7 @@ export default function DashboardHeader({ selectedShops, setSelectedShops }) {
           }}
         >
           <MultiOptionSelectNew
-            zIndex={999}
+            zIndex={9}
             placeholder={t('placeholders.select_shops')}
             multiple
             defaultSelectedAll

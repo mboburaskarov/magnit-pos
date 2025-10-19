@@ -1,4 +1,4 @@
-import { Block, Report } from '@mui/icons-material'
+import { Block, Info, Report } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
@@ -39,6 +39,7 @@ import ProductDrawer from './product-edit/ProductDrawer'
 import ProductDashboard from './productDashboard'
 import SendToErrorWithReason from './sendToErrorWithReason'
 import tableHeaderSelector from './tableHeaderSelector'
+import thousandDivider from '../../../utils/thousandDivider'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function ProductsPage() {
   const theme = useTheme()
@@ -177,8 +178,9 @@ export default function ProductsPage() {
     refetch,
   } = useQuery(['productsList', productsListFilter], () => requests.getAllProducts(productsListFilter))
 
-  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['statusCountList', values?.search, productsListFilter], () =>
-    requests.getAllProductsStatusCount(productsListFilter)
+  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(
+    ['statusCountList', values?.search, { ...productsListFilter, status: undefined }],
+    () => requests.getAllProductsStatusCount(productsListFilter)
   )
 
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
@@ -330,100 +332,144 @@ export default function ProductsPage() {
               defaultValue='ALL'
               onChange={(e) => setAppType(e)}
               options={[
-                { title: t('switch.title.all'), value: 'ALL', count: get(statusCountList, 'data.data.total_quantity', 0) },
-                { title: t('switch.title.active'), value: 'active', count: get(statusCountList, 'data.data.active_count', 0) },
-                { title: t('switch.title.inactive'), value: 'inactive', count: get(statusCountList, 'data.data.inactive_count', 0) },
-                { title: t('switch.title.less_amount'), value: 'low-stock', count: get(statusCountList, 'data.data.low_stock_count', 0) },
-                { title: t('switch.title.empty'), value: 'zero-stock', count: get(statusCountList, 'data.data.zero_stock_count', 0) },
-                { title: t('switch.title.less_date'), value: 'imminent', count: get(statusCountList, 'data.data.imminent_count', 0) },
-                { title: t('switch.title.outofdate'), value: 'expired', count: get(statusCountList, 'data.data.expired_count', 0) },
+                { title: t('switch.title.all'), value: 'ALL', count: thousandDivider(get(statusCountList, 'data.data.total_quantity', 0)) },
+                { title: t('switch.title.active'), value: 'active', count: thousandDivider(get(statusCountList, 'data.data.active_count', 0)) },
+                { title: t('switch.title.inactive'), value: 'inactive', count: thousandDivider(get(statusCountList, 'data.data.inactive_count', 0)) },
+                {
+                  title: t('switch.title.less_amount'),
+                  value: 'low-stock',
+                  count: (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <Box />({thousandDivider(get(statusCountList, 'data.data.low_stock_count', 0))})
+                      <StyledTooltip title={'Остаточные товары менее 10'}>
+                        <Info sx={{ color: 'bunker.300' }} />
+                      </StyledTooltip>
+                    </Box>
+                  ),
+                },
+                {
+                  title: t('switch.title.empty'),
+                  value: 'zero-stock',
+                  count: (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <Box />
+                      {thousandDivider(get(statusCountList, 'data.data.zero_stock_count', 0))}
+                      <StyledTooltip title={'Продукты без астатики'}>
+                        <Info sx={{ color: 'bunker.300' }} />
+                      </StyledTooltip>
+                    </Box>
+                  ),
+                },
+                {
+                  title: t('switch.title.less_date'),
+                  value: 'imminent',
+                  count: (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <Box />
+                      {thousandDivider(get(statusCountList, 'data.data.imminent_count', 0))}
+                      <StyledTooltip title={'Товары со сроком годности менее 3 месяцев'}>
+                        <Info sx={{ color: 'bunker.300' }} />
+                      </StyledTooltip>
+                    </Box>
+                  ),
+                },
+
+                { title: t('switch.title.outofdate'), value: 'expired', count: thousandDivider(get(statusCountList, 'data.data.expired_count', 0)) },
               ]}
             />
             <Box display={'flex'}>
-              <StyledTooltip title={'Запрещенный продукт'}>
-                <Box
-                  onClick={() => navigate('/products/banned-product')}
-                  sx={{
-                    backgroundColor: 'bg.10',
-                    padding: '10px',
-                    borderRadius: '10px',
-                    mr: '10px',
-                    display: 'flex',
-                    width: '38px',
-                    height: '38px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Block
-                    sx={(theme) => ({
-                      fill: theme.palette.orange[500],
-                      fontSize: 23,
-                    })}
-                  />
-                </Box>
-              </StyledTooltip>
-              <StyledTooltip title={'Управление каталогом'}>
-                <Box
-                  onClick={() => navigate('/products/categories')}
-                  sx={{
-                    backgroundColor: 'bg.10',
-                    padding: '10px',
-                    borderRadius: '10px',
-                    mr: '10px',
-                    display: 'flex',
-                    width: '38px',
-                    height: '38px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <CategoryIcon />
-                </Box>
-              </StyledTooltip>
-              <StyledTooltip title={'Бонусный продукт'}>
-                <Box
-                  onClick={() => navigate('/products/bonus-product')}
-                  sx={{
-                    backgroundColor: 'bg.10',
-                    padding: '10px',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    width: '38px',
-                    height: '38px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    '& svg': {
-                      width: '18px',
-                      height: '18px',
-                    },
-                  }}
-                >
-                  <PrizeBoxIcon color='#FF6018' />
-                </Box>
-              </StyledTooltip>
-              <StyledTooltip title={'Ошибки'}>
-                <Box
-                  onClick={() => navigate('/products/errors')}
-                  sx={{
-                    ml: '10px',
-                    backgroundColor: 'bg.10',
-                    padding: '10px',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    width: '38px',
-                    height: '38px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    '& svg': {
-                      width: '18px',
-                      height: '18px',
-                    },
-                  }}
-                >
-                  <Report color='#FF6018' />
-                </Box>
-              </StyledTooltip>
+              <CheckAccess id={'banned-product'}>
+                <StyledTooltip title={'Запрещенный продукт'}>
+                  <Box
+                    onClick={() => navigate('/products/banned-product')}
+                    sx={{
+                      backgroundColor: 'bg.10',
+                      padding: '10px',
+                      borderRadius: '10px',
+                      mr: '10px',
+                      display: 'flex',
+                      width: '38px',
+                      height: '38px',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Block
+                      sx={(theme) => ({
+                        fill: theme.palette.orange[500],
+                        fontSize: 23,
+                      })}
+                    />
+                  </Box>
+                </StyledTooltip>
+              </CheckAccess>
+              <CheckAccess id={'products-categories'}>
+                <StyledTooltip title={'Управление каталогом'}>
+                  <Box
+                    onClick={() => navigate('/products/categories')}
+                    sx={{
+                      backgroundColor: 'bg.10',
+                      padding: '10px',
+                      borderRadius: '10px',
+                      mr: '10px',
+                      display: 'flex',
+                      width: '38px',
+                      height: '38px',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <CategoryIcon />
+                  </Box>
+                </StyledTooltip>
+              </CheckAccess>
+              <CheckAccess id={'products-bonus-product'}>
+                <StyledTooltip title={'Бонусный продукт'}>
+                  <Box
+                    onClick={() => navigate('/products/bonus-product')}
+                    sx={{
+                      backgroundColor: 'bg.10',
+                      padding: '10px',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      width: '38px',
+                      height: '38px',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      '& svg': {
+                        width: '18px',
+                        height: '18px',
+                      },
+                    }}
+                  >
+                    <PrizeBoxIcon color='#FF6018' />
+                  </Box>
+                </StyledTooltip>
+              </CheckAccess>
+              <CheckAccess id={'products-errors'}>
+                <StyledTooltip title={'Ошибки'}>
+                  <Box
+                    onClick={() => navigate('/products/errors')}
+                    sx={{
+                      ml: '10px',
+                      backgroundColor: 'bg.10',
+                      padding: '10px',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      width: '38px',
+                      height: '38px',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      '& svg': {
+                        width: '18px',
+                        height: '18px',
+                      },
+                    }}
+                  >
+                    <Report color='#FF6018' />
+                  </Box>
+                </StyledTooltip>
+              </CheckAccess>
             </Box>
           </Box>
           <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>

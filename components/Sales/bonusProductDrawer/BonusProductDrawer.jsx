@@ -129,7 +129,7 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
             />
           </Box>
           <Box display={'flex'} py={'24px'} px={'40px'}>
-            <InputSearch fullWidth uncontrolled placeholder={'Поиск: ID'} />
+            <InputSearch fullWidth uncontrolled placeholder={'Поиск: Наименование'} />
 
             {/* <Box minWidth={113} ml={'16px'}>
               <Button

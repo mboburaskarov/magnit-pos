@@ -52,6 +52,14 @@ export default function Section({ section, sectionRef, setDisabled, disabled, se
           description: child?.description,
 
           is_active: child?.is_active,
+          children:
+            child?.children?.map((child) => ({
+              id: child?.id,
+              name: child?.name,
+              description: child?.description,
+
+              is_active: child?.is_active,
+            })) || [],
         })) || [],
     })) || []
   return section?.permissions?.length ? (

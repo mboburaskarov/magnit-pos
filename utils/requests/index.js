@@ -265,7 +265,7 @@ export const requests = {
   getRevaluationDashBoard: (id) => request.get(`v1/repricing-detail/detail-status/${id}`),
 
   getRevaluationList: (filter) => request.get(`v1/repricing/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getRevaluationDetailList: (id, filter) => request.get(`v1/repricing-detail/list/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getRevaluationDetailList: ({ id, ...filter }) => request.get(`v1/repricing-detail/list/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   getRevaluation: (id, filter) => request.get(`v1/repricing/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   changePriceNew: ({ id, new_retail_price, product_id, store_product_id }) =>
     request.post(`v1/repricing/new-price/${id}`, {
@@ -297,6 +297,8 @@ export const requests = {
   changeBarcodeByImport: ({ id, barcode, unit_code, mxik, unit_label, expire_date }) =>
     request.put(`v1/product/update-mxik-import/${id}`, { id, barcode, unit_label, unit_code, mxik, expire_date }),
   getProductBonusList: (filter) => request.get(`v1/product-bonus/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getProductBonusExcelReport: (filter) => requestEXCEL.post(`v1/product-bonus/excel-import${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   getProductMinMaxList: (filter) => request.get(`v1/product/list-min-max${qs.stringify(filter, { addQueryPrefix: true })}`),
   createBonusProduct: (data) => request.post(`v1/product-bonus`, data),
   createDiscountCard: (data) => request.post(`v1/discount-card`, data),

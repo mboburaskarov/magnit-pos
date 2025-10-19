@@ -276,7 +276,7 @@ export default function InventoryCompleted() {
                 tableSettings
                 columns={tableColumns}
                 data={inventoryWithCheckingDetails?.data?.data?.data || []}
-                totalCount={inventoryWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                totalCount={inventoryWithCheckingDetails?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 fullDownload={() => inventoryExcelReport({ ...inventoryWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
@@ -286,8 +286,8 @@ export default function InventoryCompleted() {
                   if (newData) dispatch(updateTableHeader(newData))
                 }}
                 emptyTableText={{
-                  title: 'Импорт недоступен',
-                  description: 'Если вы не можете найти искомый Импорт, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+                  title: 'Инвентаризация недоступен',
+                  description: 'Если вы не можете найти искомый Инвентаризация, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}

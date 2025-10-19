@@ -3,6 +3,16 @@ import { get } from 'lodash'
 import thousandDivider from '../../../../utils/thousandDivider'
 
 function SaleMiniDashboardHeader({ saleStatsData }) {
+  const mockData = [
+    { prop: 'total_cash', title: 'Naqt' },
+    { prop: 'total_humo', title: 'Humo' },
+    { prop: 'total_uzcard', title: 'Uzcard' },
+    { prop: 'total_click', title: 'Click' },
+    { prop: 'total_payme', title: 'Payme' },
+    { prop: 'total_alif', title: 'Alif' },
+    { prop: 'total_returnals_sum', title: 'Вазврат' },
+    { prop: 'total_discount_amount', title: 'Сумма скидки' },
+  ]
   return (
     <Box
       display={'flex'}
@@ -52,8 +62,8 @@ function SaleMiniDashboardHeader({ saleStatsData }) {
           },
         }}
       >
-        {get(saleStatsData, 'payment_type_stats', [])?.map((type) => {
-          if (get(type, 'sum') === 0) return null
+        {mockData?.map((type) => {
+          if (get(saleStatsData, type?.prop) === 0) return null
           return (
             <Box
               sx={{
@@ -73,7 +83,7 @@ function SaleMiniDashboardHeader({ saleStatsData }) {
                   mb: '5px',
                 }}
               >
-                {get(type, 'name')}
+                {get(type, 'title')}
               </Typography>
               <Typography
                 sx={{
@@ -82,75 +92,11 @@ function SaleMiniDashboardHeader({ saleStatsData }) {
                   fontWeight: '700',
                 }}
               >
-                {thousandDivider(get(type, 'sum'), 'сум')}
+                {thousandDivider(get(saleStatsData, type?.prop), 'сум')}
               </Typography>
             </Box>
           )
         })}
-        {get(saleStatsData, 'total_returnals_sum') > 0 && (
-          <Box
-            sx={{
-              flexShrink: 0,
-              padding: '10px 15px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              borderRight: '1px dashed #ccc',
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: '16px',
-                color: 'bunker.950',
-                fontWeight: '500',
-                mb: '5px',
-              }}
-            >
-              Вазврат
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: '18px',
-                color: 'orange.500',
-                fontWeight: '700',
-              }}
-            >
-              {thousandDivider(get(saleStatsData, 'total_returnals_sum'), 'сум')}
-            </Typography>
-          </Box>
-        )}
-        {get(saleStatsData, 'total_discount_amount') > 0 && (
-          <Box
-            sx={{
-              flexShrink: 0,
-              padding: '10px 15px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              borderRight: '1px dashed #ccc',
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: '16px',
-                color: 'bunker.950',
-                fontWeight: '500',
-                mb: '5px',
-              }}
-            >
-              Сумма скидки
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: '18px',
-                color: 'orange.500',
-                fontWeight: '700',
-              }}
-            >
-              {thousandDivider(get(saleStatsData, 'total_discount_amount'), 'сум')}
-            </Typography>
-          </Box>
-        )}
       </Box>
     </Box>
   )

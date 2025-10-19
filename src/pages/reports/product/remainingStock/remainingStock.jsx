@@ -37,20 +37,20 @@ export default function RemainingStockPage({ id }) {
   }, [values?.limitHistory, selectedShops, values?.offsetHistory, values?.search, values?.from_time, values?.to_time, values?.start_date, values?.end_date])
 
   const {
-    data: productDataHistory,
+    data: allProducts,
     isLoading: isproductDataLoadingHistory,
-    isFetching: isFetchingproductDataHistory,
+    isFetching: isFetchingallProducts,
     refetch,
-  } = useQuery(['productDataHistory', productHistoryFilter], () => requests.getAllProducts(productHistoryFilter, id))
+  } = useQuery(['remainingstockallProducts', productHistoryFilter], () => requests.getAllProducts(productHistoryFilter, id))
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
 
   useEffect(() => {
-    const count = productDataHistory?.data?.data?._meta?.total_count
+    const count = allProducts?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limitHistory || 0))
 
     setOffsetCount(offsetsCount || 0)
-  }, [productDataHistory?.data, values?.limitHistory])
+  }, [allProducts?.data, values?.limitHistory])
 
   useEffect(() => {
     refetch()
@@ -109,7 +109,7 @@ export default function RemainingStockPage({ id }) {
     []
   )
 
-  const formattedData = productDataHistory?.data?.data?.data
+  const formattedData = allProducts?.data?.data?.data
 
   return (
     <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
@@ -158,11 +158,11 @@ export default function RemainingStockPage({ id }) {
       </Box>
       <Box>
         <AgGridTable
-          isDataLoading={isproductDataLoadingHistory || isFetchingproductDataHistory}
+          isDataLoading={isproductDataLoadingHistory || isFetchingallProducts}
           offsetQuery='offsetHistory'
           limitQuery='limitHistory'
           id='products-history-table'
-          totalCount={productDataHistory?.data?.data?._meta?.total_count || 0}
+          totalCount={allProducts?.data?.data?._meta?.total_count || 0}
           columns={columns}
           data={formattedData}
           offsetCount={offsetCount}

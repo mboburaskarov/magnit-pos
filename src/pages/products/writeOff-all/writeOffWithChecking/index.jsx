@@ -227,15 +227,15 @@ export default function WriteOffScanWithCheckingPage() {
                 tableSettings
                 columns={tableColumns}
                 data={WriteOffWithCheckingDetails?.data?.data?.data || []}
-                totalCount={WriteOffWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                totalCount={WriteOffWithCheckingDetails?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchingWriteOffWithCheckingDetails || WriteOffWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
                 }}
                 emptyTableText={{
-                  title: 'Импорт недоступен',
-                  description: 'Если вы не можете найти искомый Импорт, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+                  title: 'Списание недоступен',
+                  description: 'Если вы не можете найти искомый Списание, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}

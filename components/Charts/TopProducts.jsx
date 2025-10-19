@@ -136,9 +136,9 @@ export default function TopProducts({ data }) {
             </TableBody>
           </Table>
         </TableContainer>
-        <Button sx={{ width: '100%' }} color='secondary' onClick={() => setIsCollapse((a) => !a)}>
+        {/* <Button sx={{ width: '100%' }} color='secondary' onClick={() => setIsCollapse((a) => !a)}>
           {isCollapse ? 'Показать меньше' : `Показать больше`}
-        </Button>
+        </Button> */}
       </Box>
     </Box>
   )

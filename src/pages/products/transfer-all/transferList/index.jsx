@@ -206,7 +206,7 @@ export default function TransferPage() {
                 changeColumnSequence={changeColumnSequence}
               />
             </Box>
-            <CheckAccess id={'create-return-to-warehouse'} noAccess>
+            <CheckAccess id={'create-transfer'} noAccess>
               <Box minWidth={156}>
                 <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
                   Новое перемещение
@@ -228,7 +228,7 @@ export default function TransferPage() {
             columns={tableColumns}
             defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
             data={transferList?.data?.data?.data || []}
-            totalCount={transferList?.data?.data?._meta?.total_count || 0}
+            totalCount={transferList?.data?._meta?.total_count || 0}
             isDataLoading={isFetchingtransferList || transferListLoading}
             offsetCount={offsetCount}
             updaterAction={(newData) => {

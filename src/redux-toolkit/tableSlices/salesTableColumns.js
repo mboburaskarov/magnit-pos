@@ -11,7 +11,7 @@ const columns = [
     field: 'sale_number',
     hide: false,
     minWidth: 60,
-    width: 180,
+    width: 230,
   },
   {
     field: 'document',
@@ -64,7 +64,12 @@ const columns = [
     minWidth: 70,
     width: 160,
   },
-
+  {
+    field: 'total_discount',
+    hide: false,
+    minWidth: 70,
+    width: 160,
+  },
   {
     field: 'created_at',
     hide: false,

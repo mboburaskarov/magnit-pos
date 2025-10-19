@@ -236,8 +236,8 @@ export default function InventoryDetailPage() {
                 if (newData) dispatch(updateTableHeader(newData))
               }}
               emptyTableText={{
-                title: 'Импорт недоступен',
-                description: 'Если вы не можете найти искомый Импорт, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+                title: 'Инвентаризация недоступен',
+                description: 'Если вы не можете найти искомый Инвентаризация, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
               }}
               fullInfoAboutCurrentPage
               resetTable={() => dispatch(resetTableHeader({ refetch }))}

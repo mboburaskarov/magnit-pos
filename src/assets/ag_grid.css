@@ -276,6 +276,10 @@
 .ag-menu.ag-ltr.ag-popup-child[aria-label='SubMenu'] .ag-menu-option-part.ag-menu-option-icon {
   order: 1;
 }
+.ag-ltr .ag-cell {
+  border-width: 1px !important;
+  border: var(--ag-cell-horizontal-border);
+}
 .ag-ltr .ag-cell[col-id='number'] {
   justify-content: center;
 }

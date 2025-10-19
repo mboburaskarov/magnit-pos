@@ -190,7 +190,7 @@ export default function WriteOffPage() {
                 changeColumnSequence={changeColumnSequence}
               />
             </Box>
-            <CheckAccess id={'create-auto-order'}>
+            <CheckAccess id={'create-write-off'}>
               <Box minWidth={156}>
                 <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
                   Новая Списание

@@ -2,7 +2,7 @@
   position: relative;
   display: inline-block;
   width: 100% !important;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Gilroy', sans-serif;
 }
 .select:focus {
   outline: 0;
@@ -43,13 +43,13 @@
 .value {
   position: relative;
   display: inline-block;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Gilroy', sans-serif;
   color: #111217 !important;
   font-size: 16px !important;
 }
 .multiple {
   font-weight: 500;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Gilroy', sans-serif;
   line-height: 1.6;
   display: -webkit-box;
   padding-right: 32px;
@@ -74,7 +74,7 @@
 .placeholder {
   padding: 5px 10px;
   color: #bdbdbd;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Gilroy', sans-serif;
   font-weight: 600;
 }
 .arrow {
@@ -97,7 +97,7 @@
   padding: 0;
   border-width: 0 1px;
   border-radius: 16px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Gilroy', sans-serif;
   height: 226px;
   overflow-y: auto;
 }
@@ -110,7 +110,7 @@
   height: 56px;
   cursor: pointer;
   display: flex;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Gilroy', sans-serif;
   align-items: center;
   user-select: none;
   justify-content: space-between;

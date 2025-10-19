@@ -64,7 +64,6 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
   const { t } = useTranslation()
   const { values } = useQueryParams()
   const classes = useStyles()
-  const navigate = useNavigate()
 
   const [currentSaleId, setCurrentSaleId] = useState(get(values, 'sale_id', ''))
   const [currentIndex, setcurrentIndex] = useState(0)
@@ -139,21 +138,12 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
     }
   })
   const theme = useTheme()
-  const { mutate: saleMoveToPending, isLoading: isSaleMoveToPending } = useMutation(requests.saleMoveToPending, {
-    onSuccess: ({ data }) => {
-      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
-    },
-    onError: (err) => {
-      console.log(err)
-      error('Ошибка: Продажа переведена в режим ожидания!')
-    },
-  })
+
   const { mutate: getQrCodeWithFiscal, isLoading: isgetQrCodeWithFiscal } = useMutation(requests.closeZReport, {
     onSuccess: ({ data }) => {
       if (!get(data, 'error', true)) {
         setQrcodeUrl(get(data, 'message.qrCodeURL', 'pending'))
       } else {
-        saleMoveToPending(get(open, 'id'))
         error(`FISCAL: ${data?.message}`)
       }
     },
@@ -240,7 +230,11 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
                     <CheckAccess id={'can-chnage-payment-type'}>
                       <Box
                         onClick={() => {
-                          setopenCreateBonusModal({ types: get(saleDetailsList, 'data.data.sale_payments', []), sale_payment_id: pays.id })
+                          setopenCreateBonusModal({
+                            types: get(saleDetailsList, 'data.data.sale_payments', []),
+                            sale_payment_id: pays.id,
+                            sale_id: get(open, 'id'),
+                          })
                         }}
                       >
                         <ChangeCircle sx={{ color: '#fff', fontSize: '30px', mt: '10px' }} />
@@ -306,7 +300,7 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
                   {get(saleDetailsList, 'data.data.customer.first_name', 'Unknown')} {get(saleDetailsList, 'data.data.customer.last_name', '')}
                 </Typography>
               </Box>
-              {get(saleDetailsList, 'data.data.referral', 'Unknown').length && (
+              {get(saleDetailsList, 'data.data.referral', 'Unknown').length ? (
                 <Box width={'50%'} mt={'16px'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
                   <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
                     Направление
@@ -315,6 +309,8 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
                     {get(saleDetailsList, 'data.data.referral', 'Unknown')}
                   </Typography>
                 </Box>
+              ) : (
+                <></>
               )}
             </Box>
           </Box>

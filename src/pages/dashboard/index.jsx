@@ -25,10 +25,21 @@ import OrdersIcon from '../../assets/icons/OrdersIcon'
 import ProductsIcon from '../../assets/icons/ProductsIcon'
 import RevenueIcon from '../../assets/icons/RevenueIcon'
 import VendorsIcon from '../../assets/icons/VendorsIcon'
+import MoneyArrowDown from '../../assets/icons/dashboard/MoneyArrowDown'
 import { useQueryParams } from '../../hooks/useQueryParams'
 import DashboardHeader from './DashboardHeader'
 import DashboardInfoBox from './DashboardInfoBox'
 import ImportPage from './expiredImports/index'
+import ChartArrowUp from '../../assets/icons/dashboard/ChartArrowUp'
+import TimeForward from '../../assets/icons/dashboard/TimeForward'
+import Time24 from '../../assets/icons/dashboard/Time24'
+import Wallet from '../../assets/icons/dashboard/Wallet'
+import ShoppingBasketArrow from '../../assets/icons/dashboard/ShoppingBasketArrow'
+import ShoppingBasketCheck from '../../assets/icons/dashboard/ShoppingBasketCheck'
+import StopWatchMinus from '../../assets/icons/dashboard/StopWatchMinus'
+import HourglassEnd from '../../assets/icons/dashboard/HourglassEnd'
+import Gift from '../../assets/icons/dashboard/Gift'
+import DashboardTopsBox from '../../../components/Charts/DashboardTopsBox'
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
   const { type } = useSelector((state) => state.user)
@@ -79,11 +90,13 @@ export default function DashboarPage() {
     before_stock_amount,
     before_bonus_amount,
     before_expiring_soon_count,
+    before_product_turnover,
+    product_turnover,
   }) => {
     return [
       {
         title: t('Общая сумма продаж'),
-        icon: <RevenueIcon color='#fe5000' />,
+        icon: <MoneyArrowDown color='#fe5000' />,
         count: total_sale_amount,
         percent: calculatePercentage(before_sale_amount || 1, total_sale_amount),
         id: 'total_sale_amount',
@@ -91,8 +104,26 @@ export default function DashboarPage() {
         old: before_sale_amount,
       },
       {
+        title: t('Себестоимость'),
+        icon: <ChartArrowUp color='#fe5000' />,
+        count: product_turnover,
+        percent: calculatePercentage(before_sale_amount || 1, product_turnover),
+        id: 'product_turnover',
+        endText: 'сум',
+        old: before_product_turnover,
+      },
+      {
+        title: t('Чистая прибыль'),
+        icon: <ChartArrowUp color='#fe5000' />,
+        count: total_net_income,
+        endText: 'сум',
+        percent: calculatePercentage(before_total_net_income || 1, total_net_income),
+        id: 'total_net_income',
+        old: before_total_net_income,
+      },
+      {
         title: t('Импорт в ожидании (за весь период)'),
-        icon: <RevenueIcon color='#fe5000' />,
+        icon: <TimeForward color='#fe5000' />,
         count: import_amount,
         percent: calculatePercentage(before_import_amount || 1, import_amount),
         id: 'import_amount',
@@ -101,7 +132,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Импорты старше 24 часов'),
-        icon: <RevenueIcon color='#fe5000' />,
+        icon: <Time24 color='#fe5000' />,
         count: not_last_24h_import_amount,
         percent: 0,
         id: 'current_import_amount',
@@ -110,7 +141,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Общая сумма баланса'),
-        icon: <RevenueIcon color='#fe5000' />,
+        icon: <Wallet color='#fe5000' />,
 
         count: stock_total_amount,
         endText: 'сум',
@@ -118,18 +149,10 @@ export default function DashboarPage() {
         percent: calculatePercentage(before_stock_amount || 1, stock_total_amount),
         old: before_stock_amount,
       },
-      {
-        title: t('Чистая прибыль'),
-        icon: <VendorsIcon color='#fe5000' />,
-        count: total_net_income,
-        endText: 'сум',
-        percent: calculatePercentage(before_total_net_income || 1, total_net_income),
-        id: 'total_net_income',
-        old: before_total_net_income,
-      },
+
       {
         title: t('Общее количество продаж'),
-        icon: <OrdersIcon color='#fe5000' />,
+        icon: <ShoppingBasketArrow color='#fe5000' />,
         count: total_sale_count,
         endText: 'шт',
 
@@ -139,7 +162,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Общее количество остатков'),
-        icon: <ProductsIcon color='#fe5000' />,
+        icon: <ShoppingBasketCheck color='#fe5000' />,
         count: total_product_count,
         endText: 'шт',
 
@@ -149,7 +172,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Просроченные продукты'),
-        icon: <VendorsIcon color='#fe5000' />,
+        icon: <StopWatchMinus color='#fe5000' />,
         count: expired_soon_count,
         endText: 'шт',
 
@@ -160,7 +183,7 @@ export default function DashboarPage() {
       },
       {
         title: t('Истекающий срок'),
-        icon: <VendorsIcon color='#fe5000' />,
+        icon: <HourglassEnd color='#fe5000' />,
         count: expiring_soon_count,
         amount: expiring_soon_amount,
         id: 'expiring_soon_amount',
@@ -171,7 +194,7 @@ export default function DashboarPage() {
 
       {
         title: t('Ваш бонус'),
-        icon: <VendorsIcon color='#fe5000' />,
+        icon: <Gift color='#fe5000' />,
         count: bonus_amount,
         id: 'bonus_amount',
         percent: calculatePercentage(before_bonus_amount || 1, bonus_amount),
@@ -262,6 +285,7 @@ export default function DashboarPage() {
                       bgcolor: 'bg.10',
                       minHeight: '154px',
                       width: '100%',
+                      height: '100%',
                     })}
                   >
                     <Box
@@ -319,10 +343,41 @@ export default function DashboarPage() {
         </Grid>
       </Box>
       {!isLoading && (
-        <>
+        <Box sx={{ padding: '0 20px' }}>
           <CheckAccess id={'dashboard-transactions-vendor'}>
             <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-              <Transactions
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(payments, 'data.data')}
+                title={'Топ продавцы'}
+                subTitle={thousandDivider(Math.round(get(payments, 'data.data', [])?.reduce((a, b) => a + b.amount, 0)), 'сум')}
+                tableData={[
+                  { title: 'Тип Платежи	', colId: 'name' },
+                  { title: 'Кол-во', colId: 'count', sortable: true },
+                  { title: 'Сумма продажи', colId: 'amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(transaction, 'data.data')}
+                title={'Транзакции'}
+                subTitle={thousandDivider(
+                  get(transaction, 'data.data', [])?.reduce((a, b) => {
+                    const count = parseFloat((b.count || '0').replace(',', '.'))
+                    return a + count
+                  }, 0),
+
+                  'шт'
+                )}
+                tableData={[
+                  { title: 'Тип Платежи	', colId: 'name' },
+                  { title: 'Кол-во', colId: 'count', sortable: true },
+                  { title: 'Сумма продажи', colId: 'amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+              {/* <Transactions
                 id='dashboard-chart'
                 data={get(payments, 'data.data')}
                 title={'Платежи'}
@@ -340,27 +395,77 @@ export default function DashboarPage() {
 
                   'шт'
                 )}
-              />
+              /> */}
             </Box>
           </CheckAccess>
           <CheckAccess id={'dashboard-vendor'}>
             <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-              <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} />
-              <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} />
+              <DashboardTopsBox
+                id='dashboard-chart'
+                href='/reports/top-branchs?backHref=/dashboard'
+                data={get(topStores, 'data.data')}
+                title={'Топ филиалам'}
+                tableData={[
+                  { title: 'Филиал', colId: 'name' },
+                  { title: 'Кол-во чеков', colId: 'count', sortable: true },
+                  { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(topProducts, 'data.data')}
+                title={'Топ продукты'}
+                href='/reports/top-products?backHref=/dashboard'
+                tableData={[
+                  { title: 'Продукт', colId: 'name' },
+                  { title: 'Количество ', colId: 'count', sortable: true },
+                  { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+              {/* <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} /> */}
+              {/* <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} /> */}
             </Box>
           </CheckAccess>
           <CheckAccess id={'dashboard-seller'}>
             <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-              <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} />
-              <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} />
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(topSellers, 'data.data')}
+                title={'Топ продавцы'}
+                href='/reports/top-vendors?backHref=/dashboard'
+                tableData={[
+                  { title: 'Продавец	', colId: 'full_name' },
+                  { title: 'Кол-во чеков', colId: 'count', sortable: true },
+                  { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(topBonusProducts, 'data.data')}
+                title={'Бонусные продукты'}
+                href='/reports/bonus-products?backHref=/dashboard'
+                tableData={[
+                  { title: 'Продукт	', colId: 'name' },
+                  { title: 'Количество', colId: 'count', sortable: true },
+                  { title: 'Бонусная сумма', colId: 'bonus_amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+              {/* <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} /> */}
+              {/* <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} /> */}
             </Box>
           </CheckAccess>
-          <CheckAccess id={'dashboard-expired-imports'}>
-            <Box>
-              <ImportPage />
-            </Box>
-          </CheckAccess>
-        </>
+        </Box>
+      )}
+      {!isLoading && (
+        <CheckAccess id={'dashboard-expired-imports'}>
+          <Box>
+            <ImportPage />
+          </Box>
+        </CheckAccess>
       )}
     </LoadingContainer>
   )

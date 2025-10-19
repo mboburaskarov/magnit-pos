@@ -37,11 +37,8 @@ export default function Dashboard_B2B({ selectedShops, setSelectedShops }) {
         </Typography>
       </Box>
       <Box display='inline-flex' padding={'11px 0'} columnGap={3}>
-        <DateRangeInput
-          minHeight={'56px'}
-          defaultFilterData={{ label: 'Это час', start_date: dayjs().tz().startOf('week'), end_date: dayjs().tz() }}
-          id='accounting-report-date-range'
-        />
+        <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
+
         <Box
           sx={{
             maxWidth: 400,

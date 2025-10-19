@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flex: '1 1 auto',
     height: '100%',
-    maxWidth: ({ isOpen }) => (isOpen ? 'calc(100vw - 315px)' : 'calc(100vw - 20px)'),
+    maxWidth: ({ isOpen }) => (isOpen ? 'calc(100vw - 292px)' : 'calc(100vw - 20px)'),
   },
   main: {
     flex: '1 1 100%',

@@ -15,7 +15,7 @@ import { error, success } from '../../../utils/toast'
 import StyledDialog from '../../Dialogs/StyledeEmptyDialog'
 import { RippedPaperItem } from '../../RippedPaperList'
 import PaymentMethodInput from './PaymentMethodInput'
-
+import SaleProgressSteps from '../../../src/pages/sales/new-order/saleStepLoading'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useSelector } from 'react-redux'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
@@ -23,6 +23,8 @@ import QrScanIcon from '../../../src/assets/icons/QrScanIcon'
 import thousandDivider from '../../../utils/thousandDivider'
 import TextField from '../../Inputs/TextField'
 import LoadingBlock from '../../LoadingBlock'
+import PreventRefresh from '../../../src/pages/sales/new-order/preventRefresh'
+import PreventRefreshDialog from '../../../src/pages/sales/new-order/preventRefreshDialog'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -264,9 +266,9 @@ export default function OrderDrawer({
   setOpenDebt,
 }) {
   const methods = useForm()
-  console.log(methods.getValues('service-type'))
 
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
+  const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
   const addEmptyStringMarkToMarkinglessProduct = (markings, shouldHaveMarkings) => {
     let newMarkingList = { ...markings }
     for (const key in shouldHaveMarkings) {
@@ -292,6 +294,7 @@ export default function OrderDrawer({
   const [hasChange, setHasChange] = useState(false)
   const [qrcodeUrl, setQrcodeUrl] = useState({ qr: 'pending', fiscal: 'pending' })
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
+  const [isOpenRefreshDialog, setOpenRefreshDialog] = useState(false)
   const [payme, setPayme] = useState(false)
   const { id } = useParams()
   const theme = useTheme()
@@ -322,13 +325,21 @@ export default function OrderDrawer({
     }
   }, [paymentsList, cartItemsList])
 
-  const { mutate: sendEPOSresponseToBackend, isLoading: isSendEPOSresponseToBackend } = useMutation(requests.sendEPOSresponseToBackend, {
+  const {
+    mutate: sendEPOSresponseToBackend,
+    isLoading: isSendEPOSresponseToBackend,
+    isError: isSaleResponseError,
+  } = useMutation(requests.sendEPOSresponseToBackend, {
     onSuccess: ({ data }) => {
+      setOpenRefreshDialog(false)
+
       setNewSaleId(get(data, 'data.id', false))
       setDmedPrescriptionsList([])
       setDmedOrganizedList([])
     },
     onError: (err) => {
+      setOpenRefreshDialog(false)
+
       error('Ошибка при епосе')
     },
   })
@@ -344,8 +355,16 @@ export default function OrderDrawer({
   })
 
   const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
-  const { mutate: finishSaleWithoutAppPaymentType, isLoading: isFinishSaleWithoutAppPaymentType } = useMutation(requests.addToOrderPayment, {
+  const {
+    mutate: finishSaleWithoutAppPaymentType,
+    isLoading: isFinishSaleWithoutAppPaymentType,
+    isError: isSaleError,
+  } = useMutation(requests.addToOrderPayment, {
     onSuccess: ({ data }) => {
+      if (SALE_STAGE == 6) {
+        sendEPOSresponseToBackend({ error: false, response_data: null, sale_id: id })
+        return
+      }
       if (!JSON.parse(send_to_epos)) {
         // disabling epos
         // navigate(`/sales/new-sale/${get(data, 'data.id', '/')}`)
@@ -422,6 +441,7 @@ export default function OrderDrawer({
     },
     onError: (err) => {
       setHasChange(false)
+      setOpenRefreshDialog(false)
 
       if (get(err, 'response.status') == 409) {
         saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), error('Эта продажа уже закрыта.')
@@ -436,7 +456,11 @@ export default function OrderDrawer({
       console.log('err', err)
     },
   })
-  const { mutate: sendToEPOS, isLoading: isSendToEPOS } = useMutation(requests.sendToEpos, {
+  const {
+    mutate: sendToEPOS,
+    isLoading: isSendToEPOS,
+    isError: isEposError,
+  } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
       if (!get(data, 'error', true)) {
         setCustomerId('')
@@ -448,6 +472,8 @@ export default function OrderDrawer({
 
         return
       } else {
+        setOpenRefreshDialog(false)
+        isEposError = true
         setHasChange(false)
 
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
@@ -457,6 +483,7 @@ export default function OrderDrawer({
     onError: (err) => {
       sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
       setHasChange(false)
+      setOpenRefreshDialog(false)
 
       error('Ошибка при EPOS')
       console.log('err', err)
@@ -662,6 +689,10 @@ export default function OrderDrawer({
 
   return (
     <Box hidden>
+      <PreventRefresh
+        isDirty={isFinishSaleWithoutAppPaymentType || isSendToEPOS || isSendEPOSresponseToBackend}
+        setShowModal={() => setOpenRefreshDialog(true)}
+      />
       <Box width='calc(100% + 32px)' mx={-2} mt={-4}>
         <Drawer
           open={isOrderDrower}
@@ -694,7 +725,7 @@ export default function OrderDrawer({
           className={`${classes.drawer} ${half ? classes.half : ''}`}
         >
           <FormProvider {...methods}>
-            {hasChange && <LoadingBlock position={'absolute'} bgColor={'#ffffff99'} width={'100%'} left='0' />}
+            {/* {hasChange && <LoadingBlock position={'absolute'} bgColor={'#ffffff99'} width={'100%'} left='0' />} */}
             <Box className={classes.wrapper}>
               <Box width='calc(75% - 64px)' padding={'0 40px 0 0'}>
                 <Box mb={'40px'} display='flex' width={'100%'} justifyContent={'space-between'}>
@@ -730,107 +761,111 @@ export default function OrderDrawer({
                     </Typography>
                   </Box>
                 </Box>
-                <Box>
-                  <Typography fontSize={16} fontWeight={'600'} lineHeight={'24px'} color={'bunker.700'}>
-                    To'lov turi:
-                  </Typography>
-                  <Grid container display={'flex'}>
-                    {get(paymentTypesList, 'data.data', []).map((item) => (
-                      <Grid key={item.id} item xs={3} sm={3} lg={3} xl={3} p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
-                        <Box
-                          display={'flex'}
-                          p={'20px'}
-                          sx={{
-                            '& p': {
-                              color: isVisiblePaymentType(item) ? 'bunker.600' : 'bunker.400',
-                            },
-                          }}
-                          height={'80px'}
-                          bgcolor={'bg.10'}
-                          justifyContent={'space-between'}
-                          borderRadius={'24px'}
-                        >
-                          <Typography fontSize={18} fontWeight={'600'} lineHeight={'40px'}>
-                            {get(item, 'name')}
-                          </Typography>
-                          <Typography alignItems={'center'} justifyContent={'center'} display={'flex'}>
+                {SALE_STAGE != 8 && (
+                  <>
+                    <Box>
+                      <Typography fontSize={16} fontWeight={'600'} lineHeight={'24px'} color={'bunker.700'}>
+                        To'lov turi:
+                      </Typography>
+                      <Grid container display={'flex'}>
+                        {get(paymentTypesList, 'data.data', []).map((item) => (
+                          <Grid key={item.id} item xs={3} sm={3} lg={3} xl={3} p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
                             <Box
+                              display={'flex'}
+                              p={'20px'}
                               sx={{
-                                color: '#bdbdbd',
-                                border: '2px solid #cfcfcf',
-                                height: '34px',
-                                display: 'flex',
-                                padding: '2px',
-                                ml: '5px',
-                                minWidth: '34px',
-                                alignItems: 'center',
-                                borderRadius: '8px',
-                                justifyContent: 'center',
+                                '& p': {
+                                  color: isVisiblePaymentType(item) ? 'bunker.600' : 'bunker.400',
+                                },
                               }}
+                              height={'80px'}
+                              bgcolor={'bg.10'}
+                              justifyContent={'space-between'}
+                              borderRadius={'24px'}
                             >
-                              {getPaymentTypeHotKeyLabel(get(item, 'name'))}
-                            </Box>
-                          </Typography>
-                        </Box>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </Box>
-                <Box>
-                  <Grid container width={'100%'} display={'flex'}>
-                    {mpaddedPaymentsList?.map((el, index) => (
-                      <Grid item sm={3} lg={3} xl={3} xs={3} m={'3'} key={el.id}>
-                        {el?.name ? (
-                          <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.box}>
-                            <div className={classes.boxHeader}>
-                              <Typography lineHeight={'24px'} fontSize={'16px'} fontWeight={'600'} color={'bunker.950'} id='payment-type'>
-                                {el.name}
+                              <Typography fontSize={18} fontWeight={'600'} lineHeight={'40px'}>
+                                {get(item, 'name')}
                               </Typography>
-                              <Box display='flex' alignItems='center'>
-                                <MuiButton
-                                  variant='primary'
-                                  onClick={() => removePaymentType(el.id)}
-                                  sx={() => ({
-                                    paddingRight: 0,
-                                    paddingLeft: 1,
-                                  })}
+                              <Typography alignItems={'center'} justifyContent={'center'} display={'flex'}>
+                                <Box
+                                  sx={{
+                                    color: '#bdbdbd',
+                                    border: '2px solid #cfcfcf',
+                                    height: '34px',
+                                    display: 'flex',
+                                    padding: '2px',
+                                    ml: '5px',
+                                    minWidth: '34px',
+                                    alignItems: 'center',
+                                    borderRadius: '8px',
+                                    justifyContent: 'center',
+                                  }}
                                 >
-                                  <RemovePaymentIcon color={theme.palette.black} />
-                                </MuiButton>
-                              </Box>
-                            </div>
-                            <div className={classes.boxBody}>
-                              <PaymentMethodInput
-                                id={el.id}
-                                index={el.id}
-                                classes={classes}
-                                isLast={mpaddedPaymentsList.filter((el) => el.name)?.length - 1 == index}
-                                lastPaymentInput={(el) => (lastPaymentInput.current = el)}
-                                item={el}
-                                isReturnDrawer={true}
-                                removePaymentType={removePaymentType}
-                                cashbackPaymentPercentage={1}
-                                paymentsList={paymentsList}
-                                setPaymentsList={(el) => {
-                                  setPaymentsList(el)
-                                }}
-                                totalPrice={1}
-                                clientInfo={'clientInfo'}
-                                max={maxAmount}
-                                totalAmount={get(cartItemsList, 'total_amount')}
-                                paymentAmount={paymentAmount}
-                                disabled={false}
-                                webkassaOn={true}
-                              />
-                            </div>
-                          </Box>
-                        ) : (
-                          <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.placeholder}></Box>
-                        )}
+                                  {getPaymentTypeHotKeyLabel(get(item, 'name'))}
+                                </Box>
+                              </Typography>
+                            </Box>
+                          </Grid>
+                        ))}
                       </Grid>
-                    ))}
-                  </Grid>
-                </Box>
+                    </Box>
+                    <Box>
+                      <Grid container width={'100%'} display={'flex'}>
+                        {mpaddedPaymentsList?.map((el, index) => (
+                          <Grid item sm={3} lg={3} xl={3} xs={3} m={'3'} key={el.id}>
+                            {el?.name ? (
+                              <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.box}>
+                                <div className={classes.boxHeader}>
+                                  <Typography lineHeight={'24px'} fontSize={'16px'} fontWeight={'600'} color={'bunker.950'} id='payment-type'>
+                                    {el.name}
+                                  </Typography>
+                                  <Box display='flex' alignItems='center'>
+                                    <MuiButton
+                                      variant='primary'
+                                      onClick={() => removePaymentType(el.id)}
+                                      sx={() => ({
+                                        paddingRight: 0,
+                                        paddingLeft: 1,
+                                      })}
+                                    >
+                                      <RemovePaymentIcon color={theme.palette.black} />
+                                    </MuiButton>
+                                  </Box>
+                                </div>
+                                <div className={classes.boxBody}>
+                                  <PaymentMethodInput
+                                    id={el.id}
+                                    index={el.id}
+                                    classes={classes}
+                                    isLast={mpaddedPaymentsList.filter((el) => el.name)?.length - 1 == index}
+                                    lastPaymentInput={(el) => (lastPaymentInput.current = el)}
+                                    item={el}
+                                    isReturnDrawer={true}
+                                    removePaymentType={removePaymentType}
+                                    cashbackPaymentPercentage={1}
+                                    paymentsList={paymentsList}
+                                    setPaymentsList={(el) => {
+                                      setPaymentsList(el)
+                                    }}
+                                    totalPrice={1}
+                                    clientInfo={'clientInfo'}
+                                    max={maxAmount}
+                                    totalAmount={get(cartItemsList, 'total_amount')}
+                                    paymentAmount={paymentAmount}
+                                    disabled={false}
+                                    webkassaOn={true}
+                                  />
+                                </div>
+                              </Box>
+                            ) : (
+                              <Box mr={'16px'} mb={'16px'} id={`payment-box${el.id}`} className={classes.placeholder}></Box>
+                            )}
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Box>
+                  </>
+                )}
               </Box>
               <Box
                 maxWidth='400px'
@@ -869,7 +904,7 @@ export default function OrderDrawer({
               sx={{ minHeight: '48px !important ', display: 'flex' }}
               variant='contained'
               loading={isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType}
-              disabled={maxAmount > 0}
+              disabled={maxAmount > 0 && SALE_STAGE != 8}
               onClick={() => handleFinish()}
             >
               {t('menu.orders.new_order.cart_container.pay')}
@@ -892,6 +927,14 @@ export default function OrderDrawer({
               </Box>
             </LoadingButton>
           </FormProvider>
+          <SaleProgressSteps
+            isFinishSaleWithoutAppPaymentType={isFinishSaleWithoutAppPaymentType}
+            isSendToEPOS={isSendToEPOS}
+            isSendEPOSresponseToBackend={isSendEPOSresponseToBackend}
+            isSaleResponseError={isSaleResponseError}
+            isEposError={isEposError}
+            isSaleError={isSaleError}
+          />
         </Drawer>
       </Box>
       <StyledDialog
@@ -941,6 +984,8 @@ export default function OrderDrawer({
           </Box>
         </Box>
       </StyledDialog>
+
+      <PreventRefreshDialog isOpenRefreshDialog={isOpenRefreshDialog} setOpenRefreshDialog={setOpenRefreshDialog} />
     </Box>
   )
 }

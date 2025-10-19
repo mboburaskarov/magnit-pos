@@ -132,7 +132,7 @@ export default function ChangePriceDetailPage() {
     isLoading: revaluationDetailListLoading,
     isFetching: isFetchingrevaluationDetailList,
     refetch,
-  } = useQuery(['revaluationDetailList', revaluationDetailListFilter], () => requests.getRevaluationDetailList(id))
+  } = useQuery(['revaluationDetailList', revaluationDetailListFilter], () => requests.getRevaluationDetailList({ id, ...revaluationDetailListFilter }))
 
   const {
     data: revaluationById,

@@ -1,20 +1,25 @@
 import MenuOutline from '../assets/icons/MenuOutline'
+import ClientsIcon from '../assets/icons/navbar/ClientsIcon'
+import DashboardIcon from '../assets/icons/navbar/DashboardIcon'
+import KatalogIcon from '../assets/icons/navbar/KatalogIcon'
+import ReportIcon from '../assets/icons/navbar/ReportIcon'
+import SaleIcon from '../assets/icons/navbar/SaleIcon'
+import SettingIcon from '../assets/icons/navbar/SettingIcon'
 import ProductsIcon from '../assets/icons/ProductsIcon'
 import QrScanIcon from '../assets/icons/QrScanIcon'
 import RevenueIcon from '../assets/icons/RevenueIcon'
 import SettingsIcon from '../assets/icons/SettingsIcon'
-import UsersIcon from '../assets/icons/UsersIcon'
 export const navbatRouteData = [
   {
     label: 'navbar.dashboard',
     id: '2',
-    icon: <MenuOutline />,
+    icon: <DashboardIcon />,
     href: '/dashboard',
   },
   {
     label: 'navbar.catalog',
     id: '3',
-    icon: <ProductsIcon />,
+    icon: <KatalogIcon />,
     href: '/products',
     children: [
       {
@@ -84,7 +89,7 @@ export const navbatRouteData = [
   {
     label: 'navbar.sales',
     id: '5',
-    icon: <QrScanIcon />,
+    icon: <SaleIcon />,
     href: '/sales',
     children: [
       {
@@ -110,7 +115,7 @@ export const navbatRouteData = [
   {
     label: 'navbar.clients',
     id: '1',
-    icon: <UsersIcon />,
+    icon: <ClientsIcon />,
     href: '/clients',
     children: [
       {
@@ -132,7 +137,7 @@ export const navbatRouteData = [
   {
     label: 'Отчеты',
     id: '9999',
-    icon: <RevenueIcon />,
+    icon: <ReportIcon />,
     href: '/reports',
     children: [
       {
@@ -165,7 +170,7 @@ export const navbatRouteData = [
   {
     label: 'navbar.settings',
     id: '9',
-    icon: <SettingsIcon />,
+    icon: <SettingIcon />,
     href: '/settings',
     children: [
       {

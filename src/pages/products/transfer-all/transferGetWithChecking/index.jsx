@@ -253,15 +253,15 @@ export default function TransferGetScanWithCheckingPage() {
                 fullDownload={() => getReturnToWarehouseDetailsExcelReport({ ...transferWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                 downloadByFilter={() => getReturnToWarehouseDetailsExcelReport(transferWithCheckingDetailsFilter)}
                 data={transferWithCheckingDetails?.data?.data?.data || []}
-                totalCount={transferWithCheckingDetails?.data?.data?.data?._meta?.total_count || 0}
+                totalCount={transferWithCheckingDetails?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchingtransferWithCheckingDetails || transferWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
                 }}
                 emptyTableText={{
-                  title: 'Импорт недоступен',
-                  description: 'Если вы не можете найти искомый Импорт, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+                  title: 'Перемещение недоступен',
+                  description: 'Если вы не можете найти искомый Перемещение, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
@@ -280,10 +280,10 @@ export default function TransferGetScanWithCheckingPage() {
         desc={
           <>
             <Typography fontWeight={'600'} fontSize={'20px'}>
-              {'Вы уверены, что хотите принять перемещение?'}
+              {'Вы уверены что хотите Принять перемещение?'}
             </Typography>
             <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
-              {'Не сканированные товары не будут добавлены'}
+              {'Не сканированные товары будут списаны'}
             </Typography>
           </>
         }

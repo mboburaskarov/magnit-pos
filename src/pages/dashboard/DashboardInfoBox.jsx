@@ -8,116 +8,108 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
 
   return (
     <Box sx={(theme) => ({ border: 1, borderRadius: '16px', borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' })}>
-      <Box key={ind} sx={(theme) => ({ pr: '26px', pl: '16px', minHeight: '115px', pt: '16px', pb: '10px', m: 0 })}>
-        <Box width='100%' alignItems={'center'} display='inline-flex'>
-          {!noDot && (
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: icon ? 40 : 24,
-                minWidth: icon ? 40 : 24,
-                minHeight: icon ? 40 : 24,
-                height: icon ? 40 : 24,
-                backgroundColor: 'orange.100',
-                borderRadius: icon ? 3 : 6,
-                '& > svg > path': { stroke: '#FE5000' },
-                '& > svg > circle': { stroke: '#FE5000' },
-                '& > svg': { width: 18 },
-              }}
-            >
-              {isLoading ? <Skeleton variant='circular' width={18} height={18} /> : icon}
-            </Box>
-          )}
-          <Box ml={'10px'} flex={1}>
+      <Box key={ind} sx={(theme) => ({ p: '20px', minHeight: '115px', m: 0 })}>
+        <Box width='100%' alignItems={'start'} flexDirection={'column'} display='inline-flex'>
+          {!noDot && <Box height={'48px'}>{isLoading ? <Skeleton variant='circular' width={48} height={48} sx={{ borderRadius: '12px' }} /> : icon}</Box>}
+          <Box flex={1}>
             {isLoading ? (
-              <Skeleton variant='text' width='80%' height={24} />
+              <Skeleton variant='rectangular' width='65%' height={20} sx={{ mt: '16px', borderRadius: '6px' }} />
             ) : (
-              <Typography fontSize={18} fontWeight={'500'} lineHeight={'24px'} color={'dark.500'} mt={0.5}>
-                {title}
+              <Typography display={'flex'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'} color={'bunker.500'} mt={'16px'}>
+                {title}{' '}
+                {id === 'expiring_soon_amount' || id === 'expired_soon_amount' ? (
+                  <Typography
+                    sx={{
+                      padding: '3px 8px 1px',
+                      borderRadius: '16px',
+                      backgroundColor: 'bunker.100',
+                      fontWeight: '500',
+                      fontSize: '12px',
+                      ml: '8px',
+                      lineHeight: '16px',
+                      color: 'bunker.500',
+                    }}
+                  >
+                    {withoutDivider ? count : thousandDivider(count, '')} {endText}
+                  </Typography>
+                ) : (
+                  ''
+                )}
               </Typography>
             )}
           </Box>
         </Box>
 
         {
-          <Box mt={icon ? '10px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
+          <Box mt={icon ? '0px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
             <Box flex={1}>
               {isLoading ? (
-                <Skeleton variant='text' width='60%' height={40} />
+                <Skeleton variant='rectangular' width='55%' height={40} sx={{ borderRadius: '8px', mt: '8px' }} />
               ) : (
                 <Typography
                   alignItems={'end'}
                   display={'flex'}
                   color='dark.500'
-                  fontSize={'30px'}
-                  lineHeight={'32px'}
-                  fontWeight='600'
+                  fontSize={'28px'}
+                  lineHeight={'40px'}
+                  fontWeight='700'
                   variant='h1'
                   sx={{
                     '& > p': {
-                      fontSize: '30px',
-                      lineHeight: '32px',
-                      fontWeight: '600 !important',
+                      fontSize: '28px',
+                      lineHeight: '40px',
+                      fontWeight: '700 !important',
                       color: 'dark.500',
-                      ml: '10px',
                     },
                   }}
                 >
-                  {id === 'expiring_soon_amount' || id === 'expired_soon_amount' ? (
-                    <>
-                      {thousandDivider(Math.round(amount), 'сум')}
-                      <Typography color='dark.500' fontSize={'20px'} lineHeight={'25px'} fontWeight='500' ml={'10px'}>
-                        ({withoutDivider ? count : thousandDivider(count, '')}
-                        {endText})
-                      </Typography>
-                    </>
-                  ) : withoutDivider ? (
-                    Math.round(count)
-                  ) : (
-                    <Typography>{thousandDivider(Math.round(count), endText)}</Typography>
-                  )}
+                  {withoutDivider ? Math.round(amount) : <Typography>{thousandDivider(Math.round(amount), 'сум')}</Typography>}
                 </Typography>
               )}
             </Box>
-            {percent < 1000 && (
-              <>
-                {isLoading ? (
-                  <Skeleton variant='rectangular' width={60} height={26} sx={{ borderRadius: '5px' }} />
-                ) : (
-                  <Box
-                    display='inline-flex'
-                    sx={{
-                      borderRadius: '5px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: '4px 5px',
-                      backgroundColor: !isFall ? '#30BE821A' : '#F45B691A',
-                    }}
-                    alignItems='center'
-                  >
-                    {!isFall ? <GrowIcon /> : <FallIcon />}{' '}
-                    <Typography color={isFall ? '#F45B69' : '#30BE82'} fontWeight='500' mr={0.5} fontSize={14} lineHeight={'18px'}>
-                      {percent}%
-                    </Typography>
-                  </Box>
-                )}
-              </>
-            )}
           </Box>
         }
       </Box>
 
-      <Box key={ind} sx={(theme) => ({ pt: '10px', pb: '8px', px: '16px', m: 0, height: 37, borderTop: 1, borderColor: '#A4A5AB33' })}>
-        <Box>
-          {isLoading ? (
-            <Skeleton variant='text' width='70%' height={20} />
-          ) : (
-            <Typography color='gray.500' fontSize={'16px'} lineHeight={'20px'} fontWeight='500' variant='h1'>
-              {thousandDivider(old)} {endText} за прошедший период
-            </Typography>
+      <Box key={ind} sx={(theme) => ({ py: '18px', px: '20px', m: 0, borderTop: 1, borderColor: '#A4A5AB33' })}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          {percent < 1000 && (
+            <>
+              {isLoading ? (
+                <Skeleton variant='rectangular' width={65} height={26} sx={{ borderRadius: '16px' }} />
+              ) : (
+                <Box
+                  display='inline-flex'
+                  sx={{
+                    borderRadius: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '3px 8px 1px',
+                    backgroundColor: !isFall ? '#30BE821F' : '#FF46393D',
+                  }}
+                  alignItems='center'
+                >
+                  <Typography color={isFall ? '#FF4639' : '#30BE82'} fontWeight='500' fontSize={12} lineHeight={'16px'}>
+                    {!isFall ? '+' : ''} {percent}%
+                  </Typography>
+                </Box>
+              )}
+            </>
           )}
+          <Box sx={{ ml: '10px' }}>
+            {isLoading ? (
+              <Skeleton variant='rectangular' width={140} height={16} sx={{ borderRadius: '6px' }} />
+            ) : (
+              <Typography color='bunker.500' fontSize={'12px'} lineHeight={'16px'} fontWeight='500' variant='h1'>
+                {thousandDivider(old)} {endText} за прошедший период
+              </Typography>
+            )}
+          </Box>
         </Box>
       </Box>
     </Box>

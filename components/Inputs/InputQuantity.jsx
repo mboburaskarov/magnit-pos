@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiInputBase-root': {
       height: 48,
       backgroundColor: theme.palette.background.default,
-      border: `2px solid ${theme.palette.bunker[100]}`,
+      border: `1px solid ${theme.palette.bunker[200]}`,
     },
     '& .price': {
       justifyContent: 'center',
@@ -45,18 +45,25 @@ const useStyles = makeStyles((theme) => ({
   },
   textfield: {
     height: 48,
-    '& input[type=number]::-webkit-inner-spin-button': {
-      '-webkit-appearance': 'none',
-      cursor: 'pointer',
-      display: 'block',
-      color: theme.palette.gray[400],
-      textAlign: 'center',
-      background: `url('/images/input-arrows.svg') no-repeat 100% 50%`,
-      width: 10,
-      height: 32,
-      position: 'relative',
-      right: 12,
-      opacity: 1,
+    // '& input[type=number]::-webkit-inner-spin-button': {
+    //   '-webkit-appearance': 'none',
+    //   cursor: 'pointer',
+    //   display: 'block',
+    //   color: theme.palette.gray[400],
+    //   textAlign: 'center',
+    //   background: `url('/images/input-arrows.svg') no-repeat 100% 50%`,
+    //   width: 10,
+    //   height: 32,
+    //   position: 'relative',
+    //   right: 12,
+    //   opacity: 1,
+    // },
+    '& input[type=number]': {
+      MozAppearance: 'textfield', // Firefox
+    },
+    '& input[type=number]::-webkit-inner-spin-button, & input[type=number]::-webkit-outer-spin-button': {
+      WebkitAppearance: 'none',
+      margin: 0,
     },
   },
   applyAll: {
@@ -183,11 +190,7 @@ function InputQuantity({
         onWheel={(e) => {
           e.target.blur()
           e.stopPropagation()
-          //   setTimeout(() => {
-          //     e.target.focus()
-          //   }, 0)
         }}
-        // onFocus={(e) => setApplyAll(true)}
         autoComplete='off'
         {...(!uncontrolled && methods?.register(name, { required }))}
         {...(uncontrolled && {
@@ -230,7 +233,7 @@ function InputQuantity({
         {...inputProps}
         style={{
           ...inputStyles,
-          width: fullWidth ? '100%' : `calc(${initWidth} +  ${String(inputValue || 1).length ? String(inputValue || 1).length * 10 : 0}px)`,
+          width: fullWidth ? '100%' : '110px', // FIXED WIDTH - eng yaxshi yechim
         }}
         className={`${classes.textfield} ${!label && classes.noMargin} ${multiline && classes.multiline} ${adornment && classes.hasAdornment}`}
         error={!!error}
