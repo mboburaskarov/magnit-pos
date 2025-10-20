@@ -102,7 +102,7 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
               },
             }}
           >
-            <Box className={`step-icon-box ${isLoadedStage(open, 1) ? 'loaded' : 'complated'}`}>
+            <Box className={`step-icon-box complated'}`}>
               <FolderSearch />
             </Box>
             <Box className={isLoadedStage(open, 1) ? 'loaded-bar' : 'complated-bar'} />
@@ -141,14 +141,14 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
             </Box>
 
             <Box className='step-title'>
-              <Typography>Sunnat</Typography>
+              <Typography>{isLoadedStage(open, 1) ? '...' : 'Sunnat'}</Typography>
             </Box>
 
             <Box className='step-title'>
-              <Typography>Murtazo</Typography>
+              <Typography>{isLoadedStage(open, 2) ? '...' : 'Murtazo'}</Typography>
             </Box>
             <Box className='step-title'>
-              <Typography>JsDev</Typography>
+              <Typography>{isLoadedStage(open, 3) ? '...' : 'JsDev'}</Typography>
             </Box>
           </Box>
           <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between' }}>
