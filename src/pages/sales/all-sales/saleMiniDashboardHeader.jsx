@@ -4,7 +4,7 @@ import thousandDivider from '../../../../utils/thousandDivider'
 
 function SaleMiniDashboardHeader({ saleStatsData }) {
   const mockData = [
-    { prop: 'total_cash', title: 'Naqt' },
+    { prop: 'total_cash', title: 'Наличные' },
     { prop: 'total_humo', title: 'Humo' },
     { prop: 'total_uzcard', title: 'Uzcard' },
     { prop: 'total_click', title: 'Click' },

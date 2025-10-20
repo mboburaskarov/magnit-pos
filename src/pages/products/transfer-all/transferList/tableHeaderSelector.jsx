@@ -14,6 +14,10 @@ import DownloadIcon from '../../../../assets/icons/DownloadIcon'
 import LeftArrowIcon from '../../../../assets/icons/LeftArrow'
 import { useQueryParams } from '../../../../hooks/useQueryParams'
 import { ClockIcon } from '@mui/x-date-pickers-pro'
+import FolderSearch from '../../../../assets/icons/step-progress/FolderSearch'
+import SentFastIcon from '../../../../assets/icons/step-progress/SentFast'
+import TimeQuarterIcon from '../../../../assets/icons/step-progress/TimeQuarter'
+import TickIcon from '../../../../assets/icons/step-progress/Tick'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography
@@ -25,7 +29,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, t, downloadNakladnoy, setOpenConfirmDialog }) {
+export default function tableHeaderSelector({ importsColumns, t, downloadNakladnoy, setOpenConfirmDialog, setStatusModal }) {
   const { values } = useQueryParams()
   const navigate = useNavigate()
   const columns = importsColumns?.map((el) => {
@@ -239,147 +243,127 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
       }
     }
     if (el.field === 'status') {
+      const isLoadedStage = (data, stage) => {
+        const status = data?.status
+        const stagesByStatus = {
+          sent: [1],
+          checking: [1, 2],
+          completed: [1, 2, 3],
+        }
+
+        return !stagesByStatus[status]?.includes(stage)
+      }
+
       return {
         ...el,
         headerName: t('table_columns.status'),
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box
-            id={`${'status'}-${p.rowIndex}`}
-            whiteSpace='pre-wrap'
-            sx={{
-              height: '45px',
-              width: '150px',
-              display: 'flex',
-              alignItems: 'start',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              position: 'relative',
-              '& .boxes': {
-                display: 'flex',
+          // <Box
+          //   onClick={() => setStatusModal(p?.data)}
+          //   id={`${'status'}-${p.rowIndex}`}
+          //   whiteSpace='pre-wrap'
+          //   sx={{
+          //     '& .step-title > p': {
+          //       fontSize: '16px',
+          //       fontWeight: '600',
+          //       lineHeight: '24px',
+          //       color: 'black',
+          //     },
+          //   }}
+          // >
+          //   <Box
+          //     sx={{
+          //       display: 'flex',
+          //       width: '100%',
+          //       '& .loaded-bar': {
+          //         height: '10px',
+          //         width: '24px',
+          //         backgroundColor: '#ffff',
+          //         overflow: 'hidden',
+          //         position: 'relative',
+          //         marginTop: '8px',
+          //         background: `repeating-linear-gradient(
+          //         45deg,
+          //         #f0f0f0,
+          //         #f0f0f0 5px,
+          //         #e8e8e8 5px,
+          //         #e8e8e8 10px
+          //       )`,
+          //       },
+          //       '& .complated-bar': {
+          //         height: '10px',
+          //         width: '24px',
+          //         marginX: '-2px',
+          //         backgroundColor: '#fe5000',
+          //         overflow: 'hidden',
+          //         position: 'relative',
+          //         marginTop: '8px',
+          //         background: `repeating-linear-gradient(
+          //         45deg,
+          //         #ff9f50,
+          //         #ff9f50 5px,
+          //         #ff6f00 5px,
+          //         #ff6f00 10px
+          //       )`,
+          //       },
+          //       '& .step-icon-box': {
+          //         backgroundColor: 'orange.500',
+          //         borderRadius: '50%',
+          //         width: '27px',
+          //         height: '27px',
+          //         marginX: '-2px',
+          //         flexShrink: 0,
+          //         display: 'flex',
+          //         alignItems: 'center',
+          //         justifyContent: 'center',
+          //         zIndex: 9,
+          //       },
+          //       '& .step-icon-box.loaded': {
+          //         backgroundColor: 'bunker.200',
+          //       },
+          //     }}
+          //   >
+          //     <Box className={`step-icon-box ${isLoadedStage(p?.data, 1) ? 'loaded' : 'complated'}`}>
+          //       <FolderSearch />
+          //     </Box>
+          //     <Box className={isLoadedStage(p?.data, 1) ? 'loaded-bar' : 'complated-bar'} />
 
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                textWrapMode: 'nowrap',
-              },
-              '& .boxes > p:nth-child(1)': {
-                color: 'white',
-                height: '25px',
-                backgroundColor: '#3CA98F',
-                borderRadius: '16px',
-                padding: '2px 5px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                font: '600 10px/16px Gilroy',
-              },
-              '& .boxes > p:nth-child(2)': {
-                font: '500 10px/16px Gilroy',
-                color: 'orange.500',
-              },
-              '& .title > p': {
-                font: '500 10px/16px Gilroy',
-                color: 'orange.500',
-              },
-            }}
-          >
-            <Box sx={{ display: 'flex', width: '100%' }}>
-              <Box className='boxes'>
-                <Typography>999</Typography>
-              </Box>
-              <Box
-                sx={{
-                  height: '10px',
-                  width: '100%',
-                  backgroundColor: 'orange.500',
-                  // backgroundColor: '#f0f0f0',
-                  overflow: 'hidden',
-                  position: 'relative',
-                  marginTop: '8px',
-                  // background: `repeating-linear-gradient(
-                  //   45deg,
-                  //   #f0f0f0,
-                  //   #f0f0f0 5px,
-                  //   #e8e8e8 5px,
-                  //   #e8e8e8 10px
-                  // )`,
-                }}
-              />
-              <Box className='boxes'>
-                <Typography>999</Typography>
-              </Box>
-              <Box
-                sx={{
-                  height: '10px',
-                  width: '100%',
-                  backgroundColor: 'orange.500',
-                  backgroundColor: '#f0f0f0',
-                  overflow: 'hidden',
-                  position: 'relative',
-                  marginTop: '8px',
-                  background: `repeating-linear-gradient(
-                  45deg,
-                  #f0f0f0,
-                  #f0f0f0 5px,
-                  #e8e8e8 5px,
-                  #e8e8e8 10px
-                )`,
-                }}
-              />
-              <Box className='boxes'>
-                <Typography>
-                  <ClockIcon />
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  height: '10px',
-                  width: '100%',
-                  backgroundColor: 'orange.500',
-                  backgroundColor: '#f0f0f0',
-                  overflow: 'hidden',
-                  position: 'relative',
-                  marginTop: '8px',
-                  background: `repeating-linear-gradient(
-                  45deg,
-                  #f0f0f0,
-                  #f0f0f0 5px,
-                  #e8e8e8 5px,
-                  #e8e8e8 10px
-                )`,
-                }}
-              />
-              <Box className='boxes'>
-                <Typography>
-                  <ClockIcon />
-                </Typography>
-              </Box>
-            </Box>
-            <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Box className='title'>
-                <Typography>Новый</Typography>
-              </Box>
+          //     <Box className={`step-icon-box ${isLoadedStage(p?.data, 1) ? 'loaded' : 'complated'}`}>
+          //       <SentFastIcon />
+          //     </Box>
+          //     <Box className={isLoadedStage(p?.data, 2) ? 'loaded-bar' : 'complated-bar'} />
+          //     <Box className={`step-icon-box ${isLoadedStage(p?.data, 2) ? 'loaded' : 'complated'}`}>
+          //       <TimeQuarterIcon />
+          //     </Box>
+          //     <Box className={isLoadedStage(p?.data, 3) ? 'loaded-bar' : 'complated-bar'} />
+          //     <Box className={`step-icon-box ${isLoadedStage(p?.data, 3) ? 'loaded' : 'complated'}`}>
+          //       <TickIcon />
+          //     </Box>
+          //   </Box>
+          //   <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
+          //     <Box className='step-title'>
+          //       <Typography>999</Typography>
+          //     </Box>
 
-              <Box className='title'>
-                <Typography>Отп</Typography>
-              </Box>
+          //     <Box className='step-title'>
+          //       <Typography>999</Typography>
+          //     </Box>
 
-              <Box className='title'>
-                <Typography>Прв</Typography>
-              </Box>
-              <Box className='title'>
-                <Typography>Звш</Typography>
-              </Box>
-            </Box>
-          </Box>
-          // <StatusCell
-          //   id={`products-status-${p.rowIndex}`}
-          //   color={returns_list_statuses.find((el) => el.id === p.data.status)?.color}
-          //   bgcolor={returns_list_statuses.find((el) => el.id === p.data.status)?.bgcolor}
-          //   title={returns_list_statuses.find((el) => el.id === p.data.status)?.name}
-          // />
+          //     <Box className='step-title'>
+          //       <Typography>999</Typography>
+          //     </Box>
+          //     <Box className='step-title'>
+          //       <Typography>999</Typography>
+          //     </Box>
+          //   </Box>
+          // </Box>
+          <StatusCell
+            id={`products-status-${p.rowIndex}`}
+            color={returns_list_statuses.find((el) => el.id === p.data.status)?.color}
+            bgcolor={returns_list_statuses.find((el) => el.id === p.data.status)?.bgcolor}
+            title={returns_list_statuses.find((el) => el.id === p.data.status)?.name}
+          />
         )),
       }
     }
