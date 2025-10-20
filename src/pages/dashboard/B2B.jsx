@@ -65,7 +65,7 @@ export default function DashboarB2BPage() {
       {
         title: t('Общая сумма продаж'),
         icon: <MoneyArrowDown color='#fe5000' />,
-        amount: total_sale_amount,
+        count: total_sale_amount,
         percent: calculatePercentage(before_sale_amount || 1, total_sale_amount),
         id: 'total_sale_amount',
         endText: 'сум',
@@ -74,7 +74,7 @@ export default function DashboarB2BPage() {
       {
         title: t('Себестоимость'),
         icon: <ChartArrowUp color='#fe5000' />,
-        amount: product_turnover,
+        count: product_turnover,
         percent: calculatePercentage(before_sale_amount || 1, product_turnover),
         id: 'product_turnover',
         endText: 'сум',
@@ -83,7 +83,7 @@ export default function DashboarB2BPage() {
       {
         title: t('Чистая прибыль'),
         icon: <ChartArrowUp color='#fe5000' />,
-        amount: total_net_income,
+        count: total_net_income,
         endText: 'сум',
         percent: calculatePercentage(before_total_net_income || 1, total_net_income),
         id: 'total_net_income',
@@ -92,7 +92,7 @@ export default function DashboarB2BPage() {
       {
         title: t('Импорт в ожидании (за весь период)'),
         icon: <TimeForward color='#fe5000' />,
-        amount: import_amount,
+        count: import_amount,
         percent: calculatePercentage(before_import_amount || 1, import_amount),
         id: 'import_amount',
         endText: 'сум',
@@ -101,7 +101,7 @@ export default function DashboarB2BPage() {
       {
         title: t('Импорты старше 24 часов'),
         icon: <Time24 color='#fe5000' />,
-        amount: not_last_24h_import_amount,
+        count: not_last_24h_import_amount,
         percent: 0,
         id: 'current_import_amount',
         endText: 'сум',
@@ -111,7 +111,7 @@ export default function DashboarB2BPage() {
         title: t('Общая сумма баланса'),
         icon: <Wallet color='#fe5000' />,
 
-        amount: stock_total_amount,
+        count: stock_total_amount,
         endText: 'сум',
         id: 'stock_total_amount',
         percent: calculatePercentage(before_stock_amount || 1, stock_total_amount),
@@ -121,7 +121,7 @@ export default function DashboarB2BPage() {
       {
         title: t('Общее количество продаж'),
         icon: <ShoppingBasketArrow color='#fe5000' />,
-        amount: total_sale_count,
+        count: total_sale_count,
         endText: 'шт',
 
         id: 'total_sale_count',
@@ -131,7 +131,7 @@ export default function DashboarB2BPage() {
       {
         title: t('Общее количество остатков'),
         icon: <ShoppingBasketCheck color='#fe5000' />,
-        amount: total_product_count,
+        count: total_product_count,
         endText: 'шт',
 
         percent: calculatePercentage(before_product_count || 1, total_product_count),
