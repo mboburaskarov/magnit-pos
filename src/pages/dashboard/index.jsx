@@ -349,7 +349,7 @@ export default function DashboarPage() {
               <DashboardTopsBox
                 id='dashboard-chart'
                 data={get(payments, 'data.data')}
-                title={'Топ продавцы'}
+                title={'Платежи'}
                 subTitle={thousandDivider(Math.round(get(payments, 'data.data', [])?.reduce((a, b) => a + b.amount, 0)), 'сум')}
                 tableData={[
                   { title: 'Тип Платежи	', colId: 'name' },
