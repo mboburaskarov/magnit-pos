@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import TotalOrdersByCity from '../../../components/Charts/SingleBarChart'
 import SingleLineChart from '../../../components/Charts/SingleLineChart'
 import TopBonusProducts from '../../../components/Charts/TopBonusProducts'
@@ -257,7 +257,7 @@ export default function DashboarPage() {
     <LoadingContainer readyState={true}>
       <DashboardHeader setSelectedShops={setSelectedShops} selectedShops={selectedShops} />
 
-      <Box display='flex' flexDirection='column' position='relative' pt={0} px={'20px'} pb={3} width={'100%'}>
+      <Box display='flex' flexDirection='column' position='relative' pt={0} px={'20px'} pb={'32px'} width={'100%'}>
         <Grid width={'100%'} container>
           <Grid width={'100%'} item>
             <Grid container mt={0} spacing={2}>
@@ -272,47 +272,48 @@ export default function DashboarPage() {
                 ))}
               <CheckAccess id={`franchise-dashboard-box`}>
                 <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
-                  <Box
-                    onClick={() => navigate('/dashboard/b2b')}
-                    sx={(theme) => ({
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: 1,
-                      borderRadius: '16px',
-                      borderColor: '#A4A5AB33',
-                      cursor: 'pointer',
-                      bgcolor: 'bg.10',
-                      minHeight: '154px',
-                      width: '100%',
-                      height: '100%',
-                    })}
-                  >
+                  <Link to={'/dashboard/b2b'}>
                     <Box
-                      key={1}
                       sx={(theme) => ({
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        pr: '26px',
-                        pl: '16px',
-                        minHeight: '115px',
-                        pt: '16px',
-                        pb: '10px',
-                        m: 0,
+                        border: 1,
+                        borderRadius: '16px',
+                        borderColor: '#A4A5AB33',
+                        cursor: 'pointer',
+                        bgcolor: 'bg.10',
+                        minHeight: '154px',
+                        width: '100%',
+                        height: '100%',
                       })}
                     >
-                      <Typography
-                        sx={{
-                          fontSize: 25,
-                          fontWeight: '600',
-                        }}
+                      <Box
+                        key={1}
+                        sx={(theme) => ({
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          pr: '26px',
+                          pl: '16px',
+                          minHeight: '115px',
+                          pt: '16px',
+                          pb: '10px',
+                          m: 0,
+                        })}
                       >
-                        Перейти к панели управления франшизой
-                      </Typography>
-                      <ArrowRightRounded sx={{ fontSize: '40px', color: '#fe5000' }} />
+                        <Typography
+                          sx={{
+                            fontSize: 25,
+                            fontWeight: '600',
+                          }}
+                        >
+                          Перейти к панели управления франшизой
+                        </Typography>
+                        <ArrowRightRounded sx={{ fontSize: '40px', color: '#fe5000' }} />
+                      </Box>
                     </Box>
-                  </Box>
+                  </Link>
                 </Grid>
               </CheckAccess>
             </Grid>
@@ -345,39 +346,44 @@ export default function DashboarPage() {
       {!isLoading && (
         <Box sx={{ padding: '0 20px' }}>
           <CheckAccess id={'dashboard-transactions-vendor'}>
-            <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-              <DashboardTopsBox
-                id='dashboard-chart'
-                data={get(payments, 'data.data')}
-                title={'Платежи'}
-                subTitle={thousandDivider(Math.round(get(payments, 'data.data', [])?.reduce((a, b) => a + b.amount, 0)), 'сум')}
-                tableData={[
-                  { title: 'Тип Платежи	', colId: 'name' },
-                  { title: 'Кол-во', colId: 'count', sortable: true },
-                  { title: 'Сумма продажи', colId: 'amount', sortable: true },
-                  { title: 'Прирост', colId: 'stat' },
-                ]}
-              />
-              <DashboardTopsBox
-                id='dashboard-chart'
-                data={get(transaction, 'data.data')}
-                title={'Транзакции'}
-                subTitle={thousandDivider(
-                  get(transaction, 'data.data', [])?.reduce((a, b) => {
-                    const count = parseFloat((b.count || '0').replace(',', '.'))
-                    return a + count
-                  }, 0),
+            <Grid width={'100%'} container spacing={2}>
+              <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={2}>
+                <DashboardTopsBox
+                  id='dashboard-chart'
+                  data={get(payments, 'data.data')}
+                  title={'Платежи'}
+                  subTitle={thousandDivider(Math.round(get(payments, 'data.data', [])?.reduce((a, b) => a + b.amount, 0)), 'сум')}
+                  tableData={[
+                    { title: 'Тип Платежи	', colId: 'name' },
+                    { title: 'Кол-во', colId: 'count', sortable: true },
+                    { title: 'Сумма продажи', colId: 'amount', sortable: true },
+                    { title: 'Прирост', colId: 'stat' },
+                  ]}
+                />
+              </Grid>
+              <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={2}>
+                <DashboardTopsBox
+                  id='dashboard-chart'
+                  data={get(transaction, 'data.data')}
+                  title={'Транзакции'}
+                  subTitle={thousandDivider(
+                    get(transaction, 'data.data', [])?.reduce((a, b) => {
+                      const count = parseFloat((b.count || '0').replace(',', '.'))
+                      return a + count
+                    }, 0),
 
-                  'шт'
-                )}
-                tableData={[
-                  { title: 'Тип Платежи	', colId: 'name' },
-                  { title: 'Кол-во', colId: 'count', sortable: true },
-                  { title: 'Сумма продажи', colId: 'amount', sortable: true },
-                  { title: 'Прирост', colId: 'stat' },
-                ]}
-              />
-              {/* <Transactions
+                    'шт'
+                  )}
+                  tableData={[
+                    { title: 'Тип Платежи	', colId: 'name' },
+                    { title: 'Кол-во', colId: 'count', sortable: true },
+                    { title: 'Сумма продажи', colId: 'amount', sortable: true },
+                    { title: 'Прирост', colId: 'stat' },
+                  ]}
+                />
+              </Grid>
+            </Grid>
+            {/* <Transactions
                 id='dashboard-chart'
                 data={get(payments, 'data.data')}
                 title={'Платежи'}
@@ -396,67 +402,74 @@ export default function DashboarPage() {
                   'шт'
                 )}
               /> */}
-            </Box>
           </CheckAccess>
           <CheckAccess id={'dashboard-vendor'}>
-            <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-              <DashboardTopsBox
-                id='dashboard-chart'
-                href='/reports/top-branchs?backHref=/dashboard'
-                data={get(topStores, 'data.data')}
-                title={'Топ филиалам'}
-                tableData={[
-                  { title: 'Филиал', colId: 'name' },
-                  { title: 'Кол-во чеков', colId: 'count', sortable: true },
-                  { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
-                  { title: 'Прирост', colId: 'stat' },
-                ]}
-              />
-              <DashboardTopsBox
-                id='dashboard-chart'
-                data={get(topProducts, 'data.data')}
-                title={'Топ продукты'}
-                href='/reports/top-products?backHref=/dashboard'
-                tableData={[
-                  { title: 'Продукт', colId: 'name' },
-                  { title: 'Количество ', colId: 'count', sortable: true },
-                  { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
-                  { title: 'Прирост', colId: 'stat' },
-                ]}
-              />
-              {/* <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} /> */}
-              {/* <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} /> */}
-            </Box>
+            <Grid width={'100%'} container mt={'32px'} spacing={2}>
+              <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={0} pb={'0px'} pt={'20px !important'}>
+                <DashboardTopsBox
+                  id='dashboard-chart'
+                  href='/reports/top-branchs?backHref=/dashboard'
+                  data={get(topStores, 'data.data')}
+                  title={'Топ филиалам'}
+                  tableData={[
+                    { title: 'Филиал', colId: 'name' },
+                    { title: 'Кол-во чеков', colId: 'count', sortable: true },
+                    { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
+                    { title: 'Прирост', colId: 'stat' },
+                  ]}
+                />
+              </Grid>
+              <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={0} pb={'0px'} pt={'20px !important'}>
+                <DashboardTopsBox
+                  id='dashboard-chart'
+                  data={get(topProducts, 'data.data')}
+                  title={'Топ продукты'}
+                  href='/reports/top-products?backHref=/dashboard'
+                  tableData={[
+                    { title: 'Продукт', colId: 'name' },
+                    { title: 'Количество ', colId: 'count', sortable: true },
+                    { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
+                    { title: 'Прирост', colId: 'stat' },
+                  ]}
+                />
+              </Grid>
+            </Grid>
+            {/* <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} /> */}
+            {/* <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} /> */}
           </CheckAccess>
           <CheckAccess id={'dashboard-seller'}>
-            <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
-              <DashboardTopsBox
-                id='dashboard-chart'
-                data={get(topSellers, 'data.data')}
-                title={'Топ продавцы'}
-                href='/reports/top-vendors?backHref=/dashboard'
-                tableData={[
-                  { title: 'Продавец	', colId: 'full_name' },
-                  { title: 'Кол-во чеков', colId: 'count', sortable: true },
-                  { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
-                  { title: 'Прирост', colId: 'stat' },
-                ]}
-              />
-              <DashboardTopsBox
-                id='dashboard-chart'
-                data={get(topBonusProducts, 'data.data')}
-                title={'Бонусные продукты'}
-                href='/reports/bonus-products?backHref=/dashboard'
-                tableData={[
-                  { title: 'Продукт	', colId: 'name' },
-                  { title: 'Количество', colId: 'count', sortable: true },
-                  { title: 'Бонусная сумма', colId: 'bonus_amount', sortable: true },
-                  { title: 'Прирост', colId: 'stat' },
-                ]}
-              />
-              {/* <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} /> */}
-              {/* <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} /> */}
-            </Box>
+            <Grid width={'100%'} mt={'32px'} container spacing={2}>
+              <Grid item xs={6} xl={6} sm={6} md={6} lg={6}>
+                <DashboardTopsBox
+                  id='dashboard-chart'
+                  data={get(topSellers, 'data.data')}
+                  title={'Топ продавцы'}
+                  href='/reports/top-vendors?backHref=/dashboard'
+                  tableData={[
+                    { title: 'Продавец	', colId: 'full_name' },
+                    { title: 'Кол-во чеков', colId: 'count', sortable: true },
+                    { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
+                    { title: 'Прирост', colId: 'stat' },
+                  ]}
+                />
+              </Grid>
+              <Grid item xs={6} xl={6} sm={6} md={6} lg={6}>
+                <DashboardTopsBox
+                  id='dashboard-chart'
+                  data={get(topBonusProducts, 'data.data')}
+                  title={'Бонусные продукты'}
+                  href='/reports/bonus-products?backHref=/dashboard'
+                  tableData={[
+                    { title: 'Продукт	', colId: 'name' },
+                    { title: 'Количество', colId: 'count', sortable: true },
+                    { title: 'Бонусная сумма', colId: 'bonus_amount', sortable: true },
+                    { title: 'Прирост', colId: 'stat' },
+                  ]}
+                />
+              </Grid>
+            </Grid>
+            {/* <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} /> */}
+            {/* <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} /> */}
           </CheckAccess>
         </Box>
       )}

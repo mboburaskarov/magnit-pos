@@ -70,6 +70,7 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
               sx={{
                 backgroundColor: '#F7F7F7',
                 overflow: 'hidden',
+
                 '& .table-cell': {
                   color: 'bunker.300 !important',
                   fontSize: '14px',
@@ -110,6 +111,10 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
             </TableHead>
             <TableBody
               sx={{
+                '& .MuiTableRow-root:not(:last-child)': {
+                  borderBottom: '1px solid',
+                  borderColor: 'bunker.100',
+                },
                 '& .table-cell': {
                   fontSize: '14px',
                   fontWeight: 500,
@@ -129,7 +134,7 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
                       if (el?.colId == 'name' || el?.colId == 'full_name') {
                         return (
                           <TableCell
-                            sx={{ maxWidth: '280px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxLines: 1 }}
+                            sx={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxLines: 1 }}
                             className='table-cell'
                           >
                             {index + 1}. {item[el?.colId]}

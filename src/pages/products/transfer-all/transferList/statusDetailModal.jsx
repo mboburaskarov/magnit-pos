@@ -9,10 +9,13 @@ import FolderSearch from '../../../../assets/icons/step-progress/FolderSearch'
 import SentFastIcon from '../../../../assets/icons/step-progress/SentFast'
 import TimeQuarterIcon from '../../../../assets/icons/step-progress/TimeQuarter'
 import TickIcon from '../../../../assets/icons/step-progress/Tick'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
 export default function StatusDetailModal({ open, refetch, setOpen }) {
   const methods = useForm()
   const theme = useTheme()
+  console.log(open)
 
   const { t } = useTranslation()
   const isLoadedStage = (data, stage) => {
@@ -27,6 +30,7 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
   }
   return (
     <StyledEmptyDialog
+      maxWidth={900}
       overflowVisible
       onClose={() => setOpen(false)}
       open={open}
@@ -59,7 +63,7 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
             <Typography></Typography>
           </Box>
           <Box className='header-cell'>
-            <Typography>Пользователь</Typography>
+            <Typography>Создатель</Typography>
           </Box>
           <Box className='header-cell'>
             <Typography>Количество</Typography>
@@ -110,13 +114,13 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
               <Typography>Новый</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
-              <Typography>JsDev</Typography>
+              <Typography>{get(open, 'created_by.full_name')}</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
               <Typography>999</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
-              <Typography>20.02.2222</Typography>
+              <Typography>{dayjs(get(open, 'created_at')).format('DD.MM.YYYY HH:mm')}</Typography>
             </Box>
           </Box>
 
@@ -129,10 +133,10 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
               my: '-2px',
               background: `repeating-linear-gradient(
         45deg,
-        #ff9f50,
-        #ff9f50 5px,
-        #ff6f00 5px,
-        #ff6f00 10px
+        #ff9f40,
+                  #ff9f50 5px,
+                  #ff7f40 5px,
+                  #ff7f00 10px
       )`,
             }}
           />
@@ -169,13 +173,13 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
               <Typography>Отправил</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
-              <Typography>{isLoadedStage(open, 1) ? '...' : 'Sunnat'}</Typography>
+              <Typography>{isLoadedStage(open, 1) ? '...' : get(open, 'updated_by.full_name')}</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
               <Typography>{isLoadedStage(open, 1) ? '...' : '999'}</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
-              <Typography>{isLoadedStage(open, 1) ? '...' : '12.02.2002'}</Typography>
+              <Typography>{isLoadedStage(open, 1) ? '...' : dayjs(get(open, 'updated_at')).format('DD.MM.YYYY HH:mm')}</Typography>
             </Box>
           </Box>
 
@@ -196,77 +200,10 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
       )`
                 : `repeating-linear-gradient(
         45deg,
-        #ff9f50,
-        #ff9f50 5px,
-        #ff6f00 5px,
-        #ff6f00 10px
-      )`,
-            }}
-          />
-
-          {/* Row 3 - Проверка */}
-          <Box
-            sx={{
-              display: 'flex',
-              width: '100%',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              py: 0,
-              '&:hover': { backgroundColor: '#f5f5f5' },
-              cursor: 'pointer',
-            }}
-          >
-            <Box sx={{ width: '50px', display: 'flex', justifyContent: 'center' }}>
-              <Box
-                sx={{
-                  backgroundColor: isLoadedStage(open, 2) ? 'bunker.200' : 'orange.500',
-                  borderRadius: '50%',
-                  zIndex: 9,
-                  width: '27px',
-                  height: '27px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <TimeQuarterIcon />
-              </Box>
-            </Box>
-            <Box sx={{ width: '100%', ml: '20px' }}>
-              <Typography>Проверка</Typography>
-            </Box>
-            <Box sx={{ width: '100%' }}>
-              <Typography>{isLoadedStage(open, 2) ? '...' : 'Murtazo'}</Typography>
-            </Box>
-            <Box sx={{ width: '100%' }}>
-              <Typography>{isLoadedStage(open, 2) ? '...' : '999'}</Typography>
-            </Box>
-            <Box sx={{ width: '100%' }}>
-              <Typography>{isLoadedStage(open, 2) ? '...' : '12.02.2002'}</Typography>
-            </Box>
-          </Box>
-
-          {/* Connector Line */}
-          <Box
-            sx={{
-              width: '10px',
-              height: '20px',
-              ml: '8px',
-              my: '-2px',
-              background: isLoadedStage(open, 3)
-                ? `repeating-linear-gradient(
-        45deg,
-        #f0f0f0,
-        #f0f0f0 5px,
-        #e8e8e8 5px,
-        #e8e8e8 10px
-      )`
-                : `repeating-linear-gradient(
-        45deg,
-        #ff9f50,
-        #ff9f50 5px,
-        #ff6f00 5px,
-        #ff6f00 10px
+        #ff9f40,
+                  #ff9f50 5px,
+                  #ff7f40 5px,
+                  #ff7f00 10px
       )`,
             }}
           />
@@ -303,13 +240,13 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
               <Typography>Завершенный</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
-              <Typography>{isLoadedStage(open, 3) ? '...' : 'JsDev'}</Typography>
+              <Typography>{isLoadedStage(open, 3) ? '...' : get(open, 'accepted_by.full_name')}</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
               <Typography>{isLoadedStage(open, 3) ? '...' : '999'}</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
-              <Typography>{isLoadedStage(open, 3) ? '...' : '12.02.2002'}</Typography>
+              <Typography>{isLoadedStage(open, 3) ? '...' : dayjs(get(open, 'accepted_at')).format('DD.MM.YYYY HH:mm')}</Typography>
             </Box>
           </Box>
         </Box>

@@ -296,16 +296,15 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
                   height: '10px',
                   width: '24px',
                   marginX: '-2px',
-                  backgroundColor: '#fe5000',
                   overflow: 'hidden',
                   position: 'relative',
                   marginTop: '8px',
                   background: `repeating-linear-gradient(
                   45deg,
-                  #ff9f50,
+                  #ff9f40,
                   #ff9f50 5px,
-                  #ff6f00 5px,
-                  #ff6f00 10px
+                  #ff7f40 5px,
+                  #ff7f00 10px
                 )`,
                 },
                 '& .step-icon-box': {
@@ -333,11 +332,8 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
               <Box className={`step-icon-box ${isLoadedStage(p?.data, 1) ? 'loaded' : 'complated'}`}>
                 <SentFastIcon />
               </Box>
-              <Box className={isLoadedStage(p?.data, 2) ? 'loaded-bar' : 'complated-bar'} />
-              <Box className={`step-icon-box ${isLoadedStage(p?.data, 2) ? 'loaded' : 'complated'}`}>
-                <TimeQuarterIcon />
-              </Box>
               <Box className={isLoadedStage(p?.data, 3) ? 'loaded-bar' : 'complated-bar'} />
+
               <Box className={`step-icon-box ${isLoadedStage(p?.data, 3) ? 'loaded' : 'complated'}`}>
                 <TickIcon />
               </Box>
@@ -351,9 +347,6 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
                 <Typography>999</Typography>
               </Box>
 
-              <Box className='step-title'>
-                <Typography>999</Typography>
-              </Box>
               <Box className='step-title'>
                 <Typography>999</Typography>
               </Box>
