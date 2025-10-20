@@ -244,142 +244,142 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
         headerName: t('table_columns.status'),
         colId: el.field,
         cellRenderer: memo((p) => (
-          // <Box
-          //   id={`${'status'}-${p.rowIndex}`}
-          //   whiteSpace='pre-wrap'
-          //   sx={{
-          //     height: '45px',
-          //     width: '150px',
-          //     display: 'flex',
-          //     alignItems: 'start',
-          //     flexDirection: 'column',
-          //     justifyContent: 'center',
-          //     position: 'relative',
-          //     '& .boxes': {
-          //       display: 'flex',
+          <Box
+            id={`${'status'}-${p.rowIndex}`}
+            whiteSpace='pre-wrap'
+            sx={{
+              height: '45px',
+              width: '150px',
+              display: 'flex',
+              alignItems: 'start',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              position: 'relative',
+              '& .boxes': {
+                display: 'flex',
 
-          //       display: 'flex',
-          //       flexDirection: 'column',
-          //       alignItems: 'center',
-          //       textWrapMode: 'nowrap',
-          //     },
-          //     '& .boxes > p:nth-child(1)': {
-          //       color: 'white',
-          //       height: '25px',
-          //       backgroundColor: '#3CA98F',
-          //       borderRadius: '16px',
-          //       padding: '2px 5px',
-          //       display: 'flex',
-          //       flexDirection: 'column',
-          //       alignItems: 'center',
-          //       justifyContent: 'center',
-          //       font: '600 10px/16px Gilroy',
-          //     },
-          //     '& .boxes > p:nth-child(2)': {
-          //       font: '500 10px/16px Gilroy',
-          //       color: 'orange.500',
-          //     },
-          //     '& .title > p': {
-          //       font: '500 10px/16px Gilroy',
-          //       color: 'orange.500',
-          //     },
-          //   }}
-          // >
-          //   <Box sx={{ display: 'flex', width: '100%' }}>
-          //     <Box className='boxes'>
-          //       <Typography>999</Typography>
-          //     </Box>
-          //     <Box
-          //       sx={{
-          //         height: '10px',
-          //         width: '100%',
-          //         backgroundColor: 'orange.500',
-          //         // backgroundColor: '#f0f0f0',
-          //         overflow: 'hidden',
-          //         position: 'relative',
-          //         marginTop: '8px',
-          //         // background: `repeating-linear-gradient(
-          //         //   45deg,
-          //         //   #f0f0f0,
-          //         //   #f0f0f0 5px,
-          //         //   #e8e8e8 5px,
-          //         //   #e8e8e8 10px
-          //         // )`,
-          //       }}
-          //     />
-          //     <Box className='boxes'>
-          //       <Typography>999</Typography>
-          //     </Box>
-          //     <Box
-          //       sx={{
-          //         height: '10px',
-          //         width: '100%',
-          //         backgroundColor: 'orange.500',
-          //         backgroundColor: '#f0f0f0',
-          //         overflow: 'hidden',
-          //         position: 'relative',
-          //         marginTop: '8px',
-          //         background: `repeating-linear-gradient(
-          //         45deg,
-          //         #f0f0f0,
-          //         #f0f0f0 5px,
-          //         #e8e8e8 5px,
-          //         #e8e8e8 10px
-          //       )`,
-          //       }}
-          //     />
-          //     <Box className='boxes'>
-          //       <Typography>
-          //         <ClockIcon />
-          //       </Typography>
-          //     </Box>
-          //     <Box
-          //       sx={{
-          //         height: '10px',
-          //         width: '100%',
-          //         backgroundColor: 'orange.500',
-          //         backgroundColor: '#f0f0f0',
-          //         overflow: 'hidden',
-          //         position: 'relative',
-          //         marginTop: '8px',
-          //         background: `repeating-linear-gradient(
-          //         45deg,
-          //         #f0f0f0,
-          //         #f0f0f0 5px,
-          //         #e8e8e8 5px,
-          //         #e8e8e8 10px
-          //       )`,
-          //       }}
-          //     />
-          //     <Box className='boxes'>
-          //       <Typography>
-          //         <ClockIcon />
-          //       </Typography>
-          //     </Box>
-          //   </Box>
-          //   <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-          //     <Box className='title'>
-          //       <Typography>Новый</Typography>
-          //     </Box>
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textWrapMode: 'nowrap',
+              },
+              '& .boxes > p:nth-child(1)': {
+                color: 'white',
+                height: '25px',
+                backgroundColor: '#3CA98F',
+                borderRadius: '16px',
+                padding: '2px 5px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                font: '600 10px/16px Gilroy',
+              },
+              '& .boxes > p:nth-child(2)': {
+                font: '500 10px/16px Gilroy',
+                color: 'orange.500',
+              },
+              '& .title > p': {
+                font: '500 10px/16px Gilroy',
+                color: 'orange.500',
+              },
+            }}
+          >
+            <Box sx={{ display: 'flex', width: '100%' }}>
+              <Box className='boxes'>
+                <Typography>999</Typography>
+              </Box>
+              <Box
+                sx={{
+                  height: '10px',
+                  width: '100%',
+                  backgroundColor: 'orange.500',
+                  // backgroundColor: '#f0f0f0',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  marginTop: '8px',
+                  // background: `repeating-linear-gradient(
+                  //   45deg,
+                  //   #f0f0f0,
+                  //   #f0f0f0 5px,
+                  //   #e8e8e8 5px,
+                  //   #e8e8e8 10px
+                  // )`,
+                }}
+              />
+              <Box className='boxes'>
+                <Typography>999</Typography>
+              </Box>
+              <Box
+                sx={{
+                  height: '10px',
+                  width: '100%',
+                  backgroundColor: 'orange.500',
+                  backgroundColor: '#f0f0f0',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  marginTop: '8px',
+                  background: `repeating-linear-gradient(
+                  45deg,
+                  #f0f0f0,
+                  #f0f0f0 5px,
+                  #e8e8e8 5px,
+                  #e8e8e8 10px
+                )`,
+                }}
+              />
+              <Box className='boxes'>
+                <Typography>
+                  <ClockIcon />
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  height: '10px',
+                  width: '100%',
+                  backgroundColor: 'orange.500',
+                  backgroundColor: '#f0f0f0',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  marginTop: '8px',
+                  background: `repeating-linear-gradient(
+                  45deg,
+                  #f0f0f0,
+                  #f0f0f0 5px,
+                  #e8e8e8 5px,
+                  #e8e8e8 10px
+                )`,
+                }}
+              />
+              <Box className='boxes'>
+                <Typography>
+                  <ClockIcon />
+                </Typography>
+              </Box>
+            </Box>
+            <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box className='title'>
+                <Typography>Новый</Typography>
+              </Box>
 
-          //     <Box className='title'>
-          //       <Typography>Отп</Typography>
-          //     </Box>
+              <Box className='title'>
+                <Typography>Отп</Typography>
+              </Box>
 
-          //     <Box className='title'>
-          //       <Typography>Прв</Typography>
-          //     </Box>
-          //     <Box className='title'>
-          //       <Typography>Звш</Typography>
-          //     </Box>
-          //   </Box>
-          // </Box>
-          <StatusCell
-            id={`products-status-${p.rowIndex}`}
-            color={returns_list_statuses.find((el) => el.id === p.data.status)?.color}
-            bgcolor={returns_list_statuses.find((el) => el.id === p.data.status)?.bgcolor}
-            title={returns_list_statuses.find((el) => el.id === p.data.status)?.name}
-          />
+              <Box className='title'>
+                <Typography>Прв</Typography>
+              </Box>
+              <Box className='title'>
+                <Typography>Звш</Typography>
+              </Box>
+            </Box>
+          </Box>
+          // <StatusCell
+          //   id={`products-status-${p.rowIndex}`}
+          //   color={returns_list_statuses.find((el) => el.id === p.data.status)?.color}
+          //   bgcolor={returns_list_statuses.find((el) => el.id === p.data.status)?.bgcolor}
+          //   title={returns_list_statuses.find((el) => el.id === p.data.status)?.name}
+          // />
         )),
       }
     }

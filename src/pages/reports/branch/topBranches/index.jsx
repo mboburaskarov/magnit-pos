@@ -266,8 +266,8 @@ export default function TopBranchesPage() {
             isDataLoading={isFetchingtopBranchesReportList || topBranchesReportListLoading}
             offsetCount={offsetCount}
             emptyTableText={{
-              title: 'Филиал не существует',
-              description: 'Если вы не нашли искомого филиала, нажмите кнопку «Добавить нового» и введите необходимую информацию.',
+              title: 'Топ филиалам не существует',
+              description: '...',
             }}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))

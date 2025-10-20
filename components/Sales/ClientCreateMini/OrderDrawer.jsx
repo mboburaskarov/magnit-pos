@@ -472,12 +472,12 @@ export default function OrderDrawer({
 
         return
       } else {
+        error(`EPOS: ${get(data, 'message')}`)
         setOpenRefreshDialog(false)
         isEposError = true
         setHasChange(false)
 
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
-        error(`EPOS: ${get(data, 'message')}`)
       }
     },
     onError: (err) => {
