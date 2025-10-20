@@ -1,5 +1,5 @@
 import { ArrowRightRounded } from '@mui/icons-material'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Button, Grid, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import isoWeek from 'dayjs/plugin/isoWeek'
 import { get } from 'lodash'
@@ -40,6 +40,10 @@ import StopWatchMinus from '../../assets/icons/dashboard/StopWatchMinus'
 import HourglassEnd from '../../assets/icons/dashboard/HourglassEnd'
 import Gift from '../../assets/icons/dashboard/Gift'
 import DashboardTopsBox from '../../../components/Charts/DashboardTopsBox'
+import LeftArrowIcon from '../../assets/icons/LeftArrow'
+import RightArrowRound from '../../assets/icons/dashboard/RightArrowRound'
+import RightArrowIcon from '../../assets/icons/RightArrowIcon'
+import HomeSetting from '../../assets/icons/dashboard/HomeSetting'
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
   const { type } = useSelector((state) => state.user)
@@ -272,48 +276,67 @@ export default function DashboarPage() {
                 ))}
               <CheckAccess id={`franchise-dashboard-box`}>
                 <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
-                  <Link to={'/dashboard/b2b'}>
+                  <Box
+                    sx={(theme) => ({
+                      display: 'flex',
+                      alignItems: 'start',
+                      justifyContent: 'start',
+                      border: 1,
+                      borderColor: '#A4A5AB33',
+                      borderRadius: '16px',
+                      // cursor: 'pointer',
+                      minHeight: '154px',
+                      width: '100%',
+                      height: '100%',
+                    })}
+                  >
                     <Box
+                      key={1}
                       sx={(theme) => ({
                         display: 'flex',
-                        alignItems: 'center',
+                        alignItems: 'start',
                         justifyContent: 'center',
-                        border: 1,
-                        borderRadius: '16px',
-                        borderColor: '#A4A5AB33',
-                        cursor: 'pointer',
-                        bgcolor: 'bg.10',
-                        minHeight: '154px',
-                        width: '100%',
-                        height: '100%',
+                        flexDirection: 'column',
+                        p: '20px',
+                        minHeight: '115px',
+
+                        m: 0,
                       })}
                     >
-                      <Box
-                        key={1}
-                        sx={(theme) => ({
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          pr: '26px',
-                          pl: '16px',
-                          minHeight: '115px',
-                          pt: '16px',
-                          pb: '10px',
-                          m: 0,
-                        })}
+                      <HomeSetting color='#fe5000' />
+                      <Typography
+                        sx={{
+                          fontSize: '20px',
+                          fontWeight: '600',
+                          lineHeight: '32px',
+                          my: '12px',
+                        }}
                       >
-                        <Typography
+                        Перейти к панели управления франшизой
+                      </Typography>
+                      <Link to={'/dashboard/b2b'}>
+                        <Button
                           sx={{
-                            fontSize: 25,
-                            fontWeight: '600',
+                            borderRadius: '50px',
+                            mr: '4px',
+                            p: '9px 16px',
+                            height: '40px',
+                            backgroundColor: 'white !important',
+                            color: 'orange.500',
+                            borderColor: 'orange.500',
+                            '& svg': {
+                              flexShrink: 0,
+                            },
                           }}
+                          // disabled={size(get(cartItemsList, 'data.data.data')) == 0}
+                          color='secondary'
+                          onClick={() => setIsCreateOpenDraft(true)}
                         >
-                          Перейти к панели управления франшизой
-                        </Typography>
-                        <ArrowRightRounded sx={{ fontSize: '40px', color: '#fe5000' }} />
-                      </Box>
+                          Показать <RightArrowIcon />
+                        </Button>
+                      </Link>
                     </Box>
-                  </Link>
+                  </Box>
                 </Grid>
               </CheckAccess>
             </Grid>
@@ -356,7 +379,7 @@ export default function DashboarPage() {
                   tableData={[
                     { title: 'Тип Платежи	', colId: 'name' },
                     { title: 'Кол-во', colId: 'count', sortable: true },
-                    { title: 'Сумма продажи', colId: 'amount', sortable: true },
+                    { title: 'Сумма', colId: 'amount', sortable: true },
                     { title: 'Прирост', colId: 'stat' },
                   ]}
                 />
@@ -377,7 +400,7 @@ export default function DashboarPage() {
                   tableData={[
                     { title: 'Тип Платежи	', colId: 'name' },
                     { title: 'Кол-во', colId: 'count', sortable: true },
-                    { title: 'Сумма продажи', colId: 'amount', sortable: true },
+                    { title: 'Сумма', colId: 'amount', sortable: true },
                     { title: 'Прирост', colId: 'stat' },
                   ]}
                 />
@@ -413,8 +436,8 @@ export default function DashboarPage() {
                   title={'Топ филиалам'}
                   tableData={[
                     { title: 'Филиал', colId: 'name' },
-                    { title: 'Кол-во чеков', colId: 'count', sortable: true },
-                    { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
+                    { title: 'Кол-во', colId: 'count', sortable: true },
+                    { title: 'Сумма', colId: 'total_amount', sortable: true },
                     { title: 'Прирост', colId: 'stat' },
                   ]}
                 />
@@ -427,8 +450,8 @@ export default function DashboarPage() {
                   href='/reports/top-products?backHref=/dashboard'
                   tableData={[
                     { title: 'Продукт', colId: 'name' },
-                    { title: 'Количество ', colId: 'count', sortable: true },
-                    { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
+                    { title: 'Кол-во ', colId: 'count', sortable: true },
+                    { title: 'Сумма', colId: 'total_amount', sortable: true },
                     { title: 'Прирост', colId: 'stat' },
                   ]}
                 />
@@ -447,8 +470,8 @@ export default function DashboarPage() {
                   href='/reports/top-vendors?backHref=/dashboard'
                   tableData={[
                     { title: 'Продавец	', colId: 'full_name' },
-                    { title: 'Кол-во чеков', colId: 'count', sortable: true },
-                    { title: 'Сумма продажи', colId: 'total_amount', sortable: true },
+                    { title: 'Кол-во', colId: 'count', sortable: true },
+                    { title: 'Сумма', colId: 'total_amount', sortable: true },
                     { title: 'Прирост', colId: 'stat' },
                   ]}
                 />
@@ -461,8 +484,8 @@ export default function DashboarPage() {
                   href='/reports/bonus-products?backHref=/dashboard'
                   tableData={[
                     { title: 'Продукт	', colId: 'name' },
-                    { title: 'Количество', colId: 'count', sortable: true },
-                    { title: 'Бонусная сумма', colId: 'bonus_amount', sortable: true },
+                    { title: 'Кол-во', colId: 'count', sortable: true },
+                    { title: 'Сумма', colId: 'bonus_amount', sortable: true },
                     { title: 'Прирост', colId: 'stat' },
                   ]}
                 />

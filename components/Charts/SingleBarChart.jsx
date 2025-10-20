@@ -84,10 +84,10 @@ export default function TotalOrdersByCity({ data }) {
                 Филиал
               </TableCell>
               <TableCell className='table-cell'>
-                Кол-во чеков <SortIcon />
+                Кол-во <SortIcon />
               </TableCell>
               <TableCell className='table-cell'>
-                Сумма продажи <SortIcon />
+                Сумма <SortIcon />
               </TableCell>
               <TableCell
                 className='table-cell'

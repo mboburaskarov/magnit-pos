@@ -56,7 +56,7 @@ export default function TopBonusProducts({ data }) {
                 Продукт
               </TableCell>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 16px 16px 0', border: 'none', color: 'dark.500' }}>
-                Количество
+                Кол-во
               </TableCell>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
                 Бонусная сумма

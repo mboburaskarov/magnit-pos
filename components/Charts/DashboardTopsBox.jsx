@@ -19,6 +19,7 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
   return (
     <Box
       sx={{
+        height: '100%',
         border: '1px solid #ECEDF2',
         borderRadius: '16px',
         padding: '20px',

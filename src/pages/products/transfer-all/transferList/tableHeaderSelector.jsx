@@ -332,23 +332,29 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
               <Box className={`step-icon-box ${isLoadedStage(p?.data, 1) ? 'loaded' : 'complated'}`}>
                 <SentFastIcon />
               </Box>
+              <Box className={isLoadedStage(p?.data, 2) ? 'loaded-bar' : 'complated-bar'} />
+              <Box className={`step-icon-box ${isLoadedStage(p?.data, 2) ? 'loaded' : 'complated'}`}>
+                <TimeQuarterIcon />
+              </Box>
               <Box className={isLoadedStage(p?.data, 3) ? 'loaded-bar' : 'complated-bar'} />
-
               <Box className={`step-icon-box ${isLoadedStage(p?.data, 3) ? 'loaded' : 'complated'}`}>
                 <TickIcon />
               </Box>
             </Box>
             <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box className='step-title'>
-                <Typography>999</Typography>
+                <Typography width={'25px'}></Typography>
               </Box>
 
               <Box className='step-title'>
-                <Typography>999</Typography>
+                <Typography>{get(p, 'data.expected_count')}</Typography>
               </Box>
 
               <Box className='step-title'>
-                <Typography>999</Typography>
+                <Typography>{get(p, 'data.scanned_count')}</Typography>
+              </Box>
+              <Box className='step-title'>
+                <Typography>{get(p, 'data.accepted_count')}</Typography>
               </Box>
             </Box>
           </Box>

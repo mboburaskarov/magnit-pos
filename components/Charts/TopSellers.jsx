@@ -55,10 +55,10 @@ export default function TopSellers({ data }) {
                 Продавец
               </TableCell>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 16px 16px 0', border: 'none', color: 'dark.500' }}>
-                Кол-во чеков
+                Кол-во
               </TableCell>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
-                Сумма продажи
+                Сумма
               </TableCell>
               <TableCell sx={{ fontSize: '16px', fontWeight: 500, lineHeight: '28px', p: '16px 0px 16px 0', border: 'none', color: 'dark.500' }}>
                 Прирост
