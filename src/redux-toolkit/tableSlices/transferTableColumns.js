@@ -55,7 +55,7 @@ const columns = [
     field: 'status',
     hide: false,
     minWidth: 70,
-    width: 170,
+    width: 200,
   },
   {
     field: 'created_by',
