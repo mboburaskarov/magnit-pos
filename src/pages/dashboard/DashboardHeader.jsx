@@ -18,7 +18,7 @@ export default function DashboardHeader({ selectedShops, setSelectedShops }) {
           {t('greeting')}, {get(userData, 'first_name')}!
         </Typography>
         <Typography variant='h1' fontWeight={500} fontSize={'14px'} lineHeight={'20px'} color={'bunker.500'}>
-          Добро пожаловать в Аптека. Управляйте своим Аптекаом с помощью PharmaCosmos CRM
+          Добро пожаловать! Управляйте своими аптеками с помощью PharmaCosmos CRM.
         </Typography>
       </Box>
       <Box display='inline-flex' padding={'11px 0'} columnGap={3}>

@@ -126,7 +126,7 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
               }}
             >
               {formattedData?.map((item, index) => {
-                const isFall = item?.percent > 0
+                const isFall = item?.percent < 0
                 const percent = item?.percent
                 return (
                   <TableRow key={item.name}>
@@ -181,7 +181,7 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
                                 fontSize={12}
                                 lineHeight={'16px'}
                               >
-                                {!isFall ? '+' : '-'} {percent}%
+                                {!isFall ? '+' : ''} {percent}%
                               </Typography>
                             </Box>
                           </TableCell>

@@ -21,7 +21,7 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import SaleChildItemsBox from './SaleChildItemsBox'
 import ChangePaymentType from './changePaymentType'
-import { paymentTypes } from '../../../../constants/paymenttypes'
+import { paymentTypes } from '../../../../constants/paymentTypes'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
