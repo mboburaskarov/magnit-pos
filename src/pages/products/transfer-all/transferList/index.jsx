@@ -27,6 +27,7 @@ import CreateReturn from './createReturn'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 import TransferDashboard from './transferDashboard'
+import StatusDetailModal from './statusDetailModal'
 const SELECTION_ID = 'checkboxSelectionField'
 export default function TransferPage() {
   const location = useLocation()
@@ -40,6 +41,7 @@ export default function TransferPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [orderModel, setOrderModel] = useState(false)
+  const [statusModal, setStatusModal] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
   const [filterMenu, setFilterMenu] = useState(false)
@@ -61,6 +63,7 @@ export default function TransferPage() {
     downloadNakladnoy,
     values,
     setImages: setOpenImageGallery,
+    setStatusModal,
     setOpenConfirmDialog: setOpenConfirmDialog,
   })
 
@@ -217,6 +220,7 @@ export default function TransferPage() {
         </Box>
         <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
         <CreateReturn refetch={refetch} open={orderModel} setOpen={setOrderModel} />
+        <StatusDetailModal open={statusModal} setOpen={setStatusModal} />
 
         <Box>
           <AgGridTable

@@ -10,11 +10,12 @@ import LazySelect from '../../../../../components/Select/LazySelect'
 import { requests } from '../../../../../utils/requests'
 import { error, success } from '../../../../../utils/toast'
 import CloseIcon from '../../../../assets/icons/CloseIcon'
+import { LoadingButton } from '@mui/lab'
 
 export default function CreateAutoOrder({ open, refetch, setOpen }) {
   const methods = useForm()
   const { reset, control } = methods
-  const { mutate: createAutoOrder } = useMutation(requests.createAutoOrder, {
+  const { mutate: createAutoOrder, isLoading } = useMutation(requests.createAutoOrder, {
     onSuccess: () => {
       setOpen(false)
       success('Создать автозаказ')
@@ -130,9 +131,9 @@ export default function CreateAutoOrder({ open, refetch, setOpen }) {
             </Box>
 
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
-              <Button fullWidth variant='contained' type='submit'>
+              <LoadingButton loading={isLoading} fullWidth variant='contained' type='submit'>
                 {t('filter_dialog.save.label')}
-              </Button>
+              </LoadingButton>
             </Box>
           </Box>
         </FormProvider>

@@ -13,6 +13,7 @@ import SelectSimple from '../../../../../components/Select/SelectSimple'
 import { requests } from '../../../../../utils/requests'
 import { error, success } from '../../../../../utils/toast'
 import CloseIcon from '../../../../assets/icons/CloseIcon'
+import { LoadingButton } from '@mui/lab'
 export const writeOffReason = [
   { name: 'Другое', id: 'other' },
   { name: 'Дефект', id: 'defect' },
@@ -169,9 +170,9 @@ export default function CreateWriteOff({ open, refetch, setOpen }) {
               </Box>
             )}
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
-              <Button fullWidth variant='contained' type='submit'>
+              <LoadingButton loading={iscreateWriteOff} fullWidth variant='contained' type='submit'>
                 {t('filter_dialog.save.label')}
-              </Button>
+              </LoadingButton>
             </Box>
           </Box>
         </FormProvider>

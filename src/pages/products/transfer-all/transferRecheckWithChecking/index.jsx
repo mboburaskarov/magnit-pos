@@ -301,7 +301,7 @@ export default function TransferRecheckScanWithCheckingPage() {
                 setOpenFinishConfirmDialog(false)
                 finishTransferChecking(id)
               }}
-              isLoading={false}
+              isLoading={isFetchingtransferWithCheckingDetails}
             >
               {t('buttons.yes_complete')}
             </Button>

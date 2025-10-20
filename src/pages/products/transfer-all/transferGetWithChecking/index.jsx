@@ -299,7 +299,7 @@ export default function TransferGetScanWithCheckingPage() {
                 setOpenFinishConfirmDialog(false)
                 acceptTransferChecking({ id, type: 'transfer' })
               }}
-              isLoading={false}
+              isLoading={isFetchingtransferWithCheckingDetails}
             >
               {t('buttons.yes_complete')}
             </Button>
