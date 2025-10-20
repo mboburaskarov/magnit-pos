@@ -334,7 +334,6 @@ export default function ProductsPage() {
               options={[
                 { title: t('switch.title.all'), value: 'ALL', count: thousandDivider(get(statusCountList, 'data.data.total_quantity', 0)) },
                 { title: t('switch.title.active'), value: 'active', count: thousandDivider(get(statusCountList, 'data.data.active_count', 0)) },
-                { title: t('switch.title.inactive'), value: 'inactive', count: thousandDivider(get(statusCountList, 'data.data.inactive_count', 0)) },
                 {
                   title: t('switch.title.less_amount'),
                   value: 'low-stock',
