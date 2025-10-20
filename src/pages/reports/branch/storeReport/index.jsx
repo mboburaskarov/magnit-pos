@@ -196,8 +196,8 @@ export default function StoreReportPage() {
             isDataLoading={isFetchingstoreReportList || storeReportListLoading}
             offsetCount={offsetCount}
             emptyTableText={{
-              title: 'Клиент не существует',
-              description: 'Если вы не нашли искомого Клиента, нажмите кнопку «Добавить нового» и введите необходимую информацию.',
+              title: 'Отчет филиала не существует',
+              description: '...',
             }}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))

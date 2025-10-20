@@ -292,8 +292,8 @@ export default function StoreSummaryPage() {
             isDataLoading={isFetchingstoreSummaryReportList || storeSummaryReportListLoading}
             offsetCount={offsetCount}
             emptyTableText={{
-              title: 'Филиал не существует',
-              description: 'Если вы не нашли искомого филиала, нажмите кнопку «Добавить нового» и введите необходимую информацию.',
+              title: 'Остаток Аптека не существует',
+              description: '...',
             }}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))
