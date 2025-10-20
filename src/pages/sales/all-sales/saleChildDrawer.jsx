@@ -21,6 +21,7 @@ import CloseIcon from '../../../assets/icons/CloseIcon'
 import { useQueryParams } from '../../../hooks/useQueryParams'
 import SaleChildItemsBox from './SaleChildItemsBox'
 import ChangePaymentType from './changePaymentType'
+import { paymentTypes } from '../../../../constants/paymenttypes'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -206,28 +207,30 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
               {t('pay')}
             </Typography>
             <Grid container display={'flex'}>
-              {get(saleDetailsList, 'data.data.sale_payments', [])?.map((pays) => (
-                <Grid item xl={6} xs={6} sm={6} md={6} lg={6} width={'100%'} padding={'4px'}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      minWidth: '180px',
-                      borderRadius: '16px',
-                      padding: '12px 16px',
-                    }}
-                    bgcolor={'bg.10'}
-                  >
-                    <Box>
-                      <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                        {get(pays, 'payment_type.name')}
-                      </Typography>
-                      <Typography fontSize={16} mt={'4px'} flexShrink={'none'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                        {thousandDivider(get(pays, 'amount'), 'сум')}
-                      </Typography>
-                    </Box>
-                    <CheckAccess id={'can-chnage-payment-type'}>
+              {paymentTypes?.map((pays) => {
+                if (get(saleDetailsList, `data.data.${pays?.prop}`, 0) == 0) return <></>
+                return (
+                  <Grid item xl={6} xs={6} sm={6} md={6} lg={6} width={'100%'} padding={'4px'}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        minWidth: '180px',
+                        borderRadius: '16px',
+                        padding: '12px 16px',
+                      }}
+                      bgcolor={'bg.10'}
+                    >
+                      <Box>
+                        <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                          {get(pays, 'title', 'Unknown')}
+                        </Typography>
+                        <Typography fontSize={16} mt={'4px'} flexShrink={'none'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                          {thousandDivider(get(saleDetailsList, `data.data.${pays?.prop}`, []), 'сум')}
+                        </Typography>
+                      </Box>
+                      {/* <CheckAccess id={'can-chnage-payment-type'}>
                       <Box
                         onClick={() => {
                           setopenCreateBonusModal({
@@ -239,10 +242,11 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
                       >
                         <ChangeCircle sx={{ color: '#fff', fontSize: '30px', mt: '10px' }} />
                       </Box>
-                    </CheckAccess>
-                  </Box>
-                </Grid>
-              ))}
+                    </CheckAccess> */}
+                    </Box>
+                  </Grid>
+                )
+              })}
               {get(saleDetailsList, 'data.data.total_discount', 0) > 0 && (
                 <Grid item xl={6} xs={6} sm={6} md={6} lg={6} width={'100%'} padding={'4px'}>
                   <Box

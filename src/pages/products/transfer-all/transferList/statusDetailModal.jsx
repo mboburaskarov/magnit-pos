@@ -34,137 +34,282 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
     >
       <Box sx={{ p: '20px' }}>
+        {/* Table Header */}
         <Box
-          onClick={() => setStatusModal(open)}
-          id={`${'status'}-${1}`}
-          whiteSpace='pre-wrap'
           sx={{
             display: 'flex',
-            '& .step-title > p': {
-              fontSize: '16px',
-              fontWeight: '600',
-              lineHeight: '24px',
-              color: 'black',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            mb: 2,
+            '& .header-cell': {
+              width: '100%',
+              '& p': {
+                fontSize: '14px',
+                fontWeight: '700',
+                color: '#666',
+              },
             },
           }}
         >
+          <Box className='header-cell' sx={{ width: '50px !important' }}>
+            <Typography>Статус</Typography>
+          </Box>
+          <Box className='header-cell'>
+            <Typography></Typography>
+          </Box>
+          <Box className='header-cell'>
+            <Typography>Пользователь</Typography>
+          </Box>
+          <Box className='header-cell'>
+            <Typography>Количество</Typography>
+          </Box>
+          <Box className='header-cell'>
+            <Typography>Дата</Typography>
+          </Box>
+        </Box>
+
+        {/* Table Rows */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 0,
+          }}
+        >
+          {/* Row 1 - Новый */}
+          <Box
+            onClick={() => setStatusModal(open)}
+            sx={{
+              display: 'flex',
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              py: 0,
+              '&:hover': { backgroundColor: '#f5f5f5' },
+              cursor: 'pointer',
+            }}
+          >
+            <Box sx={{ width: '50px', display: 'flex', justifyContent: 'center' }}>
+              <Box
+                sx={{
+                  backgroundColor: 'orange.500',
+                  borderRadius: '50%',
+                  zIndex: 9,
+                  width: '27px',
+                  height: '27px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <FolderSearch />
+              </Box>
+            </Box>
+            <Box sx={{ width: '100%', ml: '20px' }}>
+              <Typography>Новый</Typography>
+            </Box>
+            <Box sx={{ width: '100%' }}>
+              <Typography>JsDev</Typography>
+            </Box>
+            <Box sx={{ width: '100%' }}>
+              <Typography>999</Typography>
+            </Box>
+            <Box sx={{ width: '100%' }}>
+              <Typography>20.02.2222</Typography>
+            </Box>
+          </Box>
+
+          {/* Connector Line */}
+          <Box
+            sx={{
+              width: '10px',
+              height: '20px',
+              ml: '8px',
+              my: '-2px',
+              background: `repeating-linear-gradient(
+        45deg,
+        #ff9f50,
+        #ff9f50 5px,
+        #ff6f00 5px,
+        #ff6f00 10px
+      )`,
+            }}
+          />
+
+          {/* Row 2 - Отправил */}
           <Box
             sx={{
               display: 'flex',
-              flexDirection: 'column',
+              width: '100%',
               alignItems: 'center',
-
-              width: '34px',
-              '& .loaded-bar': {
-                height: '24px',
-                width: '10px',
-                backgroundColor: '#ffff',
-                overflow: 'hidden',
-                marginY: '-2px',
-
-                position: 'relative',
-                background: `repeating-linear-gradient(
-                       45deg,
-                       #f0f0f0,
-                       #f0f0f0 5px,
-                       #e8e8e8 5px,
-                       #e8e8e8 10px
-                     )`,
-              },
-              '& .complated-bar': {
-                height: '24px',
-                width: '10px',
-                marginY: '-2px',
-                backgroundColor: '#fe5000',
-                overflow: 'hidden',
-                position: 'relative',
-                background: `repeating-linear-gradient(
-                       45deg,
-                       #ff9f50,
-                       #ff9f50 5px,
-                       #ff6f00 5px,
-                       #ff6f00 10px
-                     )`,
-              },
-              '& .step-icon-box': {
-                backgroundColor: 'orange.500',
-                borderRadius: '50%',
-                width: '27px',
-                height: '27px',
-                flexShrink: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 9,
-              },
-              '& .step-icon-box.loaded': {
-                backgroundColor: 'bunker.200',
-              },
+              justifyContent: 'space-between',
+              py: 0,
+              '&:hover': { backgroundColor: '#f5f5f5' },
+              cursor: 'pointer',
             }}
           >
-            <Box className={`step-icon-box complated'}`}>
-              <FolderSearch />
+            <Box sx={{ width: '50px', display: 'flex', justifyContent: 'center' }}>
+              <Box
+                sx={{
+                  backgroundColor: isLoadedStage(open, 1) ? 'bunker.200' : 'orange.500',
+                  borderRadius: '50%',
+                  zIndex: 9,
+                  width: '27px',
+                  height: '27px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <SentFastIcon />
+              </Box>
             </Box>
-            <Box className={isLoadedStage(open, 1) ? 'loaded-bar' : 'complated-bar'} />
-
-            <Box className={`step-icon-box ${isLoadedStage(open, 1) ? 'loaded' : 'complated'}`}>
-              <SentFastIcon />
-            </Box>
-            <Box className={isLoadedStage(open, 2) ? 'loaded-bar' : 'complated-bar'} />
-            <Box className={`step-icon-box ${isLoadedStage(open, 2) ? 'loaded' : 'complated'}`}>
-              <TimeQuarterIcon />
-            </Box>
-            <Box className={isLoadedStage(open, 3) ? 'loaded-bar' : 'complated-bar'} />
-            <Box className={`step-icon-box ${isLoadedStage(open, 3) ? 'loaded' : 'complated'}`}>
-              <TickIcon />
-            </Box>
-          </Box>
-          <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <Box className='step-title'>
-              <Typography>Новый</Typography>
-            </Box>
-
-            <Box className='step-title'>
+            <Box sx={{ width: '100%', ml: '20px' }}>
               <Typography>Отправил</Typography>
             </Box>
-
-            <Box className='step-title'>
-              <Typography>Проверка</Typography>
-            </Box>
-            <Box className='step-title'>
-              <Typography>Завершенный</Typography>
-            </Box>
-          </Box>
-          <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <Box className='step-title'>
-              <Typography>JsDev</Typography>
-            </Box>
-
-            <Box className='step-title'>
+            <Box sx={{ width: '100%' }}>
               <Typography>{isLoadedStage(open, 1) ? '...' : 'Sunnat'}</Typography>
             </Box>
-
-            <Box className='step-title'>
-              <Typography>{isLoadedStage(open, 2) ? '...' : 'Murtazo'}</Typography>
+            <Box sx={{ width: '100%' }}>
+              <Typography>{isLoadedStage(open, 1) ? '...' : '999'}</Typography>
             </Box>
-            <Box className='step-title'>
-              <Typography>{isLoadedStage(open, 3) ? '...' : 'JsDev'}</Typography>
+            <Box sx={{ width: '100%' }}>
+              <Typography>{isLoadedStage(open, 1) ? '...' : '12.02.2002'}</Typography>
             </Box>
           </Box>
-          <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <Box className='step-title'>
-              <Typography>999</Typography>
-            </Box>
 
-            <Box className='step-title'>
-              <Typography>999</Typography>
-            </Box>
+          {/* Connector Line */}
+          <Box
+            sx={{
+              width: '10px',
+              height: '20px',
+              ml: '8px',
+              my: '-2px',
+              background: isLoadedStage(open, 2)
+                ? `repeating-linear-gradient(
+        45deg,
+        #f0f0f0,
+        #f0f0f0 5px,
+        #e8e8e8 5px,
+        #e8e8e8 10px
+      )`
+                : `repeating-linear-gradient(
+        45deg,
+        #ff9f50,
+        #ff9f50 5px,
+        #ff6f00 5px,
+        #ff6f00 10px
+      )`,
+            }}
+          />
 
-            <Box className='step-title'>
-              <Typography>999</Typography>
+          {/* Row 3 - Проверка */}
+          <Box
+            sx={{
+              display: 'flex',
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              py: 0,
+              '&:hover': { backgroundColor: '#f5f5f5' },
+              cursor: 'pointer',
+            }}
+          >
+            <Box sx={{ width: '50px', display: 'flex', justifyContent: 'center' }}>
+              <Box
+                sx={{
+                  backgroundColor: isLoadedStage(open, 2) ? 'bunker.200' : 'orange.500',
+                  borderRadius: '50%',
+                  zIndex: 9,
+                  width: '27px',
+                  height: '27px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <TimeQuarterIcon />
+              </Box>
             </Box>
-            <Box className='step-title'>
-              <Typography>999</Typography>
+            <Box sx={{ width: '100%', ml: '20px' }}>
+              <Typography>Проверка</Typography>
+            </Box>
+            <Box sx={{ width: '100%' }}>
+              <Typography>{isLoadedStage(open, 2) ? '...' : 'Murtazo'}</Typography>
+            </Box>
+            <Box sx={{ width: '100%' }}>
+              <Typography>{isLoadedStage(open, 2) ? '...' : '999'}</Typography>
+            </Box>
+            <Box sx={{ width: '100%' }}>
+              <Typography>{isLoadedStage(open, 2) ? '...' : '12.02.2002'}</Typography>
+            </Box>
+          </Box>
+
+          {/* Connector Line */}
+          <Box
+            sx={{
+              width: '10px',
+              height: '20px',
+              ml: '8px',
+              my: '-2px',
+              background: isLoadedStage(open, 3)
+                ? `repeating-linear-gradient(
+        45deg,
+        #f0f0f0,
+        #f0f0f0 5px,
+        #e8e8e8 5px,
+        #e8e8e8 10px
+      )`
+                : `repeating-linear-gradient(
+        45deg,
+        #ff9f50,
+        #ff9f50 5px,
+        #ff6f00 5px,
+        #ff6f00 10px
+      )`,
+            }}
+          />
+
+          {/* Row 4 - Завершенный */}
+          <Box
+            sx={{
+              display: 'flex',
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              py: 0,
+              '&:hover': { backgroundColor: '#f5f5f5' },
+              cursor: 'pointer',
+            }}
+          >
+            <Box sx={{ width: '50px', display: 'flex', justifyContent: 'center' }}>
+              <Box
+                sx={{
+                  backgroundColor: isLoadedStage(open, 3) ? 'bunker.200' : 'orange.500',
+                  borderRadius: '50%',
+                  zIndex: 9,
+                  width: '27px',
+                  height: '27px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <TickIcon />
+              </Box>
+            </Box>
+            <Box sx={{ width: '100%', ml: '20px' }}>
+              <Typography>Завершенный</Typography>
+            </Box>
+            <Box sx={{ width: '100%' }}>
+              <Typography>{isLoadedStage(open, 3) ? '...' : 'JsDev'}</Typography>
+            </Box>
+            <Box sx={{ width: '100%' }}>
+              <Typography>{isLoadedStage(open, 3) ? '...' : '999'}</Typography>
+            </Box>
+            <Box sx={{ width: '100%' }}>
+              <Typography>{isLoadedStage(open, 3) ? '...' : '12.02.2002'}</Typography>
             </Box>
           </Box>
         </Box>
