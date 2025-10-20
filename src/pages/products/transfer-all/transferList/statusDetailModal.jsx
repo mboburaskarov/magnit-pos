@@ -172,10 +172,10 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
               <Typography>Отправил</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
-              <Typography>{isLoadedStage(open, 1) ? '...' : get(open, 'updated_by.full_name')}</Typography>
+              <Typography>{isLoadedStage(open, 1) ? '...' : get(open, 'created_by.full_name')}</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
-              <Typography>{isLoadedStage(open, 1) ? '...' : get(p, 'data.accepted_count')}</Typography>
+              <Typography>{isLoadedStage(open, 1) ? '...' : get(open, 'expected_count')}</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
               <Typography>{isLoadedStage(open, 1) ? '...' : dayjs(get(open, 'updated_at')).format('DD.MM.YYYY HH:mm')}</Typography>
@@ -239,10 +239,10 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
               <Typography>Проверка</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
-              <Typography>{isLoadedStage(open, 2) ? '...' : get(open, 'accepted_by.full_name')}</Typography>
+              <Typography>{isLoadedStage(open, 2) ? '...' : get(open, 'updated_by.full_name')}</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
-              <Typography>{isLoadedStage(open, 2) ? '...' : get(p, 'data.scanned_count')}</Typography>
+              <Typography>{isLoadedStage(open, 2) ? '...' : get(open, 'scanned_count')}</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
               <Typography>{isLoadedStage(open, 2) ? '...' : dayjs(get(open, 'accepted_at')).format('DD.MM.YYYY HH:mm')}</Typography>
@@ -309,7 +309,7 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
               <Typography>{isLoadedStage(open, 3) ? '...' : get(open, 'accepted_by.full_name')}</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
-              <Typography>{isLoadedStage(open, 3) ? '...' : get(p, 'data.accepted_count')}</Typography>
+              <Typography>{isLoadedStage(open, 3) ? '...' : get(open, 'accepted_count')}</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
               <Typography>{isLoadedStage(open, 3) ? '...' : dayjs(get(open, 'accepted_at')).format('DD.MM.YYYY HH:mm')}</Typography>

@@ -276,43 +276,46 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
             <Box
               sx={{
                 display: 'flex',
-                width: '100%',
+                alignItems: 'start',
                 '& .loaded-bar': {
                   height: '10px',
+                  flex: 1,
                   width: '24px',
+                  marginX: '-2px',
                   backgroundColor: '#ffff',
                   overflow: 'hidden',
                   position: 'relative',
                   marginTop: '8px',
                   background: `repeating-linear-gradient(
-                  45deg,
-                  #f0f0f0,
-                  #f0f0f0 5px,
-                  #e8e8e8 5px,
-                  #e8e8e8 10px
-                )`,
+          45deg,
+          #f0f0f0,
+          #f0f0f0 5px,
+          #e8e8e8 5px,
+          #e8e8e8 10px
+        )`,
                 },
                 '& .complated-bar': {
                   height: '10px',
+                  flex: 1,
                   width: '24px',
                   marginX: '-2px',
+
                   overflow: 'hidden',
                   position: 'relative',
                   marginTop: '8px',
                   background: `repeating-linear-gradient(
-                  45deg,
-                  #ff9f40,
-                  #ff9f50 5px,
-                  #ff7f40 5px,
-                  #ff7f00 10px
-                )`,
+          45deg,
+          #ff9f40,
+          #ff9f50 5px,
+          #ff7f40 5px,
+          #ff7f00 10px
+        )`,
                 },
                 '& .step-icon-box': {
                   backgroundColor: 'orange.500',
                   borderRadius: '50%',
                   width: '27px',
                   height: '27px',
-                  marginX: '-2px',
                   flexShrink: 0,
                   display: 'flex',
                   alignItems: 'center',
@@ -324,7 +327,7 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
                 },
               }}
             >
-              <Box className={`step-icon-box complated'}`}>
+              <Box className={`step-icon-box complated`}>
                 <FolderSearch />
               </Box>
               <Box className={isLoadedStage(p?.data, 1) ? 'loaded-bar' : 'complated-bar'} />
@@ -333,28 +336,35 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
                 <SentFastIcon />
               </Box>
               <Box className={isLoadedStage(p?.data, 2) ? 'loaded-bar' : 'complated-bar'} />
+
               <Box className={`step-icon-box ${isLoadedStage(p?.data, 2) ? 'loaded' : 'complated'}`}>
                 <TimeQuarterIcon />
               </Box>
               <Box className={isLoadedStage(p?.data, 3) ? 'loaded-bar' : 'complated-bar'} />
+
               <Box className={`step-icon-box ${isLoadedStage(p?.data, 3) ? 'loaded' : 'complated'}`}>
                 <TickIcon />
               </Box>
             </Box>
-            <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Box className='step-title'>
-                <Typography width={'25px'}></Typography>
-              </Box>
 
-              <Box className='step-title'>
-                <Typography>{get(p, 'data.expected_count')}</Typography>
+            <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', mt: 1 }}>
+              <Box className='step-title' sx={{ width: '27px', textAlign: 'center', flexShrink: 0 }}>
+                <Typography></Typography>
               </Box>
+              <Box sx={{ flex: 1 }} />
 
-              <Box className='step-title'>
-                <Typography>{get(p, 'data.scanned_count')}</Typography>
+              <Box className='step-title' sx={{ width: '27px', textAlign: 'center', flexShrink: 0 }}>
+                <Typography>{!isLoadedStage(p?.data, 1) && get(p, 'data.expected_count')}</Typography>
               </Box>
-              <Box className='step-title'>
-                <Typography>{get(p, 'data.accepted_count')}</Typography>
+              <Box sx={{ flex: 1 }} />
+
+              <Box className='step-title' sx={{ width: '27px', textAlign: 'center', flexShrink: 0 }}>
+                <Typography>{!isLoadedStage(p?.data, 2) && get(p, 'data.scanned_count')}</Typography>
+              </Box>
+              <Box sx={{ flex: 1 }} />
+
+              <Box className='step-title' sx={{ width: '27px', textAlign: 'center', flexShrink: 0 }}>
+                <Typography>{!isLoadedStage(p?.data, 3) && get(p, 'data.accepted_count')}</Typography>
               </Box>
             </Box>
           </Box>
