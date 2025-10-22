@@ -4,7 +4,7 @@ import Label from '../../../../components/Label'
 
 function DmedPrescriptionsList({ data, setDmedPrescriptionsList }) {
   return (
-    <Box mb={'24px'}>
+    <Box>
       {data?.length > 0 ? (
         <Box sx={{ border: '1px solid #fe5000', position: 'relative', padding: '20px', borderRadius: '20px' }}>
           <Box sx={{ display: 'flex', mb: '4px', justifyContent: 'space-between' }}>

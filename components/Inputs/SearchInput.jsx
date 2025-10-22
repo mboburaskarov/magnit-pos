@@ -16,12 +16,17 @@ import GiftCardIcon from '../../src/assets/icons/BigTickIcon'
 const useStyles = makeStyles((theme) => ({
   input: {
     position: 'relative',
-    height: 56,
+    height: 40,
     margin: 0,
     borderRadius: 16,
     width: ({ maxWidth }) => maxWidth,
     color: theme.palette.gray[400],
-
+    '& .MuiInputBase-root': {
+      height: '40px',
+    },
+    '& .MuiInputAdornment-root': {
+      width: 'auto',
+    },
     '& .MuiOutlinedInput-input': {
       padding: '15.5px 5px',
     },
@@ -93,6 +98,7 @@ const SearchInput = ({
   adornmentTextHotKey,
   noIcon,
   disabled,
+  adornment,
   uncontrolled,
   timeout = 200,
   handleClickGiftCards,
@@ -153,15 +159,17 @@ const SearchInput = ({
                       <FontAwesomeIcon icon={faTimesCircle} />
                     </button>
                   </div>
+                ) : adornment ? (
+                  <Box>{adornment}</Box>
+                ) : adornmentTextHotKey ? (
+                  <div className={classes.inputEndText}>
+                    <span className={classes.lastText}>{adornmentTextHotKey}</span>
+                    <span>
+                      <ShortcutWrapper shortcut='/' />
+                    </span>
+                  </div>
                 ) : (
-                  adornmentTextHotKey && (
-                    <div className={classes.inputEndText}>
-                      <span className={classes.lastText}>{adornmentTextHotKey}</span>
-                      <span>
-                        <ShortcutWrapper shortcut='/' />
-                      </span>
-                    </div>
-                  )
+                  <></>
                 )}
               </InputAdornment>
             ),

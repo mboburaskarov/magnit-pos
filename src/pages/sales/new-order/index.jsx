@@ -959,7 +959,7 @@ function NewSale() {
     onSuccess: ({ data }) => {
       setLastNoorOrderCount(get(data, 'data.count', 0))
       if (lastNoorOrderCount < get(data, 'data.count', 0)) {
-        NotificationAudio.play()
+        // NotificationAudio.play()
       }
     },
   })

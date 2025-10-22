@@ -1,9 +1,10 @@
 import { Box } from '@mui/material'
 import React from 'react'
 
-function ShortcutBox({ color = '#fff', shortcut = 'XX', height = '34px', minWidth = '34px' }) {
+function ShortcutBox({ className = 'shortcutbox', color = '#fff', shortcut = 'XX', height = '34px', minWidth = '34px' }) {
   return (
     <Box
+      className={className}
       sx={{
         color: color,
         border: `2px solid ${color}`,

@@ -116,7 +116,7 @@ const useStyles = makeStyles((theme) => ({
   card_detail: {
     width: '360px',
     borderLeft: `1px solid ${theme.palette.bunker[100]}`,
-    minHeight: '100vh',
+    // minHeight: '100vh',
     '& .MuiInputBase-root': {
       borderRadius: '40px ',
     },
@@ -658,7 +658,7 @@ function NewSaleV2() {
   }, [])
   useEffect(() => {
     const customer = get(cashBoxDetails, 'data.data.customer')
-    if (customer) {
+    if (customer?.first_name) {
       setCustomerId({ id: customer?.id, name: customer?.first_name + ' ' + customer?.first_name, balance: 0, barcode: '', new: false })
     }
   }, [cashBoxDetails])
@@ -951,7 +951,7 @@ function NewSaleV2() {
     onSuccess: ({ data }) => {
       setLastNoorOrderCount(get(data, 'data.count', 0))
       if (lastNoorOrderCount < get(data, 'data.count', 0)) {
-        NotificationAudio.play()
+        // NotificationAudio.play()
       }
     },
   })
@@ -1099,21 +1099,28 @@ function NewSaleV2() {
                 </Box>
               </Box>
 
-              <LoadingContainer noHeight readyState={!isCartItemsLIstLoading}>
+              <LoadingContainer height='calc(100vh - 205px)' noHeight readyState={!isCartItemsLIstLoading}>
                 {!size(get(cartItemsList, 'data.data.data')) ? (
-                  <Box className={classes.empty_list}>
-                    <Typography fontWeight={'800'} fontSize={'24px'} lineHeight={'32px'}>
-                      {t('page.new_sale.empty_cart_title')}
-                    </Typography>
-                    <Typography fontWeight={'500'} fontSize={'16px'} color={'bunker.500'} lineHeight={'24px'}>
-                      {t('page.new_sale.empty_cart_desc')}
-                    </Typography>
+                  <Box
+                    sx={{
+                      height: 'calc(100vh - 210px)',
+                    }}
+                  >
+                    <Box className={classes.empty_list}>
+                      <Typography fontWeight={'800'} fontSize={'24px'} lineHeight={'32px'}>
+                        {t('page.new_sale.empty_cart_title')}
+                      </Typography>
+                      <Typography fontWeight={'500'} fontSize={'16px'} color={'bunker.500'} lineHeight={'24px'}>
+                        {t('page.new_sale.empty_cart_desc')}
+                      </Typography>
+                    </Box>
                   </Box>
                 ) : (
                   <Box
                     sx={{
-                      overflowY: 'auto',
-                      maxHeight: '75vh',
+                      // overflowY: 'auto',
+                      // height: 'calc(100vh - 210px)',
+
                       paddingBottom: '80px',
                       '&::-webkit-scrollbar': {
                         display: 'none',
@@ -1141,7 +1148,7 @@ function NewSaleV2() {
                 position: 'absolute',
                 bottom: 0,
                 right: 20,
-                height: '172px',
+                height: '224px',
                 width: 'calc(100% - 40px)',
                 left: 20,
                 padding: '8px 8px 16px',
@@ -1174,7 +1181,7 @@ function NewSaleV2() {
                 printContainer={printContainer}
               />
               <Box className={classes.priceDetails}>
-                <Box sx={{ display: 'flex', height: '44px', justifyContent: 'space-between' }}>
+                {/* <Box sx={{ display: 'flex', height: '44px', justifyContent: 'space-between' }}>
                   <Box display={'flex'} width={'100%'} justifyContent={'space-between'} flexDirection={'column'}>
                     <Typography fontWeight={'500'} fontSize={'12px'} color={'bunker.400'} lineHeight={'16px'}>
                       {t('total_amount')}:
@@ -1191,7 +1198,7 @@ function NewSaleV2() {
                       -{thousandDivider(get(cartItemsList, 'data.data.discount_amount'), 'сум')}
                     </Typography>
                   </Box>
-                </Box>
+                </Box> */}
                 <Button
                   loading={hasChange}
                   disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0 || hasChange}
@@ -1208,66 +1215,42 @@ function NewSaleV2() {
                     }
                   }}
                   color='primary'
-                  sx={{ height: '44px', borderRadius: '16px', display: 'flex', justifyContent: 'space-between', padding: '10px 12px' }}
+                  sx={{
+                    height: '96px',
+                    borderRadius: '16px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    padding: '20px 12px',
+                    bgcolor: 'orange.500',
+                    alignItems: 'start',
+                    flexDirection: 'column',
+                  }}
                 >
-                  <Typography display={'flex'} alignItems={'center'} fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
+                  <Typography
+                    display={'flex'}
+                    alignItems={'center'}
+                    fontWeight={'600'}
+                    fontSize={'16px'}
+                    color={'white'}
+                    lineHeight={'24px'}
+                    justifyContent={'space-between'}
+                    width={'100%'}
+                  >
                     {t('pay')}
-                    <ShortcutBox shortcut='F10' />
+                    <ShortcutBox height='24px' shortcut='F10' />
                   </Typography>
-                  <Typography fontWeight={'500'} fontSize={'18px'} color={'white'} lineHeight={'26px'}>
+                  <Typography fontWeight={'700'} fontSize={'24px'} color={'white'} lineHeight={'32px'}>
                     {thousandDivider(get(cartItemsList, 'data.data.total_amount'), 'сум')}
                   </Typography>
                 </Button>
-                <Box display={'flex'}>
-                  <Button
-                    sx={{
-                      borderRadius: '16px',
-                      mr: '4px',
-                      p: '12px',
-                      height: '44px',
-                      width: '100%',
-
-                      '& svg': {
-                        flexShrink: 0,
-                      },
-                    }}
-                    disabled={true}
-                    // disabled={size(get(cartItemsList, 'data.data.data')) == 0}
-                    color='secondary'
-                    onClick={() => setIsCreateOpenDraft(true)}
-                  >
-                    <TimeFast disabled={size(get(cartItemsList, 'data.data.data'))} />
-                    <Typography ml={'8px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
-                      {t('draft')}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        height: '20px',
-                        padding: '5px 10px',
-                        backgroundColor: '#000',
-                        color: '#fff !important',
-                        fontSize: '10px',
-                        fontWeight: '600',
-                        borderRadius: '24px',
-                        display: 'flex',
-                        top: '-5px',
-                        right: '-2px',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        position: 'absolute',
-
-                        ml: '5px',
-                      }}
-                    >
-                      Доработка
-                    </Typography>
-                  </Button>
+                <Box display={'flex'} flexDirection={'column'}>
                   <Button
                     disabled={size(get(cartItemsList, 'data.data.data')) === 0}
                     color='secondary'
                     sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
                       borderRadius: '16px',
-                      ml: '4px',
                       p: '12px',
                       width: '100%',
                       height: '44px',
@@ -1293,6 +1276,45 @@ function NewSaleV2() {
                     </Typography>
 
                     <ArrowRightIcon disabled={size(get(cartItemsList, 'data.data.data'))} />
+                  </Button>
+                  <Button
+                    sx={{
+                      borderRadius: '16px',
+                      mr: '4px',
+                      p: '12px',
+                      height: '44px',
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mt: '8px',
+                      '& svg': {
+                        flexShrink: 0,
+                      },
+                    }}
+                    disabled={true}
+                    // disabled={size(get(cartItemsList, 'data.data.data')) == 0}
+                    color='secondary'
+                    onClick={() => setIsCreateOpenDraft(true)}
+                  >
+                    {/* <TimeFast disabled={size(get(cartItemsList, 'data.data.data'))} /> */}
+                    <Typography ml={'8px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
+                      {t('draft')}
+                    </Typography>
+                    <Box
+                      sx={{
+                        bgcolor: '#0125FF',
+                        padding: '2px 8px',
+                        textAlign: 'center',
+                        borderRadius: '12px',
+                        mr: '8px',
+                      }}
+                    >
+                      <Typography
+                        sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600', color: '#fff !important', textAlign: 'center', m: '0 !important' }}
+                      >
+                        В доработке
+                      </Typography>
+                    </Box>
                   </Button>
                 </Box>
               </Box>

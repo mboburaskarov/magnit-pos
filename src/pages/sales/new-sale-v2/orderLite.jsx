@@ -709,7 +709,6 @@ function OrderLite({
       sx={{
         width: '100%',
         display: 'flex',
-        mr: '8px',
         '& .MuiFormControl-root': {
           borderRadius: '16px',
         },
@@ -736,7 +735,7 @@ function OrderLite({
         isEposError={isEposError}
         isSaleError={isSaleError}
       />
-      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', mr: '8px', minWidth: '168px' }}>
+      {/* <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', mr: '8px', minWidth: '168px' }}>
         <Box
           sx={{
             height: '100%',
@@ -806,7 +805,7 @@ function OrderLite({
             {thousandDivider(Math.abs(maxAmount), 'сум')}
           </Typography>
         </Box>
-      </Box>
+      </Box> */}
       <Box sx={{ width: '100%' }}>
         <Box
           sx={{
@@ -820,6 +819,7 @@ function OrderLite({
               fontWeight: 500,
               color: 'bunker.950',
             },
+
             '& .MuiOutlinedInput-root': {
               height: '44px !important',
             },
@@ -864,6 +864,69 @@ function OrderLite({
             }
           />
         </Box>
+        {/*  */}
+
+        <Box
+          sx={{
+            '& .MuiInputBase-root .MuiInputAdornment-root': {
+              width: 'auto !important',
+            },
+            '& .react-select__control': {
+              width: '65px',
+            },
+            '& input': {
+              fontWeight: 500,
+              color: 'bunker.950',
+            },
+            mt: '8px',
+
+            '& .MuiOutlinedInput-root': {
+              height: '44px !important',
+            },
+          }}
+        >
+          <InputFormattedPriceWithTextField
+            name='lite_cash_amount_soon'
+            id='lite_cash_amount_soon'
+            placeholder={t('Карта лояльности')}
+            noMarginTop
+            // disabled={true}
+            required
+            uncontrolled
+            inputHeight='48px'
+            error={errors?.lite_cash_amount_soon}
+            fullWidth
+            onInput={() => {}}
+            onKeyDown={() => {}}
+            adornmentPosition='end'
+            borderRadius='18px'
+            type='number'
+            adornment={
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 16px' }}>
+                <Box
+                  sx={{
+                    bgcolor: '#0125FF',
+                    padding: '0 8px',
+                    height: '20px',
+                    textAlign: 'center',
+                    borderRadius: '12px',
+                    mr: '8px',
+                  }}
+                >
+                  <Typography
+                    sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600', color: '#fff !important', textAlign: 'center', m: '0 !important' }}
+                  >
+                    soon
+                  </Typography>
+                </Box>
+                <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>сум</Typography>
+                <ShortcutBox minWidth='27px' shortcut='N' height='20px' color='#D5D7E2' />
+              </Box>
+            }
+          />
+        </Box>
+        {/*  */}
+
         <Box
           sx={{
             '& .MuiInputBase-root .MuiInputAdornment-root': {
@@ -1096,7 +1159,7 @@ function OrderLite({
                   }}
                 >
                   <img style={{ width: '25px', height: '25px' }} src='/images/payme.png' />
-                  <ShortcutBox minWidth='27px' shortcut='U' height='20px' color='#868FAA' />
+                  <ShortcutBox minWidth='27px' shortcut='P' height='20px' color='#868FAA' />
                 </Box>
                 <Box
                   sx={{
@@ -1120,7 +1183,7 @@ function OrderLite({
                   }}
                 >
                   <img style={{ width: '25px', height: '25px' }} src='/images/click.png' />
-                  <ShortcutBox minWidth='27px' shortcut='H' height='20px' color='#868FAA' />
+                  <ShortcutBox minWidth='27px' shortcut='C' height='20px' color='#868FAA' />
                 </Box>
               </Box>
               // <AdornmentSelect
@@ -1147,7 +1210,54 @@ function OrderLite({
           />
         </Box>
       </Box>
-
+      <Box
+        sx={{
+          minWidth: '226px',
+          padding: '12px 8px',
+          bgcolor: 'white',
+          borderRadius: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          m: '0 16px',
+          '.box-title': {
+            fontWeight: '600',
+            fontSize: '14px',
+            lineHeight: '20px',
+            color: 'bunker.500',
+          },
+          '.box-sum': {
+            fontWeight: '600',
+            fontSize: '14px',
+            lineHeight: '20px',
+            color: 'bunker.950',
+          },
+          '.box-wrapper:last-child > .box-sum': {
+            color: 'orange.500',
+          },
+          '.box-wrapper:not(:last-child)': {
+            borderBottom: '1px solid',
+            borderColor: 'bunker.100',
+          },
+        }}
+      >
+        <Box className='box-wrapper'>
+          <Typography className='box-title'>Общая стоимость</Typography>
+          <Typography className='box-sum'>550 000 сум</Typography>
+        </Box>
+        <Box className='box-wrapper'>
+          <Typography className='box-title'>Общая стоимость</Typography>
+          <Typography className='box-sum'>550 000 сум</Typography>
+        </Box>
+        <Box className='box-wrapper'>
+          <Typography className='box-title'>Общая стоимость</Typography>
+          <Typography className='box-sum'>550 000 сум</Typography>
+        </Box>
+        <Box className='box-wrapper'>
+          <Typography className='box-title'>Общая стоимость</Typography>
+          <Typography className='box-sum'>550 000 сум</Typography>
+        </Box>
+      </Box>
       <Box
         maxWidth='400px'
         sx={{

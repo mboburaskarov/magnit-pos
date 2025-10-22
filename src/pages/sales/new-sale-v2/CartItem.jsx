@@ -292,12 +292,11 @@ export default function CartItem({
   return (
     <TableRow
       key={item.id}
+      className='table-row'
       sx={{
         height: '80px',
-        borderBottom: '1px solid',
-        borderColor: 'bunker.500',
+        '& td': { padding: '0px', textAlign: 'left !important' },
         '& td': { border: 'none' },
-        '& td': { textAlign: 'left', border: 'none', borderBottom: '1px solid', borderColor: 'bunker.100', padding: '0px' },
       }}
     >
       <TableCell>
@@ -327,19 +326,19 @@ export default function CartItem({
           </Box>
         </Box>
       </TableCell>
-      <TableCell sx={{ textAlign: 'center' }}>
+      <TableCell sx={{ width: '100px' }}>
         <Typography sx={{ fontWeight: 500, fontSize: 16, lineHeight: '24px', color: 'bunker.950' }}>
           {item.quantity_stock > 0 && `${item.quantity_stock}уп`} {item.unit_quantity_stock > 0 && `${item.unit_quantity_stock}шт`}
         </Typography>
       </TableCell>
-      <TableCell sx={{ textAlign: 'center' }}>
+      <TableCell sx={{ width: '60px' }}>
         <Box
           sx={{
             '& .MuiInputBase-root': {
               borderRadius: '6px !important',
             },
             '& .MuiFormControl-root': {
-              height: '32px !important',
+              height: '35px !important',
               width: '40px !important',
             },
             '& input': {
@@ -415,22 +414,24 @@ export default function CartItem({
           />
         </Box>
       </TableCell>
-      <TableCell sx={{ textAlign: 'center' }}>
+      <TableCell sx={{ width: '90px' }}>
         <Box
           sx={{
             '& .MuiFormControl-root .MuiInputBase-root': {
               borderRadius: '6px !important',
+              display: 'flex',
+              alignItems: 'end',
             },
 
             '& .MuiFormControl-root': {
-              height: '32px !important',
+              height: '35px !important',
               width: '64px !important',
             },
             '& input': {
               textAlign: 'end',
-              padding: '6px 24px 6px 6px !important',
+              padding: '4px 32px 4px 6px !important',
               fontSize: '14px',
-
+              height: '23px',
               lineHeight: '20px',
               fontWeight: '500',
               color: 'bunker.950',
@@ -451,7 +452,7 @@ export default function CartItem({
             }}
             adornment={
               <Typography pr='8px' display={'flex'}>
-                <Box fontSize={'12px'} m={'0px 0'} color='bunker.950'>
+                <Box fontSize={'14px'} lineHeight={'20px'} fontWeight={'500'} color='bunker.400'>
                   /{item.unit_per_pack}
                 </Box>
               </Typography>
@@ -505,7 +506,7 @@ export default function CartItem({
           />
         </Box>
       </TableCell>
-      <TableCell sx={{ textAlign: 'right' }}>
+      <TableCell sx={{ width: '150px' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography sx={{ color: 'orange.500', fontWeight: 600, fontSize: 16, lineHeight: '24px' }}>{thousandDivider(item?.total_price, 'сум')}</Typography>
           <Typography variant='caption' sx={{ color: 'bunker.400', fontWeight: 500, fontSize: 12, lineHeight: '16px' }}>
@@ -546,12 +547,11 @@ export default function CartItem({
           )}
         </Box>
       </TableCell>
-      <TableCell>
+      <TableCell sx={{ width: '40px', p: '0 !important' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <Box
             sx={{
               width: 40,
-              ml: '8px',
               borderRadius: '50%',
               height: 40,
               display: 'flex',

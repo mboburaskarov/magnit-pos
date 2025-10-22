@@ -1,7 +1,7 @@
 import { useTheme } from '@emotion/react'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Block, Print, ReceiptLong } from '@mui/icons-material'
+import { Block, Print, QrCode, ReceiptLong } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/material'
 import { get, size } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
@@ -35,6 +35,11 @@ import ClearIcon from '../../../assets/icons/ClearIcon'
 import ReturnExchangeIcon from '../../../assets/icons/ReturnExchangeIcon'
 import ChequeIcon from '../../../assets/icons/ChequeIcon'
 import OnlineSaleNoorIcon from '../../../assets/icons/OnlineSaleNoorIcon'
+import { useQuery } from 'react-query'
+import BrandPlaceholderIcon from '../../../assets/icons/BrandPlaceholderIcon'
+import InputSwitchRadio from '../../../../components/Inputs/InputSwitchRadio'
+import QrScanIcon from '../../../assets/icons/QrScanIcon'
+import ShortcutBox from '../../../../components/ShortcutBox'
 function CartDetailSide({
   setServiceType,
   setIsOpenBonusProductDrawer,
@@ -89,6 +94,13 @@ function CartDetailSide({
   const [collapsedSale, setCollapsedSale] = useState(false)
   const { id } = useParams()
   const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
+  const {
+    data: sellerBonus,
+    isLoading: sellerBonusLoading,
+    isFetching: isFetchingsellerBonus,
+    refetch,
+  } = useQuery(['sellerBonus'], () => requests.getSellerBonusData())
+  console.log(sellerBonus)
 
   const leftZreportCount = localStorage.getItem('leftZreportCount')
   useEffect(() => {
@@ -102,7 +114,7 @@ function CartDetailSide({
   const methods = useForm()
 
   const { control } = methods
-  const CustomButtonRow = ({ onClick, leftIcon, title }) => (
+  const CustomButtonRow = ({ onClick, leftIcon, title, isLast = false }) => (
     <Box
       onClick={onClick}
       sx={{
@@ -111,7 +123,7 @@ function CartDetailSide({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingY: '12px',
-        borderBottom: '1px solid',
+        borderBottom: isLast ? '1px solid' : 'none',
         borderColor: 'bunker.100',
       }}
     >
@@ -126,6 +138,7 @@ function CartDetailSide({
     <Box
       className={classes.card_detail}
       sx={{
+        pt: '20px',
         '& .slider_box_wrapper': {
           width: '100%',
         },
@@ -143,13 +156,14 @@ function CartDetailSide({
       </Box>
       <Box sx={{ padding: '8px 20px' }}>
         <CustomButtonRow
+          isLast={true}
           leftIcon={<MaximizeIcon />}
           title={'Открыть новое окно продаж'}
           onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })}
         />
-        <CustomButtonRow leftIcon={<TimeFast />} title={'Черновик / Отложки'} onClick={() => setIsOpenDraft(true)} />
-        <CustomButtonRow leftIcon={<ClearIcon />} title={'Отказ'} onClick={() => setIsOpenSendRejectedProduct(true)} />
-        <CustomButtonRow leftIcon={<ReturnExchangeIcon />} title={'Возврат / Обмен'} onClick={() => setIsOpenReturnExchange(true)} />
+        <CustomButtonRow isLast={true} leftIcon={<TimeFast />} title={'Черновик / Отложки'} onClick={() => setIsOpenDraft(true)} />
+        <CustomButtonRow isLast={true} leftIcon={<ClearIcon />} title={'Отказ'} onClick={() => setIsOpenSendRejectedProduct(true)} />
+        <CustomButtonRow isLast={true} leftIcon={<ReturnExchangeIcon />} title={'Возврат / Обмен'} onClick={() => setIsOpenReturnExchange(true)} />
 
         <Box
           sx={{
@@ -213,6 +227,45 @@ function CartDetailSide({
               fullWidth
               onChange={(e) => setSearchTerm(e.target.value)}
               value={searchTerm}
+              adornment={
+                <Box
+                  sx={{
+                    mr: '4px',
+                    bgcolor: 'orange.500',
+                    display: 'flex',
+                    height: '32px',
+                    borderRadius: '16px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '12px 6px',
+                    '& .shortcutbox': {
+                      ml: '8px',
+                    },
+                  }}
+                >
+                  <QrScanIcon color='#fff' />
+                  <ShortcutBox height='20px' shortcut='F3' />
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      bgcolor: '#0125FF',
+                      padding: '0 8px',
+                      height: '20px',
+                      textAlign: 'center',
+                      borderRadius: '12px',
+                      mr: '8px',
+                      top: '-12px',
+                      right: '-15px',
+                    }}
+                  >
+                    <Typography
+                      sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600', color: '#fff !important', textAlign: 'center', m: '0 !important' }}
+                    >
+                      soon
+                    </Typography>
+                  </Box>
+                </Box>
+              }
               setSearchTerm={setSearchTerm}
               client
               error={!!searchTerm && searchTerm?.length < 3}
@@ -300,6 +353,36 @@ function CartDetailSide({
             </OutsideClickHandler>
           )}
         </Box>
+        {customerId && (
+          <Box
+            sx={{
+              background: 'linear-gradient(147.13deg, #2558FF 3.88%, #0028FF 73.63%)',
+              border: '1px solid',
+              borderColor: 'purple.200',
+              borderRadius: '16px',
+              padding: '12px 16px',
+              m: '20px',
+              mt: 0,
+              position: 'relative',
+            }}
+          >
+            <Typography fontWeight={'500'} fontSize={'14px'} color={'purple.200'} lineHeight={'20px'}>
+              Карта лояльности
+            </Typography>
+            <Typography fontWeight={'700'} fontSize={'28px'} color={'white'} lineHeight={'40px'}>
+              {thousandDivider(get(customerId, 'balance', 0), 'сум')}
+            </Typography>
+            <Box
+              sx={{
+                position: 'absolute',
+                right: 0,
+                bottom: '-5px',
+              }}
+            >
+              <BrandPlaceholderIcon />
+            </Box>
+          </Box>
+        )}
       </Box>
       <Box className={classes.cart_detail_id}>
         <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
@@ -308,7 +391,7 @@ function CartDetailSide({
       </Box>
 
       <Box sx={{ padding: '10px 20px' }}>
-        <InputSwitchNew
+        <InputSwitchRadio
           id='service-type-id'
           noMarginTop
           name='service-type'
@@ -322,17 +405,49 @@ function CartDetailSide({
               value: 'other',
             },
             {
-              title: t('Arzon Apteka'),
+              title: t('Arzon Apt'),
               value: 'arzon-apteka',
             },
             {
-              title: t('Oson Apteka'),
+              title: t('Oson Apt'),
               value: 'oson-apteka',
             },
           ]}
         />
       </Box>
       <DmedPrescriptionsList data={dmedPrescriptionsList} setDmedPrescriptionsList={setDmedPrescriptionsList} />
+      <Box
+        onClick={() => setIsOpenBonusProductDrawer(true)}
+        sx={{ backgroundColor: '#FFC120', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px', cursor: 'pointer' }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              backgroundColor: 'white',
+              width: '48px',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              mr: '12px',
+              '& svg': {
+                width: '24px',
+                height: '24px',
+              },
+            }}
+          >
+            <PrizeBoxIcon color='#FFC120' />
+          </Box>
+          <Box>
+            <Typography sx={{ fontWeight: '700', fontSize: '24px', lineHeight: '32px', color: '#fff' }}>
+              +{thousandDivider(get(sellerBonus, 'data.data.total_bonus', 0), 'сум')}
+            </Typography>
+            <Typography sx={{ fontWeight: '600', fontSize: '12px', lineHeight: '14px', color: '#fff' }}>Мой бонус</Typography>
+          </Box>
+        </Box>
+        <RightArrow color='#fff' />
+      </Box>
       {/* <CheckAccess id={'new-sale-discount'}>
         <Box onClick={() => setCollapseDiscount((p) => !p)} width={'100%'} display={'flex'} justifyContent={'space-between'}>
           <Label>{t('discount')}</Label>
