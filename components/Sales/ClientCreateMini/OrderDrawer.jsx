@@ -442,7 +442,13 @@ export default function OrderDrawer({
     onError: (err) => {
       setHasChange(false)
       setOpenRefreshDialog(false)
-
+      if (get(err, 'response.data.data.available_quantity', false)) {
+        error(`Описание
+  Редактировать
+  Введенное количество товара превышает существующее количество. 
+  Максимальное количество на складе - ${get(err, 'response.data.data.available_quantity')}`)
+        return
+      }
       if (get(err, 'response.status') == 409) {
         saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') }), error('Эта продажа уже закрыта.')
         return
