@@ -8,8 +8,16 @@ import RightArrowRound from '../../src/assets/icons/dashboard/RightArrowRound'
 import SortIcon from '../../src/assets/icons/dashboard/SortIcon'
 import SortUpIcon from '../../src/assets/icons/dashboard/SortUpIcon'
 import SortDownIcon from '../../src/assets/icons/dashboard/SortDownIcon'
+import { size } from 'lodash'
 
-export default function DashboardTopsBox({ data, title, tableData, subTitle, href = false }) {
+export default function DashboardTopsBox({
+  data,
+  title,
+  tableData,
+  subTitle,
+  href = false,
+  noData = { title: 'Информация не найдена', description: 'Данные за этот период не найдены' },
+}) {
   const { t } = useTranslation()
   const [isCollapse, setIsCollapse] = useState(false)
   const formattedData = isCollapse ? data : data?.slice(0, 5)
@@ -63,6 +71,7 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
           height: 'calc(100% - 25px)',
           justifyContent: 'space-between',
           flexDirection: 'column',
+          position: 'relative',
         }}
       >
         <TableContainer px={'20px'}>
@@ -110,89 +119,108 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
                 </TableCell>
               ))}
             </TableHead>
-            <TableBody
-              sx={{
-                '& .MuiTableRow-root:not(:last-child)': {
-                  borderBottom: '1px solid',
-                  borderColor: 'bunker.100',
-                },
-                '& .table-cell': {
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  lineHeight: '20px',
-                  border: 'none',
-                  p: '12px 8px',
-                  color: 'dark.500',
-                },
-              }}
-            >
-              {formattedData?.map((item, index) => {
-                const isFall = item?.percent < 0
-                const percent = item?.percent
-                return (
-                  <TableRow key={item.name}>
-                    {tableData.map((el, ind) => {
-                      if (el?.colId == 'name' || el?.colId == 'full_name') {
-                        return (
-                          <TableCell
-                            sx={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxLines: 1 }}
-                            className='table-cell'
-                          >
-                            {index + 1}. {item[el?.colId]}
-                          </TableCell>
-                        )
-                      }
-
-                      if (el?.colId == 'count') {
-                        return (
-                          <TableCell className='table-cell'>
-                            {item.unit_per_pack > 1
-                              ? item[el?.colId] > 0
-                                ? `${item[el?.colId]}(${item.unit_quantity}/${item.unit_per_pack})`
-                                : `(${item.unit_quantity}/${item.unit_per_pack})`
-                              : item[el?.colId]}
-                          </TableCell>
-                        )
-                      }
-                      if (el?.colId == 'total_amount' || el?.colId == 'amount' || el?.colId == 'bonus_amount') {
-                        return <TableCell className='table-cell'>{thousandDivider(item[el?.colId], 'сум')}</TableCell>
-                      }
-                      if (el?.colId == 'stat') {
-                        return (
-                          <TableCell className='table-cell'>
-                            <Box
-                              display='inline-flex'
-                              sx={{
-                                borderRadius: '16px',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                textAlign: 'center',
-                                height: '20px',
-                                width: 'fit-content',
-                                backgroundColor: !isFall ? '#30BE821A' : '#F45B691A',
-                              }}
-                              alignItems='center'
+            {size(formattedData) >= 1 ? (
+              <TableBody
+                sx={{
+                  '& .MuiTableRow-root': {},
+                  '& .MuiTableRow-root:not(:last-child)': {
+                    borderBottom: '1px solid',
+                    borderColor: 'bunker.100',
+                  },
+                  '& .table-cell': {
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    lineHeight: '20px',
+                    border: 'none',
+                    p: '16px 12px',
+                    color: 'dark.500',
+                  },
+                }}
+              >
+                {formattedData?.map((item, index) => {
+                  const isFall = item?.percent < 0
+                  const percent = item?.percent
+                  return (
+                    <TableRow key={item.name}>
+                      {tableData.map((el, ind) => {
+                        if (el?.colId == 'name' || el?.colId == 'full_name') {
+                          return (
+                            <TableCell
+                              sx={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxLines: 1 }}
+                              className='table-cell'
                             >
-                              <Typography
-                                padding={'3px 8px'}
-                                color={isFall ? '#F45B69' : '#30BE82'}
-                                textAlign={'center'}
-                                fontWeight='500'
-                                fontSize={12}
-                                lineHeight={'16px'}
+                              {index + 1}. {item[el?.colId]}
+                            </TableCell>
+                          )
+                        }
+
+                        if (el?.colId == 'count') {
+                          return (
+                            <TableCell className='table-cell'>
+                              {item.unit_per_pack > 1
+                                ? item[el?.colId] > 0
+                                  ? `${item[el?.colId]}(${item.unit_quantity}/${item.unit_per_pack})`
+                                  : `(${item.unit_quantity}/${item.unit_per_pack})`
+                                : item[el?.colId]}
+                            </TableCell>
+                          )
+                        }
+                        if (el?.colId == 'total_amount' || el?.colId == 'amount' || el?.colId == 'bonus_amount') {
+                          return <TableCell className='table-cell'>{thousandDivider(item[el?.colId], 'сум')}</TableCell>
+                        }
+                        if (el?.colId == 'stat') {
+                          return (
+                            <TableCell className='table-cell'>
+                              <Box
+                                display='inline-flex'
+                                sx={{
+                                  borderRadius: '16px',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  textAlign: 'center',
+                                  height: '20px',
+                                  width: 'fit-content',
+                                  backgroundColor: !isFall ? '#30BE821A' : '#F45B691A',
+                                }}
+                                alignItems='center'
                               >
-                                {!isFall ? '+' : ''} {percent}%
-                              </Typography>
-                            </Box>
-                          </TableCell>
-                        )
-                      }
-                    })}
-                  </TableRow>
-                )
-              })}
-            </TableBody>
+                                <Typography
+                                  padding={'3px 8px'}
+                                  color={isFall ? '#F45B69' : '#30BE82'}
+                                  textAlign={'center'}
+                                  fontWeight='500'
+                                  fontSize={12}
+                                  lineHeight={'16px'}
+                                >
+                                  {!isFall ? '+' : ''} {percent}%
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                          )
+                        }
+                      })}
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            ) : (
+              <Box
+                sx={{
+                  display: 'flex',
+                  width: '100%',
+                  height: '100%',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  // justifyContent: 'center',
+                  top: '80px',
+                  position: 'absolute',
+                }}
+              >
+                <Typography sx={{ fontSize: '24px', lineHeight: '32px', fontWeight: '600', color: 'bunker.950' }}>{noData?.title}</Typography>
+                <Typography sx={{ fontSize: '18px', lineHeight: '28px', fontWeight: '500', color: 'bunker.500' }}>{noData?.description}</Typography>
+              </Box>
+            )}
           </Table>
         </TableContainer>
       </Box>

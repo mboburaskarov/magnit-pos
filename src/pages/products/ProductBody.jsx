@@ -186,8 +186,6 @@ export default function ProductBody({ productData = null }) {
   const { data: unitsList, refetch: refetchUnitList } = useQuery('unitsList', () => requests.getAllUnits({ limit: 20, offset: 0 }))
 
   useEffect(() => {
-    console.log(productData)
-
     if (productData) {
       setValue('name', productData?.name)
       setImages(productData?.photos?.map((item) => ({ file_name: item, file_url: item })))

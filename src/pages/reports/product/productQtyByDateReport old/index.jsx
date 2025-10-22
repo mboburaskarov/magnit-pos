@@ -79,7 +79,6 @@ export default function ProductQtyByDateReportPage() {
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
-  console.log(shopList)
 
   const productQtyByDateReportListFilter = useMemo(() => {
     const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)

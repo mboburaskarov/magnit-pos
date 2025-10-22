@@ -42,7 +42,6 @@ export default function Navbar() {
       routeString.push(item.route)
     }
   })
-  console.log(filterNavData(navbatRouteData, routeString, user_data))
 
   return (
     <>

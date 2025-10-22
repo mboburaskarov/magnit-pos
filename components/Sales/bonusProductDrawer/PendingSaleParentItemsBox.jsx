@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
 function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
   const { t } = useTranslation()
   const classes = useStyles()
-  console.log(item)
 
   return (
     <Box

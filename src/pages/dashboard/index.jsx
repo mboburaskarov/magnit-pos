@@ -312,7 +312,7 @@ export default function DashboarPage() {
                           my: '12px',
                         }}
                       >
-                        Перейти к панели управления франшизой
+                        Перейти к панели управления B2B
                       </Typography>
                       <Link to={'/dashboard/b2b'}>
                         <Button

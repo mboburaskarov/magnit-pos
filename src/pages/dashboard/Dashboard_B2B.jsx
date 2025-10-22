@@ -33,7 +33,7 @@ export default function Dashboard_B2B({ selectedShops, setSelectedShops }) {
           <LeftArrowIcon />
         </Box>
         <Typography variant='h1' fontWeight={600} ml={'20px'} fontSize={'40px'} lineHeight={'50px'} color={'dark.500'}>
-          Франшиза
+          B2B
         </Typography>
       </Box>
       <Box display='inline-flex' padding={'11px 0'} columnGap={3}>
@@ -57,9 +57,7 @@ export default function Dashboard_B2B({ selectedShops, setSelectedShops }) {
             defaultSelectedAll
             beforeContent={t('placeholders.select_shops')}
             value={selectedShops}
-            allOptions={get(shopList, 'data.data.ids', [])}
-            selectAllLabel={t('Все франшиза')}
-            options={get(shopList, 'data.data.data', [])}
+            selectAllLabel={t('Все B2B')}
             isLoading={false}
             onChange={(val) => {
               setSelectedShops(val)

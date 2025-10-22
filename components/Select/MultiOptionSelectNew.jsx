@@ -1,4 +1,4 @@
-import { Box, TextField } from '@mui/material'
+import { Box, TextField, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -108,7 +108,7 @@ const MultiOptionSelectNew = ({
         ...customFilter,
       })
 
-      const newData = get(response, 'data.data.data', [])
+      const newData = get(response, 'data.data.data', []).filter((item) => item?.name != 'Pharma Cosmos ')
 
       if (pagination.offset === 0) {
         setOptions(newData) // Replace options for new search
@@ -351,9 +351,17 @@ const MultiOptionSelectNew = ({
           : countLabel
           ? `${values?.length} ${countLabel}`
           : (values || [])?.map((value, index) => `${index !== 0 ? ', ' : ''} ${value?.name}`)
+      console.log(val)
 
       return (
-        <StyledTooltip title={val} placement='top'>
+        <StyledTooltip
+          title={
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              {val || []?.map((a) => <Typography sx={{ display: 'flex' }}>{a.split(', ')[1]}</Typography>)}
+            </Box>
+          }
+          placement='top'
+        >
           <span className='multiple value'>{val}</span>
         </StyledTooltip>
       )

@@ -291,8 +291,24 @@ export default function TransferRecheckScanWithCheckingPage() {
         }
         actions={
           <>
-            <Button secondary onClick={() => setOpenFinishConfirmDialog(false)}>
-              {t('buttons.go_back')}
+            <Button
+              sx={{
+                borderRadius: '50px',
+                mr: '4px',
+                p: '9px 16px',
+                height: '40px',
+                backgroundColor: 'white !important',
+                color: 'orange.500',
+                borderColor: 'orange.500',
+                '& svg': {
+                  flexShrink: 0,
+                },
+              }}
+              color='secondary'
+              secondary
+              onClick={() => setOpenFinishConfirmDialog(false)}
+            >
+              Нет
             </Button>
             <Button
               size='medium'

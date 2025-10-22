@@ -33,8 +33,6 @@ export default function SendToErrorWithReason({ refetch, open, setOpen, setRegio
     },
   })
   const onSubmit = (data) => {
-    console.log(data, open)
-
     const requestBody = {
       category: Number(get(data, 'error_type.value')),
       reason: get(data, 'reason'),

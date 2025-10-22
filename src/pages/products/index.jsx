@@ -340,7 +340,7 @@ export default function ProductsPage() {
                   count: (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                       <Box />({thousandDivider(get(statusCountList, 'data.data.low_stock_count', 0))})
-                      <StyledTooltip title={'Остаточные товары менее 10'}>
+                      <StyledTooltip title={'В аптеке осталось менее 10 лекарств'}>
                         <Info sx={{ color: 'bunker.300' }} />
                       </StyledTooltip>
                     </Box>
@@ -351,9 +351,8 @@ export default function ProductsPage() {
                   value: 'zero-stock',
                   count: (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <Box />
-                      {thousandDivider(get(statusCountList, 'data.data.zero_stock_count', 0))}
-                      <StyledTooltip title={'Продукты без астатики'}>
+                      <Box />({thousandDivider(get(statusCountList, 'data.data.zero_stock_count', 0))})
+                      <StyledTooltip title={'Лекарства, которые не остались в аптеке'}>
                         <Info sx={{ color: 'bunker.300' }} />
                       </StyledTooltip>
                     </Box>
@@ -364,8 +363,7 @@ export default function ProductsPage() {
                   value: 'imminent',
                   count: (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <Box />
-                      {thousandDivider(get(statusCountList, 'data.data.imminent_count', 0))}
+                      <Box />({thousandDivider(get(statusCountList, 'data.data.imminent_count', 0))})
                       <StyledTooltip title={'Товары со сроком годности менее 3 месяцев'}>
                         <Info sx={{ color: 'bunker.300' }} />
                       </StyledTooltip>

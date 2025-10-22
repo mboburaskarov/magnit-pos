@@ -129,6 +129,7 @@ export default function BannedProductPage() {
           buttonText='Запрещенный продукт'
           backIcon
           noActions
+          backHref='/products/all'
           backButtonClick={() => navigate('/products/all')}
           text={'Запрещенный продукт'}
           checkAccessId={'product-create'}

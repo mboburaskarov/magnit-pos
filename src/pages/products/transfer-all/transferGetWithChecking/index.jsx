@@ -276,11 +276,11 @@ export default function TransferGetScanWithCheckingPage() {
         open={openFinishConfirmDialog}
         setOpen={() => setOpenFinishConfirmDialog(false)}
         icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
-        title={'Принять перемещение?'}
+        title={'принятие перемещение?'}
         desc={
           <>
             <Typography fontWeight={'600'} fontSize={'20px'}>
-              {'Вы уверены что хотите Принять перемещение?'}
+              {'Вы уверены что хотите принятие перемещение?'}
             </Typography>
             <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
               {'Не сканированные товары будут списаны'}
@@ -289,8 +289,23 @@ export default function TransferGetScanWithCheckingPage() {
         }
         actions={
           <>
-            <Button secondary onClick={() => setOpenFinishConfirmDialog(false)}>
-              {t('buttons.go_back')}
+            <Button
+              sx={{
+                borderRadius: '50px',
+                mr: '4px',
+                p: '9px 16px',
+                height: '40px',
+                backgroundColor: 'white !important',
+                color: 'orange.500',
+                borderColor: 'orange.500',
+                '& svg': {
+                  flexShrink: 0,
+                },
+              }}
+              color='secondary'
+              onClick={() => setOpenFinishConfirmDialog(false)}
+            >
+              Нет
             </Button>
             <Button
               size='medium'
@@ -301,7 +316,7 @@ export default function TransferGetScanWithCheckingPage() {
               }}
               isLoading={isFetchingtransferWithCheckingDetails}
             >
-              {t('buttons.yes_complete')}
+              Да, принятие
             </Button>
           </>
         }

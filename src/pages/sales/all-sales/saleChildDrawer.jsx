@@ -159,8 +159,10 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
     const hidden = '*'?.repeat(str?.length - 4) // mask the rest
     return hidden + visible
   }
+  const { data: paymentTypeList } = useQuery('paymentTypeList', () => requests.getPaymentTypesList({ limit: 20, offset: 0 }))
+
   return (
-    <LoadingContainer noHeight readyState={debouncedCurrentSaleId || !isLoading}>
+    <LoadingContainer noHeight readyState={debouncedCurrentSaleId && !isLoading}>
       <Box className={classes.drawer}>
         <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
           <Box display={'flex'} alignItems={'center'}>
@@ -207,8 +209,8 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
               {t('pay')}
             </Typography>
             <Grid container display={'flex'}>
-              {paymentTypes?.map((pays) => {
-                if (get(saleDetailsList, `data.data.${pays?.prop}`, 0) == 0) return <></>
+              {get(paymentTypeList, 'data.data', []).map((pays) => {
+                if (get(saleDetailsList, `data.data.${pays?.name.toLowerCase()}`, 0) == 0) return <></>
                 return (
                   <Grid item xl={6} xs={6} sm={6} md={6} lg={6} width={'100%'} padding={'4px'}>
                     <Box
@@ -224,25 +226,25 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
                     >
                       <Box>
                         <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                          {get(pays, 'title', 'Unknown')}
+                          {get(pays, 'name', 'Unknown')}
                         </Typography>
                         <Typography fontSize={16} mt={'4px'} flexShrink={'none'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                          {thousandDivider(get(saleDetailsList, `data.data.${pays?.prop}`, []), 'сум')}
+                          {thousandDivider(get(saleDetailsList, `data.data.${pays?.name.toLowerCase()}`, []), 'сум')}
                         </Typography>
                       </Box>
-                      {/* <CheckAccess id={'can-chnage-payment-type'}>
-                      <Box
-                        onClick={() => {
-                          setopenCreateBonusModal({
-                            types: get(saleDetailsList, 'data.data.sale_payments', []),
-                            sale_payment_id: pays.id,
-                            sale_id: get(open, 'id'),
-                          })
-                        }}
-                      >
-                        <ChangeCircle sx={{ color: '#fff', fontSize: '30px', mt: '10px' }} />
-                      </Box>
-                    </CheckAccess> */}
+                      <CheckAccess id={'can-chnage-payment-type'}>
+                        <Box
+                          onClick={() => {
+                            setopenCreateBonusModal({
+                              types: get(paymentTypeList, 'data.data', []),
+                              sale_payment_id: pays.id,
+                              sale_id: get(open, 'id'),
+                            })
+                          }}
+                        >
+                          <ChangeCircle sx={{ color: '#fff', fontSize: '30px', mt: '10px' }} />
+                        </Box>
+                      </CheckAccess>
                     </Box>
                   </Grid>
                 )

@@ -91,7 +91,6 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
     if (!isUpdatingFromPercent) {
       setIsUpdatingFromPrice(true)
       const calculatedPercent = calculatePercentFromPrice(numValue)
-      console.log(calculatedPercent)
 
       setNewPercent(calculatedPercent)
       setTimeout(() => setIsUpdatingFromPrice(false), 0)

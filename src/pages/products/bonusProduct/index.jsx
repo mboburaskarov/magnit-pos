@@ -142,6 +142,7 @@ export default function BonusProductPage() {
           buttonText='Бонусный продукт'
           backIcon
           noActions
+          backHref='/products/all'
           backButtonClick={() => navigate('/products/all')}
           text={'Бонусный продукт'}
           checkAccessId={'product-create'}

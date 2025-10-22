@@ -28,7 +28,6 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])
-    console.log(data)
 
     const requestBody = {
       total_amount_from: data.total_amount_from || undefined,

@@ -147,7 +147,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
     if (el.field === 'accepted_amount_vat') {
       return {
         ...el,
-        headerName: 'Cумма СНДС',
+        headerName: 'Cумма cНДС',
         colId: el.field,
         cellRenderer: memo((p) => (
           <>

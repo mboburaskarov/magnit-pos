@@ -187,7 +187,6 @@ const useStyles = makeStyles((theme) => ({
 export default function UploadImage({ id, images, onChange, showGuideList = true }) {
   const { t } = useTranslation()
   const classes = useStyles()
-  console.log(images)
 
   const [uploadedImages, setUploadedImages] = useState(images || [])
 
@@ -316,7 +315,6 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
   useDidUpdate(() => {
     onChange(uploadedImages)
   }, [uploadedImages])
-  console.log(uploadedImages)
 
   return (
     <div className={classes.root}>

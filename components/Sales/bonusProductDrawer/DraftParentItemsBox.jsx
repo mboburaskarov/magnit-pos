@@ -434,7 +434,6 @@ export default function ResultItem({
   useEffect(() => {
     setItemcount(1)
   }, [values?.search])
-  console.log(product, item)
 
   return (
     // <Box className={classes.searchResult}>

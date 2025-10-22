@@ -85,6 +85,7 @@ export default function CatalogManagement() {
           buttonText='Категории'
           backIcon
           noActions
+          backHref='/products/all'
           backButtonClick={() => navigate('/products/all')}
           text={'Категории'}
           checkAccessId={'product-create'}

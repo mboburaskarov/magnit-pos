@@ -17,7 +17,6 @@ import { useQueryParams } from '../../../../hooks/useQueryParams'
 
 export default function DiscountCardReport({ id }) {
   const { values } = useQueryParams()
-  console.log(values)
 
   const [offsetCount, setOffsetCount] = useState(0)
   const navigate = useNavigate()
@@ -66,8 +65,6 @@ export default function DiscountCardReport({ id }) {
         minWidth: 60,
         width: 60,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
-          console.log(rowIndex, p)
-
           const absoluteIndex = Number(get(values, 'offsetHistory', 0)) + 1 + rowIndex
 
           return (

@@ -9,6 +9,7 @@ import { error } from '../../../../utils/toast'
 import { useMutation } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { requests } from '../../../../utils/requests'
+import LoadingContainer from '../../../../components/LoadingContainer'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -48,7 +49,6 @@ function SaleDrawer({ open, setOpen, ids }) {
       error('Ошибка: Продажа переведена в режим ожидания!')
     },
   })
-  console.log(open)
 
   return (
     <Drawer

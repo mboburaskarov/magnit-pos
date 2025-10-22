@@ -14,7 +14,6 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
   const tree = useMemo(() => flattenTree({ items }), [items])
   const marksUncheckedRef = useRef(createMarksUnchecked({ tree, items, selected }))
   const activeParentRef = useRef('')
-  console.log(tree, items)
 
   const handleChange = ({ event, parents = [], children = [] }) => {
     const {

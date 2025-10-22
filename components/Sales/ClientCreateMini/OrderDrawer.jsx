@@ -266,6 +266,7 @@ export default function OrderDrawer({
   setOpenDebt,
 }) {
   const methods = useForm()
+  const lastEposRequest = useRef()
 
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
   const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
@@ -304,7 +305,6 @@ export default function OrderDrawer({
   const scannedBarcodeRef = useRef()
 
   let send_to_epos = localStorage.getItem('send_to_epos')
-  console.log(send_to_epos)
 
   useEffect(() => {
     addEmptyStringMarkToMarkinglessProduct(markingsList, markingCount)
@@ -355,6 +355,10 @@ export default function OrderDrawer({
   })
 
   const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
+  const sendToEPOSPayload = (payload) => {
+    lastEposRequest.current = payload
+    sendToEPOS(payload)
+  }
   const {
     mutate: finishSaleWithoutAppPaymentType,
     isLoading: isFinishSaleWithoutAppPaymentType,
@@ -399,7 +403,7 @@ export default function OrderDrawer({
           }))
         })
 
-        sendToEPOS({
+        sendToEPOSPayload({
           token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
           method: SALE_TYPE === 'SALE' ? 'fastSale' : 'refund', // Название метода, Обязательное поле, String
           companyName: 'Pharma Cosmos OOO', // Поле для ввода названия компании, будет напечатано на чеке, Обязательное поле, String
@@ -457,6 +461,24 @@ export default function OrderDrawer({
     },
   })
   const {
+    mutate: setCashNumber,
+    isLoading: isSetCashNumber,
+    isError: isSetCashNumberError,
+  } = useMutation(requests.sendToEpos, {
+    onSuccess: ({ data }) => {
+      sendToEPOS(lastEposRequest.current)
+      lastEposRequest.current = null
+    },
+
+    onError: (err) => {
+      sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
+      setHasChange(false)
+      setOpenRefreshDialog(false)
+
+      error('Ошибка при EPOS')
+    },
+  })
+  const {
     mutate: sendToEPOS,
     isLoading: isSendToEPOS,
     isError: isEposError,
@@ -481,6 +503,13 @@ export default function OrderDrawer({
       }
     },
     onError: (err) => {
+      if (get(err, 'message', 'err').includes('CASH_REGISTERER_NUMBER_NOT_AVAILABLE') && localStorage.getItem('mode') == 'dev-mode') {
+        setCashNumber({
+          token: 'DXJFX32CN1296678504F2',
+          method: 'setCashNumber',
+        })
+        return
+      }
       sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
       setHasChange(false)
       setOpenRefreshDialog(false)
