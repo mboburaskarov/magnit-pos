@@ -921,7 +921,7 @@ function OrderLite({
                   </Typography>
                 </Box>
                 <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>сум</Typography>
-                <ShortcutBox minWidth='27px' shortcut='N' height='20px' color='#D5D7E2' />
+                <ShortcutBox minWidth='27px' shortcut='L' height='20px' color='#D5D7E2' />
               </Box>
             }
           />

@@ -210,7 +210,7 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
             </Typography>
             <Grid container display={'flex'}>
               {get(paymentTypeList, 'data.data', []).map((pays) => {
-                if (get(saleDetailsList, `data.data.${pays?.name.toLowerCase()}`, 0) == 0) return <></>
+                if (get(saleDetailsList, `data.data.${pays?.front_name}`, 0) == 0) return <></>
                 return (
                   <Grid item xl={6} xs={6} sm={6} md={6} lg={6} width={'100%'} padding={'4px'}>
                     <Box

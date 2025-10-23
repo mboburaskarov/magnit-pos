@@ -155,7 +155,7 @@ export default function TransferGetScanWithCheckingPage() {
         <Header
           onSubmit={() => setOpenFinishConfirmDialog(true)}
           isLoading={false}
-          buttonText='Принятие'
+          buttonText='Oтправил'
           backIcon
           backHref='/products/transfer'
           text={'Перемещение с проверкой'}
@@ -276,11 +276,11 @@ export default function TransferGetScanWithCheckingPage() {
         open={openFinishConfirmDialog}
         setOpen={() => setOpenFinishConfirmDialog(false)}
         icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
-        title={'принятие перемещение?'}
+        title={'Oтправил перемещение?'}
         desc={
           <>
             <Typography fontWeight={'600'} fontSize={'20px'}>
-              {'Вы уверены что хотите принятие перемещение?'}
+              {'Вы уверены что хотите отправил перемещение?'}
             </Typography>
             <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
               {'Не сканированные товары будут списаны'}
@@ -316,7 +316,7 @@ export default function TransferGetScanWithCheckingPage() {
               }}
               isLoading={isFetchingtransferWithCheckingDetails}
             >
-              Да, принятие
+              Да, отправил
             </Button>
           </>
         }

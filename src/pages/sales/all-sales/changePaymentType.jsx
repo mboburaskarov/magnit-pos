@@ -26,8 +26,10 @@ export default function ChangePaymentType({ open, refetch, setOpen }) {
     },
   })
   const onSubmit = (data) => {
+    console.log(data)
+
     const requestBody = {
-      payment_type_id: data.payment_type_id.value,
+      payment_type_id: data.payment_type_id.id,
       sale_payment_id: get(open, 'sale_payment_id'),
       sale_id: get(open, 'sale_id'),
     }
@@ -71,13 +73,10 @@ export default function ChangePaymentType({ open, refetch, setOpen }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
+            {console.log(open?.types?.filter((type) => open?.payment_type?.[type?.front_name] == 0))}
             <SelectSimple
               id={'payment_type_id'}
-              options={open?.types?.filter((type) => {
-                console.log(type, open?.payment_type, open?.payment_type?.[type?.front_name])
-
-                return open?.payment_type?.[type?.front_name] == 0
-              })}
+              options={open?.types?.filter((type) => open?.payment_type?.[type?.front_name] == 0)}
               menuPlacement='bottom'
               fullWidth
               label={'Оплата'}

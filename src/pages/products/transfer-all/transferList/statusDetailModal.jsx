@@ -169,7 +169,7 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
               </Box>
             </Box>
             <Box sx={{ width: '100%', ml: '20px' }}>
-              <Typography>Отправил</Typography>
+              <Typography>Создано</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
               <Typography>{isLoadedStage(open, 1) ? '...' : get(open, 'created_by.full_name')}</Typography>
@@ -236,7 +236,7 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
               </Box>
             </Box>
             <Box sx={{ width: '100%', ml: '20px' }}>
-              <Typography>Проверка</Typography>
+              <Typography>Отправил</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
               <Typography>{isLoadedStage(open, 2) ? '...' : get(open, 'updated_by.full_name')}</Typography>
@@ -303,7 +303,7 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
               </Box>
             </Box>
             <Box sx={{ width: '100%', ml: '20px' }}>
-              <Typography>Завершенный</Typography>
+              <Typography>Полученный</Typography>
             </Box>
             <Box sx={{ width: '100%' }}>
               <Typography>{isLoadedStage(open, 3) ? '...' : get(open, 'accepted_by.full_name')}</Typography>
