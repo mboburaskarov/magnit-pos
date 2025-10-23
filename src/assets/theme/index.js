@@ -545,7 +545,7 @@ export const theme = ({ mode, palette }) => {
             height: 48,
             '&.Mui-focused': {
               boxSizing: 'border-box',
-              border: `1px solid ${palette.orange[500]} !important`,
+              border: `2px solid ${palette.orange[500]} !important`,
             },
             '&.Mui-error:not(.Mui-focused)': {
               border: '2px solid red',

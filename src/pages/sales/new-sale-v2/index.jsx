@@ -999,7 +999,7 @@ function NewSaleV2() {
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />
       {isEposTurnOn || get(userData, 'type') === 'SUPERADMIN' ? (
-        <Box display={'flex'}>
+        <Box display={'flex'} height={'100vh'} overflow={'hidden'}>
           <Box width={'calc(100% - 360px)'} position={'relative'} padding={'20px'}>
             <Box position={'relative'}>
               <CartSearchBar
@@ -1099,7 +1099,7 @@ function NewSaleV2() {
                 </Box>
               </Box>
 
-              <LoadingContainer height='calc(100vh - 205px)' noHeight readyState={!isCartItemsLIstLoading}>
+              <LoadingContainer height='calc(100vh - 210px)' noHeight readyState={!isCartItemsLIstLoading}>
                 {!size(get(cartItemsList, 'data.data.data')) ? (
                   <Box
                     sx={{

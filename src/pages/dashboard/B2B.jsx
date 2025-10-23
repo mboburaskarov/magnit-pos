@@ -165,7 +165,6 @@ export default function DashboarB2BPage() {
   const dashboard_company_filter = useMemo(() => {
     const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
     const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
-    console.log(selectedComapanies)
 
     return {
       limit: values?.limit || 15,

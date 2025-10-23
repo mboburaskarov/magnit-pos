@@ -349,6 +349,9 @@ export default function CartItem({
               fontWeight: '600',
               color: 'bunker.950',
             },
+            '& .Mui-focused': {
+              border: `1px solid ${theme.palette.orange[500]} !important`,
+            },
           }}
         >
           <InputQuantity
@@ -416,7 +419,7 @@ export default function CartItem({
       </TableCell>
       <TableCell sx={{ width: '90px' }}>
         <Box
-          sx={{
+          sx={(theme) => ({
             '& .MuiFormControl-root .MuiInputBase-root': {
               borderRadius: '6px !important',
               display: 'flex',
@@ -436,7 +439,10 @@ export default function CartItem({
               fontWeight: '500',
               color: 'bunker.950',
             },
-          }}
+            '& .Mui-focused': {
+              border: `1px solid ${theme.palette.orange[500]} !important`,
+            },
+          })}
         >
           <InputQuantity
             type='number'

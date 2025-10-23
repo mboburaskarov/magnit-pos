@@ -238,6 +238,7 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
                             setopenCreateBonusModal({
                               types: get(paymentTypeList, 'data.data', []),
                               sale_payment_id: pays.id,
+                              payment_type: get(saleDetailsList, `data.data`),
                               sale_id: get(open, 'id'),
                             })
                           }}

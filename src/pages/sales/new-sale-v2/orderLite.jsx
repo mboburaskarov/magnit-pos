@@ -890,6 +890,7 @@ function OrderLite({
             id='lite_cash_amount_soon'
             placeholder={t('Карта лояльности')}
             noMarginTop
+            readOnly={true}
             // disabled={true}
             required
             uncontrolled
@@ -1243,19 +1244,21 @@ function OrderLite({
       >
         <Box className='box-wrapper'>
           <Typography className='box-title'>Общая стоимость</Typography>
-          <Typography className='box-sum'>550 000 сум</Typography>
+          <Typography className='box-sum'>{thousandDivider(get(cartItemsList, 'sum'), 'сум')}</Typography>
         </Box>
         <Box className='box-wrapper'>
-          <Typography className='box-title'>Общая стоимость</Typography>
-          <Typography className='box-sum'>550 000 сум</Typography>
+          <Typography className='box-title'>Скидка</Typography>
+          <Typography className='box-sum'>{thousandDivider(get(cartItemsList, 'discount_amount'), 'сум')}</Typography>
         </Box>
         <Box className='box-wrapper'>
-          <Typography className='box-title'>Общая стоимость</Typography>
-          <Typography className='box-sum'>550 000 сум</Typography>
+          <Typography className='box-title'>Итого</Typography>
+          <Typography className='box-sum'>{thousandDivider(get(cartItemsList, 'total_amount'), 'сум')}</Typography>
         </Box>
         <Box className='box-wrapper'>
-          <Typography className='box-title'>Общая стоимость</Typography>
-          <Typography className='box-sum'>550 000 сум</Typography>
+          <Typography className='box-title'>Сдача</Typography>
+          <Typography className='box-sum'>
+            {get(cartItemsList, 'total_amount') === Math.abs(maxAmount) ? '0' : thousandDivider(Math.abs(maxAmount), 'сум')}
+          </Typography>
         </Box>
       </Box>
       <Box

@@ -13,6 +13,7 @@ function InputFormattedPriceWithTextField({
   noMarginTop,
   label,
   noLabel,
+  readOnly = false,
   placeholder,
   name,
   onInput,
@@ -65,13 +66,15 @@ function InputFormattedPriceWithTextField({
             id={id || name}
             value={value === 0 ? '' : value}
             onValueChange={({ floatValue }) => {
-              onChange(floatValue ?? '')
+              if (!readOnly) {
+                onChange(floatValue ?? '')
+              }
             }}
             customInput={InputSimple}
             thousandSeparator=' '
             isNumericString
             label={t(label)}
-            onKeyDown={onKeyDown}
+            onKeyDown={readOnly ? (e) => e.preventDefault() : onKeyDown}
             noLabel={noLabel}
             placeholder={t(placeholder)}
             fullWidth={fullWidth}
@@ -82,8 +85,9 @@ function InputFormattedPriceWithTextField({
             adornmentClassName={adornmentClassName}
             required={required}
             disabled={disabled}
+            readOnly={readOnly}
             asteriks={asteriks}
-            onInput={onInput}
+            onInput={readOnly ? (e) => e.preventDefault() : onInput}
             borderRadius={borderRadius}
             autoCompleteOff={autoCompleteOff}
             inputComponent={inputComponent}

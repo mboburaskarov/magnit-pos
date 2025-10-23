@@ -40,6 +40,9 @@ import BrandPlaceholderIcon from '../../../assets/icons/BrandPlaceholderIcon'
 import InputSwitchRadio from '../../../../components/Inputs/InputSwitchRadio'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
 import ShortcutBox from '../../../../components/ShortcutBox'
+import BonusProductTable from './bonusProductTable'
+import { requests } from '../../../../utils/requests'
+import { getDynamicBonusTableHeight } from '../../../../utils/calcDynamicBonusTableHeight.js'
 function CartDetailSide({
   setServiceType,
   setIsOpenBonusProductDrawer,
@@ -94,6 +97,10 @@ function CartDetailSide({
   const [collapsedSale, setCollapsedSale] = useState(false)
   const { id } = useParams()
   const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
+  const [bonusTableHeight, setBonusTableHeight] = useState(0)
+  useEffect(() => {
+    setBonusTableHeight(getDynamicBonusTableHeight(userData, get(customerId, 'name', false), dmedPrescriptionsList))
+  }, [customerId, dmedOrganizedList])
   const {
     data: sellerBonus,
     isLoading: sellerBonusLoading,
@@ -114,25 +121,27 @@ function CartDetailSide({
   const methods = useForm()
 
   const { control } = methods
-  const CustomButtonRow = ({ onClick, leftIcon, title, isLast = false }) => (
-    <Box
-      onClick={onClick}
-      sx={{
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingY: '12px',
-        borderBottom: isLast ? '1px solid' : 'none',
-        borderColor: 'bunker.100',
-      }}
-    >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {leftIcon}
-        <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>{title}</Typography>
+  const CustomButtonRow = ({ onClick, leftIcon, title, isLast = false, accessId = 'no-access' }) => (
+    <CheckAccess id={accessId}>
+      <Box
+        onClick={onClick}
+        sx={{
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingY: '12px',
+          borderBottom: isLast ? '1px solid' : 'none',
+          borderColor: 'bunker.100',
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {leftIcon}
+          <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>{title}</Typography>
+        </Box>
+        <RightArrow />
       </Box>
-      <RightArrow />
-    </Box>
+    </CheckAccess>
   )
   return (
     <Box
@@ -156,40 +165,55 @@ function CartDetailSide({
       </Box>
       <Box sx={{ padding: '8px 20px' }}>
         <CustomButtonRow
+          accessId='can-open-new-window'
           isLast={true}
           leftIcon={<MaximizeIcon />}
           title={'Открыть новое окно продаж'}
           onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })}
         />
-        <CustomButtonRow isLast={true} leftIcon={<TimeFast />} title={'Черновик / Отложки'} onClick={() => setIsOpenDraft(true)} />
-        <CustomButtonRow isLast={true} leftIcon={<ClearIcon />} title={'Отказ'} onClick={() => setIsOpenSendRejectedProduct(true)} />
-        <CustomButtonRow isLast={true} leftIcon={<ReturnExchangeIcon />} title={'Возврат / Обмен'} onClick={() => setIsOpenReturnExchange(true)} />
-
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingY: '12px',
-            borderBottom: '1px solid',
-            borderColor: 'bunker.100',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <ChequeIcon />
-            <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>EPOS</Typography>
-          </Box>
-          <CustomSwitch
-            onChange={() => {
-              setSendToEpos((prev) => !prev)
+        <CustomButtonRow
+          accessId='draft-and-pending-sales'
+          isLast={true}
+          leftIcon={<TimeFast />}
+          title={'Черновик / Отложки'}
+          onClick={() => setIsOpenDraft(true)}
+        />
+        <CustomButtonRow accessId='product-reject' isLast={true} leftIcon={<ClearIcon />} title={'Отказ'} onClick={() => setIsOpenSendRejectedProduct(true)} />
+        <CustomButtonRow
+          accessId='can-return-product'
+          isLast={true}
+          leftIcon={<ReturnExchangeIcon />}
+          title={'Возврат / Обмен'}
+          onClick={() => setIsOpenReturnExchange(true)}
+        />
+        <CheckAccess id={'can-disable-epos-cheque'}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingY: '12px',
+              borderBottom: '1px solid',
+              borderColor: 'bunker.100',
             }}
-            value={sendToEpos}
-            name='isActive'
-            defaultValue={true}
-            uncontrolled
-          />
-        </Box>
-        <CustomButtonRow leftIcon={<OnlineSaleNoorIcon />} title={'Онлайн-продажи (Noor)'} onClick={() => setIsOpenNoorDrawer(true)} />
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <ChequeIcon />
+              <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>EPOS</Typography>
+            </Box>
+            <CustomSwitch
+              onChange={() => {
+                setSendToEpos((prev) => !prev)
+              }}
+              value={sendToEpos}
+              name='isActive'
+              defaultValue={true}
+              uncontrolled
+            />
+          </Box>
+        </CheckAccess>
+
+        <CustomButtonRow accessId='noor-order' leftIcon={<OnlineSaleNoorIcon />} title={'Онлайн-продажи (Noor)'} onClick={() => setIsOpenNoorDrawer(true)} />
       </Box>
 
       <Box>
@@ -448,6 +472,15 @@ function CartDetailSide({
         </Box>
         <RightArrow color='#fff' />
       </Box>
+      <Box className={classes.cart_detail_id} mt={'12px'}>
+        <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
+          {t('Бонусные товары')}
+        </Typography>
+        <Typography sx={{ cursor: 'pointer' }} onClick={() => setIsOpenBonusProductDrawer(true)} color={'orange.500'} fontSize={'14px'} fontWeight={'600'}>
+          {t('Показать')}
+        </Typography>
+      </Box>
+      <BonusProductTable customerId={customerId} bonusTableHeight={bonusTableHeight} />
       {/* <CheckAccess id={'new-sale-discount'}>
         <Box onClick={() => setCollapseDiscount((p) => !p)} width={'100%'} display={'flex'} justifyContent={'space-between'}>
           <Label>{t('discount')}</Label>

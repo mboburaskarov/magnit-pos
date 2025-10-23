@@ -73,10 +73,11 @@ export default function ChangePaymentType({ open, refetch, setOpen }) {
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
             <SelectSimple
               id={'payment_type_id'}
-              options={paymentTypesList?.data?.data
-                ?.filter((type) => !open?.types?.map((type) => type?.payment_type?.id).includes(type?.id))
-                ?.flatMap((item) => ({ name: item?.name, value: item?.id }))}
-              required
+              options={open?.types?.filter((type) => {
+                console.log(type, open?.payment_type, open?.payment_type?.[type?.front_name])
+
+                return open?.payment_type?.[type?.front_name] == 0
+              })}
               menuPlacement='bottom'
               fullWidth
               label={'Оплата'}
