@@ -169,7 +169,7 @@ export default function TransferPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={'Возврат номер, наименование'} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'Перемещение номер, наименование'} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>

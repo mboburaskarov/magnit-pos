@@ -806,7 +806,7 @@ function OrderLite({
           </Typography>
         </Box>
       </Box> */}
-      <Box sx={{ width: '100%' }}>
+      <Box sx={{ width: '100%', minWidth: '320px' }}>
         <Box
           sx={{
             '& .MuiInputBase-root .MuiInputAdornment-root': {
@@ -1213,7 +1213,7 @@ function OrderLite({
       </Box>
       <Box
         sx={{
-          minWidth: '226px',
+          minWidth: '155px',
           padding: '12px 8px',
           bgcolor: 'white',
           borderRadius: '16px',

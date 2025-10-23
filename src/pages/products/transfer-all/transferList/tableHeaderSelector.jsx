@@ -101,39 +101,39 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
     if (el.field === 'store_name') {
       return {
         ...el,
-        headerName: 'До Аптека',
+        headerName: 'до Аптека',
         colId: el.field,
         cellRenderer: memo((p) => <Typography whiteSpace={'pre-wrap'}>{p.data?.to_store?.name}</Typography>),
       }
     }
-    if (el.field === 'created_by') {
-      return {
-        ...el,
-        headerName: 'Создал',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.created_by} type='full_name' />),
-      }
-    }
-    if (el.field === 'updated_by') {
-      return {
-        ...el,
-        headerName: 'Отправитель',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.updated_by} type='full_name' />),
-      }
-    }
-    if (el.field === 'accepted_by') {
-      return {
-        ...el,
-        headerName: 'Завершил',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.accepted_by} type='full_name' />),
-      }
-    }
+    // if (el.field === 'created_by') {
+    //   return {
+    //     ...el,
+    //     headerName: 'Создал',
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.created_by} type='full_name' />),
+    //   }
+    // }
+    // if (el.field === 'updated_by') {
+    //   return {
+    //     ...el,
+    //     headerName: 'Отправитель',
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.updated_by} type='full_name' />),
+    //   }
+    // }
+    // if (el.field === 'accepted_by') {
+    //   return {
+    //     ...el,
+    //     headerName: 'Завершил',
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.accepted_by} type='full_name' />),
+    //   }
+    // }
     if (el.field === 'from_store_name') {
       return {
         ...el,
-        headerName: 'От Аптека',
+        headerName: 'oт Аптека',
         colId: el.field,
         cellRenderer: memo((p) => <Typography whiteSpace={'pre-wrap'}>{p.data?.store?.name}</Typography>),
       }
@@ -378,18 +378,18 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
       }
     }
 
-    if (el.field === 'import_date') {
-      return {
-        ...el,
-        headerName: 'Завершение',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.['accepted_at'] ? dayjs(p.data?.['accepted_at']).format('DD.MM.YYYY HH:mm:ss') : '-'}</Typography>
-          </Box>
-        )),
-      }
-    }
+    // if (el.field === 'import_date') {
+    //   return {
+    //     ...el,
+    //     headerName: 'Завершение',
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => (
+    //       <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+    //         <Typography>{p.data?.['accepted_at'] ? dayjs(p.data?.['accepted_at']).format('DD.MM.YYYY HH:mm:ss') : '-'}</Typography>
+    //       </Box>
+    //     )),
+    //   }
+    // }
     if (el.field === 'accepted_amount') {
       return {
         ...el,
@@ -443,71 +443,71 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
       }
     }
 
-    if (el.field === 'received_count') {
-      return {
-        ...el,
-        headerName: 'Количество',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Недостачи'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'red.500',
-                  }}
-                >
-                  <LeftArrowIcon fill='transparent' color='#fff' />
-                </Box>
-              </StyledTooltip>
+    // if (el.field === 'received_count') {
+    //   return {
+    //     ...el,
+    //     headerName: 'Количество',
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => (
+    //       <>
+    //         <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+    //           <StyledTooltip title={'Недостачи'}>
+    //             <Box
+    //               sx={{
+    //                 display: 'flex',
+    //                 justifyContent: 'center',
+    //                 alignItems: 'center',
+    //                 width: '20px',
+    //                 height: '20px',
+    //                 borderRadius: '50%',
+    //                 bgcolor: 'red.500',
+    //               }}
+    //             >
+    //               <LeftArrowIcon fill='transparent' color='#fff' />
+    //             </Box>
+    //           </StyledTooltip>
 
-              <Box width={'10px'} />
+    //           <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={''} type={'received_count'} />
-            </Box>
-            <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Излишек'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'green.500',
-                  }}
-                >
-                  <ArrowRight color='#fff' />
-                </Box>
-              </StyledTooltip>
-              <Box width={'10px'} />
+    //           <SimpleText {...p} withDevider currency={''} type={'received_count'} />
+    //         </Box>
+    //         <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+    //           <StyledTooltip title={'Излишек'}>
+    //             <Box
+    //               sx={{
+    //                 display: 'flex',
+    //                 justifyContent: 'center',
+    //                 alignItems: 'center',
+    //                 width: '20px',
+    //                 height: '20px',
+    //                 borderRadius: '50%',
+    //                 bgcolor: 'green.500',
+    //               }}
+    //             >
+    //               <ArrowRight color='#fff' />
+    //             </Box>
+    //           </StyledTooltip>
+    //           <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={''} type={'accepted_count'} />
-            </Box>
-          </>
-        )),
-      }
-    }
+    //           <SimpleText {...p} withDevider currency={''} type={'accepted_count'} />
+    //         </Box>
+    //       </>
+    //     )),
+    //   }
+    // }
 
-    if (el.field === 'created_at') {
-      return {
-        ...el,
-        headerName: 'Создание',
-        colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
-          </Box>
-        )),
-      }
-    }
+    // if (el.field === 'created_at') {
+    //   return {
+    //     ...el,
+    //     headerName: 'Создание',
+    //     colId: el.field,
+    //     cellRenderer: memo((p) => (
+    //       <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+    //         <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
+    //       </Box>
+    //     )),
+    //   }
+    // }
     if (el.field === 'actions') {
       return {
         ...el,

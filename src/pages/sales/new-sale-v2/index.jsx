@@ -1,4 +1,4 @@
-import { Refresh } from '@mui/icons-material'
+import { Construction, Refresh } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, ListItem, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
@@ -178,7 +178,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   priceDetails: {
-    minWidth: '292px',
+    minWidth: '225px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -1277,45 +1277,54 @@ function NewSaleV2() {
 
                     <ArrowRightIcon disabled={size(get(cartItemsList, 'data.data.data'))} />
                   </Button>
-                  <Button
-                    sx={{
-                      borderRadius: '16px',
-                      mr: '4px',
-                      p: '12px',
-                      height: '44px',
-                      width: '100%',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      mt: '8px',
-                      '& svg': {
-                        flexShrink: 0,
-                      },
-                    }}
-                    disabled={true}
-                    // disabled={size(get(cartItemsList, 'data.data.data')) == 0}
-                    color='secondary'
-                    onClick={() => setIsCreateOpenDraft(true)}
-                  >
-                    {/* <TimeFast disabled={size(get(cartItemsList, 'data.data.data'))} /> */}
-                    <Typography ml={'8px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
-                      {t('draft')}
-                    </Typography>
-                    <Box
+                  <StyledTooltip title={'В доработке'}>
+                    <Button
                       sx={{
-                        bgcolor: '#0125FF',
-                        padding: '2px 8px',
-                        textAlign: 'center',
-                        borderRadius: '12px',
-                        mr: '8px',
+                        borderRadius: '16px',
+                        mr: '4px',
+                        p: '12px',
+                        height: '44px',
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        mt: '8px',
+                        '& svg': {
+                          flexShrink: 0,
+                        },
                       }}
+                      disabled={true}
+                      // disabled={size(get(cartItemsList, 'data.data.data')) == 0}
+                      color='secondary'
+                      onClick={() => setIsCreateOpenDraft(true)}
                     >
-                      <Typography
-                        sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600', color: '#fff !important', textAlign: 'center', m: '0 !important' }}
-                      >
-                        В доработке
+                      {/* <TimeFast disabled={size(get(cartItemsList, 'data.data.data'))} /> */}
+                      <Typography ml={'8px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
+                        {t('draft')}
                       </Typography>
-                    </Box>
-                  </Button>
+                      <Typography
+                        sx={{
+                          height: '24px',
+                          width: '24px',
+                          padding: '5px 10px',
+                          backgroundColor: 'orange.500',
+                          color: '#fff !important',
+                          fontSize: '10px',
+                          fontWeight: '600',
+                          borderRadius: '24px',
+                          display: 'flex',
+                          top: '9px',
+                          right: '10px',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          position: 'absolute',
+
+                          ml: '5px',
+                        }}
+                      >
+                        <Construction sx={{ color: 'white' }} />
+                      </Typography>
+                    </Button>
+                  </StyledTooltip>
                 </Box>
               </Box>
             </Box>

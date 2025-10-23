@@ -20,7 +20,7 @@ function WriteOffDashboard({ data }) {
         { title: 'Количество отпрафкий', value: 'accepted_count' },
         // { title: 'result' },
       ].map((stat) => (
-        <Grid sm='4' lg='4' md='4' item sx={{}}>
+        <Grid sm='3' lg='3' md='3' item sx={{}}>
           <Box
             sx={{
               backgroundColor: stat.title == 'result' ? 'bg.10' : 'bg.10',

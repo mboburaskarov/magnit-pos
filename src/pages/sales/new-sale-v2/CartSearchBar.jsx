@@ -20,6 +20,7 @@ import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
 import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
 import UnlockIcon from '../../../assets/icons/UnlockIcon'
 import SerchedItem from './SerchedItem'
+import RussianFlagIcon from '../../../assets/icons/RussianFlagIcon'
 const useStyles = makeStyles((theme) => ({
   avatar: {
     width: 30,
@@ -370,7 +371,7 @@ function CartSearchBar({
               (dmedPrescriptionsList.length == size(get(cartItemsList, 'data.data.data', 0)) && size(get(cartItemsList, 'data.data.data', 0) != 0))
             }
             style={{ zIndex: showOverlay ? 25 : 10 }}
-            sx={{ width: '100%', marginRight: '16px !important', height: '48px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
+            sx={{ width: '100%', marginRight: '16px !important', height: '40px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
             name='search'
             placeholder={'Поиск: товар, категория, штрих-код'}
             fullWidth
@@ -450,21 +451,20 @@ function CartSearchBar({
               }}
               sx={{
                 bgcolor: 'bg.10',
-                height: '48px',
-                width: '48px',
+                height: '40px',
+                width: '40px',
                 userSelect: 'none',
                 flexShrink: 0,
                 mr: '16px',
                 display: 'flex',
                 borderRadius: '50%',
-                pt: '5px',
                 alignItems: 'center',
                 justifyContent: 'center',
                 border: '2px solid transparent !important',
                 borderColor: inputlang == 'ru' ? '#fe5000 !important' : 'transparent',
               }}
             >
-              🇷🇺
+              <RussianFlagIcon />
             </Box>
           </StyledTooltip>
           <StyledTooltip title={'Закрыть кассу & Обмен сменами'}>
@@ -472,7 +472,7 @@ function CartSearchBar({
               id={'ff'}
               noArrow
               // ml={'16px'}
-              sx={{ height: '48px', width: 48, border: '1px solid transparent !important' }}
+              sx={{ height: '40px', width: 40, border: '1px solid transparent !important' }}
               noMarginSvg
               placement='bottom-end'
               onClick={() => refetch()}

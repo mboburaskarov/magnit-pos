@@ -169,24 +169,25 @@ const InputSearch = ({
                   </div>
                 ) : (
                   hasShortCut && (
-                    <Typography mr={'10px'} color={'bunker.300'} fontWeight={'600'} fontSize={'16px'} display={'flex'}>
-                      Нажмите
-                      <Box
-                        sx={{
-                          color: '#bdbdbd',
-                          border: '2px solid #cfcfcf',
-                          height: '24px',
-                          display: 'flex',
-                          padding: '2px',
-                          ml: '5px',
-                          minWidth: '24px',
-                          alignItems: 'center',
-                          borderRadius: '8px',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        /
-                      </Box>
+                    <Typography
+                      sx={{
+                        backgroundColor: '#fff',
+                        color: '#bdbdbd',
+                        border: '1px solid #cfcfcf',
+                        height: '20px',
+                        mr: '16px',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        lineHeight: '16px',
+                        display: 'flex',
+                        ml: '5px',
+                        width: '20px',
+                        alignItems: 'center',
+                        borderRadius: '4px',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      /
                     </Typography>
                   )
                 )}

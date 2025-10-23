@@ -11,7 +11,7 @@ const columns = [
     field: 'public_id',
     hide: false,
     minWidth: 60,
-    width: 200,
+    width: 110,
   },
 
   {
@@ -32,12 +32,12 @@ const columns = [
     minWidth: 70,
     width: 250,
   },
-  {
-    field: 'received_count',
-    hide: false,
-    minWidth: 70,
-    width: 170,
-  },
+  // {
+  //   field: 'received_count',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 170,
+  // },
   {
     field: 'retail_price',
     hide: false,
@@ -57,36 +57,36 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
-  {
-    field: 'created_by',
-    hide: false,
-    minWidth: 70,
-    width: 300,
-  },
-  {
-    field: 'updated_by',
-    hide: false,
-    minWidth: 70,
-    width: 300,
-  },
-  {
-    field: 'accepted_by',
-    hide: false,
-    minWidth: 70,
-    width: 300,
-  },
-  {
-    field: 'created_at',
-    hide: false,
-    minWidth: 70,
-    width: 250,
-  },
-  {
-    field: 'import_date',
-    hide: false,
-    minWidth: 70,
-    width: 250,
-  },
+  // {
+  //   field: 'created_by',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 300,
+  // },
+  // {
+  //   field: 'updated_by',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 300,
+  // },
+  // {
+  //   field: 'accepted_by',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 300,
+  // },
+  // {
+  //   field: 'created_at',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 250,
+  // },
+  // {
+  //   field: 'import_date',
+  //   hide: false,
+  //   minWidth: 70,
+  //   width: 250,
+  // },
   {
     field: 'actions',
     hide: false,

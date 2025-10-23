@@ -46,6 +46,10 @@ export default function TransferSentScanWithCheckingPage() {
     },
     onError: (err) => {
       refetch()
+      if (get(err, 'response.data.data').includes('expected_count')) {
+        error('Вы добавили больше, чем в астатке.')
+        return
+      }
 
       error('Ошибка при сканирование!')
     },
