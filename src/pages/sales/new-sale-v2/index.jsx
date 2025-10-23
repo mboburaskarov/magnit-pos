@@ -1249,11 +1249,13 @@ function NewSaleV2() {
                     color='secondary'
                     sx={{
                       display: 'flex',
+                      flexShrink: 0,
                       justifyContent: 'space-between',
                       borderRadius: '16px',
                       p: '12px',
+                      mb: '8px',
                       width: '100%',
-                      height: '44px',
+                      height: '44px !important',
                       borderColor: 'orange.500',
                       '& svg > path': {
                         stroke: '#fe5000',
@@ -1281,13 +1283,12 @@ function NewSaleV2() {
                     <Button
                       sx={{
                         borderRadius: '16px',
-                        mr: '4px',
                         p: '12px',
                         height: '44px',
                         width: '100%',
                         display: 'flex',
                         justifyContent: 'space-between',
-                        mt: '8px',
+                        // mt: '8px',
                         '& svg': {
                           flexShrink: 0,
                         },

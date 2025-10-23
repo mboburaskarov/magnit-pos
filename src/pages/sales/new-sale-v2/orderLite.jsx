@@ -1214,6 +1214,8 @@ function OrderLite({
       <Box
         sx={{
           minWidth: '155px',
+          width: '100%',
+          maxWidth: '226px',
           padding: '12px 8px',
           bgcolor: 'white',
           borderRadius: '16px',
