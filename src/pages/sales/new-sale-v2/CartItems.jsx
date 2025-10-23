@@ -79,7 +79,7 @@ export default function CartItems({
         <Box className='table-cell' sx={{ textAlign: 'left !important', width: '150px' }}>
           Цена
         </Box>
-        <Box className='table-cell' sx={{ textAlign: 'left !important', width: '40px' }}></Box>
+        <Box className='table-cell' sx={{ textAlign: 'left !important', width: '40px', borderTopRightRadius: '6px', borderBottomRightRadius: '6px' }}></Box>
       </Box>
       <Box
         sx={{
