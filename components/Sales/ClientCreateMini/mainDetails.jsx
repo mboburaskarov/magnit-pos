@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Button, Grid, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import dayjs from 'dayjs'
 import React, { useEffect } from 'react'
@@ -169,6 +169,32 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
             }}
             // filterOption={() => true}
           />
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2}>
+        <Grid mt={'25px'} item xs={6}>
+          <Typography className={classes.required} mb='4px'>
+            {t('client_name')}
+          </Typography>
+
+          <TextField
+            id='client-name'
+            name='first_name'
+            control={control}
+            fullWidth
+            error={errors?.first_name}
+            placeholder={t('client_name.placeholder')}
+            required
+            defaultValue={quickCreateClientName || clientData?.name || ''}
+            asteriks
+          />
+        </Grid>
+        <Grid sx={{ mt: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} gap={'8px'} item xs={6}>
+          <Button sx={{ height: '48px', width: '100%' }} color='secondary'>
+            Отменить
+          </Button>
+          <Button sx={{ height: '48px', width: '100%' }}>Подтвердить</Button>
         </Grid>
       </Grid>
     </Box>
