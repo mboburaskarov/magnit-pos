@@ -2,7 +2,7 @@ import { useTheme } from '@mui/styles'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useInfiniteQuery } from 'react-query'
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
 import { Box, Grid, Typography, CircularProgress } from '@mui/material'
@@ -30,8 +30,8 @@ export default function TransferDetailModal({ open, refetch, setOpen }) {
     {
       enabled: !!open,
       getNextPageParam: (lastPage, allPages) => {
-        const totalLoaded = allPages.reduce((acc, page) => acc + get(page, 'data.data', []).length, 0)
-        const totalCount = get(lastPage, 'data.total', 0)
+        const totalLoaded = allPages.reduce((acc, page) => acc + get(page, 'data.data.data', []).length, 0)
+        const totalCount = get(lastPage, 'data.data._meta.total_count', 0)
 
         return totalLoaded < totalCount ? totalLoaded : undefined
       },
@@ -49,8 +49,8 @@ export default function TransferDetailModal({ open, refetch, setOpen }) {
     [fetchNextPage, hasNextPage, isFetchingNextPage]
   )
 
-  // Set up observer
-  useCallback(() => {
+  // Set up observer with useEffect
+  useEffect(() => {
     const element = observerTarget.current
     const option = { threshold: 0 }
     const observer = new IntersectionObserver(handleObserver, option)
@@ -60,10 +60,10 @@ export default function TransferDetailModal({ open, refetch, setOpen }) {
     return () => {
       if (element) observer.unobserve(element)
     }
-  }, [handleObserver, observerTarget])()
+  }, [handleObserver])
 
   // Flatten all pages data
-  const allItems = data?.pages?.flatMap((page) => get(page, 'data.data', [])) || []
+  const allItems = data?.pages?.flatMap((page) => get(page, 'data.data.data', [])) || []
 
   return (
     <StyledEmptyDialog
@@ -133,17 +133,14 @@ export default function TransferDetailModal({ open, refetch, setOpen }) {
                 </Grid>
               </Box>
             ))}
-
             {/* Observer target for infinite scroll */}
-            <div ref={observerTarget} />
-
+            <Box ref={observerTarget} sx={{ height: '20px' }} />
             {/* Loading indicator for next page */}
             {isFetchingNextPage && (
               <Box sx={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
                 <CircularProgress size={30} />
               </Box>
             )}
-
             {/* No more data message */}
             {!hasNextPage && allItems.length > 0 && (
               <Box sx={{ textAlign: 'center', padding: '20px', color: 'text.secondary' }}>
