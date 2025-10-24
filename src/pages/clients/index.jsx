@@ -52,6 +52,7 @@ export default function ClientsPage() {
     t,
     values,
     setImages: setOpenImageGallery,
+    setOpenClientCreateMini,
     setOpenConfirmDialog,
     selectClientsFunc,
   })
@@ -143,7 +144,6 @@ export default function ClientsPage() {
             >
               <InputSearch id='producrs-search' name='search' placeholder={'ID, Имя, Телефон'} uncontrolled />
             </Box>
-
             <Box minWidth={113} ml={'16px'}>
               <Button
                 sx={{
@@ -170,6 +170,7 @@ export default function ClientsPage() {
                 </Typography>
               </Button>
             </Box>
+
             {selectClients.length > 0 && (
               <>
                 <Box minWidth={48} ml={'16px'}>

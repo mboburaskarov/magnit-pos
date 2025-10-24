@@ -5,6 +5,7 @@ import { formatPhoneNumber } from '../../../utils/formatPhoneNumber'
 import thousandDivider from '../../../utils/thousandDivider'
 import { formatDate } from '../../../utils/validateDate'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
+import EditIcon from '../../assets/icons/EditIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -14,7 +15,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ clientsColumns, values, selectClientsFunc, t, setOpenConfirmDialog }) {
+export default function tableHeaderSelector({ clientsColumns, values, selectClientsFunc, t, setOpenConfirmDialog, setOpenClientCreateMini }) {
   const columns = clientsColumns?.map((el) => {
     if (el.field === 'number') {
       return {
@@ -152,7 +153,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
       }
     }
 
-    if (el.field === 'actions') {
+    if (el.field === 'action') {
       return {
         ...el,
         headerName: t('table_columns.actions'),
@@ -161,6 +162,9 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
           <Box display='inline-flex' columnGap={'8px'}>
             <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
               <DeleteIcon />
+            </IconButton>
+            <IconButton onClick={() => setOpenClientCreateMini({ type: 'edit', data })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+              <EditIcon />
             </IconButton>
           </Box>
         )),

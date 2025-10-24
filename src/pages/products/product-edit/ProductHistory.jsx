@@ -10,6 +10,7 @@ import { requests } from '../../../../utils/requests'
 import thousandDivider from '../../../../utils/thousandDivider'
 import { error } from '../../../../utils/toast'
 import { useQueryParams } from '../../../hooks/useQueryParams'
+import TransferDetailModal from './transferDetailModal'
 
 export default function ProductHistory({ id }) {
   const { values } = useQueryParams()
@@ -71,7 +72,8 @@ export default function ProductHistory({ id }) {
               } else if (type == '8') {
                 navigate(`/sales/all-sales?limit=10&offset=0&search=${get(data, 'public_id')}&sale_id=${get(data, 'id')}`)
               } else if (type == '6') {
-                navigate(`/products/transfer-completed/${get(data, 'id')}`)
+                setModal(data)
+                // navigate(`/products/transfer-completed/${get(data, 'id')}`)
               } else if (type == '5') {
                 navigate(`/products/return-to-warehouse-completed/${get(data, 'id')}`)
               } else if (type == '3') {
@@ -157,6 +159,7 @@ export default function ProductHistory({ id }) {
       error('Ошибка при скачать excel!')
     },
   })
+  const [oepnModal, setModal] = useState()
   return (
     <Box mt={'16px'}>
       <AgGridTable
@@ -174,6 +177,7 @@ export default function ProductHistory({ id }) {
         offsetCount={offsetCount}
         defaultOffsetSize={5}
       />
+      <TransferDetailModal open={oepnModal} setOpen={setModal} />
     </Box>
   )
 }

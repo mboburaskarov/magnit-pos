@@ -79,6 +79,12 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
+  {
+    field: 'action',
+    hide: false,
+    minWidth: 90,
+    width: 90,
+  },
 ]
 
 const clientTableColumns = createSlice({

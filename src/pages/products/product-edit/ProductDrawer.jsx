@@ -197,6 +197,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         bgcolor={'#fff'}
         position={'fixed'}
         bottom={'0'}
+        zIndex={9999}
         p={'20px 40px'}
         columnGap={2}
         width='1000px'

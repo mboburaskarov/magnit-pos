@@ -49,8 +49,16 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
   const userData = useSelector((state) => state.user)
 
   useEffect(() => {
+    console.log(openDrawer)
+
     methods.register('dial_code')
-  }, [])
+    methods.setValue('loyalty_card_barcode', get(openDrawer, 'data.loyalty_card_barcode'))
+    methods.setValue('first_name', get(openDrawer, 'data.first_name'))
+    methods.setValue('last_name', get(openDrawer, 'data.last_name'))
+    methods.setValue('date_of_birth', new Date(get(openDrawer, 'data.birthday', null)))
+    methods.setValue('gender', get(openDrawer, 'data.gender'))
+    methods.setValue('phone', get(openDrawer, 'data.phone', '').split('998')[1])
+  }, [openDrawer])
 
   useDidUpdate(() => {
     if (clientData) {
@@ -93,6 +101,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       store_id: get(userData, 'store.id'),
       phone: '998' + data?.phone?.replace(/[()\s]/g, ''),
       tag_id: data?.tags?.value,
+      loyalty_card_barcode: data?.loyalty_card_barcode,
     }
     handleCustomerCreate(requestBody)
   }
@@ -107,7 +116,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       <Box height={'100%'}>
         <Box className={classes.header}>
           <Typography variant='h4' className={classes.title}>
-            {t('menu.clients.new_client')}
+            {get(openDrawer, 'type') == 'edit' ? 'Изменить клиент' : t('menu.clients.new_client')}
           </Typography>
           <CloseIcon color={theme.palette.black} onClick={() => closeDrawer(false)} />
         </Box>
@@ -118,7 +127,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
                 padding: '0 24px',
               }}
             >
-              <MainDetails quickCreateClientName={quickCreateClientName} clientData={clientData} />
+              <MainDetails quickCreateClientName={quickCreateClientName} clientData={clientData} openDrawer={openDrawer} />
             </Box>
             <Box
               width={196}
@@ -132,7 +141,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
               }}
             >
               <Button primary fullWidth size='small' style={{ borderRadius: 16 }} isLoading={isCreateCustomer} form='create-client-form-mini' type='submit'>
-                {t('create')}
+                {get(openDrawer, 'type') == 'edit' ? t('Изменить') : t('create')}
               </Button>
             </Box>
           </form>

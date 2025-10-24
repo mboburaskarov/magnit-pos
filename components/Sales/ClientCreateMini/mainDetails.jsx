@@ -10,6 +10,10 @@ import InputSwitchNew from '../../Inputs/InputSwitch'
 import InputPhone from '../../Inputs/PhoneNumber'
 import TextField from '../../Inputs/TextField'
 import LazySelect from '../../Select/LazySelect'
+import { get } from 'lodash'
+import BrandPlaceholderIcon from '../../../src/assets/icons/BrandPlaceholderIcon'
+import BrandCardIcon from '../../../src/assets/icons/BrandCardIcon'
+import thousandDivider from '../../../utils/thousandDivider'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -32,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function MainDetails({ quickCreateClientName, clientData }) {
+export default function MainDetails({ quickCreateClientName, clientData, openDrawer }) {
   const classes = useStyles()
   const { control, errors, setValue, register, watch } = useFormContext()
   const { t } = useTranslation()
@@ -174,28 +178,48 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
 
       <Grid container spacing={2}>
         <Grid mt={'25px'} item xs={6}>
-          <Typography className={classes.required} mb='4px'>
-            {t('client_name')}
-          </Typography>
+          {get(openDrawer, 'data.loyalty_card_barcode', false) ? (
+            <Box
+              sx={{
+                padding: '20px',
+                height: '160px',
+                borderRadius: '16px',
+                background: 'linear-gradient(147.13deg, #2558FF 3.88%, #0028FF 73.63%)',
+              }}
+            >
+              <BrandCardIcon />
+              <Box mt={'28px'}>
+                <Typography sx={{ fontSize: '14px', fontWeight: '500', lineHeight: '20px', color: '#AFD5FF' }}>Карта лояльности</Typography>
+                <Typography sx={{ fontSize: '28px', fontWeight: '700', lineHeight: '40px', color: 'white' }}>
+                  {thousandDivider(get(openDrawer, 'data.balance', 0), 'сум')}{' '}
+                </Typography>
+              </Box>
+            </Box>
+          ) : (
+            <>
+              <Typography className={classes.required} mb='4px'>
+                {t('Лояльность карта')}
+              </Typography>
 
-          <TextField
-            id='client-name'
-            name='first_name'
-            control={control}
-            fullWidth
-            error={errors?.first_name}
-            placeholder={t('client_name.placeholder')}
-            required
-            defaultValue={quickCreateClientName || clientData?.name || ''}
-            asteriks
-          />
+              <TextField
+                id='loyalty_card_barcode'
+                name='loyalty_card_barcode'
+                control={control}
+                fullWidth
+                error={errors?.loyalty_card_barcode}
+                placeholder={t('Введите номер карты')}
+                defaultValue={clientData?.loyalty_card_barcode || ''}
+                asteriks
+              />
+            </>
+          )}
         </Grid>
-        <Grid sx={{ mt: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} gap={'8px'} item xs={6}>
+        {/* <Grid sx={{ mt: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} gap={'8px'} item xs={6}>
           <Button sx={{ height: '48px', width: '100%' }} color='secondary'>
             Отменить
           </Button>
           <Button sx={{ height: '48px', width: '100%' }}>Подтвердить</Button>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Box>
   )

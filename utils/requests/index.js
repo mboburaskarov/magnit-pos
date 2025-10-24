@@ -318,6 +318,8 @@ export const requests = {
   getProductsExcelReportForAA: (filter) => requestEXCEL.get(`v1/product/export-arzon${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getSingleProduct: ({ id, ...filter }) => request.get(`v1/product/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getTransferLogs: ({ id, ...filter }) => request.get(`v1/transfer/logs/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   getSingleProductMovement: (filter, id) => request.get(`v1/product/${id}/product-movement${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleProductMovementExcel: ({ id, ...filter }) =>
     requestEXCEL.get(`v1/product/${id}/product-movement/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
