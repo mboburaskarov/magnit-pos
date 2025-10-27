@@ -248,7 +248,7 @@ export default function TransferSentScanWithCheckingPage() {
                 setOpenFinishConfirmDialog(false)
                 finishWriteOffChecking(id)
               }}
-              isLoading={isfinishTransferChecking}
+              isLoading={transferWithCheckingDetailsLoading}
             >
               {t('buttons.yes_complete')}
             </Button>
