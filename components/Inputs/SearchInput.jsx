@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiOutlinedInput-input': {
       padding: '15.5px 5px',
     },
+    '& .MuiOutlinedInput-root': {
+      padding: '4px 4px 4px 10px !important',
+    },
     '& .Mui-error:not(.Mui-focused)': {
       border: `3px solid ${theme.palette.red[500]}`,
     },
@@ -149,7 +152,7 @@ const SearchInput = ({
         disabled={disabled}
         {...(!noIcon && {
           InputProps: {
-            startAdornment: <InputAdornment position='start'>{client ? <UserFilledIcon /> : icon || <SearchIcon />}</InputAdornment>,
+            startAdornment: <InputAdornment position='start'>{client ? <UserFilledIcon /> : icon || <SearchIcon color='#868FAA' />}</InputAdornment>,
             endAdornment: (
               <InputAdornment position='end'>
                 {value || searchTerm ? (

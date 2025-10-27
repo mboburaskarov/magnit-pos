@@ -72,6 +72,7 @@ export default function DashboardTopsBox({
           justifyContent: 'space-between',
           flexDirection: 'column',
           position: 'relative',
+          minHeight: '200px',
         }}
       >
         <TableContainer px={'20px'}>

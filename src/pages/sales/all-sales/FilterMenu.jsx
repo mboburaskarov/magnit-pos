@@ -129,6 +129,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
         sx={{
           width: '100%',
           padding: '24px',
+          overflow: 'auto',
           '& .MuiInputBase-root': {
             border: `2px solid`,
             borderColor: 'bunker.100',

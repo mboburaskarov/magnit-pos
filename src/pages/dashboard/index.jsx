@@ -44,6 +44,7 @@ import LeftArrowIcon from '../../assets/icons/LeftArrow'
 import RightArrowRound from '../../assets/icons/dashboard/RightArrowRound'
 import RightArrowIcon from '../../assets/icons/RightArrowIcon'
 import HomeSetting from '../../assets/icons/dashboard/HomeSetting'
+import { paymentTypes } from '../../../constants/paymentTypes'
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
   const { type } = useSelector((state) => state.user)
@@ -256,6 +257,12 @@ export default function DashboarPage() {
       })),
     [chartData, dashboard_filter]
   )
+  const regenerated = paymentTypes.map((p) => ({
+    ...p,
+    name: p?.title,
+    count: payments?.data?.data?.[`${p.prop}_count`],
+    amount: payments?.data?.data?.[p.prop] ?? 0,
+  }))
 
   return (
     <LoadingContainer readyState={true}>
@@ -373,9 +380,9 @@ export default function DashboarPage() {
               <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={2}>
                 <DashboardTopsBox
                   id='dashboard-chart'
-                  data={get(payments, 'data.data')}
+                  data={regenerated}
                   title={'Платежи'}
-                  subTitle={thousandDivider(Math.round(get(payments, 'data.data', [])?.reduce((a, b) => a + b.amount, 0)), 'сум')}
+                  subTitle={thousandDivider(Math.round(regenerated.reduce((a, b) => a + b.amount, 0)), 'сум')}
                   tableData={[
                     { title: 'Тип Платежи	', colId: 'name' },
                     { title: 'Кол-во', colId: 'count', sortable: true },

@@ -42,6 +42,7 @@ export default function CartItems({
         sx={{
           display: 'flex',
           width: '100%',
+          padding: '2px 0',
           '& .table-cell': {
             border: 'none',
             bgcolor: 'bg.10',

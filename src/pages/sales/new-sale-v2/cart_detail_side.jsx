@@ -254,7 +254,6 @@ function CartDetailSide({
               adornment={
                 <Box
                   sx={{
-                    mr: '4px',
                     bgcolor: 'orange.500',
                     display: 'flex',
                     height: '32px',
@@ -278,8 +277,8 @@ function CartDetailSide({
                       textAlign: 'center',
                       borderRadius: '12px',
                       mr: '8px',
-                      top: '-12px',
-                      right: '-15px',
+                      top: '-10px',
+                      right: '-24px',
                     }}
                   >
                     <Typography
@@ -291,7 +290,6 @@ function CartDetailSide({
                 </Box>
               }
               setSearchTerm={setSearchTerm}
-              client
               error={!!searchTerm && searchTerm?.length < 3}
             />
           )}

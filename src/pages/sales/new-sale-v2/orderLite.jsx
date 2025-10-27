@@ -858,7 +858,7 @@ function OrderLite({
             type='number'
             adornment={
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 16px' }}>
-                <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>сум</Typography>
+                <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600', mx: '8px' }}>сум</Typography>
                 <ShortcutBox minWidth='27px' shortcut='N' height='20px' color='#D5D7E2' />
               </Box>
             }
@@ -911,7 +911,6 @@ function OrderLite({
                     height: '20px',
                     textAlign: 'center',
                     borderRadius: '12px',
-                    mr: '8px',
                   }}
                 >
                   <Typography
@@ -920,7 +919,7 @@ function OrderLite({
                     soon
                   </Typography>
                 </Box>
-                <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>сум</Typography>
+                <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600', mx: '8px' }}>сум</Typography>
                 <ShortcutBox minWidth='27px' shortcut='L' height='20px' color='#D5D7E2' />
               </Box>
             }
@@ -1215,8 +1214,8 @@ function OrderLite({
         sx={{
           minWidth: '155px',
           width: '100%',
-          maxWidth: '226px',
-          padding: '12px 8px',
+          maxWidth: '380px',
+          padding: '8px 12px',
           bgcolor: 'white',
           borderRadius: '16px',
           display: 'flex',

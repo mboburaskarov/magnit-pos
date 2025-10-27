@@ -7,6 +7,7 @@ import SortUpIcon from '../../../assets/icons/dashboard/SortUpIcon'
 import SortDownIcon from '../../../assets/icons/dashboard/SortDownIcon'
 import SortIcon from '../../../assets/icons/dashboard/SortIcon'
 import thousandDivider from '../../../../utils/thousandDivider'
+import { useWindowHeight } from '../../../hooks/useWindowHeight'
 
 const BonusTableRow = ({ item, product }) => (
   <TableRow
@@ -99,10 +100,12 @@ function BonusProductTable({ customerId, bonusTableHeight }) {
   // Flatten all pages data
   const allProducts = data?.pages.flatMap((page) => get(page, 'data.data.data', [])) || []
   console.log(bonusTableHeight)
+  const maxHeight = useWindowHeight()
+  console.log('maxHeight', maxHeight)
 
   return (
     <Box sx={{ padding: '0 20px', mt: '12px' }}>
-      <TableContainer sx={{ maxHeight: `${165 + bonusTableHeight}px`, overflowY: 'auto' }}>
+      <TableContainer sx={{ maxHeight: `${maxHeight - 800 + bonusTableHeight}px`, overflowY: 'auto' }}>
         <Table>
           <TableHead
             sx={{

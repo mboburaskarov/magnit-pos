@@ -1032,7 +1032,7 @@ function NewSaleV2() {
                 }}
               >
                 <Box display={'flex'} alignItems={'center'}>
-                  <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
+                  <Typography fontWeight={'700'} fontSize={'24px'} lineHeight={'32px'}>
                     {t('menu.orders.new_order.heading')}
                   </Typography>
                   {get(cartItemsList, 'data.data.data', 0)?.length ? (
@@ -1040,11 +1040,14 @@ function NewSaleV2() {
                       <Box
                         display={'flex'}
                         sx={{ cursor: 'pointer', ml: '16px', backgroundColor: 'bg.10', p: '6px 19px', borderRadius: '40px' }}
-                        height={'48px'}
+                        height={'44px'}
                         alignItems={'center'}
                         onClick={() => setOpenConfirmDialog({ type: 'deleteAll' })}
                       >
-                        <Typography onClick={() => setIsOpenOrganizeDmedOrderDialog(true)} sx={{ mr: '12px', mt: '3px', fontSize: '22px', fontWeight: '600' }}>
+                        <Typography
+                          onClick={() => setIsOpenOrganizeDmedOrderDialog(true)}
+                          sx={{ mr: '12px', mt: '3px', fontSize: '20px', lineHeight: '32px', fontWeight: '600' }}
+                        >
                           {size(get(cartItemsList, 'data.data.data', 0))}
                         </Typography>
                         <DeleteIcon width={'20px'} />
@@ -1061,16 +1064,16 @@ function NewSaleV2() {
                     sx={{
                       cursor: 'pointer',
                       ml: '16px',
-                      height: '48px',
+                      height: '44px',
+                      width: '44px',
                       display: 'flex',
                       alignItems: 'center',
                       backgroundColor: 'bg.10',
-                      p: '6px 19px',
                       borderRadius: '40px',
                       svg: {
                         width: '23px',
                         height: '23px',
-                        fill: '#fe5000',
+                        fill: '#000',
                       },
                     }}
                   >

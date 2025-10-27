@@ -1,25 +1,23 @@
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import React from 'react'
 
-function ShortcutBox({ className = 'shortcutbox', color = '#fff', shortcut = 'XX', height = '34px', minWidth = '34px' }) {
+function ShortcutBox({ className = 'shortcutbox', color = '#FFCEA8', shortcut = 'XX', height = '34px', minWidth = '28px' }) {
   return (
     <Box
       className={className}
       sx={{
-        color: color,
-        border: `2px solid ${color}`,
+        border: `1px solid ${color}`,
         height: height,
         display: 'flex',
+
         padding: '2px',
-        fontSize: '12px',
         minWidth: minWidth,
-        lineHeight: '16px',
         alignItems: 'center',
-        borderRadius: '8px',
+        borderRadius: '4px',
         justifyContent: 'center',
       }}
     >
-      {shortcut}
+      <Typography sx={{ fontWeight: '500', fontSize: '12px', lineHeight: '16px', color: '#fff' }}>{shortcut}</Typography>
     </Box>
   )
 }

@@ -349,7 +349,7 @@ export default function CartItem({
               fontWeight: '600',
               color: 'bunker.950',
             },
-            '& .Mui-focused': {
+            '& .MuiFormControl-root > .MuiOutlinedInput-root.Mui-focused': {
               border: `1px solid ${theme.palette.orange[500]} !important`,
             },
           }}
@@ -439,7 +439,7 @@ export default function CartItem({
               fontWeight: '500',
               color: 'bunker.950',
             },
-            '& .Mui-focused': {
+            '& .MuiFormControl-root > .MuiOutlinedInput-root.Mui-focused': {
               border: `1px solid ${theme.palette.orange[500]} !important`,
             },
           })}
