@@ -24,6 +24,7 @@ import thousandDivider from '../../../utils/thousandDivider'
 import OrdersIcon from '../../assets/icons/OrdersIcon'
 import ProductsIcon from '../../assets/icons/ProductsIcon'
 import RevenueIcon from '../../assets/icons/RevenueIcon'
+import { paymentTypes } from '../../../constants/paymentTypes'
 import VendorsIcon from '../../assets/icons/VendorsIcon'
 import MoneyArrowDown from '../../assets/icons/dashboard/MoneyArrowDown'
 import { useQueryParams } from '../../hooks/useQueryParams'
@@ -253,6 +254,12 @@ export default function DashboarPage() {
     [chartData, dashboard_filter]
   )
 
+  const regenerated = paymentTypes.map((p) => ({
+    ...p,
+    name: p?.title,
+    count: payments?.data?.data?.[`${p.prop}_count`],
+    amount: payments?.data?.data?.[p.prop] ?? 0,
+  }))
   return (
     <LoadingContainer readyState={true}>
       <DashboardHeader setSelectedShops={setSelectedShops} selectedShops={selectedShops} />
@@ -348,9 +355,9 @@ export default function DashboarPage() {
             <Box justifyContent={'stretch'} mt={4} columnGap={3} display='flex'>
               <DashboardTopsBox
                 id='dashboard-chart'
-                data={get(payments, 'data.data')}
+                data={regenerated}
                 title={'Платежи'}
-                subTitle={thousandDivider(Math.round(get(payments, 'data.data', [])?.reduce((a, b) => a + b.amount, 0)), 'сум')}
+                subTitle={thousandDivider(Math.round(regenerated.reduce((a, b) => a + b.amount, 0)), 'сум')}
                 tableData={[
                   { title: 'Тип Платежи	', colId: 'name' },
                   { title: 'Кол-во', colId: 'count', sortable: true },

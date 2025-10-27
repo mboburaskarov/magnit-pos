@@ -25,6 +25,7 @@ export default function DashboardTopsBox({ data, title, tableData, subTitle, hre
         backgroundColor: 'white',
         width: '100%',
         position: 'relative',
+        minHeight: '200px',
       }}
     >
       <Box display='flex' justifyContent='space-between' alignItems='center' mb={'8px'}>
