@@ -48,6 +48,8 @@ import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import TimeFast from '../../../assets/icons/TimeFast'
 import ShortcutBox from '../../../../components/ShortcutBox'
+import RefreshIcon from '../../../assets/icons/RefreshIcon'
+import EmptyCartItemIcon from '../../../assets/icons/EmptyCartItemIcon'
 const useStyles = makeStyles((theme) => ({
   currentUser: {
     // minWidth: '120px',
@@ -147,14 +149,14 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   empty_list: {
-    border: `1px dashed ${theme.palette.bunker[300]}`,
+    // border: `1px dashed ${theme.palette.bunker[300]}`,
     display: 'flex',
     borderRadius: '16px',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     padding: '80px 64px',
-    marginTop: '16px',
+    // marginTop: '16px',
     backgroundColor: `${theme.palette.bg[10]}`,
   },
 
@@ -765,6 +767,26 @@ function NewSaleV2() {
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
+  useHotkeys(
+    'F10',
+    () => {
+      if (dmedPrescriptionsList.length && dmedOrganizedList.length != size(get(cartItemsList, 'data.data.data'))) {
+        setIsOpenOrganizeDmedOrderDialog(true)
+        return
+      }
+      if (isAllMarkingFill() || !sendToEpos) {
+        setLiteOrder(true)
+      } else {
+        setLiteOrder(false)
+        setIsOpenImplementMarkingDialog({ mode: 'lite' })
+      }
+    },
+    {
+      preventDefault: true,
+      enableOnFormTags: true,
+      enableOnTags: ['INPUT', 'TEXTAREA'],
+    }
+  )
 
   const [debouncedDiscount, setDebouncedDiscount] = useState('')
 
@@ -1056,29 +1078,27 @@ function NewSaleV2() {
                   ) : (
                     <></>
                   )}
-                  <Box
-                    onClick={() => {
-                      refetchcartItemsList()
-                      setHasChange(true)
-                    }}
-                    sx={{
-                      cursor: 'pointer',
-                      ml: '16px',
-                      height: '44px',
-                      width: '44px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      backgroundColor: 'bg.10',
-                      borderRadius: '40px',
-                      svg: {
-                        width: '23px',
-                        height: '23px',
-                        fill: '#000',
-                      },
-                    }}
-                  >
-                    <Refresh />
-                  </Box>
+                  <StyledTooltip title={'Печать нетоварного чека'}>
+                    <Box
+                      onClick={() => {
+                        refetchcartItemsList()
+                        setHasChange(true)
+                      }}
+                      sx={{
+                        cursor: 'pointer',
+                        ml: '16px',
+                        height: '44px',
+                        width: '44px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'bg.10',
+                        borderRadius: '40px',
+                      }}
+                    >
+                      <RefreshIcon />
+                    </Box>
+                  </StyledTooltip>
                 </Box>
                 <Box
                   onClick={() => {
@@ -1110,10 +1130,11 @@ function NewSaleV2() {
                     }}
                   >
                     <Box className={classes.empty_list}>
-                      <Typography fontWeight={'800'} fontSize={'24px'} lineHeight={'32px'}>
+                      <EmptyCartItemIcon />
+                      <Typography mt='16px' fontWeight={'600'} fontSize={'20px'} lineHeight={'32px'}>
                         {t('page.new_sale.empty_cart_title')}
                       </Typography>
-                      <Typography fontWeight={'500'} fontSize={'16px'} color={'bunker.500'} lineHeight={'24px'}>
+                      <Typography fontWeight={'500'} fontSize={'14px'} color={'bunker.500'} lineHeight={'20px'}>
                         {t('page.new_sale.empty_cart_desc')}
                       </Typography>
                     </Box>

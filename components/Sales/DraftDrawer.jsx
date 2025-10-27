@@ -36,7 +36,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
   const [draftfilter, setDraftFilter] = useState(false)
   const userData = useSelector((state) => state.user)
   const { values } = useQueryParams()
-  const [appType, setAppType] = useState('draft')
+  const [appType, setAppType] = useState('sale')
   const [isOpenChild, setIsOpenChild] = useState(false)
   const [controlleroffset, setControllerOffset] = useState(0)
   useEffect(() => {
@@ -92,8 +92,8 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
               defaultValue={appType}
               onChange={(e) => setAppType(e)}
               options={[
-                { title: 'Черновики', value: 'draft' },
                 { title: 'Отложки', value: 'sale' },
+                { title: 'Черновики', value: 'draft', inprecess: true },
               ]}
             />
           </Box>

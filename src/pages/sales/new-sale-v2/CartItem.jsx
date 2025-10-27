@@ -359,10 +359,10 @@ export default function CartItem({
             name={`quantity_${item?.id}`}
             adornmentPosition='end'
             adornmentClassName={cls.adornment}
-            max={100}
+            max={item?.quantity_stock || 100}
             // adornment={item?.short_name}
             inputRef={(e) => packRef(e, index)}
-            onKeyDown={({ key }) => {
+            onKeyDown={({ key, ...p }) => {
               if (key === 'Enter' || key == 'Escape') {
                 searchRef?.current?.focus()
               }
@@ -370,13 +370,13 @@ export default function CartItem({
             defaultValue={get(item, 'quantity', 0)}
             type='number'
             disabled={false}
-            onFocus={({ target }) => {
-              method.setValue(`quantity_${item?.id}`, '')
-            }}
+            // onFocus={({ target }) => {
+            //   method.setValue(`quantity_${item?.id}`, '')
+            // }}
             onBlur={({ target }) => {
-              if (Number(get(target, 'value')) == '') {
-                method.setValue(`quantity_${item?.id}`, get(item, 'quantity', 0))
-              }
+              // if (Number(get(target, 'value')) == '') {
+              //   method.setValue(`quantity_${item?.id}`, get(item, 'quantity', 0))
+              // }
               if (get(item, 'quantity') == Number(get(target, 'value'))) {
                 return
               }
@@ -457,7 +457,7 @@ export default function CartItem({
               }
             }}
             adornment={
-              <Typography pr='8px' display={'flex'}>
+              <Typography pr='15px' display={'flex'}>
                 <Box fontSize={'14px'} lineHeight={'20px'} fontWeight={'500'} color='bunker.400'>
                   /{item.unit_per_pack}
                 </Box>
@@ -466,13 +466,13 @@ export default function CartItem({
             inputRef={(e) => unitRef(e)}
             adornmentClassName={cls.adornment}
             max={100}
-            onFocus={({ target }) => {
-              method.setValue(`unit_quantity_${item?.id}`, '')
-            }}
+            // onFocus={({ target }) => {
+            //   method.setValue(`unit_quantity_${item?.id}`, '')
+            // }}
             onBlur={({ target }) => {
-              if (Number(get(target, 'value')) == '') {
-                method.setValue(`unit_quantity_${item?.id}`, get(item, 'unit_quantity', 1))
-              }
+              // if (Number(get(target, 'value')) == '') {
+              //   method.setValue(`unit_quantity_${item?.id}`, get(item, 'unit_quantity', 1))
+              // }
               if (get(item, 'unit_quantity') == Number(get(target, 'value'))) {
                 return
               }

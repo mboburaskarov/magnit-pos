@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
       width: '660px',
+      overflow: 'hidden',
       borderRadius: '24px 0 0 24px',
       backgroundColor: theme.palette.background.default,
     },
@@ -36,7 +37,7 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
   const [draftfilter, setDraftFilter] = useState(false)
   const userData = useSelector((state) => state.user)
   const { values } = useQueryParams()
-  const [appType, setAppType] = useState('all')
+  const [appType, setAppType] = useState(get(open, 'owner', 'all'))
   const [isOpenChild, setIsOpenChild] = useState(false)
   const [controlleroffset, setControllerOffset] = useState(0)
   useEffect(() => {
@@ -48,6 +49,7 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
   const draftsListFilter = useMemo(() => {
     return {
       search: values?.search || null,
+      limit: 100,
     }
   }, [values?.customer_id, values?.draft_date, values?.search, controlleroffset])
 
@@ -187,6 +189,7 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
             {appType === 'all' ? (
               <ListWithPagination
                 limit={10}
+                maxHeight='calc(100vh - 350px)'
                 request={(filter) => requests.getProductBonusList(filter)}
                 renderItem={(item) => (
                   <ResultItem

@@ -439,7 +439,7 @@ function CartDetailSide({
       </Box>
       <DmedPrescriptionsList data={dmedPrescriptionsList} setDmedPrescriptionsList={setDmedPrescriptionsList} />
       <Box
-        onClick={() => setIsOpenBonusProductDrawer(true)}
+        onClick={() => setIsOpenBonusProductDrawer({ owner: 'my' })}
         sx={{ backgroundColor: '#FFC120', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px', cursor: 'pointer' }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

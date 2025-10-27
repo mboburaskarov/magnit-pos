@@ -101,7 +101,7 @@ export default function SwitchSlider({ name, options, onChange, defaultValue, no
                   value={option.value}
                   className={classes.input}
                   onClick={() => {
-                    if (option.soon) return
+                    if (option.soon || option.inprecess) return
                     if (uncontrolled) {
                       setValue(options[index].value)
                     } else {
@@ -139,6 +139,25 @@ export default function SwitchSlider({ name, options, onChange, defaultValue, no
                           }}
                         >
                           soon
+                        </Typography>
+                      )}
+                      {option.inprecess && (
+                        <Typography
+                          sx={{
+                            height: '20px',
+                            backgroundColor: '#0125FF',
+                            color: '#fff',
+                            fontSize: '10px',
+                            fontWeight: '600',
+                            borderRadius: '24px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            ml: '10px',
+                            p: '3px 5px',
+                          }}
+                        >
+                          В доработке
                         </Typography>
                       )}
                     </Typography>
