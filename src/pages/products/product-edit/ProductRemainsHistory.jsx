@@ -70,9 +70,7 @@ export default function ProductRemainsHistory({ id }) {
         minWidth: 185,
         maxWidth: 185,
         width: 185,
-        cellRenderer: ({ data, rowIndex }) => (
-          <Typography id={`${'quantity'}-${rowIndex}-${data?.store_id}`}>{thousandDivider(get(data, 'quantity'))}</Typography>
-        ),
+        cellRenderer: ({ data, rowIndex }) => <Typography id={`${'quantity'}-${rowIndex}-${data?.store_id}`}>{get(data, 'quantity')}</Typography>,
       },
       {
         headerName: 'Цена продажи',
