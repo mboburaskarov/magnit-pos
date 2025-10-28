@@ -25,7 +25,7 @@ const PaymentTypeBox = ({ pay }) => (
         fontSize: '18px',
         fontWeight: '600',
         lineHeight: '28px',
-        color: get(pay, 'sum_prop') == 'total_transaction' ? 'orange.500' : 'dark.500',
+        color: get(pay, 'sum_prop') == 'total_transaction_sum' ? 'orange.500' : 'dark.500',
         mt: '4px',
       }}
     >
