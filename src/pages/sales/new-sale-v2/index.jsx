@@ -384,6 +384,8 @@ function NewSaleV2() {
       console.log('err', err)
     },
   })
+  console.log(customerId)
+
   useEffect(() => {
     if (customerId?.id && customerId?.new != false) {
       addDiscountCard({
@@ -548,11 +550,8 @@ function NewSaleV2() {
         return
       }
       if (get(err, 'response.data.code') === 409) {
-        error(`Описание
-      Редактировать
-      Введенное количество товара превышает существующее количество. 
-      Максимальное количество упаковок на складе - ${get(err, 'response.data.data.pack_quantity')},
-      единичное количество на складе - ${get(err, 'response.data.data.unit_quantity')}.`)
+        error(`Введенное количество превышает имеющееся в наличии.
+               Максимальное количество на складе - ${get(err, 'response.data.data.pack_quantity')} уп, ${get(err, 'response.data.data.unit_quantity')} шт`)
       } else {
         if (err.toString().includes('Error: Condition not met. Request not sent')) {
           error('Ошибка при создании элемента карты. Максимальное количество товаров в корзине 10')
@@ -629,11 +628,8 @@ function NewSaleV2() {
       method.setValue(`quantity_${item?.id}`, item?.quantity)
       method.setValue(`unit_quantity_${item?.id}`, item?.unit_quantity)
       if (get(err, 'response.data.code') === 409) {
-        error(`Описание
-Редактировать
-Введенное количество товара превышает существующее количество. 
-Максимальное количество упаковок на складе - ${get(err, 'response.data.data.pack_quantity')},
-единичное количество на складе - ${get(err, 'response.data.data.unit_quantity')}.`)
+        error(`Введенное количество превышает имеющееся в наличии.
+               Максимальное количество на складе - ${get(err, 'response.data.data.pack_quantity')} уп, ${get(err, 'response.data.data.unit_quantity')} шт`)
       } else {
         error('Ошибка при получении похожих товаров.')
       }

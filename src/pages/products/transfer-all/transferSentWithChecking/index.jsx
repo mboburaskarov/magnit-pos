@@ -267,7 +267,7 @@ export default function TransferSentScanWithCheckingPage() {
                 setOpenFinishConfirmDialog(false)
                 finishWriteOffChecking(id)
               }}
-              isLoading={isFetchingtransferWithCheckingDetails}
+              isLoading={transferWithCheckingDetailsLoading}
             >
               Да, создать
             </Button>

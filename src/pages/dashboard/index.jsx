@@ -24,6 +24,7 @@ import thousandDivider from '../../../utils/thousandDivider'
 import OrdersIcon from '../../assets/icons/OrdersIcon'
 import ProductsIcon from '../../assets/icons/ProductsIcon'
 import RevenueIcon from '../../assets/icons/RevenueIcon'
+import { paymentTypes } from '../../../constants/paymentTypes'
 import VendorsIcon from '../../assets/icons/VendorsIcon'
 import MoneyArrowDown from '../../assets/icons/dashboard/MoneyArrowDown'
 import { useQueryParams } from '../../hooks/useQueryParams'
@@ -44,7 +45,6 @@ import LeftArrowIcon from '../../assets/icons/LeftArrow'
 import RightArrowRound from '../../assets/icons/dashboard/RightArrowRound'
 import RightArrowIcon from '../../assets/icons/RightArrowIcon'
 import HomeSetting from '../../assets/icons/dashboard/HomeSetting'
-import { paymentTypes } from '../../../constants/paymentTypes'
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
   const { type } = useSelector((state) => state.user)
@@ -231,16 +231,22 @@ export default function DashboarPage() {
     }
   }, [values?.offset, detalization, selectedShops, values?.start_date, values?.end_date, values?.from_time, values?.to_time, values?.limit, values?.search])
 
-  const { data: chartData } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
+  const { data: chartData, isLoading: isChartLoading } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
   const { data: countStats, isLoading } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter), {
     staleTime: 1000 * 60 * 1, // 1 minutes — won’t refetch until 1 mins passed
   })
-  const { data: topStores } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
-  const { data: payments } = useQuery(['payments', dashboard_filter], () => requests.dashboradPayments(dashboard_filter))
-  const { data: transaction } = useQuery(['transaction', dashboard_filter], () => requests.dashboradTransaction(dashboard_filter))
-  const { data: topProducts } = useQuery(['TopProducts', dashboard_filter], () => requests.dashboradTopProducts(dashboard_filter))
-  const { data: topBonusProducts } = useQuery(['TopBonusProducts', dashboard_filter], () => requests.dashboradTopBonusProducts(dashboard_filter))
-  const { data: topSellers } = useQuery(['TopSellers', dashboard_filter], () => requests.dashboradTopSellers(dashboard_filter))
+  const { data: topStores, isLoading: isTopStoreLoading } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
+  const { data: payments, isLoading: isPaymentsLoading } = useQuery(['payments', dashboard_filter], () => requests.dashboradPayments(dashboard_filter))
+  const { data: transaction, isLoading: isTransactionLoading } = useQuery(['transaction', dashboard_filter], () =>
+    requests.dashboradTransaction(dashboard_filter)
+  )
+  const { data: topProducts, isLoading: isTopProductsLoading } = useQuery(['TopProducts', dashboard_filter], () =>
+    requests.dashboradTopProducts(dashboard_filter)
+  )
+  const { data: topBonusProducts, isLoading: isTopBonusProductLoading } = useQuery(['TopBonusProducts', dashboard_filter], () =>
+    requests.dashboradTopBonusProducts(dashboard_filter)
+  )
+  const { data: topSellers, isLoading: isTopSellerLoading } = useQuery(['TopSellers', dashboard_filter], () => requests.dashboradTopSellers(dashboard_filter))
 
   const toFixData = useMemo(
     () =>
@@ -348,72 +354,72 @@ export default function DashboarPage() {
               </CheckAccess>
             </Grid>
 
-            {!isLoading && (
-              <CheckAccess id={'dashboard-chart'}>
-                <Box mt={'32px'} display='inline-flex' columnGap={3} width='100%'>
-                  <SingleLineChart
-                    width='100%'
-                    id='dashboard-chart'
-                    period={detailing}
-                    detalization={detalization}
-                    setDetalization={setDetalization}
-                    chartType={chartType}
-                    setchartType={setchartType}
-                    sortBy={sortBy}
-                    dataKey={sortBy === 'SUM' ? 'all_orders' : 'count'}
-                    data={{
-                      values: toFixData,
-                      total: sortBy === 'SUM' ? totalSum : totalCount,
-                    }}
-                    measurmentUnit={sortBy === 'SUM' ? ' сум' : ' шт'}
-                  />
-                </Box>
-              </CheckAccess>
-            )}
+            <CheckAccess id={'dashboard-chart'}>
+              <Box mt={'32px'} display='inline-flex' columnGap={3} width='100%'>
+                <SingleLineChart
+                  width='100%'
+                  id='dashboard-chart'
+                  period={detailing}
+                  detalization={detalization}
+                  setDetalization={setDetalization}
+                  chartType={chartType}
+                  setchartType={setchartType}
+                  isLoading={isChartLoading}
+                  sortBy={sortBy}
+                  dataKey={sortBy === 'SUM' ? 'all_orders' : 'count'}
+                  data={{
+                    values: toFixData,
+                    total: sortBy === 'SUM' ? totalSum : totalCount,
+                  }}
+                  measurmentUnit={sortBy === 'SUM' ? ' сум' : ' шт'}
+                />
+              </Box>
+            </CheckAccess>
           </Grid>
         </Grid>
       </Box>
-      {!isLoading && (
-        <Box sx={{ padding: '0 20px' }}>
-          <CheckAccess id={'dashboard-transactions-vendor'}>
-            <Grid width={'100%'} container spacing={2}>
-              <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={2}>
-                <DashboardTopsBox
-                  id='dashboard-chart'
-                  data={regenerated}
-                  title={'Платежи'}
-                  subTitle={thousandDivider(Math.round(regenerated.reduce((a, b) => a + b.amount, 0)), 'сум')}
-                  tableData={[
-                    { title: 'Тип Платежи	', colId: 'name' },
-                    { title: 'Кол-во', colId: 'count', sortable: true },
-                    { title: 'Сумма', colId: 'amount', sortable: true },
-                    { title: 'Прирост', colId: 'stat' },
-                  ]}
-                />
-              </Grid>
-              <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={2}>
-                <DashboardTopsBox
-                  id='dashboard-chart'
-                  data={get(transaction, 'data.data')}
-                  title={'Транзакции'}
-                  subTitle={thousandDivider(
-                    get(transaction, 'data.data', [])?.reduce((a, b) => {
-                      const count = parseFloat((b.count || '0').replace(',', '.'))
-                      return a + count
-                    }, 0),
-
-                    'шт'
-                  )}
-                  tableData={[
-                    { title: 'Тип Платежи	', colId: 'name' },
-                    { title: 'Кол-во', colId: 'count', sortable: true },
-                    { title: 'Сумма', colId: 'amount', sortable: true },
-                    { title: 'Прирост', colId: 'stat' },
-                  ]}
-                />
-              </Grid>
+      <Box sx={{ padding: '0 20px' }}>
+        <CheckAccess id={'dashboard-transactions-vendor'}>
+          <Grid width={'100%'} container spacing={2}>
+            <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={2}>
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={regenerated}
+                title={'Платежи'}
+                isLoading={isPaymentsLoading}
+                subTitle={thousandDivider(Math.round(regenerated.reduce((a, b) => a + b.amount, 0)), 'сум')}
+                tableData={[
+                  { title: 'Тип Платежи	', colId: 'name' },
+                  { title: 'Кол-во', colId: 'count', sortable: true },
+                  { title: 'Сумма', colId: 'amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
             </Grid>
-            {/* <Transactions
+            <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={2}>
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(transaction, 'data.data')}
+                title={'Транзакции'}
+                isLoading={isTransactionLoading}
+                subTitle={thousandDivider(
+                  get(transaction, 'data.data', [])?.reduce((a, b) => {
+                    const count = parseFloat((b.count || '0').replace(',', '.'))
+                    return a + count
+                  }, 0),
+
+                  'шт'
+                )}
+                tableData={[
+                  { title: 'Тип Платежи	', colId: 'name' },
+                  { title: 'Кол-во', colId: 'count', sortable: true },
+                  { title: 'Сумма', colId: 'amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+            </Grid>
+          </Grid>
+          {/* <Transactions
                 id='dashboard-chart'
                 data={get(payments, 'data.data')}
                 title={'Платежи'}
@@ -432,84 +438,85 @@ export default function DashboarPage() {
                   'шт'
                 )}
               /> */}
-          </CheckAccess>
-          <CheckAccess id={'dashboard-vendor'}>
-            <Grid width={'100%'} container mt={'32px'} spacing={2}>
-              <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={0} pb={'0px'} pt={'20px !important'}>
-                <DashboardTopsBox
-                  id='dashboard-chart'
-                  href='/reports/top-branchs?backHref=/dashboard'
-                  data={get(topStores, 'data.data')}
-                  title={'Топ филиалам'}
-                  tableData={[
-                    { title: 'Филиал', colId: 'name' },
-                    { title: 'Кол-во', colId: 'count', sortable: true },
-                    { title: 'Сумма', colId: 'total_amount', sortable: true },
-                    { title: 'Прирост', colId: 'stat' },
-                  ]}
-                />
-              </Grid>
-              <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={0} pb={'0px'} pt={'20px !important'}>
-                <DashboardTopsBox
-                  id='dashboard-chart'
-                  data={get(topProducts, 'data.data')}
-                  title={'Топ продукты'}
-                  href='/reports/top-products?backHref=/dashboard'
-                  tableData={[
-                    { title: 'Продукт', colId: 'name' },
-                    { title: 'Кол-во ', colId: 'count', sortable: true },
-                    { title: 'Сумма', colId: 'total_amount', sortable: true },
-                    { title: 'Прирост', colId: 'stat' },
-                  ]}
-                />
-              </Grid>
-            </Grid>
-            {/* <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} /> */}
-            {/* <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} /> */}
-          </CheckAccess>
-          <CheckAccess id={'dashboard-seller'}>
-            <Grid width={'100%'} mt={'32px'} container spacing={2}>
-              <Grid item xs={6} xl={6} sm={6} md={6} lg={6}>
-                <DashboardTopsBox
-                  id='dashboard-chart'
-                  data={get(topSellers, 'data.data')}
-                  title={'Топ продавцы'}
-                  href='/reports/top-vendors?backHref=/dashboard'
-                  tableData={[
-                    { title: 'Продавец	', colId: 'full_name' },
-                    { title: 'Кол-во', colId: 'count', sortable: true },
-                    { title: 'Сумма', colId: 'total_amount', sortable: true },
-                    { title: 'Прирост', colId: 'stat' },
-                  ]}
-                />
-              </Grid>
-              <Grid item xs={6} xl={6} sm={6} md={6} lg={6}>
-                <DashboardTopsBox
-                  id='dashboard-chart'
-                  data={get(topBonusProducts, 'data.data')}
-                  title={'Бонусные продукты'}
-                  href='/reports/bonus-products?backHref=/dashboard'
-                  tableData={[
-                    { title: 'Продукт	', colId: 'name' },
-                    { title: 'Кол-во', colId: 'count', sortable: true },
-                    { title: 'Сумма', colId: 'bonus_amount', sortable: true },
-                    { title: 'Прирост', colId: 'stat' },
-                  ]}
-                />
-              </Grid>
-            </Grid>
-            {/* <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} /> */}
-            {/* <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} /> */}
-          </CheckAccess>
-        </Box>
-      )}
-      {!isLoading && (
-        <CheckAccess id={'dashboard-expired-imports'}>
-          <Box>
-            <ImportPage />
-          </Box>
         </CheckAccess>
-      )}
+        <CheckAccess id={'dashboard-vendor'}>
+          <Grid width={'100%'} container mt={'32px'} spacing={2}>
+            <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={0} pb={'0px'} pt={'20px !important'}>
+              <DashboardTopsBox
+                id='dashboard-chart'
+                href='/reports/top-branchs?backHref=/dashboard'
+                data={get(topStores, 'data.data')}
+                title={'Топ филиалам'}
+                isLoading={isTopStoreLoading}
+                tableData={[
+                  { title: 'Филиал', colId: 'name' },
+                  { title: 'Кол-во', colId: 'count', sortable: true },
+                  { title: 'Сумма', colId: 'total_amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+            </Grid>
+            <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={0} pb={'0px'} pt={'20px !important'}>
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(topProducts, 'data.data')}
+                isLoading={isTopProductsLoading}
+                title={'Топ продукты'}
+                href='/reports/top-products?backHref=/dashboard'
+                tableData={[
+                  { title: 'Продукт', colId: 'name' },
+                  { title: 'Кол-во ', colId: 'count', sortable: true },
+                  { title: 'Сумма', colId: 'total_amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+            </Grid>
+          </Grid>
+          {/* <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} /> */}
+          {/* <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} /> */}
+        </CheckAccess>
+        <CheckAccess id={'dashboard-seller'}>
+          <Grid width={'100%'} mt={'32px'} container spacing={2}>
+            <Grid item xs={6} xl={6} sm={6} md={6} lg={6}>
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(topSellers, 'data.data')}
+                isLoading={isTopSellerLoading}
+                title={'Топ продавцы'}
+                href='/reports/top-vendors?backHref=/dashboard'
+                tableData={[
+                  { title: 'Продавец	', colId: 'full_name' },
+                  { title: 'Кол-во', colId: 'count', sortable: true },
+                  { title: 'Сумма', colId: 'total_amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+            </Grid>
+            <Grid item xs={6} xl={6} sm={6} md={6} lg={6}>
+              <DashboardTopsBox
+                id='dashboard-chart'
+                data={get(topBonusProducts, 'data.data')}
+                isLoading={isTopBonusProductLoading}
+                title={'Бонусные продукты'}
+                href='/reports/bonus-products?backHref=/dashboard'
+                tableData={[
+                  { title: 'Продукт	', colId: 'name' },
+                  { title: 'Кол-во', colId: 'count', sortable: true },
+                  { title: 'Сумма', colId: 'bonus_amount', sortable: true },
+                  { title: 'Прирост', colId: 'stat' },
+                ]}
+              />
+            </Grid>
+          </Grid>
+          {/* <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} /> */}
+          {/* <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} /> */}
+        </CheckAccess>
+      </Box>
+      <CheckAccess id={'dashboard-expired-imports'}>
+        <Box>
+          <ImportPage />
+        </Box>
+      </CheckAccess>
     </LoadingContainer>
   )
 }

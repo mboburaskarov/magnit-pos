@@ -653,6 +653,7 @@ export default function OrderDrawer({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
       payment_types: paymentTypes,
       sale_id: id,
+      loyalty_card_barcode: customerId?.barcode,
       store_id: get(userData, 'store.id'),
       service_type: dmedPrescriptionsList?.length > 0 ? 'dmed' : undefined,
       referral: serviceType == 'other' ? undefined : serviceType,

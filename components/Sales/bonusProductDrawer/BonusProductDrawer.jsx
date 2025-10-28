@@ -34,12 +34,18 @@ const useStyles = makeStyles((theme) => ({
 function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
   const { t } = useTranslation()
   const classes = useStyles()
+
   const [draftfilter, setDraftFilter] = useState(false)
   const userData = useSelector((state) => state.user)
   const { values } = useQueryParams()
-  const [appType, setAppType] = useState(get(open, 'owner', 'all'))
+  const [appType, setAppType] = useState('all')
   const [isOpenChild, setIsOpenChild] = useState(false)
   const [controlleroffset, setControllerOffset] = useState(0)
+  useEffect(() => {
+    setTimeout(() => {
+      setAppType(get(open, 'owner', 'all'))
+    }, 0)
+  }, [open])
   useEffect(() => {
     setControllerOffset(values?.offset)
   }, [values?.offset])

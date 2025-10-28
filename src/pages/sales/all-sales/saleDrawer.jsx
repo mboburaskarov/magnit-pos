@@ -78,7 +78,7 @@ function SaleDrawer({ open, setOpen, ids }) {
             Повторный чек
           </Button>
         </CheckAccess>
-        {size(get(open, 'data.fiscal_sign')) < 2 ? (
+        {/* {size(get(open, 'data.fiscal_sign')) < 2 ? (
           <CheckAccess id='can-sale-to-change-pending'>
             <Button sx={{ minHeight: '56px', flex: '1', ml: '10px', mr: '20px' }} onClick={() => saleMoveToPending(get(open, 'id'))}>
               Повторно отправить продажу
@@ -86,7 +86,7 @@ function SaleDrawer({ open, setOpen, ids }) {
           </CheckAccess>
         ) : (
           ''
-        )}
+        )} */}
       </Box>
     </Drawer>
   )

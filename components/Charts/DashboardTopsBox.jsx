@@ -1,4 +1,4 @@
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Skeleton } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
@@ -15,6 +15,7 @@ export default function DashboardTopsBox({
   title,
   tableData,
   subTitle,
+  isLoading = true,
   href = false,
   noData = { title: 'Информация не найдена', description: 'Данные за этот период не найдены' },
 }) {
@@ -37,15 +38,33 @@ export default function DashboardTopsBox({
       }}
     >
       <Box display='flex' justifyContent='space-between' alignItems='center' mb={'8px'}>
-        <Box>
-          <Typography lineHeight={'32px'} fontWeight={'700'} fontSize={'24px'}>
-            {title}
-          </Typography>
-          <Typography color='orange.500' lineHeight={'24px'} fontWeight={600} fontSize={'16px'}>
-            {subTitle}
-          </Typography>
+        <Box sx={{ width: '100%' }}>
+          {isLoading ? (
+            <>
+              <Typography lineHeight={'32px'} fontWeight={'700'} fontSize={'24px'}>
+                {title}
+              </Typography>
+              <Skeleton
+                variant='text'
+                width={80}
+                height={24}
+                sx={{
+                  borderRadius: '8px',
+                }}
+              />
+            </>
+          ) : (
+            <>
+              <Typography lineHeight={'32px'} fontWeight={'700'} fontSize={'24px'}>
+                {title}
+              </Typography>
+              <Typography color='orange.500' lineHeight={'24px'} fontWeight={600} fontSize={'16px'}>
+                {subTitle}
+              </Typography>
+            </>
+          )}
         </Box>
-        {href && (
+        {href && !isLoading && (
           <Link to={href}>
             <Box
               sx={{
@@ -72,7 +91,7 @@ export default function DashboardTopsBox({
           justifyContent: 'space-between',
           flexDirection: 'column',
           position: 'relative',
-          minHeight: '200px',
+          minHeight: '260px',
         }}
       >
         <TableContainer px={'20px'}>
@@ -110,8 +129,8 @@ export default function DashboardTopsBox({
                   }}
                 >
                   <Box display={'flex'} color={'bunker.300'} alignItems={'center'}>
-                    {el?.title}{' '}
-                    {el?.sortable && (
+                    {el?.title}
+                    {el?.sortable && !isLoading && (
                       <Box display={'inline-flex'} ml='2px'>
                         {false ? <SortUpIcon /> ? false : <SortDownIcon /> : <SortIcon />}
                       </Box>
@@ -120,7 +139,38 @@ export default function DashboardTopsBox({
                 </TableCell>
               ))}
             </TableHead>
-            {size(formattedData) >= 1 ? (
+            {isLoading ? (
+              <TableBody
+                sx={{
+                  '& .MuiTableRow-root:not(:last-child)': {
+                    borderBottom: '1px solid',
+                    borderColor: 'bunker.100',
+                  },
+                  '& .table-cell': {
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    lineHeight: '20px',
+                    border: 'none',
+                    p: '16px 12px',
+                  },
+                }}
+              >
+                {[...Array(5)].map((_, index) => (
+                  <TableRow key={index}>
+                    {tableData.map((el, ind) => (
+                      <TableCell className='table-cell' key={ind}>
+                        <Skeleton
+                          variant='rounded'
+                          width={ind === 0 ? '60%' : ind === tableData.length - 1 ? '50%' : '80%'}
+                          height={16}
+                          sx={{ borderRadius: '8px' }}
+                        />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            ) : size(formattedData) >= 1 ? (
               <TableBody
                 sx={{
                   '& .MuiTableRow-root': {},
@@ -147,6 +197,7 @@ export default function DashboardTopsBox({
                         if (el?.colId == 'name' || el?.colId == 'full_name') {
                           return (
                             <TableCell
+                              key={ind}
                               sx={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxLines: 1 }}
                               className='table-cell'
                             >
@@ -157,7 +208,7 @@ export default function DashboardTopsBox({
 
                         if (el?.colId == 'count') {
                           return (
-                            <TableCell className='table-cell'>
+                            <TableCell key={ind} className='table-cell'>
                               {item.unit_per_pack > 1
                                 ? item[el?.colId] > 0
                                   ? `${item[el?.colId]}(${item.unit_quantity}/${item.unit_per_pack})`
@@ -167,11 +218,15 @@ export default function DashboardTopsBox({
                           )
                         }
                         if (el?.colId == 'total_amount' || el?.colId == 'amount' || el?.colId == 'bonus_amount') {
-                          return <TableCell className='table-cell'>{thousandDivider(item[el?.colId], 'сум')}</TableCell>
+                          return (
+                            <TableCell key={ind} className='table-cell'>
+                              {thousandDivider(item[el?.colId], 'сум')}
+                            </TableCell>
+                          )
                         }
                         if (el?.colId == 'stat') {
                           return (
-                            <TableCell className='table-cell'>
+                            <TableCell key={ind} className='table-cell'>
                               <Box
                                 display='inline-flex'
                                 sx={{
@@ -200,6 +255,7 @@ export default function DashboardTopsBox({
                             </TableCell>
                           )
                         }
+                        return null
                       })}
                     </TableRow>
                   )
@@ -210,12 +266,12 @@ export default function DashboardTopsBox({
                 sx={{
                   display: 'flex',
                   width: '100%',
-                  height: '100%',
+                  height: '160px',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  // justifyContent: 'center',
                   top: '80px',
                   position: 'absolute',
+                  justifyContent: 'center',
                 }}
               >
                 <Typography sx={{ fontSize: '24px', lineHeight: '32px', fontWeight: '600', color: 'bunker.950' }}>{noData?.title}</Typography>

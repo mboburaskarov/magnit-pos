@@ -321,7 +321,7 @@ export default function CartItem({
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Typography sx={{ fontWeight: 600, fontSize: 16, lineHeight: '24px', color: 'bunker.950' }}>{item?.name}</Typography>
             <Typography variant='caption' sx={{ fontWeight: 500, fontSize: 12, lineHeight: '16px', color: 'bunker.500' }}>
-              {item?.barcode} / Полка: {item?.shelf}
+              {item?.barcode} {item.is_marking ? '/ Есть маркировка' : ''}
             </Typography>
           </Box>
         </Box>
