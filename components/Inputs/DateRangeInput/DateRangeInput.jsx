@@ -14,7 +14,7 @@ import { useQueryParams } from '../../../src/hooks/useQueryParams'
 import { calculateDateDifference } from '../../../utils/calculateDateDifference'
 import ButtonWithPopup from '../../Buttons/ButtonWithPopup'
 import DateFilterDrawerSingle from './DateFilterDrawerSingle'
-import ClockIcon from '../../../src/assets/icons/clockIcon'
+import ClockIcon from '../../../src/assets/icons/ClockIcon'
 
 dayjs.extend(isBetween)
 dayjs.extend(isSameOrAfter)
