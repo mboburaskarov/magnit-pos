@@ -20,26 +20,34 @@ const PaymentTypeBox = ({ pay }) => (
         {thousandDivider(get(pay, 'count'), 'шт')}
       </Typography>
     </Box>
-    <Typography sx={{ fontSize: '18px', fontWeight: '600', lineHeight: '28px', color: 'dark.500', mt: '4px' }}>
+    <Typography
+      sx={{
+        fontSize: '18px',
+        fontWeight: '600',
+        lineHeight: '28px',
+        color: get(pay, 'sum_prop') == 'total_transaction' ? 'orange.500' : 'dark.500',
+        mt: '4px',
+      }}
+    >
       {thousandDivider(get(pay, 'amount'), 'сум')}
     </Typography>
   </Box>
 )
 function SaleMiniDashboardHeader({ saleStatsData }) {
   const mockData = [
-    { sum_prop: 'total_transaction', title: 'Транзакции', count_prop: 'total_transaction' },
-    { sum_prop: 'total_cash', title: 'Наличные', count_prop: 'total_transaction' },
-    { sum_prop: 'total_uzcard', title: 'UzCard', count_prop: 'total_transaction' },
-    { sum_prop: 'total_humo', title: 'HUMO', count_prop: 'total_transaction' },
-    { sum_prop: 'total_click', title: 'Click', count_prop: 'total_transaction' },
-    { sum_prop: 'total_payme', title: 'Payme', count_prop: 'total_transaction' },
-    { sum_prop: 'total_alif', title: 'Alif', count_prop: 'total_transaction' },
-    { sum_prop: 'total_returnals_sum', title: 'Вазврат', count_prop: 'total_transaction' },
-    { sum_prop: 'total_discount_amount', title: 'Сумма скидки', count_prop: 'total_transaction' },
-    { sum_prop: 'total_cashback_amount', title: 'Сумма кешбек', count_prop: 'total_transaction' },
+    { sum_prop: 'total_transaction_sum', title: 'Транзакции', count_prop: 'total_transaction' },
+    { sum_prop: 'total_cash_sum', title: 'Наличные', count_prop: 'total_cash_count' },
+    { sum_prop: 'total_uzcard_sum', title: 'UzCard', count_prop: 'total_uzcard_count' },
+    { sum_prop: 'total_humo_sum', title: 'Humo', count_prop: 'total_humo_count' },
+    { sum_prop: 'total_click_sum', title: 'Click', count_prop: 'total_click_count' },
+    { sum_prop: 'total_payme_sum', title: 'Payme', count_prop: 'total_payme_count' },
+    { sum_prop: 'total_alif_sum', title: 'Alif', count_prop: 'total_alif_count' },
+    { sum_prop: 'total_returnals_sum', title: 'Вазврат', count_prop: 'total_returned_count' },
+    { sum_prop: 'total_discount_sum', title: 'Сумма скидки', count_prop: 'total_discount_count' },
+    { sum_prop: 'total_cashback_sum', title: 'Сумма кешбек', count_prop: 'total_cashback_count' },
   ]
   const changedData = mockData.map((item) => {
-    return { ...item, amount: saleStatsData[item.sum_prop], count: saleStatsData[item.count_prop] }
+    return { ...item, amount: saleStatsData?.[item?.sum_prop], count: saleStatsData?.[item?.count_prop] }
   })
   console.log(changedData)
 
@@ -48,8 +56,8 @@ function SaleMiniDashboardHeader({ saleStatsData }) {
       display={'flex'}
       sx={{
         m: '10px 0',
+        p: '8px',
         bgcolor: 'bunker.100',
-        padding: '10px 15px',
         borderRadius: '24px',
       }}
     >
