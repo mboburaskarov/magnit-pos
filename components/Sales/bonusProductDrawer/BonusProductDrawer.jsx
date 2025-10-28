@@ -55,9 +55,9 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
   const draftsListFilter = useMemo(() => {
     return {
       search: values?.search || null,
-      limit: 100,
+      limit: get(values, 'bonusLimit'),
     }
-  }, [values?.customer_id, values?.draft_date, values?.search, controlleroffset])
+  }, [values?.customer_id, values?.bonusLimit, values?.draft_date, values?.search, controlleroffset])
 
   const theme = useTheme()
   const {
@@ -212,10 +212,13 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
                     classes={classes}
                   />
                 )}
+                limitQuery='bonusLimit'
                 customFilter={draftsListFilter}
               />
             ) : (
               <ListWithPagination
+                maxHeight='calc(100vh - 350px)'
+                limitQuery='bonusLimit'
                 statePath='pendingSaleList'
                 request={(filter) => requests.getBonusProductSold(filter)}
                 renderItem={(item) => <PendingSaleParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}

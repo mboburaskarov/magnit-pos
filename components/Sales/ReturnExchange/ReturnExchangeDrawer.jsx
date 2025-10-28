@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
       width: '660px',
+      overflow: 'hidden',
       borderRadius: '24px 0 0 24px',
       backgroundColor: theme.palette.background.default,
     },
@@ -40,10 +41,11 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
     return {
       search: values?.search || null,
       store_id: get(userData, 'store.id'),
+      limit: get(values, 'returnLimit'),
       customer_id: values?.customer_id,
       draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : '',
     }
-  }, [values?.customer_id, values?.draft_date, values?.page, values?.search])
+  }, [values?.customer_id, values?.returnLimit, values?.draft_date, values?.page, values?.search])
 
   const theme = useTheme()
   return (
@@ -52,7 +54,7 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
         <Box>
           <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
             <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
-              Возврат / Обмен
+              Возврат
             </Typography>
             <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
           </Box>
@@ -85,8 +87,11 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
               </Button>
             </Box>
           </Box>
+
           <Box py={'0px'} px={'40px'}>
             <ListWithPagination
+              maxHeight='calc(100vh - 300px)'
+              limitQuery='returnLimit'
               request={(filter) => requests.getAllSales(filter)}
               customFilter={returnExchangeListFilter}
               renderItem={(item) => <ReturnExchangeParentItemBox item={item} setIsOpenChild={setIsOpenChild} />}

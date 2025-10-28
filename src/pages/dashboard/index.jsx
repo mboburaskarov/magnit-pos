@@ -282,7 +282,7 @@ export default function DashboarPage() {
                 ?.filter((el) => (check ? el : el.title !== 'Общая сумма заказов'))
                 ?.map((el, ind) => (
                   <CheckAccess id={`dashboard-box-${el.id}`}>
-                    <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
+                    <Grid item xs={12} xl={3} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
                       <DashboardInfoBox key={ind} {...el} isLoading={isLoading} />
                     </Grid>
                   </CheckAccess>

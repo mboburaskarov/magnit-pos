@@ -113,14 +113,18 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
       console.log('err', err)
     },
   })
-  const { data: darftChildList, refetch, isDarftChildList } = useQuery('darftChildList', () => requests.getCashBoxDetaildWithSaleId(get(open, 'item.id')))
+  const {
+    data: darftChildList,
+    refetch,
+    isLoading: cashBoxDetaildWithSaleIdLoading,
+  } = useQuery('cashBoxDetaildWithSaleId', () => requests.getCashBoxDetaildWithSaleId(get(open, 'item.id')))
   useEffect(() => {
     refetch()
   }, [open])
 
   const theme = useTheme()
   return (
-    <LoadingContainer readyState={!isDarftChildList}>
+    <LoadingContainer readyState={!cashBoxDetaildWithSaleIdLoading}>
       <Box className={classes.drawer}>
         <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
           <Box display={'flex'} alignItems={'center'}>
@@ -162,21 +166,23 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
             </Box>
           </Box>
           <Box maxHeight={'calc(100vh - 485px)'} sx={{ overflowY: 'auto' }} padding={'0px 40px'}>
-            <Box mb={'10px'} borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} mr={'8px'} display={'flex'} width={'auto'}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '50px',
-                }}
-              >
-                <input onChange={(e) => selectAllReturnItem(e)} name='checkbox_zero' checked={isAllChecked()} className='customCheckbox' type='checkbox' />
+            {!get(open, 'item.is_returned') && (
+              <Box mb={'10px'} borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} mr={'8px'} display={'flex'} width={'auto'}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '50px',
+                  }}
+                >
+                  <input onChange={(e) => selectAllReturnItem(e)} name='checkbox_zero' checked={isAllChecked()} className='customCheckbox' type='checkbox' />
+                </Box>
+                <Typography>Выбрать все</Typography>
               </Box>
-              <Typography>Выбрать все</Typography>
-            </Box>
+            )}
             {get(darftChildList, 'data.data.products', []).map((el) => (
-              <ReturnExchangeChildItemBox selectedReturnItems={selectedReturnItems} selectReturnItem={selectReturnItem} key={el.id} item={el} />
+              <ReturnExchangeChildItemBox selectedReturnItems={selectedReturnItems} open={open} selectReturnItem={selectReturnItem} key={el.id} item={el} />
             ))}
           </Box>
           <Box p={'24px 40px'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
@@ -227,23 +233,25 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
             width='100%'
             mt={4}
           >
-            <Button
-              onClick={() =>
-                returnSaleItem({
-                  cash_box_operation_id,
-                  sale_id: get(open, 'item.id'),
-                  sale_items: selectedReturnItems.map(({ id, ...others }) => ({ ...others })),
-                })
-              }
-              fullWidth
-              disabled={selectedReturnItems?.length == 0}
-              variant='contained'
-              type='submit'
-            >
-              <Typography fontSize={16} ml={'12px'} color={'white'} lineHeight={'24px'} fontWeight={600}>
-                Возврат / Обмен
-              </Typography>
-            </Button>
+            {!get(open, 'item.is_returned') && (
+              <Button
+                onClick={() =>
+                  returnSaleItem({
+                    cash_box_operation_id,
+                    sale_id: get(open, 'item.id'),
+                    sale_items: selectedReturnItems.map(({ id, ...others }) => ({ ...others })),
+                  })
+                }
+                fullWidth
+                disabled={selectedReturnItems?.length == 0}
+                variant='contained'
+                type='submit'
+              >
+                <Typography fontSize={16} ml={'12px'} color={'white'} lineHeight={'24px'} fontWeight={600}>
+                  Возврат
+                </Typography>
+              </Button>
+            )}
           </Box>
         </Box>
       </Box>

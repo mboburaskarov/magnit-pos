@@ -804,45 +804,52 @@ export default function OrderDrawer({
                         To'lov turi:
                       </Typography>
                       <Grid container display={'flex'}>
-                        {get(paymentTypesList, 'data.data', []).map((item) => (
-                          <Grid key={item.id} item xs={3} sm={3} lg={3} xl={3} p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
-                            <Box
-                              display={'flex'}
-                              p={'20px'}
-                              sx={{
-                                '& p': {
-                                  color: isVisiblePaymentType(item) ? 'bunker.600' : 'bunker.400',
-                                },
-                              }}
-                              height={'80px'}
-                              bgcolor={'bg.10'}
-                              justifyContent={'space-between'}
-                              borderRadius={'24px'}
-                            >
-                              <Typography fontSize={18} fontWeight={'600'} lineHeight={'40px'}>
-                                {get(item, 'name')}
-                              </Typography>
-                              <Typography alignItems={'center'} justifyContent={'center'} display={'flex'}>
-                                <Box
-                                  sx={{
-                                    color: '#bdbdbd',
-                                    border: '2px solid #cfcfcf',
-                                    height: '34px',
-                                    display: 'flex',
-                                    padding: '2px',
-                                    ml: '5px',
-                                    minWidth: '34px',
-                                    alignItems: 'center',
-                                    borderRadius: '8px',
-                                    justifyContent: 'center',
-                                  }}
-                                >
-                                  {getPaymentTypeHotKeyLabel(get(item, 'name'))}
-                                </Box>
-                              </Typography>
-                            </Box>
-                          </Grid>
-                        ))}
+                        {get(paymentTypesList, 'data.data', [])
+                          .filter((pay) => {
+                            if (get(cashBoxDetails, 'data.data.sale_type') == 'RETURN') {
+                              return pay?.type == 'cash'
+                            }
+                            return pay
+                          })
+                          .map((item) => (
+                            <Grid key={item.id} item xs={3} sm={3} lg={3} xl={3} p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
+                              <Box
+                                display={'flex'}
+                                p={'20px'}
+                                sx={{
+                                  '& p': {
+                                    color: isVisiblePaymentType(item) ? 'bunker.600' : 'bunker.400',
+                                  },
+                                }}
+                                height={'80px'}
+                                bgcolor={'bg.10'}
+                                justifyContent={'space-between'}
+                                borderRadius={'24px'}
+                              >
+                                <Typography fontSize={18} fontWeight={'600'} lineHeight={'40px'}>
+                                  {get(item, 'name')}
+                                </Typography>
+                                <Typography alignItems={'center'} justifyContent={'center'} display={'flex'}>
+                                  <Box
+                                    sx={{
+                                      color: '#bdbdbd',
+                                      border: '2px solid #cfcfcf',
+                                      height: '34px',
+                                      display: 'flex',
+                                      padding: '2px',
+                                      ml: '5px',
+                                      minWidth: '34px',
+                                      alignItems: 'center',
+                                      borderRadius: '8px',
+                                      justifyContent: 'center',
+                                    }}
+                                  >
+                                    {getPaymentTypeHotKeyLabel(get(item, 'name'))}
+                                  </Box>
+                                </Typography>
+                              </Box>
+                            </Grid>
+                          ))}
                       </Grid>
                     </Box>
                     <Box>

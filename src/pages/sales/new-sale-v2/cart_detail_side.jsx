@@ -133,6 +133,9 @@ function CartDetailSide({
           paddingY: '12px',
           borderBottom: isLast ? '1px solid' : 'none',
           borderColor: 'bunker.100',
+          '&:hover': {
+            backgroundColor: 'bg.10',
+          },
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -183,7 +186,7 @@ function CartDetailSide({
           accessId='can-return-product'
           isLast={true}
           leftIcon={<ReturnExchangeIcon />}
-          title={'Возврат / Обмен'}
+          title={'Возврат'}
           onClick={() => setIsOpenReturnExchange(true)}
         />
         <CheckAccess id={'can-disable-epos-cheque'}>

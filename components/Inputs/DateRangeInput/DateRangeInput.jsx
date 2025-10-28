@@ -14,6 +14,7 @@ import { useQueryParams } from '../../../src/hooks/useQueryParams'
 import { calculateDateDifference } from '../../../utils/calculateDateDifference'
 import ButtonWithPopup from '../../Buttons/ButtonWithPopup'
 import DateFilterDrawerSingle from './DateFilterDrawerSingle'
+import ClockIcon from '../../../src/assets/icons/clockIcon'
 
 dayjs.extend(isBetween)
 dayjs.extend(isSameOrAfter)
@@ -52,7 +53,7 @@ const customDateRanges = () => [
 const today = dayjs().toDate()
 const tomorrow = dayjs().add(1, 'day').toDate()
 
-export default function DateRangeInput({ id, name, minHeight = '56px', startDateQuery = 'start_date', endDateQuery = 'end_date', defaultFilterData }) {
+export default function DateRangeInput({ id, name, minHeight = '48px', startDateQuery = 'start_date', endDateQuery = 'end_date', defaultFilterData }) {
   const defaultState = {
     from: dayjs(defaultFilterData?.start_date).isValid() ? dayjs(defaultFilterData?.start_date).toDate() : today,
     to: dayjs(defaultFilterData?.end_date).isValid() ? dayjs(defaultFilterData?.end_date).toDate() : today,
@@ -151,34 +152,55 @@ export default function DateRangeInput({ id, name, minHeight = '56px', startDate
         sx={{
           height: minHeight,
           border: '1px solid #ECEDF2 !important',
+          padding: '0',
+          paddingLeft: '16px',
+          '& .MuiButton-endIcon': {
+            marginLeft: '10px',
+          },
         }}
         placement='bottom-end'
         buttonLabel={
           <Box
-            display='inline-flex'
-            flexDirection={'column'}
-            whiteSpace={'pre'}
+            display='flex'
             sx={{
-              '& > span': { lineHeight: '19px', color: 'gray.600', fontWeight: 600, ml: 1, mr: '2px !important' },
+              alignItems: 'center',
+              '& > span': { lineHeight: '19px', color: 'gray.600', fontWeight: 600, m: '0' },
             }}
           >
-            {customDateRangeSelected.split('\n').map((letter, index) => {
-              return (
-                <Typography
-                  key={index}
-                  sx={{
-                    fontWeight: 600,
-                    textAlign: 'center',
-                    color: index === 0 ? 'text.primary' : 'dark.500',
-                    margin: '0 20px',
-                    lineHeight: '17px',
-                    fontSize: 16,
-                  }}
-                >
-                  {letter}
-                </Typography>
-              )
-            }) || 'Выберите дату'}
+            <Box
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                display: 'flex',
+              }}
+            >
+              <ClockIcon />
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'start',
+              }}
+            >
+              {customDateRangeSelected.split('\n').map((letter, index) => {
+                return (
+                  <Typography
+                    key={index}
+                    sx={{
+                      fontWeight: 600,
+                      textAlign: 'center',
+                      color: index === 0 ? '#868FAA' : 'dark.500',
+                      lineHeight: '18px',
+                      ml: '10px',
+                      fontSize: index == 0 ? '12px' : '16px',
+                    }}
+                  >
+                    {letter.trim()}
+                  </Typography>
+                )
+              }) || 'Выберите дату'}
+            </Box>
           </Box>
         }
         popperContentProps={{

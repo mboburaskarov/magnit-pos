@@ -28,7 +28,7 @@ export default function DashboardHeader({ selectedShops, setSelectedShops }) {
           sx={{
             maxWidth: 400,
             '.selection': {
-              height: '56px',
+              height: '48px',
             },
           }}
         >

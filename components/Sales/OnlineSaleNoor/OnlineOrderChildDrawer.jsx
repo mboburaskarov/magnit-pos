@@ -92,7 +92,11 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
       console.log('err', err)
     },
   })
-  const { data: darftChildList, refetch, isDarftChildList } = useQuery('darftChildList', () => requests.getCashBoxDetaildWithSaleId(get(open, 'item.id')))
+  const {
+    data: darftChildList,
+    refetch,
+    isLoading: isDarftChildList,
+  } = useQuery('darftChildList', () => requests.getCashBoxDetaildWithSaleId(get(open, 'item.id')))
   useEffect(() => {
     refetch()
   }, [open])

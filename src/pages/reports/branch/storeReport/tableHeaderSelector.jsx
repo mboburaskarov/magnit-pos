@@ -208,6 +208,17 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         cellRenderer: memo((p) => <SimpleText {...p} withDevider type='payme' />),
       }
     }
+    if (el.field === 'alif') {
+      return {
+        ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
+        headerName: 'Alif',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='alif' />),
+      }
+    }
     if (el.field === 'discount_amount') {
       return {
         ...el,

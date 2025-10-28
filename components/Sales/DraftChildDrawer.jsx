@@ -94,7 +94,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   const {
     data: darftChildList,
     refetch,
-    isDarftChildList,
+    isLoading: isDarftChildList,
   } = useQuery('darftChildList', () =>
     get(open, 'type') == 'draft' ? requests.getDarftChildList(get(open, 'item.id')) : requests.getCashBoxDetaildWithSaleId(get(open, 'item.id'))
   )

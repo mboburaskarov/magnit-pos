@@ -64,6 +64,13 @@ const columns = [
   },
 
   {
+    field: 'alif',
+    hide: false,
+    minWidth: 70,
+    width: 158,
+  },
+
+  {
     field: 'return_amount',
     hide: false,
     minWidth: 70,

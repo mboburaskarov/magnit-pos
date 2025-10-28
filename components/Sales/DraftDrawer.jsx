@@ -129,6 +129,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
           <Box py={'0px'} px={'40px'}>
             {appType === 'draft' ? (
               <ListWithPagination
+                maxHeight='calc(100vh - 350px)'
                 request={(filter) => requests.getDarftList(filter)}
                 renderItem={(item) => <DraftParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}
                 customFilter={draftsListFilter}
@@ -136,6 +137,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
             ) : (
               <ListWithPagination
                 statePath='pendingSaleList'
+                maxHeight='calc(100vh - 350px)'
                 request={(filter) => requests.getPendingSales(filter)}
                 renderItem={(item) => <PendingSaleParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}
                 customFilter={draftsListFilter}
