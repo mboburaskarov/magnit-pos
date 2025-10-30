@@ -354,14 +354,7 @@ const MultiOptionSelectNew = ({
       console.log(val)
 
       return (
-        <StyledTooltip
-          title={
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              {val || []?.map((a) => <Typography sx={{ display: 'flex' }}>{a.split(', ')[1]}</Typography>)}
-            </Box>
-          }
-          placement='top'
-        >
+        <StyledTooltip hide={val == selectAllLabel} title={<Box sx={{ display: 'flex', flexDirection: 'column' }}>{val}</Box>} placement='top'>
           <span className='multiple value'>{val}</span>
         </StyledTooltip>
       )
@@ -481,7 +474,12 @@ const MultiOptionSelectNew = ({
 
   return (
     <Box
-      sx={{ minWidth: 300 }}
+      sx={{
+        minWidth: 300,
+        '& .options': {
+          height: '450px !important',
+        },
+      }}
       className='select'
       tabIndex={0}
       onFocus={onFocus}

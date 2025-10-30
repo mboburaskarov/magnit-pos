@@ -43,6 +43,7 @@ function ReturnExchangeChildItemBox({ item, selectedReturnItems, selectReturnIte
                   overflow: 'hidden',
                   wordWrap: 'break-word',
                   textOverflow: 'ellipsis',
+
                   '-webkit-box-orient': 'vertical',
                   '-webkit-line-clamp': '1',
                 }}

@@ -56,6 +56,7 @@ export default function DashboarB2BPage() {
     before_import_amount,
     before_total_net_income,
     before_stock_amount,
+    not_last_24h_import_count,
     before_bonus_amount,
     before_expiring_soon_count,
     before_product_turnover,
@@ -101,7 +102,8 @@ export default function DashboarB2BPage() {
       {
         title: t('Импорты старше 24 часов'),
         icon: <Time24 color='#fe5000' />,
-        count: not_last_24h_import_amount,
+        count: not_last_24h_import_count,
+        amount: not_last_24h_import_amount,
         percent: 0,
         id: 'current_import_amount',
         endText: 'сум',

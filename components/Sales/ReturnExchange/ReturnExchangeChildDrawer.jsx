@@ -216,6 +216,20 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
               </Typography>
             </Box>
           </Box>
+
+          {get(open, 'item.is_returned') && (
+            <Typography
+              sx={{
+                color: 'white',
+                bgcolor: 'red.600',
+                borderRadius: '16px',
+                padding: '20px',
+                m: '20px 40px',
+              }}
+            >
+              Поскольку вы перешли в статус возврата, вы больше не можете выполнять какие-либо операции с этой продажей.
+            </Typography>
+          )}
           <Box
             sx={{
               position: 'absolute',

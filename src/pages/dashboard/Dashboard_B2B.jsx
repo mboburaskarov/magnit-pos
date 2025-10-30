@@ -32,7 +32,7 @@ export default function Dashboard_B2B({ selectedShops, setSelectedShops }) {
         >
           <LeftArrowIcon />
         </Box>
-        <Typography variant='h1' fontWeight={600} ml={'20px'} fontSize={'40px'} lineHeight={'50px'} color={'dark.500'}>
+        <Typography mt={'4px'} fontWeight={600} ml={'20px'} fontSize={'40px'} lineHeight={'50px'} color={'dark.500'}>
           B2B
         </Typography>
       </Box>
@@ -43,12 +43,12 @@ export default function Dashboard_B2B({ selectedShops, setSelectedShops }) {
           sx={{
             maxWidth: 400,
             '.selection': {
-              height: '56px',
+              height: '48px',
             },
           }}
         >
           <MultiOptionSelectNew
-            zIndex={999}
+            zIndex={9}
             placeholder={t('placeholders.select_shops')}
             multiple
             customFilter={{

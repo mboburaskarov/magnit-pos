@@ -181,6 +181,7 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'start',
+                width: 'max-content',
               }}
             >
               {customDateRangeSelected.split('\n').map((letter, index) => {

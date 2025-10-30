@@ -214,6 +214,26 @@ export default function MainDetails({ quickCreateClientName, clientData, openDra
             </>
           )}
         </Grid>
+        <Grid mt={'25px'} item xs={6}>
+          {get(openDrawer, 'data.loyalty_card_barcode', false) && (
+            <Box
+              sx={{
+                padding: '20px',
+                height: '160px',
+                borderRadius: '16px',
+                background: 'linear-gradient(147.13deg, #fbff00 3.88%, #ffad00 73.63%)',
+              }}
+            >
+              <BrandCardIcon />
+              <Box mt={'28px'}>
+                <Typography sx={{ fontSize: '14px', fontWeight: '500', lineHeight: '20px', color: '#AFD5FF' }}>Карта лояльности</Typography>
+                <Typography sx={{ fontSize: '28px', fontWeight: '700', lineHeight: '40px', color: 'white' }}>
+                  {thousandDivider(get(openDrawer, 'data.balance', 0), 'сум')}{' '}
+                </Typography>
+              </Box>
+            </Box>
+          )}
+        </Grid>
         {/* <Grid sx={{ mt: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} gap={'8px'} item xs={6}>
           <Button sx={{ height: '48px', width: '100%' }} color='secondary'>
             Отменить

@@ -31,7 +31,7 @@ import { useQueryParams } from '../../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/changePriceDetailTableColumns'
 import ChangePriceModal from './changePriceModal'
 import ChangePriceDashboard from './dashboard'
-import FilterMenu from './FilterMenu'
+// import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
@@ -317,7 +317,7 @@ export default function ChangePriceDetailPage() {
                   <InputSearch id='producrs-search' name='search' placeholder={'Наименование'} uncontrolled />
                 </Box>
                 <Box minWidth={'580px'} display={'flex'}>
-                  <Box minWidth={113} ml={'16px'}>
+                  {/* <Box minWidth={113} ml={'16px'}>
                     <Button
                       sx={{
                         height: '48px',
@@ -342,7 +342,7 @@ export default function ChangePriceDetailPage() {
                         {t('filter_dialog.label')}
                       </Typography>
                     </Button>
-                  </Box>
+                  </Box> */}
                   <Box
                     sx={{
                       display: 'flex',
@@ -409,7 +409,7 @@ export default function ChangePriceDetailPage() {
                 </Box>
               </Box>
             </Box>
-            <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
+            {/* <FilterMenu open={filterMenu} setOpen={setFilterMenu} /> */}
             <Box>
               <AgGridTable
                 downloadByFilter={() => revaluationExcelReport(revaluationDetailListFilter)}

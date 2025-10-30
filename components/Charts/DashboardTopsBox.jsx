@@ -17,11 +17,12 @@ export default function DashboardTopsBox({
   subTitle,
   isLoading = true,
   href = false,
+  collapseCount = 5,
   noData = { title: 'Информация не найдена', description: 'Данные за этот период не найдены' },
 }) {
   const { t } = useTranslation()
   const [isCollapse, setIsCollapse] = useState(false)
-  const formattedData = isCollapse ? data : data?.slice(0, 5)
+  const formattedData = isCollapse ? data : data?.slice(0, collapseCount)
   const navigate = useNavigate()
   const { navigateWithParams } = useNavigateWithParams()
 
@@ -32,6 +33,7 @@ export default function DashboardTopsBox({
         border: '1px solid #ECEDF2',
         borderRadius: '16px',
         padding: '20px',
+        paddingBottom: '4px',
         backgroundColor: 'white',
         width: '100%',
         position: 'relative',
