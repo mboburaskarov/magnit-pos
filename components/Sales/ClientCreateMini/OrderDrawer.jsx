@@ -22,7 +22,6 @@ import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import QrScanIcon from '../../../src/assets/icons/QrScanIcon'
 import thousandDivider from '../../../utils/thousandDivider'
 import TextField from '../../Inputs/TextField'
-import LoadingBlock from '../../LoadingBlock'
 import PreventRefresh from '../../../src/pages/sales/new-order/preventRefresh'
 import PreventRefreshDialog from '../../../src/pages/sales/new-order/preventRefreshDialog'
 
