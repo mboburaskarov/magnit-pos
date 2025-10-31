@@ -26,6 +26,7 @@ import ShoppingBasketArrow from '../../assets/icons/dashboard/ShoppingBasketArro
 import ShoppingBasketCheck from '../../assets/icons/dashboard/ShoppingBasketCheck'
 import StopWatchMinus from '../../assets/icons/dashboard/StopWatchMinus'
 import HourglassEnd from '../../assets/icons/dashboard/HourglassEnd'
+import Gift from '../../assets/icons/dashboard/Gift'
 export default function DashboarB2BPage() {
   dayjs.extend(isoWeek)
   const { type } = useSelector((state) => state.user)
@@ -163,7 +164,109 @@ export default function DashboarB2BPage() {
       },
     ]
   }
-
+  const dashboardBoxData = [
+    {
+      title: t('Общая сумма продаж'),
+      icon: <MoneyArrowDown color='#fe5000' />,
+      count: 'sale_amount',
+      endText: 'сум',
+      id: 'sale_amount',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_sale_amount',
+    },
+    {
+      title: t('Себестоимость'),
+      icon: <ChartArrowUp color='#fe5000' />,
+      count: 'production_cost',
+      endText: 'сум',
+      id: 'production_cost',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_production_cost',
+    },
+    {
+      title: t('Чистая прибыль'),
+      icon: <ChartArrowUp color='#fe5000' />,
+      count: 'income_amount',
+      endText: 'сум',
+      id: 'income_amount',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_income_amount',
+    },
+    {
+      title: t('Импорт в ожидании (за весь период)'),
+      icon: <TimeForward color='#fe5000' />,
+      count: 'import_amount',
+      endText: 'сум',
+      id: 'import_amount',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_import_amount',
+    },
+    {
+      title: t('Импорты старше 24 часов'),
+      icon: <Time24 color='#fe5000' />,
+      count: 'not_last_24h_import_amount',
+      endText: 'сум',
+      id: 'not_last_24h_import_amount',
+      percent: () => 0,
+      old: 'before_not_last_24h_import_amount',
+    },
+    {
+      title: t('Общая сумма баланса'),
+      icon: <Wallet color='#fe5000' />,
+      count: 'stock_total_amount',
+      endText: 'сум',
+      id: 'stock_total_amount',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_stock_amount',
+    },
+    {
+      title: t('Общее количество продаж'),
+      icon: <ShoppingBasketArrow color='#fe5000' />,
+      count: 'sale_count',
+      endText: 'шт',
+      id: 'sale_count',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_sale_count',
+    },
+    {
+      title: t('Общее количество остатков'),
+      icon: <ShoppingBasketCheck color='#fe5000' />,
+      count: 'total_product_count',
+      endText: 'шт',
+      id: 'total_product_count',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_product_count',
+    },
+    {
+      title: t('Просроченные продукты'),
+      icon: <StopWatchMinus color='#fe5000' />,
+      count: 'expired_soon_count',
+      endText: 'шт',
+      id: 'expired_soon_amount',
+      amount: 'expired_soon_amount',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_expired_soon_amount',
+    },
+    {
+      title: t('Истекающий срок'),
+      icon: <HourglassEnd color='#fe5000' />,
+      count: 'expiring_soon_count',
+      amount: 'expiring_soon_amount',
+      endText: 'шт',
+      id: 'expiring_soon_amount',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_expiring_soon_amount',
+    },
+    // {
+    //   title: t('Ваш бонус'),
+    //   icon: <Gift color='#fe5000' />,
+    //   count: 'bonus_amount',
+    //   endText: 'сум',
+    //   id: 'bonus_amount',
+    //   percent: (before, current) => calculatePercentage(before || 1, current),
+    //   old: 'before_bonus_amount',
+    // },
+  ]
   const dashboard_company_filter = useMemo(() => {
     const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
     const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
@@ -198,15 +301,13 @@ export default function DashboarB2BPage() {
           <Grid width={'100%'} item>
             <Dashboard_B2B setSelectedShops={setSelectedComapanies} selectedShops={selectedComapanies} />
             <Grid container mt={0} spacing={2}>
-              {OrdersStatistics(get(companyCountStats, 'data.data', {}))
-                ?.filter((el) => (check ? el : el.title !== 'Общая сумма заказов'))
-                ?.map((el, ind) => (
-                  <CheckAccess id={`dashboard-box-${el.id}`}>
-                    <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
-                      <DashboardInfoBox isLoading={isLoading} key={ind} {...el} />
-                    </Grid>
-                  </CheckAccess>
-                ))}
+              {dashboardBoxData.map((el, ind) => (
+                <CheckAccess id={`dashboard-box-${el.id}`}>
+                  <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
+                    <DashboardInfoBox dashboard_filter={dashboard_company_filter} key={ind} {...el} />
+                  </Grid>
+                </CheckAccess>
+              ))}
             </Grid>
           </Grid>
         </Grid>

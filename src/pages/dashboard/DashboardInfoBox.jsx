@@ -1,14 +1,55 @@
 import { Box, Typography, Skeleton } from '@mui/material'
-import thousandDivider from '../../../utils/thousandDivider'
-import FallIcon from '../../assets/icons/FallIcon'
-import GrowIcon from '../../assets/icons/GrowIcon'
+import thousandDivider from '@utils/thousandDivider'
+import { useQuery } from 'react-query'
+import { requests } from '@utils/requests'
 
-export default function DashboardInfoBox({ noDot, ind, title, icon, count, amount, percent, id, old, endText, withoutDivider, isLoading, ...l }) {
+export default function DashboardInfoBox({
+  noDot,
+  ind,
+  title,
+  icon,
+  count: countProp,
+  amount: amountProp,
+  percent: percentProp,
+  id,
+  old,
+  endText,
+  withoutDivider,
+  dashboard_filter,
+  ...l
+}) {
+  const isSaleBox = ['sale_amount', 'sale_count'].includes(id)
+  const isNetProfit = ['income_amount', 'production_cost'].includes(id)
+  const isImport = ['import_amount', 'not_last_24h_import_amount'].includes(id)
+  const isProduct = [
+    'total_product_count',
+    'stock_total_amount',
+    'expiring_soon_count',
+    'expired_soon_count',
+    'expiring_soon_amount',
+    'expired_soon_amount',
+  ].includes(id)
+  const isEmployee = id === 'bonus_amount'
+  const { data: countStats, isLoading } = useQuery({
+    queryKey: [id, dashboard_filter],
+    queryFn: async () => {
+      if (isSaleBox) return requests.dashboradSaleStatistic(dashboard_filter)
+      if (isNetProfit) return requests.dashboradNetProfitStatistic(dashboard_filter)
+      if (isImport) return requests.dashboradImportStatistic(dashboard_filter)
+      if (isProduct) return requests.dashboradProductStatistic(dashboard_filter)
+      if (isEmployee) return requests.dashboradEmployeeStatistic(dashboard_filter)
+      throw new Error('Unknown id')
+    },
+    enabled: isSaleBox || isNetProfit || isProduct || isImport || isEmployee, // fetch only if valid
+  })
+  const count = countStats?.data?.data?.[countProp]
+  const before = countStats?.data?.data?.old
+  const amount = countStats?.data?.data?.[amountProp]
+  const percent = percentProp(before, count)
   const isFall = percent < 0
-
   return (
     <Box sx={(theme) => ({ border: 1, borderRadius: '16px', borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' })}>
-      <Box key={ind} sx={(theme) => ({ p: '20px', minHeight: '115px', m: 0 })}>
+      <Box key={ind} sx={(theme) => ({ p: '20px', height: '164px', m: 0 })}>
         <Box width='100%' alignItems={'start'} flexDirection={'column'} display='inline-flex'>
           {!noDot && <Box height={'48px'}>{isLoading ? <Skeleton variant='circular' width={48} height={48} sx={{ borderRadius: '12px' }} /> : icon}</Box>}
           <Box flex={1}>
@@ -44,7 +85,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
           <Box mt={icon ? '0px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
             <Box flex={1}>
               {isLoading ? (
-                <Skeleton variant='rectangular' width='55%' height={40} sx={{ borderRadius: '8px', mt: '8px' }} />
+                <Skeleton variant='rectangular' width='55%' height={40} sx={{ borderRadius: '8px' }} />
               ) : (
                 <Typography
                   alignItems={'end'}
@@ -71,7 +112,7 @@ export default function DashboardInfoBox({ noDot, ind, title, icon, count, amoun
         }
       </Box>
 
-      <Box key={ind} sx={(theme) => ({ py: '18px', px: '20px', m: 0, borderTop: 1, borderColor: '#A4A5AB33' })}>
+      <Box key={ind} sx={(theme) => ({ py: '18px', px: '20px', height: '52px', m: 0, borderTop: 1, borderColor: '#A4A5AB33' })}>
         <Box
           sx={{
             display: 'flex',

@@ -208,6 +208,109 @@ export default function DashboarPage() {
       },
     ]
   }
+  const dashboardBoxData = [
+    {
+      title: t('Общая сумма продаж'),
+      icon: <MoneyArrowDown color='#fe5000' />,
+      count: 'sale_amount',
+      endText: 'сум',
+      id: 'sale_amount',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_sale_amount',
+    },
+    {
+      title: t('Себестоимость'),
+      icon: <ChartArrowUp color='#fe5000' />,
+      count: 'production_cost',
+      endText: 'сум',
+      id: 'production_cost',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_production_cost',
+    },
+    {
+      title: t('Чистая прибыль'),
+      icon: <ChartArrowUp color='#fe5000' />,
+      count: 'income_amount',
+      endText: 'сум',
+      id: 'income_amount',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_income_amount',
+    },
+    {
+      title: t('Импорт в ожидании (за весь период)'),
+      icon: <TimeForward color='#fe5000' />,
+      count: 'import_amount',
+      endText: 'сум',
+      id: 'import_amount',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_import_amount',
+    },
+    {
+      title: t('Импорты старше 24 часов'),
+      icon: <Time24 color='#fe5000' />,
+      count: 'not_last_24h_import_amount',
+      endText: 'сум',
+      id: 'not_last_24h_import_amount',
+      percent: () => 0,
+      old: 'before_not_last_24h_import_amount',
+    },
+    {
+      title: t('Общая сумма баланса'),
+      icon: <Wallet color='#fe5000' />,
+      count: 'stock_total_amount',
+      endText: 'сум',
+      id: 'stock_total_amount',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_stock_amount',
+    },
+    {
+      title: t('Общее количество продаж'),
+      icon: <ShoppingBasketArrow color='#fe5000' />,
+      count: 'sale_count',
+      endText: 'шт',
+      id: 'sale_count',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_sale_count',
+    },
+    {
+      title: t('Общее количество остатков'),
+      icon: <ShoppingBasketCheck color='#fe5000' />,
+      count: 'total_product_count',
+      endText: 'шт',
+      id: 'total_product_count',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_product_count',
+    },
+    {
+      title: t('Просроченные продукты'),
+      icon: <StopWatchMinus color='#fe5000' />,
+      count: 'expired_soon_count',
+      endText: 'шт',
+      id: 'expired_soon_amount',
+      amount: 'expired_soon_amount',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_expired_soon_amount',
+    },
+    {
+      title: t('Истекающий срок'),
+      icon: <HourglassEnd color='#fe5000' />,
+      count: 'expiring_soon_count',
+      amount: 'expiring_soon_amount',
+      endText: 'шт',
+      id: 'expiring_soon_amount',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_expiring_soon_amount',
+    },
+    {
+      title: t('Ваш бонус'),
+      icon: <Gift color='#fe5000' />,
+      count: 'bonus_amount',
+      endText: 'сум',
+      id: 'bonus_amount',
+      percent: (before, current) => calculatePercentage(before || 1, current),
+      old: 'before_bonus_amount',
+    },
+  ]
 
   const dashboard_filter = useMemo(() => {
     const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
@@ -232,9 +335,9 @@ export default function DashboarPage() {
   }, [values?.offset, detalization, selectedShops, values?.start_date, values?.end_date, values?.from_time, values?.to_time, values?.limit, values?.search])
 
   const { data: chartData, isLoading: isChartLoading } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
-  const { data: countStats, isLoading } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter), {
-    staleTime: 1000 * 60 * 1, // 1 minutes — won’t refetch until 1 mins passed
-  })
+  // const { data: countStats, isLoading } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter), {
+  // staleTime: 1000 * 60 * 1, // 1 minutes — won’t refetch until 1 mins passed
+  // })
   const { data: topStores, isLoading: isTopStoreLoading } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
   const { data: payments, isLoading: isPaymentsLoading } = useQuery(['payments', dashboard_filter], () => requests.dashboradPayments(dashboard_filter))
   const { data: transaction, isLoading: isTransactionLoading } = useQuery(['transaction', dashboard_filter], () =>
@@ -280,15 +383,13 @@ export default function DashboarPage() {
         <Grid width={'100%'} container>
           <Grid width={'100%'} item>
             <Grid container mt={0} spacing={2}>
-              {OrdersStatistics(get(countStats, 'data.data', {}))
-                ?.filter((el) => (check ? el : el.title !== 'Общая сумма заказов'))
-                ?.map((el, ind) => (
-                  <CheckAccess id={`dashboard-box-${el.id}`}>
-                    <Grid item xs={12} xl={3} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
-                      <DashboardInfoBox key={ind} {...el} isLoading={isLoading} />
-                    </Grid>
-                  </CheckAccess>
-                ))}
+              {dashboardBoxData.map((el, ind) => (
+                <CheckAccess id={`dashboard-box-${el.id}`}>
+                  <Grid item xs={12} xl={3} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
+                    <DashboardInfoBox key={ind} {...el} dashboard_filter={dashboard_filter} />
+                  </Grid>
+                </CheckAccess>
+              ))}
               <CheckAccess id={`franchise-dashboard-box`}>
                 <Grid item xs={12} xl={3} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
                   <Box
