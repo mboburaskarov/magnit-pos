@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get, head } from 'lodash'
-import thousandDivider from '../../utils/thousandDivider'
+import thousandDivider from '@utils/thousandDivider'
 
 const useStyles = makeStyles((theme) => ({
   root: {

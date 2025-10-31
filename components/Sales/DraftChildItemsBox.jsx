@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
 import React from 'react'
-import thousandDivider from '../../utils/thousandDivider'
+import thousandDivider from '@utils/thousandDivider'
 import CustomImg from '../CustomImg'
 const useStyles = makeStyles((theme) => ({
   productImg: {

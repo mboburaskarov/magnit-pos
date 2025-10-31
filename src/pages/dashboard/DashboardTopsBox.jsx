@@ -2,12 +2,12 @@ import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, Ta
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
-import thousandDivider from '../../utils/thousandDivider'
-import { useNavigateWithParams } from '../../src/hooks/useNavigateWithParams'
-import RightArrowRound from '../../src/assets/icons/dashboard/RightArrowRound'
-import SortIcon from '../../src/assets/icons/dashboard/SortIcon'
-import SortUpIcon from '../../src/assets/icons/dashboard/SortUpIcon'
-import SortDownIcon from '../../src/assets/icons/dashboard/SortDownIcon'
+import thousandDivider from '@utils/thousandDivider'
+import { useNavigateWithParams } from '@hooks/useNavigateWithParams'
+import RightArrowRound from '@icons/dashboard/RightArrowRound'
+import SortIcon from '@icons/dashboard/SortIcon'
+import SortUpIcon from '@icons/dashboard/SortUpIcon'
+import SortDownIcon from '@icons/dashboard/SortDownIcon'
 import { size } from 'lodash'
 
 export default function DashboardTopsBox({

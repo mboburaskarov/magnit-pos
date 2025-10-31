@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
-import { getDateFromDateTime, getTimeFromDateTime } from '../../utils/parseDateTime'
-import paletteLight from '../../src/assets/theme/paletteLight'
+import { getDateFromDateTime, getTimeFromDateTime } from '@utils/parseDateTime'
+import paletteLight from '@/assets/theme/paletteLight'
 
 export default function ChartAxisTick({ x, y, payload, detalization, index, visibleTicksCount }) {
   const hideEvenTicksMonthOption = detalization.value === 'month' && (visibleTicksCount > 8 ? index % 2 !== 0 : false)

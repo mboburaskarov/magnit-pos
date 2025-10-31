@@ -3,11 +3,11 @@ import { get } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useInView } from 'react-intersection-observer'
-import ArrowDown from '../../src/assets/icons/ArrowDown'
-import ArrowUp from '../../src/assets/icons/ArrowUp'
-import TickSmallIcon from '../../src/assets/icons/TickIcon'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
-import { error } from '../../utils/toast'
+import ArrowDown from '@icons/ArrowDown'
+import ArrowUp from '@icons/ArrowUp'
+import TickSmallIcon from '@icons/TickIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { error } from '@utils/toast'
 import StyledTooltip from '../StyledTooltip'
 import './select.css'
 
@@ -330,6 +330,17 @@ const MultiOptionSelectNew = ({
     // e.preventDefault()
     // e.stopPropagation()
   }
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
 
   useEffect(() => {
     setTempValues(multiple ? values : values?.[0])
@@ -456,7 +467,7 @@ const MultiOptionSelectNew = ({
                 </div>
               )}
 
-              {options.map(renderOption)}
+              <Box sx={{ maxHeight: '330px', overflow: 'auto' }}>{options.map(renderOption)}</Box>
               {pagination.hasMore && <div ref={bottomRef} style={{ height: '20px', width: '100%' }} />}
               {isLoading && (
                 <div className='loading-indicator' style={{ padding: '10px', textAlign: 'center' }}>
@@ -477,6 +488,7 @@ const MultiOptionSelectNew = ({
       sx={{
         minWidth: 300,
         '& .options': {
+          overflowY: 'hidden !important',
           height: '450px !important',
         },
       }}

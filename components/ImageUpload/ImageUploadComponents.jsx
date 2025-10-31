@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material'
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
-import getImageUrl from '../../utils/getImageUrl'
+import getImageUrl from '@utils/getImageUrl'
 import CustomImg from '../CustomImg'
 
 export const SortablePhoto = SortableElement(({ item, i, setEditingImage, setUploadedImages, id, setCount, count }) => {

@@ -12,8 +12,8 @@ import InputPassword from '../../components/Inputs/InputPasswordNew'
 import NumberFormatInput from '../../components/Inputs/OutLineTextFieldThousand'
 import TextField from '../../components/Inputs/TextField'
 import SelectSimple from '../../components/Select/SelectSimple'
-import { requests } from '../../utils/requests'
-import { error, success } from '../../utils/toast'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
 import ArrowRightIcon from '../assets/icons/ArrowRightIcon'
 const useStyles = makeStyles((theme) => ({
   box: {

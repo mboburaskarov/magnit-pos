@@ -5,16 +5,19 @@ import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import CloseIcon from '../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import CloseIcon from '@icons/CloseIcon'
 
 export default function EditDiscountCard({ open, refetch, setOpen }) {
   const methods = useForm()
-  const { reset, control } = methods
-  const { mutate: editDiscountCard, isLoading: iseditDiscountCard } = useMutation(requests.editDiscountCard, {
+  const theme = useTheme()
+  const { t } = useTranslation()
+  const { reset } = methods
+
+  const { mutate: editDiscountCard } = useMutation(requests.editDiscountCard, {
     onSuccess: () => {
       setOpen(false)
       success('Редактировать дисконтная карта успешно!')
@@ -27,9 +30,7 @@ export default function EditDiscountCard({ open, refetch, setOpen }) {
   })
   const onSubmit = (data) => {
     const requestBody = {
-      // customer_id: data.customer_id.value,
       percent: data.percent,
-      // barcode: String(data.barcode),
     }
     editDiscountCard({ data: requestBody, id: get(open, 'id', 0) })
   }
@@ -43,14 +44,11 @@ export default function EditDiscountCard({ open, refetch, setOpen }) {
     reset(
       {
         percent: get(open, 'percent', 0),
-        // barcode: get(open, 'barcode', 0),
       },
       { keepDirty: true }
     )
   }, [open])
-  const theme = useTheme()
 
-  const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       overflowVisible

@@ -1,11 +1,11 @@
 import { Box, Typography } from '@mui/material'
-import { numberToPrice } from '../../utils/numberToPrice'
-import { colors } from '../../utils/getColors'
+import { numberToPrice } from '@utils/numberToPrice'
+import { colors } from '@utils/getColors'
 import { useTranslation } from 'react-i18next'
 import { useStyles } from './OrderListItem'
 import React from 'react'
 import GiftCardBadge from '../GiftCardBadge'
-import { getGiftCardTitle } from '../../utils/getGiftCardTitle'
+import { getGiftCardTitle } from '@utils/getGiftCardTitle'
 
 const GiftCardListItem = ({ data }) => {
   const cls = useStyles()

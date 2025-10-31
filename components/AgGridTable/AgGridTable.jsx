@@ -10,7 +10,7 @@ import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react
 import { useLocation, useNavigate } from 'react-router-dom'
 import { usePrevious } from 'react-use'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
-import isEqual from '../../utils/isEqual'
+import isEqual from '@utils/isEqual'
 import LoadingBlurry from '../LoadingBlurry'
 import AgGridBottom from './AgGridBottom'
 import { HeaderCheckbox, icons, OverlayLoadingTemplateFunc, OverlayNoRowsTemplate } from './AgGridComponents'

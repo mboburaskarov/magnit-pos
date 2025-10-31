@@ -1,7 +1,7 @@
 import { Box, IconButton, Typography } from '@mui/material'
 import { useState } from 'react'
 import BackArrowIcon from '../../src/assets/icons/BackArrow'
-import getImageUrl from '../../utils/getImageUrl'
+import getImageUrl from '@utils/getImageUrl'
 import CustomImg from '../CustomImg'
 import { SortableGallery, SortablePhoto } from './ImageUploadComponents'
 

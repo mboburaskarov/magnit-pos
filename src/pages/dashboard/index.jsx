@@ -1,63 +1,153 @@
-import { ArrowRightRounded } from '@mui/icons-material'
 import { Box, Button, Grid, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import isoWeek from 'dayjs/plugin/isoWeek'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
-import TotalOrdersByCity from '../../../components/Charts/SingleBarChart'
-import SingleLineChart from '../../../components/Charts/SingleLineChart'
-import TopBonusProducts from '../../../components/Charts/TopBonusProducts'
-import TopProducts from '../../../components/Charts/TopProducts'
-import TopSellers from '../../../components/Charts/TopSellers'
-import Transactions from '../../../components/Charts/transactions'
-import CheckAccess from '../../../components/CheckAccess'
-import LoadingContainer from '../../../components/LoadingContainer'
-import { calculatePercentage } from '../../../utils/calculatePercentage'
-import dataTypeFilter from '../../../utils/dataTypeFilter'
-import { getDetaling } from '../../../utils/getDetaling'
-import { requests } from '../../../utils/requests'
-import thousandDivider from '../../../utils/thousandDivider'
-import OrdersIcon from '../../assets/icons/OrdersIcon'
-import ProductsIcon from '../../assets/icons/ProductsIcon'
-import RevenueIcon from '../../assets/icons/RevenueIcon'
-import { paymentTypes } from '../../../constants/paymentTypes'
-import VendorsIcon from '../../assets/icons/VendorsIcon'
-import MoneyArrowDown from '../../assets/icons/dashboard/MoneyArrowDown'
-import { useQueryParams } from '../../hooks/useQueryParams'
+import { Link } from 'react-router-dom'
+import SingleLineChart from '@components/Charts/SingleLineChart'
+import CheckAccess from '@components/CheckAccess'
+import LoadingContainer from '@components/LoadingContainer'
+
+import { calculatePercentage } from '@utils/calculatePercentage'
+import dataTypeFilter from '@utils/dataTypeFilter'
+import { getDetaling } from '@utils/getDetaling'
+import { requests } from '@utils/requests'
+import thousandDivider from '@utils/thousandDivider'
+
+import { paymentTypes } from '@constants/paymentTypes'
+
+import { useQueryParams } from '@hooks/useQueryParams'
+
+import ChartArrowUp from '@icons/dashboard/ChartArrowUp'
+import TimeForward from '@icons/dashboard/TimeForward'
+import Time24 from '@icons/dashboard/Time24'
+import Wallet from '@icons/dashboard/Wallet'
+import ShoppingBasketArrow from '@icons/dashboard/ShoppingBasketArrow'
+import ShoppingBasketCheck from '@icons/dashboard/ShoppingBasketCheck'
+import StopWatchMinus from '@icons/dashboard/StopWatchMinus'
+import HourglassEnd from '@icons/dashboard/HourglassEnd'
+import Gift from '@icons/dashboard/Gift'
+import RightArrowIcon from '@icons/RightArrowIcon'
+import HomeSetting from '@icons/dashboard/HomeSetting'
+import MoneyArrowDown from '@icons/dashboard/MoneyArrowDown'
+
 import DashboardHeader from './DashboardHeader'
 import DashboardInfoBox from './DashboardInfoBox'
 import ImportPage from './expiredImports/index'
-import ChartArrowUp from '../../assets/icons/dashboard/ChartArrowUp'
-import TimeForward from '../../assets/icons/dashboard/TimeForward'
-import Time24 from '../../assets/icons/dashboard/Time24'
-import Wallet from '../../assets/icons/dashboard/Wallet'
-import ShoppingBasketArrow from '../../assets/icons/dashboard/ShoppingBasketArrow'
-import ShoppingBasketCheck from '../../assets/icons/dashboard/ShoppingBasketCheck'
-import StopWatchMinus from '../../assets/icons/dashboard/StopWatchMinus'
-import HourglassEnd from '../../assets/icons/dashboard/HourglassEnd'
-import Gift from '../../assets/icons/dashboard/Gift'
-import DashboardTopsBox from '../../../components/Charts/DashboardTopsBox'
-import LeftArrowIcon from '../../assets/icons/LeftArrow'
-import RightArrowRound from '../../assets/icons/dashboard/RightArrowRound'
-import RightArrowIcon from '../../assets/icons/RightArrowIcon'
-import HomeSetting from '../../assets/icons/dashboard/HomeSetting'
+import DashboardTopsBox from './DashboardTopsBox'
+
+export const dashboardBoxData = [
+  {
+    title: 'Общая сумма продаж',
+    icon: <MoneyArrowDown color='#fe5000' />,
+    count: 'sale_amount',
+    endText: 'сум',
+    id: 'sale_amount',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_sale_amount',
+  },
+  {
+    title: 'Себестоимость',
+    icon: <ChartArrowUp color='#fe5000' />,
+    count: 'production_cost',
+    endText: 'сум',
+    id: 'production_cost',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_production_cost',
+  },
+  {
+    title: 'Чистая прибыль',
+    icon: <ChartArrowUp color='#fe5000' />,
+    count: 'income_amount',
+    endText: 'сум',
+    id: 'income_amount',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_income_amount',
+  },
+  {
+    title: 'Импорт в ожидании (за весь период)',
+    icon: <TimeForward color='#fe5000' />,
+    count: 'import_amount',
+    endText: 'сум',
+    id: 'import_amount',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_import_amount',
+  },
+  {
+    title: 'Импорты старше 24 часов',
+    icon: <Time24 color='#fe5000' />,
+    count: 'not_last_24h_import_amount',
+    endText: 'сум',
+    id: 'not_last_24h_import_amount',
+    percent: () => 0,
+    old: 'before_not_last_24h_import_amount',
+  },
+  {
+    title: 'Общая сумма баланса',
+    icon: <Wallet color='#fe5000' />,
+    count: 'stock_total_amount',
+    endText: 'сум',
+    id: 'stock_total_amount',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_stock_amount',
+  },
+  {
+    title: 'Общее количество продаж',
+    icon: <ShoppingBasketArrow color='#fe5000' />,
+    count: 'sale_count',
+    endText: 'шт',
+    id: 'sale_count',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_sale_count',
+  },
+  {
+    title: 'Общее количество остатков',
+    icon: <ShoppingBasketCheck color='#fe5000' />,
+    count: 'total_product_count',
+    endText: 'шт',
+    id: 'total_product_count',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_product_count',
+  },
+  {
+    title: 'Просроченные продукты',
+    icon: <StopWatchMinus color='#fe5000' />,
+    count: 'expired_soon_count',
+    endText: 'шт',
+    id: 'expired_soon_amount',
+    amount: 'expired_soon_amount',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_expired_soon_amount',
+  },
+  {
+    title: 'Истекающие через 3 месяца',
+    icon: <HourglassEnd color='#fe5000' />,
+    count: 'expiring_soon_count',
+    amount: 'expiring_soon_amount',
+    endText: 'шт',
+    id: 'expiring_soon_amount',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_expiring_soon_amount',
+  },
+  {
+    title: 'Ваш бонус',
+    icon: <Gift color='#fe5000' />,
+    count: 'bonus_amount',
+    endText: 'сум',
+    id: 'bonus_amount',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_bonus_amount',
+  },
+]
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
-  const { type } = useSelector((state) => state.user)
   const { values } = useQueryParams()
   const [detailing, setDetaling] = useState('week')
   const [selectedShops, setSelectedShops] = useState('all')
-  const [selectedComapanies, setSelectedComapanies] = useState('all')
-  const navigate = useNavigate()
   const [detalization, setDetalization] = useState({ name: 'по дням', value: 'day' })
   const [chartType, setchartType] = useState({ name: 'Продажи', value: 'sale' })
-  const check = type === 'SUPERADMIN' || type === 'ACCOUNTANT'
   const [sortBy, setSortBy] = useState('SUM')
-  const { t } = useTranslation()
   const dashboardFilter = useMemo(() => {
     return { type: sortBy, fromDate: values?.start_date, toDate: values?.end_date }
   }, [values?.start_date, values?.end_date, sortBy])
@@ -72,245 +162,6 @@ export default function DashboarPage() {
 
   const totalSum = chartInfo?.data?.reduce((acc, item) => acc + item?.totalAmount, 0)
   const totalCount = chartInfo?.data?.reduce((acc, item) => acc + item?.count, 0)
-  const OrdersStatistics = ({
-    total_sale_amount,
-    total_product_count,
-    total_sale_count,
-    expiring_soon_amount,
-    expired_soon_amount,
-    total_net_income,
-    stock_total_amount,
-    bonus_amount,
-    expiring_soon_count,
-    expired_soon_count,
-    before_sale_amount,
-    before_product_count,
-    before_sale_count,
-    not_last_24h_import_amount,
-    before_expiring_soon_amount,
-    before_expired_soon_amount,
-    import_amount,
-    before_import_amount,
-    before_total_net_income,
-    before_stock_amount,
-    before_bonus_amount,
-    before_expiring_soon_count,
-    before_product_turnover,
-    product_turnover,
-  }) => {
-    return [
-      {
-        title: t('Общая сумма продаж'),
-        icon: <MoneyArrowDown color='#fe5000' />,
-        count: total_sale_amount,
-        percent: calculatePercentage(before_sale_amount || 1, total_sale_amount),
-        id: 'total_sale_amount',
-        endText: 'сум',
-        old: before_sale_amount,
-      },
-      {
-        title: t('Себестоимость'),
-        icon: <ChartArrowUp color='#fe5000' />,
-        count: product_turnover,
-        percent: calculatePercentage(before_sale_amount || 1, product_turnover),
-        id: 'product_turnover',
-        endText: 'сум',
-        old: before_product_turnover,
-      },
-      {
-        title: t('Чистая прибыль'),
-        icon: <ChartArrowUp color='#fe5000' />,
-        count: total_net_income,
-        endText: 'сум',
-        percent: calculatePercentage(before_total_net_income || 1, total_net_income),
-        id: 'total_net_income',
-        old: before_total_net_income,
-      },
-      {
-        title: t('Импорт в ожидании (за весь период)'),
-        icon: <TimeForward color='#fe5000' />,
-        count: import_amount,
-        percent: calculatePercentage(before_import_amount || 1, import_amount),
-        id: 'import_amount',
-        endText: 'сум',
-        old: before_import_amount,
-      },
-      {
-        title: t('Импорты старше 24 часов'),
-        icon: <Time24 color='#fe5000' />,
-        count: not_last_24h_import_amount,
-        percent: 0,
-        id: 'current_import_amount',
-        endText: 'сум',
-        old: 0,
-      },
-      {
-        title: t('Общая сумма баланса'),
-        icon: <Wallet color='#fe5000' />,
-
-        count: stock_total_amount,
-        endText: 'сум',
-        id: 'stock_total_amount',
-        percent: calculatePercentage(before_stock_amount || 1, stock_total_amount),
-        old: before_stock_amount,
-      },
-
-      {
-        title: t('Общее количество продаж'),
-        icon: <ShoppingBasketArrow color='#fe5000' />,
-        count: total_sale_count,
-        endText: 'шт',
-
-        id: 'total_sale_count',
-        percent: calculatePercentage(before_sale_count || 1, total_sale_count),
-        old: before_sale_count,
-      },
-      {
-        title: t('Общее количество остатков'),
-        icon: <ShoppingBasketCheck color='#fe5000' />,
-        count: total_product_count,
-        endText: 'шт',
-
-        percent: calculatePercentage(before_product_count || 1, total_product_count),
-        id: 'total_product_count',
-        old: before_product_count,
-      },
-      {
-        title: t('Просроченные продукты'),
-        icon: <StopWatchMinus color='#fe5000' />,
-        count: expired_soon_count,
-        endText: 'шт',
-
-        amount: expired_soon_amount,
-        id: 'expired_soon_amount',
-        percent: calculatePercentage(before_expiring_soon_count || 1, expired_soon_count),
-        old: before_expired_soon_amount,
-      },
-      {
-        title: t('Истекающий срок'),
-        icon: <HourglassEnd color='#fe5000' />,
-        count: expiring_soon_count,
-        amount: expiring_soon_amount,
-        id: 'expiring_soon_amount',
-        endText: 'шт',
-        percent: calculatePercentage(before_expiring_soon_count || 1, expiring_soon_count),
-        old: before_expiring_soon_amount,
-      },
-
-      {
-        title: t('Ваш бонус'),
-        icon: <Gift color='#fe5000' />,
-        count: bonus_amount,
-        id: 'bonus_amount',
-        percent: calculatePercentage(before_bonus_amount || 1, bonus_amount),
-        endText: 'сум',
-        old: before_bonus_amount,
-      },
-    ]
-  }
-  const dashboardBoxData = [
-    {
-      title: t('Общая сумма продаж'),
-      icon: <MoneyArrowDown color='#fe5000' />,
-      count: 'sale_amount',
-      endText: 'сум',
-      id: 'sale_amount',
-      percent: (before, current) => calculatePercentage(before || 1, current),
-      old: 'before_sale_amount',
-    },
-    {
-      title: t('Себестоимость'),
-      icon: <ChartArrowUp color='#fe5000' />,
-      count: 'production_cost',
-      endText: 'сум',
-      id: 'production_cost',
-      percent: (before, current) => calculatePercentage(before || 1, current),
-      old: 'before_production_cost',
-    },
-    {
-      title: t('Чистая прибыль'),
-      icon: <ChartArrowUp color='#fe5000' />,
-      count: 'income_amount',
-      endText: 'сум',
-      id: 'income_amount',
-      percent: (before, current) => calculatePercentage(before || 1, current),
-      old: 'before_income_amount',
-    },
-    {
-      title: t('Импорт в ожидании (за весь период)'),
-      icon: <TimeForward color='#fe5000' />,
-      count: 'import_amount',
-      endText: 'сум',
-      id: 'import_amount',
-      percent: (before, current) => calculatePercentage(before || 1, current),
-      old: 'before_import_amount',
-    },
-    {
-      title: t('Импорты старше 24 часов'),
-      icon: <Time24 color='#fe5000' />,
-      count: 'not_last_24h_import_amount',
-      endText: 'сум',
-      id: 'not_last_24h_import_amount',
-      percent: () => 0,
-      old: 'before_not_last_24h_import_amount',
-    },
-    {
-      title: t('Общая сумма баланса'),
-      icon: <Wallet color='#fe5000' />,
-      count: 'stock_total_amount',
-      endText: 'сум',
-      id: 'stock_total_amount',
-      percent: (before, current) => calculatePercentage(before || 1, current),
-      old: 'before_stock_amount',
-    },
-    {
-      title: t('Общее количество продаж'),
-      icon: <ShoppingBasketArrow color='#fe5000' />,
-      count: 'sale_count',
-      endText: 'шт',
-      id: 'sale_count',
-      percent: (before, current) => calculatePercentage(before || 1, current),
-      old: 'before_sale_count',
-    },
-    {
-      title: t('Общее количество остатков'),
-      icon: <ShoppingBasketCheck color='#fe5000' />,
-      count: 'total_product_count',
-      endText: 'шт',
-      id: 'total_product_count',
-      percent: (before, current) => calculatePercentage(before || 1, current),
-      old: 'before_product_count',
-    },
-    {
-      title: t('Просроченные продукты'),
-      icon: <StopWatchMinus color='#fe5000' />,
-      count: 'expired_soon_count',
-      endText: 'шт',
-      id: 'expired_soon_amount',
-      amount: 'expired_soon_amount',
-      percent: (before, current) => calculatePercentage(before || 1, current),
-      old: 'before_expired_soon_amount',
-    },
-    {
-      title: t('Истекающий срок'),
-      icon: <HourglassEnd color='#fe5000' />,
-      count: 'expiring_soon_count',
-      amount: 'expiring_soon_amount',
-      endText: 'шт',
-      id: 'expiring_soon_amount',
-      percent: (before, current) => calculatePercentage(before || 1, current),
-      old: 'before_expiring_soon_amount',
-    },
-    {
-      title: t('Ваш бонус'),
-      icon: <Gift color='#fe5000' />,
-      count: 'bonus_amount',
-      endText: 'сум',
-      id: 'bonus_amount',
-      percent: (before, current) => calculatePercentage(before || 1, current),
-      old: 'before_bonus_amount',
-    },
-  ]
 
   const dashboard_filter = useMemo(() => {
     const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
@@ -318,7 +169,6 @@ export default function DashboarPage() {
 
     return {
       is_franchise: selectedShops == 'all' ? false : undefined,
-
       limit: values?.limit || 15,
       search: values?.search,
       start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
@@ -335,9 +185,6 @@ export default function DashboarPage() {
   }, [values?.offset, detalization, selectedShops, values?.start_date, values?.end_date, values?.from_time, values?.to_time, values?.limit, values?.search])
 
   const { data: chartData, isLoading: isChartLoading } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
-  // const { data: countStats, isLoading } = useQuery(['countStats', dashboard_filter], () => requests.dashboradCountStats(dashboard_filter), {
-  // staleTime: 1000 * 60 * 1, // 1 minutes — won’t refetch until 1 mins passed
-  // })
   const { data: topStores, isLoading: isTopStoreLoading } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
   const { data: payments, isLoading: isPaymentsLoading } = useQuery(['payments', dashboard_filter], () => requests.dashboradPayments(dashboard_filter))
   const { data: transaction, isLoading: isTransactionLoading } = useQuery(['transaction', dashboard_filter], () =>
@@ -400,7 +247,6 @@ export default function DashboarPage() {
                       border: 1,
                       borderColor: '#A4A5AB33',
                       borderRadius: '16px',
-                      // cursor: 'pointer',
                       minHeight: '154px',
                       width: '100%',
                       height: '100%',
@@ -444,7 +290,6 @@ export default function DashboarPage() {
                               flexShrink: 0,
                             },
                           }}
-                          // disabled={size(get(cartItemsList, 'data.data.data')) == 0}
                           color='secondary'
                           onClick={() => setIsCreateOpenDraft(true)}
                         >
@@ -523,25 +368,6 @@ export default function DashboarPage() {
               />
             </Grid>
           </Grid>
-          {/* <Transactions
-                id='dashboard-chart'
-                data={get(payments, 'data.data')}
-                title={'Платежи'}
-                subTitle={thousandDivider(Math.round(get(payments, 'data.data', [])?.reduce((a, b) => a + b.amount, 0)), 'сум')}
-              />
-              <Transactions
-                id='dashboard-chart'
-                data={get(transaction, 'data.data')}
-                title={'Транзакции'}
-                subTitle={thousandDivider(
-                  get(transaction, 'data.data', [])?.reduce((a, b) => {
-                    const count = parseFloat((b.count || '0').replace(',', '.'))
-                    return a + count
-                  }, 0),
-
-                  'шт'
-                )}
-              /> */}
         </CheckAccess>
         <CheckAccess id={'dashboard-vendor'}>
           <Grid width={'100%'} container mt={'32px'} spacing={2}>
@@ -576,8 +402,6 @@ export default function DashboarPage() {
               />
             </Grid>
           </Grid>
-          {/* <TotalOrdersByCity id='dashboard-chart' data={get(topStores, 'data.data')} /> */}
-          {/* <TopProducts id='dashboard-chart' data={get(topProducts, 'data.data')} /> */}
         </CheckAccess>
         <CheckAccess id={'dashboard-seller'}>
           <Grid width={'100%'} mt={'32px'} container spacing={2}>
@@ -612,8 +436,6 @@ export default function DashboarPage() {
               />
             </Grid>
           </Grid>
-          {/* <TopSellers id='dashboard-chart' data={get(topSellers, 'data.data')} /> */}
-          {/* <TopBonusProducts id='dashboard-chart' data={get(topBonusProducts, 'data.data')} /> */}
         </CheckAccess>
       </Box>
       <CheckAccess id={'dashboard-expired-imports'}>

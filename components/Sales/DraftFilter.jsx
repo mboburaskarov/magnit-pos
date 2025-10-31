@@ -11,8 +11,8 @@ import InputDatePicker from '../../components/Inputs/InputDatePicker'
 import LazySelect from '../../components/Select/LazySelect'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
-import getOptionsFromUrlParam from '../../utils/getOptionsFromUrlParam'
-import { requests } from '../../utils/requests'
+import getOptionsFromUrlParam from '@utils/getOptionsFromUrlParam'
+import { requests } from '@utils/requests'
 export default function DraftFilter({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()

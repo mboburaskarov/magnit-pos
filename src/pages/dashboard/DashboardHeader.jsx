@@ -4,9 +4,12 @@ import { get } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
-import DateRangeInput from '../../../components/Inputs/DateRangeInput/DateRangeInput'
-import MultiOptionSelectNew from '../../../components/Select/MultiOptionSelectNew'
-import { requests } from '../../../utils/requests'
+
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
+
+import { requests } from '@utils/requests'
+
 export default function DashboardHeader({ selectedShops, setSelectedShops }) {
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)

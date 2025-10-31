@@ -17,8 +17,7 @@ import CustomImg from '../../../../components/CustomImg'
 import LoadingContainer from '../../../../components/LoadingContainer'
 import LoadingOverflow from '../../../../components/LoadingOverflow'
 import ClientCreateMini from '../../../../components/Sales/ClientCreateMini'
-// import OrderDrawer from '../../../../components/Sales/ClientCreateMini/OrderDrawer'
-import OrderDrawer from './full-order/OrderDrawer'
+import OrderDrawer from '../../../../components/Sales/ClientCreateMini/OrderDrawer'
 import DraftDrawer from '../../../../components/Sales/DraftDrawer'
 import OnlineSaleDrawer from '../../../../components/Sales/OnlineSaleNoor/OnlineSaleDrawer'
 import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchange/ReturnExchangeDrawer'
@@ -48,7 +47,6 @@ import OrderLite from './orderLite'
 import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
 import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
 import TimeFast from '../../../assets/icons/TimeFast'
-import LiteOrder from './lite-order'
 import ShortcutBox from '../../../../components/ShortcutBox'
 import RefreshIcon from '../../../assets/icons/RefreshIcon'
 import EmptyCartItemIcon from '../../../assets/icons/EmptyCartItemIcon'
@@ -1181,7 +1179,7 @@ function NewSaleV2() {
                 borderTopLeftRadius: '20px',
               })}
             >
-              <LiteOrder
+              <OrderLite
                 serviceType={serviceType}
                 setDmedOrganizedList={setDmedOrganizedList}
                 liteOrder={liteOrder}

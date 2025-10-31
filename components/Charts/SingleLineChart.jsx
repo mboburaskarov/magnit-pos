@@ -2,9 +2,9 @@ import { Box, Skeleton, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import getShorterNumber from '../../utils/getShorterNumber'
-import { getDateFromDateTime } from '../../utils/parseDateTime'
-import thousandDivider from '../../utils/thousandDivider'
+import getShorterNumber from '@utils/getShorterNumber'
+import { getDateFromDateTime } from '@utils/parseDateTime'
+import thousandDivider from '@utils/thousandDivider'
 import LoadingBlurry from '../LoadingBlurry'
 import SelectSimple from '../Select/SelectSimple'
 import CustomizedAxisTick from './ChartAxisTick'
@@ -24,9 +24,6 @@ const chartOptions = [
   { name: 'Возвраты', value: 'return', soon: true, isDisabled: true },
 ]
 
-const purpleColor = '#a811d6'
-const blueColor = '#0F6FD7'
-const newColor = '#FE5000' // The color you want to use
 const orangeColor = '#ffb18e'
 const Body = ({ children, isLoading, isEmpty }) => (
   <Box
@@ -51,9 +48,7 @@ const Body = ({ children, isLoading, isEmpty }) => (
 )
 
 export default function SingleBarChart({
-  title,
   measurmentUnit = '',
-  colorCode,
   data,
   detalization,
   setDetalization,
@@ -63,7 +58,6 @@ export default function SingleBarChart({
   isLoading,
   width: boxWidth = '100%',
   dataKey,
-  sortBy,
   id,
 }) {
   const { t } = useTranslation()
@@ -199,10 +193,6 @@ export default function SingleBarChart({
                   <stop offset='0%' stopColor={orangeColor} stopOpacity={0.3} />
                   <stop offset='100%' stopColor={orangeColor} stopOpacity={0.1} />
                 </linearGradient>
-                {/* <linearGradient id='ikki' x1='0' y1='0' x2='0' y2='1'>
-                  <stop offset='0%' stopColor={orangeColor} stopOpacity={0.3} />
-                  <stop offset='100%' stopColor={orangeColor} stopOpacity={0.1} />
-                </linearGradient> */}
               </defs>
 
               <CartesianGrid strokeDasharray='3 3' vertical={false} />
@@ -214,11 +204,7 @@ export default function SingleBarChart({
                 tickFormatter={(value) => getDateFromDateTime(value)}
               />
               <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => getShorterNumber(value, 0)} />
-              <Tooltip
-                content={<DashboardTooltip measurmentUnit={measurmentUnit} detalization={detalization} />}
-                // position={{ x: 100, y: -150 }}
-                wrapperStyle={{ zIndex: 11 }}
-              />
+              <Tooltip content={<DashboardTooltip measurmentUnit={measurmentUnit} detalization={detalization} />} wrapperStyle={{ zIndex: 11 }} />
               <Area
                 type='monotone'
                 dataKey={dataKey || 'value'}
@@ -232,19 +218,6 @@ export default function SingleBarChart({
                   fill: '#fff',
                 }}
               />
-              {/* <Area
-                type='monotone'
-                dataKey={'all_orders2' || 'value'}
-                stroke={'#fe5000'}
-                fill='url(#ikki)'
-                strokeWidth={3}
-                activeDot={{
-                  r: 6,
-                  stroke: orangeColor,
-                  strokeWidth: 2,
-                  fill: '#fff',
-                }}
-              /> */}
             </AreaChart>
           </ResponsiveContainer>
           <ChartSlider value={sliderValue} onChange={handleSliderChange} min={0} max={chartData?.length} />

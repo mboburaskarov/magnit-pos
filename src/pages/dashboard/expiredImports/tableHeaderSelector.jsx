@@ -6,11 +6,16 @@ import { get } from 'lodash'
 import * as qs from 'qs'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
-import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
-import palette from '../../../../src/assets/theme/mui.config'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
-import { useQueryParams } from '../../../hooks/useQueryParams'
+
+import StatusCell from '@components/AgGridTable/Cells/StatusCell'
+
+import palette from '@/assets/theme/mui.config'
+import { imports_list_statuses } from '@/assets/data/imports-list-statuses'
+
+import thousandDivider from '@utils/thousandDivider'
+
+import { useQueryParams } from '@hooks/useQueryParams'
+
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography

@@ -1,4 +1,4 @@
-import thousandDivider from '../../utils/thousandDivider'
+import thousandDivider from '@utils/thousandDivider'
 import Tab from './Tab'
 import { Fragment } from 'react'
 import { Box } from '@mui/material'

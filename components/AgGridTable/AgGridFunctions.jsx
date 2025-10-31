@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import addCssToElement from '../../utils/addCssToElement'
+import addCssToElement from '@utils/addCssToElement'
 
 export const scrollShowHide = (agGridTableArea, agGridTableScroll) => {
   const tableBottom = Math.round(agGridTableArea?.[0]?.getBoundingClientRect()?.bottom)

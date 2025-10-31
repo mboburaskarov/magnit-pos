@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
-import { numberToPrice } from '../../utils/numberToPrice'
-import { colors } from '../../utils/getColors'
+import { numberToPrice } from '@utils/numberToPrice'
+import { colors } from '@utils/getColors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTag } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'

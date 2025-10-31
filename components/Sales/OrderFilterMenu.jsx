@@ -5,7 +5,7 @@ import LazySelect from '../Select/LazySelect'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
-import { requests } from '../../utils/requests'
+import { requests } from '@utils/requests'
 import dayjs from 'dayjs'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
 

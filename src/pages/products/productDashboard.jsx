@@ -7,7 +7,7 @@ function ProductDashboard({ data }) {
   return (
     <Grid
       container
-      spacing={2}
+      spacing={'8px'}
       sx={{
         display: 'flex',
       }}
@@ -21,9 +21,9 @@ function ProductDashboard({ data }) {
           <Box
             sx={{
               backgroundColor: stat.title == 'result' ? 'bg.10' : 'bg.10',
-              borderRadius: '24px',
-              padding: '20px',
-              minHeight: '110px',
+              borderRadius: '16px',
+              padding: '16px',
+              minHeight: '84px',
             }}
           >
             {stat.title == 'result' ? (
@@ -56,8 +56,10 @@ function ProductDashboard({ data }) {
               <>
                 <Typography
                   sx={{
-                    fontSize: '18px',
-                    fontWeight: '600',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    lineHeight: '20px',
+                    color: 'bunker.700',
                   }}
                 >
                   {stat.title}
@@ -65,8 +67,10 @@ function ProductDashboard({ data }) {
                 <Typography
                   sx={{
                     mt: '5px',
-                    color: 'bunker.500',
+                    color: 'bunker.950',
                     fontWeight: '600',
+                    fontSize: '18px',
+                    lineHeight: '28px',
                     display: 'flex',
                     alignItems: 'center',
                     '& svg': {

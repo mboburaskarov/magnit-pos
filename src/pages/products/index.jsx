@@ -374,7 +374,16 @@ export default function ProductsPage() {
                 { title: t('switch.title.outofdate'), value: 'expired', count: thousandDivider(get(statusCountList, 'data.data.expired_count', 0)) },
               ]}
             />
-            <Box display={'flex'}>
+            <Box
+              display={'flex'}
+              sx={{
+                bgcolor: 'bg.10',
+                height: '48px',
+                borderRadius: '24px',
+                mt: '14px',
+                padding: '4px 10px',
+              }}
+            >
               <CheckAccess id={'banned-product'}>
                 <StyledTooltip title={'Запрещенный продукт'}>
                   <Box

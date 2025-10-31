@@ -1,13 +1,13 @@
 import { Box, Typography } from '@mui/material'
-import { numberToPrice } from '../../utils/numberToPrice'
+import { numberToPrice } from '@utils/numberToPrice'
 import ArrowRightOutlined from '../../src/assets/icons/ArrowDown'
-import { colors } from '../../utils/getColors'
+import { colors } from '@utils/getColors'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import Highlighter from 'react-highlight-words'
 import SmallUserIcon from '../../src/assets/icons/ArrowDown'
-import event from '../../utils/event'
-import currency from '../../utils/currency'
+import event from '@utils/event'
+import currency from '@utils/currency'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
