@@ -193,12 +193,12 @@ export default function ProductReportPage() {
                 '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
                 '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                   background: 'transparent',
-                  width: '400px',
+                  width: '500px',
                   height: 48,
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={'ID, Имя, Телефон'} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'Филиал, Наименование'} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'} mr={'10px'}>
@@ -284,8 +284,8 @@ export default function ProductReportPage() {
             isDataLoading={isFetchingproductReportList || productReportListLoading}
             offsetCount={offsetCount}
             emptyTableText={{
-              title: 'Клиент не существует',
-              description: 'Если вы не нашли искомого Клиента, нажмите кнопку «Добавить нового» и введите необходимую информацию.',
+              title: 'Продажи не существует',
+              description: '...',
             }}
             updaterAction={(newData) => {
               if (newData) dispatch(updateTableHeader(newData))

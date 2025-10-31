@@ -2,7 +2,7 @@ import { Box, Divider, Typography } from '@mui/material'
 import { get } from 'lodash'
 import React from 'react'
 import { useSelector } from 'react-redux'
-import thousandDivider from '../../utils/thousandDivider'
+import thousandDivider from '@utils/thousandDivider'
 
 function ZReportManualCheck({ data, printContainer }) {
   const userData = useSelector((state) => state.user)

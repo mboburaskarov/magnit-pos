@@ -4,7 +4,7 @@ import React from 'react'
 import Barcode from 'react-barcode'
 
 import dayjs from 'dayjs'
-import thousandDivider from '../../utils/thousandDivider'
+import thousandDivider from '@utils/thousandDivider'
 
 function RippedPaperProductPriceCheck({ data, printContainer }) {
   return (

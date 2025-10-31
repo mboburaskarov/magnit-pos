@@ -1,11 +1,13 @@
 import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
-import CheckAccess from '../../../../components/CheckAccess'
-import thousandDivider from '../../../../utils/thousandDivider'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import EditIcon from '../../../assets/icons/EditIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
+
+import CheckAccess from '@components/CheckAccess'
+import thousandDivider from '@utils/thousandDivider'
+import DeleteIcon from '@icons/DeleteIcon'
+import EditIcon from '@icons/EditIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography

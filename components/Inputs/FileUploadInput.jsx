@@ -3,9 +3,9 @@ import Label from '../Label'
 import FileIcon from '../../src/assets/icons/FileIcon'
 import { useState } from 'react'
 import { useMutation } from 'react-query'
-import { requests } from '../../utils/requests'
-import { error } from '../../utils/toast'
-import getImageUrl from '../../utils/getImageUrl'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import getImageUrl from '@utils/getImageUrl'
 import StyledTooltip from '../StyledTooltip'
 
 export default function FileUploadInput({ id, onChange, label, placeholder, defaultValue }) {

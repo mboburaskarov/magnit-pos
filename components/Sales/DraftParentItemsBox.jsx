@@ -5,7 +5,7 @@ import { get } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import ArrowRightIcon from '../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../src/assets/icons/BagOutline'
-import thousandDivider from '../../utils/thousandDivider'
+import thousandDivider from '@utils/thousandDivider'
 import CustomImg from '../CustomImg'
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {

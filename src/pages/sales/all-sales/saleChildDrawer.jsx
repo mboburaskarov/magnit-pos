@@ -145,6 +145,11 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
       if (!get(data, 'error', true)) {
         setQrcodeUrl(get(data, 'message.qrCodeURL', 'pending'))
       } else {
+        if (data?.message == 'Введённого вами фискального признака нет в базе данных!') {
+          error(`Данные о продажах не найдены. Возможно, это было сделано из "другой кассы."`)
+
+          return
+        }
         error(`FISCAL: ${data?.message}`)
       }
     },

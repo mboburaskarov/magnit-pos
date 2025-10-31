@@ -10,7 +10,7 @@ import useStyles from './useStyles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import palette from '../../src/assets/theme/mui.config'
-import thousandDivider from '../../utils/thousandDivider.js'
+import thousandDivider from '@utils/thousandDivider.js'
 const FiskalText = ({ data }) => {
   return <Typography>Fiskal belgi: {data}</Typography>
 }

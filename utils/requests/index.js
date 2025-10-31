@@ -22,6 +22,16 @@ export const requests = {
   getComanyInfo: () => request.get(`v1/company/info`),
 
   //dashboard
+  dashboradSaleStatistic: ({ store_ids, ...filter }) =>
+    request.post(`v1/dashboard/sale-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
+  dashboradNetProfitStatistic: ({ store_ids, ...filter }) =>
+    request.post(`v1/dashboard/net-profit-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
+  dashboradImportStatistic: ({ store_ids, ...filter }) =>
+    request.post(`v1/dashboard/import-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
+  dashboradProductStatistic: ({ store_ids, ...filter }) =>
+    request.post(`v1/dashboard/product-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
+  dashboradEmployeeStatistic: ({ store_ids, ...filter }) =>
+    request.post(`v1/dashboard/employee-bonus${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
 
   dashboradChart: ({ store_ids, ...filter }) => request.post(`v1/dashboard/chart${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
   dashboradCountStats: ({ store_ids, company_ids, ...filter }) =>

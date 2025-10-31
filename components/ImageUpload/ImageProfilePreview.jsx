@@ -2,7 +2,7 @@ import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { useState } from 'react'
 import DeleteIcon from '../../src/assets/icons/DeleteIcon'
-import getImageUrl from '../../utils/getImageUrl'
+import getImageUrl from '@utils/getImageUrl'
 import CustomImg from '../CustomImg'
 import ImageUploadGallery from './ImageUploadGallery'
 

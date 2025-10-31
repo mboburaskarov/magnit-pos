@@ -1,11 +1,11 @@
 import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
-import { formatPhoneNumber } from '../../../utils/formatPhoneNumber'
-import thousandDivider from '../../../utils/thousandDivider'
-import { formatDate } from '../../../utils/validateDate'
-import DeleteIcon from '../../assets/icons/DeleteIcon'
-import EditIcon from '../../assets/icons/EditIcon'
+import { formatPhoneNumber } from '@utils/formatPhoneNumber'
+import thousandDivider from '@utils/thousandDivider'
+import { formatDate } from '@utils/validateDate'
+import DeleteIcon from '@icons/DeleteIcon'
+import EditIcon from '@icons/EditIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (

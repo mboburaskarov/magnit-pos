@@ -3,7 +3,7 @@ import { Box, Paper, Button, List, ListItem, ClickAwayListener, Typography } fro
 import SortIcon from '../../src/assets/icons/SortIcon'
 import TickIcon from '../../src/assets/icons/TickIcon'
 import { useTranslation } from 'react-i18next'
-import event from '../../utils/event'
+import event from '@utils/event'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({

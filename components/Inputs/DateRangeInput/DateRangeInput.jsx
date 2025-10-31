@@ -135,7 +135,7 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
       return `В этом году \n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
     }
 
-    return `\n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
+    return `\n ${start.format('DD.MM.YYYY')}`
   }
 
   const [customDateRangeSelected, setCustomDateRangeSelected] = useState(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
@@ -181,6 +181,7 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'start',
+                width: 'max-content',
               }}
             >
               {customDateRangeSelected.split('\n').map((letter, index) => {

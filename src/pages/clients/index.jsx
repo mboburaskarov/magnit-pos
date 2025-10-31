@@ -1,34 +1,36 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../components/CheckAccess'
-import ConfirmDialog from '../../../components/ConfirmDialog'
-import ImageGallery from '../../../components/ImageGallery'
-import InputSearch from '../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../components/LoadingContainer'
-import ClientCreateMini from '../../../components/Sales/ClientCreateMini/index'
-import { downloadLinkExcel } from '../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../utils/requests'
-import { error, success } from '../../../utils/toast'
-import BigTickIcon from '../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../assets/icons/BigWarningIcon'
-import DeleteIcon from '../../assets/icons/DeleteIcon'
-import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
-import PlusIcon from '../../assets/icons/PlusIcon'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/clientTableColumns'
-import FilterMenu from './FilterMenu'
+
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '@components/CheckAccess'
+import ConfirmDialog from '@components/ConfirmDialog'
+import ImageGallery from '@components/ImageGallery'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import ClientCreateMini from '@components/Sales/ClientCreateMini/index'
+
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+
+import BigTickIcon from '@icons/BigTickIcon'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import DeleteIcon from '@icons/DeleteIcon'
+import PlusIcon from '@icons/PlusIcon'
+
+import { useQueryParams } from '@hooks/useQueryParams'
+
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/clientTableColumns'
+
 import tableHeaderSelector from './tableHeaderSelector'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ClientsPage() {
-  const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.clientTableColumns)
@@ -38,7 +40,6 @@ export default function ClientsPage() {
   const [selectClients, setselectClients] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const selectClientsFunc = (isChecked, id) => {
     if (isChecked) {
@@ -144,32 +145,6 @@ export default function ClientsPage() {
             >
               <InputSearch id='producrs-search' name='search' placeholder={'ID, Имя, Телефон'} uncontrolled />
             </Box>
-            <Box minWidth={113} ml={'16px'}>
-              <Button
-                sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
-                  },
-                }}
-                fullWidth
-                startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
-              >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
-            </Box>
 
             {selectClients.length > 0 && (
               <>
@@ -225,7 +200,6 @@ export default function ClientsPage() {
             </CheckAccess>
           </Box>
         </Box>
-        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='clients-main-table'

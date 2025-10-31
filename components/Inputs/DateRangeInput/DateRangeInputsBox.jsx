@@ -43,7 +43,15 @@ export default function DateRangeInputsBox({ dateState }) {
       py={3}
       px={3}
     >
-      <Box display='flex' alignItems='center'>
+      <Box
+        display='flex'
+        alignItems='center'
+        sx={{
+          '& .MuiOutlinedInput-root:hover': {
+            bgcolor: 'bunker.100',
+          },
+        }}
+      >
         <StyledTooltip title={'Нажмите, чтобы добавить временной фильтр'}>
           <Box mr={2} display={'flex'} flexDirection={'column'} alignItems={'center'} onClick={() => setShowTime((p) => !p)}>
             {/* <AccessTime sx={{ fontSize: 40, color: '#fe5000' }} /> */}

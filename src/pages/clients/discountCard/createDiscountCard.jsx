@@ -4,17 +4,20 @@ import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-import LazySelect from '../../../../components/Select/LazySelect'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import CloseIcon from '../../../assets/icons/CloseIcon'
+
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
+import LazySelect from '@components/Select/LazySelect'
+
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+
+import CloseIcon from '@icons/CloseIcon'
 
 export default function CreateDiscountCard({ open, refetch, setOpen }) {
   const methods = useForm()
   const { reset, control } = methods
-  const { mutate: createDiscountCard, isLoading: iscreateDiscountCard } = useMutation(requests.createDiscountCard, {
+  const { mutate: createDiscountCard } = useMutation(requests.createDiscountCard, {
     onSuccess: () => {
       setOpen(false)
       success('Создать дисконтная карта успешно!')

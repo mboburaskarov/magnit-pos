@@ -1,14 +1,11 @@
-import { FormatLineSpacing } from '@mui/icons-material'
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import FallIcon from '../../src/assets/icons/FallIcon'
-import GrowIcon from '../../src/assets/icons/GrowIcon'
-import thousandDivider from '../../utils/thousandDivider'
-import { useNavigateWithParams } from '../../src/hooks/useNavigateWithParams'
-import RightArrowRound from '../../src/assets/icons/dashboard/RightArrowRound'
-import SortIcon from '../../src/assets/icons/dashboard/SortIcon'
+import thousandDivider from '@utils/thousandDivider'
+import { useNavigateWithParams } from '@hooks/useNavigateWithParams'
+import RightArrowRound from '@icons/dashboard/RightArrowRound'
+import SortIcon from '@icons/dashboard/SortIcon'
 
 export default function TotalOrdersByCity({ data }) {
   const { t } = useTranslation()
@@ -147,9 +144,6 @@ export default function TotalOrdersByCity({ data }) {
             </TableBody>
           </Table>
         </TableContainer>
-        {/* <Button sx={{ width: '100%' }} color='secondary' onClick={() => setIsCollapse((a) => !a)}>
-          {isCollapse ? 'Показать меньше' : `Показать больше`}
-        </Button> */}
       </Box>
     </Box>
   )

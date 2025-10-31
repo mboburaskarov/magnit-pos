@@ -2,12 +2,12 @@ import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, Ta
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
-import thousandDivider from '../../utils/thousandDivider'
-import { useNavigateWithParams } from '../../src/hooks/useNavigateWithParams'
-import RightArrowRound from '../../src/assets/icons/dashboard/RightArrowRound'
-import SortIcon from '../../src/assets/icons/dashboard/SortIcon'
-import SortUpIcon from '../../src/assets/icons/dashboard/SortUpIcon'
-import SortDownIcon from '../../src/assets/icons/dashboard/SortDownIcon'
+import thousandDivider from '@utils/thousandDivider'
+import { useNavigateWithParams } from '@hooks/useNavigateWithParams'
+import RightArrowRound from '@icons/dashboard/RightArrowRound'
+import SortIcon from '@icons/dashboard/SortIcon'
+import SortUpIcon from '@icons/dashboard/SortUpIcon'
+import SortDownIcon from '@icons/dashboard/SortDownIcon'
 import { size } from 'lodash'
 
 export default function DashboardTopsBox({
@@ -17,11 +17,12 @@ export default function DashboardTopsBox({
   subTitle,
   isLoading = true,
   href = false,
+  collapseCount = 5,
   noData = { title: 'Информация не найдена', description: 'Данные за этот период не найдены' },
 }) {
   const { t } = useTranslation()
   const [isCollapse, setIsCollapse] = useState(false)
-  const formattedData = isCollapse ? data : data?.slice(0, 5)
+  const formattedData = isCollapse ? data : data?.slice(0, collapseCount)
   const navigate = useNavigate()
   const { navigateWithParams } = useNavigateWithParams()
 
@@ -32,6 +33,7 @@ export default function DashboardTopsBox({
         border: '1px solid #ECEDF2',
         borderRadius: '16px',
         padding: '20px',
+        paddingBottom: '4px',
         backgroundColor: 'white',
         width: '100%',
         position: 'relative',

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import getImageUrl from '../../utils/getImageUrl'
+import getImageUrl from '@utils/getImageUrl'
 import BackArrowIcon from '../../src/assets/icons/BackArrow'
 import { SortableGallery, SortablePhoto } from './ImageUploadComponents'
 

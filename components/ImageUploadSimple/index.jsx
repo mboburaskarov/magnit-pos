@@ -3,8 +3,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useMutation } from 'react-query'
 import { arrayMove } from 'react-sortable-hoc'
-import { requests } from '../../utils/requests'
-import { error } from '../../utils/toast'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
 import ImagePreview from './ImagePreview'
 
 export default function ImageUploadSimple({ id, images, onChange, label, width, height, type, withoutTextBox, margin }) {

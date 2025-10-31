@@ -3,7 +3,7 @@ import { useTheme } from '@mui/styles'
 import { useState } from 'react'
 import DeleteIcon from '../../src/assets/icons/DeleteIcon'
 import EditIcon from '../../src/assets/icons/EditIcon'
-import getImageUrl from '../../utils/getImageUrl'
+import getImageUrl from '@utils/getImageUrl'
 import CustomImg from '../CustomImg'
 
 const ImagePlaceholder = () => {

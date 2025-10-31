@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import isEqual from '../../utils/isEqual'
+import isEqual from '@utils/isEqual'
 
 function useDeepCompareEffect(fn, deps, options) {
   const { initialEffect = true, debugKey } = options || {}

@@ -130,13 +130,6 @@
   background: transparent;
 }
 
-.option:first-child {
-  border-radius: 16px 16px 0 0;
-}
-.option:last-child {
-  border-radius: 0 0 16px 16px;
-}
-
 .checkbox {
   content: '';
   vertical-align: top;

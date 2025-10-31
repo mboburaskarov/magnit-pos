@@ -17,7 +17,7 @@ function ShortcutBox({ className = 'shortcutbox', color = '#FFCEA8', shortcut = 
         justifyContent: 'center',
       }}
     >
-      <Typography sx={{ fontWeight: '500', fontSize: '12px', lineHeight: '16px', color: '#fff' }}>{shortcut}</Typography>
+      <Typography sx={{ fontWeight: '500', fontSize: '12px', lineHeight: '16px', color: '#fff', m: '0 !important' }}>{shortcut}</Typography>
     </Box>
   )
 }
