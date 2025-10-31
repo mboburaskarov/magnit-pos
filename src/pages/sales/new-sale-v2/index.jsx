@@ -327,49 +327,14 @@ function NewSaleV2() {
   const printContainer = useRef()
   const cartRef = cartItemRef.current
 
-  const wsRef = useRef(null)
-
-  // useEffect(() => {
-  //   // Connect to backend
-
-  //   const ws = new WebSocket(`wss://api-pharma.noor.uz/ws?store_id=${userData?.store?.id}`) // or wss://your-domain.com/ws
-  //   wsRef.current = ws
-
-  //   ws.onopen = () => {
-  //     console.log('WebSocket connection established')
-  //   }
-
-  //   ws.onmessage = (event) => {
-  //     const data = JSON.parse(event.data)
-  //     if (data?.event == 'noor_order') {
-  //       refetchNoorOrderCount()
-  //     }
-  //     console.log('Received:', data)
-  //   }
-
-  //   ws.onerror = (error) => {
-  //     console.error('WebSocket error:', error)
-  //   }
-
-  //   ws.onclose = () => {
-  //     console.log('WebSocket closed')
-  //   }
-
-  //   return () => {
-  //     ws.close()
-  //   }
-  // }, [])
-
   const { mutate: addDiscountCard, isLoading: isaddDiscountCard } = useMutation(requests.addDiscountCard, {
     onSuccess: ({ data }) => {
-      console.log(data)
-
       refetchcartItemsList()
       success(`Карта скидки успешно добавлена - ${data?.data?.discount_percent}%`)
     },
     onError: (err) => {
       error('Ошибка при добавлении карты скидки')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: removeDiscountCard, isLoading: isremoveDiscountCard } = useMutation(requests.removeDiscountCard, {
@@ -381,10 +346,9 @@ function NewSaleV2() {
     },
     onError: (err) => {
       error('Ошибка при удалении карты скидки')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
-  console.log(customerId)
 
   useEffect(() => {
     if (customerId?.id && customerId?.new != false) {
@@ -483,7 +447,7 @@ function NewSaleV2() {
     },
     onError: (err) => {
       error('Ошибка при Корзина была очищена')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: saleCreate, isLoading: issaleCreate } = useMutation(requests.saleCreate, {
@@ -492,7 +456,7 @@ function NewSaleV2() {
     },
     onError: (err) => {
       error('Ошибка при создании продажи')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: changeDiscountValue, isLoading: ischangeDiscountValue } = useMutation(requests.changeDiscountValue, {
@@ -506,7 +470,7 @@ function NewSaleV2() {
       setHasChange(false)
 
       error('Ошибка при изменении цены со скидкой.')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const conditionalCreateCartItem = async (params) => {
@@ -570,7 +534,7 @@ function NewSaleV2() {
     },
     onError: (err) => {
       error('Ошибка при Элемент корзины был удален')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: sendToRejectedProduct, isLoading: issendToRejectedProduct } = useMutation(requests.sendToRejectedProduct, {
@@ -582,7 +546,7 @@ function NewSaleV2() {
     },
     onError: (err) => {
       error('Ошибка при Продукт был отправлен в «Отказ»')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -633,7 +597,7 @@ function NewSaleV2() {
       } else {
         error('Ошибка при получении похожих товаров.')
       }
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: checkEPOSTurnOn, isLoading: ischeckEPOSTurnOn } = useMutation(requests.checkEPOSTurnOn, {
@@ -645,7 +609,7 @@ function NewSaleV2() {
     onError: (err) => {
       setisEposTurnOn(false)
       error('Программа EPOS отключена. Запустить программу EPOS (uz: epos dasturi o‘chirilgan. Epos dasturini yoqing)')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   useEffect(() => {
@@ -857,8 +821,6 @@ function NewSaleV2() {
       ?.map((e) => Object.values(e)?.filter((a) => a?.length))
       ?.map((e) => Object.keys(e).length)
       ?.reduce((acc, i) => acc + i, 0)
-    console.log(cartsMarkingCount, userIsFilledMarkingCount)
-
     return cartsMarkingCount === userIsFilledMarkingCount
   }
   const isAllMarkingFillBeforeAdd = () => {
@@ -993,7 +955,7 @@ function NewSaleV2() {
       setIsOrderDrower(false)
       setLiteOrder(false)
       error('Ошибка EPOS getFiscalsList')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   useEffect(() => {

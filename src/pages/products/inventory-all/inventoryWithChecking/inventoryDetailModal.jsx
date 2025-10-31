@@ -43,7 +43,7 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
     },
     onError: (err) => {
       error('Ошибка Создать автозаказ!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { t } = useTranslation()
@@ -99,7 +99,7 @@ export default function InventoryDetailModal({ open, refetch, barcode, setBarcod
   }, [inventoryDetailFlow?.data, values?.limit])
   const onError = (err) => {
     error('Пожалуйста, заполните все поля!')
-    console.log('err', err)
+    console.error('err', err)
   }
   useEffect(() => {
     if (!quantityTransitionModalOpen) {

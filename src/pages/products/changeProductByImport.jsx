@@ -182,7 +182,7 @@ export default function ProductsPageByStore() {
       refetch()
       error('Ошибка при удалении товара!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -198,7 +198,7 @@ export default function ProductsPageByStore() {
       error('Ошибка при активации продукта!')
       refetch()
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.changeProductStatus, {
@@ -213,7 +213,7 @@ export default function ProductsPageByStore() {
       error('Ошибка при деактивации продукта!')
       refetch()
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -242,7 +242,7 @@ export default function ProductsPageByStore() {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },
@@ -252,7 +252,7 @@ export default function ProductsPageByStore() {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },

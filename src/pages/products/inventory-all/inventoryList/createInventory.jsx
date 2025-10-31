@@ -32,7 +32,7 @@ export default function CreateInventory({ open, refetch, setOpen }) {
         return
       }
       error('Ошибка Создать инвентаризация!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const onSubmit = (data) => {
@@ -46,7 +46,7 @@ export default function CreateInventory({ open, refetch, setOpen }) {
 
   const onError = (err) => {
     error('Пожалуйста, заполните все поля!')
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {

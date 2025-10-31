@@ -43,7 +43,7 @@ export default function UploadCV({ open, refetch, setOpen, setHasChange }) {
 
   const onError = (err) => {
     error('Пожалуйста, заполните все поля!')
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {

@@ -50,7 +50,6 @@ function ListWithPagination({ request, limit = 5, limitQuery = 'customLimit', re
   const [open, setOpen] = useState(false)
   const [page, setPage] = useState(0)
   const navigate = useNavigate()
-  console.log(customFilter)
 
   const handleChange = (e) => {
     setPage(e)

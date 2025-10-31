@@ -101,7 +101,6 @@ export default function CartItems({
           }}
         >
           <TableBody sx={{ overflowY: 'auto', height: '100px' }}>
-            {console.log(get(cartItemsList, 'data.data.data', []))}
             {get(cartItemsList, 'data.data.data', []).map((el, index) => (
               <CartItem
                 markingsList={markingsList}

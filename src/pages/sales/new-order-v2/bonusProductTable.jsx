@@ -99,9 +99,7 @@ function BonusProductTable({ customerId, bonusTableHeight }) {
 
   // Flatten all pages data
   const allProducts = data?.pages.flatMap((page) => get(page, 'data.data.data', [])) || []
-  console.log(bonusTableHeight)
   const maxHeight = useWindowHeight()
-  console.log('maxHeight', maxHeight)
 
   return (
     <Box sx={{ padding: '0 20px', mt: '12px' }}>

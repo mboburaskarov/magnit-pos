@@ -45,7 +45,7 @@ export default function ReturnToWarehousePage() {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },
@@ -129,7 +129,7 @@ export default function ReturnToWarehousePage() {
       refetch()
       error('Ошибка при удалении Возврат!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: getReturnToWarehouseExcelReport, isLoading: isgetReturnToWarehouseExcelReport } = useMutation(requests.getReturnToWarehouseExcelReport, {
@@ -137,7 +137,7 @@ export default function ReturnToWarehousePage() {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },

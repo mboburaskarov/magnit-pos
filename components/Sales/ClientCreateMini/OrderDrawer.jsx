@@ -349,7 +349,7 @@ export default function OrderDrawer({
     },
     onError: (err) => {
       error('Ошибка при создании продажи')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -462,7 +462,7 @@ export default function OrderDrawer({
         return
       }
       error('Ошибка при Продажа завершена')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const {
@@ -520,7 +520,7 @@ export default function OrderDrawer({
       setOpenRefreshDialog(false)
 
       error('Ошибка при EPOS')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 

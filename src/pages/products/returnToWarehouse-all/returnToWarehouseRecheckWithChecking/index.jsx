@@ -69,7 +69,7 @@ export default function ReturnToWarehouseRecheckScanWithCheckingPage() {
       refetch()
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
       refetch()
       error('Ошибка при сканирование!')
     },
@@ -141,7 +141,7 @@ export default function ReturnToWarehouseRecheckScanWithCheckingPage() {
         downloadLinkExcel(get(data, 'data.file_name'))
       },
       onError: (err) => {
-        console.log(err)
+        console.error(err)
 
         error('Ошибка при скачать excel!')
       },

@@ -177,7 +177,7 @@ export default function InventoryWithCheckingPage() {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },
@@ -349,17 +349,10 @@ export default function InventoryWithCheckingPage() {
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
-  useHotkeys(
-    '*',
-    (event) => {
-      console.log(event)
-    },
-    { enableOnFormTags: true, enableOnTags: ['INPUT', 'TEXTAREA'], preventDefault: false }
-  )
+
   useEffect(() => {
     if (quantityModalOpen == false && typeof quantityModalOpen == 'boolean') {
       handleFocus()
-      // setBarcode('')
     }
   }, [quantityModalOpen])
   useEffect(() => {

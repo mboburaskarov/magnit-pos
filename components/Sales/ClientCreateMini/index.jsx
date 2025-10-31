@@ -49,8 +49,6 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
   const userData = useSelector((state) => state.user)
 
   useEffect(() => {
-    console.log(openDrawer)
-
     methods.register('dial_code')
     methods.setValue('loyalty_card_barcode', get(openDrawer, 'data.loyalty_card_barcode'))
     methods.setValue('first_name', get(openDrawer, 'data.first_name'))
@@ -84,7 +82,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
     },
     onError: (err) => {
       error('Ошибка при Клиент создан!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -108,7 +106,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
 
   const onError = (err) => {
     error('alerts.enter_all_required_fields')
-    console.log('err', err)
+    console.error('err', err)
   }
   const theme = useTheme()
   return (

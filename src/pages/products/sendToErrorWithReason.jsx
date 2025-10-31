@@ -29,7 +29,7 @@ export default function SendToErrorWithReason({ refetch, open, setOpen, setRegio
     },
     onError: (err) => {
       error('Ошибка при редактировании товара!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const onSubmit = (data) => {
@@ -42,7 +42,7 @@ export default function SendToErrorWithReason({ refetch, open, setOpen, setRegio
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
   useEffect(() => {
     if (methods.getValues('error_type')?.value == 4) {

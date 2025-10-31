@@ -56,7 +56,7 @@ export default function ChangePriceDetailPage() {
     onSuccess: () => {},
     onError: (err) => {
       error('Ошибка изменить количество!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: finalAutoOrder, isLoading: isfinalAutoOrder } = useMutation(requests.finalAutoOrder, {
@@ -66,7 +66,7 @@ export default function ChangePriceDetailPage() {
     },
     onError: (err) => {
       error('Ошибка изменить количество!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const tableColumns = tableHeaderSelector({
@@ -218,7 +218,7 @@ export default function ChangePriceDetailPage() {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },

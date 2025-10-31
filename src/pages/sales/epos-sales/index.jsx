@@ -52,7 +52,7 @@ export default function EposSales({ id }) {
     },
     onError: (err) => {
       error('Ошибка закрытия кассы! (close Z Report)')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   useEffect(() => {

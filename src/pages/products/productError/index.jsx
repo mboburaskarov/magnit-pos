@@ -57,8 +57,6 @@ export default function RejectedProducts({ id }) {
         minWidth: 60,
         width: 60,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
-          console.log(rowIndex, p)
-
           const absoluteIndex = Number(get(values, 'offsetHistory', 0)) + 1 + rowIndex
 
           return (

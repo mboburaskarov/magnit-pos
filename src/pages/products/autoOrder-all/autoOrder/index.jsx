@@ -52,7 +52,7 @@ export default function AutoOrderPage() {
       refetch()
       error('Ошибка при удалении Авто заказ!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const tableColumns = tableHeaderSelector({

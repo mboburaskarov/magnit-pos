@@ -10,7 +10,7 @@ export const useSocket = (url, onMessage) => {
 
     socket.onmessage = onMessage
     socket.onerror = (err) => console.error('WS Error', err)
-    socket.onclose = () => console.log('WS Closed')
+    socket.onclose = () => console.error('WS Closed')
 
     return () => socket.close()
   }, [url, onMessage])

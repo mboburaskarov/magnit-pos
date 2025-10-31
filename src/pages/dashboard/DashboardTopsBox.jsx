@@ -117,7 +117,7 @@ export default function DashboardTopsBox({
               {tableData.map((el, index) => (
                 <TableCell
                   className='table-cell'
-                  key={el?.id}
+                  key={el?.colId}
                   sx={{
                     ...(index === 0 && {
                       borderTopLeftRadius: '8px',
@@ -199,7 +199,7 @@ export default function DashboardTopsBox({
                         if (el?.colId == 'name' || el?.colId == 'full_name') {
                           return (
                             <TableCell
-                              key={ind}
+                              key={el.colId}
                               sx={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxLines: 1 }}
                               className='table-cell'
                             >

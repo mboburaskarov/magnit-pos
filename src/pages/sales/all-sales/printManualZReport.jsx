@@ -51,7 +51,7 @@ export default function PrintManualZReport({ open, setManualZreportData, refetch
 
   const onError = (err) => {
     error('Пожалуйста, заполните все поля!')
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {

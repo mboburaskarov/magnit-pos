@@ -111,7 +111,7 @@ export default function WriteOffPage() {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },
@@ -126,7 +126,7 @@ export default function WriteOffPage() {
       refetch()
       error('Ошибка при удалении Списание!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['writeOffStatusCountList', values?.search, writeOffListFilter], () =>

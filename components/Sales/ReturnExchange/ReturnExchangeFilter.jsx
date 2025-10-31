@@ -37,7 +37,7 @@ export default function ReturnExchangeFilter({ open, setOpen, setRegions }) {
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {

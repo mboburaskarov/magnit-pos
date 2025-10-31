@@ -45,7 +45,7 @@ function SaleDrawer({ open, setOpen, ids }) {
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
       error('Ошибка: Продажа переведена в режим ожидания!')
     },
   })

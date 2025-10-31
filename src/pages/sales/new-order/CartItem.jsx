@@ -263,7 +263,7 @@ const CartItem = ({
       } else {
         error('Ошибка при получении похожих товаров.')
       }
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   return (

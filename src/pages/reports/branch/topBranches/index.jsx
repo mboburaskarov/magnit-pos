@@ -133,7 +133,7 @@ export default function TopBranchesPage() {
       refetch()
       error('Ошибка при удалении филиала!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -152,7 +152,7 @@ export default function TopBranchesPage() {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },

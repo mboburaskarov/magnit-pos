@@ -31,7 +31,7 @@ export default function ProductCreatePage() {
     },
     onError: (err) => {
       error('Ошибка при создании товара!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -75,7 +75,7 @@ export default function ProductCreatePage() {
     createProduct(requestBody)
   }
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
     error('Пожалуйста, заполните все поля!')
   }
 

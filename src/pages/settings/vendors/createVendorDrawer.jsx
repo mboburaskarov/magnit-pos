@@ -62,7 +62,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
     },
     onError: (err) => {
       error('Ошибка при Вендор создан!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -76,7 +76,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
     },
     onError: (err) => {
       error('Ошибка при редактирование Вендор!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -102,7 +102,7 @@ export default function CreateVendorDrawer({ refetchVendorList, quickCreateClien
 
   const onError = (err) => {
     error('alerts.enter_all_required_fields')
-    console.log('err', err)
+    console.error('err', err)
   }
   const theme = useTheme()
   return (

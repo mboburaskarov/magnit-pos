@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MainDetails({ clientData, openDrawer }) {
   const classes = useStyles()
-  console.log(openDrawer)
 
   const { data: companyInfo, refetch: refetcompanyInfo } = useQuery(
     ['companyInfo', openDrawer],
@@ -44,7 +43,6 @@ export default function MainDetails({ clientData, openDrawer }) {
     }
   )
   const mode = openDrawer?.mode
-  console.log(companyInfo)
 
   const { control, errors, setValue } = useFormContext()
   const { t } = useTranslation()

@@ -26,7 +26,7 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
     },
     onError: (err) => {
       error('Ошибка Редактировать Бонусный продукт успешно!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const onSubmit = (data) => {
@@ -41,7 +41,7 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
 
   const onError = (err) => {
     error('Пожалуйста, заполните все поля!')
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {

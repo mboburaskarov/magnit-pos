@@ -21,7 +21,7 @@ export default function ChangePassWordDialog({ open, setOpen }) {
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function ChangePassWordDialog({ open, setOpen }) {
     },
     onError: (err) => {
       error('Ошибка смены пароля!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const theme = useTheme()

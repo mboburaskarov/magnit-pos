@@ -101,11 +101,7 @@ export function containsEnglish(text) {
 }
 
 export function convertEngToRu(input) {
-  // console.log('convertEngToRu', input)
-
   // if (!containsEnglish(input)) return input
-  // console.log('convertEngToRu', input)
-
   return input
     .split('')
     .map((char) => engToRuMap[char] || char)

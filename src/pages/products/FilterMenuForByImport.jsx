@@ -59,7 +59,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {

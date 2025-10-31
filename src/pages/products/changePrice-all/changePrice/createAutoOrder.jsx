@@ -31,7 +31,7 @@ export default function CreateInventory({ open, refetch, setOpen }) {
     },
     onError: (err) => {
       error('Ошибка Создать инвентаризация!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -49,7 +49,7 @@ export default function CreateInventory({ open, refetch, setOpen }) {
 
   const onError = (err) => {
     error('Пожалуйста, заполните все поля!')
-    console.log('err', err)
+    console.error('err', err)
   }
 
   // Watch for revaluation type changes

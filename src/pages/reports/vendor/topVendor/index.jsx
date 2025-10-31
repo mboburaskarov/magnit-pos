@@ -130,7 +130,7 @@ export default function TopVendorsPage() {
       refetch()
       error('Ошибка при удалении продавца!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -149,7 +149,7 @@ export default function TopVendorsPage() {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
       error('Ошибка при скачать excel!')
     },
   })

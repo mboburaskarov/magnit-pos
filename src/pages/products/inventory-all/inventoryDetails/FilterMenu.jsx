@@ -34,7 +34,7 @@ export default function FilterMenu({ open, id, setOpen }) {
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {

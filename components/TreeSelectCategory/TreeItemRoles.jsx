@@ -19,49 +19,35 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
     const {
       target: { value, checked },
     } = event
-    console.log('##1')
 
     let newSelect = selected.slice()
     if (checked) {
-      console.log('##2')
-
       newSelect = [...parents, value].reverse().reduce(
         (prev, curr, index) => {
           const node = curr
           let newSelectSoFar = prev
-          console.log('##3')
 
           if (index === 0) {
             const childNodes = getTreeNodes({ tree, node })
             const childNodesLength = childNodes.length
             if (childNodesLength > 0) {
-              console.log('##4')
-
               newSelectSoFar = [...newSelectSoFar, ...childNodes]
-              // newSelectSoFar = [...newSelectSoFar?.filter((select) => !childNodes.includes(select))]
-
-              // marksUncheckedRef.current = marksUncheckedRef?.current?.filter((marksUnchecked) => ![...childNodes, node].includes(marksUnchecked))
               marksUncheckedRef.current = [...marksUncheckedRef?.current, ...childNodes, value]
             }
           } else {
-            console.log('##5')
-
             const childNodes = getTreeNodes({ tree, node })
             const childNodesLength = childNodes.length
 
             if (childNodesLength > 0) {
               const isEveryChildrenExist = childNodes.every((childNode) => newSelectSoFar.includes(childNode))
-              console.log('##6')
 
               if (isEveryChildrenExist) {
                 newSelectSoFar = [...newSelectSoFar.filter((select) => node != select), node]
-                console.log('##7')
 
                 marksUncheckedRef.current = marksUncheckedRef?.current?.filter((marksUnchecked) => ![]?.includes(marksUnchecked))
               }
             }
           }
-          console.log('##8')
 
           marksUncheckedRef.current = marksUncheckedRef?.current?.filter((marksUnchecked) => !newSelectSoFar?.includes(marksUnchecked))
 
@@ -69,18 +55,13 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
         },
         [...newSelect, value]
       )
-      console.log('##9')
     } else if (!checked && !newSelect.includes(value)) {
-      console.log('##10')
-
       let toExclude = value
       newSelect = parents
         .slice()
         .reverse()
         .reduce(
           (prev, curr, index) => {
-            console.log('##11')
-
             const node = curr
             let newSelectSoFar = prev
             let childNodes
@@ -88,13 +69,9 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
             marksUncheckedRef.current = [...new Set([...marksUncheckedRef.current, toExclude])]
 
             if (index === 0) {
-              console.log('##12')
-
               childNodes = getTreeNodes({ tree, node, depth: 1 })
               newSelectSoFar = [...newSelectSoFar, ...childNodes.filter((childNode) => childNode !== toExclude)]
             } else {
-              console.log('##13')
-
               childNodes = getTreeNodes({ tree, node, depth: 1 }).filter((childNode) => childNode !== toExclude)
 
               newSelectSoFar = [
@@ -110,25 +87,18 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
 
           newSelect.filter((select) => !parents.includes(select))
         )
-      console.log('##14')
     } else {
-      console.log('##15')
       ;[...parents, value]
         ?.slice()
         ?.reverse()
         ?.forEach((item) => {
           const node = item
-          console.log('##16')
 
           const childNodes = getTreeNodes({ tree, node, depth: 1 })
 
           if (childNodes.length > 0) {
-            console.log('##17')
-
             marksUncheckedRef.current = [...new Set([...marksUncheckedRef?.current, ...childNodes])]
           } else {
-            console.log('##18')
-
             marksUncheckedRef.current = [...new Set([...marksUncheckedRef?.current, node])]
           }
         })
@@ -136,32 +106,21 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
 
       newSelect = newSelect?.filter((select) => !childnodes.includes(select) && select !== value && select != 'e14d59f2-0292-4c9e-a8b4-33c804208393')
     }
-    console.log('##19')
 
     if (disableMultiParentSelection) {
       if (checked) {
-        console.log('##20')
-
         activeParentRef.current = parents.length > 0 ? parents[0] : value
       } else {
-        console.log('##21')
-
         const childNodes = getTreeNodes({
           tree,
           node: parents.length > 0 ? parents[0] : value,
         })
 
-        console.log('##22')
-
         if (!childNodes.some((childNode) => newSelect.includes(childNode))) {
-          console.log('##23')
-
           activeParentRef.current = ''
         }
       }
     }
-    console.log('##24')
-    console.log(newSelect)
 
     onSelect([
       ...newSelect,

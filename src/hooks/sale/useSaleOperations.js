@@ -192,8 +192,6 @@ export const useSaleOperations = ({
 
   const submitSale = useCallback(
     (paymentsList, otpData, maxAmount) => {
-      console.log(paymentsList)
-
       // Handle both formats: lite order (with payment_type_id) and full order (with id)
       const paymentTypes = paymentsList
         ?.filter((type) => get(type, 'amount', false) && !get(type, 'isPlaceholder', false))

@@ -114,7 +114,7 @@ export default function VendorsPage() {
       refetch()
       error('Ошибка при удалении продавец!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -130,7 +130,7 @@ export default function VendorsPage() {
       error('Ошибка при активации продавеца!')
       refetch()
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: deActivateVendor, isLoading: isDeActivatingProduct } = useMutation(requests.deActivateVendor, {
@@ -145,7 +145,7 @@ export default function VendorsPage() {
       error('Ошибка при деактивации продавеца!')
       refetch()
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -164,7 +164,7 @@ export default function VendorsPage() {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },

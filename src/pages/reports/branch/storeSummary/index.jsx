@@ -137,7 +137,7 @@ export default function StoreSummaryPage() {
       refetch()
       error('Ошибка при удалении филиала!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -156,7 +156,7 @@ export default function StoreSummaryPage() {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },

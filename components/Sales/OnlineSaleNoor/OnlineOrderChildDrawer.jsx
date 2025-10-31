@@ -77,7 +77,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
     },
     onError: (err) => {
       error('Ошибка при Черновик удален!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: completeOnlineOrder, isLoading: isCompleteDraft } = useMutation(requests.completeOnlineOrder, {
@@ -89,7 +89,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
     },
     onError: (err) => {
       error('Ошибка при создании Черновик!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const {
@@ -137,7 +137,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
               <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
                 {t('vendor')}:
               </Typography>
-              <CustomImg className={classes.usrImg} src='/default-user-img.png' />
+              <CustomImg className={classes.usrImg} src='default-user-img.png' />
               <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
                 {get(darftChildList, 'data.data.employee.first_name')}
               </Typography>

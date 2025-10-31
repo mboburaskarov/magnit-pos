@@ -78,11 +78,8 @@ function ImplementMarkingDialog({
   }, [markingsList]) // Replace with actual marking state dependency
 
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex, item) => {
-    console.log('#1')
-
     if (e.key === 'Enter') {
       e.preventDefault()
-      console.log('#2')
 
       if (containsCyrillic(e.target.value)) {
         inputsRef.current[flatIndex].value = ''
@@ -92,12 +89,10 @@ function ImplementMarkingDialog({
       if (e.target.value.length == 0) {
         if (markingsList?.[id]?.[childIndex]?.length != 0) {
           //demak u markirofkani tozlamoqchi
-          console.log('#3')
 
           implementMarkingList(e.target.value, id, childIndex)
           return
         }
-        console.log('#4')
 
         //input bo'sh holatda enter bosildi
         inputsRef.current[flatIndex].value = markingsList?.[id]?.[childIndex]
@@ -106,7 +101,6 @@ function ImplementMarkingDialog({
       }
       let validLength = [83, 37, 53, 94, 93, 51]
       if (!validLength.includes(e.target.value.length)) {
-        console.log('#5')
         // markirofka uzunligi mos emas
 
         inputsRef.current[flatIndex].value = ''
@@ -117,7 +111,6 @@ function ImplementMarkingDialog({
       if (Object.values(markingsList[id] || {}).includes(e.target.value) && markingsList?.[id]?.[childIndex]?.length == 0) {
         // ikki martta bir xil markirofka kiritildi
         inputsRef.current[flatIndex].value = ''
-        console.log('#7')
 
         error('Повторение маркировки (uz: takrorlangan markirovka)')
         return
@@ -137,53 +130,22 @@ function ImplementMarkingDialog({
         }
       }
       //hammasi ok
-      console.log('#9')
 
       implementMarkingList(e.target.value, id, childIndex)
-      console.log('#10', markingsList, isAllMarkingFill())
-
-      // const values = inputsRef.current
-      //   .map((input) => input?.value || '') // Ensure input and value are safe
-      //   .filter((val) => val.length > 0)
-
-      // if (cartmarkingCount() != values.length) {
-      //   inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
-      //   console.log('#11')
-
-      //   return
-      // } else {
-      //   if (get(open, 'mode', 'lite') === 'lite') {
-      //     setLiteOrder(true)
-      //     console.log('#12')
-      //   } else {
-      //     console.log('#13')
-
-      //     setIsOrderDrower(true)
-      //   }
-      //   console.log('#14')
-
-      //   handleClose()
-      //   return
-      // }
     }
   }
   useEffect(() => {
     if ((markingsList, cartItems.length)) {
       if (!isAllMarkingFill()) {
         inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
-        console.log('#11')
 
         return
       } else {
         if (get(open, 'mode', 'lite') === 'lite') {
           setLiteOrder(true)
-          console.log('#12')
         } else {
-          console.log('#13')
-
           setIsOrderDrower(true)
         }
-        console.log('#14')
 
         handleClose()
         return
@@ -204,32 +166,10 @@ function ImplementMarkingDialog({
     const id = changeingMarkingData?.id
     const childIndex = changeingMarkingData?.childIndex
     implementMarkingList(value, id, childIndex)
-    console.log('#10', markingsList)
 
     const values = inputsRef.current
       .map((input) => input?.value || '') // Ensure input and value are safe
       .filter((val) => val.length > 0)
-    console.log(cartmarkingCount(), values)
-
-    // if (cartmarkingCount() != values.length) {
-    //   inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
-    //   console.log('#11')
-
-    //   return
-    // } else {
-    //   if (get(open, 'mode', 'lite') === 'lite') {
-    //     setLiteOrder(true)
-    //     console.log('#12')
-    //   } else {
-    //     console.log('#13')
-
-    //     setIsOrderDrower(true)
-    //   }
-    //   console.log('#14')
-
-    //   handleClose()
-    //   return
-    // }
   }
   const getFlatIndex = (parentIndex, childIndex, markingCounts) => {
     let flatIndex = 0
@@ -255,7 +195,7 @@ function ImplementMarkingDialog({
         error('err: Asl belgi')
       }
 
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   return (

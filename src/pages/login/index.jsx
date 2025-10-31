@@ -102,7 +102,7 @@ export default function LoginPage() {
     },
     onError: (err) => {
       error('Hеверный логин или пароль')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -120,7 +120,7 @@ export default function LoginPage() {
 
   const onError = (err) => {
     error('Пожалуйста, заполните все поля')
-    console.log('err', err)
+    console.error('err', err)
   }
 
   return (

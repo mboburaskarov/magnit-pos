@@ -41,7 +41,7 @@ export default function ChangeShift({ open, setOpen }) {
     },
     onError: (err) => {
       error('Ошибка при смене смены')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const onSubmit = (data) => {
@@ -54,7 +54,7 @@ export default function ChangeShift({ open, setOpen }) {
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
 
   const theme = useTheme()

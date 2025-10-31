@@ -79,7 +79,7 @@ export default function CompaniesPage() {
       refetch()
       error('Ошибка при удалении Аптека!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 

@@ -95,11 +95,11 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
   }, [qrCodeUrl])
   useImperativeHandle(childRef, () => ({
     printChildCheque() {
-      getQrCodeWithFiscal({
-        token: 'DXJFX32CN1296678504F2',
-        method: 'getReceiptInfoByFiscalSign',
-        fiscalSign: get(saleDetailsList, 'data.data.fiscal_sign'),
-      })
+      if (get(saleDetailsList, 'data.data.check_url', false)) {
+        setQrcodeUrl(get(saleDetailsList, 'data.data.check_url', 'pending'))
+      } else {
+        error(`No FISCAL`)
+      }
     },
   }))
   const {
@@ -140,23 +140,6 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
   })
   const theme = useTheme()
 
-  const { mutate: getQrCodeWithFiscal, isLoading: isgetQrCodeWithFiscal } = useMutation(requests.closeZReport, {
-    onSuccess: ({ data }) => {
-      if (!get(data, 'error', true)) {
-        setQrcodeUrl(get(data, 'message.qrCodeURL', 'pending'))
-      } else {
-        if (data?.message == 'Введённого вами фискального признака нет в базе данных!') {
-          error(`Данные о продажах не найдены. Возможно, это было сделано из "другой кассы."`)
-
-          return
-        }
-        error(`FISCAL: ${data?.message}`)
-      }
-    },
-    onError: (err) => {
-      console.log('err', err)
-    },
-  })
   function maskNumber(num) {
     if (num.length == 0) return '*****'
     const str = String(num)
@@ -198,7 +181,7 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
               <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
                 {t('vendor')}:
               </Typography>
-              <CustomImg className={classes.usrImg} src='/default-user-img.png' />
+              <CustomImg className={classes.usrImg} src='default-user-img.png' />
               <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
                 {get(saleDetailsList, 'data.data.employee.first_name')}
               </Typography>

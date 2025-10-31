@@ -26,7 +26,7 @@ export default function ChangeUnitPerPack({ refetch, open, setOpen, setRegions }
     },
     onError: (err) => {
       error('Ошибка при редактировании товара!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const onSubmit = (data) => {
@@ -38,7 +38,7 @@ export default function ChangeUnitPerPack({ refetch, open, setOpen, setRegions }
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
 
   const theme = useTheme()

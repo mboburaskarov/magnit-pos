@@ -64,7 +64,7 @@ export default function BonusProductPage() {
       refetch()
       error('Ошибка при удалении товара!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   useEffect(() => {
@@ -129,7 +129,7 @@ export default function BonusProductPage() {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },

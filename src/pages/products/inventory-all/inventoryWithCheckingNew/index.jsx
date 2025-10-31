@@ -105,36 +105,6 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   )
 
-  // useEffect(() => {
-  //   // Connect to backend
-
-  //   const ws = new WebSocket(`wss://api-pharma.noor.uz/ws?store_id=${userData?.id}`) // or wss://your-domain.com/ws
-  //   wsRef.current = ws
-
-  //   ws.onopen = () => {
-  //     console.log('WebSocket connection established')
-  //   }
-
-  //   ws.onmessage = (event) => {
-  //     const data = JSON.parse(event.data)
-  //     if (data?.event == 'your_invertry_qty_is_change') {
-  //       refetch()
-  //     }
-  //     console.log('Received:', data)
-  //   }
-
-  //   ws.onerror = (error) => {
-  //     console.error('WebSocket error:', error)
-  //   }
-
-  //   ws.onclose = () => {
-  //     console.log('WebSocket closed')
-  //   }
-
-  //   return () => {
-  //     ws.close()
-  //   }
-  // }, [])
   const allRows = data?.pages?.flatMap((page) => page.rows) || []
   const rowCount = allRows.length
 
@@ -235,7 +205,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },
@@ -317,16 +287,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       preventDefault: true,
     }
   )
-  useHotkeys(
-    '*',
-    (e) => {
-      console.log(e)
-    },
-    {
-      enableOnTags: ['INPUT', 'TEXTAREA'],
-      preventDefault: true,
-    }
-  )
+
   useHotkeys(
     'shift',
     () => {

@@ -135,7 +135,7 @@ export default function ProductQtyByDateReportPage() {
       refetch()
       error('Ошибка при удалении клиент!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -156,7 +156,7 @@ export default function ProductQtyByDateReportPage() {
         downloadLinkExcel(get(data, 'data.file_name'))
       },
       onError: (err) => {
-        console.log(err)
+        console.error(err)
 
         error('Ошибка при скачать excel!')
       },

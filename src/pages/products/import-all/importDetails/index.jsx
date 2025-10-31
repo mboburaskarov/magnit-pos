@@ -106,7 +106,7 @@ export default function ImportDetailsPage() {
     onError: (err) => {
       error('Ошибка при весь импорт принят!')
 
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const loadWithoutChecking = () => {
@@ -117,7 +117,7 @@ export default function ImportDetailsPage() {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },

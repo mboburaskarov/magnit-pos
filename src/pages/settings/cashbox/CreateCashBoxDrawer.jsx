@@ -58,7 +58,7 @@ export default function CreateCashBoxDrawer({ refetchVendorList, quickCreateClie
     },
     onError: (err) => {
       error('Ошибка при Кассы создан!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -71,7 +71,7 @@ export default function CreateCashBoxDrawer({ refetchVendorList, quickCreateClie
     },
     onError: (err) => {
       error('Ошибка редактирования сотрудники.!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -91,7 +91,7 @@ export default function CreateCashBoxDrawer({ refetchVendorList, quickCreateClie
 
   const onError = (err) => {
     error('alerts.enter_all_required_fields')
-    console.log('err', err)
+    console.error('err', err)
   }
   const theme = useTheme()
   return (

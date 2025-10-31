@@ -120,7 +120,7 @@ function CashCloseDrawer({ open, setOpen }) {
     },
     onError: (err) => {
       error('Ошибка закрытия кассы! (close Z info Report)')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   useEffect(() => {
@@ -146,7 +146,7 @@ function CashCloseDrawer({ open, setOpen }) {
     },
     onError: (err) => {
       error('Ошибка закрытия кассы! (close Z Report)')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: closeCashBoxRegister, isLoading: iscloseCashBoxRegister } = useMutation(requests.closeCashBoxRegister, {
@@ -155,7 +155,7 @@ function CashCloseDrawer({ open, setOpen }) {
     },
     onError: (err) => {
       error('Ошибка закрытия кассы!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -171,7 +171,7 @@ function CashCloseDrawer({ open, setOpen }) {
     })
   }
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
     error('Пожалуйста, заполните все поля!')
   }
 

@@ -61,26 +61,6 @@ const Image = ({ data, rowIndex, setImages, setOpenErrorReason }) => {
       }}
     >
       <CustomImg src={head(get(data, 'photos'))} alt={'main'} className='has-img' />
-
-      {/* {get(data, 'photos')?.length > 0 ? (
-        <img className='has-img' src={import.meta.env.VITE_FILE_API_URL + '/v1/upload/' + head(get(data, 'photos'))} />
-      ) : (
-        <img src='/no-img.png' />
-      )} */}
-      {/* <Box
-        className='hover-option'
-        onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          setOpenErrorReason(data)
-        }}
-      >
-        <Report color='#fff' />
-        <Typography fontSize={'14px'} color={'#fff'}>
-          {' '}
-          Ошибка
-        </Typography>
-      </Box> */}
     </Box>
   )
 }

@@ -29,7 +29,7 @@ export default function RoleCreatePage() {
     },
     onError: (err) => {
       error('Ошибка создания роли')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery('rolesAndPermissionListForCreate', () =>
@@ -63,7 +63,7 @@ export default function RoleCreatePage() {
     createRole(requestBody)
   }
   const onError = (err) => {
-    console.log(err)
+    console.error(err)
   }
 
   return (

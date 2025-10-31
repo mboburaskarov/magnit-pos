@@ -62,7 +62,7 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
     },
     onError: (err) => {
       error('Ошибка при Аптека создан!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -75,7 +75,7 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
     },
     onError: (err) => {
       error('Ошибка редактирования Аптекаа.!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -102,7 +102,7 @@ export default function CreateLocationDrawer({ refetchVendorList, quickCreateCli
 
   const onError = (err) => {
     error('alerts.enter_all_required_fields')
-    console.log('err', err)
+    console.error('err', err)
   }
   const theme = useTheme()
   return (

@@ -49,7 +49,6 @@ function SaleMiniDashboardHeader({ saleStatsData }) {
   const changedData = mockData.map((item) => {
     return { ...item, amount: saleStatsData?.[item?.sum_prop], count: saleStatsData?.[item?.count_prop] }
   })
-  console.log(changedData)
 
   return (
     <Box
@@ -62,8 +61,8 @@ function SaleMiniDashboardHeader({ saleStatsData }) {
       }}
     >
       <Grid container spacing={'8px'}>
-        {changedData.map((pay) => (
-          <Grid item xs={2.4} xl={2.4} sm={2.4} md={2.4} lg={2.4}>
+        {changedData.map((pay, index) => (
+          <Grid item xs={6} xl={2.4} sm={index == 9 ? 12 : 4} md={index <= 7 ? 3 : 6} lg={2.4}>
             <Box>
               <PaymentTypeBox pay={pay} />
             </Box>

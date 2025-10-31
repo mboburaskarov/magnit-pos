@@ -37,7 +37,7 @@ function CardShiftDetails() {
     onError: (err) => {
       refetch()
       error('Ошибка редактирования чистой цены!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const tableColumns = tableHeaderSelector({

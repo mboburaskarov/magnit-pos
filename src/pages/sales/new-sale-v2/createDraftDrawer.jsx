@@ -71,7 +71,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
     },
     onError: (err) => {
       error('Ошибка при Черновик создан!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const onSubmit = (data) => {
@@ -89,7 +89,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
     createDraft(requestBody)
   }
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
     error('Пожалуйста, заполните все поля!')
   }
   const theme = useTheme()

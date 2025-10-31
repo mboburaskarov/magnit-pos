@@ -48,7 +48,7 @@ export default function AutoOrderDetailPage({ isNew = true }) {
     },
     onError: (err) => {
       error('Ошибка Авто заказ!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const tableColumns = tableHeaderSelector({
@@ -59,7 +59,7 @@ export default function AutoOrderDetailPage({ isNew = true }) {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
       error('Ошибка при скачать excel!')
     },
   })

@@ -60,17 +60,6 @@ const Image = ({ data, rowIndex, setImages, setOpenErrorReason }) => {
       ) : (
         <img src='/no-img.png' />
       )}
-      {/* <Box
-        className='hover-option'
-        onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          setOpenErrorReason(data)
-        }}
-      >
-        <Report color='#fff' />
-        <Typography color={'#fff'}> Ошибка</Typography>
-      </Box> */}
     </Box>
   )
 }

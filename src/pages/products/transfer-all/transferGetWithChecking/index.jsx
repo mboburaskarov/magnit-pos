@@ -143,7 +143,7 @@ export default function TransferGetScanWithCheckingPage() {
         downloadLinkExcel(get(data, 'data.file_name'))
       },
       onError: (err) => {
-        console.log(err)
+        console.error(err)
 
         error('Ошибка при скачать excel!')
       },

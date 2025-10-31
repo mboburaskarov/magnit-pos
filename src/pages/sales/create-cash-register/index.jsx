@@ -106,7 +106,7 @@ function NewCashRegister() {
       setIsLoding(false)
 
       // error('Ошибка при создании товара!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   useEffect(() => {
@@ -130,7 +130,7 @@ function NewCashRegister() {
     },
     onError: (err) => {
       error('Ошибка при создании кассы!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const onSubmit = (data) => {
@@ -148,7 +148,7 @@ function NewCashRegister() {
     handleCashBoxCreate(requestBody)
   }
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
     error('Пожалуйста, заполните все поля!')
   }
 
@@ -164,7 +164,7 @@ function NewCashRegister() {
     },
     onError: (err) => {
       error('Ошибка при создании кассы! (open z report)')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: checkEPOSTurnOn, isLoading: ischeckEPOSTurnOn } = useMutation(requests.checkEPOSTurnOn, {
@@ -176,7 +176,7 @@ function NewCashRegister() {
     onError: (err) => {
       setisEposTurnOn(false)
       error('Программа EPOS отключена. Запустить программу EPOS')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   useEffect(() => {

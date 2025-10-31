@@ -362,7 +362,6 @@ const MultiOptionSelectNew = ({
           : countLabel
           ? `${values?.length} ${countLabel}`
           : (values || [])?.map((value, index) => `${index !== 0 ? ', ' : ''} ${value?.name}`)
-      console.log(val)
 
       return (
         <StyledTooltip hide={val == selectAllLabel} title={<Box sx={{ display: 'flex', flexDirection: 'column' }}>{val}</Box>} placement='top'>

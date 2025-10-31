@@ -117,13 +117,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <StyledSwitch
-              checked={get(p, 'data.is_delivered', false)}
-              onChange={() => {
-                console.log('gg')
-              }}
-              name={'is_delivered'}
-            />
+            <StyledSwitch checked={get(p, 'data.is_delivered', false)} onChange={() => {}} name={'is_delivered'} />
           </Box>
         )),
       }

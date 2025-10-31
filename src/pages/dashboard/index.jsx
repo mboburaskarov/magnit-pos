@@ -231,14 +231,14 @@ export default function DashboarPage() {
           <Grid width={'100%'} item>
             <Grid container mt={0} spacing={2}>
               {dashboardBoxData.map((el, ind) => (
-                <CheckAccess id={`dashboard-box-${el.id}`}>
-                  <Grid item xs={12} xl={3} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
+                <CheckAccess id={`dashboard-box-${el.id}`} key={el.id}>
+                  <Grid item xs={12} xl={3} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'}>
                     <DashboardInfoBox key={ind} {...el} dashboard_filter={dashboard_filter} />
                   </Grid>
                 </CheckAccess>
               ))}
               <CheckAccess id={`franchise-dashboard-box`}>
-                <Grid item xs={12} xl={3} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'} spacing={2}>
+                <Grid item xs={12} xl={3} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'}>
                   <Box
                     sx={(theme) => ({
                       display: 'flex',

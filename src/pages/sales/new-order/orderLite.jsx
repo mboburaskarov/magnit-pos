@@ -593,7 +593,7 @@ function OrderLite({
         return
       }
       error('Ошибка при Продажа завершена')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -626,7 +626,7 @@ function OrderLite({
       setHasChange(false)
 
       error('Ошибка при EPOS')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   useEffect(() => {
@@ -668,7 +668,7 @@ function OrderLite({
     },
     onError: (err) => {
       error('Ошибка при создании продажи')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 

@@ -17,7 +17,7 @@ function ReChangeMarkingDialog({ open, handleClose, saveNewChangedMarking, refet
     },
     onError: (err) => {
       error('errr')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   return (

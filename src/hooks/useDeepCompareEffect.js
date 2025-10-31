@@ -9,18 +9,10 @@ function useDeepCompareEffect(fn, deps, options) {
   useEffect(() => {
     if (debugKey) {
       console.group(`useDeepCompareEffect - ${debugKey}`)
-      console.log('deps', deps)
     }
     const isSame = isEqual(deps, prevDeps.current)
-    if (debugKey) {
-      console.log('useDeepCompareEffect isSame =>', isSame, deps, prevDeps.current)
-      console.log('useDeepCompareEffect firstRender =>', firstRender.current)
-      console.log('useDeepCompareEffect should execute =>', Boolean((firstRender.current || !isSame) && fn))
-    }
+
     if ((firstRender.current || !isSame) && fn) {
-      if (debugKey) {
-        console.log('useDeepCompareEffect fn executed')
-      }
       if (shouldCompare.current) {
         fn()
       }

@@ -91,7 +91,7 @@ export default function RolesPage() {
       refetch()
       error('Ошибка при удалении роли!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 

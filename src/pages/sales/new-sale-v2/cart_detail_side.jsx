@@ -107,7 +107,6 @@ function CartDetailSide({
     isFetching: isFetchingsellerBonus,
     refetch,
   } = useQuery(['sellerBonus'], () => requests.getSellerBonusData())
-  console.log(sellerBonus)
 
   const leftZreportCount = localStorage.getItem('leftZreportCount')
   useEffect(() => {

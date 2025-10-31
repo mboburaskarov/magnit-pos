@@ -1,6 +1,4 @@
 export default function getOptionsFromUrlParam(urlParam, optionsList, objectKey = 'name', name = 'name') {
-  console.log(urlParam?.split(','), optionsList, urlParam, optionsList.find((option) => option?.id === 'arzon-apteka')?.[objectKey])
-
   return urlParam?.split(',').map((item) =>
     optionsList
       ? {

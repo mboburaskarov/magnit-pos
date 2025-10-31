@@ -30,7 +30,7 @@ export default function RoleEditPage() {
     },
     onError: (err) => {
       error('Ошибка создания роли')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { data: singleRoleData } = useQuery('singleRoleData', () => requests.getSingleRole(id))
@@ -41,7 +41,6 @@ export default function RoleEditPage() {
     let selectedChildren = []
 
     if (!permission.children) return selectedChildren
-    console.log(permission, selected)
 
     for (const child of permission.children) {
       // If child itself is selected
@@ -79,7 +78,7 @@ export default function RoleEditPage() {
     createRole({ id, data: requestBody })
   }
   const onError = (err) => {
-    console.log(err)
+    console.error(err)
   }
 
   return (

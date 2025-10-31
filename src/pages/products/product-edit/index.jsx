@@ -27,7 +27,7 @@ export default function ProductEditPage() {
     },
     onError: (err) => {
       error('Ошибка при редактировании товара!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function ProductEditPage() {
     updateProduct({ id, data: requestBody })
   }
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
     error('Пожалуйста, заполните все поля!')
   }
 

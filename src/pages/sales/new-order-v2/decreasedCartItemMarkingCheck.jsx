@@ -41,7 +41,7 @@ function DecreasedCartItemMarkingCheck({ open, handleClose, cartItems, markingsL
       } else {
         error('Ошибка при получении похожих товаров.')
       }
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const isValidInput = (evialable, input) => {

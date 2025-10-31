@@ -28,7 +28,7 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
 
   const theme = useTheme()

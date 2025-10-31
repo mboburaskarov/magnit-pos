@@ -129,7 +129,7 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
         downloadLinkExcel(get(data, 'data.file_name'))
       },
       onError: (err) => {
-        console.log(err)
+        console.error(err)
 
         error('Ошибка при скачать excel!')
       },

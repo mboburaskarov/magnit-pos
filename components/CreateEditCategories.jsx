@@ -244,7 +244,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
     },
     onError: (err) => {
       error('Ошибка при Создать категорию!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: updateCategory, isLoading: isupdateCategory } = useMutation(requests.updateCategory, {
@@ -255,7 +255,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
     },
     onError: (err) => {
       error('Ошибка при Изменить категорию!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 

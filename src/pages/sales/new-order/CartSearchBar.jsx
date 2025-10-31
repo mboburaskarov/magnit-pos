@@ -240,7 +240,7 @@ function CartSearchBar({
       setSearchTerm('')
 
       error('Ошибка при DMED')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -494,9 +494,6 @@ function CartSearchBar({
                   title: 'Закрыть кассу',
                   icon: <UnlockIcon />,
                   clickHandler: () => {
-                    {
-                      console.log(darftList)
-                    }
                     if (size(get(darftList, 'data.data.data')) > 0) {
                       setCloseCashBox(true)
                     } else {

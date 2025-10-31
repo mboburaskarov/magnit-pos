@@ -93,7 +93,7 @@ export default function PaymentsAssetsList() {
       refetch()
       error('Ошибка при удалении товара!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 

@@ -40,7 +40,7 @@ export default function CreateWriteOff({ open, refetch, setOpen }) {
     },
     onError: (err) => {
       error('Ошибка Создать автозаказ!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const onSubmit = (data) => {
@@ -54,7 +54,7 @@ export default function CreateWriteOff({ open, refetch, setOpen }) {
 
   const onError = (err) => {
     error('Пожалуйста, заполните все поля!')
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {

@@ -20,7 +20,7 @@ export default function RolesCreateDrawer({ isOpen, onClose, categoriesRefetch }
     },
     onError: (err) => {
       error('Ошибка при создании действии!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -32,7 +32,7 @@ export default function RolesCreateDrawer({ isOpen, onClose, categoriesRefetch }
     },
     onError: (err) => {
       error('Ошибка при создании действии!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const onSubmit = (data) => {
@@ -60,7 +60,7 @@ export default function RolesCreateDrawer({ isOpen, onClose, categoriesRefetch }
     }
   }
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
     error('Пожалуйста, заполните все поля!')
   }
 

@@ -58,7 +58,7 @@ export default function DiscountCardPage() {
       refetch()
       error('Ошибка при удалении дисконтная карта!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   useEffect(() => {

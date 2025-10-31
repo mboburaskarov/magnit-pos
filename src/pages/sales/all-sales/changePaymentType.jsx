@@ -22,7 +22,7 @@ export default function ChangePaymentType({ open, refetch, setOpen }) {
     },
     onError: (err) => {
       error('Ошибка Изменить тип оплаты успешно!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const onSubmit = (data) => {
@@ -36,7 +36,7 @@ export default function ChangePaymentType({ open, refetch, setOpen }) {
 
   const onError = (err) => {
     error('Пожалуйста, заполните все поля!')
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {
@@ -71,7 +71,6 @@ export default function ChangePaymentType({ open, refetch, setOpen }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            {console.log(open?.types?.filter((type) => open?.payment_type?.[type?.front_name] == 0))}
             <SelectSimple
               id={'payment_type_id'}
               options={open?.types?.filter((type) => open?.payment_type?.[type?.front_name] == 0)}

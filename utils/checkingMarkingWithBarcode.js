@@ -14,10 +14,6 @@ export function checkBarcodeWithMarking(barcode, marking) {
   if (barcode.length <= 0) return true
   const markingBarcode = extractNumbers(marking)
   const cleanBarcode = trimLeadingZeros(barcode)
-  console.log('markingBarcode ->>>>>>>>>', markingBarcode)
-  console.log('cleanBarcode ->>>>>>>>>', cleanBarcode)
-  console.log('barcode ->>>>>>>>>', barcode)
-  console.log('marking ->>>>>>>>>', marking)
 
   return markingBarcode === cleanBarcode
 }

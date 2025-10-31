@@ -48,7 +48,7 @@ export default function CatalogManagement() {
     },
     onError: (err) => {
       error('Ошибка при создании Категори!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 

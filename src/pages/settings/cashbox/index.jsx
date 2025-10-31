@@ -92,7 +92,7 @@ export default function CashBoxsPage() {
       refetch()
       error('Ошибка при удалении товара!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
