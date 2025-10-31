@@ -80,7 +80,7 @@ const CustomHeader = (props) => {
     </Box>
   )
 }
-export default function tableHeaderSelector({ vendorsColumns, t, setOrderStoring, orderStoring }) {
+export default function tableHeaderSelector({ vendorsColumns, t, setOrderStoring, orderStoring, setOpenSellerBonusHistoryDrawer }) {
   const columns = vendorsColumns?.map((el) => {
     if (el.field === 'sales_count') {
       return {
@@ -124,7 +124,9 @@ export default function tableHeaderSelector({ vendorsColumns, t, setOrderStoring
         headerName: t('fish'),
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Typography sx={{ whiteSpace: 'pre-line', color: 'orange.500', cursor: 'pointer' }}>{get(p, 'data.[full_name]')}</Typography>
+          <Typography onClick={() => setOpenSellerBonusHistoryDrawer(p.data)} sx={{ whiteSpace: 'pre-line', color: 'orange.500', cursor: 'pointer' }}>
+            {get(p, 'data.[full_name]')}
+          </Typography>
         )),
       }
     }

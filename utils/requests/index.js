@@ -75,6 +75,9 @@ export const requests = {
 
   getAllDisountCardsList: (filter) => request.get(`v1/customer/list-discount-cards${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSellerBonusData: (filter) => request.post(`v1/product-bonus/balance${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getSellerBonusHistoryData: (filter) => request.post(`v1/report/bonus-items${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getSellerBonusHistoryDataExcel: (filter) => requestEXCEL.post(`v1/report/bonus-items-export${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   changeSalePaymentTypeId: (data) => request.put(`v1/payment-type/change-payment-type`, data),
 
   //producer
