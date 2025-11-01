@@ -23,14 +23,11 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 24,
     marginTop: 16,
     maxHeight: 808,
-    // overflowY: 'scroll',
     '&::-webkit-scrollbar': {
       width: 0,
     },
   },
   root: {
-    // padding: '24px 24px 0 24px',
-    // border: `1px solid ${theme.palette.bunker[100]}`,
     paddingTop: 0,
     borderRadius: 24,
     marginTop: 16,

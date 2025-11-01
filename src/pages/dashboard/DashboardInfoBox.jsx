@@ -30,8 +30,18 @@ export default function DashboardInfoBox({
     'expired_soon_amount',
   ].includes(id)
   const isEmployee = id === 'bonus_amount'
+
+  // 👇 Use grouped query keys
+  const queryKey =
+    (isSaleBox && ['sale_stats', dashboard_filter]) ||
+    (isNetProfit && ['net_profit_stats', dashboard_filter]) ||
+    (isImport && ['import_stats', dashboard_filter]) ||
+    (isProduct && ['product_stats', dashboard_filter]) ||
+    (isEmployee && ['employee_stats', dashboard_filter]) ||
+    null
+
   const { data: countStats, isLoading } = useQuery({
-    queryKey: [id, dashboard_filter],
+    queryKey,
     queryFn: async () => {
       if (isSaleBox) return requests.dashboradSaleStatistic(dashboard_filter)
       if (isNetProfit) return requests.dashboradNetProfitStatistic(dashboard_filter)
@@ -40,25 +50,28 @@ export default function DashboardInfoBox({
       if (isEmployee) return requests.dashboradEmployeeStatistic(dashboard_filter)
       throw new Error('Unknown id')
     },
-    enabled: isSaleBox || isNetProfit || isProduct || isImport || isEmployee, // fetch only if valid
+    enabled: !!queryKey,
   })
+
   const count = countStats?.data?.data?.[countProp]
   const before = countStats?.data?.data?.old
   const amount = countStats?.data?.data?.[amountProp]
-  const percent = percentProp(before, count)
+  const percent = percentProp?.(before, count)
   const isFall = percent < 0
+
   return (
-    <Box sx={(theme) => ({ border: 1, borderRadius: '16px', borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' })}>
-      <Box key={ind} sx={(theme) => ({ p: '20px', height: '164px', m: 0 })}>
-        <Box width='100%' alignItems={'start'} flexDirection={'column'} display='inline-flex'>
+    <Box sx={{ border: 1, borderRadius: '16px', borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' }}>
+      <Box key={ind} sx={{ p: '20px', height: '164px', m: 0 }}>
+        <Box width='100%' alignItems='start' flexDirection='column' display='inline-flex'>
           {!noDot && <Box height={'48px'}>{isLoading ? <Skeleton variant='circular' width={48} height={48} sx={{ borderRadius: '12px' }} /> : icon}</Box>}
+
           <Box flex={1}>
             {isLoading ? (
               <Skeleton variant='rectangular' width='65%' height={20} sx={{ mt: '16px', borderRadius: '6px' }} />
             ) : (
-              <Typography display={'flex'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'} color={'bunker.500'} mt={'16px'}>
+              <Typography display='flex' fontSize='14px' fontWeight='500' lineHeight='20px' color='bunker.500' mt='16px'>
                 {title}{' '}
-                {id === 'expiring_soon_amount' || id === 'expired_soon_amount' ? (
+                {(id === 'expiring_soon_amount' || id === 'expired_soon_amount') && (
                   <Typography
                     sx={{
                       padding: '3px 8px 1px',
@@ -73,52 +86,43 @@ export default function DashboardInfoBox({
                   >
                     {withoutDivider ? count : thousandDivider(count, '')} {endText}
                   </Typography>
-                ) : (
-                  ''
                 )}
               </Typography>
             )}
           </Box>
         </Box>
 
-        {
-          <Box mt={icon ? '0px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
-            <Box flex={1}>
-              {isLoading ? (
-                <Skeleton variant='rectangular' width='55%' height={40} sx={{ borderRadius: '8px' }} />
-              ) : (
-                <Typography
-                  alignItems={'end'}
-                  display={'flex'}
-                  color='dark.500'
-                  fontSize={'28px'}
-                  lineHeight={'40px'}
-                  fontWeight='700'
-                  variant='h1'
-                  sx={{
-                    '& > p': {
-                      fontSize: '28px',
-                      lineHeight: '40px',
-                      fontWeight: '700 !important',
-                      color: 'dark.500',
-                    },
-                  }}
-                >
-                  {withoutDivider ? Math.round(amount) : <Typography>{thousandDivider(Math.round(count), endText)}</Typography>}
-                </Typography>
-              )}
-            </Box>
+        <Box mt={icon ? '0px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
+          <Box flex={1}>
+            {isLoading ? (
+              <Skeleton variant='rectangular' width='55%' height={40} sx={{ borderRadius: '8px' }} />
+            ) : (
+              <Typography
+                alignItems='end'
+                display='flex'
+                color='dark.500'
+                fontSize='28px'
+                lineHeight='40px'
+                fontWeight='700'
+                variant='h1'
+                sx={{
+                  '& > p': {
+                    fontSize: '28px',
+                    lineHeight: '40px',
+                    fontWeight: '700 !important',
+                    color: 'dark.500',
+                  },
+                }}
+              >
+                {withoutDivider ? Math.round(amount) : <Typography>{thousandDivider(Math.round(count), endText)}</Typography>}
+              </Typography>
+            )}
           </Box>
-        }
+        </Box>
       </Box>
 
-      <Box key={ind} sx={(theme) => ({ py: '18px', px: '20px', height: '52px', m: 0, borderTop: 1, borderColor: '#A4A5AB33' })}>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
+      <Box key={ind} sx={{ py: '18px', px: '20px', height: '52px', m: 0, borderTop: 1, borderColor: '#A4A5AB33' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {percent < 1000 && (
             <>
               {isLoading ? (
@@ -135,7 +139,7 @@ export default function DashboardInfoBox({
                   }}
                   alignItems='center'
                 >
-                  <Typography color={isFall ? '#FF4639' : '#30BE82'} fontWeight='500' fontSize={12} lineHeight={'16px'}>
+                  <Typography color={isFall ? '#FF4639' : '#30BE82'} fontWeight='500' fontSize={12} lineHeight='16px'>
                     {!isFall ? '+' : ''} {percent}%
                   </Typography>
                 </Box>
@@ -146,7 +150,7 @@ export default function DashboardInfoBox({
             {isLoading ? (
               <Skeleton variant='rectangular' width={140} height={16} sx={{ borderRadius: '6px' }} />
             ) : (
-              <Typography color='bunker.500' fontSize={'12px'} lineHeight={'16px'} fontWeight='500' variant='h1'>
+              <Typography color='bunker.500' fontSize='12px' lineHeight='16px' fontWeight='500' variant='h1'>
                 {thousandDivider(old)} {endText} за прошедший период
               </Typography>
             )}

@@ -6,14 +6,7 @@ import thousandDivider from '@utils/thousandDivider'
 import { formatDate } from '@utils/validateDate'
 import DeleteIcon from '@icons/DeleteIcon'
 import EditIcon from '@icons/EditIcon'
-
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import { SimpleText } from '../../../components/AgGridTable/Cells/SimpleText'
 
 export default function tableHeaderSelector({ clientsColumns, values, selectClientsFunc, t, setOpenConfirmDialog, setOpenClientCreateMini }) {
   const columns = clientsColumns?.map((el) => {
@@ -56,7 +49,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: t('fish'),
         colId: el.field,
-        cellRenderer: memo((p) => <Typography whiteSpace={'pre-line'}>{get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} customText={get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')} type='fish' />),
       }
     }
     if (el.field === 'phone_number') {
@@ -64,11 +57,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: t('phone_number'),
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
-            {p.data.phone.length > 0 ? formatPhoneNumber(p.data.phone) : '-'}
-          </Typography>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} customText={p.data.phone.length > 0 ? formatPhoneNumber(p.data.phone) : '-'} type='phone_number' />),
       }
     }
     if (el.field === 'tags') {
@@ -93,11 +82,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Последняя покупка',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{formatDate(p.data?.sale_date, 'DD.MM.YYYY')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} customText={formatDate(p.data?.sale_date, 'DD.MM.YYYY')} type='sale_date' />),
       }
     }
     if (el.field === 'birthday') {
@@ -105,11 +90,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Дата рождения',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{formatDate(p.data?.birthday, 'DD.MM.YYYY')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} customText={formatDate(p.data?.birthday, 'DD.MM.YYYY')} type='birthday' />),
       }
     }
     if (el.field === 'created_at') {
@@ -117,11 +98,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Дата регистрации',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{formatDate(p.data?.created_at, 'DD.MM.YYYY')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} customText={formatDate(p.data?.created_at, 'DD.MM.YYYY')} type='created_at' />),
       }
     }
     if (el.field === 'store') {
@@ -129,6 +106,8 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Зарегистрируйтесь в филиале',
         colId: el.field,
+        // cellRenderer: memo((p) => <SimpleText {...p} customText={get(p, 'data.store.name', '-')} type='store' />),
+
         cellRenderer: memo((p) => (
           <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
             {get(p, 'data.store.name', '-')}
