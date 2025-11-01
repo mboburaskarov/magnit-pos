@@ -21,7 +21,7 @@ import { RippedPaperItem } from '@components/RippedPaperList'
 
 import PaymentMethodInput from './PaymentMethodInput'
 import SaleProgressSteps from '@/pages/sales/new-order/saleStepLoading'
-import PreventRefresh from '../components/preventRefresh'
+import PreventRefresh from '../components/PreventRefresh'
 import PreventRefreshDialog from '../components/preventRefreshDialog'
 
 // Import shared hooks from OrderLite
