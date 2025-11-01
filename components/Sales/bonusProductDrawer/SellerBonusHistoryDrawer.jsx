@@ -90,6 +90,8 @@ function SellerBonusHistoryDrawer({ open, setOpen }) {
   }, [values?.search])
 
   const sellerBonusHistoryFilters = useMemo(() => {
+    const ready_start_date = dayjs(values?.start_date);
+    const ready_end_date = dayjs(values?.end_date);
     return {
       search: values?.search || null,
       limit: values?.bonusLimit,
