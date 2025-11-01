@@ -21,7 +21,6 @@ import { RippedPaperItem } from '@components/RippedPaperList'
 
 import PaymentMethodInput from './PaymentMethodInput'
 import SaleProgressSteps from '@/pages/sales/new-order/saleStepLoading'
-import PreventRefresh from '../components/preventRefresh'
 import PreventRefreshDialog from '../components/preventRefreshDialog'
 
 // Import shared hooks from OrderLite
@@ -29,6 +28,7 @@ import { useSaleOperations } from '@hooks/sale/useSaleOperations'
 import { usePrintOperations } from '@hooks/sale/usePrintOperations'
 import { useFullOrderPayments } from '@hooks/sale/useFullOrderPayments'
 import { useFullOrderHotkeys } from '@hooks/sale/useFullOrderHotkeys'
+import PreventRefresh from '../components/preventRefresh'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
