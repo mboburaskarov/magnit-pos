@@ -41,6 +41,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
       retail_price_from: data.retail_price_from || undefined,
       retail_price_to: data.retail_price_to || undefined,
       store_id: data.store_id?.value || undefined,
+      company_id: data.company_id?.value || undefined,
       store_name: data.store_id?.name || undefined,
       producer_id: data.producer_id?.value || undefined,
       producer_name: data.producer_id?.name || undefined,
@@ -138,7 +139,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <Box padding={'0 2px'} maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'scroll'}>
+            <Box padding={'0 2px'} maxHeight={'calc(100vh - 280px)'} width={'100%'}>
               <SelectSimple
                 fullWidth
                 id='nobarcode'
@@ -151,65 +152,88 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                 getOptionLabel={(el) => el.name}
               />
               <Box height={'20px'} />
+              <Box display={'flex'}>
+                <LazySelect
+                  slug='users'
+                  boxStyle={{ width: '100%' }}
+                  id='store'
+                  name='store_id'
+                  isMulti={false}
+                  placeholder={t('Выберите Аптека')}
+                  minWidth='auto'
+                  isClearable={true}
+                  label={t('input.store.label')}
+                  request={requests.getAllStores}
+                  filters={{ limit: 10 }}
+                  control={methods.control}
+                  getOptionLabel={(option) => {
+                    return option.name
+                  }}
+                  filterOption={() => true}
+                />
+                <Box width={'20px'} />
 
-              <LazySelect
-                slug='users'
-                boxStyle={{ width: '100%' }}
-                id='store'
-                name='store_id'
-                isMulti={false}
-                placeholder={t('Выберите Аптека')}
-                minWidth='auto'
-                isClearable={true}
-                label={t('input.store.label')}
-                request={requests.getAllStores}
-                filters={{ limit: 10 }}
-                control={methods.control}
-                getOptionLabel={(option) => {
-                  return option.name
-                }}
-                filterOption={() => true}
-              />
+                <LazySelect
+                  slug='users'
+                  boxStyle={{ width: '100%' }}
+                  id='company'
+                  name='company_id'
+                  isMulti={false}
+                  placeholder={t('Выберите B2B')}
+                  minWidth='auto'
+                  isClearable={true}
+                  label={t('B2B')}
+                  request={requests.getAllCompanies}
+                  filters={{ limit: 10 }}
+                  control={methods.control}
+                  getOptionLabel={(option) => {
+                    return option.name
+                  }}
+                  filterOption={() => true}
+                />
+              </Box>
               <Box height={'20px'} />
+              <Box display={'flex'}>
+                <LazySelect
+                  slug='users'
+                  boxStyle={{ width: '100%' }}
+                  id='category_id'
+                  name='category_id'
+                  isMulti={false}
+                  label={t('input.category.label')}
+                  placeholder={t('input.category.placeholder')}
+                  minWidth='auto'
+                  isClearable={true}
+                  request={requests.getAllCategories}
+                  filters={{ limit: 10 }}
+                  control={methods.control}
+                  getOptionLabel={(option) => {
+                    return option.name
+                  }}
+                  filterOption={() => true}
+                />
+                <Box width={'20px'} />
 
-              <LazySelect
-                slug='users'
-                boxStyle={{ width: '100%' }}
-                id='category_id'
-                name='category_id'
-                isMulti={false}
-                label={t('input.category.label')}
-                placeholder={t('input.category.placeholder')}
-                minWidth='auto'
-                isClearable={true}
-                request={requests.getAllCategories}
-                filters={{ limit: 10 }}
-                control={methods.control}
-                getOptionLabel={(option) => {
-                  return option.name
-                }}
-                filterOption={() => true}
-              />
-              <Box height={'20px'} />
+                <LazySelect
+                  slug='users'
+                  boxStyle={{ width: '100%' }}
+                  id='producer'
+                  name='producer_id'
+                  isMulti={false}
+                  label={t('input.manufacturer.label')}
+                  placeholder={t('input.manufacturer.placeholder')}
+                  minWidth='auto'
+                  isClearable={true}
+                  request={requests.getProducer}
+                  filters={{ limit: 10 }}
+                  control={methods.control}
+                  getOptionLabel={(option) => {
+                    return option.name
+                  }}
+                  filterOption={() => true}
+                />
+              </Box>
 
-              <LazySelect
-                slug='users'
-                boxStyle={{ width: '100%' }}
-                id='producer'
-                name='producer_id'
-                isMulti={false}
-                label={t('input.manufacturer.label')}
-                placeholder={t('input.manufacturer.placeholder')}
-                minWidth='auto'
-                isClearable={true}
-                request={requests.getProducer}
-                filters={{ limit: 10 }}
-                control={methods.control}
-                getOptionLabel={(option) => {
-                  return option.name
-                }}
-                filterOption={() => true}
-              />
               <Box height={'20px'} />
 
               <InputRange
