@@ -22,7 +22,7 @@ import { RippedPaperItem } from '@components/RippedPaperList'
 import PaymentMethodInput from './PaymentMethodInput'
 import SaleProgressSteps from '@/pages/sales/new-order/saleStepLoading'
 import PreventRefresh from '../components/PreventRefresh'
-import PreventRefreshDialog from '../components/preventRefreshDialog'
+import PreventRefreshDialog from '../components/PreventRefreshDialog'
 
 // Import shared hooks from OrderLite
 import { useSaleOperations } from '@hooks/sale/useSaleOperations'
