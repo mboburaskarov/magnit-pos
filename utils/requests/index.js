@@ -22,16 +22,16 @@ export const requests = {
   getComanyInfo: () => request.get(`v1/company/info`),
 
   //dashboard
-  dashboradSaleStatistic: ({ store_ids, ...filter }) =>
-    request.post(`v1/dashboard/sale-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
-  dashboradNetProfitStatistic: ({ store_ids, ...filter }) =>
-    request.post(`v1/dashboard/net-profit-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
-  dashboradImportStatistic: ({ store_ids, ...filter }) =>
-    request.post(`v1/dashboard/import-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
-  dashboradProductStatistic: ({ store_ids, ...filter }) =>
-    request.post(`v1/dashboard/product-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
-  dashboradEmployeeStatistic: ({ store_ids, ...filter }) =>
-    request.post(`v1/dashboard/employee-bonus${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
+  dashboradSaleStatistic: ({ store_ids, company_ids, ...filter }) =>
+    request.post(`v1/dashboard/sale-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
+  dashboradNetProfitStatistic: ({ store_ids, company_ids, ...filter }) =>
+    request.post(`v1/dashboard/net-profit-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
+  dashboradImportStatistic: ({ store_ids, company_ids, ...filter }) =>
+    request.post(`v1/dashboard/import-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
+  dashboradProductStatistic: ({ store_ids, company_ids, ...filter }) =>
+    request.post(`v1/dashboard/product-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
+  dashboradEmployeeStatistic: ({ store_ids, company_ids, ...filter }) =>
+    request.post(`v1/dashboard/employee-bonus${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
 
   dashboradChart: ({ store_ids, ...filter }) => request.post(`v1/dashboard/chart${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
   dashboradCountStats: ({ store_ids, company_ids, ...filter }) =>
@@ -75,6 +75,9 @@ export const requests = {
 
   getAllDisountCardsList: (filter) => request.get(`v1/customer/list-discount-cards${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSellerBonusData: (filter) => request.post(`v1/product-bonus/balance${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getSellerBonusHistoryData: (filter) => request.post(`v1/report/bonus-items${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getSellerBonusHistoryDataExcel: (filter) => requestEXCEL.post(`v1/report/bonus-items-export${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   changeSalePaymentTypeId: (data) => request.put(`v1/payment-type/change-payment-type`, data),
 
   //producer
@@ -307,7 +310,7 @@ export const requests = {
   changeBarcodeByImport: ({ id, barcode, unit_code, mxik, unit_label, expire_date }) =>
     request.put(`v1/product/update-mxik-import/${id}`, { id, barcode, unit_label, unit_code, mxik, expire_date }),
   getProductBonusList: (filter) => request.get(`v1/product-bonus/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getProductBonusExcelReport: (filter) => requestEXCEL.post(`v1/product-bonus/excel-import${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getProductBonusExcelReport: (filter) => requestEXCEL.get(`v1/product-bonus/export${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getProductMinMaxList: (filter) => request.get(`v1/product/list-min-max${qs.stringify(filter, { addQueryPrefix: true })}`),
   createBonusProduct: (data) => request.post(`v1/product-bonus`, data),

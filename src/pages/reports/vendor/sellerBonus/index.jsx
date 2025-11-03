@@ -19,7 +19,10 @@ import { error } from '../../../../../utils/toast'
 import { useQueryParams } from '../../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/sellerBonusTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
+import SellerBonusHistoryDrawer from '../../../../../components/Sales/bonusProductDrawer/SellerBonusHistoryDrawer'
+
 const SELECTION_ID = 'checkboxSelectionField'
+
 export default function SellerBonus() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -30,21 +33,18 @@ export default function SellerBonus() {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
+  const [isOpenSellerBonusHistoryDrawer, setOpenSellerBonusHistoryDrawer] = useState()
 
   const [selectedBonusType, setSelectedBonusType] = useState({ id: 'default', name: 'По умолчанию' })
-  const sortTypes = [
-    { id: 'default', name: 'По умолчанию' },
-    { id: 'max_amount', name: 'Топ продажи сум' },
-    { id: 'min_amount', name: 'Мин продажи сум' },
-    { id: 'max_count', name: 'Больше продаж шт' },
-    { id: 'min_count', name: 'Меньше продаж шт' },
-  ]
+
   const tableColumns = tableHeaderSelector({
     vendorsColumns: columns,
     setOrderStoring,
     orderStoring,
     t,
+    setOpenSellerBonusHistoryDrawer,
   })
+
   useEffect(() => {
     navigate(`/reports/seller-bonus?limit=10&offset=0&start_date=${dayjs().startOf('month').format('YYYY-MM-DD')}&end_date=${dayjs().format('YYYY-MM-DD')}`)
   }, [shopList])
@@ -115,6 +115,7 @@ export default function SellerBonus() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [sellerBonnus?.data, values?.limit])
+
   const { mutate: sellerBonusExcelReport, isLoading: issellerBonusExcelReport } = useMutation(requests.getsellerBonusExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
@@ -147,9 +148,8 @@ export default function SellerBonus() {
               <InputSearch fullWidth id='producrs-search' name='search' placeholder={'ID, имя, телефон'} uncontrolled />
             </Box>
           </Box>
-
           <Box
-            width={956}
+            width={'100%'}
             display={'flex'}
             sx={{
               '& .select': {
@@ -217,6 +217,7 @@ export default function SellerBonus() {
           />
         </Box>
       </Box>
+      <SellerBonusHistoryDrawer open={isOpenSellerBonusHistoryDrawer} setOpen={setOpenSellerBonusHistoryDrawer} />
     </LoadingContainer>
   )
 }
