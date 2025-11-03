@@ -23,12 +23,15 @@ import { useQueryParams } from '../../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/storeReportTableColumns'
 import StoreReposrMiniDashboardHeader from './storeReposrMiniDashboardHeader'
 import tableHeaderSelector from './tableHeaderSelector'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function StoreReportPage() {
   const dispatch = useDispatch()
   const methods = useForm()
   const navigate = useNavigate()
+  const [selectedComapanies, setSelectedComapanies] = useState('all')
+
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.storeReportTableColumns)
   const { values } = useQueryParams()
@@ -75,10 +78,22 @@ export default function StoreReportPage() {
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
+      company_ids: selectedComapanies.length <= 63 && selectedComapanies != 'all' ? [...selectedComapanies?.map((a) => a.id)] : null || null,
 
       store_id: values?.store_id || undefined,
     }
-  }, [values?.offset, values?.from_time, values?.to_time, values?.limit, orderStoring, values?.store_id, values?.search, values?.start_date, values?.end_date])
+  }, [
+    values?.offset,
+    selectedComapanies,
+    values?.from_time,
+    values?.to_time,
+    values?.limit,
+    orderStoring,
+    values?.store_id,
+    values?.search,
+    values?.start_date,
+    values?.end_date,
+  ])
   const {
     data: storeReportList,
     isLoading: storeReportListLoading,
@@ -166,6 +181,33 @@ export default function StoreReportPage() {
                   return option.name
                 }}
                 filterOption={() => true}
+              />
+            </Box>
+            <Box
+              sx={{
+                ml: '10px',
+                maxWidth: 400,
+                '.selection': {
+                  height: '48px',
+                },
+              }}
+            >
+              <MultiOptionSelectNew
+                zIndex={9}
+                placeholder={t('placeholders.select_shops')}
+                multiple
+                customFilter={{
+                  is_franchise: true,
+                }}
+                defaultSelectedAll
+                beforeContent={t('placeholders.select_shops')}
+                value={selectedComapanies}
+                selectAllLabel={t('Все B2B')}
+                isLoading={false}
+                onChange={(val) => {
+                  setSelectedComapanies(val)
+                }}
+                request={requests.getAllCompanies}
               />
             </Box>
           </Box>

@@ -104,9 +104,9 @@ export const requests = {
   getProductReportStat: ({ store_ids, ...filter }) => request.post(`v1/report/product-status${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
 
   // / report store
-  getStoreReport: (filter) => request.post(`v1/report/store-amount${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getStoreReport: ({ company_ids, ...filter }) => request.post(`v1/report/store-amount${qs.stringify(filter, { addQueryPrefix: true })}`, { company_ids }),
   getStoreReportExcelReport: (filter) => requestEXCEL.post(`v1/report/store-amount/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getStoreStats: (filter) => request.post(`v1/report/store-stats${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getStoreStats: ({ company_ids, ...filter }) => request.post(`v1/report/store-stats${qs.stringify(filter, { addQueryPrefix: true })}`, { company_ids }),
 
   // report product
   topProductsReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-products${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),

@@ -364,7 +364,7 @@ const MultiOptionSelectNew = ({
           : (values || [])?.map((value, index) => `${index !== 0 ? ', ' : ''} ${value?.name}`)
 
       return (
-        <StyledTooltip hide={val == selectAllLabel} title={<Box sx={{ display: 'flex', flexDirection: 'column' }}>{val}</Box>} placement='top'>
+        <StyledTooltip sx={{}} hide={val == selectAllLabel} title={<Box sx={{ display: 'flex', flexDirection: 'column' }}>{val}</Box>} placement='top'>
           <span className='multiple value'>{val}</span>
         </StyledTooltip>
       )
@@ -433,7 +433,6 @@ const MultiOptionSelectNew = ({
             variant='outlined'
             sx={{
               '& .MuiOutlinedInput-root': {
-                height: '17px',
                 fontWeight: '500',
                 fontSize: '18px',
                 height: '48px',
