@@ -21,20 +21,25 @@ import { requests } from '../../../../../utils/requests'
 import { error } from '../../../../../utils/toast'
 import { useQueryParams } from '../../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/storeReportTableColumns'
-import StoreReposrMiniDashboardHeader from './storeReposrMiniDashboardHeader'
 import tableHeaderSelector from './tableHeaderSelector'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
+import StoreReportMiniDashboardHeader from './storeReportMiniDashboardHeader'
+import SendSaleTo1C from './sendSaleTo1C'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function StoreReportPage() {
   const dispatch = useDispatch()
   const methods = useForm()
   const navigate = useNavigate()
+  const [selectedComapanies, setSelectedComapanies] = useState('all')
+
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.storeReportTableColumns)
   const { values } = useQueryParams()
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
 
   const [offsetCount, setOffsetCount] = useState(0)
+  const [open, setOpen] = useState(false)
 
   const tableColumns = tableHeaderSelector({
     clientsColumns: columns,
@@ -42,6 +47,7 @@ export default function StoreReportPage() {
     values,
     setOrderStoring,
     orderStoring,
+    setOpen,
   })
 
   useEffect(() => {
@@ -75,10 +81,22 @@ export default function StoreReportPage() {
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
+      company_ids: selectedComapanies.length <= 63 && selectedComapanies != 'all' ? [...selectedComapanies?.map((a) => a.id)] : null || null,
 
       store_id: values?.store_id || undefined,
     }
-  }, [values?.offset, values?.from_time, values?.to_time, values?.limit, orderStoring, values?.store_id, values?.search, values?.start_date, values?.end_date])
+  }, [
+    values?.offset,
+    selectedComapanies,
+    values?.from_time,
+    values?.to_time,
+    values?.limit,
+    orderStoring,
+    values?.store_id,
+    values?.search,
+    values?.start_date,
+    values?.end_date,
+  ])
   const {
     data: storeReportList,
     isLoading: storeReportListLoading,
@@ -122,8 +140,8 @@ export default function StoreReportPage() {
     <LoadingContainer readyState={true}>
       {isgetStoreReportExcelReport && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
       <Header noActions isLoading={false} backIcon backHref='/reports/branch' text={'Отчет филиала '} />
-      <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'24px'} px={'50px'} pb={'20px'}>
-        <StoreReposrMiniDashboardHeader saleStatsData={get(saleStatsData, 'data.data')} />
+      <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'0px'} px={'50px'} pb={'20px'}>
+        <StoreReportMiniDashboardHeader saleStatsData={get(saleStatsData, 'data.data')} />
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'} sx={{ width: '100%' }}>
@@ -168,6 +186,33 @@ export default function StoreReportPage() {
                 filterOption={() => true}
               />
             </Box>
+            <Box
+              sx={{
+                ml: '10px',
+                maxWidth: 400,
+                '.selection': {
+                  height: '48px',
+                },
+              }}
+            >
+              <MultiOptionSelectNew
+                zIndex={9}
+                placeholder={t('placeholders.select_shops')}
+                multiple
+                customFilter={{
+                  is_franchise: true,
+                }}
+                defaultSelectedAll
+                beforeContent={t('placeholders.select_shops')}
+                value={selectedComapanies}
+                selectAllLabel={t('Все B2B')}
+                isLoading={false}
+                onChange={(val) => {
+                  setSelectedComapanies(val)
+                }}
+                request={requests.getAllCompanies}
+              />
+            </Box>
           </Box>
 
           <Box display={'flex'} alignItems={'center'}>
@@ -207,6 +252,7 @@ export default function StoreReportPage() {
             isRefreshing={loading || isFetchingstoreReportList || storeReportListLoading}
           />
         </Box>
+        <SendSaleTo1C open={open} setOpen={setOpen} refetch={() => {}} />
       </Box>
     </LoadingContainer>
   )

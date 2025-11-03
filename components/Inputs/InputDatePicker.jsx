@@ -15,7 +15,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     color: theme.palette.gray[600],
-
+    '& svg > path': {
+      fill: 'white',
+    },
     '& .MuiOutlinedInput-root': {
       backgroundColor: ({ disabled }) => disabled && theme.palette.background.default,
       border: ({ disabled, dashed }) => disabled && `2px ${dashed ? 'dashed' : 'solid'} ${theme.palette.gray[200]}`,

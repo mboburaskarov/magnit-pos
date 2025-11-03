@@ -79,7 +79,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
           setshouldICleanSearchQuery(true)
         }
       }, 700)
-      if (res.data?.data?.data?.length > 0 && status !== 'checking') {
+      if (res.data?.data?.data?.length > 0 && status !== 'checking' && barcode?.length >= 1) {
         // setSelectedCellRowId(res.data.data.data[0].id)
         setLastSelectedCellRowId(res.data.data.data[0].id)
         setSelectedIndex(0)
@@ -151,13 +151,56 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   })
 
-  // 🎯 Scroll to selected row
+  const SCROLL_DEBOUNCE = 60 // ms
+
+  let scrollTimeout = null
+  let isHoldingKey = false
+  // Detect when key is held
   useEffect(() => {
-    if (rowRefs.current[selectedIndex]) {
-      rowRefs.current[selectedIndex].scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      })
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        isHoldingKey = true
+      }
+    }
+    const handleKeyUp = (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        isHoldingKey = false
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
+    }
+  }, [])
+  // 🎯 Debounced scroll
+  useEffect(() => {
+    if (!rowRefs.current[selectedIndex]) return
+
+    if (scrollTimeout) clearTimeout(scrollTimeout)
+    scrollTimeout = setTimeout(() => {
+      const el = rowRefs.current[selectedIndex]
+      if (el && typeof el.scrollIntoView === 'function') {
+        el.scrollIntoView({
+          behavior: isHoldingKey ? 'auto' : 'smooth',
+          block: 'center',
+        })
+      }
+    }, SCROLL_DEBOUNCE)
+  }, [selectedIndex])
+  useEffect(() => {
+    const container = document.querySelector('.inventory-with-checking-page table tbody')
+    const el = rowRefs.current[selectedIndex]
+    if (container && el) {
+      const elTop = el.offsetTop
+      const elBottom = elTop + el.offsetHeight
+      if (elTop < container.scrollTop) {
+        container.scrollTop = elTop - 50
+      } else if (elBottom > container.scrollTop + container.clientHeight) {
+        container.scrollTop = elBottom - container.clientHeight + 50
+      }
     }
   }, [selectedIndex])
 

@@ -120,20 +120,6 @@ export default function TopProductsPage() {
     refetch,
   } = useQuery(['topProductsReportList', topProductsReportListFilter], () => requests.topProductsReport(topProductsReportListFilter))
 
-  const { mutate: deleteClient, isLoading: isDeletingProduct } = useMutation(requests.deleteClient, {
-    onSuccess: () => {
-      refetch()
-      success('Продукт успешно удален!')
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении продукта!')
-      setOpenConfirmDialog(null)
-      console.error('err', err)
-    },
-  })
-
   useEffect(() => {
     refetch()
   }, [topProductsReportListFilter])
@@ -174,34 +160,6 @@ export default function TopProductsPage() {
               <InputSearch id='producrs-search' name='search' placeholder={'Наименование'} uncontrolled />
             </Box>
             <Box>
-              {selectClients.length > 0 && (
-                <>
-                  <Box minWidth={48} ml={'16px'}>
-                    <Button
-                      sx={{
-                        height: '48px',
-                        padding: 0,
-                        bgcolor: '#fff',
-                        border: '1px solid #ECEDF2',
-                        color: 'dark.500',
-                        fontWeight: '500',
-                        fontSize: '16px',
-                        lineHeight: '24px',
-                        '& span': {
-                          mr: '12px',
-                        },
-                      }}
-                      fullWidth
-                      variant='contained'
-                      color='secondary'
-                      onClick={() => deleteClient({ data: selectClients })}
-                    >
-                      <DeleteIcon width='24px' />
-                    </Button>
-                  </Box>
-                </>
-              )}
-
               <Box
                 width={956}
                 display={'flex'}
@@ -273,34 +231,6 @@ export default function TopProductsPage() {
           />
         </Box>
       </Box>
-
-      <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
-      {openConfirmDialog && (
-        <ConfirmDialog
-          open={!!openConfirmDialog}
-          setOpen={setOpenConfirmDialog}
-          icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={'Удалить клиента?'}
-          desc={'Хотите ли вы удалить клиента?'}
-          supDesc={'“Azitromitsin 250 mg”'}
-          actions={
-            <>
-              <Button
-                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
-                fullWidth
-                color='secondary'
-                variant='contained'
-                onClick={() => setOpenConfirmDialog(null)}
-              >
-                Нет
-              </Button>
-              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteClient({ data: [openConfirmDialog.id] })}>
-                Да, удалить
-              </LoadingButton>
-            </>
-          }
-        />
-      )}
     </LoadingContainer>
   )
 }

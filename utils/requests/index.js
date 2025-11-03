@@ -101,12 +101,12 @@ export const requests = {
     requestEXCEL.post(`v1/report/store-products-given-day/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getPorductReportExcelReport: (filter) => requestEXCEL.post(`v1/report/product-export${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getProductReportStat: ({ store_ids, ...filter }) => request.post(`v1/report/product-status${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
+  getProductReportStat: ({ store_ids, ...filter }) => request.post(`v1/report/product-status${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
 
   // / report store
-  getStoreReport: (filter) => request.post(`v1/report/store-amount${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getStoreReport: ({ company_ids, ...filter }) => request.post(`v1/report/store-amount${qs.stringify(filter, { addQueryPrefix: true })}`, { company_ids }),
   getStoreReportExcelReport: (filter) => requestEXCEL.post(`v1/report/store-amount/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getStoreStats: (filter) => request.post(`v1/report/store-stats${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getStoreStats: ({ company_ids, ...filter }) => request.post(`v1/report/store-stats${qs.stringify(filter, { addQueryPrefix: true })}`, { company_ids }),
 
   // report product
   topProductsReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-products${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
@@ -117,11 +117,13 @@ export const requests = {
 
   topVendorReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-seller${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   topBranchReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
-  storeSummaryReport: ({ store_ids, ...filter }) => request.post(`v1/report/store-summary${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  storeSummaryReport: ({ store_ids, company_ids, ...filter }) =>
+    request.post(`v1/report/store-summary${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
   storeSummaryExcelReport: (filter) => requestEXCEL.post(`v1/report/store-summary/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   topProductsExcelReport: (filter) => requestEXCEL.post(`v1/report/top-products/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
-  getStoreSummaryReportStat: (filter) => request.post(`v1/report/store-summary-stats${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getStoreSummaryReportStat: ({ company_ids, store_ids, ...filter }) =>
+    request.post(`v1/report/store-summary-stats${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
 
   //shift
   createShift: (data) => request.post(`v1/shift`, data),
@@ -317,6 +319,8 @@ export const requests = {
   createDiscountCard: (data) => request.post(`v1/discount-card`, data),
   editDiscountCard: ({ data, id }) => request.put(`v1/discount-card/${id}`, data),
   deleteDiscountCard: (id) => request.delete(`v1/discount-card/${id}`),
+
+  sendSaleTo1C: (data) => request.post(`v1/expense/send-with-number${qs.stringify(data, { addQueryPrefix: true })}`),
 
   editBonusProduct: ({ data, id }) => request.put(`v1/product-bonus/${id}`, data),
   createMinMax: (data) => request.post(`v1/product/min-max`, data),
