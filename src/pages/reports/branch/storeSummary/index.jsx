@@ -48,6 +48,7 @@ export default function StoreSummaryPage() {
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
+  const [selectedComapanies, setSelectedComapanies] = useState('all')
 
   const selectClientsFunc = (isChecked, id) => {
     if (isChecked) {
@@ -104,7 +105,9 @@ export default function StoreSummaryPage() {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
+
       order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
+      company_ids: selectedComapanies.length <= 63 && selectedComapanies != 'all' ? [...selectedComapanies?.map((a) => a.id)] : null || null,
 
       store_ids: selectedShops === 'all' ? [] : selectedShops.map((el) => el.id),
     }
@@ -113,6 +116,7 @@ export default function StoreSummaryPage() {
     values?.from_time,
     values?.to_time,
     orderStoring,
+    selectedComapanies,
     values?.limit,
     selectedBonusType,
     values?.search,
@@ -126,20 +130,6 @@ export default function StoreSummaryPage() {
     isFetching: isFetchingstoreSummaryReportList,
     refetch,
   } = useQuery(['storeSummaryReportList', storeSummaryReportListFilter], () => requests.storeSummaryReport(storeSummaryReportListFilter))
-
-  const { mutate: deleteClient, isLoading: isDeletingProduct } = useMutation(requests.deleteClient, {
-    onSuccess: () => {
-      refetch()
-      success('Филиал успешно удален!')
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении филиала!')
-      setOpenConfirmDialog(null)
-      console.error('err', err)
-    },
-  })
 
   useEffect(() => {
     refetch()
@@ -202,34 +192,6 @@ export default function StoreSummaryPage() {
               <InputSearch id='producrs-search' name='search' placeholder={'Наименование'} uncontrolled />
             </Box>
             <Box>
-              {selectClients.length > 0 && (
-                <>
-                  <Box minWidth={48} ml={'16px'}>
-                    <Button
-                      sx={{
-                        height: '48px',
-                        padding: 0,
-                        bgcolor: '#fff',
-                        border: '1px solid #ECEDF2',
-                        color: 'dark.500',
-                        fontWeight: '500',
-                        fontSize: '16px',
-                        lineHeight: '24px',
-                        '& span': {
-                          mr: '12px',
-                        },
-                      }}
-                      fullWidth
-                      variant='contained'
-                      color='secondary'
-                      onClick={() => deleteClient({ data: selectClients })}
-                    >
-                      <DeleteIcon width='24px' />
-                    </Button>
-                  </Box>
-                </>
-              )}
-
               <Box
                 width={956}
                 display={'flex'}
@@ -262,6 +224,33 @@ export default function StoreSummaryPage() {
                   request={requests.getAllStores}
                 />
                 <Box width={'15px'} />
+                <Box
+                  sx={{
+                    ml: '10px',
+                    maxWidth: 400,
+                    '.selection': {
+                      height: '48px',
+                    },
+                  }}
+                >
+                  <MultiOptionSelectNew
+                    zIndex={9}
+                    placeholder={t('placeholders.select_shops')}
+                    multiple
+                    customFilter={{
+                      is_franchise: true,
+                    }}
+                    defaultSelectedAll
+                    beforeContent={t('placeholders.select_shops')}
+                    value={selectedComapanies}
+                    selectAllLabel={t('Все B2B')}
+                    isLoading={false}
+                    onChange={(val) => {
+                      setSelectedComapanies(val)
+                    }}
+                    request={requests.getAllCompanies}
+                  />
+                </Box>
               </Box>
             </Box>
           </Box>
@@ -304,34 +293,6 @@ export default function StoreSummaryPage() {
           />
         </Box>
       </Box>
-
-      <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
-      {openConfirmDialog && (
-        <ConfirmDialog
-          open={!!openConfirmDialog}
-          setOpen={setOpenConfirmDialog}
-          icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={'Удалить клиента?'}
-          desc={'Хотите ли вы удалить клиента?'}
-          supDesc={'“Azitromitsin 250 mg”'}
-          actions={
-            <>
-              <Button
-                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
-                fullWidth
-                color='secondary'
-                variant='contained'
-                onClick={() => setOpenConfirmDialog(null)}
-              >
-                Нет
-              </Button>
-              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteClient({ data: [openConfirmDialog.id] })}>
-                Да, удалить
-              </LoadingButton>
-            </>
-          }
-        />
-      )}
     </LoadingContainer>
   )
 }

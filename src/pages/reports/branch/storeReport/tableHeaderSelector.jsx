@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import thousandDivider from '../../../../../utils/thousandDivider'
+import SentFastIcon from '@/assets/icons/step-progress/SentFast'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -78,7 +79,7 @@ const CustomHeader = (props) => {
     </Box>
   )
 }
-export default function tableHeaderSelector({ clientsColumns, values, setOrderStoring, orderStoring }) {
+export default function tableHeaderSelector({ clientsColumns, values, setOrderStoring, orderStoring, setOpen }) {
   const columns = clientsColumns?.map((el) => {
     if (el.field === 'number') {
       return {
@@ -239,6 +240,34 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         headerName: 'Количество чеков',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} withDevider type='cheque_count' />),
+      }
+    }
+    if (el.field === 'actions') {
+      return {
+        ...el,
+        headerComponent: CustomHeader,
+        headerName: 'Отп в 1c',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box
+            sx={{
+              width: '30px',
+              height: '30px',
+              cursor: 'pointer',
+              borderRadius: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              bgcolor: 'orange.500',
+              '&:hover': {
+                bgcolor: 'orange.400',
+              },
+            }}
+            onClick={() => setOpen(p?.data)}
+          >
+            <SentFastIcon color='white' />
+          </Box>
+        )),
       }
     }
   })

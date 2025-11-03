@@ -84,7 +84,7 @@ export default function DashboardInfoBox({
                       color: 'bunker.500',
                     }}
                   >
-                    {withoutDivider ? count : thousandDivider(count, '')} {endText}
+                    {withoutDivider ? count : thousandDivider(count, '')} шт
                   </Typography>
                 )}
               </Typography>
@@ -114,7 +114,7 @@ export default function DashboardInfoBox({
                   },
                 }}
               >
-                {withoutDivider ? Math.round(amount) : <Typography>{thousandDivider(Math.round(count), endText)}</Typography>}
+                {withoutDivider ? thousandDivider(Math.round(amount), endText) : <Typography>{thousandDivider(Math.round(count), endText)}</Typography>}
               </Typography>
             )}
           </Box>

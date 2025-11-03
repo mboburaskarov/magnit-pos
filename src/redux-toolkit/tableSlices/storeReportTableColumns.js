@@ -88,6 +88,12 @@ const columns = [
     minWidth: 220,
     flex: 1,
   },
+  {
+    field: 'actions',
+    hide: false,
+    minWidth: 60,
+    width: 100,
+  },
 ]
 
 const storeReportTableColumns = createSlice({

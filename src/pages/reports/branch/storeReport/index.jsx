@@ -21,9 +21,10 @@ import { requests } from '../../../../../utils/requests'
 import { error } from '../../../../../utils/toast'
 import { useQueryParams } from '../../../../hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/storeReportTableColumns'
-import StoreReposrMiniDashboardHeader from './storeReposrMiniDashboardHeader'
 import tableHeaderSelector from './tableHeaderSelector'
 import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
+import StoreReportMiniDashboardHeader from './storeReportMiniDashboardHeader'
+import SendSaleTo1C from './sendSaleTo1C'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function StoreReportPage() {
@@ -38,6 +39,7 @@ export default function StoreReportPage() {
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
 
   const [offsetCount, setOffsetCount] = useState(0)
+  const [open, setOpen] = useState(false)
 
   const tableColumns = tableHeaderSelector({
     clientsColumns: columns,
@@ -45,6 +47,7 @@ export default function StoreReportPage() {
     values,
     setOrderStoring,
     orderStoring,
+    setOpen,
   })
 
   useEffect(() => {
@@ -137,8 +140,8 @@ export default function StoreReportPage() {
     <LoadingContainer readyState={true}>
       {isgetStoreReportExcelReport && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
       <Header noActions isLoading={false} backIcon backHref='/reports/branch' text={'Отчет филиала '} />
-      <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'24px'} px={'50px'} pb={'20px'}>
-        <StoreReposrMiniDashboardHeader saleStatsData={get(saleStatsData, 'data.data')} />
+      <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'0px'} px={'50px'} pb={'20px'}>
+        <StoreReportMiniDashboardHeader saleStatsData={get(saleStatsData, 'data.data')} />
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'} sx={{ width: '100%' }}>
@@ -249,6 +252,7 @@ export default function StoreReportPage() {
             isRefreshing={loading || isFetchingstoreReportList || storeReportListLoading}
           />
         </Box>
+        <SendSaleTo1C open={open} setOpen={setOpen} refetch={() => {}} />
       </Box>
     </LoadingContainer>
   )
