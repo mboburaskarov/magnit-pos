@@ -1,10 +1,11 @@
 import { Box, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { useState } from 'react'
-import StyledSwitch from '../../../../components/IOSSwitch'
+import StyledSwitch from '@components/IOSSwitch'
 
 function PaymentTypeRow({ type, setPaymentTypes }) {
   const [disabled, setDisabled] = useState(get(type, 'is_active'))
+  console.log(type)
 
   return (
     <Box key={type?.id} sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

@@ -3,23 +3,12 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
-import NumberFormatInput from '../../../../../components/Inputs/OutLineTextFieldThousand'
-import thousandDivider from '../../../../../utils/thousandDivider'
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
 
-export default function tableHeaderSelector({ importsColumns, values, t, methods, setScanedNumber }) {
+export default function tableHeaderSelector({ transferColumsn, values, methods, setScanedNumber }) {
   const { id } = useParams()
 
-  const columns = importsColumns?.map((el) => {
+  const columns = transferColumsn?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,
@@ -42,11 +31,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
         ...el,
         headerName: 'Штрих-код',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.barcode}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'barcode'} />),
       }
     }
     if (el.field === 'name') {
@@ -54,11 +39,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
         ...el,
         headerName: 'Название',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.name}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'name'} />),
       }
     }
     if (el.field === 'material_code') {
@@ -66,11 +47,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
         ...el,
         headerName: 'Артикул',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.material_code}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'material_code'} />),
       }
     }
     if (el.field === 'export_date') {
@@ -78,11 +55,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
         ...el,
         headerName: 'Срок годности',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.expire_date).format('DD.MM.YYYY')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'export_date'} customText={dayjs(p.data?.expire_date).format('DD.MM.YYYY')} />),
       }
     }
     if (el.field === 'serial_number') {
@@ -98,13 +71,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
         ...el,
         headerName: 'Текущее кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>
-              {p.data?.received_count} {p.data?.short_name}
-            </Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'stock_count'} customText={`${p.data?.received_count} ${p.data?.short_name}`} />),
       }
     }
     if (el.field === 'expected_count') {
@@ -128,7 +95,6 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
                   barcode: get(p, 'data.barcode'),
                   type: 'MANUAL',
                   scanned_pack: Number(get(target, 'value').replace(/\s+/g, '')),
-                  // scanned_unit: p?.data?.scanned_unit,
                 })
               }}
               placeholder={'0'}
@@ -160,12 +126,10 @@ export default function tableHeaderSelector({ importsColumns, values, t, methods
                   product_id: get(p, 'data.id'),
                   barcode: get(p, 'data.barcode'),
                   type: 'MANUAL',
-                  // scanned_pack: p?.data?.scanned_pack,
                   scanned_unit: Number(get(target, 'value').replace(/\s+/g, '')),
                 })
               }}
               disabled={true}
-              // disabled={p?.data?.unit_per_pack == 1 || p?.data?.unit_per_pack == p?.data?.scanned_pack}
               placeholder={'0'}
               value={p?.data?.scanned_unit}
               defaultValue={p?.data?.scanned_unit}

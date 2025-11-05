@@ -9,8 +9,6 @@ import CreateMinMaxPage from '../../pages/products/createMinMax'
 import ImportDetailsPage from '../../pages/products/import-all/importDetails'
 import ImportWithCheckingPage from '../../pages/products/import-all/importWithChecking'
 import InventoryCompleted from '../../pages/products/inventory-all/inventoryCompleted'
-import InventoryDetailPage from '../../pages/products/inventory-all/inventoryDetails/index'
-import InventoryWithCheckingPage from '../../pages/products/inventory-all/inventoryWithChecking/index'
 import InventoryWithCheckingPageNew from '../../pages/products/inventory-all/inventoryWithCheckingNew'
 import ProductCreatePage from '../../pages/products/product-create'
 import ProductEditPage from '../../pages/products/product-edit'
@@ -45,15 +43,7 @@ const productsCreateRoutes = {
         },
       ],
     },
-    {
-      path: 'inventory-with-checking/:id',
-      children: [
-        {
-          path: '',
-          element: <InventoryWithCheckingPage />,
-        },
-      ],
-    },
+
     {
       path: 'inventory-with-checking/new/:id',
       children: [
@@ -173,15 +163,7 @@ const productsCreateRoutes = {
         },
       ],
     },
-    {
-      path: 'inventory/:id',
-      children: [
-        {
-          path: '',
-          element: <InventoryDetailPage />,
-        },
-      ],
-    },
+
     {
       path: 'categories',
       element: <CatalogManagement />,

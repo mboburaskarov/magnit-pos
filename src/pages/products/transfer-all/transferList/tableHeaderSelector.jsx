@@ -1,38 +1,24 @@
 import { Box, IconButton, Typography } from '@mui/material'
-import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import StatusCell from '../../../../../components/AgGridTable/Cells/StatusCell'
-import CheckAccess from '../../../../../components/CheckAccess'
-import StyledTooltip from '../../../../../components/StyledTooltip'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import { returns_list_statuses } from '../../../../assets/data/return-statuses'
-import ArrowRight from '../../../../assets/icons/ArrowRight'
-import DeleteIcon from '../../../../assets/icons/DeleteIcon'
-import DownloadIcon from '../../../../assets/icons/DownloadIcon'
-import LeftArrowIcon from '../../../../assets/icons/LeftArrow'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { ClockIcon } from '@mui/x-date-pickers-pro'
-import FolderSearch from '../../../../assets/icons/step-progress/FolderSearch'
-import SentFastIcon from '../../../../assets/icons/step-progress/SentFast'
-import TimeQuarterIcon from '../../../../assets/icons/step-progress/TimeQuarter'
-import TickIcon from '../../../../assets/icons/step-progress/Tick'
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import CheckAccess from '@components/CheckAccess'
+import StyledTooltip from '@components/StyledTooltip'
+import ArrowRight from '@icons/ArrowRight'
+import DeleteIcon from '@icons/DeleteIcon'
+import DownloadIcon from '@icons/DownloadIcon'
+import LeftArrowIcon from '@icons/LeftArrow'
+import { useQueryParams } from '@hooks/useQueryParams'
+import FolderSearch from '@icons/step-progress/FolderSearch'
+import SentFastIcon from '@icons/step-progress/SentFast'
+import TimeQuarterIcon from '@icons/step-progress/TimeQuarter'
+import TickIcon from '@icons/step-progress/Tick'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
-export default function tableHeaderSelector({ importsColumns, t, downloadNakladnoy, setOpenConfirmDialog, setStatusModal }) {
+export default function tableHeaderSelector({ transferColumns, t, downloadNakladnoy, setOpenConfirmDialog, setStatusModal }) {
   const { values } = useQueryParams()
   const navigate = useNavigate()
-  const columns = importsColumns?.map((el) => {
+  const columns = transferColumns?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,
@@ -103,39 +89,16 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
         ...el,
         headerName: 'до Аптека',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography whiteSpace={'pre-wrap'}>{p.data?.to_store?.name}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'store_name'} customText={p.data?.to_store?.name} />),
       }
     }
-    // if (el.field === 'created_by') {
-    //   return {
-    //     ...el,
-    //     headerName: 'Создал',
-    //     colId: el.field,
-    //     cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.created_by} type='full_name' />),
-    //   }
-    // }
-    // if (el.field === 'updated_by') {
-    //   return {
-    //     ...el,
-    //     headerName: 'Отправитель',
-    //     colId: el.field,
-    //     cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.updated_by} type='full_name' />),
-    //   }
-    // }
-    // if (el.field === 'accepted_by') {
-    //   return {
-    //     ...el,
-    //     headerName: 'Завершил',
-    //     colId: el.field,
-    //     cellRenderer: memo((p) => <SimpleText currency='' data={p?.data?.accepted_by} type='full_name' />),
-    //   }
-    // }
+
     if (el.field === 'from_store_name') {
       return {
         ...el,
         headerName: 'oт Аптека',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography whiteSpace={'pre-wrap'}>{p.data?.store?.name}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'from_store_name'} customText={p.data?.store?.name} />),
       }
     }
     if (el.field === 'supply_price') {
@@ -368,28 +331,10 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
               </Box>
             </Box>
           </Box>
-          // <StatusCell
-          //   id={`products-status-${p.rowIndex}`}
-          //   color={returns_list_statuses.find((el) => el.id === p.data.status)?.color}
-          //   bgcolor={returns_list_statuses.find((el) => el.id === p.data.status)?.bgcolor}
-          //   title={returns_list_statuses.find((el) => el.id === p.data.status)?.name}
-          // />
         )),
       }
     }
 
-    // if (el.field === 'import_date') {
-    //   return {
-    //     ...el,
-    //     headerName: 'Завершение',
-    //     colId: el.field,
-    //     cellRenderer: memo((p) => (
-    //       <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-    //         <Typography>{p.data?.['accepted_at'] ? dayjs(p.data?.['accepted_at']).format('DD.MM.YYYY HH:mm:ss') : '-'}</Typography>
-    //       </Box>
-    //     )),
-    //   }
-    // }
     if (el.field === 'accepted_amount') {
       return {
         ...el,
@@ -443,71 +388,6 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
       }
     }
 
-    // if (el.field === 'received_count') {
-    //   return {
-    //     ...el,
-    //     headerName: 'Количество',
-    //     colId: el.field,
-    //     cellRenderer: memo((p) => (
-    //       <>
-    //         <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-    //           <StyledTooltip title={'Недостачи'}>
-    //             <Box
-    //               sx={{
-    //                 display: 'flex',
-    //                 justifyContent: 'center',
-    //                 alignItems: 'center',
-    //                 width: '20px',
-    //                 height: '20px',
-    //                 borderRadius: '50%',
-    //                 bgcolor: 'red.500',
-    //               }}
-    //             >
-    //               <LeftArrowIcon fill='transparent' color='#fff' />
-    //             </Box>
-    //           </StyledTooltip>
-
-    //           <Box width={'10px'} />
-
-    //           <SimpleText {...p} withDevider currency={''} type={'received_count'} />
-    //         </Box>
-    //         <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-    //           <StyledTooltip title={'Излишек'}>
-    //             <Box
-    //               sx={{
-    //                 display: 'flex',
-    //                 justifyContent: 'center',
-    //                 alignItems: 'center',
-    //                 width: '20px',
-    //                 height: '20px',
-    //                 borderRadius: '50%',
-    //                 bgcolor: 'green.500',
-    //               }}
-    //             >
-    //               <ArrowRight color='#fff' />
-    //             </Box>
-    //           </StyledTooltip>
-    //           <Box width={'10px'} />
-
-    //           <SimpleText {...p} withDevider currency={''} type={'accepted_count'} />
-    //         </Box>
-    //       </>
-    //     )),
-    //   }
-    // }
-
-    // if (el.field === 'created_at') {
-    //   return {
-    //     ...el,
-    //     headerName: 'Создание',
-    //     colId: el.field,
-    //     cellRenderer: memo((p) => (
-    //       <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-    //         <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
-    //       </Box>
-    //     )),
-    //   }
-    // }
     if (el.field === 'actions') {
       return {
         ...el,

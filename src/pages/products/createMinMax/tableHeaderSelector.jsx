@@ -1,19 +1,13 @@
 import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
-import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
-import CheckAccess from '../../../../components/CheckAccess'
-import thousandDivider from '../../../../utils/thousandDivider'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import EditIcon from '../../../assets/icons/EditIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import StatusCell from '@components/AgGridTable/Cells/StatusCell'
+import CheckAccess from '@components/CheckAccess'
+import DeleteIcon from '@icons/DeleteIcon'
+import EditIcon from '@icons/EditIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+
 const minmaxStatus = [
   {
     id: 'true',
@@ -126,10 +120,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenEditMinM
                 </IconButton>
               </CheckAccess>
               <CheckAccess id={'delete-min-max'}>
-                <IconButton
-                  // onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: data.name })}
-                  sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
-                >
+                <IconButton sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <DeleteIcon />
                 </IconButton>
               </CheckAccess>

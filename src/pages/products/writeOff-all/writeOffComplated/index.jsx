@@ -1,70 +1,40 @@
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Box, Button, Container, Typography } from '@mui/material'
+import { Box, Container, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import Header from '../../../../../components/Header'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { requests } from '../../../../../utils/requests'
-import { error } from '../../../../../utils/toast'
-import ArrowDown from '../../../../assets/icons/ArrowDown'
-import ArrowUp from '../../../../assets/icons/ArrowUp'
-import BarcodeIcon from '../../../../assets/icons/BarcodeIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/writeOffWithCheckingTableColumns'
+import { useParams } from 'react-router-dom'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import Header from '@components/Header'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import ArrowDown from '@icons/ArrowDown'
+import ArrowUp from '@icons/ArrowUp'
+import BarcodeIcon from '@icons/BarcodeIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/writeOffWithCheckingTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function WriteOffCompletedPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
-  const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.writeOffWithCheckingColumns)
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
-  const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
-  const [manualNumber, setManualNumber] = useState(1)
-  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedWriteOffNumber, {
-    onSuccess: ({ data }) => {
-      refetchgetWriteOffDashBoard()
-      setBarcode('')
-    },
-    onError: (err) => {
-      refetch()
 
-      error('Ошибка при сканирование!')
-    },
-  })
-
-  const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.finishWriteOffChecking, {
-    onSuccess: ({ data }) => {
-      navigate('/products/writeoff')
-    },
-    onError: (err) => {
-      error('Ошибка при завершение импорта!')
-    },
-  })
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
-    t,
     values,
-
-    id,
-    setScanedNumber,
   })
   const WriteOffWithCheckingDetailsFilter = useMemo(() => {
     return {
@@ -75,7 +45,7 @@ export default function WriteOffCompletedPage() {
     }
   }, [id])
 
-  const { data: getWriteOffDashBoard, refetch: refetchgetWriteOffDashBoard } = useQuery(['getWriteOffDashBoard', id], () => requests.getWriteOffDashBoard(id))
+  const { data: getWriteOffDashBoard } = useQuery(['getWriteOffDashBoard', id], () => requests.getWriteOffDashBoard(id))
 
   const {
     data: WriteOffWithCheckingDetails,
@@ -84,18 +54,9 @@ export default function WriteOffCompletedPage() {
     refetch,
   } = useQuery(['WriteOffWithCheckingDetails', WriteOffWithCheckingDetailsFilter], () => requests.getWriteOffDetails(WriteOffWithCheckingDetailsFilter))
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -115,18 +76,8 @@ export default function WriteOffCompletedPage() {
     })
   }, [WriteOffWithCheckingDetails?.data, values?.limit])
 
-  const sendScannedImport = () => {
-    if (barcode === '') return
-    setScanedNumber({
-      id,
-      barcode: barcode,
-      type: 'SCAN',
-      scanned_count: Number(manualNumber),
-    })
-  }
-
   return (
-    <LoadingContainer readyState={!isfinishWriteOffChecking}>
+    <LoadingContainer readyState={!WriteOffWithCheckingDetailsLoading}>
       <FormProvider {...methods}>
         <Header isLoading={false} backIcon noActions backHref='/products/write-off' text={'Списание с проверкой'} checkAccessId={'product-create'} />
 
@@ -165,7 +116,6 @@ export default function WriteOffCompletedPage() {
                 >
                   <InputSearch
                     icon={<BarcodeIcon />}
-                    onKeyDown={({ code }) => code === 'Enter' && sendScannedImport()}
                     onChange={({ target }) => setBarcode(get(target, 'value'))}
                     id='producrs-search'
                     name='search'
@@ -213,40 +163,6 @@ export default function WriteOffCompletedPage() {
           </Box>
         </Container>
       </FormProvider>
-      <ConfirmDialog
-        open={openFinishConfirmDialog}
-        setOpen={() => setOpenFinishConfirmDialog(false)}
-        icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
-        title={t('alerts.finish_writeoff')}
-        desc={
-          <>
-            <Typography fontWeight={'600'} fontSize={'20px'}>
-              {t('alerts.finish_writeoff_desc')}
-            </Typography>
-            <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
-              {t('alerts.finish_writeoff_warning')}
-            </Typography>
-          </>
-        }
-        actions={
-          <>
-            <Button secondary onClick={() => setOpenFinishConfirmDialog(false)}>
-              {t('buttons.go_back')}
-            </Button>
-            <Button
-              size='medium'
-              variant='contained'
-              onClick={() => {
-                setOpenFinishConfirmDialog(false)
-                finishWriteOffChecking(id)
-              }}
-              isLoading={false}
-            >
-              {t('buttons.yes_complete')}
-            </Button>
-          </>
-        }
-      />
     </LoadingContainer>
   )
 }

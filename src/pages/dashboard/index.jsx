@@ -36,6 +36,7 @@ import DashboardHeader from './DashboardHeader'
 import DashboardInfoBox from './DashboardInfoBox'
 import ImportPage from './expiredImports/index'
 import DashboardTopsBox from './DashboardTopsBox'
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
 
 export const dashboardBoxData = [
   {
@@ -166,20 +167,12 @@ export default function DashboarPage() {
   const totalCount = chartInfo?.data?.reduce((acc, item) => acc + item?.count, 0)
 
   const dashboard_filter = useMemo(() => {
-    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
-    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
-
     return {
       is_franchise: selectedShops == 'all' ? false : undefined,
       limit: values?.limit || 15,
       search: values?.search,
-      start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
-      end_date:
-        values?.end_date && values?.to_time
-          ? ready_start_date?.isSame(ready_end_date)
-            ? dayjs(`${values?.start_date} 23:59:59`).format()
-            : ready_end_date.format()
-          : null,
+      start_date: getFilterStartDate(values),
+      end_date: getFilterEndDate(values),
       store_ids: selectedShops.length <= 63 && selectedShops != 'all' ? [...selectedShops?.map((a) => a.id)] : null || null,
       type: dataTypeFilter(detalization),
       offset: values?.search ? 0 : values?.offset || 0,

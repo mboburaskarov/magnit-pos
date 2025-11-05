@@ -4,15 +4,15 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import { useInfiniteQuery } from 'react-query'
 import { useParams } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
-import { requests } from '../../../../../utils/requests'
-import errorAudio from '../../../../assets/audio/error.mp3'
-import successAudio from '../../../../assets/audio/normal.mp3'
+import { requests } from '@utils/requests'
+import errorAudio from '@/assets/audio/error.mp3'
+import successAudio from '@/assets/audio/normal.mp3'
 
 import { useTheme } from '@emotion/react'
 import { useMutation } from 'react-query'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import { error } from '../../../../../utils/toast'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import { error } from '@utils/toast'
+import CloseIcon from '@icons/CloseIcon'
 import ChangeFlowAdditionalsModal from './changeFlowAdditionalsModal'
 import ChangeFlowQuantityModal from './changeFlowQuantityModal'
 import NewLightTableForInventory from './newLightTableForInventory'
@@ -31,13 +31,11 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
 
   const [debouncedSearchBarcode] = useDebounce(barcode, 200)
 
-  //
   const [selectedIndex, setSelectedIndex] = useState(0)
   const rowRefs = useRef([])
   const observerRef = useRef()
   const { id } = useParams()
 
-  // 🔄 API call with limit/offset
   const fetchPage = async ({ pageParam = 0 }) => {
     const filter = {
       inventory_id: id,
@@ -50,7 +48,6 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
     return { rows: res.data?.data?.data, total_data: res.data?.data?.total_data || [], nextOffset: pageParam + LIMIT }
   }
 
-  // 🔄 useInfiniteQuery
   const {
     data,
     fetchNextPage,
@@ -63,11 +60,9 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
     getNextPageParam: (lastPage) => (lastPage.rows.length < LIMIT ? undefined : lastPage.nextOffset),
   })
 
-  // 🔁 Flatten all loaded rows
   const allRows = data?.pages?.flatMap((page) => page.rows) || []
   const rowCount = allRows.length
 
-  // 🔼⬇️ Keyboard nav
   useHotkeys('up', () => {
     setSelectedIndex((prev) => Math.max(0, prev - 1))
     const selectedRow = allRows[selectedIndex - 1]
@@ -94,7 +89,6 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
     }
   })
 
-  // 🎯 Scroll to selected row
   useEffect(() => {
     if (rowRefs.current[selectedIndex]) {
       rowRefs.current[selectedIndex].scrollIntoView({
@@ -104,7 +98,6 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
     }
   }, [selectedIndex])
 
-  // 📦 Infinite scroll observer
   const lastRowRef = useCallback(
     (node) => {
       if (isFetchingNextPage) return
@@ -155,7 +148,7 @@ const InventoryDetailModalNew = ({ open, barcode, setBarcode, setOpen, onSelectR
     if (rowRefs.current[selectedIndex]) {
       rowRefs.current[selectedIndex].scrollIntoView({
         behavior: 'smooth',
-        block: 'center', // Changed from 'nearest' to 'center'
+        block: 'center',
       })
     }
   }, [selectedIndex])

@@ -6,27 +6,26 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../../components/CheckAccess'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import HeaderWithDashboardWrapper from '../../../../../components/HeaderWithDashboard'
-import ImageGallery from '../../../../../components/ImageGallery'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import BigTickIcon from '../../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
-import FilterMenuIcon from '../../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/inventoryTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '@components/CheckAccess'
+import ConfirmDialog from '@components/ConfirmDialog'
+import HeaderWithDashboardWrapper from '@components/HeaderWithDashboard'
+import ImageGallery from '@components/ImageGallery'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import BigTickIcon from '@icons/BigTickIcon'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/inventoryTableColumns'
 import CreateInventory from './createInventory'
 import FilterMenu from './FilterMenu'
 import InventoryDashboard from './inventoryDashboard'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function InventoryPage() {
   const theme = useTheme()
@@ -50,16 +49,7 @@ export default function InventoryPage() {
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -69,26 +59,12 @@ export default function InventoryPage() {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
-
       store_id: values?.store_id,
       start_date: values?.start_date,
       end_date: values?.end_date,
       status: values?.status,
-      import_date: values?.import_date,
-      received_amount_to: values?.received_amount_to,
-      received_amount_from: values?.received_amount_from,
     }
-  }, [
-    values?.offset,
-    values?.limit,
-    values?.end_date,
-    values?.start_date,
-    values?.search,
-    values?.status,
-    values?.store_id,
-    values?.received_amount_to,
-    values?.received_amount_from,
-  ])
+  }, [values?.offset, values?.limit, values?.end_date, values?.start_date, values?.search, values?.status, values?.store_id])
   const {
     data: inventoryList,
     isLoading: inventoryListLoading,
@@ -106,16 +82,7 @@ export default function InventoryPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [inventoryList?.data, values?.limit])
-  const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
-    onSuccess: ({ data }) => {
-      downloadLinkExcel(get(data, 'data.file_name'))
-    },
-    onError: (err) => {
-      console.error(err)
 
-      error('Ошибка при скачать excel!')
-    },
-  })
   const { mutate: deleteInventory, isLoading: isDeletingProduct } = useMutation(requests.deleteInventory, {
     onSuccess: () => {
       refetch()
@@ -129,7 +96,8 @@ export default function InventoryPage() {
       console.error('err', err)
     },
   })
-  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['inventoryStatusCountList', values?.search, inventoryListFilter], () =>
+
+  const { data: statusCountList } = useQuery(['inventoryStatusCountList', values?.search, inventoryListFilter], () =>
     requests.getInventoryStatusCount(inventoryListFilter)
   )
   return (
@@ -205,7 +173,7 @@ export default function InventoryPage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
-            isDownloading={isimportsExcelReport}
+            isDownloading={inventoryListLoading}
             tableSettings
             columns={tableColumns}
             defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}

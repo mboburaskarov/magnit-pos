@@ -4,24 +4,24 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ImageGallery from '../../../../../components/ImageGallery'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { requests } from '../../../../../utils/requests'
-import { error } from '../../../../../utils/toast'
-import FilterMenuIcon from '../../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/importsTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import ImageGallery from '@components/ImageGallery'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/importsTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 
 import { get } from 'lodash'
-import HeaderWithDashboardWrapper from '../../../../../components/HeaderWithDashboard'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
+import HeaderWithDashboardWrapper from '@components/HeaderWithDashboard'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
 import ImportDashboard from './importantDashboard'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function ImportPage() {
   const theme = useTheme()
@@ -42,16 +42,7 @@ export default function ImportPage() {
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -81,6 +72,7 @@ export default function ImportPage() {
     values?.received_amount_to,
     values?.received_amount_from,
   ])
+
   const {
     data: importsList,
     isLoading: importsListLoading,
@@ -98,6 +90,7 @@ export default function ImportPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [importsList?.data, values?.limit])
+
   const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
@@ -108,13 +101,14 @@ export default function ImportPage() {
       error('Ошибка при скачать excel!')
     },
   })
-  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['statusCountList', values?.search, importsListFilter], () =>
+
+  const { data: getImportStatusCount } = useQuery(['getImportStatusCount', values?.search, importsListFilter], () =>
     requests.getImportStatusCount(importsListFilter)
   )
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <HeaderWithDashboardWrapper title={'Импорт'} component={<ImportDashboard data={get(statusCountList, 'data.data', 0)} />} />
+        <HeaderWithDashboardWrapper title={'Импорт'} component={<ImportDashboard data={get(getImportStatusCount, 'data.data', 0)} />} />
 
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>

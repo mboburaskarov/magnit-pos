@@ -272,11 +272,25 @@ function CartDetailSide({
                   className={classes.searchItem}
                   onKeyDown={(event) => {
                     if (event.key === 'Enter' && fakeIndexForCheckClient === index + 1) {
-                      setCustomerId({ id: item?.id, name: item?.first_name + ' ' + item?.first_name, balance: item?.balance, barcode: item?.discount_card })
+                      setCustomerId({
+                        id: item?.id,
+                        name: item?.first_name + ' ' + item?.first_name,
+                        balance: item?.balance,
+                        barcode: item?.discount_card,
+                        ...item,
+                        searchTerm,
+                      })
                     }
                   }}
                   onClick={() => {
-                    setCustomerId({ id: item?.id, name: item?.first_name + ' ' + item?.last_name, balance: item?.balance, barcode: item?.discount_card })
+                    setCustomerId({
+                      id: item?.id,
+                      name: item?.first_name + ' ' + item?.last_name,
+                      balance: item?.balance,
+                      barcode: item?.discount_card,
+                      ...item,
+                      searchTerm,
+                    })
 
                     setSearchTerm()
                   }}

@@ -8,24 +8,24 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import Header from '../../../../../components/Header'
-import InputQuantity from '../../../../../components/Inputs/InputQuantity'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import InputSwitch from '../../../../../components/Inputs/InputSwitch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { requests } from '../../../../../utils/requests'
-import { error } from '../../../../../utils/toast'
-import ArrowDown from '../../../../assets/icons/ArrowDown'
-import ArrowUp from '../../../../assets/icons/ArrowUp'
-import BarcodeIcon from '../../../../assets/icons/BarcodeIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/writeOffWithCheckingTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import ConfirmDialog from '@components/ConfirmDialog'
+import Header from '@components/Header'
+import InputQuantity from '@components/Inputs/InputQuantity'
+import InputSearch from '@components/Inputs/InputSearch'
+import InputSwitch from '@components/Inputs/InputSwitch'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import ArrowDown from '@icons/ArrowDown'
+import ArrowUp from '@icons/ArrowUp'
+import BarcodeIcon from '@icons/BarcodeIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/writeOffWithCheckingTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function WriteOffScanWithCheckingPage() {
   const dispatch = useDispatch()
@@ -43,7 +43,6 @@ export default function WriteOffScanWithCheckingPage() {
   const [manualNumber, setManualNumber] = useState(1)
   const { mutate: setScanedNumber } = useMutation(requests.sendScannedWriteOffNumber, {
     onSuccess: ({ data }) => {
-      // refetch()
       refetchgetWriteOffDashBoard()
       setBarcode('')
     },
@@ -62,6 +61,7 @@ export default function WriteOffScanWithCheckingPage() {
       error('Ошибка при завершение импорта!')
     },
   })
+
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
@@ -89,18 +89,9 @@ export default function WriteOffScanWithCheckingPage() {
     refetch,
   } = useQuery(['WriteOffWithCheckingDetails', WriteOffWithCheckingDetailsFilter], () => requests.getWriteOffDetails(WriteOffWithCheckingDetailsFilter))
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])

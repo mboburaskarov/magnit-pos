@@ -2,8 +2,8 @@ import { Box, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
-import NumberFormatInput from '../../../../../components/Inputs/OutLineTextFieldThousand'
-import thousandDivider from '../../../../../utils/thousandDivider'
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
+import thousandDivider from '@utils/thousandDivider'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography
@@ -15,7 +15,7 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, values, t, setScanedNumber }) {
+export default function tableHeaderSelector({ importsColumns, values }) {
   const { id } = useParams()
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {

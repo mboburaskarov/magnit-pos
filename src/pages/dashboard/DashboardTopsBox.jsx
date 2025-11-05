@@ -1,9 +1,6 @@
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Skeleton } from '@mui/material'
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Link, useNavigate } from 'react-router-dom'
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Skeleton } from '@mui/material'
+import { Link } from 'react-router-dom'
 import thousandDivider from '@utils/thousandDivider'
-import { useNavigateWithParams } from '@hooks/useNavigateWithParams'
 import RightArrowRound from '@icons/dashboard/RightArrowRound'
 import SortIcon from '@icons/dashboard/SortIcon'
 import SortUpIcon from '@icons/dashboard/SortUpIcon'
@@ -20,11 +17,7 @@ export default function DashboardTopsBox({
   collapseCount = 5,
   noData = { title: 'Информация не найдена', description: 'Данные за этот период не найдены' },
 }) {
-  const { t } = useTranslation()
-  const [isCollapse, setIsCollapse] = useState(false)
-  const formattedData = isCollapse ? data : data?.slice(0, collapseCount)
-  const navigate = useNavigate()
-  const { navigateWithParams } = useNavigateWithParams()
+  const formattedData = data?.slice(0, collapseCount)
 
   return (
     <Box

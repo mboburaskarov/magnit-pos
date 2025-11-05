@@ -39,14 +39,14 @@ import { salesTableColumnsSlice } from './tableSlices/salesTableColumns'
 import { sellerBonusTableColumnsSlice } from './tableSlices/sellerBonusTableColumns'
 import { storeReportTableColumnsSlice } from './tableSlices/storeReportTableColumns'
 import { storeSummaryTableColumnsSlice } from './tableSlices/storeSummaryTableColumns'
-import { storeTableColumnsSlice } from './tableSlices/storeTableColumns'
+import { branchTableColumnsSlice } from './tableSlices/branchTableColumns'
 import { storesListTableColumnsForProductSlice } from './tableSlices/storesListTableColumnsForProduct'
 import { topReportTableColumnsSlice } from './tableSlices/topReportsTableColumns'
 import { taransferGetWithCheckingTableColumnsSlice } from './tableSlices/transferGetWithCheckingTableColumns'
 import { transferRecheckWithCheckingTableColumnsSlice } from './tableSlices/transferRecheckWithCheckingTableColumns'
 import { transferSentWithCheckingTableColumnsSlice } from './tableSlices/transferSentWithCheckingTableColumns'
 import { transferTableColumnsSlice } from './tableSlices/transferTableColumns'
-import { vendorsTableColumnsSlice } from './tableSlices/vendorsTableColumns'
+import { employeesTableColumnsSlice } from './tableSlices/employeesTableColumns'
 import { writeOffTableColumnsSlice } from './tableSlices/writeOffTableColumns'
 import { writeOffWithCheckingTableColumnsSlice } from './tableSlices/writeOffWithCheckingTableColumns'
 import { userSlice } from './userSlice'
@@ -54,7 +54,7 @@ import { userSlice } from './userSlice'
 // Define your migration function here
 const migrations = {
   // Example migration
-  393: (state) => {
+  396: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -72,7 +72,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 393, // Current version of the persisted state
+  version: 396, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -115,7 +115,7 @@ const reducer = combineReducers({
   salesTableColumns: salesTableColumnsSlice,
   cashBoxShiftsTableColumns: cashBoxShiftsTableColumnsSlice,
   cashBoxShiftHistoryTableColumns: cashBoxShiftHistoryTableColumnsSlice,
-  vendorsTableColumns: vendorsTableColumnsSlice,
+  employeesTableColumns: employeesTableColumnsSlice,
   sellerBonusTableColumns: sellerBonusTableColumnsSlice,
   cashboxTableColumns: cashboxTableColumnsSlice,
   paymentAssetsTableColumns: paymentAssetsTableColumnsSlice,
@@ -128,7 +128,7 @@ const reducer = combineReducers({
   user: userSlice,
   productPriceListTableColumnsForProduct: productPriceListTableColumnsForProductSlice,
   storesListTableColumnsForProduct: storesListTableColumnsForProductSlice,
-  storeTableColumns: storeTableColumnsSlice,
+  branchTableColumns: branchTableColumnsSlice,
   rolesTableColumns: rolesTableColumnsSlice,
 })
 

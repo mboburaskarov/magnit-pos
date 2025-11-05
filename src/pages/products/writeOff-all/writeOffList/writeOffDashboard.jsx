@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
-import DownloadIcon from '../../../../assets/icons/DownloadIcon'
+import thousandDivider from '@utils/thousandDivider'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import DownloadIcon from '@icons/DownloadIcon'
 
 function WriteOffDashboard({ data }) {
   return (

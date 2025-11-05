@@ -1,18 +1,12 @@
 import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
-import CustomImg from '../../../../components/CustomImg'
-import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
-import thousandDivider from '../../../../utils/thousandDivider'
-import EditIcon from '../../../assets/icons/EditIcon'
-
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import CustomImg from '@components/CustomImg'
+import { formatPhoneNumber } from '@utils/formatPhoneNumber'
+import thousandDivider from '@utils/thousandDivider'
+import EditIcon from '@icons/EditIcon'
+import CheckAccess from '@components/CheckAccess'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
 const Image = ({ data, rowIndex, setImages }) => {
   return (
@@ -58,7 +52,7 @@ const Image = ({ data, rowIndex, setImages }) => {
   )
 }
 
-export default function tableHeaderSelector({ productsColumns, values, t, setOpenConfirmDialog, setopenCreateLocationDrawer }) {
+export default function tableHeaderSelector({ productsColumns, values, t, setOpenCompanyDrawer }) {
   const columns = productsColumns?.map((el) => {
     if (el.field === 'name') {
       return {
@@ -105,11 +99,7 @@ export default function tableHeaderSelector({ productsColumns, values, t, setOpe
         ...el,
         headerName: 'Телефон',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
-            {p.data.phone?.length > 1 ? formatPhoneNumber(p.data.phone) : '-'}
-          </Typography>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='postal_code' customText={p.data.phone?.length > 1 ? formatPhoneNumber(p.data.phone) : '-'} />),
       }
     }
     if (el.field === 'postal_code') {
@@ -170,15 +160,11 @@ export default function tableHeaderSelector({ productsColumns, values, t, setOpe
         colId: el.field,
         cellRenderer: memo(({ data }) => (
           <Box display='inline-flex' columnGap={'8px'}>
-            <IconButton onClick={() => setopenCreateLocationDrawer({ mode: 'edit', data })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-              <EditIcon />
-            </IconButton>
-            {/* <IconButton
-              onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: data.name })}
-              sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
-            >
-              <DeleteIcon />
-            </IconButton> */}
+            <CheckAccess id={'company:edit'}>
+              <IconButton onClick={() => setOpenCompanyDrawer({ mode: 'edit', data })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <EditIcon />
+              </IconButton>
+            </CheckAccess>
           </Box>
         )),
       }

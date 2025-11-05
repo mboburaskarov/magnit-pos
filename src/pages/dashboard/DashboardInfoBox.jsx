@@ -31,7 +31,6 @@ export default function DashboardInfoBox({
   ].includes(id)
   const isEmployee = id === 'bonus_amount'
 
-  // 👇 Use grouped query keys
   const queryKey =
     (isSaleBox && ['sale_stats', dashboard_filter]) ||
     (isNetProfit && ['net_profit_stats', dashboard_filter]) ||

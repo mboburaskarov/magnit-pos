@@ -1,28 +1,26 @@
-import CrreatePaymentAssetDrawer from '../CrreatePaymentAssetDrawer'
-
+import CrreatePaymentAssetDrawer from '../CreatePaymentAssetDrawer'
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import BigTickIcon from '../../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
-import DeleteIcon from '../../../../assets/icons/DeleteIcon'
-import FilterMenuIcon from '../../../../assets/icons/FilterMenuIcon'
-import PlusIcon from '../../../../assets/icons/PlusIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/paymentAssetsTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import ConfirmDialog from '@components/ConfirmDialog'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import BigTickIcon from '@icons/BigTickIcon'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import PlusIcon from '@icons/PlusIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/paymentAssetsTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function PaymentsAssetsList() {
   const dispatch = useDispatch()
@@ -30,40 +28,21 @@ export default function PaymentsAssetsList() {
   const { columns, loading } = useSelector((state) => state.paymentAssetsTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
-  const [openCreateVendorDrawer, setopenCreateVendorDrawer] = useState(false)
   const [openCreatePermission, setOpenCreatePermission] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
-  const [slectedVendors, setSelectedVendors] = useState([])
-  const selectVendors = (isChecked, id) => {
-    if (isChecked) {
-      setSelectedVendors((p) => [...p, id])
-    } else {
-      setSelectedVendors((p) => p.filter((ids) => ids !== id))
-    }
-  }
 
   const tableColumns = tableHeaderSelector({
     vendorsColumns: columns,
     t,
     values,
     setOpenConfirmDialog,
-    selectVendors,
     setOpenCreatePermission,
   })
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -76,6 +55,7 @@ export default function PaymentsAssetsList() {
       store_id: values?.store_id,
     }
   }, [values?.offset, values?.limit, values?.search, values?.store_id])
+
   const {
     data: getPaymentAssetsList,
     isLoading: getPaymentAssetsListLoading,
@@ -86,12 +66,12 @@ export default function PaymentsAssetsList() {
   const { mutate: deletePaymentAsset, isLoading: isDeletingCashBox } = useMutation(requests.deletePaymentAsset, {
     onSuccess: () => {
       refetch()
-      success('Продукт успешно удален!')
+      success('Ключ успешно удален!')
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
-      error('Ошибка при удалении товара!')
+      error('Ошибка при удалении Ключ!')
       setOpenConfirmDialog(null)
       console.error('err', err)
     },
@@ -157,33 +137,6 @@ export default function PaymentsAssetsList() {
                 </Typography>
               </Button>
             </Box>
-            {slectedVendors.length > 0 && (
-              <>
-                <Box minWidth={48} ml={'16px'}>
-                  <Button
-                    sx={{
-                      height: '48px',
-                      padding: 0,
-                      bgcolor: '#fff',
-                      border: '1px solid #ECEDF2',
-                      color: 'dark.500',
-                      fontWeight: '500',
-                      fontSize: '16px',
-                      lineHeight: '24px',
-                      '& span': {
-                        mr: '12px',
-                      },
-                    }}
-                    fullWidth
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => deletePaymentAsset({ data: slectedVendors })}
-                  >
-                    <DeleteIcon width='24px' />
-                  </Button>
-                </Box>
-              </>
-            )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box>
@@ -211,7 +164,7 @@ export default function PaymentsAssetsList() {
         <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
-            id='products-main-table'
+            id='payment-assistent-table'
             tableSettings
             columns={tableColumns}
             data={getPaymentAssetsList?.data?.data?.data || []}
@@ -222,8 +175,8 @@ export default function PaymentsAssetsList() {
               if (newData) dispatch(updateTableHeader(newData))
             }}
             emptyTableText={{
-              title: 'Касса недоступен',
-              description: 'Если вы не можете найти искомый Касса, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+              title: 'ключ недоступен',
+              description: 'Если вы не можете найти искомый ключ, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
             }}
             fullInfoAboutCurrentPage
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
@@ -237,7 +190,7 @@ export default function PaymentsAssetsList() {
           open={!!openConfirmDialog}
           setOpen={setOpenConfirmDialog}
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={'Удалить кассы?'}
+          title={'Удалить ключ?'}
           desc={'вы хотите удалить?'}
           supDesc={openConfirmDialog.name}
           actions={
@@ -258,25 +211,8 @@ export default function PaymentsAssetsList() {
           }
         />
       )}
-      {/* <CreateEditCategories
-        withoutNavigate
-        refetch={categoriesRefetch}
-        open={!!createEdit}
-        editId={createEdit?.parentId}
-        focusId={createEdit?.id}
-        closeDrawer={() => setCreateEdit(false)}
-      /> */}
 
       <CrreatePaymentAssetDrawer categoriesRefetch={() => refetch()} isOpen={openCreatePermission} onClose={() => setOpenCreatePermission(null)} />
-
-      {/* <CreateCashBoxDrawer
-        refetchVendorList={refetch}
-        setCustomerId={'setCustomerId'}
-        quickCreateClientName={'quickCreateClientName'}
-        openDrawer={openCreateVendorDrawer}
-        closeDrawer={() => setopenCreateVendorDrawer(false)}
-        clientData={'clientDetails'}
-      /> */}
     </LoadingContainer>
   )
 }

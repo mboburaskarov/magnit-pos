@@ -1,19 +1,17 @@
 import { useTheme } from '@mui/styles'
-import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
 
-import CloseIcon from '../../../../assets/icons/CloseIcon'
+import CloseIcon from '@icons/CloseIcon'
 import { Box, Typography } from '@mui/material'
-import FolderSearch from '../../../../assets/icons/step-progress/FolderSearch'
-import SentFastIcon from '../../../../assets/icons/step-progress/SentFast'
-import TimeQuarterIcon from '../../../../assets/icons/step-progress/TimeQuarter'
-import TickIcon from '../../../../assets/icons/step-progress/Tick'
+import FolderSearch from '@icons/step-progress/FolderSearch'
+import SentFastIcon from '@icons/step-progress/SentFast'
+import TimeQuarterIcon from '@icons/step-progress/TimeQuarter'
+import TickIcon from '@icons/step-progress/Tick'
 import { get } from 'lodash'
 import dayjs from 'dayjs'
 
-export default function StatusDetailModal({ open, refetch, setOpen }) {
-  const methods = useForm()
+export default function StatusDetailModal({ open, setOpen }) {
   const theme = useTheme()
 
   const { t } = useTranslation()
@@ -37,7 +35,6 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
     >
       <Box sx={{ p: '20px' }}>
-        {/* Table Header */}
         <Box
           sx={{
             display: 'flex',
@@ -72,7 +69,6 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
           </Box>
         </Box>
 
-        {/* Table Rows */}
         <Box
           sx={{
             display: 'flex',
@@ -80,7 +76,6 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
             gap: 0,
           }}
         >
-          {/* Row 1 - Новый */}
           <Box
             onClick={() => setStatusModal(open)}
             sx={{
@@ -123,7 +118,6 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
             </Box>
           </Box>
 
-          {/* Connector Line */}
           <Box
             sx={{
               width: '10px',
@@ -140,7 +134,6 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
             }}
           />
 
-          {/* Row 2 - Отправил */}
           <Box
             sx={{
               display: 'flex',
@@ -182,7 +175,6 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
             </Box>
           </Box>
 
-          {/* Connector Line */}
           <Box
             sx={{
               width: '10px',
@@ -207,7 +199,6 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
             }}
           />
 
-          {/* Row 3 - Проверка */}
           <Box
             sx={{
               display: 'flex',
@@ -249,7 +240,6 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
             </Box>
           </Box>
 
-          {/* Connector Line */}
           <Box
             sx={{
               width: '10px',
@@ -274,7 +264,6 @@ export default function StatusDetailModal({ open, refetch, setOpen }) {
             }}
           />
 
-          {/* Row 4 - Завершенный */}
           <Box
             sx={{
               display: 'flex',

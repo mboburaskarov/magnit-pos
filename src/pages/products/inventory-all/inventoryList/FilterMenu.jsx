@@ -8,15 +8,14 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import InputDateRangePicker from '../../../../../components/Inputs/InputDateRangePicker'
-import InputRange from '../../../../../components/Inputs/InputRange'
-import LazySelect from '../../../../../components/Select/LazySelect'
-import SelectSimple from '../../../../../components/Select/SelectSimple'
-import { requests } from '../../../../../utils/requests'
-import { imports_list_statuses } from '../../../../assets/data/imports-list-statuses'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import InputDateRangePicker from '@components/Inputs/InputDateRangePicker'
+import LazySelect from '@components/Select/LazySelect'
+import SelectSimple from '@components/Select/SelectSimple'
+import { requests } from '@utils/requests'
+import { imports_list_statuses } from '@/assets/data/imports-list-statuses'
+import CloseIcon from '@icons/CloseIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
 
 export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
@@ -26,6 +25,8 @@ export default function FilterMenu({ open, setOpen }) {
   const [startDate, setStartDate] = useState(0)
   const [endDate, setEndDate] = useState(0)
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
+  const theme = useTheme()
+  const { t } = useTranslation()
 
   const onSubmit = (data) => {
     const requestBody = {
@@ -49,38 +50,24 @@ export default function FilterMenu({ open, setOpen }) {
   }
 
   useEffect(() => {
-    const { received_amount_to, start_date, end_date, status, import_date, received_amount_from, store_id } = values
+    const { start_date, end_date, status, store_id } = values
 
     reset(
       {
         store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
-        received_amount_to: received_amount_to || null,
-        received_amount_from: received_amount_from || null,
         status: status ? { name: 'd', value: values?.no_barcode } : null,
-        import_date: import_date,
         start_date: start_date,
         end_date: end_date,
       },
       { keepDirty: true }
     )
-  }, [
-    values?.store_id,
-    values?.status,
-    values?.start_date,
-    values?.end_date,
-    values?.received_amount_to,
-    values?.received_amount_from,
-    values?.import_date,
-    shopList,
-  ])
-  const theme = useTheme()
+  }, [values?.store_id, values?.status, values?.start_date, values?.end_date, shopList])
 
   const resetFilter = () => {
     reset()
     setOpen(false)
     navigate(`/products/inventory?offset=0&limit=${values?.limit || 5}`)
   }
-  const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       onClose={() => setOpen(false)}
@@ -148,16 +135,6 @@ export default function FilterMenu({ open, setOpen }) {
               placeholder={'Bыберите статус'}
               options={imports_list_statuses.map((item) => ({ name: get(item, 'name'), value: get(item, 'id') }))}
               getOptionLabel={(el) => el.name}
-            />
-
-            <InputRange
-              fullWidth
-              id='prixwce'
-              label={'Полученная сумма'}
-              name1='received_amount_from'
-              name2='received_amount_to'
-              placeholder1={t('input.price.from')}
-              placeholder2={t('input.price.to')}
             />
 
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>

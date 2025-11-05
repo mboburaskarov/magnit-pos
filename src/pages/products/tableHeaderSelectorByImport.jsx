@@ -3,15 +3,16 @@ import { Box, IconButton, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get, head } from 'lodash'
-import { memo, useState } from 'react'
+import { memo } from 'react'
 import Highlighter from 'react-highlight-words'
 import { useNavigate } from 'react-router-dom'
-import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
-import CheckAccess from '../../../components/CheckAccess'
-import thousandDivider from '../../../utils/thousandDivider'
-import { products_statuses } from '../../assets/data/products-statuses'
-import DeleteIcon from '../../assets/icons/DeleteIcon'
-import EditIcon from '../../assets/icons/EditIcon'
+import StatusCell from '@components/AgGridTable/Cells/StatusCell'
+import CheckAccess from '@components/CheckAccess'
+import thousandDivider from '@utils/thousandDivider'
+import { products_statuses } from '@/assets/data/products-statuses'
+import DeleteIcon from '@icons/DeleteIcon'
+import EditIcon from '@icons/EditIcon'
+
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography
@@ -80,7 +81,6 @@ const CustomHeader = (props) => {
       }
     }
 
-    // Toggle sort direction manually
     props.column.colDef.setOrderStoring(newOrder)
   }
 
@@ -129,17 +129,10 @@ export default function tableHeaderSelector({
   setMarkingRequired,
   setOpenConfirmDialog,
   setOpenProductDrawer,
-  changeBarcode,
 }) {
   const theme = useTheme()
   const navigate = useNavigate()
-  const [eidtingDate, setEditingDate] = useState(false)
-  const getDateColor = (date) => {
-    if (date >= 90) return { color: theme.palette.green[700] }
-    if (date > 60 && date < 90) return { color: theme.palette.orange[400] }
-    if (date > 30 && date < 60) return { color: theme.palette.red[400] }
-    if (date < 30) return { color: theme.palette.bunker[950] }
-  }
+
   const columns = productsColumns?.map((el) => {
     if (el.field === 'main_photo') {
       return {
@@ -376,20 +369,17 @@ export default function tableHeaderSelector({
         colId: el.field,
         editable: editable,
         valueGetter: (params) => {
-          // Option 1: Transform the raw value
           const rawDate = params.data?.expire_date
           if (!rawDate) return ''
 
-          // Example: Convert ISO string to local date format
           const date = new Date(rawDate)
           return dayjs(date).format('YYYY.MM.DD')
         },
         cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} onClick={() => setEditingDate(p?.data)} whiteSpace='pre-wrap'>
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             {p.data?.['expire_date'] ? (
               <>
                 <Typography>{dayjs(p.data?.['expire_date']).format('YYYY.MM.DD')}</Typography>
-                {/* <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography> */}
               </>
             ) : (
               <Typography>Выберите филиал</Typography>

@@ -1,22 +1,10 @@
-import { Box, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
-import { useParams } from 'react-router-dom'
-import thousandDivider from '../../../../../utils/thousandDivider'
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
-export default function tableHeaderSelector({ importsColumns, values, t, updateByBarcode, setScanedNumber }) {
-  const { id } = useParams()
+export default function tableHeaderSelector({ importsColumns, values }) {
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {
       return {
@@ -25,7 +13,6 @@ export default function tableHeaderSelector({ importsColumns, values, t, updateB
         colId: el.field,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
           const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
-
           return (
             <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
               {absoluteIndex}
@@ -40,11 +27,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, updateB
         ...el,
         headerName: 'Штрих-код',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.barcode}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'barcode'} />),
       }
     }
     if (el.field === 'name') {
@@ -52,11 +35,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, updateB
         ...el,
         headerName: 'Название',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.name}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'name'} />),
       }
     }
     if (el.field === 'material_code') {
@@ -64,11 +43,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, updateB
         ...el,
         headerName: 'Артикул',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.material_code}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'material_code'} />),
       }
     }
     if (el.field === 'export_date') {
@@ -76,11 +51,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, updateB
         ...el,
         headerName: 'Срок годности',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.expire_date).format('DD.MM.YYYY')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'export_date'} customText={dayjs(p.data?.expire_date).format('DD.MM.YYYY')} />),
       }
     }
     if (el.field === 'serial_number') {
@@ -96,13 +67,7 @@ export default function tableHeaderSelector({ importsColumns, values, t, updateB
         ...el,
         headerName: 'Текущее кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>
-              {p.data?.received_count} {p.data?.short_name}
-            </Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'stock_count'} customText={`${p.data?.received_count} ${p.data?.short_name}`} />),
       }
     }
     if (el.field === 'expected_count') {

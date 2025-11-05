@@ -5,34 +5,29 @@ import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import TextField from '../../../../../components/Inputs/TextField'
-import Label from '../../../../../components/Label'
-import LazySelect from '../../../../../components/Select/LazySelect'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import TextField from '@components/Inputs/TextField'
+import Label from '@components/Label'
+import LazySelect from '@components/Select/LazySelect'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import CloseIcon from '@icons/CloseIcon'
 import { LoadingButton } from '@mui/lab'
 
 export default function CreateReturn({ open, refetch, setOpen }) {
   const methods = useForm()
-  const [openWarn, setopenWarn] = useState(false)
   const { reset, control } = methods
-  useEffect(() => {
-    if (methods.getValues('reason')?.id == 'correction_of_misclassification') {
-      setopenWarn(true)
-    } else {
-      setopenWarn(false)
-    }
-  }, [methods.watch('reason')])
+  const theme = useTheme()
+  const { t } = useTranslation()
+
   const { mutate: createReturnToWarehouse, isLoading: iscreateReturnToWarehouse } = useMutation(requests.createTransfer, {
     onSuccess: () => {
       setOpen(false)
-      success('Создать автозаказ')
+      success('Создать Перемещение')
       refetch()
     },
     onError: (err) => {
-      error('Ошибка Создать автозаказ!')
+      error('Ошибка Создать Перемещение!')
       console.error('err', err)
     },
   })
@@ -54,9 +49,7 @@ export default function CreateReturn({ open, refetch, setOpen }) {
   useEffect(() => {
     reset({}, { keepDirty: true })
   }, [open])
-  const theme = useTheme()
 
-  const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       overflowVisible

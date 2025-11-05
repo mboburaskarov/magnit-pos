@@ -2,19 +2,11 @@ import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import CheckAccess from '../../../../components/CheckAccess'
-import StyledTooltip from '../../../../components/StyledTooltip'
-import thousandDivider from '../../../../utils/thousandDivider'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import EditIcon from '../../../assets/icons/EditIcon'
-
-const SimpleText = ({ data, width = 'auto', rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography sx={{ maxWidth: width, textOverflow: 'ellipsis', overflow: 'hidden', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import StyledTooltip from '@components/StyledTooltip'
+import DeleteIcon from '@icons/DeleteIcon'
+import EditIcon from '@icons/EditIcon'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import CheckAccess from '@components/CheckAccess'
 
 export default function tableHeaderSelector({ productsColumns, t, selectVendors, values, setOpenConfirmDialog }) {
   const navigate = useNavigate()
@@ -88,23 +80,21 @@ export default function tableHeaderSelector({ productsColumns, t, selectVendors,
         headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          // <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
           <Box display='inline-flex' columnGap={'8px'}>
-            {/* <CheckAccess id={'product-edit'}> */}
-            <IconButton onClick={() => navigate(`/roles/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-              <EditIcon />
-            </IconButton>
-            {/* </CheckAccess> */}
-            {/* <CheckAccess id={'product-delete'}> */}
-            <IconButton
-              onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
-              sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
-            >
-              <DeleteIcon />
-            </IconButton>
-            {/* </CheckAccess> */}
+            <CheckAccess id={'role:edit'}>
+              <IconButton onClick={() => navigate(`/roles/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <EditIcon />
+              </IconButton>
+            </CheckAccess>
+            <CheckAccess id={'role:delete'}>
+              <IconButton
+                onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: get(data, '[first_name]') + ' ' + get(data, '[last_name]') })}
+                sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </CheckAccess>
           </Box>
-          // </CheckAccess>
         )),
       }
     }

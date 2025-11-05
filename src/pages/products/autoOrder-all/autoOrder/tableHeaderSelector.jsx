@@ -6,78 +6,18 @@ import { get } from 'lodash'
 import * as qs from 'qs'
 import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import StatusCell from '../../../../../components/AgGridTable/Cells/StatusCell'
-import CustomImg from '../../../../../components/CustomImg'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import { autoorder_list_statuses } from '../../../../assets/data/imports-list-statuses'
-import DefaultImgIcon from '../../../../assets/icons/defaultImgIcon'
-import DeleteIcon from '../../../../assets/icons/DeleteIcon'
-import palette from '../../../../assets/theme/mui.config'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import StatusCell from '@components/AgGridTable/Cells/StatusCell'
+import { autoorder_list_statuses } from '@/assets/data/imports-list-statuses'
+import DeleteIcon from '@icons/DeleteIcon'
+import palette from '@/assets/theme/mui.config'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
-const Image = ({ data, rowIndex, setImages }) => {
-  return (
-    <Box
-      sx={{
-        position: 'relative',
-        width: '40px',
-        height: '40px',
-        borderRadius: 2,
-        '&:hover': {
-          '#overlay_image': {
-            opacity: 0.5,
-          },
-        },
-      }}
-    >
-      {data?.main_photo?.[0] ? (
-        <CustomImg
-          id={`product-image-${rowIndex}`}
-          src={data?.main_photo || 'default-img.avif'}
-          alt={data?.name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
-        />
-      ) : (
-        <DefaultImgIcon />
-      )}
-      {data?.files?.[0] && (
-        <Box
-          sx={{
-            transition: 'all 0.2s ease',
-            cursor: 'pointer',
-            opacity: 0,
-            borderRadius: 2,
-            bottom: 0,
-            right: 0,
-            top: 0,
-            left: 0,
-            bgcolor: 'green.600',
-            position: 'absolute',
-            zIndex: 2,
-          }}
-          id='overlay_image'
-          onClick={() => setImages({ data: data?.files })}
-        />
-      )}
-    </Box>
-  )
-}
-
-export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmDialog }) {
+export default function tableHeaderSelector({ autoOrderColumns, t, setOpenConfirmDialog }) {
   const { values } = useQueryParams()
   const navigate = useNavigate()
 
-  const columns = importsColumns?.map((el) => {
+  const columns = autoOrderColumns?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,
@@ -164,11 +104,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         ...el,
         headerName: 'Дата заказ',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='import_date' customText={dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')} />),
       }
     }
 

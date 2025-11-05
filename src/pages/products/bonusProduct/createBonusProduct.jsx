@@ -1,17 +1,17 @@
-import { Box, Button } from '@mui/material'
+import { Box } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import InputDateRangePicker from '../../../../components/Inputs/InputDateRangePicker'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-import LazySelect from '../../../../components/Select/LazySelect'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import CloseIcon from '../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import InputDateRangePicker from '@components/Inputs/InputDateRangePicker'
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
+import LazySelect from '@components/Select/LazySelect'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import CloseIcon from '@icons/CloseIcon'
 import { LoadingButton } from '@mui/lab'
 
 export default function CreateBonusProduct({ open, refetch, setOpen }) {
@@ -19,6 +19,9 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
   const { reset, control } = methods
   const [startDate, setStartDate] = useState(0)
   const [endDate, setEndDate] = useState(0)
+  const theme = useTheme()
+  const { t } = useTranslation()
+
   const { mutate: createBonusProduct, isLoading: iscreateBonusProduct } = useMutation(requests.createBonusProduct, {
     onSuccess: () => {
       setOpen(false)
@@ -48,9 +51,7 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
   useEffect(() => {
     reset({}, { keepDirty: true })
   }, [open])
-  const theme = useTheme()
 
-  const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       overflowVisible

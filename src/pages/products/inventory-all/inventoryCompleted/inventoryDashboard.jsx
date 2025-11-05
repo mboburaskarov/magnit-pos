@@ -1,29 +1,9 @@
 import { Box, Grid, Typography } from '@mui/material'
 import { get } from 'lodash'
-import { useMutation } from 'react-query'
-import { useParams } from 'react-router-dom'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import { error } from '../../../../../utils/toast'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
+import thousandDivider from '@utils/thousandDivider'
+import BigWarningIcon from '@icons/BigWarningIcon'
 
 function InventoryDashboard({ data: stats, setHasChange }) {
-  const { id } = useParams()
-
-  const { mutate: getInventoryExcelReport, isLoading: isgetInventoryExcelReport } = useMutation(requests.getInventoryExcelReport, {
-    onSuccess: ({ data }) => {
-      setHasChange(false)
-
-      downloadLinkExcel(get(data, 'data.file_name'))
-    },
-    onError: (err) => {
-      setHasChange(false)
-
-      error('Ошибка при скачать excel!')
-    },
-  })
-
   return (
     <Grid
       container

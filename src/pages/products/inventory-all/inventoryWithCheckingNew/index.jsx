@@ -10,24 +10,23 @@ import { useTranslation } from 'react-i18next'
 import { useInfiniteQuery, useQueryClient } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { requests } from '../../../../../utils/requests'
-import errorAudio from '../../../../assets/audio/error.mp3'
-import successAudio from '../../../../assets/audio/normal.mp3'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import errorAudio from '@/assets/audio/error.mp3'
+import successAudio from '@/assets/audio/normal.mp3'
 import './table.css'
-
 import { Download } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import Header from '../../../../../components/Header'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import InputSwitch from '../../../../../components/Inputs/InputSwitch'
-import LoadingBlock from '../../../../../components/LoadingBlock'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { error } from '../../../../../utils/toast'
-import BarcodeIcon from '../../../../assets/icons/BarcodeIcon'
+import ConfirmDialog from '@components/ConfirmDialog'
+import Header from '@components/Header'
+import InputSearch from '@components/Inputs/InputSearch'
+import InputSwitch from '@components/Inputs/InputSwitch'
+import LoadingBlock from '@components/LoadingBlock'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { error } from '@utils/toast'
+import BarcodeIcon from '@icons/BarcodeIcon'
 import ChangeAdditionalsModal from './changeAdditionalsModal'
 import ChangeQuantityModal from './changeQuantityModal'
 import InventoryDetailModalNew from './inventoryDetailModalNew'
@@ -56,19 +55,17 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
 
   const queryClient = useQueryClient()
 
-  //
   const [selectedIndex, setSelectedIndex] = useState(0)
   const rowRefs = useRef([])
   const observerRef = useRef()
   const { id } = useParams()
 
-  // 🔄 API call with limit/offset
   const fetchPage = async ({ pageParam = 0 }) => {
     const filter = {
       inventory_id: id,
-      limit: status === 'checking' && pageParam === 0 ? 5000 : LIMIT, // Use 5000 for initial 'checking' fetch, otherwise LIMIT (50)
+      limit: status === 'checking' && pageParam === 0 ? 5000 : LIMIT,
       type: status || 'all',
-      offset: status === 'checking' && pageParam === 0 ? 0 : pageParam, // Use offset 0 for initial 'checking' fetch
+      offset: status === 'checking' && pageParam === 0 ? 0 : pageParam,
       search: barcode,
       order: orderStoring.position === 1 ? `+${orderStoring.colId}` : orderStoring.position === 2 ? `-${orderStoring.colId}` : undefined,
     }
@@ -80,12 +77,10 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
         }
       }, 700)
       if (res.data?.data?.data?.length > 0 && status !== 'checking' && barcode?.length >= 1) {
-        // setSelectedCellRowId(res.data.data.data[0].id)
         setLastSelectedCellRowId(res.data.data.data[0].id)
         setSelectedIndex(0)
       }
       return res
-      // setHasChange(false)
     })
     return {
       rows: res.data?.data?.data,
@@ -96,7 +91,6 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   }
 
-  // 🔄 useInfiniteQuery
   const { data, fetchNextPage, refetch, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery(
     ['inventoryWithCheckingDetails', id, debouncedSearchBarcode, status, orderStoring],
     fetchPage,
@@ -108,7 +102,6 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   const allRows = data?.pages?.flatMap((page) => page.rows) || []
   const rowCount = allRows.length
 
-  // 🔼⬇️ Keyboard nav
   useHotkeys('up', () => {
     if (selectedCellRowId) return
 
@@ -151,11 +144,10 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   })
 
-  const SCROLL_DEBOUNCE = 60 // ms
+  const SCROLL_DEBOUNCE = 60
 
   let scrollTimeout = null
   let isHoldingKey = false
-  // Detect when key is held
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -175,7 +167,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       window.removeEventListener('keyup', handleKeyUp)
     }
   }, [])
-  // 🎯 Debounced scroll
+
   useEffect(() => {
     if (!rowRefs.current[selectedIndex]) return
 
@@ -190,6 +182,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       }
     }, SCROLL_DEBOUNCE)
   }, [selectedIndex])
+
   useEffect(() => {
     const container = document.querySelector('.inventory-with-checking-page table tbody')
     const el = rowRefs.current[selectedIndex]
@@ -204,7 +197,6 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   }, [selectedIndex])
 
-  // 📦 Infinite scroll observer
   const lastRowRef = useCallback(
     (node) => {
       if (isFetchingNextPage) return
@@ -219,7 +211,6 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     [isFetchingNextPage, hasNextPage, status, fetchNextPage]
   )
 
-  //
   let currentOffset = Math.floor(selectedIndex / 50) * 50
 
   const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
@@ -313,7 +304,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     if (rowRefs.current[selectedIndex]) {
       rowRefs.current[selectedIndex].scrollIntoView({
         behavior: 'smooth',
-        block: 'center', // Changed from 'nearest' to 'center'
+        block: 'center',
       })
     }
   }, [selectedIndex])
@@ -350,20 +341,15 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   )
 
-  // 🔄 Function to refetch a specific page
   const refetchSpecificPage = async (targetOffset) => {
     try {
-      // Fetch the specific page
       const pageData = await fetchPage({ pageParam: targetOffset })
 
-      // Update the query cache for the specific page
       queryClient.setQueryData(['inventoryWithCheckingDetails', id, debouncedSearchBarcode, status, orderStoring], (oldData) => {
         if (!oldData) return { pages: [pageData], pageParams: [targetOffset] }
 
-        // Replace or append the page corresponding to targetOffset
         const updatedPages = oldData.pages.map((page) => (page.nextOffset === targetOffset + LIMIT ? pageData : page))
 
-        // If the page doesn't exist in the cache, append it
         if (!updatedPages.some((page) => page.nextOffset === targetOffset + LIMIT)) {
           updatedPages.push(pageData)
         }
@@ -380,10 +366,9 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   }
 
-  // Example: Trigger refetch for offset=150
   const handleRefetchPage = (offset = 0) => {
     refetchInverStatus()
-    refetchSpecificPage(offset) // Refetch only the page for offset=150
+    refetchSpecificPage(offset)
   }
   return (
     <LoadingContainer readyState={!isfinishInventoryChecking}>

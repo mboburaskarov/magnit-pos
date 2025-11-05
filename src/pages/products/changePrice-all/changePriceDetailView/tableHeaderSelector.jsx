@@ -2,8 +2,8 @@ import { ArrowCircleRight } from '@mui/icons-material'
 import { Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
+import thousandDivider from '@utils/thousandDivider'
+import { useQueryParams } from '@hooks/useQueryParams'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -26,10 +26,10 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, t, setValue, getValue, autoOrderChangeQuantity }) {
+export default function tableHeaderSelector({ revaluationColumns }) {
   const { values } = useQueryParams()
 
-  const columns = importsColumns?.map((el) => {
+  const columns = revaluationColumns?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,

@@ -4,27 +4,15 @@ import { get } from 'lodash'
 import * as qs from 'qs'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
-import StatusCell from '../../../../../components/AgGridTable/Cells/StatusCell'
-import ButtonWithPopup from '../../../../../components/Buttons/ButtonWithPopup'
-import CheckAccess from '../../../../../components/CheckAccess'
-import StyledTooltip from '../../../../../components/StyledTooltip'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import { imports_list_statuses } from '../../../../assets/data/imports-list-statuses'
-import ArrowRight from '../../../../assets/icons/ArrowRight'
-import DeleteIcon from '../../../../assets/icons/DeleteIcon'
-import DownloadIcon from '../../../../assets/icons/DownloadIcon'
-import LeftArrowIcon from '../../../../assets/icons/LeftArrow'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import StatusCell from '@components/AgGridTable/Cells/StatusCell'
+import CheckAccess from '@components/CheckAccess'
+import StyledTooltip from '@components/StyledTooltip'
+import { imports_list_statuses } from '@/assets/data/imports-list-statuses'
+import ArrowRight from '@icons/ArrowRight'
+import DeleteIcon from '@icons/DeleteIcon'
+import LeftArrowIcon from '@icons/LeftArrow'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
 export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmDialog }) {
   const { values } = useQueryParams()
@@ -63,7 +51,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
           <Link
             to={
               p.data.status !== 'completed'
-                ? `/products/inventory-with-checking/${p.data.id}?${qs.stringify({
+                ? `/products/inventory-with-checking/new/${p.data.id}?${qs.stringify({
                     previusLimit: values?.limit,
                     previusOffset: values?.offset,
                   })}`
@@ -85,7 +73,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         ...el,
         headerName: t('store'),
         colId: el.field,
-        cellRenderer: memo((p) => <Typography whiteSpace={'pre-wrap'}>{p.data?.store?.name}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type='store_name' customText={p.data?.store?.name} />),
       }
     }
     if (el.field === 'status') {
@@ -109,11 +97,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         ...el,
         headerName: 'Завершил',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['updated_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='import_date' customText={dayjs(p.data?.['updated_at']).format('DD.MM.YYYY HH:mm:ss')} />),
       }
     }
     if (el.field === 'accepted_amount') {
@@ -189,7 +173,6 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
             </Box>
           </>
         )),
-        // <SimpleText currency='сум' withDevider {...p} type='accepted_amount' />),
       }
     }
 
@@ -274,11 +257,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         ...el,
         headerName: 'Создал',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='created_at' customText={dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')} />),
       }
     }
     if (el.field === 'actions') {
@@ -293,46 +272,6 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
                 <DeleteIcon width='18px' />
               </IconButton>
             </CheckAccess>
-            <ButtonWithPopup
-              id={'ff'}
-              noArrow
-              // ml={'16px'}
-              sx={{
-                height: '38px',
-                padding: '0px !important',
-                borderRadius: '8px !important',
-                marginLeft: '5px',
-                width: '38px',
-                border: '1px solid transparent !important',
-              }}
-              popperStyle={{
-                '& .pop-up-options': {
-                  minWidth: '200px !important',
-                },
-              }}
-              noMarginSvg
-              placement='bottom-end'
-              onClick={() => refetch()}
-              buttonLabel={
-                <Box
-                  sx={{
-                    display: 'flex',
-                    cursor: 'pointer',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-
-                    '&:hover': { bgcolor: 'transparent !important' },
-                  }}
-                  className='cash_register_icon_wrapper'
-                >
-                  <DownloadIcon />
-                </Box>
-              }
-              popperData={[
-                { title: 'Излишек', soon: false, clickHandler: () => setIsOpenChangeShift(true) },
-                { title: 'Излишек', soon: false, clickHandler: () => setIsOpenChangeShift(true) },
-              ]}
-            />
           </Box>
         )),
       }

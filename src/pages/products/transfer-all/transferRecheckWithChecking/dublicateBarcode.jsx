@@ -4,15 +4,15 @@ import { get } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
 import { useParams } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import { requests } from '../../../../../utils/requests'
-import { error } from '../../../../../utils/toast'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import CloseIcon from '@icons/CloseIcon'
 
 export default function DublicateProductBarcode({ open, refetch, setOpen }) {
   const { id } = useParams()
 
-  const { mutate: updateByBarcode, isLoading: isSetScannedNumber } = useMutation(requests.updateTransferByBarcode, {
+  const { mutate: updateByBarcode } = useMutation(requests.updateTransferByBarcode, {
     onSuccess: ({ data }) => {
       refetch()
       setOpen(false)

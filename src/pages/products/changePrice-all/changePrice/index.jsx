@@ -6,22 +6,22 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../../components/CheckAccess'
-import HeaderWithDashboardWrapper from '../../../../../components/HeaderWithDashboard'
-import ImageGallery from '../../../../../components/ImageGallery'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { requests } from '../../../../../utils/requests'
-import FilterMenuIcon from '../../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/changePriceTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '@components/CheckAccess'
+import HeaderWithDashboardWrapper from '@components/HeaderWithDashboard'
+import ImageGallery from '@components/ImageGallery'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/changePriceTableColumns'
 import ChangePriceDashboard from './changePriceDashboard'
-import CreateAutoOrder from './createAutoOrder'
+import CreateRevaluation from './createRevaluation'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function ChangePricePage() {
   const theme = useTheme()
@@ -35,35 +35,28 @@ export default function ChangePricePage() {
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [orderModel, setOrderModel] = useState(false)
+  const [controlleroffset, setControllerOffset] = useState(0)
+
   const tableColumns = tableHeaderSelector({
-    importsColumns: columns,
+    revaluationColumns: columns,
     t,
-    values,
-    setImages: setOpenImageGallery,
   })
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
-  const [controlleroffset, setControllerOffset] = useState(0)
+
   useEffect(() => {
     setControllerOffset(values?.offset)
   }, [values?.offset])
+
   useEffect(() => {
     setControllerOffset(0)
   }, [values?.search])
+
   const revaluationListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
@@ -101,10 +94,10 @@ export default function ChangePricePage() {
 
   useEffect(() => {
     const count = revaluationList?.data?.data?._meta?.total_count
-
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [revaluationList?.data, values?.limit])
+
   const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['revaluationStatusCountList', values?.search, revaluationListFilter], () =>
     requests.getChnagePriceCount(revaluationListFilter)
   )
@@ -169,15 +162,7 @@ export default function ChangePricePage() {
               </Box>
               <CheckAccess id={'create-revaluation'}>
                 <Box minWidth={156}>
-                  <Button
-                    sx={{ height: '48px' }}
-                    type='submit'
-                    onClick={() => setOrderModel(true)}
-                    fullWidth
-                    // startIcon={<PlusIcon color='#fff' />}
-                    variant='contained'
-                    color='primary'
-                  >
+                  <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
                     Новая переоценка
                   </Button>
                 </Box>
@@ -185,7 +170,7 @@ export default function ChangePricePage() {
             </Box>
           </Box>
           <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
-          <CreateAutoOrder refetch={refetch} open={orderModel} setOpen={setOrderModel} />
+          <CreateRevaluation refetch={refetch} open={orderModel} setOpen={setOrderModel} />
           <Box>
             <AgGridTable
               id='revaluation-main-table'
@@ -199,8 +184,8 @@ export default function ChangePricePage() {
                 if (newData) dispatch(updateTableHeader(newData))
               }}
               emptyTableText={{
-                title: 'Заказ недоступен',
-                description: 'Если вы не можете найти искомый Заказ, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+                title: 'Переоценка недоступен',
+                description: 'Если вы не можете найти искомый Переоценка, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
               }}
               fullInfoAboutCurrentPage
               resetTable={() => dispatch(resetTableHeader({ refetch }))}

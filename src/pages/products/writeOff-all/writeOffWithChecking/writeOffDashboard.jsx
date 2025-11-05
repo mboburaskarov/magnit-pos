@@ -1,8 +1,8 @@
 import { Box, Grid, Typography } from '@mui/material'
 import { get } from 'lodash'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
-import DownloadIcon from '../../../../assets/icons/DownloadIcon'
+import thousandDivider from '@utils/thousandDivider'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import DownloadIcon from '@icons/DownloadIcon'
 import { writeOffReason } from '../writeOffList/createWriteOff'
 
 function WriteOffDashboard({ data }) {
@@ -19,7 +19,6 @@ function WriteOffDashboard({ data }) {
         { title: 'Кол-во товаров', value: 'writeoff_count' },
         { title: 'Сумма к списанию по цене поставки', value: 'supply_price_sum' },
         { title: 'Причина', value: 'comment' },
-        // { title: 'result' },
       ].map((stat) => (
         <Grid sm='6' lg='6' md='6' item sx={{}}>
           <Box

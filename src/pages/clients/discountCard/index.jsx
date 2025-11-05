@@ -39,12 +39,14 @@ export default function DiscountCardPage() {
 
   const [openCreateBonusModal, setopenCreateBonusModal] = useState(false)
   const [openEditBonusModal, setopenEditBonusModal] = useState(false)
+
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
     setopenEditBonusModal: setopenEditBonusModal,
     setOpenConfirmDialog: setOpenConfirmDialog,
   })
+
   const { mutate: deleteDiscountCard } = useMutation(requests.deleteDiscountCard, {
     onSuccess: () => {
       refetch().then(() => {

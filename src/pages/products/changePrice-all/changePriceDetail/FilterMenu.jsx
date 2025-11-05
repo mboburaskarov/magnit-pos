@@ -5,17 +5,19 @@ import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import LazySelect from '../../../../../components/Select/LazySelect'
-import { requests } from '../../../../../utils/requests'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import LazySelect from '@components/Select/LazySelect'
+import { requests } from '@utils/requests'
+import CloseIcon from '@icons/CloseIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
 
 export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
   const { formState, reset, control } = methods
+  const theme = useTheme()
+  const { t } = useTranslation()
 
   const onSubmit = (data) => {
     const requestBody = {
@@ -42,14 +44,13 @@ export default function FilterMenu({ open, setOpen }) {
       { keepDirty: true }
     )
   }, [values?.store_id])
-  const theme = useTheme()
 
   const resetFilter = () => {
     reset()
     setOpen(false)
     navigate(`/products/revaluation?offset=0&limit=${values?.limit || 5}`)
   }
-  const { t } = useTranslation()
+
   return (
     <StyledEmptyDialog
       overflowVisible

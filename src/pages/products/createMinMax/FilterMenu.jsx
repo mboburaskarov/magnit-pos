@@ -6,17 +6,19 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import LazySelect from '../../../../components/Select/LazySelect'
-import { requests } from '../../../../utils/requests'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import LazySelect from '@components/Select/LazySelect'
+import { requests } from '@utils/requests'
+import CloseIcon from '@icons/CloseIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
 
 export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
-  const { formState, reset, control, getValues } = methods
+  const theme = useTheme()
+  const { t } = useTranslation()
+  const { formState, reset, control } = methods
 
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
 
@@ -51,8 +53,7 @@ export default function FilterMenu({ open, setOpen }) {
     setOpen(false)
     navigate(`/products/min-max-create?offset=0&limit=${values?.limit || 5}`)
   }
-  const theme = useTheme()
-  const { t } = useTranslation()
+
   return (
     <StyledEmptyDialog
       overflowVisible

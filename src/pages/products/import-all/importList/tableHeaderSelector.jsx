@@ -6,21 +6,11 @@ import { get } from 'lodash'
 import * as qs from 'qs'
 import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import StatusCell from '../../../../../components/AgGridTable/Cells/StatusCell'
-import palette from '../../../../../src/assets/theme/mui.config'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import { imports_list_statuses } from '../../../../assets/data/imports-list-statuses'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import StatusCell from '@components/AgGridTable/Cells/StatusCell'
+import palette from '@/assets/theme/mui.config'
+import { imports_list_statuses } from '@/assets/data/imports-list-statuses'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
 export default function tableHeaderSelector({ importsColumns, t }) {
   const { values } = useQueryParams()
@@ -57,29 +47,24 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         headerName: 'Наименование',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Typography
+          <SimpleText
             onClick={() => {
               navigate(
                 `/products/imports/${p.data.id}?${qs.stringify({
                   previusLimit: values?.limit,
                   previusOffset: values?.offset,
-                })}
-        `,
+                })}`,
                 {
                   state: {
-                    prevFilter: values, // save current filter state here
+                    prevFilter: values,
                   },
                 }
               )
             }}
-            whiteSpace={'pre-wrap'}
-            fontWeight={'600'}
-            color={'orange.500'}
-            fontSize={'16px'}
-            lineHeight={'24px'}
-          >
-            {p.data.document_number}
-          </Typography>
+            customText={p.data.document_number}
+            {...p}
+            type='document_number'
+          />
         )),
       }
     }
@@ -88,7 +73,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: t('store'),
         colId: el.field,
-        cellRenderer: memo((p) => <Typography whiteSpace={'pre-wrap'}>{p.data?.store?.name}</Typography>),
+        cellRenderer: memo((p) => <SimpleText customText={p.data?.store?.name} {...p} type='store_name' />),
       }
     }
     if (el.field === 'status') {
@@ -112,11 +97,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: 'Дата закрытия',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['updated_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText customText={dayjs(p.data?.['updated_at']).format('DD.MM.YYYY HH:mm:ss')} {...p} type='import_date' />),
       }
     }
     if (el.field === 'accepted_amount') {
@@ -203,11 +184,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: 'Дата создания',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText customText={dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')} {...p} type='created_at' />),
       }
     }
   })

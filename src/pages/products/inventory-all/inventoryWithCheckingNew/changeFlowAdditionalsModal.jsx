@@ -7,12 +7,12 @@ import { useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useMutation } from 'react-query'
 import { useParams } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import { requests } from '../../../../../utils/requests'
-import { error } from '../../../../../utils/toast'
-import errorAudio from '../../../../assets/audio/error.mp3'
-import successAudio from '../../../../assets/audio/normal.mp3'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import errorAudio from '@/assets/audio/error.mp3'
+import successAudio from '@/assets/audio/normal.mp3'
+import CloseIcon from '@icons/CloseIcon'
 
 export default function ChangeFlowAdditionalsModal({ open, setBarcode, refetch, setOpen }) {
   const theme = useTheme()

@@ -195,14 +195,14 @@ export const navbatRouteData = [
       {
         label: 'navbar.vendors',
         id: '92',
-        active: '/settings/vendors/*',
-        href: '/settings/vendors',
+        active: '/settings/employees/*',
+        href: '/settings/employees',
       },
       {
         label: 'Филиалы',
-        active: '/settings/stores/*',
+        active: '/settings/branches/*',
         id: '93',
-        href: '/settings/stores',
+        href: '/settings/branches',
       },
       {
         label: 'Роли',

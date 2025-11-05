@@ -6,27 +6,27 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../../components/CheckAccess'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import HeaderWithDashboardWrapper from '../../../../../components/HeaderWithDashboard'
-import ImageGallery from '../../../../../components/ImageGallery'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import BigTickIcon from '../../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
-import FilterMenuIcon from '../../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/returnToWarehouseTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '@components/CheckAccess'
+import ConfirmDialog from '@components/ConfirmDialog'
+import HeaderWithDashboardWrapper from '@components/HeaderWithDashboard'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import BigTickIcon from '@icons/BigTickIcon'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/returnToWarehouseTableColumns'
 import CreateReturn from './createReturn'
 import FilterMenu from './FilterMenu'
 import ReturnToWarehouseDashboard from './returnDashboard'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+
 export default function ReturnToWarehousePage() {
   const theme = useTheme()
   const dispatch = useDispatch()
@@ -34,19 +34,17 @@ export default function ReturnToWarehousePage() {
   const { columns, loading } = useSelector((state) => state.returnToWarehouseTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
-  const [openImageGallery, setOpenImageGallery] = useState(false)
   const [orderModel, setOrderModel] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
   const [filterMenu, setFilterMenu] = useState(false)
 
-  const { mutate: downloadNakladnoy, isLoading: isDownloadNakladnoy } = useMutation(requests.downloadReturnNakladnoy, {
+  const { mutate: downloadNakladnoy } = useMutation(requests.downloadReturnNakladnoy, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
       console.error(err)
-
       error('Ошибка при скачать excel!')
     },
   })
@@ -55,22 +53,12 @@ export default function ReturnToWarehousePage() {
     importsColumns: columns,
     t,
     downloadNakladnoy: downloadNakladnoy,
-    values,
-    setImages: setOpenImageGallery,
     setOpenConfirmDialog: setOpenConfirmDialog,
   })
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
 
       dispatch(changeColumnSequence(formattedData))
     }
@@ -101,6 +89,7 @@ export default function ReturnToWarehousePage() {
     values?.received_amount_to,
     values?.received_amount_from,
   ])
+
   const {
     data: returnsList,
     isLoading: returnsListLoading,
@@ -138,11 +127,10 @@ export default function ReturnToWarehousePage() {
     },
     onError: (err) => {
       console.error(err)
-
       error('Ошибка при скачать excel!')
     },
   })
-  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['returnStatusCountList', values?.search, returnsListFilter], () =>
+  const { data: statusCountList } = useQuery(['returnStatusCountList', values?.search, returnsListFilter], () =>
     requests.getReturnStatusCount(returnsListFilter)
   )
   return (
@@ -242,7 +230,6 @@ export default function ReturnToWarehousePage() {
         </Box>
       </Box>
 
-      <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (
         <ConfirmDialog
           open={!!openConfirmDialog}

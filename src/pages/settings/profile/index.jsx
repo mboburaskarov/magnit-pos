@@ -7,19 +7,18 @@ import { useMutation } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-import CheckAccess from '../../../../components/CheckAccess'
-import TextField from '../../../../components/Inputs/TextField'
-import Label from '../../../../components/Label'
-import ImageUpload from '../../../../components/ProfileImageUpload'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import LockIcon from '../../../assets/icons/LockIcon'
-import i18n from '../../../i18n'
-import { setUserData } from '../../../redux-toolkit/userSlice'
+import CheckAccess from '@components/CheckAccess'
+import TextField from '@components/Inputs/TextField'
+import Label from '@components/Label'
+import ImageUpload from '@components/ProfileImageUpload'
+import SelectSimple from '@components/Select/SelectSimple'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import LockIcon from '@icons/LockIcon'
+import i18n from '@/i18n'
+import { setUserData } from '@/redux-toolkit/userSlice'
 import ChangePassWordDialog from './changePasswordDialog'
 
-// Constants for options
 const LANGUAGE_OPTIONS = [
   { name: "O'zbekcha", value: 'uz' },
   { name: 'Русский', value: 'ru' },
@@ -31,7 +30,6 @@ const THEME_OPTIONS = [
   { name: 'Light', value: 'light' },
 ]
 
-// Helper function to get initial value for SelectSimple based on the current value
 const getSelectDefaultValue = (options, value) => {
   return options.find((option) => option.value === value) || options[0]
 }
@@ -78,13 +76,11 @@ const Profile = () => {
       return error('Загрузить изображение!')
     }
 
-    // Theme handling
     if (userTheme !== data?.theme?.value) {
       localStorage.setItem('user_theme', data?.theme?.value || 'auto')
       navigate(`/settings/profile?theme_changed=${data?.theme?.value}`)
     }
 
-    // Language handling
     if (get(data, 'language')?.value && i18n.language !== get(data, 'language').value) {
       i18n.changeLanguage(get(data, 'language').value)
     }
@@ -157,7 +153,6 @@ const Profile = () => {
 
             <Button
               fullWidth
-              // disabled={!isEditMode}
               onClick={() => setOpen(true)}
               sx={{
                 width: '100%',
@@ -188,7 +183,6 @@ const Profile = () => {
                   setlang(get(e, 'value', 'ru'))
                 }}
                 value={getSelectDefaultValue(LANGUAGE_OPTIONS, lang)}
-                disabled={true}
                 white
                 isClearable={false}
                 defaultValue={languageDefaultValue}

@@ -7,6 +7,7 @@ import { formatDate } from '@utils/validateDate'
 import DeleteIcon from '@icons/DeleteIcon'
 import EditIcon from '@icons/EditIcon'
 import { SimpleText } from '../../../components/AgGridTable/Cells/SimpleText'
+import { CardGiftcard } from '@mui/icons-material'
 
 export default function tableHeaderSelector({ clientsColumns, values, selectClientsFunc, t, setOpenConfirmDialog, setOpenClientCreateMini }) {
   const columns = clientsColumns?.map((el) => {
@@ -50,6 +51,16 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         headerName: t('fish'),
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} customText={get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')} type='fish' />),
+      }
+    }
+    if (el.field === 'loyalty_card_barcode') {
+      return {
+        ...el,
+        headerName: t('Карта лояльности'),
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <SimpleText {...p} customText={get(p, 'data.loyalty_card_barcode', '')?.replace(/.(?=.{4})/g, '*')} type='loyalty_card_barcode' />
+        )),
       }
     }
     if (el.field === 'phone_number') {
@@ -131,6 +142,14 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='debt_amount' />),
       }
     }
+    if (el.field === 'spending_from_balance') {
+      return {
+        ...el,
+        headerName: 'Расходы с баланса',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='spending_from_balance' />),
+      }
+    }
 
     if (el.field === 'action') {
       return {
@@ -138,7 +157,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          <Box display='inline-flex' columnGap={'8px'}>
+          <Box key={data.loyalty_card_barcode} display='inline-flex' columnGap={'8px'}>
             <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
               <DeleteIcon />
             </IconButton>

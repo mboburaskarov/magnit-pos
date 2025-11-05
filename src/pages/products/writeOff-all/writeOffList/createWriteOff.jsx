@@ -5,15 +5,16 @@ import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import TextField from '../../../../../components/Inputs/TextField'
-import Label from '../../../../../components/Label'
-import LazySelect from '../../../../../components/Select/LazySelect'
-import SelectSimple from '../../../../../components/Select/SelectSimple'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import TextField from '@components/Inputs/TextField'
+import Label from '@components/Label'
+import LazySelect from '@components/Select/LazySelect'
+import SelectSimple from '@components/Select/SelectSimple'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import CloseIcon from '@icons/CloseIcon'
 import { LoadingButton } from '@mui/lab'
+
 export const writeOffReason = [
   { name: 'Другое', id: 'other' },
   { name: 'Дефект', id: 'defect' },
@@ -23,8 +24,10 @@ export const writeOffReason = [
 ]
 export default function CreateWriteOff({ open, refetch, setOpen }) {
   const methods = useForm()
+  const theme = useTheme()
   const [openWarn, setopenWarn] = useState(false)
   const { reset, control } = methods
+
   useEffect(() => {
     if (methods.getValues('reason')?.id == 'correction_of_misclassification') {
       setopenWarn(true)
@@ -32,6 +35,7 @@ export default function CreateWriteOff({ open, refetch, setOpen }) {
       setopenWarn(false)
     }
   }, [methods.watch('reason')])
+
   const { mutate: createWriteOff, isLoading: iscreateWriteOff } = useMutation(requests.createWriteOff, {
     onSuccess: () => {
       setOpen(false)
@@ -43,6 +47,7 @@ export default function CreateWriteOff({ open, refetch, setOpen }) {
       console.error('err', err)
     },
   })
+
   const onSubmit = (data) => {
     const requestBody = {
       store_id: data.store_id?.id || undefined,
@@ -60,7 +65,6 @@ export default function CreateWriteOff({ open, refetch, setOpen }) {
   useEffect(() => {
     reset({}, { keepDirty: true })
   }, [open])
-  const theme = useTheme()
 
   const { t } = useTranslation()
   return (
@@ -95,8 +99,6 @@ export default function CreateWriteOff({ open, refetch, setOpen }) {
                 name='name'
                 control={control}
                 fullWidth
-                // label='Назовите списание'
-                // error={errors?.name}
                 placeholder={t('Назовите списание')}
                 required
                 defaultValue={`Cписание ${dayjs().format('YYYY.MM.DD HH:mm')}`}
@@ -118,8 +120,6 @@ export default function CreateWriteOff({ open, refetch, setOpen }) {
               request={requests.getAllStores}
               filters={{ limit: 10 }}
               control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
               getOptionLabel={(option) => {
                 return option.name
               }}

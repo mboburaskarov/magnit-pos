@@ -6,19 +6,22 @@ import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import InputDateRangePicker from '../../../../components/Inputs/InputDateRangePicker'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import CloseIcon from '../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import InputDateRangePicker from '@components/Inputs/InputDateRangePicker'
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import CloseIcon from '@icons/CloseIcon'
 
 export default function EditBonusProduct({ open, refetch, setOpen }) {
   const methods = useForm()
   const { reset, control } = methods
   const [startDate, setStartDate] = useState(0)
   const [endDate, setEndDate] = useState(0)
-  const { mutate: editBonusProduct, isLoading: iseditBonusProduct } = useMutation(requests.editBonusProduct, {
+  const theme = useTheme()
+  const { t } = useTranslation()
+
+  const { mutate: editBonusProduct } = useMutation(requests.editBonusProduct, {
     onSuccess: () => {
       setOpen(false)
       success('Редактировать Бонусный продукт успешно!')
@@ -29,6 +32,7 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
       console.error('err', err)
     },
   })
+
   const onSubmit = (data) => {
     const requestBody = {
       product_id: get(open, 'product.id', 0),
@@ -54,9 +58,7 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
         { keepDirty: true }
       )
   }, [open])
-  const theme = useTheme()
 
-  const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       overflowVisible

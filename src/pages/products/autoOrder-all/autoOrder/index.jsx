@@ -6,28 +6,27 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../../components/CheckAccess'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import ImageGallery from '../../../../../components/ImageGallery'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import StyledTooltip from '../../../../../components/StyledTooltip'
-import { requests } from '../../../../../utils/requests'
-import CategoryIcon from '../../../../assets/icons/CategoryIcon'
-import FilterMenuIcon from '../../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '@components/CheckAccess'
+import ConfirmDialog from '@components/ConfirmDialog'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import StyledTooltip from '@components/StyledTooltip'
+import { requests } from '@utils/requests'
+import CategoryIcon from '@icons/CategoryIcon'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
 import { LoadingButton } from '@mui/lab'
-import { error, success } from '../../../../../utils/toast'
-import BigTickIcon from '../../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/autoOrderTableColumns'
+import { error, success } from '@utils/toast'
+import BigTickIcon from '@icons/BigTickIcon'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/autoOrderTableColumns'
 import CreateAutoOrder from './createAutoOrder'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+
 export default function AutoOrderPage() {
   const theme = useTheme()
   const methods = useForm()
@@ -37,11 +36,11 @@ export default function AutoOrderPage() {
   const { columns, loading } = useSelector((state) => state.autoOrderTableColumns)
   const { values } = useQueryParams()
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
-
+  const [controlleroffset, setControllerOffset] = useState(0)
   const [offsetCount, setOffsetCount] = useState(0)
-  const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [orderModel, setOrderModel] = useState(false)
+
   const { mutate: deleteAutoOrder, isLoading: isdeleteAutoOrder } = useMutation(requests.deleteAutoOrder, {
     onSuccess: () => {
       refetch()
@@ -55,36 +54,28 @@ export default function AutoOrderPage() {
       console.error('err', err)
     },
   })
+
   const tableColumns = tableHeaderSelector({
-    importsColumns: columns,
+    autoOrderColumns: columns,
     t,
-    values,
-    setImages: setOpenImageGallery,
     setOpenConfirmDialog,
   })
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
-  const [controlleroffset, setControllerOffset] = useState(0)
+
   useEffect(() => {
     setControllerOffset(values?.offset)
   }, [values?.offset])
+
   useEffect(() => {
     setControllerOffset(0)
   }, [values?.search])
+
   const autoOrderListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
@@ -122,7 +113,6 @@ export default function AutoOrderPage() {
 
   useEffect(() => {
     const count = autoOrderList?.data?.data?._meta?.total_count
-
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [autoOrderList?.data, values?.limit])
@@ -134,7 +124,6 @@ export default function AutoOrderPage() {
           <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
             Авто заказ
           </Typography>
-
           <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
             <Box display={'flex'}>
               <Box
@@ -150,7 +139,6 @@ export default function AutoOrderPage() {
               >
                 <InputSearch id='producrs-search' name='search' placeholder={'Номер автозаказа, Аптека'} uncontrolled />
               </Box>
-
               <Box minWidth={113} ml={'16px'}>
                 <Button
                   sx={{
@@ -212,15 +200,7 @@ export default function AutoOrderPage() {
               </Box>
               <CheckAccess id={'create-auto-order'}>
                 <Box minWidth={156}>
-                  <Button
-                    sx={{ height: '48px' }}
-                    type='submit'
-                    onClick={() => setOrderModel(true)}
-                    fullWidth
-                    // startIcon={<PlusIcon color='#fff' />}
-                    variant='contained'
-                    color='primary'
-                  >
+                  <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
                     Создать заказ
                   </Button>
                 </Box>
@@ -242,8 +222,8 @@ export default function AutoOrderPage() {
                 if (newData) dispatch(updateTableHeader(newData))
               }}
               emptyTableText={{
-                title: 'Заказ недоступен',
-                description: 'Если вы не можете найти искомый Заказ, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+                title: 'Авто заказ недоступен',
+                description: '...',
               }}
               fullInfoAboutCurrentPage
               resetTable={() => dispatch(resetTableHeader({ refetch }))}
@@ -251,8 +231,6 @@ export default function AutoOrderPage() {
             />
           </Box>
         </Box>
-
-        <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       </FormProvider>
       {openConfirmDialog && (
         <ConfirmDialog

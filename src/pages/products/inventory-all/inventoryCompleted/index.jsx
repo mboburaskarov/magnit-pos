@@ -1,6 +1,4 @@
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Box, Button, Container, Typography } from '@mui/material'
+import { Box, Container, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
@@ -8,80 +6,43 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import Header from '../../../../../components/Header'
-import InputQuantity from '../../../../../components/Inputs/InputQuantity'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import InputSwitch from '../../../../../components/Inputs/InputSwitch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import errorAudio from '../../../../assets/audio/error.mp3'
-import successAudio from '../../../../assets/audio/normal.mp3'
-import overplusAudio from '../../../../assets/audio/overplus.mp3'
-import ArrowDown from '../../../../assets/icons/ArrowDown'
-import ArrowUp from '../../../../assets/icons/ArrowUp'
-import BarcodeIcon from '../../../../assets/icons/BarcodeIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
+import { useParams } from 'react-router-dom'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import Header from '@components/Header'
+import InputSearch from '@components/Inputs/InputSearch'
+import InputSwitch from '@components/Inputs/InputSwitch'
+import LoadingContainer from '@components/LoadingContainer'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import ArrowDown from '@icons/ArrowDown'
+import ArrowUp from '@icons/ArrowUp'
+import BarcodeIcon from '@icons/BarcodeIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/inventoryWithCheckingTableColumns'
 import InventoryDashboard from './inventoryDashboard'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function InventoryCompleted() {
-  const errorScanAudio = new Audio(errorAudio)
-  const successScanAudio = new Audio(successAudio)
-  const overplusScanAudio = new Audio(overplusAudio)
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { id } = useParams()
-  const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.inventoryWithCheckingColumns)
   const { values } = useQueryParams()
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
   const methods = useForm()
-  const [hasTableChange, setHasTableChange] = useState(false)
-  const [appType, setAppType] = useState('ALL')
-  const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [status, setStatus] = useState('ALL')
   const [offsetCount, setOffsetCount] = useState(0)
-  const [manualNumber, setManualNumber] = useState(1)
   const { data: inventoryStat } = useQuery('inventoryStat', () => requests.getInventoryStat(id))
 
-  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedInventoryNumber, {
-    onSuccess: ({ data }) => {
-      // refetch()
-      fetchStatusCountList()
-      setBarcode('')
-    },
-    onError: (err) => {
-      refetch()
-
-      error('Ошибка при сканирование!')
-    },
-  })
-
-  const { mutate: finishInventoryChecking, isLoading: isfinishInventoryChecking } = useMutation(requests.finishInventoryChecking, {
-    onSuccess: ({ data }) => {
-      navigate('/products/inventory')
-    },
-    onError: (err) => {
-      error('Ошибка при завершение импорта!')
-    },
-  })
   const tableColumns = tableHeaderSelector({
-    importsColumns: columns,
-    t,
+    inventoryColumns: columns,
     values,
-
-    id,
-    setScanedNumber,
   })
+
   const inventoryWithCheckingDetailsFilter = useMemo(() => {
     return {
       inventory_id: id,
@@ -92,13 +53,6 @@ export default function InventoryCompleted() {
     }
   }, [values?.offset, status, values?.limit, id, barcode])
 
-  // const {
-  //   data: inventoryDetails,
-  //   isLoading: inventoryDetailsLoading,
-  //   isFetching: isFetchinginventoryDetails,
-  //   refetch,
-  // } = useQuery(['inventoryDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
-
   const {
     data: inventoryWithCheckingDetails,
     isLoading: inventoryWithCheckingDetailsLoading,
@@ -106,18 +60,9 @@ export default function InventoryCompleted() {
     refetch,
   } = useQuery(['inventoryWithCheckingDetails', inventoryWithCheckingDetailsFilter], () => requests.getInventoryDetails(inventoryWithCheckingDetailsFilter))
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -131,21 +76,8 @@ export default function InventoryCompleted() {
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-
-    // get(inventoryWithCheckingDetails, 'data.data.data', [])?.map((importData) => {
-    //   methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
-    // })
   }, [inventoryWithCheckingDetails?.data, values?.limit])
 
-  const sendScannedImport = () => {
-    if (barcode === '') return
-    setScanedNumber({
-      id,
-      barcode: barcode,
-      type: 'SCAN',
-      scanned_count: Number(manualNumber),
-    })
-  }
   const { mutate: inventoryExcelReport, isLoading: isinventoryExcelReport } = useMutation(requests.getInventoryExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
@@ -167,12 +99,12 @@ export default function InventoryCompleted() {
     },
   })
   return (
-    <LoadingContainer readyState={!isfinishInventoryChecking}>
+    <LoadingContainer readyState={!inventoryWithCheckingDetailsLoading}>
       <FormProvider {...methods}>
         <Header
           onSubmit={() => send1c(id)}
           buttonText='Повторно отправлено в 1с'
-          isLoading={false}
+          isLoading={isSend1c}
           backIcon
           subText={`${inventoryStat?.data?.data?.store?.name} - ${dayjs(inventoryStat?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
           backHref='/products/inventory'
@@ -251,11 +183,6 @@ export default function InventoryCompleted() {
                     placeholder={t('input.search.product.multi')}
                   />
                 </Box>
-                {appType === 'manual' && (
-                  <Box sx={{ ml: '16px' }}>
-                    <InputQuantity placeholder={'0'} uncontrolled defaultValue={1} onChange={({ target }) => setManualNumber(target.value)} />
-                  </Box>
-                )}
               </Box>
               <Box display={'flex'} alignItems={'center'}>
                 <Box>
@@ -291,47 +218,13 @@ export default function InventoryCompleted() {
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
-                status={appType}
-                isRefreshing={loading || hasTableChange || isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
+                status={'All'}
+                isRefreshing={loading || isFetchinginventoryWithCheckingDetails || inventoryWithCheckingDetailsLoading}
               />
             </Box>
           </Box>
         </Container>
       </FormProvider>
-      <ConfirmDialog
-        open={openFinishConfirmDialog}
-        setOpen={() => setOpenFinishConfirmDialog(false)}
-        icon={<FontAwesomeIcon icon={faExclamationTriangle} sx={{ fontSize: 41, color: 'yellow.400' }} />}
-        title={t('alerts.finish_inventory')}
-        desc={
-          <>
-            <Typography fontWeight={'600'} fontSize={'20px'}>
-              {t('alerts.finish_inventory_desc')}
-            </Typography>
-            <Typography fontWeight={'600'} sx={{ color: 'red.500' }}>
-              {t('alerts.finish_inventory_warning')}
-            </Typography>
-          </>
-        }
-        actions={
-          <>
-            <Button secondary onClick={() => setOpenFinishConfirmDialog(false)}>
-              {t('buttons.go_back')}
-            </Button>
-            <Button
-              size='medium'
-              variant='contained'
-              onClick={() => {
-                setOpenFinishConfirmDialog(false)
-                finishInventoryChecking(id)
-              }}
-              isLoading={false}
-            >
-              {t('buttons.yes_complete')}
-            </Button>
-          </>
-        }
-      />
     </LoadingContainer>
   )
 }

@@ -5,57 +5,44 @@ import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../components/CheckAccess'
-import Header from '../../../../components/Header'
-import ImageGallery from '../../../../components/ImageGallery'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { requests } from '../../../../utils/requests'
-import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/minMaxTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '@components/CheckAccess'
+import Header from '@components/Header'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/minMaxTableColumns'
 import CreateBonusProduct from './createBonusProduct'
 import EditBonusProduct from './editBonusProduct'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function CreateMinMaxPage() {
   const methods = useForm()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { columns, loading } = useSelector((state) => state.minMaxTableColumns)
+  const { columns } = useSelector((state) => state.minMaxTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
-  const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
   const [openCreateMinMaxModal, setOpenCreateMinMaxModal] = useState(false)
   const [openEditMinMaxModal, setOpenEditMinMaxModal] = useState(false)
+
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
-    values,
-    setImages: setOpenImageGallery,
     setOpenEditMinMaxModal: setOpenEditMinMaxModal,
   })
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -68,6 +55,7 @@ export default function CreateMinMaxPage() {
       store_id: values?.store_id,
     }
   }, [values?.offset, values?.limit, values?.search, values?.store_id])
+
   const {
     data: minMaxProductList,
     isLoading: minMaxProductListLoading,
@@ -81,10 +69,10 @@ export default function CreateMinMaxPage() {
 
   useEffect(() => {
     const count = minMaxProductList?.data?.data?._meta?.total_count
-
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [minMaxProductList?.data, values?.limit])
+
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pb={'20px'}>
@@ -194,8 +182,6 @@ export default function CreateMinMaxPage() {
                 />
               </Box>
             </Box>
-
-            <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
           </FormProvider>
         </Container>
       </Box>

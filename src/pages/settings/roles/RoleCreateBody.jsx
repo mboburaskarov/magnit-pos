@@ -1,9 +1,9 @@
 import { Box, Switch, Typography, useTheme } from '@mui/material'
-import TextField from '../../../../components/Inputs/TextField'
+import TextField from '@components/Inputs/TextField'
 import { useFormContext } from 'react-hook-form'
 import { useEffect } from 'react'
 import { useQuery } from 'react-query'
-import { requests } from '../../../../utils/requests'
+import { requests } from '@utils/requests'
 
 export default function RoleCreateBody({ setPermission, permissionList, roleData, roleActions }) {
   const { setValue } = useFormContext()

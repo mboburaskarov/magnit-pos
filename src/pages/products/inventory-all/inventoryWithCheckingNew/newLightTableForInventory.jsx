@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useRef } from 'react'
-import thousandDivider from '../../../../../utils/thousandDivider'
+import thousandDivider from '@utils/thousandDivider'
 
 function NewLightTableForInventory({
   inventoryWithCheckingDetails,
@@ -102,26 +102,6 @@ function NewLightTableForInventory({
         </thead>
 
         <tfoot>
-          {/* <tr>
-            <th colSpan={2}>Общий</th>
-            <th colSpan={6}></th>
-            <th colSpan={3}>
-              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>
-                {thousandDivider(get(inventoryWithCheckingDetails, 'pages.[0].total_data.total_current_sum'), '')}
-              </Typography>
-            </th>
-            <th colSpan={2}>
-              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>
-                {thousandDivider(get(inventoryWithCheckingDetails, 'pages.[0].total_data.total_fact_sum'), '')}
-              </Typography>
-            </th>
-            <th>
-              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>
-                {thousandDivider(get(inventoryWithCheckingDetails, 'pages.[0].total_data.total_difference_sum'), '')}
-              </Typography>
-            </th>
-          </tr> */}
-
           <tr>
             <th colSpan={1}>{get(inventoryWithCheckingDetails, 'pages.[0].total_count')}</th>
             <th colSpan={2}>Общий</th>
@@ -139,53 +119,43 @@ function NewLightTableForInventory({
         </tfoot>
 
         <tbody>
-          {/* {allRows.length > 0 ? ( */}
-          {
-            allRows.map((row, index) => {
-              const isLast = index === allRows.length - 1
-              const uniqueKey = `${row.id}-${index}`
-              return (
-                <tr
-                  key={uniqueKey}
-                  ref={(el) => {
-                    rowRefs.current[index] = el
-                    if (isLast) lastRowRef(el)
-                  }}
-                  className={index === selectedIndex ? 'selected' : ''}
-                  onClick={() => {
-                    setSelectedIndex(index)
-                    setLastSelectedCellRowId(row.id)
-                  }}
-                >
-                  <td>{index + 1}</td>
-                  <td className='limited-width'>{row.name}</td>
-                  <td>{row.barcode}</td>
-                  <td>{dayjs(row.expire_date).format('DD.MM.YYYY')}</td>
-                  <td>{row.producer_name}</td>
-                  <td>{row.unit_per_pack}</td>
-                  <td>{row.retail_price}</td>
-                  <td>{row?.current_unit > 0 ? `${Math.floor(row?.current_quantity)}(${row?.current_unit}/${row?.unit_per_pack})` : row?.current_quantity}</td>
-                  <td>{row.current_sum}</td>
-                  <td>{row.fact_quantity}</td>
-                  <td>{row?.fact_unit > 0 ? `${Math.floor(row?.fact_quantity)}(${row?.fact_unit}/${row?.unit_per_pack})` : row?.fact_quantity}</td>
-                  <td>{row.fact_sum}</td>
-                  <td>
-                    {row?.difference_unit > 0
-                      ? `${Math.floor(row?.difference_quantity)}(${row?.difference_unit}/${row?.unit_per_pack})`
-                      : row?.difference_quantity}
-                  </td>
-                  <td>{row.difference_sum}</td>
-                </tr>
-              )
-            })
-            // ) : (
-            //   <tr>
-            //     <td colSpan={columns.length} style={{ textAlign: 'center' }}>
-            //       No data available
-            //     </td>
-            //   </tr>
-            // )
-          }
+          {allRows.map((row, index) => {
+            const isLast = index === allRows.length - 1
+            const uniqueKey = `${row.id}-${index}`
+            return (
+              <tr
+                key={uniqueKey}
+                ref={(el) => {
+                  rowRefs.current[index] = el
+                  if (isLast) lastRowRef(el)
+                }}
+                className={index === selectedIndex ? 'selected' : ''}
+                onClick={() => {
+                  setSelectedIndex(index)
+                  setLastSelectedCellRowId(row.id)
+                }}
+              >
+                <td>{index + 1}</td>
+                <td className='limited-width'>{row.name}</td>
+                <td>{row.barcode}</td>
+                <td>{dayjs(row.expire_date).format('DD.MM.YYYY')}</td>
+                <td>{row.producer_name}</td>
+                <td>{row.unit_per_pack}</td>
+                <td>{row.retail_price}</td>
+                <td>{row?.current_unit > 0 ? `${Math.floor(row?.current_quantity)}(${row?.current_unit}/${row?.unit_per_pack})` : row?.current_quantity}</td>
+                <td>{row.current_sum}</td>
+                <td>{row.fact_quantity}</td>
+                <td>{row?.fact_unit > 0 ? `${Math.floor(row?.fact_quantity)}(${row?.fact_unit}/${row?.unit_per_pack})` : row?.fact_quantity}</td>
+                <td>{row.fact_sum}</td>
+                <td>
+                  {row?.difference_unit > 0
+                    ? `${Math.floor(row?.difference_quantity)}(${row?.difference_unit}/${row?.unit_per_pack})`
+                    : row?.difference_quantity}
+                </td>
+                <td>{row.difference_sum}</td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
 

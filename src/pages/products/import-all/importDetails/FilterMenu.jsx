@@ -5,12 +5,12 @@ import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import InputRange from '../../../../../components/Inputs/InputRange'
-import SelectSimple from '../../../../../components/Select/SelectSimple'
-import getOptionsFromUrlParam from '../../../../../utils/getOptionsFromUrlParam'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import InputRange from '@components/Inputs/InputRange'
+import SelectSimple from '@components/Select/SelectSimple'
+import getOptionsFromUrlParam from '@utils/getOptionsFromUrlParam'
+import CloseIcon from '@icons/CloseIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
 const barcodeFilterList = [
   { name: 'Без штрих-кода', id: '1' },
   { name: 'Со штрих-кодом', id: '2' },

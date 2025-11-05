@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
 import { get } from 'lodash'
 import Highlighter from 'react-highlight-words'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import EditIcon from '../../../assets/icons/EditIcon'
+import DeleteIcon from '@icons/DeleteIcon'
+import EditIcon from '@icons/EditIcon'
 
 const list = [
   { accessor: 'name', is_active: true },
@@ -106,7 +106,6 @@ const tableHeadersCategories = ({ searchTerm, setCreateEdit, t, setConfirmToDele
                     >
                       <DeleteIcon color='#fff' />
                     </IconButton>
-                    {/* <Delete /> */}
                   </Button>
                 </Tooltip>
               </>

@@ -4,24 +4,23 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import BigTickIcon from '../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
-import PlusIcon from '../../../assets/icons/PlusIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/cashboxTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import ConfirmDialog from '@components/ConfirmDialog'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import BigTickIcon from '@icons/BigTickIcon'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import DeleteIcon from '@icons/DeleteIcon'
+import PlusIcon from '@icons/PlusIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/cashboxTableColumns'
 import CreateCashBoxDrawer from './CreateCashBoxDrawer'
-import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import CheckAccess from '@components/CheckAccess'
 
 export default function CashBoxsPage() {
   const dispatch = useDispatch()
@@ -29,11 +28,11 @@ export default function CashBoxsPage() {
   const { columns, loading } = useSelector((state) => state.cashboxTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
-  const [openCreateVendorDrawer, setopenCreateVendorDrawer] = useState(false)
+  const [openCreateCashBoxDrawer, setOpenCreateCashBoxDrawer] = useState(false)
 
-  const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [slectedVendors, setSelectedVendors] = useState([])
+
   const selectVendors = (isChecked, id) => {
     if (isChecked) {
       setSelectedVendors((p) => [...p, id])
@@ -48,20 +47,12 @@ export default function CashBoxsPage() {
     values,
     setOpenConfirmDialog,
     selectVendors,
-    setopenCreateVendorDrawer,
+    setOpenCreateCashBoxDrawer,
   })
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
 
       dispatch(changeColumnSequence(formattedData))
     }
@@ -72,9 +63,9 @@ export default function CashBoxsPage() {
       limit: values?.limit || 10,
       search: values?.search,
       offset: values?.search ? 0 : values?.offset || 0,
-      store_id: values?.store_id,
     }
-  }, [values?.offset, values?.limit, values?.search, values?.store_id])
+  }, [values?.offset, values?.limit, values?.search])
+
   const {
     data: cashboxList,
     isLoading: cashboxListLoading,
@@ -127,35 +118,9 @@ export default function CashBoxsPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={'ID, имя, телефон'} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'Касса, aптека'} uncontrolled />
             </Box>
 
-            <Box minWidth={113} ml={'16px'}>
-              <Button
-                sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
-                  },
-                }}
-                fullWidth
-                startIcon={<FilterMenuIcon />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
-              >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
-            </Box>
             {slectedVendors.length > 0 && (
               <>
                 <Box minWidth={48} ml={'16px'}>
@@ -194,21 +159,22 @@ export default function CashBoxsPage() {
                 resetTableHeader={resetTableHeader}
               />
             </Box>
-            <Box minWidth={156}>
-              <Button
-                sx={{ height: '48px' }}
-                onClick={() => setopenCreateVendorDrawer({ mode: 'add' })}
-                fullWidth
-                startIcon={<PlusIcon color='#fff' />}
-                variant='contained'
-                color='primary'
-              >
-                {t('button.add_new.text')}
-              </Button>
-            </Box>
+            <CheckAccess id={'cashbox:create'}>
+              <Box minWidth={156}>
+                <Button
+                  sx={{ height: '48px' }}
+                  onClick={() => setOpenCreateCashBoxDrawer({ mode: 'add' })}
+                  fullWidth
+                  startIcon={<PlusIcon color='#fff' />}
+                  variant='contained'
+                  color='primary'
+                >
+                  {t('button.add_new.text')}
+                </Button>
+              </Box>
+            </CheckAccess>
           </Box>
         </Box>
-        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'
@@ -263,9 +229,9 @@ export default function CashBoxsPage() {
         refetchVendorList={refetch}
         setCustomerId={'setCustomerId'}
         quickCreateClientName={'quickCreateClientName'}
-        openDrawer={openCreateVendorDrawer}
-        closeDrawer={() => setopenCreateVendorDrawer(false)}
-        clientData={'clientDetails'}
+        openDrawer={openCreateCashBoxDrawer}
+        closeDrawer={() => setOpenCreateCashBoxDrawer(false)}
+        cashBoxData={'clientDetails'}
       />
     </LoadingContainer>
   )

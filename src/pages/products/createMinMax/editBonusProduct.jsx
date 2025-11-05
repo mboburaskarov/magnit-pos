@@ -5,21 +5,21 @@ import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-import LazySelect from '../../../../components/Select/LazySelect'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import CloseIcon from '../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
+import LazySelect from '@components/Select/LazySelect'
+import SelectSimple from '@components/Select/SelectSimple'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import CloseIcon from '@icons/CloseIcon'
 
 export default function EditBonusProduct({ open, refetch, setOpen }) {
   const methods = useForm()
-
+  const theme = useTheme()
   const { reset, control } = methods
-  const [startDate, setStartDate] = useState(0)
-  const [endDate, setEndDate] = useState(0)
-  const { mutate: createMinMax, isLoading: iscreateMinMax } = useMutation(requests.editMinMax, {
+  const { t } = useTranslation()
+
+  const { mutate: createMinMax } = useMutation(requests.editMinMax, {
     onSuccess: () => {
       setOpen(false)
       refetch()
@@ -30,6 +30,7 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
       console.error('err', err)
     },
   })
+
   useEffect(() => {
     if (open) {
       const { product_id, is_active, min_quantity, max_quantity, kvant } = open
@@ -45,6 +46,7 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
       )
     }
   }, [open])
+
   const onSubmit = (data) => {
     const requestBody = {
       product_id: data.product.value,
@@ -64,12 +66,11 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
   useEffect(() => {
     reset({}, { keepDirty: true })
   }, [open])
-  const theme = useTheme()
+
   const minMaxStatusSelect = [
     { name: 'Неактивный', id: 'false' },
     { name: 'Активный', id: 'true' },
   ]
-  const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       overflowVisible

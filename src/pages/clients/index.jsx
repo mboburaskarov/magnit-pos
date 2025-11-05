@@ -28,7 +28,7 @@ import { useQueryParams } from '@hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/clientTableColumns'
 
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function ClientsPage() {
   const dispatch = useDispatch()
@@ -60,16 +60,7 @@ export default function ClientsPage() {
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -113,6 +104,7 @@ export default function ClientsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [clientsList?.data, values?.limit])
+
   const { mutate: clientsExcelReport, isLoading: isclientsExcelReport } = useMutation(requests.getClientsExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
@@ -230,9 +222,10 @@ export default function ClientsPage() {
           refetch()
         }}
         quickCreateClientName={''}
+        setOpenDrawer={setOpenClientCreateMini}
         openDrawer={openClientCreateMini}
         closeDrawer={() => setOpenClientCreateMini(false)}
-        clientData={''}
+        clientData={openClientCreateMini}
         afterCreate={(clientId) => {}}
       />
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />

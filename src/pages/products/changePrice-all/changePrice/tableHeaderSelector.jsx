@@ -1,78 +1,18 @@
-import { Box, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import * as qs from 'qs'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
-import StatusCell from '../../../../../components/AgGridTable/Cells/StatusCell'
-import CustomImg from '../../../../../components/CustomImg'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import { imports_list_statuses } from '../../../../assets/data/imports-list-statuses'
-import DefaultImgIcon from '../../../../assets/icons/defaultImgIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import StatusCell from '@components/AgGridTable/Cells/StatusCell'
+import { imports_list_statuses } from '@/assets/data/imports-list-statuses'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
-const Image = ({ data, rowIndex, setImages }) => {
-  return (
-    <Box
-      sx={{
-        position: 'relative',
-        width: '40px',
-        height: '40px',
-        borderRadius: 2,
-        '&:hover': {
-          '#overlay_image': {
-            opacity: 0.5,
-          },
-        },
-      }}
-    >
-      {data?.main_photo?.[0] ? (
-        <CustomImg
-          id={`product-image-${rowIndex}`}
-          src={data?.main_photo || 'default-img.avif'}
-          alt={data?.name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
-        />
-      ) : (
-        <DefaultImgIcon />
-      )}
-      {data?.files?.[0] && (
-        <Box
-          sx={{
-            transition: 'all 0.2s ease',
-            cursor: 'pointer',
-            opacity: 0,
-            borderRadius: 2,
-            bottom: 0,
-            right: 0,
-            top: 0,
-            left: 0,
-            bgcolor: 'green.600',
-            position: 'absolute',
-            zIndex: 2,
-          }}
-          id='overlay_image'
-          onClick={() => setImages({ data: data?.files })}
-        />
-      )}
-    </Box>
-  )
-}
-
-export default function tableHeaderSelector({ importsColumns, t }) {
+export default function tableHeaderSelector({ revaluationColumns, t }) {
   const { values } = useQueryParams()
 
-  const columns = importsColumns?.map((el) => {
+  const columns = revaluationColumns?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,
@@ -129,7 +69,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: 'Создал',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography whiteSpace='pre-wrap'>{p.data?.created_by}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'created_by'} />),
       }
     }
     if (el.field === 'updated_by') {
@@ -137,7 +77,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: 'Завершил',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography whiteSpace='pre-wrap'>{p.data?.updated_by}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'updated_by'} />),
       }
     }
     if (el.field === 'store_name') {
@@ -145,7 +85,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: t('store'),
         colId: el.field,
-        cellRenderer: memo((p) => <Typography whiteSpace='pre-wrap'>{p.data?.store?.name}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'store_name'} customText={p.data?.store?.name} />),
       }
     }
     if (el.field === 'status') {
@@ -169,11 +109,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         ...el,
         headerName: 'Дата переоценки',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'updated_at'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type={'updated_at'} customText={dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')} />),
       }
     }
 

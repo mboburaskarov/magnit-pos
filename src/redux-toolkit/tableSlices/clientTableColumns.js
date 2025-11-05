@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { createUniversalSlice } from '../helper/createUniversalSlice'
 
 const columns = [
   {
@@ -31,6 +32,13 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
+  {
+    field: 'loyalty_card_barcode',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+
   {
     field: 'tags',
     hide: false,
@@ -80,6 +88,12 @@ const columns = [
     width: 200,
   },
   {
+    field: 'spending_from_balance',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
     field: 'action',
     hide: false,
     minWidth: 90,
@@ -87,45 +101,7 @@ const columns = [
   },
 ]
 
-const clientTableColumns = createSlice({
-  name: 'clientTableColumns',
-  initialState: {
-    columns,
-    loading: false,
-  },
-  reducers: {
-    changeColumnSequence(state, payload) {
-      state.columns = payload.payload
-    },
-    resetColumnsWidth(state, payload) {
-      const newColumns = state.columns.map((el) => ({
-        ...el,
-        width: payload?.find((col) => col.field === el.field)?.width || el?.width,
-      }))
-      state.columns = newColumns
-    },
-    setTableColumns(state, payload) {
-      const columns = [...state.columns]
-      const accessors = state?.columns?.map((column) => column?.field)
-      payload?.forEach((item) => {
-        if (!accessors.includes(item?.field)) {
-          columns?.push(item)
-        }
-      })
-      state.columns = columns
-    },
-    removeCustomColumn(state, payload) {
-      const filteredColumns = [...state.columns].filter((column) => column?.colId !== payload)
-      state.columns = filteredColumns
-    },
-    updateTableHeader(state, action) {
-      state.columns = action.payload
-    },
-    resetTableHeader(state, action) {
-      state.columns = columns
-    },
-  },
-})
+const clientTableColumns = createUniversalSlice('clientTableColumns', columns)
 
 export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } = clientTableColumns.actions
 export const clientTableColumnsSlice = clientTableColumns.reducer

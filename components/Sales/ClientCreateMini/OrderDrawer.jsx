@@ -575,6 +575,8 @@ export default function OrderDrawer({
 
   const isVisiblePaymentType = useCallback(
     (type) => {
+      if ((customerId?.balance <= 1 && type?.front_name == 'loyalty_cd') || (!customerId?.first_name && type?.front_name == 'loyalty_cd')) return false
+
       const totalEnteredMoney = paymentsList.reduce((sum, item) => sum + item.amount || 0, 0)
       const totalAmount = get(cartItemsList, 'total_amount')
       const isThereType = type === 'overAll' ? false : paymentsList.some((item) => item.id == type.id)
@@ -652,7 +654,7 @@ export default function OrderDrawer({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
       payment_types: paymentTypes,
       sale_id: id,
-      loyalty_card_barcode: customerId?.barcode,
+      loyalty_card_barcode: customerId?.loyalty_card_barcode,
       store_id: get(userData, 'store.id'),
       service_type: dmedPrescriptionsList?.length > 0 ? 'dmed' : undefined,
       referral: serviceType == 'other' ? undefined : serviceType,
@@ -825,9 +827,16 @@ export default function OrderDrawer({
                                 justifyContent={'space-between'}
                                 borderRadius={'24px'}
                               >
-                                <Typography fontSize={18} fontWeight={'600'} lineHeight={'40px'}>
-                                  {get(item, 'name')}
-                                </Typography>
+                                <Box>
+                                  <Typography fontSize={18} fontWeight={'600'} lineHeight={get(item, 'front_name', false) == 'loyalty_cd' ? '20px' : '40px'}>
+                                    {get(item, 'name')}
+                                  </Typography>
+                                  {get(item, 'front_name', false) == 'loyalty_cd' && (
+                                    <Typography sx={{ fontSize: '17px', color: 'bunker.500', fontWeight: '500' }}>
+                                      {thousandDivider(customerId?.balance, 'сум')}
+                                    </Typography>
+                                  )}
+                                </Box>
                                 <Typography alignItems={'center'} justifyContent={'center'} display={'flex'}>
                                   <Box
                                     sx={{
@@ -878,6 +887,7 @@ export default function OrderDrawer({
                                   <PaymentMethodInput
                                     id={el.id}
                                     index={el.id}
+                                    customerId={customerId}
                                     classes={classes}
                                     isLast={mpaddedPaymentsList.filter((el) => el.name)?.length - 1 == index}
                                     lastPaymentInput={(el) => (lastPaymentInput.current = el)}
