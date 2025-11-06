@@ -1,18 +1,21 @@
-import { Box, Button, Dialog, Typography } from '@mui/material'
-import { get } from 'lodash'
-import { useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation } from 'react-query'
-import { useSelector } from 'react-redux'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import TextField from '../../../../components/Inputs/TextField'
-import { checkBarcodeWithMarking } from '../../../../utils/checkingMarkingWithBarcode'
-import { containsCyrillic } from '../../../../utils/convertoRuOrEngToEng'
-import hasAccess from '../../../../utils/hasAccess'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import ReChangeMarkingDialog from './ReChangeMarkingDialog'
+import { checkBarcodeWithMarking } from '@utils/checkingMarkingWithBarcode';
+import { Box, Button, Dialog, Typography } from '@mui/material';
+import { containsCyrillic } from '@utils/convertoRuOrEngToEng';
+import ConfirmDialog from '@components/ConfirmDialog';
+import TextField from '@components/Inputs/TextField';
+import { useEffect, useRef, useState } from 'react';
+import BigWarningIcon from '@icons/BigWarningIcon';
+import { useTranslation } from 'react-i18next';
+import { error, success } from '@utils/toast';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import { useMutation } from 'react-query';
+import hasAccess from '@utils/hasAccess';
+import { get } from 'lodash';
+
+import ReChangeMarkingDialog from './ReChangeMarkingDialog';
+
+
 function ImplementMarkingDialog({
   open,
   setIsOrderDrower,
@@ -20,23 +23,23 @@ function ImplementMarkingDialog({
   isAllMarkingFill,
   markingCount,
   handleClose,
-  cartmarkingCount,
   setLiteOrder,
   cartItems,
-
   markingsList,
   setMarkingList,
 }) {
+  const inputsRef = useRef([])
+  const { t } = useTranslation()
+
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [openRechangeDialog, setOpenRechangeDialog] = useState(false)
   const [changeingMarkingData, setChangeingMarkingData] = useState(false)
-  const inputsRef = useRef([])
-  const { t } = useTranslation()
   const user_data = useSelector((state) => state.user)
 
   const implementMarkingList = (marking, id, index) => {
     setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
   }
+
   useEffect(() => {
     if (open) {
       setTimeout(() => {
@@ -44,6 +47,7 @@ function ImplementMarkingDialog({
       }, 100)
     }
   }, [open])
+
   const addEmptyStringMarkToMarkinglessProduct = (markings, shouldHaveMarkings) => {
     let newMarkingList = { ...markings }
     for (const key in shouldHaveMarkings) {
@@ -69,13 +73,12 @@ function ImplementMarkingDialog({
   useEffect(() => {
     if (markingsList.length) {
       if (!isAllMarkingFill()) {
-        // Open order drawer or lite mode
         setOpenConfirmDialog(true)
         setLiteOrder(false)
         setIsOrderDrower(false)
       }
     }
-  }, [markingsList]) // Replace with actual marking state dependency
+  }, [markingsList])
 
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex, item) => {
     if (e.key === 'Enter') {
@@ -134,6 +137,7 @@ function ImplementMarkingDialog({
       implementMarkingList(e.target.value, id, childIndex)
     }
   }
+
   useEffect(() => {
     if ((markingsList, cartItems.length)) {
       if (!isAllMarkingFill()) {
@@ -152,6 +156,7 @@ function ImplementMarkingDialog({
       }
     }
   }, [markingsList])
+
   useEffect(() => {
     if (changeingMarkingData) {
       checkingAslName({
@@ -161,12 +166,14 @@ function ImplementMarkingDialog({
       })
     }
   }, [changeingMarkingData])
+
   const saveNewChangedMarking = () => {
     const value = changeingMarkingData?.value
     const id = changeingMarkingData?.id
     const childIndex = changeingMarkingData?.childIndex
     implementMarkingList(value, id, childIndex)
   }
+
   const getFlatIndex = (parentIndex, childIndex, markingCounts) => {
     let flatIndex = 0
     for (let i = 0; i < parentIndex; i++) {
@@ -174,6 +181,7 @@ function ImplementMarkingDialog({
     }
     return flatIndex + childIndex
   }
+
   const { mutate: checkingAslName, isLoading: ischeckingAslName } = useMutation(requests.checkingAslName, {
     onSuccess: ({ data }) => {
       if (data?.data?.status == 'pending') {
@@ -194,6 +202,7 @@ function ImplementMarkingDialog({
       console.error('err', err)
     },
   })
+
   return (
     <Dialog
       sx={{
@@ -281,7 +290,6 @@ function ImplementMarkingDialog({
         })}
       </Box>
 
-      {/* Rest of your dialog footer remains the same */}
       <Box
         display={'flex'}
         sx={{

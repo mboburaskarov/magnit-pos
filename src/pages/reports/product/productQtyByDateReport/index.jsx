@@ -1,43 +1,41 @@
-import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTableSelectable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../../components/CheckAccess'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import ImageGallery from '../../../../../components/ImageGallery'
-import DateRangeInput from '../../../../../components/Inputs/DateRangeInput/DateRangeInput'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import InputSwitch from '../../../../../components/Inputs/InputSwitch'
-import LoadingBlock from '../../../../../components/LoadingBlock'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import StyledTooltip from '../../../../../components/StyledTooltip'
-import { checkPermission } from '../../../../../utils/checkPermission'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import ArrowDown from '../../../../assets/icons/ArrowDown'
-import ArrowUp from '../../../../assets/icons/ArrowUp'
-import BigTickIcon from '../../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
-import FilterMenuIcon from '../../../../assets/icons/FilterMenuIcon'
-import LeftArrowIcon from '../../../../assets/icons/LeftArrow'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/productsTableColumns'
-import ProductDrawer from '@components/Drawers/ProductDrawer'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/productsTableColumns';
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
+import AgGridTable from '@components/AgGridTable/AgGridTableSelectable';
+import ProductDrawer from '@components/Drawers/ProductDrawer';
+import LoadingContainer from '@components/LoadingContainer';
+import InputSwitch from '@components/Inputs/InputSwitch';
+import InputSearch from '@components/Inputs/InputSearch';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Box, Button, Typography } from '@mui/material';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useDispatch, useSelector } from 'react-redux';
+import StyledTooltip from '@components/StyledTooltip';
+import ConfirmDialog from '@components/ConfirmDialog';
+import { useEffect, useMemo, useState } from 'react';
+import ImageGallery from '@components/ImageGallery';
+import FilterMenuIcon from '@icons/FilterMenuIcon';
+import BigWarningIcon from '@icons/BigWarningIcon';
+import CheckAccess from '@components/CheckAccess';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import LeftArrowIcon from '@icons/LeftArrow';
+import BigTickIcon from '@icons/BigTickIcon';
+import { requests } from '@utils/requests';
+import ArrowDown from '@icons/ArrowDown';
+import { LoadingButton } from '@mui/lab';
+import { useTheme } from '@mui/styles';
+import { useQuery } from 'react-query';
+import ArrowUp from '@icons/ArrowUp';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
 
-import ProductDashboard from '../../../products/productDashboard'
-import FilterMenu from './FilterMenu'
-import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import ProductDashboard from '../../../products/productDashboard';
+import tableHeaderSelector from './tableHeaderSelector';
+import FilterMenu from './FilterMenu';
+
+
 export default function ProductsPage() {
   const theme = useTheme()
   const methods = useForm()
@@ -55,45 +53,20 @@ export default function ProductsPage() {
   const [offsetCount, setOffsetCount] = useState(0)
   const [controlleroffset, setControllerOffset] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [openPerPack, setOpenPerPack] = useState(false)
-  const [openErrorReason, setOpenErrorReason] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
-  const { mutate: setMarkingRequired, isLoading: isSetMarkingRequired } = useMutation(requests.setMarkingRequired, {
-    onSuccess: ({ data }) => {
-      refetch()
-      success('Статус обязательности Маркировка был изменен')
-    },
-    onError: (err) => {
-      refetch()
-
-      error('Ошибка при Маркировка был изменен!')
-    },
-  })
-  const { mutate: changeBarcode, isLoading: isChangeBarcode } = useMutation(requests.changeBarcode, {
-    onSuccess: ({ data }) => {
-      refetch()
-      fetchStatusCountList()
-    },
-    onError: (err) => {
-      error('Ошибка при сканирование!')
-    },
-  })
 
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
-    setOpenPerPack,
     values,
     setOpenProductDrawer,
-    setMarkingRequired,
     editable: true,
     setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     setOrderStoring,
     orderStoring,
-    setOpenErrorReason,
   })
   const routeString = []
 
@@ -105,16 +78,7 @@ export default function ProductsPage() {
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          hide: !routeString.includes(el?.colId),
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
 
       dispatch(changeColumnSequence(formattedData))
     }
@@ -123,9 +87,11 @@ export default function ProductsPage() {
   useEffect(() => {
     setControllerOffset(values?.offset)
   }, [values?.offset])
+
   useEffect(() => {
     setControllerOffset(0)
   }, [values?.search])
+
   const productsListFilter = useMemo(() => {
     const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
     const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
@@ -153,8 +119,6 @@ export default function ProductsPage() {
       retail_price_from: values?.retail_price_from,
       no_barcode: values?.no_barcode == '1' ? true : false,
       isExpress: values?.isExpress,
-      // start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
-      // end_date: values?.start_date == values?.end_date ? null : values?.end_date,
       ...(appType !== 'ALL' && { status: appType }),
     }
   }, [
@@ -190,51 +154,6 @@ export default function ProductsPage() {
     requests.getAllProductsStatusCount(productsListFilter)
   )
 
-  const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
-    onSuccess: () => {
-      refetch()
-      success('Продукт успешно удален!')
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении товара!')
-      setOpenConfirmDialog(null)
-      console.error('err', err)
-    },
-  })
-
-  const { mutate: activateProduct, isLoading: isActivatingProduct } = useMutation(requests.activateProduct, {
-    onSuccess: () => {
-      success('Продукт успешно активирован!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при активации продукта!')
-      refetch()
-      setOpenConfirmDialog(null)
-      console.error('err', err)
-    },
-  })
-  const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.changeProductStatus, {
-    onSuccess: () => {
-      success('Продукт успешно деактивирован!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при деактивации продукта!')
-      refetch()
-      setOpenConfirmDialog(null)
-      console.error('err', err)
-    },
-  })
-
   useEffect(() => {
     refetch()
   }, [productsListFilter])
@@ -244,68 +163,11 @@ export default function ProductsPage() {
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
+  }, [productsList?.data, values?.limit])
 
-    get(productsList, 'data.data.data', [])?.map((productData) => {
-      methods.setValue(`editable_barcode_${get(productData, 'id')}`, get(productData, 'barcode'))
-    })
-    get(productsList, 'data.data.data', [])?.map((productData) => {
-      methods.setValue(`editable_mxik_${get(productData, 'id')}`, get(productData, 'mxik'))
-    })
-    get(productsList, 'data.data.data', [])?.map((productData) => {
-      methods.setValue(`editable_unit_code_${get(productData, 'id')}`, get(productData, 'unit_code'))
-    })
-  }, [productsList?.data, values?.limit, appType])
-  const { mutate: productsExcelReport, isLoading: isproductsExcelReport } = useMutation(requests.getProductsExcelReport, {
-    onSuccess: ({ data }) => {
-      downloadLinkExcel(get(data, 'data.file_name'))
-    },
-    onError: (err) => {
-      console.error(err)
-
-      error('Ошибка при скачать excel!')
-    },
-  })
-  const { mutate: productsExcelReportForAA, isLoading: isproductsExcelReportForAA } = useMutation(requests.getProductsExcelReportForAA, {
-    onSuccess: ({ data }) => {
-      downloadLinkExcel(get(data, 'data.file_name'))
-    },
-    onError: (err) => {
-      console.error(err)
-
-      error('Ошибка при скачать excel!')
-    },
-  })
-
-  const onCellValueChanged = (params) => {
-    const { data, colDef, newValue, oldValue } = params
-    if (!checkPermission('can-change-product-data-katalog', user_data)) return
-
-    if (colDef?.field === 'barcode' && newValue !== oldValue) {
-      const id = data?.id
-      const barcode = newValue
-      changeBarcode({ id, barcode })
-    }
-    if (colDef?.field === 'mxik' && newValue !== oldValue) {
-      const id = data?.id
-      const mxik = newValue
-      changeBarcode({ id, mxik })
-    }
-    if (colDef?.field === 'unit_code' && newValue !== oldValue) {
-      const id = data?.id
-      const unit_code = newValue
-      changeBarcode({ id, unit_code })
-    }
-    if (colDef?.field === 'unit_label' && newValue !== oldValue) {
-      const id = data?.id
-      const unit_label = newValue
-      changeBarcode({ id, unit_label })
-    }
-  }
   return (
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
-        {isproductsExcelReport && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
-
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box
@@ -451,13 +313,7 @@ export default function ProductsPage() {
               alwaysShowHorizontalScroll={true}
               tableSettings
               canCellClick={true}
-              hasAADownload={productsListFilter?.store_id}
               enableFillHandle={true}
-              onCellValueChanged={onCellValueChanged}
-              downloadForAA={() => productsExcelReportForAA({ ...productsListFilter, offset: 0, limit: 1000000 })}
-              fullDownload={() => productsExcelReport({ ...productsListFilter, offset: 0, limit: 1000000 })}
-              downloadByFilter={() => productsExcelReport(productsListFilter)}
-              isDownloading={isproductsExcelReport}
               columns={tableColumns}
               data={productsList?.data?.data?.data || []}
               totalCount={productsList?.data?.data?._meta?.total_count || 0}

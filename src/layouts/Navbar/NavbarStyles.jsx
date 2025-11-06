@@ -1,4 +1,5 @@
-import makeStyles from '@mui/styles/makeStyles'
+import makeStyles from '@mui/styles/makeStyles';
+
 
 const drawerWidth = '272px'
 
@@ -140,7 +141,7 @@ export const navbarStyles = makeStyles((theme) => {
           color: '#fff',
         },
       },
-      '&:first-child': {
+      '&:first-of-type': {
         margin: '0 0 8px',
       },
       '&:last-child': {

@@ -1,125 +1,67 @@
-import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import Header from '../../../../../components/Header'
-import ImageGallery from '../../../../../components/ImageGallery'
-import DateRangeInput from '../../../../../components/Inputs/DateRangeInput/DateRangeInput'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import ArrowDown from '../../../../assets/icons/ArrowDown'
-import ArrowUp from '../../../../assets/icons/ArrowUp'
-import BigTickIcon from '../../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
-import DeleteIcon from '../../../../assets/icons/DeleteIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/topReportsTableColumns'
-import FilterMenu from './FilterMenu'
-import BonusProductReportDashboard from './bonusPoductReportDashboard'
-import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/topReportsTableColumns';
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
+import AgGridTable from '@components/AgGridTable/AgGridTable';
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
+import LoadingContainer from '@components/LoadingContainer';
+import InputSearch from '@components/Inputs/InputSearch';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { Box, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { requests } from '@utils/requests';
+import ArrowDown from '@icons/ArrowDown';
+import Header from '@components/Header';
+import ArrowUp from '@icons/ArrowUp';
+import { error } from '@utils/toast';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
+import BonusProductReportDashboard from './bonusPoductReportDashboard';
+import tableHeaderSelector from './tableHeaderSelector';
+import FilterMenu from './FilterMenu';
+
 
 export default function BonusProductsPage() {
-  const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.topReportsTableColumns)
   const { values } = useQueryParams()
-  const [appType, setAppType] = useState('ALL')
-  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
-  const [selectedShops, setSelectedShops] = useState('all')
-  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
 
-  const [selectClients, setselectClients] = useState([])
+  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [offsetCount, setOffsetCount] = useState(0)
-  const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
 
-  const selectClientsFunc = (isChecked, id) => {
-    if (isChecked) {
-      setselectClients((p) => [...p, id])
-    } else {
-      setselectClients((p) => p.filter((ids) => ids !== id))
-    }
-  }
   const tableColumns = tableHeaderSelector({
-    clientsColumns: columns,
-    t,
+    productsColumns: columns,
     values,
-    setImages: setOpenImageGallery,
-    setOpenConfirmDialog,
-    selectClientsFunc,
     setOrderStoring,
     orderStoring,
   })
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
-  const [selectedBonusType, setSelectedBonusType] = useState({ id: 'default', name: 'По умолчанию' })
-  const sortTypes = [
-    { id: 'default', name: 'По умолчанию' },
-    { id: 'max_amount', name: 'Топ продажи сум' },
-    { id: 'min_amount', name: 'Мин продажи сум' },
-    { id: 'max_count', name: 'Больше продаж шт' },
-    { id: 'min_count', name: 'Меньше продаж шт' },
-  ]
+
   const bonusProductsReportListFilter = useMemo(() => {
-    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
-    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
     return {
-      start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
-      end_date:
-        values?.end_date && values?.to_time
-          ? ready_start_date?.isSame(ready_end_date)
-            ? dayjs(`${values?.start_date} 23:59:59`).format()
-            : ready_end_date.format()
-          : null,
+      start_date: getFilterStartDate(values),
+      end_date: getFilterEndDate(values),
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
-
-      store_ids: selectedShops === 'all' ? [] : selectedShops.map((el) => el.id),
     }
-  }, [
-    values?.offset,
+  }, [values?.offset, values?.from_time, values?.to_time, orderStoring, values?.limit, values?.search, values?.start_date, values?.end_date])
 
-    values?.from_time,
-    values?.to_time,
-    orderStoring,
-    values?.limit,
-    selectedBonusType,
-    values?.search,
-    selectedShops,
-    values?.start_date,
-    values?.end_date,
-  ])
   const {
     data: bonusProductsReportList,
     isLoading: bonusProductsReportListLoading,
@@ -133,7 +75,6 @@ export default function BonusProductsPage() {
 
   useEffect(() => {
     const count = bonusProductsReportList?.data?.data?._meta?.total_count
-    setselectClients([])
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [bonusProductsReportList?.data, values?.limit])
@@ -193,9 +134,7 @@ export default function BonusProductsPage() {
                 width={956}
                 display={'flex'}
                 sx={{
-                  '& .select': {
-                    // width: '175px !important',
-                  },
+                  '& .select': {},
                 }}
               >
                 <Box width={'15px'} />

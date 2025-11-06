@@ -1,7 +1,9 @@
-import { Box } from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import ReportBox from '../../../../components/ReportsSection/ReportBox'
-import palette from '../../../assets/theme/mui.config'
+import ReportBox from '@components/ReportsSection/ReportBox';
+import palette from '@/assets/theme/mui.config';
+import { useTranslation } from 'react-i18next';
+import { Box } from '@mui/material';
+
+
 function PoductReportsList() {
   const { t } = useTranslation()
   return (
@@ -11,24 +13,23 @@ function PoductReportsList() {
           title={t('menu.reports.products')}
           desc={t('menu.reports.products_desc')}
           to='/reports/product-report'
-          checkSlug='/reports/product'
+          checkslug='/reports/product'
           color={palette.blue[500]}
         />
-        {/* {!shopTransactionRoute && ( */}
         <ReportBox
           title={t('Oтчет LFL')}
           desc={t(
             'Отчёт показывает, какие товары продаются лучше всего. Доступна разбивка по категориям, цветам, размерам и другим характеристикам. Сравнение с прошлым периодом помогает оценить рост или падение продаж.'
           )}
           to='/reports/lfl'
-          checkSlug='/reports/product'
+          checkslug='/reports/product'
           color={palette.blue[600]}
         />
         <ReportBox
           title={t('Топ продукты')}
           desc={t('Отчёт отображает самые продаваемые товары за выбранный период. Помогает определить хиты продаж и популярные категории.')}
           to='/reports/top-products'
-          checkSlug='/reports/product'
+          checkslug='/reports/product'
           color={palette.blue[600]}
         />
         <ReportBox
@@ -37,7 +38,7 @@ function PoductReportsList() {
             'Отчёт показывает товары, предоставленные в качестве бонусов. Помогает отслеживать количество, стоимость и условия предоставления бонусов по заказам.'
           )}
           to='/reports/bonus-products'
-          checkSlug='/reports/product'
+          checkslug='/reports/product'
           color={palette.blue[600]}
         />
         <ReportBox
@@ -46,7 +47,7 @@ function PoductReportsList() {
             'Отчёт показывает остатки товаров на выбранную дату. Позволяет анализировать доступное количество продукции на складе и контролировать наличие.'
           )}
           to='/reports/product-qty-by-date'
-          checkSlug='/reports/product'
+          checkslug='/reports/product'
           color={palette.blue[600]}
         />
 

@@ -1,58 +1,53 @@
-import { Construction, Refresh } from '@mui/icons-material'
-import { LoadingButton } from '@mui/lab'
-import { Box, Button, ListItem, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { get, head, size } from 'lodash'
-import { useEffect, useRef, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useHotkeys } from 'react-hotkeys-hook'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useDebounce } from 'use-debounce'
-import CheckAccess from '../../../../components/CheckAccess'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import CustomImg from '../../../../components/CustomImg'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import LoadingOverflow from '../../../../components/LoadingOverflow'
-import ClientCreateMini from '../../../../components/Sales/ClientCreateMini'
-import OrderDrawer from '../../../../components/Sales/ClientCreateMini/OrderDrawer'
-import DraftDrawer from '../../../../components/Sales/DraftDrawer'
-import OnlineSaleDrawer from '../../../../components/Sales/OnlineSaleNoor/OnlineSaleDrawer'
-import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchange/ReturnExchangeDrawer'
-import ShortcutsDrawer from '../../../../components/Sales/ShortcutsDrawer'
-import StyledTooltip from '../../../../components/StyledTooltip'
-import { requests } from '../../../../utils/requests'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { error, success } from '../../../../utils/toast'
-import notificationAudio from '../../../assets/audio/notification.mp3'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import useDebouncedValue from '../../../hooks/useDebouncedValue'
-import CartDetailSide from './cart_detail_side'
-import CartItem from './CartItem'
-import CartSearchBar from './CartSearchBar'
-import ChangeShift from './ChangeShift'
-import CreateDraftDrawer from './createDraftDrawer'
-import ImplementMarkingDialog from './ImplementMarkingDialog'
-import ProductDrawer from './ProductDrawer'
-import PrinterIcon from '../../../assets/icons/PrinterIcon'
-import BonusProductDrawer from '../../../../components/Sales/bonusProductDrawer/BonusProductDrawer'
-import SendRejectedProductDrawer from '../../../../components/Sales/SendRejectedProduct/SendRejectedProductDrawer'
-import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck'
-import OrganizeDmedOrder from './OrganizeDmedOrder'
-import CartItems from './CartItems'
-import OrderLite from './orderLite'
-import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
-import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
-import TimeFast from '../../../assets/icons/TimeFast'
-import ShortcutBox from '../../../../components/ShortcutBox'
-import RefreshIcon from '../../../assets/icons/RefreshIcon'
-import EmptyCartItemIcon from '../../../assets/icons/EmptyCartItemIcon'
+import SendRejectedProductDrawer from '@components/Sales/SendRejectedProduct/SendRejectedProductDrawer';
+import ReturnExchangeDrawer from '@components/Sales/ReturnExchange/ReturnExchangeDrawer';
+import BonusProductDrawer from '@components/Sales/bonusProductDrawer/BonusProductDrawer';
+import OnlineSaleDrawer from '@components/Sales/OnlineSaleNoor/OnlineSaleDrawer';
+import ClientCreateMini from '@components/Sales/ClientCreateMini';
+import LoadingContainer from '@components/LoadingContainer';
+import LoadingOverflow from '@components/LoadingOverflow';
+import { useNavigate, useParams } from 'react-router-dom';
+import useDebouncedValue from '@hooks/useDebouncedValue';
+import EmptyCartItemIcon from '@icons/EmptyCartItemIcon';
+import DraftDrawer from '@components/Sales/DraftDrawer';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Box, Button, Typography } from '@mui/material';
+import StyledTooltip from '@components/StyledTooltip';
+import ConfirmDialog from '@components/ConfirmDialog';
+import thousandDivider from '@utils/thousandDivider';
+import { useMutation, useQuery } from 'react-query';
+import { useEffect, useRef, useState } from 'react';
+import BigWarningIcon from '@icons/BigWarningIcon';
+import ArrowRightIcon from '@icons/ArrowRightIcon';
+import { Construction } from '@mui/icons-material';
+import ShortcutBox from '@components/ShortcutBox';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { useTranslation } from 'react-i18next';
+import { error, success } from '@utils/toast';
+import RefreshIcon from '@icons/RefreshIcon';
+import PrinterIcon from '@icons/PrinterIcon';
+import DeleteIcon from '@icons/DeleteIcon';
+import { useDebounce } from 'use-debounce';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import { LoadingButton } from '@mui/lab';
+import { get, head, size } from 'lodash';
+
+import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck';
+import ImplementMarkingDialog from './ImplementMarkingDialog';
+import OrganizeDmedOrder from './OrganizeDmedOrder';
+import CreateDraftDrawer from './createDraftDrawer';
+import OrderDrawer from './full-order/OrderDrawer';
+import CartDetailSide from './cart_detail_side';
+import ProductDrawer from './ProductDrawer';
+import CartSearchBar from './CartSearchBar';
+import ChangeShift from './ChangeShift';
+import OrderLite from './lite-order';
+import CartItems from './CartItems';
+
+
 const useStyles = makeStyles((theme) => ({
   currentUser: {
-    // minWidth: '120px',
     width: 'auto',
     height: '48px',
     padding: '4px 4px 4px 16px !important',
@@ -61,7 +56,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '40px !important',
   },
   avatarPlaceholder: {
-    // position: 'relative',
     height: 40,
     width: 40,
     borderRadius: 20,
@@ -149,14 +143,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   empty_list: {
-    // border: `1px dashed ${theme.palette.bunker[300]}`,
     display: 'flex',
     borderRadius: '16px',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     padding: '80px 64px',
-    // marginTop: '16px',
     backgroundColor: `${theme.palette.bg[10]}`,
   },
 
@@ -173,7 +165,6 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '8px',
     fontWeight: '500',
     lineHeight: '24px',
-    // borderColor: 'transparent',
     fontSize: '16px',
     '&:last-child': {
       marginRight: '0',
@@ -188,12 +179,10 @@ const useStyles = makeStyles((theme) => ({
   },
 
   searchItemList: {
-    // maxHeight: 320,
     overflowY: 'scroll',
     position: 'absolute',
     zIndex: 2,
     width: 'calc(100% - 40px)',
-    // maxWidth: 316,
     margin: '0 auto',
     overflow: 'hidden',
     borderRadius: 16,
@@ -272,7 +261,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 let a = -1
 function NewSaleV2() {
-  const NotificationAudio = new Audio(notificationAudio)
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
@@ -303,7 +291,6 @@ function NewSaleV2() {
   const [input, setInput] = useState('')
   const lastKeyPressTime = useRef(Date.now())
   const [lastNoorOrderCount, setLastNoorOrderCount] = useState(0)
-  // const [searchTerm, setSearchTerm] = useState('')
   const [markingsList, setMarkingList] = useState({})
   const [dmedOrganizedList, setDmedOrganizedList] = useState([])
   const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
@@ -358,7 +345,6 @@ function NewSaleV2() {
         sale_id: id,
       })
     }
-    // refetchcartItemsList()
   }, [customerId])
   for (const key in cartRef) {
     if (cartRef[key] === null) {
@@ -922,58 +908,11 @@ function NewSaleV2() {
       searchRef.current?.focus() // Focus the input field
     }
   })
-  const { data: sellerBonusInOneSale } = useQuery(
-    ['sellerBonusInOneSale'],
-    () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
-    { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
-  )
-  const { data: noorOrderCount, refetch: refetchNoorOrderCount } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
-    onSuccess: ({ data }) => {
-      setLastNoorOrderCount(get(data, 'data.count', 0))
-      if (lastNoorOrderCount < get(data, 'data.count', 0)) {
-        // NotificationAudio.play()
-      }
-    },
-  })
-  // useEffect(() => {
-  //   const noorTimeout = setInterval(() => {
-  //     refetchNoorOrderCount()
-  //   }, 5000)
-
-  //   return () => clearInterval(noorTimeout)
-  // }, [])
-  const { mutate: checkEposFlesh, isLoading: ischeckEposFlesh } = useMutation(requests.checkEposFlesh, {
-    onSuccess: ({ data }) => {
-      if (get(data, 'error', true) && get(data, 'message', '').includes('cannot connect card')) {
-        error("EPOS Flash не установлен (EPOS qurulmasi su'g'irib qo'yilgan")
-        setIsOrderDrower(false)
-        setLiteOrder(false)
-        return
-      }
-    },
-    onError: (err) => {
-      setIsOrderDrower(false)
-      setLiteOrder(false)
-      error('Ошибка EPOS getFiscalsList')
-      console.error('err', err)
-    },
-  })
-  useEffect(() => {
-    if (isOrderDrower || liteOrder) {
-      checkEposFlesh({
-        token: 'DXJFX32CN1296678504F2',
-        method: 'getFiscalsList',
-        printerSize: 80,
-        zReportId: 1,
-      })
-    }
-  }, [isOrderDrower, liteOrder])
 
   const childRef = useRef()
   const printNoProductCheque = () => {
     childRef.current.printChildCheque()
   }
-  const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
 
   return (
     <FormProvider {...method}>
@@ -1163,24 +1102,6 @@ function NewSaleV2() {
                 printContainer={printContainer}
               />
               <Box className={classes.priceDetails}>
-                {/* <Box sx={{ display: 'flex', height: '44px', justifyContent: 'space-between' }}>
-                  <Box display={'flex'} width={'100%'} justifyContent={'space-between'} flexDirection={'column'}>
-                    <Typography fontWeight={'500'} fontSize={'12px'} color={'bunker.400'} lineHeight={'16px'}>
-                      {t('total_amount')}:
-                    </Typography>
-                    <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.950'} lineHeight={'24px'}>
-                      {thousandDivider(get(cartItemsList, 'data.data.sum'), 'сум')}
-                    </Typography>
-                  </Box>
-                  <Box display={'flex'} width={'100%'} justifyContent={'space-between'} flexDirection={'column'}>
-                    <Typography fontWeight={'500'} fontSize={'12px'} color={'bunker.400'} lineHeight={'16px'}>
-                      {t('discount')}:
-                    </Typography>
-                    <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.950'} lineHeight={'24px'}>
-                      -{thousandDivider(get(cartItemsList, 'data.data.discount_amount'), 'сум')}
-                    </Typography>
-                  </Box>
-                </Box> */}
                 <Button
                   loading={hasChange}
                   disabled={size(get(cartItemsList, 'data.data.data')) === 0 || maxAmount > 0 || hasChange}
@@ -1270,17 +1191,14 @@ function NewSaleV2() {
                         width: '100%',
                         display: 'flex',
                         justifyContent: 'space-between',
-                        // mt: '8px',
                         '& svg': {
                           flexShrink: 0,
                         },
                       }}
                       disabled={true}
-                      // disabled={size(get(cartItemsList, 'data.data.data')) == 0}
                       color='secondary'
                       onClick={() => setIsCreateOpenDraft(true)}
                     >
-                      {/* <TimeFast disabled={size(get(cartItemsList, 'data.data.data'))} /> */}
                       <Typography ml={'8px'} fontWeight={'500'} fontSize={'18px'} color={'black'} lineHeight={'26px'}>
                         {t('draft')}
                       </Typography>
@@ -1311,7 +1229,6 @@ function NewSaleV2() {
                 </Box>
               </Box>
             </Box>
-            {/* <ShortcutsDrawer /> */}
           </Box>
 
           <CartDetailSide
@@ -1348,7 +1265,6 @@ function NewSaleV2() {
             searchTerm={searchTerm}
             customers={customers}
             setQuickCreateClientName={setQuickCreateClientName}
-            // fakeIndexForCheckClient={fakeIndexForCheckClient}
             changeDiscountDebounce={changeDiscountDebounce}
             inputDiscount={inputDiscount}
             isAllMarkingFill={isAllMarkingFill}
@@ -1395,11 +1311,9 @@ function NewSaleV2() {
                 loading={isdeleteCartItem}
                 onClick={() => {
                   if (openConfirmDialog.type === 'deleteOne') {
-                    // return
-
                     setMarkingCount((p) => {
                       const newState = { ...p }
-                      delete newState[openConfirmDialog.id] // Remove the key completely
+                      delete newState[openConfirmDialog.id]
                       return newState
                     })
 

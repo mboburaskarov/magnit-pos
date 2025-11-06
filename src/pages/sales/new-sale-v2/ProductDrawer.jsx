@@ -1,15 +1,13 @@
-import { Box, Drawer, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import CustomImg from '../../../../components/CustomImg'
-import DrawerInfoBox from '../../../../components/Drawers/DrawerInfoBox'
-import SectionTitle from '../../../../components/SectionTitle'
-import getImageUrl from '../../../../utils/getImageUrl'
-import { requests } from '../../../../utils/requests'
-import thousandDivider from '../../../../utils/thousandDivider'
-import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
+import DrawerInfoBox from '@components/Drawers/DrawerInfoBox';
+import { Box, Drawer, Typography } from '@mui/material';
+import thousandDivider from '@utils/thousandDivider';
+import SectionTitle from '@components/SectionTitle';
+import DefaultImgIcon from '@icons/defaultImgIcon';
+import CustomImg from '@components/CustomImg';
+import getImageUrl from '@utils/getImageUrl';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
 
 const Image = ({ data, setImages }) => {
   return (
@@ -63,14 +61,7 @@ const Image = ({ data, setImages }) => {
   )
 }
 
-export default function ProductDrawer({ open: item, onClose, setImages, productDatas }) {
-  const {
-    data: productData,
-    isLoading: productDataLoading,
-    isFetching: isFetchingproductData,
-  } = useQuery(['productData'], () => requests.getSingleProduct(), { enabled: false })
-
-  const navigate = useNavigate()
+export default function ProductDrawer({ open: item, onClose, setImages }) {
   return (
     <Drawer
       anchor='right'
@@ -82,7 +73,6 @@ export default function ProductDrawer({ open: item, onClose, setImages, productD
       }}
       onClose={() => onClose(false)}
       open={!!item}
-      isLoading={productDataLoading && isFetchingproductData}
     >
       <Box display='inline-flex' pt={'40px'} pb={'20px'} px={'40px'}>
         <Image setImages={setImages} data={item?.photos?.[0]} />
@@ -110,7 +100,6 @@ export default function ProductDrawer({ open: item, onClose, setImages, productD
         <DrawerInfoBox
           infoData={[
             { title: 'Наименование товара', info: item.name, fullWidth: true },
-            // { title: 'Код продукта', info: item.material_code },
             { title: 'Баркод', info: thousandDivider(item.barcode, '') },
             { title: 'Цена', info: thousandDivider(item.unit_price, 'сум') },
             { title: 'Производитель', info: get(item, 'producer.name', '-') },

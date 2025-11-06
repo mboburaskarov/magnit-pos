@@ -1,10 +1,12 @@
-import { Box, TextField, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { Controller, useFormContext } from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form';
+import { Box, TextField, Typography } from '@mui/material';
+import { NumericFormat } from 'react-number-format';
+import { useEffect, useState } from 'react';
 // import { NumberFormatBase } from 'react-number-format'
-import { useTheme } from '@mui/styles'
-import { NumericFormat } from 'react-number-format'
-import Label from '../Label'
+import { useTheme } from '@mui/styles';
+
+import Label from '../Label';
+
 
 const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandler, name, onChange, right, ...rest }) => {
   const theme = useTheme()
@@ -46,7 +48,7 @@ const InputRangeComponent = ({ value, id, placeholder, allowNegative, blurHandle
             appearance: 'none',
             margin: 0,
           },
-          '& .MuiInputBase-root:first-child': {
+          '& .MuiInputBase-root:first-of-type': {
             borderLeft: right && '2px solid transparent',
           },
         }}
@@ -97,7 +99,7 @@ function InputRange({
               position: 'relative',
               display: 'flex',
               width: '100%',
-              '& .MuiInputBase-root:first-child': {
+              '& .MuiInputBase-root:first-of-type': {
                 borderRight: 'none !important',
               },
             }}

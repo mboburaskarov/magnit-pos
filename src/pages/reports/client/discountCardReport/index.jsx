@@ -1,36 +1,30 @@
-import { Box, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { memo, useEffect, useMemo, useState } from 'react'
-import { useMutation, useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import Header from '../../../../../components/Header'
-import DateRangeInput from '../../../../../components/Inputs/DateRangeInput/DateRangeInput'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import { error } from '../../../../../utils/toast'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
+import AgGridTable from '@components/AgGridTable/AgGridTable';
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
+import LoadingContainer from '@components/LoadingContainer';
+import { memo, useEffect, useMemo, useState } from 'react';
+import InputSearch from '@components/Inputs/InputSearch';
+import { useQueryParams } from '@hooks/useQueryParams';
+import thousandDivider from '@utils/thousandDivider';
+import { useMutation, useQuery } from 'react-query';
+import { Box, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { requests } from '@utils/requests';
+import Header from '@components/Header';
+import { error } from '@utils/toast';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
 
 export default function DiscountCardReport({ id }) {
   const { values } = useQueryParams()
-
   const [offsetCount, setOffsetCount] = useState(0)
   const navigate = useNavigate()
   const productHistoryFilter = useMemo(() => {
-    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
-    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
     return {
-      start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
-      end_date:
-        values?.end_date && values?.to_time
-          ? ready_start_date?.isSame(ready_end_date)
-            ? dayjs(`${values?.start_date} 23:59:59`).format()
-            : ready_end_date.format()
-          : null,
+      start_date: getFilterStartDate(values),
+      end_date: getFilterEndDate(values),
       limit: values?.limitHistory || 5,
       store_id: values?.store_id,
       offset: values?.offsetHistory || 0,
@@ -171,6 +165,7 @@ export default function DiscountCardReport({ id }) {
   )
 
   const formattedData = discountCartReport?.data?.data?.data
+
   const { mutate: getDiscountCartReportExcel, isLoading: isgetDiscountCartReportExcel } = useMutation(requests.getDiscountCartReportExcel, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
@@ -181,6 +176,7 @@ export default function DiscountCardReport({ id }) {
       error('Ошибка при скачать excel!')
     },
   })
+
   return (
     <LoadingContainer readyState={true}>
       <Header noActions isLoading={false} backIcon backHref='/reports/client' text={'Отчёт: Карта лояльности'} />
@@ -208,7 +204,6 @@ export default function DiscountCardReport({ id }) {
             fullDownload={() => getDiscountCartReportExcel({ ...productHistoryFilter, offset: 0, limit: 1000000 })}
             downloadByFilter={() => getDiscountCartReportExcel(productHistoryFilter)}
             isDownloading={isgetDiscountCartReportExcel}
-            //
             isDataLoading={isproductDataLoadingHistory || isFetchingdiscountCartReport}
             offsetQuery='offsetHistory'
             limitQuery='limitHistory'

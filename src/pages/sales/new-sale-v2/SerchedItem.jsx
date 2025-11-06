@@ -1,41 +1,37 @@
-import { Box, Typography } from '@mui/material'
-import Highlighter from 'react-highlight-words'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import ZoomTextIcon from '../../../assets/icons/ZoomTextIcon'
+import thousandDivider from '@utils/thousandDivider';
+import Highlighter from 'react-highlight-words';
+import { Box, Typography } from '@mui/material';
+import ZoomTextIcon from '@icons/ZoomTextIcon';
+import PrizeBoxIcon from '@icons/PrizeBoxIcon';
+import CustomImg from '@components/CustomImg';
+import { useParams } from 'react-router-dom';
+import { requests } from '@utils/requests';
+import { useMutation } from 'react-query';
+import CloseIcon from '@icons/CloseIcon';
+import { error } from '@utils/toast';
+import { useState } from 'react';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
 
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useState } from 'react'
-import { useMutation } from 'react-query'
-import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import CustomImg from '../../../../components/CustomImg'
-import { requests } from '../../../../utils/requests'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { error } from '../../../../utils/toast'
-import PrizeBoxIcon from '../../../assets/icons/PrizeBoxIcon'
 
 export default function SerchedItem({
   index,
   handleAddProduct,
   discount,
-
   itemRef,
-  fakeIndexForCheckSearch,
   item,
   conflictItem = false,
   isSimilar = false,
   isChild = true,
   classes,
-  setSearchTerm,
   searchTerm,
-  lastElementRef,
   product,
 }) {
-  const userData = useSelector((state) => state.user)
+  const { id } = useParams()
+
   const [openSimilar, setOpenSimilar] = useState(false)
   const [similarProductList, setSimilarProductList] = useState([])
-  const { id } = useParams()
+
   const { mutate: getAllSimilarStoreProducts } = useMutation(requests.getAllSimilarStoreProducts, {
     onSuccess: ({ data }) => {
       if (data?.data?.length) {

@@ -1,23 +1,26 @@
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import { get } from 'lodash'
-import * as qs from 'qs'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import Label from '../../../../../components/Label'
-import LazySelect from '../../../../../components/Select/LazySelect'
-import MultiOptionSelectNew from '../../../../../components/Select/MultiOptionSelectNew'
-import { requests } from '../../../../../utils/requests'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew';
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Box, Button, Typography } from '@mui/material';
+import LazySelect from '@components/Select/LazySelect';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import CloseIcon from '@icons/CloseIcon';
+import { useTheme } from '@mui/styles';
+import { useQuery } from 'react-query';
+import Label from '@components/Label';
+import { get } from 'lodash';
+import * as qs from 'qs';
+
 
 export default function FilterMenu({ open, selectedShops, setSelectedShops, setOpen }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
+  const theme = useTheme()
+  const { t } = useTranslation()
   const methods = useForm()
   const userData = useSelector((state) => state.user)
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
@@ -40,8 +43,6 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
     console.error('err', err)
   }
 
-  const theme = useTheme()
-
   const resetFilter = () => {
     reset({
       employee_id: null,
@@ -51,7 +52,6 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
     setOpen(false)
     navigate(`/reports/product-report?offset=0&limit=${values?.limit || 5}`)
   }
-  const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       overflowVisible

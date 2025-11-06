@@ -1,125 +1,87 @@
-import { useTheme } from '@emotion/react'
-import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Block, Print, QrCode, ReceiptLong } from '@mui/icons-material'
-import { Box, Button, Typography } from '@mui/material'
-import { get, size } from 'lodash'
-import { useEffect, useRef, useState } from 'react'
-import Highlighter from 'react-highlight-words'
-import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import OutsideClickHandler from 'react-outside-click-handler'
-import { useParams } from 'react-router-dom'
-import CheckAccess from '../../../../components/CheckAccess'
-import { default as InputSwitch, default as InputSwitchNew } from '../../../../components/Inputs/InputSwitch'
-import OutLineTextFieldThousand from '../../../../components/Inputs/OutLineTextFieldThousand'
-import SearchInput from '../../../../components/Inputs/SearchInput'
-import Label from '../../../../components/Label'
-import StyledTooltip from '../../../../components/StyledTooltip'
-import thousandDivider from '../../../../utils/thousandDivider'
-import ArrowDown from '../../../assets/icons/ArrowDown'
-import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
-import ArrowUp from '../../../assets/icons/ArrowUp'
-import FileIcon from '../../../assets/icons/FileIcon'
-import PrizeBoxIcon from '../../../assets/icons/PrizeBoxIcon'
-import TimeAndDate from '../../../assets/icons/TimeandDateIcon'
-import TimesSmallIcon from '../../../assets/icons/TimesSmallIcon'
-import UserFilledIcon from '../../../assets/icons/UserFilledIcon'
-import DmedPrescriptionsList from './dmedPrescriptionsList'
-import OrderLite from './orderLite'
-import MaximizeIcon from '../../../assets/icons/MaximizeIcon'
-import RightArrow from '../../../assets/icons/RightArrow'
-import CustomSwitch from '../../../../components/IOSSwitch'
-import TimeFast from '../../../assets/icons/TimeFast'
-import ClearIcon from '../../../assets/icons/ClearIcon'
-import ReturnExchangeIcon from '../../../assets/icons/ReturnExchangeIcon'
-import ChequeIcon from '../../../assets/icons/ChequeIcon'
-import OnlineSaleNoorIcon from '../../../assets/icons/OnlineSaleNoorIcon'
-import { useQuery } from 'react-query'
-import BrandPlaceholderIcon from '../../../assets/icons/BrandPlaceholderIcon'
-import InputSwitchRadio from '../../../../components/Inputs/InputSwitchRadio'
-import QrScanIcon from '../../../assets/icons/QrScanIcon'
-import ShortcutBox from '../../../../components/ShortcutBox'
-import BonusProductTable from './bonusProductTable'
-import { requests } from '../../../../utils/requests'
-import { getDynamicBonusTableHeight } from '../../../../utils/calcDynamicBonusTableHeight.js'
+import { getDynamicBonusTableHeight } from '@utils/calcDynamicBonusTableHeight.js';
+import InputSwitchRadio from '@components/Inputs/InputSwitchRadio';
+import BrandPlaceholderIcon from '@icons/BrandPlaceholderIcon';
+import OutsideClickHandler from 'react-outside-click-handler';
+import ReturnExchangeIcon from '@icons/ReturnExchangeIcon';
+import OnlineSaleNoorIcon from '@icons/OnlineSaleNoorIcon';
+import SearchInput from '@components/Inputs/SearchInput';
+import StyledTooltip from '@components/StyledTooltip';
+import thousandDivider from '@utils/thousandDivider';
+import UserFilledIcon from '@icons/UserFilledIcon';
+import TimesSmallIcon from '@icons/TimesSmallIcon';
+import ShortcutBox from '@components/ShortcutBox';
+import CheckAccess from '@components/CheckAccess';
+import CustomSwitch from '@components/IOSSwitch';
+import Highlighter from 'react-highlight-words';
+import { Box, Typography } from '@mui/material';
+import PrizeBoxIcon from '@icons/PrizeBoxIcon';
+import MaximizeIcon from '@icons/MaximizeIcon';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import RightArrow from '@icons/RightArrow';
+import QrScanIcon from '@icons/QrScanIcon';
+import ChequeIcon from '@icons/ChequeIcon';
+import { requests } from '@utils/requests';
+import { useForm } from 'react-hook-form';
+import ClearIcon from '@icons/ClearIcon';
+import TimeFast from '@icons/TimeFast';
+import { useQuery } from 'react-query';
+import { get, size } from 'lodash';
+
+import DmedPrescriptionsList from './dmedPrescriptionsList';
+import BonusProductTable from './bonusProductTable';
+
+
 function CartDetailSide({
   setServiceType,
   setIsOpenBonusProductDrawer,
   serviceType,
   setSendToEpos,
   sendToEpos,
-  setDmedOrganizedList,
   cashBoxDetails,
   setIsOpenNoorDrawer,
   dmedOrganizedList,
-  setIsOpenOrganizeDmedOrderDialog,
   setDmedPrescriptionsList,
   setIsOpenSendRejectedProduct,
   dmedPrescriptionsList,
   saleCreate,
   userData,
   classes,
-  hasChange,
   setOpenClientCreateMini,
   customerId,
   removeDiscountCard,
-  setMarkingList,
   setCustomerId,
   setSearchTerm,
   searchTerm,
   customers,
   setQuickCreateClientName,
-  changeDiscountDebounce,
-  inputDiscount,
-  isAllMarkingFill,
-  setIsOrderDrower,
-  setIsOpenImplementMarkingDialog,
-  setDiscountType,
-  cartItemsList,
-  setHasChange,
-  discount,
   setIsOpenReturnExchange,
-  setIsCreateOpenDraft,
-  setInputDiscount,
   setIsOpenDraft,
-  printContainer,
-  markingsList,
-  liteOrder,
-  setLiteOrder,
-  childRef,
-  maxAmount,
-  setMaxAmount,
 }) {
+  const methods = useForm()
+  const { control } = methods
   const { t } = useTranslation()
-  const theme = useTheme()
-  const [collapseDiscount, setCollapseDiscount] = useState(false)
-  const [collapsedSale, setCollapsedSale] = useState(false)
   const { id } = useParams()
-  const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
   const [bonusTableHeight, setBonusTableHeight] = useState(0)
+
   useEffect(() => {
     setBonusTableHeight(getDynamicBonusTableHeight(userData, get(customerId, 'name', false), dmedPrescriptionsList))
   }, [customerId, dmedOrganizedList])
-  const {
-    data: sellerBonus,
-    isLoading: sellerBonusLoading,
-    isFetching: isFetchingsellerBonus,
-    refetch,
-  } = useQuery(['sellerBonus'], () => requests.getSellerBonusData())
 
+  const { data: sellerBonus } = useQuery(['sellerBonus'], () => requests.getSellerBonusData())
   const leftZreportCount = localStorage.getItem('leftZreportCount')
+
   useEffect(() => {
     let send_to_epos = localStorage.getItem('send_to_epos')
     setSendToEpos(JSON.parse(send_to_epos) ?? true)
   }, [])
+
   useEffect(() => {
     if (typeof sendToEpos == 'boolean') localStorage.setItem('send_to_epos', sendToEpos)
     else localStorage.setItem('send_to_epos', true)
   }, [sendToEpos])
-  const methods = useForm()
 
-  const { control } = methods
   const CustomButtonRow = ({ onClick, leftIcon, title, isLast = false, accessId = 'no-access' }) => (
     <CheckAccess id={accessId}>
       <Box
@@ -422,7 +384,7 @@ function CartDetailSide({
           control={control}
           uncontrolled
           defaultValue={serviceType || 'other'}
-          onChange={(value) => setServiceType(value)} // Add this line
+          onChange={(value) => setServiceType(value)}
           options={[
             {
               title: t('Другой'),
@@ -481,77 +443,6 @@ function CartDetailSide({
         </Typography>
       </Box>
       <BonusProductTable customerId={customerId} bonusTableHeight={bonusTableHeight} />
-      {/* <CheckAccess id={'new-sale-discount'}>
-        <Box onClick={() => setCollapseDiscount((p) => !p)} width={'100%'} display={'flex'} justifyContent={'space-between'}>
-          <Label>{t('discount')}</Label>
-          <Box
-            sx={{
-              width: '20px',
-              height: '20px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '50%',
-              backgroundColor: 'bg.10',
-            }}
-          >
-            {collapseDiscount ? <ArrowDown color='#111217' /> : <ArrowUp color='#111217' />}{' '}
-          </Box>
-        </Box>
-        {collapseDiscount && (
-          <Box display={'flex'} alignItems={'center'}>
-            <OutLineTextFieldThousand
-              setValue={(e) => changeDiscountDebounce(e)}
-              value={inputDiscount}
-              type={'number'}
-              fullWidth
-              name='discount'
-              label={''}
-              uncontrolled
-              placeholder='Введите скидку'
-            />
-            <Box ml={'8px'}>
-              <InputSwitch
-                uncontrolled
-                id='app-type'
-                noMarginTop
-                name='app-type'
-                style={{ width: 'auto' }}
-                defaultValue={discount}
-                onChange={setDiscountType}
-                options={[
-                  { title: '%', value: 'percent' },
-                  { title: 'UZS', value: 'cash' },
-                ]}
-              />
-            </Box>
-          </Box>
-        )}
-        {collapseDiscount && (
-          <Box mt='8px' display={'flex'}>
-            {discount === 'percent' &&
-              [15, 30, 50, 75].map((el, index) => (
-                <Box
-                  sx={{ cursor: 'pointer', color: el === inputDiscount ? 'orange.500' : '#000' }}
-                  onClick={() => setInputDiscount(el)}
-                  className={classes.percent}
-                >
-                  {el}%
-                </Box>
-              ))}
-            {discount === 'cash' &&
-              [5, 10, 50, 100].map((el, index) => (
-                <Box
-                  sx={{ cursor: 'pointer', color: el === inputDiscount / 1000 ? 'orange.500' : '#000' }}
-                  onClick={() => setInputDiscount(`${el}000`)}
-                  className={classes.percent}
-                >
-                  {el}k
-                </Box>
-              ))}
-          </Box>
-        )}
-      </CheckAccess> */}
       {leftZreportCount <= 7 && leftZreportCount != null ? (
         <Box
           sx={{

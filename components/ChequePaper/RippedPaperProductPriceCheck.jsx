@@ -1,10 +1,9 @@
-import { Box, Typography } from '@mui/material'
-import { get } from 'lodash'
-import React from 'react'
-import Barcode from 'react-barcode'
+import thousandDivider from '@utils/thousandDivider';
+import { Box, Typography } from '@mui/material';
+import Barcode from 'react-barcode';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
 
-import dayjs from 'dayjs'
-import thousandDivider from '@utils/thousandDivider'
 
 function RippedPaperProductPriceCheck({ data, printContainer }) {
   return (
@@ -29,7 +28,6 @@ function RippedPaperProductPriceCheck({ data, printContainer }) {
           width={'100%'}
           sx={{
             display: 'flex',
-            justifyContent: 'space-between',
             alignItems: 'start',
             padding: '0 10px 0 0',
             justifyContent: 'start',
@@ -40,7 +38,6 @@ function RippedPaperProductPriceCheck({ data, printContainer }) {
           <Box
             sx={{
               display: 'flex',
-              justifyContent: 'space-between',
               alignItems: 'end',
               justifyContent: 'start',
               width: '100%',

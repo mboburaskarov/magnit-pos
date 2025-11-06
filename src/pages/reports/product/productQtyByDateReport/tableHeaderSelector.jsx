@@ -1,28 +1,17 @@
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
-import { Box, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get, head } from 'lodash'
-import { memo } from 'react'
-import Highlighter from 'react-highlight-words'
-import { useNavigate } from 'react-router-dom'
-import StatusCell from '../../../../../components/AgGridTable/Cells/StatusCell'
-import StyledTooltip from '../../../../../components/StyledTooltip'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import { products_statuses } from '../../../../assets/data/products-statuses'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
+import { products_statuses } from '@/assets/data/products-statuses';
+import StatusCell from '@components/AgGridTable/Cells/StatusCell';
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
+import StyledTooltip from '@components/StyledTooltip';
+import Highlighter from 'react-highlight-words';
+import { Box, Typography } from '@mui/material';
+import { useTheme } from '@mui/styles';
+import { get, head } from 'lodash';
+import { memo } from 'react';
+import dayjs from 'dayjs';
 
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
 
-const Image = ({ data, rowIndex, setImages, setOpenErrorReason }) => {
+const Image = ({ data, setImages }) => {
   return (
     <Box
       onClick={() => setImages({ data: data?.photos })}
@@ -129,23 +118,8 @@ const CustomHeader = (props) => {
     </Box>
   )
 }
-export default function tableHeaderSelector({
-  productsColumns,
-  values,
-  setOpenPerPack,
-  setImages,
-  editable = false,
-  t,
-  setOrderStoring,
-  orderStoring,
-  setMarkingRequired,
-  setOpenErrorReason,
-  setOpenConfirmDialog,
-  setOpenProductDrawer,
-  changeBarcode,
-}) {
+export default function tableHeaderSelector({ productsColumns, values, setImages, editable = false, t, setOrderStoring, orderStoring, setOpenProductDrawer }) {
   const theme = useTheme()
-  const navigate = useNavigate()
   const getDateColor = (date) => {
     if (date >= 90) return { color: theme.palette.green[700] }
     if (date > 60 && date < 90) return { color: theme.palette.orange[400] }
@@ -159,7 +133,7 @@ export default function tableHeaderSelector({
         headerName: t('table_columns.photo'),
         colId: el.field,
         suppressCellFlash: true,
-        cellRenderer: memo((p) => <Image setOpenErrorReason={setOpenErrorReason} {...p} setImages={setImages} />),
+        cellRenderer: memo((p) => <Image setOpenErrorReason={() => {}} {...p} setImages={setImages} />),
       }
     }
     if (el.field === 'name') {
@@ -407,7 +381,7 @@ export default function tableHeaderSelector({
         cellRenderer: memo((p) => (
           <Box sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <input
-              onChange={(e) => setMarkingRequired({ is_marking: e.target.checked, product_id: p.data.id })}
+              onChange={(e) => () => {}}
               defaultChecked={get(p, 'data.is_marking', false)}
               name='checkbox_zero'
               className='customCheckbox'
@@ -426,7 +400,7 @@ export default function tableHeaderSelector({
         cellRenderer: memo((p) => (
           <Box sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <input
-              onChange={(e) => setMarkingRequired({ is_checking: e.target.checked, product_id: p.data.product_id, id: p.data.id })}
+              onChange={(e) => () => {}}
               defaultChecked={get(p, 'data.is_checking', false)}
               name='checkbox_zero2'
               className='customCheckbox'
@@ -441,33 +415,7 @@ export default function tableHeaderSelector({
         ...el,
         headerName: t('table_columns.actions'),
         colId: el.field,
-        cellRenderer: memo(({ data }) => (
-          <Box display='inline-flex' columnGap={'8px'}>
-            {/* {data?.unit_per_pack <= 1 && (
-              <CheckAccess id={'edit-product-unitperpaack'}>
-                <IconButton onClick={() => setOpenPerPack({ id: data?.id, name: data?.name })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-                  <AccountTreeIcon style={{ color: 'red', fill: 'green', width: 40 }} />
-                </IconButton>
-              </CheckAccess>
-            )}
-            <CheckAccess id={'edit-product'}>
-              <IconButton onClick={() => navigate(`/products/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-                <EditIcon />
-              </IconButton>
-            </CheckAccess>
-
-            <CheckAccess id={'delete-product'}>
-              <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-                <DeleteIcon />
-              </IconButton>
-            </CheckAccess>
-            <CheckAccess id={'can-alert-error'}>
-              <IconButton onClick={() => setOpenErrorReason(data)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-                <Report color='#fe5000' sx={{ fill: '#fe5000 !important' }} />
-              </IconButton>
-            </CheckAccess> */}
-          </Box>
-        )),
+        cellRenderer: memo(({ data }) => <Box display='inline-flex' columnGap={'8px'}></Box>),
       }
     }
   })

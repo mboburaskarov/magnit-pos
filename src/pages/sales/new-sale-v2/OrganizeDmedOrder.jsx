@@ -1,13 +1,13 @@
-import { DndContext, useDraggable, useDroppable } from '@dnd-kit/core'
-import { Box, Button, Dialog, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { DndContext, useDraggable, useDroppable } from '@dnd-kit/core';
+import { Box, Button, Dialog, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
 
-// 🔹 Draggable Item
+
 function Draggable({ id, label }) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
-    data: { label }, // ✅ attach label here
+    data: { label },
   })
 
   const style = {
@@ -27,7 +27,6 @@ function Draggable({ id, label }) {
   )
 }
 
-// 🔹 Droppable Container
 function Droppable({ id, items, children }) {
   const { isOver, setNodeRef } = useDroppable({ id })
 
@@ -66,18 +65,15 @@ function OrganizeDmedOrder({ open, handleClose, setDmedOrganizedList, medicine, 
     }
   }, [dmedPrescriptionsList, medicine])
 
-  // Handle drag end
   const handleDragEnd = (event) => {
     const { over, active } = event
 
     if (over) {
       setContainers((prev) => {
-        // Remove from old container
         const newContainers = { ...prev }
         for (const key in newContainers) {
           newContainers[key] = newContainers[key].filter((i) => i.id !== active.id)
         }
-        // Add to new container
         newContainers[over.id] = [...newContainers[over.id], { id: active.id, label: active.data.current?.label || active.id }]
         return newContainers
       })
@@ -113,11 +109,9 @@ function OrganizeDmedOrder({ open, handleClose, setDmedOrganizedList, medicine, 
       </Box>
       <Box p={'0 20px'}>
         <DndContext onDragEnd={handleDragEnd}>
-          {/* Outside items */}
           <h2 style={{ margin: '16px 0' }}>Лекарства</h2>
           <Droppable id='outside' items={containers.outside} />
 
-          {/* Containers */}
           <h2 style={{ margin: '16px 0' }}>Рецепты</h2>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {dmedPrescriptionsList?.map((item, ind) => (
@@ -130,7 +124,6 @@ function OrganizeDmedOrder({ open, handleClose, setDmedOrganizedList, medicine, 
           </div>
         </DndContext>
       </Box>
-      {/* Rest of your dialog footer remains the same */}
       <Box
         display={'flex'}
         sx={{
@@ -150,11 +143,7 @@ function OrganizeDmedOrder({ open, handleClose, setDmedOrganizedList, medicine, 
         <Button
           onClick={() => {
             setDmedOrganizedList(
-              Object.entries(containers).flatMap(([key, arr]) =>
-                key === 'outside' // skip "outside"
-                  ? [] // ignore outside
-                  : arr.map((item) => ({ dmedId: Number(key), ...item }))
-              )
+              Object.entries(containers).flatMap(([key, arr]) => (key === 'outside' ? [] : arr.map((item) => ({ dmedId: Number(key), ...item }))))
             )
             handleClose()
           }}

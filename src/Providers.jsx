@@ -1,28 +1,30 @@
-import { CacheProvider } from '@emotion/react'
-import { StyledEngineProvider, ThemeProvider } from '@mui/material'
-import { createTheme } from '@mui/material/styles'
-import dayjs from 'dayjs'
-import 'dayjs/locale/ru'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
-import duration from 'dayjs/plugin/duration'
-import localeData from 'dayjs/plugin/localeData'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import timezone from 'dayjs/plugin/timezone'
-import updateLocale from 'dayjs/plugin/updateLocale'
-import utc from 'dayjs/plugin/utc'
-import { useEffect, useMemo, useState } from 'react'
-import 'react-datepicker/dist/react-datepicker.css'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { ReactQueryDevtools } from 'react-query/devtools'
-import { Provider } from 'react-redux'
-import { createEmotionCache } from '../utils/createEmotionCache'
-import { theme } from './assets/theme'
-import paletteDark from './assets/theme/paletteDark'
-import paletteLight from './assets/theme/paletteLight'
-import ErrorBoundary from './ErrorBoundary'
-import useListenSystemTheme from './hooks/useListenSystemTheme'
-import { useQueryParams } from './hooks/useQueryParams'
-import store from './redux-toolkit/store'
+import 'react-datepicker/dist/react-datepicker.css';
+import 'dayjs/locale/ru';
+
+import { StyledEngineProvider, ThemeProvider } from '@mui/material';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import updateLocale from 'dayjs/plugin/updateLocale';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { useEffect, useMemo, useState } from 'react';
+import { createTheme } from '@mui/material/styles';
+import localeData from 'dayjs/plugin/localeData';
+import { CacheProvider } from '@emotion/react';
+import timezone from 'dayjs/plugin/timezone';
+import duration from 'dayjs/plugin/duration';
+import { Provider } from 'react-redux';
+import utc from 'dayjs/plugin/utc';
+import dayjs from 'dayjs';
+
+import { createEmotionCache } from '../utils/createEmotionCache';
+import useListenSystemTheme from './hooks/useListenSystemTheme';
+import { useQueryParams } from './hooks/useQueryParams';
+import paletteLight from './assets/theme/paletteLight';
+import ErrorBoundary from './ErrorBoundary';
+import store from './redux-toolkit/store';
+import { theme } from './assets/theme';
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -61,7 +63,6 @@ function Providers({ children }) {
   const muiTheme = useMemo(() => {
     const themeObj = theme({
       palette: themeMode === 'dark' ? paletteLight : paletteLight,
-      palette: themeMode === 'dark' ? paletteDark : paletteLight,
       mode: themeMode,
     })
     return createTheme(themeObj)

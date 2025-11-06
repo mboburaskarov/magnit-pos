@@ -1,20 +1,22 @@
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { requests } from '../../../../utils/requests'
-import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/cashBoxShiftHistoryTableColumns'
-import FilterMenu from './FilterMenu'
-import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/cashBoxShiftHistoryTableColumns';
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
+import AgGridTable from '@components/AgGridTable/AgGridTable';
+import LoadingContainer from '@components/LoadingContainer';
+import InputSearch from '@components/Inputs/InputSearch';
+import { Box, Button, Typography } from '@mui/material';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
+import FilterMenuIcon from '@icons/FilterMenuIcon';
+import { useTranslation } from 'react-i18next';
+import { requests } from '@utils/requests';
+import { useTheme } from '@mui/styles';
+import { useQuery } from 'react-query';
+
+import tableHeaderSelector from './tableHeaderSelector';
+import FilterMenu from './FilterMenu';
+
 
 export default function CashShiftHistoryPage() {
   const theme = useTheme()
@@ -33,15 +35,7 @@ export default function CashShiftHistoryPage() {
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
 
       dispatch(changeColumnSequence(formattedData))
     }
@@ -154,8 +148,8 @@ export default function CashShiftHistoryPage() {
             }}
             fullInfoAboutCurrentPage
             emptyTableText={{
-              title: 'Продажи недоступен',
-              description: 'Если вы не можете найти искомый Продажи, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+              title: 'Cмен недоступен',
+              description: '...',
             }}
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             isRefreshing={loading || isFetchingcashShiftHistoryList || cashShiftHistoryListLoading}

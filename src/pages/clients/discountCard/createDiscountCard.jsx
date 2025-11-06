@@ -16,7 +16,10 @@ import CloseIcon from '@icons/CloseIcon'
 
 export default function CreateDiscountCard({ open, refetch, setOpen }) {
   const methods = useForm()
+  const theme = useTheme()
+  const { t } = useTranslation()
   const { reset, control } = methods
+
   const { mutate: createDiscountCard } = useMutation(requests.createDiscountCard, {
     onSuccess: () => {
       setOpen(false)
@@ -45,9 +48,7 @@ export default function CreateDiscountCard({ open, refetch, setOpen }) {
   useEffect(() => {
     reset({}, { keepDirty: true })
   }, [open])
-  const theme = useTheme()
 
-  const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       overflowVisible

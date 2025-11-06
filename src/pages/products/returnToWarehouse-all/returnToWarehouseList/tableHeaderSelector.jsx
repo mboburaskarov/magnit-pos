@@ -1,20 +1,21 @@
-import { Box, IconButton, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import * as qs from 'qs'
-import { memo } from 'react'
-import { useNavigate } from 'react-router-dom'
-import StatusCell from '@components/AgGridTable/Cells/StatusCell'
-import ButtonWithPopup from '@components/Buttons/ButtonWithPopup'
-import CheckAccess from '@components/CheckAccess'
-import StyledTooltip from '@components/StyledTooltip'
-import { returns_list_statuses } from '@/assets/data/return-statuses'
-import ArrowRight from '@icons/ArrowRight'
-import DeleteIcon from '@icons/DeleteIcon'
-import DownloadIcon from '@icons/DownloadIcon'
-import LeftArrowIcon from '@icons/LeftArrow'
-import { useQueryParams } from '@hooks/useQueryParams'
-import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
+import { returns_list_statuses } from '@/assets/data/return-statuses';
+import StatusCell from '@components/AgGridTable/Cells/StatusCell';
+import ButtonWithPopup from '@components/Buttons/ButtonWithPopup';
+import { Box, IconButton, Typography } from '@mui/material';
+import { useQueryParams } from '@hooks/useQueryParams';
+import StyledTooltip from '@components/StyledTooltip';
+import CheckAccess from '@components/CheckAccess';
+import DownloadIcon from '@icons/DownloadIcon';
+import { useNavigate } from 'react-router-dom';
+import LeftArrowIcon from '@icons/LeftArrow';
+import DeleteIcon from '@icons/DeleteIcon';
+import ArrowRight from '@icons/ArrowRight';
+import { memo } from 'react';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+import * as qs from 'qs';
+
 
 export default function tableHeaderSelector({ importsColumns, t, downloadNakladnoy, setOpenConfirmDialog }) {
   const { values } = useQueryParams()
@@ -348,7 +349,7 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
                       marginRight: '5px',
                       width: '38px',
                       border: '1px solid transparent !important',
-                      '& svg:first-child': {
+                      '& svg:first-of-type': {
                         fill: '#07259c !important',
                       },
                     }}
@@ -392,7 +393,7 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
                     height: 40,
                     borderRadius: 3,
                     p: '8px',
-                    '& svg:first-child': {
+                    '& svg:first-of-type': {
                       fill: '#fe5000 !important',
                     },
                   }}

@@ -1,10 +1,12 @@
-import { Box, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useTranslation } from 'react-i18next'
-import BagOutline from '../../../src/assets/icons/BagOutline'
-import thousandDivider from '../../../utils/thousandDivider'
+import thousandDivider from '@utils/thousandDivider';
+import { Box, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import BagOutline from '@icons/BagOutline';
+import { makeStyles } from '@mui/styles';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
+
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {
     backgroundColor: '#fff ',

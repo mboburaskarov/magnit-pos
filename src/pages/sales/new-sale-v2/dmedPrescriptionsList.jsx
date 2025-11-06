@@ -1,6 +1,7 @@
-import { Close } from '@mui/icons-material'
-import { Box } from '@mui/material'
-import Label from '../../../../components/Label'
+import { Close } from '@mui/icons-material';
+import Label from '@components/Label';
+import { Box } from '@mui/material';
+
 
 function DmedPrescriptionsList({ data, setDmedPrescriptionsList }) {
   return (

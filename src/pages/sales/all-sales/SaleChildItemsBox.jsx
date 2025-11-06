@@ -1,9 +1,11 @@
-import { Box, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { get, size } from 'lodash'
-import CustomImg from '../../../../components/CustomImg'
-import thousandDivider from '../../../../utils/thousandDivider'
-import DefaultImgIcon from '../../../assets/icons/defaultImgIcon'
+import thousandDivider from '@utils/thousandDivider';
+import DefaultImgIcon from '@icons/defaultImgIcon';
+import { Box, Typography } from '@mui/material';
+import CustomImg from '@components/CustomImg';
+import { makeStyles } from '@mui/styles';
+import { get, size } from 'lodash';
+
+
 const useStyles = makeStyles((theme) => ({
   productImg: {
     width: '75px',

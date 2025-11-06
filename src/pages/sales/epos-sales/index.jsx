@@ -1,20 +1,22 @@
-import { Box, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { useMutation, useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRangeInput'
-import { requests } from '../../../../utils/requests'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { error } from '../../../../utils/toast'
-import { useQueryParams } from '../../../hooks/useQueryParams'
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
+import AgGridTable from '@components/AgGridTable/AgGridTable';
+import { useQueryParams } from '@hooks/useQueryParams';
+import thousandDivider from '@utils/thousandDivider';
+import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { Box, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { requests } from '@utils/requests';
+import { error } from '@utils/toast';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
 
 export default function EposSales({ id }) {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const navigate = useNavigate()
+
   const productHistoryFilter = useMemo(() => {
     return {
       limit: values?.limitHistory || 5,
@@ -30,6 +32,8 @@ export default function EposSales({ id }) {
     isFetching: isFetchingproductDataHistory,
     refetch,
   } = useQuery(['epos-sales-productDataHistory', productHistoryFilter], () => requests.getSingleProductMovement(productHistoryFilter, id))
+
+  const formattedData = productDataHistory?.data?.data?.data
 
   useEffect(() => {
     const count = productDataHistory?.data?.data?._meta?.total_count
@@ -55,6 +59,7 @@ export default function EposSales({ id }) {
       console.error('err', err)
     },
   })
+
   useEffect(() => {
     closeZReport({
       token: 'DXJFX32CN1296678504F2',
@@ -66,6 +71,7 @@ export default function EposSales({ id }) {
           : `${values?.end_date.replaceAll('-', '')}000000`,
     })
   }, [])
+
   const columns = useMemo(
     () => [
       {
@@ -128,7 +134,6 @@ export default function EposSales({ id }) {
             </Box>
           </>
         ),
-        // <Typography>{get(data, 'import.accepted_count')}</Typography>,
       },
       {
         headerName: 'Цена',
@@ -145,7 +150,6 @@ export default function EposSales({ id }) {
             </Box>
           </>
         ),
-        // <Typography>{get(data, 'import.accepted_count')}</Typography>,
       },
       {
         headerName: 'Aптека',
@@ -158,8 +162,6 @@ export default function EposSales({ id }) {
     ],
     []
   )
-
-  const formattedData = productDataHistory?.data?.data?.data
 
   return (
     <Box mt={'16px'}>

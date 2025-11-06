@@ -1,6 +1,8 @@
-import { Box, Grid, Typography } from '@mui/material'
-import { get } from 'lodash'
-import thousandDivider from '@utils/thousandDivider'
+import { Box, Grid, Typography } from '@mui/material';
+import thousandDivider from '@utils/thousandDivider';
+import { get } from 'lodash';
+
+
 const PaymentTypeBox = ({ pay }) => (
   <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'white', borderRadius: '16px', p: '20px', height: '92px' }}>
     <Box sx={{ display: 'flex', alignItems: 'center' }}>

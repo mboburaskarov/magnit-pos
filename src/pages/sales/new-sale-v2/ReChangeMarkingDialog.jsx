@@ -1,14 +1,15 @@
-import { ArrowRightAlt } from '@mui/icons-material'
-import { Box, Button, Dialog, Typography } from '@mui/material'
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation } from 'react-query'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
+import { Box, Button, Dialog, Typography } from '@mui/material';
+import { ArrowRightAlt } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { error, success } from '@utils/toast';
+import { requests } from '@utils/requests';
+import { useMutation } from 'react-query';
+
+
 function ReChangeMarkingDialog({ open, handleClose, saveNewChangedMarking, refetchcartItemsList }) {
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const { t } = useTranslation()
-  const { mutate: confirmAslName, isLoading: isconfirmAslName } = useMutation(requests.confirmAslName, {
+
+  const { mutate: confirmAslName } = useMutation(requests.confirmAslName, {
     onSuccess: ({ data }) => {
       refetchcartItemsList()
       handleClose()
@@ -20,6 +21,7 @@ function ReChangeMarkingDialog({ open, handleClose, saveNewChangedMarking, refet
       console.error('err', err)
     },
   })
+
   return (
     <Dialog
       sx={{

@@ -2,12 +2,10 @@ import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { formatPhoneNumber } from '@utils/formatPhoneNumber'
-import thousandDivider from '@utils/thousandDivider'
 import { formatDate } from '@utils/validateDate'
 import DeleteIcon from '@icons/DeleteIcon'
 import EditIcon from '@icons/EditIcon'
 import { SimpleText } from '../../../components/AgGridTable/Cells/SimpleText'
-import { CardGiftcard } from '@mui/icons-material'
 
 export default function tableHeaderSelector({ clientsColumns, values, selectClientsFunc, t, setOpenConfirmDialog, setOpenClientCreateMini }) {
   const columns = clientsColumns?.map((el) => {

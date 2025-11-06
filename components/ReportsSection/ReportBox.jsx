@@ -1,11 +1,13 @@
-import { ArrowRightAltTwoTone } from '@mui/icons-material'
-import { Box, Typography } from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
-import colors from '../../src/assets/theme/mui.config'
-import useStyles from './useStyles'
+import { ArrowRightAltTwoTone } from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-export default function ReportBox({ type = 'menu.reports.report', title, desc, to, checkSlug, color }) {
+import colors from '../../src/assets/theme/mui.config';
+import useStyles from './useStyles';
+
+
+export default function ReportBox({ type = 'menu.reports.report', title, desc, to, checkslug, color }) {
   const { t } = useTranslation()
   const classes = useStyles({
     color,
@@ -19,7 +21,7 @@ export default function ReportBox({ type = 'menu.reports.report', title, desc, t
       </Box>
       <Typography variant='h4'>{title}</Typography>
       <Typography mb={'10px'}>{desc}</Typography>
-      <Link to={to} checkSlug={checkSlug}>
+      <Link to={to} checkslug={checkslug}>
         {t('menu.reports.go_to_report')} <ArrowRightAltTwoTone fill={colors.blue[500]} />
       </Link>
     </Box>

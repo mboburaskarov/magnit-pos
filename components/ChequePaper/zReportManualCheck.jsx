@@ -1,8 +1,8 @@
-import { Box, Divider, Typography } from '@mui/material'
-import { get } from 'lodash'
-import React from 'react'
-import { useSelector } from 'react-redux'
-import thousandDivider from '@utils/thousandDivider'
+import { Box, Divider, Typography } from '@mui/material';
+import thousandDivider from '@utils/thousandDivider';
+import { useSelector } from 'react-redux';
+import { get } from 'lodash';
+
 
 function ZReportManualCheck({ data, printContainer }) {
   const userData = useSelector((state) => state.user)
@@ -32,12 +32,10 @@ function ZReportManualCheck({ data, printContainer }) {
         }}
         ref={printContainer}
       >
-        {/* Body */}
         <Box
           width={'100%'}
           sx={{
             display: 'flex',
-            justifyContent: 'space-between',
             alignItems: 'start',
             justifyContent: 'start',
             flexDirection: 'column',

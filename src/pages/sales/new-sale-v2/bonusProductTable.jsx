@@ -1,13 +1,14 @@
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, CircularProgress } from '@mui/material'
-import React, { useCallback, useRef, useEffect } from 'react'
-import { requests } from '../../../../utils/requests'
-import { useInfiniteQuery } from 'react-query'
-import { get, size } from 'lodash'
-import SortUpIcon from '../../../assets/icons/dashboard/SortUpIcon'
-import SortDownIcon from '../../../assets/icons/dashboard/SortDownIcon'
-import SortIcon from '../../../assets/icons/dashboard/SortIcon'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { useWindowHeight } from '../../../hooks/useWindowHeight'
+import { Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import SortDownIcon from '@icons/dashboard/SortDownIcon';
+import { useWindowHeight } from '@hooks/useWindowHeight';
+import { useCallback, useEffect, useRef } from 'react';
+import thousandDivider from '@utils/thousandDivider';
+import SortUpIcon from '@icons/dashboard/SortUpIcon';
+import SortIcon from '@icons/dashboard/SortIcon';
+import { useInfiniteQuery } from 'react-query';
+import { requests } from '@utils/requests';
+import { get } from 'lodash';
+
 
 const BonusTableRow = ({ item, product }) => (
   <TableRow

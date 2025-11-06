@@ -1,26 +1,29 @@
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import { get } from 'lodash'
-import * as qs from 'qs'
-import { useEffect } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import InputRange from '../../../../../components/Inputs/InputRange'
-import LazySelect from '../../../../../components/Select/LazySelect'
-import SelectSimple from '../../../../../components/Select/SelectSimple'
-import getOptionsFromUrlParam from '../../../../../utils/getOptionsFromUrlParam'
-import { requests } from '../../../../../utils/requests'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
+import getOptionsFromUrlParam from '@utils/getOptionsFromUrlParam';
+import SelectSimple from '@components/Select/SelectSimple';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Box, Button, Typography } from '@mui/material';
+import LazySelect from '@components/Select/LazySelect';
+import InputRange from '@components/Inputs/InputRange';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { requests } from '@utils/requests';
+import CloseIcon from '@icons/CloseIcon';
+import { useTheme } from '@mui/styles';
+import { useQuery } from 'react-query';
+import { useEffect } from 'react';
+import { get } from 'lodash';
+import * as qs from 'qs';
+
 
 export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
   const { formState, reset } = methods
+  const { t } = useTranslation()
+  const theme = useTheme()
 
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 100, offset: 0 }))
   const { data: categories } = useQuery('categories', () => requests.getAllCategories({ id: values?.category_id }), {
@@ -92,7 +95,6 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
     shopList,
     open,
   ])
-  const theme = useTheme()
 
   const resetFilter = () => {
     reset(
@@ -109,7 +111,6 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
     setOpen(false)
     navigate(`/reports/product-qty-by-date?offset=0&limit=${values?.limit || 5}`)
   }
-  const { t } = useTranslation()
   const barcodeFilterList = [
     { name: 'Без штрих-кода', id: '1' },
     { name: 'Со штрих-кодом', id: '2' },

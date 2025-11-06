@@ -1,9 +1,11 @@
-import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material'
-import { Box, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { memo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import ShortcutWrapper from '../ShortcutWrapper'
+import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { makeStyles } from '@mui/styles';
+import { memo, useState } from 'react';
+
+import ShortcutWrapper from '../ShortcutWrapper';
+
 
 const ShortcutsDrawerArray = [
   {
@@ -214,7 +216,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     flexDirection: 'row',
     marginTop: 17,
-    '&:first-child': {
+    '&:first-of-type': {
       marginTop: 26,
     },
   },

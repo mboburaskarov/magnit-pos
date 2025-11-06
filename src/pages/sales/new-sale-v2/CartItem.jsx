@@ -1,36 +1,16 @@
-import React, { useState } from 'react'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  TextField,
-  Box,
-  Typography,
-  useMediaQuery,
-  useTheme,
-  Card,
-  CardContent,
-  Grid,
-} from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
-import CustomImg from '../../../../components/CustomImg'
-import InputQuantity from '../../../../components/Inputs/InputQuantity'
-import { get } from 'lodash'
-import { makeStyles } from '@mui/styles'
-import DeleteIconBig from '../../../assets/icons/DeleteIconBig'
-import DeleteMiddleIcon from '../../../assets/icons/DeleteMiddleIcon'
-import TrashIcon from '../../../assets/icons/TrashIcon'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { useMutation } from 'react-query'
-import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
-import PrizeBoxIcon from '../../../assets/icons/PrizeBoxIcon'
-import GiftIcon from '../../../assets/icons/GiftIcon'
+import { Box, TableCell, TableRow, Typography, useTheme } from '@mui/material';
+import InputQuantity from '@components/Inputs/InputQuantity';
+import thousandDivider from '@utils/thousandDivider';
+import CustomImg from '@components/CustomImg';
+import { requests } from '@utils/requests';
+import { useMutation } from 'react-query';
+import TrashIcon from '@icons/TrashIcon';
+import { makeStyles } from '@mui/styles';
+import GiftIcon from '@icons/GiftIcon';
+import { error } from '@utils/toast';
+import { get } from 'lodash';
+
+
 export const useStyles = makeStyles((theme) => ({
   root: {
     padding: 16,
@@ -52,7 +32,6 @@ export const useStyles = makeStyles((theme) => ({
         lineHeight: '28px',
       },
       borderRadius: '12px',
-      // border: 'none',
     },
     '& .MuiFormControl-root': {
       backgroundColor: 'transparent !important',
@@ -72,9 +51,7 @@ export const useStyles = makeStyles((theme) => ({
     },
   },
   content: {
-    // display: 'flex',
     width: '100%',
-    // marginLeft: 12,
   },
   details: {
     display: 'flex',
@@ -107,7 +84,6 @@ export const useStyles = makeStyles((theme) => ({
     minWidth: 0,
     display: 'flex',
     marginBottom: '3px',
-    // flexDirection: 'column',
     justifyContent: 'space-between',
 
     '& p': {
@@ -117,7 +93,6 @@ export const useStyles = makeStyles((theme) => ({
       overflow: 'hidden',
       'text-overflow': 'ellipsis',
       margin: 0,
-      // maxWidth: 300,
       fontWeight: 600,
       fontSize: 16,
       lineHeight: '19px',
@@ -250,19 +225,7 @@ export const useStyles = makeStyles((theme) => ({
     fontFamily: theme.fontFamily.Inter,
   },
 }))
-export default function CartItem({
-  index,
-  searchRef,
-  packRef = () => {},
-  setOpenProductDrawer,
-  unitRef,
-
-  refetchcartItemsList,
-  method,
-  item,
-  setOpenConfirmDialog,
-  removeMarking,
-}) {
+export default function CartItem({ index, searchRef, packRef = () => {}, unitRef, refetchcartItemsList, method, item, setOpenConfirmDialog, removeMarking }) {
   const theme = useTheme()
   const cls = useStyles()
 
@@ -289,14 +252,14 @@ export default function CartItem({
       console.error('err', err)
     },
   })
+
   return (
     <TableRow
       key={item.id}
       className='table-row'
       sx={{
         height: '80px',
-        '& td': { padding: '0px', textAlign: 'left !important' },
-        '& td': { border: 'none' },
+        '& td': { padding: '0px', border: 'none', textAlign: 'left !important' },
       }}
     >
       <TableCell>
@@ -370,13 +333,7 @@ export default function CartItem({
             defaultValue={get(item, 'quantity', 0)}
             type='number'
             disabled={false}
-            // onFocus={({ target }) => {
-            //   method.setValue(`quantity_${item?.id}`, '')
-            // }}
             onBlur={({ target }) => {
-              // if (Number(get(target, 'value')) == '') {
-              //   method.setValue(`quantity_${item?.id}`, get(item, 'quantity', 0))
-              // }
               if (get(item, 'quantity') == Number(get(target, 'value'))) {
                 return
               }
@@ -466,17 +423,10 @@ export default function CartItem({
             inputRef={(e) => unitRef(e)}
             adornmentClassName={cls.adornment}
             max={100}
-            // onFocus={({ target }) => {
-            //   method.setValue(`unit_quantity_${item?.id}`, '')
-            // }}
             onBlur={({ target }) => {
-              // if (Number(get(target, 'value')) == '') {
-              //   method.setValue(`unit_quantity_${item?.id}`, get(item, 'unit_quantity', 1))
-              // }
               if (get(item, 'unit_quantity') == Number(get(target, 'value'))) {
                 return
               }
-
               if (method.getValues(`quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
                 method.setValue(`unit_quantity_${item?.id}`, get(target, 'value'))
               } else {

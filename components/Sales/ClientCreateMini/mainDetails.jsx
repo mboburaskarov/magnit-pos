@@ -1,20 +1,21 @@
-import { Box, Button, Grid, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import dayjs from 'dayjs'
-import React, { useEffect, useState } from 'react'
-import { useFormContext } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { requests } from '../../../utils/requests'
-import InputDatePicker from '../../Inputs/InputDatePicker'
-import InputSwitchNew from '../../Inputs/InputSwitch'
-import InputPhone from '../../Inputs/PhoneNumber'
-import TextField from '../../Inputs/TextField'
-import LazySelect from '../../Select/LazySelect'
-import { get } from 'lodash'
-import LoyalCard from './loyalCard'
-import DiscountCard from './discountCard'
-import { useMutation } from 'react-query'
-import { error, success } from '@utils/toast'
+import { Box, Grid, Typography } from '@mui/material';
+import { useFormContext } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
+import { makeStyles } from '@mui/styles';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
+import InputDatePicker from '../../Inputs/InputDatePicker';
+import InputSwitchNew from '../../Inputs/InputSwitch';
+import { requests } from '../../../utils/requests';
+import InputPhone from '../../Inputs/PhoneNumber';
+import LazySelect from '../../Select/LazySelect';
+import TextField from '../../Inputs/TextField';
+import DiscountCard from './discountCard';
+import LoyalCard from './loyalCard';
+
+
 const useStyles = makeStyles((theme) => ({
   card: {
     display: 'flex',
@@ -41,7 +42,6 @@ export default function MainDetails({ setCustomerId, setOpenDrawer, quickCreateC
   const [loyalCardType, setloyalCardType] = useState('byHand')
   const { control, errors, setValue } = useFormContext()
   const { t } = useTranslation()
-  console.log(openDrawer)
 
   useEffect(() => {
     setValue('dial_code', '+998')

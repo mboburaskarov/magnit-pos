@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Typography, LinearProgress } from '@mui/material'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import SuccessIcon from '../../../assets/icons/SuccessIcon'
-import ErrorIcon from '../../../assets/icons/ErrorIcon'
+import { Box, LinearProgress, Typography } from '@mui/material';
+import SuccessIcon from '@icons/SuccessIcon';
+import { useEffect, useState } from 'react';
+import ErrorIcon from '@icons/ErrorIcon';
+
 
 export default function SaleProgressSteps({
   isFinishSaleWithoutAppPaymentType,
@@ -29,7 +29,6 @@ export default function SaleProgressSteps({
 
   // Qaysi step active ekanini aniqlash
   let currentStep = null
-  let currentProgress = 0
 
   if (isFinishSaleWithoutAppPaymentType) {
     currentStep = {
@@ -80,7 +79,6 @@ export default function SaleProgressSteps({
       }}
     >
       {isCompleted ? (
-        // Step 4: Завершено
         <Box
           sx={{
             backgroundColor: '#fff',
@@ -123,7 +121,6 @@ export default function SaleProgressSteps({
           </Typography>
         </Box>
       ) : (
-        // Steps 1-3: Active step
         <Box
           sx={{
             backgroundColor: '#fff',
@@ -145,7 +142,6 @@ export default function SaleProgressSteps({
           </Typography>
 
           <Box sx={{ position: 'relative', marginBottom: '16px' }}>
-            {/* Background pattern uchun progress bar */}
             <Box
               sx={{
                 height: 12,

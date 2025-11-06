@@ -1,20 +1,22 @@
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
-import AccountTreeIcon from '@mui/icons-material/AccountTree'
-import { Box, IconButton, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get, head } from 'lodash'
-import { memo } from 'react'
-import Highlighter from 'react-highlight-words'
-import { useNavigate } from 'react-router-dom'
-import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
-import CheckAccess from '../../../components/CheckAccess'
-import CustomImg from '../../../components/CustomImg'
-import StyledTooltip from '../../../components/StyledTooltip'
-import thousandDivider from '../../../utils/thousandDivider'
-import { products_statuses } from '../../assets/data/products-statuses'
-import DeleteIcon from '../../assets/icons/DeleteIcon'
-import EditIcon from '../../assets/icons/EditIcon'
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import { Box, IconButton, Typography } from '@mui/material';
+import Highlighter from 'react-highlight-words';
+import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/styles';
+import { get, head } from 'lodash';
+import { memo } from 'react';
+import dayjs from 'dayjs';
+
+import StatusCell from '../../../components/AgGridTable/Cells/StatusCell';
+import { products_statuses } from '../../assets/data/products-statuses';
+import StyledTooltip from '../../../components/StyledTooltip';
+import thousandDivider from '../../../utils/thousandDivider';
+import CheckAccess from '../../../components/CheckAccess';
+import DeleteIcon from '../../assets/icons/DeleteIcon';
+import CustomImg from '../../../components/CustomImg';
+import EditIcon from '../../assets/icons/EditIcon';
+
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -407,13 +409,13 @@ export default function tableHeaderSelector({
 
         cellRenderer: memo((p) => (
           <Box sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <input
+            {/* <input
               onChange={(e) => setMarkingRequired({ is_marking: e.target.checked, product_id: p.data.id })}
               defaultChecked={get(p, 'data.is_marking', false)}
               name='checkbox_zero'
               className='customCheckbox'
               type='checkbox'
-            />
+            /> */}
           </Box>
         )),
       }
@@ -426,13 +428,13 @@ export default function tableHeaderSelector({
 
         cellRenderer: memo((p) => (
           <Box sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <input
+            {/* <input
               onChange={(e) => setMarkingRequired({ is_checking: e.target.checked, product_id: p.data.product_id, id: p.data.id })}
               defaultChecked={get(p, 'data.is_checking', false)}
               name='checkbox_zero2'
               className='customCheckbox'
               type='checkbox'
-            />
+            /> */}
           </Box>
         )),
       }

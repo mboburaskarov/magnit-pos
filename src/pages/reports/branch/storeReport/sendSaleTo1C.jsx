@@ -1,20 +1,23 @@
-import { Box, Button } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useMutation } from 'react-query'
-import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
-import { requests } from '@utils/requests'
-import { error, success } from '@utils/toast'
-import CloseIcon from '@icons/CloseIcon'
-import { LoadingButton } from '@mui/lab'
-import InputDatePicker from '@components/Inputs/InputDatePicker'
-import { get } from 'lodash'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
+import InputDatePicker from '@components/Inputs/InputDatePicker';
+import { FormProvider, useForm } from 'react-hook-form';
+import { error, success } from '@utils/toast';
+import { requests } from '@utils/requests';
+import { useMutation } from 'react-query';
+import CloseIcon from '@icons/CloseIcon';
+import { LoadingButton } from '@mui/lab';
+import { useTheme } from '@mui/styles';
+import { Box } from '@mui/material';
+import { useEffect } from 'react';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
 
 export default function SendSaleTo1C({ open, refetch, setOpen }) {
   const methods = useForm()
   const { reset } = methods
+  const theme = useTheme()
+
   const { mutate: sendSaleTo1C, isLoading: isSendSaleTo1CLoading } = useMutation(requests.sendSaleTo1C, {
     onSuccess: () => {
       setOpen(false)
@@ -22,7 +25,6 @@ export default function SendSaleTo1C({ open, refetch, setOpen }) {
       refetch()
     },
     onError: (err) => {
-      console.log(err)
       if (get(err, 'response.data.data') == 'not.enough.product') {
         error('Нет товаров в продажах на указанную дату')
         return
@@ -31,6 +33,7 @@ export default function SendSaleTo1C({ open, refetch, setOpen }) {
       console.error('err', err)
     },
   })
+
   const onSubmit = (data) => {
     const requestBody = {
       send_date: dayjs(data.sale_date).format('YYYY-MM-DD'),
@@ -47,7 +50,6 @@ export default function SendSaleTo1C({ open, refetch, setOpen }) {
   useEffect(() => {
     reset({}, { keepDirty: true })
   }, [open])
-  const theme = useTheme()
 
   return (
     <StyledEmptyDialog

@@ -1,7 +1,9 @@
-import { useTheme } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import paletteDark from '../../src/assets/theme/paletteDark'
-import paletteLight from '../../src/assets/theme/paletteLight'
+import { useTheme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
+import paletteLight from '../../src/assets/theme/paletteLight';
+import paletteDark from '../../src/assets/theme/paletteDark';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -219,7 +221,7 @@ export const generateCustomStyles = (props = {}) => {
       '&:hover': {
         backgroundColor: palette.gray[101],
       },
-      '&:first-child': {
+      '&:first-of-type': {
         borderBottom: withAllSelect && `2px dashed ${palette.gray[200]}`,
       },
     }),

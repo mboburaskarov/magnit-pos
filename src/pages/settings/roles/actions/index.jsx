@@ -1,18 +1,20 @@
-import { Box, Button } from '@mui/material'
-import React, { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import PaginationTable from '@components/AgGridTable/PaginationTable'
-import ConfirmDialog from '@components/ConfirmDialog'
-import InputSearch from '@components/Inputs/InputSearch'
-import { requests } from '@utils/requests'
-import { error, success } from '@utils/toast'
-import BigWarningCircleIcon from '@icons/BigWarningCircleIcon'
-import PlusIcon from '@icons/PlusIcon'
-import useDebouncedValue from '@hooks/useDebouncedValue'
-import { useQueryParams } from '@hooks/useQueryParams'
-import tableHeadersActions from './tableHeadersActions'
-import RolesCreateDrawer from '../RolesCreateDrawer'
+import PaginationTable from '@components/AgGridTable/PaginationTable';
+import BigWarningCircleIcon from '@icons/BigWarningCircleIcon';
+import useDebouncedValue from '@hooks/useDebouncedValue';
+import InputSearch from '@components/Inputs/InputSearch';
+import { useQueryParams } from '@hooks/useQueryParams';
+import ConfirmDialog from '@components/ConfirmDialog';
+import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { useTranslation } from 'react-i18next';
+import { error, success } from '@utils/toast';
+import { Box, Button } from '@mui/material';
+import { requests } from '@utils/requests';
+import PlusIcon from '@icons/PlusIcon';
+
+import tableHeadersActions from './tableHeadersActions';
+import RolesCreateDrawer from '../RolesCreateDrawer';
+
 
 export default function ActionListPage() {
   const queryParams = useQueryParams()
@@ -26,14 +28,15 @@ export default function ActionListPage() {
   const [confirmToDelete, setConfirmToDelete] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
   const [openCreatePermission, setOpenCreatePermission] = useState(false)
+
   const categoryFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      search: values?.search,
       search: searchTerm,
       offset: values?.search ? 0 : values?.offset || 0,
     }
-  }, [values?.offset, searchTerm, values?.limit, values?.search])
+  }, [values?.offset, debouncedSearchTerm, values?.limit, values?.search])
+
   const {
     data: categories,
     refetch: categoriesRefetch,

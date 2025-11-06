@@ -1,16 +1,18 @@
-import { Box, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { get } from 'lodash'
-import { memo } from 'react'
-import { useMutation } from 'react-query'
-import CustomImg from '../../../../components/CustomImg'
-import InputQuantity from './InputQuantity'
-import StyledTooltip from '../../../../components/StyledTooltip'
-import { requests } from '../../../../utils/requests'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { error } from '../../../../utils/toast'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import PrizeBoxIcon from '../../../assets/icons/PrizeBoxIcon'
+import StyledTooltip from '@components/StyledTooltip';
+import thousandDivider from '@utils/thousandDivider';
+import { Box, Typography } from '@mui/material';
+import PrizeBoxIcon from '@icons/PrizeBoxIcon';
+import CustomImg from '@components/CustomImg';
+import DeleteIcon from '@icons/DeleteIcon';
+import { requests } from '@utils/requests';
+import { useMutation } from 'react-query';
+import { makeStyles } from '@mui/styles';
+import { error } from '@utils/toast';
+import { memo } from 'react';
+import { get } from 'lodash';
+
+import InputQuantity from './InputQuantity';
+
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +35,6 @@ export const useStyles = makeStyles((theme) => ({
         lineHeight: '28px',
       },
       borderRadius: '12px',
-      // border: 'none',
     },
     '& .MuiFormControl-root': {
       backgroundColor: 'transparent !important',
@@ -486,7 +487,6 @@ const CartItem = ({
                         textDecoration='line-through'
                         sx={{
                           mr: '10px',
-                          color: 'bunker.200',
                           whiteSpace: 'pre',
                           fontSize: item?.discount_price > 0 ? '14px' : '16px',
                           lineHeight: '24px',
@@ -511,7 +511,6 @@ const CartItem = ({
                       textDecoration='line-through'
                       sx={{
                         mr: '10px',
-                        color: 'orange.500',
                         whiteSpace: 'pre',
                         fontSize: item?.discount_price > 0 ? '14px' : '16px',
                         lineHeight: '24px',

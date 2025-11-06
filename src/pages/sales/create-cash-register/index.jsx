@@ -1,20 +1,22 @@
-import { Box, Button, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { get } from 'lodash'
-import { useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useMutation, useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-import TextField from '../../../../components/Inputs/TextField'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
-import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
-import CartOutlineIcon from '../../../assets/icons/CartOutline'
-import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand';
+import LoadingContainer from '@components/LoadingContainer';
+import SelectSimple from '@components/Select/SelectSimple';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Box, Button, Typography } from '@mui/material';
+import TextField from '@components/Inputs/TextField';
+import { useMutation, useQuery } from 'react-query';
+import MoneyOutlineIcon from '@icons/MoneyOutline';
+import ArrowRightIcon from '@icons/ArrowRightIcon';
+import CartOutlineIcon from '@icons/CartOutline';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import { error } from '@utils/toast';
+import { get } from 'lodash';
+
+
 const useStyles = makeStyles((theme) => ({
   box: {
     display: 'flex',
@@ -79,7 +81,6 @@ function NewCashRegister() {
   const classes = useStyles()
   const userData = useSelector((state) => state.user)
   const navigate = useNavigate()
-  const [isLoading, setIsLoding] = useState(false)
   const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
   const [isEposTurnOn, setisEposTurnOn] = useState(true)
@@ -87,39 +88,32 @@ function NewCashRegister() {
   const { data: registerCashList, refetch: refetchregisterCashList } = useQuery('registerCashList', () =>
     requests.getAllCashBoxList({ store_id: get(userData, 'store.id'), limit: 20, offset: 0 })
   )
-  const {
-    data: registerCashData,
-    refetch: refetchregisterCashData,
-    isLoading: isrRgisterCashDataLoading,
-    isFetched,
-  } = useQuery('registerCashData', () => requests.getRegisterCashData(get(methods.getValues('registerCash_id'), 'id', false)))
+  const { data: registerCashData, refetch: refetchregisterCashData } = useQuery('registerCashData', () =>
+    requests.getRegisterCashData(get(methods.getValues('registerCash_id'), 'id', false))
+  )
 
   const { mutate: checkSaleExist, isLoading: isCheckSaleExist } = useMutation(requests.checkSaleExist, {
     onSuccess: ({ data }) => {
-      setIsLoding(false)
-
       if (get(data, 'data.is_open', false)) {
         navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
       }
     },
     onError: (err) => {
-      setIsLoding(false)
-
-      // error('Ошибка при создании товара!')
       console.error('err', err)
     },
   })
   useEffect(() => {
     const device_id = localStorage.getItem('device_id')
-
     checkSaleExist({ store_id: get(userData, 'store.id'), device_id })
   }, [])
+
   useEffect(() => {
     if (registerCashData) setCanCreate((a) => ({ ...a, canCreate: true }))
   }, [registerCashData])
+
   useEffect(() => {
     refetchregisterCashData().then((data) => {
-      setCanCreate({ canCreate: true, is_open: get(methods.watch('registerCash_id'), 'is_open'), is_open: get(methods.watch('registerCash_id'), 'is_open') })
+      setCanCreate({ canCreate: true, is_open: get(methods.watch('registerCash_id'), 'is_open') })
     })
   }, [methods.watch('registerCash_id')])
 
@@ -167,7 +161,7 @@ function NewCashRegister() {
       console.error('err', err)
     },
   })
-  const { mutate: checkEPOSTurnOn, isLoading: ischeckEPOSTurnOn } = useMutation(requests.checkEPOSTurnOn, {
+  const { mutate: checkEPOSTurnOn } = useMutation(requests.checkEPOSTurnOn, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true)) {
         setisEposTurnOn(false)

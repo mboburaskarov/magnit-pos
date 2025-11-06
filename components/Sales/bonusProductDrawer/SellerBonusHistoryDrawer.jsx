@@ -1,17 +1,18 @@
-import { Box, Drawer, Typography } from '@mui/material'
-import { makeStyles, useTheme } from '@mui/styles'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import CloseIcon from '../../../src/assets/icons/CloseIcon'
-import { useQueryParams } from '../../../src/hooks/useQueryParams'
-import { requests } from '../../../utils/requests'
-import ListWithPagination from '../../AgGridTable/ListWithPagination'
-import DraftChildDrawer from './DraftChildDrawer'
-import ResultItem from './DraftParentItemsBox'
-import AgGridTable from '../../AgGridTable/AgGridTable'
-import { useMutation, useQuery } from 'react-query'
-import { downloadLinkExcel } from '../../../utils/downloadLinkEXCEL'
-import dayjs from 'dayjs'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
+import { Box, Drawer, Typography } from '@mui/material';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { makeStyles, useTheme } from '@mui/styles';
+import { requests } from '@utils/requests';
+import CloseIcon from '@icons/CloseIcon';
+import { error } from '@utils/toast';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
+import AgGridTable from '../../AgGridTable/AgGridTable';
+import DraftChildDrawer from './DraftChildDrawer';
+
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -90,8 +91,8 @@ function SellerBonusHistoryDrawer({ open, setOpen }) {
   }, [values?.search])
 
   const sellerBonusHistoryFilters = useMemo(() => {
-    const ready_start_date = dayjs(values?.start_date);
-    const ready_end_date = dayjs(values?.end_date);
+    const ready_start_date = dayjs(values?.start_date)
+    const ready_end_date = dayjs(values?.end_date)
     return {
       search: values?.search || null,
       limit: values?.bonusLimit,
@@ -119,8 +120,7 @@ function SellerBonusHistoryDrawer({ open, setOpen }) {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
-
+      console.error(err)
       error('Ошибка при скачать excel!')
     },
   })

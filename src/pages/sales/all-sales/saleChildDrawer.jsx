@@ -1,27 +1,27 @@
-import { ChangeCircle } from '@mui/icons-material'
-import { Box, Grid, Typography } from '@mui/material'
-import { makeStyles, useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import { useHotkeys } from 'react-hotkeys-hook'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import { useReactToPrint } from 'react-to-print'
-import { useDebounce } from 'use-debounce'
-import CheckAccess from '../../../../components/CheckAccess'
-import RippedPaperCheckReturn from '../../../../components/ChequePaper/RippedPaperCheckReturn'
-import CustomImg from '../../../../components/CustomImg'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { requests } from '../../../../utils/requests'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { error } from '../../../../utils/toast'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import SaleChildItemsBox from './SaleChildItemsBox'
-import ChangePaymentType from './changePaymentType'
-import { paymentTypes } from '../../../../constants/paymentTypes'
+import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import RippedPaperCheckReturn from '@components/ChequePaper/RippedPaperCheckReturn';
+import LoadingContainer from '@components/LoadingContainer';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { Box, Grid, Typography } from '@mui/material';
+import thousandDivider from '@utils/thousandDivider';
+import { makeStyles, useTheme } from '@mui/styles';
+import { ChangeCircle } from '@mui/icons-material';
+import CheckAccess from '@components/CheckAccess';
+import { useReactToPrint } from 'react-to-print';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { useTranslation } from 'react-i18next';
+import CustomImg from '@components/CustomImg';
+import { useDebounce } from 'use-debounce';
+import { requests } from '@utils/requests';
+import CloseIcon from '@icons/CloseIcon';
+import { useQuery } from 'react-query';
+import { error } from '@utils/toast';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
+import SaleChildItemsBox from './SaleChildItemsBox';
+import ChangePaymentType from './changePaymentType';
+
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 function SaleChildDrawer({ open, childRef, setOpen, ids }) {
+  const theme = useTheme()
   const { t } = useTranslation()
   const { values } = useQueryParams()
   const classes = useStyles()
@@ -70,7 +71,6 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
   const [currentIndex, setcurrentIndex] = useState(0)
   const [qrCodeUrl, setQrcodeUrl] = useState('pending')
   const [debouncedCurrentSaleId] = useDebounce(currentSaleId, 200)
-  const printContainer = useRef()
   const printContainerEmpty = useRef()
   const documentName = useRef('Pharma CHEQUE')
   const reactToPrintContentEmpty = useCallback(() => printContainerEmpty.current, [])
@@ -117,34 +117,25 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
   }, [open])
   useHotkeys(['ArrowRight', 'ArrowLeft'], (key) => {
     if (key.key == 'ArrowRight') {
-      // const currentIndex = ids.findIndex(() => currentSaleId)
       if (ids.length - 1 > currentIndex) {
-        // 🧹 Clear old data
-
-        // 🔄 Update index and ID
         setcurrentIndex((a) => a + 1)
         setCurrentSaleId(ids[currentIndex + 1])
       }
     }
     if (key.key == 'ArrowLeft') {
       refetch()
-      // const currentIndex = ids.findIndex(() => currentSaleId)
       if (currentIndex >= 1) {
-        // 🧹 Clear old data
-
-        // 🔄 Update index and ID
         setcurrentIndex((a) => a - 1)
         setCurrentSaleId(ids[currentIndex - 1])
       }
     }
   })
-  const theme = useTheme()
 
   function maskNumber(num) {
     if (num.length == 0) return '*****'
     const str = String(num)
-    const visible = str.slice(-4) // last 4 digits
-    const hidden = '*'?.repeat(str?.length - 4) // mask the rest
+    const visible = str.slice(-4)
+    const hidden = '*'?.repeat(str?.length - 4)
     return hidden + visible
   }
   const { data: paymentTypeList } = useQuery('paymentTypeList', () => requests.getPaymentTypesList({ limit: 20, offset: 0 }))

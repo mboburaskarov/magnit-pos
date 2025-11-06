@@ -1,16 +1,18 @@
-import { Box, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { t } from 'i18next'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import DateRangeInput from '../../../../../components/Inputs/DateRangeInput/DateRangeInput'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import MultiOptionSelectNew from '../../../../../components/Select/MultiOptionSelectNew'
-import { requests } from '../../../../../utils/requests'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew';
+import AgGridTable from '@components/AgGridTable/AgGridTable';
+import InputSearch from '@components/Inputs/InputSearch';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useEffect, useMemo, useState } from 'react';
+import { Box, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { requests } from '@utils/requests';
+import { useQuery } from 'react-query';
+import { get } from 'lodash';
+import { t } from 'i18next';
+import dayjs from 'dayjs';
+
 
 export default function RemainingStockPage({ id }) {
   const { values } = useQueryParams()
@@ -19,16 +21,10 @@ export default function RemainingStockPage({ id }) {
 
   const navigate = useNavigate()
   const productHistoryFilter = useMemo(() => {
-    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
-    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
     return {
-      start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
-      end_date:
-        values?.end_date && values?.to_time
-          ? ready_start_date?.isSame(ready_end_date)
-            ? dayjs(`${values?.start_date} 23:59:59`).format()
-            : ready_end_date.format()
-          : null,
+      start_date: getFilterStartDate(values),
+
+      end_date: getFilterEndDate(values),
       limit: values?.limitHistory || 5,
       store_id: selectedShops == 'all' ? undefined : selectedShops?.id,
       offset: values?.offsetHistory || 0,

@@ -1,37 +1,16 @@
-import React, { useState } from 'react'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  TextField,
-  Box,
-  Typography,
-  useMediaQuery,
-  useTheme,
-  Card,
-  CardContent,
-  Grid,
-} from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
-import CartItem from './CartItem'
-import { get } from 'lodash'
+import { Box, Table, TableBody } from '@mui/material';
+import { get } from 'lodash';
+
+import CartItem from './CartItem';
+
 
 export default function CartItems({
-  index,
   searchRef,
   cartItemRef,
-  packRef = () => {},
   setOpenProductDrawer,
-  unitRef,
   cartItemsList,
   refetchcartItemsList,
   method,
-  item,
   markingsList,
   setOpenConfirmDialog,
   removeMarking,
@@ -107,7 +86,6 @@ export default function CartItems({
                 removeMarking={removeMarking}
                 searchRef={searchRef}
                 setOpenProductDrawer={setOpenProductDrawer}
-                // onKeyDown={(e) => handleTabSwitch(e, el?.id)}
                 refetchcartItemsList={refetchcartItemsList}
                 method={method}
                 setOpenConfirmDialog={setOpenConfirmDialog}

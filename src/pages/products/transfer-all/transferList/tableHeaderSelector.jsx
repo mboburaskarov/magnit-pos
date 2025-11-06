@@ -1,19 +1,20 @@
-import { Box, IconButton, Typography } from '@mui/material'
-import { get } from 'lodash'
-import { memo } from 'react'
-import { useNavigate } from 'react-router-dom'
-import CheckAccess from '@components/CheckAccess'
-import StyledTooltip from '@components/StyledTooltip'
-import ArrowRight from '@icons/ArrowRight'
-import DeleteIcon from '@icons/DeleteIcon'
-import DownloadIcon from '@icons/DownloadIcon'
-import LeftArrowIcon from '@icons/LeftArrow'
-import { useQueryParams } from '@hooks/useQueryParams'
-import FolderSearch from '@icons/step-progress/FolderSearch'
-import SentFastIcon from '@icons/step-progress/SentFast'
-import TimeQuarterIcon from '@icons/step-progress/TimeQuarter'
-import TickIcon from '@icons/step-progress/Tick'
-import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
+import TimeQuarterIcon from '@icons/step-progress/TimeQuarter';
+import FolderSearch from '@icons/step-progress/FolderSearch';
+import { Box, IconButton, Typography } from '@mui/material';
+import SentFastIcon from '@icons/step-progress/SentFast';
+import { useQueryParams } from '@hooks/useQueryParams';
+import StyledTooltip from '@components/StyledTooltip';
+import CheckAccess from '@components/CheckAccess';
+import TickIcon from '@icons/step-progress/Tick';
+import DownloadIcon from '@icons/DownloadIcon';
+import { useNavigate } from 'react-router-dom';
+import LeftArrowIcon from '@icons/LeftArrow';
+import DeleteIcon from '@icons/DeleteIcon';
+import ArrowRight from '@icons/ArrowRight';
+import { memo } from 'react';
+import { get } from 'lodash';
+
 
 export default function tableHeaderSelector({ transferColumns, t, downloadNakladnoy, setOpenConfirmDialog, setStatusModal }) {
   const { values } = useQueryParams()
@@ -405,7 +406,7 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
                     height: 40,
                     borderRadius: 3,
                     p: '8px',
-                    '& svg:first-child': {
+                    '& svg:first-of-type': {
                       fill: '#07259c !important',
                     },
                   }}
@@ -423,7 +424,7 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
                     height: 40,
                     borderRadius: 3,
                     p: '8px',
-                    '& svg:first-child': {
+                    '& svg:first-of-type': {
                       fill: '#fe5000 !important',
                     },
                   }}
