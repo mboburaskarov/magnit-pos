@@ -1,11 +1,13 @@
-import { Box, IconButton, Typography } from '@mui/material'
-import { get } from 'lodash'
-import { memo } from 'react'
-import { formatPhoneNumber } from '@utils/formatPhoneNumber'
-import { formatDate } from '@utils/validateDate'
-import DeleteIcon from '@icons/DeleteIcon'
-import EditIcon from '@icons/EditIcon'
-import { SimpleText } from '../../../components/AgGridTable/Cells/SimpleText'
+import { formatPhoneNumber } from '@utils/formatPhoneNumber';
+import { Box, IconButton, Typography } from '@mui/material';
+import { formatDate } from '@utils/validateDate';
+import DeleteIcon from '@icons/DeleteIcon';
+import EditIcon from '@icons/EditIcon';
+import { memo } from 'react';
+import { get } from 'lodash';
+
+import { SimpleText } from '../../../components/AgGridTable/Cells/SimpleText';
+
 
 export default function tableHeaderSelector({ clientsColumns, values, selectClientsFunc, t, setOpenConfirmDialog, setOpenClientCreateMini }) {
   const columns = clientsColumns?.map((el) => {
@@ -78,20 +80,28 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
       }
     }
 
-    if (el.field === 'sale_amount') {
+    if (el.field === 'loyalty_card_percent') {
       return {
         ...el,
-        headerName: 'Сумма покупки',
+        headerName: 'Процент лояльности карты',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider currency={'сум'} {...p} type='sale_amount' />),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'%'} type='loyalty_card_percent' />),
       }
     }
-    if (el.field === 'sale_date') {
+    if (el.field === 'discount_card') {
       return {
         ...el,
-        headerName: 'Последняя покупка',
+        headerName: 'Дисконтная карта',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} customText={formatDate(p.data?.sale_date, 'DD.MM.YYYY')} type='sale_date' />),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='discount_card' />),
+      }
+    }
+    if (el.field === 'discount_percent') {
+      return {
+        ...el,
+        headerName: 'Процент скидки',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'%'} type='discount_percent' />),
       }
     }
     if (el.field === 'birthday') {
@@ -132,14 +142,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='balance' />),
       }
     }
-    if (el.field === 'debt_amount') {
-      return {
-        ...el,
-        headerName: 'Текущий долг',
-        colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='debt_amount' />),
-      }
-    }
+
     if (el.field === 'spending_from_balance') {
       return {
         ...el,

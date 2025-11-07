@@ -1,6 +1,6 @@
-import LayoutWithNavbar from '../../layouts/LayoutWithNavbar'
-import ClientsPage from '../../pages/clients'
-import DiscountCardPage from '../../pages/clients/discountCard'
+import LayoutWithNavbar from '../../layouts/LayoutWithNavbar';
+import ClientsPage from '../../pages/clients';
+
 
 const userRoutes = {
   path: 'clients',
@@ -9,11 +9,6 @@ const userRoutes = {
     {
       path: 'all',
       element: <ClientsPage />,
-    },
-
-    {
-      path: 'discount-card',
-      element: <DiscountCardPage />,
     },
   ],
 }

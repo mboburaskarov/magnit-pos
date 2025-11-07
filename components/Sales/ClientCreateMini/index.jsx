@@ -1,17 +1,19 @@
-import { Box, Button, Drawer, Typography } from '@mui/material'
-import { makeStyles, useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get, size } from 'lodash'
-import { useEffect } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useMutation } from 'react-query'
-import { useSelector } from 'react-redux'
-import CloseIcon from '../../../src/assets/icons/CloseIcon'
-import useDidUpdate from '../../../src/hooks/useDidUpdate'
-import { requests } from '../../../utils/requests'
-import { error, success } from '../../../utils/toast'
-import MainDetails from './mainDetails'
+import { Box, Button, Drawer, Typography } from '@mui/material';
+import { FormProvider, useForm } from 'react-hook-form';
+import { makeStyles, useTheme } from '@mui/styles';
+import useDidUpdate from '@hooks/useDidUpdate';
+import { useTranslation } from 'react-i18next';
+import { error, success } from '@utils/toast';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import { useMutation } from 'react-query';
+import CloseIcon from '@icons/CloseIcon';
+import { get, size } from 'lodash';
+import { useEffect } from 'react';
+import dayjs from 'dayjs';
+
+import MainDetails from './mainDetails';
+
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -77,6 +79,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
         name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'),
         balance: get(data, 'data.balance', 0),
         barcode: get(data, 'data.discount_card'),
+        ...data?.data,
       })
       success('Клиент создан!')
     },
@@ -96,6 +99,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
         name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'),
         balance: get(data, 'data.balance', 0),
         barcode: get(data, 'data.discount_card'),
+        ...data?.data,
       })
       success('Клиент создан!')
     },

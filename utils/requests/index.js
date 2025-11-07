@@ -373,6 +373,7 @@ export const requests = {
   editCustomer: ({ id, data }) => request.put(`v1/customer/${id}`, data),
   createLoyaltyCard: (data) => request.post(`v1/loyalty_card`, data),
   getAllCustomers: (filter) => request.get(`v1/customer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllCustomersForSale: (filter) => request.get(`v1/customer/list-for-sale${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleCustomers: (id) => request.get(`v1/customer/${id}`),
   deleteClient: (id) => request.delete(`v1/customer/soft-delete`, id),
 

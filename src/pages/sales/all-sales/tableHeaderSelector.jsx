@@ -186,12 +186,12 @@ export default function tableHeaderSelector({ salesColumns, setOpenSaleDrawer, v
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='total_discount' />),
       }
     }
-    if (el.field === 'balance') {
+    if (el.field === 'loyalty_card') {
       return {
         ...el,
         headerName: 'Баланс',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='balance' />),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='loyalty_card' />),
       }
     }
 

@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { createUniversalSlice } from '../helper/createUniversalSlice'
+import { createUniversalSlice } from '../helper/createUniversalSlice';
+
 
 const columns = [
   {
@@ -38,25 +38,31 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
-
+  {
+    field: 'loyalty_card_percent',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'discount_card',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'discount_percent',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
   {
     field: 'tags',
     hide: false,
     minWidth: 70,
     width: 200,
   },
-  {
-    field: 'sale_amount',
-    hide: false,
-    minWidth: 70,
-    width: 158,
-  },
-  {
-    field: 'sale_date',
-    hide: false,
-    minWidth: 70,
-    width: 158,
-  },
+
   {
     field: 'birthday',
     hide: false,
@@ -81,12 +87,7 @@ const columns = [
     minWidth: 70,
     width: 200,
   },
-  {
-    field: 'debt_amount',
-    hide: false,
-    minWidth: 70,
-    width: 200,
-  },
+
   {
     field: 'spending_from_balance',
     hide: false,

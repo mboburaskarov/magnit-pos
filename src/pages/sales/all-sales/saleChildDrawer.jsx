@@ -208,7 +208,7 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
                           {get(pays, 'name', 'Unknown')}
                         </Typography>
                         <Typography fontSize={16} mt={'4px'} flexShrink={'none'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                          {thousandDivider(get(saleDetailsList, `data.data.${pays?.name.toLowerCase()}`, []), 'сум')}
+                          {thousandDivider(get(saleDetailsList, `data.data.${pays?.front_name.toLowerCase()}`, []), 'сум')}
                         </Typography>
                       </Box>
                       <CheckAccess id={'can-chnage-payment-type'}>

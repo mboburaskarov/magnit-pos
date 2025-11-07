@@ -435,7 +435,7 @@ function NewSale() {
   const searchResult = useQuery(
     ['searchCustomers', debouncedSearchTerm],
     () =>
-      requests.getAllCustomers({
+      requests.getAllCustomersForSale({
         search: searchTerm,
       }),
     { enabled: false }

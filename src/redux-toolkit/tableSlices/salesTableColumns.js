@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { createUniversalSlice } from '../helper/createUniversalSlice'
+import { createUniversalSlice } from '../helper/createUniversalSlice';
+
 
 const columns = [
   {
@@ -65,6 +65,13 @@ const columns = [
     minWidth: 70,
     width: 160,
   },
+  {
+    field: 'loyalty_card',
+    hide: false,
+    minWidth: 70,
+    width: 160,
+  },
+
   {
     field: 'total_discount',
     hide: false,
