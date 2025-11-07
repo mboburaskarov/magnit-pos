@@ -1,42 +1,39 @@
-import { Box, Button, Grid, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import isoWeek from 'dayjs/plugin/isoWeek'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { useQuery } from 'react-query'
-import { Link } from 'react-router-dom'
-import SingleLineChart from '@components/Charts/SingleLineChart'
-import CheckAccess from '@components/CheckAccess'
-import LoadingContainer from '@components/LoadingContainer'
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
+import ShoppingBasketCheck from '@icons/dashboard/ShoppingBasketCheck';
+import ShoppingBasketArrow from '@icons/dashboard/ShoppingBasketArrow';
+import SingleLineChart from '@components/Charts/SingleLineChart';
+import { calculatePercentage } from '@utils/calculatePercentage';
+import { Box, Button, Grid, Typography } from '@mui/material';
+import StopWatchMinus from '@icons/dashboard/StopWatchMinus';
+import MoneyArrowDown from '@icons/dashboard/MoneyArrowDown';
+import LoadingContainer from '@components/LoadingContainer';
+import HourglassEnd from '@icons/dashboard/HourglassEnd';
+import ChartArrowUp from '@icons/dashboard/ChartArrowUp';
+import TimeForward from '@icons/dashboard/TimeForward';
+import HomeSetting from '@icons/dashboard/HomeSetting';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { paymentTypes } from '@constants/paymentTypes';
+import thousandDivider from '@utils/thousandDivider';
+import { useEffect, useMemo, useState } from 'react';
+import RightArrowIcon from '@icons/RightArrowIcon';
+import dataTypeFilter from '@utils/dataTypeFilter';
+import CheckAccess from '@components/CheckAccess';
+import { getDetaling } from '@utils/getDetaling';
+import Wallet from '@icons/dashboard/Wallet';
+import Time24 from '@icons/dashboard/Time24';
+import isoWeek from 'dayjs/plugin/isoWeek';
+import { requests } from '@utils/requests';
+import Gift from '@icons/dashboard/Gift';
+import { Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
 
-import { calculatePercentage } from '@utils/calculatePercentage'
-import dataTypeFilter from '@utils/dataTypeFilter'
-import { getDetaling } from '@utils/getDetaling'
-import { requests } from '@utils/requests'
-import thousandDivider from '@utils/thousandDivider'
+import DashboardTopsBox from './DashboardTopsBox';
+import DashboardInfoBox from './DashboardInfoBox';
+import ImportPage from './expiredImports/index';
+import DashboardHeader from './DashboardHeader';
 
-import { paymentTypes } from '@constants/paymentTypes'
-
-import { useQueryParams } from '@hooks/useQueryParams'
-
-import ChartArrowUp from '@icons/dashboard/ChartArrowUp'
-import TimeForward from '@icons/dashboard/TimeForward'
-import Time24 from '@icons/dashboard/Time24'
-import Wallet from '@icons/dashboard/Wallet'
-import ShoppingBasketArrow from '@icons/dashboard/ShoppingBasketArrow'
-import ShoppingBasketCheck from '@icons/dashboard/ShoppingBasketCheck'
-import StopWatchMinus from '@icons/dashboard/StopWatchMinus'
-import HourglassEnd from '@icons/dashboard/HourglassEnd'
-import Gift from '@icons/dashboard/Gift'
-import RightArrowIcon from '@icons/RightArrowIcon'
-import HomeSetting from '@icons/dashboard/HomeSetting'
-import MoneyArrowDown from '@icons/dashboard/MoneyArrowDown'
-
-import DashboardHeader from './DashboardHeader'
-import DashboardInfoBox from './DashboardInfoBox'
-import ImportPage from './expiredImports/index'
-import DashboardTopsBox from './DashboardTopsBox'
-import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
 
 export const dashboardBoxData = [
   {
@@ -132,6 +129,33 @@ export const dashboardBoxData = [
     id: 'expiring_soon_amount',
     percent: (before, current) => calculatePercentage(before || 1, current),
     old: 'before_expiring_soon_amount',
+  },
+  {
+    title: 'Количество карт лояльности',
+    icon: <Gift color='#fe5000' />,
+    count: 'total_loyalty_card_count',
+    endText: 'шт',
+    id: 'total_loyalty_card_count',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_total_loyalty_card_count',
+  },
+  {
+    title: 'Общая сумма карты лояльности',
+    icon: <Gift color='#fe5000' />,
+    count: 'total_loyalty_card_balance',
+    endText: 'сум',
+    id: 'total_loyalty_card_balance',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_total_loyalty_card_balance',
+  },
+  {
+    title: 'Новые карты лояльности на сегодня',
+    icon: <Gift color='#fe5000' />,
+    count: 'today_created_loyalty_card_count',
+    endText: 'шт',
+    id: 'today_created_loyalty_card_count',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_today_created_loyalty_card_count',
   },
   {
     title: 'Ваш бонус',
@@ -255,7 +279,7 @@ export default function DashboarPage() {
                         justifyContent: 'center',
                         flexDirection: 'column',
                         p: '20px',
-                        minHeight: '115px',
+                        height: '164px',
 
                         m: 0,
                       })}
@@ -263,9 +287,9 @@ export default function DashboarPage() {
                       <HomeSetting color='#fe5000' />
                       <Typography
                         sx={{
-                          fontSize: '20px',
+                          fontSize: '16px',
                           fontWeight: '600',
-                          lineHeight: '32px',
+                          lineHeight: '20px',
                           my: '12px',
                         }}
                       >
@@ -277,9 +301,10 @@ export default function DashboarPage() {
                             borderRadius: '50px',
                             mr: '4px',
                             p: '9px 16px',
-                            height: '40px',
+                            height: '30px',
                             backgroundColor: 'white !important',
                             color: 'orange.500',
+                            fontSize: '14px',
                             borderColor: 'orange.500',
                             '& svg': {
                               flexShrink: 0,

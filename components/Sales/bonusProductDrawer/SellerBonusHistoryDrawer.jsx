@@ -1,3 +1,4 @@
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
 import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
 import { Box, Drawer, Typography } from '@mui/material';
 import { useQueryParams } from '@hooks/useQueryParams';
@@ -8,7 +9,6 @@ import { requests } from '@utils/requests';
 import CloseIcon from '@icons/CloseIcon';
 import { error } from '@utils/toast';
 import { get } from 'lodash';
-import dayjs from 'dayjs';
 
 import AgGridTable from '../../AgGridTable/AgGridTable';
 import DraftChildDrawer from './DraftChildDrawer';
@@ -35,7 +35,7 @@ const columns = [
     field: 'sale_number',
     minWidth: 60,
     width: 120,
-    headerName: 'ID продажи',
+    headerName: 'ID',
     colId: 'sale_number',
     label: 'ID',
     name: 'sale_number',
@@ -43,7 +43,7 @@ const columns = [
   {
     autoHeight: true,
     field: 'product_name',
-    minWidth: 300,
+    minWidth: 450,
     headerName: 'Название продукта',
     colId: 'product_name',
     label: 'Название продукта',
@@ -91,29 +91,25 @@ function SellerBonusHistoryDrawer({ open, setOpen }) {
   }, [values?.search])
 
   const sellerBonusHistoryFilters = useMemo(() => {
-    const ready_start_date = dayjs(values?.start_date)
-    const ready_end_date = dayjs(values?.end_date)
     return {
       search: values?.search || null,
       limit: values?.bonusLimit,
       employee_id: open?.id,
       offset: values?.bonusOffset,
-      start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
-      end_date:
-        values?.end_date && values?.to_time
-          ? ready_start_date?.isSame(ready_end_date)
-            ? dayjs(`${values?.start_date} 23:59:59`).format()
-            : ready_end_date.format()
-          : null,
+      start_date: getFilterStartDate(values),
+      end_date: getFilterEndDate(values),
     }
   }, [values?.bonusLimit, controlleroffset, open, values?.limit, values?.bonusOffset, values?.end_date, values?.start_date])
+  console.log(open?.id?.length > 0)
 
   const {
     data: sellerBonusHistory,
     isLoading: sellerBonusHistoryLoading,
     isFetching: isFetchingSellerBonusHistory,
     refetch,
-  } = useQuery(['sellerBonusHistory', sellerBonusHistoryFilters], () => requests.getSellerBonusHistoryData(sellerBonusHistoryFilters))
+  } = useQuery(['sellerBonusHistory', sellerBonusHistoryFilters], () => requests.getSellerBonusHistoryData(sellerBonusHistoryFilters), {
+    enabled: open?.id?.length > 0,
+  })
 
   const { mutate: bonusHistoryExcelReport, isLoading: isBonusHistoryExcelReport } = useMutation(requests.getSellerBonusHistoryDataExcel, {
     onSuccess: ({ data }) => {
@@ -124,10 +120,6 @@ function SellerBonusHistoryDrawer({ open, setOpen }) {
       error('Ошибка при скачать excel!')
     },
   })
-
-  useEffect(() => {
-    refetch()
-  }, [sellerBonusHistoryFilters])
 
   useEffect(() => {
     const count = sellerBonusHistory?.data?.data?._meta?.total_count

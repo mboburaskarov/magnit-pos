@@ -1,6 +1,8 @@
-import { get } from 'lodash'
-import * as qs from 'qs'
-import { authRequest, eposRequest, fileUploadRequest, request, requestEXCEL } from '../axios'
+import { get } from 'lodash';
+import * as qs from 'qs';
+
+import { authRequest, eposRequest, fileUploadRequest, request, requestEXCEL } from '../axios';
+
 
 export const requests = {
   //epos
@@ -24,6 +26,8 @@ export const requests = {
   //dashboard
   dashboradSaleStatistic: ({ store_ids, company_ids, ...filter }) =>
     request.post(`v1/dashboard/sale-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
+  dashboradLoyaltyStatistic: ({ store_ids, company_ids, ...filter }) =>
+    request.post(`v1/dashboard/loyalty_card-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
   dashboradNetProfitStatistic: ({ store_ids, company_ids, ...filter }) =>
     request.post(`v1/dashboard/net-profit-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
   dashboradImportStatistic: ({ store_ids, company_ids, ...filter }) =>
