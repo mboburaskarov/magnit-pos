@@ -1,21 +1,20 @@
-import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand';
-import LoadingContainer from '@components/LoadingContainer';
-import SelectSimple from '@components/Select/SelectSimple';
-import { FormProvider, useForm } from 'react-hook-form';
-import { Box, Button, Typography } from '@mui/material';
-import TextField from '@components/Inputs/TextField';
-import { useMutation, useQuery } from 'react-query';
-import MoneyOutlineIcon from '@icons/MoneyOutline';
-import ArrowRightIcon from '@icons/ArrowRightIcon';
-import CartOutlineIcon from '@icons/CartOutline';
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { requests } from '@utils/requests';
-import { useSelector } from 'react-redux';
-import { makeStyles } from '@mui/styles';
-import { error } from '@utils/toast';
-import { get } from 'lodash';
-
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
+import TextField from '@components/Inputs/TextField'
+import LoadingContainer from '@components/LoadingContainer'
+import SelectSimple from '@components/Select/SelectSimple'
+import ArrowRightIcon from '@icons/ArrowRightIcon'
+import CartOutlineIcon from '@icons/CartOutline'
+import MoneyOutlineIcon from '@icons/MoneyOutline'
+import { Box, Button, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import { get } from 'lodash'
+import { useEffect, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useMutation, useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   box: {
@@ -95,6 +94,9 @@ function NewCashRegister() {
   const { mutate: checkSaleExist, isLoading: isCheckSaleExist } = useMutation(requests.checkSaleExist, {
     onSuccess: ({ data }) => {
       if (get(data, 'data.is_open', false)) {
+        // checkPermission('can-open-new-sale-v2', userData)
+        //   ? navigate(`/sales/new-sale-v2/${get(data, 'data.sale_id')}`)
+        //   :
         navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
       }
     },
@@ -120,6 +122,8 @@ function NewCashRegister() {
   const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashOperationBox, {
     onSuccess: ({ data }) => {
       localStorage.setItem('device_id', get(data, 'data.device_id'))
+      // checkPermission('can-open-new-sale-v2', userData)
+      //   ? navigate(`/sales/new-sale-v2/${get(data, 'data.id')}`)
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
     },
     onError: (err) => {

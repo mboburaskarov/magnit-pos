@@ -1,7 +1,6 @@
-import { useFormContext } from 'react-hook-form';
-import { useEffect, useState } from 'react';
-import { get } from 'lodash';
-
+import { get } from 'lodash'
+import { useEffect, useState } from 'react'
+import { useFormContext } from 'react-hook-form'
 
 export const usePaymentOperations = (cartItemsList, paymentTypesList) => {
   const { setValue, getValues, watch } = useFormContext()
@@ -35,7 +34,14 @@ export const usePaymentOperations = (cartItemsList, paymentTypesList) => {
   const [maxAmount, setMaxAmount] = useState(0)
   const [onlinePaymentType, setOnlinePaymentType] = useState({ from: 'Click', to: 'Payme' })
   const [cardPaymentType, setCardPaymentType] = useState({ from: 'Uzcard', to: 'Humo' })
+  useEffect(() => {
+    setPaymentsList(defaultPaymentTypes)
 
+    setValue('lite_cash_amount', '')
+    setValue('lite_card_amount', '')
+    setValue('lite_online_amount', '')
+    setMaxAmount(0)
+  }, [cartItemsList])
   // Update cash payment
   useEffect(() => {
     const updatedPaymentList = paymentsList.map((payment) =>

@@ -1,25 +1,24 @@
-import { usePaymentOperations } from '@hooks/sale/usePaymentOperations'; //lite sale own hook
-import { usePaymentShortcuts } from '@hooks/sale/useKeyboardShortcuts'; //lite sale own hook
-import { usePrintOperations } from '@hooks/sale/usePrintOperations'; //sales global hook
-import { useSaleOperations } from '@hooks/sale/useSaleOperations'; //sales global hook
-import { RippedPaperItem } from '@components/RippedPaperList';
-import StyledDialog from '@components/Dialogs/StyledDialog';
-import { Box, TextField, Typography } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import QrScanIcon from '@icons/QrScanIcon';
-import { requests } from '@utils/requests';
-import CloseIcon from '@icons/CloseIcon';
-import { useTheme } from '@mui/styles';
-import { useQuery } from 'react-query';
+import StyledDialog from '@components/Dialogs/StyledDialog'
+import { RippedPaperItem } from '@components/RippedPaperList'
+import { usePaymentShortcuts } from '@hooks/sale/useKeyboardShortcuts' //lite sale own hook
+import { usePaymentOperations } from '@hooks/sale/usePaymentOperations' //lite sale own hook
+import { usePrintOperations } from '@hooks/sale/usePrintOperations' //sales global hook
+import { useSaleOperations } from '@hooks/sale/useSaleOperations' //sales global hook
+import CloseIcon from '@icons/CloseIcon'
+import QrScanIcon from '@icons/QrScanIcon'
+import { Box, TextField, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import { requests } from '@utils/requests'
+import { useEffect, useRef, useState } from 'react'
+import { useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
 
-import PreventRefreshDialog from '../components/PreventRefreshDialog';
-import { PaymentSummaryBox } from '../components/PaymentSummaryBox';
-import { PaymentInputField } from '../components/PaymentInputField';
-import PreventRefresh from '../components/PreventRefresh';
-import SaleProgressSteps from '../saleStepLoading';
-
+import { PaymentInputField } from '../components/PaymentInputField'
+import { PaymentSummaryBox } from '../components/PaymentSummaryBox'
+import PreventRefresh from '../components/PreventRefresh'
+import PreventRefreshDialog from '../components/PreventRefreshDialog'
+import SaleProgressSteps from '../saleStepLoading'
 
 function LiteOrder({
   serviceType,
@@ -44,7 +43,11 @@ function LiteOrder({
 
   const scannedBarcodeRef = useRef()
   const inputRefs = useRef([])
-
+  useEffect(() => {
+    inputRefs.current[0].value = ''
+    inputRefs.current[1].value = ''
+    inputRefs.current[2].value = ''
+  }, [cartItemsList])
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
   const [isOpenRefreshDialog, setOpenRefreshDialog] = useState(false)
   const [newSaleId, setNewSaleId] = useState(false)
@@ -73,6 +76,8 @@ function LiteOrder({
       setDmedPrescriptionsList,
       setDmedOrganizedList,
       setCustomerId,
+      paymentsList,
+      maxAmount,
     })
 
   usePaymentShortcuts({
@@ -177,10 +182,19 @@ function LiteOrder({
           inputRef={(el) => (inputRefs.current[0] = el)}
           shortcut='N'
           setValue={setValue}
+          setPaymentsList={setPaymentsList}
+          paymentsLis={paymentsList}
         />
 
-        <PaymentInputField name='lite_cash_amount_soon' placeholder={t('Карта лояльности')} readOnly shortcut='L' soon />
-
+        <PaymentInputField
+          setPaymentsList={setPaymentsList}
+          name='lite_cash_amount_soon'
+          placeholder={t('Карта лояльности')}
+          readOnly
+          shortcut='L'
+          soon
+          paymentsLis={paymentsList}
+        />
         <PaymentInputField
           name='lite_card_amount'
           placeholder={t('По карте')}
@@ -190,9 +204,10 @@ function LiteOrder({
           paymentType={cardPaymentType}
           setPaymentType={setCardPaymentType}
           paymentOptions={['Uzcard', 'Humo']}
+          setPaymentsList={setPaymentsList}
           setValue={setValue}
+          paymentsLis={paymentsList}
         />
-
         <PaymentInputField
           name='lite_online_amount'
           placeholder={t('Онлайн оплата')}
@@ -203,6 +218,8 @@ function LiteOrder({
           setPaymentType={setOnlinePaymentType}
           paymentOptions={['Payme', 'Click']}
           setValue={setValue}
+          setPaymentsList={setPaymentsList}
+          paymentsLis={paymentsList}
         />
       </Box>
 

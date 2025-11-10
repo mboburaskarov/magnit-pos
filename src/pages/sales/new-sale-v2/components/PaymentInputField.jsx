@@ -41,6 +41,13 @@ export const PaymentInputField = ({
       }
     }
   }
+  const handleClick = (e) => {
+    const input = e.target
+    const length = input.value.length
+    setTimeout(() => {
+      input.setSelectionRange(length, length)
+    }, 0)
+  }
 
   const renderAdornment = () => {
     // Soon badge for loyalty card
@@ -131,6 +138,7 @@ export const PaymentInputField = ({
         '& input': {
           fontWeight: 500,
           color: 'bunker.950',
+          textAlign: 'right',
         },
         mt: name.includes('cash_amount_soon') ? '8px' : name.includes('card') || name.includes('online') ? '8px' : 0,
         '& .MuiOutlinedInput-root': {
@@ -148,6 +156,7 @@ export const PaymentInputField = ({
         readOnly={readOnly}
         uncontrolled={readOnly}
         onInput={handleInput}
+        onClick={handleClick}
         inputRef={inputRef}
         inputHeight='48px'
         error={errors?.[name]}

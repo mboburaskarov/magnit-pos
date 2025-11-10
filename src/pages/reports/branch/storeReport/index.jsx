@@ -1,34 +1,33 @@
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/storeReportTableColumns';
-import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
-import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
-import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
-import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew';
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
-import AgGridTable from '@components/AgGridTable/AgGridTable';
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
-import LoadingContainer from '@components/LoadingContainer';
-import InputSearch from '@components/Inputs/InputSearch';
-import LazySelect from '@components/Select/LazySelect';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
-import LoadingBlock from '@components/LoadingBlock';
-import { useMutation, useQuery } from 'react-query';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { requests } from '@utils/requests';
-import { useForm } from 'react-hook-form';
-import Header from '@components/Header';
-import { error } from '@utils/toast';
-import { Box } from '@mui/material';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
-import * as qs from 'qs';
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/storeReportTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import Header from '@components/Header'
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingBlock from '@components/LoadingBlock'
+import LoadingContainer from '@components/LoadingContainer'
+import LazySelect from '@components/Select/LazySelect'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { Box } from '@mui/material'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
+import * as qs from 'qs'
+import { useEffect, useMemo, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
-import StoreReportMiniDashboardHeader from './storeReportMiniDashboardHeader';
-import tableHeaderSelector from './tableHeaderSelector';
-import SendSaleTo1C from './sendSaleTo1C';
-
+import SendSaleTo1C from './sendSaleTo1C'
+import StoreReportMiniDashboardHeader from './storeReportMiniDashboardHeader'
+import tableHeaderSelector from './tableHeaderSelector'
 
 export default function StoreReportPage() {
   const dispatch = useDispatch()
@@ -187,6 +186,7 @@ export default function StoreReportPage() {
                 zIndex={9}
                 placeholder={t('placeholders.select_shops')}
                 multiple
+                notShowedPharmaCosmos={false}
                 customFilter={{
                   is_franchise: true,
                 }}

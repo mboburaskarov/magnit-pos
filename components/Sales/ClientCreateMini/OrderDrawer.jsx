@@ -1,30 +1,29 @@
-import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { FormProvider, useForm } from 'react-hook-form';
-import { useMutation, useQuery } from 'react-query';
-import { useReactToPrint } from 'react-to-print';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import { get, isNaN, size } from 'lodash';
-import { makeStyles } from '@mui/styles';
-import { LoadingButton } from '@mui/lab';
+import { LoadingButton } from '@mui/lab'
+import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { get, isNaN, size } from 'lodash'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useReactToPrint } from 'react-to-print'
 
-import { default as CloseIcon, default as RemovePaymentIcon } from '../../../src/assets/icons/CloseIcon';
-import PreventRefreshDialog from '../../../src/pages/sales/new-order/preventRefreshDialog';
-import SaleProgressSteps from '../../../src/pages/sales/new-order/saleStepLoading';
-import PreventRefresh from '../../../src/pages/sales/new-order/preventRefresh';
-import QrScanIcon from '../../../src/assets/icons/QrScanIcon';
-import thousandDivider from '../../../utils/thousandDivider';
-import StyledDialog from '../../Dialogs/StyledeEmptyDialog';
-import { paymeGoId } from '../../../constants/paymeGoId';
-import { RippedPaperItem } from '../../RippedPaperList';
-import PaymentMethodInput from './PaymentMethodInput';
-import { error, success } from '../../../utils/toast';
-import { requests } from '../../../utils/requests';
-import TextField from '../../Inputs/TextField';
-
+import { paymeGoId } from '../../../constants/paymeGoId'
+import { default as CloseIcon, default as RemovePaymentIcon } from '../../../src/assets/icons/CloseIcon'
+import QrScanIcon from '../../../src/assets/icons/QrScanIcon'
+import PreventRefresh from '../../../src/pages/sales/new-order/preventRefresh'
+import PreventRefreshDialog from '../../../src/pages/sales/new-order/preventRefreshDialog'
+import SaleProgressSteps from '../../../src/pages/sales/new-order/saleStepLoading'
+import { requests } from '../../../utils/requests'
+import thousandDivider from '../../../utils/thousandDivider'
+import { error, success } from '../../../utils/toast'
+import StyledDialog from '../../Dialogs/StyledeEmptyDialog'
+import TextField from '../../Inputs/TextField'
+import { RippedPaperItem } from '../../RippedPaperList'
+import PaymentMethodInput from './PaymentMethodInput'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -291,7 +290,7 @@ export default function OrderDrawer({
   const [paymentsList, setPaymentsList] = useState([])
 
   useEffect(() => {
-    if (paymentsList?.length == 1 && paymentsList?.[0]?.type == 'uzum') {
+    if (paymentsList?.length == 1 && paymentsList?.[0]?.front_name == 'uzum') {
       setPayType(2)
       return
     } else {
@@ -510,6 +509,10 @@ export default function OrderDrawer({
 
         return
       } else {
+        if (get(data, 'message', '').includes('common.sender.balance.not.enough')) {
+          error('На вашем счете недостаточно средств.')
+          return
+        }
         error(`EPOS: ${get(data, 'message')}`)
         setOpenRefreshDialog(false)
         isEposError = true

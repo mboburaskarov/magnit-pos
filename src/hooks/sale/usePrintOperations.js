@@ -1,8 +1,7 @@
-import { useCallback, useImperativeHandle, useRef } from 'react';
-import { useReactToPrint } from 'react-to-print';
-import { useNavigate } from 'react-router-dom';
-import { error } from '@utils/toast';
-
+import { error } from '@utils/toast'
+import { useCallback, useImperativeHandle, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useReactToPrint } from 'react-to-print'
 
 export const usePrintOperations = ({
   childRef,
@@ -46,7 +45,7 @@ export const usePrintOperations = ({
       }
 
       if (JSON.parse(sendToEpos)) {
-        navigate(`/sales/new-sale/${newSaleId}`)
+        navigate(`/sales/new-sale-v2/${newSaleId}`)
       } else {
         navigate(`/sales/create`)
       }

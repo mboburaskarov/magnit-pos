@@ -1,9 +1,9 @@
-import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand';
-import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
-import { Box, Typography } from '@mui/material';
-import { memo } from 'react';
-import { get } from 'lodash';
-
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
+import { Box, Typography } from '@mui/material'
+import thousandDivider from '@utils/thousandDivider'
+import { get } from 'lodash'
+import { memo } from 'react'
 
 export default function tableHeaderSelector({ cardShiftColumns, t, setValue, changeCloseBoxNetAmout }) {
   const columns = cardShiftColumns?.map((el) => {

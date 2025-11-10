@@ -1,50 +1,49 @@
-import SendRejectedProductDrawer from '@components/Sales/SendRejectedProduct/SendRejectedProductDrawer';
-import ReturnExchangeDrawer from '@components/Sales/ReturnExchange/ReturnExchangeDrawer';
-import BonusProductDrawer from '@components/Sales/bonusProductDrawer/BonusProductDrawer';
-import OnlineSaleDrawer from '@components/Sales/OnlineSaleNoor/OnlineSaleDrawer';
-import ClientCreateMini from '@components/Sales/ClientCreateMini';
-import LoadingContainer from '@components/LoadingContainer';
-import LoadingOverflow from '@components/LoadingOverflow';
-import { useNavigate, useParams } from 'react-router-dom';
-import useDebouncedValue from '@hooks/useDebouncedValue';
-import EmptyCartItemIcon from '@icons/EmptyCartItemIcon';
-import DraftDrawer from '@components/Sales/DraftDrawer';
-import { FormProvider, useForm } from 'react-hook-form';
-import { Box, Button, Typography } from '@mui/material';
-import StyledTooltip from '@components/StyledTooltip';
-import ConfirmDialog from '@components/ConfirmDialog';
-import thousandDivider from '@utils/thousandDivider';
-import { useMutation, useQuery } from 'react-query';
-import { useEffect, useRef, useState } from 'react';
-import BigWarningIcon from '@icons/BigWarningIcon';
-import ArrowRightIcon from '@icons/ArrowRightIcon';
-import { Construction } from '@mui/icons-material';
-import ShortcutBox from '@components/ShortcutBox';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { useTranslation } from 'react-i18next';
-import { error, success } from '@utils/toast';
-import RefreshIcon from '@icons/RefreshIcon';
-import PrinterIcon from '@icons/PrinterIcon';
-import DeleteIcon from '@icons/DeleteIcon';
-import { useDebounce } from 'use-debounce';
-import { requests } from '@utils/requests';
-import { useSelector } from 'react-redux';
-import { makeStyles } from '@mui/styles';
-import { LoadingButton } from '@mui/lab';
-import { get, head, size } from 'lodash';
+import ConfirmDialog from '@components/ConfirmDialog'
+import LoadingContainer from '@components/LoadingContainer'
+import LoadingOverflow from '@components/LoadingOverflow'
+import BonusProductDrawer from '@components/Sales/bonusProductDrawer/BonusProductDrawer'
+import ClientCreateMini from '@components/Sales/ClientCreateMini'
+import DraftDrawer from '@components/Sales/DraftDrawer'
+import OnlineSaleDrawer from '@components/Sales/OnlineSaleNoor/OnlineSaleDrawer'
+import ReturnExchangeDrawer from '@components/Sales/ReturnExchange/ReturnExchangeDrawer'
+import SendRejectedProductDrawer from '@components/Sales/SendRejectedProduct/SendRejectedProductDrawer'
+import ShortcutBox from '@components/ShortcutBox'
+import StyledTooltip from '@components/StyledTooltip'
+import useDebouncedValue from '@hooks/useDebouncedValue'
+import ArrowRightIcon from '@icons/ArrowRightIcon'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import DeleteIcon from '@icons/DeleteIcon'
+import EmptyCartItemIcon from '@icons/EmptyCartItemIcon'
+import PrinterIcon from '@icons/PrinterIcon'
+import RefreshIcon from '@icons/RefreshIcon'
+import { Construction } from '@mui/icons-material'
+import { LoadingButton } from '@mui/lab'
+import { Box, Button, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { requests } from '@utils/requests'
+import thousandDivider from '@utils/thousandDivider'
+import { error, success } from '@utils/toast'
+import { get, head, size } from 'lodash'
+import { useEffect, useRef, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useDebounce } from 'use-debounce'
 
-import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck';
-import ImplementMarkingDialog from './ImplementMarkingDialog';
-import OrganizeDmedOrder from './OrganizeDmedOrder';
-import CreateDraftDrawer from './createDraftDrawer';
-import OrderDrawer from './full-order/OrderDrawer';
-import CartDetailSide from './cart_detail_side';
-import ProductDrawer from './ProductDrawer';
-import CartSearchBar from './CartSearchBar';
-import ChangeShift from './ChangeShift';
-import OrderLite from './lite-order';
-import CartItems from './CartItems';
-
+import CartDetailSide from './cart_detail_side'
+import CartItems from './CartItems'
+import CartSearchBar from './CartSearchBar'
+import ChangeShift from './ChangeShift'
+import CreateDraftDrawer from './createDraftDrawer'
+import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck'
+import OrderDrawer from './full-order/OrderDrawer'
+import ImplementMarkingDialog from './ImplementMarkingDialog'
+import OrderLite from './lite-order'
+import OrganizeDmedOrder from './OrganizeDmedOrder'
+import ProductDrawer from './ProductDrawer'
 
 const useStyles = makeStyles((theme) => ({
   currentUser: {
@@ -975,48 +974,51 @@ function NewSaleV2() {
                   ) : (
                     <></>
                   )}
-                  <StyledTooltip title={'Печать нетоварного чека'}>
-                    <Box
-                      onClick={() => {
-                        refetchcartItemsList()
-                        setHasChange(true)
-                      }}
-                      sx={{
-                        cursor: 'pointer',
-                        ml: '16px',
-                        height: '44px',
-                        width: '44px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: 'bg.10',
-                        borderRadius: '40px',
-                      }}
-                    >
-                      <RefreshIcon />
-                    </Box>
-                  </StyledTooltip>
+                  <Box
+                    onClick={() => {
+                      refetchcartItemsList()
+                      setHasChange(true)
+                    }}
+                    sx={{
+                      cursor: 'pointer',
+                      ml: '16px',
+                      height: '44px',
+                      width: '44px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: 'bg.10',
+                      borderRadius: '40px',
+                      '&:hover': {
+                        backgroundColor: 'bunker.300',
+                      },
+                    }}
+                  >
+                    <RefreshIcon />
+                  </Box>
                 </Box>
-                <Box
-                  onClick={() => {
-                    size(get(cartItemsList, 'data.data.data')) !== 0 && printNoProductCheque()
-                  }}
-                  sx={{
-                    cursor: 'pointer',
-                    height: '44px',
-                    width: '44px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    backgroundColor: 'bg.10',
-                    borderRadius: '40px',
-                    justifyContent: 'center',
-                    '&:hover': {
-                      backgroundColor: 'bunker.300',
-                    },
-                  }}
-                >
-                  <PrinterIcon />
-                </Box>
+                <StyledTooltip title={'Печать нетоварного чека'}>
+                  <Box
+                    onClick={() => {
+                      size(get(cartItemsList, 'data.data.data')) !== 0 && printNoProductCheque()
+                    }}
+                    sx={{
+                      cursor: 'pointer',
+                      height: '44px',
+                      width: '44px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      backgroundColor: 'bg.10',
+                      borderRadius: '40px',
+                      justifyContent: 'center',
+                      '&:hover': {
+                        backgroundColor: 'bunker.300',
+                      },
+                    }}
+                  >
+                    <PrinterIcon />
+                  </Box>
+                </StyledTooltip>
               </Box>
 
               <LoadingContainer height='calc(100vh - 210px)' noHeight readyState={!isCartItemsLIstLoading}>
