@@ -1,17 +1,11 @@
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
-import { Box, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { memo } from 'react'
-import thousandDivider from '../../../../../utils/thousandDivider'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
+import { memo } from 'react';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
 
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+
 const CustomHeader = (props) => {
   const lastStort = props.column.colDef.orderStoring
   const currentColId = props.column.colId
@@ -40,7 +34,6 @@ const CustomHeader = (props) => {
       }
     }
 
-    // Toggle sort direction manually
     props.column.colDef.setOrderStoring(newOrder)
   }
 
@@ -78,8 +71,8 @@ const CustomHeader = (props) => {
     </Box>
   )
 }
-export default function tableHeaderSelector({ clientsColumns, values, setOrderStoring, orderStoring }) {
-  const columns = clientsColumns?.map((el) => {
+export default function tableHeaderSelector({ reportColumns, values, setOrderStoring, orderStoring }) {
+  const columns = reportColumns?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,
@@ -172,11 +165,7 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         setOrderStoring,
         headerName: 'Срок. Годности',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='expire_date' customText={dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')} />),
       }
     }
     if (el.field === 'quantity') {
@@ -278,11 +267,7 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         setOrderStoring,
         headerName: 'Дата продажи',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['completed_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='completed_at' customText={dayjs(p.data?.['completed_at']).format('DD.MM.YYYY HH:mm:ss')} />),
       }
     }
     if (el.field === 'full_name') {
@@ -304,6 +289,7 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         setOrderStoring,
         headerName: 'ID ЧЕКА ',
         colId: el.field,
+
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             <Typography color={'orange.500'}>

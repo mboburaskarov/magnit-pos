@@ -1,5 +1,5 @@
-// hooks/useKeyboardShortcuts.js
-import { useHotkeys } from 'react-hotkeys-hook'
+import { useHotkeys } from 'react-hotkeys-hook';
+
 
 export const usePaymentShortcuts = ({ inputRefs, setValue, setOnlinePaymentType, setCardPaymentType, remainingAmount }) => {
   const shouldPaymentInputActive = () => {

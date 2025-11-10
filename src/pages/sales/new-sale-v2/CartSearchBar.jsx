@@ -1,26 +1,29 @@
-import { Box, Button, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { get, head, size } from 'lodash'
-import { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useHotkeys } from 'react-hotkeys-hook'
-import { useMutation, useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useDebounce } from 'use-debounce'
-import ButtonWithPopup from '../../../../components/Buttons/ButtonWithPopup'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import StyledTooltip from '../../../../components/StyledTooltip'
-import { convertEngToRu } from '../../../../utils/convertoEngToRu'
-import { convertoRuOrEngToEng } from '../../../../utils/convertoRuOrEngToEng'
-import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import FinanceAndPaymentIcon from '../../../assets/icons/FinanceAndPaymentIcon'
-import UnlockIcon from '../../../assets/icons/UnlockIcon'
-import SerchedItem from './SerchedItem'
-import RussianFlagIcon from '../../../assets/icons/RussianFlagIcon'
+import { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { convertoRuOrEngToEng } from '@utils/convertoRuOrEngToEng';
+import ButtonWithPopup from '@components/Buttons/ButtonWithPopup';
+import FinanceAndPaymentIcon from '@icons/FinanceAndPaymentIcon';
+import { useNavigate, useParams } from 'react-router-dom';
+import InputSearch from '@components/Inputs/InputSearch';
+import { FormProvider, useForm } from 'react-hook-form';
+import { convertEngToRu } from '@utils/convertoEngToRu';
+import { Box, Button, Typography } from '@mui/material';
+import StyledTooltip from '@components/StyledTooltip';
+import ConfirmDialog from '@components/ConfirmDialog';
+import RussianFlagIcon from '@icons/RussianFlagIcon';
+import { useMutation, useQuery } from 'react-query';
+import BigWarningIcon from '@icons/BigWarningIcon';
+import { useHotkeys } from 'react-hotkeys-hook';
+import UnlockIcon from '@icons/UnlockIcon';
+import { useDebounce } from 'use-debounce';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import { get, head, size } from 'lodash';
+import { error } from '@utils/toast';
+
+import SerchedItem from './SerchedItem';
+
+
 const useStyles = makeStyles((theme) => ({
   avatar: {
     width: 30,
@@ -80,7 +83,6 @@ const useStyles = makeStyles((theme) => ({
   itemName: {
     marginBottom: 4,
     color: theme.palette.orange[500],
-    // width: 300,
     fontWeight: '600',
     lineHeight: '24px',
     fontSize: '16px',
@@ -120,8 +122,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     minHeight: 72,
     flexDirection: 'column',
-    // marginTop: 16,
-    // borderRadius: 16,
     position: 'relative',
     zIndex: 100,
     cursor: 'pointer',
@@ -191,9 +191,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
 }))
+
 let a = -2
+
 function CartSearchBar({
-  refetchcartItemsList,
   cartItemsList,
   openDraft,
   dmedPrescriptionsList,
@@ -202,7 +203,6 @@ function CartSearchBar({
   setOpenRejectConfirmDialog,
   searchResetRef,
   searchRef,
-
   handleAddProduct,
   setIsOpenChangeShift,
   cashBoxDetails,
@@ -210,6 +210,8 @@ function CartSearchBar({
   shouldWorkEnter,
   setShowOverlay,
 }) {
+  const methods = useForm()
+  const classes = useStyles()
   const [searchTearm, setSearchTerm] = useState('')
   const navigate = useNavigate()
   const [closeCashBox, setCloseCashBox] = useState(false)
@@ -219,20 +221,6 @@ function CartSearchBar({
 
   const { mutate: getDmedPrescriptions, isLoading: isgetDmedPrescriptions } = useMutation(requests.getDmedPrescriptions, {
     onSuccess: ({ data }) => {
-      // setDmedPrescriptionsList([
-      //   'Ацетилсалициловая кислота 14 мг',
-      //   'Ацетилсалициловая кислота 14 мг',
-      //   'Ацетилсалициловая кислота 14 мг',
-      //   'Ацетилсалициловая кислота 14 мг',
-      //   'Ацетилсалициловая кислота 14 мг',
-      //   'Ацетилсалициловая кислота 14 мг',
-      //   'Ацетилсалициловая кислота 14 мг',
-      //   'Ацетилсалициловая кислота 14 мг',
-      //   'Ацетилсалициловая кислота 14 мг',
-      //   'Ацетилсалициловая кислота 14 мг',
-      //   'Ацетилсалициловая кислота 14 мг',
-      //   'Ацетилсалициловая кислота 14 мг',
-      // ])
       setDmedPrescriptionsList(data?.data)
       setShowOverlay(false)
       setSearchTerm('')
@@ -266,16 +254,11 @@ function CartSearchBar({
     () => requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter),
     { enabled: searchTearm.length > 0 }
   )
-  const { data: sellerBonusInOneSale } = useQuery(
-    ['sellerBonusInOneSale'],
-    () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
-    { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
-  )
+
   const { data: darftList, refetch, isDarftList } = useQuery(['darftList'], () => requests.getDarftList({ store_id: get(userData, 'store.id') }))
 
-  const methods = useForm()
-  const classes = useStyles()
   const productsData = productsList?.data?.data
+
   useEffect(() => {
     a = -1
   }, [searchTearm])
@@ -303,9 +286,11 @@ function CartSearchBar({
       nextInput.focus()
     }
   }
+
   useHotkeys('j', () => methods.setFocus('product-search'), {
     enableOnTags: ['INPUT', 'TEXTAREA'],
   })
+
   useHotkeys(
     'ctrl+shift',
     () => {
@@ -340,9 +325,7 @@ function CartSearchBar({
         return
       }
       if (document.activeElement.id?.length === 36) {
-        // setSearchTerm('')
         setShowOverlay(false)
-
         handleAddProduct({
           discount_type: get(discount, 'type', 'percent'),
           discount_value: Number(get(discount, 'amount', 0)),
@@ -357,7 +340,9 @@ function CartSearchBar({
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
+
   useHotkeys('ArrowUp', (event) => selectUpItems(event), { enableOnFormTags: true })
+
   return (
     <Box className={classes.quick_search} mb='16px'>
       <FormProvider {...methods}>
@@ -389,8 +374,6 @@ function CartSearchBar({
               }
             }}
             onKeyDown={(e) => {
-              // if (isProductsFetching) return // Wait for productsData to be ready
-
               setShowOverlay(true)
 
               if (e.key == 'Escape') {
@@ -471,7 +454,6 @@ function CartSearchBar({
             <ButtonWithPopup
               id={'ff'}
               noArrow
-              // ml={'16px'}
               sx={{ height: '40px', width: 40, border: '1px solid transparent !important' }}
               noMarginSvg
               placement='bottom-end'
@@ -563,16 +545,6 @@ function CartSearchBar({
                 >
                   Просмотреть черновики
                 </Button>
-                {/* <LoadingButton
-                  variant='contained'
-                  type='button'
-                  // loading={isdeleteCartItem}
-                  onClick={() => {
-                    navigate(`/sales/cash-shift-detail/${get(cashBoxDetails, 'data.data.cash_box_operation_id')}?sale_id=${id}`)
-                  }}
-                >
-                  Продолжить
-                </LoadingButton> */}
               </>
             }
           />

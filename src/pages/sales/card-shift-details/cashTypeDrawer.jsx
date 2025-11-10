@@ -1,10 +1,10 @@
-import { Box, Button, Drawer, Typography } from '@mui/material'
-import { makeStyles, useTheme } from '@mui/styles'
-import React, { useState } from 'react'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import WaitingCashAmoutIcon from '../../../assets/icons/WaitingCashAmoutIcon'
-import InComeCashIcon from '../../../assets/icons/InComeCashIcon'
-import ExpenseCashIcon from '../../../assets/icons/ExpenseCashIcon'
+import WaitingCashAmoutIcon from '@icons/WaitingCashAmoutIcon';
+import { Box, Drawer, Typography } from '@mui/material';
+import ExpenseCashIcon from '@icons/ExpenseCashIcon';
+import InComeCashIcon from '@icons/InComeCashIcon';
+import { makeStyles, useTheme } from '@mui/styles';
+import CloseIcon from '@icons/CloseIcon';
+
 
 const useStyles = makeStyles((theme) => ({
   drawer: {

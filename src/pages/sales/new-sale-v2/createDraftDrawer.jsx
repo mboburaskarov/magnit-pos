@@ -1,19 +1,20 @@
-import { faCheckCircle, faCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { LoadingButton } from '@mui/lab'
-import { Box, Checkbox, Drawer, Typography } from '@mui/material'
-import { makeStyles, useTheme } from '@mui/styles'
-import { get } from 'lodash'
-import { useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useMutation } from 'react-query'
-import { useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
-import InputDatePicker from '../../../../components/Inputs/InputDatePicker'
-import OutLineTextField from '../../../../components/Inputs/OutLineTextField'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import CloseIcon from '../../../assets/icons/CloseIcon'
+import { faCheckCircle, faCircle } from '@fortawesome/free-solid-svg-icons';
+import OutLineTextField from '@components/Inputs/OutLineTextField';
+import { Box, Checkbox, Drawer, Typography } from '@mui/material';
+import InputDatePicker from '@components/Inputs/InputDatePicker';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNavigate, useParams } from 'react-router-dom';
+import { FormProvider, useForm } from 'react-hook-form';
+import { makeStyles, useTheme } from '@mui/styles';
+import { error, success } from '@utils/toast';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import { useMutation } from 'react-query';
+import CloseIcon from '@icons/CloseIcon';
+import { LoadingButton } from '@mui/lab';
+import { useState } from 'react';
+import { get } from 'lodash';
+
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -37,13 +38,16 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '10px',
   },
 }))
-function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, cashBoxDetails }) {
+function CreateDraftDrawer({ open, setOpen, customerId, cashBoxDetails }) {
   const classes = useStyles()
   const userData = useSelector((state) => state.user)
+  const theme = useTheme()
+  const navigate = useNavigate()
+  const methods = useForm()
   const { id } = useParams()
 
-  const methods = useForm()
   const [eposChecked, setEposChecked] = useState(false)
+
   const changeExpireDate = (type, date = new Date()) => {
     if (type === 'ertaga') {
       const nextDay = new Date(date)
@@ -61,7 +65,6 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
       methods.setValue('draft_time', nextWeek)
     }
   }
-  const navigate = useNavigate()
 
   const { mutate: createDraft, isLoading: isCreateDraft } = useMutation(requests.createDraft, {
     onSuccess: ({ data }) => {
@@ -88,11 +91,11 @@ function CreateDraftDrawer({ open, setOpen, customerId, refetchcartItemsList, ca
     }
     createDraft(requestBody)
   }
+
   const onError = (err) => {
     console.error('err', err)
     error('Пожалуйста, заполните все поля!')
   }
-  const theme = useTheme()
   return (
     <FormProvider {...methods}>
       <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>

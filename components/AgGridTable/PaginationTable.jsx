@@ -1,25 +1,28 @@
-import { Box, Button, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import * as qs from 'qs'
-import React, { forwardRef, Fragment, memo, useCallback, useEffect, useRef, useState } from 'react'
-import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
-import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useColumnOrder, useExpanded, useMountedLayoutEffect, usePagination, useRowSelect, useTable } from 'react-table'
-import DownloadIcon from '../../src/assets/icons/DownloadIcon'
-import colors from '../../src/assets/theme/mui.config'
-import paletteLight from '../../src/assets/theme/paletteLight'
-import useDeepCompareEffect from '../../src/hooks/useDeepCompareEffect'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
-import isEqual from '@utils/isEqual'
-import InputSearch from '../Inputs/SearchInput'
-import LoadingBlurry from '../LoadingBlurry'
-import Placeholder from '../Placeholder'
-import StyledSwitch from '../Switch/StyledSwitch'
-import Pagination from '../Table/Pagination'
-import RowFilterButton from './RowFilterButton'
-import checkTableProps from './checkTableProps'
+import { useColumnOrder, useExpanded, useMountedLayoutEffect, usePagination, useRowSelect, useTable } from 'react-table';
+import { forwardRef, Fragment, memo, useCallback, useEffect, useRef, useState } from 'react';
+import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Box, Button, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import isEqual from '@utils/isEqual';
+import * as qs from 'qs';
+
+import useDeepCompareEffect from '../../src/hooks/useDeepCompareEffect';
+import { useQueryParams } from '../../src/hooks/useQueryParams';
+import paletteLight from '../../src/assets/theme/paletteLight';
+import DownloadIcon from '../../src/assets/icons/DownloadIcon';
+import colors from '../../src/assets/theme/mui.config';
+import StyledSwitch from '../Switch/StyledSwitch';
+import RowFilterButton from './RowFilterButton';
+import InputSearch from '../Inputs/SearchInput';
+import checkTableProps from './checkTableProps';
+import Pagination from '../Table/Pagination';
+import LoadingBlurry from '../LoadingBlurry';
+import Placeholder from '../Placeholder';
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: (props) => (props?.width ? '100%' : !props.isHasNavbarInDOM ? 'calc(100vw - 288px)' : props.isOpen ? 'calc(100vw - 380px)' : 'calc(100vw - 160px)'),
@@ -143,7 +146,7 @@ const useStyles = makeStyles((theme) => ({
       borderTopRightRadius: 16,
       borderBottomRightRadius: 16,
     },
-    '&:first-child': {
+    '&:first-of-type': {
       borderTopLeftRadius: 16,
       borderBottomLeftRadius: 16,
     },

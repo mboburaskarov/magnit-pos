@@ -5,16 +5,18 @@ import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import LazySelect from '../../../../components/Select/LazySelect'
-import { requests } from '../../../../utils/requests'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import LazySelect from '@components/Select/LazySelect'
+import { requests } from '@utils/requests'
+import CloseIcon from '@icons/CloseIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
 
 export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const methods = useForm()
+  const { t } = useTranslation()
+  const theme = useTheme()
   const { formState, reset, control } = methods
 
   const onSubmit = (data) => {
@@ -34,7 +36,6 @@ export default function FilterMenu({ open, setOpen }) {
 
   useEffect(() => {
     const { store_id } = values
-
     reset(
       {
         store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
@@ -42,14 +43,13 @@ export default function FilterMenu({ open, setOpen }) {
       { keepDirty: true }
     )
   }, [values?.store_id])
-  const theme = useTheme()
 
   const resetFilter = () => {
     reset()
     setOpen(false)
     navigate(`/products/auto-order?offset=0&limit=${values?.limit || 5}`)
   }
-  const { t } = useTranslation()
+
   return (
     <StyledEmptyDialog
       overflowVisible
@@ -88,8 +88,6 @@ export default function FilterMenu({ open, setOpen }) {
               request={requests.getAllStores}
               filters={{ limit: 10 }}
               control={control}
-              // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-              // uncontrolled
               getOptionLabel={(option) => {
                 return option.name
               }}

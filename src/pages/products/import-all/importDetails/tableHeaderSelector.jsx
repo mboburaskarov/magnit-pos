@@ -4,10 +4,11 @@ import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
-import StatusCell from '../../../../../components/AgGridTable/Cells/StatusCell'
-import palette from '../../../../../src/assets/theme/mui.config'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import { imports_list_statuses } from '../../../../assets/data/imports-list-statuses'
+import StatusCell from '@components/AgGridTable/Cells/StatusCell'
+import palette from '@/assets/theme/mui.config'
+import thousandDivider from '@utils/thousandDivider'
+import { imports_list_statuses } from '@/assets/data/imports-list-statuses'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
 export default function tableHeaderSelector({ importsColumns, values, t }) {
   const columns = importsColumns?.map((el) => {
@@ -33,11 +34,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         ...el,
         headerName: 'Штрих-код',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.product?.barcode}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='barcode' customText={p.data?.product?.barcode} />),
       }
     }
     if (el.field === 'name') {
@@ -45,11 +42,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         ...el,
         headerName: 'Название',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{p.data?.product?.name}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='name' customText={p.data?.product?.name} />),
       }
     }
     if (el.field === 'supply_price') {
@@ -57,11 +50,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         ...el,
         headerName: t('table_columns.supply_price'),
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{thousandDivider(p.data?.supply_price, 'сум')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='supply_price' customText={thousandDivider(p.data?.supply_price, 'сум')} />),
       }
     }
     if (el.field === 'supply_price_vat') {
@@ -69,11 +58,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         ...el,
         headerName: t('table_columns.supply_price_vat'),
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{thousandDivider(p.data?.supply_price_vat, 'сум')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='supply_price_vat' customText={thousandDivider(p.data?.supply_price_vat, 'сум')} />),
       }
     }
     if (el.field === 'retail_price') {
@@ -81,11 +66,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         ...el,
         headerName: t('table_columns.retail_price'),
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{thousandDivider(p.data?.retail_price, 'сум')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='retail_price' customText={thousandDivider(p.data?.retail_price, 'сум')} />),
       }
     }
     if (el.field === 'retail_price_vat') {
@@ -93,11 +74,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         ...el,
         headerName: t('table_columns.retail_price_vat'),
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{thousandDivider(p.data?.retail_price_vat, 'сум')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='retail_price_vat' customText={thousandDivider(p.data?.retail_price_vat, 'сум')} />),
       }
     }
     if (el.field === 'status') {
@@ -105,6 +82,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         ...el,
         headerName: t('table_columns.status'),
         colId: el.field,
+
         cellRenderer: memo((p) => (
           <StatusCell
             id={`products-status-${p.rowIndex}`}
@@ -192,11 +170,7 @@ export default function tableHeaderSelector({ importsColumns, values, t }) {
         ...el,
         headerName: 'Дата создания',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='created_at' customText={dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')} />),
       }
     }
   })

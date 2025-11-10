@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import PlusIcon from '../../../assets/icons/PlusIcon'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import CloseIcon from '@icons/CloseIcon'
+import PlusIcon from '@icons/PlusIcon'
 import MainDetails from './mainDetails'
 
 const useStyles = makeStyles((theme) => ({
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function CreateCashBoxDrawer({ refetchVendorList, quickCreateClientName, openDrawer, closeDrawer, setCustomerId, clientData }) {
+export default function CreateCashBoxDrawer({ refetchCashBoxList, openDrawer, closeDrawer, cashBoxData }) {
   const { t } = useTranslation()
   const classes = useStyles()
   const methods = useForm()
@@ -49,11 +49,11 @@ export default function CreateCashBoxDrawer({ refetchVendorList, quickCreateClie
     methods.reset()
   }, [])
 
-  const { mutate: createCashBox, isLoading: isCreateCustomer } = useMutation(requests.createCashBox, {
+  const { mutate: createCashBox, isLoading: isCreateCashbox } = useMutation(requests.createCashBox, {
     onSuccess: ({ data }) => {
       closeDrawer(false)
       methods.reset()
-      refetchVendorList()
+      refetchCashBoxList()
       success('Кассы создан!')
     },
     onError: (err) => {
@@ -62,15 +62,15 @@ export default function CreateCashBoxDrawer({ refetchVendorList, quickCreateClie
     },
   })
 
-  const { mutate: updateCashBox, isLoading: isUpdateVendor } = useMutation(requests.updateCashBox, {
+  const { mutate: updateCashBox } = useMutation(requests.updateCashBox, {
     onSuccess: ({ data }) => {
       closeDrawer(false)
       methods.reset()
-      refetchVendorList()
-      success('Сотруд был отредактирован!')
+      refetchCashBoxList()
+      success('Обновлены кассы')
     },
     onError: (err) => {
-      error('Ошибка редактирования сотрудники.!')
+      error('Ошибка oбновлены кассы!')
       console.error('err', err)
     },
   })
@@ -105,7 +105,7 @@ export default function CreateCashBoxDrawer({ refetchVendorList, quickCreateClie
         </Box>
         <FormProvider {...methods}>
           <form
-            id='create-client-form-mini'
+            id='create-cashbox'
             style={{ display: 'flex', flexDirection: 'column', height: 'calc(100% - 80px)', justifyContent: 'space-between' }}
             onSubmit={methods.handleSubmit(onSubmit, onError)}
           >
@@ -114,13 +114,7 @@ export default function CreateCashBoxDrawer({ refetchVendorList, quickCreateClie
                 padding: '0 24px',
               }}
             >
-              <MainDetails
-                paymentTypes={paymentTypes}
-                setPaymentTypes={setPaymentTypes}
-                openDrawer={openDrawer}
-                quickCreateClientName={quickCreateClientName}
-                clientData={clientData}
-              />
+              <MainDetails paymentTypes={paymentTypes} setPaymentTypes={setPaymentTypes} openDrawer={openDrawer} cashBoxData={cashBoxData} />
             </Box>
             <Box
               width={196}
@@ -138,8 +132,8 @@ export default function CreateCashBoxDrawer({ refetchVendorList, quickCreateClie
                 fullWidth
                 size='small'
                 style={{ borderRadius: 16 }}
-                isLoading={isCreateCustomer}
-                form='create-client-form-mini'
+                isLoading={isCreateCashbox}
+                form='create-cashbox'
                 type='submit'
               >
                 {t('create')}

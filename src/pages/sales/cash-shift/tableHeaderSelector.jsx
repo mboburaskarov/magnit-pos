@@ -1,12 +1,15 @@
-import { Box, IconButton, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { memo } from 'react'
-import CheckAccess from '../../../../components/CheckAccess'
-import thousandDivider from '../../../../utils/thousandDivider'
-import CartOutlineIcon from '../../../assets/icons/CartOutline'
-import LockIcon from '../../../assets/icons/LockIcon'
-import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
+import { Box, IconButton, Typography } from '@mui/material';
+import thousandDivider from '@utils/thousandDivider';
+import MoneyOutlineIcon from '@icons/MoneyOutline';
+import CheckAccess from '@components/CheckAccess';
+import CartOutlineIcon from '@icons/CartOutline';
+import LockIcon from '@icons/LockIcon';
+import { memo } from 'react';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
+
 const IconWrapper = ({ children, color }) => {
   return (
     <Box
@@ -23,13 +26,6 @@ const IconWrapper = ({ children, color }) => {
     >
       {children}
     </Box>
-  )
-}
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
   )
 }
 

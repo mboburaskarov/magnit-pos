@@ -1,32 +1,28 @@
-import { Box, Button } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import { get } from 'lodash'
-import { useEffect } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useMutation, useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import InputPassword from '../../../../components/Inputs/InputPasswordNew'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import CloseIcon from '../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
+import InputPassword from '@components/Inputs/InputPasswordNew';
+import SelectSimple from '@components/Select/SelectSimple';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useMutation, useQuery } from 'react-query';
+import { error, success } from '@utils/toast';
+import { Box, Button } from '@mui/material';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import CloseIcon from '@icons/CloseIcon';
+import { useTheme } from '@mui/styles';
+import { useEffect } from 'react';
+import { get } from 'lodash';
+
 
 export default function ChangeShift({ open, setOpen }) {
   const userData = useSelector((state) => state.user)
-
   const methods = useForm()
-  const { formState, reset, control } = methods
-  const { data: cashBoxList } = useQuery(
-    'cashBoxList',
-    () => requests.getOpenCashBoxList({ store_id: get(userData, 'store.id'), id: get(userData, 'store.id'), limit: 20, offset: 0 }),
-    {
-      enabled: open,
-    }
-  )
+  const theme = useTheme()
+  const { reset } = methods
+
   const { data: employees } = useQuery('employees', () => requests.getAllVendors({ store_id: get(userData, 'store.id'), limit: 20, offset: 0 }), {
     enabled: open,
   })
+
   useEffect(() => {
     reset({ password: '' })
   }, [open])
@@ -44,6 +40,7 @@ export default function ChangeShift({ open, setOpen }) {
       console.error('err', err)
     },
   })
+
   const onSubmit = (data) => {
     const requestBody = {
       from_employee_id: userData?.id || undefined,
@@ -56,8 +53,6 @@ export default function ChangeShift({ open, setOpen }) {
   const onError = (err) => {
     console.error('err', err)
   }
-
-  const theme = useTheme()
 
   return (
     <StyledEmptyDialog
@@ -106,7 +101,7 @@ export default function ChangeShift({ open, setOpen }) {
               id='password'
               name='password'
               label={'Password'}
-              autoCompleteoff='new-password' // Prevent autofill
+              autoCompleteoff='new-password'
               required
               defaultState={true}
               fullWidth

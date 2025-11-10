@@ -1,14 +1,13 @@
-// hooks/usePrintOperations.js
-import { useRef, useCallback, useImperativeHandle } from 'react'
-import { useReactToPrint } from 'react-to-print'
-import { useNavigate } from 'react-router-dom'
-import { error } from '@utils/toast'
+import { useCallback, useImperativeHandle, useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
+import { useNavigate } from 'react-router-dom';
+import { error } from '@utils/toast';
+
 
 export const usePrintOperations = ({
   childRef,
   newSaleId,
   setNewSaleId,
-  setHasChange,
   setQrcodeUrl,
   setPaymentsList,
   defaultPaymentTypes,
@@ -31,7 +30,6 @@ export const usePrintOperations = ({
     onPrintError: (err) => {
       error('chek bilan muammo: ', err)
       setNewSaleId(false)
-      setHasChange(false)
       setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
       setPaymentsList(defaultPaymentTypes)
       navigate(`/sales/create`)
@@ -39,7 +37,6 @@ export const usePrintOperations = ({
     onAfterPrint: () => {
       setMarkingList({})
       setNewSaleId(false)
-      setHasChange(false)
       setPaymentsList(defaultPaymentTypes)
       setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
 

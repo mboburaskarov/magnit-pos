@@ -1,16 +1,10 @@
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
-import { Box, Typography } from '@mui/material'
-import { get } from 'lodash'
-import { memo } from 'react'
-import thousandDivider from '../../../../../utils/thousandDivider'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
+import { memo } from 'react';
+import { get } from 'lodash';
 
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+
 const CustomHeader = (props) => {
   const lastStort = props.column.colDef.orderStoring
   const currentColId = props.column.colId
@@ -78,8 +72,8 @@ const CustomHeader = (props) => {
   )
 }
 
-export default function tableHeaderSelector({ clientsColumns, values, setOrderStoring, orderStoring }) {
-  const columns = clientsColumns?.map((el) => {
+export default function tableHeaderSelector({ productsColumns, values, setOrderStoring, orderStoring }) {
+  const columns = productsColumns?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,

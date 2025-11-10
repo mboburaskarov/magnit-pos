@@ -1,17 +1,19 @@
-import { Box, Button, Drawer, Typography } from '@mui/material'
-import { makeStyles, useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get, size } from 'lodash'
-import { useEffect } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useMutation } from 'react-query'
-import { useSelector } from 'react-redux'
-import CloseIcon from '../../../src/assets/icons/CloseIcon'
-import useDidUpdate from '../../../src/hooks/useDidUpdate'
-import { requests } from '../../../utils/requests'
-import { error, success } from '../../../utils/toast'
-import MainDetails from './mainDetails'
+import { Box, Button, Drawer, Typography } from '@mui/material';
+import { FormProvider, useForm } from 'react-hook-form';
+import { makeStyles, useTheme } from '@mui/styles';
+import useDidUpdate from '@hooks/useDidUpdate';
+import { useTranslation } from 'react-i18next';
+import { error, success } from '@utils/toast';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import { useMutation } from 'react-query';
+import CloseIcon from '@icons/CloseIcon';
+import { get, size } from 'lodash';
+import { useEffect } from 'react';
+import dayjs from 'dayjs';
+
+import MainDetails from './mainDetails';
+
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -42,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function ClientCreateMini({ quickCreateClientName, openDrawer, closeDrawer, setCustomerId, clientData }) {
+export default function ClientCreateMini({ quickCreateClientName, openDrawer, closeDrawer, setOpenDrawer, setCustomerId, clientData }) {
   const { t } = useTranslation()
   const classes = useStyles()
   const methods = useForm()
@@ -59,10 +61,10 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
   }, [openDrawer])
 
   useDidUpdate(() => {
-    if (clientData) {
-      methods.reset(clientData)
+    if (openDrawer) {
+      methods.reset(openDrawer?.data)
     }
-  }, [clientData])
+  }, [openDrawer])
   useEffect(() => {
     methods.reset()
   }, [])
@@ -77,6 +79,27 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
         name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'),
         balance: get(data, 'data.balance', 0),
         barcode: get(data, 'data.discount_card'),
+        ...data?.data,
+      })
+      success('Клиент создан!')
+    },
+    onError: (err) => {
+      error('Ошибка при Клиент создан!')
+      console.error('err', err)
+    },
+  })
+
+  const { mutate: handleEditCustomer, isLoading: isHandleEditCustomer } = useMutation(requests.editCustomer, {
+    onSuccess: ({ data }) => {
+      closeDrawer(false)
+      methods.reset()
+
+      setCustomerId({
+        id: get(data, 'data.id'),
+        name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'),
+        balance: get(data, 'data.balance', 0),
+        barcode: get(data, 'data.discount_card'),
+        ...data?.data,
       })
       success('Клиент создан!')
     },
@@ -90,6 +113,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
     if (size(get(data, 'phone')) < 14) {
       error('Номер телефона меньше 14')
     }
+
     const requestBody = {
       birthday: data?.date_of_birth ? dayjs(get(data, 'date_of_birth')).format('YYYY.MM.DD') : null,
       created_by: userData?.id,
@@ -99,9 +123,18 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       store_id: get(userData, 'store.id'),
       phone: '998' + data?.phone?.replace(/[()\s]/g, ''),
       tag_id: data?.tags?.value,
-      loyalty_card_barcode: data?.loyalty_card_barcode,
+      virtual_loyalty_card_needed: data?.shouldGenerateLoyalCard == 'auto' ? true : false,
+
+      loyalty_card_barcode:
+        data?.shouldGenerateLoyalCard == 'auto'
+          ? get(openDrawer, 'data.loyalty_card_barcode', false) || data?.loyalty_card_barcode
+          : data?.loyalty_card_barcode,
     }
-    handleCustomerCreate(requestBody)
+    if (get(openDrawer, 'type') == 'edit') {
+      handleEditCustomer({ id: get(openDrawer, 'data.id'), data: requestBody })
+    } else {
+      handleCustomerCreate(requestBody)
+    }
   }
 
   const onError = (err) => {
@@ -125,7 +158,13 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
                 padding: '0 24px',
               }}
             >
-              <MainDetails quickCreateClientName={quickCreateClientName} clientData={clientData} openDrawer={openDrawer} />
+              <MainDetails
+                setOpenDrawer={setOpenDrawer}
+                setCustomerId={setCustomerId}
+                quickCreateClientName={quickCreateClientName}
+                clientData={clientData}
+                openDrawer={openDrawer}
+              />
             </Box>
             <Box
               width={196}

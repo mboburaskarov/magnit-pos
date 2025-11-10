@@ -8,27 +8,23 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import Header from '../../../../../components/Header'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import { error } from '../../../../../utils/toast'
-import ArrowDown from '../../../../assets/icons/ArrowDown'
-import ArrowUp from '../../../../assets/icons/ArrowUp'
-import BarcodeIcon from '../../../../assets/icons/BarcodeIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import {
-  changeColumnSequence,
-  resetTableHeader,
-  updateTableHeader,
-} from '../../../../redux-toolkit/tableSlices/returnToWarehouseRecheckWithCheckingTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import ConfirmDialog from '@components/ConfirmDialog'
+import Header from '@components/Header'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import ArrowDown from '@icons/ArrowDown'
+import ArrowUp from '@icons/ArrowUp'
+import BarcodeIcon from '@icons/BarcodeIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/returnToWarehouseRecheckWithCheckingTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function ReturnToWarehouseGetScanWithCheckingPage() {
   const dispatch = useDispatch()
@@ -42,17 +38,6 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
   const methods = useForm()
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
-  const { mutate: setScanedNumber, isLoading: isSetScannedNumber } = useMutation(requests.sendScannedReturnToWarehouseNumber, {
-    onSuccess: ({ data }) => {
-      refetchgetReturnToWarehouseDashBoard()
-      setBarcode('')
-    },
-    onError: (err) => {
-      refetch()
-
-      error('Ошибка при сканирование!')
-    },
-  })
 
   const { mutate: finishWriteOffChecking, isLoading: isfinishWriteOffChecking } = useMutation(requests.finishReturnToWarehouseChecking, {
     onSuccess: ({ data }) => {
@@ -64,11 +49,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
   })
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
-    t,
     values,
-
-    id,
-    setScanedNumber,
   })
   const returnToWarehouseWithCheckingDetailsFilter = useMemo(() => {
     return {
@@ -79,9 +60,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
     }
   }, [id, barcode, values?.limit, values?.offset])
 
-  const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
-    requests.getReturnToWarehouseDashBoard(id)
-  )
+  const { data: getReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () => requests.getReturnToWarehouseDashBoard(id))
 
   const {
     data: returnToWarehouseWithCheckingDetails,
@@ -94,15 +73,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -121,21 +92,19 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
       methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
     })
   }, [returnToWarehouseWithCheckingDetails?.data, values?.limit])
-  const { mutate: getReturnToWarehouseDetailsExcelReport, isLoading: isgetReturnToWarehouseDetailsExcelReport } = useMutation(
-    requests.getReturnToWarehouseDetailsExcelReport,
-    {
-      onSuccess: ({ data }) => {
-        downloadLinkExcel(get(data, 'data.file_name'))
-      },
-      onError: (err) => {
-        console.error(err)
 
-        error('Ошибка при скачать excel!')
-      },
-    }
-  )
+  const { mutate: getReturnToWarehouseDetailsExcelReport } = useMutation(requests.getReturnToWarehouseDetailsExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.error(err)
 
-  const { mutate: send1c, isLoading: isSend1c } = useMutation(requests.resend1cReturnTOwarehouse, {
+      error('Ошибка при скачать excel!')
+    },
+  })
+
+  const { mutate: send1c } = useMutation(requests.resend1cReturnTOwarehouse, {
     onSuccess: ({ data }) => {
       success('Повторно отправлено в 1с')
     },
@@ -151,10 +120,7 @@ export default function ReturnToWarehouseGetScanWithCheckingPage() {
         <Header
           onSubmit={() => send1c(id)}
           buttonText='Повторно отправлено в 1с'
-          // onSubmit={() => setOpenFinishConfirmDialog(true)}
           isLoading={false}
-          // noActions
-          // buttonText='Принятие'
           backIcon
           backHref='/products/return-to-warehouse'
           text={'Возврат'}

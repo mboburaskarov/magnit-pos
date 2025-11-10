@@ -1,27 +1,19 @@
-import { Box, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { memo } from 'react'
-import CustomImg from '../../../../components/CustomImg'
-import StyledTooltip from '../../../../components/StyledTooltip'
-import StyledSwitch from '../../../../components/Switch/StyledSwitch'
-import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
-import getImageUrl from '../../../../utils/getImageUrl'
-import thousandDivider from '../../../../utils/thousandDivider'
-import DefaultUserImgIcon from '../../../assets/icons/defaultUserImgIcon'
-import PrizeBoxIcon from '../../../assets/icons/PrizeBoxIcon'
-import { Percent } from '@mui/icons-material'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
+import { formatPhoneNumber } from '@utils/formatPhoneNumber';
+import StyledSwitch from '@components/Switch/StyledSwitch';
+import DefaultUserImgIcon from '@icons/defaultUserImgIcon';
+import StyledTooltip from '@components/StyledTooltip';
+import { Box, Typography } from '@mui/material';
+import CustomImg from '@components/CustomImg';
+import { Percent } from '@mui/icons-material';
+import getImageUrl from '@utils/getImageUrl';
+import { memo } from 'react';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
 
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
 
-export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer, values }) {
-  const columns = productsColumns?.map((el) => {
+export default function tableHeaderSelector({ salesColumns, setOpenSaleDrawer, values }) {
+  const columns = salesColumns?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,
@@ -127,16 +119,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Наличные',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data')}
-            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Naqd')}
-            type='cash'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data')} type='cash' />),
       }
     }
     if (el.field === 'humo') {
@@ -144,16 +127,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Humo',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data')}
-            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Humo')}
-            type='humo'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data')} type='humo' />),
       }
     }
     if (el.field === 'uzcard') {
@@ -161,16 +135,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Uzcard',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data', 0)}
-            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Uzcard')}
-            type='uzcard'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='uzcard' />),
       }
     }
     if (el.field === 'visa') {
@@ -178,16 +143,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Visa',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Visa')}
-            data={get(p, 'data', 0)}
-            type='visa'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='visa' />),
       }
     }
     if (el.field === 'payme') {
@@ -195,16 +151,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Payme',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data', 0)}
-            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Payme')}
-            type='payme'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='payme' />),
       }
     }
     if (el.field === 'click') {
@@ -212,16 +159,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Click',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data', 0)}
-            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Click')}
-            type='click'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='click' />),
       }
     }
     if (el.field === 'uzumbank') {
@@ -229,16 +167,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Uzumbank',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data', 0)}
-            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'UzumBank')}
-            type='uzumbank'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='uzumbank' />),
       }
     }
     if (el.field === 'alif') {
@@ -246,16 +175,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Alif',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data', 0)}
-            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'UzumBank')}
-            type='alif'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='alif' />),
       }
     }
     if (el.field === 'total_discount') {
@@ -263,33 +183,15 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Сумма скидки',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data', 0)}
-            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'UzumBank')}
-            type='total_discount'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='total_discount' />),
       }
     }
-    if (el.field === 'balance') {
+    if (el.field === 'loyalty_card') {
       return {
         ...el,
         headerName: 'Баланс',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            // data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Balanc')}
-            data={get(p, 'data', 0)}
-            type='balance'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='loyalty_card' />),
       }
     }
 

@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
-import DownloadIcon from '../../../../assets/icons/DownloadIcon'
+import thousandDivider from '@utils/thousandDivider'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import DownloadIcon from '@icons/DownloadIcon'
 
 function ChangePriceDashboard({ data }) {
   return (
@@ -19,7 +19,6 @@ function ChangePriceDashboard({ data }) {
         { title: 'Общая цена поставщика', value: 'total_old_supply_price', endText: 'сум' },
         { title: 'Средняя предыдущая наценка', value: 'avg_old_markup', endText: '%' },
         { title: 'Средняя новая наценка', value: 'avg_new_markup', endText: '%' },
-        // { title: 'result' },
       ].map((stat) => (
         <Grid sm='4' lg='4' md='4' item sx={{}}>
           <Box

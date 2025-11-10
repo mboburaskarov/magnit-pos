@@ -1,8 +1,9 @@
-import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
-import BranchReportsList from '../../pages/reports/branch'
-import ClientReportsList from '../../pages/reports/client'
-import PoductReportsList from '../../pages/reports/product'
-import VendorReportsList from '../../pages/reports/vendor'
+import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar';
+import VendorReportsList from '../../pages/reports/employees';
+import PoductReportsList from '../../pages/reports/product';
+import ClientReportsList from '../../pages/reports/client';
+import BranchReportsList from '../../pages/reports/branch';
+
 
 const reportsRoutes = {
   path: 'reports',

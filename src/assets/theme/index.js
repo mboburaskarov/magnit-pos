@@ -1,4 +1,5 @@
-import typography from './typography'
+import typography from './typography';
+
 
 export const theme = ({ mode, palette }) => {
   const fontFamily = {
@@ -329,7 +330,7 @@ export const theme = ({ mode, palette }) => {
               borderBottomLeftRadius: 16,
               borderBottomRightRadius: 16,
             },
-            '&:first-child': {
+            '&:first-of-type': {
               borderTopLeftRadius: 16,
               borderTopRightRadius: 16,
             },

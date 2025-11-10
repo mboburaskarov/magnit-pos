@@ -7,34 +7,30 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useParams } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import { requests } from '../../../../../utils/requests'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import { error } from '../../../../../utils/toast'
-import errorAudio from '../../../../assets/audio/error.mp3'
-import successAudio from '../../../../assets/audio/normal.mp3'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import { requests } from '@utils/requests'
+import thousandDivider from '@utils/thousandDivider'
+import { error } from '@utils/toast'
+import errorAudio from '@/assets/audio/error.mp3'
+import successAudio from '@/assets/audio/normal.mp3'
+import CloseIcon from '@icons/CloseIcon'
 
 export default function ChangeAdditionalsModal({ open, selectedIndex, selectedCellRowId, setshouldICleanSearchQuery, refetch, setOpen }) {
   const methods = useForm()
   const { reset } = methods
   const { id } = useParams()
   const theme = useTheme()
-  const { t } = useTranslation()
-
   const errorScanAudio = new Audio(errorAudio)
   const successScanAudio = new Audio(successAudio)
   const retilaPirceRef = useRef([])
   const [newRtailPrice, setNewRetailPrice] = useState('')
   const [newBarcode, setNewBarcode] = useState('')
   const [newBarcodeRef, setNewBarcodeRef] = useState(null)
-
   let currentOffset = Math.floor(selectedIndex / 50) * 50
-  const { data: priceOptionList, refetch: refetchInverStatus } = useQuery(
-    ['priceOptionList', open],
-    () => requests.getPriceOptions({ product_id: get(open, 'data.id'), limit: 5 }),
-    { enabled: !!get(open, 'data.id') }
-  )
+
+  const { data: priceOptionList } = useQuery(['priceOptionList', open], () => requests.getPriceOptions({ product_id: get(open, 'data.id'), limit: 5 }), {
+    enabled: !!get(open, 'data.id'),
+  })
 
   const { mutate: setScanedNumber, isLoading: issetScanedNumber } = useMutation(requests.sendScannedInventoryNumber, {
     onSuccess: ({ data }) => {
@@ -71,9 +67,7 @@ export default function ChangeAdditionalsModal({ open, selectedIndex, selectedCe
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         let activElem = document.activeElement.tagName
         if (activElem != 'INPUT') {
-          //
           retilaPirceRef?.current?.[0]?.focus()
-          //
           return
         }
         if (Number(newRtailPrice) === 0 && Number(newBarcode) === 0) {

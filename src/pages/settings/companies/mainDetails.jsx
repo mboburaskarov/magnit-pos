@@ -2,14 +2,11 @@ import { Box, Grid } from '@mui/material'
 import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import InputPhone from '../../../../components/Inputs/PhoneNumber'
-
+import InputPhone from '@components/Inputs/PhoneNumber'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
-import { useQuery } from 'react-query'
-import TextField from '../../../../components/Inputs/TextField'
-import Label from '../../../../components/Label'
-import { requests } from '../../../../utils/requests'
+import TextField from '@components/Inputs/TextField'
+import Label from '@components/Label'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -32,37 +29,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function MainDetails({ clientData, openDrawer }) {
+export default function MainDetails({ openDrawer }) {
   const classes = useStyles()
 
-  const { data: companyInfo, refetch: refetcompanyInfo } = useQuery(
-    ['companyInfo', openDrawer],
-    () => requests.getSingleComapny(get(openDrawer, 'data.id', 'no')),
-    {
-      enabled: !!get(openDrawer, 'data.id', false),
-    }
-  )
   const mode = openDrawer?.mode
 
   const { control, errors, setValue } = useFormContext()
+
   const { t } = useTranslation()
-  useEffect(() => {
-    refetcompanyInfo
-  }, [openDrawer])
+
   useEffect(() => {
     if (mode === 'edit') {
-      setValue('name', get(companyInfo, 'data.data.name'))
-      setValue('email', get(companyInfo, 'data.data.email'))
-      setValue('phone', get(companyInfo, 'data.data.phone', '').replace('998', ''))
-      setValue('country', get(companyInfo, 'data.data.country'))
-      setValue('city', get(companyInfo, 'data.data.city'))
-      setValue('postal_code', get(companyInfo, 'data.data.postal_code'))
-      setValue('legal_name', get(companyInfo, 'data.data.legal_name'))
-      setValue('legal_address', get(companyInfo, 'data.data.legal_address'))
-      setValue('company_inn', get(companyInfo, 'data.data.company_inn'))
-      setValue('company_mfo', get(companyInfo, 'data.data.company_mfo'))
+      setValue('name', get(openDrawer, 'data.name'))
+      setValue('email', get(openDrawer, 'data.email'))
+      setValue('phone', get(openDrawer, 'data.phone', '').replace('998', ''))
+      setValue('country', get(openDrawer, 'data.country'))
+      setValue('city', get(openDrawer, 'data.city'))
+      setValue('postal_code', get(openDrawer, 'data.postal_code'))
+      setValue('legal_name', get(openDrawer, 'data.legal_name'))
+      setValue('legal_address', get(openDrawer, 'data.legal_address'))
+      setValue('company_inn', get(openDrawer, 'data.company_inn'))
+      setValue('company_mfo', get(openDrawer, 'data.company_mfo'))
     }
-  }, [companyInfo])
+  }, [openDrawer])
 
   return (
     <Box mt={'24px'}>
@@ -70,17 +59,7 @@ export default function MainDetails({ clientData, openDrawer }) {
         <Grid item xs={6}>
           <Label mb='4px'>{t('name')}</Label>
 
-          <TextField
-            id='client-name'
-            name='name'
-            control={control}
-            fullWidth
-            error={errors?.name}
-            placeholder={t('Название')}
-            required
-            defaultValue={clientData?.name || ''}
-            asteriks
-          />
+          <TextField id='client-name' name='name' control={control} fullWidth error={errors?.name} placeholder={t('Название')} required asteriks />
         </Grid>
         <Grid item xs={6}>
           <Label mb='4px'>{t('Электронная почта')}</Label>
@@ -102,7 +81,6 @@ export default function MainDetails({ clientData, openDrawer }) {
             disabled
             id='phone'
             name='phone'
-            defaultValue={get(companyInfo, 'data.data.phone', '').replace('998', '')}
             placeholder={t('menu.settings.shops.shop_create.phone_placeholder')}
             control={control}
             fullWidth
@@ -137,17 +115,7 @@ export default function MainDetails({ clientData, openDrawer }) {
         <Grid item xs={6}>
           <Label mb='4px'>{t('Город')}</Label>
 
-          <TextField
-            id='client-name'
-            name='city'
-            control={control}
-            fullWidth
-            error={errors?.city}
-            placeholder={t('Город')}
-            required
-            defaultValue={clientData?.city || 'Tashkent'}
-            asteriks
-          />
+          <TextField id='client-name' name='city' control={control} fullWidth error={errors?.city} placeholder={t('Город')} required asteriks />
         </Grid>
         <Grid item xs={6}>
           <Label mb='4px'>{t('Почтовый индексc')}</Label>
@@ -178,7 +146,6 @@ export default function MainDetails({ clientData, openDrawer }) {
             error={errors?.legal_name}
             placeholder={t('Юридическое название')}
             required
-            defaultValue={clientData?.legal_name || ''}
             asteriks
           />
         </Grid>
@@ -211,7 +178,6 @@ export default function MainDetails({ clientData, openDrawer }) {
             error={errors?.company_inn}
             placeholder={t('ИНН компании')}
             required
-            defaultValue={clientData?.company_inn || ''}
             asteriks
           />
         </Grid>

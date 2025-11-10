@@ -1,79 +1,15 @@
-import { Box, Typography } from '@mui/material'
-import Highlighter from 'react-highlight-words'
+import { useQueryParams } from '@hooks/useQueryParams';
+import thousandDivider from '@utils/thousandDivider';
+import Highlighter from 'react-highlight-words';
+import { Box, Typography } from '@mui/material';
+import PrizeBoxIcon from '@icons/PrizeBoxIcon';
+import { makeStyles } from '@mui/styles';
+import { get } from 'lodash';
 
-import { makeStyles } from '@mui/styles'
-import { get } from 'lodash'
-import { useEffect, useState } from 'react'
-import PrizeBoxIcon from '../../../src/assets/icons/PrizeBoxIcon'
-import { useQueryParams } from '../../../src/hooks/useQueryParams'
-import thousandDivider from '../../../utils/thousandDivider'
-import CustomImg from '../../CustomImg'
+import CustomImg from '../../CustomImg';
+
 
 const useStyles = makeStyles((theme) => ({
-  currentUser: {
-    // minWidth: '120px',
-    width: 'auto',
-    height: '48px',
-    padding: '4px 4px 4px 16px !important',
-    justifyContent: 'space-between',
-    backgroundColor: theme.palette.gray[50],
-    borderRadius: '40px !important',
-  },
-  avatarPlaceholder: {
-    // position: 'relative',
-    height: 40,
-    width: 40,
-    borderRadius: 20,
-    marginLeft: 12,
-    fontWeight: 600,
-    fontSize: 16,
-    backgroundColor: theme.palette.orange[500],
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-    color: '#fff',
-    transition: '0.3s',
-    '& img': {
-      width: '100%',
-    },
-  },
-  bonus_amount: {
-    margin: 0,
-    lineHeight: '14px',
-    fontWeight: 600,
-    fontFamily: "'Gilroy', sans-serif",
-    color: theme.palette.orange[500],
-    fontSize: 12,
-    transition: 'all .2s',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    textAlign: 'left',
-  },
-  shopname: {
-    margin: 0,
-    lineHeight: '20px',
-    fontWeight: 600,
-    fontFamily: "'Gilroy', sans-serif",
-    color: theme.palette.bunker[400],
-    fontSize: 14,
-    transition: 'all .2s',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    textAlign: 'left',
-  },
-  username: {
-    width: '100%',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    fontWeight: '600',
-    lineHeight: '16px',
-    fontSize: '16px',
-    color: theme.palette.bunker[950],
-  },
   card_detail: {
     width: '384px',
     borderLeft: `1px solid ${theme.palette.bunker[100]}`,
@@ -95,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     marginBottom: '24px',
     marginTop: '20px',
-    // marginRight: '8px',
   },
   cart_detail_icon: {
     width: 48,
@@ -139,53 +74,32 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '8px',
     fontWeight: '500',
     lineHeight: '24px',
-    // borderColor: 'transparent',
     fontSize: '16px',
     '&:last-child': {
       marginRight: '0',
     },
   },
   priceDetails: {
-    // position: 'absolute',
-    // bottom: 20,
-    // right: 0,
-    // left: 0,
     padding: '16px 12px',
     display: 'flex',
     flexDirection: 'column',
-    // border: '1px solid',
     backgroundColor: theme.palette.white,
     borderRadius: '24px',
-    // borderColor: theme.palette.bunker[100],
     boxShadow: '0px 0px 12px 0px #0000000A',
   },
 
   searchItemList: {
-    // maxHeight: 320,
     overflowY: 'scroll',
     position: 'absolute',
     zIndex: 2,
     width: 'calc(100% - 40px)',
-    // maxWidth: 316,
     margin: '0 auto',
     overflow: 'hidden',
     borderRadius: 16,
     backgroundColor: theme.palette.background.default,
     boxShadow: theme.boxShadow['16-8'],
   },
-  searchItem: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    minHeight: 56,
-    padding: '0 16px',
-    cursor: 'pointer',
-    '&:focus-visible': {
-      outline: 'none !important',
-      backgroundColor: theme.palette.gray[100],
-    },
-  },
+
   noSuchClientAdd: {
     cursor: 'pointer',
     alignItems: 'center',
@@ -300,7 +214,6 @@ const useStyles = makeStyles((theme) => ({
   itemName: {
     marginBottom: 4,
     color: theme.palette.orange[500],
-    // width: 300,
     fontWeight: '600',
     lineHeight: '24px',
     fontSize: '16px',
@@ -340,11 +253,14 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     minHeight: 72,
     flexDirection: 'column',
-    // marginTop: 16,
-    // borderRadius: 16,
     position: 'relative',
     zIndex: 100,
     cursor: 'pointer',
+    padding: '0 16px',
+    '&:focus-visible': {
+      outline: 'none !important',
+      backgroundColor: theme.palette.gray[100],
+    },
   },
   currentUser: {
     maxWidth: '200px',
@@ -411,43 +327,14 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.bunker[950],
   },
 }))
-export default function ResultItem({
-  index,
-  handleAddProduct,
-  discount,
-  setOpenRejectConfirmDialog,
-  itemRef,
-  fakeIndexForCheckSearch,
-  item,
-  conflictItem = false,
-  isSimilar = false,
-  isChild = true,
-  setSearchTerm,
-  searchTerm,
-  lastElementRef,
-  product,
-}) {
+export default function ResultItem({ index, itemRef, item, searchTerm, product }) {
   const classes = useStyles()
-  const [itemCount, setItemcount] = useState(1)
   const { values } = useQueryParams()
 
-  useEffect(() => {
-    setItemcount(1)
-  }, [values?.search])
-
   return (
-    // <Box className={classes.searchResult}>
     <Box
       id={item?.id}
       className={classes.searchItem + ' search-item'}
-      // onClick={() => {
-      //   handleAddProduct({
-      //     discount_type: get(discount, 'type', 'percent'),
-      //     discount_value: Number(get(discount, 'amount', 0)),
-      //     sale_id: id,
-      //     store_product_id: get(product, 'id', 'err #1'),
-      //   })
-      // }}
       sx={{
         position: 'relative',
         overflow: 'hidden',
@@ -477,7 +364,6 @@ export default function ResultItem({
                 textOverflow={'ellipsis'}
                 maxWidth={'calc(100% - 1px)'}
                 whiteSpace={'nowrap'}
-                // style={{ textDecoration: get(product, 'expire_day', 0) <= 0 ? 'line-through' : 'none' }}
                 overflow={'hidden'}
                 id='product-name'
                 className={classes.itemName}
@@ -497,9 +383,12 @@ export default function ResultItem({
                   className={classes.itemBarcode}
                   textToHighlight={product?.barcode}
                 />
-                <Typography color={get(product, 'expire_day', 0) < 0 ? 'red.500' : 'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
-                  {/* / {dayjs(get(product, 'expire_date')).format('DD.MM.YYYY')} ({get(product, 'expire_day', 0)} kun) */}
-                </Typography>
+                <Typography
+                  color={get(product, 'expire_day', 0) < 0 ? 'red.500' : 'bunker.700'}
+                  fontSize={'14px'}
+                  fontWeight={'500'}
+                  lineHeight={'20px'}
+                ></Typography>
               </Typography>
             </Box>
           </Box>
@@ -521,23 +410,8 @@ export default function ResultItem({
               </Typography>
             </Box>
           )}
-          {/* {!conflictItem && (
-            <Box flex='0 0 22%' pr={2} textAlign='right'>
-              <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
-                <Box>
-                  <Typography whiteSpace={'pre'} className={classes.itemQuantity}>
-                    <span>Кол: {item?.quantity}</span>
-                  </Typography>
-                  <Typography whiteSpace={'pre'} className={classes.itemPrice}>
-                    {thousandDivider(product?.retail_price, 'сум')}{' '}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-          )} */}
         </Box>
       </Box>
     </Box>
-    // </Box>
   )
 }

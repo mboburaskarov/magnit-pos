@@ -1,8 +1,10 @@
-import thousandDivider from '@utils/thousandDivider'
-import Tab from './Tab'
-import { Fragment } from 'react'
-import { Box } from '@mui/material'
-import StyledTooltip from '../StyledTooltip'
+import thousandDivider from '@utils/thousandDivider';
+import { Box } from '@mui/material';
+import { Fragment } from 'react';
+
+import StyledTooltip from '../StyledTooltip';
+import Tab from './Tab';
+
 
 const TabContainer = ({ countOnTop, tabs = [], setSelected, selected, counts, thousandDividable = true, countFormatter, primary, countsCompare = false }) => {
   return (
@@ -26,7 +28,7 @@ const TabContainer = ({ countOnTop, tabs = [], setSelected, selected, counts, th
                       selected={selected === tab?.id}
                       setTab={setSelected}
                       icon={tab?.icon}
-                      checkSlug={tab?.checkSlug}
+                      checkslug={tab?.checkslug}
                       count={thousandDivider(counts?.[index] || 0)}
                     />
                   </StyledTooltip>
@@ -51,7 +53,7 @@ const TabContainer = ({ countOnTop, tabs = [], setSelected, selected, counts, th
                     count={thousandDivider(counts?.[index] || 0)}
                     selected={selected === tab?.id}
                     setTab={setSelected}
-                    checkSlug={tab?.checkSlug}
+                    checkslug={tab?.checkslug}
                   />
                 )}
               </Fragment>

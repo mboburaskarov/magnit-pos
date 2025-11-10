@@ -1,8 +1,8 @@
 import { Box, Grid, Typography } from '@mui/material'
 import { get } from 'lodash'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
-import DownloadIcon from '../../../../assets/icons/DownloadIcon'
+import thousandDivider from '@utils/thousandDivider'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import DownloadIcon from '@icons/DownloadIcon'
 
 function WriteOffDashboard({ data }) {
   return (
@@ -18,7 +18,6 @@ function WriteOffDashboard({ data }) {
         { title: 'Получатель', value: 'to_store' },
         { title: 'Текущее количество', value: 'received_count' },
         { title: 'Количество отпрафкий', value: 'accepted_count' },
-        // { title: 'result' },
       ].map((stat) => (
         <Grid sm='3' lg='3' md='3' item sx={{}}>
           <Box

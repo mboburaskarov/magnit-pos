@@ -1,9 +1,7 @@
-import React from 'react'
-
 function RightArrow({ color = '#B1B7C8' }) {
   return (
     <svg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-      <path d='M8.33398 5.83398L11.6673 10.0007L8.33398 14.1673' stroke={color} stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+      <path d='M8.33398 5.83398L11.6673 10.0007L8.33398 14.1673' stroke={color} strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
     </svg>
   )
 }

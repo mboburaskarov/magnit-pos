@@ -7,25 +7,25 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ButtonWithPopup from '../../../../../components/Buttons/ButtonWithPopup'
-import Header from '../../../../../components/Header'
-import ImageGallery from '../../../../../components/ImageGallery'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import FilterMenuIcon from '../../../../assets/icons/FilterMenuIcon'
-import ImportIcon from '../../../../assets/icons/ImportIcon'
-import ImportWithIcon from '../../../../assets/icons/ImportWithIcon'
-import ImportWithoutIcon from '../../../../assets/icons/ImportWithoutIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/importDetailTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import ButtonWithPopup from '@components/Buttons/ButtonWithPopup'
+import Header from '@components/Header'
+import ImageGallery from '@components/ImageGallery'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import ImportIcon from '@icons/ImportIcon'
+import ImportWithIcon from '@icons/ImportWithIcon'
+import ImportWithoutIcon from '@icons/ImportWithoutIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/importDetailTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function ImportDetailsPage() {
   const theme = useTheme()
@@ -54,18 +54,8 @@ export default function ImportDetailsPage() {
   })
   useEffect(() => {
     if (tableColumns) {
-      ;('retail_price_vat')
-      ;('retail_price_vat')
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          hide: !routeString.includes(`import-detail-${el?.colId}`),
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
+
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -81,6 +71,7 @@ export default function ImportDetailsPage() {
       no_barcode: values?.no_barcode == '1' ? true : false,
     }
   }, [values?.received_amount_to, values?.no_barcode, values?.received_amount_from, values?.offset, values?.limit, values?.search])
+
   const {
     data: importWithCheckingDetails,
     isLoading: importWithCheckingDetailsLoading,
@@ -98,6 +89,7 @@ export default function ImportDetailsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [importWithCheckingDetails?.data, values?.limit])
+
   const { mutate: loadWithoutCheckingFetch, isLoading: isLoadWithoutChecking } = useMutation(requests.loadWithoutChecking, {
     onSuccess: () => {
       navigate('/products/import')
@@ -109,9 +101,11 @@ export default function ImportDetailsPage() {
       console.error('err', err)
     },
   })
+
   const loadWithoutChecking = () => {
     loadWithoutCheckingFetch(id)
   }
+
   const { mutate: importDetailsExcelReport, isLoading: isimportDetailsExcelReport } = useMutation(requests.getImportDetailsExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
@@ -122,6 +116,7 @@ export default function ImportDetailsPage() {
       error('Ошибка при скачать excel!')
     },
   })
+
   return (
     <LoadingContainer readyState={!isLoadWithoutChecking}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>

@@ -1,21 +1,23 @@
-import { Box, Button, Drawer, Typography } from '@mui/material'
-import { makeStyles, useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
-import CloseIcon from '../../src/assets/icons/CloseIcon'
-import FilterMenuIcon from '../../src/assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
-import { requests } from '@utils/requests'
-import ListWithPagination from '../AgGridTable/ListWithPagination'
-import InputSearch from '../Inputs/InputSearch'
-import InputSwitch from '../Inputs/InputSwitch'
-import DraftChildDrawer from './DraftChildDrawer'
-import DraftFilter from './DraftFilter'
-import DraftParentItemsBox from './DraftParentItemsBox'
-import PendingSaleParentItemsBox from './PendingSaleParentItemsBox'
+import { Box, Button, Drawer, Typography } from '@mui/material';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useEffect, useMemo, useState } from 'react';
+import FilterMenuIcon from '@icons/FilterMenuIcon';
+import { makeStyles, useTheme } from '@mui/styles';
+import { useTranslation } from 'react-i18next';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import CloseIcon from '@icons/CloseIcon';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
+import PendingSaleParentItemsBox from './PendingSaleParentItemsBox';
+import ListWithPagination from '../AgGridTable/ListWithPagination';
+import DraftParentItemsBox from './DraftParentItemsBox';
+import DraftChildDrawer from './DraftChildDrawer';
+import InputSwitch from '../Inputs/InputSwitch';
+import InputSearch from '../Inputs/InputSearch';
+import DraftFilter from './DraftFilter';
+
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -68,7 +70,6 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
           </Box>
           <Box
             sx={{
-              width: '100%',
               padding: '0 40px',
               display: 'flex',
               width: '100%',
@@ -143,9 +144,6 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
                 customFilter={draftsListFilter}
               />
             )}
-            {/* {draftListData.map((item, index) => {
-              return <DraftParentItemsBox key={index} item={item} setIsOpenChild={setIsOpenChild} />
-            })} */}
           </Box>
         </Box>
       ) : (

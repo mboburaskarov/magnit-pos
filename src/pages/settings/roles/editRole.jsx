@@ -1,14 +1,13 @@
 import { Box, Container } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
-import { error, success } from '../../../../utils/toast'
+import { error, success } from '@utils/toast'
 import { useMutation, useQuery } from 'react-query'
-import { requests } from '../../../../utils/requests'
+import { requests } from '@utils/requests'
 import { useNavigate, useParams } from 'react-router-dom'
-import LoadingContainer from '../../../../components/LoadingContainer'
+import LoadingContainer from '@components/LoadingContainer'
 import RoleBody from './RoleBody'
-import Header from '../../../../components/Header'
-import { useTranslation } from 'react-i18next'
+import Header from '@components/Header'
 import { get, size } from 'lodash'
 export default function RoleEditPage() {
   const { id } = useParams()
@@ -43,12 +42,10 @@ export default function RoleEditPage() {
     if (!permission.children) return selectedChildren
 
     for (const child of permission.children) {
-      // If child itself is selected
       if (selected.includes(child.id)) {
         selectedChildren.push(child.id)
       }
 
-      // Recursively check deeper levels
       selectedChildren = selectedChildren.concat(getSelectedChildrenRecursive(child, selected))
     }
 

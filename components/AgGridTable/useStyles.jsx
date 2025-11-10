@@ -1,11 +1,12 @@
-import { makeStyles } from '@mui/styles'
+import { makeStyles } from '@mui/styles';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     position: 'relative',
     overflow: 'hidden',
-    '& > div:first-child': {
+    '& > div:first-of-type': {
       height: 'unset !important',
     },
   },

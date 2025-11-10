@@ -1,6 +1,8 @@
-import { get } from 'lodash'
-import * as qs from 'qs'
-import { authRequest, eposRequest, fileUploadRequest, request, requestEXCEL } from '../axios'
+import { get } from 'lodash';
+import * as qs from 'qs';
+
+import { authRequest, eposRequest, fileUploadRequest, request, requestEXCEL } from '../axios';
+
 
 export const requests = {
   //epos
@@ -24,6 +26,8 @@ export const requests = {
   //dashboard
   dashboradSaleStatistic: ({ store_ids, company_ids, ...filter }) =>
     request.post(`v1/dashboard/sale-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
+  dashboradLoyaltyStatistic: ({ store_ids, company_ids, ...filter }) =>
+    request.post(`v1/dashboard/loyalty_card-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
   dashboradNetProfitStatistic: ({ store_ids, company_ids, ...filter }) =>
     request.post(`v1/dashboard/net-profit-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
   dashboradImportStatistic: ({ store_ids, company_ids, ...filter }) =>
@@ -161,7 +165,7 @@ export const requests = {
 
   //import
   getAllImports: (filter) => request.get(`v1/import/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getAllExpiredImports: (filter) => request.post(`v1/dashboard/old-import${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllExpiredImports: ({ store_ids, ...filter }) => request.post(`v1/dashboard/old-import${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
   getImportsExcelReport: (filter) => requestEXCEL.get(`v1/import/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   getImportStatusCount: (filter) => request.get(`v1/import/list-status${qs.stringify(filter, { addQueryPrefix: true })}`),
 
@@ -366,7 +370,10 @@ export const requests = {
 
   //customers
   createCustomer: (data) => request.post(`v1/customer`, data),
+  editCustomer: ({ id, data }) => request.put(`v1/customer/${id}`, data),
+  createLoyaltyCard: (data) => request.post(`v1/loyalty_card`, data),
   getAllCustomers: (filter) => request.get(`v1/customer/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllCustomersForSale: (filter) => request.get(`v1/customer/list-for-sale${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleCustomers: (id) => request.get(`v1/customer/${id}`),
   deleteClient: (id) => request.delete(`v1/customer/soft-delete`, id),
 

@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import LazySelect from '../../../../components/Select/LazySelect'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import CloseIcon from '../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import LazySelect from '@components/Select/LazySelect'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import CloseIcon from '@icons/CloseIcon'
 import { LoadingButton } from '@mui/lab'
 
 export default function CreateBannedProduct({ open, refetch, setOpen }) {
@@ -16,6 +16,9 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
   const { reset, control, getValues, watch } = methods
   const [hideProduct, setHideProduct] = useState(false)
   const [hideProducer, setHideProducer] = useState(false)
+  const theme = useTheme()
+  const { t } = useTranslation()
+
   const { mutate: createBannedProduct, isLoading: iscreateBannedProduct } = useMutation(requests.createBannedProduct, {
     onSuccess: () => {
       setOpen(false)
@@ -33,6 +36,7 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
   useEffect(() => {
     setHideProducer(getValues('product')?.[0]?.name)
   }, [watch('product')])
+
   const onSubmit = (data) => {
     const requestBody = {
       producer_id: data.producer.value,
@@ -50,9 +54,7 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
   useEffect(() => {
     reset({}, { keepDirty: true })
   }, [open])
-  const theme = useTheme()
 
-  const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       overflowVisible

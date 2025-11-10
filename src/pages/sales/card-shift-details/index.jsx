@@ -1,21 +1,23 @@
-import { Box, Button, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import React, { useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
-import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
-import LeftArrowIcon from '../../../assets/icons/LeftArrow'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import CashCloseDrawer from './cashCloseDrawer'
-import CashTypeDrawer from './cashTypeDrawer'
-import tableHeaderSelector from './tableHeaderSelector'
+import AgGridTable from '@components/AgGridTable/AgGridTable';
+import { useNavigate, useParams } from 'react-router-dom';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Box, Button, Typography } from '@mui/material';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useMutation, useQuery } from 'react-query';
+import ArrowRightIcon from '@icons/ArrowRightIcon';
+import { useTranslation } from 'react-i18next';
+import LeftArrowIcon from '@icons/LeftArrow';
+import { useEffect, useState } from 'react';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import { error } from '@utils/toast';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
+import tableHeaderSelector from './tableHeaderSelector';
+import CashCloseDrawer from './cashCloseDrawer';
+import CashTypeDrawer from './cashTypeDrawer';
+
 
 function CardShiftDetails() {
   const { t } = useTranslation()
@@ -32,7 +34,6 @@ function CardShiftDetails() {
   const { mutate: changeCloseBoxNetAmout, isLoading: ischangeCloseBoxNetAmout } = useMutation(requests.changeCloseBoxNetAmout, {
     onSuccess: () => {
       refetch()
-      // success('Продукт успешно удален!')
     },
     onError: (err) => {
       refetch()
@@ -53,7 +54,9 @@ function CardShiftDetails() {
     isFetching: isFetchingcloseCashboxPaymentList,
     refetch,
   } = useQuery('closeCashboxPaymentList', () => requests.getCloseCashboxPaymentList(id))
+
   const { data: getCashBoxOperationInfo } = useQuery('getCashBoxOperationInfo', () => requests.getCashBoxOperationInfo(id))
+
   useEffect(() => {
     if (closeCashboxPaymentList?.data?.data?.data) {
       setRowData([

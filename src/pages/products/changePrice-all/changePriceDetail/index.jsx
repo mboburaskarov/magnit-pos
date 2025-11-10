@@ -1,10 +1,8 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Container, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
-import OutLineTextFieldThousand from '../../../../../components/Inputs/OutLineTextFieldThousand'
-
+import OutLineTextFieldThousand from '@components/Inputs/OutLineTextFieldThousand'
 import { get } from 'lodash'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -13,30 +11,26 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTableSelectable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import Header from '../../../../../components/Header'
-import ImageGallery from '../../../../../components/ImageGallery'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import InputSwitchNew from '../../../../../components/Inputs/InputSwitch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import ArrowDown from '../../../../assets/icons/ArrowDown'
-import ArrowUp from '../../../../assets/icons/ArrowUp'
-import FilterMenuIcon from '../../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/changePriceDetailTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTableSelectable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import ConfirmDialog from '@components/ConfirmDialog'
+import Header from '@components/Header'
+import InputSearch from '@components/Inputs/InputSearch'
+import InputSwitchNew from '@components/Inputs/InputSwitch'
+import LoadingContainer from '@components/LoadingContainer'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import ArrowDown from '@icons/ArrowDown'
+import ArrowUp from '@icons/ArrowUp'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/changePriceDetailTableColumns'
 import ChangePriceModal from './changePriceModal'
 import ChangePriceDashboard from './dashboard'
-// import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function ChangePriceDetailPage() {
-  const theme = useTheme()
   const methods = useForm()
   const { id } = useParams()
   const childRef = useRef()
@@ -54,85 +48,30 @@ export default function ChangePriceDetailPage() {
   const [openTotalPercentConfirmDialog, setOpenTotalPercentConfirmDialog] = useState(false)
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
 
-  const [openImageGallery, setOpenImageGallery] = useState(false)
   const [openFullQtyInput, setOpenFullQtyInput] = useState(false)
   const [fullQtyInput, setFullQtyInput] = useState(0)
-  const [gridApi, setGridApi] = useState(null) // Add this state
-  const [filterMenu, setFilterMenu] = useState(false)
-  const { mutate: autoOrderChangeQuantity, isLoading: isautoOrderChangeQuantity } = useMutation(requests.autoOrderChangeQuantity, {
-    onSuccess: () => {},
-    onError: (err) => {
-      error('Ошибка изменить количество!')
-      console.error('err', err)
-    },
-  })
-  const { mutate: finalAutoOrder, isLoading: isfinalAutoOrder } = useMutation(requests.finalAutoOrder, {
-    onSuccess: () => {
-      navigate('/products/revaluation?limit=10&offset=0')
-      success('Авто заказ подтвержден')
-    },
-    onError: (err) => {
-      error('Ошибка изменить количество!')
-      console.error('err', err)
-    },
-  })
+  const [gridApi, setGridApi] = useState(null)
+
   const tableColumns = tableHeaderSelector({
-    importsColumns: columns,
-    t,
-    values,
-    getValue: methods.getValues,
-    setValue: methods.setValue,
-    setImages: setOpenImageGallery,
-    autoOrderChangeQuantity,
+    revaluationColumns: columns,
   })
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
 
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
-  const [controlleroffset, setControllerOffset] = useState(0)
-  useEffect(() => {
-    setControllerOffset(values?.offset)
-  }, [values?.offset])
-  useEffect(() => {
-    setControllerOffset(0)
-  }, [values?.search])
+
   const revaluationDetailListFilter = useMemo(() => {
     return {
-      repricing_id: id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: values?.search,
-      store_id: values?.store_id,
-      start_date: values?.start_date,
-      end_date: values?.end_date,
-      status: values?.status,
-      import_date: values?.import_date,
-      received_amount_to: values?.received_amount_to,
-      received_amount_from: values?.received_amount_from,
     }
-  }, [
-    controlleroffset,
-    values?.limit,
-    values?.end_date,
-    values?.start_date,
-    values?.search,
-    values?.status,
-    values?.store_id,
-    values?.received_amount_to,
-    values?.received_amount_from,
-  ])
+  }, [values?.limit, values?.search, values?.offset])
+
   const {
     data: revaluationDetailList,
     isLoading: revaluationDetailListLoading,
@@ -150,7 +89,6 @@ export default function ChangePriceDetailPage() {
   const {
     data: revaluationById,
     isLoading: revaluationByIdLoading,
-    isFetching: isFetchingrevaluationById,
     refetch: refetchRevaluationById,
   } = useQuery(['revaluationById', revaluationDetailListFilter], () =>
     requests.getRevaluation(id, {
@@ -181,7 +119,6 @@ export default function ChangePriceDetailPage() {
         refetchRevaluationById()
         refetchgetRevaluationDashBoard()
         setFullQtyInput(0)
-        // navigate('/products/revaluation')
       },
       onError: (err) => {
         error('Ошибка!')
@@ -194,13 +131,12 @@ export default function ChangePriceDetailPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [revaluationDetailList?.data, values?.limit])
+
   const handleFocus = () => {
     const firstrowid = revaluationDetailList?.data?.data?.data?.[0]?.id
     const activeEl = document.activeElement
     const classList = activeEl?.classList || []
 
-    // if (barcode.length > 0) {
-    // } else {
     if (classList.contains('ag-cell')) {
       if (revaluationDetailList?.data?.data?.data.length == 1) {
         setrepricingModalOpen({ id: firstrowid, data: revaluationDetailList?.data?.data?.data?.[0] })
@@ -210,8 +146,6 @@ export default function ChangePriceDetailPage() {
         return
       }
     }
-    // }
-    // Call the exposed method: focus row with id 'b2' on column 'qty'
     if (lastSelectedCellRowId != null && revaluationDetailList?.data?.data?.data?.some((el) => el?.id === lastSelectedCellRowId)) {
       childRef.current?.focusCellByRowId(lastSelectedCellRowId, 'barcode')
     } else {
@@ -219,11 +153,13 @@ export default function ChangePriceDetailPage() {
       childRef.current?.focusCellByRowId(firstrowid, 'barcode')
     }
   }
+
   useEffect(() => {
     if (selectedCellRowId) {
       setLastSelectedCellRowId(selectedCellRowId)
     }
   }, [selectedCellRowId])
+
   useHotkeys(
     '*',
     (event) => {
@@ -241,13 +177,13 @@ export default function ChangePriceDetailPage() {
       enableOnTags: ['INPUT', 'TEXTAREA'],
     }
   )
+
   useEffect(() => {
     if (repricingModalOpen == false && typeof repricingModalOpen == 'boolean') {
       handleFocus()
-
-      // setBarcode('')
     }
   }, [repricingModalOpen])
+
   const { mutate: revaluationExcelReport, isLoading: isrevaluationExcelReport } = useMutation(requests.getREvaluationExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
@@ -258,9 +194,11 @@ export default function ChangePriceDetailPage() {
       error('Ошибка при скачать excel!')
     },
   })
+
   const { data: getRevaluationDashBoard, refetch: refetchgetRevaluationDashBoard } = useQuery(['getRevaluationDashBoard', id], () =>
     requests.getRevaluationDashBoard(id)
   )
+
   useEffect(() => {
     if (methods.getValues('separated-type') == 'full') {
       setOpenFullQtyInput(true)
@@ -268,8 +206,9 @@ export default function ChangePriceDetailPage() {
       setOpenFullQtyInput(false)
     }
   }, [methods.watch('separated-type')])
+
   return (
-    <LoadingContainer readyState={!isfinalAutoOrder}>
+    <LoadingContainer readyState={!revaluationByIdLoading}>
       <FormProvider {...methods}>
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
           <Header
@@ -317,32 +256,6 @@ export default function ChangePriceDetailPage() {
                   <InputSearch id='producrs-search' name='search' placeholder={'Наименование'} uncontrolled />
                 </Box>
                 <Box minWidth={'580px'} display={'flex'}>
-                  {/* <Box minWidth={113} ml={'16px'}>
-                    <Button
-                      sx={{
-                        height: '48px',
-                        padding: 0,
-                        bgcolor: '#fff',
-                        border: '1px solid #ECEDF2',
-                        color: 'dark.500',
-                        fontWeight: '500',
-                        fontSize: '16px',
-                        lineHeight: '24px',
-                        '& span': {
-                          mr: '12px',
-                        },
-                      }}
-                      fullWidth
-                      startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                      variant='contained'
-                      color='secondary'
-                      onClick={() => setFilterMenu((prev) => !prev)}
-                    >
-                      <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                        {t('filter_dialog.label')}
-                      </Typography>
-                    </Button>
-                  </Box> */}
                   <Box
                     sx={{
                       display: 'flex',
@@ -409,7 +322,6 @@ export default function ChangePriceDetailPage() {
                 </Box>
               </Box>
             </Box>
-            {/* <FilterMenu open={filterMenu} setOpen={setFilterMenu} /> */}
             <Box>
               <AgGridTable
                 downloadByFilter={() => revaluationExcelReport(revaluationDetailListFilter)}
@@ -430,7 +342,7 @@ export default function ChangePriceDetailPage() {
                 columns={tableColumns}
                 data={revaluationDetailList?.data?.data?.data || []}
                 totalCount={revaluationDetailList?.data?.data?._meta?.total_count || 0}
-                isDataLoading={isFetchingrevaluationDetailList || revaluationDetailListLoading || isautoOrderChangeQuantity}
+                isDataLoading={isFetchingrevaluationDetailList || revaluationDetailListLoading}
                 offsetCount={offsetCount}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
@@ -441,15 +353,13 @@ export default function ChangePriceDetailPage() {
                 }}
                 fullInfoAboutCurrentPage
                 resetTable={() => dispatch(resetTableHeader({ refetch }))}
-                isRefreshing={loading || isFetchingrevaluationDetailList || revaluationDetailListLoading || isautoOrderChangeQuantity}
+                isRefreshing={loading || isFetchingrevaluationDetailList || revaluationDetailListLoading}
                 onGridReady={(params) => setGridApi(params.api)} // Add this prop
               />
             </Box>
           </Container>
         </Box>
         <ChangePriceModal
-          // setshouldICleanSearchQuery={false}
-          // setBarcode={setBarcode}
           refetch={() => {
             refetch(), refetchRevaluationById(), refetchgetRevaluationDashBoard()
           }}
@@ -522,7 +432,6 @@ export default function ChangePriceDetailPage() {
             </>
           }
         />
-        <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       </FormProvider>
     </LoadingContainer>
   )

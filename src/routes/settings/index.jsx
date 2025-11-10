@@ -8,8 +8,8 @@ import PaymentsAssetsList from '../../pages/settings/paymentsAssets/actions'
 import Profile from '../../pages/settings/profile'
 import RolesPage from '../../pages/settings/roles'
 import ActionListPage from '../../pages/settings/roles/actions'
-import StoresPage from '../../pages/settings/stores'
-import VendorsPage from '../../pages/settings/vendors'
+import StoresPage from '../../pages/settings/branches'
+import EmployeesPage from '../../pages/settings/employees'
 
 const settingsRoutes = {
   path: 'settings',
@@ -33,7 +33,7 @@ const settingsRoutes = {
       element: <CompaniesPage />,
     },
     {
-      path: 'stores',
+      path: 'branches',
       element: <StoresPage />,
     },
     {
@@ -50,8 +50,8 @@ const settingsRoutes = {
     },
 
     {
-      path: 'vendors',
-      element: <VendorsPage />,
+      path: 'employees',
+      element: <EmployeesPage />,
     },
     {
       path: 'cashbox',

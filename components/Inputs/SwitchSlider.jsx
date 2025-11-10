@@ -1,7 +1,7 @@
-import { Box, Tooltip, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { get } from 'lodash'
-import { useEffect, useState } from 'react'
+import { Box, Tooltip, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { makeStyles } from '@mui/styles';
+
 
 const useStyles = makeStyles((theme) => ({
   inner: {
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   slider: {
     position: 'relative',
     height: 40,
-    '&:first-child': {
+    '&:first-of-type': {
       marginLeft: '0px',
     },
     marginLeft: '4px',

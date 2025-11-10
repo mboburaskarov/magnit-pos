@@ -6,27 +6,27 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../../components/CheckAccess'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import HeaderWithDashboardWrapper from '../../../../../components/HeaderWithDashboard'
-import ImageGallery from '../../../../../components/ImageGallery'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import BigTickIcon from '../../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
-import FilterMenuIcon from '../../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/writeOffTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '@components/CheckAccess'
+import ConfirmDialog from '@components/ConfirmDialog'
+import HeaderWithDashboardWrapper from '@components/HeaderWithDashboard'
+import ImageGallery from '@components/ImageGallery'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import BigTickIcon from '@icons/BigTickIcon'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/writeOffTableColumns'
 import CreateWriteOff from './createWriteOff'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+
 export default function WriteOffPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
@@ -50,16 +50,7 @@ export default function WriteOffPage() {
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -106,16 +97,7 @@ export default function WriteOffPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [writeOffList?.data, values?.limit])
-  const { mutate: importsExcelReport, isLoading: isimportsExcelReport } = useMutation(requests.getImportsExcelReport, {
-    onSuccess: ({ data }) => {
-      downloadLinkExcel(get(data, 'data.file_name'))
-    },
-    onError: (err) => {
-      console.error(err)
 
-      error('Ошибка при скачать excel!')
-    },
-  })
   const { mutate: deleteWriteOff, isLoading: isDeletingProduct } = useMutation(requests.deleteWriteOff, {
     onSuccess: () => {
       refetch()
@@ -129,7 +111,7 @@ export default function WriteOffPage() {
       console.error('err', err)
     },
   })
-  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['writeOffStatusCountList', values?.search, writeOffListFilter], () =>
+  const { data: statusCountList } = useQuery(['writeOffStatusCountList', values?.search, writeOffListFilter], () =>
     requests.getWriteOffStatusCount(writeOffListFilter)
   )
   return (
@@ -205,7 +187,7 @@ export default function WriteOffPage() {
         <Box>
           <AgGridTable
             id='imports-main-table'
-            isDownloading={isimportsExcelReport}
+            isDownloading={writeOffListLoading}
             tableSettings
             columns={tableColumns}
             defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}

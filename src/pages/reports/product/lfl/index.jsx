@@ -1,20 +1,21 @@
-import { Box, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import Header from '../../../../../components/Header'
-import DateRangeInputWithoutSelct from '../../../../../components/Inputs/DateRangeInputWithoutSelect/DateRangeInput'
-import InputSwitch from '../../../../../components/Inputs/InputSwitch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import MultiOptionSelectNew from '../../../../../components/Select/MultiOptionSelectNew'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import { translatedWeekNameRu } from '../../../../../utils/ruWeekName'
-import { error } from '../../../../../utils/toast'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
+import DateRangeInputWithoutSelct from '@components/Inputs/DateRangeInputWithoutSelect/DateRangeInput';
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew';
+import AgGridTable from '@components/AgGridTable/AgGridTable';
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
+import LoadingContainer from '@components/LoadingContainer';
+import InputSwitch from '@components/Inputs/InputSwitch';
+import { translatedWeekNameRu } from '@utils/ruWeekName';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { Box, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { requests } from '@utils/requests';
+import Header from '@components/Header';
+import { error } from '@utils/toast';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
 
 export default function ReportLfl() {
   const { t } = useTranslation()
@@ -227,8 +228,8 @@ export default function ReportLfl() {
             isDataLoading={isFetchingReportLFL || ReportLFLLoading}
             offsetCount={offsetCount}
             emptyTableText={{
-              title: 'Клиент не существует',
-              description: 'Если вы не нашли искомого Клиента, нажмите кнопку «Добавить нового» и введите необходимую информацию.',
+              title: 'Oтчет не существует',
+              description: '...',
             }}
             fullInfoAboutCurrentPage
             isRefreshing={isFetchingReportLFL || ReportLFLLoading}

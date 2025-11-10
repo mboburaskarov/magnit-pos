@@ -7,12 +7,28 @@ import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
 import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
 
 import { requests } from '@utils/requests'
-
+import GroupMultiSelect from '@components/Select/GroupMultiSelect'
 import LeftArrowIcon from '@icons/LeftArrow'
+import { useState } from 'react'
 
+const groupedOptions = [
+  {
+    group: 'Fruits',
+    items: ['Apple', 'Banana', 'Cherry'],
+  },
+  {
+    group: 'Vegetables',
+    items: ['Carrot', 'Broccoli', 'Spinach'],
+  },
+  {
+    group: 'Drinks',
+    items: ['Water', 'Juice', 'Tea'],
+  },
+]
 export default function Dashboard_B2B({ selectedShops, setSelectedShops }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const [sele, setSlel] = useState()
   return (
     <Box pl={'24px'} bgcolor='background.default' top={0} display='flex' justifyContent='space-between'>
       <Box onClick={() => navigate('/')} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -65,6 +81,7 @@ export default function Dashboard_B2B({ selectedShops, setSelectedShops }) {
             request={requests.getAllCompanies}
           />
         </Box>
+        <GroupMultiSelect label='Select Items' onChange={setSlel} value={sele} groupedOptions={groupedOptions} />
       </Box>
     </Box>
   )

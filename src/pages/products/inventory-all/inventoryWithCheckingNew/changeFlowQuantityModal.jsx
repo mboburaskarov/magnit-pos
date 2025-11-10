@@ -6,12 +6,12 @@ import { useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useMutation } from 'react-query'
 import { useParams } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import { requests } from '../../../../../utils/requests'
-import { error } from '../../../../../utils/toast'
-import errorAudio from '../../../../assets/audio/error.mp3'
-import successAudio from '../../../../assets/audio/normal.mp3'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import errorAudio from '@/assets/audio/error.mp3'
+import successAudio from '@/assets/audio/normal.mp3'
+import CloseIcon from '@icons/CloseIcon'
 
 export default function ChangeFlowQuantityModal({ open, setBarcode, refetch, setOpen }) {
   const theme = useTheme()
@@ -63,9 +63,7 @@ export default function ChangeFlowQuantityModal({ open, setBarcode, refetch, set
       if (event.code === 'Enter' || event.code === 'NumpadEnter') {
         let activElem = document.activeElement.tagName
         if (activElem != 'INPUT') {
-          //
           qtyRef?.current?.[0]?.focus()
-          //
           return
         }
         if (Number(factQuantity) === 0 && Number(factUnit) === 0) {

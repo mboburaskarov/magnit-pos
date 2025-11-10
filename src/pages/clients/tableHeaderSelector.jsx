@@ -1,12 +1,13 @@
-import { Box, IconButton, Typography } from '@mui/material'
-import { get } from 'lodash'
-import { memo } from 'react'
-import { formatPhoneNumber } from '@utils/formatPhoneNumber'
-import thousandDivider from '@utils/thousandDivider'
-import { formatDate } from '@utils/validateDate'
-import DeleteIcon from '@icons/DeleteIcon'
-import EditIcon from '@icons/EditIcon'
-import { SimpleText } from '../../../components/AgGridTable/Cells/SimpleText'
+import { formatPhoneNumber } from '@utils/formatPhoneNumber';
+import { Box, IconButton, Typography } from '@mui/material';
+import { formatDate } from '@utils/validateDate';
+import DeleteIcon from '@icons/DeleteIcon';
+import EditIcon from '@icons/EditIcon';
+import { memo } from 'react';
+import { get } from 'lodash';
+
+import { SimpleText } from '../../../components/AgGridTable/Cells/SimpleText';
+
 
 export default function tableHeaderSelector({ clientsColumns, values, selectClientsFunc, t, setOpenConfirmDialog, setOpenClientCreateMini }) {
   const columns = clientsColumns?.map((el) => {
@@ -52,6 +53,16 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         cellRenderer: memo((p) => <SimpleText {...p} customText={get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')} type='fish' />),
       }
     }
+    if (el.field === 'loyalty_card_barcode') {
+      return {
+        ...el,
+        headerName: t('Карта лояльности'),
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <SimpleText {...p} customText={get(p, 'data.loyalty_card_barcode', '')?.replace(/.(?=.{4})/g, '*')} type='loyalty_card_barcode' />
+        )),
+      }
+    }
     if (el.field === 'phone_number') {
       return {
         ...el,
@@ -69,20 +80,28 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
       }
     }
 
-    if (el.field === 'sale_amount') {
+    if (el.field === 'loyalty_card_percent') {
       return {
         ...el,
-        headerName: 'Сумма покупки',
+        headerName: 'Процент лояльности карты',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider currency={'сум'} {...p} type='sale_amount' />),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'%'} type='loyalty_card_percent' />),
       }
     }
-    if (el.field === 'sale_date') {
+    if (el.field === 'discount_card') {
       return {
         ...el,
-        headerName: 'Последняя покупка',
+        headerName: 'Дисконтная карта',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} customText={formatDate(p.data?.sale_date, 'DD.MM.YYYY')} type='sale_date' />),
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='discount_card' />),
+      }
+    }
+    if (el.field === 'discount_percent') {
+      return {
+        ...el,
+        headerName: 'Процент скидки',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'%'} type='discount_percent' />),
       }
     }
     if (el.field === 'birthday') {
@@ -123,12 +142,13 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='balance' />),
       }
     }
-    if (el.field === 'debt_amount') {
+
+    if (el.field === 'spending_from_balance') {
       return {
         ...el,
-        headerName: 'Текущий долг',
+        headerName: 'Расходы с баланса',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='debt_amount' />),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='spending_from_balance' />),
       }
     }
 
@@ -138,7 +158,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          <Box display='inline-flex' columnGap={'8px'}>
+          <Box key={data.loyalty_card_barcode} display='inline-flex' columnGap={'8px'}>
             <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
               <DeleteIcon />
             </IconButton>

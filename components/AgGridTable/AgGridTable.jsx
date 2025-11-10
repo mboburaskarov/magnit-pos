@@ -1,22 +1,23 @@
+import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { AgGridReact } from 'ag-grid-react';
+import { usePrevious } from 'react-use';
+import debounce from 'lodash/debounce';
+import isEqual from '@utils/isEqual';
 /* eslint-disable react/display-name */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-refresh/only-export-components */
-import { Box } from '@mui/material'
-import 'ag-grid-enterprise'
-import { AgGridReact } from 'ag-grid-react'
-import debounce from 'lodash/debounce'
-import * as qs from 'qs'
-import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { usePrevious } from 'react-use'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
-import isEqual from '@utils/isEqual'
-import LoadingBlurry from '../LoadingBlurry'
-import AgGridBottom from './AgGridBottom'
-import { HeaderCheckbox, icons, OverlayLoadingTemplateFunc, OverlayNoRowsTemplate } from './AgGridComponents'
-import { onColumnResized, onDisplayedColumnsChanged, scrollShowHide, useScrollListener } from './AgGridFunctions'
-import CheckBoxRenderer from './CheckboxRenderer'
-import useStyles from './useStyles'
+import { Box } from '@mui/material';
+import * as qs from 'qs';
+
+import { onColumnResized, onDisplayedColumnsChanged, scrollShowHide, useScrollListener } from './AgGridFunctions';
+import { HeaderCheckbox, icons, OverlayLoadingTemplateFunc, OverlayNoRowsTemplate } from './AgGridComponents';
+import { useQueryParams } from '../../src/hooks/useQueryParams';
+import CheckBoxRenderer from './CheckboxRenderer';
+import LoadingBlurry from '../LoadingBlurry';
+import AgGridBottom from './AgGridBottom';
+import useStyles from './useStyles';
+
 
 const AgGridUnSelectableSimpleTable = ({
   id,

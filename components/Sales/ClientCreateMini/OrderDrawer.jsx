@@ -1,29 +1,30 @@
-import { LoadingButton } from '@mui/lab'
-import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { get, isNaN, size } from 'lodash'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useReactToPrint } from 'react-to-print'
-import { paymeGoId } from '../../../constants/paymeGoId'
-import RemovePaymentIcon from '../../../src/assets/icons/CloseIcon'
-import { requests } from '../../../utils/requests'
-import { error, success } from '../../../utils/toast'
-import StyledDialog from '../../Dialogs/StyledeEmptyDialog'
-import { RippedPaperItem } from '../../RippedPaperList'
-import PaymentMethodInput from './PaymentMethodInput'
-import SaleProgressSteps from '../../../src/pages/sales/new-order/saleStepLoading'
-import { useHotkeys } from 'react-hotkeys-hook'
-import { useSelector } from 'react-redux'
-import CloseIcon from '../../../src/assets/icons/CloseIcon'
-import QrScanIcon from '../../../src/assets/icons/QrScanIcon'
-import thousandDivider from '../../../utils/thousandDivider'
-import TextField from '../../Inputs/TextField'
-import PreventRefresh from '../../../src/pages/sales/new-order/preventRefresh'
-import PreventRefreshDialog from '../../../src/pages/sales/new-order/preventRefreshDialog'
+import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useMutation, useQuery } from 'react-query';
+import { useReactToPrint } from 'react-to-print';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { get, isNaN, size } from 'lodash';
+import { makeStyles } from '@mui/styles';
+import { LoadingButton } from '@mui/lab';
+
+import { default as CloseIcon, default as RemovePaymentIcon } from '../../../src/assets/icons/CloseIcon';
+import PreventRefreshDialog from '../../../src/pages/sales/new-order/preventRefreshDialog';
+import SaleProgressSteps from '../../../src/pages/sales/new-order/saleStepLoading';
+import PreventRefresh from '../../../src/pages/sales/new-order/preventRefresh';
+import QrScanIcon from '../../../src/assets/icons/QrScanIcon';
+import thousandDivider from '../../../utils/thousandDivider';
+import StyledDialog from '../../Dialogs/StyledeEmptyDialog';
+import { paymeGoId } from '../../../constants/paymeGoId';
+import { RippedPaperItem } from '../../RippedPaperList';
+import PaymentMethodInput from './PaymentMethodInput';
+import { error, success } from '../../../utils/toast';
+import { requests } from '../../../utils/requests';
+import TextField from '../../Inputs/TextField';
+
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -285,8 +286,19 @@ export default function OrderDrawer({
   }
   const classes = useStyles()
   const [payments, setPayments] = useState([])
+  const [payType, setPayType] = useState(undefined)
+
   const [paymentsList, setPaymentsList] = useState([])
 
+  useEffect(() => {
+    if (paymentsList?.length == 1 && paymentsList?.[0]?.type == 'uzum') {
+      setPayType(2)
+      return
+    } else {
+      setPayType(undefined)
+      return
+    }
+  }, [paymentsList])
   const [maxAmount, setMaxAmount] = useState(0)
   const [paymentAmount, setPaymentAmount] = useState(0)
   const [newSaleId, setNewSaleId] = useState(false)
@@ -363,7 +375,8 @@ export default function OrderDrawer({
     isLoading: isFinishSaleWithoutAppPaymentType,
     isError: isSaleError,
   } = useMutation(requests.addToOrderPayment, {
-    onSuccess: ({ data }) => {
+    onSuccess: ({ data, ...other }) => {
+      const qrToken = JSON.parse(other?.config?.data)?.payment_types[0]?.otp_data || undefined
       if (SALE_STAGE == 6) {
         sendEPOSresponseToBackend({ error: false, response_data: null, sale_id: id })
         return
@@ -403,8 +416,10 @@ export default function OrderDrawer({
         })
 
         sendToEPOSPayload({
+          qrToken: qrToken,
           token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
-          method: SALE_TYPE === 'SALE' ? 'fastSale' : 'refund', // Название метода, Обязательное поле, String
+          method: payType == 2 ? 'saleEPS' : SALE_TYPE === 'SALE' ? 'fastSale' : 'refund', // Название метода, Обязательное поле, String
+          payType: payType,
           companyName: 'Pharma Cosmos OOO', // Поле для ввода названия компании, будет напечатано на чеке, Обязательное поле, String
           companyAddress: get(userData, 'store.address'), // Поле для ввода адреса компании, убедитесь в верности, будет напечатано на чеке, Обязательное поле, String
           companyINN: '303970073', // Поле для ввода ИНН компании, будет напечатано на чеке, Обязательное поле, String
@@ -465,11 +480,7 @@ export default function OrderDrawer({
       console.error('err', err)
     },
   })
-  const {
-    mutate: setCashNumber,
-    isLoading: isSetCashNumber,
-    isError: isSetCashNumberError,
-  } = useMutation(requests.sendToEpos, {
+  const { mutate: setCashNumber } = useMutation(requests.sendToEpos, {
     onSuccess: ({ data }) => {
       sendToEPOS(lastEposRequest.current)
       lastEposRequest.current = null
@@ -576,8 +587,13 @@ export default function OrderDrawer({
   const isVisiblePaymentType = useCallback(
     (type) => {
       const totalEnteredMoney = paymentsList.reduce((sum, item) => sum + item.amount || 0, 0)
-      const totalAmount = get(cartItemsList, 'total_amount')
       const isThereType = type === 'overAll' ? false : paymentsList.some((item) => item.id == type.id)
+
+      if ((totalEnteredMoney >= 1 && type?.front_name == 'uzum') || paymentsList.some((item) => item.front_name == 'uzum')) return false
+
+      if ((customerId?.balance <= 1 && type?.front_name == 'loyalty_cd') || (!customerId?.first_name && type?.front_name == 'loyalty_cd')) return false
+
+      const totalAmount = get(cartItemsList, 'total_amount')
 
       if (type?.type == 'app' && totalAmount - totalEnteredMoney > 0 && paymentsList.length !== 0) {
         return !paymentsList.find((item) => item.type === 'app')
@@ -652,7 +668,7 @@ export default function OrderDrawer({
       cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
       payment_types: paymentTypes,
       sale_id: id,
-      loyalty_card_barcode: customerId?.barcode,
+      loyalty_card_barcode: customerId?.loyalty_card_barcode,
       store_id: get(userData, 'store.id'),
       service_type: dmedPrescriptionsList?.length > 0 ? 'dmed' : undefined,
       referral: serviceType == 'other' ? undefined : serviceType,
@@ -825,9 +841,16 @@ export default function OrderDrawer({
                                 justifyContent={'space-between'}
                                 borderRadius={'24px'}
                               >
-                                <Typography fontSize={18} fontWeight={'600'} lineHeight={'40px'}>
-                                  {get(item, 'name')}
-                                </Typography>
+                                <Box>
+                                  <Typography fontSize={18} fontWeight={'600'} lineHeight={get(item, 'front_name', false) == 'loyalty_cd' ? '20px' : '40px'}>
+                                    {get(item, 'name')}
+                                  </Typography>
+                                  {get(item, 'front_name', false) == 'loyalty_cd' && (
+                                    <Typography sx={{ fontSize: '17px', color: 'bunker.500', fontWeight: '500' }}>
+                                      {thousandDivider(customerId?.balance, 'сум')}
+                                    </Typography>
+                                  )}
+                                </Box>
                                 <Typography alignItems={'center'} justifyContent={'center'} display={'flex'}>
                                   <Box
                                     sx={{
@@ -878,6 +901,7 @@ export default function OrderDrawer({
                                   <PaymentMethodInput
                                     id={el.id}
                                     index={el.id}
+                                    customerId={customerId}
                                     classes={classes}
                                     isLast={mpaddedPaymentsList.filter((el) => el.name)?.length - 1 == index}
                                     lastPaymentInput={(el) => (lastPaymentInput.current = el)}

@@ -13,7 +13,7 @@ export default function IncomeIcon({ width }) {
         stroke='#FF6018'
         strokeWidth='1.5'
         strokeLinecap='round'
-        stroke-linejoin='round'
+        strokeLinejoin='round'
       />
       <path
         d='M14.655 17.5L13.5776 16.4226C13.2521 16.0972 13.2521 15.5695 13.5776 15.2441L14.655 14.1667M18.3335 15.8333L13.8217 15.8333'

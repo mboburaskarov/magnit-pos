@@ -1,24 +1,27 @@
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import * as qs from 'qs'
-import { useEffect } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import CheckAccess from '../../../../components/CheckAccess'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import InputRange from '../../../../components/Inputs/InputRange'
-import LazySelect from '../../../../components/Select/LazySelect'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
-import { requests } from '../../../../utils/requests'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
+import getOptionsFromUrlParam from '@utils/getOptionsFromUrlParam';
+import SelectSimple from '@components/Select/SelectSimple';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Box, Button, Typography } from '@mui/material';
+import LazySelect from '@components/Select/LazySelect';
+import InputRange from '@components/Inputs/InputRange';
+import { useQueryParams } from '@hooks/useQueryParams';
+import CheckAccess from '@components/CheckAccess';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import CloseIcon from '@icons/CloseIcon';
+import { useTheme } from '@mui/styles';
+import { useQuery } from 'react-query';
+import { useEffect } from 'react';
+import * as qs from 'qs';
+
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
+  const theme = useTheme()
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const { values } = useQueryParams()
   const methods = useForm()
   const { formState, reset, control } = methods
@@ -109,14 +112,12 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
     values?.total_amount_to,
     values?.total_amount_from,
   ])
-  const theme = useTheme()
 
   const resetFilter = () => {
     reset()
     setOpen(false)
     navigate(`/sales/all-sales?offset=0&limit=${values?.limit || 5}`)
   }
-  const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       onClose={() => setOpen(false)}

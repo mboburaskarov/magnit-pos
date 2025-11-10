@@ -1,16 +1,17 @@
-import MainLayout from '../../layouts/MainLayout'
-import StoreReportPage from '../../pages/reports/branch/storeReport'
-import StoreSummaryPage from '../../pages/reports/branch/storeSummary'
-import TopBranchesPage from '../../pages/reports/branch/topBranches'
-import DiscountCardReport from '../../pages/reports/client/discountCardReport'
-import BonusProductsPage from '../../pages/reports/product/bonusProducts'
-import LFLReport from '../../pages/reports/product/lfl'
-import ProductQtyByDateReportPage from '../../pages/reports/product/productQtyByDateReport'
-import ProductReportPage from '../../pages/reports/product/productReport'
-import RemainingStockPage from '../../pages/reports/product/remainingStock/remainingStock'
-import TopProductsPage from '../../pages/reports/product/topProducts'
-import SellerBonus from '../../pages/reports/vendor/sellerBonus'
-import TopVendorsPage from '../../pages/reports/vendor/topVendor'
+import ProductQtyByDateReportPage from '../../pages/reports/product/productQtyByDateReport';
+import RemainingStockPage from '../../pages/reports/product/remainingStock/remainingStock';
+import DiscountCardReport from '../../pages/reports/client/discountCardReport';
+import ProductReportPage from '../../pages/reports/product/productReport';
+import BonusProductsPage from '../../pages/reports/product/bonusProducts';
+import TopEmployeesPage from '../../pages/reports/employees/topEmploees';
+import StoreSummaryPage from '../../pages/reports/branch/storeSummary';
+import TopProductsPage from '../../pages/reports/product/topProducts';
+import TopBranchesPage from '../../pages/reports/branch/topBranches';
+import StoreReportPage from '../../pages/reports/branch/storeReport';
+import SellerBonus from '../../pages/reports/employees/sellerBonus';
+import LFLReport from '../../pages/reports/product/lfl';
+import MainLayout from '../../layouts/MainLayout';
+
 
 const reportsInsideRoutes = {
   path: 'reports',
@@ -51,7 +52,7 @@ const reportsInsideRoutes = {
     },
     {
       path: 'top-vendors',
-      element: <TopVendorsPage />,
+      element: <TopEmployeesPage />,
     },
 
     {

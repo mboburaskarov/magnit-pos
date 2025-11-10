@@ -1,35 +1,34 @@
-import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import Header from '../../../../../components/Header'
-import ImageGallery from '../../../../../components/ImageGallery'
-import DateRangeInput from '../../../../../components/Inputs/DateRangeInput/DateRangeInput'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingBlock from '../../../../../components/LoadingBlock'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import ArrowDown from '../../../../assets/icons/ArrowDown'
-import ArrowUp from '../../../../assets/icons/ArrowUp'
-import BigTickIcon from '../../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
-import DeleteIcon from '../../../../assets/icons/DeleteIcon'
-import FilterMenuIcon from '../../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/productReportTableColumns'
-import FilterMenu from './FilterMenu'
-import ProductReportDashboard from './productReportDashboard'
-import tableHeaderSelector from './tableHeaderSelector'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/productReportTableColumns';
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
+import AgGridTable from '@components/AgGridTable/AgGridTable';
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
+import LoadingContainer from '@components/LoadingContainer';
+import InputSearch from '@components/Inputs/InputSearch';
+import { Box, Button, Typography } from '@mui/material';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
+import LoadingBlock from '@components/LoadingBlock';
+import { useMutation, useQuery } from 'react-query';
+import FilterMenuIcon from '@icons/FilterMenuIcon';
+import { useTranslation } from 'react-i18next';
+import { requests } from '@utils/requests';
+import ArrowDown from '@icons/ArrowDown';
+import Header from '@components/Header';
+import { useTheme } from '@mui/styles';
+import ArrowUp from '@icons/ArrowUp';
+import { error } from '@utils/toast';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
+import ProductReportDashboard from './productReportDashboard';
+import tableHeaderSelector from './tableHeaderSelector';
+import FilterMenu from './FilterMenu';
+
+
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ProductReportPage() {
@@ -43,56 +42,28 @@ export default function ProductReportPage() {
   const { columns, loading } = useSelector((state) => state.productReportTableColumns)
   const { values } = useQueryParams()
 
-  const [selectClients, setselectClients] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
-  const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
-  const selectClientsFunc = (isChecked, id) => {
-    if (isChecked) {
-      setselectClients((p) => [...p, id])
-    } else {
-      setselectClients((p) => p.filter((ids) => ids !== id))
-    }
-  }
+
   const tableColumns = tableHeaderSelector({
-    clientsColumns: columns,
-    t,
+    reportColumns: columns,
     values,
-    setImages: setOpenImageGallery,
-    setOpenConfirmDialog,
-    selectClientsFunc,
     setOrderStoring,
     orderStoring,
   })
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
 
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
 
   const productReportListFilter = useMemo(() => {
-    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
-    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
     return {
-      start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
-      end_date:
-        values?.end_date && values?.to_time
-          ? ready_start_date?.isSame(ready_end_date)
-            ? dayjs(`${values?.start_date} 23:59:59`).format()
-            : ready_end_date.format()
-          : null,
+      start_date: getFilterStartDate(values),
+      end_date: getFilterEndDate(values),
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
@@ -134,10 +105,10 @@ export default function ProductReportPage() {
 
   useEffect(() => {
     const count = productReportList?.data?.data?._meta?.total_count
-    setselectClients([])
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [productReportList?.data, values?.limit])
+
   const { mutate: getPorductReportExcelReport, isLoading: isgetPorductReportExcelReport } = useMutation(requests.getPorductReportExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))

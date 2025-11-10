@@ -7,32 +7,30 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../../components/CheckAccess'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import HeaderWithDashboardWrapper from '../../../../../components/HeaderWithDashboard'
-import ImageGallery from '../../../../../components/ImageGallery'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import BigTickIcon from '../../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
-import FilterMenuIcon from '../../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/transferTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '@components/CheckAccess'
+import ConfirmDialog from '@components/ConfirmDialog'
+import HeaderWithDashboardWrapper from '@components/HeaderWithDashboard'
+import ImageGallery from '@components/ImageGallery'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import BigTickIcon from '@icons/BigTickIcon'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/transferTableColumns'
 import CreateReturn from './createReturn'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 import TransferDashboard from './transferDashboard'
 import StatusDetailModal from './statusDetailModal'
-const SELECTION_ID = 'checkboxSelectionField'
-export default function TransferPage() {
-  const location = useLocation()
-  const navigate = useNavigate()
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
+export default function TransferPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -58,26 +56,16 @@ export default function TransferPage() {
   })
 
   const tableColumns = tableHeaderSelector({
-    importsColumns: columns,
+    transferColumns: columns,
     t,
     downloadNakladnoy,
-    values,
-    setImages: setOpenImageGallery,
     setStatusModal,
     setOpenConfirmDialog: setOpenConfirmDialog,
   })
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
 
       dispatch(changeColumnSequence(formattedData))
     }

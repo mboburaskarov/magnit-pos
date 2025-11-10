@@ -1,6 +1,6 @@
-// hooks/useFullOrderPayments.js
-import { useState, useEffect, useCallback } from 'react'
-import { get, size, isNaN } from 'lodash'
+import { useCallback, useEffect, useState } from 'react';
+import { get, isNaN, size } from 'lodash';
+
 
 export const useFullOrderPayments = ({ cartItemsList, paymentTypesList, isOrderDrower, cashBoxDetails, markingsList, markingCount, setMarkingList }) => {
   const [paymentsList, setPaymentsList] = useState([])
@@ -57,6 +57,9 @@ export const useFullOrderPayments = ({ cartItemsList, paymentTypesList, isOrderD
       const totalEnteredMoney = paymentsList.reduce((sum, item) => sum + (item.amount || 0), 0)
       const totalAmount = get(cartItemsList, 'total_amount')
       const isThereType = type === 'overAll' ? false : paymentsList.some((item) => item.id === type.id)
+
+      // Hide Uzum if other payments are present or Other payment types hide if Uzum is present
+      if ((totalEnteredMoney >= 1 && type?.front_name == 'uzum') || paymentsList.some((item) => item.front_name == 'uzum')) return false
 
       // Special handling for app payment type
       if (type?.type === 'app' && totalAmount - totalEnteredMoney > 0 && paymentsList.length !== 0) {

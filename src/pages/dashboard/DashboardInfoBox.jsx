@@ -1,7 +1,8 @@
-import { Box, Typography, Skeleton } from '@mui/material'
-import thousandDivider from '@utils/thousandDivider'
-import { useQuery } from 'react-query'
-import { requests } from '@utils/requests'
+import { Box, Skeleton, Typography } from '@mui/material';
+import thousandDivider from '@utils/thousandDivider';
+import { requests } from '@utils/requests';
+import { useQuery } from 'react-query';
+
 
 export default function DashboardInfoBox({
   noDot,
@@ -19,6 +20,7 @@ export default function DashboardInfoBox({
   ...l
 }) {
   const isSaleBox = ['sale_amount', 'sale_count'].includes(id)
+  const isLoyaltyBox = ['total_loyalty_card_count', 'total_loyalty_card_balance', 'today_created_loyalty_card_count'].includes(id)
   const isNetProfit = ['income_amount', 'production_cost'].includes(id)
   const isImport = ['import_amount', 'not_last_24h_import_amount'].includes(id)
   const isProduct = [
@@ -31,9 +33,9 @@ export default function DashboardInfoBox({
   ].includes(id)
   const isEmployee = id === 'bonus_amount'
 
-  // 👇 Use grouped query keys
   const queryKey =
     (isSaleBox && ['sale_stats', dashboard_filter]) ||
+    (isLoyaltyBox && ['loyalty_card_stats', dashboard_filter]) ||
     (isNetProfit && ['net_profit_stats', dashboard_filter]) ||
     (isImport && ['import_stats', dashboard_filter]) ||
     (isProduct && ['product_stats', dashboard_filter]) ||
@@ -44,6 +46,7 @@ export default function DashboardInfoBox({
     queryKey,
     queryFn: async () => {
       if (isSaleBox) return requests.dashboradSaleStatistic(dashboard_filter)
+      if (isLoyaltyBox) return requests.dashboradLoyaltyStatistic(dashboard_filter)
       if (isNetProfit) return requests.dashboradNetProfitStatistic(dashboard_filter)
       if (isImport) return requests.dashboradImportStatistic(dashboard_filter)
       if (isProduct) return requests.dashboradProductStatistic(dashboard_filter)
@@ -121,7 +124,7 @@ export default function DashboardInfoBox({
         </Box>
       </Box>
 
-      <Box key={ind} sx={{ py: '18px', px: '20px', height: '52px', m: 0, borderTop: 1, borderColor: '#A4A5AB33' }}>
+      {/* <Box key={ind} sx={{ py: '18px', px: '20px', height: '52px', m: 0, borderTop: 1, borderColor: '#A4A5AB33' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {percent < 1000 && (
             <>
@@ -156,7 +159,7 @@ export default function DashboardInfoBox({
             )}
           </Box>
         </Box>
-      </Box>
+      </Box> */}
     </Box>
   )
 }

@@ -1,18 +1,12 @@
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
-import { Box, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { memo } from 'react'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import SentFastIcon from '@/assets/icons/step-progress/SentFast'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
+import SentFastIcon from '@/assets/icons/step-progress/SentFast';
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
+import { memo } from 'react';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
 
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
-      {withDevider ? thousandDivider(Math.round(data?.[type]), currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+
 const CustomHeader = (props) => {
   const lastStort = props.column.colDef.orderStoring
   const currentColId = props.column.colId
@@ -41,7 +35,6 @@ const CustomHeader = (props) => {
       }
     }
 
-    // Toggle sort direction manually
     props.column.colDef.setOrderStoring(newOrder)
   }
 
@@ -79,8 +72,8 @@ const CustomHeader = (props) => {
     </Box>
   )
 }
-export default function tableHeaderSelector({ clientsColumns, values, setOrderStoring, orderStoring, setOpen }) {
-  const columns = clientsColumns?.map((el) => {
+export default function tableHeaderSelector({ branchesColumns, values, setOrderStoring, orderStoring, setOpen }) {
+  const columns = branchesColumns?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,
@@ -118,7 +111,7 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         setOrderStoring,
         headerName: 'Филиал',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography color='#fe5000'>{p?.data.store_name}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),
       }
     }
     if (el.field === 'sale_date') {
@@ -129,7 +122,7 @@ export default function tableHeaderSelector({ clientsColumns, values, setOrderSt
         setOrderStoring,
         headerName: 'Дата ',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{dayjs(get(p, 'data.sale_date')).format('DD.MM.YYYY')}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type='sale_date' customText={dayjs(get(p, 'data.sale_date')).format('DD.MM.YYYY')} />),
       }
     }
     if (el.field === 'total_amount') {

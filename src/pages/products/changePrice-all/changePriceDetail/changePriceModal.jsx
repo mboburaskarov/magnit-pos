@@ -8,17 +8,17 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
 import { useParams } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import OutLineTextFieldThousand from '../../../../../components/Inputs/OutLineTextFieldThousand'
-import { requests } from '../../../../../utils/requests'
-import { error } from '../../../../../utils/toast'
-import errorAudio from '../../../../assets/audio/error.mp3'
-import successAudio from '../../../../assets/audio/normal.mp3'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import OutLineTextFieldThousand from '@components/Inputs/OutLineTextFieldThousand'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import errorAudio from '@/assets/audio/error.mp3'
+import successAudio from '@/assets/audio/normal.mp3'
+import CloseIcon from '@icons/CloseIcon'
 
-export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
+export default function ChangePriceModal({ open, refetch, setOpen }) {
   const methods = useForm()
-  const { reset, setValue } = methods
+  const { reset } = methods
   const { id } = useParams()
   const theme = useTheme()
   const { t } = useTranslation()
@@ -32,7 +32,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
   const [isUpdatingFromPercent, setIsUpdatingFromPercent] = useState(false)
   const [isUpdatingFromPrice, setIsUpdatingFromPrice] = useState(false)
 
-  const { mutate: setScanedNumber, isLoading: issetScanedNumber } = useMutation(requests.changePriceNew, {
+  const { mutate: setScanedNumber } = useMutation(requests.changePriceNew, {
     onSuccess: ({ data }) => {
       refetch()
       setOpen(false)
@@ -45,7 +45,6 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
     },
   })
 
-  // Calculate new price from percentage
   const calculatePriceFromPercent = (percent) => {
     const oldPrice = get(open, 'data.old_supply_price', 0)
     if (percent && oldPrice) {
@@ -54,7 +53,6 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
     return ''
   }
 
-  // Calculate percentage from new price
   const calculatePercentFromPrice = (price) => {
     const oldPrice = get(open, 'data.old_supply_price', 0)
     if (price && oldPrice) {
@@ -63,7 +61,6 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
     return ''
   }
 
-  // Handle percentage change
   const handlePercentChange = (value) => {
     if (value < 0) {
       setNewPercent('')
@@ -80,7 +77,6 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
     }
   }
 
-  // Handle price change
   const handlePriceChange = (value) => {
     if (value < 0) {
       setNewPrice('')
@@ -97,14 +93,12 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
     }
   }
 
-  // Handle preset percentage buttons
   const handlePresetPercent = (percent) => {
     setNewPercent(percent)
     const calculatedPrice = calculatePriceFromPercent(percent)
     setNewPrice(calculatedPrice)
   }
 
-  // Reset form when modal opens/closes
   useEffect(() => {
     reset({}, { keepDirty: true })
     if (open) {
@@ -118,7 +112,6 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
     }
   }, [open, reset])
 
-  // Handle keyboard shortcuts
   useHotkeys(
     '*',
     (event) => {
@@ -149,6 +142,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
     }
     setNewPrice(get(open, 'data.new_retail_price', ''))
   }, [open])
+
   return (
     <StyledEmptyDialog
       overflowVisible
@@ -173,7 +167,6 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
 
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ display: 'flex', mb: '20px', alignItems: 'start', justifyContent: 'space-between' }}>
-            {/* Old Price */}
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Цена поставщика</Typography>
               <OutLineTextFieldThousand
@@ -190,7 +183,6 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
 
             <ArrowCircleRight sx={{ m: '35px 10px 0', fontSize: '25px', color: '#fe5000 !important' }} />
 
-            {/* Percentage */}
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Процент новых продаж</Typography>
               <OutLineTextFieldThousand
@@ -205,19 +197,7 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
                 uncontrolled
                 placeholder='0'
               />
-              {/* <TextField
-                type='number'
-                name='percent'
-                value={newPercent}
-                defaultValue={get(open, 'data.new_markup', '')}
-                onChange={(e) => handlePercentChange(e.target.value)}
-                inputRef={(e) => (qtyRef.current[0] = e)}
-                onKeyDown={(e) => {
-                  const invalidKeys = ['e', 'E', '+', '-']
-                  if (invalidKeys.includes(e.key)) e.preventDefault()
-                }}
-                placeholder='0'
-              /> */}
+
               <Box
                 sx={(theme) => ({
                   display: 'flex',
@@ -245,7 +225,6 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
 
             <ArrowCircleRight sx={{ m: '35px 10px 0', fontSize: '25px', color: '#fe5000 !important' }} />
 
-            {/* New Price */}
             <Box>
               <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Новая цена продажи</Typography>
               <OutLineTextFieldThousand
@@ -260,19 +239,6 @@ export default function ChangePriceModal({ open, refetch, setOpen, gridApi }) {
                 uncontrolled
                 placeholder='0'
               />
-              {/* <TextField
-                type='number'
-                name='unit'
-                value={newPrice}
-                defaultValue={get(open, 'data.new_retail_price', '')}
-                onChange={(e) => handlePriceChange(e.target.value)}
-                inputRef={(e) => (qtyRef.current[1] = e)}
-                onKeyDown={(e) => {
-                  const invalidKeys = ['e', 'E', '+', '-']
-                  if (invalidKeys.includes(e.key)) e.preventDefault()
-                }}
-                placeholder='0'
-              /> */}
             </Box>
           </Box>
         </Box>

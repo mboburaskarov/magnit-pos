@@ -1,34 +1,37 @@
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import { useReactToPrint } from 'react-to-print'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ZReportManualCheck from '../../../../components/ChequePaper/zReportManualCheck'
-import ImageGallery from '../../../../components/ImageGallery'
-import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRangeInput'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import LoadingBlock from '../../../../components/LoadingBlock'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
-import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
-import LeftArrowIcon from '../../../assets/icons/LeftArrow'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/salesTableColumns'
-import FilterMenu from './FilterMenu'
-import PrintManualZReport from './printManualZReport'
-import SaleDrawer from './saleDrawer'
-import SaleMiniDashboardHeader from './saleMiniDashboardHeader'
-import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/salesTableColumns';
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
+import ZReportManualCheck from '@components/ChequePaper/zReportManualCheck';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
+import AgGridTable from '@components/AgGridTable/AgGridTable';
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
+import LoadingContainer from '@components/LoadingContainer';
+import InputSearch from '@components/Inputs/InputSearch';
+import { Box, Button, Typography } from '@mui/material';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useDispatch, useSelector } from 'react-redux';
+import LoadingBlock from '@components/LoadingBlock';
+import ImageGallery from '@components/ImageGallery';
+import { useMutation, useQuery } from 'react-query';
+import FilterMenuIcon from '@icons/FilterMenuIcon';
+import { useReactToPrint } from 'react-to-print';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import LeftArrowIcon from '@icons/LeftArrow';
+import { requests } from '@utils/requests';
+import { useTheme } from '@mui/styles';
+import { error } from '@utils/toast';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
+import SaleMiniDashboardHeader from './saleMiniDashboardHeader';
+import tableHeaderSelector from './tableHeaderSelector';
+import PrintManualZReport from './printManualZReport';
+import SaleDrawer from './saleDrawer';
+import FilterMenu from './FilterMenu';
+
 
 export default function AllSalesPage() {
   const theme = useTheme()
@@ -47,13 +50,10 @@ export default function AllSalesPage() {
   const [manualZreportData, setManualZreportData] = useState([])
   const [isCustomersSales, setIsCustomersSales] = useState(false)
   const tableColumns = tableHeaderSelector({
-    productsColumns: columns,
-    t,
+    salesColumns: columns,
     values,
-    setImages: setOpenImageGallery,
     setOpenSaleDrawer,
   })
-  //
   const printContainer = useRef()
   const documentName = useRef('Pharma CHEQUE')
   const reactToPrintContent = useCallback(() => printContainer.current, [])
@@ -63,43 +63,29 @@ export default function AllSalesPage() {
     removeAfterPrint: true,
     onAfterPrint: () => {},
   })
-  //
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
 
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
   const [controlleroffset, setControllerOffset] = useState(0)
+
   useEffect(() => {
     setControllerOffset(values?.offset)
   }, [values?.offset])
+
   useEffect(() => {
     setControllerOffset(0)
   }, [values?.search])
+
   const salesListFilter = useMemo(() => {
     setIsCustomersSales(values?.customer_id ? true : false)
     setHasFilter(Object.keys(values).length > 2)
-    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
-    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
     return {
-      start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
-      end_date:
-        values?.end_date && values?.to_time
-          ? ready_start_date?.isSame(ready_end_date)
-            ? dayjs(`${values?.start_date} 23:59:59`).format()
-            : ready_end_date.format()
-          : null,
+      start_date: getFilterStartDate(values),
+      end_data: getFilterEndDate(values),
       limit: values?.limit || 10,
       offset: controlleroffset || 0,
       search: values?.search,
@@ -142,12 +128,14 @@ export default function AllSalesPage() {
     values?.start_date,
     values?.end_date,
   ])
+
   const {
     data: salesList,
     isLoading: salesListLoading,
     isFetching: isFetchingsalesList,
     refetch,
   } = useQuery(['salesList', salesListFilter], () => requests.getAllSales(salesListFilter))
+
   const { data: saleStatsData } = useQuery(['saleStatsData', salesListFilter], () => requests.getAllSaleStats(salesListFilter))
 
   useEffect(() => {
@@ -163,6 +151,7 @@ export default function AllSalesPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [salesList?.data, values?.limit])
+
   const { mutate: allSalesExcelReport, isLoading: isallSalesExcelReport } = useMutation(requests.getAllSalesExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))

@@ -2,28 +2,18 @@ import { Box, IconButton, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
-import StatusCell from '../../../../components/AgGridTable/Cells/StatusCell'
-import CheckAccess from '../../../../components/CheckAccess'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { imports_list_statuses } from '../../../assets/data/imports-list-statuses'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import EditIcon from '../../../assets/icons/EditIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import StatusCell from '@components/AgGridTable/Cells/StatusCell'
+import CheckAccess from '@components/CheckAccess'
+import { imports_list_statuses } from '@/assets/data/imports-list-statuses'
+import DeleteIcon from '@icons/DeleteIcon'
+import EditIcon from '@icons/EditIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
-export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmDialog, setopenEditBonusModal }) {
+export default function tableHeaderSelector({ bonusProductColumns, t, setOpenConfirmDialog, setopenEditBonusModal }) {
   const { values } = useQueryParams()
 
-  const columns = importsColumns?.map((el) => {
+  const columns = bonusProductColumns?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,
@@ -54,7 +44,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         ...el,
         headerName: 'Сумма бонуса',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography whiteSpace='pre-wrap'>{p.data?.bonus_amount}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type='bonus_amount' />),
       }
     }
     if (el.field === 'status') {
@@ -78,11 +68,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         ...el,
         headerName: 'Дата заказ',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'start_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.start_date).format('DD.MM.YYYY')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='start_date' customText={dayjs(p.data?.start_date).format('DD.MM.YYYY')} />),
       }
     }
 
@@ -91,11 +77,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         ...el,
         headerName: 'Дата заказ',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'end_data'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.end_date).format('DD.MM.YYYY')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='end_data' customText={dayjs(p.data?.end_date).format('DD.MM.YYYY')} />),
       }
     }
     if (el.field === 'actions') {

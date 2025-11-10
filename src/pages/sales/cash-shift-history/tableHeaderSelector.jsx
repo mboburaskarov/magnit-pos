@@ -1,16 +1,10 @@
-import { Box, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { memo } from 'react'
-import thousandDivider from '../../../../utils/thousandDivider'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
+import thousandDivider from '@utils/thousandDivider';
+import { Box, Typography } from '@mui/material';
+import { memo } from 'react';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
 
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
 
 export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDrawer, values }) {
   const columns = productsColumns?.map((el) => {

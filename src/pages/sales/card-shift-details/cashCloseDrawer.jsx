@@ -1,20 +1,22 @@
-import { Box, Button, Drawer, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { get } from 'lodash'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useMutation, useQuery } from 'react-query'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useReactToPrint } from 'react-to-print'
-import RippedPaperZReportCheck from '../../../../components/ChequePaper/ZReportCheck'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { requests } from '../../../../utils/requests'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { error, success } from '../../../../utils/toast'
-import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
-import CartOutlineIcon from '../../../assets/icons/CartOutline'
-import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand';
+import RippedPaperZReportCheck from '@components/ChequePaper/ZReportCheck';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Box, Button, Drawer, Typography } from '@mui/material';
+import LoadingContainer from '@components/LoadingContainer';
+import { useNavigate, useParams } from 'react-router-dom';
+import { FormProvider, useForm } from 'react-hook-form';
+import thousandDivider from '@utils/thousandDivider';
+import { useMutation, useQuery } from 'react-query';
+import MoneyOutlineIcon from '@icons/MoneyOutline';
+import ArrowRightIcon from '@icons/ArrowRightIcon';
+import CartOutlineIcon from '@icons/CartOutline';
+import { useReactToPrint } from 'react-to-print';
+import { error, success } from '@utils/toast';
+import { requests } from '@utils/requests';
+import { makeStyles } from '@mui/styles';
+import { get } from 'lodash';
+
+
 const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
@@ -106,8 +108,9 @@ function CashCloseDrawer({ open, setOpen }) {
   })
 
   const { data: closeCashboxPaymentsInfo } = useQuery(['closeCashboxPaymentsInfo', open], () => requests.getCloseCashboxPaymentsInfo(id), {
-    enabled: open, // The query will only run when open is true
+    enabled: open,
   })
+
   const { mutate: closeCheckZReport, isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true)) {
@@ -123,11 +126,13 @@ function CashCloseDrawer({ open, setOpen }) {
       console.error('err', err)
     },
   })
+
   useEffect(() => {
     if (checkdata) {
       handlePrint()
     }
   }, [checkdata])
+
   const { mutate: closeZReport, isLoading: iscloseZReport } = useMutation(requests.closeZReport, {
     onSuccess: ({ data }) => {
       if (get(data, 'message', '').includes('ERROR_ZREPORT_IS_NOT_OPEN') || get(data, 'error', true) == false) {
@@ -149,6 +154,7 @@ function CashCloseDrawer({ open, setOpen }) {
       console.error('err', err)
     },
   })
+
   const { mutate: closeCashBoxRegister, isLoading: iscloseCashBoxRegister } = useMutation(requests.closeCashBoxRegister, {
     onSuccess: () => {
       setOpen(false)

@@ -1,20 +1,20 @@
-import React, { useRef, useCallback } from 'react'
-import { Box, Button } from '@mui/material'
-import HamburgerMenuIcon from '../../src/assets/icons/BackArrow'
-import ArrowNextIcon from '../../src/assets/icons/BackArrow'
-import CashCircledIcon from '../../src/assets/icons/BackArrow'
-import thousandDivider from '@utils/thousandDivider'
-import { numberToPrice } from '@utils/numberToPrice'
-import { useTranslation } from 'react-i18next'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
-import { useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHandHoldingUsd } from '@fortawesome/free-solid-svg-icons'
-import { useReactToPrint } from 'react-to-print'
-import dayjs from 'dayjs'
-import { makeStyles } from '@mui/styles'
-import { requests } from '@utils/requests'
+import { faHandHoldingUsd } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import thousandDivider from '@utils/thousandDivider';
+import { numberToPrice } from '@utils/numberToPrice';
+import { useReactToPrint } from 'react-to-print';
+import { useTranslation } from 'react-i18next';
+import { useCallback, useRef } from 'react';
+import { Box, Button } from '@mui/material';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import { useQuery } from 'react-query';
+import dayjs from 'dayjs';
+
+import { default as ArrowNextIcon, default as CashCircledIcon, default as HamburgerMenuIcon } from '../../src/assets/icons/BackArrow';
+import { useQueryParams } from '../../src/hooks/useQueryParams';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -128,7 +128,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 14,
     lineHeight: '17px',
     marginTop: 24,
-    '&:first-child, &:nth-child(2)': {
+    '&:first-of-type, &:nth-child(2)': {
       marginTop: 0,
     },
   },
@@ -178,7 +178,7 @@ function AllOrdersContainer({ data }) {
         <Box>
           {!true && (
             <Box className={cls.action_area}>
-              <Button id='print-report' checkSlug='/order/all/print' primary adornmentEnd={<ArrowNextIcon />} fullWidth onClick={handlePrint} isLoading={false}>
+              <Button id='print-report' checkslug='/order/all/print' primary adornmentEnd={<ArrowNextIcon />} fullWidth onClick={handlePrint} isLoading={false}>
                 {t('menu.orders.all.all_orders_container.print_report_btn')}
               </Button>
             </Box>

@@ -1,21 +1,23 @@
-import { Box, Drawer, Grid, Typography } from '@mui/material'
-import { makeStyles, useTheme } from '@mui/styles'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
-import CloseIcon from '../../../src/assets/icons/CloseIcon'
-import { useQueryParams } from '../../../src/hooks/useQueryParams'
-import { requests } from '../../../utils/requests'
-import thousandDivider from '../../../utils/thousandDivider'
-import ListWithPagination from '../../AgGridTable/ListWithPagination'
-import InputSearch from '../../Inputs/InputSearch'
-import InputSwitch from '../../Inputs/InputSwitch'
-import DraftChildDrawer from './DraftChildDrawer'
-import DraftFilter from './DraftFilter'
-import ResultItem from './DraftParentItemsBox'
-import PendingSaleParentItemsBox from './PendingSaleParentItemsBox'
+import { Box, Drawer, Grid, Typography } from '@mui/material';
+import { useQueryParams } from '@hooks/useQueryParams';
+import thousandDivider from '@utils/thousandDivider';
+import { useEffect, useMemo, useState } from 'react';
+import { makeStyles, useTheme } from '@mui/styles';
+import { useTranslation } from 'react-i18next';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import CloseIcon from '@icons/CloseIcon';
+import { useQuery } from 'react-query';
+import { get } from 'lodash';
+
+import ListWithPagination from '../../AgGridTable/ListWithPagination';
+import PendingSaleParentItemsBox from './PendingSaleParentItemsBox';
+import InputSwitch from '../../Inputs/InputSwitch';
+import InputSearch from '../../Inputs/InputSearch';
+import DraftChildDrawer from './DraftChildDrawer';
+import ResultItem from './DraftParentItemsBox';
+import DraftFilter from './DraftFilter';
+
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -31,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${theme.palette.bunker[100]}`,
   },
 }))
-function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
+function BonusProductDrawer({ open, setOpen }) {
   const { t } = useTranslation()
   const classes = useStyles()
 
@@ -60,12 +62,7 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
   }, [values?.customer_id, values?.bonusLimit, values?.draft_date, values?.search, controlleroffset])
 
   const theme = useTheme()
-  const {
-    data: sellerBonus,
-    isLoading: sellerBonusLoading,
-    isFetching: isFetchingsellerBonus,
-    refetch,
-  } = useQuery(['sellerBonus'], () => requests.getSellerBonusData())
+  const { data: sellerBonus } = useQuery(['sellerBonus'], () => requests.getSellerBonusData())
   const miniDashboardMeta = [
     {
       id: 1,
@@ -107,7 +104,6 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
           </Box>
           <Box
             sx={{
-              width: '100%',
               padding: '0 40px',
               display: 'flex',
               width: '100%',
@@ -138,33 +134,6 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
           </Box>
           <Box display={'flex'} py={'24px'} px={'40px'}>
             <InputSearch fullWidth uncontrolled placeholder={'Поиск: Наименование'} />
-
-            {/* <Box minWidth={113} ml={'16px'}>
-              <Button
-                sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
-                  },
-                }}
-                fullWidth
-                startIcon={<FilterMenuIcon />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setDraftFilter((prev) => !prev)}
-              >
-                <Typography fontWeight={500} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter')}
-                </Typography>
-              </Button>
-            </Box> */}
           </Box>
           {appType != 'all' && (
             <Box
@@ -202,11 +171,9 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
                     isChild={false}
                     discount={0}
                     index={item?.id}
-                    // setOpenRejectConfirmDialog={setOpenRejectConfirmDialog}
                     handleAddProduct={(handleAddProduct) => {}}
                     setSearchTerm={values?.search}
                     item={item}
-                    // itemRef={(el) => (searchItemRef.current[index] = el)}
                     product={item?.product}
                     searchTerm={'searchTearm'}
                     classes={classes}
@@ -225,9 +192,6 @@ function BonusProductDrawer({ open, setOpen, cashBoxDetails }) {
                 customFilter={{ ...draftsListFilter, employee_id: userData?.id }}
               />
             )}
-            {/* {draftListData.map((item, index) => {
-              return <DraftParentItemsBox key={index} item={item} setIsOpenChild={setIsOpenChild} />
-            })} */}
           </Box>
         </Box>
       ) : (

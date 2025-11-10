@@ -1,9 +1,9 @@
-import React from 'react'
-import IncomeIcon from '../../../assets/icons/IncomeIcon'
-import { Box, Grid, Typography } from '@mui/material'
-import { useQuery } from 'react-query'
-import { get } from 'lodash'
-import thousandDivider from '../../../../utils/thousandDivider'
+import { Box, Grid, Typography } from '@mui/material';
+import thousandDivider from '@utils/thousandDivider';
+import IncomeIcon from '@icons/IncomeIcon';
+import { get } from 'lodash';
+
+
 function MiniDashboard({ cashShiftStat }) {
   const getMiniStat = ({
     current_cash_amount,

@@ -1,22 +1,26 @@
-import { Box, Button } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
-import CheckAccess from '../../../../components/CheckAccess'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import { HasAccess } from '../../../../components/hasAccess'
-import InputDateRangePicker from '../../../../components/Inputs/InputDateRangePicker'
-import LazySelect from '../../../../components/Select/LazySelect'
-import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-export default function PrintManualZReport({ open, setManualZreportData, refetch, setOpen, handlePrint }) {
+import InputDateRangePicker from '@components/Inputs/InputDateRangePicker';
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
+import { FormProvider, useForm } from 'react-hook-form';
+import LazySelect from '@components/Select/LazySelect';
+import CheckAccess from '@components/CheckAccess';
+import { HasAccess } from '@components/hasAccess';
+import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
+import { Box, Button } from '@mui/material';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import CloseIcon from '@icons/CloseIcon';
+import { useTheme } from '@mui/styles';
+import { useQuery } from 'react-query';
+import { error } from '@utils/toast';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
+
+export default function PrintManualZReport({ open, setManualZreportData, setOpen, handlePrint }) {
   const methods = useForm()
+  const theme = useTheme()
+  const { t } = useTranslation()
   const { reset, control } = methods
   const [startDate, setStartDate] = useState(0)
   const [reportFilter, setReportFilter] = useState(0)
@@ -57,9 +61,7 @@ export default function PrintManualZReport({ open, setManualZreportData, refetch
   useEffect(() => {
     reset({}, { keepDirty: true })
   }, [open])
-  const theme = useTheme()
 
-  const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       overflowVisible

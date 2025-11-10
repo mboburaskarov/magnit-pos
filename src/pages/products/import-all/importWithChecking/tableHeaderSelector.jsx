@@ -1,20 +1,8 @@
-import { Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
-import NumberFormatInput from '../../../../../components/Inputs/OutLineTextFieldThousand'
-import thousandDivider from '../../../../../utils/thousandDivider'
-
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
-      id={`import-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
 export default function tableHeaderSelector({ importsColumns, t, setScanedNumber }) {
   const columns = importsColumns?.map((el) => {
@@ -88,7 +76,7 @@ export default function tableHeaderSelector({ importsColumns, t, setScanedNumber
         ...el,
         headerName: 'Срок годности',
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{dayjs(new Date(p?.data?.expire_date)).format('DD.MM.YYYY')}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type='expire_date' customText={dayjs(new Date(p?.data?.expire_date)).format('DD.MM.YYYY')} />),
       }
     }
     if (el.field === 'producer_name') {

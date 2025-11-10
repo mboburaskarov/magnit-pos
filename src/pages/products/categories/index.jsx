@@ -4,17 +4,17 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import PaginationTable from '../../../../components/AgGridTable/PaginationTable'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import CreateEditCategories from '../../../../components/CreateEditCategories'
-import Header from '../../../../components/Header'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import BigWarningCircleIcon from '../../../assets/icons/BigWarningCircleIcon'
-import PlusIcon from '../../../assets/icons/PlusIcon'
-import useDebouncedValue from '../../../hooks/useDebouncedValue'
-import { useQueryParams } from '../../../hooks/useQueryParams'
+import PaginationTable from '@components/AgGridTable/PaginationTable'
+import ConfirmDialog from '@components/ConfirmDialog'
+import CreateEditCategories from '@components/CreateEditCategories'
+import Header from '@components/Header'
+import InputSearch from '@components/Inputs/InputSearch'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import BigWarningCircleIcon from '@icons/BigWarningCircleIcon'
+import PlusIcon from '@icons/PlusIcon'
+import useDebouncedValue from '@hooks/useDebouncedValue'
+import { useQueryParams } from '@hooks/useQueryParams'
 import tableHeadersCategories from './tableHeadersCategories'
 
 export default function CatalogManagement() {
@@ -33,7 +33,8 @@ export default function CatalogManagement() {
       search: searchTerm,
       offset: values?.search ? 0 : values?.offset || 0,
     }
-  }, [values?.offset, values?.limit, values?.search, searchTerm])
+  }, [values?.offset, values?.limit, values?.search, debouncedSearchTerm])
+
   const {
     data: categories,
     refetch: categoriesRefetch,
@@ -41,7 +42,7 @@ export default function CatalogManagement() {
     isFetching: categoriesFetching,
   } = useQuery(['categories', categoryFilter], () => requests.getAllCategories(categoryFilter))
 
-  const { mutate: deleteCategory, isLoading: isdeleteCategory } = useMutation(requests.deleteCategory, {
+  const { mutate: deleteCategory } = useMutation(requests.deleteCategory, {
     onSuccess: () => {
       categoriesRefetch()
       success('Категори успешно создан!')
@@ -68,7 +69,7 @@ export default function CatalogManagement() {
       obj.subRows = obj.sub_category
       delete obj.sub_category
 
-      obj.subRows.forEach(renameSubRows) // Recurse through sub_category if exists
+      obj.subRows.forEach(renameSubRows)
     }
     return obj
   }

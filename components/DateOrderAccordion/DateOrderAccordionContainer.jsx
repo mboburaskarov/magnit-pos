@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import { makeStyles } from '@mui/styles'
-import { Box } from '@mui/material'
-import { Skeleton } from '@mui/material'
-import RowFilterButton from '../AgGridTable/RowFilterButton'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
-import { useNavigate } from 'react-router-dom'
-import * as qs from 'qs'
-import Pagination from '../AgGridTable/Pagination'
-import DateOrderAccordionSingle from './DateOrderAccordionSingle'
+import { useNavigate } from 'react-router-dom';
+import { Box, Skeleton } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { makeStyles } from '@mui/styles';
+import * as qs from 'qs';
+
+import DateOrderAccordionSingle from './DateOrderAccordionSingle';
+import { useQueryParams } from '../../src/hooks/useQueryParams';
+import RowFilterButton from '../AgGridTable/RowFilterButton';
+import Pagination from '../AgGridTable/Pagination';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -98,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 8,
     height: '96px',
     transform: 'none',
-    '&:first-child': {
+    '&:first-of-type': {
       marginTop: 64,
     },
   },

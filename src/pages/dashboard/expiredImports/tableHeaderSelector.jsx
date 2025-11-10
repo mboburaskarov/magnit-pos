@@ -15,6 +15,7 @@ import { imports_list_statuses } from '@/assets/data/imports-list-statuses'
 import thousandDivider from '@utils/thousandDivider'
 
 import { useQueryParams } from '@hooks/useQueryParams'
+import { useTranslation } from 'react-i18next'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -27,8 +28,9 @@ const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   )
 }
 
-export default function tableHeaderSelector({ importsColumns, t }) {
+export default function tableHeaderSelector({ importsColumns }) {
   const { values } = useQueryParams()
+  const { t } = useTranslation()
 
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {
@@ -120,16 +122,12 @@ export default function tableHeaderSelector({ importsColumns, t }) {
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.yellow[500]} icon={faArrowCircleDown} />
-
               <Box width={'10px'} />
-
               <SimpleText {...p} withDevider currency={'сум'} type={'received_amount'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <FontAwesomeIcon color={palette.violet[500]} icon={faArrowCircleUp} />
-
               <Box width={'10px'} />
-
               <SimpleText {...p} withDevider currency={'сум'} type={'accepted_amount'} />
             </Box>
           </>

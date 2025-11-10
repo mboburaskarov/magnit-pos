@@ -1,19 +1,23 @@
-import { Box, Button } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import { get } from 'lodash'
-import { useEffect } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import CloseIcon from '../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
+import SelectSimple from '@components/Select/SelectSimple';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { error, success } from '@utils/toast';
+import { Box, Button } from '@mui/material';
+import { requests } from '@utils/requests';
+import { useMutation } from 'react-query';
+import CloseIcon from '@icons/CloseIcon';
+import { useTheme } from '@mui/styles';
+import { useEffect } from 'react';
+import { get } from 'lodash';
+
 
 export default function ChangePaymentType({ open, refetch, setOpen }) {
   const methods = useForm()
-  const { reset, control } = methods
+  const theme = useTheme()
+  const { t } = useTranslation()
+  const { reset } = methods
+
   const { mutate: changeTypeId, isLoading: ischangeTypeId } = useMutation(requests.changeSalePaymentTypeId, {
     onSuccess: () => {
       setOpen(false)
@@ -42,10 +46,7 @@ export default function ChangePaymentType({ open, refetch, setOpen }) {
   useEffect(() => {
     reset({}, { keepDirty: true })
   }, [open])
-  const theme = useTheme()
-  const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
 
-  const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       overflowVisible

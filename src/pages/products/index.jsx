@@ -1,45 +1,49 @@
-import { Block, Info, Report } from '@mui/icons-material'
-import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import AgGridTable from '../../../components/AgGridTable/AgGridTableSelectable'
-import ColumnsFilterButtonForAll from '../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../components/CheckAccess'
-import ConfirmDialog from '../../../components/ConfirmDialog'
-import ImageGallery from '../../../components/ImageGallery'
-import InputSearch from '../../../components/Inputs/InputSearch'
-import InputSwitch from '../../../components/Inputs/InputSwitch'
-import LoadingBlock from '../../../components/LoadingBlock'
-import LoadingContainer from '../../../components/LoadingContainer'
-import StyledTooltip from '../../../components/StyledTooltip'
-import { checkPermission } from '../../../utils/checkPermission'
-import { downloadLinkExcel } from '../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../utils/requests'
-import { error, success } from '../../../utils/toast'
-import ArrowDown from '../../assets/icons/ArrowDown'
-import ArrowUp from '../../assets/icons/ArrowUp'
-import BigTickIcon from '../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../assets/icons/BigWarningIcon'
-import CategoryIcon from '../../assets/icons/CategoryIcon'
-import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
-import PlusIcon from '../../assets/icons/PlusIcon'
-import PrizeBoxIcon from '../../assets/icons/PrizeBoxIcon'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/productsTableColumns'
-import ChangeUnitPerPack from './changeUnitPerPack'
-import FilterMenu from './FilterMenu'
-import ProductDrawer from './product-edit/ProductDrawer'
-import ProductDashboard from './productDashboard'
-import SendToErrorWithReason from './sendToErrorWithReason'
-import tableHeaderSelector from './tableHeaderSelector'
-import thousandDivider from '../../../utils/thousandDivider'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/productsTableColumns';
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
+import AgGridTable from '@components/AgGridTable/AgGridTableSelectable';
+import ProductDrawer from '@components/Drawers/ProductDrawer';
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
+import LoadingContainer from '@components/LoadingContainer';
+import { Block, Info, Report } from '@mui/icons-material';
+import InputSwitch from '@components/Inputs/InputSwitch';
+import InputSearch from '@components/Inputs/InputSearch';
+import { checkPermission } from '@utils/checkPermission';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Box, Button, Typography } from '@mui/material';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useDispatch, useSelector } from 'react-redux';
+import StyledTooltip from '@components/StyledTooltip';
+import ConfirmDialog from '@components/ConfirmDialog';
+import thousandDivider from '@utils/thousandDivider';
+import { useEffect, useMemo, useState } from 'react';
+import LoadingBlock from '@components/LoadingBlock';
+import ImageGallery from '@components/ImageGallery';
+import { useMutation, useQuery } from 'react-query';
+import FilterMenuIcon from '@icons/FilterMenuIcon';
+import BigWarningIcon from '@icons/BigWarningIcon';
+import CheckAccess from '@components/CheckAccess';
+import PrizeBoxIcon from '@icons/PrizeBoxIcon';
+import CategoryIcon from '@icons/CategoryIcon';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { error, success } from '@utils/toast';
+import BigTickIcon from '@icons/BigTickIcon';
+import { requests } from '@utils/requests';
+import ArrowDown from '@icons/ArrowDown';
+import { LoadingButton } from '@mui/lab';
+import PlusIcon from '@icons/PlusIcon';
+import { useTheme } from '@mui/styles';
+import ArrowUp from '@icons/ArrowUp';
+import { get } from 'lodash';
+
+import SendToErrorWithReason from './productError/sendToErrorWithReason';
+import tableHeaderSelector from './tableHeaderSelector';
+import ChangeUnitPerPack from './changeUnitPerPack';
+import ProductDashboard from './productDashboard';
+import FilterMenu from './FilterMenu';
+
+
 const SELECTION_ID = 'checkboxSelectionField'
 export default function ProductsPage() {
   const theme = useTheme()
@@ -108,16 +112,7 @@ export default function ProductsPage() {
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          hide: !routeString.includes(el?.colId),
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
 
       dispatch(changeColumnSequence(formattedData))
     }
@@ -136,6 +131,7 @@ export default function ProductsPage() {
       offset: controlleroffset || 0,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
+      company_id: values?.company_id,
       category_id: values?.category_id,
       producer_id: values?.producer_id,
       supply_price_to: values?.supply_price_to,
@@ -147,8 +143,6 @@ export default function ProductsPage() {
       retail_price_from: values?.retail_price_from,
       no_barcode: values?.no_barcode == '1' ? true : false,
       isExpress: values?.isExpress,
-      // start_date: values?.start_date || dayjs(new Date()).format('YYYY-MM-DD'),
-      // end_date: values?.start_date == values?.end_date ? null : values?.end_date,
       ...(appType !== 'ALL' && { status: appType }),
     }
   }, [
@@ -161,6 +155,7 @@ export default function ProductsPage() {
     values?.category_id,
     values?.store_id,
     values?.no_barcode,
+    values?.company_id,
     values?.supply_price_to,
     values?.retail_price_to,
     values?.supply_price_from,

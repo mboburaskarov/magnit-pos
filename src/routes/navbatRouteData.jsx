@@ -1,14 +1,11 @@
-import MenuOutline from '../assets/icons/MenuOutline'
-import ClientsIcon from '../assets/icons/navbar/ClientsIcon'
-import DashboardIcon from '../assets/icons/navbar/DashboardIcon'
-import KatalogIcon from '../assets/icons/navbar/KatalogIcon'
-import ReportIcon from '../assets/icons/navbar/ReportIcon'
-import SaleIcon from '../assets/icons/navbar/SaleIcon'
-import SettingIcon from '../assets/icons/navbar/SettingIcon'
-import ProductsIcon from '../assets/icons/ProductsIcon'
-import QrScanIcon from '../assets/icons/QrScanIcon'
-import RevenueIcon from '../assets/icons/RevenueIcon'
-import SettingsIcon from '../assets/icons/SettingsIcon'
+import DashboardIcon from '../assets/icons/navbar/DashboardIcon';
+import SettingIcon from '../assets/icons/navbar/SettingIcon';
+import KatalogIcon from '../assets/icons/navbar/KatalogIcon';
+import ClientsIcon from '../assets/icons/navbar/ClientsIcon';
+import ReportIcon from '../assets/icons/navbar/ReportIcon';
+import SaleIcon from '../assets/icons/navbar/SaleIcon';
+
+
 export const navbatRouteData = [
   {
     label: 'navbar.dashboard',
@@ -116,22 +113,7 @@ export const navbatRouteData = [
     label: 'navbar.clients',
     id: '1',
     icon: <ClientsIcon />,
-    href: '/clients',
-    children: [
-      {
-        label: 'navbar.clients',
-        active: '/clients/all*',
-        id: '912221',
-        href: '/clients/all',
-      },
-      {
-        label: 'Дисконтная карта',
-        active: '/clients/discount-card/*',
-        id: '91122',
-
-        href: '/clients/discount-card',
-      },
-    ],
+    href: '/clients/all',
   },
 
   {
@@ -195,14 +177,14 @@ export const navbatRouteData = [
       {
         label: 'navbar.vendors',
         id: '92',
-        active: '/settings/vendors/*',
-        href: '/settings/vendors',
+        active: '/settings/employees/*',
+        href: '/settings/employees',
       },
       {
         label: 'Филиалы',
-        active: '/settings/stores/*',
+        active: '/settings/branches/*',
         id: '93',
-        href: '/settings/stores',
+        href: '/settings/branches',
       },
       {
         label: 'Роли',

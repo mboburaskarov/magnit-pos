@@ -7,25 +7,25 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../components/CheckAccess'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import Header from '../../../../components/Header'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '@components/CheckAccess'
+import ConfirmDialog from '@components/ConfirmDialog'
+import Header from '@components/Header'
 
-import ImageGallery from '../../../../components/ImageGallery'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import BigTickIcon from '../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/bannedProductTableColumns'
+import ImageGallery from '@components/ImageGallery'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import BigTickIcon from '@icons/BigTickIcon'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/bannedProductTableColumns'
 import CreateBannedProduct from './createBannedProduct'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function BannedProductPage() {
   const methods = useForm()
@@ -38,13 +38,11 @@ export default function BannedProductPage() {
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
-
   const [openCreateBonusModal, setopenCreateBonusModal] = useState(false)
-  const [openEditBonusModal, setopenEditBonusModal] = useState(false)
+
   const tableColumns = tableHeaderSelector({
-    importsColumns: columns,
+    bannedProductColumns: columns,
     t,
-    setopenEditBonusModal: setopenEditBonusModal,
     setOpenConfirmDialog: setOpenConfirmDialog,
   })
   const { mutate: deleteBannedProduct } = useMutation(requests.deleteBannedProduct, {
@@ -65,16 +63,7 @@ export default function BannedProductPage() {
   })
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -103,6 +92,7 @@ export default function BannedProductPage() {
     values?.received_amount_to,
     values?.received_amount_from,
   ])
+
   const {
     data: bannedProductList,
     isLoading: bannedProductListLoading,
@@ -189,8 +179,8 @@ export default function BannedProductPage() {
                     if (newData) dispatch(updateTableHeader(newData))
                   }}
                   emptyTableText={{
-                    title: 'Заказ недоступен',
-                    description: 'Если вы не можете найти искомый Заказ, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+                    title: 'Запрещенный продукт недоступен',
+                    description: 'Если вы не можете найти искомый Запрещенный продукт, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
                   }}
                   fullInfoAboutCurrentPage
                   resetTable={() => dispatch(resetTableHeader({ refetch }))}

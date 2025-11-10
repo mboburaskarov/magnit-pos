@@ -1,25 +1,15 @@
 import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
-import CheckAccess from '../../../../components/CheckAccess'
-import thousandDivider from '../../../../utils/thousandDivider'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data?.['expire_day'] < 0 && 'line-through' }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import CheckAccess from '@components/CheckAccess'
+import DeleteIcon from '@icons/DeleteIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
-export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmDialog, setopenEditBonusModal }) {
+export default function tableHeaderSelector({ bannedProductColumns, t, setOpenConfirmDialog }) {
   const { values } = useQueryParams()
 
-  const columns = importsColumns?.map((el) => {
+  const columns = bannedProductColumns?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,

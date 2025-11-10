@@ -1,7 +1,9 @@
-import { Box } from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import ReportBox from '../../../../components/ReportsSection/ReportBox'
-import palette from '../../../assets/theme/mui.config'
+import ReportBox from '@components/ReportsSection/ReportBox';
+import palette from '@/assets/theme/mui.config';
+import { useTranslation } from 'react-i18next';
+import { Box } from '@mui/material';
+
+
 function ClientReportsList() {
   const { t } = useTranslation()
   return (
@@ -13,7 +15,7 @@ function ClientReportsList() {
             'Отчёт показывает использование карт лояльности клиентами, предоставленные скидки и начисленные бонусы. Помогает анализировать эффективность программы лояльности.'
           )}
           to='/reports/discount-card-report'
-          checkSlug='/reports/client'
+          checkslug='/reports/client'
           color={palette.indigo[500]}
         />
       </Box>

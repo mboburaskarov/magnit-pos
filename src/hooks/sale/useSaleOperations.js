@@ -1,11 +1,11 @@
-// hooks/useSaleOperations.js
-import { useState, useCallback } from 'react'
-import { useMutation } from 'react-query'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { get } from 'lodash'
-import { requests } from '@utils/requests'
-import { error, success } from '@utils/toast'
+import { useNavigate, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { error, success } from '@utils/toast';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import { useMutation } from 'react-query';
+import { get } from 'lodash';
+
 
 export const useSaleOperations = ({
   cartItemsList,
@@ -18,16 +18,27 @@ export const useSaleOperations = ({
   setNewSaleId,
   setQrcodeUrl,
   setOpenRefreshDialog,
-  setHasChange,
-  setMarkingList,
   setDmedPrescriptionsList,
   setDmedOrganizedList,
   setCustomerId,
+  paymentsList,
+  maxAmount,
 }) => {
   const { id } = useParams()
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
   const sendToEpos = localStorage.getItem('send_to_epos')
+  const [payType, setPayType] = useState(undefined)
+
+  useEffect(() => {
+    if (paymentsList?.length == 1 && paymentsList?.[0]?.type == 'uzum') {
+      setPayType(2)
+      return
+    } else {
+      setPayType(undefined)
+      return
+    }
+  }, [paymentsList])
 
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
   const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
@@ -38,7 +49,7 @@ export const useSaleOperations = ({
     isLoading: isFinishSaleWithoutAppPaymentType,
     isError: isSaleError,
   } = useMutation(requests.addToOrderPayment, {
-    onSuccess: ({ data }) => {
+    onSuccess: (data) => {
       if (SALE_STAGE === 6) {
         sendEPOSresponseToBackend({ error: false, response_data: null, sale_id: id })
         return
@@ -50,7 +61,6 @@ export const useSaleOperations = ({
       }
     },
     onError: (err) => {
-      setHasChange(false)
       setOpenRefreshDialog(false)
 
       if (get(err, 'response.status') === 409) {
@@ -83,7 +93,6 @@ export const useSaleOperations = ({
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
       } else {
         setOpenRefreshDialog(false)
-        setHasChange(false)
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
         error(`EPOS: ${get(data, 'message')}`)
       }
@@ -91,7 +100,6 @@ export const useSaleOperations = ({
     onError: (err) => {
       setOpenRefreshDialog(false)
       sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
-      setHasChange(false)
       error('Ошибка при EPOS')
     },
   })
@@ -151,12 +159,15 @@ export const useSaleOperations = ({
   }, [cartItemsList, markingsList])
 
   const sendEPOSData = useCallback(
-    (paymentsList) => {
+    (data) => {
       const items = prepareEPOSData()
+      const qrToken = JSON.parse(data?.config?.data)?.payment_types[0]?.otp_data || undefined
 
       sendToEPOS({
+        qrToken: qrToken,
         token: 'DXJFX32CN1296678504F2',
-        method: SALE_TYPE === 'SALE' ? 'fastSale' : 'refund',
+        method: payType == 2 ? 'saleEPS' : SALE_TYPE === 'SALE' ? 'fastSale' : 'refund',
+        payType: payType,
         companyName: 'Pharma Cosmos OOO',
         companyAddress: get(userData, 'store.address'),
         companyINN: '303970073',
@@ -167,12 +178,15 @@ export const useSaleOperations = ({
         params: {
           clientName: get(customerId, 'name'),
           items,
+
           receivedCash: parseFloat(
-            (
-              (paymentsList.filter((item) => item.amount && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) -
-                Math.abs(get(cartItemsList, 'total_amount'))) *
-              100
-            ).toFixed(2)
+            parseFloat(
+              (
+                Number(
+                  paymentsList.filter((item) => item.amount && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) - Math.abs(maxAmount)
+                ) * 100
+              ).toFixed(2)
+            )
           ),
           receivedCard: parseFloat(
             (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)
@@ -187,7 +201,7 @@ export const useSaleOperations = ({
         }),
       })
     },
-    [prepareEPOSData, sendToEPOS, SALE_TYPE, userData, customerId, cartItemsList, cashBoxDetails]
+    [prepareEPOSData, paymentsList, maxAmount, sendToEPOS, SALE_TYPE, userData, customerId, cartItemsList, cashBoxDetails]
   )
 
   const submitSale = useCallback(

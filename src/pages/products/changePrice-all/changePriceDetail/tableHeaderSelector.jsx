@@ -4,32 +4,12 @@ import { get } from 'lodash'
 import { memo } from 'react'
 import thousandDivider from '../../../../../utils/thousandDivider'
 import { useQueryParams } from '../../../../hooks/useQueryParams'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{
-        display: '-webkit-box',
-        overflow: 'hidden',
-        wordWrap: 'break-word',
-        textOverflow: 'ellipsis',
-        '-webkit-box-orient': 'vertical',
-        '-webkit-line-clamp': '3',
-        whiteSpace: 'pre-line',
-        color: !data?.[type] && 'gray.400',
-        textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through',
-      }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
-
-export default function tableHeaderSelector({ importsColumns, t, setValue, getValue, autoOrderChangeQuantity }) {
+export default function tableHeaderSelector({ revaluationColumns }) {
   const { values } = useQueryParams()
 
-  const columns = importsColumns?.map((el) => {
+  const columns = revaluationColumns?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,

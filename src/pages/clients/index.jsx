@@ -1,34 +1,31 @@
-import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
-import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/clientTableColumns';
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
+import ClientCreateMini from '@components/Sales/ClientCreateMini/index';
+import AgGridTable from '@components/AgGridTable/AgGridTable';
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
+import LoadingContainer from '@components/LoadingContainer';
+import InputSearch from '@components/Inputs/InputSearch';
+import { Box, Button, Typography } from '@mui/material';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useDispatch, useSelector } from 'react-redux';
+import ConfirmDialog from '@components/ConfirmDialog';
+import { useEffect, useMemo, useState } from 'react';
+import ImageGallery from '@components/ImageGallery';
+import { useMutation, useQuery } from 'react-query';
+import BigWarningIcon from '@icons/BigWarningIcon';
+import CheckAccess from '@components/CheckAccess';
+import { useTranslation } from 'react-i18next';
+import { error, success } from '@utils/toast';
+import BigTickIcon from '@icons/BigTickIcon';
+import DeleteIcon from '@icons/DeleteIcon';
+import { requests } from '@utils/requests';
+import { LoadingButton } from '@mui/lab';
+import PlusIcon from '@icons/PlusIcon';
+import { get } from 'lodash';
 
-import AgGridTable from '@components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '@components/CheckAccess'
-import ConfirmDialog from '@components/ConfirmDialog'
-import ImageGallery from '@components/ImageGallery'
-import InputSearch from '@components/Inputs/InputSearch'
-import LoadingContainer from '@components/LoadingContainer'
-import ClientCreateMini from '@components/Sales/ClientCreateMini/index'
+import tableHeaderSelector from './tableHeaderSelector';
 
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
-import { requests } from '@utils/requests'
-import { error, success } from '@utils/toast'
-
-import BigTickIcon from '@icons/BigTickIcon'
-import BigWarningIcon from '@icons/BigWarningIcon'
-import DeleteIcon from '@icons/DeleteIcon'
-import PlusIcon from '@icons/PlusIcon'
-
-import { useQueryParams } from '@hooks/useQueryParams'
-
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/clientTableColumns'
-
-import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ClientsPage() {
   const dispatch = useDispatch()
@@ -60,16 +57,7 @@ export default function ClientsPage() {
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -113,6 +101,7 @@ export default function ClientsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [clientsList?.data, values?.limit])
+
   const { mutate: clientsExcelReport, isLoading: isclientsExcelReport } = useMutation(requests.getClientsExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
@@ -230,9 +219,10 @@ export default function ClientsPage() {
           refetch()
         }}
         quickCreateClientName={''}
+        setOpenDrawer={setOpenClientCreateMini}
         openDrawer={openClientCreateMini}
         closeDrawer={() => setOpenClientCreateMini(false)}
-        clientData={''}
+        clientData={openClientCreateMini}
         afterCreate={(clientId) => {}}
       />
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />

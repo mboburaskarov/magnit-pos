@@ -1,9 +1,11 @@
-import { Box, InputAdornment, TextField, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { memo, useCallback } from 'react'
-import { Controller } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import SelectSimple from '../Select/SelectSimple'
+import { Box, InputAdornment, TextField, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { Controller } from 'react-hook-form';
+import { memo, useCallback } from 'react';
+import { makeStyles } from '@mui/styles';
+
+import SelectSimple from '../Select/SelectSimple';
+
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -14,9 +16,7 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiInputAdornment-root': {
       width: '115px !important',
     },
-    '& .MuiInputAdornment-root .MuiTypography-root': {
-      color: theme.palette.gray[600],
-    },
+
     '& .MuiInputAdornment-root .MuiTypography-root': {
       color: theme.palette.bunker[400],
       marginRight: '8px',

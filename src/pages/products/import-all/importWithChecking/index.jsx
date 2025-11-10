@@ -6,20 +6,20 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import Header from '../../../../../components/Header'
-import InputQuantity from '../../../../../components/Inputs/InputQuantity'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import InputSwitch from '../../../../../components/Inputs/InputSwitch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { requests } from '../../../../../utils/requests'
-import { error } from '../../../../../utils/toast'
-import BarcodeIcon from '../../../../assets/icons/BarcodeIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/importWithCheckingTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import Header from '@components/Header'
+import InputQuantity from '@components/Inputs/InputQuantity'
+import InputSearch from '@components/Inputs/InputSearch'
+import InputSwitch from '@components/Inputs/InputSwitch'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import BarcodeIcon from '@icons/BarcodeIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/importWithCheckingTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function ImportWithCheckingPage() {
   const dispatch = useDispatch()
@@ -73,20 +73,13 @@ export default function ImportWithCheckingPage() {
     isFetching: isFetchingimportWithCheckingDetails,
     refetch,
   } = useQuery(['importWithCheckingDetails', importWithCheckingDetailsFilter], () => requests.getImportScanDetails(importWithCheckingDetailsFilter))
+
   const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['statusCountList', values?.search], () =>
     requests.getAllImportsDetailStatusCount({ id: id, filter: { search: values?.search } })
   )
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])

@@ -8,25 +8,25 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '../../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import Header from '../../../../../components/Header'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import InputSwitch from '../../../../../components/Inputs/InputSwitch'
-import LoadingContainer from '../../../../../components/LoadingContainer'
-import { downloadLinkExcel } from '../../../../../utils/downloadLinkEXCEL'
-import { requests } from '../../../../../utils/requests'
-import { error } from '../../../../../utils/toast'
-import ArrowDown from '../../../../assets/icons/ArrowDown'
-import ArrowUp from '../../../../assets/icons/ArrowUp'
-import BarcodeIcon from '../../../../assets/icons/BarcodeIcon'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../../redux-toolkit/tableSlices/transferGetWithCheckingTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import ConfirmDialog from '@components/ConfirmDialog'
+import Header from '@components/Header'
+import InputSearch from '@components/Inputs/InputSearch'
+import InputSwitch from '@components/Inputs/InputSwitch'
+import LoadingContainer from '@components/LoadingContainer'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import ArrowDown from '@icons/ArrowDown'
+import ArrowUp from '@icons/ArrowUp'
+import BarcodeIcon from '@icons/BarcodeIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/transferGetWithCheckingTableColumns'
 import DublicateProductBarcode from './dublicateBarcode'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function TransferGetScanWithCheckingPage() {
   const dispatch = useDispatch()
@@ -54,6 +54,7 @@ export default function TransferGetScanWithCheckingPage() {
       error('Ошибка при сканирование!')
     },
   })
+
   const { mutate: updateByBarcode } = useMutation(requests.updateTransferByBarcode, {
     onSuccess: ({ data, ...other }) => {
       if (get(other, 'status') == 207) {
@@ -80,11 +81,8 @@ export default function TransferGetScanWithCheckingPage() {
     },
   })
   const tableColumns = tableHeaderSelector({
-    importsColumns: columns,
-    t,
+    transfercolumns: columns,
     values,
-
-    id,
     setScanedNumber,
   })
   const transferWithCheckingDetailsFilter = useMemo(() => {
@@ -109,15 +107,8 @@ export default function TransferGetScanWithCheckingPage() {
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
+
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -136,19 +127,17 @@ export default function TransferGetScanWithCheckingPage() {
       methods.setValue(`scanned_quantity_${get(importData, 'id')}`, get(importData, 'scanned_count'))
     })
   }, [transferWithCheckingDetails?.data, values?.limit])
-  const { mutate: getReturnToWarehouseDetailsExcelReport, isLoading: isgetReturnToWarehouseDetailsExcelReport } = useMutation(
-    requests.getTransferDetailsExcelReport,
-    {
-      onSuccess: ({ data }) => {
-        downloadLinkExcel(get(data, 'data.file_name'))
-      },
-      onError: (err) => {
-        console.error(err)
 
-        error('Ошибка при скачать excel!')
-      },
-    }
-  )
+  const { mutate: getReturnToWarehouseDetailsExcelReport } = useMutation(requests.getTransferDetailsExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.error(err)
+
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={!isacceptTransferChecking}>
       <FormProvider {...methods}>

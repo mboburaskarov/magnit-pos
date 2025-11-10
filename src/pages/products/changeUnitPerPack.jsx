@@ -4,21 +4,19 @@ import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
-import InputQuantity from '../../../components/Inputs/InputQuantity'
-import { requests } from '../../../utils/requests'
-import { error, success } from '../../../utils/toast'
-import CloseIcon from '../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../hooks/useQueryParams'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import InputQuantity from '@components/Inputs/InputQuantity'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import CloseIcon from '@icons/CloseIcon'
 
-export default function ChangeUnitPerPack({ refetch, open, setOpen, setRegions }) {
-  const navigate = useNavigate()
-  const { values } = useQueryParams()
+export default function ChangeUnitPerPack({ open, setOpen }) {
   const methods = useForm()
-  const { formState, reset } = methods
   const [unit, setUnit] = useState(0)
-  const { mutate: updateUnitPerPack, isLoading: isUpdateUnitPerPack } = useMutation(requests.updateUnitPerPack, {
+  const theme = useTheme()
+  const { t } = useTranslation()
+
+  const { mutate: updateUnitPerPack } = useMutation(requests.updateUnitPerPack, {
     onSuccess: () => {
       setOpen(false)
 
@@ -40,10 +38,6 @@ export default function ChangeUnitPerPack({ refetch, open, setOpen, setRegions }
   const onError = (err) => {
     console.error('err', err)
   }
-
-  const theme = useTheme()
-
-  const { t } = useTranslation()
 
   return (
     <StyledEmptyDialog
@@ -86,7 +80,6 @@ export default function ChangeUnitPerPack({ refetch, open, setOpen, setRegions }
                 defaultValue={0}
                 disabled={false}
               />
-              {/*  */}
               <Box height={'20px'} />
             </Box>
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>

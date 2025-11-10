@@ -1,11 +1,11 @@
-import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
-import AllSalesPage from '../../pages/sales/all-sales'
-import CardShiftDetails from '../../pages/sales/card-shift-details'
-import NewCashRegister from '../../pages/sales/create-cash-register'
-import EposSales from '../../pages/sales/epos-sales'
-import NewSale from '../../pages/sales/new-order'
-import NewOrderV2 from '../../pages/sales/new-order-v2'
-import NewSaleV2 from '../../pages/sales/new-sale-v2'
+import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar';
+import NewCashRegister from '../../pages/sales/create-cash-register';
+import CardShiftDetails from '../../pages/sales/card-shift-details';
+import AllSalesPage from '../../pages/sales/all-sales';
+import NewSaleV2 from '../../pages/sales/new-sale-v2';
+import EposSales from '../../pages/sales/epos-sales';
+import NewSale from '../../pages/sales/new-order';
+
 
 const salesRoutes = {
   path: 'sales',
@@ -24,10 +24,7 @@ const salesRoutes = {
       path: 'new-sale-v2',
       children: [{ path: ':id', element: <NewSaleV2 /> }],
     },
-    {
-      path: 'new-order-v2',
-      children: [{ path: ':id', element: <NewOrderV2 /> }],
-    },
+
     {
       path: 'cash-shift-detail',
       children: [{ path: ':id', element: <CardShiftDetails /> }],

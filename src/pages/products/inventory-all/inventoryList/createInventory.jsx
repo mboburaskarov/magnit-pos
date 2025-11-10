@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
@@ -6,19 +6,22 @@ import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import StyledEmptyDialog from '../../../../../components/Dialogs/StyledeEmptyDialog'
-import TextField from '../../../../../components/Inputs/TextField'
-import Label from '../../../../../components/Label'
-import LazySelect from '../../../../../components/Select/LazySelect'
-import SelectSimple from '../../../../../components/Select/SelectSimple'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import CloseIcon from '../../../../assets/icons/CloseIcon'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import TextField from '@components/Inputs/TextField'
+import Label from '@components/Label'
+import LazySelect from '@components/Select/LazySelect'
+import SelectSimple from '@components/Select/SelectSimple'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import CloseIcon from '@icons/CloseIcon'
 import { LoadingButton } from '@mui/lab'
 
 export default function CreateInventory({ open, refetch, setOpen }) {
   const methods = useForm()
   const { reset, control } = methods
+  const theme = useTheme()
+  const { t } = useTranslation()
+
   const { mutate: createInventory, isLoading: iscreateInventory } = useMutation(requests.createInventory, {
     onSuccess: () => {
       setOpen(false)
@@ -35,6 +38,7 @@ export default function CreateInventory({ open, refetch, setOpen }) {
       console.error('err', err)
     },
   })
+
   const onSubmit = (data) => {
     const requestBody = {
       store_id: data.store_id?.id || undefined,
@@ -52,9 +56,7 @@ export default function CreateInventory({ open, refetch, setOpen }) {
   useEffect(() => {
     reset({}, { keepDirty: true })
   }, [open])
-  const theme = useTheme()
 
-  const { t } = useTranslation()
   const inventoryOpetions = [
     { name: 'Полная', id: 'FULL' },
     { name: 'Частичная', id: 'PARTIAL', isDisabled: true },

@@ -10,9 +10,8 @@ import { requests } from '@utils/requests'
 import { useQueryParams } from '@hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/expiredImportsTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
-
-const SELECTION_ID = 'checkboxSelectionField'
-
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 export default function ImportPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -23,23 +22,11 @@ export default function ImportPage() {
 
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
-    t,
-    values,
-    setImages: setOpenImageGallery,
   })
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -48,27 +35,10 @@ export default function ImportPage() {
     return {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
-      search: values?.search,
-
-      store_id: values?.store_id,
-      start_date: values?.start_date,
-      end_date: values?.end_date == values?.start_date ? null : values?.end_date,
-      status: values?.status,
-      import_date: values?.import_date,
-      received_amount_to: values?.received_amount_to,
-      received_amount_from: values?.received_amount_from,
+      start_date: getFilterStartDate(values),
+      end_date: getFilterEndDate(values),
     }
-  }, [
-    values?.offset,
-    values?.limit,
-    values?.end_date,
-    values?.start_date,
-    values?.search,
-    values?.status,
-    values?.store_id,
-    values?.received_amount_to,
-    values?.received_amount_from,
-  ])
+  }, [values?.offset, values?.limit, values?.end_date, values?.start_date])
   const {
     data: importsList,
     isLoading: importsListLoading,

@@ -1,56 +1,39 @@
-import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
-import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import BigTickIcon from '../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import PlusIcon from '../../../assets/icons/PlusIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/companiesTableColumns'
-import CreateLocationDrawer from './createLocationDrawer'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import PlusIcon from '@icons/PlusIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/companiesTableColumns'
+import CompanyDrawer from './CompanyDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import CheckAccess from '@components/CheckAccess'
+
 export default function CompaniesPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.companiesTableColumns)
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
-  const [openCreateLocationDrawer, setopenCreateLocationDrawer] = useState(false)
-  const navigate = useNavigate()
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+  const [openCompanyDrawer, setOpenCompanyDrawer] = useState(false)
+
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
-    setopenCreateLocationDrawer,
+    setOpenCompanyDrawer,
     values,
-    setOpenConfirmDialog,
   })
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -62,26 +45,13 @@ export default function CompaniesPage() {
       search: values?.search,
     }
   }, [values?.offset, values?.limit, values?.search])
+
   const {
     data: companiesList,
     isLoading: companiesListLoading,
     isFetching: isFetchingcompaniesList,
     refetch,
   } = useQuery(['companiesList', companiesListFilter], () => requests.getAllCompanies(companiesListFilter))
-
-  const { mutate: deleteStore, isLoading: isDeletingProduct } = useMutation(requests.deleteStore, {
-    onSuccess: () => {
-      refetch()
-      success('Аптека успешно удален!')
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      refetch()
-      error('Ошибка при удалении Аптека!')
-      setOpenConfirmDialog(null)
-      console.error('err', err)
-    },
-  })
 
   useEffect(() => {
     refetch()
@@ -127,28 +97,30 @@ export default function CompaniesPage() {
                 resetTableHeader={resetTableHeader}
               />
             </Box>
-            <Box minWidth={156}>
-              <Button
-                sx={{ height: '48px' }}
-                onClick={() => setopenCreateLocationDrawer({ mode: 'create' })}
-                fullWidth
-                startIcon={<PlusIcon color='#fff' />}
-                variant='contained'
-                color='primary'
-              >
-                {t('button.add_new.text')}
-              </Button>
-            </Box>
+            <CheckAccess id={'company:create'}>
+              <Box minWidth={156}>
+                <Button
+                  sx={{ height: '48px' }}
+                  onClick={() => setOpenCompanyDrawer({ mode: 'create' })}
+                  fullWidth
+                  startIcon={<PlusIcon color='#fff' />}
+                  variant='contained'
+                  color='primary'
+                >
+                  {t('button.add_new.text')}
+                </Button>
+              </Box>
+            </CheckAccess>
           </Box>
         </Box>
         <Box>
           <AgGridTable
-            id='products-main-table'
+            id='companies-table'
             tableSettings
             columns={tableColumns}
             emptyTableText={{
-              title: 'Аптеки недоступен',
-              description: 'Если вы не можете найти искомый Аптеки, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+              title: 'Компании недоступен',
+              description: 'Если вы не можете найти искомый Компании, нажмите кнопку «Создать» и введите необходимую информацию.',
             }}
             data={companiesList?.data?.data?.data || []}
             totalCount={companiesList?.data?.data?._meta?.total_count || 0}
@@ -164,41 +136,7 @@ export default function CompaniesPage() {
         </Box>
       </Box>
 
-      {openConfirmDialog && (
-        <ConfirmDialog
-          open={!!openConfirmDialog}
-          setOpen={setOpenConfirmDialog}
-          icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={'Удалить Аптека?'}
-          desc={'хотите удалить свой Аптека?'}
-          supDesc={openConfirmDialog.name}
-          actions={
-            <>
-              <Button
-                sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
-                fullWidth
-                color='secondary'
-                variant='contained'
-                onClick={() => setOpenConfirmDialog(null)}
-              >
-                Нет
-              </Button>
-              <LoadingButton variant='contained' type='button' loading={isDeletingProduct} onClick={() => deleteStore(openConfirmDialog.id)}>
-                Да, удалить
-              </LoadingButton>
-            </>
-          }
-        />
-      )}
-
-      <CreateLocationDrawer
-        refetchCompanyList={refetch}
-        setCustomerId={'setCustomerId'}
-        quickCreateClientName={'quickCreateClientName'}
-        openDrawer={openCreateLocationDrawer}
-        closeDrawer={() => setopenCreateLocationDrawer(false)}
-        clientData={companiesList?.data?.data?.data?.find((el) => el.id == get(openCreateLocationDrawer, 'data.id'))}
-      />
+      <CompanyDrawer refetchCompanyList={refetch} openDrawer={openCompanyDrawer} closeDrawer={() => setOpenCompanyDrawer(false)} />
     </LoadingContainer>
   )
 }

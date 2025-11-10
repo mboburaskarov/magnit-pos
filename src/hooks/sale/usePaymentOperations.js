@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
-import { useFormContext } from 'react-hook-form'
-import { get } from 'lodash'
+import { useFormContext } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { get } from 'lodash';
+
 
 export const usePaymentOperations = (cartItemsList, paymentTypesList) => {
-  const { setValue, getValues } = useFormContext()
+  const { setValue, getValues, watch } = useFormContext()
 
   const defaultPaymentTypes = [
     {
@@ -48,7 +49,7 @@ export const usePaymentOperations = (cartItemsList, paymentTypesList) => {
         : payment
     )
     setPaymentsList(updatedPaymentList)
-  }, [getValues('lite_cash_amount')])
+  }, [watch('lite_cash_amount')])
 
   // Update card payment
   useEffect(() => {
@@ -65,7 +66,7 @@ export const usePaymentOperations = (cartItemsList, paymentTypesList) => {
         : payment
     )
     setPaymentsList(updatedPaymentList)
-  }, [getValues('lite_card_amount'), cardPaymentType])
+  }, [watch('lite_card_amount'), cardPaymentType])
 
   // Update online payment
   useEffect(() => {
@@ -82,7 +83,7 @@ export const usePaymentOperations = (cartItemsList, paymentTypesList) => {
         : payment
     )
     setPaymentsList(updatedPaymentList)
-  }, [getValues('lite_online_amount'), onlinePaymentType])
+  }, [watch('lite_online_amount'), onlinePaymentType])
 
   // Calculate payment amount and max amount
   useEffect(() => {

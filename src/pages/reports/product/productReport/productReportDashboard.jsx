@@ -1,7 +1,8 @@
-import { Box, Grid, Typography } from '@mui/material'
-import { get } from 'lodash'
-import thousandDivider from '../../../../../utils/thousandDivider'
-import BigWarningIcon from '../../../../assets/icons/BigWarningIcon'
+import { Box, Grid, Typography } from '@mui/material';
+import thousandDivider from '@utils/thousandDivider';
+import BigWarningIcon from '@icons/BigWarningIcon';
+import { get } from 'lodash';
+
 
 function ProductReportDashboard({ data: stats, setHasChange }) {
   return (

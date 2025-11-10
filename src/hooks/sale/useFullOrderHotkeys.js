@@ -1,7 +1,7 @@
-// hooks/useFullOrderHotkeys.js
-import { useCallback } from 'react'
-import { useHotkeys } from 'react-hotkeys-hook'
-import { get } from 'lodash'
+import { useHotkeys } from 'react-hotkeys-hook';
+import { useCallback } from 'react';
+import { get } from 'lodash';
+
 
 export const useFullOrderHotkeys = ({ paymentTypesList, handleAddPaymentType, handleFinish, maxAmount }) => {
   // Payment hotkey mapping

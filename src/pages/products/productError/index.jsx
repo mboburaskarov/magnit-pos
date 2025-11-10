@@ -5,29 +5,27 @@ import { memo, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import CheckAccess from '../../../../components/CheckAccess'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import { requests } from '../../../../utils/requests'
-import EditIcon from '../../../assets/icons/EditIcon'
-import LeftArrowIcon from '../../../assets/icons/LeftArrow'
-import { useQueryParams } from '../../../hooks/useQueryParams'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import CheckAccess from '@components/CheckAccess'
+import InputSearch from '@components/Inputs/InputSearch'
+import { requests } from '@utils/requests'
+import EditIcon from '@icons/EditIcon'
+import LeftArrowIcon from '@icons/LeftArrow'
+import { useQueryParams } from '@hooks/useQueryParams'
 
 export default function RejectedProducts({ id }) {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
-  const [selectedShops, setSelectedShops] = useState('all')
   const { t } = useTranslation()
 
   const navigate = useNavigate()
   const productHistoryFilter = useMemo(() => {
     return {
       limit: values?.limitHistory || 5,
-      store_id: selectedShops == 'all' ? undefined : selectedShops?.id,
       offset: values?.offsetHistory || 0,
       search: values?.search,
     }
-  }, [values?.limitHistory, selectedShops, values?.offsetHistory, values?.search])
+  }, [values?.limitHistory, values?.offsetHistory, values?.search])
 
   const {
     data: productErrorsList,
@@ -35,13 +33,10 @@ export default function RejectedProducts({ id }) {
     isFetching: isFetchingproductErrorsList,
     refetch,
   } = useQuery(['productErrorsList', productHistoryFilter], () => requests.getProductErrors(productHistoryFilter, id))
-  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
 
   useEffect(() => {
     const count = productErrorsList?.data?.data?._meta?.total_count
-
     const offsetsCount = Math.ceil(count / Number(values?.limitHistory || 0))
-
     setOffsetCount(offsetsCount || 0)
   }, [productErrorsList?.data, values?.limitHistory])
 
@@ -89,19 +84,6 @@ export default function RejectedProducts({ id }) {
           </Box>
         ),
       },
-      // {
-      //   headerName: 'Решающий',
-      //   colId: 'resolved_by',
-      //   minWidth: 185,
-      //   maxWidth: 185,
-      //   width: 185,
-      //   cellRenderer: ({ data, rowIndex }) => (
-      //     <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
-      //       <Typography>{data?.resolved_by}</Typography>
-      //     </Box>
-      //   ),
-      // },
-
       {
         headerName: 'Причина',
         colId: 'reason',
@@ -220,25 +202,6 @@ export default function RejectedProducts({ id }) {
         }}
       >
         <InputSearch fullWidth={false} id='producrs-search' name='search' placeholder={'Наименование'} uncontrolled />
-
-        {/* <Box maxWidth={'300px'} ml={2} mr={2}>
-          <MultiOptionSelectNew
-            zIndex={999}
-            placeholder={t('placeholders.select_shops')}
-            // multiple
-            defaultSelectedAll
-            beforeContent={t('placeholders.select_shops')}
-            value={selectedShops}
-            allOptions={get(shopList, 'data.data.ids', [])}
-            selectAllLabel={'Все филиалы'}
-            options={get(shopList, 'data.data.data', [])}
-            isLoading={false}
-            onChange={(val) => {
-              setSelectedShops(val)
-            }}
-            request={requests.getAllStores}
-          />
-        </Box> */}
       </Box>
 
       <Box>

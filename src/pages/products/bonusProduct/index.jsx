@@ -8,28 +8,27 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../components/CheckAccess'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import Header from '../../../../components/Header'
-
-import ImageGallery from '../../../../components/ImageGallery'
-import DateRangeInput from '../../../../components/Inputs/DateRangeInput/DateRangeInput'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import BigTickIcon from '../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/bonusProductTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '@components/CheckAccess'
+import ConfirmDialog from '@components/ConfirmDialog'
+import Header from '@components/Header'
+import ImageGallery from '@components/ImageGallery'
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import BigTickIcon from '@icons/BigTickIcon'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/bonusProductTableColumns'
 import CreateBonusProduct from './createBonusProduct'
 import EditBonusProduct from './editBonusProduct'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-import { downloadLinkExcel } from '../../../../utils/downloadLinkEXCEL'
-const SELECTION_ID = 'checkboxSelectionField'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function BonusProductPage() {
   const methods = useForm()
@@ -46,11 +45,12 @@ export default function BonusProductPage() {
   const [openCreateBonusModal, setopenCreateBonusModal] = useState(false)
   const [openEditBonusModal, setopenEditBonusModal] = useState(false)
   const tableColumns = tableHeaderSelector({
-    importsColumns: columns,
+    bonusProductColumns: columns,
     t,
     setopenEditBonusModal: setopenEditBonusModal,
     setOpenConfirmDialog: setOpenConfirmDialog,
   })
+
   const { mutate: deleteBonusProduct } = useMutation(requests.deleteBonusProduct, {
     onSuccess: () => {
       refetch().then(() => {
@@ -69,15 +69,7 @@ export default function BonusProductPage() {
   })
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID)
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
 
       dispatch(changeColumnSequence(formattedData))
     }

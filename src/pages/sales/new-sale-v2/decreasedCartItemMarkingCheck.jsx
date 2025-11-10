@@ -1,10 +1,11 @@
-import { Box, Button, Dialog, Typography } from '@mui/material'
-import { get } from 'lodash'
-import { useState } from 'react'
-import { useMutation } from 'react-query'
-import TextField from '../../../../components/Inputs/TextField'
-import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
+import { Box, Button, Dialog, Typography } from '@mui/material';
+import TextField from '@components/Inputs/TextField';
+import { requests } from '@utils/requests';
+import { useMutation } from 'react-query';
+import { error } from '@utils/toast';
+import { useState } from 'react';
+import { get } from 'lodash';
+
 
 function DecreasedCartItemMarkingCheck({ open, handleClose, cartItems, markingsList, refetchcartItemsList, setMarkingList }) {
   const convertData = (data, input, targetId) => {
@@ -44,6 +45,7 @@ function DecreasedCartItemMarkingCheck({ open, handleClose, cartItems, markingsL
       console.error('err', err)
     },
   })
+
   const isValidInput = (evialable, input) => {
     if (!open || !evialable) {
       return
@@ -54,6 +56,7 @@ function DecreasedCartItemMarkingCheck({ open, handleClose, cartItems, markingsL
 
     return inputSet.size === input.length && [...inputSet].every((el) => evialableSet.has(el))
   }
+
   return (
     <Dialog
       sx={{
@@ -137,7 +140,6 @@ function DecreasedCartItemMarkingCheck({ open, handleClose, cartItems, markingsL
       <Box
         display={'flex'}
         sx={{
-          //   position: 'fixed',
           bottom: 0,
           right: 0,
           backgroundColor: '#fff',

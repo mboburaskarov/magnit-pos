@@ -1,12 +1,14 @@
-import { Box, Button, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import dayjs from 'dayjs'
-import { useMemo, useRef } from 'react'
-import DayPicker, { DateUtils } from 'react-day-picker'
-import { FormProvider, useForm } from 'react-hook-form'
-import { error } from '../../../utils/toast'
-import DateRangeInputsBox from './DateRangeInputsBox'
-import YearMonthFormNew from './YearMonthFormNew'
+import DayPicker, { DateUtils } from 'react-day-picker';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Box, Button, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { useMemo, useRef } from 'react';
+import dayjs from 'dayjs';
+
+import DateRangeInputsBox from './DateRangeInputsBox';
+import YearMonthFormNew from './YearMonthFormNew';
+import { error } from '../../../utils/toast';
+
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -159,7 +161,7 @@ const useStyles = makeStyles((theme) => ({
       '&:last-child': {
         borderRadius: '50% !important',
       },
-      '&:first-child': {
+      '&:first-of-type': {
         borderRadius: '50% !important',
       },
       '&:hover, &.DayPicker-Day--end, &.DayPicker-Day--start': {

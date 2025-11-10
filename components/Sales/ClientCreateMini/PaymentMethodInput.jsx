@@ -11,7 +11,7 @@ export default function PaymentMethodInput({
   index,
   disabled,
   max,
-
+  customerId,
   lastPaymentInput,
   isLast = false,
 }) {
@@ -62,7 +62,12 @@ export default function PaymentMethodInput({
           const inputValue = Number(e.target.value.replace(/\s/g, ''))
           const box = document.getElementById(`payment-box${index}`)
           box.classList.remove(classes?.outline)
-
+          if (item?.front_name == 'loyalty_cd' && inputValue > customerId?.balance) {
+            const updatedPaymentList = paymentsList.map((payment) => (payment.id === id ? { ...payment, amount: customerId?.balance } : payment))
+            setPaymentsList(updatedPaymentList)
+            setValue(customerId?.balance)
+            return
+          }
           if (item?.type !== 'cash' && max < inputValue - item?.amount) {
             const updatedPaymentList = paymentsList.map((payment) => (payment.id === id ? { ...payment, amount: item?.amount } : payment))
             setPaymentsList(updatedPaymentList)

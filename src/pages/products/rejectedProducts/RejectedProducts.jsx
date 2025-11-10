@@ -1,15 +1,16 @@
-import { Box, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { t } from 'i18next'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import MultiOptionSelectNew from '../../../../components/Select/MultiOptionSelectNew'
-import { requests } from '../../../../utils/requests'
-import { useQueryParams } from '../../../hooks/useQueryParams'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew';
+import AgGridTable from '@components/AgGridTable/AgGridTable';
+import InputSearch from '@components/Inputs/InputSearch';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useEffect, useMemo, useState } from 'react';
+import { Box, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { requests } from '@utils/requests';
+import { useQuery } from 'react-query';
+import { get } from 'lodash';
+import { t } from 'i18next';
+import dayjs from 'dayjs';
+
 
 export default function RejectedProducts({ id }) {
   const { values } = useQueryParams()
@@ -17,7 +18,7 @@ export default function RejectedProducts({ id }) {
   const [selectedShops, setSelectedShops] = useState('all')
 
   const navigate = useNavigate()
-  const productHistoryFilter = useMemo(() => {
+  const rejectedProductListFIlter = useMemo(() => {
     return {
       limit: values?.limitHistory || 5,
       store_id: selectedShops == 'all' ? undefined : selectedShops?.id,
@@ -28,10 +29,10 @@ export default function RejectedProducts({ id }) {
 
   const {
     data: rejectedProductList,
-    isLoading: isproductDataLoadingHistory,
+    isLoading: isRejectedProductList,
     isFetching: isFetchingrejectedProductList,
     refetch,
-  } = useQuery(['rejectedProductList', productHistoryFilter], () => requests.getRejectedProductList(productHistoryFilter, id))
+  } = useQuery(['rejectedProductList', rejectedProductListFIlter], () => requests.getRejectedProductList(rejectedProductListFIlter, id))
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
 
   useEffect(() => {
@@ -44,7 +45,7 @@ export default function RejectedProducts({ id }) {
 
   useEffect(() => {
     refetch()
-  }, [productHistoryFilter])
+  }, [rejectedProductListFIlter])
 
   const columns = useMemo(
     () => [
@@ -159,7 +160,7 @@ export default function RejectedProducts({ id }) {
       </Box>
       <Box>
         <AgGridTable
-          isDataLoading={isproductDataLoadingHistory || isFetchingrejectedProductList}
+          isDataLoading={isRejectedProductList || isFetchingrejectedProductList}
           offsetQuery='offsetHistory'
           limitQuery='limitHistory'
           id='products-history-table'
@@ -167,6 +168,7 @@ export default function RejectedProducts({ id }) {
           columns={columns}
           data={formattedData}
           offsetCount={offsetCount}
+          updaterAction={(newData) => {}}
           defaultOffsetSize={5}
         />
       </Box>
