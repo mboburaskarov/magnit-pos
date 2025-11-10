@@ -1,11 +1,10 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
-import { error, success } from '@utils/toast';
-import { requests } from '@utils/requests';
-import { useSelector } from 'react-redux';
-import { useMutation } from 'react-query';
-import { get } from 'lodash';
-
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import { get } from 'lodash'
+import { useCallback, useEffect, useState } from 'react'
+import { useMutation } from 'react-query'
+import { useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 
 export const useSaleOperations = ({
   cartItemsList,
@@ -27,7 +26,8 @@ export const useSaleOperations = ({
   const { id } = useParams()
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
-  const sendToEpos = localStorage.getItem('send_to_epos')
+  const sendToEpos = JSON.parse(localStorage.getItem('send_to_epos'))
+
   const [payType, setPayType] = useState(undefined)
 
   useEffect(() => {
@@ -56,6 +56,8 @@ export const useSaleOperations = ({
       }
       if (!JSON.parse(sendToEpos)) {
         success('Продажа завершена!')
+        setNewSaleId('888', false)
+        setQrcodeUrl({ qr: 'pharma-cosmos.uz', fiscal: 'No' })
       } else {
         sendEPOSData(data)
       }
@@ -125,7 +127,7 @@ export const useSaleOperations = ({
   // Create sale
   const { mutate: saleCreate } = useMutation(requests.saleCreate, {
     onSuccess: ({ data }) => {
-      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+      navigate(`/sales/new-sale-v2/${get(data, 'data.id')}`)
       window.location.reload()
     },
     onError: () => {
@@ -162,6 +164,12 @@ export const useSaleOperations = ({
     (data) => {
       const items = prepareEPOSData()
       const qrToken = JSON.parse(data?.config?.data)?.payment_types[0]?.otp_data || undefined
+      console.log(
+        paymentsList,
+        Number(paymentsList.filter((item) => item.amount && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) - Math.abs(maxAmount)) *
+          100,
+        maxAmount
+      )
 
       sendToEPOS({
         qrToken: qrToken,
@@ -180,13 +188,11 @@ export const useSaleOperations = ({
           items,
 
           receivedCash: parseFloat(
-            parseFloat(
-              (
-                Number(
-                  paymentsList.filter((item) => item.amount && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) - Math.abs(maxAmount)
-                ) * 100
-              ).toFixed(2)
-            )
+            (
+              Number(
+                paymentsList.filter((item) => item.amount && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) - Math.abs(maxAmount)
+              ) * 100
+            ).toFixed(2)
           ),
           receivedCard: parseFloat(
             (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)

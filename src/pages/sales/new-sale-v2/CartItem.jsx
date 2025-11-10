@@ -1,15 +1,14 @@
-import { Box, TableCell, TableRow, Typography, useTheme } from '@mui/material';
-import InputQuantity from '@components/Inputs/InputQuantity';
-import thousandDivider from '@utils/thousandDivider';
-import CustomImg from '@components/CustomImg';
-import { requests } from '@utils/requests';
-import { useMutation } from 'react-query';
-import TrashIcon from '@icons/TrashIcon';
-import { makeStyles } from '@mui/styles';
-import GiftIcon from '@icons/GiftIcon';
-import { error } from '@utils/toast';
-import { get } from 'lodash';
-
+import CustomImg from '@components/CustomImg'
+import InputQuantity from '@components/Inputs/InputQuantity'
+import GiftIcon from '@icons/GiftIcon'
+import TrashIcon from '@icons/TrashIcon'
+import { Box, TableCell, TableRow, Typography, useTheme } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { requests } from '@utils/requests'
+import thousandDivider from '@utils/thousandDivider'
+import { error } from '@utils/toast'
+import { get } from 'lodash'
+import { useMutation } from 'react-query'
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -469,7 +468,7 @@ export default function CartItem({ index, searchRef, packRef = () => {}, unitRef
             {item?.discount_price > 0 ? (
               <> {thousandDivider(item?.discount_price * item.quantity || item.unit_quantity, 'сум')}/шт</>
             ) : (
-              <> {thousandDivider(item?.unit_price, 'сум')}/шт</>
+              <> {thousandDivider(item?.unit_price, 'сум')}/уп</>
             )}
           </Typography>
           {item?.bonus_amount > 0 && (

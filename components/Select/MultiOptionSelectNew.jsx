@@ -1,13 +1,13 @@
-import { Box, TextField, Typography } from '@mui/material'
+import { useQueryParams } from '@hooks/useQueryParams'
+import ArrowDown from '@icons/ArrowDown'
+import ArrowUp from '@icons/ArrowUp'
+import TickSmallIcon from '@icons/TickIcon'
+import { Box, TextField } from '@mui/material'
+import { error } from '@utils/toast'
 import { get } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useInView } from 'react-intersection-observer'
-import ArrowDown from '@icons/ArrowDown'
-import ArrowUp from '@icons/ArrowUp'
-import TickSmallIcon from '@icons/TickIcon'
-import { useQueryParams } from '@hooks/useQueryParams'
-import { error } from '@utils/toast'
 import StyledTooltip from '../StyledTooltip'
 import './select.css'
 
@@ -18,6 +18,7 @@ const MultiOptionSelectNew = ({
   onChange,
   multiple,
   placeholder,
+  notShowedPharmaCosmos = true,
   selectAllLabel,
   countLabel,
   label,
@@ -108,7 +109,7 @@ const MultiOptionSelectNew = ({
         ...customFilter,
       })
 
-      const newData = get(response, 'data.data.data', []).filter((item) => item?.name != 'Pharma Cosmos ')
+      const newData = get(response, 'data.data.data', []).filter((item) => (notShowedPharmaCosmos ? item?.name != 'Pharma Cosmos ' : true))
 
       if (pagination.offset === 0) {
         setOptions(newData) // Replace options for new search

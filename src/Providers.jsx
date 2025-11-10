@@ -1,29 +1,29 @@
-import 'react-datepicker/dist/react-datepicker.css';
-import 'dayjs/locale/ru';
+import 'dayjs/locale/ru'
+import 'react-datepicker/dist/react-datepicker.css'
 
-import { StyledEngineProvider, ThemeProvider } from '@mui/material';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
-import updateLocale from 'dayjs/plugin/updateLocale';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import { useEffect, useMemo, useState } from 'react';
-import { createTheme } from '@mui/material/styles';
-import localeData from 'dayjs/plugin/localeData';
-import { CacheProvider } from '@emotion/react';
-import timezone from 'dayjs/plugin/timezone';
-import duration from 'dayjs/plugin/duration';
-import { Provider } from 'react-redux';
-import utc from 'dayjs/plugin/utc';
-import dayjs from 'dayjs';
+import { CacheProvider } from '@emotion/react'
+import { StyledEngineProvider, ThemeProvider } from '@mui/material'
+import { createTheme } from '@mui/material/styles'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+import duration from 'dayjs/plugin/duration'
+import localeData from 'dayjs/plugin/localeData'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import timezone from 'dayjs/plugin/timezone'
+import updateLocale from 'dayjs/plugin/updateLocale'
+import utc from 'dayjs/plugin/utc'
+import { useEffect, useMemo, useState } from 'react'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
+import { Provider } from 'react-redux'
 
-import { createEmotionCache } from '../utils/createEmotionCache';
-import useListenSystemTheme from './hooks/useListenSystemTheme';
-import { useQueryParams } from './hooks/useQueryParams';
-import paletteLight from './assets/theme/paletteLight';
-import ErrorBoundary from './ErrorBoundary';
-import store from './redux-toolkit/store';
-import { theme } from './assets/theme';
+import { createEmotionCache } from '../utils/createEmotionCache'
+import { theme } from './assets/theme'
+import paletteLight from './assets/theme/paletteLight'
+import ErrorBoundary from './ErrorBoundary'
+import useListenSystemTheme from './hooks/useListenSystemTheme'
+import { useQueryParams } from './hooks/useQueryParams'
+import store from './redux-toolkit/store'
 
 
 const queryClient = new QueryClient({

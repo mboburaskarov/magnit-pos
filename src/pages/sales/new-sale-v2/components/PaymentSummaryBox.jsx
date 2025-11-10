@@ -38,10 +38,10 @@ export const PaymentSummaryBox = ({ cartItemsList, maxAmount }) => {
         },
       }}
     >
-      <SummaryRow title='Общая стоимость' value={thousandDivider(get(cartItemsList, 'sum'), 'сум')} />
-      <SummaryRow title='Скидка' value={thousandDivider(get(cartItemsList, 'discount_amount'), 'сум')} />
       <SummaryRow title='Итого' value={thousandDivider(get(cartItemsList, 'total_amount'), 'сум')} />
-      <SummaryRow title='Сдача' value={get(cartItemsList, 'total_amount') === Math.abs(maxAmount) ? '0' : thousandDivider(Math.abs(maxAmount), 'сум')} />
+      <SummaryRow title='Скидка' value={thousandDivider(get(cartItemsList, 'discount_amount'), 'сум')} />
+      <SummaryRow title='Нужно оплатить' value={thousandDivider(maxAmount > 0 ? maxAmount : 0, 'сум')} />
+      <SummaryRow title='Сдача' value={thousandDivider(maxAmount < 0 ? Math.abs(maxAmount) : 0, 'сум')} />
     </Box>
   )
 }

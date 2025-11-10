@@ -18,8 +18,8 @@ import thousandDivider from '../../../../utils/thousandDivider'
 import { error, success } from '../../../../utils/toast'
 import CloseIcon from '../../../assets/icons/CloseIcon'
 import QrScanIcon from '../../../assets/icons/QrScanIcon'
-import PreventRefreshDialog from './preventRefreshDialog'
 import PreventRefresh from './preventRefresh'
+import PreventRefreshDialog from './preventRefreshDialog'
 import SaleProgressSteps from './saleStepLoading'
 function OrderLite({
   serviceType,
