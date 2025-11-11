@@ -138,7 +138,7 @@ export const PaymentInputField = ({
         '& input': {
           fontWeight: 500,
           color: 'bunker.950',
-          textAlign: 'right',
+          textAlign: 'start',
         },
         mt: name.includes('cash_amount_soon') ? '8px' : name.includes('card') || name.includes('online') ? '8px' : 0,
         '& .MuiOutlinedInput-root': {

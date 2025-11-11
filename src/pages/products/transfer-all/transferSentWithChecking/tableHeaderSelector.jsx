@@ -1,9 +1,10 @@
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
 import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
-import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
 
 export default function tableHeaderSelector({ transferColumsn, values, methods, setScanedNumber }) {
   const { id } = useParams()
