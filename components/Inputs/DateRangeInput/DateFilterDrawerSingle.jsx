@@ -1,14 +1,13 @@
-import DayPicker, { DateUtils } from 'react-day-picker';
-import { FormProvider, useForm } from 'react-hook-form';
-import { Box, Button, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { useMemo, useRef } from 'react';
-import dayjs from 'dayjs';
+import { Box, Button, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import dayjs from 'dayjs'
+import { useMemo, useRef } from 'react'
+import DayPicker, { DateUtils } from 'react-day-picker'
+import { FormProvider, useForm } from 'react-hook-form'
 
-import DateRangeInputsBox from './DateRangeInputsBox';
-import YearMonthFormNew from './YearMonthFormNew';
-import { error } from '../../../utils/toast';
-
+import { error } from '../../../utils/toast'
+import DateRangeInputsBox from './DateRangeInputsBox'
+import YearMonthFormNew from './YearMonthFormNew'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -343,6 +342,7 @@ export default function DateFilterDrawerSingle({
   const onError = (err) => {
     console.error(err)
   }
+  console.log(selectedRange)
 
   return (
     <Box className={classes.wrapper}>
@@ -375,7 +375,6 @@ export default function DateFilterDrawerSingle({
                 captionElement={({ date }) => <YearMonthFormNew date={date} onChange={(month) => setDateState({ month })} />}
               />
             </Box>
-
             <Box
               sx={(theme) => ({
                 display: 'flex',

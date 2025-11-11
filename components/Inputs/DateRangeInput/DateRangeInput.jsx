@@ -10,11 +10,10 @@ import * as qs from 'qs'
 import { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ArrowDown from '../../../src/assets/icons/ArrowDown'
+import ClockIcon from '../../../src/assets/icons/ClockIcon'
 import { useQueryParams } from '../../../src/hooks/useQueryParams'
-import { calculateDateDifference } from '../../../utils/calculateDateDifference'
 import ButtonWithPopup from '../../Buttons/ButtonWithPopup'
 import DateFilterDrawerSingle from './DateFilterDrawerSingle'
-import ClockIcon from '../../../src/assets/icons/ClockIcon'
 
 dayjs.extend(isBetween)
 dayjs.extend(isSameOrAfter)
@@ -64,8 +63,6 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const [dateState, setDateState] = useState(defaultState)
-
-  const dateDifference = calculateDateDifference(dateState?.from, dateState?.to)
 
   useEffect(() => {
     if (values?.start_date && values?.end_date) {

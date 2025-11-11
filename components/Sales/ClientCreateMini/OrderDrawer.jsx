@@ -594,7 +594,7 @@ export default function OrderDrawer({
 
       if ((totalEnteredMoney >= 1 && type?.front_name == 'uzum') || paymentsList.some((item) => item.front_name == 'uzum')) return false
 
-      if ((customerId?.balance <= 1 && type?.front_name == 'loyalty_cd') || (!customerId?.first_name && type?.front_name == 'loyalty_cd')) return false
+      if ((customerId?.balance <= 1 && type?.front_name == 'loyalty_card') || (!customerId?.first_name && type?.front_name == 'loyalty_card')) return false
 
       const totalAmount = get(cartItemsList, 'total_amount')
 
@@ -845,10 +845,10 @@ export default function OrderDrawer({
                                 borderRadius={'24px'}
                               >
                                 <Box>
-                                  <Typography fontSize={18} fontWeight={'600'} lineHeight={get(item, 'front_name', false) == 'loyalty_cd' ? '20px' : '40px'}>
+                                  <Typography fontSize={18} fontWeight={'600'} lineHeight={get(item, 'front_name', false) == 'loyalty_card' ? '20px' : '40px'}>
                                     {get(item, 'name')}
                                   </Typography>
-                                  {get(item, 'front_name', false) == 'loyalty_cd' && (
+                                  {get(item, 'front_name', false) == 'loyalty_card' && (
                                     <Typography sx={{ fontSize: '17px', color: 'bunker.500', fontWeight: '500' }}>
                                       {thousandDivider(customerId?.balance, 'сум')}
                                     </Typography>

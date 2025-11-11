@@ -1,18 +1,18 @@
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import TextField from '@components/Inputs/TextField'
+import Label from '@components/Label'
+import LazySelect from '@components/Select/LazySelect'
+import CloseIcon from '@icons/CloseIcon'
+import { LoadingButton } from '@mui/lab'
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
 import dayjs from 'dayjs'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
-import TextField from '@components/Inputs/TextField'
-import Label from '@components/Label'
-import LazySelect from '@components/Select/LazySelect'
-import { requests } from '@utils/requests'
-import { error, success } from '@utils/toast'
-import CloseIcon from '@icons/CloseIcon'
-import { LoadingButton } from '@mui/lab'
 
 export default function CreateReturn({ open, refetch, setOpen }) {
   const methods = useForm()
@@ -27,6 +27,10 @@ export default function CreateReturn({ open, refetch, setOpen }) {
       refetch()
     },
     onError: (err) => {
+      if (err === 409) {
+        error('Возврат уже создан')
+        return
+      }
       error('Ошибка Создать автозаказ!')
       console.error('err', err)
     },

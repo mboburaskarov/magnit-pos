@@ -199,7 +199,7 @@ function CartDetailSide({
                   {get(customerId, 'name')}
                 </Typography>
                 <Typography sx={{ fontSize: '12px', lineHeight: '16px', fontWeight: '500', color: 'bunker.400' }} color='textSecondary'>
-                  {t('balans')}: {get(customerId, 'balance')}
+                  {t('balans')}: {thousandDivider(get(customerId, 'balance'), 'сум')}
                 </Typography>
               </Box>
             </Box>

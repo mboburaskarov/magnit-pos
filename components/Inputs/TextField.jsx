@@ -82,7 +82,11 @@ const TextField = ({
             borderColor: disabled && 'gray.300',
             background: '#' + bgcolor || (white && theme.palette.gray[200]) || (disabled && `${theme.palette.gray[100]} !important`),
             p: '0 !important',
-            '&:hover': { fieldset: { borderColor: 'gray.200' } },
+            '&:hover': {
+              bgcolor: 'bg.10',
+
+              fieldset: { borderColor: 'gray.200' },
+            },
             fieldset: { borderColor: 'gray.200' },
             '&.Mui-focused fieldset': {
               transition: '0.3s',

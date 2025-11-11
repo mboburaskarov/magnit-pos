@@ -1,11 +1,4 @@
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/changePriceTableColumns'
 import AgGridTable from '@components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '@components/CheckAccess'
@@ -13,15 +6,22 @@ import HeaderWithDashboardWrapper from '@components/HeaderWithDashboard'
 import ImageGallery from '@components/ImageGallery'
 import InputSearch from '@components/Inputs/InputSearch'
 import LoadingContainer from '@components/LoadingContainer'
-import { requests } from '@utils/requests'
-import FilterMenuIcon from '@icons/FilterMenuIcon'
 import { useQueryParams } from '@hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/changePriceTableColumns'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import { Box, Button, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
+import { get } from 'lodash'
+import { useEffect, useMemo, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
 import ChangePriceDashboard from './changePriceDashboard'
 import CreateRevaluation from './createRevaluation'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function ChangePricePage() {
   const theme = useTheme()
@@ -120,7 +120,7 @@ export default function ChangePricePage() {
                   },
                 }}
               >
-                <InputSearch id='producrs-search' name='search' placeholder={'Номер автозаказа, Аптека'} uncontrolled />
+                <InputSearch id='producrs-search' name='search' placeholder={'Номер переоценки, аптека'} />
               </Box>
 
               <Box minWidth={113} ml={'16px'}>

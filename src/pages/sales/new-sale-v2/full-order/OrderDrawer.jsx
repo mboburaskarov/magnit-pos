@@ -1,28 +1,27 @@
-import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material';
-import { default as CloseIcon, default as RemovePaymentIcon } from '@icons/CloseIcon';
-import SaleProgressSteps from '@/pages/sales/new-order/saleStepLoading';
-import { useFullOrderPayments } from '@hooks/sale/useFullOrderPayments'; //full sale own hook
-import { useFullOrderHotkeys } from '@hooks/sale/useFullOrderHotkeys'; //full sale own hook
-import { usePrintOperations } from '@hooks/sale/usePrintOperations'; //sales global hook
-import StyledDialog from '@components/Dialogs/StyledeEmptyDialog';
-import { useSaleOperations } from '@hooks/sale/useSaleOperations'; //sales global hook
-import { RippedPaperItem } from '@components/RippedPaperList';
-import { FormProvider, useForm } from 'react-hook-form';
-import thousandDivider from '@utils/thousandDivider';
-import TextField from '@components/Inputs/TextField';
-import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import QrScanIcon from '@icons/QrScanIcon';
-import { requests } from '@utils/requests';
-import { makeStyles } from '@mui/styles';
-import { LoadingButton } from '@mui/lab';
-import { useQuery } from 'react-query';
-import { get } from 'lodash';
+import SaleProgressSteps from '@/pages/sales/new-order/saleStepLoading'
+import StyledDialog from '@components/Dialogs/StyledeEmptyDialog'
+import TextField from '@components/Inputs/TextField'
+import { RippedPaperItem } from '@components/RippedPaperList'
+import { useFullOrderHotkeys } from '@hooks/sale/useFullOrderHotkeys' //full sale own hook
+import { useFullOrderPayments } from '@hooks/sale/useFullOrderPayments' //full sale own hook
+import { usePrintOperations } from '@hooks/sale/usePrintOperations' //sales global hook
+import { useSaleOperations } from '@hooks/sale/useSaleOperations' //sales global hook
+import { default as CloseIcon, default as RemovePaymentIcon } from '@icons/CloseIcon'
+import QrScanIcon from '@icons/QrScanIcon'
+import { LoadingButton } from '@mui/lab'
+import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { requests } from '@utils/requests'
+import thousandDivider from '@utils/thousandDivider'
+import { get } from 'lodash'
+import { useEffect, useRef, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
 
-import PreventRefreshDialog from '../components/PreventRefreshDialog';
-import PreventRefresh from '../components/PreventRefresh';
-import PaymentMethodInput from './PaymentMethodInput';
-
+import PreventRefresh from '../components/PreventRefresh'
+import PreventRefreshDialog from '../components/PreventRefreshDialog'
+import PaymentMethodInput from './PaymentMethodInput'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -330,9 +329,16 @@ export default function OrderDrawer({
                                 justifyContent={'space-between'}
                                 borderRadius={'24px'}
                               >
-                                <Typography fontSize={18} fontWeight={'600'} lineHeight={'40px'}>
-                                  {get(item, 'name')}
-                                </Typography>
+                                <Box>
+                                  <Typography fontSize={18} fontWeight={'600'} lineHeight={get(item, 'front_name', false) == 'loyalty_card' ? '20px' : '40px'}>
+                                    {get(item, 'name')}
+                                  </Typography>
+                                  {get(item, 'front_name', false) == 'loyalty_card' && (
+                                    <Typography sx={{ fontSize: '14px', color: 'bunker.500', fontWeight: '700' }}>
+                                      {thousandDivider(customerId?.balance, 'сум')}
+                                    </Typography>
+                                  )}
+                                </Box>
                                 <Typography alignItems={'center'} justifyContent={'center'} display={'flex'}>
                                   <Box
                                     sx={{

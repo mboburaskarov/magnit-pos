@@ -2,7 +2,7 @@ import { get } from 'lodash'
 import { useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 
-export const usePaymentOperations = (cartItemsList, paymentTypesList) => {
+export const usePaymentOperations = (cartItemsList, paymentTypesList, setOuterMaxAMount) => {
   const { setValue, getValues, watch } = useFormContext()
 
   const defaultPaymentTypes = [
@@ -41,6 +41,7 @@ export const usePaymentOperations = (cartItemsList, paymentTypesList) => {
     setValue('lite_card_amount', '')
     setValue('lite_online_amount', '')
     setMaxAmount(0)
+    setOuterMaxAMount(0)
   }, [cartItemsList])
   // Update cash payment
   useEffect(() => {
@@ -102,8 +103,10 @@ export const usePaymentOperations = (cartItemsList, paymentTypesList) => {
 
     if (isNaN(amount)) {
       setMaxAmount(Number(get(cartItemsList, 'total_amount')))
+      setOuterMaxAMount(Number(get(cartItemsList, 'total_amount')))
       setPaymentAmount(0)
     } else {
+      setOuterMaxAMount(Number(get(cartItemsList, 'total_amount')) - amount)
       setMaxAmount(Number(get(cartItemsList, 'total_amount')) - amount)
       setPaymentAmount(amount)
     }
@@ -116,6 +119,7 @@ export const usePaymentOperations = (cartItemsList, paymentTypesList) => {
     setValue('lite_card_amount', '')
     setValue('lite_online_amount', '')
     setMaxAmount(0)
+    setOuterMaxAMount(0)
   }, [cartItemsList])
 
   const resetPayments = () => {

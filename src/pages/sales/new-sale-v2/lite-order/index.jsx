@@ -32,6 +32,7 @@ function LiteOrder({
   setHasChange,
   liteOrder,
   dmedOrganizedList,
+  setMaxAmount,
   cashBoxDetails,
   setLiteOrder,
   customerId,
@@ -57,7 +58,7 @@ function LiteOrder({
 
   // Custom hooks for operations
   const { paymentsList, setPaymentsList, paymentAmount, onlinePaymentType, setOnlinePaymentType, cardPaymentType, setCardPaymentType, maxAmount } =
-    usePaymentOperations(cartItemsList, paymentTypesList)
+    usePaymentOperations(cartItemsList, paymentTypesList, setMaxAmount)
 
   const { isFinishSaleWithoutAppPaymentType, isSaleError, isSendToEPOS, isEposError, isSendEPOSresponseToBackend, isSaleResponseError, submitSale } =
     useSaleOperations({

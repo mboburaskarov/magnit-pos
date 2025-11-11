@@ -304,7 +304,7 @@ export default function CartItem({ index, searchRef, packRef = () => {}, unitRef
               width: '40px !important',
             },
             '& input': {
-              textAlign: 'end',
+              textAlign: 'start',
               padding: '7px 6px 6px !important',
               fontSize: '14px',
               lineHeight: '20px',
@@ -379,7 +379,7 @@ export default function CartItem({ index, searchRef, packRef = () => {}, unitRef
             '& .MuiFormControl-root .MuiInputBase-root': {
               borderRadius: '6px !important',
               display: 'flex',
-              alignItems: 'end',
+              alignItems: 'start',
             },
 
             '& .MuiFormControl-root': {
@@ -387,12 +387,14 @@ export default function CartItem({ index, searchRef, packRef = () => {}, unitRef
               width: '64px !important',
             },
             '& input': {
-              textAlign: 'end',
+              textAlign: 'start',
               padding: '4px 32px 4px 6px !important',
               fontSize: '14px',
               height: '23px',
               lineHeight: '20px',
               fontWeight: '500',
+              height: '25px',
+
               color: 'bunker.950',
             },
             '& .MuiFormControl-root > .MuiOutlinedInput-root.Mui-focused': {

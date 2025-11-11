@@ -1,12 +1,12 @@
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import { useQueryParams } from '@hooks/useQueryParams'
 import { Box, Typography } from '@mui/material'
+import { requests } from '@utils/requests'
+import thousandDivider from '@utils/thousandDivider'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
-import AgGridTable from '@components/AgGridTable/AgGridTable'
-import { requests } from '@utils/requests'
-import thousandDivider from '@utils/thousandDivider'
-import { useQueryParams } from '@hooks/useQueryParams'
 
 export default function ProductRemainsHistory({ id }) {
   const { values } = useQueryParams()
@@ -48,7 +48,9 @@ export default function ProductRemainsHistory({ id }) {
         width: 300,
         cellRenderer: ({ data, rowIndex }) => (
           <Box id={`${'store_name'}-${rowIndex}-${data?.store_id}`}>
-            <Typography id={`${'store_name'}-${rowIndex}-${data?.store_id}`}>{data?.store?.name}</Typography>
+            <Typography whiteSpace='pre-line' id={`${'store_name'}-${rowIndex}-${data?.store_id}`}>
+              {data?.store?.name}
+            </Typography>
           </Box>
         ),
       },

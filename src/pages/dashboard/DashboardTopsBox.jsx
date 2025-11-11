@@ -1,10 +1,9 @@
-import { Box, Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import RightArrowRound from '@icons/dashboard/RightArrowRound';
-import thousandDivider from '@utils/thousandDivider';
-import SortIcon from '@icons/dashboard/SortIcon';
-import { Link } from 'react-router-dom';
-import { size } from 'lodash';
-
+import RightArrowRound from '@icons/dashboard/RightArrowRound'
+import SortIcon from '@icons/dashboard/SortIcon'
+import { Box, Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import thousandDivider from '@utils/thousandDivider'
+import { size } from 'lodash'
+import { Link } from 'react-router-dom'
 
 export default function DashboardTopsBox({
   data,
@@ -60,6 +59,7 @@ export default function DashboardTopsBox({
           <Link to={href}>
             <Box
               sx={{
+                mr: '2px',
                 cursor: 'pointer',
                 '&:hover': {
                   '& rect': { stroke: '#333' },

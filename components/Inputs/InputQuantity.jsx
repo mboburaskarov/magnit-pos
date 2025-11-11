@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme) => ({
       height: 48,
       backgroundColor: theme.palette.background.default,
       border: `1px solid ${theme.palette.bunker[200]}`,
+      '&:hover': {
+        backgroundColor: `${theme.palette.bg[10]} !important`,
+      },
     },
     '& .price': {
       justifyContent: 'center',

@@ -1,17 +1,17 @@
-import React, { useCallback, useState, useEffect } from 'react'
-import { InputAdornment, Button, TextField, Box } from '@mui/material'
-import * as qs from 'qs'
-import SearchIcon from '../../src/assets/icons/SearchIcon'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import UserFilledIcon from '../../src/assets/icons/UserFilledIcon'
-import ShortcutWrapper from './ShortcutWrapper'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Box, Button, InputAdornment, TextField } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import * as qs from 'qs'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import GiftCardIcon from '../../src/assets/icons/BigTickIcon'
+import SearchIcon from '../../src/assets/icons/SearchIcon'
+import UserFilledIcon from '../../src/assets/icons/UserFilledIcon'
 import useDebouncedValue from '../../src/hooks/useDebouncedValue'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
-import { useNavigate } from 'react-router-dom'
-import { makeStyles } from '@mui/styles'
-import GiftCardIcon from '../../src/assets/icons/BigTickIcon'
+import ShortcutWrapper from './ShortcutWrapper'
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.gray[400],
     '& .MuiInputBase-root': {
       height: '40px',
+      '&:hover': {
+        backgroundColor: theme.palette.bg[10],
+      },
     },
     '& .MuiInputAdornment-root': {
       width: 'auto',

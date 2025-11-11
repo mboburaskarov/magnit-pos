@@ -1,19 +1,18 @@
-import { Box, Button, Drawer, Typography } from '@mui/material';
-import { FormProvider, useForm } from 'react-hook-form';
-import { makeStyles, useTheme } from '@mui/styles';
-import useDidUpdate from '@hooks/useDidUpdate';
-import { useTranslation } from 'react-i18next';
-import { error, success } from '@utils/toast';
-import { requests } from '@utils/requests';
-import { useSelector } from 'react-redux';
-import { useMutation } from 'react-query';
-import CloseIcon from '@icons/CloseIcon';
-import { get, size } from 'lodash';
-import { useEffect } from 'react';
-import dayjs from 'dayjs';
+import useDidUpdate from '@hooks/useDidUpdate'
+import CloseIcon from '@icons/CloseIcon'
+import { Box, Button, Drawer, Typography } from '@mui/material'
+import { makeStyles, useTheme } from '@mui/styles'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import dayjs from 'dayjs'
+import { get, size } from 'lodash'
+import { useEffect } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useMutation } from 'react-query'
+import { useSelector } from 'react-redux'
 
-import MainDetails from './mainDetails';
-
+import MainDetails from './mainDetails'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -110,7 +109,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
   })
 
   const onSubmit = (data) => {
-    if (size(get(data, 'phone')) < 14) {
+    if (size(get(data, 'phone')) < 14 && get(openDrawer, 'type') != 'edit') {
       error('Номер телефона меньше 14')
     }
 
@@ -121,7 +120,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       gender: data?.gender,
       last_name: data?.last_name,
       store_id: get(userData, 'store.id'),
-      phone: '998' + data?.phone?.replace(/[()\s]/g, ''),
+      phone: get(openDrawer, 'type') == 'edit' ? data?.phone?.replace(/[()\s]/g, '') : '998' + data?.phone?.replace(/[()\s]/g, ''),
       tag_id: data?.tags?.value,
       virtual_loyalty_card_needed: data?.shouldGenerateLoyalCard == 'auto' ? true : false,
 

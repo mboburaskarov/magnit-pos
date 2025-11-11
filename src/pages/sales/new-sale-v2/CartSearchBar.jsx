@@ -1,28 +1,27 @@
-import { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { convertoRuOrEngToEng } from '@utils/convertoRuOrEngToEng';
-import ButtonWithPopup from '@components/Buttons/ButtonWithPopup';
-import FinanceAndPaymentIcon from '@icons/FinanceAndPaymentIcon';
-import { useNavigate, useParams } from 'react-router-dom';
-import InputSearch from '@components/Inputs/InputSearch';
-import { FormProvider, useForm } from 'react-hook-form';
-import { convertEngToRu } from '@utils/convertoEngToRu';
-import { Box, Button, Typography } from '@mui/material';
-import StyledTooltip from '@components/StyledTooltip';
-import ConfirmDialog from '@components/ConfirmDialog';
-import RussianFlagIcon from '@icons/RussianFlagIcon';
-import { useMutation, useQuery } from 'react-query';
-import BigWarningIcon from '@icons/BigWarningIcon';
-import { useHotkeys } from 'react-hotkeys-hook';
-import UnlockIcon from '@icons/UnlockIcon';
-import { useDebounce } from 'use-debounce';
-import { requests } from '@utils/requests';
-import { useSelector } from 'react-redux';
-import { makeStyles } from '@mui/styles';
-import { get, head, size } from 'lodash';
-import { error } from '@utils/toast';
+import ButtonWithPopup from '@components/Buttons/ButtonWithPopup'
+import ConfirmDialog from '@components/ConfirmDialog'
+import InputSearch from '@components/Inputs/InputSearch'
+import StyledTooltip from '@components/StyledTooltip'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import FinanceAndPaymentIcon from '@icons/FinanceAndPaymentIcon'
+import RussianFlagIcon from '@icons/RussianFlagIcon'
+import UnlockIcon from '@icons/UnlockIcon'
+import { Box, Button, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { convertEngToRu } from '@utils/convertoEngToRu'
+import { convertoRuOrEngToEng } from '@utils/convertoRuOrEngToEng'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import { get, head, size } from 'lodash'
+import { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { useMutation, useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useDebounce } from 'use-debounce'
 
-import SerchedItem from './SerchedItem';
-
+import SerchedItem from './SerchedItem'
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -358,7 +357,7 @@ function CartSearchBar({
             style={{ zIndex: showOverlay ? 25 : 10 }}
             sx={{ width: '100%', marginRight: '16px !important', height: '40px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
             name='search'
-            placeholder={'Поиск: товар, категория, штрих-код'}
+            placeholder={'Поиск: название, маркировка, штрих-код'}
             fullWidth
             onFocus={() => {
               a = 0

@@ -1,13 +1,12 @@
-import { formatPhoneNumber } from '@utils/formatPhoneNumber';
-import { Box, IconButton, Typography } from '@mui/material';
-import { formatDate } from '@utils/validateDate';
-import DeleteIcon from '@icons/DeleteIcon';
-import EditIcon from '@icons/EditIcon';
-import { memo } from 'react';
-import { get } from 'lodash';
+import DeleteIcon from '@icons/DeleteIcon'
+import EditIcon from '@icons/EditIcon'
+import { Box, IconButton, Typography } from '@mui/material'
+import { formatPhoneNumber } from '@utils/formatPhoneNumber'
+import { formatDate } from '@utils/validateDate'
+import { get } from 'lodash'
+import { memo } from 'react'
 
-import { SimpleText } from '../../../components/AgGridTable/Cells/SimpleText';
-
+import { SimpleText } from '../../../components/AgGridTable/Cells/SimpleText'
 
 export default function tableHeaderSelector({ clientsColumns, values, selectClientsFunc, t, setOpenConfirmDialog, setOpenClientCreateMini }) {
   const columns = clientsColumns?.map((el) => {
@@ -85,7 +84,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Процент лояльности карты',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'%'} type='loyalty_card_percent' />),
+        cellRenderer: memo((p) => <SimpleText {...p} currency={'%'} type='loyalty_card_percent' />),
       }
     }
     if (el.field === 'discount_card') {
@@ -93,7 +92,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Дисконтная карта',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='discount_card' />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='discount_card' />),
       }
     }
     if (el.field === 'discount_percent') {

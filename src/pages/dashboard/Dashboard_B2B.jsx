@@ -6,9 +6,8 @@ import { useNavigate } from 'react-router-dom'
 import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
 import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
 
-import { requests } from '@utils/requests'
-import GroupMultiSelect from '@components/Select/GroupMultiSelect'
 import LeftArrowIcon from '@icons/LeftArrow'
+import { requests } from '@utils/requests'
 import { useState } from 'react'
 
 const groupedOptions = [
@@ -81,7 +80,7 @@ export default function Dashboard_B2B({ selectedShops, setSelectedShops }) {
             request={requests.getAllCompanies}
           />
         </Box>
-        <GroupMultiSelect label='Select Items' onChange={setSlel} value={sele} groupedOptions={groupedOptions} />
+        {/* <GroupMultiSelect label='Select Items' onChange={setSlel} value={sele} groupedOptions={groupedOptions} /> */}
       </Box>
     </Box>
   )
