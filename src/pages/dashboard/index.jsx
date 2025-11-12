@@ -1,39 +1,38 @@
-import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
-import ShoppingBasketCheck from '@icons/dashboard/ShoppingBasketCheck';
-import ShoppingBasketArrow from '@icons/dashboard/ShoppingBasketArrow';
-import SingleLineChart from '@components/Charts/SingleLineChart';
-import { calculatePercentage } from '@utils/calculatePercentage';
-import { Box, Button, Grid, Typography } from '@mui/material';
-import StopWatchMinus from '@icons/dashboard/StopWatchMinus';
-import MoneyArrowDown from '@icons/dashboard/MoneyArrowDown';
-import LoadingContainer from '@components/LoadingContainer';
-import HourglassEnd from '@icons/dashboard/HourglassEnd';
-import ChartArrowUp from '@icons/dashboard/ChartArrowUp';
-import TimeForward from '@icons/dashboard/TimeForward';
-import HomeSetting from '@icons/dashboard/HomeSetting';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { paymentTypes } from '@constants/paymentTypes';
-import thousandDivider from '@utils/thousandDivider';
-import { useEffect, useMemo, useState } from 'react';
-import RightArrowIcon from '@icons/RightArrowIcon';
-import dataTypeFilter from '@utils/dataTypeFilter';
-import CheckAccess from '@components/CheckAccess';
-import { getDetaling } from '@utils/getDetaling';
-import Wallet from '@icons/dashboard/Wallet';
-import Time24 from '@icons/dashboard/Time24';
-import isoWeek from 'dayjs/plugin/isoWeek';
-import { requests } from '@utils/requests';
-import Gift from '@icons/dashboard/Gift';
-import { Link } from 'react-router-dom';
-import { useQuery } from 'react-query';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import SingleLineChart from '@components/Charts/SingleLineChart'
+import CheckAccess from '@components/CheckAccess'
+import LoadingContainer from '@components/LoadingContainer'
+import { paymentTypes } from '@constants/paymentTypes'
+import { useQueryParams } from '@hooks/useQueryParams'
+import ChartArrowUp from '@icons/dashboard/ChartArrowUp'
+import Gift from '@icons/dashboard/Gift'
+import HomeSetting from '@icons/dashboard/HomeSetting'
+import HourglassEnd from '@icons/dashboard/HourglassEnd'
+import MoneyArrowDown from '@icons/dashboard/MoneyArrowDown'
+import ShoppingBasketArrow from '@icons/dashboard/ShoppingBasketArrow'
+import ShoppingBasketCheck from '@icons/dashboard/ShoppingBasketCheck'
+import StopWatchMinus from '@icons/dashboard/StopWatchMinus'
+import Time24 from '@icons/dashboard/Time24'
+import TimeForward from '@icons/dashboard/TimeForward'
+import Wallet from '@icons/dashboard/Wallet'
+import RightArrowIcon from '@icons/RightArrowIcon'
+import { Box, Button, Grid, Typography } from '@mui/material'
+import { calculatePercentage } from '@utils/calculatePercentage'
+import dataTypeFilter from '@utils/dataTypeFilter'
+import { getDetaling } from '@utils/getDetaling'
+import { requests } from '@utils/requests'
+import thousandDivider from '@utils/thousandDivider'
+import dayjs from 'dayjs'
+import isoWeek from 'dayjs/plugin/isoWeek'
+import { get } from 'lodash'
+import { useEffect, useMemo, useState } from 'react'
+import { useQuery } from 'react-query'
+import { Link } from 'react-router-dom'
 
-import DashboardTopsBox from './DashboardTopsBox';
-import DashboardInfoBox from './DashboardInfoBox';
-import ImportPage from './expiredImports/index';
-import DashboardHeader from './DashboardHeader';
-
+import DashboardHeader from './DashboardHeader'
+import DashboardInfoBox from './DashboardInfoBox'
+import DashboardTopsBox from './DashboardTopsBox'
+import ImportPage from './expiredImports/index'
 
 export const dashboardBoxData = [
   {

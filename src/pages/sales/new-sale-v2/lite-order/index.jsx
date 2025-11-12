@@ -188,15 +188,6 @@ function LiteOrder({
         />
 
         <PaymentInputField
-          setPaymentsList={setPaymentsList}
-          name='lite_cash_amount_soon'
-          placeholder={t('Карта лояльности')}
-          readOnly
-          shortcut='L'
-          soon
-          paymentsLis={paymentsList}
-        />
-        <PaymentInputField
           name='lite_card_amount'
           placeholder={t('По карте')}
           control={control}
@@ -220,6 +211,15 @@ function LiteOrder({
           paymentOptions={['Payme', 'Click']}
           setValue={setValue}
           setPaymentsList={setPaymentsList}
+          paymentsLis={paymentsList}
+        />
+        <PaymentInputField
+          setPaymentsList={setPaymentsList}
+          name='lite_cash_amount_soon'
+          placeholder={t('Карта лояльности')}
+          readOnly
+          shortcut='L'
+          soon
           paymentsLis={paymentsList}
         />
       </Box>
