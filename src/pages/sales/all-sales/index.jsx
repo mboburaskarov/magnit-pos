@@ -1,37 +1,36 @@
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/salesTableColumns';
-import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
-import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
-import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
-import ZReportManualCheck from '@components/ChequePaper/zReportManualCheck';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
-import AgGridTable from '@components/AgGridTable/AgGridTable';
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
-import LoadingContainer from '@components/LoadingContainer';
-import InputSearch from '@components/Inputs/InputSearch';
-import { Box, Button, Typography } from '@mui/material';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useDispatch, useSelector } from 'react-redux';
-import LoadingBlock from '@components/LoadingBlock';
-import ImageGallery from '@components/ImageGallery';
-import { useMutation, useQuery } from 'react-query';
-import FilterMenuIcon from '@icons/FilterMenuIcon';
-import { useReactToPrint } from 'react-to-print';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import LeftArrowIcon from '@icons/LeftArrow';
-import { requests } from '@utils/requests';
-import { useTheme } from '@mui/styles';
-import { error } from '@utils/toast';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/salesTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import ZReportManualCheck from '@components/ChequePaper/zReportManualCheck'
+import ImageGallery from '@components/ImageGallery'
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingBlock from '@components/LoadingBlock'
+import LoadingContainer from '@components/LoadingContainer'
+import { useQueryParams } from '@hooks/useQueryParams'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import LeftArrowIcon from '@icons/LeftArrow'
+import { Box, Button, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { useReactToPrint } from 'react-to-print'
 
-import SaleMiniDashboardHeader from './saleMiniDashboardHeader';
-import tableHeaderSelector from './tableHeaderSelector';
-import PrintManualZReport from './printManualZReport';
-import SaleDrawer from './saleDrawer';
-import FilterMenu from './FilterMenu';
-
+import FilterMenu from './FilterMenu'
+import PrintManualZReport from './printManualZReport'
+import SaleDrawer from './saleDrawer'
+import SaleMiniDashboardHeader from './saleMiniDashboardHeader'
+import tableHeaderSelector from './tableHeaderSelector'
 
 export default function AllSalesPage() {
   const theme = useTheme()
@@ -85,7 +84,7 @@ export default function AllSalesPage() {
     setHasFilter(Object.keys(values).length > 2)
     return {
       start_date: getFilterStartDate(values),
-      end_data: getFilterEndDate(values),
+      end_date: getFilterEndDate(values),
       limit: values?.limit || 10,
       offset: controlleroffset || 0,
       search: values?.search,
