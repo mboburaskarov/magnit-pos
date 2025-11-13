@@ -191,7 +191,7 @@ const PaymentTypeButton = ({ option, isActive, onClick, shortcut, isFirst }) => 
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
-        pr: isFirst ? '3px' : '3px',
+        pr: isFirst ? '3px' : '6px',
         pl: isFirst ? '3px' : '3px',
         justifyContent: 'center',
         height: '32px',
@@ -203,19 +203,20 @@ const PaymentTypeButton = ({ option, isActive, onClick, shortcut, isFirst }) => 
     >
       <Box
         sx={{
-          bgcolor: 'white',
+          // bgcolor: 'white',
           borderRadius: '6px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           height: '32px',
-          width: imageSize,
+          width: '36px',
+          mr: '5px',
           padding: '5px 0',
         }}
       >
-        <img style={{ width: imageSize, height: imageSize, marginRight: '3px' }} src={getImagePath(option)} alt={option} />
+        <img style={{ width: imageSize, height: imageSize }} src={getImagePath(option)} alt={option} />
       </Box>
-      <ShortcutBox minWidth='27px' shortcut={shortcut} height='20px' color='#868FAA' />
+      <ShortcutBox minWidth='20px' shortcut={shortcut} height='20px' color='#868FAA' />
     </Box>
   )
 }

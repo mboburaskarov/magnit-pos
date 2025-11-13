@@ -20,7 +20,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
 import ProductHistory from './ProductHistory'
-import ProductMovementDashboard from './ProductMovementDaahboard'
+import ProductMovementDashboard from './ProductMovementDashboard'
 import ProductRemainsHistory from './ProductRemainsHistory'
 const Image = ({ data, setImages }) => {
   return (

@@ -51,9 +51,9 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
     },
     {
       title: 'Текущее',
-      color: 'green.700',
+      color: 'indigo.600',
       bgColor: 'bunker.400',
-      countKey: 'product_count',
+      countKey: 'unit_quantity',
       amountKey: 'product_amount',
     },
   ]
@@ -116,7 +116,7 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
                       {'шт'}
                     </Typography>
                   </Typography>
-                  <Typography fontSize={14} ml={'3px'} lineHeight={'24px'} color={item.color} fontWeight={600}>
+                  <Typography fontSize={13} ml={'3px'} lineHeight={'24px'} color={item.color} fontWeight={600}>
                     {thousandDivider(get(singleProductDashboard, item.amountKey), 'сум')}
                   </Typography>
                 </>
