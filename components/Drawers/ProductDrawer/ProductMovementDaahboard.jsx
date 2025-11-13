@@ -74,7 +74,7 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
                 display: 'flex',
                 alignItems: 'start',
                 flexDirection: 'column',
-                padding: '20px 10px',
+                padding: '10px 10px 5px',
                 borderRadius: '16px',
                 border: '1px dashed',
                 borderColor: 'gray.300',
@@ -126,7 +126,7 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
                 </>
               ) : (
                 <>
-                  <Typography fontSize={32} m={'10px 0'} fontWeight={700} color={item.color}>
+                  <Typography fontSize={32} m={'10px 0 2px'} fontWeight={700} color={item.color}>
                     {thousandDivider(get(singleProductDashboard, item.countKey))}
                   </Typography>
                   <Typography fontSize={14} lineHeight={'24px'} color={item.color} fontWeight={600}>
