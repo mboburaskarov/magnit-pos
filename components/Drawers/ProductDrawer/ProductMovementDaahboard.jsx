@@ -74,12 +74,12 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
                 display: 'flex',
                 alignItems: 'start',
                 flexDirection: 'column',
-                padding: '10px 10px 5px',
+                padding: '5px 12px 5px',
                 borderRadius: '16px',
                 border: '1px dashed',
                 borderColor: 'gray.300',
                 bgcolor: 'background.paper',
-                boxShadow: '0px 2px 6px rgba(0,0,0,0.05)',
+                boxShadow: '0px 0px 19px 4px rgb(0 0 0 / 5%)',
                 height: '100%',
               }}
             >
@@ -91,25 +91,6 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
                   width: '100%',
                 }}
               >
-                {isLoading ? (
-                  <Skeleton variant='circular' width={40} height={40} />
-                ) : (
-                  <Box
-                    sx={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      bgcolor: item.bgColor,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '5px',
-                    }}
-                  >
-                    {item.icon}
-                  </Box>
-                )}
-
                 {isLoading ? (
                   <Skeleton width='50%' height={20} sx={{ mt: 1 }} />
                 ) : (

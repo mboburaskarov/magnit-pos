@@ -131,13 +131,16 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         <Typography mt={0.5} ml={2} fontSize={24} color={'bunker.950'} lineHeight={'32px'} fontWeight={'700'}>
           {productData?.data?.data?.name}
           <Typography display='flex' alignItems='center' color='orange.500' mt={1} fontWeight={'500'}>
-            {thousandDivider(get(productData, 'data.data.retail_price'))} сум
+            {thousandDivider(get(productData, 'data.data.retail_price'), 'сум')}
           </Typography>
         </Typography>
       </Box>
       <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
       {(values?.store_id || userData?.store?.id) && (
-        <ProductMovementDashboard singleProductDashboard={get(singleProductDashboard, 'data.data')} isLoading={singleProductDashboardLoading} />
+        <ProductMovementDashboard
+          singleProductDashboard={{ ...get(singleProductDashboard, 'data.data'), product_amount: get(productData, 'data.data.retail_price') }}
+          isLoading={singleProductDashboardLoading}
+        />
       )}
       <Box px={'40px'} my={'20px'}>
         <SectionTitle grey>История продукта</SectionTitle>
