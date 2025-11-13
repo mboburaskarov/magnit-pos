@@ -1,18 +1,20 @@
-import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
-import { formatPhoneNumber } from '@utils/formatPhoneNumber';
-import StyledSwitch from '@components/Switch/StyledSwitch';
-import DefaultUserImgIcon from '@icons/defaultUserImgIcon';
-import StyledTooltip from '@components/StyledTooltip';
-import { Box, Typography } from '@mui/material';
-import CustomImg from '@components/CustomImg';
-import { Percent } from '@mui/icons-material';
-import getImageUrl from '@utils/getImageUrl';
-import { memo } from 'react';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
-
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import CustomImg from '@components/CustomImg'
+import StyledTooltip from '@components/StyledTooltip'
+import StyledSwitch from '@components/Switch/StyledSwitch'
+import DefaultUserImgIcon from '@icons/defaultUserImgIcon'
+import { Percent } from '@mui/icons-material'
+import { Box, Typography } from '@mui/material'
+import { checkPermission } from '@utils/checkPermission'
+import { formatPhoneNumber } from '@utils/formatPhoneNumber'
+import getImageUrl from '@utils/getImageUrl'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
+import { memo } from 'react'
+import { useSelector } from 'react-redux'
 
 export default function tableHeaderSelector({ salesColumns, setOpenSaleDrawer, values }) {
+  const userData = useSelector((state) => state.user)
   const columns = salesColumns?.map((el) => {
     if (el.field === 'number') {
       return {
@@ -82,7 +84,17 @@ export default function tableHeaderSelector({ salesColumns, setOpenSaleDrawer, v
         ...el,
         headerName: 'Kасса',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='cash_box_name' />),
+        cellRenderer: memo((p) => (
+          <SimpleText
+            onClick={() => {
+              if (checkPermission('can-view-ofd-cheque', userData)) {
+                window.open(get(p, 'data.check_url'), '_blank')
+              }
+            }}
+            {...p}
+            type='cash_box_name'
+          />
+        )),
       }
     }
 

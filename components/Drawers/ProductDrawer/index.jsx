@@ -82,6 +82,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     isLoading: productDataLoading,
     isFetching: isFetchingproductData,
   } = useQuery(['productData', id], () => requests.getSingleProduct({ id, store_id: values?.store_id || userData?.store?.id }), { enabled: !!id })
+
   const {
     data: singleProductDashboard,
     isLoading: singleProductDashboardLoading,
@@ -140,6 +141,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         <ProductMovementDashboard
           singleProductDashboard={{ ...get(singleProductDashboard, 'data.data'), product_amount: get(productData, 'data.data.retail_price') }}
           isLoading={singleProductDashboardLoading}
+          unit_per_pack={get(productData, 'data.data.unit_per_pack')}
         />
       )}
       <Box px={'40px'} my={'20px'}>

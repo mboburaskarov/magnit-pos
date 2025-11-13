@@ -2,61 +2,26 @@ import { Box, Grid, Skeleton, Typography } from '@mui/material'
 import thousandDivider from '@utils/thousandDivider'
 import { get } from 'lodash'
 
-function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) {
+function ProductMovementDashboard({ singleProductDashboard, isLoading = true, unit_per_pack = 1 }) {
   const items = [
-    {
-      title: 'Импорты',
-      color: 'green.700',
-      bgColor: 'bunker.400',
-
-      countKey: 'import_count',
-      amountKey: 'import_amount',
-    },
-    {
-      title: 'Трансфер',
-      color: 'green.700',
-      bgColor: 'bunker.400',
-
-      countKey: 'transfer_in_count',
-      amountKey: 'transfer_in_amount',
-    },
-    {
-      title: 'Возврат',
-      color: 'green.700',
-      bgColor: 'bunker.400',
-
-      countKey: 'return_sale_count',
-      amountKey: 'return_sale_amount',
-    },
-    {
-      title: 'Продажи',
-      color: 'red.700',
-      bgColor: 'bunker.400',
-      countKey: 'sale_count',
-      amountKey: 'sale_amount',
-    },
-    {
-      title: 'Трансфер',
-      color: 'red.700',
-      bgColor: 'bunker.400',
-      countKey: 'transfer_out_count',
-      amountKey: 'transfer_out_amount',
-    },
-    {
-      title: 'На склад',
-      color: 'red.700',
-      bgColor: 'bunker.400',
-      countKey: 'return_to_sklad_count',
-      amountKey: 'return_to_sklad_amount',
-    },
-    {
-      title: 'Текущее',
-      color: 'indigo.600',
-      bgColor: 'bunker.400',
-      countKey: 'unit_quantity',
-      amountKey: 'product_amount',
-    },
+    { title: 'Импорты', color: 'green.700', bgColor: 'bunker.400', countKey: 'import_count', amountKey: 'import_amount' },
+    { title: 'Трансфер', color: 'green.700', bgColor: 'bunker.400', countKey: 'transfer_in_count', amountKey: 'transfer_in_amount' },
+    { title: 'Возврат', color: 'green.700', bgColor: 'bunker.400', countKey: 'return_sale_count', amountKey: 'return_sale_amount' },
+    { title: 'Продажи', color: 'red.700', bgColor: 'bunker.400', countKey: 'sale_count', amountKey: 'sale_amount' },
+    { title: 'Трансфер', color: 'red.700', bgColor: 'bunker.400', countKey: 'transfer_out_count', amountKey: 'transfer_out_amount' },
+    { title: 'На склад', color: 'red.700', bgColor: 'bunker.400', countKey: 'return_to_sklad_count', amountKey: 'return_to_sklad_amount' },
+    { title: 'Текущее', color: 'indigo.600', bgColor: 'bunker.400', countKey: 'unit_quantity', amountKey: 'product_amount' },
   ]
+
+  const formatCount = (count) => {
+    if (!count || unit_per_pack <= 1) return `${thousandDivider(count)} шт`
+    const packs = Math.floor(count / unit_per_pack)
+    const pieces = count % unit_per_pack
+    let result = ''
+    if (packs > 0) result += `${thousandDivider(packs)}уп`
+    if (pieces > 0) result += ` ${thousandDivider(pieces)}шт`
+    return result.trim()
+  }
 
   return (
     <Box sx={{ padding: '10px 35px' }}>
@@ -78,14 +43,7 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
                 height: '100%',
               }}
             >
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'start',
-                  flexDirection: 'column',
-                  width: '100%',
-                }}
-              >
+              <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                 {isLoading ? (
                   <Skeleton width='50%' height={20} sx={{ mt: 1 }} />
                 ) : (
@@ -97,25 +55,15 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
 
               {isLoading ? (
                 <>
-                  <Skeleton width='60%' height={40} sx={{ mt: '10px', mb: '2px' }} />
+                  <Skeleton width='60%' height={40} sx={{ mt: '5px', mb: '2px' }} />
                   <Skeleton width='40%' height={20} />
                 </>
               ) : (
                 <>
-                  <Typography
-                    fontSize={32}
-                    m={'10px 0 2px'}
-                    display={'flex'}
-                    alignItems={'flex-end'}
-                    justifyContent={'end'}
-                    fontWeight={700}
-                    color={item.color}
-                  >
-                    {thousandDivider(get(singleProductDashboard, item.countKey))}
-                    <Typography fontSize={14} lineHeight={'20px'} ml={'5px'} color={item.color} fontWeight={600}>
-                      {'шт'}
-                    </Typography>
+                  <Typography fontSize={20} m={'5px 0 2px'} display={'flex'} alignItems={'flex-end'} fontWeight={700} color={item.color}>
+                    {formatCount(get(singleProductDashboard, item.countKey) || 0)}
                   </Typography>
+
                   <Typography fontSize={13} ml={'3px'} lineHeight={'24px'} color={item.color} fontWeight={600}>
                     {thousandDivider(get(singleProductDashboard, item.amountKey), 'сум')}
                   </Typography>
