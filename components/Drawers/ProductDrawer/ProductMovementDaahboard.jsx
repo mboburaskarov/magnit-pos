@@ -23,20 +23,20 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
       amountKey: 'transfer_in_amount',
     },
     {
-      title: 'Продажи',
-      color: 'red.700',
-      bgColor: 'bunker.400',
-      icon: <OutIcon color='#fff' />,
-      countKey: 'sale_count',
-      amountKey: 'sale_amount',
-    },
-    {
       title: 'Возврат',
       color: 'green.700',
       bgColor: 'bunker.400',
       icon: <InIcon color='#fff' />,
       countKey: 'return_sale_count',
       amountKey: 'return_sale_amount',
+    },
+    {
+      title: 'Продажи',
+      color: 'red.700',
+      bgColor: 'bunker.400',
+      icon: <OutIcon color='#fff' />,
+      countKey: 'sale_count',
+      amountKey: 'sale_amount',
     },
     {
       title: 'Трансфер',
@@ -65,8 +65,8 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
   ]
 
   return (
-    <Box sx={{ padding: '10px 40px' }}>
-      <Grid container spacing={3}>
+    <Box sx={{ padding: '10px 35px' }}>
+      <Grid container spacing={'10px'}>
         {items.map((item, index) => (
           <Grid key={index} item xs={12} sm={6} md={3} lg={1.7}>
             <Box
