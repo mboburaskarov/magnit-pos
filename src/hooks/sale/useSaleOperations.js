@@ -143,9 +143,10 @@ export const useSaleOperations = ({
 
     items.forEach((item) => {
       const itemTotal = item.price + item.other
+      const itemTotalForVat = item.price
       sum += itemTotal
 
-      const calculatedVat = +((itemTotal * item.vatPercent) / (100 + item.vatPercent))
+      const calculatedVat = +((itemTotalForVat * item.vatPercent) / (100 + item.vatPercent))
       if (Math.abs(calculatedVat - item.vat) > 0.5) {
         console.log(`VAT mismatch for ${item.name}: expected ${item.vat}, calculated ${calculatedVat}`)
         allVatCorrect = false
@@ -159,7 +160,7 @@ export const useSaleOperations = ({
     }
 
     if (!allVatCorrect) {
-      console.log('❌ Some VAT values are incorrect')
+      console.log('❌ Some VAT values are incorrect', items)
       return []
     }
     return items
@@ -171,6 +172,7 @@ export const useSaleOperations = ({
     get(cartItemsList, 'data', []).map((el) => {
       if (el?.is_marking == false) {
         let leftPrice = el.total_price
+        const price = el.total_price
         let otherSum = 0
         if (leftLoayCardSum > 0) {
           if (el.total_price >= leftLoayCardSum) {
@@ -183,26 +185,27 @@ export const useSaleOperations = ({
             leftPrice = 0
           }
         }
+        const other = (otherSum * 100).toFixed(2)
+        const discount = parseFloat((get(el, 'discount_amount') * 100).toFixed(2)) + parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2))
         readyData.push({
           barcode: el.barcode,
           amount: (el.quantity + el.unit_amount) * 1000,
-          price: parseFloat((leftPrice * 100).toFixed(2)),
-          discount: parseFloat((get(el, 'discount_amount') * 100).toFixed(2)) + parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2)),
+          price: parseFloat((price * 100).toFixed(2)),
+          discount: discount,
           vatPercent: get(el, 'vat_percent'),
-          vat: parseFloat((get(el, 'vat') * 100).toFixed(2)),
+          vat: parseFloat(((((price - otherSum - discount) * get(el, 'vat_percent')) / (get(el, 'vat_percent') + 100)) * 100).toFixed(2)),
+
           label: '',
           name: el.name,
           classCode: get(el, 'class_code'),
           packageCode: get(el, 'package_code'),
-          other: parseFloat((otherSum * 100).toFixed(2)),
+          other: parseFloat(other),
           ownerType: 0,
         })
       } else {
         Object.values(markingsList[el.id] || {}).map((marking, index) => {
-          let price = el.quantity > index ? el.unit_price : el.unit_quantity_price * el.unit_quantity
-          let vat = el.quantity > index ? get(el, 'vat_price') : el.unit_vat_price * el.unit_quantity
+          const price = el.quantity > index ? el.unit_price : el.unit_quantity_price * el.unit_quantity
 
-          let leftPrice = price
           let otherSum = 0
 
           if (leftLoayCardSum > 0) {
@@ -216,18 +219,20 @@ export const useSaleOperations = ({
               leftPrice = 0
             }
           }
-          let other = (otherSum * 100).toFixed(2)
+          const other = (otherSum * 100).toFixed(2)
+          const discount =
+            el.quantity > index
+              ? parseFloat((get(el, 'discount_amount') * 100).toFixed(2))
+              : parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2))
+
           readyData.push({
             barcode: el.barcode,
             amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
-            price: parseFloat((leftPrice * 100).toFixed(2)),
+            price: parseFloat((price * 100).toFixed(2)),
 
-            discount:
-              el.quantity > index
-                ? parseFloat((get(el, 'discount_amount') * 100).toFixed(2))
-                : parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2)),
+            discount: discount,
             vatPercent: get(el, 'vat_percent'),
-            vat: parseFloat((vat * 100).toFixed(2)),
+            vat: parseFloat(((((price - otherSum - discount) * get(el, 'vat_percent')) / (get(el, 'vat_percent') + 100)) * 100).toFixed(2)),
             label: marking,
             name: el.name,
             classCode: get(el, 'class_code'),
@@ -238,6 +243,7 @@ export const useSaleOperations = ({
         })
       }
     })
+    return readyData
     return testEPOSDataSums(readyData, get(cartItemsList, 'total_amount') * 100)
   }
 
@@ -285,7 +291,11 @@ export const useSaleOperations = ({
             payType == 2
               ? 0
               : parseFloat(
-                  (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)
+                  (
+                    paymentsList
+                      .filter((item) => item.amount && item.type !== 'cash' && item.type !== 'loyalty_card')
+                      .reduce((sum, item) => sum + (item.amount || 0), 0) * 100
+                  ).toFixed(2)
                 ),
         },
         ...(SALE_TYPE === 'RETURN' && {

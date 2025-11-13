@@ -98,7 +98,6 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
   } = useQuery(['singleProductDashboard', id], () => requests.getSingleProductDashboard({ id, store_id: values?.store_id || userData?.store?.id }), {
     enabled: !!id,
   })
-  console.log(singleProductDashboard)
 
   //
   const printContainer = useRef()
@@ -119,7 +118,6 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     removeAfterPrint: true,
     onAfterPrint: () => {},
   })
-  console.log(productReaminsDataHistory)
 
   function getRetailPriceRange(productReaminsDataHistory) {
     const data = get(productReaminsDataHistory, 'data.data.data', [])
