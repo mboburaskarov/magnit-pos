@@ -154,7 +154,7 @@ export const useSaleOperations = ({
     })
 
     if (sum != expectedTotal) {
-      console.log('❌ Total sum mismatch:', sum, 'expected:', expectedTotal)
+      console.log('❌ Total sum mismatch:', sum, 'expected:', expectedTotal, 'wrong items:', items)
       return []
     }
 
