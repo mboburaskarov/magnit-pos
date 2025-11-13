@@ -353,7 +353,7 @@ export const useSaleOperations = ({
         referral: serviceType === 'other' ? undefined : serviceType,
         store_id: get(userData, 'store.id'),
         customer_id: get(customerId, 'id'),
-        loyalty_card_barcode: customerId?.barcode, // Add loyalty card support
+        loyalty_card_barcode: customerId?.loyalty_card_barcode, // Add loyalty card support
         total_amount: get(cartItemsList, 'total_amount'),
         tax_free: !sendToEpos,
         marking_data: markingData,
