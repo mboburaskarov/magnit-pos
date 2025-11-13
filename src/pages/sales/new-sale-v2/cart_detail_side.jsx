@@ -1,37 +1,36 @@
-import { getDynamicBonusTableHeight } from '@utils/calcDynamicBonusTableHeight.js';
-import InputSwitchRadio from '@components/Inputs/InputSwitchRadio';
-import BrandPlaceholderIcon from '@icons/BrandPlaceholderIcon';
-import OutsideClickHandler from 'react-outside-click-handler';
-import ReturnExchangeIcon from '@icons/ReturnExchangeIcon';
-import OnlineSaleNoorIcon from '@icons/OnlineSaleNoorIcon';
-import SearchInput from '@components/Inputs/SearchInput';
-import StyledTooltip from '@components/StyledTooltip';
-import thousandDivider from '@utils/thousandDivider';
-import UserFilledIcon from '@icons/UserFilledIcon';
-import TimesSmallIcon from '@icons/TimesSmallIcon';
-import ShortcutBox from '@components/ShortcutBox';
-import CheckAccess from '@components/CheckAccess';
-import CustomSwitch from '@components/IOSSwitch';
-import Highlighter from 'react-highlight-words';
-import { Box, Typography } from '@mui/material';
-import PrizeBoxIcon from '@icons/PrizeBoxIcon';
-import MaximizeIcon from '@icons/MaximizeIcon';
-import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import RightArrow from '@icons/RightArrow';
-import QrScanIcon from '@icons/QrScanIcon';
-import ChequeIcon from '@icons/ChequeIcon';
-import { requests } from '@utils/requests';
-import { useForm } from 'react-hook-form';
-import ClearIcon from '@icons/ClearIcon';
-import TimeFast from '@icons/TimeFast';
-import { useQuery } from 'react-query';
-import { get, size } from 'lodash';
+import CheckAccess from '@components/CheckAccess'
+import InputSwitchRadio from '@components/Inputs/InputSwitchRadio'
+import SearchInput from '@components/Inputs/SearchInput'
+import CustomSwitch from '@components/IOSSwitch'
+import ShortcutBox from '@components/ShortcutBox'
+import StyledTooltip from '@components/StyledTooltip'
+import BrandPlaceholderIcon from '@icons/BrandPlaceholderIcon'
+import ChequeIcon from '@icons/ChequeIcon'
+import ClearIcon from '@icons/ClearIcon'
+import MaximizeIcon from '@icons/MaximizeIcon'
+import OnlineSaleNoorIcon from '@icons/OnlineSaleNoorIcon'
+import PrizeBoxIcon from '@icons/PrizeBoxIcon'
+import QrScanIcon from '@icons/QrScanIcon'
+import ReturnExchangeIcon from '@icons/ReturnExchangeIcon'
+import RightArrow from '@icons/RightArrow'
+import TimeFast from '@icons/TimeFast'
+import TimesSmallIcon from '@icons/TimesSmallIcon'
+import UserFilledIcon from '@icons/UserFilledIcon'
+import { Box, Typography } from '@mui/material'
+import { getDynamicBonusTableHeight } from '@utils/calcDynamicBonusTableHeight.js'
+import { requests } from '@utils/requests'
+import thousandDivider from '@utils/thousandDivider'
+import { get, size } from 'lodash'
+import { useEffect, useState } from 'react'
+import Highlighter from 'react-highlight-words'
+import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import OutsideClickHandler from 'react-outside-click-handler'
+import { useQuery } from 'react-query'
+import { useParams } from 'react-router-dom'
 
-import DmedPrescriptionsList from './dmedPrescriptionsList';
-import BonusProductTable from './bonusProductTable';
-
+import BonusProductTable from './bonusProductTable'
+import DmedPrescriptionsList from './dmedPrescriptionsList'
 
 function CartDetailSide({
   setServiceType,
@@ -306,17 +305,19 @@ function CartDetailSide({
                     tabIndex={index + 1}
                     id={`searchResult${index + 1}`}
                     className={classes.searchItem}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' && fakeIndexForCheckClient === index + 1) {
-                        setCustomerId({ id: item?.id, name: item?.first_name + ' ' + item?.first_name, balance: item?.balance, barcode: item?.discount_card })
-                      }
-                    }}
                     onClick={() => {
-                      setCustomerId({ id: item?.id, name: item?.first_name + ' ' + item?.last_name, balance: item?.balance, barcode: item?.discount_card })
-
+                      setCustomerId({
+                        id: item?.id,
+                        name: item?.first_name + ' ' + item?.last_name,
+                        balance: item?.balance,
+                        barcode: item?.discount_card,
+                        discount_card_barcode: searchTerm == item?.discount_card ? item?.discount_card : null,
+                        loyalty_card_barcode: searchTerm == item?.loyalty_card_barcode ? item?.loyalty_card_barcode : null,
+                      })
                       setSearchTerm()
                     }}
                   >
+                    ccx
                     <Typography>
                       <Highlighter
                         highlightClassName='highlighter'
