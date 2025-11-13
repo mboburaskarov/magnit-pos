@@ -431,15 +431,25 @@ export default function OrderDrawer({
             clientName: get(customerId, 'name'), //ФИО Клиента
 
             items: mockData.flat(),
+
             receivedCash: parseFloat(
               (
                 (paymentsList.filter((item) => item.amount && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) - Math.abs(maxAmount)) *
                 100
               ).toFixed(2)
             ), // Сумма полученной наличности. Значение указывается в тийинах (100 сум = 10000 тийин)
-            receivedCard: parseFloat(
-              (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)
-            ), // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
+            receivedEps:
+              payType == 2
+                ? parseFloat(
+                    (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)
+                  )
+                : 0, // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
+            receivedCard:
+              payType == 2
+                ? 0
+                : parseFloat(
+                    (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)
+                  ), // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
           },
 
           ...(SALE_TYPE === 'RETURN' && {
