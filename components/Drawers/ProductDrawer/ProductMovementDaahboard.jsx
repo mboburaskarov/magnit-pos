@@ -126,10 +126,21 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
                 </>
               ) : (
                 <>
-                  <Typography fontSize={32} m={'10px 0 2px'} fontWeight={700} color={item.color}>
+                  <Typography
+                    fontSize={32}
+                    m={'10px 0 2px'}
+                    display={'flex'}
+                    alignItems={'flex-end'}
+                    justifyContent={'end'}
+                    fontWeight={700}
+                    color={item.color}
+                  >
                     {thousandDivider(get(singleProductDashboard, item.countKey))}
+                    <Typography fontSize={14} lineHeight={'20px'} ml={'5px'} color={item.color} fontWeight={600}>
+                      {'шт'}
+                    </Typography>
                   </Typography>
-                  <Typography fontSize={14} lineHeight={'24px'} color={item.color} fontWeight={600}>
+                  <Typography fontSize={14} ml={'3px'} lineHeight={'24px'} color={item.color} fontWeight={600}>
                     {thousandDivider(get(singleProductDashboard, item.amountKey), 'сум')}
                   </Typography>
                 </>
