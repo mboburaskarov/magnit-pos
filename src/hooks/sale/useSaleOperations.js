@@ -168,7 +168,6 @@ export const useSaleOperations = ({
   const getReadyDataForOFD = () => {
     const readyData = []
     let leftLoayCardSum = paymentsList?.find((el) => el.front_name == 'loyalty_card')?.amount
-
     get(cartItemsList, 'data', []).map((el) => {
       if (el?.is_marking == false) {
         let leftPrice = el.total_price
@@ -241,30 +240,12 @@ export const useSaleOperations = ({
     })
     return testEPOSDataSums(readyData, get(cartItemsList, 'total_amount') * 100)
   }
-  // get(cartItemsList, 'data', []).map((el) => {
-  //       return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
-  //         barcode: el.barcode,
-  //         amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
-  //         price: el.quantity > index ? parseFloat((el.unit_price * 100).toFixed(2)) : parseFloat((el.unit_quantity_price * el.unit_quantity * 100).toFixed(2)),
-  //         discount:
-  //           el.quantity > index
-  //             ? parseFloat((get(el, 'discount_amount') * 100).toFixed(2))
-  //             : parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2)),
-  //         vatPercent: get(el, 'vat_percent'),
-  //         vat: el.quantity > index ? parseFloat((get(el, 'vat_price') * 100).toFixed(2)) : parseFloat((el.unit_vat_price * el.unit_quantity * 100).toFixed(2)),
-  //         label: marking,
-  //         name: el.name,
-  //         classCode: get(el, 'class_code'),
-  //         packageCode: get(el, 'package_code'),
-  //         other: 0,
-  //         ownerType: 0,
-  //       }))
-  // Prepare EPOS data
+
   const prepareEPOSData = useCallback(() => {
     const mockData = getReadyDataForOFD()
 
     return mockData.flat()
-  }, [cartItemsList, markingsList])
+  }, [cartItemsList, paymentsList, markingsList])
 
   const sendEPOSData = useCallback(
     (data) => {

@@ -5,6 +5,7 @@ export const useFullOrderPayments = ({ cartItemsList, paymentTypesList, isOrderD
   const [paymentsList, setPaymentsList] = useState([])
   const [maxAmount, setMaxAmount] = useState(0)
   const [paymentAmount, setPaymentAmount] = useState(0)
+  console.log(paymentsList)
 
   // Add empty string mark to markingless products
   const addEmptyStringMarkToMarkinglessProduct = useCallback(
