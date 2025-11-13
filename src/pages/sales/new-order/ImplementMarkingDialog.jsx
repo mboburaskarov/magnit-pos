@@ -80,9 +80,7 @@ function ImplementMarkingDialog({
   const handleKeyDown = (e, flatIndex, productBarcode, id, childIndex, item) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      implementMarkingList(e.target.value, id, childIndex)
 
-      return
       if (containsCyrillic(e.target.value)) {
         inputsRef.current[flatIndex].value = ''
         error('Кириллица не поддерживается (uz: krilcha qabul qilinmaydi)')

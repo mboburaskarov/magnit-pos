@@ -289,11 +289,6 @@ export default function OrderDrawer({
 
   const [paymentsList, setPaymentsList] = useState([])
 
-  const loyalPrice = paymentsList?.find((el) => el.front_name == 'loyalty_card')?.amount
-
-  console.log(loyalPrice)
-
-  // Result: 4
   useEffect(() => {
     if (paymentsList?.length == 1 && paymentsList?.[0]?.front_name == 'uzum') {
       setPayType(2)
@@ -374,55 +369,6 @@ export default function OrderDrawer({
     lastEposRequest.current = payload
     sendToEPOS(payload)
   }
-  const getReadyDataForOFD = () => {
-    const readyData = []
-    get(cartItemsList, 'data', []).map((el) => {
-      console.log(el)
-      if (el?.is_marking == false) {
-        readyData.push({
-          barcode: el.barcode,
-          amount: (el.quantity + el.unit_amount) * 1000,
-          price: parseFloat((el.total_price * 100).toFixed(2)),
-          discount: parseFloat((get(el, 'discount_amount') * 100).toFixed(2)) + parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2)),
-          vatPercent: get(el, 'vat_percent'),
-          vat: parseFloat((get(el, 'vat') * 100).toFixed(2)),
-          label: '',
-          name: el.name,
-          classCode: get(el, 'class_code'),
-          packageCode: get(el, 'package_code'),
-          // commissionTIN: '',
-          other: 0,
-          ownerType: 0,
-        })
-      } else {
-        Object.values(markingsList[el.id] || {}).map((marking, index) => {
-          readyData.push({
-            barcode: el.barcode,
-            amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
-            price:
-              el.quantity > index ? parseFloat((el.unit_price * 100).toFixed(2)) : parseFloat((el.unit_quantity_price * el.unit_quantity * 100).toFixed(2)),
-            discount:
-              el.quantity > index
-                ? parseFloat((get(el, 'discount_amount') * 100).toFixed(2))
-                : parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2)),
-            vatPercent: get(el, 'vat_percent'),
-            vat:
-              el.quantity > index ? parseFloat((get(el, 'vat_price') * 100).toFixed(2)) : parseFloat((el.unit_vat_price * el.unit_quantity * 100).toFixed(2)),
-            label: marking,
-            name: el.name,
-            classCode: get(el, 'class_code'),
-            packageCode: get(el, 'package_code'),
-            other: 0,
-            ownerType: 0,
-          })
-        })
-      }
-    })
-    console.log(readyData)
-
-    return readyData
-  }
-  getReadyDataForOFD()
   const {
     mutate: finishSaleWithoutAppPaymentType,
     isLoading: isFinishSaleWithoutAppPaymentType,
@@ -445,7 +391,28 @@ export default function OrderDrawer({
         handlePrint()
       } else {
         //send to epos
-        const mockData = getReadyDataForOFD()
+        const mockData = get(cartItemsList, 'data', []).map((el) => {
+          return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
+            barcode: el.barcode,
+            amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
+            price:
+              el.quantity > index ? parseFloat((el.unit_price * 100).toFixed(2)) : parseFloat((el.unit_quantity_price * el.unit_quantity * 100).toFixed(2)),
+            discount:
+              el.quantity > index
+                ? parseFloat((get(el, 'discount_amount') * 100).toFixed(2))
+                : parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2)),
+            vatPercent: get(el, 'vat_percent'),
+            vat:
+              el.quantity > index ? parseFloat((get(el, 'vat_price') * 100).toFixed(2)) : parseFloat((el.unit_vat_price * el.unit_quantity * 100).toFixed(2)),
+            label: marking,
+            name: el.name,
+            classCode: get(el, 'class_code'),
+            packageCode: get(el, 'package_code'),
+            // commissionTIN: '',
+            other: 0,
+            ownerType: 0,
+          }))
+        })
 
         sendToEPOSPayload({
           qrToken: qrToken,

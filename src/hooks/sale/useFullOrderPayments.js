@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
-import { get, isNaN, size } from 'lodash';
+import { get, isNaN, size } from 'lodash'
+import { useCallback, useEffect, useState } from 'react'
 
-
-export const useFullOrderPayments = ({ cartItemsList, paymentTypesList, isOrderDrower, cashBoxDetails, markingsList, markingCount, setMarkingList }) => {
+export const useFullOrderPayments = ({ cartItemsList, paymentTypesList, isOrderDrower, customerId, markingsList, markingCount, setMarkingList }) => {
   const [paymentsList, setPaymentsList] = useState([])
   const [maxAmount, setMaxAmount] = useState(0)
   const [paymentAmount, setPaymentAmount] = useState(0)
@@ -86,7 +85,12 @@ export const useFullOrderPayments = ({ cartItemsList, paymentTypesList, isOrderD
       const isThereType = paymentsList.some((item) => item.id === type.id)
 
       setPaymentsList((prev) => {
-        if (prev?.length < size(get(paymentTypesList, 'data.data', [])) && !isThereType) {
+        if (
+          get(cartItemsList, 'total_amount') - prev.reduce((sum, item) => sum + (item.amount || 0), 0) > customerId?.balance &&
+          type?.type == 'loyalty_card'
+        ) {
+          return [...prev, { ...type, amount: customerId?.balance }]
+        } else if (prev?.length < size(get(paymentTypesList, 'data.data', [])) && !isThereType) {
           const remainingAmount = get(cartItemsList, 'total_amount') - prev.reduce((sum, item) => sum + (item.amount || 0), 0)
           return [...prev, { ...type, amount: remainingAmount }]
         }

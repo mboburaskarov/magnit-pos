@@ -156,22 +156,14 @@ export const useSaleOperations = ({
         ownerType: 0,
       }))
     })
-    console.log(mockData)
 
     return mockData.flat()
   }, [cartItemsList, markingsList])
-  console.log(prepareEPOSData())
 
   const sendEPOSData = useCallback(
     (data) => {
       const items = prepareEPOSData()
       const qrToken = JSON.parse(data?.config?.data)?.payment_types[0]?.otp_data || undefined
-      console.log(
-        paymentsList,
-        Number(paymentsList.filter((item) => item.amount && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) - Math.abs(maxAmount)) *
-          100,
-        maxAmount
-      )
 
       sendToEPOS({
         qrToken: qrToken,

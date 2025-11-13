@@ -153,10 +153,10 @@ export default function OrderDrawer({
       cartItemsList,
       paymentTypesList,
       isOrderDrower,
-      cashBoxDetails,
       markingsList,
       markingCount,
       setMarkingList,
+      customerId,
     })
 
   const { isFinishSaleWithoutAppPaymentType, isSaleError, isSendToEPOS, isEposError, isSendEPOSresponseToBackend, isSaleResponseError, submitSale } =
