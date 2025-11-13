@@ -145,7 +145,7 @@ export const useSaleOperations = ({
       const itemTotal = item.price + item.other
       sum += itemTotal
 
-      const calculatedVat = +((itemTotal * item.vatPercent) / (100 + item.vatPercent)).toFixed(2)
+      const calculatedVat = +((itemTotal * item.vatPercent) / (100 + item.vatPercent))
       if (Math.abs(calculatedVat - item.vat) > 0.5) {
         console.log(`VAT mismatch for ${item.name}: expected ${item.vat}, calculated ${calculatedVat}`)
         allVatCorrect = false

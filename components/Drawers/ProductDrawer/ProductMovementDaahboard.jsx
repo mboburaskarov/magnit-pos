@@ -1,5 +1,3 @@
-import InIcon from '@/assets/icons/InIcon'
-import OutIcon from '@/assets/icons/OutIcon'
 import { Box, Grid, Skeleton, Typography } from '@mui/material'
 import thousandDivider from '@utils/thousandDivider'
 import { get } from 'lodash'
@@ -10,7 +8,7 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
       title: 'Импорты',
       color: 'green.700',
       bgColor: 'bunker.400',
-      icon: <InIcon color='#fff' />,
+
       countKey: 'import_count',
       amountKey: 'import_amount',
     },
@@ -18,7 +16,7 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
       title: 'Трансфер',
       color: 'green.700',
       bgColor: 'bunker.400',
-      icon: <InIcon color='#fff' />,
+
       countKey: 'transfer_in_count',
       amountKey: 'transfer_in_amount',
     },
@@ -26,7 +24,7 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
       title: 'Возврат',
       color: 'green.700',
       bgColor: 'bunker.400',
-      icon: <InIcon color='#fff' />,
+
       countKey: 'return_sale_count',
       amountKey: 'return_sale_amount',
     },
@@ -34,7 +32,6 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
       title: 'Продажи',
       color: 'red.700',
       bgColor: 'bunker.400',
-      icon: <OutIcon color='#fff' />,
       countKey: 'sale_count',
       amountKey: 'sale_amount',
     },
@@ -42,7 +39,6 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
       title: 'Трансфер',
       color: 'red.700',
       bgColor: 'bunker.400',
-      icon: <OutIcon color='#fff' />,
       countKey: 'transfer_out_count',
       amountKey: 'transfer_out_amount',
     },
@@ -50,7 +46,6 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
       title: 'На склад',
       color: 'red.700',
       bgColor: 'bunker.400',
-      icon: <OutIcon color='#fff' />,
       countKey: 'return_to_sklad_count',
       amountKey: 'return_to_sklad_amount',
     },
@@ -58,7 +53,6 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
       title: 'Текущее',
       color: 'green.700',
       bgColor: 'bunker.400',
-      icon: <InIcon color='#fff' />,
       countKey: 'product_count',
       amountKey: 'product_amount',
     },
@@ -71,6 +65,7 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
           <Grid key={index} item xs={12} sm={6} md={3} lg={1.7}>
             <Box
               sx={{
+                maxHeight: '100px',
                 display: 'flex',
                 alignItems: 'start',
                 flexDirection: 'column',
@@ -102,7 +97,7 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true }) 
 
               {isLoading ? (
                 <>
-                  <Skeleton width='60%' height={40} sx={{ mt: 2, mb: 1 }} />
+                  <Skeleton width='60%' height={40} sx={{ mt: '10px', mb: '2px' }} />
                   <Skeleton width='40%' height={20} />
                 </>
               ) : (

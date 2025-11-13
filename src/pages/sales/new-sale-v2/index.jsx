@@ -337,7 +337,7 @@ function NewSaleV2() {
   })
 
   useEffect(() => {
-    if (customerId?.id && customerId?.new != false) {
+    if (customerId?.id && customerId?.new != false && customerId?.searchTerm == customerId?.discount_card) {
       addDiscountCard({
         customer_id: customerId?.id,
         barcode: customerId?.barcode,

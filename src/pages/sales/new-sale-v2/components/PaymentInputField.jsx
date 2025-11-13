@@ -96,7 +96,7 @@ export const PaymentInputField = ({
     return (
       <Box
         sx={{
-          bgcolor: '#F6F7F9',
+          bgcolor: 'bunker.100',
           borderRadius: '12px',
           display: 'flex',
           alignItems: 'center',
@@ -140,6 +140,7 @@ export const PaymentInputField = ({
           color: 'bunker.950',
           textAlign: 'start',
         },
+
         mt: name.includes('cash_amount_soon') ? '8px' : name.includes('card') || name.includes('online') ? '8px' : 0,
         '& .MuiOutlinedInput-root': {
           height: '44px !important',
@@ -181,7 +182,7 @@ const PaymentTypeButton = ({ option, isActive, onClick, shortcut, isFirst }) => 
     return images[option] || ''
   }
 
-  const imageSize = option === 'Payme' || option === 'Click' ? '25px' : '36px'
+  const imageSize = option === 'Payme' || option === 'Click' ? '20px' : '30px'
 
   return (
     <Box
@@ -190,18 +191,30 @@ const PaymentTypeButton = ({ option, isActive, onClick, shortcut, isFirst }) => 
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
-        pr: isFirst ? '6px' : '3px',
-        pl: isFirst ? '6px' : '3px',
-        justifyContent: 'space-between',
+        pr: isFirst ? '3px' : '3px',
+        pl: isFirst ? '3px' : '3px',
+        justifyContent: 'center',
         height: '32px',
         borderRadius: '10px',
-        bgcolor: isActive ? '#fff' : 'transparent',
-        p: '6px',
+        bgcolor: isActive ? 'white' : 'transparent',
         mr: isFirst ? '2px' : 0,
       }}
       onClick={onClick}
     >
-      <img style={{ width: imageSize, height: imageSize }} src={getImagePath(option)} alt={option} />
+      <Box
+        sx={{
+          bgcolor: 'white',
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '32px',
+          width: imageSize,
+          padding: '5px 0',
+        }}
+      >
+        <img style={{ width: imageSize, height: imageSize, marginRight: '3px' }} src={getImagePath(option)} alt={option} />
+      </Box>
       <ShortcutBox minWidth='27px' shortcut={shortcut} height='20px' color='#868FAA' />
     </Box>
   )

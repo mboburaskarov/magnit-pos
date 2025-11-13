@@ -53,7 +53,15 @@ function InputFormattedPriceWithTextField({
   const { t } = useTranslation()
 
   return (
-    <Box>
+    <Box
+      sx={{
+        '& .MuiInputBase-root': {
+          '&:hover': {
+            backgroundColor: 'bunker.100',
+          },
+        },
+      }}
+    >
       <Controller
         name={name}
         control={control}
