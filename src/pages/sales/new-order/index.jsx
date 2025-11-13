@@ -1,48 +1,47 @@
-import { Box, Button, ListItem, Typography } from '@mui/material';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { FormProvider, useForm } from 'react-hook-form';
-import { useMutation, useQuery } from 'react-query';
-import { useEffect, useRef, useState } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { useTranslation } from 'react-i18next';
-import { Refresh } from '@mui/icons-material';
-import { useDebounce } from 'use-debounce';
-import { useSelector } from 'react-redux';
-import { makeStyles } from '@mui/styles';
-import { LoadingButton } from '@mui/lab';
-import { get, head, size } from 'lodash';
+import { Refresh } from '@mui/icons-material'
+import { LoadingButton } from '@mui/lab'
+import { Box, Button, ListItem, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { get, head, size } from 'lodash'
+import { useEffect, useRef, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useDebounce } from 'use-debounce'
 
-import SendRejectedProductDrawer from '../../../../components/Sales/SendRejectedProduct/SendRejectedProductDrawer';
-import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchange/ReturnExchangeDrawer';
-import BonusProductDrawer from '../../../../components/Sales/bonusProductDrawer/BonusProductDrawer';
-import OnlineSaleDrawer from '../../../../components/Sales/OnlineSaleNoor/OnlineSaleDrawer';
-import OrderDrawer from '../../../../components/Sales/ClientCreateMini/OrderDrawer';
-import ClientCreateMini from '../../../../components/Sales/ClientCreateMini';
-import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck';
-import ShortcutsDrawer from '../../../../components/Sales/ShortcutsDrawer';
-import notificationAudio from '../../../assets/audio/notification.mp3';
-import LoadingContainer from '../../../../components/LoadingContainer';
-import LoadingOverflow from '../../../../components/LoadingOverflow';
-import DraftDrawer from '../../../../components/Sales/DraftDrawer';
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon';
-import useDebouncedValue from '../../../hooks/useDebouncedValue';
-import StyledTooltip from '../../../../components/StyledTooltip';
-import ConfirmDialog from '../../../../components/ConfirmDialog';
-import thousandDivider from '../../../../utils/thousandDivider';
-import ImplementMarkingDialog from './ImplementMarkingDialog';
-import CheckAccess from '../../../../components/CheckAccess';
-import DeleteIcon from '../../../assets/icons/DeleteIcon';
-import CustomImg from '../../../../components/CustomImg';
-import { error, success } from '../../../../utils/toast';
-import { requests } from '../../../../utils/requests';
-import OrganizeDmedOrder from './OrganizeDmedOrder';
-import CreateDraftDrawer from './createDraftDrawer';
-import CartDetailSide from './cart_detail_side';
-import ProductDrawer from './ProductDrawer';
-import CartSearchBar from './CartSearchBar';
-import ChangeShift from './ChangeShift';
-import CartItem from './CartItem';
-
+import CheckAccess from '../../../../components/CheckAccess'
+import ConfirmDialog from '../../../../components/ConfirmDialog'
+import CustomImg from '../../../../components/CustomImg'
+import LoadingContainer from '../../../../components/LoadingContainer'
+import LoadingOverflow from '../../../../components/LoadingOverflow'
+import BonusProductDrawer from '../../../../components/Sales/bonusProductDrawer/BonusProductDrawer'
+import ClientCreateMini from '../../../../components/Sales/ClientCreateMini'
+import OrderDrawer from '../../../../components/Sales/ClientCreateMini/OrderDrawer'
+import DraftDrawer from '../../../../components/Sales/DraftDrawer'
+import OnlineSaleDrawer from '../../../../components/Sales/OnlineSaleNoor/OnlineSaleDrawer'
+import ReturnExchangeDrawer from '../../../../components/Sales/ReturnExchange/ReturnExchangeDrawer'
+import SendRejectedProductDrawer from '../../../../components/Sales/SendRejectedProduct/SendRejectedProductDrawer'
+import ShortcutsDrawer from '../../../../components/Sales/ShortcutsDrawer'
+import StyledTooltip from '../../../../components/StyledTooltip'
+import { requests } from '../../../../utils/requests'
+import thousandDivider from '../../../../utils/thousandDivider'
+import { error, success } from '../../../../utils/toast'
+import notificationAudio from '../../../assets/audio/notification.mp3'
+import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
+import DeleteIcon from '../../../assets/icons/DeleteIcon'
+import useDebouncedValue from '../../../hooks/useDebouncedValue'
+import CartDetailSide from './cart_detail_side'
+import CartItem from './CartItem'
+import CartSearchBar from './CartSearchBar'
+import ChangeShift from './ChangeShift'
+import CreateDraftDrawer from './createDraftDrawer'
+import DecreasedCartItemMarkingCheck from './decreasedCartItemMarkingCheck'
+import ImplementMarkingDialog from './ImplementMarkingDialog'
+import OrganizeDmedOrder from './OrganizeDmedOrder'
+import ProductDrawer from './ProductDrawer'
 
 const useStyles = makeStyles((theme) => ({
   currentUser: {
@@ -357,7 +356,7 @@ function NewSale() {
     },
   })
   useEffect(() => {
-    if (customerId?.id && customerId?.new != false && customerId?.searchTerm == customerId?.discount_card) {
+    if (customerId?.id && customerId?.new != false && customerId?.searchTerm == customerId?.discount_card && customerId?.discount_card) {
       addDiscountCard({
         customer_id: customerId?.id,
         barcode: customerId?.barcode,
