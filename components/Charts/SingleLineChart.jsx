@@ -1,10 +1,10 @@
 import { Box, Skeleton, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import getShorterNumber from '@utils/getShorterNumber'
 import { getDateFromDateTime } from '@utils/parseDateTime'
 import thousandDivider from '@utils/thousandDivider'
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import LoadingBlurry from '../LoadingBlurry'
 import SelectSimple from '../Select/SelectSimple'
 import CustomizedAxisTick from './ChartAxisTick'
@@ -72,6 +72,9 @@ export default function SingleBarChart({
     if (data?.values?.length) {
       setChartData(data?.values)
       setSliderValue([0, data?.values?.length])
+    } else {
+      setChartData([])
+      setSliderValue([0, 0])
     }
   }, [data, detalization])
   const maxValue = Math.max(...chartData.slice(sliderValue[0], sliderValue[1]).map((item) => item?.count))

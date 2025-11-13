@@ -2,7 +2,7 @@ import { useQueryParams } from '@hooks/useQueryParams'
 import ArrowDown from '@icons/ArrowDown'
 import ArrowUp from '@icons/ArrowUp'
 import TickSmallIcon from '@icons/TickIcon'
-import { Box, TextField } from '@mui/material'
+import { Box, TextField, Typography } from '@mui/material'
 import { error } from '@utils/toast'
 import { get } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
@@ -40,6 +40,7 @@ const MultiOptionSelectNew = ({
   const [typed, setTyped] = useState('')
   const [hasApplied, setHasApplied] = useState(false)
   const [isSelectAll, setIsSelectAll] = useState(false)
+  const [isSelectAllB2B, setIsSelectAllB2B] = useState(false)
   const [tempValues, setTempValues] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isSearching, setIsSearching] = useState(false) // Separate loading state for search
@@ -129,6 +130,7 @@ const MultiOptionSelectNew = ({
         setValues(newData)
         onChange?.(newData)
         setHasApplied(true)
+        setIsSelectAllB2B(true)
         setIsSelectAll(true)
       }
     } catch (err) {
@@ -296,6 +298,7 @@ const MultiOptionSelectNew = ({
 
   const onClickOption = (e) => {
     setIsSelectAll(false)
+    setIsSelectAllB2B(false)
     const { value } = e.currentTarget.dataset
     const selectedOption = options == 'all' ? [] : options.find((el) => el.id === value)
     setValues((prev) => {
@@ -347,6 +350,7 @@ const MultiOptionSelectNew = ({
     setTempValues(multiple ? values : values?.[0])
     if (values?.length === options?.length && options.length > 0) {
       setIsSelectAll(true)
+      setIsSelectAllB2B(true)
     }
   }, [multiple, values, options])
 
@@ -445,26 +449,41 @@ const MultiOptionSelectNew = ({
         <>
           {options?.length ? (
             <>
-              {selectAllLabel && (
-                <div
-                  className='option all'
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => {
-                    setTempValues(!isSelectAll ? (multiple ? 'all' : options?.[0]) : [])
-                    setIsSelectAll((prev) => !prev)
-                    setValues(!isSelectAll ? (multiple ? 'all' : options?.[0]) : [])
-                  }}
-                >
-                  {selectAllLabel}
-                  {(isSelectAll || values == 'all') && values?.length != 1 ? (
-                    <Box flexShrink={0}>
-                      <TickSmallIcon />
-                    </Box>
-                  ) : (
-                    ''
-                  )}
-                </div>
-              )}
+              <Box className='option all' sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                {selectAllLabel && (
+                  <Box
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      setTempValues(!isSelectAll ? (multiple ? 'all' : options?.[0]) : [])
+                      setIsSelectAll((prev) => !prev)
+                      setValues(!isSelectAll ? (multiple ? 'all' : options?.[0]) : [])
+                    }}
+                  >
+                    <Typography sx={{ fontSize: '14px', fontWeight: '600' }}>{selectAllLabel}</Typography>
+                    {(isSelectAll || values == 'all') && values?.length != 1 ? <Box flexShrink={0}>{<TickSmallIcon />}</Box> : ''}
+                  </Box>
+                )}
+                {selectAllLabel && (
+                  <Box
+                    sx={{ display: 'flex', alignItems: 'center', minWidth: '80px' }}
+                    onClick={() => {
+                      // setTempValues(!isSelectAllB2B ? (multiple ? 'all' : options?.[0]) : [])
+                      setIsSelectAllB2B((prev) => !prev)
+                      // setValues(!isSelectAllB2B ? (multiple ? 'all' : options?.[0]) : [])
+                    }}
+                  >
+                    <Typography sx={{ fontSize: '14px', fontWeight: '600' }}>Все B2B</Typography>
+                    {isSelectAllB2B ? (
+                      <Box flexShrink={0}>
+                        <TickSmallIcon />
+                      </Box>
+                    ) : (
+                      ''
+                    )}
+                  </Box>
+                )}
+              </Box>
 
               <Box sx={{ maxHeight: '330px', overflow: 'auto' }}>{options.map(renderOption)}</Box>
               {pagination.hasMore && <div ref={bottomRef} style={{ height: '20px', width: '100%' }} />}

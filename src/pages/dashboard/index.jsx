@@ -231,6 +231,7 @@ export default function DashboarPage() {
       })),
     [chartData, dashboard_filter]
   )
+
   const regenerated = paymentTypes.map((p) => ({
     ...p,
     name: p?.title,
@@ -310,7 +311,6 @@ export default function DashboarPage() {
                             },
                           }}
                           color='secondary'
-                          onClick={() => setIsCreateOpenDraft(true)}
                         >
                           Показать <RightArrowIcon />
                         </Button>
@@ -459,7 +459,7 @@ export default function DashboarPage() {
       </Box>
       <CheckAccess id={'dashboard-expired-imports'}>
         <Box>
-          <ImportPage />
+          <ImportPage dashboard_filter={dashboard_filter} />
         </Box>
       </CheckAccess>
     </LoadingContainer>

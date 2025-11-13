@@ -294,9 +294,18 @@ export const useSaleOperations = ({
               ) * 100
             ).toFixed(2)
           ),
-          receivedCard: parseFloat(
-            (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)
-          ),
+          receivedEps:
+            payType == 2
+              ? parseFloat(
+                  (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)
+                )
+              : 0,
+          receivedCard:
+            payType == 2
+              ? 0
+              : parseFloat(
+                  (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)
+                ),
         },
         ...(SALE_TYPE === 'RETURN' && {
           refundInfo: (() => {

@@ -1,18 +1,18 @@
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/expiredImportsTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ImageGallery from '@components/ImageGallery'
+import LoadingContainer from '@components/LoadingContainer'
+import { useQueryParams } from '@hooks/useQueryParams'
 import { Box, Typography } from '@mui/material'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '@components/AgGridTable/AgGridTable'
-import ImageGallery from '@components/ImageGallery'
-import LoadingContainer from '@components/LoadingContainer'
-import { requests } from '@utils/requests'
-import { useQueryParams } from '@hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/expiredImportsTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
-import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
-export default function ImportPage() {
+export default function ImportPage({ dashboard_filter }) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.expiredImportsTableColumns)
@@ -37,8 +37,9 @@ export default function ImportPage() {
       offset: values?.search ? 0 : values?.offset || 0,
       start_date: getFilterStartDate(values),
       end_date: getFilterEndDate(values),
+      ...dashboard_filter,
     }
-  }, [values?.offset, values?.limit, values?.end_date, values?.start_date])
+  }, [values?.offset, values?.limit, values?.end_date, dashboard_filter, values?.start_date])
   const {
     data: importsList,
     isLoading: importsListLoading,

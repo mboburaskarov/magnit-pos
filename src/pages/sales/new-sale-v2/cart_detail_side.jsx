@@ -317,7 +317,6 @@ function CartDetailSide({
                       setSearchTerm()
                     }}
                   >
-                    ccx
                     <Typography>
                       <Highlighter
                         highlightClassName='highlighter'

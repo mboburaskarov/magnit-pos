@@ -11,8 +11,8 @@ import { useQueryParams } from '@hooks/useQueryParams'
 import Dashboard_B2B from './Dashboard_B2B'
 import DashboardInfoBox from './DashboardInfoBox'
 
-import { dashboardBoxData } from '.'
 import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import { dashboardBoxData } from '.'
 export default function DashboarB2BPage() {
   dayjs.extend(isoWeek)
   const { values } = useQueryParams()
@@ -41,7 +41,7 @@ export default function DashboarB2BPage() {
                 .filter((p) => p?.id != 'bonus_amount')
                 .map((el, ind) => (
                   <CheckAccess id={`dashboard-box-${el.id}`}>
-                    <Grid item xs={12} xl={4} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'}>
+                    <Grid item xs={12} xl={3} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'}>
                       <DashboardInfoBox dashboard_filter={dashboard_company_filter} key={ind} {...el} />
                     </Grid>
                   </CheckAccess>
