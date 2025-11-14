@@ -69,7 +69,6 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true, un
       >
         {filteredItems.map((item, index) => {
           const isLast = item.title === 'Текущее'
-          console.log(isLast, item)
 
           return (
             <Box

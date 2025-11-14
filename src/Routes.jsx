@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React, { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate, useRoutes } from 'react-router-dom'
 import LoadingContainer from '../components/LoadingContainer'
