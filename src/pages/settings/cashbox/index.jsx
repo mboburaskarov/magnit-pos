@@ -1,26 +1,26 @@
-import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
-import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/cashboxTableColumns'
 import AgGridTable from '@components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '@components/CheckAccess'
 import ConfirmDialog from '@components/ConfirmDialog'
 import InputSearch from '@components/Inputs/InputSearch'
 import LoadingContainer from '@components/LoadingContainer'
-import { requests } from '@utils/requests'
-import { error, success } from '@utils/toast'
+import { useQueryParams } from '@hooks/useQueryParams'
 import BigTickIcon from '@icons/BigTickIcon'
 import BigWarningIcon from '@icons/BigWarningIcon'
 import DeleteIcon from '@icons/DeleteIcon'
 import PlusIcon from '@icons/PlusIcon'
-import { useQueryParams } from '@hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/cashboxTableColumns'
+import { LoadingButton } from '@mui/lab'
+import { Box, Button, Typography } from '@mui/material'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
 import CreateCashBoxDrawer from './CreateCashBoxDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
-import CheckAccess from '@components/CheckAccess'
 
 export default function CashBoxsPage() {
   const dispatch = useDispatch()
@@ -226,7 +226,7 @@ export default function CashBoxsPage() {
       )}
 
       <CreateCashBoxDrawer
-        refetchVendorList={refetch}
+        refetchCashBoxList={refetch}
         setCustomerId={'setCustomerId'}
         quickCreateClientName={'quickCreateClientName'}
         openDrawer={openCreateCashBoxDrawer}

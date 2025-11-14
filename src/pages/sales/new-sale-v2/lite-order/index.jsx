@@ -3,7 +3,6 @@ import { RippedPaperItem } from '@components/RippedPaperList'
 import { usePaymentShortcuts } from '@hooks/sale/useKeyboardShortcuts' //lite sale own hook
 import { usePaymentOperations } from '@hooks/sale/usePaymentOperations' //lite sale own hook
 import { usePrintOperations } from '@hooks/sale/usePrintOperations' //sales global hook
-import { useSaleOperations } from '@hooks/sale/useSaleOperations' //sales global hook
 import CloseIcon from '@icons/CloseIcon'
 import QrScanIcon from '@icons/QrScanIcon'
 import { Box, TextField, Typography } from '@mui/material'
@@ -14,6 +13,7 @@ import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 
+import { useSaleOperations } from '@/hooks/sale/useSaleOperations'
 import { PaymentInputField } from '../components/PaymentInputField'
 import { PaymentSummaryBox } from '../components/PaymentSummaryBox'
 import PreventRefresh from '../components/PreventRefresh'
@@ -188,15 +188,6 @@ function LiteOrder({
         />
 
         <PaymentInputField
-          setPaymentsList={setPaymentsList}
-          name='lite_cash_amount_soon'
-          placeholder={t('Карта лояльности')}
-          readOnly
-          shortcut='L'
-          soon
-          paymentsLis={paymentsList}
-        />
-        <PaymentInputField
           name='lite_card_amount'
           placeholder={t('По карте')}
           control={control}
@@ -220,6 +211,15 @@ function LiteOrder({
           paymentOptions={['Payme', 'Click']}
           setValue={setValue}
           setPaymentsList={setPaymentsList}
+          paymentsLis={paymentsList}
+        />
+        <PaymentInputField
+          setPaymentsList={setPaymentsList}
+          name='lite_cash_amount_soon'
+          placeholder={t('Карта лояльности')}
+          readOnly
+          shortcut='L'
+          soon
           paymentsLis={paymentsList}
         />
       </Box>

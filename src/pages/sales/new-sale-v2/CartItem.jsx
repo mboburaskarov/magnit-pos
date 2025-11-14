@@ -402,65 +402,69 @@ export default function CartItem({ index, searchRef, packRef = () => {}, unitRef
             },
           })}
         >
-          <InputQuantity
-            type='number'
-            id={`inputQuantitys${index}`}
-            name={`unit_quantity_${item?.id}`}
-            defaultValue={get(item, 'unit_quantity', 1)}
-            adornmentPosition='end'
-            initWidth='90px'
-            onKeyDown={({ key }) => {
-              if (key === 'Enter' || key == 'Escape') {
-                searchRef?.current?.focus()
+          {get(item, 'unit_per_pack') > 1 ? (
+            <InputQuantity
+              type='number'
+              id={`inputQuantitys${index}`}
+              name={`unit_quantity_${item?.id}`}
+              defaultValue={get(item, 'unit_quantity', 1)}
+              adornmentPosition='end'
+              initWidth='90px'
+              onKeyDown={({ key }) => {
+                if (key === 'Enter' || key == 'Escape') {
+                  searchRef?.current?.focus()
+                }
+              }}
+              adornment={
+                <Typography pr='15px' display={'flex'}>
+                  <Box fontSize={'14px'} lineHeight={'20px'} fontWeight={'500'} color='bunker.400'>
+                    /{item.unit_per_pack}
+                  </Box>
+                </Typography>
               }
-            }}
-            adornment={
-              <Typography pr='15px' display={'flex'}>
-                <Box fontSize={'14px'} lineHeight={'20px'} fontWeight={'500'} color='bunker.400'>
-                  /{item.unit_per_pack}
-                </Box>
-              </Typography>
-            }
-            inputRef={(e) => unitRef(e)}
-            adornmentClassName={cls.adornment}
-            max={100}
-            onBlur={({ target }) => {
-              if (get(item, 'unit_quantity') == Number(get(target, 'value'))) {
-                return
-              }
-              if (method.getValues(`quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
-                method.setValue(`unit_quantity_${item?.id}`, get(target, 'value'))
-              } else {
-                if (get(item, 'unit_quantity') > Number(get(target, 'value'))) {
-                  removeMarking({
-                    quantity: Number(method.getValues(`quantity_${item?.id}`)),
-                    unit_per_pack: get(item, 'unit_per_pack'),
-                    unit_quantity: Number(get(target, 'value')),
-                    id: get(item, 'id'),
-                    request: {
+              inputRef={(e) => unitRef(e)}
+              adornmentClassName={cls.adornment}
+              max={100}
+              onBlur={({ target }) => {
+                if (get(item, 'unit_quantity') == Number(get(target, 'value'))) {
+                  return
+                }
+                if (method.getValues(`quantity_${item?.id}`) == 0 && Number(get(target, 'value') == 0)) {
+                  method.setValue(`unit_quantity_${item?.id}`, get(target, 'value'))
+                } else {
+                  if (get(item, 'unit_quantity') > Number(get(target, 'value'))) {
+                    removeMarking({
+                      quantity: Number(method.getValues(`quantity_${item?.id}`)),
+                      unit_per_pack: get(item, 'unit_per_pack'),
+                      unit_quantity: Number(get(target, 'value')),
+                      id: get(item, 'id'),
+                      request: {
+                        id: get(item, 'id'),
+                        data: {
+                          quantity: Number(method.getValues(`quantity_${item?.id}`)),
+                          store_product_id: get(item, 'store_product_id'),
+                          unit_quantity: Number(get(target, 'value')),
+                        },
+                      },
+                    })
+                    method.setValue(`quantity_${item?.id}`, item?.quantity)
+                    method.setValue(`unit_quantity_${item?.id}`, item?.unit_quantity)
+                  } else {
+                    changeCartItemQuantity({
                       id: get(item, 'id'),
                       data: {
                         quantity: Number(method.getValues(`quantity_${item?.id}`)),
                         store_product_id: get(item, 'store_product_id'),
                         unit_quantity: Number(get(target, 'value')),
                       },
-                    },
-                  })
-                  method.setValue(`quantity_${item?.id}`, item?.quantity)
-                  method.setValue(`unit_quantity_${item?.id}`, item?.unit_quantity)
-                } else {
-                  changeCartItemQuantity({
-                    id: get(item, 'id'),
-                    data: {
-                      quantity: Number(method.getValues(`quantity_${item?.id}`)),
-                      store_product_id: get(item, 'store_product_id'),
-                      unit_quantity: Number(get(target, 'value')),
-                    },
-                  })
+                    })
+                  }
                 }
-              }
-            }}
-          />
+              }}
+            />
+          ) : (
+            <></>
+          )}
         </Box>
       </TableCell>
       <TableCell sx={{ width: '150px' }}>

@@ -1,28 +1,27 @@
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/topReportsTableColumns';
-import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
-import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
-import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
-import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew';
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
-import AgGridTable from '@components/AgGridTable/AgGridTable';
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
-import LoadingContainer from '@components/LoadingContainer';
-import InputSearch from '@components/Inputs/InputSearch';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { useTranslation } from 'react-i18next';
-import { requests } from '@utils/requests';
-import Header from '@components/Header';
-import { error } from '@utils/toast';
-import { Box } from '@mui/material';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/topReportsTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import Header from '@components/Header'
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { Box } from '@mui/material'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
 
-import tableHeaderSelector from './tableHeaderSelector';
-import FilterMenu from './FilterMenu';
-
+import FilterMenu from './FilterMenu'
+import tableHeaderSelector from './tableHeaderSelector'
 
 export default function TopBranchesPage() {
   const dispatch = useDispatch()

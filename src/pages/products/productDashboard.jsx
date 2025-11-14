@@ -1,7 +1,7 @@
-import { Box, Grid, Typography } from '@mui/material'
-import thousandDivider from '@utils/thousandDivider'
 import BigWarningIcon from '@icons/BigWarningIcon'
 import DownloadIcon from '@icons/DownloadIcon'
+import { Box, Grid, Typography } from '@mui/material'
+import thousandDivider from '@utils/thousandDivider'
 
 function ProductDashboard({ data }) {
   return (
@@ -15,9 +15,11 @@ function ProductDashboard({ data }) {
       {[
         { title: 'Наименований', value: 'total_count', endText: 'шт' },
         { title: 'Товарных единиц', value: 'total_quantity', endText: 'ед.' },
+        { title: 'PharamaCosmos суммa', value: 'total_stock_amount', endText: 'сум' },
+        { title: 'B2B суммa', value: 'total_stock_amount', endText: 'сум' },
         { title: 'Oбщая суммa', value: 'total_stock_amount', endText: 'сум' },
       ].map((stat) => (
-        <Grid sm='4' lg='4' md='4' item sx={{}}>
+        <Grid sm='2.4' lg='2.4' md='2.4' item sx={{}}>
           <Box
             sx={{
               backgroundColor: stat.title == 'result' ? 'bg.10' : 'bg.10',

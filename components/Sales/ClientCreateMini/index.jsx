@@ -76,9 +76,8 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       setCustomerId({
         id: get(data, 'data.id'),
         name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'),
-        balance: get(data, 'data.balance', 0),
-        barcode: get(data, 'data.discount_card'),
-        ...data?.data,
+        balance: 0,
+        loyalty_card_barcode: get(data, 'data.loyalty_card_barcode'),
       })
       success('Клиент создан!')
     },
@@ -97,8 +96,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
         id: get(data, 'data.id'),
         name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'),
         balance: get(data, 'data.balance', 0),
-        barcode: get(data, 'data.discount_card'),
-        ...data?.data,
+        loyalty_card_barcode: get(data, 'data.loyalty_card_barcode'),
       })
       success('Клиент создан!')
     },

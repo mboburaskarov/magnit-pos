@@ -1,18 +1,17 @@
-import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
-import { Box, Drawer, Typography } from '@mui/material';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { makeStyles, useTheme } from '@mui/styles';
-import { requests } from '@utils/requests';
-import CloseIcon from '@icons/CloseIcon';
-import { error } from '@utils/toast';
-import { get } from 'lodash';
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import { useQueryParams } from '@hooks/useQueryParams'
+import CloseIcon from '@icons/CloseIcon'
+import { Box, Drawer, Typography } from '@mui/material'
+import { makeStyles, useTheme } from '@mui/styles'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import { get } from 'lodash'
+import { useEffect, useMemo, useState } from 'react'
+import { useMutation, useQuery } from 'react-query'
 
-import AgGridTable from '../../AgGridTable/AgGridTable';
-import DraftChildDrawer from './DraftChildDrawer';
-
+import AgGridTable from '../../AgGridTable/AgGridTable'
+import DraftChildDrawer from './DraftChildDrawer'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -100,7 +99,6 @@ function SellerBonusHistoryDrawer({ open, setOpen }) {
       end_date: getFilterEndDate(values),
     }
   }, [values?.bonusLimit, controlleroffset, open, values?.limit, values?.bonusOffset, values?.end_date, values?.start_date])
-  console.log(open?.id?.length > 0)
 
   const {
     data: sellerBonusHistory,

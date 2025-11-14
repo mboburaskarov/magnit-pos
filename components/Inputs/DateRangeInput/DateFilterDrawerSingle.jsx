@@ -342,7 +342,6 @@ export default function DateFilterDrawerSingle({
   const onError = (err) => {
     console.error(err)
   }
-  console.log(selectedRange)
 
   return (
     <Box className={classes.wrapper}>

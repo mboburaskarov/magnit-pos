@@ -270,28 +270,15 @@ function CartDetailSide({
                   tabIndex={index + 1}
                   id={`searchResult${index + 1}`}
                   className={classes.searchItem}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter' && fakeIndexForCheckClient === index + 1) {
-                      setCustomerId({
-                        id: item?.id,
-                        name: item?.first_name + ' ' + item?.first_name,
-                        balance: item?.balance,
-                        barcode: item?.discount_card,
-                        ...item,
-                        searchTerm,
-                      })
-                    }
-                  }}
                   onClick={() => {
                     setCustomerId({
                       id: item?.id,
                       name: item?.first_name + ' ' + item?.last_name,
                       balance: item?.balance,
                       barcode: item?.discount_card,
-                      ...item,
-                      searchTerm,
+                      discount_card_barcode: searchTerm == item?.discount_card ? item?.discount_card : null,
+                      loyalty_card_barcode: searchTerm == item?.loyalty_card_barcode ? item?.loyalty_card_barcode : null,
                     })
-
                     setSearchTerm()
                   }}
                 >

@@ -1,6 +1,17 @@
+import ButtonWithPopup from '@components/Buttons/ButtonWithPopup'
+import CheckAccess from '@components/CheckAccess'
+import RippedPaperProductPriceCheck from '@components/ChequePaper/RippedPaperProductPriceCheck'
+import CustomImg from '@components/CustomImg'
+import DrawerInfoBox from '@components/Drawers/DrawerInfoBox'
+import SectionTitle from '@components/SectionTitle'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useQueryParams } from '@hooks/useQueryParams'
+import DefaultImgIcon from '@icons/defaultImgIcon'
 import { Box, Button, Drawer, Typography } from '@mui/material'
+import getImageUrl from '@utils/getImageUrl'
+import { requests } from '@utils/requests'
+import thousandDivider from '@utils/thousandDivider'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useCallback, useRef } from 'react'
@@ -8,20 +19,9 @@ import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
-import ButtonWithPopup from '@components/Buttons/ButtonWithPopup'
-import CheckAccess from '@components/CheckAccess'
-import RippedPaperProductPriceCheck from '@components/ChequePaper/RippedPaperProductPriceCheck'
-import CustomImg from '@components/CustomImg'
-import DrawerInfoBox from '@components/Drawers/DrawerInfoBox'
-import SectionTitle from '@components/SectionTitle'
-import getImageUrl from '@utils/getImageUrl'
-import { requests } from '@utils/requests'
-import thousandDivider from '@utils/thousandDivider'
-import DefaultImgIcon from '@icons/defaultImgIcon'
-import { useQueryParams } from '@hooks/useQueryParams'
 import ProductHistory from './ProductHistory'
+import ProductMovementDashboard from './ProductMovementDashboard'
 import ProductRemainsHistory from './ProductRemainsHistory'
-
 const Image = ({ data, setImages }) => {
   return (
     <Box
@@ -82,6 +82,23 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     isLoading: productDataLoading,
     isFetching: isFetchingproductData,
   } = useQuery(['productData', id], () => requests.getSingleProduct({ id, store_id: values?.store_id || userData?.store?.id }), { enabled: !!id })
+  const {
+    data: productReaminsDataHistory,
+    isLoading: isproductDataLoadingHistory,
+    isFetching: isFetchingproductReaminsDataHistory,
+    refetch,
+  } = useQuery(['productReaminsDataHistory', id], () => requests.getSingleProductRemainsHistory({}, id), {
+    enabled: !!id,
+  })
+
+  const {
+    data: singleProductDashboard,
+    isLoading: singleProductDashboardLoading,
+    isFetching: isFetchingsingleProductDashboard,
+  } = useQuery(['singleProductDashboard', id], () => requests.getSingleProductDashboard({ id, store_id: values?.store_id || userData?.store?.id }), {
+    enabled: !!id,
+  })
+
   //
   const printContainer = useRef()
   const documentName = useRef('Pharma CHEQUE')
@@ -101,6 +118,24 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     removeAfterPrint: true,
     onAfterPrint: () => {},
   })
+
+  function getRetailPriceRange(productReaminsDataHistory) {
+    const data = get(productReaminsDataHistory, 'data.data.data', [])
+
+    if (!Array.isArray(data) || data.length === 0) {
+      return { min: null, max: null }
+    }
+
+    // Extract all retail prices safely
+    const prices = data.map((item) => Number(item?.retail_price)).filter((price) => !isNaN(price))
+
+    if (prices.length === 0) return { min: null, max: null }
+
+    const min = Math.min(...prices)
+    const max = Math.max(...prices)
+
+    return { min, max }
+  }
 
   //
   const navigate = useNavigate()
@@ -122,11 +157,17 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         <Typography mt={0.5} ml={2} fontSize={24} color={'bunker.950'} lineHeight={'32px'} fontWeight={'700'}>
           {productData?.data?.data?.name}
           <Typography display='flex' alignItems='center' color='orange.500' mt={1} fontWeight={'500'}>
-            {thousandDivider(get(productData, 'data.data.retail_price'))} сум
+            {thousandDivider(getRetailPriceRange(productReaminsDataHistory)?.min, 'сум')} -{' '}
+            {thousandDivider(getRetailPriceRange(productReaminsDataHistory)?.max, 'сум')}
           </Typography>
         </Typography>
       </Box>
       <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
+      <ProductMovementDashboard
+        singleProductDashboard={{ ...get(singleProductDashboard, 'data.data'), product_amount: get(productData, 'data.data.retail_price') }}
+        isLoading={singleProductDashboardLoading}
+        unit_per_pack={get(productData, 'data.data.unit_per_pack')}
+      />
       <Box px={'40px'} my={'20px'}>
         <SectionTitle grey>История продукта</SectionTitle>
         <ProductHistory id={id} />
@@ -240,7 +281,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
             { title: 'Штук', soon: false, clickHandler: () => handleUnitPrint('unit') },
           ]}
         />
-       
+
         <Button
           sx={{
             height: '48px',

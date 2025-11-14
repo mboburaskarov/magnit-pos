@@ -1,25 +1,28 @@
-import { Box, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { useMutation, useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
 import AgGridTable from '@components/AgGridTable/AgGridTable'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { Box, Typography } from '@mui/material'
 import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
 import { requests } from '@utils/requests'
 import thousandDivider from '@utils/thousandDivider'
 import { error } from '@utils/toast'
-import { useQueryParams } from '@hooks/useQueryParams'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
+import { useEffect, useMemo, useState } from 'react'
+import { useMutation, useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import TransferDetailModal from './transferDetailModal'
 
 export default function ProductHistory({ id }) {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const navigate = useNavigate()
+  const userData = useSelector((state) => state.user)
+
   const productHistoryFilter = useMemo(() => {
     return {
       limit: values?.limitHistory || 5,
-      store_id: values?.store_id,
+      store_id: values?.store_id || userData?.store?.id,
       offset: values?.offsetHistory || 0,
     }
   }, [values?.limitHistory, values?.offsetHistory])

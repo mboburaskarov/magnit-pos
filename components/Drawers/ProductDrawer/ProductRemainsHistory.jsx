@@ -7,16 +7,18 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
 
 export default function ProductRemainsHistory({ id }) {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
+  const userData = useSelector((state) => state.user)
 
   const productHistoryFilter = useMemo(() => {
     return {
       limit: values?.remainsLimit || 5,
       offset: values?.remainsOffset || 0,
-      store_id: values?.store_id,
+      store_id: values?.store_id || userData?.store?.id,
     }
   }, [values?.remainsLimit, values?.store_id, values?.remainsOffset])
 

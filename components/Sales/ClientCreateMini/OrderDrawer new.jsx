@@ -289,6 +289,9 @@ export default function OrderDrawer({
 
   const [paymentsList, setPaymentsList] = useState([])
 
+  const loyalPrice = paymentsList?.find((el) => el.front_name == 'loyalty_card')?.amount
+
+  // Result: 4
   useEffect(() => {
     if (paymentsList?.length == 1 && paymentsList?.[0]?.front_name == 'uzum') {
       setPayType(2)
@@ -369,6 +372,116 @@ export default function OrderDrawer({
     lastEposRequest.current = payload
     sendToEPOS(payload)
   }
+
+  function testEPOSDataSums(items, expectedTotal) {
+    let sum = 0
+    let allVatCorrect = true
+
+    items.forEach((item) => {
+      const itemTotal = item.price + item.other
+      sum += itemTotal
+
+      const calculatedVat = +((itemTotal * item.vatPercent) / (100 + item.vatPercent))
+      if (Math.abs(calculatedVat - item.vat) > 0.5) {
+        console.log(`VAT mismatch for ${item.name}: expected ${item.vat}, calculated ${calculatedVat}`)
+        allVatCorrect = false
+        return []
+      }
+    })
+
+    if (sum != expectedTotal) {
+      console.log('❌ Total sum mismatch:', sum, 'expected:', expectedTotal, 'wrong items:', items)
+
+      return []
+    }
+
+    if (!allVatCorrect) {
+      console.log('❌ Some VAT values are incorrect')
+      return []
+    }
+    return items
+  }
+
+  const getReadyDataForOFD = () => {
+    const readyData = []
+    let leftLoayCardSum = paymentsList?.find((el) => el.front_name == 'loyalty_card')?.amount
+    get(cartItemsList, 'data', []).map((el) => {
+      if (el?.is_marking == false) {
+        let leftPrice = el.total_price
+        const price = el.total_price
+        let otherSum = 0
+        if (leftLoayCardSum > 0) {
+          if (el.total_price >= leftLoayCardSum) {
+            leftPrice = el.total_price - leftLoayCardSum
+            otherSum = leftLoayCardSum
+            leftLoayCardSum = 0
+          } else {
+            otherSum = el.total_price
+            leftLoayCardSum = leftLoayCardSum - el.total_price
+            leftPrice = 0
+          }
+        }
+        const other = (otherSum * 100).toFixed(2)
+        const discount = parseFloat((get(el, 'discount_amount') * 100).toFixed(2)) + parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2))
+        readyData.push({
+          barcode: el.barcode,
+          amount: (el.quantity + el.unit_amount) * 1000,
+          price: parseFloat((price * 100).toFixed(2)),
+          discount: discount,
+          vatPercent: get(el, 'vat_percent'),
+          vat: parseFloat(((((price - otherSum - discount) * get(el, 'vat_percent')) / (get(el, 'vat_percent') + 100)) * 100).toFixed(2)),
+
+          label: '',
+          name: el.name,
+          classCode: get(el, 'class_code'),
+          packageCode: get(el, 'package_code'),
+          other: parseFloat(other),
+          ownerType: 0,
+        })
+      } else {
+        Object.values(markingsList[el.id] || {}).map((marking, index) => {
+          const price = el.quantity > index ? el.unit_price : el.unit_quantity_price * el.unit_quantity
+
+          let otherSum = 0
+
+          if (leftLoayCardSum > 0) {
+            if (price >= leftLoayCardSum) {
+              leftPrice = price - leftLoayCardSum
+              otherSum = leftLoayCardSum
+              leftLoayCardSum = 0
+            } else {
+              otherSum = price
+              leftLoayCardSum = leftLoayCardSum - price
+              leftPrice = 0
+            }
+          }
+          const other = (otherSum * 100).toFixed(2)
+          const discount =
+            el.quantity > index
+              ? parseFloat((get(el, 'discount_amount') * 100).toFixed(2))
+              : parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2))
+
+          readyData.push({
+            barcode: el.barcode,
+            amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
+            price: parseFloat((price * 100).toFixed(2)),
+
+            discount: discount,
+            vatPercent: get(el, 'vat_percent'),
+            vat: parseFloat(((((price - otherSum - discount) * get(el, 'vat_percent')) / (get(el, 'vat_percent') + 100)) * 100).toFixed(2)),
+            label: marking,
+            name: el.name,
+            classCode: get(el, 'class_code'),
+            packageCode: get(el, 'package_code'),
+            other: parseFloat(other),
+            ownerType: 0,
+          })
+        })
+      }
+    })
+    return readyData
+    return testEPOSDataSums(readyData, get(cartItemsList, 'total_amount') * 100)
+  }
   const {
     mutate: finishSaleWithoutAppPaymentType,
     isLoading: isFinishSaleWithoutAppPaymentType,
@@ -391,28 +504,7 @@ export default function OrderDrawer({
         handlePrint()
       } else {
         //send to epos
-        const mockData = get(cartItemsList, 'data', []).map((el) => {
-          return Object.values(markingsList[el.id] || {}).map((marking, index) => ({
-            barcode: el.barcode,
-            amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
-            price:
-              el.quantity > index ? parseFloat((el.unit_price * 100).toFixed(2)) : parseFloat((el.unit_quantity_price * el.unit_quantity * 100).toFixed(2)),
-            discount:
-              el.quantity > index
-                ? parseFloat((get(el, 'discount_amount') * 100).toFixed(2))
-                : parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2)),
-            vatPercent: get(el, 'vat_percent'),
-            vat:
-              el.quantity > index ? parseFloat((get(el, 'vat_price') * 100).toFixed(2)) : parseFloat((el.unit_vat_price * el.unit_quantity * 100).toFixed(2)),
-            label: marking,
-            name: el.name,
-            classCode: get(el, 'class_code'),
-            packageCode: get(el, 'package_code'),
-            // commissionTIN: '',
-            other: 0,
-            ownerType: 0,
-          }))
-        })
+        const mockData = getReadyDataForOFD()
 
         sendToEPOSPayload({
           qrToken: qrToken,
@@ -431,7 +523,6 @@ export default function OrderDrawer({
             clientName: get(customerId, 'name'), //ФИО Клиента
 
             items: mockData.flat(),
-
             receivedCash: parseFloat(
               (
                 (paymentsList.filter((item) => item.amount && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) - Math.abs(maxAmount)) *
@@ -448,7 +539,11 @@ export default function OrderDrawer({
               payType == 2
                 ? 0
                 : parseFloat(
-                    (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)
+                    (
+                      paymentsList
+                        .filter((item) => item.amount && item.type !== 'cash' && item.type !== 'loyalty_card')
+                        .reduce((sum, item) => sum + (item.amount || 0), 0) * 100
+                    ).toFixed(2)
                   ), // Сумма полученной безналичности. Значение указывается в тийинах (100 сум = 10000 тийин)
           },
 
@@ -523,12 +618,12 @@ export default function OrderDrawer({
           error('На вашем счете недостаточно средств.')
           return
         }
-        error(`EPOS: ${get(data, 'message')}`)
+        // error(`EPOS: ${get(data, 'message')}`)
         setOpenRefreshDialog(false)
-        isEposError = true
         setHasChange(false)
 
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
+        throw new Error(`custome_error: ${get(data, 'message')}`)
       }
     },
     onError: (err) => {
@@ -539,11 +634,13 @@ export default function OrderDrawer({
         })
         return
       }
-      sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
+      if (!err.message.includes('custome_error')) {
+        sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
+      }
       setHasChange(false)
       setOpenRefreshDialog(false)
 
-      error('Ошибка при EPOS')
+      error(err?.message || 'Ошибка при EPOS')
       console.error('err', err)
     },
   })
@@ -567,7 +664,9 @@ export default function OrderDrawer({
     const isThereType = paymentsList.some((item) => item.id == type.id)
 
     setPaymentsList((prev) => {
-      if (prev?.length < size(get(paymentTypesList, 'data.data', [])) && !isThereType) {
+      if (get(cartItemsList, 'total_amount') - paymentAmount > customerId?.balance && type?.type == 'loyalty_card') {
+        return [...prev, { ...type, amount: customerId?.balance }]
+      } else if (prev?.length < size(get(paymentTypesList, 'data.data', [])) && !isThereType) {
         return [...prev, { ...type, amount: get(cartItemsList, 'total_amount') - paymentAmount }]
       } else {
         return prev
@@ -604,8 +703,7 @@ export default function OrderDrawer({
 
       if ((totalEnteredMoney >= 1 && type?.front_name == 'uzum') || paymentsList.some((item) => item.front_name == 'uzum')) return false
 
-      if (type?.front_name == 'loyalty_card') return false //vaqtincha
-      // if ((customerId?.balance <= 1 && type?.front_name == 'loyalty_card') || (!customerId?.name && type?.front_name == 'loyalty_card')) return false
+      if ((customerId?.balance <= 1 && type?.front_name == 'loyalty_card') || (!customerId?.name && type?.front_name == 'loyalty_card')) return false
 
       const totalAmount = get(cartItemsList, 'total_amount')
 
@@ -822,7 +920,7 @@ export default function OrderDrawer({
                       {maxAmount < 0 ? t('return') : t('should_pay')}
                     </Typography>
                     <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={maxAmount === 0 ? 'green.700' : 'red.700'}>
-                      {thousandDivider(Math.abs(maxAmount), 'сум')}
+                      {thousandDivider(Math.abs(maxAmount.toFixed(2)), 'сум')}
                     </Typography>
                   </Box>
                 </Box>

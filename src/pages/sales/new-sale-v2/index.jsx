@@ -337,7 +337,7 @@ function NewSaleV2() {
   })
 
   useEffect(() => {
-    if (customerId?.id && customerId?.new != false) {
+    if (customerId?.id && customerId?.new != false && customerId?.searchTerm == customerId?.discount_card && customerId?.discount_card_barcode?.length) {
       addDiscountCard({
         customer_id: customerId?.id,
         barcode: customerId?.barcode,
@@ -606,7 +606,13 @@ function NewSaleV2() {
   useEffect(() => {
     const customer = get(cashBoxDetails, 'data.data.customer')
     if (customer?.first_name) {
-      setCustomerId({ id: customer?.id, name: customer?.first_name + ' ' + customer?.first_name, balance: 0, barcode: '', new: false })
+      setCustomerId({
+        id: customer?.id,
+        name: customer?.first_name + ' ' + customer?.first_name,
+        balance: customer?.balance,
+        loyalty_card_barcode: customer?.loyalty_card_barcode,
+        new: false,
+      })
     }
   }, [cashBoxDetails])
   useEffect(() => {
