@@ -1,3 +1,4 @@
+import { useQueryParams } from '@/hooks/useQueryParams'
 import { Box, Button, Container, IconButton, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { createBrowserHistory } from 'history'
@@ -94,6 +95,8 @@ function Header({
 }) {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
   const navigate = useNavigate()
+  const { values } = useQueryParams()
+
   const classes = useStyles({ fullWidth, isOpen })
   const history = createBrowserHistory()
   const backHistory = useRef()
@@ -107,7 +110,13 @@ function Header({
       backHistory.current = location.state?.prevFilter
     }
   }, [])
-
+  const addDateToLink = (link) => {
+    debugger
+    if (values?.start_date && values?.end_date) {
+      return `${link}&start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`
+    }
+    return `${link}`
+  }
   const backButtonClickHandler = (e) => {
     goBackWithParams(backHref)
     return

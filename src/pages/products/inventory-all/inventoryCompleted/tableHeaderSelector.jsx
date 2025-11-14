@@ -1,3 +1,4 @@
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'

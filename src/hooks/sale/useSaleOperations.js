@@ -31,7 +31,7 @@ export const useSaleOperations = ({
   const [payType, setPayType] = useState(undefined)
 
   useEffect(() => {
-    if (paymentsList?.length == 1 && paymentsList?.[0]?.type == 'uzum') {
+    if (paymentsList?.length == 1 && paymentsList?.[0]?.front_name == 'uzum') {
       setPayType(2)
       return
     } else {
@@ -205,18 +205,15 @@ export const useSaleOperations = ({
       } else {
         Object.values(markingsList[el.id] || {}).map((marking, index) => {
           const price = el.quantity > index ? el.unit_price : el.unit_quantity_price * el.unit_quantity
-
           let otherSum = 0
 
           if (leftLoayCardSum > 0) {
             if (price >= leftLoayCardSum) {
-              leftPrice = price - leftLoayCardSum
               otherSum = leftLoayCardSum
               leftLoayCardSum = 0
             } else {
               otherSum = price
               leftLoayCardSum = leftLoayCardSum - price
-              leftPrice = 0
             }
           }
           const other = (otherSum * 100).toFixed(2)

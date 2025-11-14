@@ -239,7 +239,10 @@ export default function DashboarPage() {
     amount: payments?.data?.data?.[p.prop] ?? 0,
   }))
   const addDateToLink = (link) => {
-    return `${link}&start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`
+    if (values?.start_date && values?.end_date) {
+      return `${link}&start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`
+    }
+    return `${link}`
   }
   return (
     <LoadingContainer readyState={true}>

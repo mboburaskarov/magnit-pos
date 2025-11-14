@@ -201,7 +201,7 @@ export default function tableHeaderSelector({ salesColumns, setOpenSaleDrawer, v
     if (el.field === 'loyalty_card') {
       return {
         ...el,
-        headerName: 'Баланс',
+        headerName: 'Накопительный',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='loyalty_card' />),
       }

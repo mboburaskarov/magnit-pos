@@ -1,22 +1,42 @@
-import ArrowDown from '@/assets/icons/ArrowDown'
-import ArrowUp from '@/assets/icons/ArrowUp'
-import { Box, Collapse, IconButton, Skeleton, Typography } from '@mui/material'
+import { Box, Skeleton, Typography } from '@mui/material'
 import thousandDivider from '@utils/thousandDivider'
 import { get } from 'lodash'
 import { useState } from 'react'
 
 function ProductMovementDashboard({ singleProductDashboard, isLoading = true, unit_per_pack = 1 }) {
-  const [open, setOpen] = useState(false)
+  const [collapse, setCollapse] = useState(true)
 
   const items = [
-    { title: 'Импорты', color: 'green.700', countKey: 'import_count', amountKey: 'import_amount' },
-    { title: 'Входящее перемещение', color: 'green.700', countKey: 'transfer_in_count', amountKey: 'transfer_in_amount' },
-    { title: 'Возв от клиента', color: 'green.700', countKey: 'return_sale_count', amountKey: 'return_sale_amount' },
+    { title: 'Импорты', collapseTitle: 'Импорты', color: 'green.700', countKey: 'import_count', amountKey: 'import_amount' },
+    { title: 'Возврат от клиента ', collapseTitle: 'Возврат или продажи', color: 'green.700', countKey: 'return_sale_count', amountKey: 'return_sale_amount' },
+    { title: 'Перемещение', collapseTitle: 'Перемещение', color: 'green.700', countKey: 'transfer_in_count', amountKey: 'transfer_in_amount' },
+    { title: 'Инвентаризация', collapseTitle: 'Инвентаризация', color: 'green.700', countKey: 'inventory_plus_count', amountKey: 'inventory_plus_amount' },
+
+    { title: 'Возврат на склад', color: 'red.700', countKey: 'return_to_sklad_count', amountKey: 'return_to_sklad_amount' },
     { title: 'Продажи', color: 'red.700', countKey: 'sale_count', amountKey: 'sale_amount' },
-    { title: 'Исходящее перемещение', color: 'red.700', countKey: 'transfer_out_count', amountKey: 'transfer_out_amount' },
-    { title: 'Возв на склад', color: 'red.700', countKey: 'return_to_sklad_count', amountKey: 'return_to_sklad_amount' },
-    { title: 'Текущее', color: 'indigo.600', countKey: 'unit_quantity', amountKey: 'product_amount' },
+    { title: 'Перемещение', color: 'red.700', countKey: 'transfer_out_count', amountKey: 'transfer_out_amount' },
+    { title: 'Инвентаризация', color: 'red.700', countKey: 'inventory_minus_count', amountKey: 'inventory_minus_amount' },
+
+    { title: 'Текущее', collapseTitle: 'Текущее', color: 'indigo.600', countKey: 'unit_quantity', amountKey: 'product_amount' },
   ]
+
+  const merged = { ...singleProductDashboard }
+
+  if (collapse) {
+    merged.import_count += merged.return_to_sklad_count || 0
+    merged.import_amount += merged.return_to_sklad_amount || 0
+
+    merged.return_sale_count += merged.sale_count || 0
+    merged.return_sale_amount += merged.sale_amount || 0
+
+    merged.transfer_in_count += merged.transfer_out_count || 0
+    merged.transfer_in_amount += merged.transfer_out_amount || 0
+
+    merged.inventory_plus_count += merged.inventory_minus_count || 0
+    merged.inventory_plus_amount += merged.inventory_minus_amount || 0
+  }
+
+  const filteredItems = collapse ? items.filter((i) => i.color !== 'red.700' || i.title === 'Текущее') : items
 
   const formatCount = (count) => {
     if (!count || unit_per_pack <= 1) return `${thousandDivider(count)} шт`
@@ -29,108 +49,82 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true, un
   }
 
   return (
-    <Box sx={{ padding: '10px 10px', bgcolor: 'bunker.100', borderRadius: '16px', m: '25px 35px 0px' }}>
-      {/* Header with toggle button */}
+    <Box>
+      <Typography
+        textAlign={'end'}
+        onClick={() => setCollapse((a) => !a)}
+        sx={{ mb: 1, cursor: 'pointer', fontWeight: 600, fontSize: '17px', color: 'gray.700', userSelect: 'none', padding: '10px 40px 0 0' }}
+      >
+        {collapse ? 'Еще' : 'Меньше'}
+      </Typography>
+
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          mb: 1,
+          padding: '10px 35px',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, 1fr)',
+          gridAutoRows: collapse ? '45px' : '90px',
+          gap: '10px',
         }}
       >
-        <Typography fontSize={16} fontWeight={700} color='bunker.700'>
-          Статистика продукта
-        </Typography>
-        <IconButton onClick={() => setOpen(!open)} size='small'>
-          {!open ? <ArrowDown color='#fe5000' /> : <ArrowUp color='#fe5000' />}
-        </IconButton>
-      </Box>
+        {filteredItems.map((item, index) => {
+          const isLast = item.title === 'Текущее'
+          console.log(isLast, item)
 
-      {/* Collapsible content */}
-      <Collapse in={open} timeout='auto' unmountOnExit>
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gridAutoRows: '1fr',
-            gap: '10px',
-          }}
-        >
-          {/* first 6 items */}
-          {items.slice(0, 6).map((item, index) => (
+          return (
             <Box
               key={index}
               sx={{
-                p: '5px 12px',
-                borderRadius: '16px',
-                bgcolor: 'background.paper',
+                gridRow: isLast ? '1 / span 2' : 'auto',
+                gridColumn: isLast ? '5' : 'auto',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between',
-                minHeight: '90px',
-                height: '90px',
+                justifyContent: isLast && !collapse ? 'center' : 'flex-start',
+                alignItems: isLast && !collapse ? 'center' : 'flex-start',
+                padding: '5px 12px',
+                bgcolor: 'bg.10',
+                borderRadius: '16px',
+                height: isLast && !collapse ? 'auto' : '90px',
+                maxHeight: isLast && !collapse ? 'auto' : '90px',
               }}
             >
+              <Box sx={{ width: '100%' }}>
+                {isLoading ? (
+                  <Skeleton width='50%' height={20} sx={{ mt: 1 }} />
+                ) : (
+                  <Typography
+                    fontSize={14}
+                    textAlign={isLast && !collapse ? 'center' : 'start'}
+                    mt={'5px'}
+                    lineHeight={'24px'}
+                    color={'bunker.600'}
+                    fontWeight={600}
+                  >
+                    {collapse ? item.collapseTitle : item.title}
+                  </Typography>
+                )}
+              </Box>
+
               {isLoading ? (
                 <>
-                  <Skeleton width='50%' height={20} sx={{ mt: 1 }} />
                   <Skeleton width='60%' height={40} sx={{ mt: '5px', mb: '2px' }} />
                   <Skeleton width='40%' height={20} />
                 </>
               ) : (
                 <>
-                  <Typography fontSize={14} mt={'5px'} lineHeight={'24px'} color={'bunker.600'} fontWeight={600}>
-                    {item.title}
+                  <Typography fontSize={20} m={'5px 0 2px'} display={'flex'} alignItems={'flex-end'} fontWeight={700} color={item.color}>
+                    {formatCount(Math.abs(get(merged, item.countKey)) || 0)}
                   </Typography>
-                  <Typography fontSize={20} fontWeight={700} color={item.color}>
-                    {formatCount(get(singleProductDashboard, item.countKey) || 0)}
-                  </Typography>
-                  <Typography fontSize={13} color={item.color} fontWeight={600}>
-                    {thousandDivider(get(singleProductDashboard, item.amountKey), 'сум')}
+
+                  <Typography fontSize={13} ml={'3px'} lineHeight={'24px'} color={item.color} fontWeight={600}>
+                    {thousandDivider(get(merged, item.amountKey), 'сум')}
                   </Typography>
                 </>
               )}
             </Box>
-          ))}
-
-          {/* last item (tall one) */}
-          <Box
-            sx={{
-              gridColumn: '4',
-              gridRow: '1 / span 2', // spans two rows
-              p: '5px 12px',
-              borderRadius: '16px',
-              bgcolor: 'background.paper',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '190px',
-            }}
-          >
-            {isLoading ? (
-              <>
-                <Skeleton width='50%' height={20} sx={{ mt: 1 }} />
-                <Skeleton width='60%' height={40} sx={{ mt: '5px', mb: '2px' }} />
-                <Skeleton width='40%' height={20} />
-              </>
-            ) : (
-              <>
-                <Typography fontSize={14} lineHeight={'24px'} color={'bunker.600'} fontWeight={600}>
-                  {items[6].title}
-                </Typography>
-                <Typography fontSize={20} fontWeight={700} color={items[6].color}>
-                  {formatCount(get(singleProductDashboard, items[6].countKey) || 0)}
-                </Typography>
-                <Typography fontSize={13} color={items[6].color} fontWeight={600}>
-                  {thousandDivider(get(singleProductDashboard, items[6].amountKey), 'сум')}
-                </Typography>
-              </>
-            )}
-          </Box>
-        </Box>
-      </Collapse>
+          )
+        })}
+      </Box>
     </Box>
   )
 }

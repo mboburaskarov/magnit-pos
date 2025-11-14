@@ -59,6 +59,7 @@ export const useFullOrderPayments = ({ cartItemsList, paymentTypesList, isOrderD
 
       // Hide Uzum if other payments are present or Other payment types hide if Uzum is present
       if ((totalEnteredMoney >= 1 && type?.front_name == 'uzum') || paymentsList.some((item) => item.front_name == 'uzum')) return false
+      if ((customerId?.balance <= 1 && type?.front_name == 'loyalty_card') || (!customerId?.name && type?.front_name == 'loyalty_card')) return false
 
       // Special handling for app payment type
       if (type?.type === 'app' && totalAmount - totalEnteredMoney > 0 && paymentsList.length !== 0) {

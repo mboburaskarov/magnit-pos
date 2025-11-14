@@ -31,7 +31,7 @@ export const useSaleOperations = ({
   const [payType, setPayType] = useState(undefined)
 
   useEffect(() => {
-    if (paymentsList?.length == 1 && paymentsList?.[0]?.type == 'uzum') {
+    if (paymentsList?.length == 1 && paymentsList?.[0]?.front_name == 'uzum') {
       setPayType(2)
       return
     } else {

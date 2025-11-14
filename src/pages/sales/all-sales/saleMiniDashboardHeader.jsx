@@ -1,7 +1,6 @@
-import { Box, Grid, Typography } from '@mui/material';
-import thousandDivider from '@utils/thousandDivider';
-import { get } from 'lodash';
-
+import { Box, Grid, Typography } from '@mui/material'
+import thousandDivider from '@utils/thousandDivider'
+import { get } from 'lodash'
 
 const PaymentTypeBox = ({ pay }) => (
   <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'white', borderRadius: '16px', p: '20px', height: '92px' }}>
@@ -46,7 +45,7 @@ function SaleMiniDashboardHeader({ saleStatsData }) {
     { sum_prop: 'total_alif_sum', title: 'Alif', count_prop: 'total_alif_count' },
     { sum_prop: 'total_returnals_sum', title: 'Вазврат', count_prop: 'total_returned_count' },
     { sum_prop: 'total_discount_sum', title: 'Сумма скидки', count_prop: 'total_discount_count' },
-    { sum_prop: 'total_cashback_sum', title: 'Сумма кешбек', count_prop: 'total_cashback_count' },
+    { sum_prop: 'total_cashback_sum', title: 'Накопительный', count_prop: 'total_cashback_count' },
   ]
   const changedData = mockData.map((item) => {
     return { ...item, amount: saleStatsData?.[item?.sum_prop], count: saleStatsData?.[item?.count_prop] }

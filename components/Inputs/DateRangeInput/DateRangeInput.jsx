@@ -111,7 +111,6 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
     const yesterday = today.subtract(1, 'day')
     const start = dayjs(startDate).startOf('day')
     const end = dayjs(endDate).startOf('day')
-
     if (start.isSame(today) && end.isSame(today)) return `Сегодня \n ${start.format('DD.MM.YYYY')}`
     if (start.isSame(yesterday) && end.isSame(yesterday)) return `Вчера \n ${end.format('DD.MM.YYYY')}`
 
@@ -131,8 +130,9 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
     if (start.isSame(startOfYear) && end.isSame(today)) {
       return `В этом году \n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
     }
+    if (start.format('DD.MM.YYYY') == end.format('DD.MM.YYYY')) return `\n ${start.format('DD.MM.YYYY')}`
 
-    return `\n ${start.format('DD.MM.YYYY')}`
+    return `\n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
   }
 
   const [customDateRangeSelected, setCustomDateRangeSelected] = useState(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')

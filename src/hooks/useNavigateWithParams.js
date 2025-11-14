@@ -1,5 +1,5 @@
+import { useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useRef, useEffect } from 'react'
 import { useQueryParams } from './useQueryParams'
 
 export function useNavigateWithParams() {
@@ -39,7 +39,14 @@ export function useNavigateWithParams() {
     if (prevUrlRef.current) {
       navigate(prevUrlRef.current)
     } else {
-      navigate(values?.backHref || backHref) // fallback to normal browser back
+      if (values?.start_date && values?.end_date) {
+        const link = `${values?.backHref || backHref}?start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${
+          values?.to_time
+        }`
+        navigate(link)
+        return
+      }
+      navigate(values?.backHref || backHref)
     }
   }
 
