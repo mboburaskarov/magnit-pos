@@ -1,30 +1,29 @@
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/topReportsTableColumns';
-import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
-import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
-import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
-import AgGridTable from '@components/AgGridTable/AgGridTable';
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
-import LoadingContainer from '@components/LoadingContainer';
-import InputSearch from '@components/Inputs/InputSearch';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { Box, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import { requests } from '@utils/requests';
-import ArrowDown from '@icons/ArrowDown';
-import Header from '@components/Header';
-import ArrowUp from '@icons/ArrowUp';
-import { error } from '@utils/toast';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/topReportsTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import Header from '@components/Header'
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { useQueryParams } from '@hooks/useQueryParams'
+import ArrowDown from '@icons/ArrowDown'
+import ArrowUp from '@icons/ArrowUp'
+import { Box, Typography } from '@mui/material'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
 
-import BonusProductReportDashboard from './bonusPoductReportDashboard';
-import tableHeaderSelector from './tableHeaderSelector';
-import FilterMenu from './FilterMenu';
-
+import BonusProductReportDashboard from './bonusPoductReportDashboard'
+import FilterMenu from './FilterMenu'
+import tableHeaderSelector from './tableHeaderSelector'
 
 export default function BonusProductsPage() {
   const dispatch = useDispatch()
@@ -58,6 +57,7 @@ export default function BonusProductsPage() {
       limit: values?.limit || 10,
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
+      storeIds: [],
       order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
     }
   }, [values?.offset, values?.from_time, values?.to_time, orderStoring, values?.limit, values?.search, values?.start_date, values?.end_date])

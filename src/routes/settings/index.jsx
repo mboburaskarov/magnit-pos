@@ -1,15 +1,16 @@
 import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import SettingsPage from '../../pages/settings'
 
+import PermissionsManager from '@/pages/settings/new-permission-v2'
+import StoresPage from '../../pages/settings/branches'
 import CashBoxsPage from '../../pages/settings/cashbox'
 import CompaniesPage from '../../pages/settings/companies/index'
 import CompanyPage from '../../pages/settings/company'
+import EmployeesPage from '../../pages/settings/employees'
 import PaymentsAssetsList from '../../pages/settings/paymentsAssets/actions'
 import Profile from '../../pages/settings/profile'
 import RolesPage from '../../pages/settings/roles'
 import ActionListPage from '../../pages/settings/roles/actions'
-import StoresPage from '../../pages/settings/branches'
-import EmployeesPage from '../../pages/settings/employees'
 
 const settingsRoutes = {
   path: 'settings',
@@ -24,6 +25,7 @@ const settingsRoutes = {
       path: 'profile',
       element: <Profile />,
     },
+    { path: 'new-permission-v2', element: <PermissionsManager /> },
     {
       path: 'company',
       element: <CompanyPage />,
