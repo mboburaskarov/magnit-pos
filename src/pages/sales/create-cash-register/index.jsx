@@ -96,9 +96,9 @@ function NewCashRegister() {
     onSuccess: ({ data }) => {
       if (get(data, 'data.is_open', false)) {
         navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
-        // checkPermission('can-open-new-sale-v2', userData)
-        //   ? navigate(`/sales/new-sale-v2/${get(data, 'data.sale_id')}`)
-        //   : navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
+        checkPermission('can-open-new-sale-v2', userData)
+          ? navigate(`/sales/new-sale-v2/${get(data, 'data.sale_id')}`)
+          : navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
       }
     },
     onError: (err) => {
