@@ -111,11 +111,18 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true, un
                 </>
               ) : (
                 <>
-                  <Typography fontSize={20} m={'5px 0 2px'} display={'flex'} alignItems={'flex-end'} fontWeight={700} color={item.color}>
+                  <Typography
+                    fontSize={20}
+                    m={'5px 0 2px'}
+                    display={'flex'}
+                    alignItems={'flex-end'}
+                    fontWeight={700}
+                    color={get(merged, item.countKey) >= 0 ? item.color : 'red.700'}
+                  >
                     {formatCount(Math.abs(get(merged, item.countKey)) || 0)}
                   </Typography>
 
-                  <Typography fontSize={13} ml={'3px'} lineHeight={'24px'} color={item.color} fontWeight={600}>
+                  <Typography fontSize={13} ml={'3px'} lineHeight={'24px'} color={get(merged, item.countKey) >= 0 ? item.color : 'red.700'} fontWeight={600}>
                     {thousandDivider(get(merged, item.amountKey), 'сум')}
                   </Typography>
                 </>
