@@ -1,16 +1,16 @@
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import LazySelect from '@components/Select/LazySelect'
+import { useQueryParams } from '@hooks/useQueryParams'
+import CloseIcon from '@icons/CloseIcon'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import { requests } from '@utils/requests'
 import * as qs from 'qs'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
-import LazySelect from '@components/Select/LazySelect'
-import { requests } from '@utils/requests'
-import CloseIcon from '@icons/CloseIcon'
-import { useQueryParams } from '@hooks/useQueryParams'
 
 export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
@@ -28,7 +28,7 @@ export default function FilterMenu({ open, setOpen }) {
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
     setOpen(false)
-    navigate(`/settings/vendors${requestParams}`)
+    navigate(`/settings/employees${requestParams}`)
   }
 
   const onError = (err) => {
@@ -49,7 +49,7 @@ export default function FilterMenu({ open, setOpen }) {
   const resetFilter = () => {
     reset()
     setOpen(false)
-    navigate(`/settings/vendors?offset=0&limit=${values?.limit || 5}`)
+    navigate(`/settings/employees?offset=0&limit=${values?.limit || 5}`)
   }
   const theme = useTheme()
   const { t } = useTranslation()

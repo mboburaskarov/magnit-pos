@@ -68,7 +68,12 @@ function CartDetailSide({
     setBonusTableHeight(getDynamicBonusTableHeight(userData, get(customerId, 'name', false), dmedPrescriptionsList))
   }, [customerId, dmedOrganizedList])
 
-  const { data: sellerBonus } = useQuery(['sellerBonus'], () => requests.getSellerBonusData())
+  // const { data: sellerBonus } = useQuery(['sellerBonus'], () => requests.getSellerBonusData())
+  const { data: sellerBonusInOneSale } = useQuery(
+    ['sellerBonusInOneSale'],
+    () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
+    { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
+  )
   const leftZreportCount = localStorage.getItem('leftZreportCount')
 
   useEffect(() => {
@@ -427,7 +432,7 @@ function CartDetailSide({
           </Box>
           <Box>
             <Typography sx={{ fontWeight: '700', fontSize: '24px', lineHeight: '32px', color: '#fff' }}>
-              +{thousandDivider(get(sellerBonus, 'data.data.total_bonus', 0), 'сум')}
+              +{thousandDivider(get(sellerBonusInOneSale, 'data.data.bonus', 0), 'сум')}
             </Typography>
             <Typography sx={{ fontWeight: '600', fontSize: '12px', lineHeight: '14px', color: '#fff' }}>Мой бонус</Typography>
           </Box>
