@@ -1,12 +1,4 @@
-import { Box, Button, Container, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import { get } from 'lodash'
-import * as qs from 'qs'
-import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/importDetailTableColumns'
 import AgGridTable from '@components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
 import ButtonWithPopup from '@components/Buttons/ButtonWithPopup'
@@ -14,18 +6,26 @@ import Header from '@components/Header'
 import ImageGallery from '@components/ImageGallery'
 import InputSearch from '@components/Inputs/InputSearch'
 import LoadingContainer from '@components/LoadingContainer'
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
-import { requests } from '@utils/requests'
-import { error, success } from '@utils/toast'
+import { useQueryParams } from '@hooks/useQueryParams'
 import FilterMenuIcon from '@icons/FilterMenuIcon'
 import ImportIcon from '@icons/ImportIcon'
 import ImportWithIcon from '@icons/ImportWithIcon'
 import ImportWithoutIcon from '@icons/ImportWithoutIcon'
-import { useQueryParams } from '@hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/importDetailTableColumns'
+import { Box, Button, Container, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import { get } from 'lodash'
+import * as qs from 'qs'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function ImportDetailsPage() {
   const theme = useTheme()
@@ -229,6 +229,7 @@ export default function ImportDetailsPage() {
             <AgGridTable
               id='imports-main-table'
               tableSettings
+              defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
               columns={tableColumns}
               downloadByFilter={() => importDetailsExcelReport(importWithCheckingDetailsFilter)}
               fullDownload={() => importDetailsExcelReport({ ...importWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}

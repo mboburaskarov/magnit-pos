@@ -1,20 +1,19 @@
-import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
-import TimeQuarterIcon from '@icons/step-progress/TimeQuarter';
-import FolderSearch from '@icons/step-progress/FolderSearch';
-import { Box, IconButton, Typography } from '@mui/material';
-import SentFastIcon from '@icons/step-progress/SentFast';
-import { useQueryParams } from '@hooks/useQueryParams';
-import StyledTooltip from '@components/StyledTooltip';
-import CheckAccess from '@components/CheckAccess';
-import TickIcon from '@icons/step-progress/Tick';
-import DownloadIcon from '@icons/DownloadIcon';
-import { useNavigate } from 'react-router-dom';
-import LeftArrowIcon from '@icons/LeftArrow';
-import DeleteIcon from '@icons/DeleteIcon';
-import ArrowRight from '@icons/ArrowRight';
-import { memo } from 'react';
-import { get } from 'lodash';
-
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import CheckAccess from '@components/CheckAccess'
+import StyledTooltip from '@components/StyledTooltip'
+import { useQueryParams } from '@hooks/useQueryParams'
+import ArrowRight from '@icons/ArrowRight'
+import DeleteIcon from '@icons/DeleteIcon'
+import DownloadIcon from '@icons/DownloadIcon'
+import LeftArrowIcon from '@icons/LeftArrow'
+import FolderSearch from '@icons/step-progress/FolderSearch'
+import SentFastIcon from '@icons/step-progress/SentFast'
+import TickIcon from '@icons/step-progress/Tick'
+import TimeQuarterIcon from '@icons/step-progress/TimeQuarter'
+import { Box, IconButton, Typography } from '@mui/material'
+import { get } from 'lodash'
+import { memo } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export default function tableHeaderSelector({ transferColumns, t, downloadNakladnoy, setOpenConfirmDialog, setStatusModal }) {
   const { values } = useQueryParams()
@@ -297,7 +296,7 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
               <Box className={isLoadedStage(p?.data, 1) ? 'loaded-bar' : 'complated-bar'} />
 
               <Box className={`step-icon-box ${isLoadedStage(p?.data, 1) ? 'loaded' : 'complated'}`}>
-                <SentFastIcon />
+                <SentFastIcon color='#fff' />
               </Box>
               <Box className={isLoadedStage(p?.data, 2) ? 'loaded-bar' : 'complated-bar'} />
 

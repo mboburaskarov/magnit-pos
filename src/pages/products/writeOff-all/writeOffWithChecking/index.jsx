@@ -1,13 +1,4 @@
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Box, Button, Container, Typography } from '@mui/material'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/writeOffWithCheckingTableColumns'
 import AgGridTable from '@components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
 import ConfirmDialog from '@components/ConfirmDialog'
@@ -16,16 +7,25 @@ import InputQuantity from '@components/Inputs/InputQuantity'
 import InputSearch from '@components/Inputs/InputSearch'
 import InputSwitch from '@components/Inputs/InputSwitch'
 import LoadingContainer from '@components/LoadingContainer'
-import { requests } from '@utils/requests'
-import { error } from '@utils/toast'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useQueryParams } from '@hooks/useQueryParams'
 import ArrowDown from '@icons/ArrowDown'
 import ArrowUp from '@icons/ArrowUp'
 import BarcodeIcon from '@icons/BarcodeIcon'
-import { useQueryParams } from '@hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/writeOffWithCheckingTableColumns'
+import { Box, Button, Container, Typography } from '@mui/material'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import { get } from 'lodash'
+import { useEffect, useMemo, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function WriteOffScanWithCheckingPage() {
   const dispatch = useDispatch()
@@ -221,6 +221,7 @@ export default function WriteOffScanWithCheckingPage() {
                 totalCount={WriteOffWithCheckingDetails?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchingWriteOffWithCheckingDetails || WriteOffWithCheckingDetailsLoading}
                 offsetCount={offsetCount}
+                defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
                 updaterAction={(newData) => {
                   if (newData) dispatch(updateTableHeader(newData))
                 }}

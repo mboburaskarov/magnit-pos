@@ -1,11 +1,4 @@
-import { Box, Container } from '@mui/material'
-import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/importWithCheckingTableColumns'
 import AgGridTable from '@components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
 import Header from '@components/Header'
@@ -13,13 +6,20 @@ import InputQuantity from '@components/Inputs/InputQuantity'
 import InputSearch from '@components/Inputs/InputSearch'
 import InputSwitch from '@components/Inputs/InputSwitch'
 import LoadingContainer from '@components/LoadingContainer'
+import { useQueryParams } from '@hooks/useQueryParams'
+import BarcodeIcon from '@icons/BarcodeIcon'
+import { Box, Container } from '@mui/material'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 import { requests } from '@utils/requests'
 import { error } from '@utils/toast'
-import BarcodeIcon from '@icons/BarcodeIcon'
-import { useQueryParams } from '@hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/importWithCheckingTableColumns'
+import { get } from 'lodash'
+import { useEffect, useMemo, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 import tableHeaderSelector from './tableHeaderSelector'
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function ImportWithCheckingPage() {
   const dispatch = useDispatch()
@@ -196,6 +196,7 @@ export default function ImportWithCheckingPage() {
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
+                defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
                 data={importWithCheckingDetails?.data?.data?.data || []}
                 totalCount={importWithCheckingDetails?.data?.data?._meta?.total_count || 0}
                 isDataLoading={isFetchingimportWithCheckingDetails || importWithCheckingDetailsLoading}

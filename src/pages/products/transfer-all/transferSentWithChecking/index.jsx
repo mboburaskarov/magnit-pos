@@ -1,6 +1,21 @@
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/transferSentWithCheckingTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import ConfirmDialog from '@components/ConfirmDialog'
+import Header from '@components/Header'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useQueryParams } from '@hooks/useQueryParams'
+import ArrowDown from '@icons/ArrowDown'
+import ArrowUp from '@icons/ArrowUp'
+import BarcodeIcon from '@icons/BarcodeIcon'
 import { Box, Button, Container, Typography } from '@mui/material'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -8,23 +23,8 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '@components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '@components/ConfirmDialog'
-import Header from '@components/Header'
-import InputSearch from '@components/Inputs/InputSearch'
-import LoadingContainer from '@components/LoadingContainer'
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
-import { requests } from '@utils/requests'
-import { error } from '@utils/toast'
-import ArrowDown from '@icons/ArrowDown'
-import ArrowUp from '@icons/ArrowUp'
-import BarcodeIcon from '@icons/BarcodeIcon'
-import { useQueryParams } from '@hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/transferSentWithCheckingTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function TransferSentScanWithCheckingPage() {
   const dispatch = useDispatch()
@@ -196,6 +196,7 @@ export default function TransferSentScanWithCheckingPage() {
                 id='imports-main-table'
                 tableSettings
                 columns={tableColumns}
+                defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
                 fullDownload={() => getTransferDetailsExcelReport({ ...transferWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                 downloadByFilter={() => getTransferDetailsExcelReport(transferWithCheckingDetailsFilter)}
                 data={transferWithCheckingDetails?.data?.data?.data || []}

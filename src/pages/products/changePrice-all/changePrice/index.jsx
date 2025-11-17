@@ -175,6 +175,7 @@ export default function ChangePricePage() {
             <AgGridTable
               id='revaluation-main-table'
               tableSettings
+              defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
               columns={tableColumns}
               data={revaluationList?.data?.data?.data || []}
               totalCount={revaluationList?.data?.data?._meta?.total_count || 0}

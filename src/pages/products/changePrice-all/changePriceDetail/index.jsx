@@ -1,8 +1,23 @@
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/changePriceDetailTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTableSelectable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import ConfirmDialog from '@components/ConfirmDialog'
+import Header from '@components/Header'
+import InputSearch from '@components/Inputs/InputSearch'
+import InputSwitchNew from '@components/Inputs/InputSwitch'
+import OutLineTextFieldThousand from '@components/Inputs/OutLineTextFieldThousand'
+import LoadingContainer from '@components/LoadingContainer'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useQueryParams } from '@hooks/useQueryParams'
+import ArrowDown from '@icons/ArrowDown'
+import ArrowUp from '@icons/ArrowUp'
 import { Box, Button, Container, Typography } from '@mui/material'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
 import dayjs from 'dayjs'
-import OutLineTextFieldThousand from '@components/Inputs/OutLineTextFieldThousand'
 import { get } from 'lodash'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -11,24 +26,9 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import AgGridTable from '@components/AgGridTable/AgGridTableSelectable'
-import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '@components/ConfirmDialog'
-import Header from '@components/Header'
-import InputSearch from '@components/Inputs/InputSearch'
-import InputSwitchNew from '@components/Inputs/InputSwitch'
-import LoadingContainer from '@components/LoadingContainer'
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
-import { requests } from '@utils/requests'
-import { error, success } from '@utils/toast'
-import ArrowDown from '@icons/ArrowDown'
-import ArrowUp from '@icons/ArrowUp'
-import { useQueryParams } from '@hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/changePriceDetailTableColumns'
 import ChangePriceModal from './changePriceModal'
 import ChangePriceDashboard from './dashboard'
 import tableHeaderSelector from './tableHeaderSelector'
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function ChangePriceDetailPage() {
   const methods = useForm()
@@ -338,6 +338,7 @@ export default function ChangePriceDetailPage() {
                 }}
                 canCellClick={true}
                 childRef={childRef}
+                defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
                 selectedCellRowId={setSelectedCellRowId}
                 columns={tableColumns}
                 data={revaluationDetailList?.data?.data?.data || []}

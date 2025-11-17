@@ -7,6 +7,7 @@ import DraftDrawer from '@components/Sales/DraftDrawer'
 import OnlineSaleDrawer from '@components/Sales/OnlineSaleNoor/OnlineSaleDrawer'
 import ReturnExchangeDrawer from '@components/Sales/ReturnExchange/ReturnExchangeDrawer'
 import SendRejectedProductDrawer from '@components/Sales/SendRejectedProduct/SendRejectedProductDrawer'
+import ShortcutsDrawerNew from '@components/Sales/ShortcutsDrawerNew'
 import ShortcutBox from '@components/ShortcutBox'
 import StyledTooltip from '@components/StyledTooltip'
 import useDebouncedValue from '@hooks/useDebouncedValue'
@@ -32,7 +33,6 @@ import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
-
 import CartDetailSide from './cart_detail_side'
 import CartItems from './CartItems'
 import CartSearchBar from './CartSearchBar'
@@ -311,6 +311,7 @@ function NewSaleV2() {
   const searchRef = useRef('')
   const searchResetRef = useRef('')
   const printContainer = useRef()
+  const drawerRef = useRef()
   const cartRef = cartItemRef.current
 
   const { mutate: addDiscountCard, isLoading: isaddDiscountCard } = useMutation(requests.addDiscountCard, {
@@ -1237,6 +1238,7 @@ function NewSaleV2() {
                 </Box>
               </Box>
             </Box>
+            <ShortcutsDrawerNew ref={drawerRef} />
           </Box>
 
           <CartDetailSide
@@ -1442,6 +1444,27 @@ function NewSaleV2() {
         implementMarkingList={implementMarkingList}
         handleClose={() => setIsOpenRemoveMarkingDialog(false)}
       />
+      <Box
+        onClick={() => drawerRef.current.open()}
+        sx={{
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
+          backgroundColor: '#000',
+          borderRadius: '24px',
+          padding: '8px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          '&:hover': {
+            backgroundColor: '#000',
+            opacity: 0.9,
+          },
+        }}
+      >
+        <Typography sx={{ color: '#fff', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>⌘ {'Шорткаты'}</Typography>
+      </Box>
       <ChangeShift open={isOpenChangeShift} setOpen={setIsOpenChangeShift} />
       <DraftDrawer cashBoxDetails={cashBoxDetails} open={isOpenDraft} setOpen={setIsOpenDraft} />
       <BonusProductDrawer cashBoxDetails={cashBoxDetails} open={isOpenBonusProductDrawer} setOpen={setIsOpenBonusProductDrawer} />

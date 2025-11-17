@@ -1,4 +1,18 @@
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/transferRecheckWithCheckingTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import Header from '@components/Header'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { useQueryParams } from '@hooks/useQueryParams'
+import ArrowDown from '@icons/ArrowDown'
+import ArrowUp from '@icons/ArrowUp'
+import BarcodeIcon from '@icons/BarcodeIcon'
 import { Box, Container, Typography } from '@mui/material'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -6,22 +20,8 @@ import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import AgGridTable from '@components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
-import Header from '@components/Header'
-import InputSearch from '@components/Inputs/InputSearch'
-import LoadingContainer from '@components/LoadingContainer'
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
-import { requests } from '@utils/requests'
-import { error } from '@utils/toast'
-import ArrowDown from '@icons/ArrowDown'
-import ArrowUp from '@icons/ArrowUp'
-import BarcodeIcon from '@icons/BarcodeIcon'
-import { useQueryParams } from '@hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/transferRecheckWithCheckingTableColumns'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 
 export default function TransferCompletedPage() {
   const dispatch = useDispatch()
@@ -175,6 +175,7 @@ export default function TransferCompletedPage() {
                 fullDownload={() => getTransferDetailsExcelReport({ ...WriteOffWithCheckingDetailsFilter, offset: 0, limit: 1000000 })}
                 downloadByFilter={() => getTransferDetailsExcelReport(WriteOffWithCheckingDetailsFilter)}
                 tableSettings
+                defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
                 columns={tableColumns}
                 data={WriteOffWithCheckingDetails?.data?.data?.data || []}
                 totalCount={WriteOffWithCheckingDetails?.data?.data?._meta?.total_count || 0}
