@@ -1,5 +1,12 @@
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import InputRange from '@components/Inputs/InputRange'
+import LazySelect from '@components/Select/LazySelect'
+import { useQueryParams } from '@hooks/useQueryParams'
+import CloseIcon from '@icons/CloseIcon'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import getOptionsFromUrlParam from '@utils/getOptionsFromUrlParam'
+import { requests } from '@utils/requests'
 import { get } from 'lodash'
 import * as qs from 'qs'
 import { useEffect } from 'react'
@@ -7,14 +14,6 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
-import InputRange from '@components/Inputs/InputRange'
-import LazySelect from '@components/Select/LazySelect'
-import SelectSimple from '@components/Select/SelectSimple'
-import getOptionsFromUrlParam from '@utils/getOptionsFromUrlParam'
-import { requests } from '@utils/requests'
-import CloseIcon from '@icons/CloseIcon'
-import { useQueryParams } from '@hooks/useQueryParams'
 
 export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -140,7 +139,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
             <Box padding={'0 2px'} maxHeight={'calc(100vh - 280px)'} width={'100%'}>
-              <SelectSimple
+              {/* <SelectSimple
                 fullWidth
                 id='nobarcode'
                 white
@@ -151,7 +150,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                 options={barcodeFilterList}
                 getOptionLabel={(el) => el.name}
               />
-              <Box height={'20px'} />
+              <Box height={'20px'} /> */}
               <Box display={'flex'}>
                 <LazySelect
                   slug='users'

@@ -2,7 +2,15 @@ import { Box, Skeleton, Typography } from '@mui/material'
 import thousandDivider from '@utils/thousandDivider'
 import { get } from 'lodash'
 import { useState } from 'react'
-
+export const formatCount = (count, unit_per_pack, canBeMinus = true) => {
+  if (!count || unit_per_pack <= 1) return `${thousandDivider(count)} шт`
+  const packs = canBeMinus ? Math.floor(count / unit_per_pack) : Math.abs(Math.floor(count / unit_per_pack))
+  const pieces = canBeMinus ? count % unit_per_pack : Math.abs(Math.floor(count % unit_per_pack))
+  let result = ''
+  if (packs > 0) result += `${thousandDivider(packs)}уп`
+  if (pieces > 0) result += ` ${thousandDivider(pieces)}шт`
+  return result.trim()
+}
 function ProductMovementDashboard({ singleProductDashboard, isLoading = true, unit_per_pack = 1 }) {
   const [collapse, setCollapse] = useState(true)
 
@@ -37,16 +45,6 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true, un
   }
 
   const filteredItems = collapse ? items.filter((i) => i.color !== 'red.700' || i.title === 'Текущее') : items
-
-  const formatCount = (count) => {
-    if (!count || unit_per_pack <= 1) return `${thousandDivider(count)} шт`
-    const packs = Math.floor(count / unit_per_pack)
-    const pieces = count % unit_per_pack
-    let result = ''
-    if (packs > 0) result += `${thousandDivider(packs)}уп`
-    if (pieces > 0) result += ` ${thousandDivider(pieces)}шт`
-    return result.trim()
-  }
 
   return (
     <Box>
@@ -119,7 +117,7 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true, un
                     fontWeight={700}
                     color={get(merged, item.countKey) >= 0 ? item.color : 'red.700'}
                   >
-                    {formatCount(Math.abs(get(merged, item.countKey)) || 0)}
+                    {formatCount(Math.abs(get(merged, item.countKey)) || 0, unit_per_pack)}
                   </Typography>
 
                   <Typography fontSize={13} ml={'3px'} lineHeight={'24px'} color={get(merged, item.countKey) >= 0 ? item.color : 'red.700'} fontWeight={600}>

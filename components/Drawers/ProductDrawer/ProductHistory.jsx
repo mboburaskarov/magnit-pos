@@ -11,9 +11,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { formatCount } from './ProductMovementDashboard'
 import TransferDetailModal from './transferDetailModal'
 
-export default function ProductHistory({ id }) {
+export default function ProductHistory({ id, unit_per_pack }) {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const navigate = useNavigate()
@@ -25,7 +26,7 @@ export default function ProductHistory({ id }) {
       store_id: values?.store_id || userData?.store?.id,
       offset: values?.offsetHistory || 0,
     }
-  }, [values?.limitHistory, values?.offsetHistory])
+  }, [values?.limitHistory, values?.offsetHistory, unit_per_pack])
   const {
     data: singleProductMovement,
     isLoading: isproductDataLoadingHistory,
@@ -115,7 +116,7 @@ export default function ProductHistory({ id }) {
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <Typography ml={'4px'} color={'bunker.500'}>
-                {data?.count}
+                {formatCount(data?.quantity, unit_per_pack, false)}
               </Typography>
             </Box>
           </>

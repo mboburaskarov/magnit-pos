@@ -14,7 +14,7 @@ import { requests } from '@utils/requests'
 import thousandDivider from '@utils/thousandDivider'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -76,6 +76,7 @@ const Image = ({ data, setImages }) => {
 
 export default function ProductDrawer({ open: id, onClose, setImages, setOpenConfirmDialog, setRejectComment }) {
   const userData = useSelector((state) => state.user)
+  const [unitPerPack, setUnitPerPack] = useState(1)
   const { values } = useQueryParams()
   const {
     data: productData,
@@ -99,6 +100,10 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     enabled: !!id,
   })
 
+  useEffect(() => {
+    if (!productData || productDataLoading || id == null) return
+    setUnitPerPack(get(productData, 'data.data.unit_per_pack'))
+  }, [productData])
   //
   const printContainer = useRef()
   const documentName = useRef('Pharma CHEQUE')
@@ -166,11 +171,11 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
       <ProductMovementDashboard
         singleProductDashboard={{ ...get(singleProductDashboard, 'data.data'), product_amount: get(productData, 'data.data.retail_price') }}
         isLoading={singleProductDashboardLoading}
-        unit_per_pack={get(productData, 'data.data.unit_per_pack')}
+        unit_per_pack={unitPerPack}
       />
       <Box px={'40px'} my={'20px'}>
         <SectionTitle grey>История продукта</SectionTitle>
-        <ProductHistory id={id} />
+        <ProductHistory id={id} unit_per_pack={unitPerPack} />
       </Box>
       <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
       <Box px={'40px'} my={'20px'}>
