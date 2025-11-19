@@ -147,7 +147,7 @@ export default function ProductHistory({ id, unit_per_pack }) {
         cellRenderer: ({ data, rowIndex }) => <Typography>{get(data, 'store_name')}</Typography>,
       },
     ],
-    []
+    [unit_per_pack]
   )
 
   const formattedData = singleProductMovement?.data?.data?.data
