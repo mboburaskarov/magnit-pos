@@ -92,7 +92,7 @@ export default function ProductHistory({ id }) {
               ? 'Перемещение '
               : get(data, 'entry_type') == '5'
               ? 'Возврат на склад '
-              : get(data, 'entry_type') == '8'
+              : get(data, 'entry_type') == '7'
               ? 'Возврат '
               : get(data, 'entry_type') == '3'
               ? 'Списание '
@@ -100,8 +100,6 @@ export default function ProductHistory({ id }) {
               ? 'Импорт '
               : get(data, 'entry_type') == '2'
               ? 'Инвентаризация '
-              : get(data, 'entry_type') == '7'
-              ? 'Черновик '
               : 'Продажa '}
             #{get(data, 'public_id')}
           </Typography>

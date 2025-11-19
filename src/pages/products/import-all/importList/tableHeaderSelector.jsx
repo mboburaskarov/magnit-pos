@@ -1,16 +1,16 @@
+import { imports_list_statuses } from '@/assets/data/imports-list-statuses'
+import palette from '@/assets/theme/mui.config'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import StatusCell from '@components/AgGridTable/Cells/StatusCell'
 import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useQueryParams } from '@hooks/useQueryParams'
 import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import * as qs from 'qs'
 import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import StatusCell from '@components/AgGridTable/Cells/StatusCell'
-import palette from '@/assets/theme/mui.config'
-import { imports_list_statuses } from '@/assets/data/imports-list-statuses'
-import { useQueryParams } from '@hooks/useQueryParams'
-import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
 export default function tableHeaderSelector({ importsColumns, t }) {
   const { values } = useQueryParams()
@@ -48,6 +48,9 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         colId: el.field,
         cellRenderer: memo((p) => (
           <SimpleText
+            sx={{
+              color: '#fe5000 !important',
+            }}
             onClick={() => {
               navigate(
                 `/products/imports/${p.data.id}?${qs.stringify({

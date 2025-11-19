@@ -1,23 +1,22 @@
-import { Box, Drawer, Grid, Typography } from '@mui/material';
-import { useQueryParams } from '@hooks/useQueryParams';
-import thousandDivider from '@utils/thousandDivider';
-import { useEffect, useMemo, useState } from 'react';
-import { makeStyles, useTheme } from '@mui/styles';
-import { useTranslation } from 'react-i18next';
-import { requests } from '@utils/requests';
-import { useSelector } from 'react-redux';
-import CloseIcon from '@icons/CloseIcon';
-import { useQuery } from 'react-query';
-import { get } from 'lodash';
+import { useQueryParams } from '@hooks/useQueryParams'
+import CloseIcon from '@icons/CloseIcon'
+import { Box, Drawer, Grid, Typography } from '@mui/material'
+import { makeStyles, useTheme } from '@mui/styles'
+import { requests } from '@utils/requests'
+import thousandDivider from '@utils/thousandDivider'
+import { get } from 'lodash'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
 
-import ListWithPagination from '../../AgGridTable/ListWithPagination';
-import PendingSaleParentItemsBox from './PendingSaleParentItemsBox';
-import InputSwitch from '../../Inputs/InputSwitch';
-import InputSearch from '../../Inputs/InputSearch';
-import DraftChildDrawer from './DraftChildDrawer';
-import ResultItem from './DraftParentItemsBox';
-import DraftFilter from './DraftFilter';
-
+import ListWithPagination from '../../AgGridTable/ListWithPagination'
+import InputSearch from '../../Inputs/InputSearch'
+import InputSwitch from '../../Inputs/InputSwitch'
+import DraftChildDrawer from './DraftChildDrawer'
+import DraftFilter from './DraftFilter'
+import ResultItem from './DraftParentItemsBox'
+import PendingSaleParentItemsBox from './PendingSaleParentItemsBox'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {

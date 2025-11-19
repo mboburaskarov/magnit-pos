@@ -198,6 +198,9 @@ const PaymentTypeButton = ({ option, isActive, onClick, shortcut, isFirst }) => 
         borderRadius: '10px',
         bgcolor: isActive ? 'white' : 'transparent',
         mr: isFirst ? '2px' : 0,
+        '&:hover': {
+          bgcolor: 'bunker.200',
+        },
       }}
       onClick={onClick}
     >

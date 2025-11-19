@@ -1,16 +1,15 @@
 import { Box, Button, ClickAwayListener, List, ListItem, Paper, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
+import * as qs from 'qs'
 import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
-import Pagination from './Pagination'
-import { makeStyles } from '@mui/styles'
+import { useNavigate } from 'react-router-dom'
 import ArrowDown from '../../src/assets/icons/ArrowDown'
 import TickIcon from '../../src/assets/icons/TickIcon'
-import * as qs from 'qs'
-import { useNavigate } from 'react-router-dom'
-import { get } from 'lodash'
-import LoadingBlock from '../LoadingBlock'
+import { useQueryParams } from '../../src/hooks/useQueryParams'
 import LoadingBlurry from '../LoadingBlurry'
+import Pagination from './Pagination'
 
 const useStyles = makeStyles((theme) => ({
   lineSortContainer: {
@@ -127,7 +126,7 @@ function ListWithPagination({ request, limit = 5, limitQuery = 'customLimit', re
             </Paper>
           )}
         </Box>
-        <Pagination count={Math.ceil(datList?.data?.data?._meta?.total_count / 5)} handleChangeOffset={handleChange} page={page + 1} pageQuery='page' />
+        <Pagination count={Math.ceil(datList?.data?.data?._meta?.page_count)} handleChangeOffset={handleChange} page={page + 1} pageQuery='page' />
       </Box>
     </Box>
   )

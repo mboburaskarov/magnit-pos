@@ -1,12 +1,11 @@
-import { seller_bonus_statuses } from '@/assets/data/seller-bonus-statuses';
-import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
-import StatusCell from '@components/AgGridTable/Cells/StatusCell';
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
-import { formatPhoneNumber } from '@utils/formatPhoneNumber';
-import { Box, Typography } from '@mui/material';
-import { memo } from 'react';
-import { get } from 'lodash';
-
+import { seller_bonus_statuses } from '@/assets/data/seller-bonus-statuses'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import StatusCell from '@components/AgGridTable/Cells/StatusCell'
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
+import { Box, Typography } from '@mui/material'
+import { formatPhoneNumber } from '@utils/formatPhoneNumber'
+import { get } from 'lodash'
+import { memo } from 'react'
 
 const CustomHeader = (props) => {
   const lastStort = props.column.colDef.orderStoring
@@ -131,7 +130,7 @@ export default function tableHeaderSelector({ bonusColumns, t, setOrderStoring, 
         setOrderStoring,
         headerName: t('branch'),
         colId: el.field,
-        cellRenderer: memo((p) => <Typography>{get(p, 'data.store_name')}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),
       }
     }
     if (el.field === 'phone') {

@@ -1,7 +1,6 @@
-import { Box, Tooltip, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { makeStyles } from '@mui/styles';
-
+import { Box, Tooltip, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { useEffect, useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   inner: {
@@ -27,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
     visibility: 'hidden',
     width: 0,
     margin: 0,
+    '& + .radioButton:hover': {
+      backgroundColor: theme.palette.gray[200],
+    },
     '&:checked + .radioButton': {
       boxShadow: theme.boxShadow['16-8'],
       backgroundColor: theme.palette.background.default,
@@ -121,7 +123,7 @@ export default function SwitchSlider({ name, options, onChange, defaultValue, no
                       color={value === option.value ? 'orange.500' : 'dark.500'}
                       id={value + index}
                     >
-                      {option.title} {renderCount(option)}{' '}
+                      {option.title} {renderCount(option)}
                       {option.soon && (
                         <Typography
                           sx={{

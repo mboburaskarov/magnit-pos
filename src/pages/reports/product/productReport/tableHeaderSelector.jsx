@@ -1,10 +1,9 @@
-import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
-import { Box, Typography } from '@mui/material';
-import { memo } from 'react';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
-
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
+import { Box, Typography } from '@mui/material'
+import dayjs from 'dayjs'
+import { get } from 'lodash'
+import { memo } from 'react'
 
 const CustomHeader = (props) => {
   const lastStort = props.column.colDef.orderStoring
@@ -188,7 +187,7 @@ export default function tableHeaderSelector({ reportColumns, values, setOrderSto
         setOrderStoring,
         headerName: 'Цена прихода',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider currency={'сум'} {...p} type='supply_price' />),
+        cellRenderer: memo((p) => <SimpleText withDevider toFixed2 currency={'сум'} {...p} type='supply_price' />),
       }
     }
     if (el.field === 'total_discount') {
@@ -199,7 +198,7 @@ export default function tableHeaderSelector({ reportColumns, values, setOrderSto
         setOrderStoring,
         headerName: 'Общее сумма скидки',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider currency={'сум'} {...p} type='total_discount' />),
+        cellRenderer: memo((p) => <SimpleText withDevider toFixed2 currency={'сум'} {...p} type='total_discount' />),
       }
     }
 
@@ -211,7 +210,7 @@ export default function tableHeaderSelector({ reportColumns, values, setOrderSto
         setOrderStoring,
         headerName: 'Цена продажная',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider currency={'сум'} {...p} type='retail_price' />),
+        cellRenderer: memo((p) => <SimpleText withDevider toFixed2 currency={'сум'} {...p} type='retail_price' />),
       }
     }
 
@@ -223,7 +222,7 @@ export default function tableHeaderSelector({ reportColumns, values, setOrderSto
         setOrderStoring,
         headerName: 'Сумма прихода',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider currency={'сум'} {...p} type='supply_price_sum' />),
+        cellRenderer: memo((p) => <SimpleText withDevider toFixed2 currency={'сум'} {...p} type='supply_price_sum' />),
       }
     }
     if (el.field === 'retail_price_sum') {
@@ -234,7 +233,7 @@ export default function tableHeaderSelector({ reportColumns, values, setOrderSto
         setOrderStoring,
         headerName: 'Сумма продажная',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider currency={'сум'} {...p} type='retail_price_sum' />),
+        cellRenderer: memo((p) => <SimpleText withDevider toFixed2 currency={'сум'} {...p} type='retail_price_sum' />),
       }
     }
     if (el.field === 'markup_sum') {
@@ -245,7 +244,7 @@ export default function tableHeaderSelector({ reportColumns, values, setOrderSto
         setOrderStoring,
         headerName: 'Сумма наценки',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider currency={'сум'} {...p} type='markup_sum' />),
+        cellRenderer: memo((p) => <SimpleText withDevider toFixed2 currency={'сум'} {...p} type='markup_sum' />),
       }
     }
     if (el.field === 'vat_sum') {
@@ -256,7 +255,7 @@ export default function tableHeaderSelector({ reportColumns, values, setOrderSto
         setOrderStoring,
         headerName: 'Сумма НДС',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider currency={'сум'} {...p} type='vat_sum' />),
+        cellRenderer: memo((p) => <SimpleText toFixed2 withDevider currency={'сум'} {...p} type='vat_sum' />),
       }
     }
     if (el.field === 'completed_at') {
