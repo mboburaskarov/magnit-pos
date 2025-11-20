@@ -6,7 +6,7 @@ import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 
 import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
-import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNewV2'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
 import GroupMultiSelect from '@components/Select/GroupMultiSelect'
 import { requests } from '@utils/requests'
 
@@ -14,7 +14,7 @@ export default function DashboardHeader({ selectedShops, setSelectedShops, setSe
   const { t } = useTranslation()
 
   const userData = useSelector((state) => state.user)
-  // const { data: shopList } = useQuery('shopList', () => requests.getAllComapniesWithStores({ limit: 20, offset: 0 }))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
   return (
     <Box p={'24px 20px 13px 20px'} bgcolor='background.default' top={0} display='inline-flex' justifyContent='space-between'>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
