@@ -1,3 +1,4 @@
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
 import AgGridTable from '@components/AgGridTable/AgGridTable'
 import { useQueryParams } from '@hooks/useQueryParams'
 import { Box, Typography } from '@mui/material'
@@ -16,18 +17,32 @@ export default function ProductRemainsHistory({ id }) {
 
   const productHistoryFilter = useMemo(() => {
     return {
+      start_date: getFilterStartDate(values),
+      end_date: getFilterEndDate(values),
       limit: values?.remainsLimit || 5,
       offset: values?.remainsOffset || 0,
       store_id: values?.store_id || userData?.store?.id,
+      id,
     }
-  }, [values?.remainsLimit, values?.store_id, values?.remainsOffset])
+  }, [
+    values?.from_time,
+    values?.to_time,
+    values?.store_id,
+    id,
+    values?.start_date,
+    values?.end_date,
+    values?.remainsLimit,
+    id,
+    values?.store_id,
+    values?.remainsOffset,
+  ])
 
   const {
     data: productReaminsDataHistory,
     isLoading: isproductDataLoadingHistory,
     isFetching: isFetchingproductReaminsDataHistory,
     refetch,
-  } = useQuery(['productReaminsDataHistory', productHistoryFilter], () => requests.getSingleProductRemainsHistory(productHistoryFilter, id))
+  } = useQuery(['productReaminsDataHistory', productHistoryFilter], () => requests.getSingleProductRemainsHistory(productHistoryFilter))
 
   useEffect(() => {
     const count = productReaminsDataHistory?.data?.data?._meta?.total_count

@@ -341,12 +341,12 @@ export const requests = {
   getSingleProductDashboard: ({ id, ...filter }) => request.get(`v1/product/${id}/dashboard${qs.stringify(filter, { addQueryPrefix: true })}`),
   getTransferLogs: ({ id, ...filter }) => request.get(`v1/transfer/logs/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
 
-  getSingleProductMovement: (filter, id) => request.get(`v1/product/${id}/product-movement${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getSingleProductMovement: ({ id, ...filter }) => request.get(`v1/product/${id}/product-movement${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleProductMovementExcel: ({ id, ...filter }) =>
     requestEXCEL.get(`v1/product/${id}/product-movement/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   // getSingleProductHistory: (filter, id) => request.get(`v1/product/import/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getSingleProductRemainsHistory: (filter, id) => request.get(`v1/product/store-product/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getSingleProductRemainsHistory: ({ id, ...filter }) => request.get(`v1/product/store-product/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateProduct: ({ id, data }) => request.put(`v1/product/${id}`, data),
   updateUnitPerPack: (data) => request.put(`v1/product/update-packaging`, data),
   deleteProduct: (id) => request.delete(`v1/product/soft-delete`, id),

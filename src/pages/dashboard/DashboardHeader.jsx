@@ -12,10 +12,9 @@ import { requests } from '@utils/requests'
 
 export default function DashboardHeader({ selectedShops, setSelectedShops, setSelectedAllB2B }) {
   const { t } = useTranslation()
-  console.log(selectedShops)
 
   const userData = useSelector((state) => state.user)
-  const { data: shopList } = useQuery('shopList', () => requests.getAllComapniesWithStores({ limit: 20, offset: 0 }))
+  // const { data: shopList } = useQuery('shopList', () => requests.getAllComapniesWithStores({ limit: 20, offset: 0 }))
   return (
     <Box p={'24px 20px 13px 20px'} bgcolor='background.default' top={0} display='inline-flex' justifyContent='space-between'>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>

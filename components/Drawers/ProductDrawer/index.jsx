@@ -15,7 +15,7 @@ import { requests } from '@utils/requests'
 import thousandDivider from '@utils/thousandDivider'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -23,6 +23,7 @@ import { useReactToPrint } from 'react-to-print'
 import ProductHistory from './ProductHistory'
 import ProductMovementDashboard from './ProductMovementDashboard'
 import ProductRemainsHistory from './ProductRemainsHistory'
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
 const Image = ({ data, setImages }) => {
   return (
     <Box
@@ -79,17 +80,29 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
   const userData = useSelector((state) => state.user)
   const [unitPerPack, setUnitPerPack] = useState(1)
   const { values } = useQueryParams()
+
+  const drawerFilter = useMemo(() => {
+    return {
+      start_date: getFilterStartDate(values),
+      end_date: getFilterEndDate(values),
+      id,
+      store_id: values?.store_id || userData?.store?.id,
+    }
+  }, [values?.from_time, values?.to_time, values?.store_id, id, values?.start_date, values?.end_date])
+
   const {
     data: productData,
     isLoading: productDataLoading,
     isFetching: isFetchingproductData,
-  } = useQuery(['productData', id], () => requests.getSingleProduct({ id, store_id: values?.store_id || userData?.store?.id }), { enabled: !!id })
+  } = useQuery(['productData', drawerFilter], () => requests.getSingleProduct(drawerFilter), {
+    enabled: !!id,
+  })
   const {
     data: productReaminsDataHistory,
     isLoading: isproductDataLoadingHistory,
     isFetching: isFetchingproductReaminsDataHistory,
     refetch,
-  } = useQuery(['productReaminsDataHistory', id], () => requests.getSingleProductRemainsHistory({}, id), {
+  } = useQuery(['productReaminsDataHistory', drawerFilter], () => requests.getSingleProductRemainsHistory(drawerFilter), {
     enabled: !!id,
   })
 
@@ -97,7 +110,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     data: singleProductDashboard,
     isLoading: singleProductDashboardLoading,
     isFetching: isFetchingsingleProductDashboard,
-  } = useQuery(['singleProductDashboard', id], () => requests.getSingleProductDashboard({ id, store_id: values?.store_id || userData?.store?.id }), {
+  } = useQuery(['singleProductDashboard', drawerFilter], () => requests.getSingleProductDashboard(drawerFilter), {
     enabled: !!id,
   })
 

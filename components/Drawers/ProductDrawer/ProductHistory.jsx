@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { formatCount } from './ProductMovementDashboard'
 import TransferDetailModal from './transferDetailModal'
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
 
 export default function ProductHistory({ id, unit_per_pack }) {
   const { values } = useQueryParams()
@@ -25,14 +26,17 @@ export default function ProductHistory({ id, unit_per_pack }) {
       limit: values?.limitHistory || 5,
       store_id: values?.store_id || userData?.store?.id,
       offset: values?.offsetHistory || 0,
+      start_date: getFilterStartDate(values),
+      end_date: getFilterEndDate(values),
+      id,
     }
-  }, [values?.limitHistory, values?.offsetHistory, unit_per_pack])
+  }, [values?.limitHistory, id, values?.offsetHistory, unit_per_pack, values?.from_time, values?.to_time, values?.start_date, values?.end_date])
   const {
     data: singleProductMovement,
     isLoading: isproductDataLoadingHistory,
     isFetching: isFetchingsingleProductMovement,
     refetch,
-  } = useQuery(['singleProductMovement', productHistoryFilter], () => requests.getSingleProductMovement(productHistoryFilter, id))
+  } = useQuery(['singleProductMovement', productHistoryFilter], () => requests.getSingleProductMovement(productHistoryFilter))
 
   useEffect(() => {
     const count = singleProductMovement?.data?.data?._meta?.total_count
