@@ -6,13 +6,12 @@ import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 
 import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
-import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNewV2'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
 import GroupMultiSelect from '@components/Select/GroupMultiSelect'
 import { requests } from '@utils/requests'
 
 export default function DashboardHeader({ selectedShops, setSelectedShops, setSelectedAllB2B }) {
   const { t } = useTranslation()
-  console.log(selectedShops)
 
   const userData = useSelector((state) => state.user)
   const { data: shopList } = useQuery('shopList', () => requests.getAllComapniesWithStores({ limit: 20, offset: 0 }))
@@ -37,8 +36,8 @@ export default function DashboardHeader({ selectedShops, setSelectedShops, setSe
             },
           }}
         >
-          <GroupMultiSelect label='Select Pharmacies' apiData={shopList?.data} value={selectedShops} onChange={setSelectedShops} />
-          {/* <MultiOptionSelectNew
+          {/* <GroupMultiSelect label='Select Pharmacies' apiData={shopList?.data} value={selectedShops} onChange={setSelectedShops} /> */}
+          <MultiOptionSelectNew
             zIndex={9}
             placeholder={t('placeholders.select_shops')}
             multiple
@@ -56,7 +55,7 @@ export default function DashboardHeader({ selectedShops, setSelectedShops, setSe
               setSelectedAllB2B(val)
             }}
             request={requests.getAllStores}
-          /> */}
+          />
         </Box>
       </Box>
     </Box>

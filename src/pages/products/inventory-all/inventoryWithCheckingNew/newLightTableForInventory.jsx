@@ -134,8 +134,6 @@ function NewLightTableForInventory({
                 }}
                 className={index === selectedIndex ? 'selected' : ''}
                 onClick={() => {
-                  console.log('hi', selectedIndex, index)
-
                   setSelectedIndex(index)
                   setLastSelectedCellRowId(row.id)
                 }}
