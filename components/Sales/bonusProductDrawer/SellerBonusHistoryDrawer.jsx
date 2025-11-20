@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   drawerHeader: {
-    padding: '40px 40px 24px 40px',
+    padding: '20px 40px 20px 40px',
     borderBottom: `1px solid ${theme.palette.bunker[100]}`,
   },
 }))
@@ -82,8 +82,8 @@ function SellerBonusHistoryDrawer({ open, setOpen }) {
   useEffect(() => {}, [open])
 
   useEffect(() => {
-    setControllerOffset(values?.offset)
-  }, [values?.offset])
+    setControllerOffset(values?.bonusOffset)
+  }, [values?.bonusOffset])
 
   useEffect(() => {
     setControllerOffset(0)
@@ -98,7 +98,7 @@ function SellerBonusHistoryDrawer({ open, setOpen }) {
       start_date: getFilterStartDate(values),
       end_date: getFilterEndDate(values),
     }
-  }, [values?.bonusLimit, controlleroffset, open, values?.limit, values?.bonusOffset, values?.end_date, values?.start_date])
+  }, [values?.bonusLimit, controlleroffset, open, values?.bonusLimit, values?.bonusOffset, values?.end_date, values?.start_date])
 
   const {
     data: sellerBonusHistory,
@@ -122,9 +122,9 @@ function SellerBonusHistoryDrawer({ open, setOpen }) {
   useEffect(() => {
     const count = sellerBonusHistory?.data?.data?._meta?.total_count
 
-    const offsetsCount = Math.ceil(count / Number(values?.limit))
+    const offsetsCount = Math.ceil(count / Number(values?.bonusLimit))
     setOffsetCount(offsetsCount || 0)
-  }, [sellerBonusHistory?.data, values?.limit])
+  }, [sellerBonusHistory?.data, values?.bonusLimit])
 
   return (
     <Drawer open={!!open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
@@ -137,7 +137,20 @@ function SellerBonusHistoryDrawer({ open, setOpen }) {
             <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
           </Box>
 
-          <Box pt={5} pb={0} px={'40px'} maxHeight={'calc(100vh-400px)'}>
+          <Box
+            p={'30px 40px'}
+            maxHeight={'calc(100vh - 300px)'}
+            sx={{
+              '.ag-center-cols-viewport': {
+                height: 'calc(100vh - 300px) !important',
+                overflowY: 'auto',
+              },
+              '.ag-center-cols-container': {
+                height: 'calc(100vh - 300px) !important',
+                overflowY: 'auto',
+              },
+            }}
+          >
             <AgGridTable
               id='bonus-history'
               alwaysShowHorizontalScroll={true}

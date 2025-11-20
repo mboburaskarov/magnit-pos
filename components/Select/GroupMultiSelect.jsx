@@ -2,26 +2,15 @@ import React from 'react'
 import { Checkbox, ListItemText, MenuItem, Select, InputLabel, FormControl, ListSubheader, Box } from '@mui/material'
 import { Controller } from 'react-hook-form'
 
-const GroupMultiSelect = ({
-  name,
-  label,
-  control,
-  value: controlledValue,
-  onChange: controlledOnChange,
-  apiData, // Your API response data
-  defaultValue = [],
-  ...rest
-}) => {
-  // Transform API data into grouped options
+const GroupMultiSelect = ({ name, label, control, value: controlledValue, onChange: controlledOnChange, apiData, defaultValue = [], ...rest }) => {
   const groupedOptions = React.useMemo(() => {
     if (!apiData?.data) return []
 
     const groups = []
 
-    // Add Pharma Cosmos stores (non-franchise)
     if (apiData.data.pharma_cosmos?.stores) {
       groups.push({
-        group: apiData.data.pharma_cosmos.company.trim(), // trim to remove extra spaces
+        group: apiData.data.pharma_cosmos.company.trim(),
         items: apiData.data.pharma_cosmos.stores.map((store) => ({
           id: store.id,
           name: store.name,
@@ -30,16 +19,14 @@ const GroupMultiSelect = ({
       })
     }
 
-    // Add each franchise company as a separate group
     if (apiData.data.franchises?.length > 0) {
       apiData.data.franchises.forEach((franchise) => {
-        // Only add franchises that have stores with valid data
         const validStores = franchise.stores?.filter((store) => store.id && store.name) || []
 
         if (validStores.length > 0 || franchise.company) {
           groups.push({
             group: franchise.company || 'Unnamed Franchise',
-            groupId: franchise.id, // Store franchise ID if needed
+            groupId: franchise.id,
             items: validStores.map((store) => ({
               id: store.id,
               name: store.name,
@@ -92,7 +79,6 @@ const GroupMultiSelect = ({
   const [localValue, setLocalValue] = React.useState(defaultValue)
 
   const renderSelect = (value, setValue) => {
-    // Get selected store names for display
     const selectedNames = groupedOptions
       .flatMap((g) => g.items)
       .filter((item) => value.includes(item.id))
@@ -100,17 +86,34 @@ const GroupMultiSelect = ({
 
     return (
       <FormControl fullWidth>
-        {label && <InputLabel>{label}</InputLabel>}
         <Select
           multiple
           value={value}
           onChange={(e) => handleValueChange(e.target.value, value, setValue)}
           renderValue={(selected) => (selectedNames.length > 0 ? selectedNames.join(', ') : '')}
           label={label}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                '& .MuiList-root': {
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                },
+                '& .MuiListSubheader-root': {
+                  position: 'sticky',
+                  bottom: 0,
+                  top: 'auto',
+                  backgroundColor: 'background.paper',
+                  zIndex: 1,
+                  borderBottom: '1px solid',
+                  borderColor: 'divider',
+                },
+              },
+            },
+          }}
           {...rest}
         >
           {groupedOptions.map((group) => {
-            // Only render group if it has items
             if (group.items.length === 0) {
               return (
                 <ListSubheader key={group.group} style={{ cursor: 'default', userSelect: 'none' }}>
@@ -130,7 +133,7 @@ const GroupMultiSelect = ({
                     checked={group.items.every((item) => value.includes(item.id))}
                     indeterminate={group.items.some((item) => value.includes(item.id)) && !group.items.every((item) => value.includes(item.id))}
                   />
-                  <Box component='span' sx={{ fontWeight: 600 }}>
+                  <Box component='span' sx={{ fontWeight: 600, ml: '10px' }}>
                     {group.group}
                   </Box>
                 </Box>
@@ -138,7 +141,7 @@ const GroupMultiSelect = ({
               ...group.items.map((item) => (
                 <MenuItem key={item.id} value={item.id}>
                   <Checkbox checked={value.includes(item.id)} />
-                  <ListItemText primary={item.name} />
+                  <ListItemText primary={item.name} sx={{ ml: '10px' }} />
                 </MenuItem>
               )),
             ]

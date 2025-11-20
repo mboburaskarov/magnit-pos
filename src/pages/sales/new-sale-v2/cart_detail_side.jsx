@@ -115,6 +115,7 @@ function CartDetailSide({
     <Box
       className={classes.card_detail}
       sx={{
+        backgroundColor: 'white',
         pt: '20px',
         '& .slider_box_wrapper': {
           width: '100%',
