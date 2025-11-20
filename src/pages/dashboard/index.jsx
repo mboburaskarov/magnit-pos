@@ -171,7 +171,7 @@ export default function DashboarPage() {
   const { values } = useQueryParams()
   const [detailing, setDetaling] = useState('week')
   const [selectedAllB2B, setSelectedAllB2B] = useState(false)
-  const [selectedShops, setSelectedShops] = useState([])
+  const [selectedShops, setSelectedShops] = useState('all')
   const [detalization, setDetalization] = useState({ name: 'по дням', value: 'day' })
   const [chartType, setchartType] = useState({ name: 'Продажи', value: 'sale' })
   const [sortBy, setSortBy] = useState('SUM')
@@ -189,10 +189,12 @@ export default function DashboarPage() {
 
   const totalSum = chartInfo?.data?.reduce((acc, item) => acc + item?.totalAmount, 0)
   const totalCount = chartInfo?.data?.reduce((acc, item) => acc + item?.count, 0)
+  console.log(selectedShops)
 
   const dashboard_filter = useMemo(() => {
     return {
       is_franchise: selectedAllB2B ? true : false,
+      is_pharma: selectedShops == 'all' ? true : false,
       limit: values?.limit || 15,
       search: values?.search,
       start_date: getFilterStartDate(values),
@@ -201,7 +203,18 @@ export default function DashboarPage() {
       type: dataTypeFilter(detalization),
       offset: values?.search ? 0 : values?.offset || 0,
     }
-  }, [values?.offset, detalization, selectedShops, values?.start_date, values?.end_date, values?.from_time, values?.to_time, values?.limit, values?.search])
+  }, [
+    values?.offset,
+    detalization,
+    selectedShops,
+    selectedAllB2B,
+    values?.start_date,
+    values?.end_date,
+    values?.from_time,
+    values?.to_time,
+    values?.limit,
+    values?.search,
+  ])
 
   const { data: chartData, isLoading: isChartLoading } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
   const { data: topStores, isLoading: isTopStoreLoading } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))

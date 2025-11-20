@@ -6,7 +6,7 @@ import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 
 import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
-import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNewV2'
 import GroupMultiSelect from '@components/Select/GroupMultiSelect'
 import { requests } from '@utils/requests'
 
@@ -14,7 +14,7 @@ export default function DashboardHeader({ selectedShops, setSelectedShops, setSe
   const { t } = useTranslation()
 
   const userData = useSelector((state) => state.user)
-  const { data: shopList } = useQuery('shopList', () => requests.getAllComapniesWithStores({ limit: 20, offset: 0 }))
+  // const { data: shopList } = useQuery('shopList', () => requests.getAllComapniesWithStores({ limit: 20, offset: 0 }))
   return (
     <Box p={'24px 20px 13px 20px'} bgcolor='background.default' top={0} display='inline-flex' justifyContent='space-between'>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -36,7 +36,7 @@ export default function DashboardHeader({ selectedShops, setSelectedShops, setSe
             },
           }}
         >
-          {/* <GroupMultiSelect label='Select Pharmacies' apiData={shopList?.data} value={selectedShops} onChange={setSelectedShops} /> */}
+          {/* <GroupMultiSelect label='Select Pharmacies' apiData={shopList?.data} value={[]} onChange={setSelectedShops} /> */}
           <MultiOptionSelectNew
             zIndex={9}
             placeholder={t('placeholders.select_shops')}
@@ -49,10 +49,10 @@ export default function DashboardHeader({ selectedShops, setSelectedShops, setSe
             options={get(shopList, 'data.data.data', [])}
             isLoading={false}
             onChangeAllB2B={(val) => {
-              setSelectedShops(val)
+              setSelectedAllB2B(val)
             }}
             onChange={(val) => {
-              setSelectedAllB2B(val)
+              setSelectedShops(val)
             }}
             request={requests.getAllStores}
           />

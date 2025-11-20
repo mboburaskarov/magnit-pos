@@ -173,7 +173,7 @@ const MultiOptionSelectNewV2 = ({
     }
 
     if (onChange && tempValues) {
-      if (tempValues?.length === 0) {
+      if (tempValues?.length === 0 && !isSelectAllB2B) {
         error(t('toast.error.multiple_select_at_least_one'))
         return
       } else {
@@ -424,6 +424,10 @@ const MultiOptionSelectNewV2 = ({
           },
           '& .option': {
             transition: 'all 0.15s ease-in-out',
+            // padding: 0,
+          },
+          '& .option.all': {
+            padding: '0',
           },
         }}
         className={`options ${!options?.length ? 'no-option' : ''}`}
@@ -456,7 +460,7 @@ const MultiOptionSelectNewV2 = ({
               <Box className='option all' sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 {selectAllLabel && (
                   <Box
-                    sx={{ display: 'flex', alignItems: 'center' }}
+                    sx={{ display: 'flex', alignItems: 'center', height: '48px', pl: '20px' }}
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => {
                       setTempValues(!isSelectAll ? (multiple ? 'all' : options?.[0]) : [])
@@ -470,7 +474,7 @@ const MultiOptionSelectNewV2 = ({
                 )}
                 {selectAllLabel && (
                   <Box
-                    sx={{ display: 'flex', alignItems: 'center', minWidth: '80px' }}
+                    sx={{ display: 'flex', alignItems: 'center', minWidth: '96px', height: '48px', pr: '20px' }}
                     onClick={() => {
                       // setTempValues(!isSelectAllB2B ? (multiple ? 'all' : options?.[0]) : [])
                       setIsSelectAllB2B((prev) => !prev)
