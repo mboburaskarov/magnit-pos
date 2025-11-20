@@ -6,14 +6,16 @@ import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 
 import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
-import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
-
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNewV2'
+import GroupMultiSelect from '@components/Select/GroupMultiSelect'
 import { requests } from '@utils/requests'
 
-export default function DashboardHeader({ selectedShops, setSelectedShops }) {
+export default function DashboardHeader({ selectedShops, setSelectedShops, setSelectedAllB2B }) {
   const { t } = useTranslation()
+  console.log(selectedShops)
+
   const userData = useSelector((state) => state.user)
-  const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
+  const { data: shopList } = useQuery('shopList', () => requests.getAllComapniesWithStores({ limit: 20, offset: 0 }))
   return (
     <Box p={'24px 20px 13px 20px'} bgcolor='background.default' top={0} display='inline-flex' justifyContent='space-between'>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -29,13 +31,14 @@ export default function DashboardHeader({ selectedShops, setSelectedShops }) {
 
         <Box
           sx={{
-            maxWidth: 400,
+            width: 400,
             '.selection': {
               height: '48px',
             },
           }}
         >
-          <MultiOptionSelectNew
+          <GroupMultiSelect label='Select Pharmacies' apiData={shopList?.data} value={selectedShops} onChange={setSelectedShops} />
+          {/* <MultiOptionSelectNew
             zIndex={9}
             placeholder={t('placeholders.select_shops')}
             multiple
@@ -46,11 +49,14 @@ export default function DashboardHeader({ selectedShops, setSelectedShops }) {
             selectAllLabel={t('Все филиалы')}
             options={get(shopList, 'data.data.data', [])}
             isLoading={false}
-            onChange={(val) => {
+            onChangeAllB2B={(val) => {
               setSelectedShops(val)
             }}
+            onChange={(val) => {
+              setSelectedAllB2B(val)
+            }}
             request={requests.getAllStores}
-          />
+          /> */}
         </Box>
       </Box>
     </Box>

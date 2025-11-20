@@ -109,28 +109,43 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
   const getLabelForDateRange = (startDate, endDate) => {
     const today = dayjs().startOf('day')
     const yesterday = today.subtract(1, 'day')
-    const start = dayjs(startDate).startOf('day')
-    const end = dayjs(endDate).startOf('day')
-    if (start.isSame(today) && end.isSame(today)) return `Сегодня \n ${start.format('DD.MM.YYYY')}`
-    if (start.isSame(yesterday) && end.isSame(yesterday)) return `Вчера \n ${end.format('DD.MM.YYYY')}`
 
-    // На этой неделе — оба дня в той же неделе, что и today
+    let start = dayjs(startDate).startOf('day')
+    let end = dayjs(endDate).startOf('day')
+
+    // If endDate > today → force it to today
+    if (end.isAfter(today)) {
+      end = today
+    }
+
+    if (start.isSame(today) && end.isSame(today)) {
+      return `Сегодня \n ${start.format('DD.MM.YYYY')}`
+    }
+
+    if (start.isSame(yesterday) && end.isSame(yesterday)) {
+      return `Вчера \n ${end.format('DD.MM.YYYY')}`
+    }
+
+    // На этой неделе
     if (start.isSame(today, 'week') && end.isSame(today, 'week')) {
       return `На этой неделе \n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
     }
 
-    // С начала месяца до сегодня
+    // В этом месяце
     const startOfMonth = today.startOf('month')
     if (start.isSame(startOfMonth) && end.isSame(today)) {
       return `В этом месяце \n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
     }
 
-    // С начала года до сегодня
+    // В этом году
     const startOfYear = today.startOf('year')
     if (start.isSame(startOfYear) && end.isSame(today)) {
       return `В этом году \n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
     }
-    if (start.format('DD.MM.YYYY') == end.format('DD.MM.YYYY')) return `\n ${start.format('DD.MM.YYYY')}`
+
+    if (start.isSame(end)) {
+      return `\n ${start.format('DD.MM.YYYY')}`
+    }
 
     return `\n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
   }

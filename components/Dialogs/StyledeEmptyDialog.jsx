@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: 'none !important',
       borderRadius: 20,
       // minHeight: 500,
-      // overflowY: 'scroll !important',
+      overflowY: ({ overflowVisible }) => (overflowVisible ? 'auto' : 'hidden'),
       transition: open ? 'padding 0.3s ease-out' : 'padding 0.1s ease-in',
       zIndex: 15,
     },

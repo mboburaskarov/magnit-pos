@@ -170,7 +170,8 @@ export default function DashboarPage() {
   dayjs.extend(isoWeek)
   const { values } = useQueryParams()
   const [detailing, setDetaling] = useState('week')
-  const [selectedShops, setSelectedShops] = useState('all')
+  const [selectedAllB2B, setSelectedAllB2B] = useState(false)
+  const [selectedShops, setSelectedShops] = useState([])
   const [detalization, setDetalization] = useState({ name: 'по дням', value: 'day' })
   const [chartType, setchartType] = useState({ name: 'Продажи', value: 'sale' })
   const [sortBy, setSortBy] = useState('SUM')
@@ -191,7 +192,7 @@ export default function DashboarPage() {
 
   const dashboard_filter = useMemo(() => {
     return {
-      is_franchise: selectedShops == 'all' ? false : undefined,
+      is_franchise: selectedAllB2B ? true : false,
       limit: values?.limit || 15,
       search: values?.search,
       start_date: getFilterStartDate(values),
@@ -246,7 +247,7 @@ export default function DashboarPage() {
   }
   return (
     <LoadingContainer readyState={true}>
-      <DashboardHeader setSelectedShops={setSelectedShops} selectedShops={selectedShops} />
+      <DashboardHeader setSelectedAllB2B={setSelectedAllB2B} setSelectedShops={setSelectedShops} selectedShops={selectedShops} />
 
       <Box display='flex' flexDirection='column' position='relative' pt={0} px={'20px'} pb={'32px'} width={'100%'}>
         <Grid width={'100%'} container>

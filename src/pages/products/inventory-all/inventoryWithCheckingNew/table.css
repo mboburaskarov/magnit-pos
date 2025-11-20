@@ -16,7 +16,9 @@
 .inventory-with-checking-page .custom-table td {
   border: none !important;
   padding: 8px;
-  border: 1px solid #9a9a9a1a !important;
+  border: 1px solid #e8e8e8 !important;
+  /* border: 1px solid #e4e4e4; */
+
   height: 50px;
   text-align: left;
 }
@@ -63,4 +65,33 @@
 .inventory-with-checking-page .custom-table th {
   position: relative;
   padding: 8px;
+}
+
+.table-container {
+  height: 80vh; /* Fixed height */
+  overflow-y: auto;
+  border: 1px solid #f0f0f0;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Gilroy', sans-serif;
+}
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid #e4e4e4;
+  padding: 8px;
+  text-align: left;
+}
+
+.custom-table tr.selected {
+  background-color: #ffe3d7;
+}
+.custom-table .limited-width {
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

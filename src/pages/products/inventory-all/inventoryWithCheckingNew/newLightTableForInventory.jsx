@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useRef } from 'react'
 import thousandDivider from '@utils/thousandDivider'
+import './table.css'
 
 function NewLightTableForInventory({
   inventoryWithCheckingDetails,
@@ -80,7 +81,9 @@ function NewLightTableForInventory({
 
                   position: 'relative',
                 }}
-                onClick={() => onClick(col.id)}
+                onClick={() => {
+                  onClick(col.id)
+                }}
               >
                 <Box
                   sx={{
@@ -131,6 +134,8 @@ function NewLightTableForInventory({
                 }}
                 className={index === selectedIndex ? 'selected' : ''}
                 onClick={() => {
+                  console.log('hi', selectedIndex, index)
+
                   setSelectedIndex(index)
                   setLastSelectedCellRowId(row.id)
                 }}

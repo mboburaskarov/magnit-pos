@@ -11,7 +11,7 @@ import { useInView } from 'react-intersection-observer'
 import StyledTooltip from '../StyledTooltip'
 import './select.css'
 
-const MultiOptionSelectNew = ({
+const MultiOptionSelectNewV2 = ({
   defaultSelectedAll,
   value,
   isMenuOpen,
@@ -26,6 +26,7 @@ const MultiOptionSelectNew = ({
   menuMinWidth,
   customFilter,
   required,
+  onChangeAllB2B = () => {},
   request, // API request function
   initialLimit = 20, // Default limit
 }) => {
@@ -106,6 +107,7 @@ const MultiOptionSelectNew = ({
       const response = await request({
         limit: pagination.limit,
         offset: pagination.offset,
+        is_franchise: isSelectAllB2B,
         search: searchTerm || serachParams?.search,
         ...customFilter,
       })
@@ -355,7 +357,7 @@ const MultiOptionSelectNew = ({
   }, [multiple, values, options])
 
   const renderValues = () => {
-    if (values.length === 0 && !isSelectAll) {
+    if (values.length === 0 && !isSelectAll && !isSelectAllB2B) {
       return <div className='placeholder'>{placeholder}</div>
     }
 
@@ -363,7 +365,9 @@ const MultiOptionSelectNew = ({
       let val =
         (selectAllLabel && options.length && values?.length === options.length && values.length != 1) ||
         ((values == 'all' || isSelectAll) && values.length != 1)
-          ? selectAllLabel
+          ? selectAllLabel + (isSelectAllB2B ? ' & Все B2B' : '')
+          : isSelectAllB2B && (values != 'all' || !isSelectAll) && values.length != 1
+          ? 'Все B2B'
           : countLabel
           ? `${values?.length} ${countLabel}`
           : (values || [])?.map((value, index) => `${index !== 0 ? ', ' : ''} ${value?.name}`)
@@ -429,7 +433,7 @@ const MultiOptionSelectNew = ({
           <TextField
             ref={searchInputRef}
             size='small'
-            placeholder='Search options...'
+            placeholder='Поиск...'
             value={searchTerm}
             onChange={handleSearchChange}
             onMouseDown={handleSearchMouseDown}
@@ -470,6 +474,7 @@ const MultiOptionSelectNew = ({
                     onClick={() => {
                       // setTempValues(!isSelectAllB2B ? (multiple ? 'all' : options?.[0]) : [])
                       setIsSelectAllB2B((prev) => !prev)
+                      onChangeAllB2B(!isSelectAllB2B)
                       // setValues(!isSelectAllB2B ? (multiple ? 'all' : options?.[0]) : [])
                     }}
                   >
@@ -531,4 +536,4 @@ const MultiOptionSelectNew = ({
   )
 }
 
-export default MultiOptionSelectNew
+export default MultiOptionSelectNewV2

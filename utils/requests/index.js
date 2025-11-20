@@ -402,6 +402,7 @@ export const requests = {
 
   //store
   getAllStores: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllComapniesWithStores: (filter) => request.get(`v1/company/list_with_stores${qs.stringify(filter, { addQueryPrefix: true })}`),
   deleteStore: (id) => request.delete(`v1/store/${id}`),
   createStore: (data) => request.post('v1/store', data),
   updateStore: ({ id, data }) => request.put(`v1/store/${id}`, data),

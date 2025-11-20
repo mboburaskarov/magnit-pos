@@ -2,10 +2,11 @@ import { Box, Skeleton, Typography } from '@mui/material'
 import thousandDivider from '@utils/thousandDivider'
 import { get } from 'lodash'
 import { useState } from 'react'
-export const formatCount = (count, unit_per_pack, canBeMinus = true) => {
-  if (!count || unit_per_pack <= 1) return `${thousandDivider(count)} шт`
-  const packs = canBeMinus ? Math.floor(count / unit_per_pack) : Math.abs(Math.floor(count / unit_per_pack))
-  const pieces = canBeMinus ? count % unit_per_pack : Math.abs(Math.floor(count % unit_per_pack))
+export const formatCount = (reciveCount, unit_per_pack, canBeMinus = true) => {
+  const count = canBeMinus ? reciveCount : Math.abs(reciveCount)
+  if (!count || unit_per_pack <= 1 || count < unit_per_pack) return canBeMinus ? `${thousandDivider(count)}шт` : `${thousandDivider(count)}шт`
+  const packs = canBeMinus ? Math.floor(count / unit_per_pack) : Math.floor(count / unit_per_pack)
+  const pieces = canBeMinus ? count % unit_per_pack : Math.floor(count % unit_per_pack)
   let result = ''
   if (packs > 0) result += `${thousandDivider(packs)}уп`
   if (pieces > 0) result += ` ${thousandDivider(pieces)}шт`
@@ -51,7 +52,16 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true, un
       <Typography
         textAlign={'end'}
         onClick={() => setCollapse((a) => !a)}
-        sx={{ mb: 1, cursor: 'pointer', fontWeight: 600, fontSize: '17px', color: 'gray.700', userSelect: 'none', padding: '10px 40px 0 0' }}
+        sx={{
+          mb: 1,
+
+          cursor: 'pointer',
+          fontWeight: 600,
+          fontSize: '17px',
+          color: 'gray.700',
+          userSelect: 'none',
+          padding: '10px 40px 0 0',
+        }}
       >
         {collapse ? 'Еще' : 'Меньше'}
       </Typography>
@@ -121,7 +131,7 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true, un
                   </Typography>
 
                   <Typography fontSize={13} ml={'3px'} lineHeight={'24px'} color={get(merged, item.countKey) >= 0 ? item.color : 'red.700'} fontWeight={600}>
-                    {thousandDivider(get(merged, item.amountKey), 'сум')}
+                    {thousandDivider(get(merged, item.amountKey), 'сум', true)}
                   </Typography>
                 </>
               )}

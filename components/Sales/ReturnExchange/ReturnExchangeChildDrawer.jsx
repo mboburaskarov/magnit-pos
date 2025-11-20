@@ -1,10 +1,12 @@
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
+import { checkPermission } from '@utils/checkPermission'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
@@ -49,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
 function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, setOpen }) {
   const reactToPrintContent = useCallback(() => printContainer.current, [])
   const printContainer = useRef()
+  const userData = useSelector((state) => state.user)
   const [selectedReturnItems, setSelectedReturnItems] = useState([])
 
   const documentName = useRef('Cheque')
@@ -106,7 +109,9 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
       // ()
       setChildOpen(false)
       setOpen(false)
-      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+      checkPermission('can-open-new-sale-v2', userData)
+        ? navigate(`/sales/new-sale-v2/${get(data, 'data.id')}`)
+        : navigate(`/sales/new-sale/${get(data, 'data.id')}`)
     },
     onError: (err) => {
       error('Ошибка при создании Черновик!')

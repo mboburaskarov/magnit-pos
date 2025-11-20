@@ -1,5 +1,13 @@
+import { imports_list_statuses } from '@/assets/data/imports-list-statuses'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import InputDateRangePicker from '@components/Inputs/InputDateRangePicker'
+import LazySelect from '@components/Select/LazySelect'
+import SelectSimple from '@components/Select/SelectSimple'
+import { useQueryParams } from '@hooks/useQueryParams'
+import CloseIcon from '@icons/CloseIcon'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import { requests } from '@utils/requests'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import * as qs from 'qs'
@@ -8,14 +16,6 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
-import InputDateRangePicker from '@components/Inputs/InputDateRangePicker'
-import LazySelect from '@components/Select/LazySelect'
-import SelectSimple from '@components/Select/SelectSimple'
-import { requests } from '@utils/requests'
-import { imports_list_statuses } from '@/assets/data/imports-list-statuses'
-import CloseIcon from '@icons/CloseIcon'
-import { useQueryParams } from '@hooks/useQueryParams'
 
 export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
@@ -33,6 +33,7 @@ export default function FilterMenu({ open, setOpen }) {
       received_amount_from: data.received_amount_from || undefined,
       received_amount_to: data.received_amount_to || undefined,
       status: data.status?.value || undefined,
+      status_name: data.status?.name || undefined,
       import_date: data.import_date || undefined,
       store_id: data.store_id?.id || undefined,
       store_name: data.store_id?.name || undefined,
@@ -55,7 +56,7 @@ export default function FilterMenu({ open, setOpen }) {
     reset(
       {
         store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
-        status: status ? { name: 'd', value: values?.no_barcode } : null,
+        status: status ? { name: values?.status_name, value: values?.status } : null,
         start_date: start_date,
         end_date: end_date,
       },

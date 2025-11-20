@@ -3,6 +3,7 @@ import CheckAccess from '@components/CheckAccess'
 import RippedPaperProductPriceCheck from '@components/ChequePaper/RippedPaperProductPriceCheck'
 import CustomImg from '@components/CustomImg'
 import DrawerInfoBox from '@components/Drawers/DrawerInfoBox'
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
 import SectionTitle from '@components/SectionTitle'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -167,7 +168,20 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
           </Typography>
         </Typography>
       </Box>
+
       <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'start',
+          borderBottom: '1px solid',
+          borderColor: 'bunker.100',
+          padding: '10px 40px 10px 40px !important',
+        }}
+      >
+        <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
+      </Box>
       <ProductMovementDashboard
         singleProductDashboard={{ ...get(singleProductDashboard, 'data.data'), product_amount: get(productData, 'data.data.retail_price') }}
         isLoading={singleProductDashboardLoading}

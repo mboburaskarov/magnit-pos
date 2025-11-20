@@ -5,7 +5,6 @@ import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import PhoneNumber from '../../../components/Inputs/PhoneNumber'
 import { requests } from '../../../utils/requests'
 import { error } from '../../../utils/toast'
@@ -85,10 +84,8 @@ const useStyles = makeStyles((theme) => ({
 export default function LoginPage() {
   const classes = useStyles()
   const methods = useForm()
-  const navigate = useNavigate()
   const dispatch = useDispatch()
   const [country, setCountry] = useState(countries[0])
-  const [fcmToken, setFcmToken] = useState(null)
 
   const { mutate: logIn, isLoading: logInLoading } = useMutation(requests.logIn, {
     onSuccess: async ({ data }) => {

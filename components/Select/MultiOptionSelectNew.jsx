@@ -425,7 +425,7 @@ const MultiOptionSelectNew = ({
           <TextField
             ref={searchInputRef}
             size='small'
-            placeholder='Search options...'
+            placeholder='Поиск...'
             value={searchTerm}
             onChange={handleSearchChange}
             onMouseDown={handleSearchMouseDown}

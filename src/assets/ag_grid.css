@@ -582,6 +582,7 @@
 }
 .ag-cell-value,
 .ag-group-value {
+  white-space: pre-line;
   overflow: visible;
 }
 .ag-center-cols-container {

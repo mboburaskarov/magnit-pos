@@ -21,6 +21,7 @@ import { Construction } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { checkPermission } from '@utils/checkPermission'
 import { requests } from '@utils/requests'
 import thousandDivider from '@utils/thousandDivider'
 import { error, success } from '@utils/toast'
@@ -438,7 +439,9 @@ function NewSaleV2() {
   })
   const { mutate: saleCreate, isLoading: issaleCreate } = useMutation(requests.saleCreate, {
     onSuccess: ({ data }) => {
-      window.open(`/sales/new-sale/${get(data, 'data.id')}`, '_blank', 'rel=noopener noreferrer')
+      checkPermission('can-open-new-sale-v2', userData)
+        ? window.open(`/sales/new-sale-v2/${get(data, 'data.id')}`, '_blank', 'rel=noopener noreferrer')
+        : window.open(`/sales/new-sale/${get(data, 'data.id')}`, '_blank', 'rel=noopener noreferrer')
     },
     onError: (err) => {
       error('Ошибка при создании продажи')
