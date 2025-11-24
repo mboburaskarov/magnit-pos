@@ -210,7 +210,7 @@ export default function DashboardTopsBox({
                                 ? item[el?.colId] > 0
                                   ? `${item[el?.colId]}(${item.unit_quantity}/${item.unit_per_pack})`
                                   : `(${item.unit_quantity}/${item.unit_per_pack})`
-                                : item[el?.colId]}
+                                : thousandDivider(item[el?.colId])}
                             </TableCell>
                           )
                         }
@@ -225,7 +225,7 @@ export default function DashboardTopsBox({
 
                         if (el?.colId === 'stat') {
                           return (
-                            <TableCell key={ind} className='table-cell'>
+                            <TableCell key={ind} className='table-cell' sx={{ textAlign: 'end' }}>
                               <Box
                                 display='inline-flex'
                                 alignItems='center'
@@ -247,7 +247,7 @@ export default function DashboardTopsBox({
                                   fontSize={12}
                                   lineHeight='16px'
                                 >
-                                  {!isFall ? '+' : ''} {percent}%
+                                  {!isFall ? '+' : ''} {percent <= 999 || percent == undefined ? thousandDivider(percent) : 999}%
                                 </Typography>
                               </Box>
                             </TableCell>

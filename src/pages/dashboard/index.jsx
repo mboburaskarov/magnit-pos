@@ -189,7 +189,6 @@ export default function DashboarPage() {
 
   const totalSum = chartInfo?.data?.reduce((acc, item) => acc + item?.totalAmount, 0)
   const totalCount = chartInfo?.data?.reduce((acc, item) => acc + item?.count, 0)
-  console.log(selectedShops)
 
   const dashboard_filter = useMemo(() => {
     return {
@@ -250,6 +249,7 @@ export default function DashboarPage() {
     ...p,
     name: p?.title,
     count: payments?.data?.data?.[`${p.prop}_count`],
+    percent: payments?.data?.data?.[`${p.prop}_percent`],
     amount: payments?.data?.data?.[p.prop] ?? 0,
   }))
   const addDateToLink = (link) => {
@@ -370,7 +370,7 @@ export default function DashboarPage() {
                 id='dashboard-chart'
                 data={regenerated}
                 title={'Платежи'}
-                collapseCount={6}
+                collapseCount={9}
                 isLoading={isPaymentsLoading}
                 subTitle={thousandDivider(Math.round(regenerated.reduce((a, b) => a + b.amount, 0)), 'сум')}
                 tableData={[

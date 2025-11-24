@@ -6,7 +6,7 @@ import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 
 import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
-import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNewV2'
 import GroupMultiSelect from '@components/Select/GroupMultiSelect'
 import { requests } from '@utils/requests'
 

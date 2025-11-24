@@ -19,7 +19,7 @@ import PrinterIcon from '@icons/PrinterIcon'
 import RefreshIcon from '@icons/RefreshIcon'
 import { Construction } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, ListItem, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { checkPermission } from '@utils/checkPermission'
 import { requests } from '@utils/requests'
@@ -45,11 +45,14 @@ import ImplementMarkingDialog from './ImplementMarkingDialog'
 import OrderLite from './lite-order'
 import OrganizeDmedOrder from './OrganizeDmedOrder'
 import ProductDrawer from './ProductDrawer'
+import CustomImg from '@components/CustomImg'
+import { formatPhoneNumber } from '@utils/formatPhoneNumber'
 
 const useStyles = makeStyles((theme) => ({
   currentUser: {
     width: 'auto',
-    height: '48px',
+    height: '44px',
+    cursor: 'pointer',
     padding: '4px 4px 4px 16px !important',
     justifyContent: 'space-between',
     backgroundColor: theme.palette.gray[50],
@@ -62,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 12,
     fontWeight: 600,
     fontSize: 16,
-    backgroundColor: theme.palette.orange[500],
+    backgroundColor: 'transparent',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -78,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '14px',
     fontWeight: 600,
     fontFamily: "'Gilroy', sans-serif",
-    color: theme.palette.orange[500],
+    color: theme.palette.dark[500],
     fontSize: 12,
     transition: 'all .2s',
     whiteSpace: 'nowrap',
@@ -1007,28 +1010,47 @@ function NewSaleV2() {
                     <RefreshIcon />
                   </Box>
                 </Box>
-                <StyledTooltip title={'Печать нетоварного чека'}>
-                  <Box
-                    onClick={() => {
-                      size(get(cartItemsList, 'data.data.data')) !== 0 && printNoProductCheque()
-                    }}
-                    sx={{
-                      cursor: 'pointer',
-                      height: '44px',
-                      width: '44px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      backgroundColor: 'bg.10',
-                      borderRadius: '40px',
-                      justifyContent: 'center',
-                      '&:hover': {
-                        backgroundColor: 'bunker.300',
-                      },
-                    }}
-                  >
-                    <PrinterIcon />
-                  </Box>
-                </StyledTooltip>
+                <Box sx={{ display: 'flex' }}>
+                  <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar'>
+                    <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
+                      <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
+                        <Typography id='user-username' className={classes.username}>
+                          {get(userData, 'first_name')} {get(userData, 'last_name')}
+                        </Typography>
+                        <p id='user-shopname' className={`${classes.bonus_amount} `}>
+                          {/* {get(userData, 'last_name')} */}
+                          {/* {formatPhoneNumber(get(userData, 'phone'))} */}
+                        </p>
+                      </Box>
+                      <div className={classes.avatarPlaceholder}>
+                        <CustomImg src={get(userData, 'photo')} />
+                      </div>
+                    </Box>
+                  </ListItem>
+                  <StyledTooltip title={'Печать нетоварного чека'}>
+                    <Box
+                      onClick={() => {
+                        size(get(cartItemsList, 'data.data.data')) !== 0 && printNoProductCheque()
+                      }}
+                      sx={{
+                        cursor: 'pointer',
+                        height: '44px',
+                        width: '44px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        backgroundColor: 'bg.10',
+                        borderRadius: '40px',
+                        justifyContent: 'center',
+                        ml: '16px',
+                        '&:hover': {
+                          backgroundColor: 'bunker.300',
+                        },
+                      }}
+                    >
+                      <PrinterIcon />
+                    </Box>
+                  </StyledTooltip>
+                </Box>
               </Box>
 
               <LoadingContainer height='calc(100vh - 210px)' noHeight readyState={!isCartItemsLIstLoading}>

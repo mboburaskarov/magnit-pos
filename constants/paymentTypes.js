@@ -7,4 +7,5 @@ export const paymentTypes = [
   { prop: 'alif', title: 'Alif' },
   { prop: 'returnals_sum', title: 'Вазврат' },
   { prop: 'discount_amount', title: 'Сумма скидки' },
+  { prop: 'loyalty_card_balance', title: 'Карты лояльности' },
 ]

@@ -223,3 +223,6 @@ div[role='row'][row-id='ag-grid-footer'] {
 .ag-body-viewport-wrapper.ag-layout-normal {
   overflow-x: scroll;
 }
+.img {
+  /* background-color: transparent; */
+}

@@ -1,5 +1,5 @@
-import makeStyles from '@mui/styles/makeStyles';
-
+import makeStyles from '@mui/styles/makeStyles'
+import { display } from '@mui/system'
 
 const drawerWidth = '272px'
 
@@ -269,6 +269,9 @@ export const navbarStyles = makeStyles((theme) => {
       // marginTop: 'auto !important',
       padding: ({ isOpen }) => (isOpen ? '12px 16px !important' : '12px !important'),
       borderRadius: '20px !important',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'start',
       '& img': {
         width: '35px',
       },
@@ -310,7 +313,7 @@ export const navbarStyles = makeStyles((theme) => {
       marginRight: 12,
       fontWeight: 600,
       fontSize: 16,
-      backgroundColor: theme.palette.orange[600],
+      backgroundColor: 'transparent',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
