@@ -25,6 +25,7 @@ const settingsRoutes = {
       path: 'profile',
       element: <Profile />,
     },
+
     { path: 'new-permission-v2', element: <PermissionsManager /> },
     {
       path: 'company',

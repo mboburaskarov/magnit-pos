@@ -1,10 +1,9 @@
-import DashboardIcon from '../assets/icons/navbar/DashboardIcon';
-import SettingIcon from '../assets/icons/navbar/SettingIcon';
-import KatalogIcon from '../assets/icons/navbar/KatalogIcon';
-import ClientsIcon from '../assets/icons/navbar/ClientsIcon';
-import ReportIcon from '../assets/icons/navbar/ReportIcon';
-import SaleIcon from '../assets/icons/navbar/SaleIcon';
-
+import DashboardIcon from '../assets/icons/navbar/DashboardIcon'
+import SettingIcon from '../assets/icons/navbar/SettingIcon'
+import KatalogIcon from '../assets/icons/navbar/KatalogIcon'
+import ClientsIcon from '../assets/icons/navbar/ClientsIcon'
+import ReportIcon from '../assets/icons/navbar/ReportIcon'
+import SaleIcon from '../assets/icons/navbar/SaleIcon'
 
 export const navbatRouteData = [
   {
@@ -113,7 +112,21 @@ export const navbatRouteData = [
     label: 'navbar.clients',
     id: '1',
     icon: <ClientsIcon />,
-    href: '/clients/all',
+    href: '/clients',
+    children: [
+      {
+        label: 'navbar.clients',
+        active: '/clients/all*',
+        id: '51',
+        href: '/clients/all',
+      },
+      {
+        label: 'Уровень лояльности',
+        active: '/clients/loyalty-level/*',
+        id: '52',
+        href: '/clients/loyalty-level',
+      },
+    ],
   },
 
   {

@@ -8,7 +8,7 @@ import salesRoutes from './sales'
 import salesWithHeaderRoutes from './sales/withHeader'
 import settingsRoutes from './settings'
 import rolesCreateRoutes from './settings/role-create'
-import userRoutes from './users'
+import clientsRoutes from './clients'
 
 const routes = [
   { ...dashboardRoutes },
@@ -20,7 +20,7 @@ const routes = [
   { ...productsRoutes },
   { ...productsCreateRoutes },
   { ...rolesCreateRoutes },
-  { ...userRoutes },
+  { ...clientsRoutes },
   { ...settingsRoutes },
 ]
 export default routes
