@@ -107,10 +107,13 @@ function NewLightTableForInventory({
         <tfoot>
           <tr>
             <th colSpan={1}>{get(inventoryWithCheckingDetails, 'pages.[0].total_count')}</th>
-            <th colSpan={2}>Общий</th>
+            <th colSpan={2}>
+              Общий
+              {isFetchingNextPage && <div className='loader'>Загрузка ещё...</div>}
+            </th>
             <th colSpan={5}></th>
             <th colSpan={3}>
-              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>{thousandDivider(get(inventoryStat, 'data.data.current_sum'), '')}77</Typography>
+              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>{thousandDivider(get(inventoryStat, 'data.data.current_sum'), '')}</Typography>
             </th>
             <th colSpan={2}>
               <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>{thousandDivider(get(inventoryStat, 'data.data.fact_sum'), '')}</Typography>
@@ -132,7 +135,7 @@ function NewLightTableForInventory({
                   rowRefs.current[index] = el
                   if (isLast) lastRowRef(el)
                 }}
-                className={index === selectedIndex ? 'selected' : ''}
+                className={index === selectedIndex ? 'selected' : 'body-row'}
                 onClick={() => {
                   setSelectedIndex(index)
                   setLastSelectedCellRowId(row.id)
@@ -161,8 +164,6 @@ function NewLightTableForInventory({
           })}
         </tbody>
       </table>
-
-      {isFetchingNextPage && <div className='loader'>Загрузка ещё...</div>}
     </div>
   )
 }

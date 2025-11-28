@@ -31,7 +31,7 @@ i18n
   .init({
     resources,
     fallbackLng: ['ru', 'uz'],
-    lng: 'ru',
+    // lng: 'ru',
     keySeparator: '.', // we do not use keys in form messages.welcome
     interpolation: {
       escapeValue: false, // react already safes from xss

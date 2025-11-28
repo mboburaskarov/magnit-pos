@@ -78,7 +78,7 @@ function LazySelect({
   customLabel = 'name',
   boxStyle,
   label,
-  placeholder = 'components.enterAttribute',
+  placeholder = 'select_placeholder',
   uncontrolled,
   value = '',
   onChange,
@@ -191,7 +191,7 @@ function LazySelect({
           name={name}
           formatOptionLabel={formatOptionLabel}
           isSearchable={isSearchable}
-          placeholder={placeholder}
+          placeholder={t(placeholder)}
           noOptionsMessage={() => 'no options'}
           formatCreateLabel={(inputValue) => t('components.add_inputValue', { inputValue })}
           onChange={(val) => onChange(val)}
@@ -276,7 +276,7 @@ function LazySelect({
                   label: option?.name,
                   value: option?.id,
                 }))}
-                placeholder={placeholder}
+                placeholder={t(placeholder)}
                 isClearable={isClearable}
                 lastElementRef={lastElementRef}
               />
@@ -287,7 +287,7 @@ function LazySelect({
                 styles={customStyles}
                 onInputChange={handleInputChange}
                 isSearchable={isSearchable}
-                placeholder={placeholder}
+                placeholder={t(placeholder)}
                 menuPlacement={menuPlacement}
                 filterOption={filterOption}
                 noOptionsMessage={() => 'no_options'}

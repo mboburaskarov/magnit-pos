@@ -58,7 +58,7 @@ function OnlineSaleDrawer({ open, setOpen, cashBoxDetails }) {
         <Box>
           <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
             <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
-              {t('Онлайн-продажи (Noor)')}
+              {t('online_sales_noor')}
             </Typography>
             <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
           </Box>

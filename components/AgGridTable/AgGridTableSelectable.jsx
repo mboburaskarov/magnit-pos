@@ -1,21 +1,20 @@
-import { Fragment, memo, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { AgGridReact } from 'ag-grid-react';
-import { usePrevious } from 'react-use';
-import debounce from 'lodash/debounce';
-import isEqual from '@utils/isEqual';
-import { Box } from '@mui/material';
-import * as qs from 'qs';
+import { Fragment, memo, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { AgGridReact } from 'ag-grid-react'
+import { usePrevious } from 'react-use'
+import debounce from 'lodash/debounce'
+import isEqual from '@utils/isEqual'
+import { Box } from '@mui/material'
+import * as qs from 'qs'
 
-import { onColumnResized, onDisplayedColumnsChanged, scrollShowHide, useScrollListener } from './AgGridFunctions';
-import { HeaderCheckbox, icons, OverlayLoadingTemplateFunc, OverlayNoRowsTemplate } from './AgGridComponents';
-import { useQueryParams } from '../../src/hooks/useQueryParams';
-import CheckBoxRenderer from './CheckboxRenderer';
-import LoadingBlurry from '../LoadingBlurry';
-import AgGridBottom from './AgGridBottom';
-import useStyles from './useStyles';
-
+import { onColumnResized, onDisplayedColumnsChanged, scrollShowHide, useScrollListener } from './AgGridFunctions'
+import { HeaderCheckbox, icons, OverlayLoadingTemplateFunc, OverlayNoRowsTemplate } from './AgGridComponents'
+import { useQueryParams } from '../../src/hooks/useQueryParams'
+import CheckBoxRenderer from './CheckboxRenderer'
+import LoadingBlurry from '../LoadingBlurry'
+import AgGridBottom from './AgGridBottom'
+import useStyles from './useStyles'
 
 const AgGridSimpleTable = ({
   id,
@@ -346,7 +345,8 @@ const AgGridSimpleTable = ({
           defaultColDef={defaultColDef}
           suppressHorizontalScroll={true}
           isRowSelectable={isRowSelectable}
-          domLayout='autoHeight'
+          domLayout='normal'
+          suppressRowVirtualisation={true}
           onDisplayedColumnsChanged={debounce((p) => onDisplayedColumnsChanged({ ...p, updaterAction }), 1000)}
           onColumnResized={debounce((p) => onColumnResized({ ...p, updaterAction }), 1000)}
           rowHeight={48}

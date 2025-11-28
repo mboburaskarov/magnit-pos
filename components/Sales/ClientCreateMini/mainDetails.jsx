@@ -1,20 +1,19 @@
-import { Box, Grid, Typography } from '@mui/material';
-import { useFormContext } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
-import { makeStyles } from '@mui/styles';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
+import { Box, Grid, Typography } from '@mui/material'
+import { useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
+import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
-import InputDatePicker from '../../Inputs/InputDatePicker';
-import InputSwitchNew from '../../Inputs/InputSwitch';
-import { requests } from '../../../utils/requests';
-import InputPhone from '../../Inputs/PhoneNumber';
-import LazySelect from '../../Select/LazySelect';
-import TextField from '../../Inputs/TextField';
-import DiscountCard from './discountCard';
-import LoyalCard from './loyalCard';
-
+import InputDatePicker from '../../Inputs/InputDatePicker'
+import InputSwitchNew from '../../Inputs/InputSwitch'
+import { requests } from '../../../utils/requests'
+import InputPhone from '../../Inputs/PhoneNumber'
+import LazySelect from '../../Select/LazySelect'
+import TextField from '../../Inputs/TextField'
+import DiscountCard from './discountCard'
+import LoyalCard from './loyalCard'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -174,7 +173,7 @@ export default function MainDetails({ setCustomerId, setOpenDrawer, quickCreateC
           ) : (
             <>
               <Typography className={classes.required} mb='4px'>
-                {t('Лояльность карта')}
+                {t('balance')}
               </Typography>
               <Box height={'20px'} />
               <InputSwitchNew
@@ -186,11 +185,11 @@ export default function MainDetails({ setCustomerId, setOpenDrawer, quickCreateC
                 defaultValue='byHand'
                 options={[
                   {
-                    title: t('Авто'),
+                    title: t('auto'),
                     value: 'auto',
                   },
                   {
-                    title: t('Ручной'),
+                    title: t('manual'),
                     value: 'byHand',
                   },
                 ]}
@@ -204,7 +203,7 @@ export default function MainDetails({ setCustomerId, setOpenDrawer, quickCreateC
                   fullWidth
                   type={'number'}
                   error={errors?.loyalty_card_barcode}
-                  placeholder={t('Введите номер карты')}
+                  placeholder={t('enter_balance_card_number')}
                   defaultValue={clientData?.loyalty_card_barcode || ''}
                   asteriks
                 />

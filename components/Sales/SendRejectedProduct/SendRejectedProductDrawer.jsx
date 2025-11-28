@@ -9,6 +9,7 @@ import { requests } from '../../../utils/requests'
 import InputSearch from '../../Inputs/InputSearch'
 import OutLineTextFieldThousand from '../../Inputs/OutLineTextFieldThousand'
 import ResultItem from './ResultItem'
+import { t } from 'i18next'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -44,12 +45,12 @@ function SendRejectedProductDrawer({ open, setOpen, setOpenRejectConfirmDialog, 
       <Box>
         <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
           <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
-            Oтправить "Отказ"
+            {t('navbar.rejected_products')}
           </Typography>
           <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
         </Box>
         <Box display={'flex'} py={'24px'} px={'40px'}>
-          <InputSearch fullWidth uncontrolled placeholder={'Поиск: Наименование'} />
+          <InputSearch fullWidth uncontrolled placeholder={t('search_product')} />
         </Box>
         <Box
           py={'0px'}

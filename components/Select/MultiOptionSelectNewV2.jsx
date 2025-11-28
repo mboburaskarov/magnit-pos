@@ -457,10 +457,18 @@ const MultiOptionSelectNewV2 = ({
         <>
           {options?.length ? (
             <>
-              <Box className='option all' sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Box className=' all' sx={{ display: 'flex', flexDirection: 'column' }}>
                 {selectAllLabel && (
                   <Box
-                    sx={{ display: 'flex', alignItems: 'center', height: '48px', pl: '20px' }}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      height: '48px',
+                      px: '15px',
+                      borderBottom: '2px dashed',
+                      borderColor: 'bunker.300',
+                    }}
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => {
                       setTempValues(!isSelectAll ? (multiple ? 'all' : options?.[0]) : [])
@@ -468,13 +476,23 @@ const MultiOptionSelectNewV2 = ({
                       setValues(!isSelectAll ? (multiple ? 'all' : options?.[0]) : [])
                     }}
                   >
-                    <Typography sx={{ fontSize: '14px', fontWeight: '600' }}>{selectAllLabel}</Typography>
+                    <Typography sx={{ fontSize: '14px', fontWeight: '600', mr: '10px' }}>{selectAllLabel}</Typography>
                     {(isSelectAll || values == 'all') && values?.length != 1 ? <Box flexShrink={0}>{<TickSmallIcon />}</Box> : ''}
                   </Box>
                 )}
                 {selectAllLabel && (
                   <Box
-                    sx={{ display: 'flex', alignItems: 'center', minWidth: '96px', height: '48px', pr: '20px' }}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      minWidth: '96px',
+                      height: '48px',
+                      px: '15px',
+                      justifyContent: 'space-between',
+
+                      borderBottom: '2px dashed',
+                      borderColor: 'bunker.300',
+                    }}
                     onClick={() => {
                       // setTempValues(!isSelectAllB2B ? (multiple ? 'all' : options?.[0]) : [])
                       setIsSelectAllB2B((prev) => !prev)
@@ -482,7 +500,7 @@ const MultiOptionSelectNewV2 = ({
                       // setValues(!isSelectAllB2B ? (multiple ? 'all' : options?.[0]) : [])
                     }}
                   >
-                    <Typography sx={{ fontSize: '14px', fontWeight: '600' }}>Все B2B</Typography>
+                    <Typography sx={{ fontSize: '14px', fontWeight: '600', mr: '10px' }}>Все B2B</Typography>
                     {isSelectAllB2B ? (
                       <Box flexShrink={0}>
                         <TickSmallIcon />

@@ -18,6 +18,7 @@ import LockIcon from '@icons/LockIcon'
 import i18n from '@/i18n'
 import { setUserData } from '@/redux-toolkit/userSlice'
 import ChangePassWordDialog from './changePasswordDialog'
+import { t } from 'i18next'
 
 const LANGUAGE_OPTIONS = [
   { name: "O'zbekcha", value: 'uz' },
@@ -110,7 +111,7 @@ const Profile = () => {
           <Box height={'24px'} />
 
           <Typography variant='h4' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} mb={'10px'}>
-            Профиль
+            {t('navbar.profile')}
           </Typography>
 
           <ImageUpload
@@ -131,24 +132,24 @@ const Profile = () => {
 
           <Box display='flex' gap={3} mt={3} mb={'20px'}>
             <Box flex={1}>
-              <Label>Имя</Label>
+              <Label>{t('first_name')}</Label>
               <TextField disabled={!isEditMode} required fullWidth name='first_name' placeholder='Enter first name' />
             </Box>
 
             <Box flex={1}>
-              <Label>Фамилия</Label>
+              <Label>{t('last_name')}</Label>
               <TextField disabled={!isEditMode} required fullWidth name='last_name' placeholder='Enter last name' />
             </Box>
           </Box>
           <CheckAccess id={'profile-update-position'}>
             <Box flex={1} mb={7}>
-              <Label>Позиция</Label>
+              <Label>{t('position')}</Label>
               <TextField disabled={!isEditMode} required fullWidth name='position' placeholder='Enter Позиция' />
             </Box>
           </CheckAccess>
           <CheckAccess id={'profile-update-password'}>
             <Typography variant='h5' fontWeight={700} mb={3}>
-              Безопасность
+              {t('security')}
             </Typography>
 
             <Button
@@ -163,17 +164,17 @@ const Profile = () => {
               variant='primary'
               startIcon={<LockIcon color={!isEditMode && '#ccc'} />}
             >
-              Изменить пароль
+              {t('change_password.label')}
             </Button>
           </CheckAccess>
 
           <Typography variant='h5' fontWeight={700} mt={7} mb={3}>
-            Интерфейс
+            {t('interface')}
           </Typography>
 
           <Box display='flex' gap={3}>
             <Box flex={1}>
-              <Label>Язык</Label>
+              <Label>{t('language')}</Label>
               <SelectSimple
                 uncontrolled
                 onChange={(e) => {
@@ -182,7 +183,7 @@ const Profile = () => {
                   }
                   setlang(get(e, 'value', 'ru'))
                 }}
-                value={getSelectDefaultValue(LANGUAGE_OPTIONS, lang)}
+                value={getSelectDefaultValue(LANGUAGE_OPTIONS, i18n.language)}
                 white
                 isClearable={false}
                 defaultValue={languageDefaultValue}
@@ -192,8 +193,16 @@ const Profile = () => {
             </Box>
 
             <Box flex={1}>
-              <Label>Тема</Label>
-              <SelectSimple disabled={true} white isClearable={false} defaultValue={themeDefaultValue} options={THEME_OPTIONS} name='theme' />
+              <Label>{t('theme')}</Label>
+              <SelectSimple
+                disabled={false}
+                white
+                isClearable={false}
+                defaultValue={themeDefaultValue}
+                onChange={(e) => {}}
+                options={THEME_OPTIONS}
+                name='theme'
+              />
             </Box>
           </Box>
           {isEditMode && (

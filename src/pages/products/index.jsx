@@ -1,48 +1,47 @@
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/productsTableColumns';
-import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
-import AgGridTable from '@components/AgGridTable/AgGridTableSelectable';
-import ProductDrawer from '@components/Drawers/ProductDrawer';
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
-import LoadingContainer from '@components/LoadingContainer';
-import { Block, Info, Report } from '@mui/icons-material';
-import InputSwitch from '@components/Inputs/InputSwitch';
-import InputSearch from '@components/Inputs/InputSearch';
-import { checkPermission } from '@utils/checkPermission';
-import { FormProvider, useForm } from 'react-hook-form';
-import { Box, Button, Typography } from '@mui/material';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useDispatch, useSelector } from 'react-redux';
-import StyledTooltip from '@components/StyledTooltip';
-import ConfirmDialog from '@components/ConfirmDialog';
-import thousandDivider from '@utils/thousandDivider';
-import { useEffect, useMemo, useState } from 'react';
-import LoadingBlock from '@components/LoadingBlock';
-import ImageGallery from '@components/ImageGallery';
-import { useMutation, useQuery } from 'react-query';
-import FilterMenuIcon from '@icons/FilterMenuIcon';
-import BigWarningIcon from '@icons/BigWarningIcon';
-import CheckAccess from '@components/CheckAccess';
-import PrizeBoxIcon from '@icons/PrizeBoxIcon';
-import CategoryIcon from '@icons/CategoryIcon';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { error, success } from '@utils/toast';
-import BigTickIcon from '@icons/BigTickIcon';
-import { requests } from '@utils/requests';
-import ArrowDown from '@icons/ArrowDown';
-import { LoadingButton } from '@mui/lab';
-import PlusIcon from '@icons/PlusIcon';
-import { useTheme } from '@mui/styles';
-import ArrowUp from '@icons/ArrowUp';
-import { get } from 'lodash';
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/productsTableColumns'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import AgGridTable from '@components/AgGridTable/AgGridTableSelectable'
+import ProductDrawer from '@components/Drawers/ProductDrawer'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import LoadingContainer from '@components/LoadingContainer'
+import { Block, Info, Report } from '@mui/icons-material'
+import InputSwitch from '@components/Inputs/InputSwitch'
+import InputSearch from '@components/Inputs/InputSearch'
+import { checkPermission } from '@utils/checkPermission'
+import { FormProvider, useForm } from 'react-hook-form'
+import { Box, Button, Typography } from '@mui/material'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { useDispatch, useSelector } from 'react-redux'
+import StyledTooltip from '@components/StyledTooltip'
+import ConfirmDialog from '@components/ConfirmDialog'
+import thousandDivider from '@utils/thousandDivider'
+import { useEffect, useMemo, useState } from 'react'
+import LoadingBlock from '@components/LoadingBlock'
+import ImageGallery from '@components/ImageGallery'
+import { useMutation, useQuery } from 'react-query'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import CheckAccess from '@components/CheckAccess'
+import PrizeBoxIcon from '@icons/PrizeBoxIcon'
+import CategoryIcon from '@icons/CategoryIcon'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { error, success } from '@utils/toast'
+import BigTickIcon from '@icons/BigTickIcon'
+import { requests } from '@utils/requests'
+import ArrowDown from '@icons/ArrowDown'
+import { LoadingButton } from '@mui/lab'
+import PlusIcon from '@icons/PlusIcon'
+import { useTheme } from '@mui/styles'
+import ArrowUp from '@icons/ArrowUp'
+import { get } from 'lodash'
 
-import SendToErrorWithReason from './productError/sendToErrorWithReason';
-import tableHeaderSelector from './tableHeaderSelector';
-import ChangeUnitPerPack from './changeUnitPerPack';
-import ProductDashboard from './productDashboard';
-import FilterMenu from './FilterMenu';
-
+import SendToErrorWithReason from './productError/sendToErrorWithReason'
+import tableHeaderSelector from './tableHeaderSelector'
+import ChangeUnitPerPack from './changeUnitPerPack'
+import ProductDashboard from './productDashboard'
+import FilterMenu from './FilterMenu'
 
 const SELECTION_ID = 'checkboxSelectionField'
 export default function ProductsPage() {
@@ -547,7 +546,14 @@ export default function ProductsPage() {
             </Box>
           </Box>
           <FilterMenu refetch={refetch} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
-          <Box>
+          <Box
+            sx={{
+              '& .ag-root-wrapper': {
+                height: 'calc(100vh - 400px) !important',
+                overflowY: 'auto',
+              },
+            }}
+          >
             <AgGridTable
               id='products-main-table'
               alwaysShowHorizontalScroll={true}

@@ -1,42 +1,38 @@
-import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-import { Box, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import { makeStyles } from '@mui/styles';
-import { memo, useState } from 'react';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material'
+import { Box, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
+import { makeStyles } from '@mui/styles'
+import { memo, useState } from 'react'
 
-import ShortcutWrapper from '../ShortcutWrapper';
-
+import ShortcutWrapper from '../ShortcutWrapper'
+import { t } from 'i18next'
 
 const ShortcutsDrawerArray = [
   {
     title: 'menu.sales.shortcuts.add_search',
     types: [
       {
-        titleofshortcut: 'Сменить язык',
-        symbolofshortcut: ['Ctrl+Shift'],
-      },
-      {
-        titleofshortcut: 'Создать клиента',
+        titleofshortcut: 'menu.sales.shortcuts.add_user',
         symbolofshortcut: ['U'],
       },
       {
-        titleofshortcut: 'Открыть новую вкладку',
+        titleofshortcut: 'menu.sales.shortcuts.open_new_tab',
         symbolofshortcut: ['T'],
       },
       {
-        titleofshortcut: 'Передать смену',
+        titleofshortcut: 'menu.sales.shortcuts.change_shift',
         symbolofshortcut: ['A'],
       },
       {
-        titleofshortcut: 'Открыть список черновиков',
+        titleofshortcut: 'menu.sales.shortcuts.open_draft',
         symbolofshortcut: ['D'],
       },
       {
-        titleofshortcut: 'Закрыть список черновиков',
+        titleofshortcut: 'menu.sales.shortcuts.close_draft',
         symbolofshortcut: ['esc'],
       },
       {
-        titleofshortcut: 'Не товарный чек',
+        titleofshortcut: 'menu.sales.shortcuts.not_product',
         symbolofshortcut: ['F8'],
       },
 
@@ -54,7 +50,7 @@ const ShortcutsDrawerArray = [
     title: 'menu.sales.shortcuts.cart',
     types: [
       {
-        titleofshortcut: 'Добавить черновик',
+        titleofshortcut: 'menu.sales.shortcuts.add_draft',
         symbolofshortcut: ['Q'],
       },
       // {
@@ -96,35 +92,35 @@ const ShortcutsDrawerArray = [
     title: 'menu.sales.shortcuts.payment',
     types: [
       {
-        titleofshortcut: 'Оплата (LITE)',
+        titleofshortcut: 'menu.sales.shortcuts.payment_lite',
         symbolofshortcut: ['F10'],
       },
       {
-        titleofshortcut: 'Оплата (Полный)',
+        titleofshortcut: 'menu.sales.shortcuts.payment_full',
         symbolofshortcut: ['F9'],
       },
       {
-        titleofshortcut: 'Закрыть кассу',
+        titleofshortcut: 'menu.sales.shortcuts.close_cash',
         symbolofshortcut: ['x'],
       },
       {
-        titleofshortcut: 'Выберите наличными',
+        titleofshortcut: 'menu.sales.shortcuts.select_cash',
         symbolofshortcut: ['N'],
       },
       {
-        titleofshortcut: 'Выберите HUMO',
+        titleofshortcut: 'menu.sales.shortcuts.select_humo',
         symbolofshortcut: ['H'],
       },
       {
-        titleofshortcut: 'Выберите UZCARD',
+        titleofshortcut: 'menu.sales.shortcuts.select_uzcard',
         symbolofshortcut: ['U'],
       },
       {
-        titleofshortcut: 'Выберите PAYME',
+        titleofshortcut: 'menu.sales.shortcuts.select_payme',
         symbolofshortcut: ['P'],
       },
       {
-        titleofshortcut: 'Выберите CLICK',
+        titleofshortcut: 'menu.sales.shortcuts.select_click',
         symbolofshortcut: ['C'],
       },
 
@@ -250,7 +246,7 @@ function ShortcutsDrawer() {
         <Box className={classes.topOfBox}>
           <Box className={classes.leftSide}>
             {isOpen ? (
-              <Typography variant='h1'>{t('menu.sales.shortcuts.title')}</Typography>
+              <Typography variant='h1'>{'menu.sales.shortcuts.title'}</Typography>
             ) : (
               <>
                 <Box className={classes.leftSideBox}>

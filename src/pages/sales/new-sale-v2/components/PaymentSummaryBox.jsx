@@ -2,6 +2,7 @@
 import { Box, Typography } from '@mui/material'
 import { get } from 'lodash'
 import thousandDivider from '../../../../../utils/thousandDivider'
+import { t } from 'i18next'
 
 export const PaymentSummaryBox = ({ cartItemsList, maxAmount }) => {
   return (
@@ -38,10 +39,10 @@ export const PaymentSummaryBox = ({ cartItemsList, maxAmount }) => {
         },
       }}
     >
-      <SummaryRow title='Итого' value={thousandDivider(get(cartItemsList, 'total_amount'), 'сум')} />
-      <SummaryRow title='Скидка' value={thousandDivider(get(cartItemsList, 'discount_amount'), 'сум')} />
-      <SummaryRow title='Нужно оплатить' value={thousandDivider(maxAmount > 0 ? maxAmount : 0, 'сум')} />
-      <SummaryRow title='Сдача' value={thousandDivider(maxAmount < 0 ? Math.abs(maxAmount) : 0, 'сум')} />
+      <SummaryRow title={t('total_amount')} value={thousandDivider(get(cartItemsList, 'total_amount'), 'сум')} />
+      <SummaryRow title={t('discount')} value={thousandDivider(get(cartItemsList, 'discount_amount'), 'сум')} />
+      <SummaryRow title={t('should_pay')} value={thousandDivider(maxAmount > 0 ? maxAmount : 0, 'сум')} />
+      <SummaryRow title={t('return')} value={thousandDivider(maxAmount < 0 ? Math.abs(maxAmount) : 0, 'сум')} />
     </Box>
   )
 }

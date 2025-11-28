@@ -1,23 +1,22 @@
-import { Box, Button, Drawer, Typography } from '@mui/material';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useEffect, useMemo, useState } from 'react';
-import FilterMenuIcon from '@icons/FilterMenuIcon';
-import { makeStyles, useTheme } from '@mui/styles';
-import { useTranslation } from 'react-i18next';
-import { requests } from '@utils/requests';
-import { useSelector } from 'react-redux';
-import CloseIcon from '@icons/CloseIcon';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
+import { Box, Button, Drawer, Typography } from '@mui/material'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { useEffect, useMemo, useState } from 'react'
+import FilterMenuIcon from '@icons/FilterMenuIcon'
+import { makeStyles, useTheme } from '@mui/styles'
+import { useTranslation } from 'react-i18next'
+import { requests } from '@utils/requests'
+import { useSelector } from 'react-redux'
+import CloseIcon from '@icons/CloseIcon'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
-import PendingSaleParentItemsBox from './PendingSaleParentItemsBox';
-import ListWithPagination from '../AgGridTable/ListWithPagination';
-import DraftParentItemsBox from './DraftParentItemsBox';
-import DraftChildDrawer from './DraftChildDrawer';
-import InputSwitch from '../Inputs/InputSwitch';
-import InputSearch from '../Inputs/InputSearch';
-import DraftFilter from './DraftFilter';
-
+import PendingSaleParentItemsBox from './PendingSaleParentItemsBox'
+import ListWithPagination from '../AgGridTable/ListWithPagination'
+import DraftParentItemsBox from './DraftParentItemsBox'
+import DraftChildDrawer from './DraftChildDrawer'
+import InputSwitch from '../Inputs/InputSwitch'
+import InputSearch from '../Inputs/InputSearch'
+import DraftFilter from './DraftFilter'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -64,7 +63,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
         <Box>
           <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
             <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
-              {t('draft')} / Отложки
+              {t('draft_and_pending_sales')}
             </Typography>
             <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
           </Box>
@@ -93,8 +92,8 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
               defaultValue={appType}
               onChange={(e) => setAppType(e)}
               options={[
-                { title: 'Отложки', value: 'sale' },
-                { title: 'Черновики', value: 'draft', inprecess: true },
+                { title: t('pending_sales'), value: 'sale' },
+                { title: t('draft'), value: 'draft', inprecess: true },
               ]}
             />
           </Box>

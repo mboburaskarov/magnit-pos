@@ -29,6 +29,7 @@ import tableHeaderSelector from './tableHeaderSelector'
 import TransferDashboard from './transferDashboard'
 import StatusDetailModal from './statusDetailModal'
 import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { height } from '@mui/system'
 
 export default function TransferPage() {
   const theme = useTheme()
@@ -210,7 +211,14 @@ export default function TransferPage() {
         <CreateReturn refetch={refetch} open={orderModel} setOpen={setOrderModel} />
         <StatusDetailModal open={statusModal} setOpen={setStatusModal} />
 
-        <Box>
+        <Box
+          sx={{
+            '& .ag-root-wrapper': {
+              height: 'calc(100vh - 300px) !important',
+              overflowY: 'auto',
+            },
+          }}
+        >
           <AgGridTable
             id='imports-main-table'
             fullDownload={() => getReturnToWarehouseExcelReport({ ...transferListFilter, offset: 0, limit: 1000000 })}

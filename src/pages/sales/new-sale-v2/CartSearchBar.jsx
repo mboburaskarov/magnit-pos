@@ -22,6 +22,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useDebounce } from 'use-debounce'
 
 import SerchedItem from './SerchedItem'
+import { t } from 'i18next'
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -357,7 +358,7 @@ function CartSearchBar({
             style={{ zIndex: showOverlay ? 25 : 10 }}
             sx={{ width: '100%', marginRight: '16px !important', height: '40px !important', '& .MuiOutlinedInput-root': { height: '48px' } }}
             name='search'
-            placeholder={'Поиск: название, маркировка, штрих-код'}
+            placeholder={t('search_product')}
             fullWidth
             onFocus={() => {
               a = 0
@@ -449,7 +450,7 @@ function CartSearchBar({
               <RussianFlagIcon />
             </Box>
           </StyledTooltip>
-          <StyledTooltip title={'Закрыть кассу & Обмен сменами'}>
+          <StyledTooltip title={`${t('close_cashbox')} & ${t('change_shift')}`}>
             <ButtonWithPopup
               id={'ff'}
               noArrow
@@ -472,7 +473,7 @@ function CartSearchBar({
               }
               popperData={[
                 {
-                  title: 'Закрыть кассу',
+                  title: t('close_cashbox'),
                   icon: <UnlockIcon />,
                   clickHandler: () => {
                     if (size(get(darftList, 'data.data.data')) > 0) {
@@ -482,7 +483,7 @@ function CartSearchBar({
                     }
                   },
                 },
-                { title: 'Обмен сменами', icon: <FinanceAndPaymentIcon />, soon: false, clickHandler: () => setIsOpenChangeShift(true) },
+                { title: t('change_shift'), icon: <FinanceAndPaymentIcon />, soon: false, clickHandler: () => setIsOpenChangeShift(true) },
               ]}
             />
           </StyledTooltip>
@@ -516,7 +517,7 @@ function CartSearchBar({
             ) : (
               <Box sx={{ zIndex: 999999, display: 'flex', justifyContent: 'center', paddingTop: '75px', height: '100vh' }}>
                 <Typography zIndex={'9999999'} fontSize={'25px'} fontWeight={'600'} color={'#fff'}>
-                  Продукт не найден
+                  {t('product_not_found')}
                 </Typography>
               </Box>
             )}

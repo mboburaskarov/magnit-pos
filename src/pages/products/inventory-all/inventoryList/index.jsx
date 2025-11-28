@@ -170,7 +170,14 @@ export default function InventoryPage() {
         <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
         <CreateInventory refetch={refetch} open={orderModel} setOpen={setOrderModel} />
 
-        <Box>
+        <Box
+          sx={{
+            '& .ag-root-wrapper': {
+              height: 'calc(100vh - 300px) !important',
+              overflowY: 'auto',
+            },
+          }}
+        >
           <AgGridTable
             id='imports-main-table'
             isDownloading={inventoryListLoading}

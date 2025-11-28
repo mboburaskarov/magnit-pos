@@ -137,22 +137,28 @@ function CartDetailSide({
           accessId='can-open-new-window'
           isLast={true}
           leftIcon={<MaximizeIcon />}
-          title={'Открыть новое окно продаж'}
+          title={t('open_new_window_sale')}
           onClick={() => saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })}
         />
         <CustomButtonRow
           accessId='draft-and-pending-sales'
           isLast={true}
           leftIcon={<TimeFast />}
-          title={'Черновик / Отложки'}
+          title={t('draft_and_pending_sales')}
           onClick={() => setIsOpenDraft(true)}
         />
-        <CustomButtonRow accessId='product-reject' isLast={true} leftIcon={<ClearIcon />} title={'Отказ'} onClick={() => setIsOpenSendRejectedProduct(true)} />
+        <CustomButtonRow
+          accessId='product-reject'
+          isLast={true}
+          leftIcon={<ClearIcon />}
+          title={t('navbar.rejected_products')}
+          onClick={() => setIsOpenSendRejectedProduct(true)}
+        />
         <CustomButtonRow
           accessId='can-return-product'
           isLast={true}
           leftIcon={<ReturnExchangeIcon />}
-          title={'Возврат'}
+          title={t('navbar.return')}
           onClick={() => setIsOpenReturnExchange(true)}
         />
         <CheckAccess id={'can-disable-epos-cheque'}>
@@ -168,7 +174,7 @@ function CartDetailSide({
           >
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <ChequeIcon />
-              <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>EPOS</Typography>
+              <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>{t('epos')}</Typography>
             </Box>
             <CustomSwitch
               onChange={() => {
@@ -182,7 +188,7 @@ function CartDetailSide({
           </Box>
         </CheckAccess>
 
-        <CustomButtonRow accessId='noor-order' leftIcon={<OnlineSaleNoorIcon />} title={'Онлайн-продажи (Noor)'} onClick={() => setIsOpenNoorDrawer(true)} />
+        <CustomButtonRow accessId='noor-order' leftIcon={<OnlineSaleNoorIcon />} title={t('online_sales_noor')} onClick={() => setIsOpenNoorDrawer(true)} />
       </Box>
 
       <Box>
@@ -359,7 +365,7 @@ function CartDetailSide({
             }}
           >
             <Typography fontWeight={'500'} fontSize={'14px'} color={'purple.200'} lineHeight={'20px'}>
-              Карта лояльности
+              {t('balance')}
             </Typography>
             <Typography fontWeight={'700'} fontSize={'28px'} color={'white'} lineHeight={'40px'}>
               {thousandDivider(get(customerId, 'balance', 0), 'сум')}
@@ -378,7 +384,7 @@ function CartDetailSide({
       </Box>
       <Box className={classes.cart_detail_id}>
         <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
-          Новый клиент
+          {t('new_client')}
         </Typography>
       </Box>
 
@@ -393,15 +399,15 @@ function CartDetailSide({
           onChange={(value) => setServiceType(value)}
           options={[
             {
-              title: t('Другой'),
+              title: t('other'),
               value: 'other',
             },
             {
-              title: t('Arzon Apt'),
+              title: t('arzon_apt'),
               value: 'arzon-apteka',
             },
             {
-              title: t('Oson Apt'),
+              title: t('oson_apt'),
               value: 'oson-apteka',
             },
           ]}
@@ -435,17 +441,17 @@ function CartDetailSide({
             <Typography sx={{ fontWeight: '700', fontSize: '24px', lineHeight: '32px', color: '#fff' }}>
               +{thousandDivider(get(sellerBonusInOneSale, 'data.data.bonus', 0), 'сум')}
             </Typography>
-            <Typography sx={{ fontWeight: '600', fontSize: '12px', lineHeight: '14px', color: '#fff' }}>Мой бонус</Typography>
+            <Typography sx={{ fontWeight: '600', fontSize: '12px', lineHeight: '14px', color: '#fff' }}>{t('my_bonus')}</Typography>
           </Box>
         </Box>
         <RightArrow color='#fff' />
       </Box>
       <Box className={classes.cart_detail_id} mt={'12px'}>
         <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
-          {t('Бонусные товары')}
+          {t('bonus_products')}
         </Typography>
         <Typography sx={{ cursor: 'pointer' }} onClick={() => setIsOpenBonusProductDrawer(true)} color={'orange.500'} fontSize={'14px'} fontWeight={'600'}>
-          {t('Показать')}
+          {t('show')}
         </Typography>
       </Box>
       <BonusProductTable customerId={customerId} bonusTableHeight={bonusTableHeight} />

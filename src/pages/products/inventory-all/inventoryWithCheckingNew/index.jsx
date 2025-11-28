@@ -2,8 +2,8 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Container, Typography } from '@mui/material'
 import dayjs from 'dayjs'
-import { get } from 'lodash'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { get, set } from 'lodash'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
@@ -52,7 +52,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [status, setStatus] = useState('ALL')
   const [debouncedSearchBarcode] = useDebounce(barcode, 400)
-
+  const [startTyping, setStartTyping] = useState(false)
   const queryClient = useQueryClient()
 
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -75,11 +75,12 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
           setQuantityModalOpen({ id: get(res, 'data.data.data.[0].id'), data: get(res, 'data.data.data.[0]') })
           setshouldICleanSearchQuery(true)
         }
-      }, 700)
+      })
       if (res.data?.data?.data?.length > 0 && status !== 'checking' && barcode?.length >= 1) {
         setLastSelectedCellRowId(res.data.data.data[0].id)
         setSelectedIndex(0)
       }
+      setStartTyping(false)
       return res
     })
     return {
@@ -99,7 +100,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   )
 
-  const allRows = data?.pages?.flatMap((page) => page.rows) || []
+  const allRows = useMemo(() => data?.pages?.flatMap((page) => page.rows), [data]) || []
   const rowCount = allRows.length
 
   useHotkeys('up', () => {
@@ -133,9 +134,10 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   })
 
   useHotkeys('enter', () => {
-    if (selectedCellRowId) return
+    if (selectedCellRowId || isLoading || startTyping) return
 
     const selectedRow = allRows[selectedIndex]
+
     if (selectedRow) {
       onSelectRow(selectedRow)
       setLastSelectedCellRowId(selectedRow.id)
@@ -144,59 +146,97 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     }
   })
 
-  const SCROLL_DEBOUNCE = 60
+  // const SCROLL_DEBOUNCE = 60
 
-  let scrollTimeout = null
-  let isHoldingKey = false
+  // let scrollTimeout = null
+  // let isHoldingKey = false
+  // useEffect(() => {
+  //   const handleKeyDown = (e) => {
+  //     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+  //       isHoldingKey = true
+  //     }
+  //   }
+  //   const handleKeyUp = (e) => {
+  //     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+  //       isHoldingKey = false
+  //     }
+  //   }
+
+  //   window.addEventListener('keydown', handleKeyDown)
+  //   window.addEventListener('keyup', handleKeyUp)
+  //   return () => {
+  //     window.removeEventListener('keydown', handleKeyDown)
+  //     window.removeEventListener('keyup', handleKeyUp)
+  //   }
+  // }, [])
+
+  // useEffect(() => {
+  //   if (!rowRefs.current[selectedIndex]) return
+
+  //   if (scrollTimeout) clearTimeout(scrollTimeout)
+  //   scrollTimeout = setTimeout(() => {
+  //     const el = rowRefs.current[selectedIndex]
+  //     if (el && typeof el.scrollIntoView === 'function') {
+  //       el.scrollIntoView({
+  //         behavior: isHoldingKey ? 'smooth' : 'smooth',
+  //         block: 'center',
+  //       })
+  //     }
+  //   }, SCROLL_DEBOUNCE)
+  // }, [selectedIndex])
+
+  // useEffect(() => {
+  //   const container = document.querySelector('.inventory-with-checking-page table tbody')
+  //   const el = rowRefs.current[selectedIndex]
+  //   if (container && el) {
+  //     const elTop = el.offsetTop
+  //     const elBottom = elTop + el.offsetHeight
+  //     if (elTop < container.scrollTop) {
+  //       container.scrollTop = elTop - 50
+  //     } else if (elBottom > container.scrollTop + container.clientHeight) {
+  //       container.scrollTop = elBottom - container.clientHeight + 50
+  //     }
+  //   }
+  // }, [selectedIndex])
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-        isHoldingKey = true
-      }
-    }
-    const handleKeyUp = (e) => {
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-        isHoldingKey = false
-      }
-    }
+    const row = rowRefs.current[selectedIndex]
+    if (!row) return
 
-    window.addEventListener('keydown', handleKeyDown)
-    window.addEventListener('keyup', handleKeyUp)
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-      window.removeEventListener('keyup', handleKeyUp)
-    }
-  }, [])
+    // Use requestAnimationFrame for smoother scroll timing
+    requestAnimationFrame(() => {
+      row.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest',
+      })
+    })
+  }, [selectedIndex])
+  const scrollTimeoutRef = useRef(null)
 
   useEffect(() => {
-    if (!rowRefs.current[selectedIndex]) return
+    // Clear any pending scroll
+    if (scrollTimeoutRef.current) {
+      cancelAnimationFrame(scrollTimeoutRef.current)
+    }
 
-    if (scrollTimeout) clearTimeout(scrollTimeout)
-    scrollTimeout = setTimeout(() => {
-      const el = rowRefs.current[selectedIndex]
-      if (el && typeof el.scrollIntoView === 'function') {
-        el.scrollIntoView({
-          behavior: isHoldingKey ? 'auto' : 'smooth',
+    // Use RAF for optimal timing
+    scrollTimeoutRef.current = requestAnimationFrame(() => {
+      const row = rowRefs.current[selectedIndex]
+      if (row) {
+        row.scrollIntoView({
+          behavior: 'smooth',
           block: 'center',
+          inline: 'nearest',
         })
       }
-    }, SCROLL_DEBOUNCE)
-  }, [selectedIndex])
+    })
 
-  useEffect(() => {
-    const container = document.querySelector('.inventory-with-checking-page table tbody')
-    const el = rowRefs.current[selectedIndex]
-    if (container && el) {
-      const elTop = el.offsetTop
-      const elBottom = elTop + el.offsetHeight
-      if (elTop < container.scrollTop) {
-        container.scrollTop = elTop - 50
-      } else if (elBottom > container.scrollTop + container.clientHeight) {
-        container.scrollTop = elBottom - container.clientHeight + 50
+    return () => {
+      if (scrollTimeoutRef.current) {
+        cancelAnimationFrame(scrollTimeoutRef.current)
       }
     }
   }, [selectedIndex])
-
   const lastRowRef = useCallback(
     (node) => {
       if (isFetchingNextPage) return
@@ -275,6 +315,8 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       const isCtrlOrCmd = event.ctrlKey || event.metaKey
       if (isCtrlOrCmd) return
       if (/^[a-zа-яё0-9+\-=!?"'.,]$/i.test(key)) {
+        if (status == 'checking') return
+        setStartTyping(true)
         if (shouldICleanSearchQuery) {
           setBarcode('')
           setBarcode((prev) => prev + key)
@@ -340,6 +382,15 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       preventDefault: true,
     }
   )
+  function replaceAtIndex(arr, index, replacements) {
+    let currentOffset = Math.floor(selectedIndex / 50) * 50
+
+    const result = [...arr]
+    replacements.forEach((item, i) => {
+      result[currentOffset + i] = item
+    })
+    return result
+  }
 
   const refetchSpecificPage = async (targetOffset) => {
     try {
@@ -347,17 +398,31 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
 
       queryClient.setQueryData(['inventoryWithCheckingDetails', id, debouncedSearchBarcode, status, orderStoring], (oldData) => {
         if (!oldData) return { pages: [pageData], pageParams: [targetOffset] }
+        let updatedPages = oldData.pages
+        if (status == 'checking') {
+          //write update function for status checking
+          let updatedPages2 = replaceAtIndex(oldData.pages[0].rows, selectedIndex, pageData.rows)
+          updatedPages = [
+            {
+              ...oldData.pages[0],
+              rows: updatedPages2,
+            },
+          ]
+        } else {
+          updatedPages = oldData.pages.map((page) => (page.nextOffset === targetOffset + LIMIT ? pageData : page))
 
-        const updatedPages = oldData.pages.map((page) => (page.nextOffset === targetOffset + LIMIT ? pageData : page))
-
-        if (!updatedPages.some((page) => page.nextOffset === targetOffset + LIMIT)) {
-          updatedPages.push(pageData)
+          if (!updatedPages.some((page) => page.nextOffset === targetOffset + LIMIT)) {
+            updatedPages.push(pageData)
+          }
         }
 
         return {
           ...oldData,
           pages: updatedPages,
-          pageParams: oldData.pageParams.map((param, index) => (updatedPages[index]?.nextOffset - LIMIT === targetOffset ? targetOffset : param)),
+          pageParams:
+            status == 'checking'
+              ? [0]
+              : oldData.pageParams.map((param, index) => (updatedPages[index]?.nextOffset - LIMIT === targetOffset ? targetOffset : param)),
         }
       })
     } catch (err) {
@@ -491,6 +556,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
                   }
                 }}
                 onChange={({ target }) => {
+                  setStartTyping(true)
                   if (shouldICleanSearchQuery) {
                     setBarcode(target.value.split('')?.at(-1))
                     setshouldICleanSearchQuery(false)

@@ -594,6 +594,7 @@
 }
 
 .ag-root-wrapper {
+  min-height: calc(100vh - 400px);
   /* Ensure the grid can receive focus */
   outline: none;
 }

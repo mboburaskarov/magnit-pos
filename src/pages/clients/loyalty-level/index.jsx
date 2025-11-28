@@ -43,7 +43,7 @@ export default function LoyaltyLevel() {
           padding: '16px 25px 12px',
         }}
       >
-        Программа лояльности
+        Уровень лояльности
       </Typography>
       <Box
         sx={{
@@ -123,7 +123,7 @@ export default function LoyaltyLevel() {
               <Typography>silver</Typography>
             </Box>
             <Box className='body-cell'>
-              <Typography>{thousandDivider(1000000, 'сум')}</Typography>
+              <Typography>{thousandDivider(1000, 'сум')}</Typography>
             </Box>
 
             <Box className='body-cell'>

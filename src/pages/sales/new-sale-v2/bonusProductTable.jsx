@@ -1,14 +1,14 @@
-import { Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import SortDownIcon from '@icons/dashboard/SortDownIcon';
-import { useWindowHeight } from '@hooks/useWindowHeight';
-import { useCallback, useEffect, useRef } from 'react';
-import thousandDivider from '@utils/thousandDivider';
-import SortUpIcon from '@icons/dashboard/SortUpIcon';
-import SortIcon from '@icons/dashboard/SortIcon';
-import { useInfiniteQuery } from 'react-query';
-import { requests } from '@utils/requests';
-import { get } from 'lodash';
-
+import { Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import SortDownIcon from '@icons/dashboard/SortDownIcon'
+import { useWindowHeight } from '@hooks/useWindowHeight'
+import { useCallback, useEffect, useRef } from 'react'
+import thousandDivider from '@utils/thousandDivider'
+import SortUpIcon from '@icons/dashboard/SortUpIcon'
+import SortIcon from '@icons/dashboard/SortIcon'
+import { useInfiniteQuery } from 'react-query'
+import { requests } from '@utils/requests'
+import { get } from 'lodash'
+import { t } from 'i18next'
 
 const BonusTableRow = ({ item, product }) => (
   <TableRow
@@ -139,7 +139,7 @@ function BonusProductTable({ customerId, bonusTableHeight }) {
                   color: 'bunker.300',
                 }}
               >
-                Название {false ? <SortUpIcon /> ? false : <SortDownIcon /> : <SortIcon />}
+                {t('name')} {false ? <SortUpIcon /> ? false : <SortDownIcon /> : <SortIcon />}
               </Typography>
             </TableCell>
             <TableCell>
@@ -155,7 +155,7 @@ function BonusProductTable({ customerId, bonusTableHeight }) {
                   color: 'bunker.300',
                 }}
               >
-                Цена {false ? <SortUpIcon /> ? false : <SortDownIcon /> : <SortIcon />}
+                {t('price')} {false ? <SortUpIcon /> ? false : <SortDownIcon /> : <SortIcon />}
               </Typography>
             </TableCell>
           </TableHead>

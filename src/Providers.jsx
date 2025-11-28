@@ -24,7 +24,10 @@ import ErrorBoundary from './ErrorBoundary'
 import useListenSystemTheme from './hooks/useListenSystemTheme'
 import { useQueryParams } from './hooks/useQueryParams'
 import store from './redux-toolkit/store'
-
+import paletteDark from './assets/theme/paletteDark'
+import { use } from 'react'
+import i18n from './i18n'
+import { I18nextProvider } from 'react-i18next'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,7 +39,7 @@ const queryClient = new QueryClient({
 
 function Providers({ children }) {
   const { values } = useQueryParams()
-  const [themeMode, setThemeMode] = useState('auto')
+  const [themeMode, setThemeMode] = useState('dark')
   const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)')
   const emotionCache = createEmotionCache()
   useListenSystemTheme(setThemeMode)
@@ -59,10 +62,19 @@ function Providers({ children }) {
       setThemeMode(user_theme)
     }
   }, [values.theme_changed, prefersDarkMode])
+  useEffect(() => {
+    const user_language = localStorage.getItem('i18nextLng')
+
+    if (user_language) {
+      i18n.changeLanguage(user_language)
+    } else {
+      i18n.changeLanguage('uz')
+    }
+  }, [])
 
   const muiTheme = useMemo(() => {
     const themeObj = theme({
-      palette: themeMode === 'dark' ? paletteLight : paletteLight,
+      palette: themeMode === 'dark' ? paletteDark : paletteLight,
       mode: themeMode,
     })
     return createTheme(themeObj)
@@ -70,16 +82,18 @@ function Providers({ children }) {
 
   return (
     <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <CacheProvider value={emotionCache}>
-          <ThemeProvider theme={muiTheme}>
-            <StyledEngineProvider injectFirst>
-              <ErrorBoundary>{children}</ErrorBoundary>
-            </StyledEngineProvider>
-          </ThemeProvider>
-        </CacheProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <I18nextProvider i18n={i18n}>
+        <QueryClientProvider client={queryClient}>
+          <CacheProvider value={emotionCache}>
+            <ThemeProvider theme={muiTheme}>
+              <StyledEngineProvider injectFirst>
+                <ErrorBoundary>{children}</ErrorBoundary>
+              </StyledEngineProvider>
+            </ThemeProvider>
+          </CacheProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </I18nextProvider>
     </Provider>
   )
 }

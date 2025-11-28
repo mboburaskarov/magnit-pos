@@ -32,43 +32,43 @@ export const navbatRouteData = [
       },
 
       {
-        label: 'Авто заказ',
+        label: 'navbar.auto_order',
         active: '/products/auto-order/*',
         id: '32',
         href: '/products/auto-order',
       },
       {
-        label: 'Инвентаризация',
+        label: 'navbar.inventory',
         active: '/products/inventory/*',
         id: '32',
         href: '/products/inventory',
       },
       {
-        label: 'Перемещение',
+        label: 'navbar.transfer',
         active: '/products/transfer/*',
         id: '32',
         href: '/products/transfer',
       },
       {
-        label: 'Переоценка',
+        label: 'navbar.revaluation',
         active: '/products/revaluation/*',
         id: '3255',
         href: '/products/revaluation',
       },
       {
-        label: 'Возврат на склад',
+        label: 'navbar.return',
         active: '/products/return-to-warehouse/*',
         id: '32',
         href: '/products/return-to-warehouse',
       },
       {
-        label: 'Списание',
+        label: 'navbar.write-off',
         active: '/products/write-off/*',
         id: '32',
         href: '/products/write-off',
       },
       {
-        label: 'Товары с отказом',
+        label: 'navbar.rejected_products',
         active: '/products/rejected-products/*',
         id: '3255',
         href: '/products/rejected-products',
@@ -121,7 +121,7 @@ export const navbatRouteData = [
         href: '/clients/all',
       },
       {
-        label: 'Уровень лояльности',
+        label: 'navbar.levels',
         active: '/clients/loyalty-level/*',
         id: '52',
         href: '/clients/loyalty-level',
@@ -130,32 +130,32 @@ export const navbatRouteData = [
   },
 
   {
-    label: 'Отчеты',
+    label: 'navbar.reports',
     id: '9999',
     icon: <ReportIcon />,
     href: '/reports',
     children: [
       {
-        label: 'Товары',
+        label: 'navbar.products2',
         active: '/reports/product/*',
         id: '91',
         href: '/reports/product',
       },
       {
-        label: 'Aптека',
+        label: 'navbar.stores',
         active: '/reports/branch/*',
         id: '9189',
         href: '/reports/branch',
       },
       {
-        label: 'Продавцы',
+        label: 'navbar.vendors',
         active: '/reports/vendor/*',
         id: '911',
         // soon: true,
         href: '/reports/vendor',
       },
       {
-        label: 'Клиенти',
+        label: 'navbar.clients',
         active: '/reports/client/*',
         id: '917',
         href: '/reports/client',
@@ -169,19 +169,19 @@ export const navbatRouteData = [
     href: '/settings',
     children: [
       {
-        label: 'Профиль',
+        label: 'navbar.profile',
         active: '/settings/profile/*',
         id: '91',
         href: '/settings/profile',
       },
       {
-        label: 'Компания',
+        label: 'navbar.company',
         active: '/settings/company/*',
         id: '91',
         href: '/settings/company',
       },
       {
-        label: 'Компании',
+        label: 'navbar.companies',
         active: '/settings/companies/*',
         id: '91',
         href: '/settings/companies',
@@ -194,19 +194,19 @@ export const navbatRouteData = [
         href: '/settings/employees',
       },
       {
-        label: 'Филиалы',
+        label: 'navbar.stores',
         active: '/settings/branches/*',
         id: '93',
         href: '/settings/branches',
       },
       {
-        label: 'Роли',
+        label: 'navbar.roles',
         active: '/settings/roles/*',
         id: '94',
         href: '/settings/roles',
       },
       {
-        label: 'Кассы',
+        label: 'navbar.cashboxes',
         active: '/settings/cashbox/*',
         id: '94',
         href: '/settings/cashbox',

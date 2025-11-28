@@ -177,7 +177,7 @@ function LiteOrder({
       <Box sx={{ width: '100%', minWidth: '320px' }}>
         <PaymentInputField
           name='lite_cash_amount'
-          placeholder={t('Наличные')}
+          placeholder={t('cash')}
           control={control}
           errors={errors}
           inputRef={(el) => (inputRefs.current[0] = el)}
@@ -189,7 +189,7 @@ function LiteOrder({
 
         <PaymentInputField
           name='lite_card_amount'
-          placeholder={t('По карте')}
+          placeholder={t('card')}
           control={control}
           errors={errors}
           inputRef={(el) => (inputRefs.current[1] = el)}
@@ -202,7 +202,7 @@ function LiteOrder({
         />
         <PaymentInputField
           name='lite_online_amount'
-          placeholder={t('Онлайн оплата')}
+          placeholder={t('online_pay')}
           control={control}
           errors={errors}
           inputRef={(el) => (inputRefs.current[2] = el)}
@@ -216,7 +216,7 @@ function LiteOrder({
         <PaymentInputField
           setPaymentsList={setPaymentsList}
           name='lite_cash_amount_soon'
-          placeholder={t('Карта лояльности')}
+          placeholder={t('balance')}
           readOnly
           shortcut='L'
           soon

@@ -7,6 +7,7 @@ import { makeStyles } from '@mui/styles'
 import { requests } from '@utils/requests'
 import thousandDivider from '@utils/thousandDivider'
 import { error } from '@utils/toast'
+import { t } from 'i18next'
 import { get } from 'lodash'
 import { useMutation } from 'react-query'
 
@@ -283,7 +284,7 @@ export default function CartItem({ index, searchRef, packRef = () => {}, unitRef
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Typography sx={{ fontWeight: 600, fontSize: 16, lineHeight: '24px', color: 'bunker.950' }}>{item?.name}</Typography>
             <Typography variant='caption' sx={{ fontWeight: 500, fontSize: 12, lineHeight: '16px', color: 'bunker.500' }}>
-              {item?.barcode} {item.is_marking ? '/ Есть маркировка' : ''}
+              {item?.barcode} {item.is_marking ? `/ ${t('has_marking')}` : ''}
             </Typography>
           </Box>
         </Box>

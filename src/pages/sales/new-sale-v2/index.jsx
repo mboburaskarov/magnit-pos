@@ -967,7 +967,7 @@ function NewSaleV2() {
                     {t('menu.orders.new_order.heading')}
                   </Typography>
                   {get(cartItemsList, 'data.data.data', 0)?.length ? (
-                    <StyledTooltip title={'Удалить все продукты'}>
+                    <StyledTooltip title={t('delete_all_products')}>
                       <Box
                         display={'flex'}
                         sx={{ cursor: 'pointer', ml: '16px', backgroundColor: 'bg.10', p: '6px 19px', borderRadius: '40px' }}
@@ -1027,7 +1027,7 @@ function NewSaleV2() {
                       </div>
                     </Box>
                   </ListItem>
-                  <StyledTooltip title={'Печать нетоварного чека'}>
+                  <StyledTooltip title={t('print_no_product_cheque')}>
                     <Box
                       onClick={() => {
                         size(get(cartItemsList, 'data.data.data')) !== 0 && printNoProductCheque()
@@ -1211,9 +1211,9 @@ function NewSaleV2() {
                     }}
                   >
                     <Typography mr={'20px'} fontWeight={'500'} fontSize={'18px'} color={'orange.500'} lineHeight={'26px'}>
-                      {t('Полный')}
+                      {t('full')}
                     </Typography>
-
+                    <ShortcutBox height='24px' color='#fe5000' textColor='#fe5000' shortcut='F9' />
                     <ArrowRightIcon disabled={size(get(cartItemsList, 'data.data.data'))} />
                   </Button>
                   <StyledTooltip title={'В доработке'}>
@@ -1488,7 +1488,7 @@ function NewSaleV2() {
           },
         }}
       >
-        <Typography sx={{ color: '#fff', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>⌘ {'Шорткаты'}</Typography>
+        <Typography sx={{ color: '#fff', fontSize: '14px', lineHeight: '20px', fontWeight: '600' }}>⌘ {t('shortcuts')}</Typography>
       </Box>
       <ChangeShift open={isOpenChangeShift} setOpen={setIsOpenChangeShift} />
       <DraftDrawer cashBoxDetails={cashBoxDetails} open={isOpenDraft} setOpen={setIsOpenDraft} />

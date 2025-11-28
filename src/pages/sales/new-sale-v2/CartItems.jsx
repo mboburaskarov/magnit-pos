@@ -1,8 +1,8 @@
-import { Box, Table, TableBody } from '@mui/material';
-import { get } from 'lodash';
+import { Box, Table, TableBody } from '@mui/material'
+import { get } from 'lodash'
 
-import CartItem from './CartItem';
-
+import CartItem from './CartItem'
+import { t } from 'i18next'
 
 export default function CartItems({
   searchRef,
@@ -45,19 +45,19 @@ export default function CartItems({
             flex: 1,
           }}
         >
-          Название лекарства
+          {t('name')}
         </Box>
         <Box className='table-cell' sx={{ width: '100px' }}>
-          Остаток
+          {t('leftover')}
         </Box>
         <Box className='table-cell' sx={{ width: '72px' }}>
-          Уп
+          {t('pack_short')}
         </Box>
         <Box className='table-cell' sx={{ width: '96px' }}>
-          Шт
+          {t('unit_short')}
         </Box>
         <Box className='table-cell' sx={{ textAlign: 'left !important', width: '150px' }}>
-          Цена
+          {t('price')}
         </Box>
         <Box className='table-cell' sx={{ textAlign: 'left !important', width: '40px', borderTopRightRadius: '6px', borderBottomRightRadius: '6px' }}></Box>
       </Box>

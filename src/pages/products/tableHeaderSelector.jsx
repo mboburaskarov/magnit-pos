@@ -1,22 +1,21 @@
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import { Box, IconButton, Typography } from '@mui/material';
-import Highlighter from 'react-highlight-words';
-import { useNavigate } from 'react-router-dom';
-import { useTheme } from '@mui/styles';
-import { get, head } from 'lodash';
-import { memo } from 'react';
-import dayjs from 'dayjs';
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
+import AccountTreeIcon from '@mui/icons-material/AccountTree'
+import { Box, IconButton, Typography } from '@mui/material'
+import Highlighter from 'react-highlight-words'
+import { useNavigate } from 'react-router-dom'
+import { useTheme } from '@mui/styles'
+import { get, head } from 'lodash'
+import { memo } from 'react'
+import dayjs from 'dayjs'
 
-import StatusCell from '../../../components/AgGridTable/Cells/StatusCell';
-import { products_statuses } from '../../assets/data/products-statuses';
-import StyledTooltip from '../../../components/StyledTooltip';
-import thousandDivider from '../../../utils/thousandDivider';
-import CheckAccess from '../../../components/CheckAccess';
-import DeleteIcon from '../../assets/icons/DeleteIcon';
-import CustomImg from '../../../components/CustomImg';
-import EditIcon from '../../assets/icons/EditIcon';
-
+import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
+import { products_statuses } from '../../assets/data/products-statuses'
+import StyledTooltip from '../../../components/StyledTooltip'
+import thousandDivider from '../../../utils/thousandDivider'
+import CheckAccess from '../../../components/CheckAccess'
+import DeleteIcon from '../../assets/icons/DeleteIcon'
+import CustomImg from '../../../components/CustomImg'
+import EditIcon from '../../assets/icons/EditIcon'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -162,7 +161,7 @@ export default function tableHeaderSelector({
         headerName: t('table_columns.photo'),
         colId: el.field,
         suppressCellFlash: true,
-        cellRenderer: memo((p) => <Image setOpenErrorReason={setOpenErrorReason} {...p} setImages={setImages} />),
+        cellRenderer: memo((p) => <Image setOpenErrorReason={setOpenErrorReason} setImages={setImages} />),
       }
     }
     if (el.field === 'name') {
