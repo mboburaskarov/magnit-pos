@@ -34,6 +34,7 @@ import DmedPrescriptionsList from './dmedPrescriptionsList'
 
 function CartDetailSide({
   setServiceType,
+  noorOrderCount,
   setIsOpenBonusProductDrawer,
   serviceType,
   setSendToEpos,
@@ -86,7 +87,7 @@ function CartDetailSide({
     else localStorage.setItem('send_to_epos', true)
   }, [sendToEpos])
 
-  const CustomButtonRow = ({ onClick, leftIcon, title, isLast = false, accessId = 'no-access' }) => (
+  const CustomButtonRow = ({ onClick, notify = false, leftIcon, title, isLast = false, accessId = 'no-access' }) => (
     <CheckAccess id={accessId}>
       <Box
         onClick={onClick}
@@ -106,6 +107,25 @@ function CartDetailSide({
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {leftIcon}
           <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>{title}</Typography>
+          {notify && (
+            <Typography
+              sx={{
+                ml: '10px',
+                width: '20px',
+                bgcolor: 'orange.500',
+                borderRadius: '50%',
+                fontWeight: '500',
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {notify}
+            </Typography>
+          )}
         </Box>
         <RightArrow />
       </Box>
@@ -188,7 +208,13 @@ function CartDetailSide({
           </Box>
         </CheckAccess>
 
-        <CustomButtonRow accessId='noor-order' leftIcon={<OnlineSaleNoorIcon />} title={t('online_sales_noor')} onClick={() => setIsOpenNoorDrawer(true)} />
+        <CustomButtonRow
+          notify={noorOrderCount}
+          accessId='noor-order'
+          leftIcon={<OnlineSaleNoorIcon />}
+          title={t('online_sales_noor')}
+          onClick={() => setIsOpenNoorDrawer(true)}
+        />
       </Box>
 
       <Box>

@@ -934,39 +934,7 @@ function NewSale() {
       }
     },
   })
-  // useEffect(() => {
-  //   const noorTimeout = setInterval(() => {
-  //     refetchNoorOrderCount()
-  //   }, 5000)
 
-  //   return () => clearInterval(noorTimeout)
-  // }, [])
-  // const { mutate: checkEposFlesh, isLoading: ischeckEposFlesh } = useMutation(requests.checkEposFlesh, {
-  //   onSuccess: ({ data }) => {
-  //     if (get(data, 'error', true) && get(data, 'message', '').includes('cannot connect card')) {
-  //       error("EPOS Flash не установлен (EPOS qurulmasi su'g'irib qo'yilgan")
-  //       setIsOrderDrower(false)
-  //       setLiteOrder(false)
-  //       return
-  //     }
-  //   },
-  //   onError: (err) => {
-  //     setIsOrderDrower(false)
-  //     setLiteOrder(false)
-  //     error('Ошибка EPOS getFiscalsList')
-  //     console.error('err', err)
-  //   },
-  // })
-  // useEffect(() => {
-  //   if (isOrderDrower || liteOrder) {
-  //     checkEposFlesh({
-  //       token: 'DXJFX32CN1296678504F2',
-  //       method: 'getFiscalsList',
-  //       printerSize: 80,
-  //       zReportId: 1,
-  //     })
-  //   }
-  // }, [isOrderDrower, liteOrder])
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />
