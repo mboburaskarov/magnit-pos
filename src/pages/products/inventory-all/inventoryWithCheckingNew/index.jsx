@@ -102,14 +102,23 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   )
 
   const allRows = useMemo(() => data?.pages?.flatMap((page) => page.rows), [data]) || []
+  const newAllRows =
+    status == 'checking'
+      ? allRows.filter((row) => {
+          const name = row.name?.toLowerCase() || ''
+          const barcode = row.barcode?.toLowerCase() || ''
+          const search = checkingSearchBarcode.toLowerCase()
 
-  const rowCount = allRows.length
+          return barcode.includes(search) || name.includes(search)
+        })
+      : allRows
+  const rowCount = newAllRows.length
 
   useHotkeys('up', () => {
     if (selectedCellRowId) return
 
     setSelectedIndex((prev) => Math.max(0, prev - 1))
-    const selectedRow = allRows[selectedIndex - 1]
+    const selectedRow = newAllRows[selectedIndex - 1]
     if (selectedRow) {
       setLastSelectedCellRowId(selectedRow.id)
     }
@@ -119,7 +128,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     if (selectedCellRowId) return
 
     setSelectedIndex((prev) => Math.min(rowCount - 1, prev + 1))
-    const selectedRow = allRows[selectedIndex + 1]
+    const selectedRow = newAllRows[selectedIndex + 1]
     if (selectedRow) {
       setLastSelectedCellRowId(selectedRow.id)
     }
@@ -138,7 +147,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   useHotkeys('enter', () => {
     if (selectedCellRowId || isLoading || startTyping) return
 
-    const selectedRow = allRows[selectedIndex]
+    const selectedRow = newAllRows[selectedIndex]
 
     if (selectedRow) {
       onSelectRow(selectedRow)
@@ -384,7 +393,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     () => {
       if (selectedCellRowId) return
 
-      const selectedRow = allRows[selectedIndex]
+      const selectedRow = newAllRows[selectedIndex]
       if (selectedRow) {
         onSelectRow(selectedRow)
         setLastSelectedCellRowId(selectedRow.id)
@@ -477,17 +486,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
                 orderStoring={orderStoring}
                 setOrderStoring={setOrderStoring}
                 isFetchingNextPage={isFetchingNextPage}
-                data={
-                  status == 'checking'
-                    ? allRows.filter((row) => {
-                        const name = row.name?.toLowerCase() || ''
-                        const barcode = row.barcode?.toLowerCase() || ''
-                        const search = checkingSearchBarcode.toLowerCase()
-
-                        return barcode.includes(search) || name.includes(search)
-                      })
-                    : allRows
-                }
+                data={newAllRows}
                 inventoryWithCheckingDetails={data}
               />
             </Box>
