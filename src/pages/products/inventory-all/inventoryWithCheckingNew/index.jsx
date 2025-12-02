@@ -113,7 +113,21 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
         })
       : allRows
   const rowCount = newAllRows.length
-
+  useEffect(() => {
+    if (status === 'checking') {
+      setTimeout(() => {
+        if (newAllRows.length === 1 && !shouldICleanSearchQuery && !quantityModalOpen) {
+          setQuantityModalOpen({ id: get(newAllRows, '[0].id'), data: get(newAllRows, '[0]') })
+          setshouldICleanSearchQuery(true)
+        }
+      })
+      if (newAllRows?.length > 0 && checkingSearchBarcode?.length >= 1) {
+        setLastSelectedCellRowId(newAllRows[0].id)
+        setSelectedIndex(0)
+      }
+      setStartTyping(false)
+    }
+  }, [checkingSearchBarcode])
   useHotkeys('up', () => {
     if (selectedCellRowId) return
 
@@ -386,7 +400,6 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       preventDefault: true,
     }
   )
-  console.log((checkingSearchBarcode, 'checkingbar'))
 
   useHotkeys(
     'shift',
