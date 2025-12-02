@@ -188,8 +188,8 @@ const AgGridUnSelectableSimpleTable = ({
         <AgGridReact
           groupDisplayType='multipleColumns'
           onGridReady={onGridReady}
-          overlayNoRowsTemplate={'<span></span>'}
           overlayLoadingTemplate={OverlayLoadingTemplate}
+          overlayNoRowsTemplate={'<div></div>'}
           rowData={rowData}
           columnDefs={modifyColumns}
           paginationOffsetSize={offsetSize}
@@ -199,7 +199,7 @@ const AgGridUnSelectableSimpleTable = ({
           defaultColDef={defaultColDef}
           suppressHorizontalScroll={true}
           isRowSelectable={isRowSelectable}
-          domLayout='normal'
+          domLayout='autoHeight'
           onDisplayedColumnsChanged={debounce((p) => onDisplayedColumnsChanged({ ...p, updaterAction }), 1000)}
           onColumnResized={debounce((p) => onColumnResized({ ...p, updaterAction }), 1000)}
           rowHeight={48}
@@ -208,7 +208,7 @@ const AgGridUnSelectableSimpleTable = ({
           suppressContextMenu={true}
           suppressCellFocus={true}
           icons={icons}
-          suppressRowVirtualisation={true}
+          // suppressRowVirtualisation={true}
           popupParent={popupParent}
           enableCellTextSelection={true}
           pinnedBottomRowData={pinnedBottomRowData}

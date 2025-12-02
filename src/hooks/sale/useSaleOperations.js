@@ -298,7 +298,7 @@ export const useSaleOperations = ({
         ...(SALE_TYPE === 'RETURN' && {
           refundInfo: (() => {
             const info = JSON.parse(get(cashBoxDetails, 'data.data.epos_response.response', '{}'))?.message
-            const { qrCodeURL, qrCodeUrl, qrcodeUrl, ...rest } = info ?? {}
+            const { qrCodeURL, qrCodeUrl, qrcodeUrl, card, cash, service, amount, chequeNumber, ...rest } = info ?? {}
             return rest
           })(),
         }),

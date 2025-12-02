@@ -214,7 +214,7 @@ export default function TransferPage() {
         <Box
           sx={{
             '& .ag-root-wrapper': {
-              height: 'calc(100vh - 300px) !important',
+              // height: 'calc(100vh - 300px) !important',
               overflowY: 'auto',
             },
           }}

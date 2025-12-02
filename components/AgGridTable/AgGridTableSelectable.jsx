@@ -345,8 +345,8 @@ const AgGridSimpleTable = ({
           defaultColDef={defaultColDef}
           suppressHorizontalScroll={true}
           isRowSelectable={isRowSelectable}
-          domLayout='normal'
-          suppressRowVirtualisation={true}
+          domLayout='autoHeight'
+          // suppressRowVirtualisation={true}
           onDisplayedColumnsChanged={debounce((p) => onDisplayedColumnsChanged({ ...p, updaterAction }), 1000)}
           onColumnResized={debounce((p) => onColumnResized({ ...p, updaterAction }), 1000)}
           rowHeight={48}

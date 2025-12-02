@@ -192,10 +192,11 @@ export const useSaleOperations = ({
             (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)
           ),
         },
+
         ...(SALE_TYPE === 'RETURN' && {
           refundInfo: (() => {
             const info = JSON.parse(get(cashBoxDetails, 'data.data.epos_response.response', '{}'))?.message
-            const { qrCodeURL, qrCodeUrl, qrcodeUrl, ...rest } = info ?? {}
+            const { qrCodeURL, qrCodeUrl, qrcodeUrl, card, cash, service, amount, chequeNumber, ...rest } = info ?? {}
             return rest
           })(),
         }),

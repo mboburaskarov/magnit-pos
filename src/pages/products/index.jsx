@@ -549,7 +549,7 @@ export default function ProductsPage() {
           <Box
             sx={{
               '& .ag-root-wrapper': {
-                height: 'calc(100vh - 400px) !important',
+                // height: 'calc(100vh - 400px) !important',
                 overflowY: 'auto',
               },
             }}
