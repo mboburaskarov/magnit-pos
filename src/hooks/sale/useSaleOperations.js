@@ -90,8 +90,10 @@ export const useSaleOperations = ({
         setCustomerId('')
         const qrCodeURL = get(data, 'message.qrCodeURL') || get(data, 'message.qrCodeUrl') || get(data, 'info.qrCodeURL') || 'pending'
         const fiscalData = get(data, 'message.fiscalSign') || get(data, 'info.fiscalSign') || 'pending'
+        const terminalId = get(data, 'message.terminalId') || get(data, 'info.terminalId') || 'pending'
 
-        setQrcodeUrl({ qr: qrCodeURL, fiscal: fiscalData })
+        setQrcodeUrl({ qr: qrCodeURL, fiscal: fiscalData, terminalId: terminalId })
+
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
       } else {
         setOpenRefreshDialog(false)

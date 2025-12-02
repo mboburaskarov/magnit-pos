@@ -14,6 +14,9 @@ import thousandDivider from '@utils/thousandDivider.js'
 const FiskalText = ({ data }) => {
   return <Typography>Fiskal belgi: {data}</Typography>
 }
+const FiskalNumber = ({ data }) => {
+  return <Typography>Fiskal raqami: {data}</Typography>
+}
 function RippedPaperCheck({
   data,
   margin,
@@ -69,6 +72,7 @@ function RippedPaperCheck({
                 "PHARMA COSMOS" MCHJ
               </p>
             </div>
+
             <Box sx={{ textAlign: 'center' }}>{qrcodeUrl == false && 'Не товарный чек'}</Box>
             <div className={classes.border} />
             <p
@@ -85,6 +89,13 @@ function RippedPaperCheck({
           <div className={classes.border} />
           <Fragment key={'index'}>
             <Box className={classes.content}>
+              <DashedRow
+                id={`return-price-${'index1'}`}
+                rowData={{
+                  type: `STIR:`,
+                  value: `303970073`,
+                }}
+              />
               {qrcodeUrl != false && disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index2'}`}
@@ -286,6 +297,7 @@ function RippedPaperCheck({
                   Chek turi: {qrcodeUrl?.qr == 'pending' ? '' : get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}
                 </Typography>
                 {qrcodeUrl?.qr !== 'pending' && <FiskalText data={qrcodeUrl.fiscal} />}
+                {qrcodeUrl?.qr !== 'pending' && <FiskalNumber data={qrcodeUrl?.terminalId} />}
               </Box>
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
