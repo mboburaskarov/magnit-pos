@@ -52,7 +52,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [checkingSearchBarcode, setCheckingSearchBarcode] = useState('')
   const [status, setStatus] = useState('ALL')
-  const [debouncedSearchBarcode] = useDebounce(barcode, 400)
+  const [debouncedSearchBarcode] = useDebounce(barcode, 500)
   const [startTyping, setStartTyping] = useState(false)
   const queryClient = useQueryClient()
 
@@ -310,8 +310,8 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     },
   })
 
-  const { data: inventoryStat, refetch: refetchInverStatus } = useQuery(['inventoryStat', debouncedSearchBarcode], () =>
-    requests.getInventoryStat(id, { search: debouncedSearchBarcode })
+  const { data: inventoryStat, refetch: refetchInverStatus } = useQuery(['inventoryStat', debouncedSearchBarcode, checkingSearchBarcode], () =>
+    requests.getInventoryStat(id, { search: debouncedSearchBarcode || checkingSearchBarcode })
   )
 
   useHotkeys(
