@@ -50,6 +50,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   const [quantityModalOpen, setQuantityModalOpen] = useState(false)
   const [shouldICleanSearchQuery, setshouldICleanSearchQuery] = useState(false)
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
+  const [checkingSearchBarcode, setCheckingSearchBarcode] = useState('')
   const [status, setStatus] = useState('ALL')
   const [debouncedSearchBarcode] = useDebounce(barcode, 400)
   const [startTyping, setStartTyping] = useState(false)
@@ -101,6 +102,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   )
 
   const allRows = useMemo(() => data?.pages?.flatMap((page) => page.rows), [data]) || []
+
   const rowCount = allRows.length
 
   useHotkeys('up', () => {
@@ -315,7 +317,16 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       const isCtrlOrCmd = event.ctrlKey || event.metaKey
       if (isCtrlOrCmd) return
       if (/^[a-zа-яё0-9+\-=!?"'.,]$/i.test(key)) {
-        if (status == 'checking') return
+        if (status == 'checking') {
+          if (shouldICleanSearchQuery) {
+            setCheckingSearchBarcode('')
+            setCheckingSearchBarcode((prev) => prev + key)
+            setshouldICleanSearchQuery(false)
+            return
+          }
+          setCheckingSearchBarcode((prev) => prev + key)
+          return
+        }
         setStartTyping(true)
         if (shouldICleanSearchQuery) {
           setBarcode('')
@@ -328,13 +339,16 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       }
       if (event.code === 'Backspace') {
         setBarcode((prev) => prev.slice(0, -1))
+        status == 'checking' && setCheckingSearchBarcode((prev) => prev.slice(0, -1))
       }
 
       if (event.code === 'Escape') {
         setBarcode('')
+        status == 'checking' && setCheckingSearchBarcode('')
       }
       if (event.code === 'Space') {
         setBarcode((p) => p + ' ')
+        status == 'checking' && setCheckingSearchBarcode((p) => p + ' ')
       }
     },
     {
@@ -363,6 +377,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       preventDefault: true,
     }
   )
+  console.log((checkingSearchBarcode, 'checkingbar'))
 
   useHotkeys(
     'shift',
@@ -462,7 +477,17 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
                 orderStoring={orderStoring}
                 setOrderStoring={setOrderStoring}
                 isFetchingNextPage={isFetchingNextPage}
-                data={allRows}
+                data={
+                  status == 'checking'
+                    ? allRows.filter((row) => {
+                        const name = row.name?.toLowerCase() || ''
+                        const barcode = row.barcode?.toLowerCase() || ''
+                        const search = checkingSearchBarcode.toLowerCase()
+
+                        return barcode.includes(search) || name.includes(search)
+                      })
+                    : allRows
+                }
                 inventoryWithCheckingDetails={data}
               />
             </Box>
@@ -557,6 +582,15 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
                 }}
                 onChange={({ target }) => {
                   setStartTyping(true)
+                  if (status == 'checking') {
+                    if (shouldICleanSearchQuery) {
+                      setCheckingSearchBarcode(target.value.split('')?.at(-1))
+                      setshouldICleanSearchQuery(false)
+                      return
+                    }
+                    setCheckingSearchBarcode(get(target, 'value'))
+                    return
+                  }
                   if (shouldICleanSearchQuery) {
                     setBarcode(target.value.split('')?.at(-1))
                     setshouldICleanSearchQuery(false)
@@ -567,8 +601,8 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
                 id='producrs-search'
                 name='search'
                 disabled={status == 'checking'}
-                value={barcode}
-                setSearchTerm={setBarcode}
+                value={status == 'checking' ? checkingSearchBarcode : barcode}
+                setSearchTerm={status == 'checking' ? setCheckingSearchBarcode : setBarcode}
                 placeholder={t('input.search.product.multi')}
               />
               <Box width={'20px'} />
