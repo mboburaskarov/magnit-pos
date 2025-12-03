@@ -57,7 +57,7 @@ export const useSaleOperations = ({
       if (!JSON.parse(sendToEpos)) {
         success('Продажа завершена!')
         setNewSaleId('888', false)
-        setQrcodeUrl({ qr: 'pharma-cosmos.uz', fiscal: 'No', cardType })
+        setQrcodeUrl({ qr: 'pharma-cosmos.uz', fiscal: 'No', cardType: JSON.parse(data?.config?.data)?.card_type })
       } else {
         sendEPOSData(data)
       }
