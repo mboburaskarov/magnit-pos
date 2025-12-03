@@ -27,7 +27,7 @@ export const useSaleOperations = ({
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
   const sendToEpos = JSON.parse(localStorage.getItem('send_to_epos'))
-
+  const [cardType, setCardType] = useState(undefined)
   const [payType, setPayType] = useState(undefined)
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export const useSaleOperations = ({
       if (!JSON.parse(sendToEpos)) {
         success('Продажа завершена!')
         setNewSaleId('888', false)
-        setQrcodeUrl({ qr: 'pharma-cosmos.uz', fiscal: 'No' })
+        setQrcodeUrl({ qr: 'pharma-cosmos.uz', fiscal: 'No', cardType })
       } else {
         sendEPOSData(data)
       }
@@ -92,7 +92,7 @@ export const useSaleOperations = ({
         const fiscalData = get(data, 'message.fiscalSign') || get(data, 'info.fiscalSign') || 'pending'
         const terminalId = get(data, 'message.terminalId') || get(data, 'info.terminalId') || 'pending'
 
-        setQrcodeUrl({ qr: qrCodeURL, fiscal: fiscalData, terminalId: terminalId })
+        setQrcodeUrl({ qr: qrCodeURL, fiscal: fiscalData, terminalId: terminalId, cardType })
 
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
       } else {
@@ -310,7 +310,8 @@ export const useSaleOperations = ({
   )
 
   const submitSale = useCallback(
-    (paymentsList, otpData, maxAmount) => {
+    (paymentsList, otpData, maxAmount, cardType) => {
+      setCardType(cardType)
       // Handle both formats: lite order (with payment_type_id) and full order (with id)
       const paymentTypes = paymentsList
         ?.filter((type) => get(type, 'amount', false) && !get(type, 'isPlaceholder', false))
@@ -346,6 +347,7 @@ export const useSaleOperations = ({
         loyalty_card_barcode: customerId?.loyalty_card_barcode, // Add loyalty card support
         total_amount: get(cartItemsList, 'total_amount'),
         tax_free: !sendToEpos,
+        card_type: cardType,
         marking_data: markingData,
       })
     },

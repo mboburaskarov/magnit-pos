@@ -3,6 +3,7 @@ export const paymentTypes = [
   { prop: 'humo', title: 'Humo' },
   { prop: 'uzcard', title: 'Uzcard' },
   { prop: 'click', title: 'Click' },
+  { prop: 'uzum', title: 'Uzum' },
   { prop: 'payme', title: 'Payme' },
   { prop: 'alif', title: 'Alif' },
   { prop: 'returnals_sum', title: 'Вазврат' },

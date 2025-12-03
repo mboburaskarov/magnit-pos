@@ -1,5 +1,4 @@
-import { createUniversalSlice } from '../helper/createUniversalSlice';
-
+import { createUniversalSlice } from '../helper/createUniversalSlice'
 
 const columns = [
   {
@@ -64,6 +63,12 @@ const columns = [
     hide: false,
     minWidth: 70,
     width: 160,
+  },
+  {
+    field: 'uzum',
+    hide: false,
+    minWidth: 70,
+    width: 158,
   },
   {
     field: 'loyalty_card',

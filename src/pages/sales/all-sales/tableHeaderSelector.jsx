@@ -190,6 +190,14 @@ export default function tableHeaderSelector({ salesColumns, setOpenSaleDrawer, v
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='alif' />),
       }
     }
+    if (el.field === 'uzum') {
+      return {
+        ...el,
+        headerName: 'Uzum',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='uzum' />),
+      }
+    }
     if (el.field === 'total_discount') {
       return {
         ...el,

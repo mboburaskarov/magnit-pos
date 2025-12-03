@@ -70,6 +70,12 @@ const columns = [
     minWidth: 70,
     width: 158,
   },
+  {
+    field: 'uzum',
+    hide: false,
+    minWidth: 70,
+    width: 158,
+  },
 
   {
     field: 'return_amount',

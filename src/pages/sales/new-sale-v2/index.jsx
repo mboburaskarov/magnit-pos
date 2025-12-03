@@ -966,6 +966,8 @@ function NewSaleV2() {
   //     ws.close()
   //   }
   // }, [])
+  console.log(liteOrder)
+
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />

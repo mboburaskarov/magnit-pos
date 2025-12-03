@@ -1,4 +1,4 @@
-import StyledDialog from '@components/Dialogs/StyledDialog'
+import StyledDialog from '@components/Dialogs/StyledeEmptyDialog'
 import { RippedPaperItem } from '@components/RippedPaperList'
 import { usePaymentShortcuts } from '@hooks/sale/useKeyboardShortcuts' //lite sale own hook
 import { usePaymentOperations } from '@hooks/sale/usePaymentOperations' //lite sale own hook
@@ -19,6 +19,7 @@ import { PaymentSummaryBox } from '../components/PaymentSummaryBox'
 import PreventRefresh from '../components/PreventRefresh'
 import PreventRefreshDialog from '../components/PreventRefreshDialog'
 import SaleProgressSteps from '../saleStepLoading'
+import { LoadingButton } from '@mui/lab'
 
 function LiteOrder({
   serviceType,
@@ -49,6 +50,7 @@ function LiteOrder({
     inputRefs.current[1].value = ''
     inputRefs.current[2].value = ''
   }, [cartItemsList])
+  const [openCartType, setOpenCartType] = useState(false)
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
   const [isOpenRefreshDialog, setOpenRefreshDialog] = useState(false)
   const [newSaleId, setNewSaleId] = useState(false)
@@ -116,6 +118,8 @@ function LiteOrder({
       if (paymentsList.find((el) => el.type === 'app')?.amount > 0) {
         setOpenScanDialog(true)
         setLiteOrder(false)
+      } else if (paymentsList.find((el) => el.type === 'card')?.amount > 0) {
+        setOpenCartType(true)
       } else {
         onSubmit()
         setLiteOrder(false)
@@ -139,9 +143,11 @@ function LiteOrder({
     }
   }, [isOpenScanDialog])
 
-  const onSubmit = async (otpData) => {
+  const onSubmit = async ({ otp: otpData, cardType }) => {
     setOpenScanDialog(false)
-    submitSale(paymentsList, otpData, maxAmount)
+    setOpenCartType(false)
+    setLiteOrder(false)
+    submitSale(paymentsList, otpData, maxAmount, cardType)
   }
 
   return (
@@ -254,7 +260,41 @@ function LiteOrder({
           />
         </Box>
       </Box>
-
+      <StyledDialog
+        backbtn={false}
+        maxWidth={'300px'}
+        onClose={() => setOpenCartType(false)}
+        customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpenCartType(false)} />}
+        title={
+          <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.500'}>
+            {t('Karta turi')}
+          </Typography>
+        }
+        open={openCartType}
+      >
+        <Box sx={{ padding: '40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'column' }}>
+          <LoadingButton
+            sx={{ minHeight: '48px !important ', display: 'flex', mb: '20px' }}
+            variant='contained'
+            loading={isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType}
+            onClick={() => {
+              onSubmit({ cardType: 'personal' })
+            }}
+          >
+            {t('Shaxsiya karta')}
+          </LoadingButton>
+          <LoadingButton
+            sx={{ minHeight: '48px !important ', display: 'flex' }}
+            variant='contained'
+            loading={isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType}
+            onClick={() => {
+              onSubmit({ cardType: 'carparative' })
+            }}
+          >
+            {t('Korporativ karta')}
+          </LoadingButton>
+        </Box>
+      </StyledDialog>
       {/* QR Scan Dialog */}
       <StyledDialog
         backbtn={false}
@@ -278,7 +318,7 @@ function LiteOrder({
             name='barcode-click'
             onKeyDown={(e) => {
               if (e.code === 'Enter') {
-                onSubmit(e.target.value)
+                onSubmit({ otp: e.target.value })
                 scannedBarcodeRef.current.value = ''
               }
             }}

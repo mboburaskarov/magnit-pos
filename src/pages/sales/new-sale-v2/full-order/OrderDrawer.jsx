@@ -9,11 +9,11 @@ import { useSaleOperations } from '@hooks/sale/useSaleOperations' //sales global
 import { default as CloseIcon, default as RemovePaymentIcon } from '@icons/CloseIcon'
 import QrScanIcon from '@icons/QrScanIcon'
 import { LoadingButton } from '@mui/lab'
-import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
+import { Box, Button, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { requests } from '@utils/requests'
 import thousandDivider from '@utils/thousandDivider'
-import { get } from 'lodash'
+import { get, set } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -143,7 +143,7 @@ export default function OrderDrawer({
   const [qrcodeUrl, setQrcodeUrl] = useState({ qr: 'pending', fiscal: 'pending' })
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
   const [isOpenRefreshDialog, setOpenRefreshDialog] = useState(false)
-
+  const [openCartType, setOpenCartType] = useState(false)
   const lastPaymentInput = useRef()
   const scannedBarcodeRef = useRef()
 
@@ -227,9 +227,9 @@ export default function OrderDrawer({
     }
   }, [isOpenScanDialog])
 
-  const onSubmit = async (otpData) => {
+  const onSubmit = async ({ otp: otpData, cardType }) => {
     setOpenScanDialog(false)
-
+    setOpenCartType(false)
     const paymentTypes = paddedPaymentsList
       .filter((type) => get(type, 'isPlaceholder', false) === false)
       .map(({ id, ...type }) => ({
@@ -241,7 +241,7 @@ export default function OrderDrawer({
         app_type: get(type, 'name').toLowerCase(),
       }))
 
-    submitSale(paymentTypes, otpData, maxAmount)
+    submitSale(paymentTypes, otpData, maxAmount, cardType)
   }
 
   return (
@@ -450,6 +450,8 @@ export default function OrderDrawer({
               onClick={() => {
                 if (paymentsList.find((el) => el.type === 'app')) {
                   setOpenScanDialog(true)
+                } else if (paymentsList.find((el) => el.type === 'card')) {
+                  setOpenCartType(true)
                 } else {
                   onSubmit()
                 }
@@ -486,7 +488,41 @@ export default function OrderDrawer({
           />
         </Drawer>
       </Box>
-
+      <StyledDialog
+        backbtn={false}
+        maxWidth={'300px'}
+        onClose={() => setOpenCartType(false)}
+        customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpenCartType(false)} />}
+        title={
+          <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.500'}>
+            {t('Karta turi')}
+          </Typography>
+        }
+        open={openCartType}
+      >
+        <Box sx={{ padding: '40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'column' }}>
+          <LoadingButton
+            sx={{ minHeight: '48px !important ', display: 'flex', mb: '20px' }}
+            variant='contained'
+            loading={isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType}
+            onClick={() => {
+              onSubmit({ cardType: 'personal' })
+            }}
+          >
+            {t('Shaxsiya karta')}
+          </LoadingButton>
+          <LoadingButton
+            sx={{ minHeight: '48px !important ', display: 'flex' }}
+            variant='contained'
+            loading={isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType}
+            onClick={() => {
+              onSubmit({ cardType: 'carparative' })
+            }}
+          >
+            {t('Korporativ karta')}
+          </LoadingButton>
+        </Box>
+      </StyledDialog>
       {/* QR Scan Dialog */}
       <StyledDialog
         backbtn={false}
@@ -514,7 +550,7 @@ export default function OrderDrawer({
             name='barcode-click'
             onKeyDown={(e) => {
               if (e.code === 'Enter') {
-                onSubmit(e.target.value)
+                onSubmit({ otp: e.target.value })
                 scannedBarcodeRef.current.value = ''
               }
             }}

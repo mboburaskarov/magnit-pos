@@ -249,7 +249,15 @@ function RippedPaperCheck({
                         )
                     ))
               }
-
+              {disableSumsOnGoods() && (
+                <DashedRow
+                  id={`return-price-${'index'}`}
+                  rowData={{
+                    type: `Karta turi`,
+                    value: `${qrcodeUrl.cardType === 'personal' ? 'Shaxsiy' : 'Korporativ'} karta`,
+                  }}
+                />
+              )}
               {disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index'}`}
