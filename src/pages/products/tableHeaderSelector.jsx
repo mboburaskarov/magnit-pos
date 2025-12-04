@@ -57,7 +57,8 @@ const Image = ({ data, rowIndex, setImages, setOpenErrorReason }) => {
           width: '40px',
         },
         '.has-img': {
-          width: '25px',
+          width: '40px',
+          height: '40px',
         },
       }}
     >
