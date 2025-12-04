@@ -263,7 +263,7 @@ function LiteOrder({
       <StyledDialog
         backbtn={false}
         maxWidth={'300px'}
-        onClose={() => setOpenCartType(false)}
+        onClose={(() => setOpenCartType(false), setLiteOrder(false))}
         customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpenCartType(false)} />}
         title={
           <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.500'}>

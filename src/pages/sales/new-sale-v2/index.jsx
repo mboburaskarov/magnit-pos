@@ -341,16 +341,17 @@ function NewSaleV2() {
       console.error('err', err)
     },
   })
-  // const { data: noorOrderCount, refetch: refetchNoorOrderCount } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
-  //   onSuccess: ({ data }) => {
-  //     setLastNoorOrderCount(get(data, 'data.count', 0))
-  //     if (lastNoorOrderCount < get(data, 'data.count', 0)) {
-  //       console.log('playy')
+  const { data: noorOrderCount, refetch: refetchNoorOrderCount } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
+    onSuccess: ({ data }) => {
+      setLastNoorOrderCount(get(data, 'data.count', 0))
+      if (lastNoorOrderCount < get(data, 'data.count', 0)) {
+        console.log('playy')
 
-  //       NotificationAudio.play()
-  //     }
-  //   },
-  // })
+        NotificationAudio.play()
+      }
+    },
+  })
+
   useEffect(() => {
     if (customerId?.id && customerId?.new != false && customerId?.searchTerm == customerId?.discount_card && customerId?.discount_card_barcode?.length) {
       addDiscountCard({
@@ -935,37 +936,37 @@ function NewSaleV2() {
   const printNoProductCheque = () => {
     childRef.current.printChildCheque()
   }
-  // const wsRef = useRef(null)
-  // useEffect(() => {
-  //   // Connect to backend
-  //   const url = import.meta.env.VITE_MODE == 'dev' ? import.meta.env.VITE_BASE_API_URL_DEV : import.meta.env.VITE_BASE_API_URL
-  //   const ws = new WebSocket(`wss://${url.split('https://')[1]}/ws?store_id=${userData?.store?.id}`) // or wss://your-domain.com/ws
-  //   wsRef.current = ws
+  const wsRef = useRef(null)
+  useEffect(() => {
+    // Connect to backend
+    const url = import.meta.env.VITE_MODE == 'dev' ? import.meta.env.VITE_BASE_API_URL_DEV : import.meta.env.VITE_BASE_API_URL
+    const ws = new WebSocket(`wss://${url.split('https://')[1]}/ws?store_id=${userData?.store?.id}`) // or wss://your-domain.com/ws
+    wsRef.current = ws
 
-  //   ws.onopen = () => {
-  //     console.log('WebSocket connection established')
-  //   }
+    ws.onopen = () => {
+      console.log('WebSocket connection established')
+    }
 
-  //   ws.onmessage = (event) => {
-  //     const data = JSON.parse(event.data)
-  //     if (data?.event == 'noor_order') {
-  //       refetchNoorOrderCount()
-  //     }
-  //     console.log('Received:', data)
-  //   }
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data)
+      if (data?.event == 'noor_order') {
+        refetchNoorOrderCount()
+      }
+      console.log('Received:', data)
+    }
 
-  //   ws.onerror = (error) => {
-  //     console.error('WebSocket error:', error)
-  //   }
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error)
+    }
 
-  //   ws.onclose = () => {
-  //     console.log('WebSocket closed')
-  //   }
+    ws.onclose = () => {
+      console.log('WebSocket closed')
+    }
 
-  //   return () => {
-  //     ws.close()
-  //   }
-  // }, [])
+    return () => {
+      ws.close()
+    }
+  }, [])
   console.log(liteOrder)
 
   return (

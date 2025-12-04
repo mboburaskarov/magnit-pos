@@ -107,7 +107,7 @@ function CartDetailSide({
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {leftIcon}
           <Typography sx={{ ml: '10px', fontWeight: '500', fontSize: '14px', lineHeight: '20px' }}>{title}</Typography>
-          {notify && (
+          {notify ? (
             <Typography
               sx={{
                 ml: '10px',
@@ -125,7 +125,7 @@ function CartDetailSide({
             >
               {notify}
             </Typography>
-          )}
+          ) : null}
         </Box>
         <RightArrow />
       </Box>
