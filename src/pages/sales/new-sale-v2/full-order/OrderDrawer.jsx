@@ -143,7 +143,7 @@ export default function OrderDrawer({
   const [qrcodeUrl, setQrcodeUrl] = useState({ qr: 'pending', fiscal: 'pending' })
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
   const [isOpenRefreshDialog, setOpenRefreshDialog] = useState(false)
-  const [cartOwnerType, setCartOwnerType] = useState('personal')
+  const [cartOwnerType, setCardOwnerType] = useState('personal')
   const lastPaymentInput = useRef()
   const scannedBarcodeRef = useRef()
 
@@ -177,7 +177,7 @@ export default function OrderDrawer({
       paymentsList,
       maxAmount,
       cartOwnerType,
-      setCartOwnerType,
+      setCardOwnerType,
     })
 
   const { handlePrint, printContainer } = usePrintOperations({
@@ -315,7 +315,7 @@ export default function OrderDrawer({
                             <input
                               type='checkbox'
                               name='cart_type'
-                              onChange={({ target }) => setCartOwnerType(target.checked ? 'corporative' : 'personal')}
+                              onChange={({ target }) => setCardOwnerType(target.checked ? 'corporative' : 'personal')}
                               value={true}
                             />
                           </Box>

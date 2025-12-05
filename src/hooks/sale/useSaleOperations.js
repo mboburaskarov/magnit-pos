@@ -23,7 +23,7 @@ export const useSaleOperations = ({
   paymentsList,
   maxAmount,
   cartOwnerType,
-  setCartOwnerType = () => {},
+  setCardOwnerType = () => {},
 }) => {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -122,7 +122,7 @@ export const useSaleOperations = ({
       setNewSaleId(get(data, 'data.id', false))
       setDmedPrescriptionsList([])
       setDmedOrganizedList([])
-      setCartOwnerType('personal')
+      setCardOwnerType('personal')
     },
     onError: () => {
       setOpenRefreshDialog(false)
@@ -348,7 +348,7 @@ export const useSaleOperations = ({
         loyalty_card_barcode: customerId?.loyalty_card_barcode, // Add loyalty card support
         total_amount: get(cartItemsList, 'total_amount'),
         tax_free: !sendToEpos,
-        card_type: cartOwnerType,
+        card_owner_type: cartOwnerType,
         marking_data: markingData,
       })
     },
