@@ -256,42 +256,7 @@ function LiteOrder({
           />
         </Box>
       </Box>
-      {/* <StyledDialog
-        backbtn={false}
-        maxWidth={'300px'}
-        onClose={(() => setOpenCartType(false), setLiteOrder(false))}
-        customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpenCartType(false)} />}
-        title={
-          <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.500'}>
-            {t('Karta turi')}
-          </Typography>
-        }
-        open={openCartType}
-      >
-        <Box sx={{ padding: '40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'column' }}>
-          <LoadingButton
-            sx={{ minHeight: '48px !important ', display: 'flex', mb: '20px' }}
-            variant='contained'
-            loading={isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType}
-            onClick={() => {
-              onSubmit({ cardType: 'personal' })
-            }}
-          >
-            {t('Shaxsiya karta')}
-          </LoadingButton>
-          <LoadingButton
-            sx={{ minHeight: '48px !important ', display: 'flex' }}
-            variant='contained'
-            loading={isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType}
-            onClick={() => {
-              onSubmit({ cardType: 'corporative' })
-            }}
-          >
-            {t('Korporativ karta')}
-          </LoadingButton>
-        </Box>
-      </StyledDialog> */}
-      {/* QR Scan Dialog */}
+
       <StyledDialog
         backbtn={false}
         onClose={() => setOpenScanDialog(false)}

@@ -143,7 +143,7 @@ export default function OrderDrawer({
   const [qrcodeUrl, setQrcodeUrl] = useState({ qr: 'pending', fiscal: 'pending' })
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
   const [isOpenRefreshDialog, setOpenRefreshDialog] = useState(false)
-  const [openCartType, setOpenCartType] = useState('personal')
+  const [cartOwnerType, setCartOwnerType] = useState('personal')
   const lastPaymentInput = useRef()
   const scannedBarcodeRef = useRef()
 
@@ -176,8 +176,8 @@ export default function OrderDrawer({
       setCustomerId,
       paymentsList,
       maxAmount,
-      openCartType,
-      setOpenCartType,
+      cartOwnerType,
+      setCartOwnerType,
     })
 
   const { handlePrint, printContainer } = usePrintOperations({
@@ -315,7 +315,7 @@ export default function OrderDrawer({
                             <input
                               type='checkbox'
                               name='cart_type'
-                              onChange={({ target }) => setOpenCartType(target.checked ? 'corporative' : 'personal')}
+                              onChange={({ target }) => setCartOwnerType(target.checked ? 'corporative' : 'personal')}
                               value={true}
                             />
                           </Box>
@@ -444,7 +444,6 @@ export default function OrderDrawer({
               >
                 <Box mx={-2} mt={'-3px'} style={{ padding: '20px' }} ref={printContainer}>
                   <RippedPaperItem
-                    openCartType={openCartType}
                     qrcodeUrl={qrcodeUrl}
                     qrcode='pending'
                     markingsList={markingsList}
@@ -505,42 +504,7 @@ export default function OrderDrawer({
           />
         </Drawer>
       </Box>
-      {/* <StyledDialog
-        backbtn={false}
-        maxWidth={'300px'}
-        onClose={() => setOpenCartType(false)}
-        customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpenCartType(false)} />}
-        title={
-          <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.500'}>
-            {t('Karta turi')}
-          </Typography>
-        }
-        open={openCartType}
-      >
-        <Box sx={{ padding: '40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'column' }}>
-          <LoadingButton
-            sx={{ minHeight: '48px !important ', display: 'flex', mb: '20px' }}
-            variant='contained'
-            loading={isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType}
-            onClick={() => {
-              onSubmit({ cardType: 'personal' })
-            }}
-          >
-            {t('Shaxsiya karta')}
-          </LoadingButton>
-          <LoadingButton
-            sx={{ minHeight: '48px !important ', display: 'flex' }}
-            variant='contained'
-            loading={isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType}
-            onClick={() => {
-              onSubmit({ cardType: 'corporative' })
-            }}
-          >
-            {t('Korporativ karta')}
-          </LoadingButton>
-        </Box>
-      </StyledDialog> */}
-      {/* QR Scan Dialog */}
+
       <StyledDialog
         backbtn={false}
         onClose={() => setOpenScanDialog(false)}

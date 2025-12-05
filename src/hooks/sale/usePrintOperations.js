@@ -44,11 +44,7 @@ export const usePrintOperations = ({
         onAfterPrint()
       }
 
-      if (JSON.parse(sendToEpos)) {
-        navigate(`/sales/new-sale-v2/${newSaleId}`)
-      } else {
-        navigate(`/sales/create`)
-      }
+      navigate(`/sales/create`)
     },
   })
 

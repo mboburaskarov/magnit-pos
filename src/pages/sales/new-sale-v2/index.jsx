@@ -451,9 +451,7 @@ function NewSaleV2() {
   })
   const { mutate: saleCreate, isLoading: issaleCreate } = useMutation(requests.saleCreate, {
     onSuccess: ({ data }) => {
-      checkPermission('can-open-new-sale-v2', userData)
-        ? window.open(`/sales/new-sale-v2/${get(data, 'data.id')}`, '_blank', 'rel=noopener noreferrer')
-        : window.open(`/sales/new-sale/${get(data, 'data.id')}`, '_blank', 'rel=noopener noreferrer')
+      window.open(`/sales/new-sale/${get(data, 'data.id')}`, '_blank', 'rel=noopener noreferrer')
     },
     onError: (err) => {
       error('Ошибка при создании продажи')

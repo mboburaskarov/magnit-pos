@@ -96,9 +96,7 @@ function NewCashRegister() {
     onSuccess: ({ data }) => {
       if (get(data, 'data.is_open', false)) {
         navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
-        checkPermission('can-open-new-sale-v2', userData)
-          ? navigate(`/sales/new-sale-v2/${get(data, 'data.sale_id')}`)
-          : navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
+        navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
       }
     },
     onError: (err) => {
@@ -123,9 +121,7 @@ function NewCashRegister() {
   const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashOperationBox, {
     onSuccess: ({ data }) => {
       localStorage.setItem('device_id', get(data, 'data.device_id'))
-      checkPermission('can-open-new-sale-v2', userData)
-        ? navigate(`/sales/new-sale-v2/${get(data, 'data.id')}`)
-        : navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
     },
     onError: (err) => {
       error('Ошибка при создании кассы!')

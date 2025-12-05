@@ -972,11 +972,9 @@ function NewSale() {
                 }}
               >
                 <Box display={'flex'} alignItems={'center'}>
-                  <Link to={`/sales/new-sale-v2/${id}`}>
-                    <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
-                      {t('menu.orders.new_order.heading')}
-                    </Typography>
-                  </Link>
+                  <Typography fontWeight={'700'} fontSize={'28px'} lineHeight={'40px'}>
+                    {t('menu.orders.new_order.heading')}
+                  </Typography>
                   {get(cartItemsList, 'data.data.data', 0)?.length ? (
                     <StyledTooltip title={'Удалить все продукты'}>
                       <Box
