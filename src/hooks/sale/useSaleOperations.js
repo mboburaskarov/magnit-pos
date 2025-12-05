@@ -351,7 +351,7 @@ export const useSaleOperations = ({
         loyalty_card_barcode: customerId?.loyalty_card_barcode, // Add loyalty card support
         total_amount: get(cartItemsList, 'total_amount'),
         tax_free: !sendToEpos,
-        isCorporate: cartOwnerType == 'corporative',
+        is_corporate: cartOwnerType == 'corporative',
         marking_data: markingData,
       })
     },
