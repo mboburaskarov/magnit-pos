@@ -22,12 +22,13 @@ export const useSaleOperations = ({
   setCustomerId,
   paymentsList,
   maxAmount,
+  openCartType,
+  setOpenCartType,
 }) => {
   const { id } = useParams()
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
   const sendToEpos = JSON.parse(localStorage.getItem('send_to_epos'))
-  const [cardType, setCardType] = useState(undefined)
   const [payType, setPayType] = useState(undefined)
 
   useEffect(() => {
@@ -57,7 +58,7 @@ export const useSaleOperations = ({
       if (!JSON.parse(sendToEpos)) {
         success('Продажа завершена!')
         setNewSaleId('888', false)
-        setQrcodeUrl({ qr: 'pharma-cosmos.uz', fiscal: 'No', cardType: JSON.parse(data?.config?.data)?.card_type })
+        setQrcodeUrl({ qr: 'pharma-cosmos.uz', fiscal: 'No', cardType: openCartType })
       } else {
         sendEPOSData(data)
       }
@@ -92,7 +93,7 @@ export const useSaleOperations = ({
         const fiscalData = get(data, 'message.fiscalSign') || get(data, 'info.fiscalSign') || 'pending'
         const terminalId = get(data, 'message.terminalId') || get(data, 'info.terminalId') || 'pending'
 
-        setQrcodeUrl({ qr: qrCodeURL, fiscal: fiscalData, terminalId: terminalId, cardType })
+        setQrcodeUrl({ qr: qrCodeURL, fiscal: fiscalData, terminalId: terminalId, cardType: openCartType })
 
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
       } else {
@@ -121,6 +122,7 @@ export const useSaleOperations = ({
       setNewSaleId(get(data, 'data.id', false))
       setDmedPrescriptionsList([])
       setDmedOrganizedList([])
+      setOpenCartType('personal')
     },
     onError: () => {
       setOpenRefreshDialog(false)
@@ -310,8 +312,7 @@ export const useSaleOperations = ({
   )
 
   const submitSale = useCallback(
-    (paymentsList, otpData, maxAmount, cardType) => {
-      setCardType(cardType)
+    (paymentsList, otpData, maxAmount) => {
       // Handle both formats: lite order (with payment_type_id) and full order (with id)
       const paymentTypes = paymentsList
         ?.filter((type) => get(type, 'amount', false) && !get(type, 'isPlaceholder', false))
@@ -335,6 +336,7 @@ export const useSaleOperations = ({
         marking_list: Object.values(markingsList[el.id] || {}).filter((a) => a.length),
         marking_count: Object.values(markingsList[el.id] || {}).filter((a) => a.length)?.length,
       }))
+      console.log(openCartType, 'infinal')
 
       finishSaleWithoutAppPaymentType({
         cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
@@ -347,7 +349,7 @@ export const useSaleOperations = ({
         loyalty_card_barcode: customerId?.loyalty_card_barcode, // Add loyalty card support
         total_amount: get(cartItemsList, 'total_amount'),
         tax_free: !sendToEpos,
-        card_type: cardType,
+        card_type: openCartType,
         marking_data: markingData,
       })
     },

@@ -345,8 +345,6 @@ function NewSaleV2() {
     onSuccess: ({ data }) => {
       setLastNoorOrderCount(get(data, 'data.count', 0))
       if (lastNoorOrderCount < get(data, 'data.count', 0)) {
-        console.log('playy')
-
         NotificationAudio.play()
       }
     },
@@ -967,7 +965,6 @@ function NewSaleV2() {
       ws.close()
     }
   }, [])
-  console.log(liteOrder)
 
   return (
     <FormProvider {...method}>

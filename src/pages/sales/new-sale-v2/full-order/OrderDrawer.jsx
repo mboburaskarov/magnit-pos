@@ -143,7 +143,7 @@ export default function OrderDrawer({
   const [qrcodeUrl, setQrcodeUrl] = useState({ qr: 'pending', fiscal: 'pending' })
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
   const [isOpenRefreshDialog, setOpenRefreshDialog] = useState(false)
-  const [openCartType, setOpenCartType] = useState(false)
+  const [openCartType, setOpenCartType] = useState('personal')
   const lastPaymentInput = useRef()
   const scannedBarcodeRef = useRef()
 
@@ -176,6 +176,8 @@ export default function OrderDrawer({
       setCustomerId,
       paymentsList,
       maxAmount,
+      openCartType,
+      setOpenCartType,
     })
 
   const { handlePrint, printContainer } = usePrintOperations({
@@ -227,9 +229,8 @@ export default function OrderDrawer({
     }
   }, [isOpenScanDialog])
 
-  const onSubmit = async ({ otp: otpData, cardType }) => {
+  const onSubmit = async (otpData) => {
     setOpenScanDialog(false)
-    setOpenCartType(false)
     const paymentTypes = paddedPaymentsList
       .filter((type) => get(type, 'isPlaceholder', false) === false)
       .map(({ id, ...type }) => ({
@@ -241,7 +242,7 @@ export default function OrderDrawer({
         app_type: get(type, 'name').toLowerCase(),
       }))
 
-    submitSale(paymentTypes, otpData, maxAmount, cardType)
+    submitSale(paymentTypes, otpData, maxAmount)
   }
 
   return (
@@ -302,9 +303,26 @@ export default function OrderDrawer({
                   <>
                     {/* Payment Type Selection */}
                     <Box>
-                      <Typography fontSize={16} fontWeight={'600'} lineHeight={'24px'} color={'bunker.700'}>
-                        To'lov turi:
-                      </Typography>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography fontSize={16} fontWeight={'600'} lineHeight={'24px'} color={'bunker.700'}>
+                          To'lov turi:
+                        </Typography>
+                        {paymentsList.find((el) => el.type === 'card')?.amount ? (
+                          <Box sx={{ display: 'flex' }}>
+                            <Typography mr={'10px'} fontSize={16} fontWeight={'600'} lineHeight={'24px'} color={'bunker.700'}>
+                              Korparativ karta:
+                            </Typography>
+                            <input
+                              type='checkbox'
+                              name='cart_type'
+                              onChange={({ target }) => setOpenCartType(target.checked ? 'corporative' : 'personal')}
+                              value={true}
+                            />
+                          </Box>
+                        ) : (
+                          <></>
+                        )}
+                      </Box>
                       <Grid container display={'flex'}>
                         {get(paymentTypesList, 'data.data', [])
                           .filter((pay) => {
@@ -426,6 +444,7 @@ export default function OrderDrawer({
               >
                 <Box mx={-2} mt={'-3px'} style={{ padding: '20px' }} ref={printContainer}>
                   <RippedPaperItem
+                    openCartType={openCartType}
                     qrcodeUrl={qrcodeUrl}
                     qrcode='pending'
                     markingsList={markingsList}
@@ -450,8 +469,6 @@ export default function OrderDrawer({
               onClick={() => {
                 if (paymentsList.find((el) => el.type === 'app')) {
                   setOpenScanDialog(true)
-                } else if (paymentsList.find((el) => el.type === 'card')) {
-                  setOpenCartType(true)
                 } else {
                   onSubmit()
                 }
@@ -488,7 +505,7 @@ export default function OrderDrawer({
           />
         </Drawer>
       </Box>
-      <StyledDialog
+      {/* <StyledDialog
         backbtn={false}
         maxWidth={'300px'}
         onClose={() => setOpenCartType(false)}
@@ -516,13 +533,13 @@ export default function OrderDrawer({
             variant='contained'
             loading={isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType}
             onClick={() => {
-              onSubmit({ cardType: 'carparative' })
+              onSubmit({ cardType: 'corporative' })
             }}
           >
             {t('Korporativ karta')}
           </LoadingButton>
         </Box>
-      </StyledDialog>
+      </StyledDialog> */}
       {/* QR Scan Dialog */}
       <StyledDialog
         backbtn={false}
@@ -550,7 +567,7 @@ export default function OrderDrawer({
             name='barcode-click'
             onKeyDown={(e) => {
               if (e.code === 'Enter') {
-                onSubmit({ otp: e.target.value })
+                onSubmit(e.target.value)
                 scannedBarcodeRef.current.value = ''
               }
             }}

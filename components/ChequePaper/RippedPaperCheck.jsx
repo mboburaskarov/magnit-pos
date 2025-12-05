@@ -29,6 +29,7 @@ function RippedPaperCheck({
   cartItemsList,
   chequeData: cheque,
   logo = '',
+
   noSticky,
   markingsList,
   orderItems,
@@ -254,7 +255,7 @@ function RippedPaperCheck({
                   id={`return-price-${'index'}`}
                   rowData={{
                     type: `Karta turi`,
-                    value: `${qrcodeUrl.cardType === 'personal' ? 'Shaxsiy' : 'Korporativ'} karta`,
+                    value: `${qrcodeUrl.cardType === 'corporative' ? 'Korporativ' : 'Shaxsiy'} karta`,
                   }}
                 />
               )}

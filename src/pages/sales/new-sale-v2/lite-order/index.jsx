@@ -50,7 +50,6 @@ function LiteOrder({
     inputRefs.current[1].value = ''
     inputRefs.current[2].value = ''
   }, [cartItemsList])
-  const [openCartType, setOpenCartType] = useState(false)
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
   const [isOpenRefreshDialog, setOpenRefreshDialog] = useState(false)
   const [newSaleId, setNewSaleId] = useState(false)
@@ -118,8 +117,6 @@ function LiteOrder({
       if (paymentsList.find((el) => el.type === 'app')?.amount > 0) {
         setOpenScanDialog(true)
         setLiteOrder(false)
-      } else if (paymentsList.find((el) => el.type === 'card')?.amount > 0) {
-        setOpenCartType(true)
       } else {
         onSubmit()
         setLiteOrder(false)
@@ -143,11 +140,10 @@ function LiteOrder({
     }
   }, [isOpenScanDialog])
 
-  const onSubmit = async ({ otp: otpData, cardType }) => {
+  const onSubmit = async (otpData) => {
     setOpenScanDialog(false)
-    setOpenCartType(false)
     setLiteOrder(false)
-    submitSale(paymentsList, otpData, maxAmount, cardType)
+    submitSale(paymentsList, otpData, maxAmount)
   }
 
   return (
@@ -260,7 +256,7 @@ function LiteOrder({
           />
         </Box>
       </Box>
-      <StyledDialog
+      {/* <StyledDialog
         backbtn={false}
         maxWidth={'300px'}
         onClose={(() => setOpenCartType(false), setLiteOrder(false))}
@@ -288,13 +284,13 @@ function LiteOrder({
             variant='contained'
             loading={isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType}
             onClick={() => {
-              onSubmit({ cardType: 'carparative' })
+              onSubmit({ cardType: 'corporative' })
             }}
           >
             {t('Korporativ karta')}
           </LoadingButton>
         </Box>
-      </StyledDialog>
+      </StyledDialog> */}
       {/* QR Scan Dialog */}
       <StyledDialog
         backbtn={false}
@@ -318,7 +314,7 @@ function LiteOrder({
             name='barcode-click'
             onKeyDown={(e) => {
               if (e.code === 'Enter') {
-                onSubmit({ otp: e.target.value })
+                onSubmit(e.target.value)
                 scannedBarcodeRef.current.value = ''
               }
             }}
