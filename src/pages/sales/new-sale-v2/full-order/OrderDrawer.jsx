@@ -242,7 +242,7 @@ export default function OrderDrawer({
         app_type: get(type, 'name').toLowerCase(),
       }))
 
-    submitSale(paymentTypes, otpData, maxAmount)
+    submitSale(paymentTypes, otpData, maxAmount, cartOwnerType)
   }
 
   return (

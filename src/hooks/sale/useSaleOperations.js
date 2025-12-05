@@ -25,6 +25,8 @@ export const useSaleOperations = ({
   cartOwnerType,
   setCardOwnerType = () => {},
 }) => {
+  console.log(cartOwnerType)
+
   const { id } = useParams()
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
@@ -312,7 +314,7 @@ export const useSaleOperations = ({
   )
 
   const submitSale = useCallback(
-    (paymentsList, otpData, maxAmount) => {
+    (paymentsList, otpData, maxAmount, cartOwnerType) => {
       // Handle both formats: lite order (with payment_type_id) and full order (with id)
       const paymentTypes = paymentsList
         ?.filter((type) => get(type, 'amount', false) && !get(type, 'isPlaceholder', false))
@@ -336,6 +338,7 @@ export const useSaleOperations = ({
         marking_list: Object.values(markingsList[el.id] || {}).filter((a) => a.length),
         marking_count: Object.values(markingsList[el.id] || {}).filter((a) => a.length)?.length,
       }))
+      console.log(cartOwnerType, 'gg')
 
       finishSaleWithoutAppPaymentType({
         cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
@@ -348,7 +351,7 @@ export const useSaleOperations = ({
         loyalty_card_barcode: customerId?.loyalty_card_barcode, // Add loyalty card support
         total_amount: get(cartItemsList, 'total_amount'),
         tax_free: !sendToEpos,
-        isCorporate: cartOwnerType === 'corporative',
+        isCorporate: cartOwnerType == 'corporative',
         marking_data: markingData,
       })
     },
