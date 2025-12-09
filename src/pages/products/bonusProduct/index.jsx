@@ -29,6 +29,7 @@ import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
 import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { get } from 'lodash'
 
 export default function BonusProductPage() {
   const methods = useForm()
