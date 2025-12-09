@@ -345,12 +345,11 @@ function NewSaleV2() {
   //   onSuccess: ({ data }) => {
   //     setLastNoorOrderCount(get(data, 'data.count', 0))
   //     if (lastNoorOrderCount < get(data, 'data.count', 0)) {
-  //       console.log('playy')
-
   //       NotificationAudio.play()
   //     }
   //   },
   // })
+
   useEffect(() => {
     if (customerId?.id && customerId?.new != false && customerId?.searchTerm == customerId?.discount_card && customerId?.discount_card_barcode?.length) {
       addDiscountCard({
@@ -452,9 +451,7 @@ function NewSaleV2() {
   })
   const { mutate: saleCreate, isLoading: issaleCreate } = useMutation(requests.saleCreate, {
     onSuccess: ({ data }) => {
-      checkPermission('can-open-new-sale-v2', userData)
-        ? window.open(`/sales/new-sale-v2/${get(data, 'data.id')}`, '_blank', 'rel=noopener noreferrer')
-        : window.open(`/sales/new-sale/${get(data, 'data.id')}`, '_blank', 'rel=noopener noreferrer')
+      window.open(`/sales/new-sale/${get(data, 'data.id')}`, '_blank', 'rel=noopener noreferrer')
     },
     onError: (err) => {
       error('Ошибка при создании продажи')
@@ -966,6 +963,7 @@ function NewSaleV2() {
   //     ws.close()
   //   }
   // }, [])
+
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />

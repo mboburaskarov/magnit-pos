@@ -1,4 +1,4 @@
-import StyledDialog from '@components/Dialogs/StyledDialog'
+import StyledDialog from '@components/Dialogs/StyledeEmptyDialog'
 import { RippedPaperItem } from '@components/RippedPaperList'
 import { usePaymentShortcuts } from '@hooks/sale/useKeyboardShortcuts' //lite sale own hook
 import { usePaymentOperations } from '@hooks/sale/usePaymentOperations' //lite sale own hook
@@ -19,6 +19,7 @@ import { PaymentSummaryBox } from '../components/PaymentSummaryBox'
 import PreventRefresh from '../components/PreventRefresh'
 import PreventRefreshDialog from '../components/PreventRefreshDialog'
 import SaleProgressSteps from '../saleStepLoading'
+import { LoadingButton } from '@mui/lab'
 
 function LiteOrder({
   serviceType,
@@ -141,6 +142,7 @@ function LiteOrder({
 
   const onSubmit = async (otpData) => {
     setOpenScanDialog(false)
+    setLiteOrder(false)
     submitSale(paymentsList, otpData, maxAmount)
   }
 
@@ -255,7 +257,6 @@ function LiteOrder({
         </Box>
       </Box>
 
-      {/* QR Scan Dialog */}
       <StyledDialog
         backbtn={false}
         onClose={() => setOpenScanDialog(false)}

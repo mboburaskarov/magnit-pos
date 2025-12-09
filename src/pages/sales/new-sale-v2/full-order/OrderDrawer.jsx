@@ -9,11 +9,11 @@ import { useSaleOperations } from '@hooks/sale/useSaleOperations' //sales global
 import { default as CloseIcon, default as RemovePaymentIcon } from '@icons/CloseIcon'
 import QrScanIcon from '@icons/QrScanIcon'
 import { LoadingButton } from '@mui/lab'
-import { Box, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
+import { Box, Button, Drawer, Grid, Button as MuiButton, Typography, useTheme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { requests } from '@utils/requests'
 import thousandDivider from '@utils/thousandDivider'
-import { get } from 'lodash'
+import { get, set } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -143,7 +143,7 @@ export default function OrderDrawer({
   const [qrcodeUrl, setQrcodeUrl] = useState({ qr: 'pending', fiscal: 'pending' })
   const [isOpenScanDialog, setOpenScanDialog] = useState(false)
   const [isOpenRefreshDialog, setOpenRefreshDialog] = useState(false)
-
+  const [cartOwnerType, setCardOwnerType] = useState('personal')
   const lastPaymentInput = useRef()
   const scannedBarcodeRef = useRef()
 
@@ -176,6 +176,8 @@ export default function OrderDrawer({
       setCustomerId,
       paymentsList,
       maxAmount,
+      cartOwnerType,
+      setCardOwnerType,
     })
 
   const { handlePrint, printContainer } = usePrintOperations({
@@ -229,7 +231,6 @@ export default function OrderDrawer({
 
   const onSubmit = async (otpData) => {
     setOpenScanDialog(false)
-
     const paymentTypes = paddedPaymentsList
       .filter((type) => get(type, 'isPlaceholder', false) === false)
       .map(({ id, ...type }) => ({
@@ -241,7 +242,7 @@ export default function OrderDrawer({
         app_type: get(type, 'name').toLowerCase(),
       }))
 
-    submitSale(paymentTypes, otpData, maxAmount)
+    submitSale(paymentTypes, otpData, maxAmount, cartOwnerType)
   }
 
   return (
@@ -302,9 +303,26 @@ export default function OrderDrawer({
                   <>
                     {/* Payment Type Selection */}
                     <Box>
-                      <Typography fontSize={16} fontWeight={'600'} lineHeight={'24px'} color={'bunker.700'}>
-                        To'lov turi:
-                      </Typography>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography fontSize={16} fontWeight={'600'} lineHeight={'24px'} color={'bunker.700'}>
+                          To'lov turi:
+                        </Typography>
+                        {paymentsList.find((el) => el.type === 'card')?.amount ? (
+                          <Box sx={{ display: 'flex' }}>
+                            <Typography mr={'10px'} fontSize={16} fontWeight={'600'} lineHeight={'24px'} color={'bunker.700'}>
+                              Korparativ karta:
+                            </Typography>
+                            <input
+                              type='checkbox'
+                              name='cart_type'
+                              onChange={({ target }) => setCardOwnerType(target.checked ? 'corporative' : 'personal')}
+                              value={true}
+                            />
+                          </Box>
+                        ) : (
+                          <></>
+                        )}
+                      </Box>
                       <Grid container display={'flex'}>
                         {get(paymentTypesList, 'data.data', [])
                           .filter((pay) => {
@@ -487,7 +505,6 @@ export default function OrderDrawer({
         </Drawer>
       </Box>
 
-      {/* QR Scan Dialog */}
       <StyledDialog
         backbtn={false}
         onClose={() => setOpenScanDialog(false)}

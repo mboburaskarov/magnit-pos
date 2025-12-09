@@ -109,9 +109,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
       // ()
       setChildOpen(false)
       setOpen(false)
-      checkPermission('can-open-new-sale-v2', userData)
-        ? navigate(`/sales/new-sale-v2/${get(data, 'data.id')}`)
-        : navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
     },
     onError: (err) => {
       error('Ошибка при создании Черновик!')

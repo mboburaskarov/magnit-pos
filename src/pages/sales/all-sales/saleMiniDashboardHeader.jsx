@@ -43,6 +43,7 @@ function SaleMiniDashboardHeader({ saleStatsData }) {
     { sum_prop: 'total_click_sum', title: 'Click', count_prop: 'total_click_count' },
     { sum_prop: 'total_payme_sum', title: 'Payme', count_prop: 'total_payme_count' },
     { sum_prop: 'total_alif_sum', title: 'Alif', count_prop: 'total_alif_count' },
+    { sum_prop: 'total_uzum_sum', title: 'Uzum', count_prop: 'total_uzum_count' },
     { sum_prop: 'total_returnals_sum', title: 'Вазврат', count_prop: 'total_returned_count' },
     { sum_prop: 'total_discount_sum', title: 'Сумма скидки', count_prop: 'total_discount_count' },
     { sum_prop: 'total_cashback_sum', title: 'Накопительный', count_prop: 'total_cashback_count' },
@@ -63,7 +64,7 @@ function SaleMiniDashboardHeader({ saleStatsData }) {
     >
       <Grid container spacing={'8px'}>
         {changedData.map((pay, index) => (
-          <Grid item xs={6} xl={2.4} sm={index == 9 ? 12 : 4} md={index <= 7 ? 3 : 6} lg={2.4}>
+          <Grid item xs={6} xl={index <= 5 ? 2 : 2.4} sm={index >= 9 ? 6 : 4} md={index <= 9 ? 3 : 6} lg={index <= 5 ? 2 : 2.4}>
             <Box>
               <PaymentTypeBox pay={pay} />
             </Box>

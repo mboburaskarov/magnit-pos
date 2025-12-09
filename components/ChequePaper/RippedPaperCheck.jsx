@@ -29,6 +29,7 @@ function RippedPaperCheck({
   cartItemsList,
   chequeData: cheque,
   logo = '',
+
   noSticky,
   markingsList,
   orderItems,
@@ -249,7 +250,15 @@ function RippedPaperCheck({
                         )
                     ))
               }
-
+              {disableSumsOnGoods() && (
+                <DashedRow
+                  id={`return-price-${'index'}`}
+                  rowData={{
+                    type: `Karta turi`,
+                    value: `${qrcodeUrl.cardType === 'corporative' ? 'Korporativ' : 'Shaxsiy'} karta`,
+                  }}
+                />
+              )}
               {disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index'}`}

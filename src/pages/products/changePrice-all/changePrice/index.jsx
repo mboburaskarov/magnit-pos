@@ -16,12 +16,14 @@ import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import ChangePriceDashboard from './changePriceDashboard'
 import CreateRevaluation from './createRevaluation'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { error } from '@utils/toast'
 
 export default function ChangePricePage() {
   const theme = useTheme()
@@ -36,6 +38,16 @@ export default function ChangePricePage() {
   const [filterMenu, setFilterMenu] = useState(false)
   const [orderModel, setOrderModel] = useState(false)
   const [controlleroffset, setControllerOffset] = useState(0)
+
+  const { mutate: revaluationListExcelReport, isLoading: isrevaluationListExcelReport } = useMutation(requests.getRevaluationListExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.error(err)
+      error('Ошибка при скачать excel!')
+    },
+  })
 
   const tableColumns = tableHeaderSelector({
     revaluationColumns: columns,
@@ -120,7 +132,7 @@ export default function ChangePricePage() {
                   },
                 }}
               >
-                <InputSearch id='producrs-search' name='search' placeholder={'Номер переоценки, аптека'} />
+                <InputSearch id='producrs-search' name='search' uncontrolled placeholder={'Номер переоценки, аптека'} />
               </Box>
 
               <Box minWidth={113} ml={'16px'}>
@@ -173,6 +185,9 @@ export default function ChangePricePage() {
           <CreateRevaluation refetch={refetch} open={orderModel} setOpen={setOrderModel} />
           <Box>
             <AgGridTable
+              downloadByFilter={() => revaluationListExcelReport(revaluationListFilter)}
+              fullDownload={() => revaluationListExcelReport({ ...revaluationListFilter, offset: 0, limit: 1000000 })}
+              isDownloading={isrevaluationListExcelReport}
               id='revaluation-main-table'
               tableSettings
               defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}

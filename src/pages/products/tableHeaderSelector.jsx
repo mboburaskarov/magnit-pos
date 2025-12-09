@@ -57,7 +57,8 @@ const Image = ({ data, rowIndex, setImages, setOpenErrorReason }) => {
           width: '40px',
         },
         '.has-img': {
-          width: '25px',
+          width: '40px',
+          height: '40px',
         },
       }}
     >
@@ -161,7 +162,7 @@ export default function tableHeaderSelector({
         headerName: t('table_columns.photo'),
         colId: el.field,
         suppressCellFlash: true,
-        cellRenderer: memo((p) => <Image setOpenErrorReason={setOpenErrorReason} setImages={setImages} />),
+        cellRenderer: memo((p) => <Image data={p?.data} setOpenErrorReason={setOpenErrorReason} setImages={setImages} />),
       }
     }
     if (el.field === 'name') {

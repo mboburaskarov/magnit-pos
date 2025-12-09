@@ -1,11 +1,10 @@
-import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
-import SentFastIcon from '@/assets/icons/step-progress/SentFast';
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
-import { Box, Typography } from '@mui/material';
-import { memo } from 'react';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
-
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import SentFastIcon from '@/assets/icons/step-progress/SentFast'
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
+import { Box, Typography } from '@mui/material'
+import { memo } from 'react'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
 const CustomHeader = (props) => {
   const lastStort = props.column.colDef.orderStoring
@@ -211,6 +210,17 @@ export default function tableHeaderSelector({ branchesColumns, values, setOrderS
         headerName: 'Alif',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} withDevider type='alif' />),
+      }
+    }
+    if (el.field === 'uzum') {
+      return {
+        ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
+        headerName: 'Uzum',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='uzum' />),
       }
     }
     if (el.field === 'discount_amount') {

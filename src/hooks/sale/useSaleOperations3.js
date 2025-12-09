@@ -127,7 +127,7 @@ export const useSaleOperations = ({
   // Create sale
   const { mutate: saleCreate } = useMutation(requests.saleCreate, {
     onSuccess: ({ data }) => {
-      navigate(`/sales/new-sale-v2/${get(data, 'data.id')}`)
+      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
       window.location.reload()
     },
     onError: () => {

@@ -28,7 +28,7 @@ function NavbarDrawer({
 }) {
   const { t } = useTranslation()
   const location = useLocation()
-  const isNewSalePage = location?.pathname?.split('new-sale/')[0] == '/sales/' || location?.pathname?.split('new-sale-v2/')[0] == '/sales/'
+  const isNewSalePage = location?.pathname?.split('new-sale/')[0] == '/sales/'
   const userData = useSelector((state) => state.user)
 
   return (
