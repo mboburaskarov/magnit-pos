@@ -208,7 +208,7 @@ export default function ChangePriceDetailPage() {
   }, [methods.watch('separated-type')])
 
   return (
-    <LoadingContainer readyState={!revaluationByIdLoading}>
+    <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
           <Header

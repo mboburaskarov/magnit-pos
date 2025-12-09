@@ -99,7 +99,7 @@ export default function InventoryCompleted() {
     },
   })
   return (
-    <LoadingContainer readyState={!inventoryWithCheckingDetailsLoading}>
+    <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
         <Header
           onSubmit={() => send1c(id)}
