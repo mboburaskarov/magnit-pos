@@ -25,8 +25,6 @@ export const useSaleOperations = ({
   cartOwnerType,
   setCardOwnerType = () => {},
 }) => {
-  console.log(cartOwnerType)
-
   const { id } = useParams()
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
@@ -338,7 +336,6 @@ export const useSaleOperations = ({
         marking_list: Object.values(markingsList[el.id] || {}).filter((a) => a.length),
         marking_count: Object.values(markingsList[el.id] || {}).filter((a) => a.length)?.length,
       }))
-      console.log(cartOwnerType, 'gg')
 
       finishSaleWithoutAppPaymentType({
         cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
