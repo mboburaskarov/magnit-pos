@@ -99,7 +99,7 @@ function BonusProductTable({ customerId, bonusTableHeight }) {
   }, [handleObserver])
 
   // Flatten all pages data
-  const allProducts = data?.pages.flatMap((page) => get(page, 'data.data.data', [])) || []
+  const allProducts = data?.pages.flatMap((page) => (get(page, 'data.data.data', false) ? get(page, 'data.data.data', []) : [])) || []
   const maxHeight = useWindowHeight()
 
   return (
@@ -174,9 +174,9 @@ function BonusProductTable({ customerId, bonusTableHeight }) {
               </TableRow>
             ) : (
               <>
-                {allProducts.map((item, index) => (
-                  <BonusTableRow key={item.id || index} item={item} product={item?.product} />
-                ))}
+                {allProducts &&
+                  allProducts.length &&
+                  allProducts.map((item, index) => <BonusTableRow key={item.id || index} item={item} product={item?.product} />)}
                 {/* Observer target for infinite scroll */}
                 <TableRow ref={observerTarget}>
                   <TableCell colSpan={2} align='center' sx={{ padding: '20px', border: 'none' }}>
