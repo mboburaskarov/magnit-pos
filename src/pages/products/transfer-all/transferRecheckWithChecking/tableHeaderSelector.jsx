@@ -97,7 +97,32 @@ export default function tableHeaderSelector({ transferColumns, values, setScaned
         headerName: 'Скан кол-во',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+          <Box id={`${'import_date'}-${p.rowIndex}`} sx={{ display: 'flex' }} whiteSpace='pre-wrap'>
+            <input
+              type='checkbox'
+              checked={p?.data?.expected_count == p?.data?.accepted_count}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setScanedNumber({
+                    transferId: id,
+                    status: 'checking',
+                    product_id: p?.data?.id,
+                    scanned_pack: Number(get(p, 'data.expected_count')),
+                    type: 'transfer',
+                  })
+                } else {
+                  setScanedNumber({
+                    transferId: id,
+                    status: 'checking',
+                    product_id: p?.data?.id,
+                    scanned_pack: 0,
+                    type: 'transfer',
+                  })
+                }
+              }}
+              name={`scanned_quantity_${p?.data?.id}`}
+            />
+            <Box width={'20px'} />
             {!p?.data?.barcode ? (
               <NumberFormatInput
                 uncontrolled

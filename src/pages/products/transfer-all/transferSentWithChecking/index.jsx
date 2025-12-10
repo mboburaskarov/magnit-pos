@@ -25,6 +25,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import tableHeaderSelector from './tableHeaderSelector'
 import WriteOffDashboard from './writeOffDashboard'
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
+import InputSwitch from '@components/Inputs/InputSwitch'
+import DublicateProductBarcode from './dublicateBarcode'
 
 export default function TransferSentScanWithCheckingPage() {
   const dispatch = useDispatch()
@@ -33,8 +36,13 @@ export default function TransferSentScanWithCheckingPage() {
   const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.transferSentWithCheckingColumns)
   const { values } = useQueryParams()
+  const [openDublicateBarcodeModal, setopenDublicateBarcodeModal] = useState(false)
+
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(true)
   const [barcode, setBarcode] = useState('')
+  const [scanCount, setScanCount] = useState(1)
+  const [inputType, setInputType] = useState('scanner')
+
   const methods = useForm()
   const [openFinishConfirmDialog, setOpenFinishConfirmDialog] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
@@ -77,7 +85,7 @@ export default function TransferSentScanWithCheckingPage() {
       offset: values?.offset || 0,
       search: barcode,
     }
-  }, [id, values?.limit, values?.offset, barcode])
+  }, [id, values?.limit, values?.offset, inputType == 'search' ? barcode : null])
 
   const { data: getReturnToWarehouseDashBoard, refetch: refetchgetReturnToWarehouseDashBoard } = useQuery(['getReturnToWarehouseDashBoard', id], () =>
     requests.getTransferDashBoard(id)
@@ -123,6 +131,22 @@ export default function TransferSentScanWithCheckingPage() {
       error('Ошибка при скачать excel!')
     },
   })
+  const { mutate: updateTransferByBarcode } = useMutation(requests.updateTransferByBarcode, {
+    onSuccess: ({ data, ...other }) => {
+      refetch()
+      if (get(other, 'status') == 207) {
+        setopenDublicateBarcodeModal(data)
+      } else {
+        refetchgetReturnToWarehouseDashBoard()
+        setBarcode('')
+      }
+    },
+    onError: (err) => {
+      refetch()
+
+      error('Ошибка при сканирование!')
+    },
+  })
   return (
     <LoadingContainer readyState={!isfinishWriteOffChecking}>
       <FormProvider {...methods}>
@@ -154,6 +178,7 @@ export default function TransferSentScanWithCheckingPage() {
             <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
           </Box>
           {isOpenStatDashboard && <WriteOffDashboard data={get(getReturnToWarehouseDashBoard, 'data.data')} />}
+          <DublicateProductBarcode refetch={refetch} open={openDublicateBarcodeModal} setOpen={setopenDublicateBarcodeModal} />
 
           <Box display='flex' flexDirection='column' position='relative' pt={'24px'} pb={'20px'}>
             <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -172,12 +197,57 @@ export default function TransferSentScanWithCheckingPage() {
                   icon={<BarcodeIcon />}
                   onChange={({ target }) => setBarcode(get(target, 'value'))}
                   id='producrs-search'
+                  onKeyDown={(e) => {
+                    if (e.key == 'Enter') {
+                      if (inputType == 'search') return
+                      updateTransferByBarcode({ transferId: id, barcode: get(e, 'target.value'), type: 'MANUAL', status: 'send', count: scanCount || 1 })
+                    }
+                  }}
                   name='search'
                   value={barcode}
                   setSearchTerm={setBarcode}
                   placeholder={t('input.search.product.multi')}
                 />
               </Box>
+              <Box
+                sx={{
+                  ml: '20px',
+                  '& .MuiInputBase-root': {
+                    backgroundColor: 'bg.10',
+                  },
+                }}
+              >
+                <NumberFormatInput
+                  setValue={(e) => setScanCount(e)}
+                  value={scanCount}
+                  type={'number'}
+                  fullWidth
+                  name='scan-count'
+                  label={''}
+                  uncontrolled
+                  placeholder='кол-во'
+                />
+              </Box>
+              <Box mr={'20px'} />
+              <InputSwitch
+                id='client-scanner'
+                noMarginTop
+                uncontrolled
+                required
+                name='scanner'
+                onChange={(e) => setInputType(e)}
+                defaultValue='scanner'
+                options={[
+                  {
+                    title: 'Сканер',
+                    value: 'scanner',
+                  },
+                  {
+                    title: 'Поиск',
+                    value: 'search',
+                  },
+                ]}
+              />
               <Box display={'flex'} alignItems={'center'}>
                 <Box>
                   <ColumnsFilterButtonForAll
