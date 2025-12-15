@@ -76,7 +76,8 @@ export const useSaleOperations = ({
         error('На вашем счете Click недостаточно средств.')
         return
       }
-      error('Ошибка при Продажа завершена')
+
+      error(`Ошибка при Продажа завершена: ${JSON.parse(get(err, 'response.data.data'))?.message}`)
     },
   })
 

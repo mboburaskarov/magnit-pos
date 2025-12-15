@@ -1,4 +1,4 @@
-import SaleProgressSteps from '@/pages/sales/new-order/saleStepLoading'
+import SaleProgressSteps from '../saleStepLoading'
 import StyledDialog from '@components/Dialogs/StyledeEmptyDialog'
 import TextField from '@components/Inputs/TextField'
 import { RippedPaperItem } from '@components/RippedPaperList'

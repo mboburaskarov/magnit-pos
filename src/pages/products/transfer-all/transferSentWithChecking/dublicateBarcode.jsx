@@ -11,6 +11,7 @@ import CloseIcon from '@icons/CloseIcon'
 export default function DublicateProductBarcode({ open, refetch, setOpen }) {
   const { id } = useParams()
   const theme = useTheme()
+  console.log(open)
 
   const { mutate: updateByBarcode } = useMutation(requests.updateTransferByBarcode, {
     onSuccess: ({ data }) => {
@@ -60,6 +61,9 @@ export default function DublicateProductBarcode({ open, refetch, setOpen }) {
                   transferId: id,
                   id: get(item, 'id'),
                   type: 'MANUAL',
+
+                  status: 'send',
+                  count: open?.count || 1,
                 })
               }}
             >

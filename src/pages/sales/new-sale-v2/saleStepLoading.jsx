@@ -1,8 +1,7 @@
-import { Box, LinearProgress, Typography } from '@mui/material';
-import SuccessIcon from '@icons/SuccessIcon';
-import { useEffect, useState } from 'react';
-import ErrorIcon from '@icons/ErrorIcon';
-
+import { Box, LinearProgress, Typography } from '@mui/material'
+import SuccessIcon from '@icons/SuccessIcon'
+import { useEffect, useState } from 'react'
+import ErrorIcon from '@icons/ErrorIcon'
 
 export default function SaleProgressSteps({
   isFinishSaleWithoutAppPaymentType,

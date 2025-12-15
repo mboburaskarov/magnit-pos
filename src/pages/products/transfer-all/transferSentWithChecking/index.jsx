@@ -135,7 +135,7 @@ export default function TransferSentScanWithCheckingPage() {
     onSuccess: ({ data, ...other }) => {
       refetch()
       if (get(other, 'status') == 207) {
-        setopenDublicateBarcodeModal(data)
+        setopenDublicateBarcodeModal({ ...data, count: scanCount || 1 })
       } else {
         refetchgetReturnToWarehouseDashBoard()
         setBarcode('')
