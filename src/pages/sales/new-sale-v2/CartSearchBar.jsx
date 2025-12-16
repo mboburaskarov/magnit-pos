@@ -227,8 +227,11 @@ function CartSearchBar({
     },
     onError: (err) => {
       setSearchTerm('')
-
-      error('Ошибка при DMED')
+      if (get(err, 'response.data.data').includes('Unauthenticated')) {
+        error('Вы не авторизованы в системе')
+        return
+      }
+      error(`Ошибка при DMED ${get(err, 'response.data.data')}`)
       console.error('err', err)
     },
   })

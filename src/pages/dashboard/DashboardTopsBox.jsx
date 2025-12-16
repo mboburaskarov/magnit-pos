@@ -3,7 +3,7 @@ import SortIcon from '@icons/dashboard/SortIcon'
 import { Box, Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import thousandDivider from '@utils/thousandDivider'
 import { size } from 'lodash'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 export default function DashboardTopsBox({
   data,
@@ -18,7 +18,10 @@ export default function DashboardTopsBox({
     description: 'Данные за этот период не найдены',
   },
 }) {
+  const location = useLocation()
+
   const formattedData = data?.slice(0, collapseCount)
+  const from = location.pathname + location.search
 
   return (
     <Box
@@ -56,7 +59,7 @@ export default function DashboardTopsBox({
         </Box>
 
         {href && !isLoading && (
-          <Link to={href}>
+          <Link to={href} state={{ from }}>
             <Box
               sx={{
                 mr: '2px',

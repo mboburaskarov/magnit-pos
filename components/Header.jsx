@@ -1,10 +1,8 @@
-import { useQueryParams } from '@/hooks/useQueryParams'
 import { Box, Button, Container, IconButton, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { createBrowserHistory } from 'history'
 import { Fragment, memo, useLayoutEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import LeftArrowIcon from '../src/assets/icons/LeftArrow'
 import { useNavigateWithParams } from '../src/hooks/useNavigateWithParams'
 
@@ -83,60 +81,29 @@ function Header({
   noCancel = true,
   text,
   buttonText = 'Применить',
-  backButtonClick,
   customButton,
   noPrimaryBtn,
   onSubmit,
-  bottomComponent,
-  bottomComponentStyles = () => {},
   description,
-  historyBack,
   checkAccessId,
 }) {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
-  const navigate = useNavigate()
-  const { values } = useQueryParams()
 
   const classes = useStyles({ fullWidth, isOpen })
-  const history = createBrowserHistory()
   const backHistory = useRef()
   const headerComponentRef = useRef()
   const [headerComponentHeight, setHeaderComponentHeight] = useState(0)
   const location = useLocation()
-  const { navigateWithParams, goBackWithParams } = useNavigateWithParams()
+  const { goBackWithParams } = useNavigateWithParams()
   useLayoutEffect(() => {
     setHeaderComponentHeight(headerComponentRef.current?.clientHeight || 0)
     if (location.state?.prevFilter) {
       backHistory.current = location.state?.prevFilter
     }
   }, [])
-  const addDateToLink = (link) => {
-    if (values?.start_date && values?.end_date) {
-      return `${link}&start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`
-    }
-    return `${link}`
-  }
+
   const backButtonClickHandler = (e) => {
     goBackWithParams(backHref)
-    return
-    if (backButtonClick) {
-      backButtonClick(e)
-      return
-    }
-    if (historyBack) {
-      history.back()
-      return
-    }
-    if (backHref) {
-      if (backHistory.current) {
-        const saved = backHistory.current
-        const searchParams = new URLSearchParams(saved).toString()
-        navigate(`${backHref}?${searchParams}`, { replace: true, state: {} }) // clear state to avoid loops
-      } else {
-        navigate(backHref)
-      }
-      return
-    }
   }
   return (
     <Fragment>
@@ -259,24 +226,6 @@ function Header({
         </Container>
       </Box>
       <Box mb={2} sx={{ height: headerComponentHeight + 'px' }} />
-      {/* <Box mb={4} sx={{ height: headerComponentHeight + 'px', width: '100vw' }} />
-
-      {bottomComponent ? (
-        <Box
-          position='fixed'
-          sx={(theme) => ({
-            left: '0',
-            top: 114,
-            zIndex: 999,
-            width: '100%',
-            ...bottomComponentStyles(theme),
-          })}
-        >
-          <Box px={18}>{bottomComponent}</Box>
-        </Box>
-      ) : (
-        ''
-      )} */}
     </Fragment>
   )
 }

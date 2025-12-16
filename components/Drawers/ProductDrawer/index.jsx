@@ -196,6 +196,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
       </Box> */}
       <ProductMovementDashboard
+        productData={productData}
         singleProductDashboard={{ ...get(singleProductDashboard, 'data.data'), product_amount: get(productData, 'data.data.retail_price') }}
         isLoading={singleProductDashboardLoading}
         unit_per_pack={unitPerPack}
