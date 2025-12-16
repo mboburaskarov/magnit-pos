@@ -69,9 +69,10 @@ export default function Pagination({ count, handleChangeOffset, offset, offsetQu
   const classes = useStyles()
 
   const [offsetValue, setOffsetValue] = useState(Number(values?.[offsetQuery] || offset))
+  console.log(offsetValue, values?.[offsetQuery], offset)
 
   useDidUpdate(() => {
-    setOffsetValue(offset)
+    setOffsetValue(Number(values?.[offsetQuery] || offset))
   }, [offset])
 
   return (
