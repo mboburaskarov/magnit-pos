@@ -26,7 +26,7 @@ import CheckAccess from '@components/CheckAccess'
 import PrizeBoxIcon from '@icons/PrizeBoxIcon'
 import CategoryIcon from '@icons/CategoryIcon'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { error, success } from '@utils/toast'
 import BigTickIcon from '@icons/BigTickIcon'
 import { requests } from '@utils/requests'
@@ -57,7 +57,7 @@ export default function ProductsPage() {
   const [appType, setAppType] = useState('ALL')
   const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(false)
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
-
+  const location = useLocation()
   const [offsetCount, setOffsetCount] = useState(0)
   const [controlleroffset, setControllerOffset] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
@@ -123,6 +123,7 @@ export default function ProductsPage() {
   useEffect(() => {
     setControllerOffset(0)
   }, [values?.search])
+
   const productsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
@@ -144,27 +145,7 @@ export default function ProductsPage() {
       isExpress: values?.isExpress,
       ...(appType !== 'ALL' && { status: appType }),
     }
-  }, [
-    appType,
-    controlleroffset,
-    orderStoring,
-    values?.limit,
-    values?.search,
-    values?.producer_id,
-    values?.category_id,
-    values?.store_id,
-    values?.no_barcode,
-    values?.company_id,
-    values?.supply_price_to,
-    values?.retail_price_to,
-    values?.supply_price_from,
-    values?.retail_price_from,
-    values?.region_id,
-    values?.isExpress,
-    values?.start_date,
-    values?.end_date,
-    regions,
-  ])
+  }, [appType, controlleroffset, orderStoring, values, regions])
   const {
     data: productsList,
     isLoading: productsListLoading,
@@ -221,10 +202,6 @@ export default function ProductsPage() {
       console.error('err', err)
     },
   })
-
-  useEffect(() => {
-    refetch()
-  }, [productsListFilter])
 
   useEffect(() => {
     const count = productsList?.data?.data?._meta?.total_count

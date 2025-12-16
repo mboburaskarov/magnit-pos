@@ -76,7 +76,8 @@ export const useSaleOperations = ({
         error('На вашем счете Click недостаточно средств.')
         return
       }
-      error('Ошибка при Продажа завершена')
+
+      error(`Ошибка при Продажа завершена: ${JSON.parse(get(err, 'response.data.data'))?.message}`)
     },
   })
 
@@ -99,13 +100,13 @@ export const useSaleOperations = ({
       } else {
         setOpenRefreshDialog(false)
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
-        throw new Error(`custome_error: ${get(data, 'message')}`)
+        throw new Error(`InnerError: ${get(data, 'message')}`)
       }
     },
     onError: (err) => {
       setOpenRefreshDialog(false)
       error(err?.message || 'Ошибка при EPOS')
-      if (!err.message.includes('custome_error')) {
+      if (!err.message.includes('InnerError')) {
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
       }
     },

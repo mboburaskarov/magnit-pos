@@ -131,7 +131,7 @@ const AgGridUnSelectableSimpleTable = ({
         {
           ...values,
           [limitQuery]: offsetSize,
-          [offsetQuery]: offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
+          [offsetQuery]: values[offsetQuery] != '0' ? values[offsetQuery] : offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
         },
         { addQueryPrefix: true }
       )

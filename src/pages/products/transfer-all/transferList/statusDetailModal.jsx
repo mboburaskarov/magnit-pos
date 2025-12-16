@@ -27,7 +27,7 @@ export default function StatusDetailModal({ open, setOpen }) {
   }
   return (
     <StyledEmptyDialog
-      maxWidth={900}
+      maxWidth={1000}
       overflowVisible
       onClose={() => setOpen(false)}
       open={open}
@@ -158,7 +158,7 @@ export default function StatusDetailModal({ open, setOpen }) {
                   justifyContent: 'center',
                 }}
               >
-                <SentFastIcon />
+                <SentFastIcon color='#fff' />
               </Box>
             </Box>
             <Box sx={{ width: '100%', ml: '20px' }}>

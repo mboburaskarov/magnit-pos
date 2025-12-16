@@ -67,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Pagination({ count, handleChangeOffset, offset, offsetQuery }) {
   const { values } = useQueryParams()
   const classes = useStyles()
+
   const [offsetValue, setOffsetValue] = useState(Number(values?.[offsetQuery] || offset))
 
   useDidUpdate(() => {

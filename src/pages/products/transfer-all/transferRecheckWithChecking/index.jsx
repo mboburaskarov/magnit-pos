@@ -48,6 +48,7 @@ export default function TransferRecheckScanWithCheckingPage() {
     onSuccess: ({ data }) => {
       refetchgetReturnToWarehouseDashBoard()
       setBarcode('')
+      refetch()
     },
     onError: (err) => {
       refetch()
@@ -70,6 +71,7 @@ export default function TransferRecheckScanWithCheckingPage() {
       if (get(other, 'status') == 207) {
         setopenDublicateBarcodeModal(data)
       } else {
+        refetch()
         refetchgetReturnToWarehouseDashBoard()
         setBarcode('')
         refetch()

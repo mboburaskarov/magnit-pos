@@ -81,10 +81,6 @@ export default function ImportPage() {
   } = useQuery(['importsList', importsListFilter], () => requests.getAllImports(importsListFilter))
 
   useEffect(() => {
-    refetch()
-  }, [importsListFilter])
-
-  useEffect(() => {
     const count = importsList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))

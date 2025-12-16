@@ -10,12 +10,13 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import * as qs from 'qs'
 import { memo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 export default function tableHeaderSelector({ importsColumns, t }) {
   const { values } = useQueryParams()
   const navigate = useNavigate()
-
+  const location = useLocation()
+  const from = location.pathname + location.search
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {
       return {
@@ -47,27 +48,16 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         headerName: 'Наименование',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <SimpleText
-            sx={{
-              color: '#fe5000 !important',
-            }}
-            onClick={() => {
-              navigate(
-                `/products/imports/${p.data.id}?${qs.stringify({
-                  previusLimit: values?.limit,
-                  previusOffset: values?.offset,
-                })}`,
-                {
-                  state: {
-                    prevFilter: values,
-                  },
-                }
-              )
-            }}
-            customText={p.data.document_number}
-            {...p}
-            type='document_number'
-          />
+          <Link to={`/products/imports/${p.data.id}`} state={{ from }}>
+            <SimpleText
+              sx={{
+                color: '#fe5000 !important',
+              }}
+              customText={p.data.document_number}
+              {...p}
+              type='document_number'
+            />
+          </Link>
         )),
       }
     }

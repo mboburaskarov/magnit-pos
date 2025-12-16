@@ -14,8 +14,14 @@ import { useNavigate } from 'react-router-dom'
 import { formatCount } from './ProductMovementDashboard'
 import TransferDetailModal from './transferDetailModal'
 import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import { Link, useLocation } from 'react-router-dom'
 
 export default function ProductHistory({ id, unit_per_pack }) {
+  const location = useLocation()
+
+  // to‘liq hozirgi URL (query bilan)
+  const from = location.pathname + location.search
+
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const navigate = useNavigate()
@@ -70,45 +76,51 @@ export default function ProductHistory({ id, unit_per_pack }) {
         minWidth: 250,
         maxWidth: 250,
         width: 250,
-        cellRenderer: ({ data, rowIndex }) => (
-          <Typography
-            color={'orange.500'}
-            onClick={() => {
-              const type = get(data, 'entry_type')
-              if (type == '4') {
-                navigate(`/sales/all-sales?limit=10&offset=0&search=${get(data, 'public_id')}&sale_id=${get(data, 'id')}`)
-              } else if (type == '8') {
-                navigate(`/sales/all-sales?limit=10&offset=0&search=${get(data, 'public_id')}&sale_id=${get(data, 'id')}`)
-              } else if (type == '6') {
-                setModal(data)
-                // navigate(`/products/transfer-completed/${get(data, 'id')}`)
-              } else if (type == '5') {
-                navigate(`/products/return-to-warehouse-completed/${get(data, 'id')}`)
-              } else if (type == '3') {
-                navigate(`/products/write-off-completed/${get(data, 'id')}`)
-              } else if (type == '2') {
-                navigate(`/products/inventory-completed/${get(data, 'id')}`)
-              } else {
-                navigate(`/products/imports/${get(data, 'id')}?tab=details`)
-              }
-            }}
-          >
-            {get(data, 'entry_type') == '6'
-              ? 'Перемещение '
-              : get(data, 'entry_type') == '5'
-              ? 'Возврат на склад '
-              : get(data, 'entry_type') == '7'
-              ? 'Возврат '
-              : get(data, 'entry_type') == '3'
-              ? 'Списание '
-              : get(data, 'entry_type') == '1'
-              ? 'Импорт '
-              : get(data, 'entry_type') == '2'
-              ? 'Инвентаризация '
-              : 'Продажa '}
-            #{get(data, 'public_id')}
-          </Typography>
-        ),
+        cellRenderer: ({ data, rowIndex }) => {
+          const entryType = get(data, 'entry_type')
+          const id = get(data, 'id')
+          const publicId = get(data, 'public_id')
+
+          const routeMap = {
+            4: `/sales/all-sales?limit=10&offset=0&search=${publicId}&sale_id=${id}`,
+            8: `/sales/all-sales?limit=10&offset=0&search=${publicId}&sale_id=${id}`,
+            5: `/products/return-to-warehouse-completed/${id}`,
+            3: `/products/write-off-completed/${id}`,
+            2: `/products/inventory-completed/${id}`,
+          }
+
+          const link = routeMap[entryType] ?? `/products/imports/${id}?tab=details`
+
+          return (
+            <Typography
+              color='orange.500'
+              component={entryType == '6' ? 'span' : Link}
+              to={entryType == '6' ? undefined : link}
+              state={{ from }}
+              onClick={() => {
+                if (entryType == '6') {
+                  setModal(data)
+                }
+              }}
+              sx={{ cursor: 'pointer' }}
+            >
+              {entryType == '6'
+                ? 'Перемещение '
+                : entryType == '5'
+                ? 'Возврат на склад '
+                : entryType == '7'
+                ? 'Возврат '
+                : entryType == '3'
+                ? 'Списание '
+                : entryType == '4'
+                ? 'Продажa '
+                : entryType == '2'
+                ? 'Инвентаризация '
+                : 'Импорт '}
+              #{publicId}
+            </Typography>
+          )
+        },
       },
       {
         headerName: 'Количество',

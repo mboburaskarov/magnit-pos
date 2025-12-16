@@ -47,6 +47,7 @@ export default function TransferGetScanWithCheckingPage() {
     onSuccess: ({ data }) => {
       refetchgetReturnToWarehouseDashBoard()
       setBarcode('')
+      refetch()
     },
     onError: (err) => {
       refetch()

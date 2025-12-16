@@ -337,6 +337,8 @@ export const requests = {
     request.patch(`v1/product/store-is-marking`, { product_id, id, is_checking, is_marking }),
   getProductsExcelReport: (filter) => requestEXCEL.get(`v1/product/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   getProductsExcelReportForAA: (filter) => requestEXCEL.get(`v1/product/export-arzon${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getProductMovementDashboardExcel: ({ id, ...filter }) =>
+    requestEXCEL.get(`v1/product/${id}/product-movement/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getSingleProduct: ({ id, ...filter }) => request.get(`v1/product/${id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   getSingleProductDashboard: ({ id, ...filter }) => request.get(`v1/product/${id}/dashboard${qs.stringify(filter, { addQueryPrefix: true })}`),

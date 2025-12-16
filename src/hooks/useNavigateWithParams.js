@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useQueryParams } from './useQueryParams'
 
@@ -6,6 +6,7 @@ export function useNavigateWithParams() {
   const navigate = useNavigate()
   const location = useLocation()
   const { values } = useQueryParams()
+  const [fromUrl, setFromUrl] = useState(location.state?.from)
 
   // Store previous full URL (pathname + search)
   const prevUrlRef = useRef(null)
@@ -36,7 +37,9 @@ export function useNavigateWithParams() {
 
   // Go back to previous page with its query params
   const goBackWithParams = (backHref = '/') => {
-    if (prevUrlRef.current) {
+    if (fromUrl) {
+      navigate(fromUrl)
+    } else if (prevUrlRef.current) {
       navigate(prevUrlRef.current)
     } else {
       if (values?.start_date && values?.end_date) {

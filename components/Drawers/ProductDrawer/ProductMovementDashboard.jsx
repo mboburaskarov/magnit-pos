@@ -1,7 +1,13 @@
+import { useQueryParams } from '@/hooks/useQueryParams'
+import { Download } from '@mui/icons-material'
 import { Box, Skeleton, Typography } from '@mui/material'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { requests } from '@utils/requests'
 import thousandDivider from '@utils/thousandDivider'
+import { error } from '@utils/toast'
 import { get } from 'lodash'
 import { useState } from 'react'
+import { useMutation } from 'react-query'
 export const formatCount = (reciveCount, unit_per_pack, canBeMinus = true) => {
   const count = canBeMinus ? reciveCount : Math.abs(reciveCount)
   if (!count || unit_per_pack <= 1 || count < unit_per_pack) return canBeMinus ? `${thousandDivider(count)}шт` : `${thousandDivider(count)}шт`
@@ -12,9 +18,21 @@ export const formatCount = (reciveCount, unit_per_pack, canBeMinus = true) => {
   if (pieces > 0) result += ` ${thousandDivider(pieces)}шт`
   return result.trim()
 }
-function ProductMovementDashboard({ singleProductDashboard, isLoading = true, unit_per_pack = 1 }) {
-  const [collapse, setCollapse] = useState(true)
 
+function ProductMovementDashboard({ singleProductDashboard, productData, isLoading = true, unit_per_pack = 1 }) {
+  const { values } = useQueryParams()
+
+  const [collapse, setCollapse] = useState(true)
+  const { mutate: getProductMovementDashboardExcel, isLoading: isGetProductMovementDashboardExcel } = useMutation(requests.getProductMovementDashboardExcel, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.error(err)
+
+      error('Ошибка при скачать excel!')
+    },
+  })
   const items = [
     { title: 'Импорты', collapseTitle: 'Импорты', color: 'green.700', countKey: 'import_count', amountKey: 'import_amount' },
     { title: 'Возврат от клиента ', collapseTitle: 'Возврат или продажи', color: 'green.700', countKey: 'return_sale_count', amountKey: 'return_sale_amount' },
@@ -49,22 +67,54 @@ function ProductMovementDashboard({ singleProductDashboard, isLoading = true, un
 
   return (
     <Box>
-      <Typography
-        textAlign={'end'}
-        onClick={() => setCollapse((a) => !a)}
+      <Box
         sx={{
-          mb: 1,
-
-          cursor: 'pointer',
-          fontWeight: 600,
-          fontSize: '17px',
-          color: 'gray.700',
-          userSelect: 'none',
-          padding: '10px 40px 0 0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: get(values, 'store_id') ? 'space-between' : 'end',
+          width: '100%',
+          pl: '40px',
         }}
       >
-        {collapse ? 'Еще' : 'Меньше'}
-      </Typography>
+        <Box
+          sx={{
+            display: get(values, 'store_id') ? 'flex' : 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mr: '10px',
+            bgcolor: 'bg.10',
+            width: '30px',
+            height: '30px',
+            borderRadius: '50%',
+            cursor: 'pointer',
+            mt: '10px',
+            ':hover': {
+              bgcolor: 'grey.300',
+            },
+          }}
+          onClick={() => {
+            getProductMovementDashboardExcel({ id: get(productData, 'data.data.id'), store_id: get(values, 'store_id'), limit: 10000, offset: 0 })
+          }}
+        >
+          <Download />
+        </Box>
+        <Typography
+          textAlign={'end'}
+          onClick={() => setCollapse((a) => !a)}
+          sx={{
+            mb: 1,
+
+            cursor: 'pointer',
+            fontWeight: 600,
+            fontSize: '17px',
+            color: 'gray.700',
+            userSelect: 'none',
+            padding: '10px 40px 0 0',
+          }}
+        >
+          {collapse ? 'Еще' : 'Меньше'}
+        </Typography>
+      </Box>
 
       <Box
         sx={{
