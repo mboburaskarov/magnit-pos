@@ -5,12 +5,12 @@ import AgGridTable from '@components/AgGridTable/AgGridTableSelectable'
 import ProductDrawer from '@components/Drawers/ProductDrawer'
 import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
 import LoadingContainer from '@components/LoadingContainer'
-import { Block, Info, Report } from '@mui/icons-material'
+import { Block, Download, Info, Report } from '@mui/icons-material'
 import InputSwitch from '@components/Inputs/InputSwitch'
 import InputSearch from '@components/Inputs/InputSearch'
 import { checkPermission } from '@utils/checkPermission'
 import { FormProvider, useForm } from 'react-hook-form'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import { useQueryParams } from '@hooks/useQueryParams'
 import { useDispatch, useSelector } from 'react-redux'
 import StyledTooltip from '@components/StyledTooltip'
@@ -265,6 +265,16 @@ export default function ProductsPage() {
       changeBarcode({ id, unit_label })
     }
   }
+  const { mutate: getProductMovementDashboardExcel, isLoading: isGetProductMovementDashboardExcel } = useMutation(requests.getProductMovementDashboardExcel, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.error(err)
+
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
@@ -362,13 +372,17 @@ export default function ProductsPage() {
                     sx={{
                       backgroundColor: 'bg.10',
                       padding: '10px',
-                      borderRadius: '10px',
+                      borderRadius: '50%',
                       mr: '10px',
                       display: 'flex',
                       width: '38px',
                       height: '38px',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: 'grey.200',
+                      },
                     }}
                   >
                     <Block
@@ -387,13 +401,18 @@ export default function ProductsPage() {
                     sx={{
                       backgroundColor: 'bg.10',
                       padding: '10px',
-                      borderRadius: '10px',
+                      borderRadius: '50%',
+
                       mr: '10px',
                       display: 'flex',
                       width: '38px',
                       height: '38px',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: 'grey.200',
+                      },
                     }}
                   >
                     <CategoryIcon />
@@ -407,7 +426,8 @@ export default function ProductsPage() {
                     sx={{
                       backgroundColor: 'bg.10',
                       padding: '10px',
-                      borderRadius: '10px',
+                      borderRadius: '50%',
+
                       display: 'flex',
                       width: '38px',
                       height: '38px',
@@ -416,6 +436,10 @@ export default function ProductsPage() {
                       '& svg': {
                         width: '18px',
                         height: '18px',
+                      },
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: 'grey.200',
                       },
                     }}
                   >
@@ -431,9 +455,10 @@ export default function ProductsPage() {
                       ml: '10px',
                       backgroundColor: 'bg.10',
                       padding: '10px',
-                      borderRadius: '10px',
+                      borderRadius: '50%',
                       display: 'flex',
                       width: '38px',
+                      cursor: 'pointer',
                       height: '38px',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -441,12 +466,43 @@ export default function ProductsPage() {
                         width: '18px',
                         height: '18px',
                       },
+                      '&:hover': {
+                        backgroundColor: 'grey.200',
+                      },
                     }}
                   >
                     <Report color='#FF6018' />
                   </Box>
                 </StyledTooltip>
               </CheckAccess>
+              <StyledTooltip title={'Общий график действий продуктов'}>
+                <Box
+                  sx={{
+                    ml: '10px',
+                    backgroundColor: 'bg.10',
+                    padding: '10px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    width: '38px',
+                    cursor: 'pointer',
+                    height: '38px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    '& svg': {
+                      width: '18px',
+                      height: '18px',
+                    },
+                    '&:hover': {
+                      backgroundColor: 'grey.200',
+                    },
+                  }}
+                  onClick={() => {
+                    getProductMovementDashboardExcel({ store_id: get(values, 'store_id'), limit: 10000, offset: 0 })
+                  }}
+                >
+                  {isGetProductMovementDashboardExcel ? <CircularProgress size={18} thickness={5} /> : <Download sx={{ color: '#FF6018' }} />}
+                </Box>
+              </StyledTooltip>
             </Box>
           </Box>
           <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>

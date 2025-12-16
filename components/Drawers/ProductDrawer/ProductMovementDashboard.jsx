@@ -22,17 +22,8 @@ export const formatCount = (reciveCount, unit_per_pack, canBeMinus = true) => {
 function ProductMovementDashboard({ singleProductDashboard, productData, isLoading = true, unit_per_pack = 1 }) {
   const { values } = useQueryParams()
 
-  const [collapse, setCollapse] = useState(true)
-  const { mutate: getProductMovementDashboardExcel, isLoading: isGetProductMovementDashboardExcel } = useMutation(requests.getProductMovementDashboardExcel, {
-    onSuccess: ({ data }) => {
-      downloadLinkExcel(get(data, 'data.file_name'))
-    },
-    onError: (err) => {
-      console.error(err)
+  const [collapse, setCollapse] = useState(false)
 
-      error('Ошибка при скачать excel!')
-    },
-  })
   const items = [
     { title: 'Импорты', collapseTitle: 'Импорты', color: 'green.700', countKey: 'import_count', amountKey: 'import_amount' },
     { title: 'Возврат от клиента ', collapseTitle: 'Возврат или продажи', color: 'green.700', countKey: 'return_sale_count', amountKey: 'return_sale_amount' },
@@ -71,33 +62,11 @@ function ProductMovementDashboard({ singleProductDashboard, productData, isLoadi
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: get(values, 'store_id') ? 'space-between' : 'end',
+          justifyContent: 'end',
           width: '100%',
           pl: '40px',
         }}
       >
-        <Box
-          sx={{
-            display: get(values, 'store_id') ? 'flex' : 'none',
-            alignItems: 'center',
-            justifyContent: 'center',
-            mr: '10px',
-            bgcolor: 'bg.10',
-            width: '30px',
-            height: '30px',
-            borderRadius: '50%',
-            cursor: 'pointer',
-            mt: '10px',
-            ':hover': {
-              bgcolor: 'grey.300',
-            },
-          }}
-          onClick={() => {
-            getProductMovementDashboardExcel({ id: get(productData, 'data.data.id'), store_id: get(values, 'store_id'), limit: 10000, offset: 0 })
-          }}
-        >
-          <Download />
-        </Box>
         <Typography
           textAlign={'end'}
           onClick={() => setCollapse((a) => !a)}

@@ -62,7 +62,7 @@ const AgGridUnSelectableSimpleTable = ({
   const location = useLocation()
   const { values } = useQueryParams()
   const [gridApi, setGridApi] = useState(null)
-  const [offsetIndex, setOffsetIndex] = useState(defaultOffsetIndex)
+  const [offsetIndex, setOffsetIndex] = useState(values?.[offsetQuery] / values?.[limitQuery] || defaultOffsetIndex)
   const [offsetSize, setOffsetSize] = useState(tableOffsetSizes?.[id] || defaultOffsetSize)
   const [headerCheckboxChecked, setHeaderCheckboxChecked] = useState(null)
   const OverlayLoadingTemplate = OverlayLoadingTemplateFunc()
@@ -73,6 +73,7 @@ const AgGridUnSelectableSimpleTable = ({
   const rowData = useMemo(() => data, [data, totalData])
   useScrollListener(agGridTableArea, agGridTableScroll)
   const navigate = useNavigate()
+  // console.log(values?.[offsetQuery] / values?.[limitQuery])
 
   const prevStatus = usePrevious(status)
 
@@ -131,7 +132,9 @@ const AgGridUnSelectableSimpleTable = ({
         {
           ...values,
           [limitQuery]: offsetSize,
-          [offsetQuery]: values[offsetQuery] != '0' ? values[offsetQuery] : offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
+          [offsetQuery]: offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
+          // [offsetQuery]:
+          //   values[offsetQuery] && values[offsetQuery] != '0' && offsetIndex == 0 ? values[offsetQuery] : offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
         },
         { addQueryPrefix: true }
       )
