@@ -128,7 +128,7 @@ export default function ProductsPage() {
     return {
       limit: values?.limit || 10,
       search: values?.search,
-      offset: controlleroffset || 0,
+      offset: values?.search ? 0 : controlleroffset || 0,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
       company_id: values?.company_id,
@@ -615,7 +615,7 @@ export default function ProductsPage() {
           </Box>
         </Box>
         <ProductDrawer open={openProductDrawer} setImages={setOpenImageGallery} onClose={setOpenProductDrawer} />
-        <ChangeUnitPerPack open={openPerPack} setOpen={setOpenPerPack} />
+        <ChangeUnitPerPack refetch={refetch} open={openPerPack} setOpen={setOpenPerPack} />
         <SendToErrorWithReason open={openErrorReason} setOpen={setOpenErrorReason} />
         <ImageGallery canAlert={setOpenErrorReason} open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
         {openConfirmDialog && (

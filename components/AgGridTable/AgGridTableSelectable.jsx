@@ -265,12 +265,30 @@ const AgGridSimpleTable = ({
 
       navigate(`${baseUrl}${offsetLimitParams}`)
     }
-  }, [offsetIndex, offsetSize, data, location.pathname, status])
+  }, [offsetIndex, offsetSize, location.pathname, status])
 
   useEffect(() => {
-    setOffsetIndex(0)
-  }, [values?.store_id, values?.no_barcode, values?.vendor_id, values?.vendor_name, values?.payment_type_id, values?.cashbox_name])
+    if (totalCount == 0) return
+    const limit = Number(offsetSize)
+    const offset = Number(offsetIndex) * Number(offsetSize) - Number(offsetSize)
+    if ((totalCount + limit) / limit < offsetIndex) {
+      const baseUrl = navigateUrl || location.pathname
 
+      if (baseUrl && !noRedirect) {
+        const offsetLimitParams = qs.stringify(
+          {
+            ...values,
+            [limitQuery]: offsetSize,
+            [offsetQuery]: 0,
+          },
+          { addQueryPrefix: true }
+        )
+
+        // navigate(`${baseUrl}${offsetLimitParams}`)
+        setOffsetIndex(0)
+      }
+    }
+  }, [totalCount])
   useEffect(() => {
     if (id) {
       const new_table_offset_sizes = JSON.stringify({

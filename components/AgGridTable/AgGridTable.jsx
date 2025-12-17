@@ -17,6 +17,7 @@ import { HeaderCheckbox, icons, OverlayLoadingTemplateFunc, OverlayNoRowsTemplat
 import { onColumnResized, onDisplayedColumnsChanged, scrollShowHide, useScrollListener } from './AgGridFunctions'
 import CheckBoxRenderer from './CheckboxRenderer'
 import useStyles from './useStyles'
+import { get } from 'lodash'
 
 const AgGridUnSelectableSimpleTable = ({
   id,
@@ -62,7 +63,7 @@ const AgGridUnSelectableSimpleTable = ({
   const location = useLocation()
   const { values } = useQueryParams()
   const [gridApi, setGridApi] = useState(null)
-  const [offsetIndex, setOffsetIndex] = useState(values?.[offsetQuery] / values?.[limitQuery] || defaultOffsetIndex)
+  const [offsetIndex, setOffsetIndex] = useState(defaultOffsetIndex)
   const [offsetSize, setOffsetSize] = useState(tableOffsetSizes?.[id] || defaultOffsetSize)
   const [headerCheckboxChecked, setHeaderCheckboxChecked] = useState(null)
   const OverlayLoadingTemplate = OverlayLoadingTemplateFunc()
@@ -73,7 +74,6 @@ const AgGridUnSelectableSimpleTable = ({
   const rowData = useMemo(() => data, [data, totalData])
   useScrollListener(agGridTableArea, agGridTableScroll)
   const navigate = useNavigate()
-  // console.log(values?.[offsetQuery] / values?.[limitQuery])
 
   const prevStatus = usePrevious(status)
 
@@ -132,9 +132,9 @@ const AgGridUnSelectableSimpleTable = ({
         {
           ...values,
           [limitQuery]: offsetSize,
-          [offsetQuery]: offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
-          // [offsetQuery]:
-          //   values[offsetQuery] && values[offsetQuery] != '0' && offsetIndex == 0 ? values[offsetQuery] : offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
+          // [offsetQuery]: offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
+          [offsetQuery]:
+            values[offsetQuery] && values[offsetQuery] != '0' && offsetIndex == 0 ? values[offsetQuery] : offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
         },
         { addQueryPrefix: true }
       )
@@ -142,9 +142,31 @@ const AgGridUnSelectableSimpleTable = ({
       navigate(`${baseUrl}${offsetLimitParams}`)
     }
   }, [offsetIndex, offsetSize, data, location.pathname, status])
+
   useEffect(() => {
-    setOffsetIndex(0)
-  }, [values?.store_id, values?.no_barcode, values?.vendor_id, values?.vendor_name, values?.payment_type_id, values?.cashbox_name])
+    if (totalCount == 0) return
+
+    const limit = Number(offsetSize)
+    const offset = Number(offsetIndex) * Number(offsetSize) - Number(offsetSize)
+    if ((totalCount + limit) / limit < offsetIndex) {
+      const baseUrl = navigateUrl || location.pathname
+
+      if (baseUrl && !noRedirect) {
+        const offsetLimitParams = qs.stringify(
+          {
+            ...values,
+            [limitQuery]: offsetSize,
+            [offsetQuery]: 0,
+          },
+          { addQueryPrefix: true }
+        )
+
+        // navigate(`${baseUrl}${offsetLimitParams}`)
+        setOffsetIndex(0)
+      }
+    }
+  }, [totalCount])
+
   useEffect(() => {
     if (id) {
       const new_table_offset_sizes = JSON.stringify({

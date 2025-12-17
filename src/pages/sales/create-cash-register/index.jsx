@@ -1,3 +1,4 @@
+import { setUserData } from '@/redux-toolkit/userSlice'
 import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
 import TextField from '@components/Inputs/TextField'
 import LoadingContainer from '@components/LoadingContainer'
@@ -14,7 +15,7 @@ import { get } from 'lodash'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
@@ -83,9 +84,22 @@ function NewCashRegister() {
   const navigate = useNavigate()
   const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
-  const [isEposTurnOn, setisEposTurnOn] = useState(true)
+  const dispatch = useDispatch()
 
-  const { data: registerCashList, refetch: refetchregisterCashList } = useQuery('registerCashList', () =>
+  const [isEposTurnOn, setisEposTurnOn] = useState(true)
+  console.log(userData)
+  const { mutate: getUserInfo } = useMutation(requests.getUserInfo, {
+    onSuccess: ({ data }) => {
+      dispatch(setUserData({ ...data?.data }))
+    },
+    onError: () => {
+      error('Ошибка получения пользовательских данных.!')
+    },
+  })
+  useEffect(() => {
+    getUserInfo()
+  }, [])
+  const { data: registerCashList, refetch: refetchregisterCashList } = useQuery(['registerCashList', userData], () =>
     requests.getAllCashBoxList({ store_id: get(userData, 'store.id'), limit: 20, offset: 0 })
   )
   const { data: registerCashData, refetch: refetchregisterCashData } = useQuery('registerCashData', () =>

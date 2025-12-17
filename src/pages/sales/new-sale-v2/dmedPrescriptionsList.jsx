@@ -1,11 +1,10 @@
-import { Close } from '@mui/icons-material';
-import Label from '@components/Label';
-import { Box } from '@mui/material';
-
+import { Close } from '@mui/icons-material'
+import Label from '@components/Label'
+import { Box } from '@mui/material'
 
 function DmedPrescriptionsList({ data, setDmedPrescriptionsList }) {
   return (
-    <Box>
+    <Box sx={{ padding: '20px' }}>
       {data?.length > 0 ? (
         <Box sx={{ border: '1px solid #fe5000', position: 'relative', padding: '20px', borderRadius: '20px' }}>
           <Box sx={{ display: 'flex', mb: '4px', justifyContent: 'space-between' }}>

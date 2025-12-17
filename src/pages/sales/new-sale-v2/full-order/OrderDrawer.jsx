@@ -159,7 +159,7 @@ export default function OrderDrawer({
       customerId,
     })
 
-  const { isFinishSaleWithoutAppPaymentType, isSaleError, isSendToEPOS, isEposError, isSendEPOSresponseToBackend, isSaleResponseError, submitSale } =
+  const { isFinishSaleWithoutAppPaymentType, hasError, isSaleError, isSendToEPOS, isEposError, isSendEPOSresponseToBackend, isSaleResponseError, submitSale } =
     useSaleOperations({
       cartItemsList,
       markingsList,
@@ -463,7 +463,7 @@ export default function OrderDrawer({
             <LoadingButton
               sx={{ minHeight: '48px !important ', display: 'flex' }}
               variant='contained'
-              loading={isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType}
+              loading={(isSendToEPOS || isSendEPOSresponseToBackend || isFinishSaleWithoutAppPaymentType) && !hasError}
               disabled={maxAmount > 0 && SALE_STAGE !== 8}
               onClick={() => {
                 if (paymentsList.find((el) => el.type === 'app')) {
@@ -501,6 +501,7 @@ export default function OrderDrawer({
             isSaleResponseError={isSaleResponseError}
             isEposError={isEposError}
             isSaleError={isSaleError}
+            hasError={hasError}
           />
         </Drawer>
       </Box>
