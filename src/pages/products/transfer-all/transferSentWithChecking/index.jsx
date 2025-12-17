@@ -68,6 +68,12 @@ export default function TransferSentScanWithCheckingPage() {
       navigate('/products/transfer')
     },
     onError: (err) => {
+      if (err.response.data.code == 409) {
+        error(`
+          Осталось ${get(err, 'response.data.data.available_quantity')} остатков лекарств в "${get(err, 'response.data.data.name')}"
+          `)
+        return
+      }
       error('Ошибка при завершение Перемещение!')
     },
   })
