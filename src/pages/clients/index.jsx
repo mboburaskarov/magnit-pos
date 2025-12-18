@@ -1,31 +1,30 @@
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/clientTableColumns';
-import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
-import ClientCreateMini from '@components/Sales/ClientCreateMini/index';
-import AgGridTable from '@components/AgGridTable/AgGridTable';
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
-import LoadingContainer from '@components/LoadingContainer';
-import InputSearch from '@components/Inputs/InputSearch';
-import { Box, Button, Typography } from '@mui/material';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useDispatch, useSelector } from 'react-redux';
-import ConfirmDialog from '@components/ConfirmDialog';
-import { useEffect, useMemo, useState } from 'react';
-import ImageGallery from '@components/ImageGallery';
-import { useMutation, useQuery } from 'react-query';
-import BigWarningIcon from '@icons/BigWarningIcon';
-import CheckAccess from '@components/CheckAccess';
-import { useTranslation } from 'react-i18next';
-import { error, success } from '@utils/toast';
-import BigTickIcon from '@icons/BigTickIcon';
-import DeleteIcon from '@icons/DeleteIcon';
-import { requests } from '@utils/requests';
-import { LoadingButton } from '@mui/lab';
-import PlusIcon from '@icons/PlusIcon';
-import { get } from 'lodash';
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/clientTableColumns'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import ClientCreateMini from '@components/Sales/ClientCreateMini/index'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import LoadingContainer from '@components/LoadingContainer'
+import InputSearch from '@components/Inputs/InputSearch'
+import { Box, Button, Typography } from '@mui/material'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { useDispatch, useSelector } from 'react-redux'
+import ConfirmDialog from '@components/ConfirmDialog'
+import { useEffect, useMemo, useState } from 'react'
+import ImageGallery from '@components/ImageGallery'
+import { useMutation, useQuery } from 'react-query'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import CheckAccess from '@components/CheckAccess'
+import { useTranslation } from 'react-i18next'
+import { error, success } from '@utils/toast'
+import BigTickIcon from '@icons/BigTickIcon'
+import DeleteIcon from '@icons/DeleteIcon'
+import { requests } from '@utils/requests'
+import { LoadingButton } from '@mui/lab'
+import PlusIcon from '@icons/PlusIcon'
+import { get } from 'lodash'
 
-import tableHeaderSelector from './tableHeaderSelector';
-
+import tableHeaderSelector from './tableHeaderSelector'
 
 export default function ClientsPage() {
   const dispatch = useDispatch()
@@ -134,34 +133,35 @@ export default function ClientsPage() {
             >
               <InputSearch id='producrs-search' name='search' placeholder={'ID, Имя, Телефон'} uncontrolled />
             </Box>
-
-            {selectClients.length > 0 && (
-              <>
-                <Box minWidth={48} ml={'16px'}>
-                  <Button
-                    sx={{
-                      height: '48px',
-                      padding: 0,
-                      bgcolor: '#fff',
-                      border: '1px solid #ECEDF2',
-                      color: 'dark.500',
-                      fontWeight: '500',
-                      fontSize: '16px',
-                      lineHeight: '24px',
-                      '& span': {
-                        mr: '12px',
-                      },
-                    }}
-                    fullWidth
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => deleteClient({ data: selectClients })}
-                  >
-                    <DeleteIcon width='24px' />
-                  </Button>
-                </Box>
-              </>
-            )}
+            <CheckAccess id={'client:delete'}>
+              {selectClients.length > 0 && (
+                <>
+                  <Box minWidth={48} ml={'16px'}>
+                    <Button
+                      sx={{
+                        height: '48px',
+                        padding: 0,
+                        bgcolor: '#fff',
+                        border: '1px solid #ECEDF2',
+                        color: 'dark.500',
+                        fontWeight: '500',
+                        fontSize: '16px',
+                        lineHeight: '24px',
+                        '& span': {
+                          mr: '12px',
+                        },
+                      }}
+                      fullWidth
+                      variant='contained'
+                      color='secondary'
+                      onClick={() => deleteClient({ data: selectClients })}
+                    >
+                      <DeleteIcon width='24px' />
+                    </Button>
+                  </Box>
+                </>
+              )}
+            </CheckAccess>
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box>
@@ -173,7 +173,7 @@ export default function ClientsPage() {
                 resetTableHeader={resetTableHeader}
               />
             </Box>
-            <CheckAccess id={'product-create'}>
+            <CheckAccess id={'client:create'}>
               <Box minWidth={156}>
                 <Button
                   sx={{ height: '48px' }}

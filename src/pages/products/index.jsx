@@ -475,34 +475,36 @@ export default function ProductsPage() {
                   </Box>
                 </StyledTooltip>
               </CheckAccess>
-              <StyledTooltip title={'Общий график действий продуктов'}>
-                <Box
-                  sx={{
-                    ml: '10px',
-                    backgroundColor: 'bg.10',
-                    padding: '10px',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    width: '38px',
-                    cursor: 'pointer',
-                    height: '38px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    '& svg': {
-                      width: '18px',
-                      height: '18px',
-                    },
-                    '&:hover': {
-                      backgroundColor: 'grey.200',
-                    },
-                  }}
-                  onClick={() => {
-                    getProductMovementDashboardExcel({ store_id: get(values, 'store_id'), limit: 10000, offset: 0 })
-                  }}
-                >
-                  {isGetProductMovementDashboardExcel ? <CircularProgress size={18} thickness={5} /> : <Download sx={{ color: '#FF6018' }} />}
-                </Box>
-              </StyledTooltip>
+              <CheckAccess id={'can-get-product-movement-dashboard'}>
+                <StyledTooltip title={'Общий график действий продуктов'}>
+                  <Box
+                    sx={{
+                      ml: '10px',
+                      backgroundColor: 'bg.10',
+                      padding: '10px',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      width: '38px',
+                      cursor: 'pointer',
+                      height: '38px',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      '& svg': {
+                        width: '18px',
+                        height: '18px',
+                      },
+                      '&:hover': {
+                        backgroundColor: 'grey.200',
+                      },
+                    }}
+                    onClick={() => {
+                      getProductMovementDashboardExcel({ store_id: get(values, 'store_id'), limit: 10000, offset: 0 })
+                    }}
+                  >
+                    {isGetProductMovementDashboardExcel ? <CircularProgress size={18} thickness={5} /> : <Download sx={{ color: '#FF6018' }} />}
+                  </Box>
+                </StyledTooltip>
+              </CheckAccess>
             </Box>
           </Box>
           <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>

@@ -1,21 +1,20 @@
-import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
-import { returns_list_statuses } from '@/assets/data/return-statuses';
-import StatusCell from '@components/AgGridTable/Cells/StatusCell';
-import ButtonWithPopup from '@components/Buttons/ButtonWithPopup';
-import { Box, IconButton, Typography } from '@mui/material';
-import { useQueryParams } from '@hooks/useQueryParams';
-import StyledTooltip from '@components/StyledTooltip';
-import CheckAccess from '@components/CheckAccess';
-import DownloadIcon from '@icons/DownloadIcon';
-import { useNavigate } from 'react-router-dom';
-import LeftArrowIcon from '@icons/LeftArrow';
-import DeleteIcon from '@icons/DeleteIcon';
-import ArrowRight from '@icons/ArrowRight';
-import { memo } from 'react';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
-import * as qs from 'qs';
-
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import { returns_list_statuses } from '@/assets/data/return-statuses'
+import StatusCell from '@components/AgGridTable/Cells/StatusCell'
+import ButtonWithPopup from '@components/Buttons/ButtonWithPopup'
+import { Box, IconButton, Typography } from '@mui/material'
+import { useQueryParams } from '@hooks/useQueryParams'
+import StyledTooltip from '@components/StyledTooltip'
+import CheckAccess from '@components/CheckAccess'
+import DownloadIcon from '@icons/DownloadIcon'
+import { useNavigate } from 'react-router-dom'
+import LeftArrowIcon from '@icons/LeftArrow'
+import DeleteIcon from '@icons/DeleteIcon'
+import ArrowRight from '@icons/ArrowRight'
+import { memo } from 'react'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
+import * as qs from 'qs'
 
 export default function tableHeaderSelector({ importsColumns, t, downloadNakladnoy, setOpenConfirmDialog }) {
   const { values } = useQueryParams()
@@ -384,7 +383,7 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
                 </>
               )}
             </CheckAccess>
-            <CheckAccess id={'can-delete-transfer'}>
+            <CheckAccess id={'can-delete-return-to-warehouse'}>
               {data.status == 'new' && (
                 <IconButton
                   onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: data.name })}
