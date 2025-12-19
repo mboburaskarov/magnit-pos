@@ -254,7 +254,7 @@ export default function DashboarPage() {
   }))
   const addDateToLink = (link) => {
     if (values?.start_date && values?.end_date) {
-      return `${link}&start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`
+      return `${link}?start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`
     }
     return `${link}`
   }
