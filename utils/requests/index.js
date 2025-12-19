@@ -445,4 +445,8 @@ export const requests = {
   createComapny: (data) => request.post(`v1/company`, data),
   updateCompany: ({ id, data }) => request.put(`v1/company/${id}`, data),
   getSingleComapny: (id) => request.get(`v1/company/${id}`),
+
+  ///loggs
+
+  getLogsList: ({ id, ...filter }) => request.get(`v1/logs${qs.stringify(filter, { addQueryPrefix: true })}`),
 }

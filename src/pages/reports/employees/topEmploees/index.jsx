@@ -1,29 +1,28 @@
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/topReportsTableColumns';
-import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
-import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
-import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
-import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew';
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
-import AgGridTable from '@components/AgGridTable/AgGridTable';
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
-import LoadingContainer from '@components/LoadingContainer';
-import SelectSimple from '@components/Select/SelectSimple';
-import InputSearch from '@components/Inputs/InputSearch';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { useTranslation } from 'react-i18next';
-import { requests } from '@utils/requests';
-import Header from '@components/Header';
-import { error } from '@utils/toast';
-import { Box } from '@mui/material';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/topReportsTableColumns'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import LoadingContainer from '@components/LoadingContainer'
+import SelectSimple from '@components/Select/SelectSimple'
+import InputSearch from '@components/Inputs/InputSearch'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useMemo, useState } from 'react'
+import { useMutation, useQuery } from 'react-query'
+import { useTranslation } from 'react-i18next'
+import { requests } from '@utils/requests'
+import Header from '@components/Header'
+import { error } from '@utils/toast'
+import { Box, Typography } from '@mui/material'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
-import tableHeaderSelector from './tableHeaderSelector';
-import FilterMenu from './FilterMenu';
-
+import tableHeaderSelector from './tableHeaderSelector'
+import FilterMenu from './FilterMenu'
 
 export default function TopEmployeesPage() {
   const dispatch = useDispatch()
