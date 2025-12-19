@@ -9,17 +9,18 @@ import InputQuantity from '@components/Inputs/InputQuantity'
 import { requests } from '@utils/requests'
 import { error, success } from '@utils/toast'
 import CloseIcon from '@icons/CloseIcon'
+import { LoadingButton } from '@mui/lab'
 
-export default function ChangeUnitPerPack({ open, setOpen }) {
+export default function ChangeUnitPerPack({ open, refetch, setOpen }) {
   const methods = useForm()
   const [unit, setUnit] = useState(0)
   const theme = useTheme()
   const { t } = useTranslation()
 
-  const { mutate: updateUnitPerPack } = useMutation(requests.updateUnitPerPack, {
+  const { mutate: updateUnitPerPack, isLoading } = useMutation(requests.updateUnitPerPack, {
     onSuccess: () => {
       setOpen(false)
-
+      refetch()
       success('Продукт успешно изменен!')
     },
     onError: (err) => {
@@ -83,9 +84,9 @@ export default function ChangeUnitPerPack({ open, setOpen }) {
               <Box height={'20px'} />
             </Box>
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
-              <Button disabled={unit <= 1} fullWidth variant='contained' type='submit'>
+              <LoadingButton loading={isLoading} disabled={unit <= 1} fullWidth variant='contained' type='submit'>
                 {t('filter_dialog.save.label')}
-              </Button>
+              </LoadingButton>
             </Box>
           </Box>
         </FormProvider>

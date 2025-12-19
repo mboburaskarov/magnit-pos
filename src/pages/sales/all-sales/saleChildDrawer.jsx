@@ -1,27 +1,26 @@
-import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import RippedPaperCheckReturn from '@components/ChequePaper/RippedPaperCheckReturn';
-import LoadingContainer from '@components/LoadingContainer';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { Box, Grid, Typography } from '@mui/material';
-import thousandDivider from '@utils/thousandDivider';
-import { makeStyles, useTheme } from '@mui/styles';
-import { ChangeCircle } from '@mui/icons-material';
-import CheckAccess from '@components/CheckAccess';
-import { useReactToPrint } from 'react-to-print';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { useTranslation } from 'react-i18next';
-import CustomImg from '@components/CustomImg';
-import { useDebounce } from 'use-debounce';
-import { requests } from '@utils/requests';
-import CloseIcon from '@icons/CloseIcon';
-import { useQuery } from 'react-query';
-import { error } from '@utils/toast';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
+import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import RippedPaperCheckReturn from '@components/ChequePaper/RippedPaperCheckReturn'
+import LoadingContainer from '@components/LoadingContainer'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { Box, Grid, Typography } from '@mui/material'
+import thousandDivider from '@utils/thousandDivider'
+import { makeStyles, useTheme } from '@mui/styles'
+import { ChangeCircle } from '@mui/icons-material'
+import CheckAccess from '@components/CheckAccess'
+import { useReactToPrint } from 'react-to-print'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { useTranslation } from 'react-i18next'
+import CustomImg from '@components/CustomImg'
+import { useDebounce } from 'use-debounce'
+import { requests } from '@utils/requests'
+import CloseIcon from '@icons/CloseIcon'
+import { useQuery } from 'react-query'
+import { error } from '@utils/toast'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
-import SaleChildItemsBox from './SaleChildItemsBox';
-import ChangePaymentType from './changePaymentType';
-
+import SaleChildItemsBox from './SaleChildItemsBox'
+import ChangePaymentType from './changePaymentType'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -211,7 +210,7 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
                           {thousandDivider(get(saleDetailsList, `data.data.${pays?.front_name.toLowerCase()}`, []), 'сум')}
                         </Typography>
                       </Box>
-                      <CheckAccess id={'can-chnage-payment-type'}>
+                      <CheckAccess id={'can-change-payment-type'}>
                         <Box
                           onClick={() => {
                             setopenCreateBonusModal({

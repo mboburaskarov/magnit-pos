@@ -128,7 +128,7 @@ export default function ProductsPage() {
     return {
       limit: values?.limit || 10,
       search: values?.search,
-      offset: controlleroffset || 0,
+      offset: values?.search ? 0 : controlleroffset || 0,
       regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
       store_id: values?.store_id,
       company_id: values?.company_id,
@@ -475,34 +475,36 @@ export default function ProductsPage() {
                   </Box>
                 </StyledTooltip>
               </CheckAccess>
-              <StyledTooltip title={'Общий график действий продуктов'}>
-                <Box
-                  sx={{
-                    ml: '10px',
-                    backgroundColor: 'bg.10',
-                    padding: '10px',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    width: '38px',
-                    cursor: 'pointer',
-                    height: '38px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    '& svg': {
-                      width: '18px',
-                      height: '18px',
-                    },
-                    '&:hover': {
-                      backgroundColor: 'grey.200',
-                    },
-                  }}
-                  onClick={() => {
-                    getProductMovementDashboardExcel({ store_id: get(values, 'store_id'), limit: 10000, offset: 0 })
-                  }}
-                >
-                  {isGetProductMovementDashboardExcel ? <CircularProgress size={18} thickness={5} /> : <Download sx={{ color: '#FF6018' }} />}
-                </Box>
-              </StyledTooltip>
+              <CheckAccess id={'can-get-product-movement-dashboard'}>
+                <StyledTooltip title={'Общий график действий продуктов'}>
+                  <Box
+                    sx={{
+                      ml: '10px',
+                      backgroundColor: 'bg.10',
+                      padding: '10px',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      width: '38px',
+                      cursor: 'pointer',
+                      height: '38px',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      '& svg': {
+                        width: '18px',
+                        height: '18px',
+                      },
+                      '&:hover': {
+                        backgroundColor: 'grey.200',
+                      },
+                    }}
+                    onClick={() => {
+                      getProductMovementDashboardExcel({ store_id: get(values, 'store_id'), limit: 10000, offset: 0 })
+                    }}
+                  >
+                    {isGetProductMovementDashboardExcel ? <CircularProgress size={18} thickness={5} /> : <Download sx={{ color: '#FF6018' }} />}
+                  </Box>
+                </StyledTooltip>
+              </CheckAccess>
             </Box>
           </Box>
           <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -615,7 +617,7 @@ export default function ProductsPage() {
           </Box>
         </Box>
         <ProductDrawer open={openProductDrawer} setImages={setOpenImageGallery} onClose={setOpenProductDrawer} />
-        <ChangeUnitPerPack open={openPerPack} setOpen={setOpenPerPack} />
+        <ChangeUnitPerPack refetch={refetch} open={openPerPack} setOpen={setOpenPerPack} />
         <SendToErrorWithReason open={openErrorReason} setOpen={setOpenErrorReason} />
         <ImageGallery canAlert={setOpenErrorReason} open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
         {openConfirmDialog && (

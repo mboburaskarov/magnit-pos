@@ -447,7 +447,7 @@ export default function tableHeaderSelector({
         cellRenderer: memo(({ data }) => (
           <Box display='inline-flex' columnGap={'8px'}>
             {data?.unit_per_pack <= 1 && (
-              <CheckAccess id={'edit-product-unitperpaack'}>
+              <CheckAccess id={'edit-product-unit_per_pack'}>
                 <IconButton onClick={() => setOpenPerPack({ id: data?.id, name: data?.name })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                   <AccountTreeIcon style={{ color: 'red', fill: 'green', width: 40 }} />
                 </IconButton>

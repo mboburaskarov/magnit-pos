@@ -30,6 +30,7 @@ export const useSaleOperations = ({
   const userData = useSelector((state) => state.user)
   const sendToEpos = JSON.parse(localStorage.getItem('send_to_epos'))
   const [payType, setPayType] = useState(undefined)
+  const [hasError, setHasError] = useState(false)
 
   useEffect(() => {
     if (paymentsList?.length == 1 && paymentsList?.[0]?.front_name == 'uzum') {
@@ -48,6 +49,7 @@ export const useSaleOperations = ({
   const {
     mutate: finishSaleWithoutAppPaymentType,
     isLoading: isFinishSaleWithoutAppPaymentType,
+
     isError: isSaleError,
   } = useMutation(requests.addToOrderPayment, {
     onSuccess: (data) => {
@@ -64,6 +66,7 @@ export const useSaleOperations = ({
       }
     },
     onError: (err) => {
+      setHasError({ hasError: true, errorType: 'finalSale' })
       setOpenRefreshDialog(false)
 
       if (get(err, 'response.status') === 409) {
@@ -104,6 +107,8 @@ export const useSaleOperations = ({
       }
     },
     onError: (err) => {
+      setHasError({ hasError: true, errorType: 'Epos' })
+
       setOpenRefreshDialog(false)
       error(err?.message || 'Ошибка при EPOS')
       if (!err.message.includes('InnerError')) {
@@ -126,6 +131,8 @@ export const useSaleOperations = ({
       setCardOwnerType('personal')
     },
     onError: () => {
+      setHasError({ hasError: true, errorType: 'Epos result' })
+
       setOpenRefreshDialog(false)
       error('Ошибка при епосе')
     },
@@ -379,5 +386,6 @@ export const useSaleOperations = ({
     isSendEPOSresponseToBackend,
     isSaleResponseError,
     submitSale,
+    hasError,
   }
 }

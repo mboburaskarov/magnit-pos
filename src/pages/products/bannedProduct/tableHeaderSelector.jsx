@@ -57,18 +57,16 @@ export default function tableHeaderSelector({ bannedProductColumns, t, setOpenCo
         headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
-            <Box display='inline-flex' columnGap={'8px'}>
-              <CheckAccess id={'delete-bonus-product'}>
-                <IconButton
-                  onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: data.name })}
-                  sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </CheckAccess>
-            </Box>
-          </CheckAccess>
+          <Box display='inline-flex' columnGap={'8px'}>
+            <CheckAccess id={'delete-banned-product'}>
+              <IconButton
+                onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id, name: data.name })}
+                sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </CheckAccess>
+          </Box>
         )),
       }
     }

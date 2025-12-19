@@ -64,7 +64,7 @@ export default function ImportDetailsPage() {
     return {
       import_id: id,
       limit: values?.limit || 10,
-      offset: values?.search ? 0 : values?.offset || 0,
+      offset: values?.offset || 0,
       search: values?.search,
       received_amount_to: values?.received_amount_to,
       received_amount_from: values?.received_amount_from,
