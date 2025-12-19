@@ -55,7 +55,7 @@ export default function ImportPage() {
 
       store_id: values?.store_id,
       start_date: values?.start_date ? values?.start_date + 'T00:00:00' : values?.start_date,
-      end_date: values?.end_date == values?.start_date ? values?.end_date + 'T23:59:59' : values?.end_date || null,
+      end_date: values?.end_date && values?.end_date == values?.start_date ? values?.end_date + 'T23:59:59' : values?.end_date || undefined,
       status: values?.status,
       import_date: values?.import_date,
       received_amount_to: values?.received_amount_to,

@@ -211,6 +211,12 @@ export const navbatRouteData = [
         id: '94',
         href: '/settings/cashbox',
       },
+      {
+        label: 'navbar.activity',
+        active: '/settings/activity-logs/*',
+        id: '99',
+        href: '/settings/activity-logs',
+      },
     ],
   },
 ]
