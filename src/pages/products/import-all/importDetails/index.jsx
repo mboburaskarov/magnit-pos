@@ -54,7 +54,7 @@ export default function ImportDetailsPage() {
   })
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = makeFormattedData({ tableColumns })
+      const formattedData = makeFormattedData({ tableColumns, hide: (el) => !routeString.includes(el?.colId) })
 
       dispatch(changeColumnSequence(formattedData))
     }
