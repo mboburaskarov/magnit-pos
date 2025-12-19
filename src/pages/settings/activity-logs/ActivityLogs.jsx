@@ -1,6 +1,6 @@
 import AgGridTable from '@components/AgGridTable/AgGridTable'
 import { useQueryParams } from '@hooks/useQueryParams'
-import { Box, Typography } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import { requests } from '@utils/requests'
 import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
@@ -12,6 +12,7 @@ import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
 import SelectSimple from '@components/Select/SelectSimple'
 import { t } from 'i18next'
 import ActivityDrawer from './avtibityDrawer'
+import { Launch, RemoveRedEye } from '@mui/icons-material'
 
 export default function ActivityLogsPage() {
   //
@@ -126,6 +127,34 @@ export default function ActivityLogsPage() {
           <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
             <Typography>{dayjs(data?.created_at).format('DD.MM.YYYY HH:mm:ss')}</Typography>
           </Box>
+        ),
+      },
+      {
+        headerName: t('table_columns.actions'),
+        colId: 'actions',
+        minWidth: 90,
+        pinned: 'right',
+        maxWidth: 90,
+        width: 90,
+        cellRenderer: ({ data, rowIndex }) => (
+          <IconButton
+            onClick={() => {
+              setModal(data)
+            }}
+            sx={{
+              width: 32,
+              height: 32,
+              borderRadius: 3,
+              p: '8px',
+              color: 'white',
+              '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' },
+              '& svg': {
+                fill: '#1300ff',
+              },
+            }}
+          >
+            <Launch />
+          </IconButton>
         ),
       },
     ],

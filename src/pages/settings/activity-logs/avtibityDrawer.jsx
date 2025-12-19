@@ -8,7 +8,6 @@ const ActivityDrawer = ({ open, onClose }) => {
     navigator.clipboard.writeText(text)
   }
   //
-  if (!data) return null
   const type = data?.provider_type
 
   const normalizeJson = (value) => {
@@ -110,7 +109,7 @@ const ActivityDrawer = ({ open, onClose }) => {
               Action:
             </Typography>
             <Chip
-              label={data.provider_type}
+              label={data?.provider_type}
               sx={{
                 backgroundColor: type == 'payme' ? 'green.400' : type == 'epos' ? 'orange.400' : type == 'click' ? 'purple.500' : 'red.500',
 
@@ -127,7 +126,7 @@ const ActivityDrawer = ({ open, onClose }) => {
               Date:
             </Typography>
             <Typography variant='body2' sx={{ color: '#666' }}>
-              {dayjs(data.created_at).format('DD.MM.YYYY HH:mm:ss')}
+              {dayjs(data?.created_at).format('DD.MM.YYYY HH:mm:ss')}
             </Typography>
           </Box>
 
@@ -156,7 +155,7 @@ const ActivityDrawer = ({ open, onClose }) => {
                 >
                   <IconButton
                     size='small'
-                    onClick={() => copyToClipboard(formatJSON(data.payload))}
+                    onClick={() => copyToClipboard(formatJSON(data?.payload))}
                     sx={{
                       bgcolor: 'rgba(255,255,255,0.1)',
                       color: 'white',
@@ -210,7 +209,7 @@ const ActivityDrawer = ({ open, onClose }) => {
                     },
                   }}
                 >
-                  <JsonViewer data={data.payload} />
+                  <JsonViewer data={data?.payload} />
                 </Box>
               </Paper>
             </Box>
@@ -238,7 +237,7 @@ const ActivityDrawer = ({ open, onClose }) => {
                 >
                   <IconButton
                     size='small'
-                    onClick={() => copyToClipboard(formatJSON(data.response))}
+                    onClick={() => copyToClipboard(formatJSON(data?.response))}
                     sx={{
                       bgcolor: 'rgba(255,255,255,0.1)',
                       color: 'white',
@@ -292,7 +291,7 @@ const ActivityDrawer = ({ open, onClose }) => {
                     },
                   }}
                 >
-                  <JsonViewer data={data.response} />
+                  <JsonViewer data={data?.response} />
                 </Box>
               </Paper>
             </Box>
