@@ -27,9 +27,8 @@ export default function ActivityLogsPage() {
       start_date: getFilterStartDate(values),
       end_date: getFilterEndDate(values),
       provider_type: providerTypes?.id,
-      id,
     }
-  }, [values?.limit, id, providerTypes, values?.offset, unit_per_pack, values?.from_time, values?.to_time, values?.start_date, values?.end_date])
+  }, [values?.limit, providerTypes, values?.offset, values?.from_time, values?.to_time, values?.start_date, values?.end_date])
   const {
     data: getLogsList,
     isLoading: isproductDataLoadingHistory,
@@ -130,7 +129,7 @@ export default function ActivityLogsPage() {
         ),
       },
     ],
-    [unit_per_pack]
+    []
   )
   const PROVIDER_TYPES = [
     { id: 'payme', name: 'Payme' },
@@ -191,8 +190,8 @@ export default function ActivityLogsPage() {
       </Box>
       <AgGridTable
         isDataLoading={isproductDataLoadingHistory || isFetchinggetLogsList}
-        offsetQuery='offsetHistory'
-        limitQuery='limitHistory'
+        offsetQuery='offset'
+        limitQuery='limit'
         id='products-history-table'
         totalCount={getLogsList?.data?.data?._meta?.total_count || 0}
         columns={columns}
