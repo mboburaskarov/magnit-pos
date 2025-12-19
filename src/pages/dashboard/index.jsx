@@ -252,7 +252,12 @@ export default function DashboarPage() {
     percent: payments?.data?.data?.[`${p.prop}_percent`],
     amount: payments?.data?.data?.[p.prop] ?? 0,
   }))
-
+  const addDateToLink = (link) => {
+    if (values?.start_date && values?.end_date) {
+      return `${link}?start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`
+    }
+    return `${link}`
+  }
   return (
     <LoadingContainer readyState={true}>
       <DashboardHeader setSelectedAllB2B={setSelectedAllB2B} setSelectedShops={setSelectedShops} selectedShops={selectedShops} />
@@ -405,7 +410,7 @@ export default function DashboarPage() {
             <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={0} pb={'0px'} pt={'20px !important'}>
               <DashboardTopsBox
                 id='dashboard-chart'
-                href={'/reports/top-branchs'}
+                href={addDateToLink('/reports/top-branchs')}
                 data={get(topStores, 'data.data')}
                 title={'Топ филиалам'}
                 isLoading={isTopStoreLoading}
@@ -423,7 +428,7 @@ export default function DashboarPage() {
                 data={get(topProducts, 'data.data')}
                 isLoading={isTopProductsLoading}
                 title={'Топ продукты'}
-                href={'/reports/top-products'}
+                href={addDateToLink('/reports/top-products')}
                 tableData={[
                   { title: 'Продукт', colId: 'name' },
                   { title: 'Кол-во ', colId: 'count', sortable: true },
@@ -442,7 +447,7 @@ export default function DashboarPage() {
                 data={get(topSellers, 'data.data')}
                 isLoading={isTopSellerLoading}
                 title={'Топ продавцы'}
-                href={'/reports/top-vendors'}
+                href={addDateToLink('/reports/top-vendors')}
                 tableData={[
                   { title: 'Продавец	', colId: 'full_name' },
                   { title: 'Кол-во', colId: 'count', sortable: true },
@@ -457,7 +462,7 @@ export default function DashboarPage() {
                 data={get(topBonusProducts, 'data.data')}
                 isLoading={isTopBonusProductLoading}
                 title={'Бонусные продукты'}
-                href={'/reports/bonus-products'}
+                href={addDateToLink('/reports/bonus-products')}
                 tableData={[
                   { title: 'Продукт	', colId: 'name' },
                   { title: 'Кол-во', colId: 'count', sortable: true },
