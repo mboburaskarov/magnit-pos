@@ -11,7 +11,7 @@ import PaymentsAssetsList from '../../pages/settings/paymentsAssets/actions'
 import Profile from '../../pages/settings/profile'
 import RolesPage from '../../pages/settings/roles'
 import ActionListPage from '../../pages/settings/roles/actions'
-import ActivityLogsPage from '@/pages/settings/logs/Activity-logs'
+import ActivityLogsPage from '../../pages/settings/logs/Activity-logs'
 
 const settingsRoutes = {
   path: 'settings',
