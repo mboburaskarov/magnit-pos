@@ -11,6 +11,7 @@ import PaymentsAssetsList from '../../pages/settings/paymentsAssets/actions'
 import Profile from '../../pages/settings/profile'
 import RolesPage from '../../pages/settings/roles'
 import ActionListPage from '../../pages/settings/roles/actions'
+// import ActiveLogsPage from '@/pages/settings/logs/Active-logs'
 
 const settingsRoutes = {
   path: 'settings',
@@ -31,6 +32,10 @@ const settingsRoutes = {
       path: 'company',
       element: <CompanyPage />,
     },
+    // {
+    //   path: 'active-logs',
+    //   element: <ActiveLogsPage />,
+    // },
     {
       path: 'companies',
       element: <CompaniesPage />,
