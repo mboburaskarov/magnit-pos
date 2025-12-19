@@ -7,7 +7,6 @@ const ActivityDrawer = ({ open, onClose }) => {
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text)
   }
-  //
   const type = data?.provider_type
 
   const normalizeJson = (value) => {
@@ -15,7 +14,7 @@ const ActivityDrawer = ({ open, onClose }) => {
       try {
         return JSON.parse(value)
       } catch {
-        return value // plain string, not JSON
+        return value
       }
     }
     return value
@@ -25,27 +24,22 @@ const ActivityDrawer = ({ open, onClose }) => {
     const value = normalizeJson(data)
     const indent = level * 2
 
-    // null
     if (value === null) {
       return <span className='json-null'>null</span>
     }
 
-    // string
     if (typeof value === 'string') {
       return <span className='json-string'>"{value}"</span>
     }
 
-    // number
     if (typeof value === 'number') {
       return <span className='json-number'>{value}</span>
     }
 
-    // boolean
     if (typeof value === 'boolean') {
       return <span className='json-boolean'>{String(value)}</span>
     }
 
-    // array
     if (Array.isArray(value)) {
       return (
         <>
@@ -63,7 +57,6 @@ const ActivityDrawer = ({ open, onClose }) => {
       )
     }
 
-    // object
     if (typeof value === 'object') {
       const entries = Object.entries(value)
 
@@ -101,12 +94,10 @@ const ActivityDrawer = ({ open, onClose }) => {
       }}
     >
       <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        {/* Content */}
         <Box sx={{ flex: 1, overflow: 'auto', p: 3 }}>
-          {/* Action */}
           <Box sx={{ mb: 3 }}>
             <Typography variant='subtitle2' sx={{ fontWeight: 600, mb: 1, color: '#333' }}>
-              Action:
+              Действие:
             </Typography>
             <Chip
               label={data?.provider_type}
@@ -120,22 +111,19 @@ const ActivityDrawer = ({ open, onClose }) => {
             />
           </Box>
 
-          {/* Date */}
           <Box sx={{ mb: 3 }}>
             <Typography variant='subtitle2' sx={{ fontWeight: 600, mb: 1, color: '#333' }}>
-              Date:
+              Дата:
             </Typography>
             <Typography variant='body2' sx={{ color: '#666' }}>
               {dayjs(data?.created_at).format('DD.MM.YYYY HH:mm:ss')}
             </Typography>
           </Box>
 
-          {/* Request & Response */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            {/* Request */}
             <Box>
               <Typography variant='subtitle2' sx={{ fontWeight: 600, mb: 1, color: '#333' }}>
-                Request:
+                Запрос:
               </Typography>
               <Paper
                 elevation={0}
@@ -214,10 +202,9 @@ const ActivityDrawer = ({ open, onClose }) => {
               </Paper>
             </Box>
 
-            {/* Response */}
             <Box>
               <Typography variant='subtitle2' sx={{ fontWeight: 600, mb: 1, color: '#333' }}>
-                Response:
+                Ответ:
               </Typography>
               <Paper
                 elevation={0}
