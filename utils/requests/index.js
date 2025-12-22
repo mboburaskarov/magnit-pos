@@ -120,6 +120,8 @@ export const requests = {
 
   topVendorReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-seller${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   topBranchReport: ({ store_ids, ...filter }) => request.post(`v1/report/top-stores${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
+  topBranchReportExcel: ({ store_ids, ...filter }) =>
+    request.post(`v1/report/top-stores/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`, store_ids),
   storeSummaryReport: ({ store_ids, company_ids, ...filter }) =>
     request.post(`v1/report/store-summary${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
   storeSummaryExcelReport: (filter) => requestEXCEL.post(`v1/report/store-summary/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),

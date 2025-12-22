@@ -79,7 +79,7 @@ export default function TopBranchesPage() {
     setOffsetCount(offsetsCount || 0)
   }, [topBranchesReportList?.data, values?.limit])
 
-  const { mutate: clientsExcelReport, isLoading: isclientsExcelReport } = useMutation(requests.getClientsExcelReport, {
+  const { mutate: topBranchReportExcel, isLoading: istopBranchReportExcel } = useMutation(requests.topBranchReportExcel, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
@@ -160,9 +160,9 @@ export default function TopBranchesPage() {
           <AgGridTable
             id='clients-main-table'
             tableSettings
-            fullDownload={() => clientsExcelReport({ ...topBranchesReportListFilter, offset: 0, limit: 1000000 })}
-            downloadByFilter={() => clientsExcelReport(topBranchesReportListFilter)}
-            isDownloading={isclientsExcelReport}
+            fullDownload={() => topBranchReportExcel({ ...topBranchesReportListFilter, offset: 0, limit: 1000000 })}
+            downloadByFilter={() => topBranchReportExcel(topBranchesReportListFilter)}
+            isDownloading={istopBranchReportExcel}
             columns={tableColumns}
             totalCount={topBranchesReportList?.data?.data?._meta?.total_count || 0}
             data={topBranchesReportList?.data?.data?.data || []}
