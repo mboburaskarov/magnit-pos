@@ -87,7 +87,6 @@ function NewCashRegister() {
   const dispatch = useDispatch()
 
   const [isEposTurnOn, setisEposTurnOn] = useState(true)
-  console.log(userData)
   const { mutate: getUserInfo } = useMutation(requests.getUserInfo, {
     onSuccess: ({ data }) => {
       dispatch(setUserData({ ...data?.data }))

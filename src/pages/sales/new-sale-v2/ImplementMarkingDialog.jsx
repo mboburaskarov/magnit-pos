@@ -1,20 +1,19 @@
-import { checkBarcodeWithMarking } from '@utils/checkingMarkingWithBarcode';
-import { Box, Button, Dialog, Typography } from '@mui/material';
-import { containsCyrillic } from '@utils/convertoRuOrEngToEng';
-import ConfirmDialog from '@components/ConfirmDialog';
-import TextField from '@components/Inputs/TextField';
-import { useEffect, useRef, useState } from 'react';
-import BigWarningIcon from '@icons/BigWarningIcon';
-import { useTranslation } from 'react-i18next';
-import { error, success } from '@utils/toast';
-import { requests } from '@utils/requests';
-import { useSelector } from 'react-redux';
-import { useMutation } from 'react-query';
-import hasAccess from '@utils/hasAccess';
-import { get } from 'lodash';
+import { checkBarcodeWithMarking } from '@utils/checkingMarkingWithBarcode'
+import { Box, Button, Dialog, Typography } from '@mui/material'
+import { containsCyrillic } from '@utils/convertoRuOrEngToEng'
+import ConfirmDialog from '@components/ConfirmDialog'
+import TextField from '@components/Inputs/TextField'
+import { useEffect, useRef, useState } from 'react'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import { useTranslation } from 'react-i18next'
+import { error, success } from '@utils/toast'
+import { requests } from '@utils/requests'
+import { useSelector } from 'react-redux'
+import { useMutation } from 'react-query'
+import hasAccess from '@utils/hasAccess'
+import { get } from 'lodash'
 
-import ReChangeMarkingDialog from './ReChangeMarkingDialog';
-
+import ReChangeMarkingDialog from './ReChangeMarkingDialog'
 
 function ImplementMarkingDialog({
   open,
@@ -71,10 +70,11 @@ function ImplementMarkingDialog({
   }
 
   useEffect(() => {
-    if (markingsList.length) {
+    if (markingsList.length && open) {
       if (!isAllMarkingFill()) {
         setOpenConfirmDialog(true)
         setLiteOrder(false)
+
         setIsOrderDrower(false)
       }
     }
@@ -139,7 +139,7 @@ function ImplementMarkingDialog({
   }
 
   useEffect(() => {
-    if ((markingsList, cartItems.length)) {
+    if ((markingsList, cartItems.length) && open) {
       if (!isAllMarkingFill()) {
         inputsRef.current.filter((a) => a && a.value == '')[0]?.focus()
 

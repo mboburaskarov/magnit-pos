@@ -74,6 +74,7 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
   const documentName = useRef('Pharma CHEQUE')
   const reactToPrintContentEmpty = useCallback(() => printContainerEmpty.current, [])
   const [openCreateBonusModal, setopenCreateBonusModal] = useState(false)
+  console.log(currentIndex, open)
 
   const emptyHandlePrint = useReactToPrint({
     content: reactToPrintContentEmpty,
@@ -113,19 +114,23 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
   useEffect(() => {
     const id = get(open, 'id')
     if (id) setCurrentSaleId(id)
+    if (open.currentIndex) setcurrentIndex(open.currentIndex)
   }, [open])
   useHotkeys(['ArrowRight', 'ArrowLeft'], (key) => {
     if (key.key == 'ArrowRight') {
       if (ids.length - 1 > currentIndex) {
         setcurrentIndex((a) => a + 1)
-        setCurrentSaleId(ids[currentIndex + 1])
+        console.log(currentIndex)
+
+        setCurrentSaleId(ids[currentIndex])
       }
     }
+    if (currentIndex == 1) return
     if (key.key == 'ArrowLeft') {
-      refetch()
+      // refetch()
       if (currentIndex >= 1) {
         setcurrentIndex((a) => a - 1)
-        setCurrentSaleId(ids[currentIndex - 1])
+        setCurrentSaleId(ids[currentIndex - 2])
       }
     }
   })

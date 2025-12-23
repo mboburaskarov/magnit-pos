@@ -41,6 +41,16 @@ function RowFilterButton({ totalCount, offsetIndex, offsetQuery, offsetSize, set
   const { t } = useTranslation()
   const classes = useStyles()
   const [open, setOpen] = useState(false)
+  function buildList(steps, totalCount) {
+    const result = steps.filter((step) => step <= totalCount)
+
+    if (!result.includes(totalCount)) {
+      result.push(totalCount)
+    }
+
+    return result
+  }
+  console.log(buildList([5, 10, 50], 100))
 
   const changeOffsetSize = (opt) => {
     setOffsetSize(opt)
@@ -71,14 +81,12 @@ function RowFilterButton({ totalCount, offsetIndex, offsetQuery, offsetSize, set
         <Paper className={classes.lineSortContainer}>
           <ClickAwayListener onClickAway={() => setOpen(false)}>
             <List className={classes.lineSortList}>
-              {[5, 10, 20, 30, 40, 50, 100]
-                // .filter((n) => n < totalCount - (offsetIndex - 1) * offsetSize)
-                .map((opt) => (
-                  <ListItem key={opt} component='button' className={classes.lineSortItem} onClick={() => changeOffsetSize(opt)}>
-                    <Typography>{opt} строк</Typography>
-                    {opt === offsetSize && <TickIcon />}
-                  </ListItem>
-                ))}
+              {buildList([5, 10, 50], totalCount <= 100 ? totalCount : 100).map((opt) => (
+                <ListItem key={opt} component='button' className={classes.lineSortItem} onClick={() => changeOffsetSize(opt)}>
+                  <Typography>{opt} строк</Typography>
+                  {opt === offsetSize && <TickIcon />}
+                </ListItem>
+              ))}
             </List>
           </ClickAwayListener>
         </Paper>

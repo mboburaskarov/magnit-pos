@@ -16,6 +16,7 @@ import PlusIcon from '@icons/PlusIcon'
 import useDebouncedValue from '@hooks/useDebouncedValue'
 import { useQueryParams } from '@hooks/useQueryParams'
 import tableHeadersCategories from './tableHeadersCategories'
+import ImageGallery from '@components/ImageGallery'
 
 export default function CatalogManagement() {
   const queryParams = useQueryParams()
@@ -26,6 +27,7 @@ export default function CatalogManagement() {
   const [searchTerm, setSearchTerm, debouncedSearchTerm] = useDebouncedValue('', 300)
   const [confirmToDelete, setConfirmToDelete] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
+  const [openImageGallery, setOpenImageGallery] = useState(false)
 
   const categoryFilter = useMemo(() => {
     return {
@@ -60,7 +62,7 @@ export default function CatalogManagement() {
     setOffsetCount(offsetsCount || 0)
   }, [categories?.data, queryParams?.values?.search, queryParams?.values?.limit, queryParams?.values?.page])
 
-  const columnsCategories = tableHeadersCategories({ searchTerm, setCreateEdit, t, setConfirmToDelete })
+  const columnsCategories = tableHeadersCategories({ searchTerm,setOpenImageGallery, setCreateEdit, t, setConfirmToDelete })
 
   const columns = columnsCategories
 
@@ -131,6 +133,7 @@ export default function CatalogManagement() {
               withHover
             />
           </Box>
+        <ImageGallery canAlert={false} open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
 
           <CreateEditCategories
             withoutNavigate

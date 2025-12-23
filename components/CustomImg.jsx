@@ -1,4 +1,4 @@
-function CustomImg({ key, src = '', alt = 'pharma cosmos', className = 'img', ...other }) {
+function CustomImg({ key, src = '', alt = 'pharma cosmos', className = 'img', onClick = () => {}, ...other }) {
   const baseUrl = import.meta.env.VITE_MODE === 'dev' ? import.meta.env.VITE_BASE_API_URL_DEV : import.meta.env.VITE_BASE_API_URL
 
   const imgUrl = `${baseUrl}/v1/upload/${src}`
@@ -9,7 +9,7 @@ function CustomImg({ key, src = '', alt = 'pharma cosmos', className = 'img', ..
     e.target.src = fallbackSrc
   }
 
-  return <img src={imgUrl} key={key} alt={alt} className={className} onError={handleError} {...other} />
+  return <img onClick={onClick} src={imgUrl} key={key} alt={alt} className={className} onError={handleError} {...other} />
 }
 
 export default CustomImg

@@ -15,6 +15,9 @@ import { useSelector } from 'react-redux'
 
 export default function tableHeaderSelector({ salesColumns, setOpenSaleDrawer, values }) {
   const userData = useSelector((state) => state.user)
+  const absoluteIndex = (rowIndex) => {
+    return Number(get(values, 'offset', 0)) + 1 + rowIndex
+  }
   const columns = salesColumns?.map((el) => {
     if (el.field === 'number') {
       return {
@@ -22,11 +25,11 @@ export default function tableHeaderSelector({ salesColumns, setOpenSaleDrawer, v
         headerName: '№',
         colId: el.field,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
-          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+          // const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
 
           return (
             <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-              {absoluteIndex}
+              {absoluteIndex(rowIndex)}
             </Typography>
           )
         }),
@@ -38,7 +41,7 @@ export default function tableHeaderSelector({ salesColumns, setOpenSaleDrawer, v
         ...el,
         headerName: 'ID',
         colId: el.field,
-        cellRenderer: memo((p) => (
+        cellRenderer: memo(({ rowIndex, ...p }) => (
           <Box
             sx={{
               display: 'flex',
@@ -54,7 +57,7 @@ export default function tableHeaderSelector({ salesColumns, setOpenSaleDrawer, v
                 fill: '#fff',
               },
             }}
-            onClick={() => setOpenSaleDrawer({ id: p.data?.id, data: p?.data })}
+            onClick={() => setOpenSaleDrawer({ id: p.data?.id, data: p?.data, currentIndex: absoluteIndex(rowIndex) })}
           >
             <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
               {get(p, 'data.sale_type', 'SALE') === 'SALE' ? 'Продажа' : 'Возврат'} #{get(p, 'data.sale_number', '-')}

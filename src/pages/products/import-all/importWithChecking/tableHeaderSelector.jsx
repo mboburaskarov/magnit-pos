@@ -48,7 +48,7 @@ export default function tableHeaderSelector({ importsColumns, t, setScanedNumber
           return (
             <NumberFormatInput
               onBlur={({ target }) => {
-                if (p?.data?.accepted_count == get(target, 'value')) return
+                if (p?.data?.scanned_count == get(target, 'value')) return
 
                 setScanedNumber({ id: get(p, 'data.id'), scanned_count: Number(get(target, 'value').replace(/\s+/g, '')) })
               }}

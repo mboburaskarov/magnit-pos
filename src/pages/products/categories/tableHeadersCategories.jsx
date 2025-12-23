@@ -5,6 +5,7 @@ import { get } from 'lodash'
 import Highlighter from 'react-highlight-words'
 import DeleteIcon from '@icons/DeleteIcon'
 import EditIcon from '@icons/EditIcon'
+import CustomImg from '@components/CustomImg'
 
 const list = [
   { accessor: 'name', is_active: true },
@@ -12,7 +13,7 @@ const list = [
   { accessor: 'action', is_active: true },
 ]
 
-const tableHeadersCategories = ({ searchTerm, setCreateEdit, t, setConfirmToDelete }) => {
+const tableHeadersCategories = ({ searchTerm, setOpenImageGallery, setCreateEdit, t, setConfirmToDelete }) => {
   return list?.map((item) => {
     switch (item.accessor) {
       case 'name':
@@ -26,7 +27,7 @@ const tableHeadersCategories = ({ searchTerm, setCreateEdit, t, setConfirmToDele
                   paddingLeft: `${row.depth * 2}rem`,
                   display: 'inline-flex',
                 }}
-              >
+              >fdfd
                 {row.isExpanded ? (
                   <FontAwesomeIcon style={{ color: '#fe5000', marginRight: 8 }} icon={faChevronDown} />
                 ) : (
@@ -44,6 +45,25 @@ const tableHeadersCategories = ({ searchTerm, setCreateEdit, t, setConfirmToDele
                 )}
               </span>
             ) : row.original.name !== '' ? (
+             <Box display={'flex'} alignItems="center" gap={1} >
+             <Box sx={{
+              borderRadius:'50%',
+              // bgcolor:'grey.300',
+              width: 32,
+              height: 32,
+              alignItems: 'center',
+              justifyContent: 'center',
+              display: 'flex',
+              overflow: 'hidden',
+              p: 0.5,
+               img: {
+                 width:'25px',
+                 height: '25px',
+                 objectFit: 'cover'
+               }
+             }}>
+             <CustomImg onClick={() => setOpenImageGallery({isOpen:true, data: [row.original.photo]})} src={row.original.photo} />
+             </Box>
               <Highlighter
                 style={{ paddingLeft: `${row.depth * 2}rem` }}
                 highlightClassName='highlighter'
@@ -51,6 +71,7 @@ const tableHeadersCategories = ({ searchTerm, setCreateEdit, t, setConfirmToDele
                 autoEscape
                 textToHighlight={row.original.name}
               />
+              </Box>
             ) : (
               <Typography style={{ paddingLeft: `${row.depth * 2}rem`, color: '#bdbdbd' }}>{t('table_columns.absent')}</Typography>
             ),
