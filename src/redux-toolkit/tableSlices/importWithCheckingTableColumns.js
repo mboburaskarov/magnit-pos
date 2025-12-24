@@ -22,7 +22,7 @@ const columns = [
     width: 200,
   },
   {
-    field: 'scanned',
+    field: 'scanned_count',
     hide: false,
     minWidth: 70,
     width: 170,

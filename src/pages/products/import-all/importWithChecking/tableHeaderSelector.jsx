@@ -39,7 +39,7 @@ export default function tableHeaderSelector({ importsColumns, t, setScanedNumber
         cellRenderer: memo((p) => <SimpleText {...p} type='received_count' />),
       }
     }
-    if (el.field === 'scanned') {
+    if (el.field === 'scanned_count') {
       return {
         ...el,
         headerName: 'Сканирование',
