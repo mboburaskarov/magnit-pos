@@ -74,7 +74,10 @@ export const useSaleOperations = ({
         error('Эта продажа уже закрыта. (uz: Bu sotuv yakunlangan - barcha sotuvlar sahifasidan tekshiring)')
         return
       }
-
+      if (get(err, 'response.data.data') === 'prescription. expired') {
+        error('Срок действия указанного рецепта истёк.')
+        return
+      }
       if (get(err, 'response.data.data') === 'failed payment with click') {
         error('На вашем счете Click недостаточно средств.')
         return
