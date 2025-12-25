@@ -19,29 +19,13 @@ const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, s
   const handleChange = useCallback(
     ({ event }) => {
       const {
-        target: { value, checked },
+        target: { value },
       } = event
 
-      let newSelect = selected.slice()
-      const foundRow = tree.find((el) => el.id === value)
-      const childIds = getChildIds(foundRow)
-
-      if (checked) {
-        newSelect = [...selected, ...(childIds || [])]?.filter((v, i, a) => a.indexOf(v) === i)
-      } else if (!checked && childIds?.some((elem) => newSelect?.includes(elem))) {
-        const excludeAll = childIds?.every((elem) => selected?.includes(elem))
-        if (excludeAll) {
-          newSelect = [...newSelect?.filter((select) => !childIds?.includes(select))]
-        } else {
-          newSelect = [...selected, ...(childIds || [])]?.filter((v, i, a) => a.indexOf(v) === i)
-        }
-      } else {
-        newSelect = [...newSelect?.filter((select) => !childIds?.includes(select))]
-      }
-
-      onSelect([...newSelect])
+      // For single selection, just set the selected value
+      onSelect(value)
     },
-    [selected, tree, onSelect]
+    [onSelect]
   )
 
   const renderTreeItem = useCallback(
@@ -51,14 +35,9 @@ const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, s
 
         const firstParentId = getParentIds(value, items)[0]
 
-        const foundRow = tree.find((el) => el.id === value)
-
-        const childIds = getChildIds(foundRow)
-
-        const checked = selected.includes(value) || childIds?.every((elem) => selected?.includes(elem))
+        const checked = selected === value
 
         if (children && children.length > 0) {
-          const indeterminate = isIndeterminate({ tree, selected, node: value })
           const treeItemLabel = createTreeItemLabel({
             formControlLabelProps: {
               label:
@@ -93,7 +72,6 @@ const TreeItem = ({ items, selected, onSelect, disabled = false, handleCreate, s
               value,
               checked,
               disabled,
-              indeterminate,
               onChange: (event) => {
                 handleChange({ event })
               },
@@ -202,11 +180,6 @@ function createTreeItemLabel({ formControlLabelProps = {}, checkboxProps = {} })
       {...formControlLabelProps}
     />
   )
-}
-
-function isIndeterminate({ tree, node: value, selected }) {
-  const foundRow = tree.find((el) => el.id === value)
-  return !getChildIds(foundRow)?.every((elem) => selected?.includes(elem)) && getChildIds(foundRow)?.some((elem) => selected?.includes(elem))
 }
 
 const getParentIds = (target, children, parents = []) => {

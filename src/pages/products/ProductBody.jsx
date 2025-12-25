@@ -18,6 +18,7 @@ import { requests } from '../../../utils/requests'
 import { error } from '../../../utils/toast'
 import useDebouncedValue from '../../hooks/useDebouncedValue'
 import { useQueryParams } from '../../hooks/useQueryParams'
+import CheckAccess from '@components/CheckAccess'
 
 export default function ProductBody({ productData = null }) {
   const { setValue, watch, register, getValues, reset } = useFormContext()
@@ -261,8 +262,7 @@ export default function ProductBody({ productData = null }) {
           <UploadImage id='images' name='images' images={images} onChange={(imagesArr) => setValue('images', imagesArr)} />
         </Box>
         <Box height={'56px'} />
-        {canChangeFullData && (
-          <>
+          <CheckAccess id={'can-change-product-full-info'}>
             <SectionTitle noWrap withLine>
               {t('create_new_product.features.label')}
             </SectionTitle>
@@ -400,9 +400,8 @@ export default function ProductBody({ productData = null }) {
             </SectionTitle>
             <CategoriesTree />
             <Box height={'30px'} />
-            <TextField borderRadius={'20px'} required multiline fullWidth name='description' label='Описание' placeholder='Введите описание' />
-          </>
-        )}
+            <TextField borderRadius={'20px'} multiline fullWidth name='description' label='Описание' placeholder='Введите описание' />
+          </CheckAccess>
       </Box>
     </Box>
   )
