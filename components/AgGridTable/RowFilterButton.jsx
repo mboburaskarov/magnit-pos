@@ -50,7 +50,6 @@ function RowFilterButton({ totalCount, offsetIndex, offsetQuery, offsetSize, set
 
     return result
   }
-  console.log(buildList([5, 10, 50], 100))
 
   const changeOffsetSize = (opt) => {
     setOffsetSize(opt)

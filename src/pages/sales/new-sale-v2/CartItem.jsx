@@ -241,11 +241,7 @@ export default function CartItem({ index, searchRef, packRef = () => {}, unitRef
       method.setValue(`quantity_${item?.id}`, item?.quantity)
       method.setValue(`unit_quantity_${item?.id}`, item?.unit_quantity)
       if (get(err, 'response.data.code') === 409) {
-        error(`Описание
-Редактировать
-Введенное количество товара превышает существующее количество. 
-Максимальное количество упаковок на складе - ${get(err, 'response.data.data.pack_quantity')},
-единичное количество на складе - ${get(err, 'response.data.data.unit_quantity')}.`)
+        error(`От этого лекарства не осталось введённого вами количества.`)
       } else {
         error('Ошибка при получении похожих товаров.')
       }

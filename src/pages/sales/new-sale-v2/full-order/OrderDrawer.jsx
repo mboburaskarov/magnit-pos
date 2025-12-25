@@ -120,7 +120,7 @@ export default function OrderDrawer({
   setDmedOrganizedList,
   markingsList,
   dmedPrescriptionsList,
-
+  cartItemsListLoading,
   cartItemsList,
   setDmedPrescriptionsList,
   customerId,
@@ -161,6 +161,7 @@ export default function OrderDrawer({
 
   const { isFinishSaleWithoutAppPaymentType, hasError, isSaleError, isSendToEPOS, isEposError, isSendEPOSresponseToBackend, isSaleResponseError, submitSale } =
     useSaleOperations({
+      cartItemsListLoading,
       cartItemsList,
       markingsList,
       dmedOrganizedList,

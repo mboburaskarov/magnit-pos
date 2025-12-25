@@ -1153,6 +1153,7 @@ function NewSaleV2() {
               })}
             >
               <OrderLite
+                cartItemsListLoading={isCartItemsLIstLoading}
                 serviceType={serviceType}
                 setDmedOrganizedList={setDmedOrganizedList}
                 liteOrder={liteOrder}
@@ -1445,6 +1446,7 @@ function NewSaleV2() {
         />
       )}
       <OrderDrawer
+        cartItemsListLoading={isCartItemsLIstLoading}
         serviceType={serviceType}
         setDmedOrganizedList={setDmedOrganizedList}
         dmedOrganizedList={dmedOrganizedList}

@@ -19,7 +19,10 @@ export default function ActivityLogsPage() {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const userData = useSelector((state) => state.user)
-  const [providerTypes, setProviderTypes] = useState([])
+  const [providerTypes, setProviderTypes] = useState({
+    id: 'epos',
+    name: 'EPOS',
+  })
   const productHistoryFilter = useMemo(() => {
     return {
       limit: values?.limit || 5,
@@ -27,7 +30,7 @@ export default function ActivityLogsPage() {
       offset: values?.offset || 0,
       start_date: getFilterStartDate(values),
       end_date: getFilterEndDate(values),
-      provider_type: providerTypes?.id,
+      provider_type: providerTypes?.id || 'epos',
     }
   }, [values?.limit, providerTypes, values?.offset, values?.from_time, values?.to_time, values?.start_date, values?.end_date])
   const {
@@ -166,6 +169,7 @@ export default function ActivityLogsPage() {
     { id: 'dmed', name: 'DMED' },
     { id: 'click', name: 'CLICK' },
   ]
+
   const formattedData = getLogsList?.data?.data?.data
 
   const [openModal, setModal] = useState()
@@ -204,7 +208,6 @@ export default function ActivityLogsPage() {
               beforeContent={'Действие'}
               minWidth='285px'
               white
-              defaultValue={'payme'}
               maxWidth={'355px'}
               isSearchable={false}
               uncontrolled

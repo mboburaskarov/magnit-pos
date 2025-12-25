@@ -37,6 +37,7 @@ function LiteOrder({
   cashBoxDetails,
   setLiteOrder,
   customerId,
+  cartItemsListLoading,
   dmedPrescriptionsList,
 }) {
   const { t } = useTranslation()
@@ -61,8 +62,9 @@ function LiteOrder({
   const { paymentsList, setPaymentsList, paymentAmount, onlinePaymentType, setOnlinePaymentType, cardPaymentType, setCardPaymentType, maxAmount } =
     usePaymentOperations(cartItemsList, paymentTypesList, setMaxAmount)
 
-  const { isFinishSaleWithoutAppPaymentType, isSaleError, isSendToEPOS, isEposError, isSendEPOSresponseToBackend, isSaleResponseError, submitSale } =
+  const { isFinishSaleWithoutAppPaymentType, isSaleError, isSendToEPOS, isEposError, hasError, isSendEPOSresponseToBackend, isSaleResponseError, submitSale } =
     useSaleOperations({
+      cartItemsListLoading,
       cartItemsList,
       markingsList,
       dmedOrganizedList,
@@ -173,6 +175,7 @@ function LiteOrder({
         isSaleResponseError={isSaleResponseError}
         isEposError={isEposError}
         isSaleError={isSaleError}
+        hasError={hasError}
       />
 
       {/* Payment Input Fields */}

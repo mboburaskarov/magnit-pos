@@ -36,7 +36,7 @@ export default function ActionCreateBody({ isOpen }) {
       setValue('description', get(onePermission, 'data.data.description'))
       setValue(
         'method',
-        METHOD_OPETIONS.filter((e) => get(onePermission, 'data.data.method').includes(e.value))
+        METHOD_OPETIONS.filter((e) => get(onePermission, 'data.data.method', '').includes(e.value))
       )
     }, 200)
   }, [onePermission?.data])

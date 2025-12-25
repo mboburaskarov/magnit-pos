@@ -23,6 +23,7 @@ export const useSaleOperations = ({
   paymentsList,
   maxAmount,
   cartOwnerType,
+  cartItemsListLoading = true,
   setCardOwnerType = () => {},
 }) => {
   const { id } = useParams()
@@ -74,8 +75,12 @@ export const useSaleOperations = ({
         error('Эта продажа уже закрыта. (uz: Bu sotuv yakunlangan - barcha sotuvlar sahifasidan tekshiring)')
         return
       }
-      if (get(err, 'response.data.data') === 'prescription. expired') {
+      if (get(err, 'response.data.data') === 'prescription.expired') {
         error('Срок действия указанного рецепта истёк.')
+        return
+      }
+      if (get(err, 'response.data.data') === 'invalid.sale.amount') {
+        error('Несоответствие торговой суммы')
         return
       }
       if (get(err, 'response.data.data') === 'failed payment with click') {
@@ -83,7 +88,19 @@ export const useSaleOperations = ({
         return
       }
 
-      error(`Ошибка при Продажа завершена: ${JSON.parse(get(err, 'response.data.data'))?.message}`)
+      let errorMessage = 'Ошибка при Продажа завершена'
+      try {
+        const errorData = get(err, 'response.data.data')
+        if (errorData) {
+          const parsedError = typeof errorData === 'string' ? JSON.parse(errorData) : errorData
+          errorMessage = `Ошибка при Продажа завершена: ${parsedError?.message || errorData}`
+        }
+      } catch (parseError) {
+        console.warn('Failed to parse error response:', parseError)
+        errorMessage = `Ошибка при Продажа завершена: ${get(err, 'message') || 'Неизвестная ошибка'}`
+      }
+      error(errorMessage)
+      return
     },
   })
 
@@ -324,6 +341,10 @@ export const useSaleOperations = ({
 
   const submitSale = useCallback(
     (paymentsList, otpData, maxAmount, cartOwnerType) => {
+      if (cartItemsListLoading) {
+        error('Продукты загружаются. Пожалуйста, повторите попытку позже.')
+        return
+      }
       // Handle both formats: lite order (with payment_type_id) and full order (with id)
       const paymentTypes = paymentsList
         ?.filter((type) => get(type, 'amount', false) && !get(type, 'isPlaceholder', false))
