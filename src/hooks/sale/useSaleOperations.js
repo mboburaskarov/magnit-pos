@@ -70,7 +70,7 @@ export const useSaleOperations = ({
       setOpenRefreshDialog(false)
 
       if (get(err, 'response.status') === 409) {
-        saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id') })
+        saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })
         error('Эта продажа уже закрыта. (uz: Bu sotuv yakunlangan - barcha sotuvlar sahifasidan tekshiring)')
         return
       }
