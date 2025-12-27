@@ -135,7 +135,7 @@ export default function Routes() {
           element: <NotFoundPage full />,
         },
         {
-          path: 'test',
+          path: 'ostatok',
           element: <Test />,
         },
         {
