@@ -12,6 +12,7 @@ import Profile from '../../pages/settings/profile'
 import RolesPage from '../../pages/settings/roles'
 import ActionListPage from '../../pages/settings/roles/actions'
 import ActivityLogsPage from '@/pages/settings/activity-logs/ActivityLogs'
+import BranchOstatkiPage from '@/pages/settings/branch-ostatki/BranchOstatki'
 
 const settingsRoutes = {
   path: 'settings',
@@ -35,6 +36,10 @@ const settingsRoutes = {
     {
       path: 'activity-logs',
       element: <ActivityLogsPage />,
+    },
+    {
+      path: 'branch-ostatki',
+      element: <BranchOstatkiPage />,
     },
     {
       path: 'companies',

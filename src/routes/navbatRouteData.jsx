@@ -217,6 +217,12 @@ export const navbatRouteData = [
         id: '99',
         href: '/settings/activity-logs',
       },
+      {
+        label: 'navbar.ostatki',
+        active: '/settings/branch-ostatki/*',
+        id: '99890',
+        href: '/settings/branch-ostatki',
+      },
     ],
   },
 ]

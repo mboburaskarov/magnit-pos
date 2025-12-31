@@ -452,6 +452,8 @@ export const requests = {
 
   getLogsList: ({ id, ...filter }) => request.get(`v1/logs${qs.stringify(filter, { addQueryPrefix: true })}`),
 
+  getBranchOstatkiWithInvenotry: (filter) => requestEXCEL.get(`v1/ostatok/inventory${qs.stringify(filter, { addQueryPrefix: true })}`),
+
   getFixedSoresList: ({ id, ...filter }) => request.get(`v1/ostatok/fixed-stores${qs.stringify(filter, { addQueryPrefix: true })}`),
   fixdMinusErrors: ({ ...filter }) => request.post(`v1/ostatok/fixed-minus${qs.stringify(filter, { addQueryPrefix: true })}`),
   fixdPlusErrors: ({ ...filter }) => request.post(`v1/ostatok/fixed-plus${qs.stringify(filter, { addQueryPrefix: true })}`),
