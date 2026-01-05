@@ -47,10 +47,10 @@ export default function BranchOstatkiPage() {
   useEffect(() => {
     const count = storesList?.data?.data?._meta?.total_count
 
-    const offsetsCount = Math.ceil(count / Number(values?.limitHistory || 0))
+    const offsetsCount = Math.ceil(count / Number(values?.limit || 0))
 
     setOffsetCount(offsetsCount || 0)
-  }, [storesList?.data, values?.limitHistory])
+  }, [storesList?.data, values?.limit])
   const { mutate: getBranchOstatkiWithInvenotry, isLoading: isGetBranchOstatkiWithInvenotry } = useMutation(requests.getBranchOstatkiWithInvenotry, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
