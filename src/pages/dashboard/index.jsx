@@ -1,4 +1,5 @@
 import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import useGlobalWebSocket from '@hooks/useGlobalWebSocket'
 import SingleLineChart from '@components/Charts/SingleLineChart'
 import CheckAccess from '@components/CheckAccess'
 import LoadingContainer from '@components/LoadingContainer'
@@ -169,6 +170,7 @@ export const dashboardBoxData = [
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
   const { values } = useQueryParams()
+  
   const [detailing, setDetaling] = useState('week')
   const [selectedAllB2B, setSelectedAllB2B] = useState(false)
   const [selectedShops, setSelectedShops] = useState('all')

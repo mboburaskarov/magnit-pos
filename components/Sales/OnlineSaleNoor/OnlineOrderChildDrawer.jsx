@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: '#ccc4 ',
       '& > svg': {
-        backgroundColor: '#ccc4 !important',
+        backgroundColor: theme.palette.grey[200],
       },
     },
   },
@@ -96,14 +96,14 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
     data: darftChildList,
     refetch,
     isLoading: isDarftChildList,
-  } = useQuery('darftChildList', () => requests.getCashBoxDetaildWithSaleId(get(open, 'item.id')))
+  } = useQuery(['darftChildList', open], () => requests.getCashBoxDetaildWithSaleId(get(open, 'item.id')))
   useEffect(() => {
     refetch()
   }, [open])
 
   const theme = useTheme()
   return (
-    <LoadingContainer readyState={!isDarftChildList}>
+    <LoadingContainer readyState={!isDarftChildList} height='100%'>
       <Box className={classes.drawer}>
         <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
           <Box display={'flex'} alignItems={'center'}>
@@ -115,7 +115,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
                 {t('Онлайн-продажи')} #{get(darftChildList, 'data.data.sale_number')}
               </Typography>
               <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
-                {thousandDivider(get(darftChildList, 'data.data.total_amount', 0), 'сум')}
+                {thousandDivider(get(open, 'item.total_amount', 0), 'сум')}
               </Typography>
             </Box>
           </Box>
@@ -143,6 +143,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
               </Typography>
             </Box>
           </Box>
+
           <Box maxHeight={'calc(100vh - 485px)'} sx={{ overflowY: 'auto' }} padding={'0px 40px'}>
             {get(darftChildList, 'data.data.products', [])?.map((el) => (
               <OnlineOrderChildItemsBox key={el.id} item={el} />

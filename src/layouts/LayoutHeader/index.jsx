@@ -11,6 +11,11 @@ import NotificationSmallIcon from '../../assets/icons/NotificationSmallIcon'
 import UserFilledIcon from '../../assets/icons/UserFilledIcon'
 import LogOutIcon from '../../assets/icons/logOutIcon'
 import { headerStyles } from './HeaderStyles'
+import useGlobalWebSocket from '@/hooks/useGlobalWebSocket'
+import { useState } from 'react'
+import { useQuery } from 'react-query'
+import { requests } from '@utils/requests'
+import notificationAudio from '@/assets/audio/notification.mp3'
 
 const DialogRowBox = ({ children, onClick }) => (
   <Box
@@ -37,9 +42,26 @@ function LayoutHeader() {
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
   const navigate = useNavigate()
+  const [message, setMessage] = useState(null)
   const firstName = userData?.first_name
   const lastName = userData?.last_name
+  const NotificationAudio = new Audio(notificationAudio)
 
+  const { data: noorOrderCount, refetch: refetchNoorOrderCount } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
+    onSuccess: ({ data }) => {
+      setMessage(get(data, 'data.count', 0))
+      if (message > 0) {
+        NotificationAudio.play()
+      }
+    },
+  })
+  useGlobalWebSocket({
+    onMessage: (data) => {
+      if (data?.event == 'noor_order') {
+        refetchNoorOrderCount()
+      }
+    },
+  })
   const classes = headerStyles({ isOpen })
   const logout = () => {
     localStorage.removeItem('access_token')
@@ -175,26 +197,28 @@ function LayoutHeader() {
           }}
         >
           <NotificationSmallIcon />
-          <Typography
-            sx={{
-              width: '40px',
-              height: '20px',
-              backgroundColor: '#A53EFF',
-              color: '#fff',
-              fontSize: '10px',
-              fontWeight: '600',
-              borderRadius: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              ml: '5px',
-              position: 'absolute',
-              top: '-6px',
-              right: '-10px',
-            }}
-          >
-            soon
-          </Typography>
+          {message && (
+            <Typography
+              sx={{
+                width: '20px',
+                height: '20px',
+                backgroundColor: '#fe5000',
+                color: '#fff',
+                fontSize: '10px',
+                fontWeight: '600',
+                borderRadius: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                ml: '5px',
+                position: 'absolute',
+                top: '-4px',
+                right: '-7px',
+              }}
+            >
+              {message}
+            </Typography>
+          )}
         </Box>
       </Box>
     </Box>

@@ -13,6 +13,7 @@ import ShortcutsDrawerNew from '@components/Sales/ShortcutsDrawerNew'
 import ShortcutBox from '@components/ShortcutBox'
 import StyledTooltip from '@components/StyledTooltip'
 import useDebouncedValue from '@hooks/useDebouncedValue'
+import useGlobalWebSocket from '@hooks/useGlobalWebSocket'
 import ArrowRightIcon from '@icons/ArrowRightIcon'
 import BigWarningIcon from '@icons/BigWarningIcon'
 import DeleteIcon from '@icons/DeleteIcon'
@@ -932,37 +933,15 @@ function NewSaleV2() {
   const printNoProductCheque = () => {
     childRef.current.printChildCheque()
   }
-  const wsRef = useRef(null)
-  useEffect(() => {
-    // Connect to backend
-    const url = import.meta.env.VITE_MODE == 'dev' ? import.meta.env.VITE_BASE_API_URL_DEV : import.meta.env.VITE_BASE_API_URL
-    const ws = new WebSocket(`wss://${url.split('https://')[1]}/ws?store_id=${userData?.store?.id}`) // or wss://your-domain.com/ws
-    wsRef.current = ws
 
-    ws.onopen = () => {
-      console.log('WebSocket connection established')
-    }
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data)
+  // Use global WebSocket service (now globally initialized in App)
+  useGlobalWebSocket({
+    onMessage: (data) => {
       if (data?.event == 'noor_order') {
         refetchNoorOrderCount()
       }
-      console.log('Received:', data)
     }
-
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error)
-    }
-
-    ws.onclose = () => {
-      console.log('WebSocket closed')
-    }
-
-    return () => {
-      ws.close()
-    }
-  }, [])
+  })
 
   return (
     <FormProvider {...method}>
