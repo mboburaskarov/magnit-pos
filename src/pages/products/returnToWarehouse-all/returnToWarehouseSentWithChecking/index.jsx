@@ -54,7 +54,13 @@ export default function ReturnToWarehouseSentScanWithCheckingPage() {
       navigate('/products/return-to-warehouse')
     },
     onError: (err) => {
-      error('Ошибка при завершение импорта!')
+      if (err?.response?.data?.code == 409) {
+        error(`
+          Осталось ${get(err, 'response.data.data.available_quantity')} остатков лекарств в "${get(err, 'response.data.data.name')}"
+          `)
+        return
+      }
+      error('Ошибка при завершение Возврат с проверкой!')
     },
   })
   const tableColumns = tableHeaderSelector({

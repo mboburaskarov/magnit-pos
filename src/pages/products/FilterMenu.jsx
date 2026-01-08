@@ -204,7 +204,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                   minWidth='auto'
                   isClearable={true}
                   request={requests.getAllCategories}
-                  filters={{ limit: 10 }}
+                  filters={{ limit: 30 }}
                   control={methods.control}
                   getOptionLabel={(option) => {
                     return option.name
