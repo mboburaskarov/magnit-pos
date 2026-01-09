@@ -345,7 +345,7 @@ function NewSaleV2() {
   const { data: noorOrderCount, refetch: refetchNoorOrderCount } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
     onSuccess: ({ data }) => {
       setLastNoorOrderCount(get(data, 'data.count', 0))
-      if (lastNoorOrderCount < get(data, 'data.count', 0)) {
+      if (lastNoorOrderCount != get(data, 'data.count', 0)) {
         NotificationAudio.play()
       }
     },
