@@ -49,7 +49,11 @@ function LayoutHeader() {
   const lastName = userData?.last_name
   const NotificationAudio = new Audio(notificationAudio)
 
-  const { data: noorOrderCount, refetch: refetchNoorOrderCount } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
+  const {
+    data: noorOrderCount,
+    refetch: refetchNoorOrderCount,
+    isLoading,
+  } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
     onSuccess: ({ data }) => {
       setMessage(get(data, 'data.count', 0))
       if (message > 0) {
@@ -227,7 +231,7 @@ function LayoutHeader() {
           )}
         </Box>
       </Box>
-      <MessagesDrawer messagesCount={message} open={openMessage} onClose={setOpenMessage} />
+      <MessagesDrawer isLoading={isLoading} messagesCount={message} open={openMessage} onClose={setOpenMessage} />
     </Box>
   )
 }
