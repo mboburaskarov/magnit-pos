@@ -17,6 +17,7 @@ import { useQuery } from 'react-query'
 import { requests } from '@utils/requests'
 import notificationAudio from '@/assets/audio/notification.mp3'
 import MessagesDrawer from './Messages'
+import { success } from '@utils/toast'
 
 const DialogRowBox = ({ children, onClick }) => (
   <Box
@@ -65,6 +66,15 @@ function LayoutHeader() {
     onMessage: (data) => {
       if (data?.event == 'noor_order' || data?.event == 'noor_order_cancel') {
         refetchNoorOrderCount()
+
+        if (data?.event == 'noor_order_cancel') {
+          success(`${data?.data?.header_ru} - ${data?.data?.content_ru}`)
+          return
+        }
+        if (data?.event == 'noor_order') {
+          success(`${data?.data?.header_ru} - ${data?.data?.content_ru}`)
+          return
+        }
       }
     },
   })

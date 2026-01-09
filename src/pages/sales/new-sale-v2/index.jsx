@@ -939,6 +939,14 @@ function NewSaleV2() {
     onMessage: (data) => {
       if (data?.event == 'noor_order' || data?.event == 'noor_order_cancel') {
         refetchNoorOrderCount()
+        if (data?.event == 'noor_order_cancel') {
+          success(`${data?.data?.header_ru} - ${data?.data?.content_ru}`)
+          return
+        }
+        if (data?.event == 'noor_order') {
+          success(`${data?.data?.header_ru} - ${data?.data?.content_ru}`)
+          return
+        }
       }
     },
   })
