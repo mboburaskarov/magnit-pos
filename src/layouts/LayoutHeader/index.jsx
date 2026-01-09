@@ -63,7 +63,7 @@ function LayoutHeader() {
   })
   useGlobalWebSocket({
     onMessage: (data) => {
-      if (data?.event == 'noor_order') {
+      if (data?.event == 'noor_order' || data?.event == 'noor_order_cancel') {
         refetchNoorOrderCount()
       }
     },

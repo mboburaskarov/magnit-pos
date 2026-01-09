@@ -937,10 +937,10 @@ function NewSaleV2() {
   // Use global WebSocket service (now globally initialized in App)
   useGlobalWebSocket({
     onMessage: (data) => {
-      if (data?.event == 'noor_order') {
+      if (data?.event == 'noor_order' || data?.event == 'noor_order_cancel') {
         refetchNoorOrderCount()
       }
-    }
+    },
   })
 
   return (
