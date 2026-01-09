@@ -10,6 +10,7 @@ import TickIcon from '../../src/assets/icons/TickIcon'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
 import LoadingBlurry from '../LoadingBlurry'
 import Pagination from './Pagination'
+import { t } from 'i18next'
 
 const useStyles = makeStyles((theme) => ({
   lineSortContainer: {
@@ -85,17 +86,27 @@ function ListWithPagination({ request, limit = 5, limitQuery = 'customLimit', re
   }, [values?.offset, page, limit])
 
   const {
-    data: datList,
+    data: dataList,
     isLoading: dataLoading,
     isFetching: isDataList,
     refetch,
   } = useQuery([statePath, dataFilter, customFilter], () => request({ ...dataFilter, ...customFilter }))
   return (
     <Box>
-      <Box sx={{ padding: '0 0 10px 0', borderRadius: '10px', overflow: 'auto', position: 'relative', height: maxHeight }}>
+      <Box sx={{ padding: '0 0 10px 0', borderRadius: '10px', overflow: 'auto', position: 'relative', minHeight: '400px', maxHeight: maxHeight }}>
         <LoadingBlurry outside isLoading={dataLoading} />
 
-        {datList?.data?.data?.data?.map((item) => renderItem(item))}
+        {dataList?.data?.data?.data?.length > 0 ? (
+          <>{dataList?.data?.data?.data?.map((item) => renderItem(item))}</>
+        ) : (
+          <>
+            <Box sx={{ display: 'flex', justifyContent: 'center', paddingTop: '75px', height: '50vh' }}>
+              <Typography fontSize={'25px'} fontWeight={'600'} color={'grey.400'}>
+                {t('Заказ не найден')}
+              </Typography>
+            </Box>
+          </>
+        )}
       </Box>
       <Box display={'flex'} justifyContent={'space-between'} mt='15px' position={'relative'}>
         <Box>
@@ -126,7 +137,7 @@ function ListWithPagination({ request, limit = 5, limitQuery = 'customLimit', re
             </Paper>
           )}
         </Box>
-        <Pagination count={Math.ceil(datList?.data?.data?._meta?.page_count)} handleChangeOffset={handleChange} page={page + 1} pageQuery='page' />
+        <Pagination count={Math.ceil(dataList?.data?.data?._meta?.page_count)} handleChangeOffset={handleChange} page={page + 1} pageQuery='page' />
       </Box>
     </Box>
   )

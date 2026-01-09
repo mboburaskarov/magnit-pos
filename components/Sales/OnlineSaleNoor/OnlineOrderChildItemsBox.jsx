@@ -17,7 +17,7 @@ function OnlineOrderChildItemsBox({ item, setIsOpenChild }) {
     <Box display={'flex'} mb={'10px'} height={'80px'} justifyContent={'space-between'}>
       <Box borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} mr={'8px'} display={'flex'} width={'100%'} justifyContent={'space-between'}>
         <Box display={'flex'} width={'100%'}>
-          <CustomImg className={classes.productImg} src='default-img.avif' />
+          <CustomImg width={'48px'} className={classes.productImg} src='default-img.avif' />
           <Box display={'flex'} flexDirection={'column'} width={'100%'}>
             <Box display={'flex'} justifyContent={'space-between'}>
               <Typography
@@ -45,7 +45,7 @@ function OnlineOrderChildItemsBox({ item, setIsOpenChild }) {
                 {get(item, 'barcode')}
               </Typography>
               <Typography whiteSpace={'pre'} mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-                {get(item, 'quantity')}пч{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''} -{' '}
+                {get(item, 'quantity')}уп{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''} -{' '}
                 {thousandDivider(get(item, 'total_price'), 'сум')}
               </Typography>
             </Box>
@@ -58,10 +58,10 @@ function OnlineOrderChildItemsBox({ item, setIsOpenChild }) {
         </Typography>
         <Box mt={'4px'} display={'flex'} justifyContent={'space-between'} width={'100%'}>
           <Typography fontSize={'14px'} fontWeight={'500'} color={'purple.500'} lineHeight={'20px'}>
-            {get(item, 'bonus_amount')} %{/* {get(item, 'discount_type') === 'percent' ? '%' : "so'm"} */}
+            {thousandDivider(Math.round(get(item, 'bonus_amount'), 2))} %
           </Typography>
           <Typography fontSize={'14px'} fontWeight={'500'} color={'purple.500'} lineHeight={'20px'}>
-            {thousandDivider(get(item, 'bonus_amount'), 'сум')}
+            {thousandDivider(Math.round(get(item, 'bonus_amount'), 2), 'сум')}
           </Typography>
         </Box>
       </Box>

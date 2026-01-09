@@ -16,6 +16,7 @@ import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { requests } from '@utils/requests'
 import notificationAudio from '@/assets/audio/notification.mp3'
+import MessagesDrawer from './Messages'
 
 const DialogRowBox = ({ children, onClick }) => (
   <Box
@@ -43,6 +44,7 @@ function LayoutHeader() {
   const userData = useSelector((state) => state.user)
   const navigate = useNavigate()
   const [message, setMessage] = useState(null)
+  const [openMessage, setOpenMessage] = useState(false)
   const firstName = userData?.first_name
   const lastName = userData?.last_name
   const NotificationAudio = new Audio(notificationAudio)
@@ -192,12 +194,14 @@ function LayoutHeader() {
             width: '48px',
             height: '48px',
             borderRadius: '100%',
+            cursor: 'pointer',
             position: 'relative',
             backgroundColor: 'gray.50',
           }}
+          onClick={() => setOpenMessage(true)}
         >
           <NotificationSmallIcon />
-          {message && (
+          {message ? (
             <Typography
               sx={{
                 width: '20px',
@@ -218,9 +222,12 @@ function LayoutHeader() {
             >
               {message}
             </Typography>
+          ) : (
+            <></>
           )}
         </Box>
       </Box>
+      <MessagesDrawer messagesCount={message} open={openMessage} onClose={setOpenMessage} />
     </Box>
   )
 }
