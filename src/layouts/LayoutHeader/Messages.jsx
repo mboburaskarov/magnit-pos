@@ -35,7 +35,7 @@ function MessagesDrawer({ open, onClose, messagesCount, isLoading }) {
           borderBottom: '1px solid #ececec',
         }}
       >
-        <Typography sx={{ fontSize: '18px', fontWeight: '600', color: 'bunker.950' }}>Сообщения</Typography>
+        <Typography sx={{ fontSize: '18px', fontWeight: '600', color: 'bunker.950' }}>Уведомления</Typography>
         {/* <CloseIcon color='#000' onClick={() => onClose(false)} /> */}
       </Box>
       {isLoading ? (
