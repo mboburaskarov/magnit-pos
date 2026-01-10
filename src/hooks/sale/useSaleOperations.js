@@ -251,19 +251,18 @@ export const useSaleOperations = ({
             }
           }
           const other = (otherSum * 100).toFixed(2)
-          const discount =
-            el.quantity > index
-              ? parseFloat((get(el, 'discount_amount') * 100).toFixed(2))
-              : parseFloat((el.discount_unit_amount * el.unit_quantity * 100).toFixed(2))
+
+          const discount = el.quantity > index ? get(el, 'discount_amount') : el.discount_unit_amount * el.unit_quantity
+          const discountSum = parseFloat((discount * 100).toFixed(2))
 
           readyData.push({
             barcode: el.barcode,
             amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
             price: parseFloat((price * 100).toFixed(2)),
 
-            discount: discount,
+            discount: discountSum,
             vatPercent: get(el, 'vat_percent'),
-            vat: parseFloat(((((price - otherSum - discount) * get(el, 'vat_percent')) / (get(el, 'vat_percent') + 100)) * 100).toFixed(2)),
+            vat: parseFloat(((((price - discount - otherSum) * get(el, 'vat_percent')) / (get(el, 'vat_percent') + 100)) * 100).toFixed(2)),
             label: marking,
             name: el.name,
             classCode: get(el, 'class_code'),
