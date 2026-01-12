@@ -3,9 +3,10 @@ import SuccessIcon from '@icons/SuccessIcon'
 import { useEffect, useState } from 'react'
 import ErrorIcon from '@icons/ErrorIcon'
 
-export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, isSendToEPOS, isSendEPOSresponseToBackend, hasError }) {
+export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, setHasError, isSendToEPOS, isSendEPOSresponseToBackend, hasError }) {
   const [showModal, setShowModal] = useState(false)
   const [currentStep, setCurrentStep] = useState(null)
+  console.log(currentStep, hasError)
 
   const allDone = !isFinishSaleWithoutAppPaymentType && !isSendToEPOS && !isSendEPOSresponseToBackend
 
@@ -18,6 +19,8 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
     // Agar hamma jarayon tugagan bo'lsa va xato bo'lmasa, 1 sekunddan keyin modalni yopish
     if (allDone && !hasError) {
       const timer = setTimeout(() => {
+        setCurrentStep(null)
+        setHasError(false)
         setShowModal(false)
       }, 1000)
       return () => clearTimeout(timer)
@@ -34,6 +37,8 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
         endProgress: 100,
       })
       const timer = setTimeout(() => {
+        setCurrentStep(null)
+        setHasError(false)
         setShowModal(false)
       }, 1000)
       return () => clearTimeout(timer)
@@ -74,6 +79,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
   if (!showModal || !currentStep) return null
 
   const isCompleted = currentStep.progress === 100
+  console.log(isCompleted, currentStep)
 
   return (
     <>

@@ -62,27 +62,36 @@ function LiteOrder({
   const { paymentsList, setPaymentsList, paymentAmount, onlinePaymentType, setOnlinePaymentType, cardPaymentType, setCardPaymentType, maxAmount } =
     usePaymentOperations(cartItemsList, paymentTypesList, setMaxAmount)
 
-  const { isFinishSaleWithoutAppPaymentType, isSaleError, isSendToEPOS, isEposError, hasError, isSendEPOSresponseToBackend, isSaleResponseError, submitSale } =
-    useSaleOperations({
-      cartItemsListLoading,
-      cartItemsList,
-      markingsList,
-      dmedOrganizedList,
-      dmedPrescriptionsList,
-      serviceType,
-      cashBoxDetails,
-      customerId,
-      setNewSaleId,
-      setQrcodeUrl,
-      setOpenRefreshDialog,
-      setHasChange,
-      setMarkingList,
-      setDmedPrescriptionsList,
-      setDmedOrganizedList,
-      setCustomerId,
-      paymentsList,
-      maxAmount,
-    })
+  const {
+    isFinishSaleWithoutAppPaymentType,
+    isSaleError,
+    isSendToEPOS,
+    isEposError,
+    setHasError,
+    hasError,
+    isSendEPOSresponseToBackend,
+    isSaleResponseError,
+    submitSale,
+  } = useSaleOperations({
+    cartItemsListLoading,
+    cartItemsList,
+    markingsList,
+    dmedOrganizedList,
+    dmedPrescriptionsList,
+    serviceType,
+    cashBoxDetails,
+    customerId,
+    setNewSaleId,
+    setQrcodeUrl,
+    setOpenRefreshDialog,
+    setHasChange,
+    setMarkingList,
+    setDmedPrescriptionsList,
+    setDmedOrganizedList,
+    setCustomerId,
+    paymentsList,
+    maxAmount,
+  })
 
   usePaymentShortcuts({
     inputRefs,
@@ -176,6 +185,7 @@ function LiteOrder({
         isEposError={isEposError}
         isSaleError={isSaleError}
         hasError={hasError}
+        setHasError={setHasError}
       />
 
       {/* Payment Input Fields */}
