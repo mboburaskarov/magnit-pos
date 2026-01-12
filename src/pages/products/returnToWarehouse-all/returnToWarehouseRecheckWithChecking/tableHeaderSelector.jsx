@@ -58,6 +58,22 @@ export default function tableHeaderSelector({ importsColumns, values, setScanedN
         cellRenderer: memo((p) => <SimpleText {...p} type={'export_date'} customText={dayjs(p.data?.expire_date).format('DD.MM.YYYY')} />),
       }
     }
+    if (el.field === 'producer') {
+      return {
+        ...el,
+        headerName: 'Производитель',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type={'producer'} />),
+      }
+    }
+    if (el.field === 'retail_price') {
+      return {
+        ...el,
+        headerName: 'Цена',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type={'retail_price'} />),
+      }
+    }
     if (el.field === 'serial_number') {
       return {
         ...el,

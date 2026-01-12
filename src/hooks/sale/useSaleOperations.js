@@ -218,7 +218,7 @@ export const useSaleOperations = ({
           }
         }
         const other = (otherSum * 100).toFixed(2)
-        const discount = get(el, 'discount_amount') + el.discount_unit_amount * el.unit_quantity
+        const discount = get(el, 'discount_amount') * el.quantity + el.discount_unit_amount * el.unit_quantity
         const discountSum = parseFloat((discount * 100).toFixed(2))
 
         readyData.push({
@@ -252,7 +252,7 @@ export const useSaleOperations = ({
           }
           const other = (otherSum * 100).toFixed(2)
 
-          const discount = el.quantity > index ? get(el, 'discount_amount') : el.discount_unit_amount * el.unit_quantity
+          const discount = el.quantity > index ? get(el, 'discount_amount') * el.quantity : el.discount_unit_amount * el.unit_quantity
           const discountSum = parseFloat((discount * 100).toFixed(2))
 
           readyData.push({
@@ -411,6 +411,7 @@ export const useSaleOperations = ({
     isSendEPOSresponseToBackend,
     isSaleResponseError,
     submitSale,
+    setHasError,
     hasError,
   }
 }

@@ -28,6 +28,19 @@ const columns = [
     width: 200,
   },
   {
+    field: 'producer',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'retail_price',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+
+  {
     field: 'export_date',
     hide: false,
     minWidth: 70,

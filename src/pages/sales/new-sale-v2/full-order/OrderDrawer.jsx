@@ -159,27 +159,36 @@ export default function OrderDrawer({
       customerId,
     })
 
-  const { isFinishSaleWithoutAppPaymentType, hasError, isSaleError, isSendToEPOS, isEposError, isSendEPOSresponseToBackend, isSaleResponseError, submitSale } =
-    useSaleOperations({
-      cartItemsListLoading,
-      cartItemsList,
-      markingsList,
-      dmedOrganizedList,
-      dmedPrescriptionsList,
-      serviceType,
-      cashBoxDetails,
-      customerId,
-      setNewSaleId,
-      setQrcodeUrl,
-      setOpenRefreshDialog,
-      setDmedPrescriptionsList,
-      setDmedOrganizedList,
-      setCustomerId,
-      paymentsList,
-      maxAmount,
-      cartOwnerType,
-      setCardOwnerType,
-    })
+  const {
+    isFinishSaleWithoutAppPaymentType,
+    hasError,
+    setHasError,
+    isSaleError,
+    isSendToEPOS,
+    isEposError,
+    isSendEPOSresponseToBackend,
+    isSaleResponseError,
+    submitSale,
+  } = useSaleOperations({
+    cartItemsListLoading,
+    cartItemsList,
+    markingsList,
+    dmedOrganizedList,
+    dmedPrescriptionsList,
+    serviceType,
+    cashBoxDetails,
+    customerId,
+    setNewSaleId,
+    setQrcodeUrl,
+    setOpenRefreshDialog,
+    setDmedPrescriptionsList,
+    setDmedOrganizedList,
+    setCustomerId,
+    paymentsList,
+    maxAmount,
+    cartOwnerType,
+    setCardOwnerType,
+  })
 
   const { handlePrint, printContainer } = usePrintOperations({
     childRef: null,
@@ -498,6 +507,7 @@ export default function OrderDrawer({
           <SaleProgressSteps
             isFinishSaleWithoutAppPaymentType={isFinishSaleWithoutAppPaymentType}
             isSendToEPOS={isSendToEPOS}
+            setHasError={setHasError}
             isSendEPOSresponseToBackend={isSendEPOSresponseToBackend}
             isSaleResponseError={isSaleResponseError}
             isEposError={isEposError}

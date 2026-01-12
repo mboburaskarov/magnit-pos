@@ -46,6 +46,22 @@ export default function tableHeaderSelector({ importsColumns, values }) {
         cellRenderer: memo((p) => <SimpleText {...p} type={'material_code'} />),
       }
     }
+    if (el.field === 'producer') {
+      return {
+        ...el,
+        headerName: 'Производитель',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type={'producer'} />),
+      }
+    }
+    if (el.field === 'retail_price') {
+      return {
+        ...el,
+        headerName: 'Цена',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type={'retail_price'} />),
+      }
+    }
     if (el.field === 'export_date') {
       return {
         ...el,

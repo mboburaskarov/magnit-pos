@@ -41,6 +41,22 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         cellRenderer: memo((p) => <SimpleText {...p} type={'name'} />),
       }
     }
+    if (el.field === 'producer') {
+      return {
+        ...el,
+        headerName: 'Производитель',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type={'producer'} />),
+      }
+    }
+    if (el.field === 'retail_price') {
+      return {
+        ...el,
+        headerName: 'Цена',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type={'retail_price'} />),
+      }
+    }
     if (el.field === 'material_code') {
       return {
         ...el,
@@ -80,7 +96,32 @@ export default function tableHeaderSelector({ importsColumns, values, t, setScan
         headerName: 'Скан кол-во',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+          <Box id={`${'import_date'}-${p.rowIndex}`} sx={{ display: 'flex' }} whiteSpace='pre-wrap'>
+            <input
+              type='checkbox'
+              checked={p?.data?.expected_count == p?.data?.scanned_pack}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setScanedNumber({
+                    returnId: id,
+                    status: 'get',
+                    product_id: p?.data?.id,
+                    scanned_pack: Number(get(p, 'data.expected_count')),
+                    type: 'return',
+                  })
+                } else {
+                  setScanedNumber({
+                    returnId: id,
+                    status: 'get',
+                    product_id: p?.data?.id,
+                    scanned_pack: 0,
+                    type: 'return',
+                  })
+                }
+              }}
+              name={`scanned_quantity_${p?.data?.id}`}
+            />
+            <Box width={'20px'} />
             {!p?.data?.barcode ? (
               <NumberFormatInput
                 uncontrolled
