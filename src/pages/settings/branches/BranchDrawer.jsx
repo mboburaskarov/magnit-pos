@@ -10,6 +10,7 @@ import { error, success } from '@utils/toast'
 import CloseIcon from '@icons/CloseIcon'
 import PlusIcon from '@icons/PlusIcon'
 import MainDetails from './mainDetails'
+import { LoadingButton } from '@mui/lab'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -134,18 +135,18 @@ export default function BranchDrawer({ refetchBranchList, openDrawer, closeDrawe
                 bottom: 0,
               }}
             >
-              <Button
-                primary
+              <LoadingButton
+                variant='contained'
                 startIcon={<PlusIcon color='#fff' />}
                 fullWidth
                 size='small'
                 style={{ borderRadius: 16 }}
-                isLoading={isHandleCreateBranch}
+                loading={isHandleCreateBranch || isHandleUpdateBranch}
                 form='create-client-form-mini'
                 type='submit'
               >
                 {t('create')}
-              </Button>
+              </LoadingButton>
             </Box>
           </form>
         </FormProvider>

@@ -34,14 +34,6 @@ export default function BranchesPage() {
   const navigate = useNavigate()
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
-  const tableColumns = tableHeaderSelector({
-    productsColumns: columns,
-    t,
-    setOpenBranchDrawer,
-    values,
-    setOpenConfirmDialog,
-  })
-
   useEffect(() => {
     if (tableColumns) {
       const formattedData = makeFormattedData({ tableColumns })
@@ -63,6 +55,14 @@ export default function BranchesPage() {
     isFetching: isFetchingstoresList,
     refetch,
   } = useQuery(['storesList', storesListFilter], () => requests.getAllStores(storesListFilter))
+  const tableColumns = tableHeaderSelector({
+    productsColumns: columns,
+    t,
+    setOpenBranchDrawer,
+    values,
+    storesList,
+    setOpenConfirmDialog,
+  })
 
   const { mutate: deleteStore, isLoading: isDeletingProduct } = useMutation(requests.deleteStore, {
     onSuccess: () => {

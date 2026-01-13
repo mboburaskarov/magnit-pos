@@ -7,7 +7,7 @@ import EditIcon from '@icons/EditIcon'
 import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 import CheckAccess from '@components/CheckAccess'
 
-export default function tableHeaderSelector({ productsColumns, values, t, setOpenConfirmDialog, setOpenBranchDrawer }) {
+export default function tableHeaderSelector({ productsColumns, values, t, storesList, setOpenConfirmDialog, setOpenBranchDrawer }) {
   const columns = productsColumns?.map((el) => {
     if (el.field === 'name') {
       return {
@@ -107,7 +107,10 @@ export default function tableHeaderSelector({ productsColumns, values, t, setOpe
         cellRenderer: memo(({ data }) => (
           <Box display='inline-flex' columnGap={'8px'}>
             <CheckAccess id={'branch:edit'}>
-              <IconButton onClick={() => setOpenBranchDrawer({ mode: 'edit', data })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+              <IconButton
+                onClick={() => setOpenBranchDrawer({ mode: 'edit', data: get(storesList, 'data.data.data', [])?.find((item) => item.id === data.id) })}
+                sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+              >
                 <EditIcon />
               </IconButton>
             </CheckAccess>

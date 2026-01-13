@@ -6,7 +6,6 @@ import ErrorIcon from '@icons/ErrorIcon'
 export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, setHasError, isSendToEPOS, isSendEPOSresponseToBackend, hasError }) {
   const [showModal, setShowModal] = useState(false)
   const [currentStep, setCurrentStep] = useState(null)
-  console.log(currentStep, hasError)
 
   const allDone = !isFinishSaleWithoutAppPaymentType && !isSendToEPOS && !isSendEPOSresponseToBackend
 
@@ -79,7 +78,6 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, s
   if (!showModal || !currentStep) return null
 
   const isCompleted = currentStep.progress === 100
-  console.log(isCompleted, currentStep)
 
   return (
     <>
