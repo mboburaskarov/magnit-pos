@@ -51,11 +51,12 @@ import { rolesTableColumnsSlice } from './tableSlices/rolesTableColumns'
 import { orderTableColumnsSlice } from './tableSlices/orderTableColumns'
 import { sidebarSettingsSlice } from './sidebarSettingsSlice'
 import { userSlice } from './userSlice'
+import { onlineOrdersTableColumnsSlice } from './tableSlices/onlineOrderTableColumns'
 
 // Define your migration function here
 const migrations = {
   // Example migration
-  404: (state) => {
+  408: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -73,7 +74,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 404, // Current version of the persisted state
+  version: 408, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
@@ -97,6 +98,7 @@ const reducer = combineReducers({
   discountCardTableColumns: discountCardTableColumnsSlice,
   bannedProductTableColumns: bannedProductTableColumnsSlice,
   minMaxTableColumns: minMaxTableColumnsSlice,
+  onlineOrdersTableColumns: onlineOrdersTableColumnsSlice,
   autoOrderTableDetailColumns: autoOrderDetailSlice,
   changePriceTableDetailColumns: changePriceDetailSlice,
   importDetailsColumns: importDetailsTableColumnsSlice,

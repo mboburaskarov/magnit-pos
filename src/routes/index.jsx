@@ -9,6 +9,7 @@ import salesWithHeaderRoutes from './sales/withHeader'
 import settingsRoutes from './settings'
 import rolesCreateRoutes from './settings/role-create'
 import clientsRoutes from './clients'
+import OnlineOrdersRoutes from './online_orders'
 
 const routes = [
   { ...dashboardRoutes },
@@ -18,6 +19,7 @@ const routes = [
   { ...reportsInsideRoutes },
   { ...salesWithHeaderRoutes },
   { ...productsRoutes },
+  { ...OnlineOrdersRoutes },
   { ...productsCreateRoutes },
   { ...rolesCreateRoutes },
   { ...clientsRoutes },

@@ -458,4 +458,7 @@ export const requests = {
   fixdMinusErrors: ({ ...filter }) => request.post(`v1/ostatok/fixed-minus${qs.stringify(filter, { addQueryPrefix: true })}`),
   fixdPlusErrors: ({ ...filter }) => request.post(`v1/ostatok/fixed-plus${qs.stringify(filter, { addQueryPrefix: true })}`),
   getOstatokExcelReport: (filter) => requestEXCEL.get(`v1/ostatok${qs.stringify(filter, { addQueryPrefix: true })}`),
+
+  //orders
+  getAllOnlineOrders: (filter) => request.get(`v1/sale/online-orders${qs.stringify(filter, { addQueryPrefix: true })}`),
 }

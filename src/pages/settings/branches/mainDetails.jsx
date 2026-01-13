@@ -1,4 +1,4 @@
-import { Box, Button, Grid, InputAdornment } from '@mui/material'
+import { Box, Button, Grid, InputAdornment, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { useEffect, useState, useRef } from 'react'
 import { useFormContext } from 'react-hook-form'
@@ -25,6 +25,7 @@ export default function MainDetails({ openDrawer }) {
   const [selectedCoords, setSelectedCoords] = useState(null)
   const [mapCenter, setMapCenter] = useState([41.31123758475188, 69.27976554916285])
   const [fixedMarkerCoords, setFixedMarkerCoords] = useState([41.31123758475188, 69.27976554916285])
+  const [mapLoading, setMapLoading] = useState(true)
   const mapRef = useRef()
   const placemarkRef = useRef()
 
@@ -69,6 +70,12 @@ export default function MainDetails({ openDrawer }) {
     setValue('work-time', time)
   }, [time])
 
+  useEffect(() => {
+    if (openLocationModal) {
+      setMapLoading(true)
+    }
+  }, [openLocationModal])
+
   return (
     <Box mt={'24px'}>
       <Grid container mb={'20px'} spacing={3}>
@@ -92,6 +99,7 @@ export default function MainDetails({ openDrawer }) {
           <InputPhone
             login={false}
             id='phone'
+            required={true}
             disabled
             name='phone'
             control={control}
@@ -240,6 +248,22 @@ export default function MainDetails({ openDrawer }) {
 
       <StyledEmptyDialog onClose={() => setOpenLocationModal(false)} open={!!openLocationModal} setOpen={setOpenLocationModal} title='Выберите локацию'>
         <Box width='100%' height='400px' position='relative'>
+          {mapLoading && (
+            <Box 
+              position='absolute' 
+              top={0} 
+              left={0} 
+              right={0} 
+              bottom={0} 
+              display='flex' 
+              alignItems='center' 
+              justifyContent='center'
+              bgcolor='white'
+              zIndex={1}
+            >
+              <Typography>Загрузка карты...</Typography>
+            </Box>
+          )}
           <YMaps query={{ load: 'package.full', apikey: import.meta.env.VITE_YANDEX_MAPS_KEY }}>
             <Map
               instanceRef={mapRef}
@@ -248,6 +272,7 @@ export default function MainDetails({ openDrawer }) {
               height='100%'
               modules={['control.ZoomControl']}
               onClick={handleMapClick}
+              onLoad={() => setMapLoading(false)}
             >
               <Placemark
                 instanceRef={placemarkRef}
