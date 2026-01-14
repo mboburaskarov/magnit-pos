@@ -48,11 +48,11 @@ export default function tableHeaderSelector({ orderColumns: productsColumns }) {
               p.data.online_status == '1'
                 ? 'Новый'
                 : p.data.online_status == '2'
-                ? 'Ожидает оплаты'
+                ? 'Поиск курьера'
                 : p.data.online_status == '3'
-                ? 'Оплачен'
+                ? 'Завершено'
                 : p.data.online_status == '4'
-                ? 'В ожидании'
+                ? 'Ожидает курьера'
                 : p.data.online_status == '-1'
                 ? 'Отменен'
                 : ''
@@ -116,7 +116,7 @@ export default function tableHeaderSelector({ orderColumns: productsColumns }) {
         headerName: 'Дата оплаты',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <SimpleText {...p} customText={p.data.completed_at ? dayjs(p.data.completed_at).format('DD.MM.YYYY HH:mm') : 'Не оплачено'} type='completed_at' />
+          <SimpleText {...p} customText={p.data.completed_at ? dayjs(p.data.completed_at).format('DD.MM.YYYY HH:mm') : '-'} type='completed_at' />
         )),
       }
     }

@@ -10,17 +10,27 @@ import AgGridTable from '@components/AgGridTable/AgGridTable'
 import { requests } from '@utils/requests'
 import { useQueryParams } from '@/hooks/useQueryParams'
 import { useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/onlineOrderTableColumns'
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
+import dayjs from 'dayjs'
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import InputSearch from '@components/Inputs/InputSearch'
 
 function OnlineOrders() {
   const [orderType, setOrderType] = useState('all')
   const [offsetCount, setOffsetCount] = useState(0)
+  const dispatch = useDispatch()
+
   const { values } = useQueryParams()
   const navigate = useNavigate()
   const onlineOrderFilter = useMemo(() => {
     return {
+      start_date: getFilterStartDate(values),
+      end_date: getFilterEndDate(values),
       limit: values?.limit || 10,
+      search: values?.search,
+      status: orderType === 'ALL' ? undefined : orderType,
       offset: values?.offset || 0,
     }
   }, [values, orderType])
@@ -43,13 +53,22 @@ function OnlineOrders() {
   return (
     <LoadingContainer readyState={true}>
       {false && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
-      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
+      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'}>
         <Box display={'flex'} mb={'10px'} justifyContent={'space-between'}>
           <Typography onClick={() => navigate('/products/all-by-import')} variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
             {t('Онлайн заказы')}
           </Typography>
         </Box>
         <Box minWidth={320} sx={{ display: 'flex' }}>
+          {/* ? 'Новый'
+                : p.data.online_status == '2'
+                ? 'Поиск курьера'
+                : p.data.online_status == '3'
+                ? 'Завершено'
+                : p.data.online_status == '4'
+                ? 'Ожидает курьера'
+                : p.data.online_status == '-1'
+                ? 'Отменен' */}
           <InputSwitch
             noMarginTop
             uncontrolled
@@ -59,11 +78,30 @@ function OnlineOrders() {
             defaultValue='ALL'
             onChange={(e) => setOrderType(e)}
             options={[
-              { title: t('switch.title.all'), value: 'ALL', count: thousandDivider(1000) },
-              { title: t('switch.title.active'), value: 'active', count: thousandDivider(1000) },
+              { title: t('switch.title.all'), value: 'ALL', tooltip: 'Все заказы' },
+              { title: t('switch.title.searching_courier'), value: 'searching_courier', tooltip: 'Поиск курьера' },
+              { title: t('switch.title.waiting_courier'), value: 'waiting_courier', tooltip: 'Ожидает курьера' },
+              { title: t('switch.title.completed'), value: 'completed', tooltip: 'Завершено' },
+              { title: t('switch.title.cancelled'), value: 'cancelled', tooltip: 'Отменен' },
             ]}
           />
         </Box>
+      </Box>
+      <Box px={'20px'} pt={'10px'} display={'flex'}>
+        <Box
+          sx={{
+            '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
+            '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+              background: 'transparent',
+              width: '400px',
+              height: 48,
+            },
+            mr: '10px',
+          }}
+        >
+          <InputSearch fullWidth id='producrs-search' name='search' placeholder={'ID, Аптека'} uncontrolled />
+        </Box>
+        <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
       </Box>
       <Box p={'20px'}>
         <AgGridTable

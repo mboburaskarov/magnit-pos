@@ -82,10 +82,11 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
   })
   const { mutate: completeOnlineOrder, isLoading: isCompleteDraft } = useMutation(requests.completeOnlineOrder, {
     onSuccess: ({ data }) => {
-      // refetchDraftList()
-      setChildOpen(false)
-      setOpen(false)
-      navigate(`/sales/new-sale/${get(data, 'data')}`)
+      success('Заказ принят!')
+      refetchDraftList()
+      // setChildOpen(false)
+      // setOpen(false)
+      // navigate(`/sales/new-sale/${get(data, 'data')}`)
     },
     onError: (err) => {
       error('Ошибка при создании Черновик!')
@@ -171,13 +172,31 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
                 </Typography>
               </Box>
             </Box>
-            <Box mt={'20px'} width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
-              <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                Клиент
-              </Typography>
-              <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                {get(darftChildList, 'data.data.customer.full_name') ?? '-'}
-              </Typography>
+            <Box display={'flex'} justifyContent={'space-between'}>
+              <Box mt={'20px'} width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
+                <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                  Клиент
+                </Typography>
+                <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                  {get(darftChildList, 'data.data.customer.full_name') ?? '-'}
+                </Typography>
+              </Box>
+              <Box mt={'20px'} width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
+                <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                  Статус
+                </Typography>
+                <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                  {get(darftChildList, 'data.data.online_status') === 1
+                    ? 'Новый'
+                    : get(darftChildList, 'data.data.online_status') === 2
+                    ? 'Поиск курьера'
+                    : get(darftChildList, 'data.data.online_status') === 3
+                    ? 'Завершено'
+                    : get(darftChildList, 'data.data.online_status') === 4
+                    ? 'Ожидает курьера'
+                    : 'Отменен'}
+                </Typography>
+              </Box>
             </Box>
           </Box>
           <Box
@@ -210,15 +229,13 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
                 {t('delete')}
               </Typography>
             </LoadingButton> */}
-            {get(darftChildList, 'data.data.online_status') === 2 ? (
+            {get(darftChildList, 'data.data.online_status') === 4 ? (
               <Button
-                onClick={() =>
-                  completeOnlineOrder({
-                    cash_box_operation_id: get(userData, 'cashbox.cashbox_operation_id'),
-                    cashbox_id: get(userData, 'cashbox.id'),
-                    sale_id: get(open, 'item.id'),
-                  })
-                }
+                onClick={() => {
+                  navigate(`/sales/new-sale/${get(darftChildList, 'data.data.id')}`)
+                  setChildOpen(false)
+                  setOpen(false)
+                }}
                 fullWidth
                 variant='contained'
                 type='submit'
