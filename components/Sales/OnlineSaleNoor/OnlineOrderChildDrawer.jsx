@@ -17,7 +17,7 @@ import { error, success } from '../../../utils/toast'
 import CustomImg from '../../CustomImg'
 import LoadingContainer from '../../LoadingContainer'
 import OnlineOrderChildItemsBox from './OnlineOrderChildItemsBox'
-
+import ifNotEmpty from '../../../utils/ifNotEmpty'
 const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
@@ -72,7 +72,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
     onSuccess: ({ data }) => {
       // refetchDraftList()
       setChildOpen(false)
-      // setOpen(false)
+      setOpen(false)
       success('Черновик удален!')
     },
     onError: (err) => {
@@ -154,6 +154,15 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
             <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
               {t('features')}
             </Typography>
+            {/* client_comment */}
+            <Box width={'100%'} bgcolor={'bg.10'} my={'8px'} borderRadius={'16px'} padding={'16px'}>
+              <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                Комментарий клиента
+              </Typography>
+              <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                {ifNotEmpty(get(darftChildList, 'data.data.client_comment'), '-')}
+              </Typography>
+            </Box>
             <Box display={'flex'} justifyContent={'space-between'}>
               <Box width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
                 <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>

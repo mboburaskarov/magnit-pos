@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${theme.palette.bunker[100]}`,
   },
 }))
-function OnlineSaleDrawer({ open, setOpen, cashBoxDetails }) {
+function OnlineSaleDrawer({ open, setOpen, cashBoxDetails, refetch }) {
   const { t } = useTranslation()
   const classes = useStyles()
   const [draftfilter, setDraftFilter] = useState(false)
@@ -103,7 +103,7 @@ function OnlineSaleDrawer({ open, setOpen, cashBoxDetails }) {
           </Box>
         </Box>
       ) : (
-        <OnlineOrderChildDrawer setChildOpen={setIsOpenChild} open={isOpenChild} setOpen={setOpen} />
+        <OnlineOrderChildDrawer setChildOpen={setIsOpenChild} refetchDraftList={refetch} open={isOpenChild} setOpen={setOpen} />
       )}
       <OnlineOrderFilter setRegions={() => {}} open={draftfilter} setOpen={setDraftFilter} />
     </Drawer>
