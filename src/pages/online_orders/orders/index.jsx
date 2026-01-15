@@ -30,7 +30,8 @@ function OnlineOrders() {
       end_date: getFilterEndDate(values),
       limit: values?.limit || 10,
       search: values?.search,
-      status: orderType === 'ALL' ? undefined : orderType,
+      status:
+        orderType == 'searching_courier' ? 2 : orderType == 'waiting_courier' ? 4 : orderType == 'completed' ? 3 : orderType == 'cancelled' ? -1 : undefined,
       offset: values?.offset || 0,
     }
   }, [values, orderType])
