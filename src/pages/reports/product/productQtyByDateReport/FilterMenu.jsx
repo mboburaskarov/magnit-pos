@@ -94,11 +94,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <Box padding={'0 2px'} maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'scroll'}>
-              <InputDatePicker required defaultValue={new Date()} name='date' id='date' showYearDropdown label='Дата' placeholder='Дата' />
-
-              <Box height={'20px'} />
-
+            <Box padding={'0 2px'} maxHeight={'calc(100vh - 280px)'} width={'100%'}>
               <LazySelect
                 slug='users'
                 boxStyle={{ width: '100%' }}
@@ -118,6 +114,9 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                 }}
                 filterOption={() => true}
               />
+              <Box height={'20px'} />
+              <InputDatePicker required defaultValue={new Date()} name='date' id='date' showYearDropdown label='Дата' placeholder='Дата' />
+
               <Box height={'20px'} />
             </Box>
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
