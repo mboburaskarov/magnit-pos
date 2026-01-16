@@ -1,21 +1,22 @@
-import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
-import getOptionsFromUrlParam from '@utils/getOptionsFromUrlParam';
-import SelectSimple from '@components/Select/SelectSimple';
-import { FormProvider, useForm } from 'react-hook-form';
-import { Box, Button, Typography } from '@mui/material';
-import LazySelect from '@components/Select/LazySelect';
-import InputRange from '@components/Inputs/InputRange';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { requests } from '@utils/requests';
-import CloseIcon from '@icons/CloseIcon';
-import { useTheme } from '@mui/styles';
-import { useQuery } from 'react-query';
-import { useEffect } from 'react';
-import { get } from 'lodash';
-import * as qs from 'qs';
-
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import getOptionsFromUrlParam from '@utils/getOptionsFromUrlParam'
+import SelectSimple from '@components/Select/SelectSimple'
+import { FormProvider, useForm } from 'react-hook-form'
+import { Box, Button, Typography } from '@mui/material'
+import LazySelect from '@components/Select/LazySelect'
+import InputRange from '@components/Inputs/InputRange'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { requests } from '@utils/requests'
+import CloseIcon from '@icons/CloseIcon'
+import { useTheme } from '@mui/styles'
+import { useQuery } from 'react-query'
+import { useEffect } from 'react'
+import { get } from 'lodash'
+import * as qs from 'qs'
+import InputDatePicker from '@components/Inputs/InputDatePicker'
+import dayjs from 'dayjs'
 
 export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -26,37 +27,16 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   const theme = useTheme()
 
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 100, offset: 0 }))
-  const { data: categories } = useQuery('categories', () => requests.getAllCategories({ id: values?.category_id }), {
-    enabled: Boolean(get(values, 'category_id', false)),
-  })
-  const { data: producers } = useQuery(['producers', values], () => requests.getProducer({ id: values?.producer_id }), {
-    enabled: Boolean(get(values, 'producer_id', false)),
-  })
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])
 
     const requestBody = {
-      category_id: data.category_id?.value || undefined,
-      category_name: data?.category_id?.name || undefined,
-      supply_price_from: data.supply_price_from || undefined,
-      supply_price_to: data.supply_price_to || undefined,
-      retail_price_from: data.retail_price_from || undefined,
-      retail_price_to: data.retail_price_to || undefined,
-      store_id: data.store_id?.value || undefined,
-      store_name: data.store_id?.name || undefined,
-      producer_id: data.producer_id?.value || undefined,
-      producer_name: data.producer_id?.name || undefined,
-      no_barcode: data.no_barcode?.id || undefined,
+      store_id: data.store_id?.value || get(shopList, 'data.data.data.0.id'),
+      store_name: data.date || dayjs(new Date()).format('YYYY-MM-DD'),
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
-    reset({
-      supply_price_to: null,
-      retail_price_to: null,
-      supply_price_from: null,
-      retail_price_from: null,
-    })
     setOpen(false)
     navigate(`/reports/product-qty-by-date${requestParams}`)
   }
@@ -64,48 +44,23 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   const onError = (err) => {
     console.error('err', err)
   }
+  console.log(shopList)
 
   useEffect(() => {
-    const { supply_price_to, no_barcode, retail_price_to, supply_price_from, retail_price_from, category_id, store_id, producer_id } = values
+    const { store_id, date } = values
 
     reset(
       {
-        category_id: category_id ? { name: values?.category_name, value: values?.category_id } : null,
-        producer_id: producer_id ? { name: values?.producer_name, value: values?.producer_id } : null,
-        store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
-        supply_price_to: supply_price_to || null,
-        retail_price_to: retail_price_to || null,
-        supply_price_from: supply_price_from || null,
-        retail_price_from: retail_price_from || null,
-        no_barcode: no_barcode ? getOptionsFromUrlParam(no_barcode, barcodeFilterList, 'name')[0] : null,
+        date: date ? new Date(date) : new Date(),
+        store_id: store_id
+          ? { name: values?.store_name, value: values?.store_id }
+          : { name: get(shopList, 'data.data.data.0.name'), value: get(shopList, 'data.data.data.0.id') },
       },
       { keepDirty: true }
     )
-  }, [
-    values?.producer_id,
-    values?.category_id,
-    values?.no_barcode,
-    values?.store_id,
-    values?.retail_price_to,
-    values?.retail_price_from,
-    values?.supply_price_to,
-    values?.supply_price_from,
-    categories,
-    producers,
-    shopList,
-    open,
-  ])
+  }, [values?.store_id, values?.data, shopList, open])
 
   const resetFilter = () => {
-    reset(
-      {
-        supply_price_to: null,
-        retail_price_to: null,
-        supply_price_from: null,
-        retail_price_from: null,
-      },
-      { keepDirty: true }
-    )
     reset()
     methods.setValue('')
     setOpen(false)
@@ -140,17 +95,8 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
             <Box padding={'0 2px'} maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'scroll'}>
-              <SelectSimple
-                fullWidth
-                id='nobarcode'
-                white
-                name='no_barcode'
-                minWidth='auto'
-                label={'Штрих-код'}
-                placeholder={'Bыберите статус'}
-                options={barcodeFilterList}
-                getOptionLabel={(el) => el.name}
-              />
+              <InputDatePicker required defaultValue={new Date()} name='date' id='date' showYearDropdown label='Дата' placeholder='Дата' />
+
               <Box height={'20px'} />
 
               <LazySelect
@@ -162,6 +108,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                 placeholder={t('Выберите Аптека')}
                 minWidth='auto'
                 isClearable={true}
+                required
                 label={t('input.store.label')}
                 request={requests.getAllStores}
                 filters={{ limit: 10 }}
@@ -170,68 +117,6 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                   return option.name
                 }}
                 filterOption={() => true}
-              />
-              <Box height={'20px'} />
-
-              <LazySelect
-                slug='users'
-                boxStyle={{ width: '100%' }}
-                id='category_id'
-                name='category_id'
-                isMulti={false}
-                label={t('input.category.label')}
-                placeholder={t('input.category.placeholder')}
-                minWidth='auto'
-                isClearable={true}
-                request={requests.getAllCategories}
-                filters={{ limit: 10 }}
-                control={methods.control}
-                getOptionLabel={(option) => {
-                  return option.name
-                }}
-                filterOption={() => true}
-              />
-              <Box height={'20px'} />
-
-              <LazySelect
-                slug='users'
-                boxStyle={{ width: '100%' }}
-                id='producer'
-                name='producer_id'
-                isMulti={false}
-                label={t('input.manufacturer.label')}
-                placeholder={t('input.manufacturer.placeholder')}
-                minWidth='auto'
-                isClearable={true}
-                request={requests.getProducer}
-                filters={{ limit: 10 }}
-                control={methods.control}
-                getOptionLabel={(option) => {
-                  return option.name
-                }}
-                filterOption={() => true}
-              />
-              <Box height={'20px'} />
-
-              <InputRange
-                fullWidth
-                id='prixwce'
-                label={t('input.supply_price.label')}
-                name1='supply_price_from'
-                name2='supply_price_to'
-                placeholder1={t('input.price.from')}
-                placeholder2={t('input.price.to')}
-              />
-              <Box height={'20px'} />
-
-              <InputRange
-                fullWidth
-                id='prixwce'
-                label={t('input.retail_price.label')}
-                name1='retail_price_from'
-                name2='retail_price_to'
-                placeholder1={t('input.price.from')}
-                placeholder2={t('input.price.to')}
               />
               <Box height={'20px'} />
             </Box>

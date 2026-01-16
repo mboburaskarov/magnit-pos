@@ -1,15 +1,15 @@
-import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
-import { products_statuses } from '@/assets/data/products-statuses';
-import StatusCell from '@components/AgGridTable/Cells/StatusCell';
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
-import StyledTooltip from '@components/StyledTooltip';
-import Highlighter from 'react-highlight-words';
-import { Box, Typography } from '@mui/material';
-import { useTheme } from '@mui/styles';
-import { get, head } from 'lodash';
-import { memo } from 'react';
-import dayjs from 'dayjs';
-
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import { products_statuses } from '@/assets/data/products-statuses'
+import StatusCell from '@components/AgGridTable/Cells/StatusCell'
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
+import StyledTooltip from '@components/StyledTooltip'
+import Highlighter from 'react-highlight-words'
+import { Box, Typography } from '@mui/material'
+import { useTheme } from '@mui/styles'
+import { get, head } from 'lodash'
+import { memo } from 'react'
+import dayjs from 'dayjs'
+import { formatCount } from '@components/Drawers/ProductDrawer/ProductMovementDashboard'
 
 const Image = ({ data, setImages }) => {
   return (
@@ -348,7 +348,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         colId: el.field,
         cellRenderer: memo((p) => (
           <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-            {p?.data?.units}
+            {formatCount(p?.data?.unit_quantity, p?.data?.unit_per_pack)}
           </Typography>
         )),
       }

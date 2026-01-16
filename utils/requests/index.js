@@ -372,6 +372,9 @@ export const requests = {
   //report
   getDiscountCartReport: (filter) => request.post(`v1/report/discount-card${qs.stringify(filter, { addQueryPrefix: true })}`),
   getDiscountCartReportExcel: (filter) => requestEXCEL.post(`v1/report/discount-card/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+  // /report/ostatok-by-date
+  getOstatokByDateReport: (filter) => request.post(`v1/report/ostatok-by-date${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getOstatokByDateReportExcel: (filter) => requestEXCEL.post(`v1/report/ostatok-by-date/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //customers
   createCustomer: (data) => request.post(`v1/customer`, data),
