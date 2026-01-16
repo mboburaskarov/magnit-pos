@@ -32,8 +32,10 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
     setRegions(data.regions || [])
 
     const requestBody = {
+      date: dayjs(data.date).format('YYYY-MM-DD') || dayjs(new Date()).format('YYYY-MM-DD'),
+
       store_id: data.store_id?.value || get(shopList, 'data.data.data.0.id'),
-      store_name: data.date || dayjs(new Date()).format('YYYY-MM-DD'),
+      store_name: data.store_name?.label || get(shopList, 'data.data.data.0.name'),
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 

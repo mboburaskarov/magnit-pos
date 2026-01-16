@@ -118,7 +118,7 @@ const CustomHeader = (props) => {
     </Box>
   )
 }
-export default function tableHeaderSelector({ productsColumns, values, setImages, editable = false, t, setOrderStoring, orderStoring, setOpenProductDrawer }) {
+export default function tableHeaderSelector({ productsColumns, values, setImages, editable = false, t, setOrderStoring, orderStoring }) {
   const theme = useTheme()
   const getDateColor = (date) => {
     if (date >= 90) return { color: theme.palette.green[700] }
@@ -127,15 +127,6 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
     if (date < 30) return { color: theme.palette.bunker[950] }
   }
   const columns = productsColumns?.map((el) => {
-    if (el.field === 'main_photo') {
-      return {
-        ...el,
-        headerName: t('table_columns.photo'),
-        colId: el.field,
-        suppressCellFlash: true,
-        cellRenderer: memo((p) => <Image setOpenErrorReason={() => {}} {...p} setImages={setImages} />),
-      }
-    }
     if (el.field === 'name') {
       return {
         ...el,
@@ -145,10 +136,7 @@ export default function tableHeaderSelector({ productsColumns, values, setImages
         headerName: t('table_columns.name'),
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box
-            sx={{ '& span': { color: 'orange.500', whiteSpace: 'pre-line' }, '& .highlighter': { color: 'orange.500' }, cursor: 'pointer' }}
-            onClick={() => setOpenProductDrawer(p.data.id)}
-          >
+          <Box sx={{ '& span': { color: 'orange.500', whiteSpace: 'pre-line' }, '& .highlighter': { color: 'orange.500' }, cursor: 'pointer' }}>
             <Highlighter highlightClassName='highlighter' searchWords={[values?.search]} autoEscape textToHighlight={`${p.data?.name}`} />
           </Box>
         )),

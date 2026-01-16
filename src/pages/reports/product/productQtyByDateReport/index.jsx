@@ -2,40 +2,31 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/red
 import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
 import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
 import AgGridTable from '@components/AgGridTable/AgGridTableSelectable'
-import ProductDrawer from '@components/Drawers/ProductDrawer'
 import LoadingContainer from '@components/LoadingContainer'
-import InputSwitch from '@components/Inputs/InputSwitch'
 import InputSearch from '@components/Inputs/InputSearch'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Box, Button, Typography } from '@mui/material'
 import { useQueryParams } from '@hooks/useQueryParams'
 import { useDispatch, useSelector } from 'react-redux'
 import StyledTooltip from '@components/StyledTooltip'
-import ConfirmDialog from '@components/ConfirmDialog'
 import { useEffect, useMemo, useState } from 'react'
-import ImageGallery from '@components/ImageGallery'
-import FilterMenuIcon from '@icons/FilterMenuIcon'
-import BigWarningIcon from '@icons/BigWarningIcon'
 import CheckAccess from '@components/CheckAccess'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import LeftArrowIcon from '@icons/LeftArrow'
-import BigTickIcon from '@icons/BigTickIcon'
 import { requests } from '@utils/requests'
-import ArrowDown from '@icons/ArrowDown'
-import { LoadingButton } from '@mui/lab'
 import { useTheme } from '@mui/styles'
-import { useQuery } from 'react-query'
-import ArrowUp from '@icons/ArrowUp'
+import { useMutation, useQuery } from 'react-query'
 import { get } from 'lodash'
 import dayjs from 'dayjs'
 
-import ProductDashboard from '../../../products/productDashboard'
 import tableHeaderSelector from './tableHeaderSelector'
-import FilterMenu from './FilterMenu'
+import LazySelect from '@components/Select/LazySelect'
+import InputDatePicker from '@components/Inputs/InputDatePicker'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { error } from '@utils/toast'
 
 export default function ProductsPage() {
-  const theme = useTheme()
   const methods = useForm()
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -43,26 +34,16 @@ export default function ProductsPage() {
   const { columns, loading } = useSelector((state) => state.ostatokByDateTableColumns)
   const { values } = useQueryParams()
   const user_data = useSelector((state) => state.user)
-  const [regions, setRegions] = useState([])
-  const [appType, setAppType] = useState('ALL')
-  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(false)
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
 
   const [offsetCount, setOffsetCount] = useState(0)
   const [controlleroffset, setControllerOffset] = useState(0)
-  const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [openProductDrawer, setOpenProductDrawer] = useState(false)
-  const [filterMenu, setFilterMenu] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
     values,
-    setOpenProductDrawer,
     editable: true,
-    setImages: setOpenImageGallery,
-    setOpenConfirmDialog,
     setOrderStoring,
     orderStoring,
   })
@@ -93,25 +74,19 @@ export default function ProductsPage() {
 
   const productsListFilter = useMemo(() => {
     return {
-      date: values?.date || dayjs(new Date()).format('YYYY-MM-DD'),
+      date: dayjs(methods.getValues('date')).format('YYYY-MM-DD') || dayjs(new Date()).format('YYYY-MM-DD'),
       limit: values?.limit || 10,
       search: values?.search,
       offset: controlleroffset || 0,
-      store_id: values?.store_id || get(shopList, 'data.data.data.0.id'),
+      store_id: methods.getValues('store_id')?.value || get(shopList, 'data.data.data.0.id'),
     }
-  }, [shopList, controlleroffset, orderStoring, values?.limit, values?.search, values?.store_id, values?.date])
+  }, [shopList, controlleroffset, orderStoring, values?.limit, values?.search, methods.watch('store_id'), methods.watch('date')])
   const {
     data: productsList,
     isLoading: productsListLoading,
     isFetching: isFetchingproductsList,
     refetch,
   } = useQuery(['productsList', productsListFilter], () => requests.getOstatokByDateReport(productsListFilter))
-
-  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(
-    ['statusCountList', values?.search, productsListFilter],
-    () => requests.getAllProductsStatusCount(productsListFilter),
-    { enabled: isShopListFetched }
-  )
 
   useEffect(() => {
     refetch()
@@ -123,7 +98,16 @@ export default function ProductsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [productsList?.data, values?.limit])
+  const { mutate: getOstatokByDateReportExcel, isLoading: isGetOstatokByDateReportExcel } = useMutation(requests.getOstatokByDateReportExcel, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.error(err)
 
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
@@ -181,33 +165,29 @@ export default function ProductsPage() {
               >
                 <InputSearch fullWidth id='producrs-search' name='search' placeholder={'Наименование продукта'} uncontrolled />
               </Box>
-              <Box width={'20px'} />
-
-              <Box minWidth={113} ml={'16px'}>
-                <Button
-                  sx={{
-                    height: '48px',
-                    padding: 0,
-                    bgcolor: '#fff',
-                    border: '1px solid #ECEDF2',
-                    color: 'dark.500',
-                    fontWeight: '500',
-                    fontSize: '16px',
-                    lineHeight: '24px',
-                    '& span': {
-                      mr: '12px',
-                    },
+              <Box display={'flex'} alignItems={'center'} minWidth={'500px'} ml={'10px'}>
+                <LazySelect
+                  slug='users'
+                  boxStyle={{ width: '100%' }}
+                  id='store'
+                  name='store_id'
+                  isMulti={false}
+                  placeholder={t('Выберите Аптека')}
+                  minWidth='auto'
+                  defaultValue={{ name: get(shopList, 'data.data.data.0.name'), value: get(shopList, 'data.data.data.0.id') }}
+                  isClearable={false}
+                  required
+                  // label={t('input.store.label')}
+                  request={requests.getAllStores}
+                  filters={{ limit: 10 }}
+                  control={methods.control}
+                  getOptionLabel={(option) => {
+                    return option.name
                   }}
-                  fullWidth
-                  startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                  variant='contained'
-                  color='secondary'
-                  onClick={() => setFilterMenu((prev) => !prev)}
-                >
-                  <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                    {t('filter_dialog.label')}
-                  </Typography>
-                </Button>
+                  filterOption={() => true}
+                />
+                <Box width={'20px'} />
+                <InputDatePicker required defaultValue={new Date()} name='date' id='date' noMarginTop showYearDropdown placeholder='Дата' />
               </Box>
             </Box>
 
@@ -228,9 +208,11 @@ export default function ProductsPage() {
               </CheckAccess>
             </Box>
           </Box>
-          <FilterMenu refetch={refetch} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
           <Box>
             <AgGridTable
+              fullDownload={() => getOstatokByDateReportExcel({ ...productsListFilter, offset: 0, limit: 1000000 })}
+              downloadByFilter={() => getOstatokByDateReportExcel(productsListFilter)}
+              isDownloading={isGetOstatokByDateReportExcel}
               id='products-main-table'
               alwaysShowHorizontalScroll={true}
               tableSettings
@@ -247,62 +229,11 @@ export default function ProductsPage() {
               }}
               fullInfoAboutCurrentPage
               resetTable={() => dispatch(resetTableHeader({ refetch }))}
-              status={appType}
+              status={'ALL'}
               isRefreshing={loading || isFetchingproductsList || productsListLoading}
             />
           </Box>
         </Box>
-        <ProductDrawer open={openProductDrawer} setImages={setOpenImageGallery} onClose={setOpenProductDrawer} />
-        <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
-        {openConfirmDialog && (
-          <ConfirmDialog
-            open={!!openConfirmDialog}
-            setOpen={setOpenConfirmDialog}
-            icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-            title={
-              openConfirmDialog?.type === 'activate'
-                ? 'Активировать продукт?'
-                : openConfirmDialog?.type === 'deactivate'
-                ? 'Деактивировать продукт?'
-                : 'Удалить продукт?'
-            }
-            desc={
-              openConfirmDialog?.type === 'activate'
-                ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
-                : openConfirmDialog?.type === 'deactivate'
-                ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-                : 'Вы хотите удалить продукт?'
-            }
-            supDesc={'“Azitromitsin 250 mg”'}
-            actions={
-              <>
-                <Button
-                  sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
-                  fullWidth
-                  color='secondary'
-                  variant='contained'
-                  onClick={() => setOpenConfirmDialog(null)}
-                >
-                  Нет
-                </Button>
-                <LoadingButton
-                  variant='contained'
-                  type='button'
-                  loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                  onClick={() =>
-                    openConfirmDialog?.type === 'activate'
-                      ? activateProduct(openConfirmDialog.id)
-                      : openConfirmDialog?.type === 'deactivate'
-                      ? deActivateProduct({ id: openConfirmDialog.id, appType: 'INACTIVE' })
-                      : deleteProduct({ data: [openConfirmDialog.id] })
-                  }
-                >
-                  Да, удалить
-                </LoadingButton>
-              </>
-            }
-          />
-        )}
       </FormProvider>
     </LoadingContainer>
   )
