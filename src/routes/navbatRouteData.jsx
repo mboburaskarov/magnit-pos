@@ -4,6 +4,7 @@ import KatalogIcon from '../assets/icons/navbar/KatalogIcon'
 import ClientsIcon from '../assets/icons/navbar/ClientsIcon'
 import ReportIcon from '../assets/icons/navbar/ReportIcon'
 import SaleIcon from '../assets/icons/navbar/SaleIcon'
+import OnlineSaleNoorIcon from '@/assets/icons/OnlineSaleNoorIcon'
 
 export const navbatRouteData = [
   {
@@ -107,6 +108,13 @@ export const navbatRouteData = [
         href: '/sales/cash-shifts',
       },
     ],
+  },
+  {
+    label: 'navbar.online_orders',
+    id: '5',
+    icon: <OnlineSaleNoorIcon />,
+    href: '/online-orders/orders',
+    аctive: '/online-orders/orders*',
   },
   {
     label: 'navbar.clients',

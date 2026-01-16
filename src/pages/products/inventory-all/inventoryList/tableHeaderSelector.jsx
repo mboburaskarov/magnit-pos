@@ -267,11 +267,11 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         colId: el.field,
         cellRenderer: memo(({ data }) => (
           <Box width={'100%'} display='flex' justifyContent={'center'} alignItems={'center'}>
-            <CheckAccess id={'delete-inventory'}>
+            {/* <CheckAccess id={'delete-inventory'}>
               <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 40, height: 40, borderRadius: 3, p: '8px' }}>
                 <DeleteIcon width='18px' />
               </IconButton>
-            </CheckAccess>
+            </CheckAccess> */}
           </Box>
         )),
       }

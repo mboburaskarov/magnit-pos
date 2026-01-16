@@ -1534,7 +1534,7 @@ function NewSaleV2() {
       <ChangeShift open={isOpenChangeShift} setOpen={setIsOpenChangeShift} />
       <DraftDrawer cashBoxDetails={cashBoxDetails} open={isOpenDraft} setOpen={setIsOpenDraft} />
       <BonusProductDrawer cashBoxDetails={cashBoxDetails} open={isOpenBonusProductDrawer} setOpen={setIsOpenBonusProductDrawer} />
-      <OnlineSaleDrawer cashBoxDetails={cashBoxDetails} open={isOpenNoorDrawer} setOpen={setIsOpenNoorDrawer} />
+      <OnlineSaleDrawer cashBoxDetails={cashBoxDetails} refetch={refetchcartItemsList} open={isOpenNoorDrawer} setOpen={setIsOpenNoorDrawer} />
       <ReturnExchangeDrawer cashBoxDetails={cashBoxDetails} open={isOpenReturnExchange} setOpen={setIsOpenReturnExchange} />
       <SendRejectedProductDrawer
         setOpenRejectConfirmDialog={setOpenRejectConfirmDialog}

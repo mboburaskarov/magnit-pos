@@ -6,6 +6,13 @@ import { useTranslation } from 'react-i18next'
 import ArrowRightIcon from '../../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../../src/assets/icons/BagOutline'
 import thousandDivider from '../../../utils/thousandDivider'
+export const onlineStatus = [
+  { title: 'Новый', value: 1, color: '#6489ff' },
+  { title: 'Поиск курьера', value: 2, color: '#ff963b' },
+  { title: 'Завершено', value: 3, color: '#00972e' },
+  { title: 'Ожидает курьера', value: 4, color: '#a7a7a7' },
+  { title: 'Отменен', value: -1, color: '#ff0000' },
+]
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {
     backgroundColor: '#fff ',
@@ -62,9 +69,23 @@ function OnlineOrderParentItemsBox({ setIsOpenChild, item }) {
           <Typography mb={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
             {t('Онлайн-продажи')} #{get(item, 'sale_number')}
           </Typography>
-          <Typography fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'} color={'bunker.500'}>
-            {dayjs(get(item, 'created_at')).format('DD.MM.YYYY | HH:mm:ss')}
-          </Typography>
+          <Box sx={{ display: 'flex' }}>
+            <Typography fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'} color={'bunker.500'}>
+              {dayjs(get(item, 'created_at')).format('DD.MM.YYYY | HH:mm:ss')}
+            </Typography>
+            <Typography
+              fontSize={'12px'}
+              borderRadius={'16px'}
+              p={'0 10px'}
+              fontWeight={'500'}
+              ml={'10px'}
+              bgcolor={onlineStatus.find((el) => el.value === get(item, 'online_status'))?.color}
+              lineHeight={'20px'}
+              color={'white'}
+            >
+              {onlineStatus.find((el) => el.value === get(item, 'online_status'))?.title}
+            </Typography>
+          </Box>
         </Box>
       </Box>
       <Box display={'flex'}>

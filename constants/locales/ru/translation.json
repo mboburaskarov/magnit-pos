@@ -72,6 +72,11 @@
   "switch.title.shortage_count": "Недостача",
   "switch.title.surplus_count": "Излишек",
   "switch.title.zero_price": "Нулевая цена",
+  "switch.title.waiting": "Ожидающие",
+  "switch.title.waiting_courier": "Ожидающие курьера",
+  "switch.title.searching_courier": "Поиск курьера",
+  "switch.title.completed": "Завершено",
+  "switch.title.cancelled": "Отменен",
 
   "switch.title.total_count": "Общий",
   "components.no_options": "Нет вариантов",
@@ -128,6 +133,7 @@
   "navbar.stores": "Аптеки",
   "navbar.activity": "Журналы действий",
   "navbar.ostatki": "Товарооборот аптеки",
+  "navbar.online_orders": "Онлайн заказы",
 
   "change_password.label": "Change Password",
   "menu.clients.new.male": "Мужской",

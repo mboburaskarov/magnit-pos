@@ -11,6 +11,13 @@ import NotificationSmallIcon from '../../assets/icons/NotificationSmallIcon'
 import UserFilledIcon from '../../assets/icons/UserFilledIcon'
 import LogOutIcon from '../../assets/icons/logOutIcon'
 import { headerStyles } from './HeaderStyles'
+import useGlobalWebSocket from '@/hooks/useGlobalWebSocket'
+import { useState } from 'react'
+import { useQuery } from 'react-query'
+import { requests } from '@utils/requests'
+import notificationAudio from '@/assets/audio/notification.mp3'
+import MessagesDrawer from './Messages'
+import { success } from '@utils/toast'
 
 const DialogRowBox = ({ children, onClick }) => (
   <Box
@@ -37,9 +44,40 @@ function LayoutHeader() {
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
   const navigate = useNavigate()
+  const [message, setMessage] = useState(null)
+  const [openMessage, setOpenMessage] = useState(false)
   const firstName = userData?.first_name
   const lastName = userData?.last_name
+  const NotificationAudio = new Audio(notificationAudio)
 
+  const {
+    data: noorOrderCount,
+    refetch: refetchNoorOrderCount,
+    isLoading,
+  } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
+    onSuccess: ({ data }) => {
+      setMessage(get(data, 'data.count', 0))
+      if (message > 0) {
+        NotificationAudio.play()
+      }
+    },
+  })
+  useGlobalWebSocket({
+    onMessage: (data) => {
+      if (data?.event == 'noor_order' || data?.event == 'noor_order_cancel') {
+        refetchNoorOrderCount()
+
+        if (data?.event == 'noor_order_cancel') {
+          success(`${data?.data?.header_ru} - ${data?.data?.content_ru}`)
+          return
+        }
+        if (data?.event == 'noor_order') {
+          success(`${data?.data?.header_ru} - ${data?.data?.content_ru}`)
+          return
+        }
+      }
+    },
+  })
   const classes = headerStyles({ isOpen })
   const logout = () => {
     localStorage.removeItem('access_token')
@@ -170,33 +208,40 @@ function LayoutHeader() {
             width: '48px',
             height: '48px',
             borderRadius: '100%',
+            cursor: 'pointer',
             position: 'relative',
             backgroundColor: 'gray.50',
           }}
+          onClick={() => setOpenMessage(true)}
         >
           <NotificationSmallIcon />
-          <Typography
-            sx={{
-              width: '40px',
-              height: '20px',
-              backgroundColor: '#A53EFF',
-              color: '#fff',
-              fontSize: '10px',
-              fontWeight: '600',
-              borderRadius: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              ml: '5px',
-              position: 'absolute',
-              top: '-6px',
-              right: '-10px',
-            }}
-          >
-            soon
-          </Typography>
+          {message ? (
+            <Typography
+              sx={{
+                width: '20px',
+                height: '20px',
+                backgroundColor: '#fe5000',
+                color: '#fff',
+                fontSize: '10px',
+                fontWeight: '600',
+                borderRadius: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                ml: '5px',
+                position: 'absolute',
+                top: '-4px',
+                right: '-7px',
+              }}
+            >
+              {message}
+            </Typography>
+          ) : (
+            <></>
+          )}
         </Box>
       </Box>
+      <MessagesDrawer isLoading={isLoading} messagesCount={message} open={openMessage} onClose={setOpenMessage} />
     </Box>
   )
 }

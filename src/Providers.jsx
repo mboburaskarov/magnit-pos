@@ -28,6 +28,7 @@ import paletteDark from './assets/theme/paletteDark'
 import { use } from 'react'
 import i18n from './i18n'
 import { I18nextProvider } from 'react-i18next'
+import WebSocketProvider from './context/WebSocketContext'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -83,16 +84,18 @@ function Providers({ children }) {
   return (
     <Provider store={store}>
       <I18nextProvider i18n={i18n}>
-        <QueryClientProvider client={queryClient}>
-          <CacheProvider value={emotionCache}>
-            <ThemeProvider theme={muiTheme}>
-              <StyledEngineProvider injectFirst>
-                <ErrorBoundary>{children}</ErrorBoundary>
-              </StyledEngineProvider>
-            </ThemeProvider>
-          </CacheProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
+        <WebSocketProvider>
+          <QueryClientProvider client={queryClient}>
+            <CacheProvider value={emotionCache}>
+              <ThemeProvider theme={muiTheme}>
+                <StyledEngineProvider injectFirst>
+                  <ErrorBoundary>{children}</ErrorBoundary>
+                </StyledEngineProvider>
+              </ThemeProvider>
+            </CacheProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        </WebSocketProvider>
       </I18nextProvider>
     </Provider>
   )

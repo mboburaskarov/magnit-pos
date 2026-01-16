@@ -1,4 +1,6 @@
 import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import useGlobalWebSocket from '@hooks/useGlobalWebSocket'
+import useIntersectionObserver from '@hooks/useIntersectionObserver'
 import SingleLineChart from '@components/Charts/SingleLineChart'
 import CheckAccess from '@components/CheckAccess'
 import LoadingContainer from '@components/LoadingContainer'
@@ -169,6 +171,7 @@ export const dashboardBoxData = [
 export default function DashboarPage() {
   dayjs.extend(isoWeek)
   const { values } = useQueryParams()
+
   const [detailing, setDetaling] = useState('week')
   const [selectedAllB2B, setSelectedAllB2B] = useState(false)
   const [selectedShops, setSelectedShops] = useState('all')
@@ -216,18 +219,39 @@ export default function DashboarPage() {
   ])
 
   const { data: chartData, isLoading: isChartLoading } = useQuery(['chartData', dashboard_filter], () => requests.dashboradChart(dashboard_filter))
-  const { data: topStores, isLoading: isTopStoreLoading } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter))
-  const { data: payments, isLoading: isPaymentsLoading } = useQuery(['payments', dashboard_filter], () => requests.dashboradPayments(dashboard_filter))
-  const { data: transaction, isLoading: isTransactionLoading } = useQuery(['transaction', dashboard_filter], () =>
-    requests.dashboradTransaction(dashboard_filter)
+
+  const { targetRef: topsBoxRef, hasIntersected: shouldLoadTopsData } = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: '200px',
+  })
+
+  const { data: topStores, isLoading: isTopStoreLoading } = useQuery(['TopStores', dashboard_filter], () => requests.dashboradTopStores(dashboard_filter), {
+    enabled: shouldLoadTopsData,
+  })
+  const { data: payments, isLoading: isPaymentsLoading } = useQuery(['payments', dashboard_filter], () => requests.dashboradPayments(dashboard_filter), {
+    enabled: shouldLoadTopsData,
+  })
+  const { data: transaction, isLoading: isTransactionLoading } = useQuery(
+    ['transaction', dashboard_filter],
+    () => requests.dashboradTransaction(dashboard_filter),
+    { enabled: shouldLoadTopsData }
   )
-  const { data: topProducts, isLoading: isTopProductsLoading } = useQuery(['TopProducts', dashboard_filter], () =>
-    requests.dashboradTopProducts(dashboard_filter)
+  const { data: topProducts, isLoading: isTopProductsLoading } = useQuery(
+    ['TopProducts', dashboard_filter],
+    () => requests.dashboradTopProducts(dashboard_filter),
+    { enabled: shouldLoadTopsData }
   )
-  const { data: topBonusProducts, isLoading: isTopBonusProductLoading } = useQuery(['TopBonusProducts', dashboard_filter], () =>
-    requests.dashboradTopBonusProducts(dashboard_filter)
+  const { data: topBonusProducts, isLoading: isTopBonusProductLoading } = useQuery(
+    ['TopBonusProducts', dashboard_filter],
+    () => requests.dashboradTopBonusProducts(dashboard_filter),
+    { enabled: shouldLoadTopsData }
   )
-  const { data: topSellers, isLoading: isTopSellerLoading } = useQuery(['TopSellers', dashboard_filter], () => requests.dashboradTopSellers(dashboard_filter))
+  const { data: topSellers, isLoading: isTopSellerLoading } = useQuery(['TopSellers', dashboard_filter], () => requests.dashboradTopSellers(dashboard_filter), {
+    enabled: shouldLoadTopsData,
+  })
+
+  const isTopsDataLoading =
+    isTopStoreLoading || isPaymentsLoading || isTransactionLoading || isTopProductsLoading || isTopBonusProductLoading || isTopSellerLoading
 
   const toFixData = useMemo(
     () =>
@@ -362,7 +386,17 @@ export default function DashboarPage() {
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{ padding: '0 20px' }}>
+      <Box sx={{ padding: '0 20px' }} ref={topsBoxRef}>
+        {!shouldLoadTopsData && (
+          <Box sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
+            <Typography>Scroll down to load statistics...</Typography>
+          </Box>
+        )}
+        {shouldLoadTopsData && isTopsDataLoading && (
+          <Box sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
+            <Typography>Loading statistics...</Typography>
+          </Box>
+        )}
         <CheckAccess id={'dashboard-transactions-vendor'}>
           <Grid width={'100%'} container spacing={2}>
             <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={2}>

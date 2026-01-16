@@ -83,6 +83,11 @@
   "switch.title.shortage_count": "Kamchilik",
   "switch.title.surplus_count": "Ortiqcha",
   "switch.title.total_count": "Umumiy",
+  "switch.title.waiting": "Kutilyotgan",
+  "switch.title.waiting_courier": "Kuryer kutilyotgan",
+  "switch.title.searching_courier": "Kuryer qidirish",
+  "switch.title.completed": "Yakunlangan",
+  "switch.title.cancelled": "Bekorqilingan",
 
   "table_columns.photo": "Rasm",
   "table_columns.name": "Nomi",
@@ -132,6 +137,7 @@
   "navbar.companies": "Kompaniyalar",
   "navbar.activity": "Harakat jurnallari",
   "navbar.ostatki": "Dorixona tovar aylanmasi",
+  "navbar.online_orders": "Online buyurtmalar",
 
   "change_password.label": "Parolni o‘zgartirish",
   "menu.clients.new.male": "Erkak",

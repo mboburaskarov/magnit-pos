@@ -1,70 +1,49 @@
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/productsTableColumns';
-import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
-import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
-import AgGridTable from '@components/AgGridTable/AgGridTableSelectable';
-import ProductDrawer from '@components/Drawers/ProductDrawer';
-import LoadingContainer from '@components/LoadingContainer';
-import InputSwitch from '@components/Inputs/InputSwitch';
-import InputSearch from '@components/Inputs/InputSearch';
-import { FormProvider, useForm } from 'react-hook-form';
-import { Box, Button, Typography } from '@mui/material';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useDispatch, useSelector } from 'react-redux';
-import StyledTooltip from '@components/StyledTooltip';
-import ConfirmDialog from '@components/ConfirmDialog';
-import { useEffect, useMemo, useState } from 'react';
-import ImageGallery from '@components/ImageGallery';
-import FilterMenuIcon from '@icons/FilterMenuIcon';
-import BigWarningIcon from '@icons/BigWarningIcon';
-import CheckAccess from '@components/CheckAccess';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import LeftArrowIcon from '@icons/LeftArrow';
-import BigTickIcon from '@icons/BigTickIcon';
-import { requests } from '@utils/requests';
-import ArrowDown from '@icons/ArrowDown';
-import { LoadingButton } from '@mui/lab';
-import { useTheme } from '@mui/styles';
-import { useQuery } from 'react-query';
-import ArrowUp from '@icons/ArrowUp';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/ostatokByDateTableColumns'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import AgGridTable from '@components/AgGridTable/AgGridTableSelectable'
+import LoadingContainer from '@components/LoadingContainer'
+import InputSearch from '@components/Inputs/InputSearch'
+import { FormProvider, useForm } from 'react-hook-form'
+import { Box, Button, Typography } from '@mui/material'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { useDispatch, useSelector } from 'react-redux'
+import StyledTooltip from '@components/StyledTooltip'
+import { useEffect, useMemo, useState } from 'react'
+import CheckAccess from '@components/CheckAccess'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import LeftArrowIcon from '@icons/LeftArrow'
+import { requests } from '@utils/requests'
+import { useTheme } from '@mui/styles'
+import { useMutation, useQuery } from 'react-query'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
-import ProductDashboard from '../../../products/productDashboard';
-import tableHeaderSelector from './tableHeaderSelector';
-import FilterMenu from './FilterMenu';
-
+import tableHeaderSelector from './tableHeaderSelector'
+import LazySelect from '@components/Select/LazySelect'
+import InputDatePicker from '@components/Inputs/InputDatePicker'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { error } from '@utils/toast'
 
 export default function ProductsPage() {
-  const theme = useTheme()
   const methods = useForm()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { columns, loading } = useSelector((state) => state.productsTableColumns)
+  const { columns, loading } = useSelector((state) => state.ostatokByDateTableColumns)
   const { values } = useQueryParams()
   const user_data = useSelector((state) => state.user)
-  const [regions, setRegions] = useState([])
-  const [appType, setAppType] = useState('ALL')
-  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(false)
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
-
+  const [isStoreSelected, setIsStoreSelected] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
   const [controlleroffset, setControllerOffset] = useState(0)
-  const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [openProductDrawer, setOpenProductDrawer] = useState(false)
-  const [filterMenu, setFilterMenu] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
   const tableColumns = tableHeaderSelector({
     productsColumns: columns,
     t,
     values,
-    setOpenProductDrawer,
     editable: true,
-    setImages: setOpenImageGallery,
-    setOpenConfirmDialog,
     setOrderStoring,
     orderStoring,
   })
@@ -91,68 +70,28 @@ export default function ProductsPage() {
   useEffect(() => {
     setControllerOffset(0)
   }, [values?.search])
+  const { data: shopList, isFetched: isShopListFetched } = useQuery('shopList', () => requests.getAllStores({ limit: 100, offset: 0 }))
 
   const productsListFilter = useMemo(() => {
-    const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
-    const ready_end_date = dayjs(`${values?.end_date} ${values?.to_time}:59`)
+    if (methods.getValues('store_id')?.value) {
+      setIsStoreSelected(true)
+    } else {
+      setIsStoreSelected(false)
+    }
     return {
-      start_date: values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00'),
-      end_date:
-        values?.end_date && values?.to_time
-          ? ready_start_date?.isSame(ready_end_date)
-            ? dayjs(`${values?.start_date} 23:59:59`).format()
-            : ready_end_date.format()
-          : null,
+      date: dayjs(methods.getValues('date')).format('YYYY-MM-DD') || dayjs(new Date()).format('YYYY-MM-DD'),
       limit: values?.limit || 10,
       search: values?.search,
       offset: controlleroffset || 0,
-      regions: regions?.length ? regions?.map((item) => item?._id) : undefined,
-      store_id: values?.store_id,
-      category_id: values?.category_id,
-      producer_id: values?.producer_id,
-      supply_price_to: values?.supply_price_to,
-      retail_price_to: values?.retail_price_to,
-      region: values?.region_id,
-      order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
-
-      supply_price_from: values?.supply_price_from,
-      retail_price_from: values?.retail_price_from,
-      no_barcode: values?.no_barcode == '1' ? true : false,
-      isExpress: values?.isExpress,
-      ...(appType !== 'ALL' && { status: appType }),
+      store_id: methods.getValues('store_id')?.value,
     }
-  }, [
-    appType,
-    controlleroffset,
-    orderStoring,
-    values?.limit,
-    values?.search,
-    values?.producer_id,
-    values?.category_id,
-    values?.store_id,
-    values?.no_barcode,
-    values?.supply_price_to,
-    values?.retail_price_to,
-    values?.supply_price_from,
-    values?.retail_price_from,
-    values?.region_id,
-    values?.isExpress,
-    values?.start_date,
-    values?.end_date,
-    regions,
-    values?.from_time,
-    values?.to_time,
-  ])
+  }, [shopList, controlleroffset, orderStoring, values?.limit, values?.search, methods.watch('store_id'), methods.watch('date')])
   const {
     data: productsList,
     isLoading: productsListLoading,
     isFetching: isFetchingproductsList,
     refetch,
-  } = useQuery(['productsList', productsListFilter], () => requests.getAllProducts(productsListFilter))
-
-  const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['statusCountList', values?.search, productsListFilter], () =>
-    requests.getAllProductsStatusCount(productsListFilter)
-  )
+  } = useQuery(['productsList', productsListFilter], () => requests.getOstatokByDateReport(productsListFilter))
 
   useEffect(() => {
     refetch()
@@ -164,7 +103,16 @@ export default function ProductsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [productsList?.data, values?.limit])
+  const { mutate: getOstatokByDateReportExcel, isLoading: isGetOstatokByDateReportExcel } = useMutation(requests.getOstatokByDateReportExcel, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.error(err)
 
+      error('Ошибка при скачать excel!')
+    },
+  })
   return (
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
@@ -206,44 +154,8 @@ export default function ProductsPage() {
                 Остаток на дату по аптекам
               </Typography>
             </Box>
-            <Box
-              sx={{
-                m: 'auto 0',
-                userSelect: 'none !important',
-                cursor: 'pointer',
-                '& > p': {
-                  cursor: 'pointer',
-                  userSelect: 'none !important',
-                },
-              }}
-              display={'flex'}
-              onClick={() => setIsOpenStatDashboard((p) => !p)}
-            >
-              {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
-              <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
-            </Box>
           </Box>
-          {isOpenStatDashboard && <ProductDashboard data={get(statusCountList, 'data.data', 0)} />}
 
-          <Box minWidth={320} mt={'10px'} sx={{ display: 'flex', justifyContent: 'center' }}>
-            <InputSwitch
-              uncontrolled
-              id='app-type'
-              name='app-type'
-              value={appType}
-              defaultValue='ALL'
-              onChange={(e) => setAppType(e)}
-              options={[
-                { title: t('switch.title.all'), value: 'ALL', count: get(statusCountList, 'data.data.total_quantity', 0) },
-                { title: t('switch.title.active'), value: 'active', count: get(statusCountList, 'data.data.active_count', 0) },
-                { title: t('switch.title.inactive'), value: 'inactive', count: get(statusCountList, 'data.data.inactive_count', 0) },
-                { title: t('switch.title.less_amount'), value: 'low-stock', count: get(statusCountList, 'data.data.low_stock_count', 0) },
-                { title: t('switch.title.empty'), value: 'zero-stock', count: get(statusCountList, 'data.data.zero_stock_count', 0) },
-                { title: t('switch.title.less_date'), value: 'imminent', count: get(statusCountList, 'data.data.imminent_count', 0) },
-                { title: t('switch.title.outofdate'), value: 'expired', count: get(statusCountList, 'data.data.expired_count', 0) },
-              ]}
-            />
-          </Box>
           <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
             <Box width='100%' display={'flex'}>
               <Box
@@ -256,36 +168,30 @@ export default function ProductsPage() {
                   },
                 }}
               >
-                <InputSearch fullWidth id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
+                <InputSearch fullWidth id='producrs-search' name='search' placeholder={'Наименование продукта'} uncontrolled />
               </Box>
-              <Box width={'20px'} />
-              <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
-
-              <Box minWidth={113} ml={'16px'}>
-                <Button
-                  sx={{
-                    height: '48px',
-                    padding: 0,
-                    bgcolor: '#fff',
-                    border: '1px solid #ECEDF2',
-                    color: 'dark.500',
-                    fontWeight: '500',
-                    fontSize: '16px',
-                    lineHeight: '24px',
-                    '& span': {
-                      mr: '12px',
-                    },
+              <Box display={'flex'} alignItems={'center'} minWidth={'500px'} ml={'10px'}>
+                <LazySelect
+                  slug='users'
+                  boxStyle={{ width: '100%' }}
+                  id='store'
+                  name='store_id'
+                  isMulti={false}
+                  placeholder={t('Выберите Аптека')}
+                  minWidth='auto'
+                  isClearable={false}
+                  required
+                  // label={t('input.store.label')}
+                  request={requests.getAllStores}
+                  filters={{ limit: 10 }}
+                  control={methods.control}
+                  getOptionLabel={(option) => {
+                    return option.name
                   }}
-                  fullWidth
-                  startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                  variant='contained'
-                  color='secondary'
-                  onClick={() => setFilterMenu((prev) => !prev)}
-                >
-                  <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                    {t('filter_dialog.label')}
-                  </Typography>
-                </Button>
+                  filterOption={() => true}
+                />
+                <Box width={'20px'} />
+                <InputDatePicker required defaultValue={new Date()} name='date' id='date' noMarginTop showYearDropdown placeholder='Дата' />
               </Box>
             </Box>
 
@@ -306,80 +212,47 @@ export default function ProductsPage() {
               </CheckAccess>
             </Box>
           </Box>
-          <FilterMenu refetch={refetch} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
-          <Box>
-            <AgGridTable
-              id='products-main-table'
-              alwaysShowHorizontalScroll={true}
-              tableSettings
-              canCellClick={true}
-              enableFillHandle={true}
-              columns={tableColumns}
-              data={productsList?.data?.data?.data || []}
-              totalCount={productsList?.data?.data?._meta?.total_count || 0}
-              isDataLoading={isFetchingproductsList || productsListLoading}
-              offsetCount={offsetCount}
-              updaterAction={(newData) => {
-                if (newData) dispatch(updateTableHeader(newData))
+          {isStoreSelected ? (
+            <Box>
+              <AgGridTable
+                fullDownload={() => getOstatokByDateReportExcel({ ...productsListFilter, offset: 0, limit: 1000000 })}
+                downloadByFilter={() => getOstatokByDateReportExcel(productsListFilter)}
+                isDownloading={isGetOstatokByDateReportExcel}
+                id='products-main-table'
+                alwaysShowHorizontalScroll={true}
+                tableSettings
+                canCellClick={true}
+                uniqId='product_id'
+                enableFillHandle={true}
+                columns={tableColumns}
+                data={productsList?.data?.data?.data || []}
+                totalCount={productsList?.data?.data?._meta?.total_count || 0}
+                isDataLoading={isFetchingproductsList || productsListLoading}
+                offsetCount={offsetCount}
+                updaterAction={(newData) => {
+                  if (newData) dispatch(updateTableHeader(newData))
+                }}
+                fullInfoAboutCurrentPage
+                resetTable={() => dispatch(resetTableHeader({ refetch }))}
+                status={'ALL'}
+                isRefreshing={loading || isFetchingproductsList || productsListLoading}
+              />
+            </Box>
+          ) : (
+            <Box
+              height={'80vh'}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
-              fullInfoAboutCurrentPage
-              resetTable={() => dispatch(resetTableHeader({ refetch }))}
-              status={appType}
-              isRefreshing={loading || isFetchingproductsList || productsListLoading}
-            />
-          </Box>
+            >
+              <Typography fontWeight={700} fontSize={'22px'} lineHeight={'40px'} color={'balck'}>
+                Вам нужно выбрать аптеку, чтобы получить отчет.
+              </Typography>
+            </Box>
+          )}
         </Box>
-        <ProductDrawer open={openProductDrawer} setImages={setOpenImageGallery} onClose={setOpenProductDrawer} />
-        <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
-        {openConfirmDialog && (
-          <ConfirmDialog
-            open={!!openConfirmDialog}
-            setOpen={setOpenConfirmDialog}
-            icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-            title={
-              openConfirmDialog?.type === 'activate'
-                ? 'Активировать продукт?'
-                : openConfirmDialog?.type === 'deactivate'
-                ? 'Деактивировать продукт?'
-                : 'Удалить продукт?'
-            }
-            desc={
-              openConfirmDialog?.type === 'activate'
-                ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
-                : openConfirmDialog?.type === 'deactivate'
-                ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-                : 'Вы хотите удалить продукт?'
-            }
-            supDesc={'“Azitromitsin 250 mg”'}
-            actions={
-              <>
-                <Button
-                  sx={{ bgcolor: '#fff !important', height: 48, border: '1px solid #ECEDF2' }}
-                  fullWidth
-                  color='secondary'
-                  variant='contained'
-                  onClick={() => setOpenConfirmDialog(null)}
-                >
-                  Нет
-                </Button>
-                <LoadingButton
-                  variant='contained'
-                  type='button'
-                  loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                  onClick={() =>
-                    openConfirmDialog?.type === 'activate'
-                      ? activateProduct(openConfirmDialog.id)
-                      : openConfirmDialog?.type === 'deactivate'
-                      ? deActivateProduct({ id: openConfirmDialog.id, appType: 'INACTIVE' })
-                      : deleteProduct({ data: [openConfirmDialog.id] })
-                  }
-                >
-                  Да, удалить
-                </LoadingButton>
-              </>
-            }
-          />
-        )}
       </FormProvider>
     </LoadingContainer>
   )
