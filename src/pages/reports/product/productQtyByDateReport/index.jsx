@@ -35,7 +35,7 @@ export default function ProductsPage() {
   const { values } = useQueryParams()
   const user_data = useSelector((state) => state.user)
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
-
+  const [isStoreSelected, setIsStoreSelected] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
   const [controlleroffset, setControllerOffset] = useState(0)
 
@@ -73,12 +73,17 @@ export default function ProductsPage() {
   const { data: shopList, isFetched: isShopListFetched } = useQuery('shopList', () => requests.getAllStores({ limit: 100, offset: 0 }))
 
   const productsListFilter = useMemo(() => {
+    if (methods.getValues('store_id')?.value) {
+      setIsStoreSelected(true)
+    } else {
+      setIsStoreSelected(false)
+    }
     return {
       date: dayjs(methods.getValues('date')).format('YYYY-MM-DD') || dayjs(new Date()).format('YYYY-MM-DD'),
       limit: values?.limit || 10,
       search: values?.search,
       offset: controlleroffset || 0,
-      store_id: methods.getValues('store_id')?.value || get(shopList, 'data.data.data.0.id'),
+      store_id: methods.getValues('store_id')?.value,
     }
   }, [shopList, controlleroffset, orderStoring, values?.limit, values?.search, methods.watch('store_id'), methods.watch('date')])
   const {
@@ -174,7 +179,6 @@ export default function ProductsPage() {
                   isMulti={false}
                   placeholder={t('Выберите Аптека')}
                   minWidth='auto'
-                  defaultValue={{ name: get(shopList, 'data.data.data.0.name'), value: get(shopList, 'data.data.data.0.id') }}
                   isClearable={false}
                   required
                   // label={t('input.store.label')}
@@ -208,31 +212,46 @@ export default function ProductsPage() {
               </CheckAccess>
             </Box>
           </Box>
-          <Box>
-            <AgGridTable
-              fullDownload={() => getOstatokByDateReportExcel({ ...productsListFilter, offset: 0, limit: 1000000 })}
-              downloadByFilter={() => getOstatokByDateReportExcel(productsListFilter)}
-              isDownloading={isGetOstatokByDateReportExcel}
-              id='products-main-table'
-              alwaysShowHorizontalScroll={true}
-              tableSettings
-              canCellClick={true}
-              uniqId='product_id'
-              enableFillHandle={true}
-              columns={tableColumns}
-              data={productsList?.data?.data?.data || []}
-              totalCount={productsList?.data?.data?._meta?.total_count || 0}
-              isDataLoading={isFetchingproductsList || productsListLoading}
-              offsetCount={offsetCount}
-              updaterAction={(newData) => {
-                if (newData) dispatch(updateTableHeader(newData))
+          {isStoreSelected ? (
+            <Box>
+              <AgGridTable
+                fullDownload={() => getOstatokByDateReportExcel({ ...productsListFilter, offset: 0, limit: 1000000 })}
+                downloadByFilter={() => getOstatokByDateReportExcel(productsListFilter)}
+                isDownloading={isGetOstatokByDateReportExcel}
+                id='products-main-table'
+                alwaysShowHorizontalScroll={true}
+                tableSettings
+                canCellClick={true}
+                uniqId='product_id'
+                enableFillHandle={true}
+                columns={tableColumns}
+                data={productsList?.data?.data?.data || []}
+                totalCount={productsList?.data?.data?._meta?.total_count || 0}
+                isDataLoading={isFetchingproductsList || productsListLoading}
+                offsetCount={offsetCount}
+                updaterAction={(newData) => {
+                  if (newData) dispatch(updateTableHeader(newData))
+                }}
+                fullInfoAboutCurrentPage
+                resetTable={() => dispatch(resetTableHeader({ refetch }))}
+                status={'ALL'}
+                isRefreshing={loading || isFetchingproductsList || productsListLoading}
+              />
+            </Box>
+          ) : (
+            <Box
+              height={'80vh'}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
-              fullInfoAboutCurrentPage
-              resetTable={() => dispatch(resetTableHeader({ refetch }))}
-              status={'ALL'}
-              isRefreshing={loading || isFetchingproductsList || productsListLoading}
-            />
-          </Box>
+            >
+              <Typography fontWeight={700} fontSize={'22px'} lineHeight={'40px'} color={'balck'}>
+                Вам нужно выбрать аптеку, чтобы получить отчет.
+              </Typography>
+            </Box>
+          )}
         </Box>
       </FormProvider>
     </LoadingContainer>

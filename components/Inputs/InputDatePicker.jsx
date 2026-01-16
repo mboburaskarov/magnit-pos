@@ -319,7 +319,7 @@ function InputDatePicker({
       {uncontrolled ? (
         <DatePicker
           id={id}
-          dateFormat={withTime ? 'yyyy.MM.dd | HH:mm' : 'yyyy.MM.dd'}
+          dateFormat={withTime ? 'dd.MM.yyyy | HH:mm' : 'dd.MM.yyyy'}
           selected={value}
           showTimeInput={withTime}
           onChange={onChange}
@@ -391,7 +391,7 @@ function InputDatePicker({
               )}
               <DatePicker
                 id={id}
-                dateFormat={withTime ? 'yyyy.MM.dd | HH:mm' : 'yyyy.MM.dd'}
+                dateFormat={withTime ? 'dd.MM.yyyy | HH:mm' : 'dd.MM.yyyy'}
                 selected={fieldValue}
                 showTimeInput={withTime}
                 onChange={(date) => {
@@ -419,7 +419,7 @@ function InputDatePicker({
                   />
                 )}
                 customInput={
-                  <ReactInputMask mask='9999.99.99' maskChar={null} value={fieldValue ? dayjs(fieldValue).format('YYYY.MM.DD') : ''}>
+                  <ReactInputMask mask='99.99.9999' maskChar={null} value={fieldValue ? dayjs(fieldValue).format('DD.MM.YYYY') : ''}>
                     {(inputProps) => (
                       <TextField
                         {...inputProps}
