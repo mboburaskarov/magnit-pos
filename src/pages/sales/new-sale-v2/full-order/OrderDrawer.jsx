@@ -22,7 +22,6 @@ import { useQuery } from 'react-query'
 import PreventRefresh from '../components/PreventRefresh'
 import PreventRefreshDialog from '../components/PreventRefreshDialog'
 import PaymentMethodInput from './PaymentMethodInput'
-import StyledTooltip from '@components/StyledTooltip'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -344,55 +343,49 @@ export default function OrderDrawer({
                           })
                           .map((item) => (
                             <Grid key={item.id} item xs={3} sm={3} lg={3} xl={3} p={'8px'} m={'3'} onClick={() => handleAddPaymentType(item)}>
-                              <StyledTooltip title={get(item, 'front_name', false) == 'uzum' ? 'Ведутся технические работы.' : ''}>
-                                <Box
-                                  display={'flex'}
-                                  p={'20px'}
-                                  sx={{
-                                    '& p': {
-                                      color: isVisiblePaymentType(item) ? 'bunker.600' : 'bunker.400',
-                                    },
-                                    cursor: isVisiblePaymentType(item) ? 'pointer' : 'not-allowed',
-                                  }}
-                                  height={'80px'}
-                                  bgcolor={'bg.10'}
-                                  justifyContent={'space-between'}
-                                  borderRadius={'24px'}
-                                >
-                                  <Box>
-                                    <Typography
-                                      fontSize={18}
-                                      fontWeight={'600'}
-                                      lineHeight={get(item, 'front_name', false) == 'loyalty_card' ? '20px' : '40px'}
-                                    >
-                                      {get(item, 'name')}
-                                    </Typography>
-                                    {get(item, 'front_name', false) == 'loyalty_card' && (
-                                      <Typography sx={{ fontSize: '14px', color: 'bunker.500', fontWeight: '700' }}>
-                                        {thousandDivider(customerId?.balance, 'сум')}
-                                      </Typography>
-                                    )}
-                                  </Box>
-                                  <Typography alignItems={'center'} justifyContent={'center'} display={'flex'}>
-                                    <Box
-                                      sx={{
-                                        color: '#bdbdbd',
-                                        border: '2px solid #cfcfcf',
-                                        height: '34px',
-                                        display: 'flex',
-                                        padding: '2px',
-                                        ml: '5px',
-                                        minWidth: '34px',
-                                        alignItems: 'center',
-                                        borderRadius: '8px',
-                                        justifyContent: 'center',
-                                      }}
-                                    >
-                                      {getPaymentTypeHotKeyLabel(get(item, 'name'))}
-                                    </Box>
+                              <Box
+                                display={'flex'}
+                                p={'20px'}
+                                sx={{
+                                  '& p': {
+                                    color: isVisiblePaymentType(item) ? 'bunker.600' : 'bunker.400',
+                                  },
+                                  cursor: isVisiblePaymentType(item) ? 'pointer' : 'not-allowed',
+                                }}
+                                height={'80px'}
+                                bgcolor={'bg.10'}
+                                justifyContent={'space-between'}
+                                borderRadius={'24px'}
+                              >
+                                <Box>
+                                  <Typography fontSize={18} fontWeight={'600'} lineHeight={get(item, 'front_name', false) == 'loyalty_card' ? '20px' : '40px'}>
+                                    {get(item, 'name')}
                                   </Typography>
+                                  {get(item, 'front_name', false) == 'loyalty_card' && (
+                                    <Typography sx={{ fontSize: '14px', color: 'bunker.500', fontWeight: '700' }}>
+                                      {thousandDivider(customerId?.balance, 'сум')}
+                                    </Typography>
+                                  )}
                                 </Box>
-                              </StyledTooltip>
+                                <Typography alignItems={'center'} justifyContent={'center'} display={'flex'}>
+                                  <Box
+                                    sx={{
+                                      color: '#bdbdbd',
+                                      border: '2px solid #cfcfcf',
+                                      height: '34px',
+                                      display: 'flex',
+                                      padding: '2px',
+                                      ml: '5px',
+                                      minWidth: '34px',
+                                      alignItems: 'center',
+                                      borderRadius: '8px',
+                                      justifyContent: 'center',
+                                    }}
+                                  >
+                                    {getPaymentTypeHotKeyLabel(get(item, 'name'))}
+                                  </Box>
+                                </Typography>
+                              </Box>
                             </Grid>
                           ))}
                       </Grid>
