@@ -45,6 +45,7 @@ export const useSaleOperations = ({
 
   const SALE_TYPE = get(cashBoxDetails, 'data.data.sale_type', 'NOTFOUND')
   const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
+  const SALE_NUMBER = get(cashBoxDetails, 'data.data.sale_number', 0)
 
   // Finish sale without app payment
   const {
@@ -119,8 +120,21 @@ export const useSaleOperations = ({
 
         setQrcodeUrl({ qr: qrCodeURL, fiscal: fiscalData, terminalId: terminalId, cardType: cartOwnerType })
 
-        sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
+        // sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
       } else {
+        // if(get(data, 'message.error') === 'sale.expired') {
+        //   error('Срок действия указанного рецепта истёк.')
+        //   return
+        // }
+        console.log(get(data, 'message')?.includes('DUPLICATE_EXTERNAL_ID'))
+        if (get(data, 'message')?.includes('DUPLICATE_EXTERNAL_ID')) {
+          let message = 'Данная продажа ранее была оформлена на уплату налогов. Скачайте этот чек из раздела «Все продажи».'
+          sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
+          setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
+          setOpenRefreshDialog(false)
+          throw new Error(`InnerError: ${message}`)
+          return
+        }
         setOpenRefreshDialog(false)
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
         throw new Error(`InnerError: ${get(data, 'message')}`)
@@ -128,7 +142,7 @@ export const useSaleOperations = ({
     },
     onError: (err) => {
       setHasError({ hasError: true, errorType: 'Epos' })
-
+      setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
       setOpenRefreshDialog(false)
       error(err?.message || 'Ошибка при EPOS')
       if (!err.message.includes('InnerError')) {
@@ -298,22 +312,24 @@ export const useSaleOperations = ({
         staffName: get(userData, 'full_name'),
         printerSize: 58,
         phoneNumber: get(userData, 'store.phone'),
+
         companyPhoneNumber: '+998772770333',
         params: {
+          externalId: SALE_NUMBER,
           clientName: get(customerId, 'name'),
           items,
 
           receivedCash: parseFloat(
             (
               Number(
-                paymentsList.filter((item) => item.amount && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) - Math.abs(maxAmount)
+                paymentsList.filter((item) => item.amount && item.type === 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) - Math.abs(maxAmount),
               ) * 100
-            ).toFixed(2)
+            ).toFixed(2),
           ),
           receivedEps:
             payType == 2
               ? parseFloat(
-                  (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2)
+                  (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2),
                 )
               : 0,
           receivedCard:
@@ -324,7 +340,7 @@ export const useSaleOperations = ({
                     paymentsList
                       .filter((item) => item.amount && item.type !== 'cash' && item.type !== 'loyalty_card')
                       .reduce((sum, item) => sum + (item.amount || 0), 0) * 100
-                  ).toFixed(2)
+                  ).toFixed(2),
                 ),
         },
         ...(SALE_TYPE === 'RETURN' && {
@@ -336,7 +352,7 @@ export const useSaleOperations = ({
         }),
       })
     },
-    [prepareEPOSData, paymentsList, maxAmount, sendToEPOS, SALE_TYPE, userData, customerId, cartItemsList, cashBoxDetails]
+    [prepareEPOSData, paymentsList, maxAmount, sendToEPOS, SALE_TYPE, userData, customerId, cartItemsList, cashBoxDetails],
   )
 
   const submitSale = useCallback(
@@ -396,7 +412,7 @@ export const useSaleOperations = ({
       id,
       sendToEpos,
       finishSaleWithoutAppPaymentType,
-    ]
+    ],
   )
 
   return {
