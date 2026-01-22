@@ -57,8 +57,6 @@ export const useFullOrderPayments = ({ cartItemsList, paymentTypesList, isOrderD
       const totalAmount = get(cartItemsList, 'total_amount')
       const isThereType = type === 'overAll' ? false : paymentsList.some((item) => item.id === type.id)
 
-      // Hide Uzum if other payments are present
-      if (type?.front_name == 'uzum') return false
       // Hide Uzum if other payments are present or Other payment types hide if Uzum is present
       if ((totalEnteredMoney >= 1 && type?.front_name == 'uzum') || paymentsList.some((item) => item.front_name == 'uzum')) return false
       if ((customerId?.balance <= 1 && type?.front_name == 'loyalty_card') || (!customerId?.name && type?.front_name == 'loyalty_card')) return false
