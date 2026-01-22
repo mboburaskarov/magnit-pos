@@ -46,7 +46,6 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   const onError = (err) => {
     console.error('err', err)
   }
-  console.log(shopList)
 
   useEffect(() => {
     const { store_id, date } = values
@@ -58,7 +57,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
           ? { name: values?.store_name, value: values?.store_id }
           : { name: get(shopList, 'data.data.data.0.name'), value: get(shopList, 'data.data.data.0.id') },
       },
-      { keepDirty: true }
+      { keepDirty: true },
     )
   }, [values?.store_id, values?.data, shopList, open])
 

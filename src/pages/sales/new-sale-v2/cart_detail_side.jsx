@@ -349,7 +349,10 @@ function CartDetailSide({
                         name: item?.first_name + ' ' + item?.last_name,
                         balance: item?.balance,
                         barcode: item?.discount_card,
+                        discount_card_percent: item?.discount_percent,
                         discount_card_barcode: searchTerm == item?.discount_card ? item?.discount_card : null,
+                        loyalty_card_percent: searchTerm == item?.loyalty_card_barcode ? get(item, 'loyalty_card_percent') : null,
+
                         loyalty_card_barcode: searchTerm == item?.loyalty_card_barcode ? item?.loyalty_card_barcode : null,
                       })
                       setSearchTerm()
@@ -386,6 +389,7 @@ function CartDetailSide({
               border: '1px solid',
               borderColor: 'purple.200',
               borderRadius: '16px',
+              opacity: sendToEpos ? 1 : 0.5,
               padding: '12px 16px',
               m: '20px',
               mt: 0,
@@ -393,10 +397,13 @@ function CartDetailSide({
             }}
           >
             <Typography fontWeight={'500'} fontSize={'14px'} color={customerId?.loyalty_card_barcode ? 'purple.200' : 'bunker.100'} lineHeight={'20px'}>
-              {customerId?.loyalty_card_barcode ? t('balance') : t('Дисконтная карта')}
+              {customerId?.loyalty_card_barcode ? t('balance') : t('Дисконтная карта')}{' '}
+              {customerId?.loyalty_card_percent ? `(${customerId?.loyalty_card_percent}%)` : ''}
             </Typography>
             <Typography fontWeight={'700'} fontSize={'28px'} color={'white'} lineHeight={'40px'}>
-              {thousandDivider(get(customerId, 'balance', 0), 'сум')}
+              {customerId?.loyalty_card_barcode
+                ? thousandDivider(get(customerId, 'balance', 0), 'сум')
+                : thousandDivider(get(customerId, 'discount_card_percent', 0), '%')}
             </Typography>
             <Box
               sx={{

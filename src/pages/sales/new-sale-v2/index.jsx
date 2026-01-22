@@ -432,7 +432,7 @@ function NewSaleV2() {
       requests.getAllCustomersForSale({
         search: searchTerm,
       }),
-    { enabled: false }
+    { enabled: false },
   )
   useEffect(() => {
     searchRef?.current?.focus()
@@ -625,7 +625,11 @@ function NewSaleV2() {
         id: customer?.id,
         name: customer?.first_name + ' ' + customer?.first_name,
         balance: customer?.balance,
+        discount_card_barcode: get(customer, 'discount_card'),
+        discount_card_percent: get(customer, 'discount_percent'),
         loyalty_card_barcode: customer?.loyalty_card_barcode,
+        loyalty_card_percent: get(customer, 'loyalty_card_percent'),
+
         new: false,
       })
     }
@@ -711,7 +715,7 @@ function NewSaleV2() {
         deleteCartItem(document?.activeElement?.id?.split('quantity_')[1])
       }
     },
-    { enableOnFormTags: true }
+    { enableOnFormTags: true },
   )
 
   useHotkeys(['NumpadAdd', 'NumpadSubtract'], (event) => focusUnitInput(event), { enableOnFormTags: true, preventDefault: true })
@@ -731,7 +735,7 @@ function NewSaleV2() {
       preventDefault: true,
       enableOnFormTags: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
-    }
+    },
   )
   useHotkeys(
     'F10',
@@ -751,7 +755,7 @@ function NewSaleV2() {
       preventDefault: true,
       enableOnFormTags: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
-    }
+    },
   )
 
   const [debouncedDiscount, setDebouncedDiscount] = useState('')
