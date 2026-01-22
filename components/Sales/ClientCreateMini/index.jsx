@@ -82,8 +82,16 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       success('Клиент создан!')
     },
     onError: (err) => {
-      error('Ошибка при Клиент создан!')
+      if (err?.response?.data?.data == 'duplicate.phone.error') {
+        error('Этот номер уже добавлен')
+        return
+      }
+      if (err?.response?.data?.data == 'duplicate.loyalty.card.error') {
+        error('Эта карта уже добавлена')
+        return
+      }
       console.error('err', err)
+      error('Ошибка при Клиент создан!')
     },
   })
 
@@ -101,6 +109,14 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       success('Клиент создан!')
     },
     onError: (err) => {
+      if (err?.response?.data?.data == 'duplicate.phone.error') {
+        error('Этот номер уже добавлен')
+        return
+      }
+      if (err?.response?.data?.data == 'duplicate.loyalty.card.error') {
+        error('Эта карта уже добавлена')
+        return
+      }
       error('Ошибка при Клиент создан!')
       console.error('err', err)
     },
