@@ -389,7 +389,7 @@ function CartDetailSide({
               border: '1px solid',
               borderColor: 'purple.200',
               borderRadius: '16px',
-              opacity: sendToEpos ? 1 : 0.5,
+              opacity: !sendToEpos && customerId?.loyalty_card_barcode ? 0.5 : 1,
               padding: '12px 16px',
               m: '20px',
               mt: 0,
