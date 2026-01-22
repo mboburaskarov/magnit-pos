@@ -122,13 +122,13 @@ export const useSaleOperations = ({
 
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
       } else {
-        console.log(get(data, 'message')?.includes('DUPLICATE_EXTERNAL_ID'))
         if (get(data, 'message')?.includes('DUPLICATE_EXTERNAL_ID')) {
           let message = 'Данная продажа ранее была оформлена на уплату налогов. Скачайте этот чек из раздела «Все продажи».'
           sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
           setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
           setOpenRefreshDialog(false)
           throw new Error(`InnerError: ${message}`)
+          return
         }
         setOpenRefreshDialog(false)
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })

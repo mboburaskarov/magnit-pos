@@ -73,7 +73,7 @@ function CartDetailSide({
   const { data: sellerBonusInOneSale } = useQuery(
     ['sellerBonusInOneSale'],
     () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
-    { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 }
+    { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 },
   )
   const leftZreportCount = localStorage.getItem('leftZreportCount')
 
@@ -322,7 +322,7 @@ function CartDetailSide({
                     id='searchResult0'
                     tabIndex={0}
                     onClick={() => {
-                      setOpenClientCreateMini(true), setQuickCreateClientName(searchTerm)
+                      ;(setOpenClientCreateMini(true), setQuickCreateClientName(searchTerm))
                     }}
                     className={classes.noSuchClientAdd}
                     onKeyDown={(event) => {
@@ -380,7 +380,9 @@ function CartDetailSide({
         {customerId && (
           <Box
             sx={{
-              background: 'linear-gradient(147.13deg, #2558FF 3.88%, #0028FF 73.63%)',
+              background: customerId?.loyalty_card_barcode
+                ? 'linear-gradient(147.13deg, #2558FF 3.88%, #0028FF 73.63%)'
+                : 'linear-gradient(147.13deg, #FFAC70 3.88%, #FF7D37 73.63%)',
               border: '1px solid',
               borderColor: 'purple.200',
               borderRadius: '16px',
@@ -390,8 +392,8 @@ function CartDetailSide({
               position: 'relative',
             }}
           >
-            <Typography fontWeight={'500'} fontSize={'14px'} color={'purple.200'} lineHeight={'20px'}>
-              {t('balance')}
+            <Typography fontWeight={'500'} fontSize={'14px'} color={customerId?.loyalty_card_barcode ? 'purple.200' : 'bunker.100'} lineHeight={'20px'}>
+              {customerId?.loyalty_card_barcode ? t('balance') : t('Дисконтная карта')}
             </Typography>
             <Typography fontWeight={'700'} fontSize={'28px'} color={'white'} lineHeight={'40px'}>
               {thousandDivider(get(customerId, 'balance', 0), 'сум')}
@@ -403,7 +405,7 @@ function CartDetailSide({
                 bottom: '-5px',
               }}
             >
-              <BrandPlaceholderIcon />
+              <BrandPlaceholderIcon color={customerId?.loyalty_card_barcode ? '#4D87FF' : '#fff'} />
             </Box>
           </Box>
         )}
