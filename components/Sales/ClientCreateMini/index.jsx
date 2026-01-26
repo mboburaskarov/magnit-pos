@@ -133,6 +133,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
     if (size(get(data, 'phone')) < 14 && get(openDrawer, 'type') != 'edit') {
       error('Номер телефона меньше 14')
     }
+    console.log(data)
 
     const requestBody = {
       birthday: data?.date_of_birth ? dayjs(get(data, 'date_of_birth')).format('YYYY.MM.DD') : null,
@@ -141,7 +142,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       gender: data?.gender,
       last_name: data?.last_name,
       store_id: get(userData, 'store.id'),
-      phone: get(openDrawer, 'type') == 'edit' ? data?.phone?.replace(/[()\s]/g, '') : '998' + data?.phone?.replace(/[()\s]/g, ''),
+      phone: data?.phone?.includes('(') ? '998' + data?.phone?.replace(/[()\s]/g, '') : data?.phone?.replace(/[()\s]/g, ''),
       tag_id: data?.tags?.value,
       virtual_loyalty_card_needed: data?.shouldGenerateLoyalCard == 'auto' ? true : false,
 
