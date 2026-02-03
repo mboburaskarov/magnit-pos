@@ -272,7 +272,7 @@ export default function tableHeaderSelector({
         headerName: t('table_columns.manufacturer'),
         colId: el.field,
 
-        cellRenderer: memo((p) => <SimpleText type={'producer_name'} {...p} />),
+        cellRenderer: memo((p) => <SimpleText type={'manufacturer'} {...p} />),
       }
     }
 

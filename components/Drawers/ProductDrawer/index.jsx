@@ -183,7 +183,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
       </Box>
 
       <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
-      {/* <Box
+      <Box
         sx={{
           width: '100%',
           display: 'flex',
@@ -194,7 +194,7 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
         }}
       >
         <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
-      </Box> */}
+      </Box>
       <ProductMovementDashboard
         productData={productData}
         singleProductDashboard={{ ...get(singleProductDashboard, 'data.data'), product_amount: get(productData, 'data.data.retail_price') }}

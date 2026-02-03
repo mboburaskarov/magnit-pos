@@ -133,7 +133,6 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
     if (size(get(data, 'phone')) < 14 && get(openDrawer, 'type') != 'edit') {
       error('Номер телефона меньше 14')
     }
-    console.log(data)
 
     const requestBody = {
       birthday: data?.date_of_birth ? dayjs(get(data, 'date_of_birth')).format('YYYY.MM.DD') : null,

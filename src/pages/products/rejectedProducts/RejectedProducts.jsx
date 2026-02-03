@@ -4,6 +4,7 @@ import InputSearch from '@components/Inputs/InputSearch';
 import { useQueryParams } from '@hooks/useQueryParams';
 import { useEffect, useMemo, useState } from 'react';
 import { Box, Typography } from '@mui/material';
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { requests } from '@utils/requests';
 import { useQuery } from 'react-query';
@@ -12,10 +13,78 @@ import { t } from 'i18next';
 import dayjs from 'dayjs';
 
 
+const CustomHeader = (props) => {
+  const lastStort = props.column.colDef.orderStoring
+  const currentColId = props.column.colId
+  const orderPosition = lastStort?.position || 0
+  const ordercolId = lastStort?.colId || 0
+  const onClick = () => {
+    let newOrder = { position: 0, colId: '' }
+    if (lastStort) {
+      if (orderPosition == 2 && ordercolId == props.column.colId) {
+        newOrder = {
+          position: 0,
+          colId: '',
+        }
+      } else {
+        if (ordercolId != props.column.colId && ordercolId != '') {
+          newOrder = {
+            position: 1,
+            colId: props.column.colId,
+          }
+        } else {
+          newOrder = {
+            position: orderPosition + 1,
+            colId: props.column.colId,
+          }
+        }
+      }
+    }
+
+    props.column.colDef.setOrderStoring(newOrder)
+  }
+
+  return (
+    <Box
+      onClick={onClick}
+      sx={{
+        cursor: 'pointer',
+        display: 'flex',
+        flex: '1 1 auto',
+        overflow: 'hidden',
+        padding: '12px',
+        alignItems: 'center',
+        textOverflow: 'ellipsis',
+        alignSelf: 'stretch',
+      }}
+    >
+      <Typography
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#111217',
+          fontSize: '16px',
+          fontWeight: ' 600',
+          lineHeight: '24px',
+        }}
+      >
+        {props.displayName}
+        <Box height={'18px'} ml='10px'>
+          {orderPosition == 1 && currentColId == ordercolId && <ArrowUpward color='#ccc' />}
+          {orderPosition == 2 && currentColId == ordercolId && <ArrowDownward color='#ccc' />}
+        </Box>
+      </Typography>
+    </Box>
+  )
+}
+
+
 export default function RejectedProducts({ id }) {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [selectedShops, setSelectedShops] = useState('all')
+  const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
 
   const navigate = useNavigate()
   const rejectedProductListFIlter = useMemo(() => {
@@ -24,8 +93,9 @@ export default function RejectedProducts({ id }) {
       store_id: selectedShops == 'all' ? undefined : selectedShops?.id,
       offset: values?.offsetHistory || 0,
       search: values?.search,
+      order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
     }
-  }, [values?.limitHistory, selectedShops, values?.offsetHistory, values?.search])
+  }, [values?.limitHistory, selectedShops, values?.offsetHistory, values?.search, orderStoring])
 
   const {
     data: rejectedProductList,
@@ -78,6 +148,12 @@ export default function RejectedProducts({ id }) {
         minWidth: 185,
         maxWidth: 185,
         width: 185,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
+        filter: 'agNumberColumnFilter',
+        // floatingFilter: true,
+        menuTabs: ['generalMenuTab', 'filterMenuTab'],
         cellRenderer: ({ data, rowIndex }) => (
           <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
             <Typography>{data?.count}</Typography>
@@ -102,6 +178,9 @@ export default function RejectedProducts({ id }) {
         minWidth: 185,
         maxWidth: 185,
         width: 185,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
         cellRenderer: ({ data, rowIndex }) => (
           <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
             <Typography>{dayjs(data?.created_at).format('DD.MM.YYYY')}</Typography>
@@ -109,7 +188,7 @@ export default function RejectedProducts({ id }) {
         ),
       },
     ],
-    []
+    [orderStoring]
   )
 
   const formattedData = rejectedProductList?.data?.data?.data
