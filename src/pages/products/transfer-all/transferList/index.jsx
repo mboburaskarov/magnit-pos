@@ -42,7 +42,6 @@ export default function TransferPage() {
   const [orderModel, setOrderModel] = useState(false)
   const [statusModal, setStatusModal] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
-
   const [filterMenu, setFilterMenu] = useState(false)
 
   const { mutate: downloadNakladnoy, isLoading: isDownloadNakladnoy } = useMutation(requests.downloadTransferNakladnoy, {
@@ -139,7 +138,7 @@ export default function TransferPage() {
     },
   })
   const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['transferStatusCountList', values?.search, transferListFilter], () =>
-    requests.getTransferStatusCount(transferListFilter)
+    requests.getTransferStatusCount(transferListFilter),
   )
   return (
     <LoadingContainer readyState={true}>

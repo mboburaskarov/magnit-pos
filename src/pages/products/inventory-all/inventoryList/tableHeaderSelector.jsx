@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import * as qs from 'qs'
 import { memo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import StatusCell from '@components/AgGridTable/Cells/StatusCell'
 import CheckAccess from '@components/CheckAccess'
 import StyledTooltip from '@components/StyledTooltip'
@@ -16,7 +16,8 @@ import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
 export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmDialog }) {
   const { values } = useQueryParams()
-
+  const location = useLocation()
+  const from = location.pathname + location.search
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {
       return {
@@ -60,6 +61,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
                     previusOffset: values?.offset,
                   })}`
             }
+            state={{ from }}
           >
             <Typography whiteSpace={'pre-wrap'} fontWeight={'600'} color={'orange.500'} fontSize={'16px'} lineHeight={'24px'}>
               {p.data.name}

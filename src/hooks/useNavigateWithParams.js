@@ -7,6 +7,7 @@ export function useNavigateWithParams() {
   const location = useLocation()
   const { values } = useQueryParams()
   const [fromUrl, setFromUrl] = useState(location.state?.from)
+  console.log(fromUrl, location)
 
   // Store previous full URL (pathname + search)
   const prevUrlRef = useRef(null)

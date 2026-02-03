@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import * as qs from 'qs'
 import { memo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import StatusCell from '@components/AgGridTable/Cells/StatusCell'
 import { imports_list_statuses } from '@/assets/data/imports-list-statuses'
 import { useQueryParams } from '@hooks/useQueryParams'
@@ -11,6 +11,8 @@ import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
 export default function tableHeaderSelector({ revaluationColumns, t }) {
   const { values } = useQueryParams()
+  const location = useLocation()
+  const from = location.pathname + location.search
 
   const columns = revaluationColumns?.map((el) => {
     if (el.field === 'number') {
@@ -55,6 +57,7 @@ export default function tableHeaderSelector({ revaluationColumns, t }) {
                     previusOffset: values?.offset,
                   })}`
             }
+            state={{ from }}
           >
             <Typography fontWeight={'600'} color={'orange.500'} fontSize={'16px'} lineHeight={'24px'}>
               {p.data.name}

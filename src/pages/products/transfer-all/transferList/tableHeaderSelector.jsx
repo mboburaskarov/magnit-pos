@@ -13,11 +13,13 @@ import TimeQuarterIcon from '@icons/step-progress/TimeQuarter'
 import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 export default function tableHeaderSelector({ transferColumns, t, downloadNakladnoy, setOpenConfirmDialog, setStatusModal }) {
   const { values } = useQueryParams()
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.pathname + location.search
   const columns = transferColumns?.map((el) => {
     if (el.field === 'number') {
       return {
@@ -53,33 +55,26 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
             p.data.status == 'completed' || p.data.status == 'canceled'
               ? `/products/transfer-completed/${p.data.id}`
               : p.data.status == 'new'
-              ? `/products/transfer-sent-with-checking/${p.data.id}`
-              : p.data.status == 'sent'
-              ? `/products/transfer-get-with-checking/${p.data.id}`
-              : p.data.status == 'checking'
-              ? `/products/transfer-recheck-with-checking/${p.data.id}`
-              : null
+                ? `/products/transfer-sent-with-checking/${p.data.id}`
+                : p.data.status == 'sent'
+                  ? `/products/transfer-get-with-checking/${p.data.id}`
+                  : p.data.status == 'checking'
+                    ? `/products/transfer-recheck-with-checking/${p.data.id}`
+                    : null
 
           return (
-            <Typography
-              whiteSpace={'pre-wrap'}
-              fontWeight={'600'}
-              color={p.data.status !== 'canceled' ? 'orange.500' : 'red.500'}
-              fontSize={'16px'}
-              lineHeight={'24px'}
-              sx={{ cursor: targetPath ? 'pointer' : 'default' }}
-              onClick={() => {
-                if (targetPath) {
-                  navigate(targetPath, {
-                    state: {
-                      prevFilter: values, // save current filter state here
-                    },
-                  })
-                }
-              }}
-            >
-              {p.data.name}
-            </Typography>
+            <Link to={targetPath} state={{ from }}>
+              <Typography
+                whiteSpace={'pre-wrap'}
+                fontWeight={'600'}
+                color={p.data.status !== 'canceled' ? 'orange.500' : 'red.500'}
+                fontSize={'16px'}
+                lineHeight={'24px'}
+                sx={{ cursor: targetPath ? 'pointer' : 'default' }}
+              >
+                {p.data.name}
+              </Typography>
+            </Link>
           )
         }),
       }

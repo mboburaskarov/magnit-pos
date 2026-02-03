@@ -93,7 +93,7 @@ const AgGridUnSelectableSimpleTable = ({
       comparator: () => null,
       menuTabs: ['generalMenuTab'],
     }),
-    []
+    [],
   )
   const modifyColumns = useMemo(() => {
     if (selection) {
@@ -136,10 +136,10 @@ const AgGridUnSelectableSimpleTable = ({
           [offsetQuery]:
             values[offsetQuery] && values[offsetQuery] != '0' && offsetIndex == 0 ? values[offsetQuery] : offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
         },
-        { addQueryPrefix: true }
+        { addQueryPrefix: true },
       )
 
-      navigate(`${baseUrl}${offsetLimitParams}`)
+      navigate(`${baseUrl}${offsetLimitParams}`, { state: { from: location?.state?.from } })
     }
   }, [offsetIndex, offsetSize, data, location.pathname, status])
 
@@ -158,7 +158,7 @@ const AgGridUnSelectableSimpleTable = ({
             [limitQuery]: offsetSize,
             [offsetQuery]: 0,
           },
-          { addQueryPrefix: true }
+          { addQueryPrefix: true },
         )
 
         // navigate(`${baseUrl}${offsetLimitParams}`)

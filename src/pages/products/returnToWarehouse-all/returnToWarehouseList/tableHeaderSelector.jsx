@@ -7,7 +7,7 @@ import { useQueryParams } from '@hooks/useQueryParams'
 import StyledTooltip from '@components/StyledTooltip'
 import CheckAccess from '@components/CheckAccess'
 import DownloadIcon from '@icons/DownloadIcon'
-import { useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import LeftArrowIcon from '@icons/LeftArrow'
 import DeleteIcon from '@icons/DeleteIcon'
 import ArrowRight from '@icons/ArrowRight'
@@ -19,6 +19,8 @@ import * as qs from 'qs'
 export default function tableHeaderSelector({ importsColumns, t, downloadNakladnoy, setOpenConfirmDialog }) {
   const { values } = useQueryParams()
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.pathname + location.search
 
   const columns = importsColumns?.map((el) => {
     if (el.field === 'number') {
@@ -83,40 +85,42 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
                   previusOffset: values?.offset,
                 })}`
               : p.data.status == 'new'
-              ? `/products/return-to-warehouse-sent-with-checking/${p.data.id}?${qs.stringify({
-                  previusLimit: values?.limit,
-                  previusOffset: values?.offset,
-                })}`
-              : p.data.status == 'sent'
-              ? `/products/return-to-warehouse-get-with-checking/${p.data.id}?${qs.stringify({
-                  previusLimit: values?.limit,
-                  previusOffset: values?.offset,
-                })}`
-              : p.data.status == 'checking'
-              ? `/products/return-to-warehouse-recheck-with-checking/${p.data.id}?${qs.stringify({
-                  previusLimit: values?.limit,
-                  previusOffset: values?.offset,
-                })}`
-              : '#'
+                ? `/products/return-to-warehouse-sent-with-checking/${p.data.id}?${qs.stringify({
+                    previusLimit: values?.limit,
+                    previusOffset: values?.offset,
+                  })}`
+                : p.data.status == 'sent'
+                  ? `/products/return-to-warehouse-get-with-checking/${p.data.id}?${qs.stringify({
+                      previusLimit: values?.limit,
+                      previusOffset: values?.offset,
+                    })}`
+                  : p.data.status == 'checking'
+                    ? `/products/return-to-warehouse-recheck-with-checking/${p.data.id}?${qs.stringify({
+                        previusLimit: values?.limit,
+                        previusOffset: values?.offset,
+                      })}`
+                    : '#'
           return (
-            <Typography
-              whiteSpace={'pre-wrap'}
-              fontWeight={'600'}
-              color={p.data.status !== 'canceled' ? 'orange.500' : 'red.500'}
-              fontSize={'16px'}
-              lineHeight={'24px'}
-              onClick={() => {
-                if (targetPath) {
-                  navigate(targetPath, {
-                    state: {
-                      prevFilter: values, // save current filter state here
-                    },
-                  })
-                }
-              }}
-            >
-              {p.data.name}
-            </Typography>
+            <Link to={targetPath} state={{ from }}>
+              <Typography
+                whiteSpace={'pre-wrap'}
+                fontWeight={'600'}
+                color={p.data.status !== 'canceled' ? 'orange.500' : 'red.500'}
+                fontSize={'16px'}
+                lineHeight={'24px'}
+                onClick={() => {
+                  if (targetPath) {
+                    navigate(targetPath, {
+                      state: {
+                        prevFilter: values, // save current filter state here
+                      },
+                    })
+                  }
+                }}
+              >
+                {p.data.name}
+              </Typography>
+            </Link>
           )
         }),
       }
