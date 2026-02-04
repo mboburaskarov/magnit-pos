@@ -66,11 +66,12 @@ export default function ChangePriceDetailPage() {
 
   const revaluationDetailListFilter = useMemo(() => {
     return {
+      id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: values?.search,
     }
-  }, [values?.limit, values?.search, values?.offset])
+  }, [values?.limit, values?.search, id, values?.offset])
 
   const {
     data: revaluationDetailList,
@@ -83,7 +84,7 @@ export default function ChangePriceDetailPage() {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: values?.search,
-    })
+    }),
   )
 
   const {
@@ -95,7 +96,7 @@ export default function ChangePriceDetailPage() {
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: values?.search,
-    })
+    }),
   )
 
   useEffect(() => {
@@ -123,7 +124,7 @@ export default function ChangePriceDetailPage() {
       onError: (err) => {
         error('Ошибка!')
       },
-    }
+    },
   )
   useEffect(() => {
     const count = revaluationDetailList?.data?.data?._meta?.total_count
@@ -175,7 +176,7 @@ export default function ChangePriceDetailPage() {
     {
       enableOnFormTags: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
-    }
+    },
   )
 
   useEffect(() => {
@@ -196,7 +197,7 @@ export default function ChangePriceDetailPage() {
   })
 
   const { data: getRevaluationDashBoard, refetch: refetchgetRevaluationDashBoard } = useQuery(['getRevaluationDashBoard', id], () =>
-    requests.getRevaluationDashBoard(id)
+    requests.getRevaluationDashBoard(id),
   )
 
   useEffect(() => {
@@ -362,7 +363,7 @@ export default function ChangePriceDetailPage() {
         </Box>
         <ChangePriceModal
           refetch={() => {
-            refetch(), refetchRevaluationById(), refetchgetRevaluationDashBoard()
+            ;(refetch(), refetchRevaluationById(), refetchgetRevaluationDashBoard())
           }}
           open={repricingModalOpen}
           setOpen={setrepricingModalOpen}

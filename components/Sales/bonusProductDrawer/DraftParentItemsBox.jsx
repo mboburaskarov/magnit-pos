@@ -1,13 +1,14 @@
-import { useQueryParams } from '@hooks/useQueryParams';
-import thousandDivider from '@utils/thousandDivider';
-import Highlighter from 'react-highlight-words';
-import { Box, Typography } from '@mui/material';
-import PrizeBoxIcon from '@icons/PrizeBoxIcon';
-import { makeStyles } from '@mui/styles';
-import { get } from 'lodash';
+import { useQueryParams } from '@hooks/useQueryParams'
+import thousandDivider from '@utils/thousandDivider'
+import Highlighter from 'react-highlight-words'
+import { Box, Typography } from '@mui/material'
+import PrizeBoxIcon from '@icons/PrizeBoxIcon'
+import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
 
-import CustomImg from '../../CustomImg';
-
+import CustomImg from '../../CustomImg'
+import dayjs from 'dayjs'
+import StyledTooltip from '@components/StyledTooltip'
 
 const useStyles = makeStyles((theme) => ({
   card_detail: {
@@ -243,7 +244,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     display: 'flex',
     maxHeight: '90px',
-    backgroundColor: theme.palette.gray[50],
+    // backgroundColor: theme.palette.gray[50],
     padding: '12px 12px 12px 16px',
   },
   searchItem: {
@@ -340,12 +341,30 @@ export default function ResultItem({ index, itemRef, item, searchTerm, product }
         overflow: 'hidden',
         width: '100%',
         outline: 'none',
+        borderRadius: '16px',
       }}
       tabIndex={index}
       key={index}
       ref={itemRef}
     >
-      <Box display={'flex'} width={'100%'} alignItems={'center'}>
+      <Box
+        display={'flex'}
+        width={'100%'}
+        alignItems={'center'}
+        sx={{
+          position: 'relative',
+          overflow: 'hidden',
+          width: '100%',
+          outline: 'none',
+          borderRadius: '16px',
+          backgroundColor: 'grey.50',
+          my: '2px',
+          '&:hover': {
+            backgroundColor: 'grey.100',
+            opacity: 0.9,
+          },
+        }}
+      >
         <Box
           className={classes.searchItemBox + ' main-Box'}
           sx={{
@@ -360,28 +379,26 @@ export default function ResultItem({ index, itemRef, item, searchTerm, product }
               <CustomImg src={product?.main_photo || '65eb3e64-185f-4642-8261-1aeec7379760.jpg'} />
             </div>
             <Box ml={2} width={'100%'} overflow={'hidden'}>
-              <Typography
-                textOverflow={'ellipsis'}
-                maxWidth={'calc(100% - 1px)'}
-                whiteSpace={'nowrap'}
-                overflow={'hidden'}
-                id='product-name'
-                className={classes.itemName}
-              >
-                <Highlighter
-                  highlightClassName='highlighter'
-                  searchWords={[searchTerm]}
-                  autoEscape
-                  textToHighlight={`${product?.name} / ${product?.category_name} (${product?.producer_name})`}
-                />
-              </Typography>
+              <StyledTooltip sx={{ maxWidth: 'calc(100% - 1px)' }} title={product?.name}>
+                <Typography
+                  textOverflow={'ellipsis'}
+                  maxWidth={'calc(100% - 1px)'}
+                  whiteSpace={'nowrap'}
+                  overflow={'hidden'}
+                  minWidth={'350px'}
+                  id='product-name'
+                  className={classes.itemName}
+                >
+                  <Highlighter highlightClassName='highlighter' searchWords={[searchTerm]} autoEscape textToHighlight={`${product?.name} `} />
+                </Typography>
+              </StyledTooltip>
               <Typography display={'flex'} id='product-barcode'>
                 <Highlighter
                   highlightClassName='highlighter'
                   searchWords={searchTerm ? searchTerm?.split(' ') : []}
                   autoEscape
                   className={classes.itemBarcode}
-                  textToHighlight={product?.barcode}
+                  textToHighlight={`${dayjs(item.start_date).format('DD.MM.YYYY')} - ${dayjs(item.end_date).format('DD.MM.YYYY')}`}
                 />
                 <Typography
                   color={get(product, 'expire_day', 0) < 0 ? 'red.500' : 'bunker.700'}
@@ -401,7 +418,7 @@ export default function ResultItem({ index, itemRef, item, searchTerm, product }
                 display: 'flex',
                 mr: '10px',
                 alignItems: 'center',
-                backgroundColor: 'orange.500',
+                backgroundColor: dayjs(item.end_date).isBefore(dayjs(), 'day') ? '#aaa' : 'orange.500',
               }}
             >
               <PrizeBoxIcon />

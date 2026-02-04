@@ -9,6 +9,7 @@ import { useInfiniteQuery } from 'react-query'
 import { requests } from '@utils/requests'
 import { get } from 'lodash'
 import { t } from 'i18next'
+import dayjs from 'dayjs'
 
 const BonusTableRow = ({ item, product }) => (
   <TableRow
@@ -33,6 +34,20 @@ const BonusTableRow = ({ item, product }) => (
       >
         {product.name}
       </Typography>
+      <Typography
+        sx={{
+          fontWeight: '500',
+          fontSize: '12px',
+          lineHeight: '18px',
+          color: 'grey.700',
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          width: '200px',
+        }}
+      >
+        {dayjs(item.start_date).format('DD.MM.YYYY')} - {dayjs(item.end_date).format('DD.MM.YYYY')}
+      </Typography>
     </TableCell>
     <TableCell sx={{ padding: '8px 12px' }}>
       <Box>
@@ -45,9 +60,9 @@ const BonusTableRow = ({ item, product }) => (
             fontWeight: '600',
             fontSize: '10px',
             lineHeight: '12px',
-            color: 'bunker.950',
             padding: '3px 4px 2px',
-            bgcolor: '#FFC120',
+            bgcolor: dayjs(item.end_date).isBefore(dayjs(), 'day') ? '#aaa' : '#FFC120',
+            color: dayjs(item.end_date).isBefore(dayjs(), 'day') ? '#fff' : 'bunker.950',
             width: 'max-content',
           }}
         >
@@ -72,7 +87,7 @@ function BonusProductTable({ customerId, bonusTableHeight }) {
         const hasMore = currentOffset + LIMIT < totalItems
         return hasMore ? currentOffset + LIMIT : undefined
       },
-    }
+    },
   )
 
   // Intersection Observer for infinite scroll
@@ -83,7 +98,7 @@ function BonusProductTable({ customerId, bonusTableHeight }) {
         fetchNextPage()
       }
     },
-    [fetchNextPage, hasNextPage, isFetchingNextPage]
+    [fetchNextPage, hasNextPage, isFetchingNextPage],
   )
 
   useEffect(() => {

@@ -59,11 +59,12 @@ export default function ChangePriceDetailPage() {
 
   const revaluationDetailListFilter = useMemo(() => {
     return {
+      id,
       limit: values?.limit || 10,
       offset: values?.offset || 0,
       search: values?.search,
     }
-  }, [values?.limit, values?.search, values?.offset])
+  }, [values?.limit, id, values?.search, values?.offset])
 
   const {
     data: revaluationDetailList,
@@ -135,7 +136,7 @@ export default function ChangePriceDetailPage() {
     {
       enableOnFormTags: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
-    }
+    },
   )
 
   useEffect(() => {
