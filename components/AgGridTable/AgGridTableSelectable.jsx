@@ -21,7 +21,7 @@ const AgGridSimpleTable = ({
   emptyTableText,
   data,
   columns,
-  onGridReady: onGridReadyProp,
+  onGridApiReady,
   gettingId = 'product_id',
   components,
   enableFillHandle = false,
@@ -137,7 +137,7 @@ const AgGridSimpleTable = ({
       comparator: () => null,
       menuTabs: ['generalMenuTab'],
     }),
-    [selectedCells, uniqId]
+    [selectedCells, uniqId],
   )
   const cellSelection = useMemo(() => {
     return {
@@ -195,7 +195,7 @@ const AgGridSimpleTable = ({
     {
       enableOnTags: ['INPUT', 'TEXTAREA'],
       preventDefault: true,
-    }
+    },
   )
   useHotkeys(
     ['ArrowUp', 'ArrowDown'],
@@ -219,7 +219,7 @@ const AgGridSimpleTable = ({
     {
       enableOnTags: ['INPUT', 'TEXTAREA'],
       preventDefault: true,
-    }
+    },
   )
   // Handle cell selection
   const onCellClicked = useCallback(
@@ -248,7 +248,7 @@ const AgGridSimpleTable = ({
         return newSelectedCells
       })
     },
-    [uniqId, onCellSelectionChange]
+    [uniqId, onCellSelectionChange],
   )
 
   useEffect(() => {
@@ -260,7 +260,7 @@ const AgGridSimpleTable = ({
           [limitQuery]: offsetSize,
           [offsetQuery]: offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
         },
-        { addQueryPrefix: true }
+        { addQueryPrefix: true },
       )
 
       navigate(`${baseUrl}${offsetLimitParams}`)
@@ -281,7 +281,7 @@ const AgGridSimpleTable = ({
             [limitQuery]: offsetSize,
             [offsetQuery]: 0,
           },
-          { addQueryPrefix: true }
+          { addQueryPrefix: true },
         )
 
         // navigate(`${baseUrl}${offsetLimitParams}`)
@@ -323,19 +323,36 @@ const AgGridSimpleTable = ({
       setGridApi(params.api) // ✅ only the API, not the full params
       gridApiRef.current = params.api
       columnApiRef.current = params.columnApi
-      if (onGridReadyProp) {
-        onGridReadyProp(params)
+      if (onGridApiReady) {
+        onGridApiReady(params.api)
       }
       setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
     },
-    [onGridReadyProp]
+    [onGridApiReady],
   )
+
+  // const onGridReady = useCallback(
+  //   (params) => {
+  //     setGridApi(params.api)
+  //     if (onGridApiReady) {
+  //       onGridApiReady(params.api)
+  //     }
+  //     setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
+  //   },
+  //   [onGridApiReady],
+  // )
+  // useEffect(() => {
+  //   if (gridApi && data) {
+  //     // Force refresh all cells when data changes
+  //     gridApi.refreshCells({ force: true })
+  //   }
+  // }, [data, gridApi])
   useEffect(() => {
-    if (gridApi && data) {
-      // Force refresh all cells when data changes
-      gridApi.refreshCells({ force: true })
+    if (gridApi && data?.length >= 0) {
+      gridApi.setRowData(data)
     }
   }, [data, gridApi])
+
   const getRowStyle = (params) => {
     if (params.node.rowPinned === 'bottom') {
       return {}

@@ -57,6 +57,7 @@ const AgGridUnSelectableSimpleTable = ({
   simpleTable,
   isRefreshing,
   status,
+  onGridApiReady,
 }) => {
   const tableOffsetSizes = localStorage?.getItem('table_offset_sizes') ? JSON.parse(localStorage?.getItem('table_offset_sizes')) : {}
   const classes = useStyles()
@@ -195,10 +196,16 @@ const AgGridUnSelectableSimpleTable = ({
     return totalData
   }, [totalData])
 
-  const onGridReady = useCallback((params) => {
-    setGridApi(params.api)
-    setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
-  }, [])
+  const onGridReady = useCallback(
+    (params) => {
+      setGridApi(params.api)
+      if (onGridApiReady) {
+        onGridApiReady(params.api)
+      }
+      setTimeout(() => scrollShowHide(agGridTableArea, agGridTableScroll), 1000)
+    },
+    [onGridApiReady],
+  )
   useEffect(() => {
     if (gridApi && data?.length >= 0) {
       gridApi.setRowData(data)

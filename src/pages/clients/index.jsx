@@ -67,8 +67,9 @@ export default function ClientsPage() {
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       store_id: values?.store_id,
+      tab: values?.tab,
     }
-  }, [values?.offset, values?.limit, values?.search, values?.store_id])
+  }, [values?.offset, values?.limit, values?.search, values?.store_id, values?.tab])
   const {
     data: clientsList,
     isLoading: clientsListLoading,

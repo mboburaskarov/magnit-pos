@@ -103,7 +103,7 @@ export default function RoleBody({ rolesAndPermissionList, productData = null, d
       setValue('shop', productData?.shop)
       setValue(
         'hashtag',
-        productData?.hashtag?.map((el) => ({ value: el.nameRu, name: el.nameRu, id: el._id }))
+        productData?.hashtag?.map((el) => ({ value: el.nameRu, name: el.nameRu, id: el._id })),
       )
       setValue('preparation_time', {
         name: `${productData?.preparationTime} ${productData?.preparationTime === 0 ? 'express' : 'минут'}`,

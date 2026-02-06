@@ -21,6 +21,7 @@ import dayjs from 'dayjs'
 
 import SaleChildItemsBox from './SaleChildItemsBox'
 import ChangePaymentType from './changePaymentType'
+import { BookDown, BookUp } from 'lucide-react'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -60,14 +61,14 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 4px',
   },
 }))
-function SaleChildDrawer({ open, childRef, setOpen, ids }) {
+function SaleChildDrawer({ open, childRef, setOpen, ids, setAnchor, anchor, currentSaleId, setCurrentSaleId, currentIndex, setCurrentIndex }) {
   const theme = useTheme()
   const { t } = useTranslation()
   const { values } = useQueryParams()
   const classes = useStyles()
 
-  const [currentSaleId, setCurrentSaleId] = useState(get(values, 'sale_id', ''))
-  const [currentIndex, setcurrentIndex] = useState(0)
+  // const [currentSaleId, setCurrentSaleId] = useState(get(values, 'sale_id', ''))
+  // const [currentIndex, setcurrentIndex] = useState(0)
   const [qrCodeUrl, setQrcodeUrl] = useState('pending')
   const [debouncedCurrentSaleId] = useDebounce(currentSaleId, 200)
   const printContainerEmpty = useRef()
@@ -113,12 +114,12 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
   useEffect(() => {
     const id = get(open, 'id')
     if (id) setCurrentSaleId(id)
-    if (open.currentIndex) setcurrentIndex(open.currentIndex)
+    if (open.currentIndex) setCurrentIndex(open.currentIndex)
   }, [open])
   useHotkeys(['ArrowRight', 'ArrowLeft'], (key) => {
     if (key.key == 'ArrowRight') {
-      if (ids.length - 1 > currentIndex) {
-        setcurrentIndex((a) => a + 1)
+      if (ids.length - 1 >= currentIndex) {
+        setCurrentIndex((a) => a + 1)
         setCurrentSaleId(ids[currentIndex])
       }
     }
@@ -126,7 +127,7 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
     if (key.key == 'ArrowLeft') {
       // refetch()
       if (currentIndex >= 1) {
-        setcurrentIndex((a) => a - 1)
+        setCurrentIndex((a) => a - 1)
         setCurrentSaleId(ids[currentIndex - 2])
       }
     }
@@ -155,13 +156,37 @@ function SaleChildDrawer({ open, childRef, setOpen, ids }) {
               </Typography>
             </Box>
           </Box>
-
-          <CloseIcon
-            color={theme.palette.black}
-            onClick={() => {
-              setOpen(false), setOpen(false)
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
-          />
+          >
+            <Box
+              sx={{
+                bgcolor: 'bg.10',
+                borderRadius: '50%',
+                width: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mr: '10px',
+              }}
+              onClick={() => {
+                setAnchor(anchor == 'bottom' ? 'right' : 'bottom')
+              }}
+            >
+              {anchor == 'right' ? <BookDown size={24} /> : <BookUp size={24} />}
+            </Box>
+            <CloseIcon
+              color={theme.palette.black}
+              onClick={() => {
+                ;(setOpen(false), setOpen(false))
+              }}
+            />
+          </Box>
         </Box>
 
         <Box padding={'104px 10px 0'} paddingX={'20px'}>

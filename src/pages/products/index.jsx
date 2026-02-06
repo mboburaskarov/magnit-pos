@@ -66,6 +66,10 @@ export default function ProductsPage() {
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+
+  const [gridApi, setGridApi] = useState(null)
+  const [currentSaleId, setCurrentSaleId] = useState(get(values, 'sale_id', ''))
+  const [currentIndex, setCurrentIndex] = useState(0)
   const { mutate: setMarkingRequired, isLoading: isSetMarkingRequired } = useMutation(requests.setMarkingRequired, {
     onSuccess: ({ data }) => {
       refetch()
@@ -155,7 +159,7 @@ export default function ProductsPage() {
 
   const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(
     ['statusCountList', values?.search, { ...productsListFilter, status: undefined }],
-    () => requests.getAllProductsStatusCount(productsListFilter)
+    () => requests.getAllProductsStatusCount(productsListFilter),
   )
 
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
@@ -275,6 +279,46 @@ export default function ProductsPage() {
       error('Ошибка при скачать excel!')
     },
   })
+
+  useEffect(() => {
+    // Auto-focus row when currentSaleId changes
+    if (gridApi && currentSaleId) {
+      // Give grid time to render rows
+      setTimeout(() => {
+        const rowNode = gridApi.getRowNode(currentSaleId) // Remove String() conversion
+
+        if (rowNode && rowNode.rowIndex !== undefined) {
+          // Scroll to row
+          gridApi.ensureNodeVisible(rowNode, 'middle')
+
+          if (rowNode) {
+            // Get the row element and scroll to it
+            const rowElement = document.querySelector(`[row-id="${currentSaleId}"]`)
+
+            if (rowElement) {
+              rowElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+              })
+            }
+          }
+          // Focus the cell - pass column key as string
+          gridApi.setFocusedCell(rowNode, 'id', null)
+          gridApi.deselectAll()
+          // Select the row
+          rowNode.setSelected(true)
+          gridApi.refreshCells({
+            rowNodes: [rowNode],
+            force: true,
+          })
+          // Optional: flash the row for visual feedback
+          // gridApi.flashCells({ rowNodes: [rowNode] })
+        } else {
+          console.warn('Row not found for ID:', currentSaleId)
+        }
+      }, 0)
+    }
+  }, [gridApi, currentSaleId])
   return (
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
@@ -613,10 +657,20 @@ export default function ProductsPage() {
               resetTable={() => dispatch(resetTableHeader({ refetch }))}
               status={appType}
               isRefreshing={loading || isFetchingproductsList || productsListLoading}
+              onGridApiReady={setGridApi}
             />
           </Box>
         </Box>
-        <ProductDrawer open={openProductDrawer} setImages={setOpenImageGallery} onClose={setOpenProductDrawer} />
+        <ProductDrawer
+          ids={(productsList?.data?.data?.data || []).map(({ id }) => id)}
+          currentIndex={currentIndex}
+          currentSaleId={currentSaleId}
+          setCurrentIndex={setCurrentIndex}
+          setCurrentSaleId={setCurrentSaleId}
+          open={openProductDrawer}
+          setImages={setOpenImageGallery}
+          onClose={setOpenProductDrawer}
+        />
         <ChangeUnitPerPack refetch={refetch} open={openPerPack} setOpen={setOpenPerPack} />
         <SendToErrorWithReason open={openErrorReason} setOpen={setOpenErrorReason} />
         <ImageGallery canAlert={setOpenErrorReason} open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
@@ -629,15 +683,15 @@ export default function ProductsPage() {
               openConfirmDialog?.type === 'activate'
                 ? 'Активировать продукт?'
                 : openConfirmDialog?.type === 'deactivate'
-                ? 'Деактивировать продукт?'
-                : 'Удалить продукт?'
+                  ? 'Деактивировать продукт?'
+                  : 'Удалить продукт?'
             }
             desc={
               openConfirmDialog?.type === 'activate'
                 ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
                 : openConfirmDialog?.type === 'deactivate'
-                ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-                : 'Вы хотите удалить продукт?'
+                  ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
+                  : 'Вы хотите удалить продукт?'
             }
             supDesc={'“Azitromitsin 250 mg”'}
             actions={
@@ -659,8 +713,8 @@ export default function ProductsPage() {
                     openConfirmDialog?.type === 'activate'
                       ? activateProduct(openConfirmDialog.id)
                       : openConfirmDialog?.type === 'deactivate'
-                      ? deActivateProduct({ id: openConfirmDialog.id, appType: 'INACTIVE' })
-                      : deleteProduct({ data: [openConfirmDialog.id] })
+                        ? deActivateProduct({ id: openConfirmDialog.id, appType: 'INACTIVE' })
+                        : deleteProduct({ data: [openConfirmDialog.id] })
                   }
                 >
                   Да, удалить

@@ -290,6 +290,7 @@ function NewSaleV2() {
   const [dmedPrescriptionsList, setDmedPrescriptionsList] = useState([])
   const [liteOrder, setLiteOrder] = useState(false)
   const [sendToEpos, setSendToEpos] = useState(null)
+  const [sendToAutoOrder, setSendToAutoOrder] = useState(true)
 
   const [isOpenImplementMarkingDialog, setIsOpenImplementMarkingDialog] = useState(false)
   const [isOpenOrganizeDmedOrderDialog, setIsOpenOrganizeDmedOrderDialog] = useState(false)
@@ -1303,7 +1304,9 @@ function NewSaleV2() {
             setIsOpenBonusProductDrawer={setIsOpenBonusProductDrawer}
             setServiceType={setServiceType}
             serviceType={serviceType}
+            setSendToAutoOrder={setSendToAutoOrder}
             setSendToEpos={setSendToEpos}
+            sendToAutoOrder={sendToAutoOrder}
             sendToEpos={sendToEpos}
             setDmedOrganizedList={setDmedOrganizedList}
             setIsOpenOrganizeDmedOrderDialog={setIsOpenOrganizeDmedOrderDialog}

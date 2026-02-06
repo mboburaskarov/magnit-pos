@@ -48,6 +48,11 @@ export default function AllSalesPage() {
   const [openSaleDrawer, setOpenSaleDrawer] = useState(false)
   const [manualZreportData, setManualZreportData] = useState([])
   const [isCustomersSales, setIsCustomersSales] = useState(false)
+
+  const [currentSaleId, setCurrentSaleId] = useState(get(values, 'sale_id', ''))
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [gridApi, setGridApi] = useState(null)
+
   const tableColumns = tableHeaderSelector({
     salesColumns: columns,
     values,
@@ -145,6 +150,46 @@ export default function AllSalesPage() {
   }, [salesListFilter])
 
   useEffect(() => {
+    // Auto-focus row when currentSaleId changes
+    if (gridApi && currentSaleId) {
+      // Give grid time to render rows
+      setTimeout(() => {
+        const rowNode = gridApi.getRowNode(currentSaleId) // Remove String() conversion
+
+        if (rowNode && rowNode.rowIndex !== undefined) {
+          // Scroll to row
+          gridApi.ensureNodeVisible(rowNode, 'middle')
+
+          if (rowNode) {
+            // Get the row element and scroll to it
+            const rowElement = document.querySelector(`[row-id="${currentSaleId}"]`)
+
+            if (rowElement) {
+              rowElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+              })
+            }
+          }
+          // Focus the cell - pass column key as string
+          gridApi.setFocusedCell(rowNode, 'id', null)
+          gridApi.deselectAll()
+          // Select the row
+          rowNode.setSelected(true)
+          gridApi.refreshCells({
+            rowNodes: [rowNode],
+            force: true,
+          })
+          // Optional: flash the row for visual feedback
+          // gridApi.flashCells({ rowNodes: [rowNode] })
+        } else {
+          console.warn('Row not found for ID:', currentSaleId)
+        }
+      }, 0)
+    }
+  }, [gridApi, currentSaleId])
+
+  useEffect(() => {
     const count = salesList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
@@ -161,6 +206,7 @@ export default function AllSalesPage() {
       error('Ошибка при скачать excel!')
     },
   })
+
   return (
     <LoadingContainer readyState={true}>
       {isallSalesExcelReport && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
@@ -171,7 +217,7 @@ export default function AllSalesPage() {
             onClick={() =>
               isCustomersSales &&
               navigate(
-                `/reports/discount-card-report?start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`
+                `/reports/discount-card-report?start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`,
               )
             }
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -262,7 +308,16 @@ export default function AllSalesPage() {
           </Box>
         </Box>
         <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
-        <Box>
+        <Box
+          sx={{
+            '& .ag-row-focus': {
+              backgroundColor: '#fff !important',
+            },
+            '& .ag-row-selected': {
+              backgroundColor: '#fff3e0 !important',
+            },
+          }}
+        >
           <AgGridTable
             id='products-main-table'
             downloadByFilter={() => allSalesExcelReport(salesListFilter)}
@@ -283,11 +338,20 @@ export default function AllSalesPage() {
               description: 'Если вы не можете найти искомый Продажи, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
             }}
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingsalesList || salesListLoading}
+            isRefreshing={loading || isFetchingsalesList || salesListLoading || currentSaleId}
+            onGridApiReady={setGridApi}
           />
         </Box>
       </Box>
-      <SaleDrawer ids={(salesList?.data?.data?.data || []).map(({ id }) => id)} open={openSaleDrawer} setOpen={setOpenSaleDrawer} />
+      <SaleDrawer
+        ids={(salesList?.data?.data?.data || []).map(({ id }) => id)}
+        open={openSaleDrawer}
+        setOpen={setOpenSaleDrawer}
+        currentSaleId={currentSaleId}
+        setCurrentSaleId={setCurrentSaleId}
+        currentIndex={currentIndex}
+        setCurrentIndex={setCurrentIndex}
+      />
       <PrintManualZReport setManualZreportData={setManualZreportData} handlePrint={handlePrint} refetch={refetch} open={orderModel} setOpen={setOrderModel} />
 
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />

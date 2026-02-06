@@ -226,3 +226,13 @@ div[role='row'][row-id='ag-grid-footer'] {
 .img {
   /* background-color: transparent; */
 }
+
+/* styles.css */
+.focused-row {
+  background-color: #e3f2fd !important;
+  border: 2px solid #1976d2 !important;
+}
+
+.ag-grid-custom {
+  height: 600px;
+}

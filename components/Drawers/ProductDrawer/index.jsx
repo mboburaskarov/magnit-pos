@@ -24,6 +24,7 @@ import ProductHistory from './ProductHistory'
 import ProductMovementDashboard from './ProductMovementDashboard'
 import ProductRemainsHistory from './ProductRemainsHistory'
 import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import { useHotkeys } from 'react-hotkeys-hook'
 const Image = ({ data, setImages }) => {
   return (
     <Box
@@ -76,7 +77,18 @@ const Image = ({ data, setImages }) => {
   )
 }
 
-export default function ProductDrawer({ open: id, onClose, setImages, setOpenConfirmDialog, setRejectComment }) {
+export default function ProductDrawer({
+  open: id,
+  onClose,
+  ids,
+  setImages,
+  setOpenConfirmDialog,
+  setRejectComment,
+  currentIndex,
+  currentSaleId,
+  setCurrentIndex,
+  setCurrentSaleId,
+}) {
   const userData = useSelector((state) => state.user)
   const [unitPerPack, setUnitPerPack] = useState(1)
   const { values } = useQueryParams()
@@ -85,10 +97,10 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
     return {
       start_date: getFilterStartDate(values),
       end_date: getFilterEndDate(values),
-      id,
+      id: currentSaleId,
       store_id: values?.store_id || userData?.store?.id,
     }
-  }, [values?.from_time, values?.to_time, values?.store_id, id, values?.start_date, values?.end_date])
+  }, [values?.from_time, currentSaleId, values?.to_time, values?.store_id, id, values?.start_date, values?.end_date])
 
   const {
     data: productData,
@@ -157,6 +169,29 @@ export default function ProductDrawer({ open: id, onClose, setImages, setOpenCon
   }
 
   //
+
+  useEffect(() => {
+    const id = get(open, 'id')
+    if (id) setCurrentSaleId(id)
+    if (open.currentIndex) setCurrentIndex(open.currentIndex)
+  }, [open])
+  useHotkeys(['ArrowRight', 'ArrowLeft'], (key) => {
+    if (key.key == 'ArrowRight') {
+      if (ids.length - 1 >= currentIndex) {
+        setCurrentIndex((a) => a + 1)
+        setCurrentSaleId(ids[currentIndex])
+      }
+    }
+    if (currentIndex == 1) return
+    if (key.key == 'ArrowLeft') {
+      // refetch()
+      if (currentIndex >= 1) {
+        setCurrentIndex((a) => a - 1)
+        setCurrentSaleId(ids[currentIndex - 2])
+      }
+    }
+  })
+
   const navigate = useNavigate()
   return (
     <Drawer

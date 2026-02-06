@@ -1,8 +1,10 @@
-import { Box, Skeleton, Typography } from '@mui/material';
-import thousandDivider from '@utils/thousandDivider';
-import { requests } from '@utils/requests';
-import { useQuery } from 'react-query';
-
+import { Box, Button, Skeleton, Typography } from '@mui/material'
+import thousandDivider from '@utils/thousandDivider'
+import { requests } from '@utils/requests'
+import { useQuery } from 'react-query'
+import dayjs from 'dayjs'
+import { Link } from 'react-router-dom'
+import RightArrowIcon from '@/assets/icons/RightArrowIcon'
 
 export default function DashboardInfoBox({
   noDot,
@@ -61,7 +63,11 @@ export default function DashboardInfoBox({
   const amount = countStats?.data?.data?.[amountProp]
   const percent = percentProp?.(before, count)
   const isFall = percent < 0
-
+  const income = countStats?.data?.data?.income_amount
+  const total = countStats?.data?.data?.income_amount + countStats?.data?.data?.production_cost
+  const totalWithoutNDS = total - total * 0.12
+  const incomePercentWithNDS = ((income / total) * 100).toFixed(1)
+  const incomePercent = ((income / totalWithoutNDS) * 100).toFixed(1)
   return (
     <Box sx={{ border: 1, borderRadius: '16px', borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' }}>
       <Box key={ind} sx={{ p: '20px', height: '164px', m: 0 }}>
@@ -72,7 +78,7 @@ export default function DashboardInfoBox({
             {isLoading ? (
               <Skeleton variant='rectangular' width='65%' height={20} sx={{ mt: '16px', borderRadius: '6px' }} />
             ) : (
-              <Typography display='flex' fontSize='14px' fontWeight='500' lineHeight='20px' color='bunker.500' mt='16px'>
+              <Typography display='flex' alignItems={'center'} fontSize='14px' fontWeight='500' lineHeight='20px' color='bunker.500' mt='16px'>
                 {title}{' '}
                 {(id === 'expiring_soon_amount' || id === 'expired_soon_amount') && (
                   <Typography
@@ -90,6 +96,46 @@ export default function DashboardInfoBox({
                     {withoutDivider ? count : thousandDivider(count, '')} шт
                   </Typography>
                 )}
+                {id == 'income_amount' && (
+                  <>
+                    <Typography
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+
+                        padding: '3px 8px 3px',
+                        borderRadius: '16px',
+                        backgroundColor: 'bunker.100',
+                        fontWeight: '700',
+                        fontSize: '12px',
+                        ml: '8px',
+                        lineHeight: '16px',
+                        color: 'bunker.500',
+                      }}
+                    >
+                      cНДС: {thousandDivider(incomePercentWithNDS, '%')}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+
+                        padding: '3px 8px 3px',
+                        borderRadius: '16px',
+                        backgroundColor: 'bunker.100',
+                        fontWeight: '700',
+                        fontSize: '12px',
+                        ml: '8px',
+                        lineHeight: '16px',
+                        color: 'bunker.500',
+                      }}
+                    >
+                      {thousandDivider(incomePercent, '%')}
+                    </Typography>
+                  </>
+                )}
               </Typography>
             )}
           </Box>
@@ -101,7 +147,7 @@ export default function DashboardInfoBox({
               <Skeleton variant='rectangular' width='55%' height={40} sx={{ borderRadius: '8px' }} />
             ) : (
               <Typography
-                alignItems='end'
+                alignItems='center'
                 display='flex'
                 color='dark.500'
                 fontSize='28px'
@@ -118,6 +164,28 @@ export default function DashboardInfoBox({
                 }}
               >
                 {withoutDivider ? thousandDivider(Math.round(amount), endText) : <Typography>{thousandDivider(Math.round(count), endText)}</Typography>}
+                {id.includes('oyalty_card') && (
+                  <Link to={'/clients/all?tab=loyalty-cards'}>
+                    <Button
+                      sx={{
+                        borderRadius: '50px',
+                        ml: '8px',
+                        p: '9px 0px',
+                        height: '30px',
+                        backgroundColor: 'white !important',
+                        color: 'orange.500',
+                        fontSize: '14px',
+                        borderColor: 'orange.500',
+                        '& svg': {
+                          flexShrink: 0,
+                        },
+                      }}
+                      color='secondary'
+                    >
+                      <RightArrowIcon />
+                    </Button>
+                  </Link>
+                )}
               </Typography>
             )}
           </Box>
