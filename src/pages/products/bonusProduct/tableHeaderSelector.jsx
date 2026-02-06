@@ -66,18 +66,18 @@ export default function tableHeaderSelector({ bonusProductColumns, t, setOpenCon
     if (el.field === 'start_date') {
       return {
         ...el,
-        headerName: 'Дата заказ',
+        headerName: 'Дата начала',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='start_date' customText={dayjs(p.data?.start_date).format('DD.MM.YYYY')} />),
       }
     }
 
-    if (el.field === 'end_data') {
+    if (el.field === 'end_date') {
       return {
         ...el,
-        headerName: 'Дата заказ',
+        headerName: 'Дата окончания',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='end_data' customText={dayjs(p.data?.end_date).format('DD.MM.YYYY')} />),
+        cellRenderer: memo((p) => <SimpleText {...p} type='end_date' customText={dayjs(p.data?.end_date).format('DD.MM.YYYY')} />),
       }
     }
     if (el.field === 'actions') {

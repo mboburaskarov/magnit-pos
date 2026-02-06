@@ -23,6 +23,19 @@ const columns = [
   },
 
   {
+    field: 'start_date',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'end_date',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+
+  {
     field: 'actions',
     hide: false,
     minWidth: 96,

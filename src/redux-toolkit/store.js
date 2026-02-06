@@ -57,7 +57,7 @@ import { ostatokByDateTableColumnsSlice } from './tableSlices/ostatokByDateTable
 // Define your migration function here
 const migrations = {
   // Example migration
-  410: (state) => {
+  411: (state) => {
     // Check if state needs migration
     if (!state.migrated) {
       // Perform migration logic
@@ -75,7 +75,7 @@ const migrations = {
 const persistConfig = {
   key: 'root',
   storage,
-  version: 410, // Current version of the persisted state
+  version: 411, // Current version of the persisted state
   migrate: (state) => {
     // Apply migrations based on state version
     return migrations[state._persist.version](state)
