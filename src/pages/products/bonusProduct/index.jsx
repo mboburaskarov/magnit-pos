@@ -208,7 +208,7 @@ export default function BonusProductPage() {
                   }}
                   fullInfoAboutCurrentPage
                   resetTable={() => dispatch(resetTableHeader({ refetch }))}
-                  isRefreshing={loading || isFetchingbonusProductList || bonusProductListLoading}
+                  isRefreshing={loading || isFetchingbonusProductList || bonusProductListLoading || bonusProductList}
                 />
               </Box>
             </Box>

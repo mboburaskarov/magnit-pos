@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     left: 'auto !important',
     '& .MuiDrawer-paper': {
       width: '600px',
-      height: ({ anchor }) => (anchor == 'right' ? '100vh' : '40vh'),
+      height: ({ anchor }) => (anchor == 'right' ? '100vh' : '60vh'),
       width: ({ anchor }) => (anchor == 'right' ? '600px' : '100vw'),
       borderRadius: ({ anchor }) => (anchor == 'right' ? '24px 0 0 24px' : '24px 24px 0 0px'),
 
@@ -62,20 +62,8 @@ function SaleDrawer({ open, setOpen, ids, currentSaleId, setCurrentSaleId, curre
         setCurrentSaleId={setCurrentSaleId}
         currentIndex={currentIndex}
         setCurrentIndex={setCurrentIndex}
+        printNoProductCheque={printNoProductCheque}
       />
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          mb: '20px',
-        }}
-      >
-        <CheckAccess id='can-reprint'>
-          <Button sx={{ minHeight: '56px', flex: '1', ml: '20px' }} onClick={() => printNoProductCheque()}>
-            Повторный чек
-          </Button>
-        </CheckAccess>
-      </Box>
     </Drawer>
   )
 }

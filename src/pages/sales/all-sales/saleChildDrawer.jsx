@@ -2,7 +2,7 @@ import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'r
 import RippedPaperCheckReturn from '@components/ChequePaper/RippedPaperCheckReturn'
 import LoadingContainer from '@components/LoadingContainer'
 import { useQueryParams } from '@hooks/useQueryParams'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Button, Grid, Typography } from '@mui/material'
 import thousandDivider from '@utils/thousandDivider'
 import { makeStyles, useTheme } from '@mui/styles'
 import { ChangeCircle } from '@mui/icons-material'
@@ -22,6 +22,8 @@ import dayjs from 'dayjs'
 import SaleChildItemsBox from './SaleChildItemsBox'
 import ChangePaymentType from './changePaymentType'
 import { BookDown, BookUp } from 'lucide-react'
+import ChequeIcon from '@/assets/icons/ChequeIcon'
+import StyledTooltip from '@components/StyledTooltip'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -61,7 +63,19 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 4px',
   },
 }))
-function SaleChildDrawer({ open, childRef, setOpen, ids, setAnchor, anchor, currentSaleId, setCurrentSaleId, currentIndex, setCurrentIndex }) {
+function SaleChildDrawer({
+  open,
+  childRef,
+  setOpen,
+  ids,
+  setAnchor,
+  anchor,
+  currentSaleId,
+  setCurrentSaleId,
+  currentIndex,
+  setCurrentIndex,
+  printNoProductCheque,
+}) {
   const theme = useTheme()
   const { t } = useTranslation()
   const { values } = useQueryParams()
@@ -163,23 +177,56 @@ function SaleChildDrawer({ open, childRef, setOpen, ids, setAnchor, anchor, curr
               justifyContent: 'center',
             }}
           >
-            <Box
-              sx={{
-                bgcolor: 'bg.10',
-                borderRadius: '50%',
-                width: '50px',
-                height: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mr: '10px',
-              }}
-              onClick={() => {
-                setAnchor(anchor == 'bottom' ? 'right' : 'bottom')
-              }}
-            >
-              {anchor == 'right' ? <BookDown size={24} /> : <BookUp size={24} />}
-            </Box>
+            <CheckAccess id='can-reprint'>
+              <StyledTooltip title={'Повторный чек'}>
+                <Box
+                  sx={{
+                    bgcolor: 'bg.10',
+                    borderRadius: '50%',
+                    width: '50px',
+                    height: '50px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mr: '10px',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      backgroundColor: 'grey.100',
+                    },
+                  }}
+                  onClick={() => printNoProductCheque()}
+                >
+                  <ChequeIcon />
+                </Box>
+              </StyledTooltip>
+            </CheckAccess>
+            <StyledTooltip title={'Сменить позиции'}>
+              <Box
+                sx={{
+                  bgcolor: 'bg.10',
+                  borderRadius: '50%',
+                  width: '50px',
+                  height: '50px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mr: '10px',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'grey.100',
+                  },
+                  '& svg': {
+                    stroke: '#677190',
+                  },
+                }}
+                onClick={() => {
+                  setAnchor(anchor == 'bottom' ? 'right' : 'bottom')
+                }}
+              >
+                {anchor == 'right' ? <BookDown size={24} /> : <BookUp size={24} />}
+              </Box>
+            </StyledTooltip>
+
             <CloseIcon
               color={theme.palette.black}
               onClick={() => {
@@ -189,34 +236,87 @@ function SaleChildDrawer({ open, childRef, setOpen, ids, setAnchor, anchor, curr
           </Box>
         </Box>
 
-        <Box padding={'104px 10px 0'} paddingX={'20px'}>
-          <Box alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
-            <Typography fontSize={20} lineHeight={'32px'} fontWeight={600}>
-              {t('cart')}
-            </Typography>
-            <Box display={'flex'} alignItems={'center'}>
-              <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                {t('vendor')}:
+        <Box
+          padding={'104px 10px 0'}
+          paddingX={'20px'}
+          sx={{
+            display: 'flex',
+            width: '100%',
+            gap: '20px',
+            flexDirection: anchor == 'right' ? 'column' : 'row',
+          }}
+        >
+          <Box sx={{ flex: 1 }}>
+            <Box alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
+              <Typography fontSize={20} lineHeight={'32px'} fontWeight={600}>
+                {t('cart')}
               </Typography>
-              <CustomImg className={classes.usrImg} src='default-user-img.png' />
-              <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
-                {get(saleDetailsList, 'data.data.employee.first_name')}
-              </Typography>
+              <Box display={'flex'} alignItems={'center'}>
+                <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                  {t('vendor')}:
+                </Typography>
+                <CustomImg className={classes.usrImg} src='default-user-img.png' />
+                <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
+                  {get(saleDetailsList, 'data.data.employee.first_name')}
+                </Typography>
+              </Box>
+            </Box>
+            <Box padding={'16px 0'} sx={{ overflowY: 'auto', maxHeight: 'calc(60vh - 140px)' }}>
+              {get(saleDetailsList, 'data.data.products', [])?.map((el, index) => (
+                <SaleChildItemsBox key={index} item={el} />
+              ))}
             </Box>
           </Box>
-          <Box padding={'16px 0'}>
-            {get(saleDetailsList, 'data.data.products', [])?.map((el, index) => (
-              <SaleChildItemsBox key={index} item={el} />
-            ))}
-          </Box>
-          <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
-            <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
-              {t('pay')}
-            </Typography>
-            <Grid container display={'flex'}>
-              {get(paymentTypeList, 'data.data', []).map((pays) => {
-                if (get(saleDetailsList, `data.data.${pays?.front_name}`, 0) == 0) return <></>
-                return (
+
+          <Box sx={{ flex: 1, overflowY: 'auto' }}>
+            <Box p={'24px 0'} mt={'8px'} borderTop={anchor == 'right' ? '1px solid' : 'none'} borderColor={'bunker.100'}>
+              <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
+                {t('pay')}
+              </Typography>
+              <Grid container display={'flex'}>
+                {get(paymentTypeList, 'data.data', []).map((pays) => {
+                  if (get(saleDetailsList, `data.data.${pays?.front_name}`, 0) == 0) return <></>
+                  return (
+                    <Grid item xl={6} xs={6} sm={6} md={6} lg={6} width={'100%'} padding={'4px'}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          minWidth: '180px',
+                          borderRadius: '16px',
+                          padding: '12px 16px',
+                        }}
+                        bgcolor={'bg.10'}
+                      >
+                        <Box>
+                          <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                            {get(pays, 'name', 'Unknown')}
+                          </Typography>
+                          <Typography fontSize={16} mt={'4px'} flexShrink={'none'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                            {thousandDivider(get(saleDetailsList, `data.data.${pays?.front_name.toLowerCase()}`, []), 'сум')}
+                          </Typography>
+                        </Box>
+                        <CheckAccess id={'can-change-payment-type'}>
+                          <Box
+                            onClick={() => {
+                              setopenCreateBonusModal({
+                                types: get(paymentTypeList, 'data.data', []),
+                                sale_payment_id: pays.id,
+                                front_name: pays.front_name,
+                                payment_type: get(saleDetailsList, `data.data`),
+                                sale_id: get(open, 'id'),
+                              })
+                            }}
+                          >
+                            <ChangeCircle sx={{ color: '#fff', fontSize: '30px', mt: '10px' }} />
+                          </Box>
+                        </CheckAccess>
+                      </Box>
+                    </Grid>
+                  )
+                })}
+                {get(saleDetailsList, 'data.data.total_discount', 0) > 0 && (
                   <Grid item xl={6} xs={6} sm={6} md={6} lg={6} width={'100%'} padding={'4px'}>
                     <Box
                       sx={{
@@ -231,100 +331,61 @@ function SaleChildDrawer({ open, childRef, setOpen, ids, setAnchor, anchor, curr
                     >
                       <Box>
                         <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                          {get(pays, 'name', 'Unknown')}
+                          Сумма скидки {maskNumber(get(saleDetailsList, 'data.data.discount_barcode'))}
                         </Typography>
                         <Typography fontSize={16} mt={'4px'} flexShrink={'none'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                          {thousandDivider(get(saleDetailsList, `data.data.${pays?.front_name.toLowerCase()}`, []), 'сум')}
+                          {thousandDivider(get(saleDetailsList, 'data.data.total_discount'), 'сум')}
                         </Typography>
                       </Box>
-                      <CheckAccess id={'can-change-payment-type'}>
-                        <Box
-                          onClick={() => {
-                            setopenCreateBonusModal({
-                              types: get(paymentTypeList, 'data.data', []),
-                              sale_payment_id: pays.id,
-                              front_name: pays.front_name,
-                              payment_type: get(saleDetailsList, `data.data`),
-                              sale_id: get(open, 'id'),
-                            })
-                          }}
-                        >
-                          <ChangeCircle sx={{ color: '#fff', fontSize: '30px', mt: '10px' }} />
-                        </Box>
-                      </CheckAccess>
                     </Box>
                   </Grid>
-                )
-              })}
-              {get(saleDetailsList, 'data.data.total_discount', 0) > 0 && (
-                <Grid item xl={6} xs={6} sm={6} md={6} lg={6} width={'100%'} padding={'4px'}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      minWidth: '180px',
-                      borderRadius: '16px',
-                      padding: '12px 16px',
-                    }}
-                    bgcolor={'bg.10'}
-                  >
-                    <Box>
-                      <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                        Сумма скидки {maskNumber(get(saleDetailsList, 'data.data.discount_barcode'))}
-                      </Typography>
-                      <Typography fontSize={16} mt={'4px'} flexShrink={'none'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                        {thousandDivider(get(saleDetailsList, 'data.data.total_discount'), 'сум')}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-              )}
-            </Grid>
-          </Box>
-          <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
-            <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
-              {t('features')}
-            </Typography>
-            <Box display={'flex'} justifyContent={'space-between'}>
-              <Box width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
-                <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                  Дата создания
-                </Typography>
-                <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                  {dayjs(get(saleDetailsList, 'data.data.completed_at')).format('DD.MM.YYYY | HH:mm:ss')}
-                </Typography>
-              </Box>
-              <Box width={'100%'} bgcolor={'bg.10'} borderRadius={'16px'} padding={'16px'}>
-                <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                  {t('store')}
-                </Typography>
-                <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                  Pharma Cosmos
-                </Typography>
-              </Box>
+                )}
+              </Grid>
             </Box>
-            <Box display={'flex'} justifyContent={'space-between'}>
-              <Box width={'50%'} mt={'16px'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
-                <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                  Клиент
-                </Typography>
-                <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                  {get(saleDetailsList, 'data.data.customer.first_name', 'Unknown')} {get(saleDetailsList, 'data.data.customer.last_name', '')}
-                </Typography>
-              </Box>
-              {get(saleDetailsList, 'data.data.referral', 'Unknown').length ? (
-                <Box width={'50%'} mt={'16px'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
+            <Box p={'24px 0'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
+              <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
+                {t('features')}
+              </Typography>
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Box width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
                   <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                    Направление
+                    Дата создания
                   </Typography>
                   <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                    {get(saleDetailsList, 'data.data.referral', 'Unknown')}
+                    {dayjs(get(saleDetailsList, 'data.data.completed_at')).format('DD.MM.YYYY | HH:mm:ss')}
                   </Typography>
                 </Box>
-              ) : (
-                <></>
-              )}
+                <Box width={'100%'} bgcolor={'bg.10'} borderRadius={'16px'} padding={'16px'}>
+                  <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                    {t('store')}
+                  </Typography>
+                  <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                    Pharma Cosmos
+                  </Typography>
+                </Box>
+              </Box>
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Box width={'50%'} mt={'16px'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
+                  <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                    Клиент
+                  </Typography>
+                  <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                    {get(saleDetailsList, 'data.data.customer.first_name', 'Unknown')} {get(saleDetailsList, 'data.data.customer.last_name', '')}
+                  </Typography>
+                </Box>
+                {get(saleDetailsList, 'data.data.referral', 'Unknown').length ? (
+                  <Box width={'50%'} mt={'16px'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
+                    <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+                      Направление
+                    </Typography>
+                    <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                      {get(saleDetailsList, 'data.data.referral', 'Unknown')}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <></>
+                )}
+              </Box>
             </Box>
           </Box>
         </Box>
