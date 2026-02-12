@@ -134,6 +134,7 @@ const CustomHeader = (props) => {
 }
 export default function tableHeaderSelector({
   productsColumns,
+  setCurrentSaleId,
   values,
   setOpenPerPack,
   setImages,
@@ -176,7 +177,9 @@ export default function tableHeaderSelector({
         cellRenderer: memo((p) => (
           <Box
             sx={{ '& span': { color: 'orange.500', whiteSpace: 'pre-line' }, '& .highlighter': { color: 'orange.500' }, cursor: 'pointer' }}
-            onClick={() => setOpenProductDrawer(p.data.id)}
+            onClick={() => {
+              ;(setOpenProductDrawer(p.data.id), setCurrentSaleId(p.data.id))
+            }}
           >
             <Highlighter highlightClassName='highlighter' searchWords={[values?.search]} autoEscape textToHighlight={`${p.data?.name}`} />
           </Box>

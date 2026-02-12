@@ -17,8 +17,6 @@ export default function ProductRemainsHistory({ id }) {
 
   const productHistoryFilter = useMemo(() => {
     return {
-      start_date: getFilterStartDate(values),
-      end_date: getFilterEndDate(values),
       limit: values?.remainsLimit || 5,
       offset: values?.remainsOffset || 0,
       store_id: values?.store_id || userData?.store?.id,
@@ -142,7 +140,7 @@ export default function ProductRemainsHistory({ id }) {
         ),
       },
     ],
-    []
+    [],
   )
 
   const formattedData = productReaminsDataHistory?.data?.data?.data

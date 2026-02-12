@@ -5,7 +5,7 @@ import { get } from 'lodash'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useMutation } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
 import InputDateRangePicker from '@components/Inputs/InputDateRangePicker'
 import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
@@ -20,7 +20,7 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
   const [endDate, setEndDate] = useState(0)
   const theme = useTheme()
   const { t } = useTranslation()
-
+  const { data: bonusProduct } = useQuery(['bonusProduct', get(open, 'id', 0)], () => requests.getBonusProduct({ id: get(open, 'id', 0) }), { enabled: !!open })
   const { mutate: editBonusProduct } = useMutation(requests.editBonusProduct, {
     onSuccess: () => {
       setOpen(false)
@@ -49,15 +49,15 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
   }
 
   useEffect(() => {
-    setStartDate(get(open, 'start_date', 0) ? dayjs(get(open, 'start_date')).toDate() : null),
-      setEndDate(get(open, 'end_date', 0) ? dayjs(get(open, 'end_date')).toDate() : null),
+    ;(setStartDate(get(bonusProduct, 'start_date', 0) ? dayjs(get(bonusProduct, 'start_date')).toDate() : null),
+      setEndDate(get(bonusProduct, 'end_date', 0) ? dayjs(get(bonusProduct, 'end_date')).toDate() : null),
       reset(
         {
-          bonus_amount: get(open, 'bonus_amount', 0),
+          bonus_amount: get(bonusProduct, 'bonus_amount', 0),
         },
-        { keepDirty: true }
-      )
-  }, [open])
+        { keepDirty: true },
+      ))
+  }, [bonusProduct])
 
   return (
     <StyledEmptyDialog

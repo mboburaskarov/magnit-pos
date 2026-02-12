@@ -329,6 +329,7 @@ export const requests = {
   sendSaleTo1C: (data) => request.post(`v1/expense/send-with-number${qs.stringify(data, { addQueryPrefix: true })}`),
 
   editBonusProduct: ({ data, id }) => request.put(`v1/product-bonus/${id}`, data),
+  getBonusProduct: ({ id }) => request.get(`v1/product-bonus/${id}`),
   createMinMax: (data) => request.post(`v1/product/min-max`, data),
   editMinMax: ({ id, data }) => request.put(`v1/product/min-max/${id}`, data),
 

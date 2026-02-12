@@ -52,7 +52,15 @@ const customDateRanges = () => [
 const today = dayjs().toDate()
 const tomorrow = dayjs().add(1, 'day').toDate()
 
-export default function DateRangeInput({ id, name, minHeight = '48px', startDateQuery = 'start_date', endDateQuery = 'end_date', defaultFilterData }) {
+export default function DateRangeInput({
+  id,
+  name,
+  minHeight = '48px',
+  startDateQuery = 'start_date',
+  endDateQuery = 'end_date',
+  defaultFilterData,
+  initialNull,
+}) {
   const defaultState = {
     from: dayjs(defaultFilterData?.start_date).isValid() ? dayjs(defaultFilterData?.start_date).toDate() : today,
     to: dayjs(defaultFilterData?.end_date).isValid() ? dayjs(defaultFilterData?.end_date).toDate() : today,
@@ -63,6 +71,7 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const [dateState, setDateState] = useState(defaultState)
+  console.log(values?.start_date)
 
   useEffect(() => {
     if (values?.start_date && values?.end_date) {
@@ -85,6 +94,9 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
       })
       setCustomDateRangeSelected(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
       setselectedId(customDateRanges().find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today')
+    } else if (initialNull) {
+      setCustomDateRangeSelected('Выберите дату')
+      setselectedId(null)
     }
   }, [values?.start_date, values?.end_date])
 
@@ -100,13 +112,53 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
           from_time: data.from_time,
           to_time: data.to_time,
         },
-        { addQueryPrefix: true }
+        { addQueryPrefix: true },
       )
       navigate(`${baseUrl}${dateParams}`)
     },
-    [dateState, location.pathname, navigate, startDateQuery, endDateQuery, values]
+    [dateState, location.pathname, navigate, startDateQuery, endDateQuery, values],
   )
+  const [selectedId, setselectedId] = useState('today')
+
+  useEffect(() => {
+    if (initialNull && !values?.start_date && !values?.end_date) {
+      setselectedId(null)
+      return
+    }
+    const today = dayjs().startOf('day')
+    const yesterday = today.subtract(1, 'day')
+    let start = dayjs(values?.start_date).startOf('day')
+    let end = dayjs(values?.end_date).startOf('day')
+    if (start.isSame(yesterday) && end.isSame(yesterday)) {
+      setselectedId('yesterday')
+      return
+    }
+    if (start.isSame(today) && end.isSame(today)) {
+      setselectedId('today')
+      return
+    }
+    if (start.isSame(today, 'week') && end.isSame(today, 'week')) {
+      setselectedId('week')
+      return
+    }
+    const startOfMonth = today.startOf('month')
+
+    if (start.isSame(startOfMonth) && end.isSame(today)) {
+      setselectedId('month')
+      return
+    }
+    const startOfYear = today.startOf('year')
+
+    if (start.isSame(startOfYear) && end.isSame(today)) {
+      setselectedId('year')
+      return
+    }
+  }, [values?.start_date, values?.end_date])
+
   const getLabelForDateRange = (startDate, endDate) => {
+    if (initialNull && !startDate && !endDate) {
+      return 'Выберите дату'
+    }
     const today = dayjs().startOf('day')
     const yesterday = today.subtract(1, 'day')
 
@@ -146,14 +198,13 @@ export default function DateRangeInput({ id, name, minHeight = '48px', startDate
     if (start.isSame(end)) {
       return `\n ${start.format('DD.MM.YYYY')}`
     }
-
     return `\n ${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`
   }
 
-  const [customDateRangeSelected, setCustomDateRangeSelected] = useState(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
-  const [selectedId, setselectedId] = useState(
-    customDateRanges().find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today'
+  const [customDateRangeSelected, setCustomDateRangeSelected] = useState(
+    getLabelForDateRange(values?.start_date, values?.end_date) || (initialNull ? 'Выберите дату' : 'Сегодня'),
   )
+
   return (
     <Box>
       <ButtonWithPopup

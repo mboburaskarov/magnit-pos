@@ -104,6 +104,7 @@ export default function ProductsPage() {
     setOrderStoring,
     orderStoring,
     setOpenErrorReason,
+    setCurrentSaleId,
   })
   const routeString = []
 

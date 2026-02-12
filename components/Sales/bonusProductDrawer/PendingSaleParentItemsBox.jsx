@@ -1,11 +1,10 @@
-import thousandDivider from '@utils/thousandDivider';
-import { Box, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import BagOutline from '@icons/BagOutline';
-import { makeStyles } from '@mui/styles';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
-
+import thousandDivider from '@utils/thousandDivider'
+import { Box, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
+import BagOutline from '@icons/BagOutline'
+import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {
@@ -52,14 +51,14 @@ function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
         },
       }}
     >
-      <Box display={'flex'} maxWidth={'calc(100% - 100px)'}>
-        <Box className={classes.productsNumsWrapper}>
-          <BagOutline />
+      <Box display={'flex'} minWidth={'300px'} maxWidth={'calc(100vw - 100px)'}>
+        {/* <Box className={classes.productsNumsWrapper}>
+           <BagOutline /> 
           <Typography ml={'12px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-            {get(item, 'quantity')}
+            {get(item, 'quantity')} ({get(item, 'unit_quantity')}/{get(item, 'unit_per_pack')})
           </Typography>
-        </Box>
-        <Box maxWidth={'calc(100% - 10px)'}>
+        </Box> */}
+        <Box minWidth={'300px'} maxWidth={'calc(100vw - 10px)'}>
           <Typography
             mb={'4px'}
             textOverflow={'ellipsis'}
@@ -82,6 +81,9 @@ function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
         <Box mr={'16px'}>
           <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
             {thousandDivider(get(item, 'bonus_amount'), 'сум')}
+          </Typography>
+          <Typography fontSize={'14px'}>
+            {get(item, 'quantity')} ({get(item, 'unit_quantity')}/{get(item, 'unit_per_pack')})
           </Typography>
         </Box>
       </Box>

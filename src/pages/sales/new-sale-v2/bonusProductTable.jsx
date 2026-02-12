@@ -11,67 +11,70 @@ import { get } from 'lodash'
 import { t } from 'i18next'
 import dayjs from 'dayjs'
 
-const BonusTableRow = ({ item, product }) => (
-  <TableRow
-    sx={{
-      '& td': {
-        borderColor: 'bunker.100',
-      },
-    }}
-  >
-    <TableCell sx={{ padding: '16px 12px' }}>
-      <Typography
-        sx={{
-          fontWeight: '500',
-          fontSize: '14px',
-          lineHeight: '20px',
-          color: 'bunker.950',
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          textOverflow: 'ellipsis',
-          width: '200px',
-        }}
-      >
-        {product.name}
-      </Typography>
-      <Typography
-        sx={{
-          fontWeight: '500',
-          fontSize: '12px',
-          lineHeight: '18px',
-          color: 'grey.700',
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          textOverflow: 'ellipsis',
-          width: '200px',
-        }}
-      >
-        {dayjs(item.start_date).format('DD.MM.YYYY')} - {dayjs(item.end_date).format('DD.MM.YYYY')}
-      </Typography>
-    </TableCell>
-    <TableCell sx={{ padding: '8px 12px' }}>
-      <Box>
-        <Typography sx={{ fontWeight: '500', fontSize: '14px', lineHeight: '20px', color: 'bunker.500' }}>
-          {thousandDivider(product.supply_price, 'сум')}
+const BonusTableRow = ({ item, product }) => {
+  const isActive = !dayjs(item.start_date).isAfter(dayjs(), 'day') && !dayjs(item.end_date).isBefore(dayjs(), 'day')
+  return (
+    <TableRow
+      sx={{
+        '& td': {
+          borderColor: 'bunker.100',
+        },
+      }}
+    >
+      <TableCell sx={{ padding: '16px 12px' }}>
+        <Typography
+          sx={{
+            fontWeight: '500',
+            fontSize: '14px',
+            lineHeight: '20px',
+            color: 'bunker.950',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            width: '200px',
+          }}
+        >
+          {product.name}
         </Typography>
         <Typography
           sx={{
-            borderRadius: '16px',
-            fontWeight: '600',
-            fontSize: '10px',
-            lineHeight: '12px',
-            padding: '3px 4px 2px',
-            bgcolor: dayjs(item.end_date).isBefore(dayjs(), 'day') ? '#aaa' : '#FFC120',
-            color: dayjs(item.end_date).isBefore(dayjs(), 'day') ? '#fff' : 'bunker.950',
-            width: 'max-content',
+            fontWeight: '500',
+            fontSize: '12px',
+            lineHeight: '18px',
+            color: 'grey.700',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            width: '200px',
           }}
         >
-          +{thousandDivider(item.bonus_amount, 'сум')}
+          {dayjs(item.start_date).format('DD.MM.YYYY')} - {dayjs(item.end_date).format('DD.MM.YYYY')}
         </Typography>
-      </Box>
-    </TableCell>
-  </TableRow>
-)
+      </TableCell>
+      <TableCell sx={{ padding: '8px 12px' }}>
+        <Box>
+          <Typography sx={{ fontWeight: '500', fontSize: '14px', lineHeight: '20px', color: 'bunker.500' }}>
+            {thousandDivider(product.supply_price, 'сум')}
+          </Typography>
+          <Typography
+            sx={{
+              borderRadius: '16px',
+              fontWeight: '600',
+              fontSize: '10px',
+              lineHeight: '12px',
+              padding: '3px 4px 2px',
+              bgcolor: isActive ? '#FFC120' : '#aaa',
+              color: isActive ? 'bunker.950' : '#fff',
+              width: 'max-content',
+            }}
+          >
+            +{thousandDivider(item.bonus_amount, 'сум')}
+          </Typography>
+        </Box>
+      </TableCell>
+    </TableRow>
+  )
+}
 
 function BonusProductTable({ customerId, bonusTableHeight }) {
   const LIMIT = 5

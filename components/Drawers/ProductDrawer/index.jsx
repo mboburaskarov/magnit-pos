@@ -92,11 +92,10 @@ export default function ProductDrawer({
   const userData = useSelector((state) => state.user)
   const [unitPerPack, setUnitPerPack] = useState(1)
   const { values } = useQueryParams()
+  // console.log(currentSaleId, id)
 
   const drawerFilter = useMemo(() => {
     return {
-      start_date: getFilterStartDate(values),
-      end_date: getFilterEndDate(values),
       id: currentSaleId,
       store_id: values?.store_id || userData?.store?.id,
     }
@@ -107,7 +106,7 @@ export default function ProductDrawer({
     isLoading: productDataLoading,
     isFetching: isFetchingproductData,
   } = useQuery(['productData', drawerFilter], () => requests.getSingleProduct(drawerFilter), {
-    enabled: !!id,
+    enabled: !!currentSaleId,
   })
   const {
     data: productReaminsDataHistory,
@@ -115,16 +114,20 @@ export default function ProductDrawer({
     isFetching: isFetchingproductReaminsDataHistory,
     refetch,
   } = useQuery(['productReaminsDataHistory', drawerFilter], () => requests.getSingleProductRemainsHistory(drawerFilter), {
-    enabled: !!id,
+    enabled: !!currentSaleId,
   })
 
   const {
     data: singleProductDashboard,
     isLoading: singleProductDashboardLoading,
     isFetching: isFetchingsingleProductDashboard,
-  } = useQuery(['singleProductDashboard', drawerFilter], () => requests.getSingleProductDashboard(drawerFilter), {
-    enabled: !!id,
-  })
+  } = useQuery(
+    ['singleProductDashboard', { ...drawerFilter, start_date: getFilterStartDate(values, true), end_date: getFilterEndDate(values) }],
+    () => requests.getSingleProductDashboard({ ...drawerFilter, start_date: getFilterStartDate(values, true), end_date: getFilterEndDate(values) }),
+    {
+      enabled: !!currentSaleId,
+    },
+  )
 
   useEffect(() => {
     if (!productData || productDataLoading || id == null) return
@@ -171,10 +174,9 @@ export default function ProductDrawer({
   //
 
   useEffect(() => {
-    const id = get(open, 'id')
     if (id) setCurrentSaleId(id)
-    if (open.currentIndex) setCurrentIndex(open.currentIndex)
-  }, [open])
+    if (currentIndex) setCurrentIndex(currentIndex)
+  }, [id])
   useHotkeys(['ArrowRight', 'ArrowLeft'], (key) => {
     if (key.key == 'ArrowRight') {
       if (ids.length - 1 >= currentIndex) {
@@ -228,7 +230,7 @@ export default function ProductDrawer({
           padding: '10px 40px 10px 40px !important',
         }}
       >
-        <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
+        <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: null, end_date: null }} initialNull id='accounting-report-date-range' />
       </Box>
       <ProductMovementDashboard
         productData={productData}
@@ -238,13 +240,13 @@ export default function ProductDrawer({
       />
       <Box px={'40px'} my={'20px'}>
         <SectionTitle grey>История продукта</SectionTitle>
-        <ProductHistory id={id} unit_per_pack={unitPerPack} />
+        <ProductHistory id={currentSaleId} unit_per_pack={unitPerPack} />
       </Box>
       <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
       <Box px={'40px'} my={'20px'}>
         <SectionTitle grey>Остатки</SectionTitle>
 
-        <ProductRemainsHistory id={id} />
+        <ProductRemainsHistory id={currentSaleId} />
       </Box>
       {productData?.data?.data?.status === 'REJECTED' && (
         <>

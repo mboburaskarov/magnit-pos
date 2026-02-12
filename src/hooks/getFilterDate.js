@@ -1,9 +1,9 @@
 import dayjs from 'dayjs'
 import React from 'react'
 
-export const getFilterStartDate = (values) => {
+export const getFilterStartDate = (values, initialNull = false) => {
   const ready_start_date = dayjs(`${values?.start_date} ${values?.from_time}`)
-  return values?.start_date && values?.from_time ? ready_start_date.format() : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00')
+  return values?.start_date && values?.from_time ? ready_start_date.format() : initialNull ? undefined : dayjs(new Date()).format('YYYY-MM-DDT00:00:00+05:00')
 }
 
 export const getFilterEndDate = (values) => {

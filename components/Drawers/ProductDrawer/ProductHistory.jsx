@@ -32,8 +32,8 @@ export default function ProductHistory({ id, unit_per_pack }) {
       limit: values?.limitHistory || 5,
       store_id: values?.store_id || userData?.store?.id,
       offset: values?.offsetHistory || 0,
-      start_date: getFilterStartDate(values),
-      end_date: getFilterEndDate(values),
+      // start_date: getFilterStartDate(values),
+      // end_date: getFilterEndDate(values),
       id,
     }
   }, [values?.limitHistory, id, values?.offsetHistory, unit_per_pack, values?.from_time, values?.to_time, values?.start_date, values?.end_date])
@@ -42,7 +42,8 @@ export default function ProductHistory({ id, unit_per_pack }) {
     isLoading: isproductDataLoadingHistory,
     isFetching: isFetchingsingleProductMovement,
     refetch,
-  } = useQuery(['singleProductMovement', productHistoryFilter], () => requests.getSingleProductMovement(productHistoryFilter))
+  } = useQuery(['singleProductMovement', productHistoryFilter], () => requests.getSingleProductMovement(productHistoryFilter), { enabled: !!id })
+  console.log(id)
 
   useEffect(() => {
     const count = singleProductMovement?.data?.data?._meta?.total_count
@@ -51,10 +52,6 @@ export default function ProductHistory({ id, unit_per_pack }) {
 
     setOffsetCount(offsetsCount || 0)
   }, [singleProductMovement?.data, values?.limitHistory])
-
-  useEffect(() => {
-    refetch()
-  }, [productHistoryFilter])
 
   const columns = useMemo(
     () => [
@@ -107,16 +104,16 @@ export default function ProductHistory({ id, unit_per_pack }) {
               {entryType == '6'
                 ? 'Перемещение '
                 : entryType == '5'
-                ? 'Возврат на склад '
-                : entryType == '7'
-                ? 'Возврат '
-                : entryType == '3'
-                ? 'Списание '
-                : entryType == '4'
-                ? 'Продажa '
-                : entryType == '2'
-                ? 'Инвентаризация '
-                : 'Импорт '}
+                  ? 'Возврат на склад '
+                  : entryType == '7'
+                    ? 'Возврат '
+                    : entryType == '3'
+                      ? 'Списание '
+                      : entryType == '4'
+                        ? 'Продажa '
+                        : entryType == '2'
+                          ? 'Инвентаризация '
+                          : 'Импорт '}
               #{publicId}
             </Typography>
           )
@@ -163,7 +160,7 @@ export default function ProductHistory({ id, unit_per_pack }) {
         cellRenderer: ({ data, rowIndex }) => <Typography>{get(data, 'store_name')}</Typography>,
       },
     ],
-    [unit_per_pack]
+    [unit_per_pack],
   )
 
   const formattedData = singleProductMovement?.data?.data?.data
