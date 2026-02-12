@@ -31,12 +31,14 @@ import PrintManualZReport from './printManualZReport'
 import SaleDrawer from './saleDrawer'
 import SaleMiniDashboardHeader from './saleMiniDashboardHeader'
 import tableHeaderSelector from './tableHeaderSelector'
+import { useWebView } from '@/layouts/WebviewProvider'
 
 export default function AllSalesPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.salesTableColumns)
+  const { isWebview } = useWebView()
   const { values } = useQueryParams()
   const [orderModel, setOrderModel] = useState(false)
   const navigate = useNavigate()

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 import LayoutHeader from '../LayoutHeader'
 import NavBar from '../Navbar'
+import { useWebView } from '../WebviewProvider'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flex: '1 1 auto',
     height: '100%',
-    maxWidth: ({ isOpen }) => (isOpen ? 'calc(100vw - 292px)' : 'calc(100vw - 20px)'),
+    maxWidth: ({ isOpen, isWebview }) => (isWebview ? '100vw' : isOpen ? 'calc(100vw - 292px)' : 'calc(100vw - 20px)'),
   },
   main: {
     flex: '1 1 100%',
@@ -35,14 +36,15 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function DashboardLayout({ hasHeader = true }) {
+  const { isWebview } = useWebView()
   const { isOpen } = useSelector((state) => state.sidebarSettings)
-  const classes = useStyles({ isOpen })
+  const classes = useStyles({ isOpen, isWebview })
   return (
     <Box display='flex' width='100%' minHeight='100%'>
       <div className={classes.root}>
-        <NavBar />
+        {isWebview ? null : <NavBar />}
         <div className={classes.headerWrapper}>
-          {hasHeader ? <LayoutHeader /> : <></>}
+          {hasHeader ? isWebview ? null : <LayoutHeader /> : <></>}
           <div className={classes.wrapper}>
             <div className={classes.contentContainer}>
               <div className={classes.content}>
