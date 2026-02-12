@@ -15,7 +15,7 @@ function updateCountdown({ endDate, doneAt, onlyShow, moreDay }) {
   return { time: output, color: onlyShow ? onlyShowColor : color }
 }
 
-export default function TimeCountdown({ endTime, doneAt, onlyShow = false, moreDay=false }) {
+export default function TimeCountdown({ endTime, doneAt, onlyShow = false, moreDay = false }) {
   const [formattedTime, setFormattedTime] = useState({ time: '00:00:00', color: 'green' })
 
   useEffect(() => {

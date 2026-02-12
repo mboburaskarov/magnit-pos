@@ -85,7 +85,6 @@ function NewCashRegister() {
   const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
   const dispatch = useDispatch()
-
   const [isEposTurnOn, setisEposTurnOn] = useState(true)
   const { mutate: getUserInfo } = useMutation(requests.getUserInfo, {
     onSuccess: ({ data }) => {
@@ -99,10 +98,10 @@ function NewCashRegister() {
     getUserInfo()
   }, [])
   const { data: registerCashList, refetch: refetchregisterCashList } = useQuery(['registerCashList', userData], () =>
-    requests.getAllCashBoxList({ store_id: get(userData, 'store.id'), limit: 20, offset: 0 })
+    requests.getAllCashBoxList({ store_id: get(userData, 'store.id'), limit: 20, offset: 0 }),
   )
   const { data: registerCashData, refetch: refetchregisterCashData } = useQuery('registerCashData', () =>
-    requests.getRegisterCashData(get(methods.getValues('registerCash_id'), 'id', false))
+    requests.getRegisterCashData(get(methods.getValues('registerCash_id'), 'id', false)),
   )
 
   const { mutate: checkSaleExist, isLoading: isCheckSaleExist } = useMutation(requests.checkSaleExist, {
@@ -110,6 +109,15 @@ function NewCashRegister() {
       if (get(data, 'data.is_open', false)) {
         navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
         navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
+        if (window.parent) {
+          window.parent.postMessage(
+            {
+              type: 'SAVE_CASH_BOX',
+              payload: data?.data,
+            },
+            '*',
+          )
+        }
       }
     },
     onError: (err) => {
@@ -133,8 +141,25 @@ function NewCashRegister() {
 
   const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashOperationBox, {
     onSuccess: ({ data }) => {
-      localStorage.setItem('device_id', get(data, 'data.device_id'))
-      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+      const saleId = get(data, 'data.id')
+      const device_id = get(data, 'data.device_id')
+      localStorage.setItem('device_id', device_id)
+      if (window.parent) {
+        window.parent.postMessage(
+          {
+            type: 'SAVE_CASH_BOX',
+            payload: {
+              sale_id: saleId,
+              cash_box_id: get(methods.getValues(), 'registerCash_id.id'),
+              device_id,
+              is_open: true,
+              opened_at: Date.now(),
+            },
+          },
+          '*',
+        )
+      }
+      navigate(`/sales/new-sale/${saleId}`)
     },
     onError: (err) => {
       error('Ошибка при создании кассы!')

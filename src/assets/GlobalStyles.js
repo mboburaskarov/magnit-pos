@@ -342,7 +342,7 @@ const useStyles = makeStyles((theme) =>
         borderColor: theme.palette.gray[200],
       },
     },
-  })
+  }),
 )
 
 const GlobalStyles = () => {
