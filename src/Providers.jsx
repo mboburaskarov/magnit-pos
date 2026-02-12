@@ -29,6 +29,7 @@ import { use } from 'react'
 import i18n from './i18n'
 import { I18nextProvider } from 'react-i18next'
 import WebSocketProvider from './context/WebSocketContext'
+import WebviewProvider from './layouts/WebviewProvider'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -89,7 +90,9 @@ function Providers({ children }) {
             <CacheProvider value={emotionCache}>
               <ThemeProvider theme={muiTheme}>
                 <StyledEngineProvider injectFirst>
-                  <ErrorBoundary>{children}</ErrorBoundary>
+                  <ErrorBoundary>
+                    <WebviewProvider>{children}</WebviewProvider>
+                  </ErrorBoundary>
                 </StyledEngineProvider>
               </ThemeProvider>
             </CacheProvider>

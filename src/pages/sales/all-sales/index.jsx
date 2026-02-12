@@ -31,12 +31,14 @@ import PrintManualZReport from './printManualZReport'
 import SaleDrawer from './saleDrawer'
 import SaleMiniDashboardHeader from './saleMiniDashboardHeader'
 import tableHeaderSelector from './tableHeaderSelector'
+import { useWebView } from '@/layouts/WebviewProvider'
 
 export default function AllSalesPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.salesTableColumns)
+  const { isWebview } = useWebView()
   const { values } = useQueryParams()
   const [orderModel, setOrderModel] = useState(false)
   const navigate = useNavigate()
@@ -171,7 +173,7 @@ export default function AllSalesPage() {
             onClick={() =>
               isCustomersSales &&
               navigate(
-                `/reports/discount-card-report?start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`
+                `/reports/discount-card-report?start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`,
               )
             }
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}

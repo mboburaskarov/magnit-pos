@@ -1,6 +1,11 @@
+import { useWebView } from '@/layouts/WebviewProvider'
 import { Box, CircularProgress } from '@mui/material'
 
 export default function LoadingContainer({ children, height = 'auto', readyState = false, fullHeight = false, noHeight = false }) {
+  const { isWebview } = useWebView()
+  if (isWebview) {
+    return children
+  }
   return (
     <Box
       sx={{
