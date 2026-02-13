@@ -49,6 +49,8 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
   }
 
   useEffect(() => {
+    setStartDate(0)
+    setEndDate(0)
     reset({}, { keepDirty: true })
   }, [open])
 
