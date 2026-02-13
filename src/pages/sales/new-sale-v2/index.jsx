@@ -1426,7 +1426,7 @@ function NewSaleV2() {
                 loading={isdeleteCartItem}
                 onClick={() => {
                   sendToRejectedProduct({
-                    rejected_times: get(openRejectConfirmDialog, 'count'),
+                    count: get(openRejectConfirmDialog, 'count'),
                     product_id: get(openRejectConfirmDialog, 'id'),
                     store_id: get(userData, 'store.id'),
                     product_name: get(openRejectConfirmDialog, 'product_name'),
