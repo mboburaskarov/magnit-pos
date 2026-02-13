@@ -11,7 +11,7 @@ import LoadingContainer from '@components/LoadingContainer'
 import { useQueryParams } from '@hooks/useQueryParams'
 import FilterMenuIcon from '@icons/FilterMenuIcon'
 import LeftArrowIcon from '@icons/LeftArrow'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
 import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
@@ -32,7 +32,37 @@ import SaleDrawer from './saleDrawer'
 import SaleMiniDashboardHeader from './saleMiniDashboardHeader'
 import tableHeaderSelector from './tableHeaderSelector'
 import { useWebView } from '@/layouts/WebviewProvider'
-
+const LoadingExcel = () => {
+  return (
+    <Box
+      sx={{
+        position: 'fixed',
+        bottom: 30,
+        right: 30,
+        zIndex: 9999,
+        maxWidth: '250px',
+        backgroundColor: 'white',
+        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+        borderRadius: '12px',
+        padding: '16px 24px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        border: '1px solid #ECEDF2',
+      }}
+    >
+      <CircularProgress size={20} sx={{ color: 'orange.500' }} />
+      <Box>
+        <Typography fontWeight={600} fontSize={'14px'}>
+          Загрузка Excel...
+        </Typography>
+        <Typography fontSize={'12px'} color='text.secondary'>
+          Пожалуйста, подождите
+        </Typography>
+      </Box>
+    </Box>
+  )
+}
 export default function AllSalesPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
@@ -211,7 +241,7 @@ export default function AllSalesPage() {
 
   return (
     <LoadingContainer readyState={true}>
-      {isallSalesExcelReport && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
+      {isallSalesExcelReport && <LoadingExcel />}
 
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
