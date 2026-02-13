@@ -125,7 +125,7 @@ export default function StoreReportPage() {
 
   return (
     <LoadingContainer readyState={true}>
-      {isgetStoreReportExcelReport && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
+      {isgetStoreReportExcelReport && <LoadingBlock zIndex={99} top={0} position={'fixed'} width={'100%'} left='0' />}
       <Header noActions isLoading={false} backIcon backHref='/reports/branch' text={'Отчет филиала '} />
       <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'0px'} px={'50px'} pb={'20px'}>
         <StoreReportMiniDashboardHeader saleStatsData={get(saleStatsData, 'data.data')} />

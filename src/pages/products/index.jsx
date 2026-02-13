@@ -323,7 +323,7 @@ export default function ProductsPage() {
   return (
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
-        {isproductsExcelReport && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
+        {isproductsExcelReport && <LoadingBlock zIndex={99} top={0} position={'fixed'} width={'100%'} left='0' />}
 
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
           <Box display={'flex'} mb={'10px'} justifyContent={'space-between'}>

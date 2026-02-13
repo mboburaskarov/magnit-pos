@@ -162,7 +162,7 @@ export default function ProductsPageByStore() {
   } = useQuery(['productsListForChangeByStore', productsListFilter], () => requests.getAllProductsByImport(productsListFilter))
 
   const { data: statusCountList, refetch: fetchStatusCountList } = useQuery(['statusCountList', values?.search, productsListFilter], () =>
-    requests.getAllProductsStatusCount(productsListFilter)
+    requests.getAllProductsStatusCount(productsListFilter),
   )
 
   const { mutate: deleteProduct, isLoading: isDeletingProduct } = useMutation(requests.deleteProduct, {
@@ -282,7 +282,7 @@ export default function ProductsPageByStore() {
   return (
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
-        {isproductsExcelReport && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
+        {isproductsExcelReport && <LoadingBlock zIndex={99} top={0} position={'fixed'} width={'100%'} left='0' />}
 
         <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
           <Box display={'flex'} mb={'10px'} justifyContent={'space-between'}>
@@ -482,15 +482,15 @@ export default function ProductsPageByStore() {
               openConfirmDialog?.type === 'activate'
                 ? 'Активировать продукт?'
                 : openConfirmDialog?.type === 'deactivate'
-                ? 'Деактивировать продукт?'
-                : 'Удалить продукт?'
+                  ? 'Деактивировать продукт?'
+                  : 'Удалить продукт?'
             }
             desc={
               openConfirmDialog?.type === 'activate'
                 ? 'Вы действительно хотите активировать продукт, вы не можете вернуть этот прогресс после активации.'
                 : openConfirmDialog?.type === 'deactivate'
-                ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
-                : 'Вы хотите удалить продукт?'
+                  ? 'Вы действительно хотите деактивировать продукт, вы не можете вернуть этот прогресс после деактивации.'
+                  : 'Вы хотите удалить продукт?'
             }
             supDesc={'“Azitromitsin 250 mg”'}
             actions={
@@ -512,8 +512,8 @@ export default function ProductsPageByStore() {
                     openConfirmDialog?.type === 'activate'
                       ? activateProduct(openConfirmDialog.id)
                       : openConfirmDialog?.type === 'deactivate'
-                      ? deActivateProduct({ id: openConfirmDialog.id, appType: 'INACTIVE' })
-                      : deleteProduct({ data: [openConfirmDialog.id] })
+                        ? deActivateProduct({ id: openConfirmDialog.id, appType: 'INACTIVE' })
+                        : deleteProduct({ data: [openConfirmDialog.id] })
                   }
                 >
                   Да, удалить

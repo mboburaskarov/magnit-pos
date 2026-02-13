@@ -98,7 +98,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     fetchPage,
     {
       getNextPageParam: (lastPage) => (lastPage.rows.length < LIMIT ? undefined : lastPage.nextOffset),
-    }
+    },
   )
 
   const allRows = useMemo(() => data?.pages?.flatMap((page) => page.rows), [data]) || []
@@ -273,7 +273,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
       })
       if (node) observerRef.current.observe(node)
     },
-    [isFetchingNextPage, hasNextPage, status, fetchNextPage]
+    [isFetchingNextPage, hasNextPage, status, fetchNextPage],
   )
 
   let currentOffset = Math.floor(selectedIndex / 50) * 50
@@ -311,7 +311,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   })
 
   const { data: inventoryStat, refetch: refetchInverStatus } = useQuery(['inventoryStat', debouncedSearchBarcode, checkingSearchBarcode], () =>
-    requests.getInventoryStat(id, { search: debouncedSearchBarcode || checkingSearchBarcode })
+    requests.getInventoryStat(id, { search: debouncedSearchBarcode || checkingSearchBarcode }),
   )
 
   useHotkeys(
@@ -329,7 +329,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     },
     {
       enableOnFormTags: true,
-    }
+    },
   )
   useHotkeys(
     '*',
@@ -376,7 +376,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     },
     {
       enableOnTags: ['INPUT', 'TEXTAREA'],
-    }
+    },
   )
 
   useEffect(() => {
@@ -398,7 +398,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     {
       enableOnTags: ['INPUT', 'TEXTAREA'],
       preventDefault: true,
-    }
+    },
   )
 
   useHotkeys(
@@ -417,7 +417,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
     {
       enableOnTags: ['INPUT', 'TEXTAREA'],
       preventDefault: true,
-    }
+    },
   )
   function replaceAtIndex(arr, index, replacements) {
     let currentOffset = Math.floor(selectedIndex / 50) * 50
@@ -475,7 +475,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   return (
     <LoadingContainer readyState={!isfinishInventoryChecking}>
       <Box className='inventory-with-checking-page'>
-        {isLoading && <LoadingBlock zIndex={99} top={0} position={'absolute'} width={'100%'} left='0' />}
+        {isLoading && <LoadingBlock zIndex={99} top={0} position={'fixed'} width={'100%'} left='0' />}
         <FormProvider {...methods}>
           <Header
             onSubmit={() => setOpenFinishConfirmDialog(true)}

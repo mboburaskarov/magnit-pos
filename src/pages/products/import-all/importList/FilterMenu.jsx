@@ -56,12 +56,17 @@ export default function FilterMenu({ open, setOpen }) {
         store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
         received_amount_to: received_amount_to || null,
         received_amount_from: received_amount_from || null,
-        status: status ? { name: 'd', value: values?.no_barcode } : null,
+        status: status
+          ? {
+              name: imports_list_statuses.find((el) => el.id == status)?.name,
+              value: values?.status,
+            }
+          : null,
         import_date: import_date,
         start_date: start_date,
         end_date: end_date,
       },
-      { keepDirty: true }
+      { keepDirty: true },
     )
   }, [
     values?.store_id,
