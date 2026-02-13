@@ -49,6 +49,7 @@ function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
         '&:hover': {
           backgroundColor: 'gray.200',
         },
+        cursor: 'pointer',
       }}
     >
       <Box display={'flex'} minWidth={'300px'} maxWidth={'calc(100vw - 100px)'}>
@@ -69,6 +70,7 @@ function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
             fontWeight={'600'}
             lineHeight={'24px'}
             color={'bunker.950'}
+            minWidth={'400px'}
           >
             {get(item, 'product_name')}
           </Typography>
@@ -77,7 +79,7 @@ function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
           </Typography>
         </Box>
       </Box>
-      <Box display={'flex'} width={'100px'}>
+      <Box display={'flex'} width={'100px'} minWidth={'120px'}>
         <Box mr={'16px'}>
           <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
             {thousandDivider(get(item, 'bonus_amount'), 'сум')}

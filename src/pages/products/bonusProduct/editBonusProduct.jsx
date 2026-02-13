@@ -32,7 +32,6 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
       console.error('err', err)
     },
   })
-
   const onSubmit = (data) => {
     const requestBody = {
       product_id: get(open, 'product.id', 0),
@@ -49,11 +48,11 @@ export default function EditBonusProduct({ open, refetch, setOpen }) {
   }
 
   useEffect(() => {
-    ;(setStartDate(get(bonusProduct, 'start_date', 0) ? dayjs(get(bonusProduct, 'start_date')).toDate() : null),
-      setEndDate(get(bonusProduct, 'end_date', 0) ? dayjs(get(bonusProduct, 'end_date')).toDate() : null),
+    ;(setStartDate(get(bonusProduct, 'data.data.start_date', 0) ? dayjs(get(bonusProduct, 'data.data.start_date')).toDate() : null),
+      setEndDate(get(bonusProduct, 'data.data.end_date', 0) ? dayjs(get(bonusProduct, 'data.data.end_date')).toDate() : null),
       reset(
         {
-          bonus_amount: get(bonusProduct, 'bonus_amount', 0),
+          bonus_amount: get(bonusProduct, 'data.data.bonus_amount', 0),
         },
         { keepDirty: true },
       ))

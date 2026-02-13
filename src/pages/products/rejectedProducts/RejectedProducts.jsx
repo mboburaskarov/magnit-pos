@@ -1,17 +1,16 @@
-import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew';
-import AgGridTable from '@components/AgGridTable/AgGridTable';
-import InputSearch from '@components/Inputs/InputSearch';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useEffect, useMemo, useState } from 'react';
-import { Box, Typography } from '@mui/material';
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
-import { requests } from '@utils/requests';
-import { useQuery } from 'react-query';
-import { get } from 'lodash';
-import { t } from 'i18next';
-import dayjs from 'dayjs';
-
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import InputSearch from '@components/Inputs/InputSearch'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { useEffect, useMemo, useState } from 'react'
+import { Box, Typography } from '@mui/material'
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
+import { requests } from '@utils/requests'
+import { useQuery } from 'react-query'
+import { get } from 'lodash'
+import { t } from 'i18next'
+import dayjs from 'dayjs'
 
 const CustomHeader = (props) => {
   const lastStort = props.column.colDef.orderStoring
@@ -78,7 +77,6 @@ const CustomHeader = (props) => {
     </Box>
   )
 }
-
 
 export default function RejectedProducts({ id }) {
   const { values } = useQueryParams()
@@ -156,7 +154,7 @@ export default function RejectedProducts({ id }) {
         menuTabs: ['generalMenuTab', 'filterMenuTab'],
         cellRenderer: ({ data, rowIndex }) => (
           <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{data?.count}</Typography>
+            <Typography>{data?.rejected_times}</Typography>
           </Box>
         ),
       },
@@ -168,7 +166,7 @@ export default function RejectedProducts({ id }) {
         width: 185,
         cellRenderer: ({ data, rowIndex }) => (
           <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{data?.rejected_times}</Typography>
+            <Typography>{data?.count}</Typography>
           </Box>
         ),
       },
@@ -188,7 +186,7 @@ export default function RejectedProducts({ id }) {
         ),
       },
     ],
-    [orderStoring]
+    [orderStoring],
   )
 
   const formattedData = rejectedProductList?.data?.data?.data
@@ -196,7 +194,7 @@ export default function RejectedProducts({ id }) {
   return (
     <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
       <Box display={'flex'} mb={'10px'} justifyContent={'space-between'}>
-        <Typography onClick={() => navigate('/products/all-by-import')} variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
+        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
           Товары с отказом
         </Typography>
       </Box>
