@@ -1,5 +1,6 @@
 import ButtonWithPopup from '@components/Buttons/ButtonWithPopup'
 import CheckAccess from '@components/CheckAccess'
+import * as qs from 'qs'
 import RippedPaperProductPriceCheck from '@components/ChequePaper/RippedPaperProductPriceCheck'
 import CustomImg from '@components/CustomImg'
 import DrawerInfoBox from '@components/Drawers/DrawerInfoBox'
@@ -195,6 +196,17 @@ export default function ProductDrawer({
   })
 
   const navigate = useNavigate()
+
+  const handleClose = () => {
+    onClose(false)
+    const newParams = { ...values }
+    delete newParams.start_date
+    delete newParams.end_date
+    delete newParams.from_time
+    delete newParams.to_time
+    const dateParams = qs.stringify(newParams, { addQueryPrefix: true })
+    navigate(`${location.pathname}${dateParams}`)
+  }
   return (
     <Drawer
       anchor='right'
@@ -204,7 +216,7 @@ export default function ProductDrawer({
           borderRadius: '24px 0 0 24px',
         },
       }}
-      onClose={() => onClose(false)}
+      onClose={handleClose}
       open={!!id}
       isLoading={productDataLoading && isFetchingproductData}
     >

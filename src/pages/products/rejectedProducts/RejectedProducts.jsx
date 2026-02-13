@@ -141,24 +141,6 @@ export default function RejectedProducts({ id }) {
         ),
       },
       {
-        headerName: 'Кол-во запросов',
-        colId: 'count',
-        minWidth: 185,
-        maxWidth: 185,
-        width: 185,
-        headerComponent: CustomHeader,
-        orderStoring,
-        setOrderStoring,
-        filter: 'agNumberColumnFilter',
-        // floatingFilter: true,
-        menuTabs: ['generalMenuTab', 'filterMenuTab'],
-        cellRenderer: ({ data, rowIndex }) => (
-          <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{data?.rejected_times}</Typography>
-          </Box>
-        ),
-      },
-      {
         headerName: 'Кол-во',
         colId: 'rejected_times',
         minWidth: 185,
