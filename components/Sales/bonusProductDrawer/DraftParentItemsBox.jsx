@@ -331,6 +331,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ResultItem({ index, itemRef, item, searchTerm, product }) {
   const classes = useStyles()
   const { values } = useQueryParams()
+  const isActive = !dayjs(item.start_date).isAfter(dayjs(), 'day') && !dayjs(item.end_date).isBefore(dayjs(), 'day')
 
   return (
     <Box
@@ -418,7 +419,7 @@ export default function ResultItem({ index, itemRef, item, searchTerm, product }
                 display: 'flex',
                 mr: '10px',
                 alignItems: 'center',
-                backgroundColor: dayjs(item.end_date).isBefore(dayjs(), 'day') ? '#aaa' : 'orange.500',
+                backgroundColor: isActive ? 'orange.500' : '#aaa',
               }}
             >
               <PrizeBoxIcon />
