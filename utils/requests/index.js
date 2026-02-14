@@ -369,6 +369,7 @@ export const requests = {
   getAllProductsList: (filter) => request.get(`v1/rejected-products/products${qs.stringify(filter, { addQueryPrefix: true })}`),
   sendToRejectedProduct: (data) => request.post(`v1/rejected-products`, data),
   getRejectedProductList: (filter) => request.get(`v1/rejected-products/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getRejectedProductListExcel: (filter) => requestEXCEL.post(`v1/rejected-products/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //report
   getDiscountCartReport: (filter) => request.post(`v1/report/discount-card${qs.stringify(filter, { addQueryPrefix: true })}`),
