@@ -310,7 +310,7 @@ export const useSaleOperations = ({
 
         companyPhoneNumber: '+998772770333',
         params: {
-          externalId: SALE_NUMBER,
+          externalId: `${SALE_NUMBER}`,
           clientName: get(customerId, 'name'),
           items,
 
