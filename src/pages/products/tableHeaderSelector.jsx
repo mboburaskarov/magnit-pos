@@ -299,7 +299,7 @@ export default function tableHeaderSelector({
     if (el.field === 'barcode') {
       return {
         ...el,
-        // editable: editable,
+        editable: editable,
 
         headerName: t('table_columns.barcode'),
         colId: el.field,
