@@ -7,10 +7,12 @@ import { Box, Typography } from '@mui/material'
 import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { requests } from '@utils/requests'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { get } from 'lodash'
 import { t } from 'i18next'
 import dayjs from 'dayjs'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { error } from '@utils/toast'
 
 const CustomHeader = (props) => {
   const lastStort = props.column.colDef.orderStoring
@@ -173,6 +175,17 @@ export default function RejectedProducts({ id }) {
 
   const formattedData = rejectedProductList?.data?.data?.data
 
+  const { mutate: productsExcelReport, isLoading: isproductsExcelReport } = useMutation(requests.getRejectedProductListExcel, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.error(err)
+
+      error('Ошибка при скачать excel!')
+    },
+  })
+
   return (
     <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
       <Box display={'flex'} mb={'10px'} justifyContent={'space-between'}>
@@ -229,6 +242,9 @@ export default function RejectedProducts({ id }) {
           offsetCount={offsetCount}
           updaterAction={(newData) => {}}
           defaultOffsetSize={5}
+          fullDownload={() => productsExcelReport({ ...rejectedProductListFIlter, offset: 0, limit: 1000000 })}
+          downloadByFilter={() => productsExcelReport(rejectedProductListFIlter)}
+          isDownloading={isproductsExcelReport}
         />
       </Box>
     </Box>
