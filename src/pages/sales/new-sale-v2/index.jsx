@@ -48,6 +48,7 @@ import ImplementMarkingDialog from './ImplementMarkingDialog'
 import OrderLite from './lite-order'
 import OrganizeDmedOrder from './OrganizeDmedOrder'
 import ProductDrawer from './ProductDrawer'
+import RamadanIcon from '@/assets/icons/RamadanIcon'
 
 const useStyles = makeStyles((theme) => ({
   currentUser: {
@@ -263,6 +264,69 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
 }))
+
+const TIMES = [
+  { '17.02.2026': ['05:52', '18:01'] },
+  { '18.02.2026': ['05:53', '18:02'] },
+  { '19.02.2026': ['05:54', '18:03'] },
+  { '20.02.2026': ['05:53', '18:04'] },
+  { '21.02.2026': ['05:52', '18:06'] },
+  { '22.02.2026': ['05:50', '18:07'] },
+  { '23.02.2026': ['05:49', '18:08'] },
+  { '24.02.2026': ['05:47', '18:09'] },
+  { '25.02.2026': ['05:46', '18:10'] },
+  { '26.02.2026': ['05:45', '18:12'] },
+  { '27.02.2026': ['05:43', '18:13'] },
+  { '28.02.2026': ['05:42', '18:14'] },
+  { '01.03.2026': ['05:40', '18:15'] },
+  { '02.03.2026': ['05:39', '18:16'] },
+  { '03.03.2026': ['05:37', '18:17'] },
+  { '04.03.2026': ['05:35', '18:19'] },
+  { '05.03.2026': ['05:34', '18:20'] },
+  { '06.03.2026': ['05:32', '18:21'] },
+  { '07.03.2026': ['05:31', '18:22'] },
+  { '08.03.2026': ['05:29', '18:23'] },
+  { '09.03.2026': ['05:27', '18:24'] },
+  { '10.03.2026': ['05:26', '18:25'] },
+  { '11.03.2026': ['05:24', '18:27'] },
+  { '12.03.2026': ['05:22', '18:28'] },
+  { '13.03.2026': ['05:21', '18:29'] },
+  { '14.03.2026': ['05:19', '18:30'] },
+  { '15.03.2026': ['05:17', '18:31'] },
+  { '16.03.2026': ['05:15', '18:32'] },
+  { '17.03.2026': ['05:14', '18:33'] },
+  { '18.03.2026': ['05:12', '18:34'] },
+  { '19.03.2026': ['05:10', '18:35'] },
+  { '20.03.2026': ['05:08', '18:36'] },
+]
+
+const calcRamadanTime = () => {
+  const now = new Date()
+  const dd = String(now.getDate()).padStart(2, '0')
+  const mm = String(now.getMonth() + 1).padStart(2, '0')
+  const yyyy = now.getFullYear()
+  const todayKey = `${dd}.${mm}.${yyyy}`
+
+  const todayIndex = TIMES.findIndex((entry) => Object.keys(entry)[0] === todayKey)
+  if (todayIndex === -1) return null
+
+  const todayEntry = TIMES[todayIndex]
+  const [saharlik, iftorlik] = todayEntry[todayKey]
+
+  const currentTotal = now.getHours() * 60 + now.getMinutes()
+  const [iftH, iftM] = iftorlik.split(':').map(Number)
+  const iftorlikTotal = iftH * 60 + iftM
+
+  if (currentTotal < iftorlikTotal) {
+    return { label: 'Iftorlik vaqti', time: iftorlik }
+  } else {
+    const nextEntry = TIMES[todayIndex + 1]
+    if (!nextEntry) return { label: 'Saharlik vaqti', time: saharlik }
+    const nextKey = Object.keys(nextEntry)[0]
+    const [nextSaharlik] = nextEntry[nextKey]
+    return { label: 'Saharlik vaqti', time: nextSaharlik }
+  }
+}
 let a = -1
 function NewSaleV2() {
   const { t } = useTranslation()
@@ -308,6 +372,8 @@ function NewSaleV2() {
   const [searchTerm, setSearchTerm, debouncedValue] = useDebouncedValue('', 200)
   const [debouncedSearchTerm] = useDebounce(searchTerm, 200)
 
+  const [ramadanTime, setRamadanTime] = useState(calcRamadanTime)
+
   const [customerId, setCustomerId] = useState('')
   const [clientDetails, setClientDetails] = useState(null)
   const [quickCreateClientName, setQuickCreateClientName] = useState(null)
@@ -320,6 +386,14 @@ function NewSaleV2() {
   const printContainer = useRef()
   const drawerRef = useRef()
   const cartRef = cartItemRef.current
+
+  // Recalculate ramadan time every 60 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRamadanTime(calcRamadanTime())
+    }, 60_000)
+    return () => clearInterval(interval)
+  }, [])
 
   const { mutate: addDiscountCard, isLoading: isaddDiscountCard } = useMutation(requests.addDiscountCard, {
     onSuccess: ({ data }) => {
@@ -1041,6 +1115,42 @@ function NewSaleV2() {
                   </Box>
                 </Box>
                 <Box sx={{ display: 'flex' }}>
+                  <Box
+                    sx={{
+                      m: '0 20px 0 20px',
+                      backgroundColor: '#f9f9fa',
+                      display: 'flex',
+                      borderRadius: '32px',
+                      padding: '2px 5px 2px 20px',
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                      <Typography sx={{ fontSize: '13px', lineHeight: '21px', color: 'gray.600', fontWeight: 'bold' }}>
+                        {ramadanTime?.label || 'Iftorlik vaqti'}
+                      </Typography>
+                      <Typography sx={{ fontSize: '18px', lineHeight: '20px', color: 'bunker.950', fontWeight: 'bold' }}>
+                        {ramadanTime?.time || '--:--'}
+                      </Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        width: '42px',
+                        height: '42px',
+                        borderRadius: '50%',
+                        backgroundColor: '#1a6d33ff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        ml: '10px',
+                        svg: {
+                          width: '34px',
+                          height: '34px',
+                        },
+                      }}
+                    >
+                      <RamadanIcon color='#ffffffff' />
+                    </Box>
+                  </Box>
                   <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar'>
                     <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
                       <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>
