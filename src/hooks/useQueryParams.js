@@ -7,18 +7,16 @@ export const useQueryParams = () => {
 
   const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true })
 
-  const set = (name, value) =>
-    navigate({ search: qs.stringify({ ...queryParams, [name]: value }) })
-  const clear = () => navigate({ search: qs.stringify({}) })
-  const merge = (values) =>
-    navigate({ search: qs.stringify({ ...queryParams, ...values }) })
+  const set = (name, value) => navigate({ search: qs.stringify({ ...queryParams, [name]: value }) }, { replace: true })
+  const clear = () => navigate({ search: qs.stringify({}) }, { replace: true })
+  const merge = (values) => navigate({ search: qs.stringify({ ...queryParams, ...values }) }, { replace: true })
   const reset = (name) => {
     const newParams = { ...queryParams }
     if (newParams[name]) {
       delete newParams[name]
     }
 
-    navigate({ search: qs.stringify({ ...newParams }) })
+    navigate({ search: qs.stringify({ ...newParams }) }, { replace: true })
   }
 
   return { values: queryParams, set, reset, clear, merge }

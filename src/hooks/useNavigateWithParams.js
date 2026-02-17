@@ -35,10 +35,14 @@ export function useNavigateWithParams() {
     navigate(fullPath, { replace: options.replace })
   }
 
-  // Go back to previous page with its query params
+  // Go back to previous page - prioritizes browser native history
   const goBackWithParams = (backHref = '/') => {
-    if (fromUrl) {
+    // If we have real browser history, use native back for consistent behavior
+    // with the browser's own back button
+    if (window.history.length > 1 && fromUrl) {
       navigate(fromUrl)
+    } else if (window.history.length > 1) {
+      navigate(-1)
     } else if (prevUrlRef.current) {
       navigate(prevUrlRef.current)
     } else {

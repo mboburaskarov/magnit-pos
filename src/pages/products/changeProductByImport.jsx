@@ -3,7 +3,7 @@ import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
@@ -37,6 +37,7 @@ import ProductDrawer from '@components/Drawers/ProductDrawer'
 import ProductDashboard from './productDashboard'
 import tableHeaderSelector from './tableHeaderSelectorByImport'
 import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { useDrawerHistory } from '@hooks/useDrawerHistory'
 
 const SELECTION_ID = 'checkboxSelectionField'
 export default function ProductsPageByStore() {
@@ -58,6 +59,11 @@ export default function ProductsPageByStore() {
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
+
+  // Close product drawer on browser back button press
+  const handleCloseDrawer = useCallback((val) => setOpenProductDrawer(val), [])
+  useDrawerHistory(openProductDrawer, handleCloseDrawer)
+
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const { mutate: setMarkingRequired, isLoading: isSetMarkingRequired } = useMutation(requests.setImportMarkingRequired, {
     onSuccess: ({ data }) => {

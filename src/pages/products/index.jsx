@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import StyledTooltip from '@components/StyledTooltip'
 import ConfirmDialog from '@components/ConfirmDialog'
 import thousandDivider from '@utils/thousandDivider'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import LoadingBlock from '@components/LoadingBlock'
 import ImageGallery from '@components/ImageGallery'
 import { useMutation, useQuery } from 'react-query'
@@ -42,8 +42,49 @@ import tableHeaderSelector from './tableHeaderSelector'
 import ChangeUnitPerPack from './changeUnitPerPack'
 import ProductDashboard from './productDashboard'
 import FilterMenu from './FilterMenu'
+import { useDrawerHistory } from '@hooks/useDrawerHistory'
 
 const SELECTION_ID = 'checkboxSelectionField'
+const LoadingChangeBarcode = ({ status }) => {
+  if (!status) return null
+  return (
+    <Box
+      sx={{
+        position: 'fixed',
+        top: '30px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 99999,
+        bgcolor: '#fff',
+        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+        borderRadius: '12px',
+        padding: '16px 24px',
+        display: 'flex',
+        alignItems: 'center',
+        maxWidth: '400px',
+        gap: '12px',
+        border: `1px solid ${status === 'error' ? '#FF4842' : status === 'success' ? '#00AB55' : '#ECEDF2'}`,
+      }}
+    >
+      {status === 'loading' && <CircularProgress size={24} sx={{ color: 'orange.500' }} />}
+      {status === 'success' && <BigTickIcon />}
+      {status === 'error' && <BigWarningIcon />}
+      <Box>
+        <Typography fontWeight={600} fontSize={'14px'} color={status === 'error' ? 'error.main' : status === 'success' ? 'success.main' : 'text.primary'}>
+          {status === 'loading' && 'Обновление...'}
+          {status === 'success' && 'Успешно обновлено'}
+          {status === 'error' && 'Ошибка обновления'}
+        </Typography>
+        {status === 'loading' && (
+          <Typography fontSize={'12px'} color='text.secondary'>
+            Пожалуйста, подождите
+          </Typography>
+        )}
+      </Box>
+    </Box>
+  )
+}
+
 export default function ProductsPage() {
   const theme = useTheme()
   const methods = useForm()
@@ -65,7 +106,13 @@ export default function ProductsPage() {
   const [openErrorReason, setOpenErrorReason] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
+
+  // Close product drawer on browser back button press
+  const handleCloseDrawer = useCallback((val) => setOpenProductDrawer(val), [])
+  useDrawerHistory(openProductDrawer, handleCloseDrawer)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
+
+  const [loadingModalStatus, setLoadingModalStatus] = useState(null)
 
   const [gridApi, setGridApi] = useState(null)
   const [currentSaleId, setCurrentSaleId] = useState(get(values, 'sale_id', ''))
@@ -82,12 +129,19 @@ export default function ProductsPage() {
     },
   })
   const { mutate: changeBarcode, isLoading: isChangeBarcode } = useMutation(requests.changeBarcode, {
+    onMutate: () => {
+      setLoadingModalStatus('loading')
+    },
     onSuccess: ({ data }) => {
       refetch()
       fetchStatusCountList()
+      setLoadingModalStatus('success')
+      setTimeout(() => setLoadingModalStatus(null), 2000)
     },
     onError: (err) => {
       error('Ошибка при сканирование!')
+      setLoadingModalStatus('error')
+      setTimeout(() => setLoadingModalStatus(null), 2000)
     },
   })
 
@@ -322,6 +376,7 @@ export default function ProductsPage() {
   }, [gridApi, currentSaleId])
   return (
     <LoadingContainer readyState={true}>
+      <LoadingChangeBarcode status={loadingModalStatus} />
       <FormProvider {...methods}>
         {isproductsExcelReport && <LoadingBlock zIndex={99} top={0} position={'fixed'} width={'100%'} left='0' />}
 

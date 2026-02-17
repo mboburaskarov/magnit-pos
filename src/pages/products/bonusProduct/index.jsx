@@ -25,7 +25,6 @@ import { useQueryParams } from '@hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/bonusProductTableColumns'
 import CreateBonusProduct from './createBonusProduct'
 import EditBonusProduct from './editBonusProduct'
-import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
 import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
@@ -40,7 +39,6 @@ export default function BonusProductPage() {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
   const [openCreateBonusModal, setopenCreateBonusModal] = useState(false)
@@ -159,10 +157,6 @@ export default function BonusProductPage() {
                   >
                     <InputSearch id='producrs-search' name='search' placeholder={t('table_columns.name')} uncontrolled />
                   </Box>
-                  <DateRangeInput
-                    defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }}
-                    id='accounting-report-date-range'
-                  />
                 </Box>
 
                 <Box display={'flex'} alignItems={'center'}>
@@ -184,7 +178,6 @@ export default function BonusProductPage() {
                   </CheckAccess>
                 </Box>
               </Box>
-              <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
               <CreateBonusProduct refetch={refetch} open={openCreateBonusModal} setOpen={setopenCreateBonusModal} />
               <EditBonusProduct refetch={refetch} open={openEditBonusModal} setOpen={setopenEditBonusModal} />
               <Box>

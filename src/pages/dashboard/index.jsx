@@ -35,6 +35,7 @@ import DashboardHeader from './DashboardHeader'
 import DashboardInfoBox from './DashboardInfoBox'
 import DashboardTopsBox from './DashboardTopsBox'
 import ImportPage from './expiredImports/index'
+import RamadanIcon from '@/assets/icons/RamadanIcon'
 
 export const dashboardBoxData = [
   {
@@ -234,17 +235,17 @@ export default function DashboarPage() {
   const { data: transaction, isLoading: isTransactionLoading } = useQuery(
     ['transaction', dashboard_filter],
     () => requests.dashboradTransaction(dashboard_filter),
-    { enabled: shouldLoadTopsData }
+    { enabled: shouldLoadTopsData },
   )
   const { data: topProducts, isLoading: isTopProductsLoading } = useQuery(
     ['TopProducts', dashboard_filter],
     () => requests.dashboradTopProducts(dashboard_filter),
-    { enabled: shouldLoadTopsData }
+    { enabled: shouldLoadTopsData },
   )
   const { data: topBonusProducts, isLoading: isTopBonusProductLoading } = useQuery(
     ['TopBonusProducts', dashboard_filter],
     () => requests.dashboradTopBonusProducts(dashboard_filter),
-    { enabled: shouldLoadTopsData }
+    { enabled: shouldLoadTopsData },
   )
   const { data: topSellers, isLoading: isTopSellerLoading } = useQuery(['TopSellers', dashboard_filter], () => requests.dashboradTopSellers(dashboard_filter), {
     enabled: shouldLoadTopsData,
@@ -266,7 +267,7 @@ export default function DashboarPage() {
         count: item.count,
         id: item?.id,
       })),
-    [chartData, dashboard_filter]
+    [chartData, dashboard_filter],
   )
 
   const regenerated = paymentTypes.map((p) => ({
@@ -427,7 +428,7 @@ export default function DashboarPage() {
                     return a + count
                   }, 0),
 
-                  'шт'
+                  'шт',
                 )}
                 tableData={[
                   { title: 'Тип	', colId: 'name' },

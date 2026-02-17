@@ -140,7 +140,7 @@ const AgGridUnSelectableSimpleTable = ({
         { addQueryPrefix: true },
       )
 
-      navigate(`${baseUrl}${offsetLimitParams}`, { state: { from: location?.state?.from } })
+      navigate(`${baseUrl}${offsetLimitParams}`, { replace: true, state: { from: location?.state?.from } })
     }
   }, [offsetIndex, offsetSize, data, location.pathname, status])
 
