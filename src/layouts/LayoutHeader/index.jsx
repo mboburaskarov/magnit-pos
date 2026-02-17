@@ -18,10 +18,11 @@ import { requests } from '@utils/requests'
 import notificationAudio from '@/assets/audio/notification.mp3'
 import MessagesDrawer from './Messages'
 import { success } from '@utils/toast'
-import CheckAccess from '@components/CheckAccess'
 import RamadanIcon from '@/assets/icons/RamadanIcon'
 
 const TIMES = [
+  { '17.02.2026': ['05:52', '18:01'] },
+  { '18.02.2026': ['05:53', '18:02'] },
   { '19.02.2026': ['05:54', '18:03'] },
   { '20.02.2026': ['05:53', '18:04'] },
   { '21.02.2026': ['05:52', '18:06'] },
@@ -178,42 +179,40 @@ function LayoutHeader() {
         <InputSearch fullWidth id='producrs-search' name='search' placeholder={t('input.search.product')} uncontrolled />
       </Box>
       <Box display={'flex'} height={'48px'}>
-        <CheckAccess id={`franchise-dashboard-box`}>
+        <Box
+          sx={{
+            m: '0 20px 0 20px',
+            backgroundColor: '#f9f9fa',
+            display: 'flex',
+            borderRadius: '32px',
+            padding: '2px 20px 2px 5px',
+          }}
+        >
           <Box
             sx={{
-              m: '0 20px 0 20px',
-              backgroundColor: '#f9f9fa',
+              width: '42px',
+              height: '42px',
+              borderRadius: '50%',
+              backgroundColor: '#1a6d33ff',
               display: 'flex',
-              borderRadius: '32px',
-              padding: '2px 20px 2px 5px',
+              alignItems: 'center',
+              justifyContent: 'center',
+              mr: '10px',
+              svg: {
+                width: '34px',
+                height: '34px',
+              },
             }}
           >
-            <Box
-              sx={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '50%',
-                backgroundColor: '#1a6d33ff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mr: '10px',
-                svg: {
-                  width: '34px',
-                  height: '34px',
-                },
-              }}
-            >
-              <RamadanIcon color='#ffffffff' />
-            </Box>
-            <Box>
-              <Typography sx={{ fontSize: '13px', lineHeight: '21px', color: 'gray.600', fontWeight: 'bold' }}>
-                {ramadanTime?.label || 'Iftorlik vaqti'}
-              </Typography>
-              <Typography sx={{ fontSize: '18px', lineHeight: '20px', color: 'bunker.950', fontWeight: 'bold' }}>{ramadanTime?.time || '--:--'}</Typography>
-            </Box>
+            <RamadanIcon color='#ffffffff' />
           </Box>
-        </CheckAccess>
+          <Box>
+            <Typography sx={{ fontSize: '13px', lineHeight: '21px', color: 'gray.600', fontWeight: 'bold' }}>
+              {ramadanTime?.label || 'Iftorlik vaqti'}
+            </Typography>
+            <Typography sx={{ fontSize: '18px', lineHeight: '20px', color: 'bunker.950', fontWeight: 'bold' }}>{ramadanTime?.time || '--:--'}</Typography>
+          </Box>
+        </Box>
         <Box mr={'17px'} width={'240px'}>
           {!userData?.first_name ? (
             <Box position='relative' marginTop={'auto'}>
