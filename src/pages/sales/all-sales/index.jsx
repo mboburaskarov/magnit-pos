@@ -32,6 +32,7 @@ import SaleDrawer from './saleDrawer'
 import SaleMiniDashboardHeader from './saleMiniDashboardHeader'
 import tableHeaderSelector from './tableHeaderSelector'
 import { useWebView } from '@/layouts/WebviewProvider'
+import { useDrawerHistory } from '@hooks/useDrawerHistory'
 const LoadingExcel = () => {
   return (
     <Box
@@ -78,6 +79,11 @@ export default function AllSalesPage() {
   const [filterMenu, setFilterMenu] = useState(false)
   const [hasFilter, setHasFilter] = useState(Object.keys(values).length > 2)
   const [openSaleDrawer, setOpenSaleDrawer] = useState(false)
+
+  // Close sale drawer on browser back button press
+  const handleCloseSaleDrawer = useCallback((val) => setOpenSaleDrawer(val), [])
+  useDrawerHistory(openSaleDrawer, handleCloseSaleDrawer)
+
   const [manualZreportData, setManualZreportData] = useState([])
   const [isCustomersSales, setIsCustomersSales] = useState(false)
 
