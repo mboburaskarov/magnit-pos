@@ -1,9 +1,8 @@
-import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
-import { Box, Typography } from '@mui/material';
-import { memo } from 'react';
-import { get } from 'lodash';
-
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
+import { Box, Typography } from '@mui/material'
+import { memo } from 'react'
+import { get } from 'lodash'
 
 const CustomHeader = (props) => {
   const lastStort = props.column.colDef.orderStoring
@@ -131,7 +130,7 @@ export default function tableHeaderSelector({ productsColumns, values, setOrderS
         headerComponent: CustomHeader,
         orderStoring,
         setOrderStoring,
-        headerName: 'Продажи',
+        headerName: 'Сумма бонуса',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='bonus_amount' />),
       }
