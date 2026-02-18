@@ -29,13 +29,13 @@ const columns = [
   },
 
   {
-    field: 'supply_price',
+    field: 'new_retail_price',
     hide: false,
     minWidth: 70,
     width: 200,
   },
   {
-    field: 'retail_price',
+    field: 'old_supply_price',
     hide: false,
     minWidth: 70,
     width: 300,

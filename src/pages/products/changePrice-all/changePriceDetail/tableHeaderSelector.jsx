@@ -52,7 +52,7 @@ export default function tableHeaderSelector({ revaluationColumns }) {
       }
     }
 
-    if (el.field === 'retail_price') {
+    if (el.field === 'new_retail_price') {
       return {
         ...el,
         headerName: '	Цена продажи',
@@ -74,7 +74,7 @@ export default function tableHeaderSelector({ revaluationColumns }) {
       }
     }
 
-    if (el.field === 'supply_price') {
+    if (el.field === 'old_supply_price') {
       return {
         ...el,
         headerName: 'Цена поставщика',
