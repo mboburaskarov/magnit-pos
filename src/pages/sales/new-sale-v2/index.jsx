@@ -49,6 +49,8 @@ import OrderLite from './lite-order'
 import OrganizeDmedOrder from './OrganizeDmedOrder'
 import ProductDrawer from './ProductDrawer'
 import RamadanIcon from '@/assets/icons/RamadanIcon'
+import { getCurrentEvent } from '@utils/ramadanTime'
+import RamadanDrawer from '@/layouts/LayoutHeader/RamadanDrawer'
 
 const useStyles = makeStyles((theme) => ({
   currentUser: {
@@ -265,68 +267,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const TIMES = [
-  { '17.02.2026': ['05:52', '18:01'] },
-  { '18.02.2026': ['05:53', '18:02'] },
-  { '19.02.2026': ['05:54', '18:03'] },
-  { '20.02.2026': ['05:53', '18:04'] },
-  { '21.02.2026': ['05:52', '18:06'] },
-  { '22.02.2026': ['05:50', '18:07'] },
-  { '23.02.2026': ['05:49', '18:08'] },
-  { '24.02.2026': ['05:47', '18:09'] },
-  { '25.02.2026': ['05:46', '18:10'] },
-  { '26.02.2026': ['05:45', '18:12'] },
-  { '27.02.2026': ['05:43', '18:13'] },
-  { '28.02.2026': ['05:42', '18:14'] },
-  { '01.03.2026': ['05:40', '18:15'] },
-  { '02.03.2026': ['05:39', '18:16'] },
-  { '03.03.2026': ['05:37', '18:17'] },
-  { '04.03.2026': ['05:35', '18:19'] },
-  { '05.03.2026': ['05:34', '18:20'] },
-  { '06.03.2026': ['05:32', '18:21'] },
-  { '07.03.2026': ['05:31', '18:22'] },
-  { '08.03.2026': ['05:29', '18:23'] },
-  { '09.03.2026': ['05:27', '18:24'] },
-  { '10.03.2026': ['05:26', '18:25'] },
-  { '11.03.2026': ['05:24', '18:27'] },
-  { '12.03.2026': ['05:22', '18:28'] },
-  { '13.03.2026': ['05:21', '18:29'] },
-  { '14.03.2026': ['05:19', '18:30'] },
-  { '15.03.2026': ['05:17', '18:31'] },
-  { '16.03.2026': ['05:15', '18:32'] },
-  { '17.03.2026': ['05:14', '18:33'] },
-  { '18.03.2026': ['05:12', '18:34'] },
-  { '19.03.2026': ['05:10', '18:35'] },
-  { '20.03.2026': ['05:08', '18:36'] },
-]
+// Removed local TIMES and calcRamadanTime constants
 
-const calcRamadanTime = () => {
-  const now = new Date()
-  const dd = String(now.getDate()).padStart(2, '0')
-  const mm = String(now.getMonth() + 1).padStart(2, '0')
-  const yyyy = now.getFullYear()
-  const todayKey = `${dd}.${mm}.${yyyy}`
-
-  const todayIndex = TIMES.findIndex((entry) => Object.keys(entry)[0] === todayKey)
-  if (todayIndex === -1) return null
-
-  const todayEntry = TIMES[todayIndex]
-  const [saharlik, iftorlik] = todayEntry[todayKey]
-
-  const currentTotal = now.getHours() * 60 + now.getMinutes()
-  const [iftH, iftM] = iftorlik.split(':').map(Number)
-  const iftorlikTotal = iftH * 60 + iftM
-
-  if (currentTotal < iftorlikTotal) {
-    return { label: 'Iftorlik vaqti', time: iftorlik }
-  } else {
-    const nextEntry = TIMES[todayIndex + 1]
-    if (!nextEntry) return { label: 'Saharlik vaqti', time: saharlik }
-    const nextKey = Object.keys(nextEntry)[0]
-    const [nextSaharlik] = nextEntry[nextKey]
-    return { label: 'Saharlik vaqti', time: nextSaharlik }
-  }
-}
 let a = -1
 function NewSaleV2() {
   const { t } = useTranslation()
@@ -372,7 +314,8 @@ function NewSaleV2() {
   const [searchTerm, setSearchTerm, debouncedValue] = useDebouncedValue('', 200)
   const [debouncedSearchTerm] = useDebounce(searchTerm, 200)
 
-  const [ramadanTime, setRamadanTime] = useState(calcRamadanTime)
+  const [ramadanTime, setRamadanTime] = useState(getCurrentEvent(0))
+  const [openRamadan, setOpenRamadan] = useState(false)
 
   const [customerId, setCustomerId] = useState('')
   const [clientDetails, setClientDetails] = useState(null)
@@ -390,7 +333,7 @@ function NewSaleV2() {
   // Recalculate ramadan time every 60 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setRamadanTime(calcRamadanTime())
+      setRamadanTime(getCurrentEvent(0))
     }, 60_000)
     return () => clearInterval(interval)
   }, [])
@@ -1116,12 +1059,18 @@ function NewSaleV2() {
                 </Box>
                 <Box sx={{ display: 'flex' }}>
                   <Box
+                    onClick={() => setOpenRamadan(true)}
                     sx={{
                       m: '0 20px 0 20px',
                       backgroundColor: '#f9f9fa',
                       display: 'flex',
                       borderRadius: '32px',
                       padding: '2px 5px 2px 20px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      '&:hover': {
+                        backgroundColor: '#eefcf3',
+                      },
                     }}
                   >
                     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
@@ -1654,6 +1603,7 @@ function NewSaleV2() {
         clientData={clientDetails}
         afterCreate={(clientId) => setCreatedClientId(clientId)}
       />
+      <RamadanDrawer open={openRamadan} onClose={setOpenRamadan} />
     </FormProvider>
   )
 }

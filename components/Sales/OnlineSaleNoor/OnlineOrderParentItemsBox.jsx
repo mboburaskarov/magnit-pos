@@ -91,9 +91,16 @@ function OnlineOrderParentItemsBox({ setIsOpenChild, item }) {
       <Box display={'flex'}>
         <Box mr={'16px'}>
           <Box display={'flex'} mb={'4px'}>
-            <img className={classes.usrImg} src='/noor.png' />
+            {get(item.service_type, 'noor') == 'noor' ? (
+              <img className={classes.usrImg} src='/noor.png' />
+            ) : (
+              <img
+                className={classes.usrImg}
+                src='https://imgs.search.brave.com/r7bZFquFlNjIE_-TVWvMw69WyZZLbDITGqJ0tqy4KoI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91enVt/LmNvbS9pbWFnZXMv/c2VydmljZXMvYmFu/ay5wbmc'
+              />
+            )}
             <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
-              {'Noor'}
+              {get(item, 'service_type', 'noor')}
             </Typography>
           </Box>
           <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
