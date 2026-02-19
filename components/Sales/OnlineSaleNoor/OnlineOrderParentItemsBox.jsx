@@ -91,7 +91,7 @@ function OnlineOrderParentItemsBox({ setIsOpenChild, item }) {
       <Box display={'flex'}>
         <Box mr={'16px'}>
           <Box display={'flex'} mb={'4px'}>
-            {get(item.service_type, 'noor') == 'noor' ? (
+            {get(item, 'service_type', 'noor') == 'noor' ? (
               <img className={classes.usrImg} src='/noor.png' />
             ) : (
               <img
