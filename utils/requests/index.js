@@ -409,6 +409,8 @@ export const requests = {
   getNoorOrderCount: (filter) => request.get(`v1/sale/online-count${qs.stringify(filter, { addQueryPrefix: true })}`),
   getOnlineOrderList: (filter) => request.get(`v1/sale/online-list${qs.stringify(filter, { addQueryPrefix: true })}`),
   completeOnlineOrder: (data) => request.post(`v1/sale/online-accept`, data),
+  //uzum
+  changeOrderStatus: ({ saleId, data }) => request.patch(`v1/sale/online-status/${saleId}`, data),
 
   //store
   getAllStores: (filter) => request.get(`v1/store/list${qs.stringify(filter, { addQueryPrefix: true })}`),

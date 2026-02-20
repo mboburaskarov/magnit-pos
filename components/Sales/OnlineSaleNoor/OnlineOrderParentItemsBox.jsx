@@ -96,7 +96,7 @@ function OnlineOrderParentItemsBox({ setIsOpenChild, item }) {
             ) : (
               <img
                 className={classes.usrImg}
-                src='https://imgs.search.brave.com/r7bZFquFlNjIE_-TVWvMw69WyZZLbDITGqJ0tqy4KoI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91enVt/LmNvbS9pbWFnZXMv/c2VydmljZXMvYmFu/ay5wbmc'
+                src='https://imgs.search.brave.com/ha-POdseYU_yQ8HjEHQKEa1mfDU8pQiKabq8Z5gMvO8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91enVt/LmNvbS9pbWFnZXMv/c2VydmljZXMvdGV6/a29yLnBuZw'
               />
             )}
             <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
