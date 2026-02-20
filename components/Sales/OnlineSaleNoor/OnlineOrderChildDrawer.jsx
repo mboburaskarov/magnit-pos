@@ -84,12 +84,24 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
     onSuccess: ({ data }) => {
       success('Заказ принят!')
       refetchDraftList()
+      refetch()
       // setChildOpen(false)
       // setOpen(false)
       // navigate(`/sales/new-sale/${get(data, 'data')}`)
     },
     onError: (err) => {
-      error('Ошибка при создании Черновик!')
+      error('Ошибка при принятии заказа!')
+      console.error('err', err)
+    },
+  })
+  const { mutate: changeOrderStatus, isLoading: isChangeOrderStatus } = useMutation(requests.changeOrderStatus, {
+    onSuccess: ({ data }) => {
+      setChildOpen(false)
+      setOpen(false)
+      navigate(`/sales/new-sale/${get(open, 'item.id')}`)
+    },
+    onError: (err) => {
+      error('Ошибка при изменении статуса заказа!')
       console.error('err', err)
     },
   })
@@ -98,6 +110,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
     refetch,
     isLoading: isDarftChildList,
   } = useQuery('darftChildList', () => requests.getCashBoxDetaildWithSaleId(get(open, 'item.id')))
+
   useEffect(() => {
     refetch()
   }, [open])
@@ -124,7 +137,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
           <CloseIcon
             color={theme.palette.black}
             onClick={() => {
-              setOpen(false), setChildOpen(false)
+              ;(setOpen(false), setChildOpen(false))
             }}
           />
         </Box>
@@ -197,12 +210,12 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
                   {get(darftChildList, 'data.data.online_status') === 1
                     ? 'Новый'
                     : get(darftChildList, 'data.data.online_status') === 2
-                    ? 'Поиск курьера'
-                    : get(darftChildList, 'data.data.online_status') === 3
-                    ? 'Завершено'
-                    : get(darftChildList, 'data.data.online_status') === 4
-                    ? 'Ожидает курьера'
-                    : 'Отменен'}
+                      ? 'Поиск курьера'
+                      : get(darftChildList, 'data.data.online_status') === 3
+                        ? 'Завершено'
+                        : get(darftChildList, 'data.data.online_status') === 4
+                          ? 'Ожидает курьера'
+                          : 'Отменен'}
                 </Typography>
               </Box>
             </Box>
@@ -237,7 +250,24 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
                 {t('delete')}
               </Typography>
             </LoadingButton> */}
-            {get(darftChildList, 'data.data.online_status') === 4 ? (
+            {get(darftChildList, 'data.data.online_status') == 2 && get(darftChildList, 'data.data.service_type', 'noor') == 'uzum' ? (
+              <Button
+                onClick={() => {
+                  changeOrderStatus({
+                    data: { online_status: 4 },
+                    saleId: get(open, 'item.id'),
+                  })
+                }}
+                fullWidth
+                variant='contained'
+                type='submit'
+              >
+                <MarkRectangleIcon />
+                <Typography fontSize={16} ml={'12px'} color={'white'} lineHeight={'24px'} fontWeight={600}>
+                  {t('Оформление заказа ')}
+                </Typography>
+              </Button>
+            ) : get(darftChildList, 'data.data.online_status') === 4 ? (
               <Button
                 onClick={() => {
                   navigate(`/sales/new-sale/${get(darftChildList, 'data.data.id')}`)
