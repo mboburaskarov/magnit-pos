@@ -35,6 +35,8 @@ export const requests = {
     request.post(`v1/dashboard/product-statistic${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
   dashboradEmployeeStatistic: ({ store_ids, company_ids, ...filter }) =>
     request.post(`v1/dashboard/employee-bonus${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
+  dashboardTargetStatistic: ({ store_ids, company_ids, ...filter }) =>
+    request.get(`v1/store-target/summary${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids, company_ids }),
 
   dashboradChart: ({ store_ids, ...filter }) => request.post(`v1/dashboard/chart${qs.stringify(filter, { addQueryPrefix: true })}`, { store_ids }),
   dashboradCountStats: ({ store_ids, company_ids, ...filter }) =>
@@ -468,4 +470,7 @@ export const requests = {
 
   //orders
   getAllOnlineOrders: (filter) => request.get(`v1/sale/online-orders${qs.stringify(filter, { addQueryPrefix: true })}`),
+
+  //target
+  createTarget: (data) => request.post(`v1/store-target`, data),
 }

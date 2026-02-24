@@ -19,6 +19,7 @@ export default function DashboardInfoBox({
   endText,
   withoutDivider,
   dashboard_filter,
+  action,
   ...l
 }) {
   const isSaleBox = ['sale_amount', 'sale_count'].includes(id)
@@ -34,6 +35,7 @@ export default function DashboardInfoBox({
     'expired_soon_amount',
   ].includes(id)
   const isEmployee = id === 'bonus_amount'
+  const isTarget = id === 'target_amount'
 
   const queryKey =
     (isSaleBox && ['sale_stats', dashboard_filter]) ||
@@ -42,6 +44,7 @@ export default function DashboardInfoBox({
     (isImport && ['import_stats', dashboard_filter]) ||
     (isProduct && ['product_stats', dashboard_filter]) ||
     (isEmployee && ['employee_stats', dashboard_filter]) ||
+    (isTarget && ['target_stats', dashboard_filter]) ||
     null
 
   const { data: countStats, isLoading } = useQuery({
@@ -53,11 +56,11 @@ export default function DashboardInfoBox({
       if (isImport) return requests.dashboradImportStatistic(dashboard_filter)
       if (isProduct) return requests.dashboradProductStatistic(dashboard_filter)
       if (isEmployee) return requests.dashboradEmployeeStatistic(dashboard_filter)
+      if (isTarget) return requests.dashboardTargetStatistic(dashboard_filter)
       throw new Error('Unknown id')
     },
     enabled: !!queryKey,
   })
-
   const count = countStats?.data?.data?.[countProp]
   const before = countStats?.data?.data?.old
   const amount = countStats?.data?.data?.[amountProp]
@@ -72,14 +75,37 @@ export default function DashboardInfoBox({
     <Box sx={{ border: 1, borderRadius: '16px', borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' }}>
       <Box key={ind} sx={{ p: '20px', height: '164px', m: 0 }}>
         <Box width='100%' alignItems='start' flexDirection='column' display='inline-flex'>
-          {!noDot && <Box height={'48px'}>{isLoading ? <Skeleton variant='circular' width={48} height={48} sx={{ borderRadius: '12px' }} /> : icon}</Box>}
-
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+            {!noDot && <Box height={'48px'}>{isLoading ? <Skeleton variant='circular' width={48} height={48} sx={{ borderRadius: '12px' }} /> : icon}</Box>}
+            {action && (
+              <Button
+                onClick={() => action(count, amount)}
+                sx={{
+                  borderRadius: '50px',
+                  ml: '8px',
+                  p: '9px 0px',
+                  height: '36px',
+                  width: '36px',
+                  backgroundColor: 'white !important',
+                  color: 'orange.500',
+                  fontSize: '14px',
+                  borderColor: 'orange.500',
+                  '& svg': {
+                    flexShrink: 0,
+                  },
+                }}
+                color='secondary'
+              >
+                <RightArrowIcon />
+              </Button>
+            )}
+          </Box>
           <Box flex={1}>
             {isLoading ? (
               <Skeleton variant='rectangular' width='65%' height={20} sx={{ mt: '16px', borderRadius: '6px' }} />
             ) : (
               <Typography display='flex' alignItems={'center'} fontSize='14px' fontWeight='500' lineHeight='20px' color='bunker.500' mt='16px'>
-                {title}{' '}
+                {title} {id === 'target_amount' ? `(Ежемесячно - ${thousandDivider(amount, '')} сум)` : ''}
                 {(id === 'expiring_soon_amount' || id === 'expired_soon_amount') && (
                   <Typography
                     sx={{
@@ -164,7 +190,7 @@ export default function DashboardInfoBox({
                 }}
               >
                 {withoutDivider ? thousandDivider(Math.round(amount), endText) : <Typography>{thousandDivider(Math.round(count), endText)}</Typography>}
-                {id.includes('oyalty_card') && (
+                {/* {id.includes('loyalty_card') && (
                   <Link to={'/clients/all?tab=loyalty-cards'}>
                     <Button
                       sx={{
@@ -185,7 +211,7 @@ export default function DashboardInfoBox({
                       <RightArrowIcon />
                     </Button>
                   </Link>
-                )}
+                )} */}
               </Typography>
             )}
           </Box>

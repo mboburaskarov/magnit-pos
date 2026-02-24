@@ -29,15 +29,18 @@ import isoWeek from 'dayjs/plugin/isoWeek'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import DashboardHeader from './DashboardHeader'
 import DashboardInfoBox from './DashboardInfoBox'
 import DashboardTopsBox from './DashboardTopsBox'
 import ImportPage from './expiredImports/index'
 import RamadanIcon from '@/assets/icons/RamadanIcon'
+import BigTargetIcon from '@/assets/icons/BigTargetIcon'
+import DashboardTargetIcon from '@/assets/icons/DashboardTargetIcon'
+import TargetDrawer from './TargetDrawer'
 
-export const dashboardBoxData = [
+export const dashboardBoxData = (navigate, setOpenDrawer) => [
   {
     title: 'Общая сумма продаж',
     icon: <MoneyArrowDown color='#fe5000' />,
@@ -138,6 +141,9 @@ export const dashboardBoxData = [
     count: 'total_loyalty_card_count',
     endText: 'шт',
     id: 'total_loyalty_card_count',
+    action: () => {
+      navigate('/clients/all?tab=loyalty-cards')
+    },
     percent: (before, current) => calculatePercentage(before || 1, current),
     old: 'before_total_loyalty_card_count',
   },
@@ -147,6 +153,9 @@ export const dashboardBoxData = [
     count: 'total_loyalty_card_balance',
     endText: 'сум',
     id: 'total_loyalty_card_balance',
+    action: () => {
+      navigate('/clients/all?tab=loyalty-cards')
+    },
     percent: (before, current) => calculatePercentage(before || 1, current),
     old: 'before_total_loyalty_card_balance',
   },
@@ -155,9 +164,26 @@ export const dashboardBoxData = [
     icon: <Gift color='#fe5000' />,
     count: 'today_created_loyalty_card_count',
     endText: 'шт',
+    action: () => {
+      navigate('/clients/all?tab=loyalty-cards')
+    },
     id: 'today_created_loyalty_card_count',
     percent: (before, current) => calculatePercentage(before || 1, current),
     old: 'before_today_created_loyalty_card_count',
+  },
+  //target
+  {
+    title: 'Таргет',
+    icon: <DashboardTargetIcon color='#fe5000' />,
+    count: 'total_target_sales',
+    amount: 'total_target_amount',
+    endText: 'сум',
+    action: (current = 20, total = 90) => {
+      setOpenDrawer({ total, current, open: true })
+    },
+    id: 'target_amount',
+    percent: (before, current) => calculatePercentage(before || 1, current),
+    old: 'before_target_amount',
   },
   {
     title: 'Ваш бонус',
@@ -175,10 +201,12 @@ export default function DashboarPage() {
 
   const [detailing, setDetaling] = useState('week')
   const [selectedAllB2B, setSelectedAllB2B] = useState(false)
+  const [openDrawer, setOpenDrawer] = useState(false)
   const [selectedShops, setSelectedShops] = useState('all')
   const [detalization, setDetalization] = useState({ name: 'по дням', value: 'day' })
   const [chartType, setchartType] = useState({ name: 'Продажи', value: 'sale' })
   const [sortBy, setSortBy] = useState('SUM')
+  const navigate = useNavigate()
   const dashboardFilter = useMemo(() => {
     return { type: sortBy, fromDate: values?.start_date, toDate: values?.end_date }
   }, [values?.start_date, values?.end_date, sortBy])
@@ -291,7 +319,7 @@ export default function DashboarPage() {
         <Grid width={'100%'} container>
           <Grid width={'100%'} item>
             <Grid container mt={0} spacing={2}>
-              {dashboardBoxData.map((el, ind) => (
+              {dashboardBoxData(navigate, setOpenDrawer).map((el, ind) => (
                 <CheckAccess id={`dashboard-box-${el.id}`} key={el.id}>
                   <Grid item xs={12} xl={3} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'}>
                     <DashboardInfoBox key={ind} {...el} dashboard_filter={dashboard_filter} />
@@ -509,6 +537,7 @@ export default function DashboarPage() {
           </Grid>
         </CheckAccess>
       </Box>
+      <TargetDrawer openDrawer={openDrawer} closeDrawer={() => setOpenDrawer(false)} />
       <CheckAccess id={'dashboard-expired-imports'}>
         <Box>
           <ImportPage dashboard_filter={dashboard_filter} />

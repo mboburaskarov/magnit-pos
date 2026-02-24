@@ -21,6 +21,12 @@ const columns = [
     width: 194,
   },
   {
+    field: 'target_amount',
+    hide: false,
+    minWidth: 70,
+    width: 194,
+  },
+  {
     field: 'work_hours',
     hide: false,
     minWidth: 70,
@@ -65,8 +71,8 @@ const columns = [
   {
     field: 'actions',
     hide: false,
-    minWidth: 96,
-    width: 96,
+    minWidth: 140,
+    width: 140,
     pinned: 'right',
   },
 ]

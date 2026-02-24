@@ -146,6 +146,38 @@ function CartDetailSide({
       }}
     >
       <Box display={'flex'} flexDirection={'column'}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: 'bg.10',
+            padding: '5px 20px 3px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
+            Цель на месяц
+          </Typography>
+          <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
+            {thousandDivider(sellerBonusInOneSale?.data?.total, 'сум')}
+          </Typography>
+        </Box>
+      </Box>
+      <Box sx={{ padding: '12px 20px' }}>
+        <Box sx={{ width: '100%', height: '36px', backgroundColor: 'orange.200', borderRadius: '6px' }}>
+          <Box width={sellerBonusInOneSale?.data?.progress + '%'} height={36} sx={{ backgroundColor: 'orange.500', borderRadius: '6px' }}>
+            {sellerBonusInOneSale?.data?.progress > 10 && (
+              <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '500', color: 'white', textAlign: 'center' }}>
+                {sellerBonusInOneSale?.data?.progress + '%'}
+              </Typography>
+            )}
+          </Box>
+        </Box>
+      </Box>
+      <Box display={'flex'} flexDirection={'column'}>
         <Box className={classes.cart_detail_id}>
           <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
             ID: #{get(cashBoxDetails, 'data.data.sale_number')}

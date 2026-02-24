@@ -23,6 +23,9 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/red
 import BranchDrawer from './BranchDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
 import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import AddTargetToBranch from './addTargetToBranch'
+import TargetIcon from '@/assets/icons/TargetIcon'
+import BigTargetIcon from '@/assets/icons/BigTargetIcon'
 
 export default function BranchesPage() {
   const dispatch = useDispatch()
@@ -31,6 +34,7 @@ export default function BranchesPage() {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const [openBranchDrawer, setOpenBranchDrawer] = useState(false)
+  const [openAddTargetToBranch, setOpenAddTargetToBranch] = useState(false)
   const navigate = useNavigate()
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
 
@@ -62,6 +66,7 @@ export default function BranchesPage() {
     values,
     storesList,
     setOpenConfirmDialog,
+    setOpenAddTargetToBranch,
   })
 
   const { mutate: deleteStore, isLoading: isDeletingProduct } = useMutation(requests.deleteStore, {
@@ -143,6 +148,31 @@ export default function BranchesPage() {
                 resetTableHeader={resetTableHeader}
               />
             </Box>
+            <CheckAccess id={'branch:add:target'}>
+              <Box
+                sx={{
+                  minWidth: '124px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '12px 20px',
+                  borderRadius: '32px',
+                  border: '1px solid #D0D5DD',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: '#F5F7FA',
+                  },
+                  '& svg': {
+                    height: '20px',
+                  },
+                  mr: '16px',
+                }}
+                onClick={() => setOpenAddTargetToBranch(true)}
+              >
+                <BigTargetIcon color={'#000'} />
+                <Typography sx={{ fontSize: '16px', fontWeight: '600', lineHeight: '24px', ml: '14px', color: '#000' }}>Таргет</Typography>
+              </Box>
+            </CheckAccess>
             <CheckAccess id={'branch:create'}>
               <Box minWidth={156}>
                 <Button
@@ -208,7 +238,7 @@ export default function BranchesPage() {
           }
         />
       )}
-
+      <AddTargetToBranch open={openAddTargetToBranch} refetch={refetch} setOpen={setOpenAddTargetToBranch} />
       <BranchDrawer refetchBranchList={refetch} openDrawer={openBranchDrawer} closeDrawer={() => setOpenBranchDrawer(false)} />
     </LoadingContainer>
   )
