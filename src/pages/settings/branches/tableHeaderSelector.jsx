@@ -6,8 +6,9 @@ import DeleteIcon from '@icons/DeleteIcon'
 import EditIcon from '@icons/EditIcon'
 import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 import CheckAccess from '@components/CheckAccess'
+import TargetIcon from '@/assets/icons/TargetIcon'
 
-export default function tableHeaderSelector({ productsColumns, values, t, storesList, setOpenConfirmDialog, setOpenBranchDrawer }) {
+export default function tableHeaderSelector({ productsColumns, values, t, storesList, setOpenConfirmDialog, setOpenBranchDrawer, setOpenAddTargetToBranch }) {
   const columns = productsColumns?.map((el) => {
     if (el.field === 'name') {
       return {
@@ -23,6 +24,14 @@ export default function tableHeaderSelector({ productsColumns, values, t, stores
         headerName: 'Наименование полное',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='detailed_name' />),
+      }
+    }
+    if (el.field === 'target_amount') {
+      return {
+        ...el,
+        headerName: 'Таргет на месяц',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='target_amount' />),
       }
     }
     if (el.field === 'location') {
@@ -106,6 +115,14 @@ export default function tableHeaderSelector({ productsColumns, values, t, stores
         colId: el.field,
         cellRenderer: memo(({ data }) => (
           <Box display='inline-flex' columnGap={'8px'}>
+            <CheckAccess id={'branch:add:target'}>
+              <IconButton
+                onClick={() => setOpenAddTargetToBranch({ mode: 'add', data: get(storesList, 'data.data.data', [])?.find((item) => item.id === data.id) })}
+                sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+              >
+                <TargetIcon />
+              </IconButton>
+            </CheckAccess>
             <CheckAccess id={'branch:edit'}>
               <IconButton
                 onClick={() => setOpenBranchDrawer({ mode: 'edit', data: get(storesList, 'data.data.data', [])?.find((item) => item.id === data.id) })}
