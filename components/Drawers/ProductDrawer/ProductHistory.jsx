@@ -43,7 +43,6 @@ export default function ProductHistory({ id, unit_per_pack }) {
     isFetching: isFetchingsingleProductMovement,
     refetch,
   } = useQuery(['singleProductMovement', productHistoryFilter], () => requests.getSingleProductMovement(productHistoryFilter), { enabled: !!id })
-  console.log(id)
 
   useEffect(() => {
     const count = singleProductMovement?.data?.data?._meta?.total_count

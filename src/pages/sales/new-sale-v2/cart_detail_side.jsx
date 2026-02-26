@@ -31,6 +31,7 @@ import { useParams } from 'react-router-dom'
 
 import BonusProductTable from './bonusProductTable'
 import DmedPrescriptionsList from './dmedPrescriptionsList'
+import { ProgressBar } from '@/pages/dashboard/TargetDrawer'
 
 function CartDetailSide({
   setServiceType,
@@ -69,12 +70,13 @@ function CartDetailSide({
     setBonusTableHeight(getDynamicBonusTableHeight(userData, get(customerId, 'name', false), dmedPrescriptionsList))
   }, [customerId, dmedOrganizedList])
 
-  // const { data: sellerBonus } = useQuery(['sellerBonus'], () => requests.getSellerBonusData())
+  const { data: myTarget } = useQuery(['myTarget'], () => requests.getMyTarget({ limit: 100, offset: 0 }))
   const { data: sellerBonusInOneSale } = useQuery(
     ['sellerBonusInOneSale'],
     () => requests.getSellerBonusInOneSale({ operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), employee_id: get(userData, 'id') }),
     { enabled: get(cashBoxDetails, 'data.data.cash_box_operation_id', '')?.length > 0 },
   )
+
   const leftZreportCount = localStorage.getItem('leftZreportCount')
 
   useEffect(() => {
@@ -162,20 +164,12 @@ function CartDetailSide({
             Цель на месяц
           </Typography>
           <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
-            {thousandDivider(sellerBonusInOneSale?.data?.total, 'сум')}
+            {thousandDivider(myTarget?.data?.data?.amount, 'сум')}
           </Typography>
         </Box>
       </Box>
       <Box sx={{ padding: '12px 20px' }}>
-        <Box sx={{ width: '100%', height: '36px', backgroundColor: 'orange.200', borderRadius: '6px' }}>
-          <Box width={sellerBonusInOneSale?.data?.progress + '%'} height={36} sx={{ backgroundColor: 'orange.500', borderRadius: '6px' }}>
-            {sellerBonusInOneSale?.data?.progress > 10 && (
-              <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '500', color: 'white', textAlign: 'center' }}>
-                {sellerBonusInOneSale?.data?.progress + '%'}
-              </Typography>
-            )}
-          </Box>
-        </Box>
+        <ProgressBar mt='0' current={get(myTarget, 'data.data.sales', 0)} total={get(myTarget, 'data.data.amount', 100)} />
       </Box>
       <Box display={'flex'} flexDirection={'column'}>
         <Box className={classes.cart_detail_id}>

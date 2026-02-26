@@ -71,7 +71,6 @@ export default function DateRangeInput({
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const [dateState, setDateState] = useState(defaultState)
-  console.log(values?.start_date)
 
   useEffect(() => {
     if (values?.start_date && values?.end_date) {
