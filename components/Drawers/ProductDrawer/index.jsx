@@ -93,7 +93,6 @@ export default function ProductDrawer({
   const userData = useSelector((state) => state.user)
   const [unitPerPack, setUnitPerPack] = useState(1)
   const { values } = useQueryParams()
-  // console.log(currentSaleId, id)
 
   const drawerFilter = useMemo(() => {
     return {

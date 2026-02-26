@@ -192,7 +192,11 @@ function NewCashRegister() {
         methods.handleSubmit((data) => onSubmit(data), onError)()
         return
       } else {
-        error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
+        if (get(data, 'message', '').includes('Ru:')) {
+          error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
+        } else {
+          error(`err: ${get(data, 'message', 'Ошибка при создании кассы! (open z report)')}`)
+        }
       }
     },
     onError: (err) => {

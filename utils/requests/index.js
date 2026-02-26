@@ -473,4 +473,6 @@ export const requests = {
 
   //target
   createTarget: (data) => request.post(`v1/store-target`, data),
+  getTargetList: (filter) => request.get(`v1/store-target/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getMyTarget: (filter) => request.get(`v1/store-target/employee/my${qs.stringify(filter, { addQueryPrefix: true })}`),
 }
