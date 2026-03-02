@@ -1,23 +1,23 @@
-import thousandDivider from '@utils/thousandDivider';
-import Highlighter from 'react-highlight-words';
-import { Box, Typography } from '@mui/material';
-import ZoomTextIcon from '@icons/ZoomTextIcon';
-import PrizeBoxIcon from '@icons/PrizeBoxIcon';
-import CustomImg from '@components/CustomImg';
-import { useParams } from 'react-router-dom';
-import { requests } from '@utils/requests';
-import { useMutation } from 'react-query';
-import CloseIcon from '@icons/CloseIcon';
-import { error } from '@utils/toast';
-import { useState } from 'react';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
-
+import thousandDivider from '@utils/thousandDivider'
+import Highlighter from 'react-highlight-words'
+import { Box, Typography } from '@mui/material'
+import ZoomTextIcon from '@icons/ZoomTextIcon'
+import PrizeBoxIcon from '@icons/PrizeBoxIcon'
+import CustomImg from '@components/CustomImg'
+import { useParams } from 'react-router-dom'
+import { requests } from '@utils/requests'
+import { useMutation } from 'react-query'
+import CloseIcon from '@icons/CloseIcon'
+import { error } from '@utils/toast'
+import { useState } from 'react'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
 export default function SerchedItem({
   index,
   handleAddProduct,
   discount,
+  previousItem,
   itemRef,
   item,
   conflictItem = false,
@@ -45,6 +45,8 @@ export default function SerchedItem({
     },
   })
 
+  //same also expired_date
+  const sameAsPreviousItem = previousItem?.name === product?.name && previousItem?.producer_name === product?.producer_name
   return (
     <Box
       id={item?.id}
@@ -79,47 +81,52 @@ export default function SerchedItem({
         <Box
           className={classes.searchItemBox + ' main-Box'}
           sx={{
+            minHeight: sameAsPreviousItem ? '48px' : '72px',
             borderTopLeftRadius: index == 0 ? 16 : 0,
             borderBottomLeftRadius: index == 29 ? 16 : 0,
             borderTopRightRadius: index == 0 ? 16 : 0,
             borderBottomRightRadius: index == 29 ? 16 : 0,
           }}
         >
-          <Box flex='1 0 20%' maxWidth={'100%'} overflow={'hidden'} display='flex' alignItems='center'>
-            <div className={classes.searchImage}>
-              <CustomImg src={product?.main_photo || '65eb3e64-185f-4642-8261-1aeec7379760.jpg'} />
-            </div>
-            <Box ml={2} width={'100%'} overflow={'hidden'}>
-              <Typography
-                textOverflow={'ellipsis'}
-                maxWidth={'calc(100% - 1px)'}
-                whiteSpace={'nowrap'}
-                style={{ textDecoration: get(product, 'expire_day', 0) <= 0 ? 'line-through' : 'none' }}
-                overflow={'hidden'}
-                id='product-name'
-                className={classes.itemName}
-              >
-                <Highlighter
-                  highlightClassName='highlighter'
-                  searchWords={[searchTerm]}
-                  autoEscape
-                  textToHighlight={`${product?.name} / ${product?.category_name} (${product?.producer_name})`}
-                />
-              </Typography>
-              <Typography display={'flex'} id='product-barcode'>
-                <Highlighter
-                  highlightClassName='highlighter'
-                  searchWords={searchTerm ? searchTerm?.split(' ') : []}
-                  autoEscape
-                  className={classes.itemBarcode}
-                  textToHighlight={product?.barcode}
-                />
-                <Typography color={get(product, 'expire_day', 0) < 0 ? 'red.500' : 'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
-                  / {dayjs(get(product, 'expire_date')).format('DD.MM.YYYY')} ({get(product, 'expire_day', 0)} kun)
+          {!sameAsPreviousItem ? (
+            <Box flex='1 0 20%' maxWidth={'100%'} overflow={'hidden'} display='flex' alignItems='center'>
+              <div className={classes.searchImage}>
+                <CustomImg src={product?.main_photo || '65eb3e64-185f-4642-8261-1aeec7379760.jpg'} />
+              </div>
+              <Box ml={2} width={'100%'} overflow={'hidden'}>
+                <Typography
+                  textOverflow={'ellipsis'}
+                  maxWidth={'calc(100% - 1px)'}
+                  whiteSpace={'nowrap'}
+                  style={{ textDecoration: get(product, 'expire_day', 0) <= 0 ? 'line-through' : 'none' }}
+                  overflow={'hidden'}
+                  id='product-name'
+                  className={classes.itemName}
+                >
+                  <Highlighter
+                    highlightClassName='highlighter'
+                    searchWords={[searchTerm]}
+                    autoEscape
+                    textToHighlight={`${product?.name} / ${product?.category_name} (${product?.producer_name})`}
+                  />
                 </Typography>
-              </Typography>
+                <Typography display={'flex'} id='product-barcode'>
+                  <Highlighter
+                    highlightClassName='highlighter'
+                    searchWords={searchTerm ? searchTerm?.split(' ') : []}
+                    autoEscape
+                    className={classes.itemBarcode}
+                    textToHighlight={product?.barcode}
+                  />
+                  <Typography color={get(product, 'expire_day', 0) < 0 ? 'red.500' : 'bunker.700'} fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'}>
+                    / {dayjs(get(product, 'expire_date')).format('DD.MM.YYYY')} ({get(product, 'expire_day', 0)} kun)
+                  </Typography>
+                </Typography>
+              </Box>
             </Box>
-          </Box>
+          ) : (
+            <Box flex='1 0 20%' maxWidth={'100%'} overflow={'hidden'} display='flex' alignItems='center'></Box>
+          )}
 
           {!conflictItem && (
             <Box flex='0 0 22%' pr={2} textAlign='right'>
@@ -143,17 +150,19 @@ export default function SerchedItem({
                   </Box>
                 )}
                 <Box>
-                  <Typography whiteSpace={'pre'} className={classes.itemQuantity}>
-                    <span>Кол: {item?.quantity}</span>
-                  </Typography>
-                  <Typography whiteSpace={'pre'} className={classes.itemPrice}>
+                  {!sameAsPreviousItem && (
+                    <Typography whiteSpace={'pre'} className={classes.itemQuantity}>
+                      <span>Кол: {item?.quantity}</span>
+                    </Typography>
+                  )}
+                  <Typography whiteSpace={'pre'} className={classes.itemPrice} sx={{ pr: sameAsPreviousItem ? '48px' : 0 }}>
                     {thousandDivider(product?.retail_price, 'сум')}{' '}
                   </Typography>
                 </Box>
               </Box>
             </Box>
           )}
-          {!isChild && (
+          {!isChild && !sameAsPreviousItem && (
             <Box
               width={'48px'}
               minWidth={'48px'}

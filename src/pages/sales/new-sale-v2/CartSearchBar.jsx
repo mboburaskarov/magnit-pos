@@ -120,11 +120,14 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'start',
     width: '100%',
-    minHeight: 72,
+    // minHeight: 72,
     flexDirection: 'column',
     position: 'relative',
     zIndex: 100,
     cursor: 'pointer',
+    '& :hover': {
+      backgroundColor: theme.palette.gray[200],
+    },
   },
   currentUser: {
     maxWidth: '200px',
@@ -255,7 +258,7 @@ function CartSearchBar({
   const { data: productsList, isFetching: isProductsFetching } = useQuery(
     ['storeProductsList', productsListFilter],
     () => requests.getAllStoreProducts({ id: get(userData, 'store.id') }, productsListFilter),
-    { enabled: searchTearm.length > 0 }
+    { enabled: searchTearm.length > 0 },
   )
 
   const { data: darftList, refetch, isDarftList } = useQuery(['darftList'], () => requests.getDarftList({ store_id: get(userData, 'store.id') }))
@@ -307,7 +310,7 @@ function CartSearchBar({
     },
     {
       enableOnFormTags: true,
-    }
+    },
   )
 
   useHotkeys(
@@ -317,7 +320,7 @@ function CartSearchBar({
       searchRef.current.value = ''
       searchRef.current.focus()
     },
-    { enableOnFormTags: true }
+    { enableOnFormTags: true },
   )
 
   useHotkeys('ArrowDown', (event) => selectDownItems(event), { enableOnFormTags: true })
@@ -341,7 +344,7 @@ function CartSearchBar({
     {
       enableOnFormTags: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
-    }
+    },
   )
 
   useHotkeys('ArrowUp', (event) => selectUpItems(event), { enableOnFormTags: true })
@@ -507,6 +510,7 @@ function CartSearchBar({
                   isChild={false}
                   discount={discount}
                   index={index}
+                  previousItem={productsData[index - 1]}
                   handleAddProduct={handleAddProduct}
                   setSearchTerm={setSearchTerm}
                   item={product}

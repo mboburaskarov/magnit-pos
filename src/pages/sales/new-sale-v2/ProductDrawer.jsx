@@ -1,15 +1,17 @@
-import DrawerInfoBox from '@components/Drawers/DrawerInfoBox';
-import { Box, Drawer, Typography } from '@mui/material';
-import thousandDivider from '@utils/thousandDivider';
-import SectionTitle from '@components/SectionTitle';
-import DefaultImgIcon from '@icons/defaultImgIcon';
-import CustomImg from '@components/CustomImg';
-import getImageUrl from '@utils/getImageUrl';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
+import DrawerInfoBox from '@components/Drawers/DrawerInfoBox'
+import { Box, Checkbox, Drawer, Typography } from '@mui/material'
+import thousandDivider from '@utils/thousandDivider'
+import SectionTitle from '@components/SectionTitle'
+import DefaultImgIcon from '@icons/defaultImgIcon'
+import CustomImg from '@components/CustomImg'
+import getImageUrl from '@utils/getImageUrl'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
+import { error, success } from '@utils/toast'
+import { useMutation } from 'react-query'
+import { requests } from '@utils/requests'
 
-
-const Image = ({ data, setImages }) => {
+const Image = ({ data, setImages, refresh }) => {
   return (
     <Box
       sx={{
@@ -61,7 +63,18 @@ const Image = ({ data, setImages }) => {
   )
 }
 
-export default function ProductDrawer({ open: item, onClose, setImages }) {
+export default function ProductDrawer({ open: item, onClose, setImages, refresh }) {
+  const { mutate: skipToAutoOrder, isLoading: isSkipToAutoOrder } = useMutation(requests.skipToAutoOrder, {
+    onSuccess: ({ data }) => {
+      refresh()
+      success('Товар успешно исключен из автозаказа')
+    },
+    onError: (err) => {
+      error('Ошибка при исключении товара из автозаказа')
+      console.error('err', err)
+    },
+  })
+  console.log(item)
   return (
     <Drawer
       anchor='right'
@@ -95,6 +108,16 @@ export default function ProductDrawer({ open: item, onClose, setImages }) {
         </>
       )}
       <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'10px'} />
+      {/* add sklip this item to auto order */}
+      <Box display='flex' alignItems='center' px={'40px'} my={'20px'} gap={1}>
+        <Checkbox
+          checked={item.skip_to_auto_order}
+          onChange={(e) => {
+            skipToAutoOrder({ id: item.id, data: { is_auto_order: e.target.checked } })
+          }}
+        />
+        <Typography>Исключить из автозаказа</Typography>
+      </Box>
       <Box px={'40px'} my={'20px'} mb={'80px'}>
         <SectionTitle grey>Доп. информация</SectionTitle>
         <DrawerInfoBox

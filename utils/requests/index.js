@@ -375,6 +375,8 @@ export const requests = {
 
   //report
   getDiscountCartReport: (filter) => request.post(`v1/report/discount-card${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getLoyaltyCardTopUsers: (filter) => request.get(`v1/loyalty_card/top${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getDiscountCartReportByUserExcel: (filter) => requestEXCEL.get(`v1/loyalty_card/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   getDiscountCartReportExcel: (filter) => requestEXCEL.post(`v1/report/discount-card/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   // /report/ostatok-by-date
   getOstatokByDateReport: (filter) => request.post(`v1/report/ostatok-by-date${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -406,7 +408,7 @@ export const requests = {
   deleteCartItem: (id) => request.delete(`v1/cart_item/${id}`),
   deleteAll: (ids) => request.post(`v1/cart_item/multiple`, ids),
   getCartItemList: (filter) => request.get(`v1/cart_item/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-
+  skipToAutoOrder: ({ id, data }) => request.patch(`v1/cart_item/${id}/is-auto-order`, data),
   //noor
   getNoorOrderCount: (filter) => request.get(`v1/sale/online-count${qs.stringify(filter, { addQueryPrefix: true })}`),
   getOnlineOrderList: (filter) => request.get(`v1/sale/online-list${qs.stringify(filter, { addQueryPrefix: true })}`),
