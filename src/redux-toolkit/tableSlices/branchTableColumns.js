@@ -27,6 +27,12 @@ const columns = [
     width: 194,
   },
   {
+    field: 'average_target_sales',
+    hide: false,
+    minWidth: 100,
+    width: 220,
+  },
+  {
     field: 'work_hours',
     hide: false,
     minWidth: 70,

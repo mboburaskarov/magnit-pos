@@ -1527,7 +1527,7 @@ function NewSaleV2() {
         open={isCreateOpenDraft}
         setOpen={setIsCreateOpenDraft}
       />
-      <ProductDrawer open={openProductDrawer} onClose={setOpenProductDrawer} />
+      <ProductDrawer open={openProductDrawer} refresh={refetchcartItemsList} onClose={setOpenProductDrawer} />
       <ImplementMarkingDialog
         liteOrder={liteOrder}
         setLiteOrder={setLiteOrder}

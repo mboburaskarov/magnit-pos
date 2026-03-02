@@ -34,6 +34,14 @@ export default function tableHeaderSelector({ productsColumns, values, t, stores
         cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'сум'} type='target_amount' />),
       }
     }
+    if (el.field === 'average_target_sales') {
+      return {
+        ...el,
+        headerName: 'Средняя цена на месяц',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} toFixed2={true} withDevider currency={'сум'} type='average_target_sales' />),
+      }
+    }
     if (el.field === 'location') {
       return {
         ...el,
