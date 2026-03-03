@@ -376,6 +376,7 @@ export const requests = {
   //report
   getDiscountCartReport: (filter) => request.post(`v1/report/discount-card${qs.stringify(filter, { addQueryPrefix: true })}`),
   getLoyaltyCardTopUsers: (filter) => request.get(`v1/loyalty_card/top${qs.stringify(filter, { addQueryPrefix: true })}`),
+  loyalcardDashboard: (filter) => requestEXCEL.get(`v1/loyalty_card/dashboard${qs.stringify(filter, { addQueryPrefix: true })}`),
   getDiscountCartReportByUserExcel: (filter) => requestEXCEL.get(`v1/loyalty_card/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   getDiscountCartReportExcel: (filter) => requestEXCEL.post(`v1/report/discount-card/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
   // /report/ostatok-by-date
