@@ -16,10 +16,14 @@ import { error } from '@utils/toast'
 import { get } from 'lodash'
 import dayjs from 'dayjs'
 import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import ArrowDown from '@icons/ArrowDown'
+import ArrowUp from '@icons/ArrowUp'
+import Dashboard from './dashboard'
 
 export default function LoyaCardReportByUsers() {
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
+
   const discoundCardFilter = useMemo(() => {
     return {
       start_date: getFilterStartDate(values),
@@ -29,7 +33,7 @@ export default function LoyaCardReportByUsers() {
       offset: values?.offset || 0,
       search: values?.search,
     }
-  }, [values?.limit, values?.offset, values?.search, values?.start_date, values?.end_date, values?.from_time, values?.to_time])
+  }, [values?.limit, values?.offset, values?.search, values?.start_date, values?.end_date])
 
   const {
     data: discountCartReportByUser,
@@ -49,6 +53,12 @@ export default function LoyaCardReportByUsers() {
   useEffect(() => {
     refetch()
   }, [discoundCardFilter])
+  const {
+    data: loyalcardDashboard,
+    isLoading: loyalcardDashboardLoading,
+    isFetching: isFetchingloyalcardDashboard,
+    refetch: refetchloyalcardDashboard,
+  } = useQuery(['loyalcardDashboard', discoundCardFilter], () => requests.loyalcardDashboard(discoundCardFilter))
 
   const columns = useMemo(
     () => [
@@ -132,12 +142,31 @@ export default function LoyaCardReportByUsers() {
       error('Ошибка при скачать excel!')
     },
   })
+  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(false)
 
   return (
     <LoadingContainer readyState={true}>
       <Header noActions isLoading={false} backIcon backHref='/reports/client' text={'Отчёт: Топ клиентов по карте лояльности'} />
+
       <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'0px'} px={'50px'} pb={'20px'}>
-        <Box display={'flex'} sx={{ width: '100%' }}>
+        <Box
+          sx={{
+            m: ' 0 0 20px',
+            userSelect: 'none !important',
+            cursor: 'pointer',
+            '& > p': {
+              cursor: 'pointer',
+              userSelect: 'none !important',
+            },
+          }}
+          display={'flex'}
+          onClick={() => setIsOpenStatDashboard((p) => !p)}
+        >
+          {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
+          <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
+        </Box>
+        {isOpenStatDashboard && <Dashboard data={get(loyalcardDashboard, 'data.data')} />}
+        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box
             sx={{
               mr: '20px',
@@ -158,10 +187,10 @@ export default function LoyaCardReportByUsers() {
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <AgGridTable
             uniqId='customer_id'
-            fullDownload={() => getDiscountCartReportByUserExcel({ ...discoundCardFilter, offset: 0, limit: 1000000 })}
-            downloadByFilter={() => getDiscountCartReportByUserExcel(discoundCardFilter)}
-            isDownloading={isgetDiscountCartReportByUserExcel}
-            isDataLoading={isproductDataLoadingHistory || isFetchingdiscountCartReportByUser}
+            fullDownload={() => loyalcardDashboard({ ...discoundCardFilter, offset: 0, limit: 1000000 })}
+            downloadByFilter={() => loyalcardDashboard(discoundCardFilter)}
+            isDownloading={loyalcardDashboardLoading}
+            isDataLoading={isproductDataLoadingHistory || isFetchingloyalcardDashboard}
             offsetQuery='offset'
             limitQuery='limit'
             id='loya-card-report-by-users-table'
