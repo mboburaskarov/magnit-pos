@@ -1,5 +1,5 @@
-import { ArrowCircleRight } from '@mui/icons-material'
-import { Box, Typography } from '@mui/material'
+import { ArrowCircleRight, WarningAmber } from '@mui/icons-material'
+import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
 import { get } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
@@ -27,6 +27,7 @@ export default function ChangePriceModal({ open, refetch, setOpen }) {
   const successScanAudio = new Audio(successAudio)
   const qtyRef = useRef([])
 
+  const [openMaxPriceDialog, setOpenMaxPriceDialog] = useState(false)
   const [newPrice, setNewPrice] = useState('')
   const [newPercent, setNewPercent] = useState('')
   const [isUpdatingFromPercent, setIsUpdatingFromPercent] = useState(false)
@@ -120,7 +121,14 @@ export default function ChangePriceModal({ open, refetch, setOpen }) {
           setOpen(false)
           return
         }
-
+        if (get(open, 'data.max_price', 0) != 0 && get(open, 'data.max_price', 0) < Number(newPrice)) {
+          setOpenMaxPriceDialog({
+            open: true,
+            data: get(open, 'data'),
+            newPrice,
+          })
+          return
+        }
         setScanedNumber({
           id,
           product_id: get(open, 'data.id'),
@@ -133,7 +141,7 @@ export default function ChangePriceModal({ open, refetch, setOpen }) {
       enabled: Boolean(open),
       enableOnFormTags: true,
       enableOnTags: ['INPUT', 'TEXTAREA'],
-    }
+    },
   )
   useEffect(() => {
     const markup = get(open, 'data.new_markup', '')
@@ -243,6 +251,56 @@ export default function ChangePriceModal({ open, refetch, setOpen }) {
           </Box>
         </Box>
       </Box>
+      <StyledEmptyDialog
+        overflowVisible
+        onClose={() => setOpenMaxPriceDialog(false)}
+        open={openMaxPriceDialog.open}
+        noHeader
+        maxWidth={'500px'}
+        title={'Создать бонусный продукт'}
+        customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpenMaxPriceDialog(false)} />}
+      >
+        <Box sx={{ padding: '24px' }}>
+          {/* warning and confirmation for max price */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: '10px' }}>
+            <WarningAmber sx={{ fontSize: '60px' }} color='warning' />
+            <Typography sx={{ ml: '5px', mb: '10px', fontWeight: '600', color: 'bunker.950', textAlign: 'center' }}>
+              Belgilangan Feferent narxga togri kelmaydi!
+            </Typography>
+            <Typography sx={{ ml: '5px', mb: '10px', color: 'bunker.950', textAlign: 'center' }}>
+              Davlat tomonidan belgilangan maksimal narxdan oshib ketdi davom ettirasizmi?
+            </Typography>
+          </Box>
+          {/* confirmation buttons */}
+          <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Button
+              onClick={() => {
+                ;(setScanedNumber({
+                  id,
+                  product_id: get(open, 'data.id'),
+                  new_retail_price: Number(newPrice),
+                  store_product_id: get(open, 'data.store_product_id'),
+                }),
+                  setOpen(false),
+                  setOpenMaxPriceDialog(false))
+              }}
+              sx={(theme) => ({ width: '100%', padding: '8px 12px', borderRadius: '28px', background: theme.palette.background.default })}
+              variant='outlined'
+            >
+              Ha
+            </Button>
+            <Box width={'10px'} />
+            <Button
+              onClick={() => {
+                ;(setOpen(false), setOpenMaxPriceDialog(false))
+              }}
+              sx={{ width: '100%' }}
+            >
+              Yo'q
+            </Button>
+          </Box>
+        </Box>
+      </StyledEmptyDialog>
     </StyledEmptyDialog>
   )
 }
