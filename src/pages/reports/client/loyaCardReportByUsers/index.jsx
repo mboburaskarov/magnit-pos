@@ -170,7 +170,6 @@ export default function LoyaCardReportByUsers() {
           <Box
             sx={{
               mr: '20px',
-              mb: '20px',
               '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
               '& .MuiFormControl-root, .MuiFormControl-root:hover': {
                 background: 'transparent',
