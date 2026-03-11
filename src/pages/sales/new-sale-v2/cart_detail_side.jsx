@@ -156,9 +156,7 @@ function CartDetailSide({
               justifyContent: 'space-between',
               backgroundColor: 'bg.10',
               padding: '5px 20px 3px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
+              
             }}
           >
             <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
@@ -350,11 +348,11 @@ function CartDetailSide({
                     id='searchResult0'
                     tabIndex={0}
                     onClick={() => {
-                      ;(setOpenClientCreateMini(true), setQuickCreateClientName(searchTerm))
+                      (setOpenClientCreateMini(true), setQuickCreateClientName(searchTerm))
                     }}
                     className={classes.noSuchClientAdd}
                     onKeyDown={(event) => {
-                      if (event.key === 'Enter' && fakeIndexForCheckClient === 0) {
+                      if (event.key === 'Enter' ) {
                         setOpenClientCreateMini(true)
                       }
                     }}
