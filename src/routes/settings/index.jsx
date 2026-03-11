@@ -13,6 +13,7 @@ import RolesPage from '../../pages/settings/roles'
 import ActionListPage from '../../pages/settings/roles/actions'
 import ActivityLogsPage from '@/pages/settings/activity-logs/ActivityLogs'
 import BranchOstatkiPage from '@/pages/settings/branch-ostatki/BranchOstatki'
+import RollReportPage from '@/pages/settings/roles/rollReportPage'
 
 const settingsRoutes = {
   path: 'settings',
@@ -69,6 +70,10 @@ const settingsRoutes = {
     {
       path: 'cashbox',
       element: <CashBoxsPage />,
+    },
+    {
+      path: 'role-report',
+      element: <RollReportPage />,
     },
   ],
 }
