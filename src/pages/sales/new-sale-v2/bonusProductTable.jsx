@@ -1,9 +1,7 @@
 import { Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import SortDownIcon from '@icons/dashboard/SortDownIcon'
 import { useWindowHeight } from '@hooks/useWindowHeight'
 import { useCallback, useEffect, useRef } from 'react'
 import thousandDivider from '@utils/thousandDivider'
-import SortUpIcon from '@icons/dashboard/SortUpIcon'
 import SortIcon from '@icons/dashboard/SortIcon'
 import { useInfiniteQuery } from 'react-query'
 import { requests } from '@utils/requests'
@@ -76,7 +74,7 @@ const BonusTableRow = ({ item, product }) => {
   )
 }
 
-function BonusProductTable({ customerId, bonusTableHeight }) {
+function BonusProductTable({  bonusTableHeight }) {
   const LIMIT = 5
   const observerTarget = useRef(null)
 
@@ -157,7 +155,9 @@ function BonusProductTable({ customerId, bonusTableHeight }) {
                   color: 'bunker.300',
                 }}
               >
-                {t('name')} {false ? <SortUpIcon /> ? false : <SortDownIcon /> : <SortIcon />}
+                {t('name')} {
+                // false ? <SortUpIcon /> ? false : <SortDownIcon /> :
+                 <SortIcon />}
               </Typography>
             </TableCell>
             <TableCell>
@@ -173,7 +173,9 @@ function BonusProductTable({ customerId, bonusTableHeight }) {
                   color: 'bunker.300',
                 }}
               >
-                {t('price')} {false ? <SortUpIcon /> ? false : <SortDownIcon /> : <SortIcon />}
+                {t('price')} {
+                // true ? <SortUpIcon /> : false ? <SortDownIcon /> :
+                 <SortIcon />}
               </Typography>
             </TableCell>
           </TableHead>
