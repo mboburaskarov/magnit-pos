@@ -4,7 +4,6 @@ import BigWarningIcon from '@icons/BigWarningIcon'
 import { get } from 'lodash'
 
 function Dashboard({ data: stats, setHasChange }) {
-  console.log(stats)
   return (
     <Grid
       container

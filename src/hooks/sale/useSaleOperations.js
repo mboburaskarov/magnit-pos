@@ -55,11 +55,13 @@ export const useSaleOperations = ({
     isError: isSaleError,
   } = useMutation(requests.addToOrderPayment, {
     onSuccess: (data) => {
+      console.log(cartItemsList, cashBoxDetails?.data?.data)
+
       if (SALE_STAGE === 6) {
         sendEPOSresponseToBackend({ error: false, response_data: null, sale_id: id })
         return
       }
-      if (!JSON.parse(sendToEpos)) {
+      if (!JSON.parse(sendToEpos) || get(cashBoxDetails, 'data.data.service_type') === 'uzum') {
         success('Продажа завершена!')
         setNewSaleId('888', false)
         setQrcodeUrl({ qr: 'pharma-cosmos.uz', fiscal: 'No', cardType: cartOwnerType })
@@ -68,6 +70,8 @@ export const useSaleOperations = ({
       }
     },
     onError: (err) => {
+      console.log(cartItemsList, cashBoxDetails?.data?.data,err)
+
       setHasError({ hasError: true, errorType: 'finalSale' })
       setOpenRefreshDialog(false)
 
