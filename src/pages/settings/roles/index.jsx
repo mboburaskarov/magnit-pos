@@ -1,10 +1,10 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, IconButton, Typography } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import AgGridTable from '@components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
 import CheckAccess from '@components/CheckAccess'
@@ -23,6 +23,9 @@ import { useQueryParams } from '@hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/rolesTableColumns'
 import RolesCreateDrawer from './RolesCreateDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
+import { Preview, Style } from '@mui/icons-material'
+import { Table2 } from 'lucide-react'
+import StyledTooltip from '@components/StyledTooltip'
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function RolesPage() {
@@ -189,6 +192,13 @@ export default function RolesPage() {
             )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
+            <StyledTooltip title={t('Ролевой отчет')}>
+              <Link to={'/settings/role-report'}>
+                <IconButton sx={{ width: '52px', padding: '13px', mr: '10px' }}>
+                  <Table2 color='#000' size={30} />
+                </IconButton>
+              </Link>
+            </StyledTooltip>
             <Box>
               <ColumnsFilterButtonForAll
                 title={t('ag_grid.table_setting.label')}

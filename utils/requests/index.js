@@ -448,6 +448,7 @@ export const requests = {
 
   // roles
   getAllRoles: (filter) => request.get(`v1/role/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getAllPermissionsWithRoles: (filter) => request.get(`v1/role/list-with-permissions${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   getSingleRole: (id) => request.get(`v1/role/${id}`),
   createRole: (data) => request.post('v1/role', data),

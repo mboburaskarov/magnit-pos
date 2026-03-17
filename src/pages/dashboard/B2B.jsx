@@ -13,7 +13,9 @@ import DashboardInfoBox from './DashboardInfoBox'
 
 import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
 import { dashboardBoxData } from '.'
+import { useNavigate } from 'react-router-dom'
 export default function DashboarB2BPage() {
+  const navigate = useNavigate()
   dayjs.extend(isoWeek)
   const { values } = useQueryParams()
   const [selectedComapanies, setSelectedComapanies] = useState('all')
@@ -37,8 +39,7 @@ export default function DashboarB2BPage() {
           <Grid width={'100%'} item>
             <Dashboard_B2B setSelectedShops={setSelectedComapanies} selectedShops={selectedComapanies} />
             <Grid container mt={0} spacing={2}>
-              {dashboardBoxData
-                .filter((p) => p?.id != 'bonus_amount')
+              {dashboardBoxData(navigate, ()=>{}).filter((p) => p?.id != 'bonus_amount')
                 .map((el, ind) => (
                   <CheckAccess id={`dashboard-box-${el.id}`}>
                     <Grid item xs={12} xl={3} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'}>

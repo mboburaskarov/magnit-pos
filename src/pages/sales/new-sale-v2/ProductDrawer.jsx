@@ -74,7 +74,6 @@ export default function ProductDrawer({ open: item, onClose, setImages, refresh 
       console.error('err', err)
     },
   })
-  console.log(item)
   return (
     <Drawer
       anchor='right'

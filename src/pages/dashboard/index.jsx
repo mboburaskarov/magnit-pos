@@ -35,8 +35,6 @@ import DashboardHeader from './DashboardHeader'
 import DashboardInfoBox from './DashboardInfoBox'
 import DashboardTopsBox from './DashboardTopsBox'
 import ImportPage from './expiredImports/index'
-import RamadanIcon from '@/assets/icons/RamadanIcon'
-import BigTargetIcon from '@/assets/icons/BigTargetIcon'
 import DashboardTargetIcon from '@/assets/icons/DashboardTargetIcon'
 import TargetDrawer from './TargetDrawer'
 

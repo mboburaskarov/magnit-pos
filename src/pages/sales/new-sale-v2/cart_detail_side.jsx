@@ -156,13 +156,14 @@ function CartDetailSide({
               justifyContent: 'space-between',
               backgroundColor: 'bg.10',
               padding: '5px 20px 3px',
+              
             }}
           >
             <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
               Цель на месяц
             </Typography>
             <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
-              {thousandDivider(myTarget?.data?.data?.amount, 'сум')}
+              {thousandDivider(myTarget?.data?.data?.amount, 'сум', false, true)}
             </Typography>
           </Box>
         </Box>
@@ -372,7 +373,7 @@ function CartDetailSide({
                     }}
                     className={classes.noSuchClientAdd}
                     onKeyDown={(event) => {
-                      if (event.key === 'Enter') {
+                      if (event.key === 'Enter' ) {
                         setOpenClientCreateMini(true)
                       }
                     }}

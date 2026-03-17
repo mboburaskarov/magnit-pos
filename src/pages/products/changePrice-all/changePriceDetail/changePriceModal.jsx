@@ -273,7 +273,7 @@ export default function ChangePriceModal({ open, refetch, setOpen }) {
           </Box>
           {/* confirmation buttons */}
           <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Button
+            {/* <Button
               onClick={() => {
                 ;(setScanedNumber({
                   id,
@@ -288,15 +288,15 @@ export default function ChangePriceModal({ open, refetch, setOpen }) {
               variant='outlined'
             >
               Ha
-            </Button>
+            </Button> */}
             <Box width={'10px'} />
             <Button
               onClick={() => {
-                ;(setOpen(false), setOpenMaxPriceDialog(false))
+                (setOpen(false), setOpenMaxPriceDialog(false))
               }}
               sx={{ width: '100%' }}
             >
-              Yo'q
+              Tushundim
             </Button>
           </Box>
         </Box>
