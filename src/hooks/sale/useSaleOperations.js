@@ -128,10 +128,11 @@ export const useSaleOperations = ({
       } else {
         if (get(data, 'message')?.includes('DUPLICATE_EXTERNAL_ID')) {
           let message = 'Данная продажа ранее была оформлена на уплату налогов. Скачайте этот чек из раздела «Все продажи».'
-          sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
+          sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
           setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
           setOpenRefreshDialog(false)
-          throw new Error(`InnerError: ${message}`)
+          error(`Oldin eposga yuborilgan savdo: ${message}`)
+          // throw new Error(`InnerError: ${message}`)
           return
         }
         setOpenRefreshDialog(false)
