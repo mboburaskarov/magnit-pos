@@ -55,7 +55,6 @@ export const useSaleOperations = ({
     isError: isSaleError,
   } = useMutation(requests.addToOrderPayment, {
     onSuccess: (data) => {
-      console.log(cartItemsList, cashBoxDetails?.data?.data)
 
       if (SALE_STAGE === 6) {
         sendEPOSresponseToBackend({ error: false, response_data: null, sale_id: id })
@@ -70,7 +69,6 @@ export const useSaleOperations = ({
       }
     },
     onError: (err) => {
-      console.log(cartItemsList, cashBoxDetails?.data?.data,err)
 
       setHasError({ hasError: true, errorType: 'finalSale' })
       setOpenRefreshDialog(false)
@@ -194,7 +192,6 @@ export const useSaleOperations = ({
 
       const calculatedVat = +((itemTotalForVat * item.vatPercent) / (100 + item.vatPercent))
       if (Math.abs(calculatedVat - item.vat) > 0.5) {
-        console.log(`VAT mismatch for ${item.name}: expected ${item.vat}, calculated ${calculatedVat}`)
         allVatCorrect = false
         return []
       }
