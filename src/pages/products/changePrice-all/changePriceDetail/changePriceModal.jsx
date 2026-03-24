@@ -269,7 +269,7 @@ export default function ChangePriceModal({ open, refetch, setOpen }) {
               Belgilangan Feferent narxga togri kelmaydi!
             </Typography>
             <Typography sx={{ ml: '5px', mb: '10px', color: 'bunker.950', textAlign: 'center' }}>
-              Davlat tomonidan belgilangan ({`${thousandDivider(openMaxPriceDialog?.data?.max_price,'сум')}`}) maksimal narxdan oshib ketdi!
+              Kiritilgan narx belgilangan ({`${thousandDivider(openMaxPriceDialog?.data?.max_price,'сум')}`}) maksimal narxdan oshib ketdi!
             </Typography>
           </Box>
           {/* confirmation buttons */}
