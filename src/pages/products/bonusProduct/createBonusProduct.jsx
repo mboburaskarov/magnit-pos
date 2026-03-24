@@ -29,7 +29,6 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
       refetch()
     },
     onError: (err) => {
-      console.log(err)
       if (err?.response?.data?.data == "Can't create duplicate bonus for one product") {
         error('Этот товар уже получил бонус.')
         return

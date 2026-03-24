@@ -973,6 +973,7 @@ function NewSaleV2() {
     },
   })
 const ramadan = false
+const leftCount = localStorage.getItem('leftZreportCount')
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />
@@ -1057,7 +1058,25 @@ const ramadan = false
                     <RefreshIcon />
                   </Box>
                 </Box>
-                <Box sx={{ display: 'flex' }}>
+                <Box sx={{ display: 'flex',alignItems:'center' }}>
+                  <StyledTooltip title={t('EPOS fleshkasiga ulanish uchun qoldirilgan zreportlar soni. Bu son 10tan kamaysa Ofisga xabar bering yangi fleshka tayyorlash uchun.')}>
+                  <Box sx={{
+                    padding:'6px 19px',
+                    display:'flex',
+                    height:'44px',
+                    alignItems:'center',
+                    justifyContent:'center',
+                    backgroundColor:leftCount > 10?'green.200':'red.200',
+                    border:'1px solid',
+                    borderColor:leftCount > 10?'green.500':'red.500', 
+                    borderRadius:'40px',
+                    mr:'10px',
+                    color:leftCount > 10?'green.500':'red.500',
+                    cursor:'pointer',
+                  }}>
+                    {leftCount}
+                  </Box>
+                  </StyledTooltip>
                   {ramadan && <Box
                     onClick={() => setOpenRamadan(true)}
                     sx={{

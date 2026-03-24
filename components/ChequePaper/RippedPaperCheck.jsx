@@ -37,7 +37,6 @@ function RippedPaperCheck({
   const classes = useStyles()
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
-  console.log('cheque', cashBoxDetails,userData,cartItemsList,orderItems)
 
   const disableSumsOnGoods = () => {
     const found = cheque?.information_block?.find((el) => el?.id === '30e14632-dc10-40a1-b97a-1be73a53054a')
