@@ -15,6 +15,7 @@ import { error } from '@utils/toast'
 import errorAudio from '@/assets/audio/error.mp3'
 import successAudio from '@/assets/audio/normal.mp3'
 import CloseIcon from '@icons/CloseIcon'
+import thousandDivider from '@utils/thousandDivider'
 
 export default function ChangePriceModal({ open, refetch, setOpen }) {
   const methods = useForm()
@@ -268,7 +269,7 @@ export default function ChangePriceModal({ open, refetch, setOpen }) {
               Belgilangan Feferent narxga togri kelmaydi!
             </Typography>
             <Typography sx={{ ml: '5px', mb: '10px', color: 'bunker.950', textAlign: 'center' }}>
-              Davlat tomonidan belgilangan maksimal narxdan oshib ketdi davom ettirasizmi?
+              Davlat tomonidan belgilangan ({`${thousandDivider(openMaxPriceDialog?.data?.max_price,'сум')}`}) maksimal narxdan oshib ketdi!
             </Typography>
           </Box>
           {/* confirmation buttons */}

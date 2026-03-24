@@ -972,7 +972,7 @@ function NewSaleV2() {
       }
     },
   })
-
+const ramadan = false
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />
@@ -1058,7 +1058,7 @@ function NewSaleV2() {
                   </Box>
                 </Box>
                 <Box sx={{ display: 'flex' }}>
-                  <Box
+                  {ramadan && <Box
                     onClick={() => setOpenRamadan(true)}
                     sx={{
                       m: '0 20px 0 20px',
@@ -1099,7 +1099,7 @@ function NewSaleV2() {
                     >
                       <RamadanIcon color='#ffffffff' />
                     </Box>
-                  </Box>
+                  </Box>}
                   <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar'>
                     <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
                       <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>

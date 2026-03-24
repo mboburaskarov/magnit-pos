@@ -37,6 +37,7 @@ function RippedPaperCheck({
   const classes = useStyles()
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
+  console.log('cheque', cashBoxDetails,userData,cartItemsList,orderItems)
 
   const disableSumsOnGoods = () => {
     const found = cheque?.information_block?.find((el) => el?.id === '30e14632-dc10-40a1-b97a-1be73a53054a')
@@ -70,7 +71,8 @@ function RippedPaperCheck({
                   textAlign: 'center',
                 }}
               >
-                "PHARMA COSMOS" MCHJ
+                {get(userData, 'company.legal_name','"PHARMA COSMOS" MCHJ')}
+                
               </p>
             </div>
 
@@ -84,7 +86,7 @@ function RippedPaperCheck({
                 textAlign: 'center',
               }}
             >
-              {get(userData, 'store.address')}
+              {get(userData, 'company.legal_address')}
             </p>
           </Fragment>
           <div className={classes.border} />
@@ -94,7 +96,7 @@ function RippedPaperCheck({
                 id={`return-price-${'index1'}`}
                 rowData={{
                   type: `STIR:`,
-                  value: `303970073`,
+                  value: get(userData, 'company.company_inn','303970073'),  
                 }}
               />
               {qrcodeUrl != false && disableSumsOnGoods() && (

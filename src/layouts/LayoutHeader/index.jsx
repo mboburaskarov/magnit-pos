@@ -97,6 +97,7 @@ function LayoutHeader() {
     window.location.replace('/login')
     navigate('/login')
   }
+  const ramadan = false
   return (
     <Box
       top={0}
@@ -119,7 +120,7 @@ function LayoutHeader() {
         <InputSearch fullWidth id='producrs-search' name='search' placeholder={t('input.search.product')} uncontrolled />
       </Box>
       <Box display={'flex'} height={'48px'}>
-        <Box
+       {ramadan&& <Box
           onClick={() => setOpenRamadan(true)}
           sx={{
             m: '0 20px 0 20px',
@@ -158,7 +159,7 @@ function LayoutHeader() {
             </Typography>
             <Typography sx={{ fontSize: '18px', lineHeight: '20px', color: 'bunker.950', fontWeight: 'bold' }}>{ramadanTime?.time || '--:--'}</Typography>
           </Box>
-        </Box>
+        </Box>}
         <Box mr={'17px'} width={'240px'}>
           {!userData?.first_name ? (
             <Box position='relative' marginTop={'auto'}>

@@ -172,27 +172,6 @@ function CartDetailSide({
         </Box>
       </CheckAccess>
       <Box display={'flex'} flexDirection={'column'}>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: 'bg.10',
-            padding: '5px 20px 3px',
-          }}
-        >
-          <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
-            Цель на месяц
-          </Typography>
-          <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
-            {thousandDivider(myTarget?.data?.data?.amount, 'сум')}
-          </Typography>
-        </Box>
-      </Box>
-      <Box sx={{ padding: '12px 20px' }}>
-        <ProgressBar mt='0' current={get(myTarget, 'data.data.sales', 0)} total={get(myTarget, 'data.data.amount', 100)} />
-      </Box>
-      <Box display={'flex'} flexDirection={'column'}>
         <Box className={classes.cart_detail_id}>
           <Typography fontWeight={'600'} fontSize={'16px'} color={'bunker.300'} lineHeight={'24px'}>
             ID: #{get(cashBoxDetails, 'data.data.sale_number')}
