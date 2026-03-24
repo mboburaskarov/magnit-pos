@@ -1,0 +1,182 @@
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import { useQueryParams } from '@hooks/useQueryParams'
+import CloseIcon from '@icons/CloseIcon'
+import { Box, Drawer, Typography } from '@mui/material'
+import { makeStyles, useTheme } from '@mui/styles'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import { get } from 'lodash'
+import { useEffect, useMemo, useState } from 'react'
+import { useMutation, useQuery } from 'react-query'
+
+import AgGridTable from '../../AgGridTable/AgGridTable'
+import DraftChildDrawer from './DraftChildDrawer'
+
+const useStyles = makeStyles((theme) => ({
+  drawer: {
+    '& .MuiDrawer-paper': {
+      width: '660px',
+      overflow: 'hidden',
+      borderRadius: '24px 0 0 24px',
+      backgroundColor: theme.palette.background.default,
+    },
+  },
+  drawerHeader: {
+    padding: '20px 40px 20px 40px',
+    borderBottom: `1px solid ${theme.palette.bunker[100]}`,
+  },
+}))
+
+const columns = [
+  {
+    autoHeight: true,
+    field: 'sale_number',
+    minWidth: 60,
+    width: 120,
+    headerName: 'ID',
+    colId: 'sale_number',
+    label: 'ID',
+    name: 'sale_number',
+  },
+  {
+    autoHeight: true,
+    field: 'product_name',
+    minWidth: 450,
+    headerName: 'Название продукта',
+    colId: 'product_name',
+    label: 'Название продукта',
+    name: 'product_name',
+  },
+  {
+    autoHeight: true,
+    field: 'quantity',
+    minWidth: 60,
+    width: 120,
+    headerName: 'Кол-во',
+    colId: 'quantity',
+    label: 'Кол-во',
+    name: 'quantity',
+  },
+  {
+    autoHeight: true,
+    field: 'bonus_amount',
+    minWidth: 60,
+    width: 120,
+    headerName: 'Сумма бонуса',
+    colId: 'bonus_amount',
+    label: 'Сумма бонуса',
+    name: 'bonus_amount',
+  },
+]
+
+function SellerBonusHistoryDrawer({ open, setOpen }) {
+  const classes = useStyles()
+  const theme = useTheme()
+  const { values } = useQueryParams()
+
+  const [offsetCount, setOffsetCount] = useState(0)
+  const [isOpenChild, setIsOpenChild] = useState(false)
+  const [controlleroffset, setControllerOffset] = useState(0)
+
+  useEffect(() => {}, [open])
+
+  useEffect(() => {
+    setControllerOffset(values?.bonusOffset)
+  }, [values?.bonusOffset])
+
+  useEffect(() => {
+    setControllerOffset(0)
+  }, [values?.search])
+
+  const sellerBonusHistoryFilters = useMemo(() => {
+    return {
+      search: values?.search || null,
+      limit: values?.bonusLimit,
+      employee_id: open?.id,
+      offset: values?.bonusOffset,
+      start_date: getFilterStartDate(values),
+      end_date: getFilterEndDate(values),
+    }
+  }, [values?.bonusLimit, controlleroffset, open, values?.bonusLimit, values?.bonusOffset, values?.end_date, values?.start_date])
+
+  const {
+    data: sellerBonusHistory,
+    isLoading: sellerBonusHistoryLoading,
+    isFetching: isFetchingSellerBonusHistory,
+    refetch,
+  } = useQuery(['sellerBonusHistory', sellerBonusHistoryFilters], () => requests.getSellerBonusHistoryData(sellerBonusHistoryFilters), {
+    enabled: open?.id?.length > 0,
+  })
+
+  const { mutate: bonusHistoryExcelReport, isLoading: isBonusHistoryExcelReport } = useMutation(requests.getSellerBonusHistoryDataExcel, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.error(err)
+      error('Ошибка при скачать excel!')
+    },
+  })
+
+  useEffect(() => {
+    const count = sellerBonusHistory?.data?.data?._meta?.total_count
+
+    const offsetsCount = Math.ceil(count / Number(values?.bonusLimit))
+    setOffsetCount(offsetsCount || 0)
+  }, [sellerBonusHistory?.data, values?.bonusLimit])
+
+  return (
+    <Drawer open={!!open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
+      {!isOpenChild ? (
+        <Box>
+          <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
+            <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
+              История бонусов
+            </Typography>
+            <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
+          </Box>
+
+          <Box
+            p={'30px 40px'}
+            maxHeight={'calc(100vh - 300px)'}
+            sx={{
+              '.ag-center-cols-viewport': {
+                height: 'calc(100vh - 300px) !important',
+                overflowY: 'auto',
+              },
+              '.ag-center-cols-container': {
+                height: 'calc(100vh - 300px) !important',
+                overflowY: 'auto',
+              },
+            }}
+          >
+            <AgGridTable
+              id='bonus-history'
+              alwaysShowHorizontalScroll={true}
+              tableSettings={false}
+              canCellClick={true}
+              enableFillHandle={true}
+              limitQuery='bonusLimit'
+              offsetQuery='bonusOffset'
+              fullDownload={() => bonusHistoryExcelReport({ ...sellerBonusHistoryFilters, offset: 0, limit: 1000000 })}
+              downloadByFilter={() => bonusHistoryExcelReport({ ...sellerBonusHistoryFilters, offset: 0, limit: 1000000 })}
+              isDownloading={isBonusHistoryExcelReport}
+              columns={columns}
+              data={sellerBonusHistory?.data?.data?.data || []}
+              totalCount={sellerBonusHistory?.data?.data?._meta?.total_count || 0}
+              isDataLoading={sellerBonusHistoryLoading || isFetchingSellerBonusHistory}
+              offsetCount={offsetCount}
+              isRefreshing={sellerBonusHistoryLoading || isFetchingSellerBonusHistory}
+              limit={20}
+            />
+          </Box>
+        </Box>
+      ) : (
+        <DraftChildDrawer setChildOpen={setIsOpenChild} open={isOpenChild} setOpen={setOpen} />
+      )}
+    </Drawer>
+  )
+}
+
+export default SellerBonusHistoryDrawer

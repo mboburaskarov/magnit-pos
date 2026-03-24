@@ -1,12 +1,11 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Typography } from '@mui/material'
 import { get } from 'lodash'
-import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useMutation, useQuery } from 'react-query'
-import CardDrawer from '../../../../components/Drawers/CardDrawer'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
+import { useMutation } from 'react-query'
+import CardDrawer from '@components/Drawers/CardDrawer'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
 import ActionCreateBody from './ActionCreateBody'
 
 export default function RolesCreateDrawer({ isOpen, onClose, categoriesRefetch }) {
@@ -20,19 +19,19 @@ export default function RolesCreateDrawer({ isOpen, onClose, categoriesRefetch }
     },
     onError: (err) => {
       error('Ошибка при создании действии!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
   const { mutate: editPermission, isLoading: editPermissionLoading } = useMutation(requests.editPermission, {
     onSuccess: () => {
-      categoriesRefetch()
+      // categoriesRefetch()
       success('Действие успешно создано!')
       onClose()
     },
     onError: (err) => {
       error('Ошибка при создании действии!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const onSubmit = (data) => {
@@ -60,7 +59,7 @@ export default function RolesCreateDrawer({ isOpen, onClose, categoriesRefetch }
     }
   }
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
     error('Пожалуйста, заполните все поля!')
   }
 

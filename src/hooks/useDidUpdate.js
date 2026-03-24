@@ -9,7 +9,6 @@ const useDidUpdate = (f, conditions) => {
       return
     }
 
-    // Cleanup effects when f returns a function
     return f && f()
   }, conditions)
 }

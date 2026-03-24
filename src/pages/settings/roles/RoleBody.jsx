@@ -2,20 +2,20 @@ import { Box, Typography } from '@mui/material'
 import { createContext, useEffect, useRef, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import TextField from '../../../../components/Inputs/TextField'
-import SectionTitle from '../../../../components/SectionTitle'
+import InputSearch from '@components/Inputs/InputSearch'
+import TextField from '@components/Inputs/TextField'
+import SectionTitle from '@components/SectionTitle'
 import Section from './Section'
 
 import { get } from 'lodash'
-import CartOutlineIcon from '../../../assets/icons/CartOutline'
-import FinanceIcon from '../../../assets/icons/FInanceIcon'
-import MenuOutline from '../../../assets/icons/MenuOutline'
-import ProductsIcon from '../../../assets/icons/ProductsIcon'
-import QrScanIcon from '../../../assets/icons/QrScanIcon'
-import UserOutlineIcon from '../../../assets/icons/UserOutlineIcon'
-import UsersIcon from '../../../assets/icons/UsersIcon'
-import useDidUpdate from '../../../hooks/useDidUpdate'
+import CartOutlineIcon from '@icons/CartOutline'
+import FinanceIcon from '@icons/FInanceIcon'
+import MenuOutline from '@icons/MenuOutline'
+import ProductsIcon from '@icons/ProductsIcon'
+import QrScanIcon from '@icons/QrScanIcon'
+import UserOutlineIcon from '@icons/UserOutlineIcon'
+import UsersIcon from '@icons/UsersIcon'
+import useDidUpdate from '@hooks/useDidUpdate'
 
 export const SearchContext = createContext()
 
@@ -103,7 +103,7 @@ export default function RoleBody({ rolesAndPermissionList, productData = null, d
       setValue('shop', productData?.shop)
       setValue(
         'hashtag',
-        productData?.hashtag?.map((el) => ({ value: el.nameRu, name: el.nameRu, id: el._id }))
+        productData?.hashtag?.map((el) => ({ value: el.nameRu, name: el.nameRu, id: el._id })),
       )
       setValue('preparation_time', {
         name: `${productData?.preparationTime} ${productData?.preparationTime === 0 ? 'express' : 'минут'}`,

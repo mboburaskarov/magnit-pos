@@ -1,24 +1,22 @@
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
-import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
-import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/cashBoxShiftHistoryTableColumns'
-import FilterMenu from './FilterMenu'
-import tableHeaderSelector from './tableHeaderSelector'
-import MiniDashboard from './miniDashboard'
-const SELECTION_ID = 'checkboxSelectionField'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/cashBoxShiftHistoryTableColumns';
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
+import AgGridTable from '@components/AgGridTable/AgGridTable';
+import LoadingContainer from '@components/LoadingContainer';
+import InputSearch from '@components/Inputs/InputSearch';
+import { Box, Button, Typography } from '@mui/material';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
+import FilterMenuIcon from '@icons/FilterMenuIcon';
+import { useTranslation } from 'react-i18next';
+import { requests } from '@utils/requests';
+import { useTheme } from '@mui/styles';
+import { useQuery } from 'react-query';
+
+import tableHeaderSelector from './tableHeaderSelector';
+import FilterMenu from './FilterMenu';
+
 
 export default function CashShiftHistoryPage() {
   const theme = useTheme()
@@ -35,18 +33,9 @@ export default function CashShiftHistoryPage() {
     values,
   })
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
 
       dispatch(changeColumnSequence(formattedData))
     }
@@ -79,21 +68,12 @@ export default function CashShiftHistoryPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [cashShiftHistoryList?.data, values?.limit])
-  const { mutate: allSalesExcelReport, isLoading: isallSalesExcelReport } = useMutation(requests.getAllSalesExcelReport, {
-    onSuccess: ({ data }) => {
-      downloadExcel(data, 'Продажи')
-    },
-    onError: (err) => {
-      console.log(err)
 
-      error('Ошибка при скачать excel!')
-    },
-  })
   return (
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          Kassa amaliyotlari tarixi
+          История смен
         </Typography>
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
           <Box display={'flex'}>
@@ -156,7 +136,7 @@ export default function CashShiftHistoryPage() {
             id='products-main-table'
             downloadByFilter={() => {}}
             fullDownload={() => {}}
-            isDownloading={isallSalesExcelReport}
+            isDownloading={false}
             tableSettings
             columns={tableColumns}
             data={cashShiftHistoryList?.data?.data?.data || []}
@@ -168,8 +148,8 @@ export default function CashShiftHistoryPage() {
             }}
             fullInfoAboutCurrentPage
             emptyTableText={{
-              title: 'Продажи недоступен',
-              description: 'Если вы не можете найти искомый Продажи, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+              title: 'Cмен недоступен',
+              description: '...',
             }}
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             isRefreshing={loading || isFetchingcashShiftHistoryList || cashShiftHistoryListLoading}

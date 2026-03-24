@@ -1,31 +1,26 @@
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import * as qs from 'qs'
-import { useEffect } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import InputRange from '../../../../components/Inputs/InputRange'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
-import { requests } from '../../../../utils/requests'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import LazySelect from '../../../../components/Select/LazySelect'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Box, Button, Typography } from '@mui/material';
+import LazySelect from '@components/Select/LazySelect';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { requests } from '@utils/requests';
+import CloseIcon from '@icons/CloseIcon';
+import { useTheme } from '@mui/styles';
+import { useEffect } from 'react';
+import * as qs from 'qs';
 
-export default function FilterMenu({ open, setOpen, setRegions }) {
+
+export default function FilterMenu({ open, setOpen }) {
   const navigate = useNavigate()
+  const theme = useTheme()
+  const { t } = useTranslation()
   const { values } = useQueryParams()
   const methods = useForm()
   const { formState, reset, control } = methods
 
-  const { data: paymentTypeList } = useQuery('paymentTypeList', () => requests.getPaymentTypesList({ limit: 20, offset: 0 }))
-
   const onSubmit = (data) => {
-    setRegions(data.regions || [])
-
     const requestBody = {
       store_id: data.store_id?.value || undefined,
       store_name: data.store_id?.name || undefined,
@@ -39,11 +34,11 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {
-    const { total_amount_to, total_amount_from, store_id, payment_type_id, cashbox_id, vendor_id } = values
+    const { store_id, cashbox_id } = values
 
     reset(
       {
@@ -53,14 +48,13 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       { keepDirty: true }
     )
   }, [values?.cashbox_id, values?.store_id])
-  const theme = useTheme()
 
   const resetFilter = () => {
     reset()
     setOpen(false)
     navigate(`/sales/cash-shifts?offset=0&limit=${values?.limit || 5}`)
   }
-  const { t } = useTranslation()
+
   return (
     <StyledEmptyDialog
       overflowVisible
@@ -93,17 +87,15 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 id='store'
                 name='store_id'
                 isMulti={false}
-                placeholder={t('Выберите Магазин')}
+                placeholder={t('Выберите Аптека')}
                 minWidth='auto'
                 isClearable={true}
                 label={t('input.store.label')}
                 request={requests.getAllStores}
                 filters={{ limit: 10 }}
                 control={control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
                 getOptionLabel={(option) => {
-                  return <Typography color='grey.600'>{option.name}</Typography>
+                  return option.name
                 }}
                 filterOption={() => true}
               />
@@ -124,10 +116,8 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 request={requests.getAllCashBoxList}
                 filters={{ limit: 10 }}
                 control={control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
                 getOptionLabel={(option) => {
-                  return <Typography color='grey.600'>{option.name}</Typography>
+                  return option.name
                 }}
                 filterOption={() => true}
               />

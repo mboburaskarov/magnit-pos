@@ -1,7 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
-import React from 'react'
 import thousandDivider from '../../../utils/thousandDivider'
 const useStyles = makeStyles((theme) => ({
   productImg: {
@@ -11,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '8px',
   },
 }))
-function ReturnExchangeChildItemBox({ item, selectedReturnItems, selectReturnItem, setIsOpenChild }) {
+function ReturnExchangeChildItemBox({ item, selectedReturnItems, selectReturnItem, open, setIsOpenChild }) {
   const classes = useStyles()
   return (
     <Box display={'flex'} mb={'10px'} height={'80px'} justifyContent={'space-between'}>
@@ -25,15 +24,17 @@ function ReturnExchangeChildItemBox({ item, selectedReturnItems, selectReturnIte
               width: '50px',
             }}
           >
-            <input
-              onChange={(e) => selectReturnItem(e, item)}
-              name='checkbox_zero'
-              checked={selectedReturnItems.find((e) => e?.id == item?.id)}
-              className='customCheckbox'
-              type='checkbox'
-            />
+            {!get(open, 'item.is_returned') && (
+              <input
+                onChange={(e) => selectReturnItem(e, item)}
+                name='checkbox_zero'
+                checked={selectedReturnItems.find((e) => e?.id == item?.store_product_id)}
+                className='customCheckbox'
+                type='checkbox'
+              />
+            )}
           </Box>
-          {/* <img className={classes.productImg} src='/default-img.avif' /> */}
+          {/* <img className={classes.productImg} src='default-img.avif' /> */}
           <Box display={'flex'} flexDirection={'column'} width={'100%'}>
             <Box display={'flex'} justifyContent={'space-between'}>
               <Typography
@@ -42,6 +43,7 @@ function ReturnExchangeChildItemBox({ item, selectedReturnItems, selectReturnIte
                   overflow: 'hidden',
                   wordWrap: 'break-word',
                   textOverflow: 'ellipsis',
+
                   '-webkit-box-orient': 'vertical',
                   '-webkit-line-clamp': '1',
                 }}

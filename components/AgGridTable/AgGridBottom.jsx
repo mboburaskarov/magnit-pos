@@ -1,15 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Box, Button, keyframes, Typography } from '@mui/material'
 import { memo } from 'react'
-import RowFilterButton from './RowFilterButton'
-import DownloadButton from './DownloadButton'
-import Pagination from './Pagination'
 import { useTranslation } from 'react-i18next'
-import ButtonWithPopup from '../Buttons/ButtonWithPopup'
-import FinanceAndPaymentIcon from '../../src/assets/icons/FinanceAndPaymentIcon'
-import UnlockIcon from '../../src/assets/icons/UnlockIcon'
 import DownloadIcon from '../../src/assets/icons/DownloadIcon'
-import { borderColor, fontSize, fontWeight, minWidth } from '@mui/system'
+import { zeroToOne } from '@utils/zeroToOne'
+import ButtonWithPopup from '../Buttons/ButtonWithPopup'
+import Pagination from './Pagination'
+import RowFilterButton from './RowFilterButton'
 
 const rotateAnimation = keyframes`
   0% {
@@ -56,9 +53,12 @@ function AgGridBottom({
   changeOffset,
   offsetIndex,
   offsetQuery,
+  setOffsetIndex,
   isDownloading,
   fullDownload,
   downloadByFilter,
+  downloadForAA,
+  hasAADownload = false,
   offsetSize,
   totalCount,
   setOffsetSize,
@@ -85,6 +85,7 @@ function AgGridBottom({
             totalCount={totalCount}
             offsetIndex={offsetIndex}
             offsetQuery={offsetQuery}
+            setOffsetIndex={setOffsetIndex}
             eventMessage={eventMessages?.[1]}
             offsetSize={offsetSize}
             setOffsetSize={setOffsetSize}
@@ -137,6 +138,14 @@ function AgGridBottom({
                   clickHandler: () => fullDownload(),
                 },
                 { title: 'Скачать по фильтру', clickHandler: () => downloadByFilter() },
+                ...(hasAADownload
+                  ? [
+                      {
+                        title: 'Скачать АА',
+                        clickHandler: () => downloadForAA(),
+                      },
+                    ]
+                  : []),
               ]}
             />
           )}
@@ -144,7 +153,11 @@ function AgGridBottom({
         </Box>
         {fullInfoAboutCurrentPage && (
           <Typography fontSize={'16px'} lineHeight={'24px'} color={'bunker.400'} fontWeight={'500'}>
-            {t('ag_grid.bottom.info', { from: totalCount, start: offsetIndex * offsetSize - offsetSize + 1, end: offsetIndex * offsetSize })}
+            {t('ag_grid.bottom.info', {
+              from: totalCount,
+              start: zeroToOne(offsetIndex) * offsetSize - offsetSize + 1,
+              end: zeroToOne(offsetIndex) * offsetSize,
+            })}
           </Typography>
         )}
         <Pagination count={controlledOffsetCount} handleChangeOffset={changeOffset} offset={offsetIndex} offsetQuery={offsetQuery} />

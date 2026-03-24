@@ -1,17 +1,18 @@
+import useDidUpdate from '@hooks/useDidUpdate'
+import CloseIcon from '@icons/CloseIcon'
 import { Box, Button, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import dayjs from 'dayjs'
 import { get, size } from 'lodash'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
 import { useSelector } from 'react-redux'
-import CloseIcon from '../../../src/assets/icons/CloseIcon'
-import useDidUpdate from '../../../src/hooks/useDidUpdate'
-import { requests } from '../../../utils/requests'
-import { error, success } from '../../../utils/toast'
+
 import MainDetails from './mainDetails'
-import dayjs from 'dayjs'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function ClientCreateMini({ quickCreateClientName, openDrawer, closeDrawer, setCustomerId, clientData }) {
+export default function ClientCreateMini({ quickCreateClientName, openDrawer, closeDrawer, setOpenDrawer, setCustomerId, clientData }) {
   const { t } = useTranslation()
   const classes = useStyles()
   const methods = useForm()
@@ -50,13 +51,19 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
 
   useEffect(() => {
     methods.register('dial_code')
-  }, [])
+    methods.setValue('loyalty_card_barcode', get(openDrawer, 'data.loyalty_card_barcode'))
+    methods.setValue('first_name', get(openDrawer, 'data.first_name'))
+    methods.setValue('last_name', get(openDrawer, 'data.last_name'))
+    methods.setValue('date_of_birth', new Date(get(openDrawer, 'data.birthday', null)))
+    methods.setValue('gender', get(openDrawer, 'data.gender'))
+    methods.setValue('phone', get(openDrawer, 'data.phone', '').split('998')[1])
+  }, [openDrawer])
 
   useDidUpdate(() => {
-    if (clientData) {
-      methods.reset(clientData)
+    if (openDrawer) {
+      methods.reset(openDrawer?.data)
     }
-  }, [clientData])
+  }, [openDrawer])
   useEffect(() => {
     methods.reset()
   }, [])
@@ -66,19 +73,67 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       closeDrawer(false)
       methods.reset()
 
-      setCustomerId({ id: get(data, 'data.id'), name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'), balance: get(data, 'data.balance', 0) })
+      setCustomerId({
+        id: get(data, 'data.id'),
+        name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'),
+        balance: 0,
+        discount_card_barcode: get(data, 'data.discount_card'),
+        discount_card_percent: get(data, 'data.discount_percent'),
+        loyalty_card_percent: get(data, 'data.loyalty_card_percent'),
+        loyalty_card_barcode: get(data, 'data.loyalty_card_barcode'),
+      })
       success('Клиент создан!')
     },
     onError: (err) => {
+      if (err?.response?.data?.data == 'duplicate.phone.error') {
+        error('Этот номер уже добавлен')
+        return
+      }
+      if (err?.response?.data?.data == 'duplicate.loyalty.card.error') {
+        error('Эта карта уже добавлена')
+        return
+      }
+      console.error('err', err)
       error('Ошибка при Клиент создан!')
-      console.log('err', err)
+    },
+  })
+
+  const { mutate: handleEditCustomer, isLoading: isHandleEditCustomer } = useMutation(requests.editCustomer, {
+    onSuccess: ({ data }) => {
+      closeDrawer(false)
+      methods.reset()
+
+      setCustomerId({
+        id: get(data, 'data.id'),
+        name: get(data, 'data.first_name') + ' ' + get(data, 'data.last_name'),
+        balance: get(data, 'data.balance', 0),
+        discount_card_barcode: get(data, 'data.discount_card'),
+        discount_card_percent: get(data, 'data.discount_percent'),
+        loyalty_card_percent: get(data, 'data.loyalty_card_percent'),
+
+        loyalty_card_barcode: get(data, 'data.loyalty_card_barcode'),
+      })
+      success('Клиент создан!')
+    },
+    onError: (err) => {
+      if (err?.response?.data?.data == 'duplicate.phone.error') {
+        error('Этот номер уже добавлен')
+        return
+      }
+      if (err?.response?.data?.data == 'duplicate.loyalty.card.error') {
+        error('Эта карта уже добавлена')
+        return
+      }
+      error('Ошибка при Клиент создан!')
+      console.error('err', err)
     },
   })
 
   const onSubmit = (data) => {
-    if (size(get(data, 'phone')) < 14) {
+    if (size(get(data, 'phone')) < 14 && get(openDrawer, 'type') != 'edit') {
       error('Номер телефона меньше 14')
     }
+
     const requestBody = {
       birthday: data?.date_of_birth ? dayjs(get(data, 'date_of_birth')).format('YYYY.MM.DD') : null,
       created_by: userData?.id,
@@ -86,15 +141,25 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       gender: data?.gender,
       last_name: data?.last_name,
       store_id: get(userData, 'store.id'),
-      phone: '998' + data?.phone?.replace(/[()\s]/g, ''),
+      phone: data?.phone?.includes('(') ? '998' + data?.phone?.replace(/[()\s]/g, '') : data?.phone?.replace(/[()\s]/g, ''),
       tag_id: data?.tags?.value,
+      virtual_loyalty_card_needed: data?.shouldGenerateLoyalCard == 'auto' ? true : false,
+
+      loyalty_card_barcode:
+        data?.shouldGenerateLoyalCard == 'auto'
+          ? get(openDrawer, 'data.loyalty_card_barcode', false) || data?.loyalty_card_barcode
+          : data?.loyalty_card_barcode,
     }
-    handleCustomerCreate(requestBody)
+    if (get(openDrawer, 'type') == 'edit') {
+      handleEditCustomer({ id: get(openDrawer, 'data.id'), data: requestBody })
+    } else {
+      handleCustomerCreate(requestBody)
+    }
   }
 
   const onError = (err) => {
     error('alerts.enter_all_required_fields')
-    console.log('err', err)
+    console.error('err', err)
   }
   const theme = useTheme()
   return (
@@ -102,7 +167,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
       <Box height={'100%'}>
         <Box className={classes.header}>
           <Typography variant='h4' className={classes.title}>
-            {t('menu.clients.new_client')}
+            {get(openDrawer, 'type') == 'edit' ? 'Изменить клиент' : t('menu.clients.new_client')}
           </Typography>
           <CloseIcon color={theme.palette.black} onClick={() => closeDrawer(false)} />
         </Box>
@@ -113,7 +178,13 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
                 padding: '0 24px',
               }}
             >
-              <MainDetails quickCreateClientName={quickCreateClientName} clientData={clientData} />
+              <MainDetails
+                setOpenDrawer={setOpenDrawer}
+                setCustomerId={setCustomerId}
+                quickCreateClientName={quickCreateClientName}
+                clientData={clientData}
+                openDrawer={openDrawer}
+              />
             </Box>
             <Box
               width={196}
@@ -127,7 +198,7 @@ export default function ClientCreateMini({ quickCreateClientName, openDrawer, cl
               }}
             >
               <Button primary fullWidth size='small' style={{ borderRadius: 16 }} isLoading={isCreateCustomer} form='create-client-form-mini' type='submit'>
-                {t('create')}
+                {get(openDrawer, 'type') == 'edit' ? t('Изменить') : t('create')}
               </Button>
             </Box>
           </form>

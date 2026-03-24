@@ -1,10 +1,10 @@
 import { Box, Button, Container, IconButton, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { createBrowserHistory } from 'history'
 import { Fragment, memo, useLayoutEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import LeftArrowIcon from '../src/assets/icons/LeftArrow'
+import { useNavigateWithParams } from '../src/hooks/useNavigateWithParams'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
   spanHEaderText: {
     fontSize: '32px',
-    lineHeight: '48px',
+    lineHeight: '32px !important',
     fontWeight: '700 !important',
     paddingRight: 10,
   },
@@ -75,45 +75,35 @@ function Header({
   typeText,
   isLoading,
   cancel,
+  subText,
   fullWidth,
   cancelButtonLabel,
   noCancel = true,
   text,
   buttonText = 'Применить',
-  backButtonClick,
   customButton,
   noPrimaryBtn,
   onSubmit,
-  bottomComponent,
-  bottomComponentStyles = () => {},
   description,
-  historyBack,
   checkAccessId,
 }) {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
-  const navigate = useNavigate()
+
   const classes = useStyles({ fullWidth, isOpen })
-  const history = createBrowserHistory()
+  const backHistory = useRef()
   const headerComponentRef = useRef()
   const [headerComponentHeight, setHeaderComponentHeight] = useState(0)
-
+  const location = useLocation()
+  const { goBackWithParams } = useNavigateWithParams()
   useLayoutEffect(() => {
     setHeaderComponentHeight(headerComponentRef.current?.clientHeight || 0)
+    if (location.state?.prevFilter) {
+      backHistory.current = location.state?.prevFilter
+    }
   }, [])
 
   const backButtonClickHandler = (e) => {
-    if (backButtonClick) {
-      backButtonClick(e)
-      return
-    }
-    if (historyBack) {
-      history.back()
-      return
-    }
-    if (backHref) {
-      navigate(backHref)
-      return
-    }
+    goBackWithParams(backHref)
   }
   return (
     <Fragment>
@@ -180,6 +170,9 @@ function Header({
                       </Typography>
                     )}
                     <Typography className={classes.spanHEaderText}>{text}</Typography>
+                    {subText && (
+                      <Typography sx={{ fontSize: '14px', lineHeight: '20px', mt: '5px', fontWeight: 'bold', color: 'grey.600' }}>{subText}</Typography>
+                    )}
                   </Typography>
                   {description && <Typography color='textSecondary'>{description}</Typography>}
                 </Box>
@@ -232,25 +225,7 @@ function Header({
           </header>
         </Container>
       </Box>
-      <Box mb={4} sx={{ height: headerComponentHeight + 'px' }} />
-      {/* <Box mb={4} sx={{ height: headerComponentHeight + 'px', width: '100vw' }} />
-
-      {bottomComponent ? (
-        <Box
-          position='fixed'
-          sx={(theme) => ({
-            left: '0',
-            top: 114,
-            zIndex: 999,
-            width: '100%',
-            ...bottomComponentStyles(theme),
-          })}
-        >
-          <Box px={18}>{bottomComponent}</Box>
-        </Box>
-      ) : (
-        ''
-      )} */}
+      <Box mb={2} sx={{ height: headerComponentHeight + 'px' }} />
     </Fragment>
   )
 }

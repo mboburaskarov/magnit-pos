@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material'
-import getImageUrl from '../../utils/getImageUrl'
+import getImageUrl from '@utils/getImageUrl'
 
 export default function DrawerInfoBox({ infoData, columnGap = 2, mb = 4, mt = 2 }) {
   return (

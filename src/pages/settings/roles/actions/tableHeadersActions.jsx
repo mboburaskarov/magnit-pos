@@ -1,8 +1,8 @@
-import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
-import Highlighter from 'react-highlight-words'
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
 import { get } from 'lodash'
+import Highlighter from 'react-highlight-words'
 import DeleteIcon from '../../../../assets/icons/DeleteIcon'
 import EditIcon from '../../../../assets/icons/EditIcon'
 
@@ -11,7 +11,12 @@ const list = [
   { accessor: 'quantity', is_active: true },
   { accessor: 'action', is_active: true },
 ]
-
+const action_types = [
+  { title: 'Модуль', value: 'MODULE' },
+  { title: 'Страница', value: 'PAGE' },
+  { title: 'Действие', value: 'ACTION' },
+  { title: 'Таблица', value: 'TABLE' },
+]
 const tableHeadersActions = (searchTerm, setCategoryDrawer, setCreateEdit, status, type, setOpenConfirm, t, setConfirmToDelete) => {
   return list?.map((item) => {
     switch (item.accessor) {
@@ -19,41 +24,85 @@ const tableHeadersActions = (searchTerm, setCategoryDrawer, setCreateEdit, statu
         return {
           ...item,
           width: 1000,
-          Cell: ({ row }) =>
-            row.canExpand ? (
-              <span
-                style={{
-                  paddingLeft: `${row.depth * 2}rem`,
-                  display: 'inline-flex',
-                }}
-              >
-                {row.isExpanded ? (
-                  <FontAwesomeIcon style={{ color: '#4993DD', marginRight: 8 }} icon={faChevronDown} />
+          Cell: ({ row }) => {
+            return (
+              <>
+                {row.canExpand ? (
+                  <span
+                    style={{
+                      paddingLeft: `${row.depth * 2}rem`,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {row.isExpanded ? (
+                      <FontAwesomeIcon style={{ color: '#fe5000', marginRight: 8 }} icon={faChevronDown} />
+                    ) : (
+                      <FontAwesomeIcon style={{ color: '#fe5000', marginRight: 8 }} icon={faChevronRight} />
+                    )}
+                    {row.original.name !== '' ? (
+                      <>
+                        <Highlighter
+                          highlightClassName='highlighter'
+                          searchWords={searchTerm ? searchTerm?.split(' ') : []}
+                          autoEscape
+                          textToHighlight={row.original.name}
+                        />
+                        <Typography
+                          sx={{
+                            ml: '10px',
+                            fontSize: '12px',
+                            fontWeight: 500,
+                            lineHeight: '20px',
+                            backgroundColor: 'green.400',
+                            color: '#fff',
+                            padding: '3px 8px',
+                            borderRadius: '16px',
+                          }}
+                        >
+                          {action_types.find((el) => el.value == row.original.type)?.title}
+                        </Typography>
+                      </>
+                    ) : (
+                      <Typography style={{ color: '#bdbdbd' }}>{t('table_columns.absent')}</Typography>
+                    )}
+                  </span>
+                ) : row.original.name !== '' ? (
+                  <span
+                    style={{
+                      paddingLeft: `${row.depth * 2}rem`,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Highlighter
+                      style={{ paddingLeft: `${row.depth * 2}rem` }}
+                      highlightClassName='highlighter'
+                      searchWords={searchTerm ? searchTerm?.split(' ') : []}
+                      autoEscape
+                      textToHighlight={row.original.name}
+                    />
+                    <Typography
+                      sx={{
+                        ml: '10px',
+                        fontSize: '12px',
+                        fontWeight: 500,
+                        lineHeight: '20px',
+                        backgroundColor: 'green.400',
+                        color: '#fff',
+                        padding: '3px 8px',
+                        borderRadius: '16px',
+                      }}
+                    >
+                      {action_types.find((el) => el.value == row.original.type)?.title}
+                    </Typography>
+                  </span>
                 ) : (
-                  <FontAwesomeIcon style={{ color: '#4993DD', marginRight: 8 }} icon={faChevronRight} />
+                  <Typography style={{ paddingLeft: `${row.depth * 2}rem`, color: '#bdbdbd' }}>{t('table_columns.absent')}</Typography>
                 )}
-                {row.original.name !== '' ? (
-                  <Highlighter
-                    highlightClassName='highlighter'
-                    searchWords={searchTerm ? searchTerm?.split(' ') : []}
-                    autoEscape
-                    textToHighlight={row.original.name}
-                  />
-                ) : (
-                  <Typography style={{ color: '#bdbdbd' }}>{t('table_columns.absent')}</Typography>
-                )}
-              </span>
-            ) : row.original.name !== '' ? (
-              <Highlighter
-                style={{ paddingLeft: `${row.depth * 2}rem` }}
-                highlightClassName='highlighter'
-                searchWords={searchTerm ? searchTerm?.split(' ') : []}
-                autoEscape
-                textToHighlight={row.original.name}
-              />
-            ) : (
-              <Typography style={{ paddingLeft: `${row.depth * 2}rem`, color: '#bdbdbd' }}>{t('table_columns.absent')}</Typography>
-            ),
+              </>
+            )
+          },
           Header: t('table_columns.name'),
         }
 
@@ -70,7 +119,7 @@ const tableHeadersActions = (searchTerm, setCategoryDrawer, setCreateEdit, statu
                   isSub: row.original.parent_id !== '',
                 })
               }
-              color={!!row?.original?.product_count ? '#4993DD' : '#BDBDBD'}
+              color={!!row?.original?.product_count ? '#fe5000' : '#BDBDBD'}
             >
               {row?.original?.product_count}
             </Box>

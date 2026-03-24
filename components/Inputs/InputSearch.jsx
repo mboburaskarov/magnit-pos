@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from 'react'
-import { InputAdornment, Box, TextField, Typography } from '@mui/material'
-import * as qs from 'qs'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Box, InputAdornment, TextField, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
-import useDebouncedValue from '../../src/hooks/useDebouncedValue'
+import * as qs from 'qs'
+import { useEffect, useRef } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { useNavigate } from 'react-router-dom'
 import SearchIcon from '../../src/assets/icons/SearchIcon'
-import { useRef } from 'react'
+import useDebouncedValue from '../../src/hooks/useDebouncedValue'
+import { useQueryParams } from '../../src/hooks/useQueryParams'
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -116,7 +116,7 @@ const InputSearch = ({
   const navigate = useNavigate()
   const { values } = useQueryParams()
   const classes = useStyles({ maxWidth, handleClickGiftCards })
-
+  const myref = inputRef || useRef(null)
   const [value, setValue, debouncedValue] = useDebouncedValue(values?.search || '', timeout)
 
   const hasMounted = useRef(false)
@@ -131,6 +131,15 @@ const InputSearch = ({
     const searchParams = qs.stringify({ ...values, search: debouncedValue || undefined }, { addQueryPrefix: true })
     navigate(`${location.pathname}${searchParams}`)
   }, [debouncedValue])
+  useHotkeys(
+    ['F3', 'alt'],
+    (event) => {
+      myref.current.focus()
+    },
+    {
+      preventDefault: true,
+    }
+  )
 
   return (
     <Box position='relative' display='flex' width='100%'>
@@ -160,24 +169,25 @@ const InputSearch = ({
                   </div>
                 ) : (
                   hasShortCut && (
-                    <Typography mr={'10px'} color={'bunker.300'} fontWeight={'600'} fontSize={'16px'} display={'flex'}>
-                      Нажмите
-                      <Box
-                        sx={{
-                          color: '#bdbdbd',
-                          border: '2px solid #cfcfcf',
-                          height: '24px',
-                          display: 'flex',
-                          padding: '2px',
-                          ml: '5px',
-                          minWidth: '24px',
-                          alignItems: 'center',
-                          borderRadius: '8px',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        /
-                      </Box>
+                    <Typography
+                      sx={{
+                        backgroundColor: '#fff',
+                        color: '#bdbdbd',
+                        border: '1px solid #cfcfcf',
+                        height: '20px',
+                        mr: '16px',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        lineHeight: '16px',
+                        display: 'flex',
+                        ml: '5px',
+                        width: '20px',
+                        alignItems: 'center',
+                        borderRadius: '4px',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      /
                     </Typography>
                   )
                 )}
@@ -190,7 +200,7 @@ const InputSearch = ({
           if (onKeyDown) onKeyDown(e)
         }}
         value={uncontrolled ? value : searchTerm}
-        inputRef={inputRef}
+        inputRef={myref}
         {...rest}
       />
     </Box>

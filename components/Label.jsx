@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material'
 
-export default function Label({ children, required, ...props }) {
+export default function Label({ children, required, mb = '12px', ...props }) {
   const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)')
   return (
     <Typography
@@ -11,7 +11,7 @@ export default function Label({ children, required, ...props }) {
       variant='h5'
       whiteSpace={'pre'}
       lineHeight={'24px'}
-      mb={'12px'}
+      mb={mb}
       display='flex'
       type='label'
       className='input-label'

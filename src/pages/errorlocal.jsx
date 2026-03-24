@@ -1,4 +1,5 @@
 import { Box, Button, Typography } from '@mui/material'
+import CustomImg from '../../components/CustomImg'
 
 export default function ErrorPageLocal({ errorData }) {
   const error = errorData?.error.stack.split(' at ')
@@ -51,7 +52,7 @@ export default function ErrorPageLocal({ errorData }) {
           <br />
         </Box>
       </Box>
-      <img
+      <CustomImg
         style={{
           zIndex: '99',
           position: 'fixed',

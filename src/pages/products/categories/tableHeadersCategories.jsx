@@ -1,13 +1,11 @@
-import Highlighter from 'react-highlight-words'
-import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
-// import Button from 'components/Buttons/Button'
-// import Tooltip from 'components/Tooltip'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import DeleteMiddleIcon from '../../../assets/icons/DeleteMiddleIcon'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import EditIcon from '../../../assets/icons/EditIcon'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
 import { get } from 'lodash'
+import Highlighter from 'react-highlight-words'
+import DeleteIcon from '@icons/DeleteIcon'
+import EditIcon from '@icons/EditIcon'
+import CustomImg from '@components/CustomImg'
 
 const list = [
   { accessor: 'name', is_active: true },
@@ -15,7 +13,7 @@ const list = [
   { accessor: 'action', is_active: true },
 ]
 
-const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, status, type, setOpenConfirm, t, setConfirmToDelete) => {
+const tableHeadersCategories = ({ searchTerm, setOpenImageGallery, setCreateEdit, t, setConfirmToDelete }) => {
   return list?.map((item) => {
     switch (item.accessor) {
       case 'name':
@@ -29,11 +27,11 @@ const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, st
                   paddingLeft: `${row.depth * 2}rem`,
                   display: 'inline-flex',
                 }}
-              >
+              >fdfd
                 {row.isExpanded ? (
-                  <FontAwesomeIcon style={{ color: '#4993DD', marginRight: 8 }} icon={faChevronDown} />
+                  <FontAwesomeIcon style={{ color: '#fe5000', marginRight: 8 }} icon={faChevronDown} />
                 ) : (
-                  <FontAwesomeIcon style={{ color: '#4993DD', marginRight: 8 }} icon={faChevronRight} />
+                  <FontAwesomeIcon style={{ color: '#fe5000', marginRight: 8 }} icon={faChevronRight} />
                 )}
                 {row.original.name !== '' ? (
                   <Highlighter
@@ -47,6 +45,25 @@ const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, st
                 )}
               </span>
             ) : row.original.name !== '' ? (
+             <Box display={'flex'} alignItems="center" gap={1} >
+             <Box sx={{
+              borderRadius:'50%',
+              // bgcolor:'grey.300',
+              width: 32,
+              height: 32,
+              alignItems: 'center',
+              justifyContent: 'center',
+              display: 'flex',
+              overflow: 'hidden',
+              p: 0.5,
+               img: {
+                 width:'25px',
+                 height: '25px',
+                 objectFit: 'cover'
+               }
+             }}>
+             <CustomImg onClick={() => setOpenImageGallery({isOpen:true, data: [row.original.photo]})} src={row.original.photo} />
+             </Box>
               <Highlighter
                 style={{ paddingLeft: `${row.depth * 2}rem` }}
                 highlightClassName='highlighter'
@@ -54,118 +71,65 @@ const tableHeadersCategories = (searchTerm, setCategoryDrawer, setCreateEdit, st
                 autoEscape
                 textToHighlight={row.original.name}
               />
+              </Box>
             ) : (
               <Typography style={{ paddingLeft: `${row.depth * 2}rem`, color: '#bdbdbd' }}>{t('table_columns.absent')}</Typography>
             ),
           Header: t('table_columns.name'),
         }
 
-      case 'quantity':
-        return {
-          ...item,
-          Cell: ({ row }) => (
-            <Box
-              onClick={() =>
-                row?.original?.product_count &&
-                setCategoryDrawer({
-                  id: row?.original?.id,
-                  name: row.original.name,
-                  isSub: row.original.parent_id !== '',
-                })
-              }
-              color={!!row?.original?.product_count ? '#4993DD' : '#BDBDBD'}
-            >
-              {row?.original?.product_count}
-            </Box>
-          ),
-          Header: t('table_columns.amount'),
-          minWidth: 150,
-        }
       case 'action':
         return {
           ...item,
           Cell: ({ row }) => (
             <Box display='inline-flex'>
-              {status === 'deleted' ? (
-                <Tooltip title={t('buttons.restore')} placement='top'>
+              <>
+                <Tooltip title={t('buttons.edit')} placement='top'>
                   <Button
-                    variant=''
+                    sx={{ borderRadius: '15px', width: '50px', height: '50px' }}
                     onClick={(e) => {
                       e.stopPropagation()
-                      setOpenConfirm({
-                        type,
-                        id: row.original.id,
-                        isDelete: false,
-                      })
+                      setCreateEdit({ type: 'categories', id: row?.original?.id, parentId: get(row, 'original.parent_id') || get(row, 'original.id') })
                     }}
-                    recover
-                    square
-                  />
+                  >
+                    <IconButton
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        backgroundColor: 'transparent',
+                        borderRadius: 3,
+                        p: '8px',
+                        '&:hover': {
+                          backgroundColor: 'transparent',
+                        },
+                      }}
+                    >
+                      <EditIcon color='#fff' />
+                    </IconButton>
+                  </Button>
                 </Tooltip>
-              ) : (
-                <>
-                  <Tooltip title={t('buttons.edit')} placement='top'>
-                    <Button
-                      sx={{ borderRadius: '15px', width: '50px', height: '50px' }}
-                      // variant=''
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setCreateEdit({ type, id: row?.original?.id, parentId: get(row, 'original.parent_id') || get(row, 'original.id') })
+                <Box width={16} />
+                <Tooltip title={t('buttons.delete')} placement='top'>
+                  <Button sx={{ borderRadius: '15px', width: '50px', height: '50px' }} square trash>
+                    <IconButton
+                      backgroundColor='#fe5000'
+                      onClick={() => setConfirmToDelete(row?.original?.id)}
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        backgroundColor: 'transparent',
+                        borderRadius: 3,
+                        p: '8px',
+                        '&:hover': {
+                          backgroundColor: 'transparent',
+                        },
                       }}
                     >
-                      <IconButton
-                        // onClick={() => navigate(`/products/edit/${data.id}`)}
-                        sx={{
-                          width: 32,
-                          height: 32,
-                          backgroundColor: 'transparent',
-                          borderRadius: 3,
-                          p: '8px',
-                          '&:hover': {
-                            backgroundColor: 'transparent',
-                          },
-                        }}
-                      >
-                        <EditIcon color='#fff' />
-                      </IconButton>
-                    </Button>
-                  </Tooltip>
-                  <Box width={16} />
-                  <Tooltip title={t('buttons.delete')} placement='top'>
-                    <Button
-                      sx={{ borderRadius: '15px', width: '50px', height: '50px' }}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setOpenConfirm({
-                          type,
-                          id: row.original.id,
-                          isDelete: true,
-                        })
-                      }}
-                      square
-                      trash
-                    >
-                      <IconButton
-                        backgroundColor='#fe5000'
-                        onClick={() => setConfirmToDelete(row?.original?.id)}
-                        sx={{
-                          width: 32,
-                          height: 32,
-                          backgroundColor: 'transparent',
-                          borderRadius: 3,
-                          p: '8px',
-                          '&:hover': {
-                            backgroundColor: 'transparent',
-                          },
-                        }}
-                      >
-                        <DeleteIcon color='#fff' />
-                      </IconButton>
-                      {/* <Delete /> */}
-                    </Button>
-                  </Tooltip>
-                </>
-              )}
+                      <DeleteIcon color='#fff' />
+                    </IconButton>
+                  </Button>
+                </Tooltip>
+              </>
             </Box>
           ),
           Header: t('table_columns.action'),

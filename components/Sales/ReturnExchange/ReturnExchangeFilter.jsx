@@ -37,7 +37,7 @@ export default function ReturnExchangeFilter({ open, setOpen, setRegions }) {
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export default function ReturnExchangeFilter({ open, setOpen, setRegions }) {
                 // uncontrolled
                 customLabel={'full_name'}
                 getOptionLabel={(option) => {
-                  return <Typography color='grey.600'>{option.name}</Typography>
+                  return option.name
                 }}
                 filterOption={() => true}
               />

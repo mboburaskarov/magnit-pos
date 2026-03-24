@@ -1,42 +1,41 @@
-import { LoadingButton } from '@mui/lab'
-import { Box, Button, TextField, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/clientTableColumns'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import ClientCreateMini from '@components/Sales/ClientCreateMini/index'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import LoadingContainer from '@components/LoadingContainer'
+import InputSearch from '@components/Inputs/InputSearch'
+import { Box, Button, Typography } from '@mui/material'
+import { useQueryParams } from '@hooks/useQueryParams'
 import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import ConfirmDialog from '../../../components/ConfirmDialog'
-import StyledDialog from '../../../components/Dialogs/StyledDialog'
-import ImageGallery from '../../../components/ImageGallery'
-import InputSearch from '../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../components/LoadingContainer'
-import { requests } from '../../../utils/requests'
-import { error, success } from '../../../utils/toast'
-import BigTickIcon from '../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../assets/icons/BigWarningIcon'
-import DeleteIcon from '../../assets/icons/DeleteIcon'
-import FilterMenuIcon from '../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../redux-toolkit/tableSlices/clientTableColumns'
-import FilterMenu from './FilterMenu'
+import ConfirmDialog from '@components/ConfirmDialog'
+import { useEffect, useMemo, useState } from 'react'
+import ImageGallery from '@components/ImageGallery'
+import { useMutation, useQuery } from 'react-query'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import CheckAccess from '@components/CheckAccess'
+import { useTranslation } from 'react-i18next'
+import { error, success } from '@utils/toast'
+import BigTickIcon from '@icons/BigTickIcon'
+import DeleteIcon from '@icons/DeleteIcon'
+import { requests } from '@utils/requests'
+import { LoadingButton } from '@mui/lab'
+import PlusIcon from '@icons/PlusIcon'
+import { get } from 'lodash'
+
 import tableHeaderSelector from './tableHeaderSelector'
-import { downloadExcel } from '../../../utils/downloadEXCEL'
-const SELECTION_ID = 'checkboxSelectionField'
 
 export default function ClientsPage() {
-  const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.clientTableColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
+  const [openClientCreateMini, setOpenClientCreateMini] = useState(false)
+
   const [selectClients, setselectClients] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [rejectComment, setRejectComment] = useState(null)
-  const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const selectClientsFunc = (isChecked, id) => {
     if (isChecked) {
@@ -50,22 +49,14 @@ export default function ClientsPage() {
     t,
     values,
     setImages: setOpenImageGallery,
+    setOpenClientCreateMini,
     setOpenConfirmDialog,
     selectClientsFunc,
   })
 
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
-
+      const formattedData = makeFormattedData({ tableColumns })
       dispatch(changeColumnSequence(formattedData))
     }
   }, [])
@@ -76,8 +67,9 @@ export default function ClientsPage() {
       offset: values?.search ? 0 : values?.offset || 0,
       search: values?.search,
       store_id: values?.store_id,
+      tab: values?.tab,
     }
-  }, [values?.offset, values?.limit, values?.search, values?.store_id])
+  }, [values?.offset, values?.limit, values?.search, values?.store_id, values?.tab])
   const {
     data: clientsList,
     isLoading: clientsListLoading,
@@ -95,7 +87,7 @@ export default function ClientsPage() {
       refetch()
       error('Ошибка при удалении клиент!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -109,12 +101,13 @@ export default function ClientsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [clientsList?.data, values?.limit])
+
   const { mutate: clientsExcelReport, isLoading: isclientsExcelReport } = useMutation(requests.getClientsExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Клиенти')
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },
@@ -141,60 +134,35 @@ export default function ClientsPage() {
             >
               <InputSearch id='producrs-search' name='search' placeholder={'ID, Имя, Телефон'} uncontrolled />
             </Box>
-
-            <Box minWidth={113} ml={'16px'}>
-              <Button
-                sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
-                  },
-                }}
-                fullWidth
-                startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
-              >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
-            </Box>
-            {selectClients.length > 0 && (
-              <>
-                <Box minWidth={48} ml={'16px'}>
-                  <Button
-                    sx={{
-                      height: '48px',
-                      padding: 0,
-                      bgcolor: '#fff',
-                      border: '1px solid #ECEDF2',
-                      color: 'dark.500',
-                      fontWeight: '500',
-                      fontSize: '16px',
-                      lineHeight: '24px',
-                      '& span': {
-                        mr: '12px',
-                      },
-                    }}
-                    fullWidth
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => deleteClient({ data: selectClients })}
-                  >
-                    <DeleteIcon width='24px' />
-                  </Button>
-                </Box>
-              </>
-            )}
+            <CheckAccess id={'client:delete'}>
+              {selectClients.length > 0 && (
+                <>
+                  <Box minWidth={48} ml={'16px'}>
+                    <Button
+                      sx={{
+                        height: '48px',
+                        padding: 0,
+                        bgcolor: '#fff',
+                        border: '1px solid #ECEDF2',
+                        color: 'dark.500',
+                        fontWeight: '500',
+                        fontSize: '16px',
+                        lineHeight: '24px',
+                        '& span': {
+                          mr: '12px',
+                        },
+                      }}
+                      fullWidth
+                      variant='contained'
+                      color='secondary'
+                      onClick={() => deleteClient({ data: selectClients })}
+                    >
+                      <DeleteIcon width='24px' />
+                    </Button>
+                  </Box>
+                </>
+              )}
+            </CheckAccess>
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box>
@@ -206,14 +174,27 @@ export default function ClientsPage() {
                 resetTableHeader={resetTableHeader}
               />
             </Box>
+            <CheckAccess id={'client:create'}>
+              <Box minWidth={156}>
+                <Button
+                  sx={{ height: '48px' }}
+                  onClick={() => setOpenClientCreateMini(true)}
+                  fullWidth
+                  startIcon={<PlusIcon color='#fff' />}
+                  variant='contained'
+                  color='primary'
+                >
+                  {t('button.add_new.text')}
+                </Button>
+              </Box>
+            </CheckAccess>
           </Box>
         </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='clients-main-table'
             tableSettings
-            fullDownload={() => clientsExcelReport({ ...clientsListFilter, limit: 1000000 })}
+            fullDownload={() => clientsExcelReport({ ...clientsListFilter, offset: 0, limit: 1000000 })}
             downloadByFilter={() => clientsExcelReport(clientsListFilter)}
             isDownloading={isclientsExcelReport}
             columns={tableColumns}
@@ -234,7 +215,17 @@ export default function ClientsPage() {
           />
         </Box>
       </Box>
-
+      <ClientCreateMini
+        setCustomerId={() => {
+          refetch()
+        }}
+        quickCreateClientName={''}
+        setOpenDrawer={setOpenClientCreateMini}
+        openDrawer={openClientCreateMini}
+        closeDrawer={() => setOpenClientCreateMini(false)}
+        clientData={openClientCreateMini}
+        afterCreate={(clientId) => {}}
+      />
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (
         <ConfirmDialog

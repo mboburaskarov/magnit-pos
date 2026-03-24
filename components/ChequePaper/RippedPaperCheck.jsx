@@ -1,35 +1,43 @@
-import React, { useEffect, useState, Fragment, useMemo } from 'react'
 import { Box, Typography } from '@mui/material'
-import TickOutlinedIcon from '../../src/assets/icons/BigTickIcon'
+import { Fragment } from 'react'
 
+import { QRCodeCanvas } from 'qrcode.react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { QRCodeCanvas } from 'qrcode.react'
 import DashedRow from './DashedRow.jsx'
 import useStyles from './useStyles'
 
-import palette from '../../src/assets/theme/mui.config'
-import { get } from 'lodash'
 import dayjs from 'dayjs'
-import thousandDivider from '../../utils/thousandDivider.js'
-
+import { get } from 'lodash'
+import palette from '../../src/assets/theme/mui.config'
+import thousandDivider from '@utils/thousandDivider.js'
+const FiskalText = ({ data }) => {
+  return <Typography>Fiskal belgi: {data}</Typography>
+}
+const FiskalNumber = ({ data }) => {
+  return <Typography>Fiskal raqami: {data}</Typography>
+}
 function RippedPaperCheck({
   data,
   margin,
   qrcodeUrl,
   cashBoxDetails,
+  mode,
   customerId,
   checked,
   paymentsList,
   cartItemsList,
   chequeData: cheque,
   logo = '',
+
   noSticky,
+  markingsList,
   orderItems,
 }) {
   const classes = useStyles()
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
+  console.log('cheque', cashBoxDetails,userData,cartItemsList,orderItems)
 
   const disableSumsOnGoods = () => {
     const found = cheque?.information_block?.find((el) => el?.id === '30e14632-dc10-40a1-b97a-1be73a53054a')
@@ -48,7 +56,6 @@ function RippedPaperCheck({
 
     return !!found ? found?.is_active === true : true
   }
-  console.log(qrcodeUrl)
 
   return (
     <Box className={`${classes.root} ${noSticky ? classes.noSticky : ''}`}>
@@ -64,9 +71,12 @@ function RippedPaperCheck({
                   textAlign: 'center',
                 }}
               >
-                "PHARMA COSMOS" MCHJ
+                {get(userData, 'company.legal_name','"PHARMA COSMOS" MCHJ')}
+                
               </p>
             </div>
+
+            <Box sx={{ textAlign: 'center' }}>{qrcodeUrl == false && 'Не товарный чек'}</Box>
             <div className={classes.border} />
             <p
               style={{
@@ -76,13 +86,20 @@ function RippedPaperCheck({
                 textAlign: 'center',
               }}
             >
-              {get(userData, 'store.address')}
+              {get(userData, 'company.legal_address')}
             </p>
           </Fragment>
           <div className={classes.border} />
           <Fragment key={'index'}>
             <Box className={classes.content}>
-              {disableSumsOnGoods() && (
+              <DashedRow
+                id={`return-price-${'index1'}`}
+                rowData={{
+                  type: `STIR:`,
+                  value: get(userData, 'company.company_inn','303970073'),  
+                }}
+              />
+              {qrcodeUrl != false && disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index2'}`}
                   rowData={{
@@ -105,7 +122,7 @@ function RippedPaperCheck({
                   id={`return-price-${'index9'}`}
                   rowData={{
                     type: `Kontakt:`,
-                    value: `+${get(userData, 'store.phone', '-')}`,
+                    value: get(userData, 'store.phone', '998').length > 3 ? `+${get(userData, 'store.phone', '-')}` : '-',
                   }}
                 />
               )}
@@ -157,15 +174,23 @@ function RippedPaperCheck({
                     {index + 1}. {get(el, 'name')}
                   </b>
                 </p>
-                {disableSumsOnGoods() && (
-                  <DashedRow
-                    id={`return-price-${'index'}`}
-                    rowData={{
-                      type: `${get(el, 'quantity')},${get(el, 'unit_quantity')} dona`,
-                      value: `${thousandDivider(get(el, 'total_price'))} so'm`,
+
+                <Box mt={'15px'} mb={'10px'} display={'flex'} alignItems={'center'} justifyContent={'end'}>
+                  <Typography sx={{ fontSize: '17px !important', fontWeight: '600 !important' }}>
+                    {`${get(el, 'quantity') > 0 ? get(el, 'quantity') : ''}${
+                      get(el, 'unit_quantity') > 0 ? ` (${get(el, 'unit_quantity')}/${get(el, 'unit_per_pack')})` : ''
+                    } X `}
+                    {thousandDivider(get(el, 'unit_price'))}
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      ml: '5px',
+                      fontSize: '17px !important',
+                      fontWeight: '600 !important',
                     }}
-                  />
-                )}
+                  >{` = ${thousandDivider(get(el, 'total_price'))} so'm`}</Typography>
+                </Box>
                 <Box
                   sx={{
                     '& > p': {
@@ -174,8 +199,15 @@ function RippedPaperCheck({
                     },
                   }}
                 >
-                  <Typography>O'lchiv birligi: {get(el, 'package_name', '-')}</Typography>
+                  <Typography>O'lchov birligi: {get(el, 'package_name', '-')}</Typography>
                   <Typography>MXIK: {get(el, 'class_code', '-')}</Typography>
+                  {get(el, 'is_marking') && (
+                    <Box>
+                      {Object.values(markingsList[get(el, 'id')] || {})?.length > 0 &&
+                        Object.values(markingsList[get(el, 'id')] || {}).map((el) => <Typography>MK: {el.slice(0, 32)}</Typography>)}
+                    </Box>
+                  )}
+
                   <Typography>ShtKod: {get(el, 'barcode', '-')}</Typography>
                 </Box>
                 <DashedRow
@@ -189,22 +221,46 @@ function RippedPaperCheck({
               {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             </Fragment>
           ))}
-
           <Fragment key={'index39'}>
             <Box className={classes.content}>
-              {paymentsList?.map(
-                (el) =>
-                  disableSumsOnGoods() && (
-                    <DashedRow
-                      id={`return-price-${'index'}`}
-                      rowData={{
-                        type: `${el.name}:`,
-                        value: `${thousandDivider(el.amount)} so'm`,
-                      }}
-                    />
-                  )
+              {
+                (mode = 'lite'
+                  ? paymentsList
+                      .filter((a) => a.amount > 0)
+                      ?.map(
+                        (el) =>
+                          disableSumsOnGoods() && (
+                            <DashedRow
+                              id={`return-price-${'index'}`}
+                              rowData={{
+                                type: `${el.name}:`,
+                                value: `${thousandDivider(el.amount)} so'm`,
+                              }}
+                            />
+                          )
+                      )
+                  : paymentsList?.map(
+                      (el) =>
+                        disableSumsOnGoods() && (
+                          <DashedRow
+                            id={`return-price-${'index'}`}
+                            rowData={{
+                              type: `${el.name}:`,
+                              value: `${thousandDivider(el.amount)} so'm`,
+                            }}
+                          />
+                        )
+                    ))
+              }
+              {disableSumsOnGoods() && (
+                <DashedRow
+                  id={`return-price-${'index'}`}
+                  rowData={{
+                    type: `Karta turi`,
+                    value: `${qrcodeUrl.cardType === 'corporative' ? 'Korporativ' : 'Shaxsiy'} karta`,
+                  }}
+                />
               )}
-
               {disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index'}`}
@@ -248,30 +304,41 @@ function RippedPaperCheck({
                   },
                 }}
               >
-                <Typography>Chek turi: {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}</Typography>
+                <Typography>
+                  Chek turi: {qrcodeUrl?.qr == 'pending' ? '' : get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? 'Sotuv' : 'Qaytarish'}
+                </Typography>
+                {qrcodeUrl?.qr !== 'pending' && <FiskalText data={qrcodeUrl.fiscal} />}
+                {qrcodeUrl?.qr !== 'pending' && <FiskalNumber data={qrcodeUrl?.terminalId} />}
               </Box>
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-              {/* {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? ( */}
-              {/* <> */}
-              <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
-                Siz xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
-              </Typography>
-              <QRCodeCanvas value={qrcodeUrl} />
-              <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
-                CHEK NUSXASI
-              </Typography>
-              <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
-                SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
-              </Typography>
-              <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
-                XARIDINGIZ UCHUN RAXMAT!!!
-              </Typography>
-              {/* </> */}
-              {/* ) : ( */}
-              {/* <></> */}
-              {/* )} */}
+              {qrcodeUrl?.qr == 'pending' ? (
+                <>
+                  <QRCodeCanvas size={200} value={'https://pharma-cosmos.uz'} />
+
+                  <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
+                    SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
+                  </Typography>
+                  <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
+                    XARIDINGIZ UCHUN RAHMAT!!!
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
+                    Siz xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
+                  </Typography>
+                  <QRCodeCanvas size={200} value={qrcodeUrl.qr} />
+
+                  <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
+                    SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
+                  </Typography>
+                  <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
+                    XARIDINGIZ UCHUN RAHMAT!!!
+                  </Typography>
+                </>
+              )}
             </Box>
           </Fragment>
         </Box>

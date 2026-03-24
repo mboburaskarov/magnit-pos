@@ -1,14 +1,13 @@
 import { Box, Container } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
-import { error, success } from '../../../../utils/toast'
+import { error, success } from '@utils/toast'
 import { useMutation, useQuery } from 'react-query'
-import { requests } from '../../../../utils/requests'
+import { requests } from '@utils/requests'
 import { useNavigate, useParams } from 'react-router-dom'
-import LoadingContainer from '../../../../components/LoadingContainer'
+import LoadingContainer from '@components/LoadingContainer'
 import RoleBody from './RoleBody'
-import Header from '../../../../components/Header'
-import { useTranslation } from 'react-i18next'
+import Header from '@components/Header'
 import { get, size } from 'lodash'
 export default function RoleEditPage() {
   const { id } = useParams()
@@ -30,14 +29,28 @@ export default function RoleEditPage() {
     },
     onError: (err) => {
       error('Ошибка создания роли')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { data: singleRoleData } = useQuery('singleRoleData', () => requests.getSingleRole(id))
   const { data: rolesAndPermissionList } = useQuery(['rolesAndPermissionListForEdit', id], () =>
     requests.getAllRolesWithPermissions({ role_id: id, limit: 20, offset: 0 })
   )
+  function getSelectedChildrenRecursive(permission, selected) {
+    let selectedChildren = []
 
+    if (!permission.children) return selectedChildren
+
+    for (const child of permission.children) {
+      if (selected.includes(child.id)) {
+        selectedChildren.push(child.id)
+      }
+
+      selectedChildren = selectedChildren.concat(getSelectedChildrenRecursive(child, selected))
+    }
+
+    return selectedChildren
+  }
   const onSubmit = (data) => {
     const permissions = []
     get(rolesAndPermissionList, 'data.data', [])
@@ -48,8 +61,8 @@ export default function RoleEditPage() {
             ? {}
             : permissions.push({
                 parent_id: permission?.id || '',
-                children_ids: selected.filter((el) => permission.children.find((child) => child.id === el)),
-                is_active: !!selected?.includes(permission?.id) || size(selected.filter((el) => permission.children.find((child) => child.id === el))) > 0,
+                children_ids: getSelectedChildrenRecursive(permission, selected),
+                is_active: !!selected?.includes(permission?.id) || getSelectedChildrenRecursive(permission, selected).length > 0,
               })
         })
       })
@@ -62,7 +75,7 @@ export default function RoleEditPage() {
     createRole({ id, data: requestBody })
   }
   const onError = (err) => {
-    console.log(err)
+    console.error(err)
   }
 
   return (

@@ -1,0 +1,96 @@
+import thousandDivider from '@utils/thousandDivider'
+import { Box, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
+import BagOutline from '@icons/BagOutline'
+import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
+
+const useStyles = makeStyles((theme) => ({
+  rightArrowIcon: {
+    backgroundColor: '#fff ',
+    width: '48px',
+    height: '48px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '50%',
+  },
+  usrImg: {
+    width: '24px',
+    borderRadius: '50%',
+    marginRight: '4px',
+  },
+  productsNumsWrapper: {
+    height: '48px',
+    minWidth: '88px',
+    backgroundColor: '#fff',
+    borderRadius: '40px',
+    marginRight: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+}))
+function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
+  const { t } = useTranslation()
+  const classes = useStyles()
+
+  return (
+    <Box
+      display={'flex'}
+      height={'84px'}
+      borderRadius={'16px'}
+      mb={'16px'}
+      bgcolor={'bg.10'}
+      padding={'18px 16px'}
+      justifyContent={'space-between'}
+      sx={{
+        '&:hover': {
+          backgroundColor: 'gray.200',
+        },
+        cursor: 'pointer',
+      }}
+    >
+      <Box display={'flex'} minWidth={'300px'} maxWidth={'calc(100vw - 100px)'}>
+        {/* <Box className={classes.productsNumsWrapper}>
+           <BagOutline /> 
+          <Typography ml={'12px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
+            {get(item, 'quantity')} ({get(item, 'unit_quantity')}/{get(item, 'unit_per_pack')})
+          </Typography>
+        </Box> */}
+        <Box minWidth={'300px'} maxWidth={'calc(100vw - 10px)'}>
+          <Typography
+            mb={'4px'}
+            textOverflow={'ellipsis'}
+            maxWidth={'calc(100% - 100px)'}
+            whiteSpace={'nowrap'}
+            overflow={'hidden'}
+            fontSize={'14px'}
+            fontWeight={'600'}
+            lineHeight={'24px'}
+            color={'bunker.950'}
+            minWidth={'400px'}
+          >
+            {get(item, 'product_name')}
+          </Typography>
+          <Typography fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'} color={'bunker.500'}>
+            {dayjs(get(item, 'created_at')).format('DD.MM.YYYY | HH:mm:ss')}
+          </Typography>
+        </Box>
+      </Box>
+      <Box display={'flex'} width={'100px'} minWidth={'120px'}>
+        <Box mr={'16px'}>
+          <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
+            {thousandDivider(get(item, 'bonus_amount'), 'сум')}
+          </Typography>
+          <Typography fontSize={'14px'}>
+            {get(item, 'quantity')} ({get(item, 'unit_quantity')}/{get(item, 'unit_per_pack')})
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
+  )
+}
+
+export default PendingSaleParentItemsBox

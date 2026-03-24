@@ -1,33 +1,39 @@
-import { Box, Typography } from '@mui/material'
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material'
-import ShortcutWrapper from '../ShortcutWrapper'
-import { memo, useState } from 'react'
+import { Box, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@mui/styles'
+import { memo, useState } from 'react'
+
+import ShortcutWrapper from '../ShortcutWrapper'
+import { t } from 'i18next'
 
 const ShortcutsDrawerArray = [
   {
     title: 'menu.sales.shortcuts.add_search',
     types: [
       {
-        titleofshortcut: 'Создать клиента',
+        titleofshortcut: 'menu.sales.shortcuts.add_user',
         symbolofshortcut: ['U'],
       },
       {
-        titleofshortcut: 'Открыть новую вкладку',
+        titleofshortcut: 'menu.sales.shortcuts.open_new_tab',
         symbolofshortcut: ['T'],
       },
       {
-        titleofshortcut: 'Передать смену',
+        titleofshortcut: 'menu.sales.shortcuts.change_shift',
         symbolofshortcut: ['A'],
       },
       {
-        titleofshortcut: 'Открыть список черновиков',
+        titleofshortcut: 'menu.sales.shortcuts.open_draft',
         symbolofshortcut: ['D'],
       },
       {
-        titleofshortcut: 'Закрыть список черновиков',
+        titleofshortcut: 'menu.sales.shortcuts.close_draft',
         symbolofshortcut: ['esc'],
+      },
+      {
+        titleofshortcut: 'menu.sales.shortcuts.not_product',
+        symbolofshortcut: ['F8'],
       },
 
       // {
@@ -44,7 +50,7 @@ const ShortcutsDrawerArray = [
     title: 'menu.sales.shortcuts.cart',
     types: [
       {
-        titleofshortcut: 'Добавить черновик',
+        titleofshortcut: 'menu.sales.shortcuts.add_draft',
         symbolofshortcut: ['Q'],
       },
       // {
@@ -65,33 +71,57 @@ const ShortcutsDrawerArray = [
       // },
     ],
   },
-  {
-    title: 'menu.sales.shortcuts.add_client_discount',
-    types: [
-      // {
-      //   titleofshortcut: 'menu.sales.shortcuts.add_client',
-      //   symbolofshortcut: ['J'],
-      // },
-      // {
-      //   titleofshortcut: 'menu.sales.shortcuts.check_discount',
-      //   symbolofshortcut: ['K'],
-      // },
-      // {
-      //   titleofshortcut: 'menu.sales.shortcuts.discount_type',
-      //   symbolofshortcut: ['right', 'left'],
-      // },
-    ],
-  },
+  // {
+  //   title: 'menu.sales.shortcuts.add_client_discount',
+  //   types: [
+  //     // {
+  //     //   titleofshortcut: 'menu.sales.shortcuts.add_client',
+  //     //   symbolofshortcut: ['J'],
+  //     // },
+  //     // {
+  //     //   titleofshortcut: 'menu.sales.shortcuts.check_discount',
+  //     //   symbolofshortcut: ['K'],
+  //     // },
+  //     // {
+  //     //   titleofshortcut: 'menu.sales.shortcuts.discount_type',
+  //     //   symbolofshortcut: ['right', 'left'],
+  //     // },
+  //   ],
+  // },
   {
     title: 'menu.sales.shortcuts.payment',
     types: [
       {
-        titleofshortcut: 'Оплата',
+        titleofshortcut: 'menu.sales.shortcuts.payment_lite',
         symbolofshortcut: ['F10'],
       },
       {
-        titleofshortcut: 'Закрыть кассу',
+        titleofshortcut: 'menu.sales.shortcuts.payment_full',
+        symbolofshortcut: ['F9'],
+      },
+      {
+        titleofshortcut: 'menu.sales.shortcuts.close_cash',
         symbolofshortcut: ['x'],
+      },
+      {
+        titleofshortcut: 'menu.sales.shortcuts.select_cash',
+        symbolofshortcut: ['N'],
+      },
+      {
+        titleofshortcut: 'menu.sales.shortcuts.select_humo',
+        symbolofshortcut: ['H'],
+      },
+      {
+        titleofshortcut: 'menu.sales.shortcuts.select_uzcard',
+        symbolofshortcut: ['U'],
+      },
+      {
+        titleofshortcut: 'menu.sales.shortcuts.select_payme',
+        symbolofshortcut: ['P'],
+      },
+      {
+        titleofshortcut: 'menu.sales.shortcuts.select_click',
+        symbolofshortcut: ['C'],
       },
 
       // {
@@ -151,7 +181,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    background: theme.palette.gray[100],
+    background: theme.palette.gray[50],
     cursor: 'pointer',
     transition: 'all 0.3s ease',
     '&:hover': {
@@ -159,7 +189,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   shortcutsBox: {
-    marginTop: 40,
     width: '108%',
     display: 'flex',
     flexDirection: 'row',
@@ -168,6 +197,7 @@ const useStyles = makeStyles((theme) => ({
   shortcutInfoBox: {
     marginRight: 0,
     minHeight: 218,
+    marginTop: '15px',
     width: '50%',
   },
   infoBoxTitle: {
@@ -182,7 +212,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     flexDirection: 'row',
     marginTop: 17,
-    '&:first-child': {
+    '&:first-of-type': {
       marginTop: 26,
     },
   },
@@ -216,7 +246,7 @@ function ShortcutsDrawer() {
         <Box className={classes.topOfBox}>
           <Box className={classes.leftSide}>
             {isOpen ? (
-              <Typography variant='h1'>{t('menu.sales.shortcuts.title')}</Typography>
+              <Typography variant='h1'>{'menu.sales.shortcuts.title'}</Typography>
             ) : (
               <>
                 <Box className={classes.leftSideBox}>
@@ -232,7 +262,7 @@ function ShortcutsDrawer() {
           </Box>
 
           <Box onClick={() => setIsOpen(!isOpen)} className={classes.icon}>
-            {isOpen ? <KeyboardArrowDown style={{ fontSize: '24px', fill: '#4993DD' }} /> : <KeyboardArrowUp style={{ fontSize: '24px', fill: '#4993DD' }} />}
+            {isOpen ? <KeyboardArrowDown style={{ fontSize: '24px', fill: '#fe5000' }} /> : <KeyboardArrowUp style={{ fontSize: '24px', fill: '#fe5000' }} />}
           </Box>
         </Box>
         {isOpen && (

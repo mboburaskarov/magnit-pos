@@ -1,16 +1,19 @@
 import { Box, Grid, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import React, { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
+import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
+
 import InputDatePicker from '../../Inputs/InputDatePicker'
 import InputSwitchNew from '../../Inputs/InputSwitch'
-import InputPhone from '../../Inputs/PhoneNumber'
-import TextField from '../../Inputs/TextField'
-import dayjs from 'dayjs'
-import { useQuery } from 'react-query'
 import { requests } from '../../../utils/requests'
+import InputPhone from '../../Inputs/PhoneNumber'
 import LazySelect from '../../Select/LazySelect'
+import TextField from '../../Inputs/TextField'
+import DiscountCard from './discountCard'
+import LoyalCard from './loyalCard'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -33,13 +36,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function MainDetails({ quickCreateClientName, clientData }) {
+export default function MainDetails({ setCustomerId, setOpenDrawer, quickCreateClientName, clientData, openDrawer }) {
   const classes = useStyles()
-  const { control, errors, setValue, register, watch } = useFormContext()
+  const [loyalCardType, setloyalCardType] = useState('byHand')
+  const { control, errors, setValue } = useFormContext()
   const { t } = useTranslation()
+
   useEffect(() => {
     setValue('dial_code', '+998')
   }, [])
+
+  useEffect(() => {
+    setValue('shouldGenerateLoyalCard', loyalCardType)
+  }, [loyalCardType])
 
   return (
     <Box mt={'24px'}>
@@ -137,17 +146,7 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
           <Box mt={'24px'}>
             <Typography mb='4px'>{t('tags')}</Typography>
           </Box>
-          {/* <TextField
-            id='tags'
-            name='tags'
-            control={control}
-            fullWidth
-            // required
-            error={errors?.tags}
-            placeholder={t('tags.placeholder')}
-            defaultValue={clientData ? clientData.last_name : ''}
-            asteriks
-          /> */}
+
           <LazySelect
             isCreatable={true}
             slug='tags'
@@ -155,21 +154,65 @@ export default function MainDetails({ quickCreateClientName, clientData }) {
             id='tags'
             name='tags'
             isMulti={false}
-            // label={t('create_new_product.features.manufacturer')}
-            // placeholder={t('create_new_product.features.manufacturer.placeholder')}
             minWidth='auto'
             isClearable={true}
             request={requests.getAllTags}
             filters={{ limit: 10 }}
-            // control={control}
-            // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-            // request={requests.brand.getAll}
             createOptionRequest={requests.createTag}
             getOptionLabel={(option) => {
-              return <Typography color='grey.600'>{option.name}</Typography>
+              return option.name
             }}
-            // filterOption={() => true}
           />
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2}>
+        <Grid mt={'25px'} item xs={6}>
+          {get(openDrawer, 'data.loyalty_card_barcode', false) ? (
+            <LoyalCard data={get(openDrawer, 'data', false)} />
+          ) : (
+            <>
+              <Typography className={classes.required} mb='4px'>
+                {t('balance')}
+              </Typography>
+              <Box height={'20px'} />
+              <InputSwitchNew
+                id='cart_type'
+                noMarginTop
+                name='cart_type'
+                uncontrolled
+                onChange={setloyalCardType}
+                defaultValue='byHand'
+                options={[
+                  {
+                    title: t('auto'),
+                    value: 'auto',
+                  },
+                  {
+                    title: t('manual'),
+                    value: 'byHand',
+                  },
+                ]}
+              />
+              <Box height={'20px'} />
+              {loyalCardType == 'byHand' && (
+                <TextField
+                  id='loyalty_card_barcode'
+                  name='loyalty_card_barcode'
+                  control={control}
+                  fullWidth
+                  type={'number'}
+                  error={errors?.loyalty_card_barcode}
+                  placeholder={t('enter_balance_card_number')}
+                  defaultValue={clientData?.loyalty_card_barcode || ''}
+                  asteriks
+                />
+              )}
+            </>
+          )}
+        </Grid>
+        <Grid mt={'25px'} item xs={6}>
+          {get(openDrawer, 'data.discount_card', false) && <DiscountCard data={get(openDrawer, 'data', false)} />}
         </Grid>
       </Grid>
     </Box>

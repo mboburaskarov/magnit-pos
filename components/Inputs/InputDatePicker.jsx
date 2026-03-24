@@ -15,7 +15,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     color: theme.palette.gray[600],
-
+    '& svg > path': {
+      fill: 'white',
+    },
     '& .MuiOutlinedInput-root': {
       backgroundColor: ({ disabled }) => disabled && theme.palette.background.default,
       border: ({ disabled, dashed }) => disabled && `2px ${dashed ? 'dashed' : 'solid'} ${theme.palette.gray[200]}`,
@@ -317,7 +319,7 @@ function InputDatePicker({
       {uncontrolled ? (
         <DatePicker
           id={id}
-          dateFormat={withTime ? 'yyyy.MM.dd | HH:mm' : 'yyyy.MM.dd'}
+          dateFormat={withTime ? 'dd.MM.yyyy | HH:mm' : 'dd.MM.yyyy'}
           selected={value}
           showTimeInput={withTime}
           onChange={onChange}
@@ -389,7 +391,7 @@ function InputDatePicker({
               )}
               <DatePicker
                 id={id}
-                dateFormat={withTime ? 'yyyy.MM.dd | HH:mm' : 'yyyy.MM.dd'}
+                dateFormat={withTime ? 'dd.MM.yyyy | HH:mm' : 'dd.MM.yyyy'}
                 selected={fieldValue}
                 showTimeInput={withTime}
                 onChange={(date) => {
@@ -417,7 +419,7 @@ function InputDatePicker({
                   />
                 )}
                 customInput={
-                  <ReactInputMask mask='9999.99.99' maskChar={null} value={fieldValue ? dayjs(fieldValue).format('YYYY.MM.DD') : ''}>
+                  <ReactInputMask mask='99.99.9999' maskChar={null} value={fieldValue ? dayjs(fieldValue).format('DD.MM.YYYY') : ''}>
                     {(inputProps) => (
                       <TextField
                         {...inputProps}

@@ -1,16 +1,16 @@
 import { Box, Container } from '@mui/material'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useEffect } from 'react'
-import { error, success } from '../../../../utils/toast'
-import { useMutation } from 'react-query'
-import { requests } from '../../../../utils/requests'
-import { useNavigate } from 'react-router-dom'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import ProductBody from '../ProductBody'
-import Header from '../../../../components/Header'
-import { useTranslation } from 'react-i18next'
 import { get } from 'lodash'
+import { useEffect } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useMutation } from 'react-query'
 import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import Header from '@components/Header'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import ProductBody from '../ProductBody'
 export default function ProductCreatePage() {
   const { t } = useTranslation()
   const methods = useForm()
@@ -31,7 +31,7 @@ export default function ProductCreatePage() {
     },
     onError: (err) => {
       error('Ошибка при создании товара!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -40,7 +40,6 @@ export default function ProductCreatePage() {
       barcode: get(data, 'barcode'),
       bonus_percent: Number(get(data, 'bonus_percent')),
       description: get(data, 'description'),
-      // expire_date: get(data, 'expire_date'),
       producer_id: get(data, 'manufacturer.value'),
       shelf_id: get(data, 'shelf_id.value'),
 
@@ -71,16 +70,12 @@ export default function ProductCreatePage() {
           pack_quantity: Number(get(item, 'pack_quantity', 0)),
           small_quantity: Number(get(item, 'small_quantity', 0)),
         })),
-      // sum: Number(get(data, 'retail_price')),
-      // supply_price: Number(get(data, 'supply_price')),
-      // vat: Number(get(data, 'vat')),
-      // vat_price: Number(get(data, 'vat_price')),
     }
 
     createProduct(requestBody)
   }
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
     error('Пожалуйста, заполните все поля!')
   }
 

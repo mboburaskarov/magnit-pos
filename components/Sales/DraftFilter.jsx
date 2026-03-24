@@ -11,8 +11,8 @@ import InputDatePicker from '../../components/Inputs/InputDatePicker'
 import LazySelect from '../../components/Select/LazySelect'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
-import getOptionsFromUrlParam from '../../utils/getOptionsFromUrlParam'
-import { requests } from '../../utils/requests'
+import getOptionsFromUrlParam from '@utils/getOptionsFromUrlParam'
+import { requests } from '@utils/requests'
 export default function DraftFilter({ open, setOpen, setRegions }) {
   const navigate = useNavigate()
   const { values } = useQueryParams()
@@ -37,7 +37,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {
@@ -120,7 +120,7 @@ export default function DraftFilter({ open, setOpen, setRegions }) {
                 // uncontrolled
                 customLabel={'full_name'}
                 getOptionLabel={(option) => {
-                  return <Typography color='grey.600'>{option.name}</Typography>
+                  return option.name
                 }}
                 filterOption={() => true}
               />

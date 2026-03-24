@@ -1,4 +1,4 @@
-import { Box, Drawer, Hidden, ListItem, Typography } from '@mui/material'
+import { Drawer, Hidden } from '@mui/material'
 import clsx from 'clsx'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
@@ -12,7 +12,6 @@ import { navbatRouteData } from '../../routes/navbatRouteData'
 import NavbarDrawer from './NavbarDrawer'
 import { navbarStyles } from './NavbarStyles'
 import UserDrawer from './userDrawer'
-import { get } from 'lodash'
 
 export default function Navbar() {
   const { isOpen } = useSelector((state) => state.sidebarSettings)
@@ -43,6 +42,7 @@ export default function Navbar() {
       routeString.push(item.route)
     }
   })
+
   return (
     <>
       <div className={classes.root}>

@@ -1,14 +1,14 @@
 import { Box, Button, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { get, size } from 'lodash'
 import React, { useState } from 'react'
-import InputSearch from '../InputSearch'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
 import useDebouncedValue from '../../../src/hooks/useDebouncedValue'
 import { useQueryParams } from '../../../src/hooks/useQueryParams'
-import { useTranslation } from 'react-i18next'
 import { requests } from '../../../utils/requests'
-import { useQuery } from 'react-query'
-import { get, size } from 'lodash'
-import { makeStyles } from '@mui/styles'
+import InputSearch from '../InputSearch'
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     backgroundColor: '#fff',
@@ -38,7 +38,6 @@ function SelectBody({ setselectedStore, selectedStore: defaultData, close }) {
     isLoading: isGetallStoresList,
     refetch,
   } = useQuery(['allStoresList', searchTerm], () => requests.getAllStores({ search: searchTerm }))
-  console.log(selectedStore, size(get(allStoresList, 'data.data.ids', [])))
 
   return (
     <Box className={classes.wrapper}>
@@ -51,6 +50,7 @@ function SelectBody({ setselectedStore, selectedStore: defaultData, close }) {
         name='searchs'
         placeholder={'Филиалы'}
       />
+
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit, onError)}>
           <Box

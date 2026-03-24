@@ -1,23 +1,19 @@
-import { useEffect, useState } from 'react'
-import { Box, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { FormProvider, useForm } from 'react-hook-form'
-import LoadingContainer from '/components/LoadingContainer'
-import BrandLogo from '../../assets/icons/BrandLogo'
-import InputPassword from '/components/Inputs/InputPassword'
-import EmailInput from '../../../components/Inputs/EmailInput'
-import CheckBox from '../../../components/Inputs/CheckBox'
-import { countries } from '../../assets/data/countries'
-import { useMutation } from 'react-query'
-import { requests } from '../../../utils/requests'
 import { LoadingButton } from '@mui/lab'
-import { error } from '../../../utils/toast'
-import { Link, useNavigate } from 'react-router-dom'
+import { Box } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useMutation } from 'react-query'
 import { useDispatch } from 'react-redux'
-import { setUserData } from '../../redux-toolkit/userSlice'
-import { fetchToken } from '../../firebase'
 import PhoneNumber from '../../../components/Inputs/PhoneNumber'
+import { requests } from '../../../utils/requests'
+import { error } from '../../../utils/toast'
+import { countries } from '../../assets/data/countries'
+import BrandLogo from '../../assets/icons/BrandLogo'
 import LoginBg from '../../assets/icons/loginBg'
+import { setUserData } from '../../redux-toolkit/userSlice'
+import InputPassword from '/components/Inputs/InputPassword'
+import LoadingContainer from '/components/LoadingContainer'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -88,10 +84,8 @@ const useStyles = makeStyles((theme) => ({
 export default function LoginPage() {
   const classes = useStyles()
   const methods = useForm()
-  const navigate = useNavigate()
   const dispatch = useDispatch()
   const [country, setCountry] = useState(countries[0])
-  const [fcmToken, setFcmToken] = useState(null)
 
   const { mutate: logIn, isLoading: logInLoading } = useMutation(requests.logIn, {
     onSuccess: async ({ data }) => {
@@ -105,7 +99,7 @@ export default function LoginPage() {
     },
     onError: (err) => {
       error('Hеверный логин или пароль')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -123,7 +117,7 @@ export default function LoginPage() {
 
   const onError = (err) => {
     error('Пожалуйста, заполните все поля')
-    console.log('err', err)
+    console.error('err', err)
   }
 
   return (

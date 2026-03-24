@@ -1,29 +1,40 @@
-import React, { useCallback, useState, useEffect } from 'react'
-import { InputAdornment, Button, TextField, Box } from '@mui/material'
-import * as qs from 'qs'
-import SearchIcon from '../../src/assets/icons/SearchIcon'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import UserFilledIcon from '../../src/assets/icons/UserFilledIcon'
-import ShortcutWrapper from './ShortcutWrapper'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Box, Button, InputAdornment, TextField } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import * as qs from 'qs'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import GiftCardIcon from '../../src/assets/icons/BigTickIcon'
+import SearchIcon from '../../src/assets/icons/SearchIcon'
+import UserFilledIcon from '../../src/assets/icons/UserFilledIcon'
 import useDebouncedValue from '../../src/hooks/useDebouncedValue'
 import { useQueryParams } from '../../src/hooks/useQueryParams'
-import { useNavigate } from 'react-router-dom'
-import { makeStyles } from '@mui/styles'
-import GiftCardIcon from '../../src/assets/icons/BigTickIcon'
+import ShortcutWrapper from './ShortcutWrapper'
 
 const useStyles = makeStyles((theme) => ({
   input: {
     position: 'relative',
-    height: 56,
+    height: 40,
     margin: 0,
     borderRadius: 16,
     width: ({ maxWidth }) => maxWidth,
     color: theme.palette.gray[400],
-
+    '& .MuiInputBase-root': {
+      height: '40px',
+      '&:hover': {
+        backgroundColor: theme.palette.bg[10],
+      },
+    },
+    '& .MuiInputAdornment-root': {
+      width: 'auto',
+    },
     '& .MuiOutlinedInput-input': {
       padding: '15.5px 5px',
+    },
+    '& .MuiOutlinedInput-root': {
+      padding: '4px 4px 4px 10px !important',
     },
     '& .Mui-error:not(.Mui-focused)': {
       border: `3px solid ${theme.palette.red[500]}`,
@@ -93,6 +104,7 @@ const SearchInput = ({
   adornmentTextHotKey,
   noIcon,
   disabled,
+  adornment,
   uncontrolled,
   timeout = 200,
   handleClickGiftCards,
@@ -143,7 +155,7 @@ const SearchInput = ({
         disabled={disabled}
         {...(!noIcon && {
           InputProps: {
-            startAdornment: <InputAdornment position='start'>{client ? <UserFilledIcon /> : icon || <SearchIcon />}</InputAdornment>,
+            startAdornment: <InputAdornment position='start'>{client ? <UserFilledIcon /> : icon || <SearchIcon color='#868FAA' />}</InputAdornment>,
             endAdornment: (
               <InputAdornment position='end'>
                 {value || searchTerm ? (
@@ -153,15 +165,17 @@ const SearchInput = ({
                       <FontAwesomeIcon icon={faTimesCircle} />
                     </button>
                   </div>
+                ) : adornment ? (
+                  <Box>{adornment}</Box>
+                ) : adornmentTextHotKey ? (
+                  <div className={classes.inputEndText}>
+                    <span className={classes.lastText}>{adornmentTextHotKey}</span>
+                    <span>
+                      <ShortcutWrapper shortcut='/' />
+                    </span>
+                  </div>
                 ) : (
-                  adornmentTextHotKey && (
-                    <div className={classes.inputEndText}>
-                      <span className={classes.lastText}>{adornmentTextHotKey}</span>
-                      <span>
-                        <ShortcutWrapper shortcut='/' />
-                      </span>
-                    </div>
-                  )
+                  <></>
                 )}
               </InputAdornment>
             ),

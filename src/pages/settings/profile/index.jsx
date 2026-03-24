@@ -1,26 +1,25 @@
-import React, { useState, useMemo } from 'react'
+import { LoadingButton } from '@mui/lab'
 import { Box, Button, Typography } from '@mui/material'
+import { get, size } from 'lodash'
+import React, { useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { get, size } from 'lodash'
-import { LoadingButton } from '@mui/lab'
 
-import UploadImage from '../../../../components/UploadImage'
-import TextField from '../../../../components/Inputs/TextField'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import Label from '../../../../components/Label'
-import ImageUpload from '../../../../components/ProfileImageUpload'
+import CheckAccess from '@components/CheckAccess'
+import TextField from '@components/Inputs/TextField'
+import Label from '@components/Label'
+import ImageUpload from '@components/ProfileImageUpload'
+import SelectSimple from '@components/Select/SelectSimple'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import LockIcon from '@icons/LockIcon'
+import i18n from '@/i18n'
+import { setUserData } from '@/redux-toolkit/userSlice'
 import ChangePassWordDialog from './changePasswordDialog'
-import { error, success } from '../../../../utils/toast'
-import { requests } from '../../../../utils/requests'
-import { setUserData } from '../../../redux-toolkit/userSlice'
-import i18n from '../../../i18n'
-import LockIcon from '../../../assets/icons/LockIcon'
-import CheckAccess from '../../../../components/CheckAccess'
+import { t } from 'i18next'
 
-// Constants for options
 const LANGUAGE_OPTIONS = [
   { name: "O'zbekcha", value: 'uz' },
   { name: 'Русский', value: 'ru' },
@@ -32,7 +31,6 @@ const THEME_OPTIONS = [
   { name: 'Light', value: 'light' },
 ]
 
-// Helper function to get initial value for SelectSimple based on the current value
 const getSelectDefaultValue = (options, value) => {
   return options.find((option) => option.value === value) || options[0]
 }
@@ -50,6 +48,7 @@ const Profile = () => {
     defaultValues: {
       first_name: get(userData, 'first_name'),
       last_name: get(userData, 'last_name'),
+      position: get(userData, 'position'),
     },
   })
 
@@ -78,22 +77,21 @@ const Profile = () => {
       return error('Загрузить изображение!')
     }
 
-    // Theme handling
     if (userTheme !== data?.theme?.value) {
       localStorage.setItem('user_theme', data?.theme?.value || 'auto')
       navigate(`/settings/profile?theme_changed=${data?.theme?.value}`)
     }
 
-    // Language handling
     if (get(data, 'language')?.value && i18n.language !== get(data, 'language').value) {
       i18n.changeLanguage(get(data, 'language').value)
     }
 
     const requestBody = {
       first_name: get(data, 'first_name'),
+      position: get(data, 'position'),
       last_name: get(data, 'last_name'),
       photo: get(data, 'photo.key', get(data, 'photo')),
-      language: get(data, 'language').value,
+      language: get(data, 'language')?.value,
     }
 
     changeEmployeeInfo(requestBody)
@@ -113,7 +111,7 @@ const Profile = () => {
           <Box height={'24px'} />
 
           <Typography variant='h4' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} mb={'10px'}>
-            Профиль
+            {t('navbar.profile')}
           </Typography>
 
           <ImageUpload
@@ -132,26 +130,30 @@ const Profile = () => {
             type='BANNER'
           />
 
-          <Box display='flex' gap={3} mt={3} mb={7}>
+          <Box display='flex' gap={3} mt={3} mb={'20px'}>
             <Box flex={1}>
-              <Label>Имя</Label>
+              <Label>{t('first_name')}</Label>
               <TextField disabled={!isEditMode} required fullWidth name='first_name' placeholder='Enter first name' />
             </Box>
 
             <Box flex={1}>
-              <Label>Фамилия</Label>
+              <Label>{t('last_name')}</Label>
               <TextField disabled={!isEditMode} required fullWidth name='last_name' placeholder='Enter last name' />
             </Box>
           </Box>
-
+          <CheckAccess id={'profile-update-position'}>
+            <Box flex={1} mb={7}>
+              <Label>{t('position')}</Label>
+              <TextField disabled={!isEditMode} required fullWidth name='position' placeholder='Enter Позиция' />
+            </Box>
+          </CheckAccess>
           <CheckAccess id={'profile-update-password'}>
             <Typography variant='h5' fontWeight={700} mb={3}>
-              Безопасность
+              {t('security')}
             </Typography>
 
             <Button
               fullWidth
-              // disabled={!isEditMode}
               onClick={() => setOpen(true)}
               sx={{
                 width: '100%',
@@ -162,17 +164,17 @@ const Profile = () => {
               variant='primary'
               startIcon={<LockIcon color={!isEditMode && '#ccc'} />}
             >
-              Изменить пароль
+              {t('change_password.label')}
             </Button>
           </CheckAccess>
 
           <Typography variant='h5' fontWeight={700} mt={7} mb={3}>
-            Интерфейс
+            {t('interface')}
           </Typography>
 
           <Box display='flex' gap={3}>
             <Box flex={1}>
-              <Label>Язык</Label>
+              <Label>{t('language')}</Label>
               <SelectSimple
                 uncontrolled
                 onChange={(e) => {
@@ -181,8 +183,7 @@ const Profile = () => {
                   }
                   setlang(get(e, 'value', 'ru'))
                 }}
-                value={getSelectDefaultValue(LANGUAGE_OPTIONS, lang)}
-                disabled={true}
+                value={getSelectDefaultValue(LANGUAGE_OPTIONS, i18n.language)}
                 white
                 isClearable={false}
                 defaultValue={languageDefaultValue}
@@ -192,8 +193,16 @@ const Profile = () => {
             </Box>
 
             <Box flex={1}>
-              <Label>Тема</Label>
-              <SelectSimple disabled={true} white isClearable={false} defaultValue={themeDefaultValue} options={THEME_OPTIONS} name='theme' />
+              <Label>{t('theme')}</Label>
+              <SelectSimple
+                disabled={false}
+                white
+                isClearable={false}
+                defaultValue={themeDefaultValue}
+                onChange={(e) => {}}
+                options={THEME_OPTIONS}
+                name='theme'
+              />
             </Box>
           </Box>
           {isEditMode && (

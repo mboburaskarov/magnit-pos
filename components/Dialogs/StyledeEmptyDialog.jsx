@@ -1,22 +1,19 @@
-import { CircularProgress } from '@mui/material'
-import Button from '@mui/material/Button'
-import DialogTitle from '@mui/material/DialogTitle'
 import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
 import Typography from '@mui/material/Typography'
-import BackArrow from '../../src/assets/icons/BackArrow'
 import { makeStyles } from '@mui/styles'
-import ButtonWithWrapper from '../Buttons/ButtonWithWrapper'
 import { useEffect } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiDialog-paper.MuiDialog-paper': {
-      width: (props) => (props.maxWidth ? 'auto' : '100%'),
+      width: (props) => (props.maxWidth ? '100%' : '100%'),
       maxWidth: (props) => props.maxWidth || 680,
       overflow: ({ overflowVisible }) => (overflowVisible ? 'visible' : 'hidden'),
       boxShadow: 'none !important',
       borderRadius: 20,
-      // overflowY: 'scroll !important',
+      // minHeight: 500,
+      // overflowY: ({ overflowVisible }) => (overflowVisible ? 'auto' : 'hidden'),
       transition: open ? 'padding 0.3s ease-out' : 'padding 0.1s ease-in',
       zIndex: 15,
     },
@@ -39,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function StyledEmptyDialog({ onClose, open, reset, children, title, customButtons, maxWidth, overflowVisible, titleStyles }) {
+function StyledEmptyDialog({ onClose, open, reset, children, title, noHeader = false, customButtons, maxWidth, overflowVisible, titleStyles }) {
   const classes = useStyles({ overflowVisible, maxWidth, open })
 
   useEffect(() => {
@@ -60,12 +57,14 @@ function StyledEmptyDialog({ onClose, open, reset, children, title, customButton
 
   return (
     <Dialog disableScrollLock disableRestoreFocus open={open} className={classes.root} onClose={handleClose}>
-      <DialogTitle className={classes.header}>
-        <Typography fontSize={24} lineHeight={'32px'} fontWeight={'700'} variant='h3' style={titleStyles}>
-          {title}
-        </Typography>
-        {customButtons || <span />}
-      </DialogTitle>
+      {!noHeader && (
+        <DialogTitle className={classes.header}>
+          <Typography fontSize={24} lineHeight={'32px'} fontWeight={'700'} variant='h3' style={titleStyles}>
+            {title}
+          </Typography>
+          {customButtons || <span />}
+        </DialogTitle>
+      )}
       {children}
     </Dialog>
   )

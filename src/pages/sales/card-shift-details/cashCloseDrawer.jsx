@@ -1,20 +1,22 @@
-import { Box, Button, Drawer, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { get } from 'lodash'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useMutation, useQuery } from 'react-query'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useReactToPrint } from 'react-to-print'
-import RippedPaperZReportCheck from '../../../../components/ChequePaper/ZReportCheck'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { requests } from '../../../../utils/requests'
-import thousandDivider from '../../../../utils/thousandDivider'
-import { error, success } from '../../../../utils/toast'
-import ArrowRightIcon from '../../../assets/icons/ArrowRightIcon'
-import CartOutlineIcon from '../../../assets/icons/CartOutline'
-import MoneyOutlineIcon from '../../../assets/icons/MoneyOutline'
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand';
+import RippedPaperZReportCheck from '@components/ChequePaper/ZReportCheck';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Box, Button, Drawer, Typography } from '@mui/material';
+import LoadingContainer from '@components/LoadingContainer';
+import { useNavigate, useParams } from 'react-router-dom';
+import { FormProvider, useForm } from 'react-hook-form';
+import thousandDivider from '@utils/thousandDivider';
+import { useMutation, useQuery } from 'react-query';
+import MoneyOutlineIcon from '@icons/MoneyOutline';
+import ArrowRightIcon from '@icons/ArrowRightIcon';
+import CartOutlineIcon from '@icons/CartOutline';
+import { useReactToPrint } from 'react-to-print';
+import { error, success } from '@utils/toast';
+import { requests } from '@utils/requests';
+import { makeStyles } from '@mui/styles';
+import { get } from 'lodash';
+
+
 const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
@@ -106,8 +108,9 @@ function CashCloseDrawer({ open, setOpen }) {
   })
 
   const { data: closeCashboxPaymentsInfo } = useQuery(['closeCashboxPaymentsInfo', open], () => requests.getCloseCashboxPaymentsInfo(id), {
-    enabled: open, // The query will only run when open is true
+    enabled: open,
   })
+
   const { mutate: closeCheckZReport, isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true)) {
@@ -116,25 +119,23 @@ function CashCloseDrawer({ open, setOpen }) {
       } else {
         setcheckdata(get(data, 'message'))
         methods.handleSubmit(onSubmit, onError)()
-        success('Касса закрыта! (cose z info report)')
       }
     },
     onError: (err) => {
       error('Ошибка закрытия кассы! (close Z info Report)')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
+
   useEffect(() => {
     if (checkdata) {
       handlePrint()
     }
   }, [checkdata])
+
   const { mutate: closeZReport, isLoading: iscloseZReport } = useMutation(requests.closeZReport, {
     onSuccess: ({ data }) => {
-      if (get(data, 'error', true)) {
-        error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
-        return
-      } else {
+      if (get(data, 'message', '').includes('ERROR_ZREPORT_IS_NOT_OPEN') || get(data, 'error', true) == false) {
         closeCheckZReport({
           token: 'DXJFX32CN1296678504F2',
           method: 'getZreportInfo',
@@ -142,20 +143,25 @@ function CashCloseDrawer({ open, setOpen }) {
           zReportId: 1,
         })
         success('Касса закрыта! (cose z report)')
+        return
+      } else {
+        error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
+        return
       }
     },
     onError: (err) => {
       error('Ошибка закрытия кассы! (close Z Report)')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
+
   const { mutate: closeCashBoxRegister, isLoading: iscloseCashBoxRegister } = useMutation(requests.closeCashBoxRegister, {
     onSuccess: () => {
       setOpen(false)
     },
     onError: (err) => {
       error('Ошибка закрытия кассы!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -171,7 +177,7 @@ function CashCloseDrawer({ open, setOpen }) {
     })
   }
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
     error('Пожалуйста, заполните все поля!')
   }
 
@@ -191,7 +197,6 @@ function CashCloseDrawer({ open, setOpen }) {
                 fontWeight={'700'}
                 color={'bunker.950'}
                 p={'24px'}
-                onClick={() => console.log(methods.getValues())}
               >
                 Закрыть кассу
               </Typography>
@@ -285,13 +290,14 @@ function CashCloseDrawer({ open, setOpen }) {
             </Box>
           </Box>
           <Button
+            disabled={iscloseZReport}
             type='submit'
-            onClick={() =>
+            onClick={() => {
               closeZReport({
                 token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
                 method: 'closeZreport', // Название метода, Обязательное поле, String
               })
-            }
+            }}
             sx={{ bottom: 0, margin: '0 24px 24px', '& > svg': { width: 24, height: 24, ml: '12px' } }}
           >
             Закрыть кассу <ArrowRightIcon color={!true ? '#FF6018' : '#fff'} />

@@ -1,5 +1,12 @@
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import InputRange from '@components/Inputs/InputRange'
+import LazySelect from '@components/Select/LazySelect'
+import { useQueryParams } from '@hooks/useQueryParams'
+import CloseIcon from '@icons/CloseIcon'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/styles'
+import getOptionsFromUrlParam from '@utils/getOptionsFromUrlParam'
+import { requests } from '@utils/requests'
 import { get } from 'lodash'
 import * as qs from 'qs'
 import { useEffect } from 'react'
@@ -7,14 +14,6 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '../../../components/Dialogs/StyledeEmptyDialog'
-import InputRange from '../../../components/Inputs/InputRange'
-import LazySelect from '../../../components/Select/LazySelect'
-import SelectSimple from '../../../components/Select/SelectSimple'
-import getOptionsFromUrlParam from '../../../utils/getOptionsFromUrlParam'
-import { requests } from '../../../utils/requests'
-import CloseIcon from '../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../hooks/useQueryParams'
 
 export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   const navigate = useNavigate()
@@ -35,12 +34,13 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
 
     const requestBody = {
       category_id: data.category_id?.value || undefined,
-      category_name: data.category_id?.name || undefined,
+      category_name: data?.category_id?.name || undefined,
       supply_price_from: data.supply_price_from || undefined,
       supply_price_to: data.supply_price_to || undefined,
       retail_price_from: data.retail_price_from || undefined,
       retail_price_to: data.retail_price_to || undefined,
       store_id: data.store_id?.value || undefined,
+      company_id: data.company_id?.value || undefined,
       store_name: data.store_id?.name || undefined,
       producer_id: data.producer_id?.value || undefined,
       producer_name: data.producer_id?.name || undefined,
@@ -59,7 +59,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {
@@ -138,19 +138,8 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <Box padding={'0 2px'} maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'scroll'}>
+            <Box padding={'0 2px'} maxHeight={'calc(100vh - 280px)'} width={'100%'}>
               {/* <SelectSimple
-              fullWidth
-              id='sto'
-              name='store_id'
-              white
-              minWidth='auto'
-              label={t('input.store.label')}
-              placeholder={t('input.store.placeholder')}
-              getOptionLabel={(el) => el.name}
-              options={shopList?.data?.data?.data}
-            /> */}
-              <SelectSimple
                 fullWidth
                 id='nobarcode'
                 white
@@ -161,83 +150,89 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                 options={barcodeFilterList}
                 getOptionLabel={(el) => el.name}
               />
-              <Box height={'20px'} />
+              <Box height={'20px'} /> */}
+              <Box display={'flex'}>
+                <LazySelect
+                  slug='users'
+                  boxStyle={{ width: '100%' }}
+                  id='store'
+                  name='store_id'
+                  isMulti={false}
+                  placeholder={t('Выберите Аптека')}
+                  minWidth='auto'
+                  isClearable={true}
+                  label={t('input.store.label')}
+                  request={requests.getAllStores}
+                  filters={{ limit: 10 }}
+                  control={methods.control}
+                  getOptionLabel={(option) => {
+                    return option.name
+                  }}
+                  filterOption={() => true}
+                />
+                <Box width={'20px'} />
 
-              <LazySelect
-                slug='users'
-                boxStyle={{ width: '100%' }}
-                id='store'
-                name='store_id'
-                isMulti={false}
-                placeholder={t('Выберите Магазин')}
-                minWidth='auto'
-                isClearable={true}
-                label={t('input.store.label')}
-                request={requests.getAllStores}
-                filters={{ limit: 10 }}
-                control={methods.control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
-                getOptionLabel={(option) => {
-                  return <Typography color='grey.600'>{option.name}</Typography>
-                }}
-                filterOption={() => true}
-              />
+                <LazySelect
+                  slug='users'
+                  boxStyle={{ width: '100%' }}
+                  id='company'
+                  name='company_id'
+                  isMulti={false}
+                  placeholder={t('Выберите B2B')}
+                  minWidth='auto'
+                  isClearable={true}
+                  label={t('B2B')}
+                  request={requests.getAllCompanies}
+                  filters={{ limit: 10 }}
+                  control={methods.control}
+                  getOptionLabel={(option) => {
+                    return option.name
+                  }}
+                  filterOption={() => true}
+                />
+              </Box>
               <Box height={'20px'} />
+              <Box display={'flex'}>
+                <LazySelect
+                  slug='users'
+                  boxStyle={{ width: '100%' }}
+                  id='category_id'
+                  name='category_id'
+                  isMulti={false}
+                  label={t('input.category.label')}
+                  placeholder={t('input.category.placeholder')}
+                  minWidth='auto'
+                  isClearable={true}
+                  request={requests.getAllCategories}
+                  filters={{ limit: 30 }}
+                  control={methods.control}
+                  getOptionLabel={(option) => {
+                    return option.name
+                  }}
+                  filterOption={() => true}
+                />
+                <Box width={'20px'} />
 
-              {/* <SelectSimple
-              fullWidth
-              id='categ'
-              white
-              name='category_id'
-              minWidth='auto'
-              label={t('input.category.label')}
-              placeholder={t('input.category.placeholder')}
-              options={categories?.data?.data?.data}
-              getOptionLabel={(el) => el.name}
-            /> */}
-              <LazySelect
-                slug='users'
-                boxStyle={{ width: '100%' }}
-                id='category_id'
-                name='category_id'
-                isMulti={false}
-                label={t('input.category.label')}
-                placeholder={t('input.category.placeholder')}
-                minWidth='auto'
-                isClearable={true}
-                request={requests.getAllCategories}
-                filters={{ limit: 10 }}
-                control={methods.control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
-                getOptionLabel={(option) => {
-                  return <Typography color='grey.600'>{option.name}</Typography>
-                }}
-                filterOption={() => true}
-              />
-              <Box height={'20px'} />
+                <LazySelect
+                  slug='users'
+                  boxStyle={{ width: '100%' }}
+                  id='producer'
+                  name='producer_id'
+                  isMulti={false}
+                  label={t('input.manufacturer.label')}
+                  placeholder={t('input.manufacturer.placeholder')}
+                  minWidth='auto'
+                  isClearable={true}
+                  request={requests.getProducer}
+                  filters={{ limit: 10 }}
+                  control={methods.control}
+                  getOptionLabel={(option) => {
+                    return option.name
+                  }}
+                  filterOption={() => true}
+                />
+              </Box>
 
-              <LazySelect
-                slug='users'
-                boxStyle={{ width: '100%' }}
-                id='producer'
-                name='producer_id'
-                isMulti={false}
-                label={t('input.manufacturer.label')}
-                placeholder={t('input.manufacturer.placeholder')}
-                minWidth='auto'
-                isClearable={true}
-                request={requests.getProducer}
-                filters={{ limit: 10 }}
-                control={methods.control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
-                getOptionLabel={(option) => {
-                  return <Typography color='grey.600'>{option.name}</Typography>
-                }}
-                filterOption={() => true}
-              />
               <Box height={'20px'} />
 
               <InputRange

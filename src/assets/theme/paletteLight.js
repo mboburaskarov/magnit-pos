@@ -105,7 +105,7 @@ const paletteLight = {
   purple: {
     50: '#faf5ff',
     100: '#f3e8ff',
-    200: '#e9d5ff',
+    200: '#AFD5FF',
     300: '#d8b4fe',
     400: '#c084fc',
     500: '#2558FF',

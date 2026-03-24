@@ -1,20 +1,22 @@
-import { Box, Tooltip, Typography, Button } from '@mui/material'
-import InputSimple from '../components/Inputs/InputSimple'
-import LoadingContainer from '../components/LoadingContainer'
-import SectionDrawer from '../components/SectionDrawer'
-import useDeepCompareEffect from '../src/hooks/useDeepCompareEffect'
-import { useQueryParams } from '../src/hooks/useQueryParams'
-// import useWebsocketMutation from '../src/hooks/useDebounce'
-import PlusIconBlue from '../src/assets/icons/PlusIcon'
-import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import { error, success } from '../utils/toast'
-import ConfirmDialog from '../components/ConfirmDialog'
-import BigWarningCircleIcon from '../src/assets/icons/BigWarningCircleIcon'
-import { makeStyles } from '@mui/styles'
-import { requests } from '../utils/requests'
+import { Box, Button, Tooltip, Typography } from '@mui/material';
+import { useMutation, useQuery } from 'react-query';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { makeStyles } from '@mui/styles';
+
+import BigWarningCircleIcon from '../src/assets/icons/BigWarningCircleIcon';
+import useDeepCompareEffect from '../src/hooks/useDeepCompareEffect';
+import LoadingContainer from '../components/LoadingContainer';
+import { useQueryParams } from '../src/hooks/useQueryParams';
+import InputSimple from '../components/Inputs/InputSimple';
+import SectionDrawer from '../components/SectionDrawer';
+import PlusIconBlue from '../src/assets/icons/PlusIcon';
+import ConfirmDialog from '../components/ConfirmDialog';
+import ImageUploadSimple from './ImageUploadSimple';
+import { error, success } from '../utils/toast';
+import { requests } from '../utils/requests';
+
 
 const DeleteIcon = (
   <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -105,7 +107,9 @@ const InputCustom = ({
   methods,
   inputTree,
   addValue,
+  addImg,
   value,
+  photo,
   error,
   onBlur,
   id,
@@ -115,34 +119,55 @@ const InputCustom = ({
   const { t } = useTranslation()
   return (
     <>
-      {!topInput && <Box className={useStyles().lineSecond} />}
-      <InputSimple
-        adornment={
-          topInput ? (
-            inputTree?.name && (
+      <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+        {!topInput && <Box className={useStyles().lineSecond} />}
+        <InputSimple
+          adornment={
+            topInput ? (
+              inputTree?.name && (
+                <Box style={{ cursor: 'pointer', display: 'flex' }} onClick={() => setConfirmToDelete(true)}>
+                  {DeleteIcon}
+                </Box>
+              )
+            ) : (
               <Box style={{ cursor: 'pointer', display: 'flex' }} onClick={() => setConfirmToDelete(true)}>
                 {DeleteIcon}
               </Box>
             )
-          ) : (
-            <Box style={{ cursor: 'pointer', display: 'flex' }} onClick={() => setConfirmToDelete(true)}>
-              {DeleteIcon}
-            </Box>
-          )
-        }
-        adornmentPosition='end'
-        width={width || '96%'}
-        defaultValue={defaultValue}
-        noMarginTop={noMarginTop}
-        placeholder={topInput ? t('placeholders.enter_category_name') : t('placeholders.enter_subcategory_name')}
-        uncontrolled
-        error={error || (topInput && methods?.errors?.uniqeNameCategory)}
-        onChange={(e) => addValue(e)}
-        required={required}
-        value={value}
-        onBlur={onBlur}
-        autoFocus={id === focusId}
-      />
+          }
+          adornmentPosition='end'
+          width={width || '96%'}
+          defaultValue={defaultValue}
+          noMarginTop={noMarginTop}
+          placeholder={topInput ? t('placeholders.enter_category_name') : t('placeholders.enter_subcategory_name')}
+          uncontrolled
+          error={error || (topInput && methods?.errors?.uniqeNameCategory)}
+          onChange={(e) => addValue(e)}
+          required={required}
+          value={value}
+          onBlur={onBlur}
+          autoFocus={id === focusId}
+        />
+        <ImageUploadSimple
+          images={[
+            {
+              name: photo,
+              key: photo,
+            },
+          ]}
+          margin={topInput ? '0 0 0 10px' : '17px 0 0 10px'}
+          label={false}
+          width={50}
+          withoutTextBox
+          height={50}
+          onChange={(images) => {
+            addImg(images?.file_url)
+          }}
+          name={'image_uz'}
+          type={'STORY'}
+        />
+      </Box>
+
       <ConfirmDialog
         open={!!confirmToDelete}
         setOpen={setConfirmToDelete}
@@ -220,7 +245,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
     },
     onError: (err) => {
       error('Ошибка при Создать категорию!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: updateCategory, isLoading: isupdateCategory } = useMutation(requests.updateCategory, {
@@ -231,7 +256,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
     },
     onError: (err) => {
       error('Ошибка при Изменить категорию!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -328,9 +353,16 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                           name: e.target.value,
                         })
                       }
+                      addImg={(img) => {
+                        setInputTree({
+                          ...inputTree,
+                          photo: img,
+                        })
+                      }}
                       error={duplicateName}
                       defaultValue={inputTree.name}
                       value={inputTree.name}
+                      photo={inputTree.photo}
                       onBlur={() => setDuplicateName(false)}
                       id={inputTree?.id}
                       focusId={focusId}
@@ -351,9 +383,15 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                             }}
                             defaultValue={FirstLvlEl?.name}
                             value={FirstLvlEl?.name}
+                            photo={FirstLvlEl?.photo}
                             addValue={(e) => {
                               const filtered = { ...inputTree }
                               filtered.subRows[FirstLvlInd].name = e.target.value
+                              setInputTree(filtered)
+                            }}
+                            addImg={(img) => {
+                              const filtered = { ...inputTree }
+                              filtered.subRows[FirstLvlInd].photo = img
                               setInputTree(filtered)
                             }}
                             id={FirstLvlEl?.id}
@@ -373,10 +411,16 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                       setInputTree(filtered)
                                     }}
                                     value={SecondLvlEl?.name}
+                                    photo={SecondLvlEl?.photo}
                                     defaultValue={SecondLvlEl?.name}
                                     addValue={(e) => {
                                       const filtered = { ...inputTree }
                                       filtered.subRows[FirstLvlInd].subRows[SecondLvlInd].name = e.target.value
+                                      setInputTree(filtered)
+                                    }}
+                                    addImg={(img) => {
+                                      const filtered = { ...inputTree }
+                                      filtered.subRows[FirstLvlInd].subRows[SecondLvlInd].photo = img
                                       setInputTree(filtered)
                                     }}
                                     id={SecondLvlEl?.id}
@@ -404,12 +448,18 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                               setInputTree(filtered)
                                             }}
                                             value={ThirdLvlEl?.name}
+                                            photo={ThirdLvlEl?.photo}
                                             defaultValue={ThirdLvlEl?.name}
                                             addValue={(e) => {
                                               const filtered = {
                                                 ...inputTree,
                                               }
                                               filtered.subRows[FirstLvlInd].subRows[SecondLvlInd].subRows[ThirdLvlInd].name = e.target.value
+                                              setInputTree(filtered)
+                                            }}
+                                            addImg={(img) => {
+                                              const filtered = { ...inputTree }
+                                              filtered.subRows[FirstLvlInd].subRows[SecondLvlInd].subRows[ThirdLvlInd].photo = img
                                               setInputTree(filtered)
                                             }}
                                             id={ThirdLvlEl?.id}
@@ -439,6 +489,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                                       setInputTree(filtered)
                                                     }}
                                                     value={FourthLvlEl?.name}
+                                                    photo={FourthLvlEl?.photo}
                                                     defaultValue={FourthLvlEl?.name}
                                                     addValue={(e) => {
                                                       const filtered = {
@@ -446,6 +497,11 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                                       }
                                                       filtered.subRows[FirstLvlInd].subRows[SecondLvlInd].subRows[ThirdLvlInd].subRows[FourthLvlInd].name =
                                                         e.target.value
+                                                      setInputTree(filtered)
+                                                    }}
+                                                    addImg={(img) => {
+                                                      const filtered = { ...inputTree }
+                                                      filtered.subRows[FirstLvlInd].subRows[SecondLvlInd].subRows[ThirdLvlInd].subRows[FourthLvlInd].photo = img
                                                       setInputTree(filtered)
                                                     }}
                                                   />
@@ -475,6 +531,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                                               setInputTree(filtered)
                                                             }}
                                                             value={FifthLvlEl?.name}
+                                                            photo={FifthLvlEl?.photo}
                                                             defaultValue={FifthLvlEl?.name}
                                                             addValue={(e) => {
                                                               const filtered = {
@@ -483,6 +540,13 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                                               filtered.subRows[FirstLvlInd].subRows[SecondLvlInd].subRows[ThirdLvlInd].subRows[
                                                                 FourthLvlInd
                                                               ].subRows[FifthLvlInd].name = e.target.value
+                                                              setInputTree(filtered)
+                                                            }}
+                                                            addImg={(img) => {
+                                                              const filtered = { ...inputTree }
+                                                              filtered.subRows[FirstLvlInd].subRows[SecondLvlInd].subRows[ThirdLvlInd].subRows[
+                                                                FourthLvlInd
+                                                              ].subRows[FifthLvlInd].photo = img
                                                               setInputTree(filtered)
                                                             }}
                                                           />
@@ -512,6 +576,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                                                       setInputTree(filtered)
                                                                     }}
                                                                     value={SixthLvlEl?.name}
+                                                                    photo={SixthLvlEl?.photo}
                                                                     defaultValue={SixthLvlEl?.name}
                                                                     addValue={(e) => {
                                                                       const filtered = {
@@ -520,6 +585,13 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                                                       filtered.subRows[FirstLvlInd].subRows[SecondLvlInd].subRows[ThirdLvlInd].subRows[
                                                                         FourthLvlInd
                                                                       ].subRows[FifthLvlInd].subRows[SixthLvlInd].name = e.target.value
+                                                                      setInputTree(filtered)
+                                                                    }}
+                                                                    addImg={(img) => {
+                                                                      const filtered = { ...inputTree }
+                                                                      filtered.subRows[FirstLvlInd].subRows[SecondLvlInd].subRows[ThirdLvlInd].subRows[
+                                                                        FourthLvlInd
+                                                                      ].subRows[FifthLvlInd].subRows[SixthLvlInd].photo = img
                                                                       setInputTree(filtered)
                                                                     }}
                                                                   />
@@ -555,6 +627,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                                                               setInputTree(filtered)
                                                                             }}
                                                                             value={SeventhLvlEl?.name}
+                                                                            photo={SeventhLvlEl?.photo}
                                                                             defaultValue={SeventhLvlEl?.name}
                                                                             addValue={(e) => {
                                                                               const filtered = {
@@ -564,6 +637,13 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                                                                 FourthLvlInd
                                                                               ].subRows[FifthLvlInd].subRows[SixthLvlInd].subRows[SeventhLvlInd].name =
                                                                                 e.target.value
+                                                                              setInputTree(filtered)
+                                                                            }}
+                                                                            addImg={(img) => {
+                                                                              const filtered = { ...inputTree }
+                                                                              filtered.subRows[FirstLvlInd].subRows[SecondLvlInd].subRows[ThirdLvlInd].subRows[
+                                                                                FourthLvlInd
+                                                                              ].subRows[FifthLvlInd].subRows[SixthLvlInd].subRows[SeventhLvlInd].photo = img
                                                                               setInputTree(filtered)
                                                                             }}
                                                                           />
@@ -602,6 +682,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                                                                       setInputTree(filtered)
                                                                                     }}
                                                                                     value={EigthLvlEl?.name}
+                                                                                    photo={EigthLvlEl?.photo}
                                                                                     defaultValue={EigthLvlEl?.name}
                                                                                     addValue={(e) => {
                                                                                       const filtered = {
@@ -612,6 +693,15 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                                                                       ].subRows[FourthLvlInd].subRows[FifthLvlInd].subRows[SixthLvlInd].subRows[
                                                                                         SeventhLvlInd
                                                                                       ].subRows[EigthLvlInd].name = e.target.value
+                                                                                      setInputTree(filtered)
+                                                                                    }}
+                                                                                    addImg={(img) => {
+                                                                                      const filtered = { ...inputTree }
+                                                                                      filtered.subRows[FirstLvlInd].subRows[SecondLvlInd].subRows[
+                                                                                        ThirdLvlInd
+                                                                                      ].subRows[FourthLvlInd].subRows[FifthLvlInd].subRows[SixthLvlInd].subRows[
+                                                                                        SeventhLvlInd
+                                                                                      ].subRows[EigthLvlInd].photo = img
                                                                                       setInputTree(filtered)
                                                                                     }}
                                                                                   />
@@ -651,6 +741,7 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                                                                             setInputTree(filtered)
                                                                                           }}
                                                                                           value={NinthLvlEl?.name}
+                                                                                          photo={NinthLvlEl?.photo}
                                                                                           defaultValue={NinthLvlEl?.name}
                                                                                           addValue={(e) => {
                                                                                             const filtered = {
@@ -663,6 +754,17 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
                                                                                             ].subRows[SeventhLvlInd].subRows[EigthLvlInd].subRows[
                                                                                               NinthLvlInd
                                                                                             ].name = e.target.value
+                                                                                            setInputTree(filtered)
+                                                                                          }}
+                                                                                          addImg={(img) => {
+                                                                                            const filtered = { ...inputTree }
+                                                                                            filtered.subRows[FirstLvlInd].subRows[SecondLvlInd].subRows[
+                                                                                              ThirdLvlInd
+                                                                                            ].subRows[FourthLvlInd].subRows[FifthLvlInd].subRows[
+                                                                                              SixthLvlInd
+                                                                                            ].subRows[SeventhLvlInd].subRows[EigthLvlInd].subRows[
+                                                                                              NinthLvlInd
+                                                                                            ].photo = img
                                                                                             setInputTree(filtered)
                                                                                           }}
                                                                                         />

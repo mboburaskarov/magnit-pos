@@ -1,7 +1,8 @@
 import { Box, Typography } from '@mui/material'
-import dayjs from 'dayjs'
-import thousandDivider from '../../utils/thousandDivider'
 import { makeStyles } from '@mui/styles'
+import dayjs from 'dayjs'
+import { get, head } from 'lodash'
+import thousandDivider from '@utils/thousandDivider'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,7 +59,8 @@ export default function DashboardTooltip({ active, payload, label, isMultiLine, 
         <div className={classes.label}>
           <Typography>
             {detalization?.value === 'hour' || detalization?.value === '30min'
-              ? label
+              ? // ? label
+                `${dayjs(get(head(payload), 'payload.id')).format('DD.MM.YYYY | HH:mm')} `
               : detalization?.value === 'week'
               ? `${dayjs(label, 'DD.MM.YYYY | HH:mm').format('DD.MM.YYYY')} - ${dayjs(label, 'DD.MM.YYYY | HH:mm').day(7).format('DD.MM.YYYY')}`
               : detalization?.value === 'month'

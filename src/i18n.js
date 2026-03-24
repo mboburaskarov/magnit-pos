@@ -31,11 +31,14 @@ i18n
   .init({
     resources,
     fallbackLng: ['ru', 'uz'],
-    lng: 'ru',
+    // lng: 'ru',
     keySeparator: '.', // we do not use keys in form messages.welcome
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
   })
+
+// global helper function
+// export const t = (key, options) => i18n.t(key, options)
 
 export default i18n

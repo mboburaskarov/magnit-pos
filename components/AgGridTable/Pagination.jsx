@@ -1,10 +1,10 @@
-import { useState } from 'react'
 import { Pagination as MuiPagination, PaginationItem } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { useState } from 'react'
 import BackArrow from '../../src/assets/icons/BackArrow'
 import ForwardArrow from '../../src/assets/icons/ForwardArrow'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
 import useDidUpdate from '../../src/hooks/useDidUpdate'
+import { useQueryParams } from '../../src/hooks/useQueryParams'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,10 +67,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Pagination({ count, handleChangeOffset, offset, offsetQuery }) {
   const { values } = useQueryParams()
   const classes = useStyles()
+
   const [offsetValue, setOffsetValue] = useState(Number(values?.[offsetQuery] || offset))
 
   useDidUpdate(() => {
-    setOffsetValue(offset)
+    setOffsetValue(Number(values?.[offsetQuery] || offset))
   }, [offset])
 
   return (
@@ -91,7 +92,7 @@ export default function Pagination({ count, handleChangeOffset, offset, offsetQu
       offset={offsetValue}
       siblingCount={1}
       boundaryCount={1}
-      page={offset}
+      page={offset == 0 ? 1 : offset}
       className={classes.root}
     />
   )

@@ -1,0 +1,95 @@
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/expiredImportsTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ImageGallery from '@components/ImageGallery'
+import LoadingContainer from '@components/LoadingContainer'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { Box, Typography } from '@mui/material'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import tableHeaderSelector from './tableHeaderSelector'
+export default function ImportPage({ dashboard_filter }) {
+  const dispatch = useDispatch()
+  const { t } = useTranslation()
+  const { columns, loading } = useSelector((state) => state.expiredImportsTableColumns)
+  const { values } = useQueryParams()
+  const [offsetCount, setOffsetCount] = useState(0)
+  const [openImageGallery, setOpenImageGallery] = useState(false)
+
+  const tableColumns = tableHeaderSelector({
+    importsColumns: columns,
+  })
+
+  useEffect(() => {
+    if (tableColumns) {
+      const formattedData = makeFormattedData({ tableColumns })
+      dispatch(changeColumnSequence(formattedData))
+    }
+  }, [])
+
+  const importsListFilter = useMemo(() => {
+    return {
+      limit: values?.limit || 10,
+      offset: values?.search ? 0 : values?.offset || 0,
+      start_date: getFilterStartDate(values),
+      end_date: getFilterEndDate(values),
+      ...dashboard_filter,
+    }
+  }, [values?.offset, values?.limit, values?.end_date, dashboard_filter, values?.start_date])
+  const {
+    data: importsList,
+    isLoading: importsListLoading,
+    isFetching: isFetchingimportsList,
+    refetch,
+  } = useQuery(['importsList', importsListFilter], () => requests.getAllExpiredImports(importsListFilter))
+
+  useEffect(() => {
+    refetch()
+  }, [importsListFilter])
+
+  useEffect(() => {
+    const count = importsList?.data?.data?._meta?.total_count
+
+    const offsetsCount = Math.ceil(count / Number(values?.limit))
+    setOffsetCount(offsetsCount || 0)
+  }, [importsList?.data, values?.limit])
+
+  return (
+    <LoadingContainer readyState={true}>
+      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
+        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} mb={'20px'} color={'balck'}>
+          {t('Просроченные импорт')}
+        </Typography>
+
+        <Box>
+          <AgGridTable
+            id='imports-main-table'
+            tableSettings
+            columns={tableColumns}
+            defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
+            data={importsList?.data?.data?.data || []}
+            totalCount={importsList?.data?.data?._meta?.total_count || 0}
+            isDataLoading={isFetchingimportsList || importsListLoading}
+            offsetCount={offsetCount}
+            updaterAction={(newData) => {
+              if (newData) dispatch(updateTableHeader(newData))
+            }}
+            emptyTableText={{
+              title: 'Просроченные импорт недоступен',
+              description: 'Если вы не можете найти искомый Просроченные импорт',
+            }}
+            fullInfoAboutCurrentPage
+            resetTable={() => dispatch(resetTableHeader({ refetch }))}
+            isRefreshing={loading || isFetchingimportsList || importsListLoading}
+          />
+        </Box>
+      </Box>
+
+      <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
+    </LoadingContainer>
+  )
+}

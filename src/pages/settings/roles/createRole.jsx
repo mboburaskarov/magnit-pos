@@ -1,13 +1,13 @@
 import { Box, Container } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
-import { error, success } from '../../../../utils/toast'
+import { error, success } from '@utils/toast'
 import { useMutation, useQuery } from 'react-query'
-import { requests } from '../../../../utils/requests'
+import { requests } from '@utils/requests'
 import { useNavigate } from 'react-router-dom'
-import LoadingContainer from '../../../../components/LoadingContainer'
+import LoadingContainer from '@components/LoadingContainer'
 import RoleBody from './RoleBody'
-import Header from '../../../../components/Header'
+import Header from '@components/Header'
 import { useTranslation } from 'react-i18next'
 import { get } from 'lodash'
 export default function RoleCreatePage() {
@@ -29,12 +29,10 @@ export default function RoleCreatePage() {
     },
     onError: (err) => {
       error('Ошибка создания роли')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
-  const { data: rolesAndPermissionList, refetch: refetchrolesAndPermissionList } = useQuery('rolesAndPermissionListForCreate', () =>
-    requests.getAllRolesWithPermissions({ limit: 20, offset: 0 })
-  )
+  const { data: rolesAndPermissionList } = useQuery('rolesAndPermissionListForCreate', () => requests.getAllRolesWithPermissions({ limit: 20, offset: 0 }))
 
   const onSubmit = (data) => {
     const permissions = []
@@ -63,7 +61,7 @@ export default function RoleCreatePage() {
     createRole(requestBody)
   }
   const onError = (err) => {
-    console.log(err)
+    console.error(err)
   }
 
   return (
@@ -73,7 +71,6 @@ export default function RoleCreatePage() {
           isLoading={createRoleLoading}
           buttonText='Создать'
           backIcon
-          // noActions
           backHref='/settings/roles'
           text={'Создать роль'}
           checkAccessId={'product-create'}

@@ -1,13 +1,12 @@
-import React, { useMemo, useRef } from 'react'
-import { makeStyles } from '@mui/styles'
+import { useMemo, useRef } from 'react'
 // import { TreeItem as MuiTreeItem } from '@mui/lab'
 // import MuiTreeItem from '@mui/lab/TreeItem'
 import { TreeItem as MuiTreeItem } from '@mui/x-tree-view/TreeItem'
 
+import { Box } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Highlighter from 'react-highlight-words'
-import { Box } from '@mui/material'
 import InfoIcon from '../../src/assets/icons/InfoIcon'
 import StyledTooltip from '../StyledTooltip'
 
@@ -32,9 +31,8 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
             const childNodes = getTreeNodes({ tree, node })
             const childNodesLength = childNodes.length
             if (childNodesLength > 0) {
-              newSelectSoFar = [...newSelectSoFar?.filter((select) => !childNodes.includes(select))]
-
-              marksUncheckedRef.current = marksUncheckedRef?.current?.filter((marksUnchecked) => ![...childNodes, node].includes(marksUnchecked))
+              newSelectSoFar = [...newSelectSoFar, ...childNodes]
+              marksUncheckedRef.current = [...marksUncheckedRef?.current, ...childNodes, value]
             }
           } else {
             const childNodes = getTreeNodes({ tree, node })
@@ -44,9 +42,9 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
               const isEveryChildrenExist = childNodes.every((childNode) => newSelectSoFar.includes(childNode))
 
               if (isEveryChildrenExist) {
-                newSelectSoFar = [...newSelectSoFar.filter((select) => !childNodes.includes(select)), node]
+                newSelectSoFar = [...newSelectSoFar.filter((select) => node != select), node]
 
-                marksUncheckedRef.current = marksUncheckedRef?.current?.filter((marksUnchecked) => ![...childNodes, node]?.includes(marksUnchecked))
+                marksUncheckedRef.current = marksUncheckedRef?.current?.filter((marksUnchecked) => ![]?.includes(marksUnchecked))
               }
             }
           }
@@ -86,6 +84,7 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
 
             return newSelectSoFar
           },
+
           newSelect.filter((select) => !parents.includes(select))
         )
     } else {
@@ -94,14 +93,18 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
         ?.reverse()
         ?.forEach((item) => {
           const node = item
+
           const childNodes = getTreeNodes({ tree, node, depth: 1 })
+
           if (childNodes.length > 0) {
             marksUncheckedRef.current = [...new Set([...marksUncheckedRef?.current, ...childNodes])]
           } else {
             marksUncheckedRef.current = [...new Set([...marksUncheckedRef?.current, node])]
           }
         })
-      newSelect = newSelect?.filter((select) => select !== value && select != 'e14d59f2-0292-4c9e-a8b4-33c804208393')
+      const childnodes = children.map((a) => a.id)
+
+      newSelect = newSelect?.filter((select) => !childnodes.includes(select) && select !== value && select != 'e14d59f2-0292-4c9e-a8b4-33c804208393')
     }
 
     if (disableMultiParentSelection) {
@@ -127,7 +130,11 @@ const TreeItem = ({ items, selected, onSelect, disableMultiParentSelection, disa
   const renderTreeItem = ({ nodes, parents = [], level = 0 }) =>
     nodes?.map((node) => {
       const { id: value, name: label, description, children } = node
+
+      // const checked = selected.includes(value)
       const checked = selected.includes(value)
+      // const checked = selected.includes(value) || parents.some((parent) => selected.includes(parent))
+
       if (children && children.length > 0) {
         const indeterminate = isIndeterminate({ tree, selected, node: value })
         const treeItemLabel = createTreeItemLabel({

@@ -1,28 +1,33 @@
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import * as qs from 'qs'
-import { useEffect } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import InputRange from '../../../../components/Inputs/InputRange'
-import LazySelect from '../../../../components/Select/LazySelect'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import getOptionsFromUrlParam from '../../../../utils/getOptionsFromUrlParam'
-import { requests } from '../../../../utils/requests'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
+import getOptionsFromUrlParam from '@utils/getOptionsFromUrlParam';
+import SelectSimple from '@components/Select/SelectSimple';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Box, Button, Typography } from '@mui/material';
+import LazySelect from '@components/Select/LazySelect';
+import InputRange from '@components/Inputs/InputRange';
+import { useQueryParams } from '@hooks/useQueryParams';
+import CheckAccess from '@components/CheckAccess';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import CloseIcon from '@icons/CloseIcon';
+import { useTheme } from '@mui/styles';
+import { useQuery } from 'react-query';
+import { useEffect } from 'react';
+import * as qs from 'qs';
+
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
+  const theme = useTheme()
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const { values } = useQueryParams()
   const methods = useForm()
   const { formState, reset, control } = methods
+  const userData = useSelector((state) => state.user)
 
   const { data: paymentTypeList } = useQuery('paymentTypeList', () => requests.getPaymentTypesList({ limit: 20, offset: 0 }))
-  console.log(paymentTypeList)
 
   const onSubmit = (data) => {
     setRegions(data.regions || [])
@@ -34,9 +39,12 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       store_name: data.store_id?.name || undefined,
       vendor_id: data.vendor_id?.value || undefined,
       vendor_name: data.vendor_id?.name || undefined,
+      sale_type: data?.sale_type?.id || undefined,
+      type: data?.type?.id || undefined,
+      referral: data?.referral?.id || undefined,
       cashbox_id: data.cashbox_id?.value || undefined,
       cashbox_name: data.cashbox_id?.name || undefined,
-      payment_type_id: data.payment_type_id?.id || undefined,
+      payment_type_id: data?.payment_type_id?.id || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
@@ -45,15 +53,45 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {
-    const { total_amount_to, total_amount_from, store_id, payment_type_id, cashbox_id, vendor_id } = values
+    const { total_amount_to, total_amount_from, store_id, payment_type_id, sale_type, type, referral, cashbox_id, vendor_id } = values
 
     reset(
       {
         payment_type_id: payment_type_id ? getOptionsFromUrlParam(payment_type_id, paymentTypeList?.data?.data, 'name')[0] : null,
+        sale_type: sale_type
+          ? getOptionsFromUrlParam(
+              sale_type,
+              [
+                { id: 'SALE', name: 'Продажа' },
+                { id: 'RETURN', name: 'Возврат' },
+              ],
+              'name'
+            )[0]
+          : null,
+        type: type
+          ? getOptionsFromUrlParam(
+              type,
+              [
+                { id: 'FiscalSign', name: 'Незаконченный' },
+                { id: 'TaxFree', name: 'Направленный' },
+              ],
+              'name'
+            )[0]
+          : null,
+        referral: referral
+          ? getOptionsFromUrlParam(
+              referral,
+              [
+                { name: 'Oson apteka', id: 'oson-apteka' },
+                { name: 'Arzon apteka', id: 'arzon-apteka' },
+              ],
+              'name'
+            )[0]
+          : null,
         vendor_id: vendor_id ? { name: values?.vendor_name, value: values?.vendor_id } : null,
         cashbox_id: cashbox_id ? { name: values?.cashbox_name, value: values?.cashbox_id } : null,
         store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
@@ -65,20 +103,21 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
   }, [
     values?.payment_type_id,
     values?.vendor_id,
+    values?.sale_type,
+    values?.type,
+    values?.referral,
     values?.cashbox_id,
     values?.category_id,
     values?.store_id,
     values?.total_amount_to,
     values?.total_amount_from,
   ])
-  const theme = useTheme()
 
   const resetFilter = () => {
     reset()
     setOpen(false)
     navigate(`/sales/all-sales?offset=0&limit=${values?.limit || 5}`)
   }
-  const { t } = useTranslation()
   return (
     <StyledEmptyDialog
       onClose={() => setOpen(false)}
@@ -91,6 +130,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
         sx={{
           width: '100%',
           padding: '24px',
+          overflow: 'auto',
           '& .MuiInputBase-root': {
             border: `2px solid`,
             borderColor: 'bunker.100',
@@ -104,40 +144,92 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <Box maxHeight={'calc(100vh - 280px)'} px={'5px'} width={'100%'} overflow={'visible'}>
-              <SelectSimple
-                fullWidth
-                id='sto'
-                name='payment_type_id'
-                white
-                minWidth='auto'
-                label={'Тип оплаты'}
-                placeholder={t('Выберите тип оплаты')}
-                getOptionLabel={(el) => el.name}
-                options={paymentTypeList?.data?.data}
-              />
+            <Box px={'5px'} width={'100%'} overflow={'visible'}>
+              <Box sx={{ display: 'flex' }}>
+                <SelectSimple
+                  fullWidth
+                  id='sto'
+                  name='type'
+                  white
+                  minWidth='auto'
+                  label={'Статус продаж'}
+                  placeholder={t('Выберите статус продаж')}
+                  getOptionLabel={(el) => el.name}
+                  options={[
+                    { id: 'FiscalSign', name: 'Незаконченный' },
+                    { id: 'TaxFree', name: 'Направленный' },
+                  ]}
+                />
+                <Box width={'20px'} />
+
+                <SelectSimple
+                  fullWidth
+                  id='referral'
+                  name='referral'
+                  white
+                  minWidth='auto'
+                  label={'Направление'}
+                  placeholder={t('Выберите направление')}
+                  getOptionLabel={(el) => el.name}
+                  options={[
+                    { name: 'Oson apteka', id: 'oson-apteka' },
+                    { name: 'Arzon apteka', id: 'arzon-apteka' },
+                  ]}
+                />
+              </Box>
+
               <Box height={'20px'} />
-              <LazySelect
-                slug='users'
-                boxStyle={{ width: '100%' }}
-                id='store'
-                white
-                name='store_id'
-                isMulti={false}
-                placeholder={t('Выберите Магазин')}
-                minWidth='auto'
-                isClearable={true}
-                label={t('input.store.label')}
-                request={requests.getAllStores}
-                filters={{ limit: 10 }}
-                control={control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
-                getOptionLabel={(option) => {
-                  return <Typography color='grey.600'>{option.name}</Typography>
-                }}
-                filterOption={() => true}
-              />
+              <Box sx={{ display: 'flex' }}>
+                <SelectSimple
+                  fullWidth
+                  id='sto'
+                  name='sale_type'
+                  white
+                  minWidth='auto'
+                  label={'Тип продажа'}
+                  placeholder={t('Выберите тип продажа')}
+                  getOptionLabel={(el) => el.name}
+                  options={[
+                    { id: 'SALE', name: 'Продажа' },
+                    { id: 'RETURN', name: 'Возврат' },
+                  ]}
+                />
+                <Box width={'20px'} />
+
+                <SelectSimple
+                  fullWidth
+                  id='sto'
+                  name='payment_type_id'
+                  white
+                  minWidth='auto'
+                  label={'Тип оплаты'}
+                  placeholder={t('Выберите тип оплаты')}
+                  getOptionLabel={(el) => el.name}
+                  options={paymentTypeList?.data?.data}
+                />
+              </Box>
+              <CheckAccess id={'can-filter-salaes-by-store'}>
+                <Box height={'20px'} />
+                <LazySelect
+                  slug='users'
+                  boxStyle={{ width: '100%' }}
+                  id='store'
+                  white
+                  name='store_id'
+                  isMulti={false}
+                  placeholder={t('Выберите Аптека')}
+                  minWidth='auto'
+                  isClearable={true}
+                  label={t('input.store.label')}
+                  request={requests.getAllStores}
+                  filters={{ limit: 100 }}
+                  control={control}
+                  getOptionLabel={(option) => {
+                    return option.name
+                  }}
+                  filterOption={() => true}
+                />
+              </CheckAccess>
               <Box height={'20px'} />
 
               <LazySelect
@@ -152,12 +244,10 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 isClearable={true}
                 label={'Продавец'}
                 request={requests.getAllVendors}
-                filters={{ limit: 10 }}
+                filters={{ limit: 10, store_id: userData?.store?.id || undefined }}
                 control={control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
                 getOptionLabel={(option) => {
-                  return <Typography color='grey.600'>{option.name}</Typography>
+                  return option.name
                 }}
                 filterOption={() => true}
               />
@@ -177,10 +267,8 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 request={requests.getAllCashBoxList}
                 filters={{ limit: 10 }}
                 control={control}
-                // value='823f9458-2e67-4ed7-b001-ca8271b1269c'
-                // uncontrolled
                 getOptionLabel={(option) => {
-                  return <Typography color='grey.600'>{option.name}</Typography>
+                  return option.name
                 }}
                 filterOption={() => true}
               />

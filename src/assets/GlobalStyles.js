@@ -1,6 +1,5 @@
-import createStyles from '@mui/styles/createStyles'
 import { makeStyles } from '@mui/styles'
-import { bgcolor } from '@mui/system'
+import createStyles from '@mui/styles/createStyles'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -256,7 +255,7 @@ const useStyles = makeStyles((theme) =>
       '.ag-row-hover': {
         color: 'red !important',
       },
-      '.ag-row:hover': {
+      '.hover .ag-row:hover': {
         backgroundColor: `${theme.palette.orange[150]} !important`,
       },
 
@@ -293,6 +292,15 @@ const useStyles = makeStyles((theme) =>
       },
       '.ag-theme-alpine .ag-header-icon': {
         color: theme.palette.gray[400],
+      },
+      '.ag-row-focus': {
+        backgroundColor: `${theme.palette.orange[150]} !important`,
+      },
+      '.ag-row-hover': {
+        backgroundColor: `${theme.palette.orange[150]} !important`,
+      },
+      '.ag-cell-focus': {
+        borderColor: `${theme.palette.orange[500]} !important`,
       },
       '.ag-tabs.ag-menu': {
         boxShadow: theme.boxShadow['64-16'],
@@ -334,7 +342,7 @@ const useStyles = makeStyles((theme) =>
         borderColor: theme.palette.gray[200],
       },
     },
-  })
+  }),
 )
 
 const GlobalStyles = () => {

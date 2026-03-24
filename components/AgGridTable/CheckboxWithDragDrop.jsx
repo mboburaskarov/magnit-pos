@@ -1,7 +1,8 @@
-import React, { memo, useMemo } from 'react'
-import { Checkbox, Box, FormControlLabel } from '@mui/material'
-import { arrayMove, sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc'
+import { PushPin, PushPinOutlined } from '@mui/icons-material'
+import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import React, { memo, useMemo } from 'react'
+import { arrayMove, sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc'
 import DragDropIcon from '../../src/assets/icons/DragDropIcon'
 
 const useStyles = makeStyles((theme) => ({
@@ -102,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function CheckboxWithDragDrop({ data, checkAllField, setData, dragHandle = true, customId }) {
+function CheckboxWithDragDrop({ data, checkAllField, setData, pin = true, dragHandle = true, customId }) {
   const classes = useStyles()
   const onSortEnd = (props) => {
     const { oldIndex, newIndex } = props
@@ -121,12 +122,49 @@ function CheckboxWithDragDrop({ data, checkAllField, setData, dragHandle = true,
 
     setData(changedData)
   }
+  const handlePinChange = (propName, checked) => {
+    const changedData = data?.map((el) => {
+      if (el.name === propName) {
+        el.pinned = checked
+      }
+      return el
+    })
+
+    setData(changedData)
+  }
 
   const DragHandle = sortableHandle(() => (
     <div className={classes.dragdrop}>
       <DragDropIcon />
     </div>
   ))
+  const Pin = ({ data }) => (
+    <Box
+      sx={(theme) => ({
+        cursor: 'pointer',
+        mr: '30px',
+        mt: '4px',
+        transform: 'rotate(45deg)',
+        '& svg': {
+          fill: theme.palette.bunker[400],
+        },
+      })}
+    >
+      {!data?.pinned ? (
+        <PushPinOutlined
+          onClick={() => {
+            handlePinChange(data.name, true)
+          }}
+        />
+      ) : (
+        <PushPin
+          onClick={() => {
+            handlePinChange(data.name, false)
+          }}
+        />
+      )}
+    </Box>
+  )
   const SortableContainer = useMemo(() => sortableContainer(({ children }) => <Box>{children}</Box>), [classes])
   const SortableItem = useMemo(
     () =>
@@ -141,9 +179,13 @@ function CheckboxWithDragDrop({ data, checkAllField, setData, dragHandle = true,
             disabled={data?.always_active}
             checked={!data?.hide}
             name={data?.name}
-            label={data?.label?.ru || data?.label}
+            label={<Typography ml={'4px'}>{data?.label?.ru || data?.label}</Typography>}
           />
-          {dragHandle && <DragHandle />}
+
+          <Box display={'flex'}>
+            {pin && <Pin data={data} />}
+            {dragHandle && <DragHandle />}
+          </Box>
         </div>
       )),
     [classes]

@@ -1,11 +1,9 @@
-import { useState } from 'react'
-import { Box, Paper, List, ListItem, ClickAwayListener, Typography, Button } from '@mui/material'
+import { Box, Button, ClickAwayListener, List, ListItem, Paper, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import SortIcon from '../../src/assets/icons/SortIcon'
-import TickIcon from '../../src/assets/icons/TickIcon'
-import ArrowDown from '../../src/assets/icons/ArrowDown'
-import { t } from 'i18next'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import ArrowDown from '../../src/assets/icons/ArrowDown'
+import TickIcon from '../../src/assets/icons/TickIcon'
 
 const useStyles = makeStyles((theme) => ({
   lineSortContainer: {
@@ -43,6 +41,15 @@ function RowFilterButton({ totalCount, offsetIndex, offsetQuery, offsetSize, set
   const { t } = useTranslation()
   const classes = useStyles()
   const [open, setOpen] = useState(false)
+  function buildList(steps, totalCount) {
+    const result = steps.filter((step) => step <= totalCount)
+
+    if (!result.includes(totalCount)) {
+      result.push(totalCount)
+    }
+
+    return result
+  }
 
   const changeOffsetSize = (opt) => {
     setOffsetSize(opt)
@@ -73,14 +80,12 @@ function RowFilterButton({ totalCount, offsetIndex, offsetQuery, offsetSize, set
         <Paper className={classes.lineSortContainer}>
           <ClickAwayListener onClickAway={() => setOpen(false)}>
             <List className={classes.lineSortList}>
-              {[5, 10, 20, 30, 40, 50]
-                .filter((n) => n < totalCount - (offsetIndex - 1) * offsetSize)
-                .map((opt) => (
-                  <ListItem key={opt} component='button' className={classes.lineSortItem} onClick={() => changeOffsetSize(opt)}>
-                    <Typography>{opt} строк</Typography>
-                    {opt === offsetSize && <TickIcon />}
-                  </ListItem>
-                ))}
+              {buildList([5, 10, 50], totalCount <= 100 ? totalCount : 100).map((opt) => (
+                <ListItem key={opt} component='button' className={classes.lineSortItem} onClick={() => changeOffsetSize(opt)}>
+                  <Typography>{opt} строк</Typography>
+                  {opt === offsetSize && <TickIcon />}
+                </ListItem>
+              ))}
             </List>
           </ClickAwayListener>
         </Paper>

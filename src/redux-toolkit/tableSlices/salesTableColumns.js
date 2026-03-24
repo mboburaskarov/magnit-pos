@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createUniversalSlice } from '../helper/createUniversalSlice'
 
 const columns = [
   {
@@ -11,7 +11,7 @@ const columns = [
     field: 'sale_number',
     hide: false,
     minWidth: 60,
-    width: 180,
+    width: 230,
   },
   {
     field: 'document',
@@ -27,18 +27,6 @@ const columns = [
     width: 160,
   },
 
-  // {
-  //   field: 'type',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 160,
-  // },
-  // {
-  //   field: 'is_delivered',
-  //   hide: false,
-  //   minWidth: 70,
-  //   width: 160,
-  // },
   {
     field: 'cash',
     hide: false,
@@ -57,12 +45,7 @@ const columns = [
     minWidth: 70,
     width: 160,
   },
-  {
-    field: 'visa',
-    hide: false,
-    minWidth: 70,
-    width: 160,
-  },
+
   {
     field: 'payme',
     hide: false,
@@ -76,20 +59,38 @@ const columns = [
     width: 160,
   },
   {
-    field: 'uzumbank',
+    field: 'alif',
     hide: false,
     minWidth: 70,
     width: 160,
   },
   {
-    field: 'balance',
+    field: 'uzum',
+    hide: false,
+    minWidth: 70,
+    width: 158,
+  },
+  {
+    field: 'loyalty_card',
     hide: false,
     minWidth: 70,
     width: 160,
   },
 
   {
+    field: 'total_discount',
+    hide: false,
+    minWidth: 70,
+    width: 160,
+  },
+  {
     field: 'created_at',
+    hide: false,
+    minWidth: 70,
+    width: 200,
+  },
+  {
+    field: 'created_at_time',
     hide: false,
     minWidth: 70,
     width: 200,
@@ -116,45 +117,7 @@ const columns = [
   },
 ]
 
-const salesTableColumns = createSlice({
-  name: 'salesTableColumns',
-  initialState: {
-    columns,
-    loading: false,
-  },
-  reducers: {
-    changeColumnSequence(state, payload) {
-      state.columns = payload.payload
-    },
-    resetColumnsWidth(state, payload) {
-      const newColumns = state.columns.map((el) => ({
-        ...el,
-        width: payload?.find((col) => col.field === el.field)?.width || el?.width,
-      }))
-      state.columns = newColumns
-    },
-    setTableColumns(state, payload) {
-      const columns = [...state.columns]
-      const accessors = state?.columns?.map((column) => column?.field)
-      payload?.forEach((item) => {
-        if (!accessors.includes(item?.field)) {
-          columns?.push(item)
-        }
-      })
-      state.columns = columns
-    },
-    removeCustomColumn(state, payload) {
-      const filteredColumns = [...state.columns].filter((column) => column?.colId !== payload)
-      state.columns = filteredColumns
-    },
-    updateTableHeader(state, action) {
-      state.columns = action.payload
-    },
-    resetTableHeader(state, action) {
-      state.columns = columns
-    },
-  },
-})
+const salesTableColumns = createUniversalSlice('salesTableColumns', columns)
 
 export const { resetTableHeader, updateTableHeader, removeCustomColumn, setTableColumns, resetColumnsWidth, changeColumnSequence } = salesTableColumns.actions
 export const salesTableColumnsSlice = salesTableColumns.reducer

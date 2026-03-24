@@ -1,31 +1,29 @@
+import { Box, Skeleton, Typography } from '@mui/material'
+import getShorterNumber from '@utils/getShorterNumber'
+import { getDateFromDateTime } from '@utils/parseDateTime'
+import thousandDivider from '@utils/thousandDivider'
 import { useEffect, useState } from 'react'
-import { Box, Typography } from '@mui/material'
-import { Skeleton } from '@mui/material'
-import { XAxis, YAxis, CartesianGrid, Tooltip, Bar, BarChart, ResponsiveContainer, AreaChart, Area } from 'recharts'
+import { useTranslation } from 'react-i18next'
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import LoadingBlurry from '../LoadingBlurry'
+import SelectSimple from '../Select/SelectSimple'
 import CustomizedAxisTick from './ChartAxisTick'
 import ChartPlaceholder from './ChartPlaceholder'
 import ChartSlider from './ChartSlider'
 import DashboardTooltip from './DashboardTooltip'
-import SelectSimple from '../Select/SelectSimple'
-import paletteLight from '../../src/assets/theme/paletteLight'
-import getShorterNumber from '../../utils/getShorterNumber'
-import { getDateFromDateTime, getTimeFromDateTime } from '../../utils/parseDateTime'
-import LoadingBlurry from '../LoadingBlurry'
-import thousandDivider from '../../utils/thousandDivider'
-import { useTranslation } from 'react-i18next'
 
 const detailingOptions = [
-  { name: 'Это 30 минут', value: '30min' },
-  { name: 'Это час', value: 'hour' },
-  { name: 'Сегодня', value: 'day' },
-  { name: 'На этой неделе', value: 'week' },
-  { name: 'Это месяц', value: 'month' },
-  { name: 'В этом году', value: 'year' },
+  { name: 'по час', value: 'hour' },
+  { name: 'по дням', value: 'day' },
+  { name: 'по неделям', value: 'week' },
+  { name: 'по месяцам', value: 'month' },
+]
+const chartOptions = [
+  { name: 'Продажи', value: 'sale' },
+  { name: 'Обмены', value: 'swap', soon: true, isDisabled: true },
+  { name: 'Возвраты', value: 'return', soon: true, isDisabled: true },
 ]
 
-const purpleColor = '#a811d6'
-const blueColor = '#0F6FD7'
-const newColor = '#FE5000' // The color you want to use
 const orangeColor = '#ffb18e'
 const Body = ({ children, isLoading, isEmpty }) => (
   <Box
@@ -50,17 +48,16 @@ const Body = ({ children, isLoading, isEmpty }) => (
 )
 
 export default function SingleBarChart({
-  title,
   measurmentUnit = '',
-  colorCode,
   data,
   detalization,
   setDetalization,
+  setchartType,
+  chartType,
   period,
   isLoading,
   width: boxWidth = '100%',
   dataKey,
-  sortBy,
   id,
 }) {
   const { t } = useTranslation()
@@ -75,10 +72,16 @@ export default function SingleBarChart({
     if (data?.values?.length) {
       setChartData(data?.values)
       setSliderValue([0, data?.values?.length])
+    } else {
+      setChartData([])
+      setSliderValue([0, 0])
     }
   }, [data, detalization])
   const maxValue = Math.max(...chartData.slice(sliderValue[0], sliderValue[1]).map((item) => item?.count))
-  console.log(dataKey, chartData)
+  const maxValue2 = chartData
+    .slice(sliderValue[0], sliderValue[1])
+    .map((item) => item?.all_orders)
+    ?.reduce((sum, num) => sum + num, 0)
 
   return (
     <Box
@@ -113,36 +116,77 @@ export default function SingleBarChart({
                   color: theme.palette.dark[500],
                 })}
               >
-                {t('all_sales')}
+                {t('all_sales')} ({thousandDivider(Math.round(maxValue2), 'сум')})
               </Typography>
             </Box>
           )}
-          <SelectSimple
-            id={id + 'detailing'}
-            name={id + 'detailing'}
-            placeholder='Детализация'
-            uncontrolled
-            isSearchable={false}
-            onChange={setDetalization}
-            minWidth={130}
-            value={detalization}
-            fullWidth
-            boxStyle={{ width: 157 }}
-            isClearable={false}
-            options={
-              period === 'today' || period === 'yesterday'
-                ? detailingOptions.slice(0, 2)
-                : period === 'week'
-                ? detailingOptions.slice(0, 4)
-                : period === 'month'
-                ? detailingOptions.slice(1, 5)
-                : period === 'days'
-                ? detailingOptions.slice(0, 3)
-                : detailingOptions.slice(5)
-            }
-            getOptionLabel={(option) => option.name}
-            beforeContent=''
-          />
+          <Box display={'flex'}>
+            <SelectSimple
+              id={id + 'detailing'}
+              name={id + 'detailing'}
+              placeholder='Детализация'
+              uncontrolled
+              isSearchable={false}
+              onChange={setchartType}
+              minWidth={130}
+              value={chartType}
+              fullWidth
+              boxStyle={{ width: 187, mr: '10px' }}
+              isClearable={false}
+              options={chartOptions}
+              getOptionLabel={(option) => (
+                <Box display={'flex'}>
+                  {option.name}
+                  {option.soon && (
+                    <Typography
+                      sx={{
+                        width: '40px',
+                        height: '20px',
+                        backgroundColor: '#A53EFF',
+                        color: '#fff',
+                        fontSize: '10px',
+                        fontWeight: '600',
+                        borderRadius: '24px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        ml: '5px',
+                      }}
+                    >
+                      soon
+                    </Typography>
+                  )}
+                </Box>
+              )}
+              beforeContent=''
+            />
+            <SelectSimple
+              id={id + 'detailing'}
+              name={id + 'detailing'}
+              placeholder='Детализация'
+              uncontrolled
+              isSearchable={false}
+              onChange={setDetalization}
+              minWidth={130}
+              value={detalization}
+              fullWidth
+              boxStyle={{ width: 157 }}
+              isClearable={false}
+              options={
+                period === 'today' || period === 'yesterday'
+                  ? detailingOptions.slice(0, 2)
+                  : period === 'week'
+                  ? detailingOptions.slice(0, 4)
+                  : period === 'month'
+                  ? detailingOptions.slice(1, 5)
+                  : period === 'days'
+                  ? detailingOptions.slice(0, 3)
+                  : detailingOptions.slice(5)
+              }
+              getOptionLabel={(option) => option.name}
+              beforeContent=''
+            />
+          </Box>
         </Box>
         <Body isLoading={isLoading} isEmpty={!chartData.length}>
           <ResponsiveContainer width='100%' height={350}>
@@ -152,10 +196,6 @@ export default function SingleBarChart({
                   <stop offset='0%' stopColor={orangeColor} stopOpacity={0.3} />
                   <stop offset='100%' stopColor={orangeColor} stopOpacity={0.1} />
                 </linearGradient>
-                {/* <linearGradient id='ikki' x1='0' y1='0' x2='0' y2='1'>
-                  <stop offset='0%' stopColor={orangeColor} stopOpacity={0.3} />
-                  <stop offset='100%' stopColor={orangeColor} stopOpacity={0.1} />
-                </linearGradient> */}
               </defs>
 
               <CartesianGrid strokeDasharray='3 3' vertical={false} />
@@ -167,11 +207,7 @@ export default function SingleBarChart({
                 tickFormatter={(value) => getDateFromDateTime(value)}
               />
               <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => getShorterNumber(value, 0)} />
-              <Tooltip
-                content={<DashboardTooltip measurmentUnit={measurmentUnit} detalization={detalization} />}
-                // position={{ x: 100, y: -150 }}
-                wrapperStyle={{ zIndex: 11 }}
-              />
+              <Tooltip content={<DashboardTooltip measurmentUnit={measurmentUnit} detalization={detalization} />} wrapperStyle={{ zIndex: 11 }} />
               <Area
                 type='monotone'
                 dataKey={dataKey || 'value'}
@@ -185,19 +221,6 @@ export default function SingleBarChart({
                   fill: '#fff',
                 }}
               />
-              {/* <Area
-                type='monotone'
-                dataKey={'all_orders2' || 'value'}
-                stroke={'#fe5000'}
-                fill='url(#ikki)'
-                strokeWidth={3}
-                activeDot={{
-                  r: 6,
-                  stroke: orangeColor,
-                  strokeWidth: 2,
-                  fill: '#fff',
-                }}
-              /> */}
             </AreaChart>
           </ResponsiveContainer>
           <ChartSlider value={sliderValue} onChange={handleSliderChange} min={0} max={chartData?.length} />

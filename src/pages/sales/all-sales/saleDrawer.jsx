@@ -1,19 +1,21 @@
-import { Box, Drawer } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import React from 'react'
+import { Box, Button, Drawer } from '@mui/material'
+import CheckAccess from '@components/CheckAccess'
 import { useTranslation } from 'react-i18next'
+import { makeStyles } from '@mui/styles'
+import { useRef, useState } from 'react'
+
 import SaleChildDrawer from './saleChildDrawer'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
     overflow: 'hidden',
-    position: 'relative !important',
-
+    left: 'auto !important',
     '& .MuiDrawer-paper': {
       width: '600px',
-      height: '100vh',
+      height: ({ anchor }) => (anchor == 'right' ? '100vh' : '60vh'),
+      width: ({ anchor }) => (anchor == 'right' ? '600px' : '100vw'),
+      borderRadius: ({ anchor }) => (anchor == 'right' ? '24px 0 0 24px' : '24px 24px 0 0px'),
 
-      borderRadius: '24px 0 0 24px',
       boxShadow: '4px -5px 20px 0px #ccc !important',
 
       backgroundColor: theme.palette.background.default,
@@ -25,43 +27,43 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${theme.palette.bunker[100]}`,
   },
 }))
-function SaleDrawer({ open, setOpen, ids }) {
+function SaleDrawer({ open, setOpen, ids, currentSaleId, setCurrentSaleId, currentIndex, setCurrentIndex }) {
   const { t } = useTranslation()
-  const classes = useStyles()
-  console.log(ids)
+  const childRef = useRef()
+  const [anchor, setAnchor] = useState('right')
+  const classes = useStyles({ anchor })
+  const printNoProductCheque = () => {
+    childRef.current.printChildCheque()
+  }
 
   return (
     <Drawer
       ModalProps={{
-        hideBackdrop: true, // Optional: Removes the overlay
-        keepMounted: true, // Keeps drawer in the DOM for better performance
-        'aria-hidden': false, // ✅ Prevents MUI from blocking other elements
-        disableScrollLock: true, // Prevents MUI from adding `overflow: hidden` to `body`
+        hideBackdrop: true,
+        keepMounted: true,
+        'aria-hidden': false,
+        disableScrollLock: true,
       }}
       sx={{ height: '100vh !important' }}
       open={open}
       onClose={() => setOpen(false)}
-      anchor='right'
+      anchor={anchor}
       elevation={1}
       className={classes.drawer}
     >
-      <SaleChildDrawer ids={ids} open={open} setOpen={setOpen} />
-      <Box
-        sx={{
-          bottom: 10,
-          m: '10px 10px',
-          '& .MuiButtonBase-root': {
-            height: 48,
-          },
-        }}
-      >
-        {/* <Button fullWidth color='secondary' variant='contained'>
-          <WithdrawIcon />
-          <Typography fontSize={16} ml={'12px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-            {t('print')}
-          </Typography>
-        </Button> */}
-      </Box>
+      <SaleChildDrawer
+        childRef={childRef}
+        ids={ids}
+        open={open}
+        setOpen={setOpen}
+        setAnchor={setAnchor}
+        anchor={anchor}
+        currentSaleId={currentSaleId}
+        setCurrentSaleId={setCurrentSaleId}
+        currentIndex={currentIndex}
+        setCurrentIndex={setCurrentIndex}
+        printNoProductCheque={printNoProductCheque}
+      />
     </Drawer>
   )
 }

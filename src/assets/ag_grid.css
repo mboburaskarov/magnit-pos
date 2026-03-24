@@ -3,9 +3,11 @@
 .ag-theme-alpine {
   /* border-radius: 16px; */
   /* border: 1px solid red; */
+  /* flex: '1 1 auto'; */
 }
 .ag-theme-alpine .ag-root-wrapper {
   border: none;
+  /* min-height: 800px !important; */
 }
 .ag-watermark {
   display: none !important;
@@ -21,6 +23,7 @@
 .ag-center-cols-container {
   min-height: unset !important;
 }
+
 .ag-center-cols-viewport {
   min-height: unset !important;
 }
@@ -80,8 +83,19 @@
 
 .ag-theme-alpine .ag-floating-bottom {
   border: none;
+  height: 100px !important;
+  position: fixed;
+  bottom: 0;
+  z-index: 9;
+  background-color: #fff;
+  opacity: 1;
 }
-
+.ag-floating-bottom-viewport {
+  height: 100px !important;
+  bottom: 0px !important;
+  /* position: fixed !important; */
+  left: -5px !important;
+}
 .ag-floating-bottom-viewport .ag-row-pinned {
   height: 80px !important;
   margin-top: 10px;
@@ -90,7 +104,7 @@
 }
 
 .ag-floating-bottom-viewport .ag-row-pinned div {
-  color: rgb(73, 147, 221);
+  color: rgb(254, 80, 0);
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -146,13 +160,13 @@
   cursor: pointer;
 }
 .ag-theme-alpine .ag-sort-ascending-icon {
-  color: rgb(73, 147, 221);
+  color: rgb(254, 80, 0);
 }
 .ag-theme-alpine .ag-sort-descending-icon {
-  color: rgb(73, 147, 221);
+  color: rgb(254, 80, 0);
 }
 .ag-theme-alpine .ag-header-icon:hover {
-  color: rgb(73, 147, 221);
+  color: rgb(254, 80, 0);
 }
 
 .ag-header-cell-menu-button:not(.ag-header-menu-always-show) {
@@ -262,6 +276,10 @@
 .ag-menu.ag-ltr.ag-popup-child[aria-label='SubMenu'] .ag-menu-option-part.ag-menu-option-icon {
   order: 1;
 }
+.ag-ltr .ag-cell {
+  border-width: 1px !important;
+  border: var(--ag-cell-horizontal-border);
+}
 .ag-ltr .ag-cell[col-id='number'] {
   justify-content: center;
 }
@@ -294,7 +312,45 @@
 .ag-theme-alpine .ag-paging-panel {
   border-top: 2px solid;
 }
-
+#group-table {
+  .ag-header-cell {
+    border: none !important;
+  }
+  .ag-header {
+    height: 105px !important;
+  }
+  .ag-header-group-cell {
+    display: flex;
+    justify-content: center;
+  }
+  .ag-header-row-column-group {
+    background-color: #ecedf2;
+    border-bottom: 1px solid #ecedf2 !important;
+    margin: 0 !important;
+  }
+  .ag-header-group-cell-label.ag-sticky-label {
+    position: relative;
+  }
+  .ag-header-group-cell-with-group:not(:last-child) .ag-header-cell-resize {
+    border-right: 1px solid #e1e3e7 !important;
+    right: 0;
+  }
+  .last-grouped-child:not(:last-child) {
+    border-right: 1px solid #e1e3e7 !important;
+    border-radius: 0;
+  }
+  .ag-header-cell {
+    border-radius: 0 !important;
+  }
+  .ag-header-row.ag-header-row-column {
+    margin-left: 0;
+  }
+  .ag-cell {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+  }
+}
 /* No Rows Overlay */
 .ag-theme-alpine .ag-overlay-no-rows-wrapper.ag-layout-auto-height {
   padding-top: 70px;
@@ -526,8 +582,35 @@
 }
 .ag-cell-value,
 .ag-group-value {
+  white-space: pre-line;
   overflow: visible;
 }
 .ag-center-cols-container {
   /* width: 100% !important; */
 }
+
+.ag-root-wrapper:focus-within {
+  /* Prevent page scrolling when grid is focused */
+}
+
+.ag-root-wrapper {
+  /* min-height: calc(100vh - 400px); */
+  /* Ensure the grid can receive focus */
+  outline: none;
+}
+
+/* Alternatively, you can apply this to the entire page when grid is active */
+body.ag-grid-focused {
+  overflow: hidden;
+}
+
+/* Disable blue cell selection */
+.ag-theme-alpine .selected-cell {
+  background-color: inherit !important;
+  border: inherit !important;
+}
+
+/* Optional: Remove background highlight */
+/* .ag-theme-alpine .ag-cell.selected-cell:not(.ag-cell-range-selected) {
+  background-color: inherit !important;
+} */

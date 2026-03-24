@@ -1,12 +1,12 @@
-import { useState, useCallback, useEffect } from 'react'
 import { Box, Typography } from '@mui/material'
-import { arrayMove } from 'react-sortable-hoc'
-import { useMutation } from 'react-query'
+import { useCallback, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { requests } from '../../utils/requests'
-import { error } from '../../utils/toast'
-import ImagePreview from './ImageProfilePreview'
+import { useMutation } from 'react-query'
+import { arrayMove } from 'react-sortable-hoc'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
 import Label from '../Label'
+import ImagePreview from './ImageProfilePreview'
 
 export default function ImageUpload({ id, images, onChange, label, width, height, type, withoutTextBox }) {
   const [uploadedImages, setUploadedImages] = useState(images || [])
@@ -15,7 +15,7 @@ export default function ImageUpload({ id, images, onChange, label, width, height
   const filterAndSetImages = (data) => {
     setUploadedImages((oldImages) => {
       const newImages = editingImage
-        ? oldImages.map((el) => {
+        ? oldImages?.map((el) => {
             if (el.name === editingImage) {
               el.name = data?.file_name
               el.key = data?.file_url

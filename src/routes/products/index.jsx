@@ -1,11 +1,15 @@
 import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
 import ProductsPage from '../../pages/products'
-import AutoOrderPage from '../../pages/products/autoOrder'
-import CatalogManagement from '../../pages/products/categories'
-import ImportPage from '../../pages/products/import'
-import ImportDetailsPage from '../../pages/products/importDetails'
-import ImportWithCheckingPage from '../../pages/products/importWithChecking'
-import BonusProductPage from '../../pages/products/bonusProduct/index'
+import AutoOrderPage from '../../pages/products/autoOrder-all/autoOrder'
+import ChangePricePage from '../../pages/products/changePrice-all/changePrice'
+import ProductsPageByImport from '../../pages/products/changeProductByImport'
+import ImportPage from '../../pages/products/import-all/importList'
+import InventoryPage from '../../pages/products/inventory-all/inventoryList'
+import ProductErrorsPage from '../../pages/products/productError'
+import RejectedProducts from '../../pages/products/rejectedProducts/RejectedProducts'
+import ReturnToWarehousePage from '../../pages/products/returnToWarehouse-all/returnToWarehouseList'
+import TransferPage from '../../pages/products/transfer-all/transferList'
+import WriteOffPage from '../../pages/products/writeOff-all/writeOffList'
 const productsRoutes = {
   path: 'products',
   element: <LayoutWithHeaderNavbar />,
@@ -14,22 +18,53 @@ const productsRoutes = {
       path: 'all',
       element: <ProductsPage />,
     },
+    {
+      path: 'rejected-products',
+      element: <RejectedProducts />,
+    },
+    {
+      path: 'all-by-import',
+      element: <ProductsPageByImport />,
+    },
 
     {
       path: 'import',
       element: <ImportPage />,
     },
-    {
-      path: 'categories',
-      element: <CatalogManagement />,
-    },
+
     {
       path: 'auto-order',
       element: <AutoOrderPage />,
     },
     {
-      path: 'bonus-product',
-      element: <BonusProductPage />,
+      path: 'revaluation',
+      element: <ChangePricePage />,
+    },
+    {
+      path: 'errors',
+      element: <ProductErrorsPage />,
+    },
+
+    {
+      path: 'inventory',
+      element: <InventoryPage />,
+    },
+
+    {
+      path: 'transfer',
+      element: <TransferPage />,
+    },
+    {
+      path: 'write-off',
+      element: <WriteOffPage />,
+    },
+    {
+      path: 'return-to-warehouse',
+      element: <ReturnToWarehousePage />,
+    },
+    {
+      path: 'trasnfer',
+      element: <TransferPage />,
     },
   ],
 }

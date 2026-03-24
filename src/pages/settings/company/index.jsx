@@ -1,23 +1,22 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Typography } from '@mui/material'
 import { get } from 'lodash'
-import React, { useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 
-import InputPhone from '../../../../components/Inputs/PhoneNumber'
-import TextField from '../../../../components/Inputs/TextField'
-import Label from '../../../../components/Label'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import i18n from '../../../i18n'
+import InputPhone from '@components/Inputs/PhoneNumber'
+import TextField from '@components/Inputs/TextField'
+import Label from '@components/Label'
+import SelectSimple from '@components/Select/SelectSimple'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import i18n from '@/i18n'
+import CheckAccess from '@components/CheckAccess'
 
-// Constants for options
 const COUNTRY_OPTIONS = [{ name: 'Uzbekistan', value: 'Uzbekistan' }]
 const CITY_OPTIONS = [{ name: 'Tashkent', value: 'Tashkent' }]
 
-// Helper function to get initial value for SelectSimple based on the current value
 const getSelectDefaultValue = (options, value) => {
   return options.find((option) => option.value === value) || options[0]
 }
@@ -28,21 +27,19 @@ const CompanyPage = () => {
 
   const { mutate: changeComanyInfo } = useMutation(requests.changeComanyInfo, {
     onSuccess: ({ data }) => {
-      success('Информация о пользователе изменена!')
+      success('Информация о Компания изменена!')
     },
     onError: () => {
-      error('Ошибка при изменении пользовательских данных!')
+      error('Ошибка при изменении Компания данных!')
     },
   })
   useEffect(() => {
     methods.setValue('name', get(companyInfo, 'data.data.name'))
-    // methods.setValue('country', get(companyInfo, 'data.data.country'))
     methods.setValue('email', get(companyInfo, 'data.data.email'))
     methods.setValue('phone', get(companyInfo, 'data.data.phone')?.replace('998', ''))
     methods.setValue('legal_name', get(companyInfo, 'data.data.legal_name'))
     methods.setValue('legal_address', get(companyInfo, 'data.data.legal_address'))
     methods.setValue('postal_code', get(companyInfo, 'data.data.postal_code'))
-    // methods.setValue('city', get(companyInfo, 'data.data.city'))
     methods.setValue('company_mfo', get(companyInfo, 'data.data.company_mfo'))
     methods.setValue('company_inn', get(companyInfo, 'data.data.company_inn'))
   }, [companyInfo])
@@ -155,11 +152,11 @@ const CompanyPage = () => {
             </Box>
           </Box>
 
-          {
+          <CheckAccess id={'company:save'}>
             <LoadingButton sx={{ ml: 'auto', width: '200px' }} variant='contained' fullWidth onClick={methods.handleSubmit(handleFormSubmit, handleFormError)}>
               Сохранить
             </LoadingButton>
-          }
+          </CheckAccess>
         </Box>
       </Box>
     </FormProvider>

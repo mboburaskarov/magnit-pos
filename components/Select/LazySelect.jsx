@@ -1,20 +1,20 @@
-import { useCallback, useState, useRef, useEffect } from 'react'
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Typography } from '@mui/material'
+import { t } from 'i18next'
+import { get } from 'lodash'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Select, { components } from 'react-select'
 import CreatableSelect from 'react-select/creatable'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { useStyles } from './SelectSimple'
 import { useDebounce } from 'use-debounce'
-import { generateCustomStyles } from './SelectStyles'
-import useVirtualizedData from '../../src/hooks/useVirtualizedData'
-import DeleteSmallIcon from '../../src/assets/icons/DeleteSmallIcon'
 import DeleteIconBig from '../../src/assets/icons/DeleteIconBig'
-import LoadingBlock from '../LoadingBlock'
+import DeleteSmallIcon from '../../src/assets/icons/DeleteSmallIcon'
+import useVirtualizedData from '../../src/hooks/useVirtualizedData'
 import Label from '../Label'
-import { get } from 'lodash'
-import { t } from 'i18next'
+import LoadingBlock from '../LoadingBlock'
+import { useStyles } from './SelectSimple'
+import { generateCustomStyles } from './SelectStyles'
 
 const SingleValue = ({ children, selectProps, ...props }) => (
   <components.SingleValue selectProps={selectProps} {...props}>
@@ -78,7 +78,7 @@ function LazySelect({
   customLabel = 'name',
   boxStyle,
   label,
-  placeholder = 'components.enterAttribute',
+  placeholder = 'select_placeholder',
   uncontrolled,
   value = '',
   onChange,
@@ -191,7 +191,7 @@ function LazySelect({
           name={name}
           formatOptionLabel={formatOptionLabel}
           isSearchable={isSearchable}
-          placeholder={placeholder}
+          placeholder={t(placeholder)}
           noOptionsMessage={() => 'no options'}
           formatCreateLabel={(inputValue) => t('components.add_inputValue', { inputValue })}
           onChange={(val) => onChange(val)}
@@ -276,7 +276,7 @@ function LazySelect({
                   label: option?.name,
                   value: option?.id,
                 }))}
-                placeholder={placeholder}
+                placeholder={t(placeholder)}
                 isClearable={isClearable}
                 lastElementRef={lastElementRef}
               />
@@ -287,7 +287,7 @@ function LazySelect({
                 styles={customStyles}
                 onInputChange={handleInputChange}
                 isSearchable={isSearchable}
-                placeholder={placeholder}
+                placeholder={t(placeholder)}
                 menuPlacement={menuPlacement}
                 filterOption={filterOption}
                 noOptionsMessage={() => 'no_options'}
@@ -305,7 +305,7 @@ function LazySelect({
                 getOptionValue={(option) => option.id}
                 options={
                   response?.data?.data?.data?.map((option) => ({
-                    name: option?.[customLabel],
+                    name: typeof customLabel === 'function' ? customLabel(option) : option?.[customLabel],
                     value: option?.id,
                     id: option?.id,
                   })) || []

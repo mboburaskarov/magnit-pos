@@ -1,25 +1,14 @@
+import DeleteIcon from '@icons/DeleteIcon'
+import EditIcon from '@icons/EditIcon'
 import { Box, IconButton, Typography } from '@mui/material'
-import dayjs from 'dayjs'
+import { formatPhoneNumber } from '@utils/formatPhoneNumber'
+import { formatDate } from '@utils/validateDate'
 import { get } from 'lodash'
 import { memo } from 'react'
-import StatusCell from '../../../components/AgGridTable/Cells/StatusCell'
-import CheckAccess from '../../../components/CheckAccess'
-import thousandDivider from '../../../utils/thousandDivider'
-import { products_statuses } from '../../assets/data/products-statuses'
-import DeleteIcon from '../../assets/icons/DeleteIcon'
-import EditIcon from '../../assets/icons/EditIcon'
-import { formatDate } from '../../../utils/validateDate'
-import { formatPhoneNumber } from '../../../utils/formatPhoneNumber'
 
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import { SimpleText } from '../../../components/AgGridTable/Cells/SimpleText'
 
-export default function tableHeaderSelector({ clientsColumns, values, selectClientsFunc, t, setOpenConfirmDialog }) {
+export default function tableHeaderSelector({ clientsColumns, values, selectClientsFunc, t, setOpenConfirmDialog, setOpenClientCreateMini }) {
   const columns = clientsColumns?.map((el) => {
     if (el.field === 'number') {
       return {
@@ -60,7 +49,17 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: t('fish'),
         colId: el.field,
-        cellRenderer: memo((p) => <Typography whiteSpace={'pre-line'}>{get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')}</Typography>),
+        cellRenderer: memo((p) => <SimpleText {...p} customText={get(p, 'data.[first_name]') + ' ' + get(p, 'data.[last_name]')} type='fish' />),
+      }
+    }
+    if (el.field === 'loyalty_card_barcode') {
+      return {
+        ...el,
+        headerName: t('Карта лояльности'),
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <SimpleText {...p} customText={get(p, 'data.loyalty_card_barcode', '')?.replace(/.(?=.{4})/g, '*')} type='loyalty_card_barcode' />
+        )),
       }
     }
     if (el.field === 'phone_number') {
@@ -68,11 +67,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: t('phone_number'),
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
-            {formatPhoneNumber(p.data.phone)}
-          </Typography>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} customText={p.data.phone.length > 0 ? formatPhoneNumber(p.data.phone) : '-'} type='phone_number' />),
       }
     }
     if (el.field === 'tags') {
@@ -84,24 +79,28 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
       }
     }
 
-    if (el.field === 'sale_amount') {
+    if (el.field === 'loyalty_card_percent') {
       return {
         ...el,
-        headerName: 'Сумма покупки',
+        headerName: 'Процент лояльности карты',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText withDevider currency={'сум'} {...p} type='sale_amount' />),
+        cellRenderer: memo((p) => <SimpleText {...p} currency={'%'} type='loyalty_card_percent' />),
       }
     }
-    if (el.field === 'sale_date') {
+    if (el.field === 'discount_card') {
       return {
         ...el,
-        headerName: 'Последняя покупка',
+        headerName: 'Дисконтная карта',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{formatDate(p.data?.sale_date, 'DD.MM.YYYY')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} type='discount_card' />),
+      }
+    }
+    if (el.field === 'discount_percent') {
+      return {
+        ...el,
+        headerName: 'Процент скидки',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider currency={'%'} type='discount_percent' />),
       }
     }
     if (el.field === 'birthday') {
@@ -109,11 +108,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Дата рождения',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{formatDate(p.data?.birthday, 'DD.MM.YYYY')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} customText={formatDate(p.data?.birthday, 'DD.MM.YYYY')} type='birthday' />),
       }
     }
     if (el.field === 'created_at') {
@@ -121,11 +116,7 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Дата регистрации',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{formatDate(p.data?.created_at, 'DD.MM.YYYY')}</Typography>
-          </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText {...p} customText={formatDate(p.data?.created_at, 'DD.MM.YYYY')} type='created_at' />),
       }
     }
     if (el.field === 'store') {
@@ -133,6 +124,8 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         ...el,
         headerName: 'Зарегистрируйтесь в филиале',
         colId: el.field,
+        // cellRenderer: memo((p) => <SimpleText {...p} customText={get(p, 'data.store.name', '-')} type='store' />),
+
         cellRenderer: memo((p) => (
           <Typography sx={{ whiteSpace: 'pre-line' }} id={`product-${p.type}-${p.rowIndex}`}>
             {get(p, 'data.store.name', '-')}
@@ -148,35 +141,30 @@ export default function tableHeaderSelector({ clientsColumns, values, selectClie
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='balance' />),
       }
     }
-    if (el.field === 'debt_amount') {
+
+    if (el.field === 'spending_from_balance') {
       return {
         ...el,
-        headerName: 'Текущий долг',
+        headerName: 'Расходы с баланса',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='debt_amount' />),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} type='spending_from_balance' />),
       }
     }
 
-    if (el.field === 'actions') {
+    if (el.field === 'action') {
       return {
         ...el,
         headerName: t('table_columns.actions'),
         colId: el.field,
         cellRenderer: memo(({ data }) => (
-          // <CheckAccess id={'product-edit product-delete product-active product-deactive'}>
-          <Box display='inline-flex' columnGap={'8px'}>
-            {/* <CheckAccess id={'product-edit'}>
-                <IconButton onClick={() => window.open(`/products/edit/${data.id}`, '_blank')} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-                  <EditIcon />
-                </IconButton>
-              </CheckAccess> */}
-            {/* <CheckAccess id={'product-delete'}> */}
+          <Box key={data.loyalty_card_barcode} display='inline-flex' columnGap={'8px'}>
             <IconButton onClick={() => setOpenConfirmDialog({ type: 'delete', id: data.id })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
               <DeleteIcon />
             </IconButton>
-            {/* </CheckAccess> */}
+            <IconButton onClick={() => setOpenClientCreateMini({ type: 'edit', data })} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+              <EditIcon />
+            </IconButton>
           </Box>
-          // </CheckAccess>
         )),
       }
     }

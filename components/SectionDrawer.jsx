@@ -1,9 +1,9 @@
-import { makeStyles, useTheme } from '@mui/styles'
-import { Box, Drawer, Typography, Button } from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import CloseIcon from '../src/assets/icons/CloseIcon'
-import BackArrowIcon from '../src/assets/icons/BackArrow'
 import { LoadingButton } from '@mui/lab'
+import { Box, Button, Drawer, Typography } from '@mui/material'
+import { makeStyles, useTheme } from '@mui/styles'
+import { useTranslation } from 'react-i18next'
+import BackArrowIcon from '../src/assets/icons/BackArrow'
+import CloseIcon from '../src/assets/icons/CloseIcon'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -165,7 +165,7 @@ function SectionDrawer({
                   }
                 }}
               >
-                <BackArrowIcon style={{ fill: '#4993DD' }} />
+                <BackArrowIcon style={{ fill: '#fe5000' }} />
                 {backButtonLabel && <Typography sx={{ whiteSpace: 'nowrap', marginLeft: 2 }}>{backButtonLabel}</Typography>}
               </Button>
             )}

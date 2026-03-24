@@ -1,15 +1,15 @@
-import { Box, Button, IconButton, Typography } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import * as qs from 'qs'
 import { useTranslation } from 'react-i18next'
-import StyledEmptyDialog from '../../../../components/Dialogs/StyledeEmptyDialog'
-import CloseIcon from '../../../assets/icons/CloseIcon'
-import Label from '../../../../components/Label'
-import InputPassword from '../../../../components/Inputs/InputPasswordNew'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import CloseIcon from '@icons/CloseIcon'
+import Label from '@components/Label'
+import InputPassword from '@components/Inputs/InputPasswordNew'
 import { useEffect, useState } from 'react'
 import { useMutation } from 'react-query'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
 import { useTheme } from '@mui/styles'
 
 export default function ChangePassWordDialog({ open, setOpen }) {
@@ -21,7 +21,7 @@ export default function ChangePassWordDialog({ open, setOpen }) {
   }
 
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
   }
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function ChangePassWordDialog({ open, setOpen }) {
     },
     onError: (err) => {
       error('Ошибка смены пароля!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const theme = useTheme()

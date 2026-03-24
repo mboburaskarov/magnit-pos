@@ -16,7 +16,7 @@ const downloadImage = async (imageUrl) => {
   link.download = '' + (duplicateName || 'Image of product') + ''
   document.body.appendChild(link)
   link.click()
-  document.body.removeChild(link)
+  document?.body?.removeChild(link)
 }
 
 export default downloadImage

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Radio, RadioGroup, FormControlLabel } from '@mui/material'
-import { Controller } from 'react-hook-form'
-import TickOutlinedIcon from '../src/assets/icons/BigTickIcon'
-import RippedPaperCheck from './ChequePaper/RippedPaperCheck'
+import { Box, RadioGroup } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import React from 'react'
+import { Controller } from 'react-hook-form'
+import RippedPaperCheck from './ChequePaper/RippedPaperCheck'
 
 const useStyles = makeStyles((theme) => ({
   inner: {
@@ -47,6 +46,7 @@ export default function RippedPaperList({
   customerId,
   paymentsList,
   cartItemsList,
+  markingsList,
   defaultValue,
   data,
   name = 'cheque_id',
@@ -66,6 +66,7 @@ export default function RippedPaperList({
             <Box className={classes.inner}>
               {data?.cheques?.map((el, index) => (
                 <RippedPaperItem
+                  markingsList={markingsList}
                   customerId={customerId}
                   cashBoxDetails={cashBoxDetails}
                   paymentsList={paymentsList}
@@ -83,13 +84,15 @@ export default function RippedPaperList({
   )
 }
 
-export function RippedPaperItem({ qrcodeUrl, printContainer, cashBoxDetails, customerId, paymentsList, cartItemsList }) {
+export function RippedPaperItem({ mode = 'full', qrcodeUrl, printContainer, markingsList, cashBoxDetails, customerId, paymentsList, cartItemsList }) {
   const classes = useStyles()
 
   return (
     <Box className={classes.wrapper}>
       <RippedPaperCheck
+        mode={mode}
         qrcodeUrl={qrcodeUrl}
+        markingsList={markingsList}
         customerId={customerId}
         cashBoxDetails={cashBoxDetails}
         cartItemsList={cartItemsList}

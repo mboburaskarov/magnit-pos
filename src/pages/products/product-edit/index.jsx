@@ -1,16 +1,15 @@
 import { Box, Container } from '@mui/material'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import Header from '../../../../components/Header'
-import { FormProvider, useForm } from 'react-hook-form'
-import ProductBody from '../ProductBody'
-import { error, success } from '../../../../utils/toast'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useMutation, useQuery } from 'react-query'
-import { requests } from '../../../../utils/requests'
-import { useEffect } from 'react'
 import { get } from 'lodash'
+import { useEffect } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
-import ImageGallery from '../../../../components/ImageGallery'
+import { useNavigate, useParams } from 'react-router-dom'
+import Header from '@components/Header'
+import LoadingContainer from '@components/LoadingContainer'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
+import ProductBody from '../ProductBody'
 
 export default function ProductEditPage() {
   const { id } = useParams()
@@ -18,16 +17,17 @@ export default function ProductEditPage() {
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
 
-  const { data: productData, isLoading: productDataLoading } = useQuery(['productData', id], () => requests.getSingleProduct(id), { enabled: !!id })
+  const { data: productData, isLoading: productDataLoading } = useQuery(['productData', id], () => requests.getSingleProduct({ id }), { enabled: !!id })
 
   const { mutate: updateProduct, isLoading: isUpdatingProduct } = useMutation(requests.updateProduct, {
     onSuccess: () => {
+      methods.reset({})
       navigate('/products/all')
       success('Продукт успешно изменен!')
     },
     onError: (err) => {
       error('Ошибка при редактировании товара!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   useEffect(() => {
@@ -41,7 +41,6 @@ export default function ProductEditPage() {
       barcode: get(data, 'barcode'),
       bonus_percent: Number(get(data, 'bonus_percent')),
       description: get(data, 'description'),
-      // expire_date: get(data, 'expire_date'),
       producer_id: get(data, 'manufacturer.value'),
       shelf_id: get(data, 'shelf_id.value'),
       name: get(data, 'name'),
@@ -52,8 +51,6 @@ export default function ProductEditPage() {
       quantity: Object.values(get(data, 'store_product')).reduce((total, product) => {
         return Number(total) + Number(product.quantity)
       }, 0),
-      // retail_price: Number(get(data, 'retail_price')),
-      // markup: Number(get(data, 'markup')),
       status: 'active',
       store_id: get(userData, 'store_id'),
       store_product: Object.values(get(data, 'store_product'))
@@ -68,16 +65,12 @@ export default function ProductEditPage() {
           pack_quantity: Number(get(item, 'pack_quantity', 0)),
           small_quantity: Number(get(item, 'small_quantity', 0)),
         })),
-      // sum: Number(get(data, 'retail_price')),
-      // supply_price: Number(get(data, 'supply_price')),
-      // vat: Number(get(data, 'vat')),
-      // vat_price: Number(get(data, 'vat_price')),
     }
 
     updateProduct({ id, data: requestBody })
   }
   const onError = (err) => {
-    console.log('err', err)
+    console.error('err', err)
     error('Пожалуйста, заполните все поля!')
   }
 

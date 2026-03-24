@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import ArrowRightIcon from '../../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../../src/assets/icons/BagOutline'
 import thousandDivider from '../../../utils/thousandDivider'
+import CustomImg from '../../CustomImg'
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {
     backgroundColor: '#fff ',
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     height: '48px',
     minWidth: '88px',
     backgroundColor: '#fff',
-    borderRadius: '40px',
+    borderRadius: '16px',
     marginRight: '16px',
     display: 'flex',
     alignItems: 'center',
@@ -73,9 +74,9 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
         </Box>
       </Box>
       <Box display={'flex'}>
-        <Box mr={'16px'}>
+        <Box mr={'16px'} display={'flex'} flexDirection={'column'} alignItems={'end'}>
           <Box display={'flex'} mb={'4px'}>
-            <img className={classes.usrImg} src='/default-user-img.png' />
+            {/* <CustomImg className={classes.usrImg} src='default-user-img.png' /> */}
             <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
               {get(item, 'customer_name') == null ? 'Unknown' : get(item, 'customer_name')}
             </Typography>

@@ -1,0 +1,140 @@
+import InputDateRangePicker from '@components/Inputs/InputDateRangePicker';
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
+import { FormProvider, useForm } from 'react-hook-form';
+import LazySelect from '@components/Select/LazySelect';
+import CheckAccess from '@components/CheckAccess';
+import { HasAccess } from '@components/hasAccess';
+import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
+import { Box, Button } from '@mui/material';
+import { requests } from '@utils/requests';
+import { useSelector } from 'react-redux';
+import CloseIcon from '@icons/CloseIcon';
+import { useTheme } from '@mui/styles';
+import { useQuery } from 'react-query';
+import { error } from '@utils/toast';
+import { get } from 'lodash';
+import dayjs from 'dayjs';
+
+
+export default function PrintManualZReport({ open, setManualZreportData, setOpen, handlePrint }) {
+  const methods = useForm()
+  const theme = useTheme()
+  const { t } = useTranslation()
+  const { reset, control } = methods
+  const [startDate, setStartDate] = useState(0)
+  const [reportFilter, setReportFilter] = useState(0)
+  const [endDate, setEndDate] = useState(0)
+  const user_data = useSelector((state) => state.user)
+
+  const { data: saleStatsData } = useQuery(['saleStatsData', reportFilter], () => requests.getAllSaleStats(reportFilter), { enabled: !!reportFilter })
+  useEffect(() => {
+    if (saleStatsData) {
+      setManualZreportData({ data: get(saleStatsData, 'data.data', []), filter: reportFilter })
+      setTimeout(() => {
+        handlePrint()
+        setStartDate(0)
+        setEndDate(0)
+        setOpen(false)
+      }, 500)
+    }
+  }, [saleStatsData])
+
+  const onSubmit = (data) => {
+    if (!startDate || !endDate) {
+      error('Пожалуйста, заполните все поля!')
+      return
+    }
+    const requestBody = {
+      store_id: HasAccess('can_choose_z_report_sale', user_data) ? data?.store_id?.value : get(user_data, 'store.id'),
+      start_date: startDate != 0 ? dayjs(startDate).format('YYYY-MM-DD') : undefined,
+      end_date: endDate != 0 ? dayjs(endDate).format('YYYY-MM-DD') : undefined,
+    }
+    setReportFilter(requestBody)
+  }
+
+  const onError = (err) => {
+    error('Пожалуйста, заполните все поля!')
+    console.error('err', err)
+  }
+
+  useEffect(() => {
+    reset({}, { keepDirty: true })
+  }, [open])
+
+  return (
+    <StyledEmptyDialog
+      overflowVisible
+      onClose={() => setOpen(false)}
+      open={open}
+      title={'Распечатать отчет'}
+      customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
+    >
+      <Box
+        sx={{
+          width: '100%',
+          padding: '24px',
+          '& .MuiInputBase-root': {
+            border: `2px solid`,
+            borderColor: 'bunker.100',
+            height: '48px',
+          },
+          '& svg': {
+            fill: '#868FAA',
+            stroke: '#868FAA',
+          },
+        }}
+      >
+        <FormProvider {...methods}>
+          <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
+            <CheckAccess id={'can_choose_z_report_sale'}>
+              <LazySelect
+                slug='users'
+                boxStyle={{ width: '100%' }}
+                id='store'
+                white
+                name='store_id'
+                isMulti={false}
+                placeholder={t('Выберите Аптека')}
+                minWidth='auto'
+                isClearable={true}
+                label={t('input.store.label')}
+                request={requests.getAllStores}
+                required={true}
+                filters={{ limit: 10 }}
+                control={control}
+                getOptionLabel={(option) => {
+                  return option.name
+                }}
+                filterOption={() => true}
+              />
+            </CheckAccess>
+
+            <InputDateRangePicker
+              id='import-date'
+              name='date'
+              noValidation
+              asteriks
+              label={'Дата отчет'}
+              minWidth='auto'
+              placeholder={'Выберите дата отчет'}
+              fullWidth
+              startDate={startDate}
+              endDate={endDate}
+              setStartDate={setStartDate}
+              required={true}
+              setEndDate={setEndDate}
+              control={control}
+            />
+
+            <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
+              <Button fullWidth variant='contained' type='submit'>
+                Распечатать
+              </Button>
+            </Box>
+          </Box>
+        </FormProvider>
+      </Box>
+    </StyledEmptyDialog>
+  )
+}

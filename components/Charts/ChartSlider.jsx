@@ -1,6 +1,6 @@
-import { withStyles } from '@mui/styles'
-import Slider from '@mui/material/Slider'
 import { Box } from '@mui/material'
+import Slider from '@mui/material/Slider'
+import { withStyles } from '@mui/styles'
 
 const AirbnbSlider = withStyles((theme) => ({
   root: {
@@ -9,7 +9,7 @@ const AirbnbSlider = withStyles((theme) => ({
     marginTop: 24,
   },
   thumb: {
-    height: 48,
+    height: 24,
     width: 24,
     backgroundColor: theme.palette.orange[400],
     borderRadius: 16,
@@ -31,7 +31,7 @@ const AirbnbSlider = withStyles((theme) => ({
       top: '50%',
       left: '50%',
       background: 'white',
-      height: 16,
+      height: 4,
       width: 4,
       content: '" "',
       position: 'absolute',
@@ -40,13 +40,13 @@ const AirbnbSlider = withStyles((theme) => ({
   },
 
   track: {
-    height: 32,
+    height: 10,
     color: theme.palette.orange[100],
   },
   rail: {
     color: theme.palette.orange[100],
     opacity: 1,
-    height: 32,
+    height: 12,
     borderRadius: 16,
   },
 }))(Slider)

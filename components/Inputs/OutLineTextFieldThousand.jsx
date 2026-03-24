@@ -1,9 +1,9 @@
 import { Box, IconButton, InputAdornment, OutlinedInput as MuiTextField } from '@mui/material'
-import { useFormContext } from 'react-hook-form'
-import Label from '../Label'
-import { NumericFormat } from 'react-number-format'
-import { useState } from 'react'
 import { makeStyles } from '@mui/styles'
+import { useState } from 'react'
+import { useFormContext } from 'react-hook-form'
+import { NumericFormat } from 'react-number-format'
+import Label from '../Label'
 const useStyles = makeStyles((theme) => ({
   applyAll: {
     position: 'absolute',
@@ -108,6 +108,7 @@ const NumberFormatInput = ({
         inputRef={inputRef}
         placeholder={placeholder}
         customInput={MuiTextField} // Use MuiTextField as the custom input component
+        // customInput={TextField} // Use MuiTextField as the custom input component
         thousandSeparator={thousandSeparator}
         allowNegative={false} // Disallow negative numbers
         decimalScale={2} // Set decimal scale to 2
@@ -142,11 +143,11 @@ const NumberFormatInput = ({
           if (currentValue > maxNumber) {
             methods.setValue(name, maxNumber)
           }
+          onBlur(e)
           if (currentValue == '') {
             methods.setValue(name, 0)
             return
           }
-          onBlur(e)
         }}
         onFocus={(e) => {
           setApplyAll(true)

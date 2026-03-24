@@ -1,4 +1,5 @@
-import typography from './typography'
+import typography from './typography';
+
 
 export const theme = ({ mode, palette }) => {
   const fontFamily = {
@@ -113,19 +114,19 @@ export const theme = ({ mode, palette }) => {
             position: 'relative',
             '&.MuiButton-containedPrimary.Mui-disabled': {
               '& p': {
-                color: `${palette.orange[200]} !important`,
+                color: `#fff !important`,
               },
             },
             '&.MuiButton-containedSecondary.Mui-disabled': {
-              backgroundColor: palette.background.gray,
+              backgroundColor: `${palette.background.gray} !important`,
               '& p': {
-                color: `${palette.bunker[900]} !important`,
+                color: `${palette.bunker[300]} !important`,
               },
             },
 
             '&.Mui-disabled': {
-              backgroundColor: `${palette.orange[50]} !important`,
-              color: `${palette.orange[200]} !important`,
+              backgroundColor: `${palette.bunker[400]} !important`,
+              color: `${palette.background.default} !important`,
               cursor: 'auto',
               background: palette.gray[50],
               '&:hover': {
@@ -248,7 +249,7 @@ export const theme = ({ mode, palette }) => {
           },
 
           thumb: {
-            marginTop: 4,
+            // marginTop: 4,
             width: 24,
             height: 24,
             boxShadow: 'none',
@@ -329,7 +330,7 @@ export const theme = ({ mode, palette }) => {
               borderBottomLeftRadius: 16,
               borderBottomRightRadius: 16,
             },
-            '&:first-child': {
+            '&:first-of-type': {
               borderTopLeftRadius: 16,
               borderTopRightRadius: 16,
             },
@@ -362,7 +363,7 @@ export const theme = ({ mode, palette }) => {
         styleOverrides: {
           tooltip: {
             padding: 16,
-            backgroundColor: palette.gray[300],
+            backgroundColor: palette.bunker[300],
             borderRadius: 16,
             fontSize: 16,
             lineHeight: '19px',
@@ -371,7 +372,7 @@ export const theme = ({ mode, palette }) => {
             textAlign: 'center',
           },
           arrow: {
-            color: palette.gray[300],
+            color: palette.bunker[300],
             '&:before': {
               borderRadius: '0 0 2px 0',
             },
@@ -449,7 +450,7 @@ export const theme = ({ mode, palette }) => {
               border: 'none !important',
               paddingLeft: 16,
               backgroundColor: 'transparent !important',
-              '-webkit-box-shadow': '0 0 0 1000px white inset !important',
+              WebkitBoxShadow: '0 0 0 1000px white inset !important',
               ' -webkit-text-fill-color': 'inherit !important' /* Inherit the text color */,
               fontSize: 'inherit !important' /* Maintain font size */,
               lineHeight: 'inherit !important' /* Prevent height issues */,
@@ -565,7 +566,7 @@ export const theme = ({ mode, palette }) => {
               paddingBottom: '9px !important',
               border: 'none !important',
               backgroundColor: 'transparent !important',
-              '-webkit-box-shadow': '0 0 0 1000px white inset !important',
+              WebkitBoxShadow: '0 0 0 1000px white inset !important',
               ' -webkit-text-fill-color': 'inherit !important' /* Inherit the text color */,
               fontSize: '16px !important' /* Maintain font size */,
               lineHeight: 'inherit !important' /* Prevent height issues */,

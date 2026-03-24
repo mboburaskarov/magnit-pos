@@ -1,7 +1,7 @@
 import makeStyles from '@mui/styles/makeStyles'
-import { borderRadius, maxWidth, width } from '@mui/system'
+import { display } from '@mui/system'
 
-const drawerWidth = '296px'
+const drawerWidth = '272px'
 
 export const navbarStyles = makeStyles((theme) => {
   return {
@@ -141,7 +141,7 @@ export const navbarStyles = makeStyles((theme) => {
           color: '#fff',
         },
       },
-      '&:first-child': {
+      '&:first-of-type': {
         margin: '0 0 8px',
       },
       '&:last-child': {
@@ -192,18 +192,24 @@ export const navbarStyles = makeStyles((theme) => {
       '&:hover .drawer_icon > svg > .stroke-icon': {
         stroke: theme.palette.white,
       },
+      '&:hover .drawer_icon > svg > g > .stroke-icon': {
+        stroke: theme.palette.white,
+      },
       '& .drawer_icon> svg > .stroke-icon': {
-        stroke: theme.palette.black,
+        stroke: theme.palette.bunker[500],
         strokeWidth: 1.5,
       },
       '& .drawer_icon> svg > .fill-icon': {
-        fill: theme.palette.black,
+        fill: theme.palette.bunker[500],
         strokeWidth: 1.5,
       },
       '&.active .drawer_icon > svg > .fill-icon': {
         fill: theme.palette.white,
       },
       '&.active .drawer_icon > svg > .stroke-icon': {
+        stroke: theme.palette.white,
+      },
+      '&.active .drawer_icon > svg > g > .stroke-icon': {
         stroke: theme.palette.white,
       },
     },
@@ -263,6 +269,9 @@ export const navbarStyles = makeStyles((theme) => {
       // marginTop: 'auto !important',
       padding: ({ isOpen }) => (isOpen ? '12px 16px !important' : '12px !important'),
       borderRadius: '20px !important',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'start',
       '& img': {
         width: '35px',
       },
@@ -304,7 +313,7 @@ export const navbarStyles = makeStyles((theme) => {
       marginRight: 12,
       fontWeight: 600,
       fontSize: 16,
-      backgroundColor: theme.palette.orange[600],
+      backgroundColor: 'transparent',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',

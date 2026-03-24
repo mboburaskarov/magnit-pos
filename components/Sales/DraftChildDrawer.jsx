@@ -3,7 +3,7 @@ import { Box, Button, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import React, { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
@@ -12,9 +12,10 @@ import CloseIcon from '../../src/assets/icons/CloseIcon'
 import DeleteIcon from '../../src/assets/icons/DeleteIcon'
 import LeftArrowIcon from '../../src/assets/icons/LeftArrow'
 import MarkRectangleIcon from '../../src/assets/icons/MarkRectangleIcon'
-import { requests } from '../../utils/requests'
-import thousandDivider from '../../utils/thousandDivider'
-import { error, success } from '../../utils/toast'
+import { requests } from '@utils/requests'
+import thousandDivider from '@utils/thousandDivider'
+import { error, success } from '@utils/toast'
+import CustomImg from '../CustomImg'
 import LoadingContainer from '../LoadingContainer'
 import DraftChildItemsBox from './DraftChildItemsBox'
 
@@ -68,29 +69,36 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
   const classes = useStyles()
   const { mutate: deleteDraft, isLoading: isDeleteDraft } = useMutation(requests.deleteDraft, {
     onSuccess: ({ data }) => {
-      refetchDraftList()
+      // refetchDraftList()
       setChildOpen(false)
       // setOpen(false)
       success('Черновик удален!')
     },
     onError: (err) => {
       error('Ошибка при Черновик удален!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
   const { mutate: completeDraft, isLoading: isCompleteDraft } = useMutation(requests.completeDraft, {
     onSuccess: ({ data }) => {
-      refetchDraftList()
+      // refetchDraftList()
       setChildOpen(false)
       setOpen(false)
       navigate(`/sales/new-sale/${get(data, 'data')}`)
     },
     onError: (err) => {
       error('Ошибка при создании Черновик!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
-  const { data: darftChildList, refetch, isDarftChildList } = useQuery('darftChildList', () => requests.getDarftChildList(get(open, 'item.id')))
+  const {
+    data: darftChildList,
+    refetch,
+    isLoading: isDarftChildList,
+  } = useQuery('darftChildList', () =>
+    get(open, 'type') == 'draft' ? requests.getDarftChildList(get(open, 'item.id')) : requests.getCashBoxDetaildWithSaleId(get(open, 'item.id'))
+  )
+
   useEffect(() => {
     refetch()
   }, [open])
@@ -105,12 +113,25 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
               <LeftArrowIcon />
             </Box>
             <Box ml={'16px'}>
-              <Typography fontSize={24} lineHeight={'32px'} fontWeight={700}>
-                {t('draft')} #{get(darftChildList, 'data.data.draft_number')}
-              </Typography>
-              <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
-                {thousandDivider(get(darftChildList, 'data.data.total_price', 0), 'сум')}
-              </Typography>
+              {get(open, 'type') == 'draft' ? (
+                <>
+                  <Typography fontSize={24} lineHeight={'32px'} fontWeight={700}>
+                    {t('draft')} #{get(darftChildList, 'data.data.draft_number')}
+                  </Typography>
+                  <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
+                    {thousandDivider(get(darftChildList, 'data.data.total_price', 0), 'сум')}
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <Typography fontSize={24} lineHeight={'32px'} fontWeight={700}>
+                    {t('Отложка')} #{get(darftChildList, 'data.data.sale_number')}
+                  </Typography>
+                  <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
+                    {thousandDivider(get(darftChildList, 'data.data.total_amount', 0), 'сум')}
+                  </Typography>
+                </>
+              )}
             </Box>
           </Box>
 
@@ -131,18 +152,26 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
               <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
                 {t('vendor')}:
               </Typography>
-              <img className={classes.usrImg} src='/default-user-img.png' />
+              <CustomImg className={classes.usrImg} src='default-user-img.png' />
 
               <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
                 {get(darftChildList, 'data.data.employee.first_name')}
               </Typography>
             </Box>
           </Box>
-          <Box maxHeight={'calc(100vh - 485px)'} sx={{ overflowY: 'auto' }} padding={'0px 40px'}>
-            {get(darftChildList, 'data.data.cart_items', [])?.map((el) => (
-              <DraftChildItemsBox key={el.id} item={el} />
-            ))}
-          </Box>
+          {get(open, 'type') == 'draft' ? (
+            <Box maxHeight={'calc(100vh - 485px)'} sx={{ overflowY: 'auto' }} padding={'0px 40px'}>
+              {get(darftChildList, 'data.data.cart_items', [])?.map((el) => (
+                <DraftChildItemsBox key={el.id} item={el} />
+              ))}
+            </Box>
+          ) : (
+            <Box maxHeight={'calc(100vh - 485px)'} sx={{ overflowY: 'auto' }} padding={'0px 40px'}>
+              {get(darftChildList, 'data.data.products', [])?.map((el) => (
+                <DraftChildItemsBox key={el.id} item={el} />
+              ))}
+            </Box>
+          )}
           <Box p={'24px 40px'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
             <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
               {t('features')}
@@ -198,7 +227,20 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
                 {t('delete')}
               </Typography>
             </LoadingButton>
-            <Button onClick={() => completeDraft(get(open, 'item.id'))} fullWidth variant='contained' type='submit'>
+            <Button
+              onClick={() => {
+                if (get(open, 'type') == 'draft') {
+                  completeDraft(get(open, 'item.id'))
+                } else {
+                  navigate(`/sales/new-sale/${get(open, 'item.id')}`)
+                  setChildOpen(false)
+                  setOpen(false)
+                }
+              }}
+              fullWidth
+              variant='contained'
+              type='submit'
+            >
               <MarkRectangleIcon />
               <Typography fontSize={16} ml={'12px'} color={'white'} lineHeight={'24px'} fontWeight={600}>
                 {t('finish')}

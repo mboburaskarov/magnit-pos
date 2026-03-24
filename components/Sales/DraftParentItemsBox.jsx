@@ -2,11 +2,11 @@ import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import ArrowRightIcon from '../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../src/assets/icons/BagOutline'
-import thousandDivider from '../../utils/thousandDivider'
+import thousandDivider from '@utils/thousandDivider'
+import CustomImg from '../CustomImg'
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {
     backgroundColor: '#fff ',
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     height: '48px',
     minWidth: '88px',
     backgroundColor: '#fff',
-    borderRadius: '40px',
+    borderRadius: '16px',
     marginRight: '16px',
     display: 'flex',
     alignItems: 'center',
@@ -38,7 +38,7 @@ function DraftParentItemsBox({ setIsOpenChild, item }) {
   const classes = useStyles()
   return (
     <Box
-      onClick={() => setIsOpenChild({ item })}
+      onClick={() => setIsOpenChild({ item, type: 'draft' })}
       display={'flex'}
       height={'84px'}
       borderRadius={'16px'}
@@ -71,7 +71,7 @@ function DraftParentItemsBox({ setIsOpenChild, item }) {
       <Box display={'flex'}>
         <Box mr={'16px'}>
           <Box display={'flex'} mb={'4px'}>
-            <img className={classes.usrImg} src='/default-user-img.png' />
+            <CustomImg className={classes.usrImg} src='default-user-img.png' />
             <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
               {get(item, 'customer.first_name') == null ? 'Unknown' : get(item, 'customer.first_name')}
             </Typography>

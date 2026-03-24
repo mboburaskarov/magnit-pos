@@ -1,35 +1,35 @@
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import CustomImg from '@components/CustomImg'
+import StyledTooltip from '@components/StyledTooltip'
+import StyledSwitch from '@components/Switch/StyledSwitch'
+import DefaultUserImgIcon from '@icons/defaultUserImgIcon'
+import { Percent } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
+import { checkPermission } from '@utils/checkPermission'
+import { formatPhoneNumber } from '@utils/formatPhoneNumber'
+import getImageUrl from '@utils/getImageUrl'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
-import StyledTooltip from '../../../../components/StyledTooltip'
-import StyledSwitch from '../../../../components/Switch/StyledSwitch'
-import { formatPhoneNumber } from '../../../../utils/formatPhoneNumber'
-import getImageUrl from '../../../../utils/getImageUrl'
-import thousandDivider from '../../../../utils/thousandDivider'
-import DefaultUserImgIcon from '../../../assets/icons/defaultUserImgIcon'
+import { useSelector } from 'react-redux'
 
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400' }} id={`product-${type}-${rowIndex}`}>
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
-
-export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer, values }) {
-  const columns = productsColumns?.map((el) => {
+export default function tableHeaderSelector({ salesColumns, setOpenSaleDrawer, values }) {
+  const userData = useSelector((state) => state.user)
+  const absoluteIndex = (rowIndex) => {
+    return Number(get(values, 'offset', 0)) + 1 + rowIndex
+  }
+  const columns = salesColumns?.map((el) => {
     if (el.field === 'number') {
       return {
         ...el,
         headerName: '№',
         colId: el.field,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
-          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+          // const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
 
           return (
             <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-              {absoluteIndex}
+              {absoluteIndex(rowIndex)}
             </Typography>
           )
         }),
@@ -41,12 +41,43 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'ID',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <Box sx={{ whiteSpace: 'pre-line', '& p': { color: 'orange.500' }, cursor: 'pointer' }} onClick={() => setOpenSaleDrawer({ id: p.data.id })}>
-            {/* <SimpleText {...p} type='sale_number' /> */}
+        cellRenderer: memo(({ rowIndex, ...p }) => (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              whiteSpace: 'pre-line',
+              '& p': { color: 'orange.500' },
+              cursor: 'pointer',
+              '& svg': {
+                width: '15px',
+                height: '15px',
+              },
+              '& svg > path': {
+                fill: '#fff',
+              },
+            }}
+            onClick={() => setOpenSaleDrawer({ id: p.data?.id, data: p?.data, currentIndex: absoluteIndex(rowIndex) })}
+          >
             <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
               {get(p, 'data.sale_type', 'SALE') === 'SALE' ? 'Продажа' : 'Возврат'} #{get(p, 'data.sale_number', '-')}
             </Typography>
+            <Box width={'10px'} />
+            {get(p, 'data.total_discount') > 0 && (
+              <Box
+                sx={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: 'orange.500',
+                }}
+              >
+                <Percent sx={{ color: '#fff' }} />
+              </Box>
+            )}
           </Box>
         )),
       }
@@ -56,17 +87,20 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Kасса',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='cash_box_name' />),
+        cellRenderer: memo((p) => (
+          <SimpleText
+            onClick={() => {
+              if (checkPermission('can-view-ofd-cheque', userData)) {
+                window.open(get(p, 'data.check_url'), '_blank')
+              }
+            }}
+            {...p}
+            type='cash_box_name'
+          />
+        )),
       }
     }
-    // if (el.field === 'organisation') {
-    //   return {
-    //     ...el,
-    //     headerName: 'Организация',
-    //     colId: el.field,
-    //     cellRenderer: memo((p) => <SimpleText {...p} type='organisation' />),
-    //   }
-    // }
+
     if (el.field === 'total_amount') {
       return {
         ...el,
@@ -90,13 +124,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box sx={{ pt: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <StyledSwitch
-              checked={get(p, 'data.is_delivered', false)}
-              onChange={() => {
-                console.log('gg')
-              }}
-              name={'is_delivered'}
-            />
+            <StyledSwitch checked={get(p, 'data.is_delivered', false)} onChange={() => {}} name={'is_delivered'} />
           </Box>
         )),
       }
@@ -106,26 +134,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Наличные',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Naqd')}
-            type='amount'
-          />
-          // )
-          // <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-          //   <Typography>
-          //     {get(
-          //       get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Naqd'),
-          //       'amount',
-          //       0
-          //     )}
-          //     сум
-          //   </Typography>
-          // </Box>
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data')} type='cash' />),
       }
     }
     if (el.field === 'humo') {
@@ -133,15 +142,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Humo',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Humo')}
-            type='amount'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data')} type='humo' />),
       }
     }
     if (el.field === 'uzcard') {
@@ -149,15 +150,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Uzcard',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Uzcard')}
-            type='amount'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='uzcard' />),
       }
     }
     if (el.field === 'visa') {
@@ -165,15 +158,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Visa',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Visa')}
-            type='amount'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='visa' />),
       }
     }
     if (el.field === 'payme') {
@@ -181,15 +166,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Payme',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Payme')}
-            type='amount'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='payme' />),
       }
     }
     if (el.field === 'click') {
@@ -197,15 +174,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Click',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Click')}
-            type='amount'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='click' />),
       }
     }
     if (el.field === 'uzumbank') {
@@ -213,42 +182,62 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
         ...el,
         headerName: 'Uzumbank',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'UzumBank')}
-            type='amount'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='uzumbank' />),
       }
     }
-    if (el.field === 'balance') {
+    if (el.field === 'alif') {
       return {
         ...el,
-        headerName: 'Баланс',
+        headerName: 'Alif',
         colId: el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText
-            currency='сум'
-            withDevider
-            {...p}
-            data={get(p, 'data.sale_payments', []).find((payment) => payment.payment_type.name == 'Balanc')}
-            type='amount'
-          />
-        )),
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='alif' />),
+      }
+    }
+    if (el.field === 'uzum') {
+      return {
+        ...el,
+        headerName: 'Uzum',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='uzum' />),
+      }
+    }
+    if (el.field === 'total_discount') {
+      return {
+        ...el,
+        headerName: 'Сумма скидки',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='total_discount' />),
+      }
+    }
+    if (el.field === 'loyalty_card') {
+      return {
+        ...el,
+        headerName: 'Накопительный',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='loyalty_card' />),
       }
     }
 
     if (el.field === 'created_at') {
       return {
         ...el,
-        headerName: 'Дата регистрации',
+        headerName: 'Дата продажа',
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{dayjs(p.data?.['completed_at']).format('DD.MM.YYYY HH:mm:ss')}</Typography>
+            <Typography>{dayjs(p.data?.['completed_at']).format('DD.MM.YYYY')}</Typography>
+          </Box>
+        )),
+      }
+    }
+    if (el.field === 'created_at_time') {
+      return {
+        ...el,
+        headerName: 'Время продажи',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{dayjs(p.data?.['completed_at']).format('HH:mm:ss')}</Typography>
           </Box>
         )),
       }
@@ -275,7 +264,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
           <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + p.data?.phone)}>
             <Box display={'flex'} alignItems={'center'}>
               {p.data?.image ? (
-                <img style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data?.image)} />
+                <CustomImg style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data?.image)} />
               ) : (
                 <DefaultUserImgIcon />
               )}
@@ -301,7 +290,7 @@ export default function tableHeaderSelector({ productsColumns, setOpenSaleDrawer
           <StyledTooltip title={'Call: ' + formatPhoneNumber('+' + (get(p, 'data.customer_phone') ?? 'xxxxxxxxxxxx'))}>
             <Box display={'flex'} alignItems={'center'}>
               {p.data?.image ? (
-                <img style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data?.image)} />
+                <CustomImg style={{ width: '40px', borderRadius: '50%', height: '40px', marginRight: '10px' }} src={getImageUrl(p.data?.image)} />
               ) : (
                 <DefaultUserImgIcon />
               )}

@@ -1,43 +1,42 @@
-import { Box, Button } from '@mui/material'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useDispatch } from 'react-redux'
-import PaginationTable from '../../../../../components/AgGridTable/PaginationTable'
-import ConfirmDialog from '../../../../../components/ConfirmDialog'
-import CreateEditCategories from '../../../../../components/CreateEditCategories'
-import InputSearch from '../../../../../components/Inputs/InputSearch'
-import { requests } from '../../../../../utils/requests'
-import { error, success } from '../../../../../utils/toast'
-import BigWarningCircleIcon from '../../../../assets/icons/BigWarningCircleIcon'
-import PlusIcon from '../../../../assets/icons/PlusIcon'
-import useDebouncedValue from '../../../../hooks/useDebouncedValue'
-import { useQueryParams } from '../../../../hooks/useQueryParams'
-import tableHeadersActions from './tableHeadersActions'
-import RolesCreateDrawer from '../RolesCreateDrawer'
+import PaginationTable from '@components/AgGridTable/PaginationTable';
+import BigWarningCircleIcon from '@icons/BigWarningCircleIcon';
+import useDebouncedValue from '@hooks/useDebouncedValue';
+import InputSearch from '@components/Inputs/InputSearch';
+import { useQueryParams } from '@hooks/useQueryParams';
+import ConfirmDialog from '@components/ConfirmDialog';
+import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { useTranslation } from 'react-i18next';
+import { error, success } from '@utils/toast';
+import { Box, Button } from '@mui/material';
+import { requests } from '@utils/requests';
+import PlusIcon from '@icons/PlusIcon';
+
+import tableHeadersActions from './tableHeadersActions';
+import RolesCreateDrawer from '../RolesCreateDrawer';
+
 
 export default function ActionListPage() {
   const queryParams = useQueryParams()
   const { t } = useTranslation()
   const { values } = useQueryParams()
-  const dispatch = useDispatch()
   const [type, setType] = useState('categories')
   const [status, setStatus] = useState('')
   const [categoryDrawer, setCategoryDrawer] = useState(false)
-  const [createEdit, setCreateEdit] = useState(null)
   const [openConfirm, setOpenConfirm] = useState(null)
   const [searchTerm, setSearchTerm, debouncedSearchTerm] = useDebouncedValue('', 300)
   const [confirmToDelete, setConfirmToDelete] = useState(false)
   const [offsetCount, setOffsetCount] = useState(0)
   const [openCreatePermission, setOpenCreatePermission] = useState(false)
+
   const categoryFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      search: values?.search,
       search: searchTerm,
       offset: values?.search ? 0 : values?.offset || 0,
     }
-  }, [values?.offset, searchTerm, values?.limit, values?.search])
+  }, [values?.offset, debouncedSearchTerm, values?.limit, values?.search])
+
   const {
     data: categories,
     refetch: categoriesRefetch,
@@ -52,7 +51,7 @@ export default function ActionListPage() {
     },
     onError: (err) => {
       error('Ошибка при создании Категори!')
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -61,8 +60,6 @@ export default function ActionListPage() {
 
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
-
-    // refetchAll()
   }, [categories?.data, queryParams?.values?.search, queryParams?.values?.limit, queryParams?.values?.page])
 
   const columnsCategories = tableHeadersActions(searchTerm, setCategoryDrawer, setOpenCreatePermission, status, type, setOpenConfirm, t, setConfirmToDelete)
@@ -74,7 +71,7 @@ export default function ActionListPage() {
       obj.subRows = obj.children
       delete obj.children
 
-      obj.subRows.forEach(renameSubRows) // Recurse through sub_category if exists
+      obj.subRows.forEach(renameSubRows)
     }
     return obj
   }

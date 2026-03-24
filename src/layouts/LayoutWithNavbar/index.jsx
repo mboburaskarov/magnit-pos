@@ -1,9 +1,9 @@
 import { Box } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { useSelector } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 import NavBar from '../Navbar'
-import { makeStyles } from '@mui/styles'
-import LayoutHeader from '../LayoutHeader'
-import { useSelector } from 'react-redux'
+import { useWebView } from '../WebviewProvider'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,12 +32,13 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function DashboardLayout() {
+  const { isWebview } = useWebView()
   const { isOpen } = useSelector((state) => state.sidebarSettings)
   const classes = useStyles({ isOpen })
   return (
     <Box display='flex' width='100%' minHeight='100%'>
       <div className={classes.root}>
-        <NavBar />
+        {isWebview ? null : <NavBar />}
         <div className={classes.wrapper}>
           <div className={classes.contentContainer}>
             <div className={classes.content}>

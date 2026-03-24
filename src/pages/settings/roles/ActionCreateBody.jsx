@@ -1,10 +1,10 @@
 import { Box } from '@mui/material'
 import { useFormContext } from 'react-hook-form'
 import { useQuery } from 'react-query'
-import InputSwitch from '../../../../components/Inputs/InputSwitch'
-import TextField from '../../../../components/Inputs/TextField'
-import SelectSimple from '../../../../components/Select/SelectSimple'
-import { requests } from '../../../../utils/requests'
+import InputSwitch from '@components/Inputs/InputSwitch'
+import TextField from '@components/Inputs/TextField'
+import SelectSimple from '@components/Select/SelectSimple'
+import { requests } from '@utils/requests'
 import { useEffect } from 'react'
 import { get } from 'lodash'
 const METHOD_OPETIONS = [
@@ -19,12 +19,9 @@ export default function ActionCreateBody({ isOpen }) {
   const type_action = watch('type_action')
   const type_page = watch('type_page')
   const { data: actions } = useQuery('actions', () => requests.getAllActions())
-  const {
-    data: onePermission,
-    refetch: onePermissionRefetch,
-    isLoading: onePermissionLoading,
-    isFetching: onePermissionFetching,
-  } = useQuery(['onePermission', isOpen], () => requests.getPermissionById(get(isOpen, 'id')), { enabled: Boolean(get(isOpen, 'id')) })
+  const { data: onePermission } = useQuery(['onePermission', isOpen], () => requests.getPermissionById(get(isOpen, 'id')), {
+    enabled: Boolean(get(isOpen, 'id')),
+  })
   useEffect(() => {
     setTimeout(() => {
       setValue('type_action', get(onePermission, 'data.data.type'))
@@ -35,10 +32,11 @@ export default function ActionCreateBody({ isOpen }) {
       )
       setValue('name', get(onePermission, 'data.data.name'))
       setValue('route', get(onePermission, 'data.data.route'))
+      setValue('key', get(onePermission, 'data.data.key'))
       setValue('description', get(onePermission, 'data.data.description'))
       setValue(
         'method',
-        METHOD_OPETIONS.filter((e) => get(onePermission, 'data.data.method').includes(e.value))
+        METHOD_OPETIONS.filter((e) => get(onePermission, 'data.data.method', '').includes(e.value))
       )
     }, 200)
   }, [onePermission?.data])
@@ -91,7 +89,7 @@ export default function ActionCreateBody({ isOpen }) {
             <>
               <Box display={'flex'} flexDirection={'column'} gap={2}>
                 <TextField required fullWidth name='name' label='Название' placeholder='Введите название' />
-                <TextField required fullWidth name='key' label='Ключ' placeholder='Введите ключ' />
+                <TextField required fullWidth name='route' label='Ключ' placeholder='Введите ключ' />
                 <TextField
                   required
                   multiline

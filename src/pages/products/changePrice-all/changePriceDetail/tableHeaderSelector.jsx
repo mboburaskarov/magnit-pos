@@ -1,0 +1,119 @@
+import { ArrowCircleRight } from '@mui/icons-material'
+import { Typography } from '@mui/material'
+import { get } from 'lodash'
+import { memo } from 'react'
+import thousandDivider from '../../../../../utils/thousandDivider'
+import { useQueryParams } from '../../../../hooks/useQueryParams'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+
+export default function tableHeaderSelector({ revaluationColumns }) {
+  const { values } = useQueryParams()
+
+  const columns = revaluationColumns?.map((el) => {
+    if (el.field === 'number') {
+      return {
+        ...el,
+        headerName: '№',
+        colId: el.field,
+        cellRenderer: memo(({ rowIndex, api, ...p }) => {
+          const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
+
+          return (
+            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+              {absoluteIndex}
+            </Typography>
+          )
+        }),
+      }
+    }
+    if (el.field === 'name') {
+      return {
+        ...el,
+        headerName: 'Наименование',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='name' />),
+      }
+    }
+    if (el.field === 'serial_number') {
+      return {
+        ...el,
+        headerName: 'Артикул',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='serial_number' />),
+      }
+    }
+
+    if (el.field === 'barcode') {
+      return {
+        ...el,
+        headerName: 'Баркод',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='barcode' />),
+      }
+    }
+
+    if (el.field === 'new_retail_price') {
+      return {
+        ...el,
+        headerName: '	Цена продажи',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Typography
+            sx={{
+              whiteSpace: 'pre-line',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            id={`product-retail_price-${p?.rowIndex}`}
+          >
+            {thousandDivider(Math.ceil(get(p, 'data.old_retail_price') / 100) * 100, 'сум')}
+            <ArrowCircleRight sx={{ m: '0 10px', fontSize: '25px', color: '#fe5000' }} />
+            {thousandDivider(Math.ceil(get(p, 'data.new_retail_price') / 100) * 100, 'сум')}
+          </Typography>
+        )),
+      }
+    }
+
+    if (el.field === 'old_supply_price') {
+      return {
+        ...el,
+        headerName: 'Цена поставщика',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='old_supply_price' withDevider currency={'сум'} />),
+      }
+    }
+
+    if (el.field === 'percent') {
+      return {
+        ...el,
+        headerName: 'Наценка',
+        colId: el.field,
+        cellRenderer: memo((p) => (
+          <Typography
+            sx={{
+              whiteSpace: 'pre-line',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+            id={`product-retail_price-${p?.rowIndex}`}
+          >
+            {thousandDivider(get(p, 'data.old_markup'), '%')}
+            <ArrowCircleRight sx={{ m: '0 10px', fontSize: '25px', color: '#fe5000' }} />
+            {thousandDivider(get(p, 'data.new_markup'), '%')}
+          </Typography>
+        )),
+      }
+    }
+    if (el.field === 'scanned_count') {
+      return {
+        ...el,
+        headerName: 'Кол-во',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='scanned_count' />),
+      }
+    }
+  })
+
+  return columns
+}

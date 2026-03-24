@@ -1,7 +1,6 @@
-import { faWeight } from '@fortawesome/free-solid-svg-icons'
 import makeStyles from '@mui/styles/makeStyles'
 
-const drawerWidth = '296px'
+const drawerWidth = '272px'
 
 export const headerStyles = makeStyles((theme) => {
   return {
@@ -179,6 +178,9 @@ export const headerStyles = makeStyles((theme) => {
       '&:hover > svg > .stroke-icon': {
         stroke: theme.palette.white,
       },
+      '&:hover > svg > g > .stroke-icon': {
+        stroke: theme.palette.white,
+      },
       '&:hover .drawer_icon > svg > .fill-icon': {
         fill: theme.palette.white,
       },
@@ -197,6 +199,9 @@ export const headerStyles = makeStyles((theme) => {
         fill: theme.palette.white,
       },
       '&.active .drawer_icon > svg > .stroke-icon': {
+        stroke: theme.palette.white,
+      },
+      '&.active .drawer_icon > svg > g > .stroke-icon': {
         stroke: theme.palette.white,
       },
     },
@@ -261,6 +266,7 @@ export const headerStyles = makeStyles((theme) => {
     avatarPlaceholder: {
       position: 'relative',
       height: 40,
+      flexShrink: 0,
       width: 40,
       borderRadius: 20,
       marginRight: 12,
@@ -289,7 +295,7 @@ export const headerStyles = makeStyles((theme) => {
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       textAlign: 'left',
-      maxWidth: '120px',
+      maxWidth: '130px',
     },
     username: {
       width: '100%',

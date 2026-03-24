@@ -1,20 +1,9 @@
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
 import { Box, Typography } from '@mui/material'
-import { memo } from 'react'
-import thousandDivider from '../../../../utils/thousandDivider'
-import TextField from '../../../../components/Inputs/TextField'
+import thousandDivider from '@utils/thousandDivider'
 import { get } from 'lodash'
-import NumberFormatInput from '../../../../components/Inputs/OutLineTextFieldThousand'
-
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
+import { memo } from 'react'
 
 export default function tableHeaderSelector({ cardShiftColumns, t, setValue, changeCloseBoxNetAmout }) {
   const columns = cardShiftColumns?.map((el) => {

@@ -1,45 +1,38 @@
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/cashboxTableColumns'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import CheckAccess from '@components/CheckAccess'
+import ConfirmDialog from '@components/ConfirmDialog'
+import InputSearch from '@components/Inputs/InputSearch'
+import LoadingContainer from '@components/LoadingContainer'
+import { useQueryParams } from '@hooks/useQueryParams'
+import BigTickIcon from '@icons/BigTickIcon'
+import BigWarningIcon from '@icons/BigWarningIcon'
+import DeleteIcon from '@icons/DeleteIcon'
+import PlusIcon from '@icons/PlusIcon'
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import { requests } from '@utils/requests'
+import { error, success } from '@utils/toast'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import CheckAccess from '../../../../components/CheckAccess'
-import ConfirmDialog from '../../../../components/ConfirmDialog'
-import StyledDialog from '../../../../components/Dialogs/StyledDialog'
-import ImageGallery from '../../../../components/ImageGallery'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { requests } from '../../../../utils/requests'
-import { error, success } from '../../../../utils/toast'
-import BigTickIcon from '../../../assets/icons/BigTickIcon'
-import BigWarningIcon from '../../../assets/icons/BigWarningIcon'
-import DeleteIcon from '../../../assets/icons/DeleteIcon'
-import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
-import LockIcon from '../../../assets/icons/LockIcon'
-import PlusIcon from '../../../assets/icons/PlusIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/cashboxTableColumns'
 import CreateCashBoxDrawer from './CreateCashBoxDrawer'
-import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
-const SELECTION_ID = 'checkboxSelectionField'
 
 export default function CashBoxsPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.cashboxTableColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
-  const [openImageGallery, setOpenImageGallery] = useState(false)
-  const [openCreateVendorDrawer, setopenCreateVendorDrawer] = useState(false)
+  const [openCreateCashBoxDrawer, setOpenCreateCashBoxDrawer] = useState(false)
 
-  const [filterMenu, setFilterMenu] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [slectedVendors, setSelectedVendors] = useState([])
+
   const selectVendors = (isChecked, id) => {
     if (isChecked) {
       setSelectedVendors((p) => [...p, id])
@@ -52,24 +45,14 @@ export default function CashBoxsPage() {
     vendorsColumns: columns,
     t,
     values,
-    setImages: setOpenImageGallery,
     setOpenConfirmDialog,
     selectVendors,
-    setopenCreateVendorDrawer,
+    setOpenCreateCashBoxDrawer,
   })
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
 
       dispatch(changeColumnSequence(formattedData))
     }
@@ -80,9 +63,9 @@ export default function CashBoxsPage() {
       limit: values?.limit || 10,
       search: values?.search,
       offset: values?.search ? 0 : values?.offset || 0,
-      store_id: values?.store_id,
     }
-  }, [values?.offset, values?.limit, values?.search, values?.store_id])
+  }, [values?.offset, values?.limit, values?.search])
+
   const {
     data: cashboxList,
     isLoading: cashboxListLoading,
@@ -90,7 +73,7 @@ export default function CashBoxsPage() {
     refetch,
   } = useQuery(['cashboxList', cashboxListFilter], () => requests.getAllCashBoxList(cashboxListFilter))
 
-  const { mutate: deleteCashBox, isLoading: isDeletingProduct } = useMutation(requests.deleteCashBox, {
+  const { mutate: deleteCashBox, isLoading: isDeletingCashBox } = useMutation(requests.deleteCashBox, {
     onSuccess: () => {
       refetch()
       success('Продукт успешно удален!')
@@ -100,38 +83,7 @@ export default function CashBoxsPage() {
       refetch()
       error('Ошибка при удалении товара!')
       setOpenConfirmDialog(null)
-      console.log('err', err)
-    },
-  })
-
-  const { mutate: activateProduct, isLoading: isActivatingProduct } = useMutation(requests.activateVendor, {
-    onSuccess: () => {
-      success('Продукт успешно активирован!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при активации продукта!')
-      refetch()
-      setOpenConfirmDialog(null)
-      console.log('err', err)
-    },
-  })
-  const { mutate: deActivateProduct, isLoading: isDeActivatingProduct } = useMutation(requests.deActivateVendor, {
-    onSuccess: () => {
-      success('Продукт успешно деактивирован!')
-      setTimeout(() => {
-        refetch()
-      }, 500)
-      setOpenConfirmDialog(null)
-    },
-    onError: (err) => {
-      error('Ошибка при деактивации продукта!')
-      refetch()
-      setOpenConfirmDialog(null)
-      console.log('err', err)
+      console.error('err', err)
     },
   })
 
@@ -166,35 +118,9 @@ export default function CashBoxsPage() {
                 },
               }}
             >
-              <InputSearch id='producrs-search' name='search' placeholder={'ID, имя, телефон'} uncontrolled />
+              <InputSearch id='producrs-search' name='search' placeholder={'Касса, aптека'} uncontrolled />
             </Box>
 
-            <Box minWidth={113} ml={'16px'}>
-              <Button
-                sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
-                  },
-                }}
-                fullWidth
-                startIcon={<FilterMenuIcon />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
-              >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
-            </Box>
             {slectedVendors.length > 0 && (
               <>
                 <Box minWidth={48} ml={'16px'}>
@@ -233,23 +159,22 @@ export default function CashBoxsPage() {
                 resetTableHeader={resetTableHeader}
               />
             </Box>
-            {/* <CheckAccess id={'product-create'}> */}
-            <Box minWidth={156}>
-              <Button
-                sx={{ height: '48px' }}
-                onClick={() => setopenCreateVendorDrawer({ mode: 'add' })}
-                fullWidth
-                startIcon={<PlusIcon color='#fff' />}
-                variant='contained'
-                color='primary'
-              >
-                {t('button.add_new.text')}
-              </Button>
-            </Box>
-            {/* </CheckAccess> */}
+            <CheckAccess id={'cashbox:create'}>
+              <Box minWidth={156}>
+                <Button
+                  sx={{ height: '48px' }}
+                  onClick={() => setOpenCreateCashBoxDrawer({ mode: 'add' })}
+                  fullWidth
+                  startIcon={<PlusIcon color='#fff' />}
+                  variant='contained'
+                  color='primary'
+                >
+                  {t('button.add_new.text')}
+                </Button>
+              </Box>
+            </CheckAccess>
           </Box>
         </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'
@@ -273,26 +198,13 @@ export default function CashBoxsPage() {
         </Box>
       </Box>
 
-      <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
       {openConfirmDialog && (
         <ConfirmDialog
           open={!!openConfirmDialog}
           setOpen={setOpenConfirmDialog}
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={
-            openConfirmDialog?.type === 'activate'
-              ? 'Активировать сотрудника?'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Деактивировать сотрудника?'
-              : 'Удалить сотрудника?'
-          }
-          desc={
-            openConfirmDialog?.type === 'activate'
-              ? 'Вы действительно хотите активировать сотрудника, но после активации вы не сможете отменить процесс.'
-              : openConfirmDialog?.type === 'deactivate'
-              ? 'Вы уверены, что хотите удалить сотрудника? После удаления вы не сможете отменить процесс.'
-              : 'вы хотите удалить?'
-          }
+          title={'Удалить кассы?'}
+          desc={'вы хотите удалить?'}
           supDesc={openConfirmDialog.name}
           actions={
             <>
@@ -305,18 +217,7 @@ export default function CashBoxsPage() {
               >
                 Нет
               </Button>
-              <LoadingButton
-                variant='contained'
-                type='button'
-                loading={isDeletingProduct || isActivatingProduct || isDeActivatingProduct}
-                onClick={() =>
-                  openConfirmDialog?.type === 'activate'
-                    ? activateProduct([openConfirmDialog.id])
-                    : openConfirmDialog?.type === 'deactivate'
-                    ? deActivateProduct([openConfirmDialog.id])
-                    : deleteCashBox({ data: [openConfirmDialog.id] })
-                }
-              >
+              <LoadingButton variant='contained' type='button' loading={isDeletingCashBox} onClick={() => deleteCashBox({ data: [openConfirmDialog.id] })}>
                 Да, удалить
               </LoadingButton>
             </>
@@ -325,12 +226,12 @@ export default function CashBoxsPage() {
       )}
 
       <CreateCashBoxDrawer
-        refetchVendorList={refetch}
+        refetchCashBoxList={refetch}
         setCustomerId={'setCustomerId'}
         quickCreateClientName={'quickCreateClientName'}
-        openDrawer={openCreateVendorDrawer}
-        closeDrawer={() => setopenCreateVendorDrawer(false)}
-        clientData={'clientDetails'}
+        openDrawer={openCreateCashBoxDrawer}
+        closeDrawer={() => setOpenCreateCashBoxDrawer(false)}
+        cashBoxData={'clientDetails'}
       />
     </LoadingContainer>
   )

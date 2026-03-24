@@ -1,17 +1,19 @@
-import { Box, List, ListItem, Skeleton, Typography } from '@mui/material'
-import { Link, useLocation } from 'react-router-dom'
+import CustomImg from '@components/CustomImg'
+import BackArrowIcon from '@icons/BackArrow'
+import LogoLetters from '@icons/LogoLetters'
+import LogoMain from '@icons/LogoMain'
+import SidebarIcon from '@icons/SidebarIcon'
+import { Box, List, ListItem, Typography } from '@mui/material'
+import isEqual from '@utils/isEqual'
+import { get, size } from 'lodash'
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import LogoMain from '../../assets/icons/LogoMain'
-import LogoLetters from '../../assets/icons/LogoLetters'
-import SidebarIcon from '../../assets/icons/SidebarIcon'
+import { Link, useLocation } from 'react-router-dom'
+
 import NavItem from './NavItem'
 import NavItemMini from './NavItemMini'
-import isEqual from '../../../utils/isEqual'
-import BackArrowIcon from '../../assets/icons/BackArrow'
-import { useTranslation } from 'react-i18next'
-import { get, size } from 'lodash'
-import { useQueryParams } from '../../hooks/useQueryParams'
+
 function NavbarDrawer({
   classes,
   isOpen,
@@ -26,11 +28,8 @@ function NavbarDrawer({
 }) {
   const { t } = useTranslation()
   const location = useLocation()
-  const { values } = useQueryParams()
   const isNewSalePage = location?.pathname?.split('new-sale/')[0] == '/sales/'
   const userData = useSelector((state) => state.user)
-  const firstName = userData?.fullName?.split(' ')?.[0]
-  const lastName = userData?.fullName?.split(' ')?.[1]
 
   return (
     <div id='navbar' className={classes.container}>
@@ -125,11 +124,43 @@ function NavbarDrawer({
           )}
         </Box>
       </List>
+      {import.meta.env.VITE_MODE == 'dev' ? (
+        <Box
+          sx={{
+            position: 'fixed',
+            width: '400px',
+            backgroundColor: '#fe5000',
+            textAlign: 'center',
+            alignItems: 'center',
+            height: '20px',
+            margin: 'auto',
+            top: 30,
+            left: -150,
+
+            transform: 'rotate(-40deg)',
+          }}
+        >
+          <Box
+            component='span'
+            sx={{
+              display: 'inline-block',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: '18px',
+            }}
+          >
+            DEV MODE
+          </Box>
+        </Box>
+      ) : (
+        <Box></Box>
+      )}
+
       {isNewSalePage && (
         <ListItem onClick={() => setIsUserOpen(true)} width={'100% !important'} className={`${classes.currentNavBarUser} drawer_user_avatar`} id='avatar'>
           <Box mr={'15px'} display='flex' alignItems='center' justifyContent='flex-start'>
             <Box className={classes.avatarPlaceholder}>
-              <img src={get(userData, 'photo')} />
+              <CustomImg src={get(userData, 'photo')} />
             </Box>
 
             {isOpen && (
@@ -138,14 +169,11 @@ function NavbarDrawer({
                   {get(userData, 'store.name')}
                 </Typography>
                 <p id='user-shopname' className={`${classes.shopname} shopname`}>
-                  {get(userData, 'store.store_code')}
+                  ({localStorage.getItem('leftZreportCount')}) {get(userData, 'cashbox.name', '-')}
                 </p>
               </Box>
             )}
           </Box>
-          {/* <Box display={'flex'} alignItems={'center'}>
-              <ArrowDown />
-            </Box> */}
         </ListItem>
       )}
     </div>

@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import StyledTooltip from './StyledTooltip'
+import { useEffect, useState } from 'react'
 import ArrowDown from '../src/assets/icons/ArrowDown'
 import ZipIcon from '../src/assets/icons/ZipIcon'
 import downloadImage from '../utils/downloadImage'
 import downloadZip from '../utils/downloadZip'
 import getImageUrl from '../utils/getImageUrl'
 import { error } from '../utils/toast'
+import CustomImg from './CustomImg'
+import StyledTooltip from './StyledTooltip'
 
 const OneSideOfCompare = ({ imagesArr = [], right, backgroundBlack }) => {
   if (!Array.isArray(imagesArr) || imagesArr.length === 0) return null
@@ -44,7 +45,7 @@ const OneSideOfCompare = ({ imagesArr = [], right, backgroundBlack }) => {
             },
           }}
         >
-          {imagesArr[count] && <img style={{ backdropFilter: 'blur(3px)' }} src={getImageUrl(imagesArr[count])} alt='image of order' />}
+          {imagesArr[count] && <CustomImg style={{ backdropFilter: 'blur(3px)' }} src={getImageUrl(imagesArr[count])} alt='image of order' />}
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, userSelect: 'none', mt: 3 }}>

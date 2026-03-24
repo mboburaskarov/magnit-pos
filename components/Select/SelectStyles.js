@@ -1,7 +1,9 @@
-import { useTheme } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import paletteDark from '../../src/assets/theme/paletteDark'
-import paletteLight from '../../src/assets/theme/paletteLight'
+import { useTheme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
+import paletteLight from '../../src/assets/theme/paletteLight';
+import paletteDark from '../../src/assets/theme/paletteDark';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
 export const generateCustomStyles = (props = {}) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const theme = useTheme()
+  const hasBeforeContent = props?.beforeContent
+
   const palette = theme.mode === 'dark' ? paletteDark : paletteLight
   const {
     withAllSelect,
@@ -52,6 +56,7 @@ export const generateCustomStyles = (props = {}) => {
       padding: 1,
       borderRadius: '40px',
     }),
+
     control: (provided, state) => ({
       borderRadius: borderRadius || '40px',
       transition: '0.3s',
@@ -61,7 +66,7 @@ export const generateCustomStyles = (props = {}) => {
       minHeight: mini ? 40 : minHeight,
       fontWeight: 600,
       overflow: 'hidden',
-      backgroundColor: white ? palette.background.default : palette.white,
+      backgroundColor: white ? palette.white : palette.bg[10],
       '&:hover': {
         backgroundColor: white ? palette.gray[10] : palette.gray[10],
       },
@@ -100,11 +105,12 @@ export const generateCustomStyles = (props = {}) => {
     }),
     singleValue: (provided) => ({
       ...provided,
-      paddingLeft: 8,
+      paddingLeft: hasBeforeContent ? '20px' : 8,
       fontSize: 17,
       fontWeight: 500,
       fontFamily: 'Gilroy',
       color: palette.dark[500],
+
       alignItems: 'center',
       lineHeight: '28px',
     }),
@@ -177,6 +183,7 @@ export const generateCustomStyles = (props = {}) => {
       borderRadius: 16,
       backgroundColor: palette.background.default,
       border: 'none',
+      fontSize: 18,
       boxShadow: theme.boxShadow['16-8'],
       // overflow: 'hidden',
       zIndex: 9999999999999,
@@ -204,17 +211,17 @@ export const generateCustomStyles = (props = {}) => {
       alignItems: 'center',
       height: mini ? 40 : 48,
       padding: '0 16px',
-      fontSize: 16,
+      fontSize: 18,
       lineHeight: '19px',
       fontWeight: 600,
       fontFamily: 'Gilroy',
-      color: palette.gray[600],
+      color: `${palette.dark[500]} !important`,
       cursor: 'pointer',
       backgroundColor: state.isFocused ? palette.gray[101] : state.isFocused ? palette.orange[50] : 'transparent',
       '&:hover': {
         backgroundColor: palette.gray[101],
       },
-      '&:first-child': {
+      '&:first-of-type': {
         borderBottom: withAllSelect && `2px dashed ${palette.gray[200]}`,
       },
     }),

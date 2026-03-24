@@ -1,9 +1,8 @@
-import { Box, Backdrop, ClickAwayListener, Popper, Button } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { useRef, useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { LoadingButton } from '@mui/lab'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Backdrop, Box, Button, ClickAwayListener, Popper } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -122,7 +121,7 @@ const ButtonWithPopup = ({
             {PopperContent ? (
               <PopperContent {...popperContentProps} close={handleClose} />
             ) : (
-              <Box className={classes.options}>
+              <Box className={classes.options + ' pop-up-options'}>
                 {popperData?.map(
                   (el, index) =>
                     el && (

@@ -1,11 +1,11 @@
-import { Box, TextField, Typography, InputAdornment } from '@mui/material'
-import { Controller } from 'react-hook-form'
-import SelectSimple from '../Select/SelectSimple'
-import { error as errorNotify } from '../../utils/toast'
-import thousandDivider from '../../utils/thousandDivider'
-import { memo, useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
-import { makeStyles } from '@mui/styles'
+import { Box, InputAdornment, TextField, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { Controller } from 'react-hook-form';
+import { memo, useCallback } from 'react';
+import { makeStyles } from '@mui/styles';
+
+import SelectSimple from '../Select/SelectSimple';
+
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -13,9 +13,10 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
   },
   root: {
-    '& .MuiInputAdornment-root .MuiTypography-root': {
-      color: theme.palette.gray[600],
+    '& .MuiInputAdornment-root': {
+      width: '115px !important',
     },
+
     '& .MuiInputAdornment-root .MuiTypography-root': {
       color: theme.palette.bunker[400],
       marginRight: '8px',
@@ -89,6 +90,8 @@ const useStyles = makeStyles((theme) => ({
   },
   inputHeight: {
     '& .MuiOutlinedInput-root': {
+      borderRadius: ({ borderRadius }) => `${borderRadius} !important `,
+
       height: ({ inputHeight }) => `${inputHeight}px !important`,
     },
   },
@@ -223,6 +226,7 @@ function InputSimple({
   multiline,
   list,
   rowsMax,
+  borderRadius = '40px',
   required = false,
   inputStyles,
   disabled = false,
@@ -273,6 +277,7 @@ function InputSimple({
     white,
     customTextColor,
     inputHeight,
+    borderRadius,
   })
   const autoCompleteProps = autoCompleteOff
     ? {
@@ -337,13 +342,13 @@ function InputSimple({
     }
     const numValue = Number(e.target.value.replace(/\s/g, ''))
 
-    if ((!max || numValue <= max) && !time) {
-      onValueChange(e.target.value)
-    } else if ((!max || numValue <= max) && time && e.target.value.length < 3) {
-      onValueChange(e.target.value)
-    } else {
-      errorNotify(t('toast.error.error_max_price', { max: thousandDivider(max) }), true)
-    }
+    // if ((!max || numValue <= max) && !time) {
+    //   onValueChange(e.target.value)
+    // } else if ((!max || numValue <= max) && time && e.target.value.length < 3) {
+    //   onValueChange(e.target.value)
+    // } else {
+    //   errorNotify(t('toast.error.error_max_price', { max: thousandDivider(max) }), true)
+    // }
   }, [])
 
   return (

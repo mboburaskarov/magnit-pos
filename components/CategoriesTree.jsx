@@ -23,14 +23,11 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 24,
     marginTop: 16,
     maxHeight: 808,
-    // overflowY: 'scroll',
     '&::-webkit-scrollbar': {
       width: 0,
     },
   },
   root: {
-    // padding: '24px 24px 0 24px',
-    // border: `1px solid ${theme.palette.bunker[100]}`,
     paddingTop: 0,
     borderRadius: 24,
     marginTop: 16,
@@ -104,7 +101,7 @@ export default function FileSystemNavigator({
   const { setValue: setValue2, getValues } = useFormContext()
   const company_id = useSelector((state) => state.company)
   const [createEdit, setCreateEdit] = useState(false)
-  const [selected, setSelected] = useState([])
+  const [selected, setSelected] = useState(null)
   const { values } = useQueryParams()
   const [searchedCategories, setSearchedCategories] = useState([])
   const [pageIndex, setPageIndex] = useState(0)
@@ -154,7 +151,7 @@ export default function FileSystemNavigator({
     setSearchedCategories(categories?.data?.data?.data?.map((el) => renameSubRows(el)))
   }, [categories?.data?.data])
   useEffect(() => {
-    setValue2('category_ids', selected)
+    setValue2('category_ids', selected ? [selected] : [])
   }, [selected, setValue2])
 
   useEffect(() => {

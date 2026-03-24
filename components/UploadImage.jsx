@@ -1,17 +1,17 @@
-import React, { useState, useCallback, useEffect } from 'react'
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
-import StarFilledIcon from '../src/assets/icons/StarFilledIcon'
-import MoveIcon from '../src/assets/icons/MoveIcon'
-import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc'
-import { useMutation } from 'react-query'
-import StarOutlinedIcon from '../src/assets/icons/StarOutlinedIcon'
-import PreviewIcon from '../src/assets/icons/PreviewIcon'
-import { useTranslation } from 'react-i18next'
-import { useDropzone } from 'react-dropzone'
-import useDidUpdate from '../src/hooks/useDidUpdate'
 import { makeStyles } from '@mui/styles'
-import { requests } from '../utils/requests'
+import { useCallback, useEffect, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { useTranslation } from 'react-i18next'
+import { useMutation } from 'react-query'
+import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc'
 import DeleteIcon from '../src/assets/icons/DeleteIcon'
+import PreviewIcon from '../src/assets/icons/PreviewIcon'
+import StarFilledIcon from '../src/assets/icons/StarFilledIcon'
+import StarOutlinedIcon from '../src/assets/icons/StarOutlinedIcon'
+import useDidUpdate from '../src/hooks/useDidUpdate'
+import { requests } from '../utils/requests'
+import CustomImg from './CustomImg'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -187,6 +187,7 @@ const useStyles = makeStyles((theme) => ({
 export default function UploadImage({ id, images, onChange, showGuideList = true }) {
   const { t } = useTranslation()
   const classes = useStyles()
+
   const [uploadedImages, setUploadedImages] = useState(images || [])
 
   const [editingImage, setEditingImage] = useState(null)
@@ -209,7 +210,7 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
 
   const SortablePhoto = SortableElement(({ item, i }) => (
     <div key={i} className={classes.img_box}>
-      <img src={item.file_url} {...item} alt={item.file_name} className={classes.img_item} />
+      <CustomImg src={item.file_url} {...item} alt={item.file_name} className={classes.img_item} />
       <div className={`${classes.preview_actions} visible`}>
         {item.is_main ? (
           <div className={classes.preview_icon} key={i}>
@@ -249,19 +250,24 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
       data.is_main = false
       setUploadedImages((oldImages) => {
         const newImages = editingImage
-          ? oldImages.map((el) => {
+          ? oldImages?.map((el) => {
               if (el.file_name === editingImage) {
                 el.file_name = data.file_name
                 el.file_url = data.file_url
               }
               return el
             })
-          : [...oldImages, data].map((el, ind) => ({
+          : oldImages
+          ? [...oldImages, data].map((el, ind) => ({
+              ...el,
+              sequence_number: ind,
+            }))
+          : [data].map((el, ind) => ({
               ...el,
               sequence_number: ind,
             }))
 
-        const hasActiveImage = !!oldImages.filter((el) => el?.is_main === true)?.length
+        const hasActiveImage = !!oldImages?.filter((el) => el?.is_main === true)?.length
 
         const allImages = hasActiveImage
           ? newImages
@@ -299,6 +305,9 @@ export default function UploadImage({ id, images, onChange, showGuideList = true
 
   useEffect(() => {
     if (uploadedImages.length === 0 && !!images?.length) {
+      setUploadedImages(images)
+    }
+    if (uploadedImages.length !== images?.length) {
       setUploadedImages(images)
     }
   }, [images])

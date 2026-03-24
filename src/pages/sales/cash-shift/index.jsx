@@ -1,25 +1,28 @@
-import { Box, Button, Typography } from '@mui/material'
-import { useTheme } from '@mui/styles'
-import dayjs from 'dayjs'
-import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useMutation, useQuery } from 'react-query'
-import { useDispatch, useSelector } from 'react-redux'
-import AgGridTable from '../../../../components/AgGridTable/AgGridTable'
-import ColumnsFilterButtonForAll from '../../../../components/AgGridTable/ColumnsFilterButtonForAll'
-import InputSearch from '../../../../components/Inputs/InputSearch'
-import LoadingContainer from '../../../../components/LoadingContainer'
-import { downloadExcel } from '../../../../utils/downloadEXCEL'
-import { requests } from '../../../../utils/requests'
-import { error } from '../../../../utils/toast'
-import FilterMenuIcon from '../../../assets/icons/FilterMenuIcon'
-import { useQueryParams } from '../../../hooks/useQueryParams'
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '../../../redux-toolkit/tableSlices/cashBoxShiftsTableColumns'
-import FilterMenu from './FilterMenu'
-import tableHeaderSelector from './tableHeaderSelector'
-import MiniDashboard from './miniDashboard'
-import CheckAccess from '../../../../components/CheckAccess'
-import { useNavigate } from 'react-router-dom'
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/cashBoxShiftsTableColumns';
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
+import AgGridTable from '@components/AgGridTable/AgGridTable';
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
+import LoadingContainer from '@components/LoadingContainer';
+import InputSearch from '@components/Inputs/InputSearch';
+import { Box, Button, Typography } from '@mui/material';
+import { useQueryParams } from '@hooks/useQueryParams';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import FilterMenuIcon from '@icons/FilterMenuIcon';
+import CheckAccess from '@components/CheckAccess';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { requests } from '@utils/requests';
+import { useTheme } from '@mui/styles';
+import { error } from '@utils/toast';
+
+import tableHeaderSelector from './tableHeaderSelector';
+import MiniDashboard from './miniDashboard';
+import FilterMenu from './FilterMenu';
+
+
 const SELECTION_ID = 'checkboxSelectionField'
 
 export default function CasShiftsPage() {
@@ -29,7 +32,6 @@ export default function CasShiftsPage() {
   const { t } = useTranslation()
   const { columns, loading } = useSelector((state) => state.cashBoxShiftsTableColumns)
   const { values } = useQueryParams()
-  const [regions, setRegions] = useState([])
   const [offsetCount, setOffsetCount] = useState(0)
   const [filterMenu, setFilterMenu] = useState(false)
   const tableColumns = tableHeaderSelector({
@@ -38,18 +40,9 @@ export default function CasShiftsPage() {
     values,
   })
 
-  /// filter table columns with permission
   useEffect(() => {
     if (tableColumns) {
-      const formattedData = tableColumns
-        ?.filter((el) => !el?.is_temporary && el?.colId !== SELECTION_ID && el.field !== 'category')
-        ?.map((el) => ({
-          ...el,
-          label: el.headerName,
-          desc: el.desc,
-          name: el.colId,
-          always_active: el?.always_active ?? el?.always_active,
-        }))
+      const formattedData = makeFormattedData({ tableColumns })
 
       dispatch(changeColumnSequence(formattedData))
     }
@@ -64,6 +57,7 @@ export default function CasShiftsPage() {
       cashbox_id: values?.cashbox_id,
     }
   }, [values?.offset, values?.limit, values?.search, values?.cashbox_id, values?.store_id])
+
   const {
     data: cashShiftsList,
     isLoading: cashShiftsListLoading,
@@ -81,22 +75,19 @@ export default function CasShiftsPage() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [cashShiftsList?.data, values?.limit])
+
   const { mutate: allSalesExcelReport, isLoading: isallSalesExcelReport } = useMutation(requests.getAllSalesExcelReport, {
     onSuccess: ({ data }) => {
-      downloadExcel(data, 'Продажи')
+      downloadLinkExcel(get(data, 'data.file_name'))
     },
     onError: (err) => {
-      console.log(err)
+      console.error(err)
 
       error('Ошибка при скачать excel!')
     },
   })
-  const {
-    data: cashShiftStat,
-    isLoading: cashShiftStatLoading,
-    isFetching: isFetchingcashShiftStat,
-    refetch: cashStatFtech,
-  } = useQuery(['cashShiftStat', cashShiftsListFilter], () => requests.getCashBoxShiftsStat(cashShiftsListFilter))
+
+  const { data: cashShiftStat } = useQuery(['cashShiftStat', cashShiftsListFilter], () => requests.getCashBoxShiftsStat(cashShiftsListFilter))
 
   return (
     <LoadingContainer readyState={true}>
@@ -161,18 +152,18 @@ export default function CasShiftsPage() {
             <CheckAccess id={'product-create'}>
               <Box minWidth={156}>
                 <Button sx={{ height: '48px' }} onClick={() => navigate('/sales/cash-shift-history')} fullWidth variant='contained' color='primary'>
-                  Shiftlar tarixi
+                  История смен
                 </Button>
               </Box>
             </CheckAccess>
           </Box>
         </Box>
-        <FilterMenu setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
+        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
         <Box>
           <AgGridTable
             id='products-main-table'
             downloadByFilter={() => allSalesExcelReport(cashShiftsListFilter)}
-            fullDownload={() => allSalesExcelReport({ ...cashShiftsListFilter, limit: 1000000 })}
+            fullDownload={() => allSalesExcelReport({ ...cashShiftsListFilter, offset: 0, limit: 1000000 })}
             isDownloading={isallSalesExcelReport}
             tableSettings
             columns={tableColumns}
@@ -185,8 +176,8 @@ export default function CasShiftsPage() {
             }}
             fullInfoAboutCurrentPage
             emptyTableText={{
-              title: 'Продажи недоступен',
-              description: 'Если вы не можете найти искомый Продажи, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+              title: 'Cмены недоступен',
+              description: '...',
             }}
             resetTable={() => dispatch(resetTableHeader({ refetch }))}
             isRefreshing={loading || isFetchingcashShiftsList || cashShiftsListLoading}

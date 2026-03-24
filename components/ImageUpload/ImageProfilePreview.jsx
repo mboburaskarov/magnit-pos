@@ -1,9 +1,10 @@
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
-import getImageUrl from '../../utils/getImageUrl'
-import ImageUploadGallery from './ImageUploadGallery'
-import { useState } from 'react'
 import { useTheme } from '@mui/styles'
+import { useState } from 'react'
 import DeleteIcon from '../../src/assets/icons/DeleteIcon'
+import getImageUrl from '@utils/getImageUrl'
+import CustomImg from '../CustomImg'
+import ImageUploadGallery from './ImageUploadGallery'
 
 const ImagePlaceholder = () => {
   const { mode } = useTheme()
@@ -101,7 +102,7 @@ export default function ImagePreview({
                 position='absolute'
                 key={ind}
               >
-                <img src={getImageUrl(el.key)} alt={`image of ${el.key || 'product'}`} width={width || 128} height={height || 128} />
+                <CustomImg src={getImageUrl(el.key)} alt={`image of ${el.key || 'product'}`} width={width || 128} height={height || 128} />
               </Box>
             ))}
           </Box>
@@ -249,7 +250,7 @@ export default function ImagePreview({
               position='absolute'
               key={ind}
             >
-              <img src={getImageUrl(el.key)} alt={`image of ${el.key || 'product'}`} width={128} height={128} />
+              <CustomImg src={getImageUrl(el.key)} alt={`image of ${el.key || 'product'}`} width={128} height={128} />
             </Box>
           ))}
         </Box>
