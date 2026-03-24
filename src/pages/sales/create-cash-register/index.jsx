@@ -190,7 +190,7 @@ function NewCashRegister() {
       
       if (get(data, 'error', true) == false || get(data, 'message', '').includes('ERROR_ZREPORT_IS_ALREADY_OPEN')) {
         localStorage.setItem('leftZreportCount', get(data, 'leftZreportCount', 999))
-        // methods.handleSubmit((data) => onSubmit(data), onError)()
+        methods.handleSubmit((data) => onSubmit(data), onError)()
         return
       } else {
         if (get(data, 'message', '').includes('Ru:')) {
