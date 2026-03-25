@@ -64,7 +64,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
   const fetchPage = async ({ pageParam = 0 }) => {
     const filter = {
       inventory_id: id,
-      limit: status === 'checking' && pageParam === 0 ? 6000 : LIMIT,
+      limit: status === 'checking' && pageParam === 0 ? 8000 : LIMIT,
       type: status || 'all',
       offset: status === 'checking' && pageParam === 0 ? 0 : pageParam,
       search: barcode,
