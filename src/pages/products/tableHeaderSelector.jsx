@@ -459,7 +459,19 @@ export default function tableHeaderSelector({
               </CheckAccess>
             )}
             <CheckAccess id={'add-product-barcode'}>
-              <IconButton onClick={() => setOpenAddBarcode({ id: data?.id, name: data?.name })}sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+              <IconButton
+                onClick={() =>
+                  setOpenAddBarcode({
+                    id: data?.id,
+                    name: data?.name,
+                    barcode: data?.barcode,
+                    barcodes: data?.barcodes,
+                    mxik: data?.mxik,
+                    unit_code: data?.unit_code,
+                  })
+                }
+                sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}
+              >
                 <Barcode />
               </IconButton>
             </CheckAccess>
