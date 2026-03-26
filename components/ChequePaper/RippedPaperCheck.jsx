@@ -18,24 +18,18 @@ const FiskalNumber = ({ data }) => {
   return <Typography>Fiskal raqami: {data}</Typography>
 }
 function RippedPaperCheck({
-  data,
-  margin,
   qrcodeUrl,
   cashBoxDetails,
   mode,
   customerId,
-  checked,
   paymentsList,
   cartItemsList,
   chequeData: cheque,
-  logo = '',
-
   noSticky,
   markingsList,
   orderItems,
 }) {
   const classes = useStyles()
-  const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
 
   const disableSumsOnGoods = () => {

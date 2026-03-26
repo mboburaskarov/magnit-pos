@@ -1,4 +1,4 @@
-import { Box, Button, Drawer, Typography } from '@mui/material'
+import { Box, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import { get } from 'lodash'
 import { useEffect } from 'react'
@@ -55,7 +55,7 @@ export default function BranchDrawer({ refetchBranchList, openDrawer, closeDrawe
   }, [])
 
   const { mutate: handleCreateBranch, isLoading: isHandleCreateBranch } = useMutation(requests.createStore, {
-    onSuccess: ({ data }) => {
+    onSuccess: () => {
       closeDrawer(false)
       methods.reset()
       refetchBranchList()
@@ -68,7 +68,7 @@ export default function BranchDrawer({ refetchBranchList, openDrawer, closeDrawe
   })
 
   const { mutate: handleUpdateBranch, isLoading: isHandleUpdateBranch } = useMutation(requests.updateStore, {
-    onSuccess: ({ data }) => {
+    onSuccess: () => {
       closeDrawer(false)
       methods.reset()
       refetchBranchList()
@@ -91,7 +91,7 @@ export default function BranchDrawer({ refetchBranchList, openDrawer, closeDrawe
       cash_box_count: Number(get(data, 'cash_box_count')),
       store_code: Number(get(data, 'store_code')),
       company_id: data?.company_id?.id,
-
+      inn: data?.inn,
       work_hours: get(data, 'time-type') == '24' ? '00:00-00:00' : get(data, 'work-time'),
     }
     if (openDrawer?.mode === 'edit') {
