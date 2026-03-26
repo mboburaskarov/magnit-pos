@@ -85,7 +85,7 @@ function RippedPaperCheck({
                 textAlign: 'center',
               }}
             >
-              {get(userData, 'company.legal_address')}
+              {get(userData, 'store.address')}
             </p>
           </Fragment>
           <div className={classes.border} />
@@ -95,7 +95,7 @@ function RippedPaperCheck({
                 id={`return-price-${'index1'}`}
                 rowData={{
                   type: `STIR:`,
-                  value: get(userData, 'company.company_inn','303970073'),  
+                  value: get(userData, 'store.inn','303970073'),  
                 }}
               />
               {qrcodeUrl != false && disableSumsOnGoods() && (
