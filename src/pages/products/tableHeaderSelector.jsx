@@ -16,6 +16,7 @@ import CheckAccess from '../../../components/CheckAccess'
 import DeleteIcon from '../../assets/icons/DeleteIcon'
 import CustomImg from '../../../components/CustomImg'
 import EditIcon from '../../assets/icons/EditIcon'
+import { Barcode } from 'lucide-react'
 
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
@@ -137,6 +138,7 @@ export default function tableHeaderSelector({
   setCurrentSaleId,
   values,
   setOpenPerPack,
+  setOpenAddBarcode,
   setImages,
   editable = false,
   t,
@@ -456,6 +458,11 @@ export default function tableHeaderSelector({
                 </IconButton>
               </CheckAccess>
             )}
+            <CheckAccess id={'add-product-barcode'}>
+              <IconButton onClick={() => setOpenAddBarcode({ id: data?.id, name: data?.name })}sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
+                <Barcode />
+              </IconButton>
+            </CheckAccess>
             <CheckAccess id={'edit-product'}>
               <IconButton onClick={() => navigate(`/products/edit/${data.id}`)} sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
                 <EditIcon />
