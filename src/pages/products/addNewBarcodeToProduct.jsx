@@ -174,7 +174,7 @@ export default function AddNewBarcodeToProduct({ open, refetch, setOpen }) {
         width: 120,
         cellRenderer: ({ data, rowIndex }) => (
           <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
-            <CheckAccess id={'edit-product'}>
+                       <CheckAccess id={'product-barcode-edit'}>
               <IconButton
                 onClick={() => {
                   setSelectedBarcode(data)
@@ -189,7 +189,7 @@ export default function AddNewBarcodeToProduct({ open, refetch, setOpen }) {
                 <EditIcon />
               </IconButton>
             </CheckAccess>
-            <CheckAccess id={'delete-product'}>
+            <CheckAccess id={'product-barcode-delete'}>
               <IconButton
                 onClick={() =>
                   setOpenConfirmDialog({
