@@ -209,11 +209,9 @@ export const useSaleOperations = ({
 
   const getReadyDataForOFD = (data) => {
     const readyData = []
-    console.log(data)
 
     let leftLoayCardSum = paymentsList?.find((el) => el.front_name == 'loyalty_card')?.amount
     get(cartItemsList, 'data', []).map((el) => {
-      console.log(cartItemsList, el)
 
       if (el?.is_marking == false) {
         let leftPrice = el.total_price
