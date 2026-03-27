@@ -225,7 +225,7 @@ export default function AddNewBarcodeToProduct({ open, refetch, setOpen }) {
           setOpen(false)
         }}
         open={open}
-        maxWidth={'880px'}
+        maxWidth={'900px'}
         title={'Добавить новый штрих-код'}
         customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
       >
@@ -267,7 +267,7 @@ export default function AddNewBarcodeToProduct({ open, refetch, setOpen }) {
                   ) : null}
                 </Box>
                 <Box height={'20px'} />
-                <Box maxHeight={'calc(100vh - 380px)'} width={'100%'} overflow={'scroll'}>
+                <Box  width={'100%'} overflow={'scroll'}>
                   <AgGridTable
                     isDataLoading={isproductDataLoadingHistory || isFetchinggetProductBarcodes || isDeletingProductBarcode || isUpdatingProductBarcode}
                     offsetQuery='offsetHistory'
