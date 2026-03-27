@@ -55,7 +55,6 @@ export const useSaleOperations = ({
     isError: isSaleError,
   } = useMutation(requests.addToOrderPayment, {
     onSuccess: (data) => {
-
       if (SALE_STAGE === 6) {
         sendEPOSresponseToBackend({ error: false, response_data: null, sale_id: id })
         return
@@ -69,7 +68,6 @@ export const useSaleOperations = ({
       }
     },
     onError: (err) => {
-
       setHasError({ hasError: true, errorType: 'finalSale' })
       setOpenRefreshDialog(false)
 
@@ -209,10 +207,14 @@ export const useSaleOperations = ({
     return items
   }
 
-  const getReadyDataForOFD = () => {
+  const getReadyDataForOFD = (data) => {
     const readyData = []
+    console.log(data)
+
     let leftLoayCardSum = paymentsList?.find((el) => el.front_name == 'loyalty_card')?.amount
     get(cartItemsList, 'data', []).map((el) => {
+      console.log(cartItemsList, el)
+
       if (el?.is_marking == false) {
         let leftPrice = el.total_price
         const price = el.total_price
@@ -233,7 +235,8 @@ export const useSaleOperations = ({
         const discountSum = parseFloat((discount * 100).toFixed(2))
 
         readyData.push({
-          barcode: el.barcode,
+          barcode: data.find((final) => final.cart_item_id === el.id)?.barcode,
+
           amount: (el.quantity + el.unit_amount) * 1000,
           price: parseFloat((price * 100).toFixed(2)),
           discount: discountSum,
@@ -242,8 +245,8 @@ export const useSaleOperations = ({
 
           label: '',
           name: el.name,
-          classCode: get(el, 'class_code'),
-          packageCode: get(el, 'package_code'),
+          classCode: data.find((final) => final.cart_item_id === el.id)?.classCode,
+          packageCode: data.find((final) => final.cart_item_id === el.id)?.packageCode,
           other: parseFloat(other),
           ownerType: 0,
         })
@@ -266,7 +269,7 @@ export const useSaleOperations = ({
           const discountSum = parseFloat((discount * 100).toFixed(2))
 
           readyData.push({
-            barcode: el.barcode,
+            barcode: data.find((final) => final.cart_item_id === el.id)?.barcode,
             amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
             price: parseFloat((price * 100).toFixed(2)),
 
@@ -275,8 +278,8 @@ export const useSaleOperations = ({
             vat: parseFloat(((((price - discount - otherSum) * get(el, 'vat_percent')) / (get(el, 'vat_percent') + 100)) * 100).toFixed(2)),
             label: marking,
             name: el.name,
-            classCode: get(el, 'class_code'),
-            packageCode: get(el, 'package_code'),
+            classCode: data.find((final) => final.cart_item_id === el.id)?.classCode,
+            packageCode: data.find((final) => final.cart_item_id === el.id)?.packageCode,
             other: parseFloat(other),
             ownerType: 0,
           })
@@ -287,15 +290,18 @@ export const useSaleOperations = ({
     return testEPOSDataSums(readyData, get(cartItemsList, 'total_amount') * 100)
   }
 
-  const prepareEPOSData = useCallback(() => {
-    const mockData = getReadyDataForOFD()
+  const prepareEPOSData = useCallback(
+    (data) => {
+      const mockData = getReadyDataForOFD(data)
 
-    return mockData.flat()
-  }, [cartItemsList, paymentsList, markingsList])
+      return mockData.flat()
+    },
+    [cartItemsList, paymentsList, markingsList],
+  )
 
   const sendEPOSData = useCallback(
     (data) => {
-      const items = prepareEPOSData()
+      const items = prepareEPOSData(get(data, 'data.data.items', '[]'))
       const qrToken = JSON.parse(data?.config?.data)?.payment_types[0]?.otp_data || undefined
 
       sendToEPOS({
