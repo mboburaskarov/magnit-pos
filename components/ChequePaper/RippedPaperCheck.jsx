@@ -18,24 +18,18 @@ const FiskalNumber = ({ data }) => {
   return <Typography>Fiskal raqami: {data}</Typography>
 }
 function RippedPaperCheck({
-  data,
-  margin,
   qrcodeUrl,
   cashBoxDetails,
   mode,
   customerId,
-  checked,
   paymentsList,
   cartItemsList,
   chequeData: cheque,
-  logo = '',
-
   noSticky,
   markingsList,
   orderItems,
 }) {
   const classes = useStyles()
-  const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
 
   const disableSumsOnGoods = () => {
@@ -85,7 +79,7 @@ function RippedPaperCheck({
                 textAlign: 'center',
               }}
             >
-              {get(userData, 'company.legal_address')}
+              {get(userData, 'store.address')}
             </p>
           </Fragment>
           <div className={classes.border} />
@@ -95,7 +89,7 @@ function RippedPaperCheck({
                 id={`return-price-${'index1'}`}
                 rowData={{
                   type: `STIR:`,
-                  value: get(userData, 'company.company_inn','303970073'),  
+                  value: get(userData, 'store.inn','303970073'),  
                 }}
               />
               {qrcodeUrl != false && disableSumsOnGoods() && (

@@ -316,7 +316,11 @@ export const requests = {
   getAllProductsStatusCount: (filter) => request.get(`v1/product/total-status-count${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllStoreProducts: (data, filter) => request.get(`v1/product/store/${get(data, 'id')}${qs.stringify(filter, { addQueryPrefix: true })}`),
   createProduct: (data) => request.post(`v1/product`, data),
+  createProductBarcode: ({data,id}) => request.post(`v1/product/${id}/barcodes`, data),
   changeBarcode: ({ id, barcode, unit_code, mxik, unit_label }) => request.put(`v1/product/update-barcode/${id}`, { id, barcode, unit_label, unit_code, mxik }),
+  getProductBarcodes: ({ id, ...filter }) => request.get(`v1/product/${id}/barcodes${qs.stringify(filter, { addQueryPrefix: true })}`),
+  updateProductBarcode: ({ productId, ...data }) => request.put(`v1/product/${productId}/barcodes`, data),
+  deleteProductBarcode: ({ id, data }) => request.delete(`v1/product/${id}/barcodes`, data),
   changeBarcodeByImport: ({ id, barcode, unit_code, mxik, unit_label, expire_date }) =>
     request.put(`v1/product/update-mxik-import/${id}`, { id, barcode, unit_label, unit_code, mxik, expire_date }),
   getProductBonusList: (filter) => request.get(`v1/product-bonus/list${qs.stringify(filter, { addQueryPrefix: true })}`),

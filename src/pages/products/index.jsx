@@ -43,6 +43,7 @@ import ChangeUnitPerPack from './changeUnitPerPack'
 import ProductDashboard from './productDashboard'
 import FilterMenu from './FilterMenu'
 import { useDrawerHistory } from '@hooks/useDrawerHistory'
+import AddNewBarcodeToProduct from './addNewBarcodeToProduct'
 
 const SELECTION_ID = 'checkboxSelectionField'
 const LoadingChangeBarcode = ({ status }) => {
@@ -103,6 +104,7 @@ export default function ProductsPage() {
   const [controlleroffset, setControllerOffset] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
   const [openPerPack, setOpenPerPack] = useState(false)
+  const [openAddBarcode, setOpenAddBarcode] = useState(false)
   const [openErrorReason, setOpenErrorReason] = useState(false)
   const [openProductDrawer, setOpenProductDrawer] = useState(false)
   const [filterMenu, setFilterMenu] = useState(false)
@@ -154,6 +156,7 @@ export default function ProductsPage() {
     setMarkingRequired,
     editable: true,
     setImages: setOpenImageGallery,
+    setOpenAddBarcode,
     setOpenConfirmDialog,
     setOrderStoring,
     orderStoring,
@@ -728,6 +731,7 @@ export default function ProductsPage() {
           onClose={setOpenProductDrawer}
         />
         <ChangeUnitPerPack refetch={refetch} open={openPerPack} setOpen={setOpenPerPack} />
+        <AddNewBarcodeToProduct open={openAddBarcode} refetch={refetch} setOpen={setOpenAddBarcode} />
         <SendToErrorWithReason open={openErrorReason} setOpen={setOpenErrorReason} />
         <ImageGallery canAlert={setOpenErrorReason} open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
         {openConfirmDialog && (

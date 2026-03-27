@@ -12,8 +12,6 @@ import LazySelect from '@components/Select/LazySelect'
 import { requests } from '@utils/requests'
 import OutLineTextField from '@components/Inputs/OutLineTextField'
 import { LocationEditIcon } from 'lucide-react'
-import ConfirmDialog from '@components/ConfirmDialog'
-import { LoadingButton } from '@mui/lab'
 import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
 import { YMaps, Map, Placemark } from 'react-yandex-maps'
 
@@ -44,6 +42,7 @@ export default function MainDetails({ openDrawer }) {
       setValue('cash_box_count', get(openDrawer, 'data.cash_box_count'))
       setValue('store_code', get(openDrawer, 'data.store_code'))
       setValue('address', get(openDrawer, 'data.address'))
+      setValue('inn', get(openDrawer, 'data.inn'))
 
       setValue('work-time', get(openDrawer, 'data.work_hours'))
       setValue('time-type', get(openDrawer, 'data.work_hours') == '24' ? '24' : 'range')
@@ -151,7 +150,7 @@ export default function MainDetails({ openDrawer }) {
             asteriks
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Label mb='4px'>{t('Компания')}</Label>
           <LazySelect
             slug='company'
@@ -168,6 +167,21 @@ export default function MainDetails({ openDrawer }) {
               return option.name
             }}
             filterOption={() => true}
+          />
+           
+        </Grid>
+        <Grid item xs={6}>
+          <Label mb='4px'>{'ИНН'}</Label>
+
+          <TextField
+            id='inn'
+            type={'number'}
+            name='inn'
+            control={control}
+            fullWidth
+            error={errors?.inn}
+            placeholder={'ИНН'}
+            asteriks
           />
         </Grid>
       </Grid>

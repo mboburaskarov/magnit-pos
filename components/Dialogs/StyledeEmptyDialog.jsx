@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme) => ({
       overflow: ({ overflowVisible }) => (overflowVisible ? 'visible' : 'hidden'),
       boxShadow: 'none !important',
       borderRadius: 20,
+      height:({height})=>height?height:'auto',
       // minHeight: 500,
       // overflowY: ({ overflowVisible }) => (overflowVisible ? 'auto' : 'hidden'),
       transition: open ? 'padding 0.3s ease-out' : 'padding 0.1s ease-in',
@@ -36,8 +37,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function StyledEmptyDialog({ onClose, open, reset, children, title, noHeader = false, customButtons, maxWidth, overflowVisible, titleStyles }) {
-  const classes = useStyles({ overflowVisible, maxWidth, open })
+function StyledEmptyDialog({ onClose, open, reset, children, title,height, noHeader = false, customButtons, maxWidth, overflowVisible, titleStyles }) {
+  const classes = useStyles({ overflowVisible, maxWidth, open,height })
 
   useEffect(() => {
     if (open) {
