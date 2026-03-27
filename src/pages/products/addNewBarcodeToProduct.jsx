@@ -15,7 +15,7 @@ import { useQueryParams } from '@/hooks/useQueryParams'
 import CheckAccess from '@components/CheckAccess'
 import EditIcon from '@/assets/icons/EditIcon'
 import { get } from 'lodash'
-import { DeleteIcon } from 'lucide-react'
+import { DeleteIcon, Trash2 } from 'lucide-react'
 
 export default function AddNewBarcodeToProduct({ open, refetch, setOpen }) {
   const methods = useForm()
@@ -34,23 +34,46 @@ export default function AddNewBarcodeToProduct({ open, refetch, setOpen }) {
       console.error('err', err)
     },
   })
+    const { mutate: updateProductBarcode, isLoading: isUpdatingProductBarcode } = useMutation(requests.updateProductBarcode, {
+    onSuccess: () => {
+      refetchProductBarcodes()
+      success('Продукт успешно добавлен!')
+    },
+    onError: (err) => {
+      error('Ошибка при добавлении продукта')
+      console.error('err', err)
+    },
+  })
+    const { mutate: deleteProductBarcode, isLoading: isDeletingProductBarcode } = useMutation(requests.deleteProductBarcode, {
+    onSuccess: () => {
+      refetchProductBarcodes()
+      success('Продукт успешно добавлен!')
+    },
+    onError: (err) => {
+      error('Ошибка при добавлении продукта')
+      console.error('err', err)
+    },
+  })
   const onSubmit = (data) => {
     const requestBody = {
+
       ...data,
     }
-    createProductBarcode(requestBody)
+    createProductBarcode({ data: requestBody, id: open?.id })
   }
 
   const onError = (err) => {
     console.error('err', err)
   }
-
+useEffect(()=>{
+  methods.reset()
+},[open])
   const {
     data: getProductBarcodes,
     isLoading: isproductDataLoadingHistory,
     isFetching: isFetchinggetProductBarcodes,
     refetch: refetchProductBarcodes,
-  } = useQuery(['getProductBarcodes'], () => requests.getProductBarcodes(open?.id))
+  } = useQuery(['getProductBarcodes'], () => requests.getProductBarcodes(open?.id),{enabled: Boolean(open)})
 
   const columns = useMemo(
     () => [
@@ -120,9 +143,9 @@ export default function AddNewBarcodeToProduct({ open, refetch, setOpen }) {
               </IconButton>
             </CheckAccess>
              <CheckAccess id={'delete-product'}>
-              <IconButton onClick={() => console.log(data)
-              } sx={{ width: 32, height: 32, borderRadius: 3, p: '8px' }}>
-                <DeleteIcon />
+              <IconButton onClick={() => deleteProductBarcode({ id: open?.id ,data:data?.id})
+              } sx={{ width: 32, ml:'10px', height: 32, borderRadius: 3, p: '8px' }}>
+                <Trash2 />
               </IconButton>
             </CheckAccess>
           </Box>
@@ -143,6 +166,7 @@ export default function AddNewBarcodeToProduct({ open, refetch, setOpen }) {
     <StyledEmptyDialog
       onClose={() => {refetch(),setOpen(false)}}
       open={open}
+      maxWidth={'780px'}
       title={'Добавить новый штрих-код'}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
     >
@@ -155,20 +179,18 @@ export default function AddNewBarcodeToProduct({ open, refetch, setOpen }) {
             borderColor: 'bunker.100',
             height: '48px',
           },
-          '& svg': {
-            fill: '#868FAA',
-            stroke: '#868FAA',
-          },
         }}
       >
         <FormProvider {...methods}>
           <Box rowGap={3} flexWrap='wrap' display='flex' component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-            <Box padding={'0 2px'} maxHeight={'calc(100vh - 280px)'} width={'100%'} overflow={'scroll'}>
+            <Box padding={'0 2px'} width={'100%'} overflow={'scroll'}>
               <Typography sx={{ fontSize: 20, fontWeight: 600, textAlign: 'center', my: '30px' }}>{open?.name}</Typography>
               <Box display='flex' alignItems='end' justifyContent='center' gap={2}>
-                <InputQuantity label={'Штрих-код'} id={`barcode`} name={`barcode`} fullWidth required type='number' defaultValue={0} disabled={false} />
-                <InputQuantity label={'MXIK'} id={`mxik`} name={`mxik`} fullWidth required type='number' defaultValue={0} disabled={false} />
-                <InputQuantity label={'Kод yпаковки'} id={`unit_code`} name={`unit_code`} fullWidth required type='number' defaultValue={0} disabled={false} />
+                <InputQuantity
+                
+                label={'Штрих-код'} id={`barcode`} name={`barcode`} fullWidth required type='number'  disabled={false} />
+                <InputQuantity label={'MXIK'} id={`mxik`} name={`mxik`} fullWidth required type='number'  disabled={false} />
+                <InputQuantity label={'Kод yпаковки'} id={`unit_code`} name={`unit_code`} fullWidth required type='number'  disabled={false} />
                 <LoadingButton loading={isLoading} variant='contained' type='submit'>
                   Добавить
                 </LoadingButton>
@@ -176,13 +198,19 @@ export default function AddNewBarcodeToProduct({ open, refetch, setOpen }) {
               <Box height={'20px'} />
               <Box maxHeight={'calc(100vh - 380px)'} width={'100%'} overflow={'scroll'}>
                 <AgGridTable
-                  isDataLoading={isproductDataLoadingHistory || isFetchinggetProductBarcodes}
+                  isDataLoading={isproductDataLoadingHistory || isFetchinggetProductBarcodes||isDeletingProductBarcode||isUpdatingProductBarcode}
                   offsetQuery='offsetHistory'
+                  emptyTableText={{
+                    title : 'Нет добавленных штрих-кодов',
+                    description : 'Если вы не можете найти искомый штрих-код, нажмите кнопку «Добавить новый» и введите необходимую информацию.',
+                  }}
+                 
                   limitQuery='limitHistory'
                   id='products-history-table'
                   totalCount={getProductBarcodes?.data?.data?._meta?.total_count || 0}
                   columns={columns}
                   data={formattedData}
+
                   offsetCount={offsetCount}
                   defaultOffsetSize={5}
                 />
