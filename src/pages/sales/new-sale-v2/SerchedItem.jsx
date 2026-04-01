@@ -54,6 +54,7 @@ export default function SerchedItem({
           discount_type: get(discount, 'type', 'percent'),
           discount_value: Number(get(discount, 'amount', 0)),
           sale_id: id,
+          barcode: product?.barcode,
           store_product_id: get(product, 'id', 'err #1'),
         })
       }}
