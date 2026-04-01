@@ -306,7 +306,7 @@ function RippedPaperCheck({
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-              {qrcodeUrl?.qr == 'pending' ? (
+              {qrcodeUrl?.qr == 'pending' || qrcodeUrl?.qr == 'pharma-cosmos.uz' ? (
                 <>
                   <QRCodeCanvas size={200} value={'https://pharma-cosmos.uz'} />
 
