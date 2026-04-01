@@ -6,6 +6,7 @@ import { authRequest, eposRequest, fileUploadRequest, request, requestEXCEL } fr
 export const requests = {
   //epos
   sendToEpos: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
+  gelOldEposCheck: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
   closeZReport: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
   closeCheckZReport: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
   checkEposFlesh: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),

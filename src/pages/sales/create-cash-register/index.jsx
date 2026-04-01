@@ -124,10 +124,10 @@ function NewCashRegister() {
       console.error('err', err)
     },
   })
-  useEffect(() => {
-    const device_id = localStorage.getItem('device_id')
-    checkSaleExist({ store_id: get(userData, 'store.id'), device_id })
-  }, [])
+  // useEffect(() => {
+  //   // const device_id = localStorage.getItem('device_id')
+  //   // checkSaleExist({ store_id: get(userData, 'store.id'), device_id })
+  // }, [])
 
   useEffect(() => {
     if (registerCashData) setCanCreate((a) => ({ ...a, canCreate: true }))
@@ -187,7 +187,6 @@ function NewCashRegister() {
 
   const { mutate: openZReport, isLoading: isopenZReport } = useMutation(requests.openZReport, {
     onSuccess: ({ data }) => {
-      
       if (get(data, 'error', true) == false || get(data, 'message', '').includes('ERROR_ZREPORT_IS_ALREADY_OPEN')) {
         localStorage.setItem('leftZreportCount', get(data, 'leftZreportCount', 999))
         methods.handleSubmit((data) => onSubmit(data), onError)()
@@ -205,18 +204,47 @@ function NewCashRegister() {
       console.error('err', err)
     },
   })
-  const { mutate: checkEPOSTurnOn } = useMutation(requests.checkEPOSTurnOn, {
+  const { mutate: checkEPOSTurnOn,isLoading: ischeckEPOSTurnOn } = useMutation(requests.checkEPOSTurnOn, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true)) {
-        setisEposTurnOn(false)
+        setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
+      } else {
+        closeCheckZReport({
+          token: 'DXJFX32CN1296678504F2',
+          method: 'getZreportInfo',
+          printerSize: 80,
+          zReportId: 0,
+        })
       }
     },
     onError: (err) => {
-      setisEposTurnOn(false)
+      setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
+
       error('Программа EPOS отключена. Запустить программу EPOS')
       console.error('err', err)
     },
   })
+  const { mutate: closeCheckZReport,isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
+    onSuccess: ({ data }) => {
+      if (get(data, 'error', true)) {
+        setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
+      } else {
+        const terminalID = data?.message?.terminalID
+        if (terminalID == userData?.store?.terminal_id) {
+          setisEposTurnOn({ is_open: false, message: 'Siz boshqa filyaldasiz!' })
+        } else {
+          const device_id = localStorage.getItem('device_id')
+          checkSaleExist({ store_id: get(userData, 'store.id'), device_id })
+        }
+      }
+    },
+    onError: (err) => {
+      setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
+      error('Ошибка закрытия кассы! (close Z info Report)')
+      console.log('err', err)
+    },
+  })
+
   useEffect(() => {
     checkEPOSTurnOn({
       token: 'DXJFX32CN1296678504F2',
@@ -224,9 +252,9 @@ function NewCashRegister() {
     })
   }, [])
   return (
-    <LoadingContainer readyState={!isCheckSaleExist}>
+    <LoadingContainer readyState={!isCheckSaleExist && !iscloseCheckZReport && !ischeckEPOSTurnOn}>
       <FormProvider {...methods}>
-        {isEposTurnOn || get(userData, 'type') === 'SUPERADMIN' ? (
+        {isEposTurnOn?.is_open || get(userData, 'type') === 'SUPERADMIN' ? (
           <Box className={classes.box}>
             <Box className={classes.wrapper}>
               <Typography display={'flex'} alignItems={'center'} fontSize={'32px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'} p={'24px'}>
@@ -333,7 +361,7 @@ function NewCashRegister() {
           </Box>
         ) : (
           <Box display={'flex'} alignItems={'center'} color={'red.500'} fontSize={'20px'} fontWeight={'700'} justifyContent={'center'} height={'100vh'}>
-            Программа EPOS отключена. Запустить программу EPOS{' '}
+            {get(isEposTurnOn, 'message')}
           </Box>
         )}
       </FormProvider>
@@ -342,3 +370,7 @@ function NewCashRegister() {
 }
 
 export default NewCashRegister
+
+
+
+

@@ -128,7 +128,7 @@ function ImplementMarkingDialog({
         } else {
           setChangeingMarkingData({ value: e.target.value, id, childIndex, flatIndex, item })
 
-          error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl: ${productBarcode} | Sizniki:  ${e.target.value} ))`)
+          // error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl: ${productBarcode} | Sizniki:  ${e.target.value} ))`)
           return
         }
       }

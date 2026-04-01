@@ -104,7 +104,30 @@ export const useSaleOperations = ({
       return
     },
   })
+  const {
+    mutate: gelOldEposCheck,
+    isLoading: isGelOldEposCheck,
+    isError: gelOldEposCheckError,
+  } = useMutation(requests.gelOldEposCheck, {
+    onSuccess: ({ data }) => {
+      setCustomerId('')
+      const qrCodeURL = get(data, 'message.qrCodeURL') || get(data, 'message.qrCodeUrl') || get(data, 'info.qrCodeURL') || 'pending'
+      const fiscalData = get(data, 'message.fiscalSign') || get(data, 'info.fiscalSign') || 'pending'
+      const terminalId = get(data, 'message.terminalId') || get(data, 'info.terminalId') || 'pending'
 
+      setQrcodeUrl({ qr: qrCodeURL, fiscal: fiscalData, terminalId: terminalId, cardType: cartOwnerType })
+        sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
+
+    },
+    onError: (err) => {
+      let message = 'Данная продажа ранее была оформлена на уплату налогов. Скачайте этот чек из раздела «Все продажи».'
+      sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(err), sale_id: id })
+      setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
+      setOpenRefreshDialog(false)
+      error(`Oldin eposga yuborilgan savdo: ${message}`)
+      throw new Error(`InnerError: ${message}`)
+    },
+  })
   // Send to EPOS
   const {
     mutate: sendToEPOS,
@@ -123,12 +146,12 @@ export const useSaleOperations = ({
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
       } else {
         if (get(data, 'message')?.includes('DUPLICATE_EXTERNAL_ID')) {
-          let message = 'Данная продажа ранее была оформлена на уплату налогов. Скачайте этот чек из раздела «Все продажи».'
-          sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
-          setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
-          setOpenRefreshDialog(false)
-          error(`Oldin eposga yuborilgan savdo: ${message}`)
-          // throw new Error(`InnerError: ${message}`)
+          const externalId = get(data, 'message')?.split('DUPLICATE_EXTERNAL_ID')[1]
+          gelOldEposCheck({
+            token: 'DXJFX32CN1296678504F2',
+            method: 'checkReceiptIfExists',
+            external_id: externalId.trim(),
+          })
           return
         }
         setOpenRefreshDialog(false)
@@ -212,7 +235,6 @@ export const useSaleOperations = ({
 
     let leftLoayCardSum = paymentsList?.find((el) => el.front_name == 'loyalty_card')?.amount
     get(cartItemsList, 'data', []).map((el) => {
-
       if (el?.is_marking == false) {
         let leftPrice = el.total_price
         const price = el.total_price
