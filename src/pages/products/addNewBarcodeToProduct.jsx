@@ -154,6 +154,7 @@ export default function AddNewBarcodeToProduct({ open, refetch, setOpen }) {
           </Box>
         ),
       },
+     
       {
         headerName: 'Kод yпаковки',
         colId: 'unit_code',
@@ -163,6 +164,16 @@ export default function AddNewBarcodeToProduct({ open, refetch, setOpen }) {
         cellRenderer: ({ data, rowIndex }) => (
           <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
             <Typography>{data?.unit_code}</Typography>
+          </Box>
+        ),
+      },
+       {
+        headerName: 'Создатель',
+        colId: 'created_by',
+        flex:1,
+        cellRenderer: ({ data, rowIndex }) => (
+          <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
+            <Typography>{data?.created_by}</Typography>
           </Box>
         ),
       },
@@ -245,7 +256,7 @@ export default function AddNewBarcodeToProduct({ open, refetch, setOpen }) {
               <Box padding={'0 2px'} width={'100%'} overflow={'scroll'}>
                 <Typography sx={{ fontSize: 20, fontWeight: 600, textAlign: 'center', my: '30px' }}>{open?.name}</Typography>
                 <Box display='flex' alignItems='end' justifyContent='center' gap={2}>
-                  <InputQuantity label={'Штрих-код'} id={`barcode`} name={`barcode`} fullWidth type='number' disabled={false} />
+                  <InputQuantity label={'Штрих-код'} id={`barcode`} name={`barcode`} fullWidth  type='number' disabled={false} />
                   <InputQuantity label={'MXIK'} id={`mxik`} name={`mxik`} fullWidth required type='number' disabled={false} />
                   <InputQuantity label={'Kод yпаковки'} id={`unit_code`} name={`unit_code`} fullWidth required type='number' disabled={false} />
                   <LoadingButton loading={selectedBarcode ? isUpdatingProductBarcode : isLoading} sx={{ width: 200, height: 48, p: '8px' }} variant='contained' type='submit'>
