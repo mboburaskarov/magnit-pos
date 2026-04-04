@@ -532,6 +532,10 @@ function NewSaleV2() {
         return
       }
       if (get(err, 'response.data.code') === 409) {
+        if (get(err, 'response.data.data') === 'sale.is.closed') {
+          error('Продажа закрыта и не может быть изменена. Пожалуйста, создайте новую продажу.')
+          return
+        }
         error(`Введенное количество превышает имеющееся в наличии.
                Максимальное количество на складе - ${get(err, 'response.data.data.pack_quantity')} уп, ${get(err, 'response.data.data.unit_quantity')} шт`)
       } else {
@@ -972,8 +976,8 @@ function NewSaleV2() {
       }
     },
   })
-const ramadan = false
-const leftCount = localStorage.getItem('leftZreportCount')
+  const ramadan = false
+  const leftCount = localStorage.getItem('leftZreportCount')
   return (
     <FormProvider {...method}>
       <LoadingOverflow fullHeight readyState={!hasChange} />
@@ -1058,67 +1062,75 @@ const leftCount = localStorage.getItem('leftZreportCount')
                     <RefreshIcon />
                   </Box>
                 </Box>
-                <Box sx={{ display: 'flex',alignItems:'center' }}>
-                  <StyledTooltip title={t('EPOS fleshkasiga ulanish uchun qoldirilgan zreportlar soni. Bu son 10tan kamaysa Ofisga xabar bering yangi fleshka tayyorlash uchun.')}>
-                  <Box sx={{
-                    padding:'6px 19px',
-                    display:'flex',
-                    height:'44px',
-                    alignItems:'center',
-                    justifyContent:'center',
-                    backgroundColor:leftCount > 10?'green.200':'red.200',
-                    border:'1px solid',
-                    borderColor:leftCount > 10?'green.500':'red.500', 
-                    borderRadius:'40px',
-                    mr:'10px',
-                    color:leftCount > 10?'green.500':'red.500',
-                    cursor:'pointer',
-                  }}>
-                    {leftCount}
-                  </Box>
-                  </StyledTooltip>
-                  {ramadan && <Box
-                    onClick={() => setOpenRamadan(true)}
-                    sx={{
-                      m: '0 20px 0 20px',
-                      backgroundColor: '#f9f9fa',
-                      display: 'flex',
-                      borderRadius: '32px',
-                      padding: '2px 5px 2px 20px',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      '&:hover': {
-                        backgroundColor: '#eefcf3',
-                      },
-                    }}
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <StyledTooltip
+                    title={t(
+                      'EPOS fleshkasiga ulanish uchun qoldirilgan zreportlar soni. Bu son 10tan kamaysa Ofisga xabar bering yangi fleshka tayyorlash uchun.',
+                    )}
                   >
-                    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                      <Typography sx={{ fontSize: '13px', lineHeight: '21px', color: 'gray.600', fontWeight: 'bold' }}>
-                        {ramadanTime?.label || 'Iftorlik vaqti'}
-                      </Typography>
-                      <Typography sx={{ fontSize: '18px', lineHeight: '20px', color: 'bunker.950', fontWeight: 'bold' }}>
-                        {ramadanTime?.time || '--:--'}
-                      </Typography>
-                    </Box>
                     <Box
                       sx={{
-                        width: '42px',
-                        height: '42px',
-                        borderRadius: '50%',
-                        backgroundColor: '#1a6d33ff',
+                        padding: '6px 19px',
                         display: 'flex',
+                        height: '44px',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        ml: '10px',
-                        svg: {
-                          width: '34px',
-                          height: '34px',
+                        backgroundColor: leftCount > 10 ? 'green.200' : 'red.200',
+                        border: '1px solid',
+                        borderColor: leftCount > 10 ? 'green.500' : 'red.500',
+                        borderRadius: '40px',
+                        mr: '10px',
+                        color: leftCount > 10 ? 'green.500' : 'red.500',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {leftCount}
+                    </Box>
+                  </StyledTooltip>
+                  {ramadan && (
+                    <Box
+                      onClick={() => setOpenRamadan(true)}
+                      sx={{
+                        m: '0 20px 0 20px',
+                        backgroundColor: '#f9f9fa',
+                        display: 'flex',
+                        borderRadius: '32px',
+                        padding: '2px 5px 2px 20px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        '&:hover': {
+                          backgroundColor: '#eefcf3',
                         },
                       }}
                     >
-                      <RamadanIcon color='#ffffffff' />
+                      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                        <Typography sx={{ fontSize: '13px', lineHeight: '21px', color: 'gray.600', fontWeight: 'bold' }}>
+                          {ramadanTime?.label || 'Iftorlik vaqti'}
+                        </Typography>
+                        <Typography sx={{ fontSize: '18px', lineHeight: '20px', color: 'bunker.950', fontWeight: 'bold' }}>
+                          {ramadanTime?.time || '--:--'}
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          width: '42px',
+                          height: '42px',
+                          borderRadius: '50%',
+                          backgroundColor: '#1a6d33ff',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          ml: '10px',
+                          svg: {
+                            width: '34px',
+                            height: '34px',
+                          },
+                        }}
+                      >
+                        <RamadanIcon color='#ffffffff' />
+                      </Box>
                     </Box>
-                  </Box>}
+                  )}
                   <ListItem className={`${classes.currentUser} drawer_user_avatar`} id='avatar'>
                     <Box width={'100%'} display='flex' alignItems='center' justifyContent='space-between'>
                       <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}>

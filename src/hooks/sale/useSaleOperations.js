@@ -98,7 +98,7 @@ export const useSaleOperations = ({
         }
       } catch (parseError) {
         console.warn('Failed to parse error response:', parseError)
-        errorMessage = `Ошибка при Продажа завершена: ${get(err, 'message') || 'Неизвестная ошибка'}`
+        errorMessage = `Ошибка при Продажа завершена:: ${get(err, 'data') || 'Неизвестная ошибка'}`
       }
       error(errorMessage)
       return
@@ -111,10 +111,9 @@ export const useSaleOperations = ({
   } = useMutation(requests.gelOldEposCheck, {
     onSuccess: ({ data }) => {
       setCustomerId('')
-      const qrCodeURL = get(data, 'message.qrCodeURL') || get(data, 'message.qrCodeUrl') || get(data, 'info.qrCodeURL') || 'pending'
-      const fiscalData = get(data, 'message.fiscalSign') || get(data, 'info.fiscalSign') || 'pending'
-      const terminalId = get(data, 'message.terminalId') || get(data, 'info.terminalId') || 'pending'
-
+      const qrCodeURL = get(data, 'data.receipt.qrCodeURL') ||get(data, 'data.receipt.qr_code_url') || get(data, 'data.receipt.qrCodeUrl') || get(data, 'info.qrCodeURL') || 'pending'
+      const fiscalData = get(data, 'data.receipt.fiscalSign')||get(data, 'data.receipt.fiscal_sign') || get(data, 'info.fiscalSign') || 'pending'
+      const terminalId = get(data, 'data.receipt.terminalId') || get(data, 'data.receipt.terminal_id') || get(data, 'info.terminalId') || 'pending'
       setQrcodeUrl({ qr: qrCodeURL, fiscal: fiscalData, terminalId: terminalId, cardType: cartOwnerType })
         sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
 
@@ -183,11 +182,11 @@ export const useSaleOperations = ({
       setDmedOrganizedList([])
       setCardOwnerType('personal')
     },
-    onError: () => {
+    onError: ({response}) => {
       setHasError({ hasError: true, errorType: 'Epos result' })
 
       setOpenRefreshDialog(false)
-      error('Ошибка при епосе')
+      error(`Ошибка результата: ${get(response, 'data.data')}`)
     },
   })
 
@@ -450,6 +449,7 @@ export const useSaleOperations = ({
     isSaleResponseError,
     submitSale,
     setHasError,
+    isGelOldEposCheck,
     hasError,
   }
 }

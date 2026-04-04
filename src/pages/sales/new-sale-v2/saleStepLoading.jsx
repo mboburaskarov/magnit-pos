@@ -3,15 +3,15 @@ import SuccessIcon from '@icons/SuccessIcon'
 import { useEffect, useState } from 'react'
 import ErrorIcon from '@icons/ErrorIcon'
 
-export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, setHasError, isSendToEPOS, isSendEPOSresponseToBackend, hasError }) {
+export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, isGelOldEposCheck,setHasError, isSendToEPOS, isSendEPOSresponseToBackend, hasError }) {
   const [showModal, setShowModal] = useState(false)
   const [currentStep, setCurrentStep] = useState(null)
 
-  const allDone = !isFinishSaleWithoutAppPaymentType && !isSendToEPOS && !isSendEPOSresponseToBackend
+  const allDone = !isFinishSaleWithoutAppPaymentType && !isSendToEPOS && !isGelOldEposCheck && !isSendEPOSresponseToBackend
 
   useEffect(() => {
     // Agar xato bo'lsa yoki jarayon davom etsa modal ko'rsatiladi
-    if (hasError || isFinishSaleWithoutAppPaymentType || isSendToEPOS || isSendEPOSresponseToBackend) {
+    if (hasError || isFinishSaleWithoutAppPaymentType || isSendToEPOS ||isGelOldEposCheck|| isSendEPOSresponseToBackend) {
       setShowModal(true)
     }
 
@@ -24,7 +24,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, s
       }, 1000)
       return () => clearTimeout(timer)
     }
-  }, [isFinishSaleWithoutAppPaymentType, isSendToEPOS, isSendEPOSresponseToBackend, allDone, hasError])
+  }, [isFinishSaleWithoutAppPaymentType, isSendToEPOS,isGelOldEposCheck, isSendEPOSresponseToBackend, allDone, hasError])
 
   useEffect(() => {
     // Xato holatini birinchi tekshirish
@@ -50,7 +50,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, s
         startProgress: 0,
         endProgress: 30,
       })
-    } else if (isSendToEPOS) {
+    } else if (isSendToEPOS || isGelOldEposCheck) {
       setCurrentStep({
         label: 'Отправляется в EPOS',
         progress: 45,

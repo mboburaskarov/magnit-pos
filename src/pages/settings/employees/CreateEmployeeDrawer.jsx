@@ -75,7 +75,7 @@ export default function CreateEmployeeDrawer({ refetchVendorList, quickCreateCli
       success('Вендор успешно редактирование!')
     },
     onError: (err) => {
-      error('Ошибка при редактирование Вендор!')
+      error(`Ошибка при редактирование Вендор! ${get(err, 'response.data.data', '')}`)
       console.error('err', err)
     },
   })

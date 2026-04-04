@@ -80,6 +80,7 @@ export default function CreateCashBoxDrawer({ refetchCashBoxList, openDrawer, cl
       name: data?.name,
       is_enable: data?.is_enable === 'active' ? true : false,
       store_id: data?.store_id?.id,
+      terminal_id: data?.terminal_id,
       payment_types: paymentTypes.map(({ is_active, id }) => ({ is_active: is_active, payment_type_id: id })),
     }
     if (openDrawer?.mode === 'edit') {

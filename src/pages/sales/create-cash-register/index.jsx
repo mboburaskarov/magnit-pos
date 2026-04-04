@@ -226,17 +226,17 @@ function NewCashRegister() {
   })
   const { mutate: closeCheckZReport,isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
+       const terminalID = data?.message?.terminalID
+        if (userData?.store?.terminal_ids.includes(terminalID) ) {
+          setisEposTurnOn({ is_open: false, message: 'Вы в другом филиале!' })
+          return
+        } 
       if (get(data, 'error', true)) {
         setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
       } else {
-        const terminalID = data?.message?.terminalID
-        if (terminalID == userData?.store?.terminal_id) {
-          setisEposTurnOn({ is_open: false, message: 'Siz boshqa filyaldasiz!' })
-        } else {
           const device_id = localStorage.getItem('device_id')
           checkSaleExist({ store_id: get(userData, 'store.id'), device_id })
         }
-      }
     },
     onError: (err) => {
       setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
@@ -254,7 +254,7 @@ function NewCashRegister() {
   return (
     <LoadingContainer readyState={!isCheckSaleExist && !iscloseCheckZReport && !ischeckEPOSTurnOn}>
       <FormProvider {...methods}>
-        {isEposTurnOn?.is_open || get(userData, 'type') === 'SUPERADMIN' ? (
+        {isEposTurnOn?.is_open  ? (
           <Box className={classes.box}>
             <Box className={classes.wrapper}>
               <Typography display={'flex'} alignItems={'center'} fontSize={'32px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'} p={'24px'}>

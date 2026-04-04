@@ -68,6 +68,7 @@ function LiteOrder({
     isSendToEPOS,
     isEposError,
     setHasError,
+    isGelOldEposCheck,
     hasError,
     isSendEPOSresponseToBackend,
     isSaleResponseError,
@@ -180,6 +181,7 @@ function LiteOrder({
       <SaleProgressSteps
         isFinishSaleWithoutAppPaymentType={isFinishSaleWithoutAppPaymentType}
         isSendToEPOS={isSendToEPOS}
+        isGelOldEposCheck={isGelOldEposCheck}
         isSendEPOSresponseToBackend={isSendEPOSresponseToBackend}
         isSaleResponseError={isSaleResponseError}
         isEposError={isEposError}

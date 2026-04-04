@@ -1,4 +1,4 @@
-import { checkBarcodeWithMarking } from '@utils/checkingMarkingWithBarcode'
+import { checkBarcodeWithMarking, extractNumbers } from '@utils/checkingMarkingWithBarcode'
 import { Box, Button, Dialog, Typography } from '@mui/material'
 import { containsCyrillic } from '@utils/convertoRuOrEngToEng'
 import ConfirmDialog from '@components/ConfirmDialog'
@@ -33,6 +33,7 @@ function ImplementMarkingDialog({
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [openRechangeDialog, setOpenRechangeDialog] = useState(false)
   const [changeingMarkingData, setChangeingMarkingData] = useState(false)
+  const [changeingBarcodegData, setChangeingBarcodegData] = useState(false)
   const user_data = useSelector((state) => state.user)
 
   const implementMarkingList = (marking, id, index) => {
@@ -126,7 +127,9 @@ function ImplementMarkingDialog({
           inputsRef.current[flatIndex].value = ''
           return
         } else {
-          setChangeingMarkingData({ value: e.target.value, id, childIndex, flatIndex, item })
+           const markingBarcode = extractNumbers(e.target.value)
+          setChangeingBarcodegData({ value: e.target.value, id,markingBarcode, childIndex, flatIndex, item })
+          // setChangeingMarkingData({ value: e.target.value, id, childIndex, flatIndex, item })
 
           // error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl: ${productBarcode} | Sizniki:  ${e.target.value} ))`)
           return
@@ -167,10 +170,31 @@ function ImplementMarkingDialog({
     }
   }, [changeingMarkingData])
 
+    useEffect(() => {
+    if (changeingBarcodegData) {
+      checkingBarcode({
+        barcode: changeingBarcodegData?.markingBarcode,
+        product_id: changeingBarcodegData?.item?.product_id,
+        cart_item_id: changeingBarcodegData?.item?.id
+      })
+    }
+  }, [changeingBarcodegData])
+
   const saveNewChangedMarking = () => {
     const value = changeingMarkingData?.value
     const id = changeingMarkingData?.id
     const childIndex = changeingMarkingData?.childIndex
+    console.log(id,value,childIndex);
+    
+    implementMarkingList(value, id, childIndex)
+  }
+
+    const saveNewChangedBarcode = () => {
+    const value = changeingBarcodegData?.value
+    const id = changeingBarcodegData?.id
+    const childIndex = changeingBarcodegData?.childIndex
+    console.log(id,value,childIndex);
+    
     implementMarkingList(value, id, childIndex)
   }
 
@@ -181,7 +205,25 @@ function ImplementMarkingDialog({
     }
     return flatIndex + childIndex
   }
+const { mutate: checkingBarcode } = useMutation(requests.checkingBarcode, {
+    onSuccess: ({ data }) => {
+      if(get(data, 'data.found',false)) {
+        saveNewChangedBarcode()
+        success('Штрих-код oбновлён. (uz: barcode yangilandi)')
+      }
+      
+    },
+    onError: (err) => {
+      inputsRef.current[changeingMarkingData?.flatIndex].value = ''
+      if (get(err, 'response.data.data') == 'similarity.not.enough') {
+        error('Недостаточно сходств')
+      } else {
+        error('err: Asl belgi')
+      }
 
+      console.error('err', err)
+    },
+  })
   const { mutate: checkingAslName, isLoading: ischeckingAslName } = useMutation(requests.checkingAslName, {
     onSuccess: ({ data }) => {
       if (data?.data?.status == 'pending') {

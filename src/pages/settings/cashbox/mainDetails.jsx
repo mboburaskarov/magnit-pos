@@ -43,8 +43,10 @@ export default function MainDetails({ paymentTypes, setPaymentTypes, openDrawer 
   return (
     <Box mt={'24px'}>
       <Label mb='4px'>{t('name')}</Label>
-
       <TextField id='client-name' name='name' control={control} fullWidth error={errors?.name} placeholder={t('name.placeholder')} required asteriks />
+      <Box mb={4} />
+      <Label mb='4px'>Terminal ID</Label>
+      <TextField id='client-name' name='terminal_id' control={control} fullWidth error={errors?.terminal_id} placeholder={t('terminal ID')} required asteriks />
 
       <Box mb={4} />
 

@@ -411,6 +411,7 @@ export const requests = {
   changeDiscountValue: ({ id, body }) => request.put(`v1/cart_item/sale/${id}`, body),
   changeCartItemQuantity: ({ id, data }) => request.put(`v1/cart_item/${id}`, data),
   createCartItem: (data) => request.post(`v1/cart_item`, data),
+  checkingBarcode: (data) => request.post(`v1/cart_item/check-marking`, data),
   deleteCartItem: (id) => request.delete(`v1/cart_item/${id}`),
   deleteAll: (ids) => request.post(`v1/cart_item/multiple`, ids),
   getCartItemList: (filter) => request.get(`v1/cart_item/list${qs.stringify(filter, { addQueryPrefix: true })}`),

@@ -164,6 +164,7 @@ export default function OrderDrawer({
     hasError,
     setHasError,
     isSaleError,
+    isGelOldEposCheck,
     isSendToEPOS,
     isEposError,
     isSendEPOSresponseToBackend,
@@ -507,6 +508,7 @@ export default function OrderDrawer({
           <SaleProgressSteps
             isFinishSaleWithoutAppPaymentType={isFinishSaleWithoutAppPaymentType}
             isSendToEPOS={isSendToEPOS}
+            isGelOldEposCheck={isGelOldEposCheck}
             setHasError={setHasError}
             isSendEPOSresponseToBackend={isSendEPOSresponseToBackend}
             isSaleResponseError={isSaleResponseError}
