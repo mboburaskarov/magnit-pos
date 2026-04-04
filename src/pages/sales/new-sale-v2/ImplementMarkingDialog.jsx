@@ -122,7 +122,7 @@ function ImplementMarkingDialog({
       if (!checkBarcodeWithMarking(productBarcode, e.target.value)) {
         //markirofkadagi barcode mahsulotniki bilan mos kelmadi
         //markirofkadagi barcode mahsulotniki bilan mos kelmadi
-        if (!hasAccess('can-change-markings-barcode-onsale', user_data)) {
+        if (!hasAccess('can-change-markings-barcode-onsale2', user_data)) {
           error(`Маркировка и штрих-код не поступили. (uz: markirovka va barcode mos emas. (Asl: ${productBarcode} | Sizniki:  ${e.target.value} ))`)
           inputsRef.current[flatIndex].value = ''
           return
