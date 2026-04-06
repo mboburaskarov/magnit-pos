@@ -413,6 +413,7 @@ export const requests = {
   createCartItem: (data) => request.post(`v1/cart_item`, data),
   checkingBarcode: (data) => request.post(`v1/cart_item/check-marking`, data),
   deleteCartItem: (id) => request.delete(`v1/cart_item/${id}`),
+  checkingBarcode: (data) => request.post(`v1/cart_item/check-marking`, data),
   deleteAll: (ids) => request.post(`v1/cart_item/multiple`, ids),
   getCartItemList: (filter) => request.get(`v1/cart_item/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   skipToAutoOrder: ({ id, data }) => request.patch(`v1/cart_item/${id}/is-auto-order`, data),
