@@ -210,6 +210,9 @@ const { mutate: checkingBarcode } = useMutation(requests.checkingBarcode, {
       if(get(data, 'data.found',false)) {
         saveNewChangedBarcode()
         success('Штрих-код oбновлён. (uz: barcode yangilandi)')
+      }else{
+      inputsRef.current[changeingMarkingData?.flatIndex].value = ''
+
       }
       
     },
