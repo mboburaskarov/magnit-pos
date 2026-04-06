@@ -211,13 +211,13 @@ const { mutate: checkingBarcode } = useMutation(requests.checkingBarcode, {
         saveNewChangedBarcode()
         success('Штрих-код oбновлён. (uz: barcode yangilandi)')
       }else{
-      inputsRef.current[changeingMarkingData?.flatIndex].value = ''
+      inputsRef.current[changeingBarcodegData?.flatIndex].value = ''
 
       }
       
     },
     onError: (err) => {
-      inputsRef.current[changeingMarkingData?.flatIndex].value = ''
+      inputsRef.current[changeingBarcodegData?.flatIndex].value = ''
       if (get(err, 'response.data.data') == 'similarity.not.enough') {
         error('Недостаточно сходств')
       } else {
