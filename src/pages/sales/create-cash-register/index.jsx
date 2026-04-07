@@ -85,7 +85,7 @@ function NewCashRegister() {
   const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
   const dispatch = useDispatch()
-  const [isEposTurnOn, setisEposTurnOn] = useState(true)
+  const [isEposTurnOn, setisEposTurnOn] = useState({is_open: true, message: ''})
   const { mutate: getUserInfo } = useMutation(requests.getUserInfo, {
     onSuccess: ({ data }) => {
       dispatch(setUserData({ ...data?.data }))
@@ -225,7 +225,7 @@ function NewCashRegister() {
   const { mutate: closeCheckZReport,isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
        const terminalID = Object.keys(data?.message?.Sender?.ZReportFilesSent)[0]
-        if (userData?.store?.terminal_ids.includes(terminalID||0) ) {
+        if (!userData?.store?.terminal_ids.includes(terminalID||0) ) {
           setisEposTurnOn({ is_open: false, message: 'Вы в другом филиале!' })
           return
         } 
@@ -249,6 +249,8 @@ function NewCashRegister() {
       method: 'checkStatus',
     })
   }, [])
+  console.log(isEposTurnOn?.is_open);
+  
   return (
     <LoadingContainer readyState={!isCheckSaleExist && !iscloseCheckZReport && !ischeckEPOSTurnOn}>
       <FormProvider {...methods}>
