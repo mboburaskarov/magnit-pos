@@ -8,7 +8,6 @@ import CartOutlineIcon from '@icons/CartOutline'
 import MoneyOutlineIcon from '@icons/MoneyOutline'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { checkPermission } from '@utils/checkPermission'
 import hasAccess from '@utils/hasAccess'
 import { requests } from '@utils/requests'
 import { error } from '@utils/toast'
@@ -98,7 +97,7 @@ function NewCashRegister() {
   useEffect(() => {
     getUserInfo()
   }, [])
-  const { data: registerCashList, refetch: refetchregisterCashList } = useQuery(['registerCashList', userData], () =>
+  const { data: registerCashList } = useQuery(['registerCashList', userData], () =>
     requests.getAllCashBoxList({ store_id: get(userData, 'store.id'), limit: 20, offset: 0 }),
   )
   const { data: registerCashData, refetch: refetchregisterCashData } = useQuery('registerCashData', () =>
@@ -135,7 +134,7 @@ function NewCashRegister() {
   }, [registerCashData])
 
   useEffect(() => {
-    refetchregisterCashData().then((data) => {
+    refetchregisterCashData().then(() => {
       setCanCreate({ canCreate: true, is_open: get(methods.watch('registerCash_id'), 'is_open') })
     })
   }, [methods.watch('registerCash_id')])
@@ -225,16 +224,22 @@ function NewCashRegister() {
   })
   const { mutate: closeCheckZReport,isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
-       const terminalID = Object.keys(data?.message?.Sender?.ZReportFilesSent)[0]
-        if (!userData?.store?.terminal_ids?.includes(terminalID||0) && hasAccess('check-terminal-id', userData)) {
-          setisEposTurnOn({ is_open: false, message: 'Вы в другом филиале!' })
-          return
-        } 
+      const zReportFilesSent = get(data, 'message.Sender.ZReportFilesSent')
+      const terminalID =
+        zReportFilesSent && typeof zReportFilesSent === 'object' ? Object.keys(zReportFilesSent)[0] : null
+      const terminalIds = userData?.store?.terminal_ids || []
+      const isAllowedTerminal =
+        !terminalID || terminalIds.includes(terminalID) || terminalIds.includes(Number(terminalID))
+
+      if (!isAllowedTerminal && hasAccess('check-terminal-id', userData)) {
+        setisEposTurnOn({ is_open: false, message: 'Вы в другом филиале!' })
+        return
+      }
       if (get(data, 'error', true)) {
         setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
       } else {
-          const device_id = localStorage.getItem('device_id')
-          checkSaleExist({ store_id: get(userData, 'store.id'), device_id })
+        const device_id = localStorage.getItem('device_id')
+        checkSaleExist({ store_id: get(userData, 'store.id'), device_id })
       }
     },
     onError: (err) => {
@@ -371,7 +376,5 @@ function NewCashRegister() {
 }
 
 export default NewCashRegister
-
-
 
 
