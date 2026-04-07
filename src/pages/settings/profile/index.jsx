@@ -195,7 +195,7 @@ const Profile = () => {
             <Box flex={1}>
               <Label>{t('theme')}</Label>
               <SelectSimple
-                disabled={false}
+                disabled={true}
                 white
                 isClearable={false}
                 defaultValue={themeDefaultValue}

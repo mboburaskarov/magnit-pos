@@ -25,7 +25,7 @@ export default function ChangePassWordDialog({ open, setOpen }) {
   }
 
   useEffect(() => {
-    setCanChange(methods.getValues('first_pass') === methods.getValues('second_pass') && methods.getValues('second_pass')?.length === 8)
+    setCanChange(methods.getValues('first_pass') === methods.getValues('second_pass'))
   }, [methods.watch('first_pass'), methods.watch('second_pass')])
 
   const { mutate: changePassword } = useMutation(requests.changePassword, {

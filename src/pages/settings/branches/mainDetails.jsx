@@ -11,11 +11,19 @@ import Label from '@components/Label'
 import LazySelect from '@components/Select/LazySelect'
 import { requests } from '@utils/requests'
 import OutLineTextField from '@components/Inputs/OutLineTextField'
-import { LocationEditIcon } from 'lucide-react'
+import { LocationEditIcon, Plus, Trash2 } from 'lucide-react'
 import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
 import { YMaps, Map, Placemark } from 'react-yandex-maps'
+import PlusIcon from '@/assets/icons/PlusIcon'
 
-export default function MainDetails({ openDrawer }) {
+export default function MainDetails({
+  openDrawer,
+  terminalIdValue,
+  setTerminalIdValue,
+  terminalIds,
+  handleAddTerminalId,
+  handleDeleteTerminalId,
+}) {
   const { control, errors, setValue, reset, getValues, watch } = useFormContext()
   const { t } = useTranslation()
   const [openLocationModal, setOpenLocationModal] = useState(false)
@@ -259,6 +267,111 @@ export default function MainDetails({ openDrawer }) {
           />
         </Grid>
       </Grid>
+      {get(openDrawer, 'mode') === 'edit' && (
+        <Box
+          sx={{
+            mt: 4,
+            mb: 4,
+            p: 3,
+            border: '1px solid #ECEDF2',
+            borderRadius: '20px',
+            backgroundColor: '#fff',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+              alignItems: 'flex-end',
+              mb: 3,
+            }}
+          >
+            <Box sx={{ flex: 1 }}>
+              <Label mb='4px'>Terminal ID</Label>
+              <TextField
+                uncontrolled
+                name='terminal-id-input'
+                fullWidth
+                value={terminalIdValue}
+                setValue={setTerminalIdValue}
+                placeholder='Terminal ID kiriting'
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault()
+                    handleAddTerminalId()
+                  }
+                }}
+              />
+            </Box>
+            <Button
+              variant='contained'
+              size='small'
+              onClick={handleAddTerminalId}
+              sx={{
+                minWidth: 50,
+                height: 48,
+                borderRadius: '16px',
+              }}
+            >
+              <Plus color='#fff' />
+
+            </Button>
+          </Box>
+
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1.5,
+            }}
+          >
+            {terminalIds?.length ? (
+              terminalIds.map((terminalId) => (
+                <Box
+                  key={terminalId}
+                  sx={{
+                    px: 2,
+                    py: 1.5,
+                    borderRadius: '16px',
+                    border: '1px solid #ECEDF2',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: 2,
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontFamily: 'Gilroy-Medium, sans-serif',
+                      fontSize: 16,
+                      color: '#111217',
+                      wordBreak: 'break-all',
+                    }}
+                  >
+                    {terminalId}
+                  </Typography>
+                  <Button
+                    color='error'
+                    onClick={() => handleDeleteTerminalId(terminalId)}
+                    sx={{ minWidth: 'auto',padding:' 0 10px',height:'32px' }}
+                  >
+                    <Trash2 color='#fff' size={16}/>
+                  </Button>
+                </Box>
+              ))
+            ) : (
+              <Typography
+                sx={{
+                  fontSize: 14,
+                  color: '#6B7280',
+                }}
+              >
+                Terminal ID list bo&apos;sh
+              </Typography>
+            )}
+          </Box>
+        </Box>
+      )}
 
       <StyledEmptyDialog onClose={() => setOpenLocationModal(false)} open={!!openLocationModal} setOpen={setOpenLocationModal} title='Выберите локацию'>
         <Box width='100%' height='400px' position='relative'>

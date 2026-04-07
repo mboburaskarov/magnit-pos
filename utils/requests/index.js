@@ -430,7 +430,6 @@ export const requests = {
   deleteStore: (id) => request.delete(`v1/store/${id}`),
   createStore: (data) => request.post('v1/store', data),
   updateStore: ({ id, data }) => request.put(`v1/store/${id}`, data),
-
   //unit-types
   getAllUnits: (filter) => request.get(`v1/unit-types/list${qs.stringify(filter, { addQueryPrefix: true })}`),
 

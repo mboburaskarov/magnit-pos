@@ -1,7 +1,7 @@
 import { Box, Drawer, Typography } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles'
 import { get } from 'lodash'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
@@ -45,6 +45,8 @@ export default function BranchDrawer({ refetchBranchList, openDrawer, closeDrawe
   const { t } = useTranslation()
   const classes = useStyles()
   const methods = useForm()
+  const [terminalIdValue, setTerminalIdValue] = useState('')
+  const [terminalIds, setTerminalIds] = useState([])
 
   useEffect(() => {
     methods.register('dial_code')
@@ -54,33 +56,15 @@ export default function BranchDrawer({ refetchBranchList, openDrawer, closeDrawe
     methods.reset()
   }, [])
 
-  const { mutate: handleCreateBranch, isLoading: isHandleCreateBranch } = useMutation(requests.createStore, {
-    onSuccess: () => {
-      closeDrawer(false)
-      methods.reset()
-      refetchBranchList()
-      success('Аптека создан!')
-    },
-    onError: (err) => {
-      error('Ошибка при Аптека создан!')
-      console.error('err', err)
-    },
-  })
+  useEffect(() => {
+    setTerminalIdValue('')
+    setTerminalIds(get(openDrawer, 'data.terminal_ids', []))
+  }, [openDrawer])
 
-  const { mutate: handleUpdateBranch, isLoading: isHandleUpdateBranch } = useMutation(requests.updateStore, {
-    onSuccess: () => {
-      closeDrawer(false)
-      methods.reset()
-      refetchBranchList()
-      success('Аптека был отредактирован!')
-    },
-    onError: (err) => {
-      error('Ошибка редактирования Аптекаа.!')
-      console.error('err', err)
-    },
-  })
+  const { mutateAsync: createBranch, isLoading: isHandleCreateBranch } = useMutation(requests.createStore)
+  const { mutateAsync: updateBranch, isLoading: isHandleUpdateBranch } = useMutation(requests.updateStore)
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const requestBody = {
       name: get(data, 'name'),
       detailed_name: get(data, 'detailed_name'),
@@ -93,11 +77,24 @@ export default function BranchDrawer({ refetchBranchList, openDrawer, closeDrawe
       company_id: data?.company_id?.id,
       inn: data?.inn,
       work_hours: get(data, 'time-type') == '24' ? '00:00-00:00' : get(data, 'work-time'),
+      terminal_ids: terminalIds,
     }
-    if (openDrawer?.mode === 'edit') {
-      handleUpdateBranch({ data: requestBody, id: openDrawer?.data?.id })
-    } else {
-      handleCreateBranch(requestBody)
+
+    try {
+      if (openDrawer?.mode === 'edit') {
+        await updateBranch({ data: requestBody, id: openDrawer?.data?.id })
+        success('Аптека был отредактирован!')
+      } else {
+        await createBranch(requestBody)
+        success('Аптека создан!')
+      }
+
+      closeDrawer(false)
+      methods.reset()
+      refetchBranchList()
+    } catch (err) {
+      error(openDrawer?.mode === 'edit' ? 'Ошибка редактирования Аптекаа.!' : 'Ошибка при Аптека создан!')
+      console.error('err', err)
     }
   }
 
@@ -105,10 +102,37 @@ export default function BranchDrawer({ refetchBranchList, openDrawer, closeDrawe
     error('alerts.enter_all_required_fields')
     console.error('err', err)
   }
+
+  const handleAddTerminalId = () => {
+    const normalizedTerminalId = terminalIdValue.trim()
+
+    if (!normalizedTerminalId) {
+      error('Terminal ID kiriting')
+      return
+    }
+
+    if (!get(openDrawer, 'data.id')) {
+      error('Filial topilmadi')
+      return
+    }
+
+    if (terminalIds.includes(normalizedTerminalId)) {
+      error('Bu Terminal ID allaqachon mavjud')
+      return
+    }
+
+    setTerminalIds((prev) => [...prev, normalizedTerminalId])
+    setTerminalIdValue('')
+  }
+
+  const handleDeleteTerminalId = (terminalId) => {
+    setTerminalIds((prev) => prev.filter((item) => item !== terminalId))
+  }
+
   const theme = useTheme()
   return (
     <Drawer className={classes.drawer} open={openDrawer} onClose={closeDrawer} anchor='right' elevation={1}>
-      <Box height={'100%'}>
+      <Box height={'100%'} sx={{ position: 'relative' }}>
         <Box className={classes.header}>
           <Typography variant='h4' className={classes.title}>
             {openDrawer?.mode === 'edit' ? 'Редактировать филиал' : 'Новый филиал'}
@@ -116,13 +140,22 @@ export default function BranchDrawer({ refetchBranchList, openDrawer, closeDrawe
           <CloseIcon color={theme.palette.black} onClick={() => closeDrawer(false)} />
         </Box>
         <FormProvider {...methods}>
-          <form id='create-client-form-mini' onSubmit={methods.handleSubmit(onSubmit, onError)}>
+          <form id='create-client-form-mini' onSubmit={methods.handleSubmit(onSubmit, onError)} style={{ height: 'calc(100% - 80px)' }}>
             <Box
               sx={{
-                padding: '0 24px',
+                padding: '0 24px 120px',
+                height: '100%',
+                overflowY: 'auto',
               }}
             >
-              <MainDetails openDrawer={openDrawer} />
+              <MainDetails
+                openDrawer={openDrawer}
+                terminalIdValue={terminalIdValue}
+                setTerminalIdValue={setTerminalIdValue}
+                terminalIds={terminalIds}
+                handleAddTerminalId={handleAddTerminalId}
+                handleDeleteTerminalId={handleDeleteTerminalId}
+              />
             </Box>
             <Box
               width={196}
