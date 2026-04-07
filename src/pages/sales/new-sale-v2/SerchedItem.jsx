@@ -1,18 +1,17 @@
-import thousandDivider from '@utils/thousandDivider';
-import Highlighter from 'react-highlight-words';
-import { Box, Typography } from '@mui/material';
-import ZoomTextIcon from '@icons/ZoomTextIcon';
-import PrizeBoxIcon from '@icons/PrizeBoxIcon';
-import CustomImg from '@components/CustomImg';
-import { useParams } from 'react-router-dom';
-import { requests } from '@utils/requests';
-import { useMutation } from 'react-query';
-import CloseIcon from '@icons/CloseIcon';
-import { error } from '@utils/toast';
-import { useState } from 'react';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
-
+import thousandDivider from '@utils/thousandDivider'
+import Highlighter from 'react-highlight-words'
+import { Box, Typography } from '@mui/material'
+import ZoomTextIcon from '@icons/ZoomTextIcon'
+import PrizeBoxIcon from '@icons/PrizeBoxIcon'
+import CustomImg from '@components/CustomImg'
+import { useParams } from 'react-router-dom'
+import { requests } from '@utils/requests'
+import { useMutation } from 'react-query'
+import CloseIcon from '@icons/CloseIcon'
+import { error } from '@utils/toast'
+import { useState } from 'react'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
 export default function SerchedItem({
   index,
@@ -121,7 +120,20 @@ export default function SerchedItem({
               </Typography>
             </Box>
           </Box>
-
+          {item?.requires_prescription && (
+            <Box
+              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              m={'auto 10px'}
+              bgcolor={'red.200'}
+              borderRadius={'20px'}
+              p={'0 10px'}
+              height={'20px'}
+            >
+              <Typography fontSize={'12px'} lineHeight={'16px'} fontWeight={'600'} color={'red.500'}>
+                Рецепт
+              </Typography>
+            </Box>
+          )}
           {!conflictItem && (
             <Box flex='0 0 22%' pr={2} textAlign='right'>
               <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
