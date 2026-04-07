@@ -226,7 +226,7 @@ function NewCashRegister() {
   const { mutate: closeCheckZReport,isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
        const terminalID = Object.keys(data?.message?.Sender?.ZReportFilesSent)[0]
-        if (!userData?.store?.terminal_ids.includes(terminalID||0) && hasAccess('check-terminal-id', userData)) {
+        if (!userData?.store?.terminal_ids?.includes(terminalID||0) && hasAccess('check-terminal-id', userData)) {
           setisEposTurnOn({ is_open: false, message: 'Вы в другом филиале!' })
           return
         } 
