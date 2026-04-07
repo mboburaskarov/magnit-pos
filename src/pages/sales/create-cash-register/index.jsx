@@ -210,10 +210,8 @@ function NewCashRegister() {
         setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
       } else {
         closeCheckZReport({
-          token: 'DXJFX32CN1296678504F2',
-          method: 'getZreportInfo',
-          printerSize: 80,
-          zReportId: 0,
+    "token": "DXJFX32CN1296678504F2",
+    "method": "getStatus"
         })
       }
     },
@@ -226,8 +224,8 @@ function NewCashRegister() {
   })
   const { mutate: closeCheckZReport,isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
-       const terminalID = data?.message?.terminalID
-        if (userData?.store?.terminal_ids.includes(terminalID) ) {
+       const terminalID = Object.keys(data?.message?.Sender?.ZReportFilesSent)[0]
+        if (!userData?.store?.terminal_ids.includes(terminalID||0) ) {
           setisEposTurnOn({ is_open: false, message: 'Вы в другом филиале!' })
           return
         } 
