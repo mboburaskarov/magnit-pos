@@ -9,6 +9,7 @@ import MoneyOutlineIcon from '@icons/MoneyOutline'
 import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { checkPermission } from '@utils/checkPermission'
+import hasAccess from '@utils/hasAccess'
 import { requests } from '@utils/requests'
 import { error } from '@utils/toast'
 import { get } from 'lodash'
@@ -225,7 +226,7 @@ function NewCashRegister() {
   const { mutate: closeCheckZReport,isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
        const terminalID = Object.keys(data?.message?.Sender?.ZReportFilesSent)[0]
-        if (!userData?.store?.terminal_ids.includes(terminalID||0) ) {
+        if (!userData?.store?.terminal_ids.includes(terminalID||0) && hasAccess('check-terminal-id', userData)) {
           setisEposTurnOn({ is_open: false, message: 'Вы в другом филиале!' })
           return
         } 
@@ -234,7 +235,7 @@ function NewCashRegister() {
       } else {
           const device_id = localStorage.getItem('device_id')
           checkSaleExist({ store_id: get(userData, 'store.id'), device_id })
-        }
+      }
     },
     onError: (err) => {
       setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
