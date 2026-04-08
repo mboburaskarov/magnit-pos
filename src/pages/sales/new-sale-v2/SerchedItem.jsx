@@ -47,6 +47,7 @@ export default function SerchedItem({
   return (
     <Box
       id={item?.id}
+      barcode={product?.barcode}
       className={classes.searchItem + ' search-item'}
       onClick={() => {
         handleAddProduct({
