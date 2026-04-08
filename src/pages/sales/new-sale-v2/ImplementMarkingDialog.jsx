@@ -211,8 +211,9 @@ const { mutate: checkingBarcode } = useMutation(requests.checkingBarcode, {
         saveNewChangedBarcode()
         success('Штрих-код oбновлён. (uz: barcode yangilandi)')
       }else{
+        
       inputsRef.current[changeingBarcodegData?.flatIndex].value = ''
-
+      error(`Штрих-код не поступил. (uz: barcode mos emas. (Asl: ${changeingBarcodegData?.item?.barcode} | Sizniki:  ${changeingBarcodegData?.markingBarcode} ))`)
       }
       
     },
