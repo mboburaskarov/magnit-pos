@@ -335,7 +335,8 @@ function CartSearchBar({
         handleAddProduct({
           discount_type: get(discount, 'type', 'percent'),
           discount_value: Number(get(discount, 'amount', 0)),
-          store_product_id: get(document, 'activeElement.id', 'err #3'),
+          store_product_id: get(document, 'activeElement.id', 'no id'),
+          barcode: get(document, 'activeElement.barcode', 'nobarcode'),
           sale_id: id,
           type: 'cart_item_select',
         })
