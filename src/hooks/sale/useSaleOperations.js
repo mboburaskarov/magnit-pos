@@ -98,7 +98,7 @@ export const useSaleOperations = ({
         }
       } catch (parseError) {
         console.warn('Failed to parse error response:', parseError)
-        errorMessage = `Ошибка при Продажа завершена:: ${get(err, 'data') || 'Неизвестная ошибка'}`
+        errorMessage = `Ошибка при Продажа завершена:: ${get(err, 'data') || get(err, 'message') || 'Неизвестная ошибка'}`
       }
       error(errorMessage)
       return

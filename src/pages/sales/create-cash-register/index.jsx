@@ -232,7 +232,7 @@ function NewCashRegister() {
         !terminalID || terminalIds.includes(terminalID) || terminalIds.includes(Number(terminalID))
 
       if (!isAllowedTerminal && hasAccess('check-terminal-id', userData)) {
-        setisEposTurnOn({ is_open: false, message: 'Вы в другом филиале!' })
+        setisEposTurnOn({ is_open: false, message:`Вы в другом филиале! Epos: ${terminalID} Pharma: ${terminalIds?.join(',')}` })
         return
       }
       if (get(data, 'error', true)) {
@@ -255,7 +255,6 @@ function NewCashRegister() {
       method: 'checkStatus',
     })
   }, [])
-  console.log(isEposTurnOn?.is_open);
   
   return (
     <LoadingContainer readyState={!isCheckSaleExist && !iscloseCheckZReport && !ischeckEPOSTurnOn}>

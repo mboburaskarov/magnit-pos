@@ -536,8 +536,7 @@ function NewSaleV2() {
           error('Продажа закрыта и не может быть изменена. Пожалуйста, создайте новую продажу.')
           return
         }
-        error(`Введенное количество превышает имеющееся в наличии.
-               Максимальное количество на складе - ${get(err, 'response.data.data.pack_quantity')} уп, ${get(err, 'response.data.data.unit_quantity')} шт`)
+        error(`Введенное количество превышает имеющееся в наличии.`)
       } else {
         if (err.toString().includes('Error: Condition not met. Request not sent')) {
           error('Ошибка при создании элемента карты. Максимальное количество товаров в корзине 10')
@@ -614,8 +613,7 @@ function NewSaleV2() {
       method.setValue(`quantity_${item?.id}`, item?.quantity)
       method.setValue(`unit_quantity_${item?.id}`, item?.unit_quantity)
       if (get(err, 'response.data.code') === 409) {
-        error(`Введенное количество превышает имеющееся в наличии.
-               Максимальное количество на складе - ${get(err, 'response.data.data.pack_quantity')} уп, ${get(err, 'response.data.data.unit_quantity')} шт`)
+        error(`Введенное количество превышает имеющееся в наличии.`)
       } else {
         error('Ошибка при получении похожих товаров.')
       }

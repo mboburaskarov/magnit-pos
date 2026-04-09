@@ -113,13 +113,13 @@ function NewLightTableForInventory({
             </th>
             <th colSpan={5}></th>
             <th colSpan={3}>
-              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>{thousandDivider(get(inventoryStat, 'data.data.current_sum'), '')}</Typography>
+              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>{thousandDivider(get(inventoryStat, 'data.current_sum'), '')}</Typography>
             </th>
             <th colSpan={2}>
-              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>{thousandDivider(get(inventoryStat, 'data.data.fact_sum'), '')}</Typography>
+              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>{thousandDivider(get(inventoryStat, 'data.fact_sum'), '')}</Typography>
             </th>
             <th>
-              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>{thousandDivider(get(inventoryStat, 'data.data.difference_sum'), '')}</Typography>
+              <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>{thousandDivider(get(inventoryStat, 'data.difference_sum'), '')}</Typography>
             </th>
           </tr>
         </tfoot>
