@@ -745,7 +745,7 @@ function NewSaleV2() {
   useHotkeys(
     'F9',
     () => {
-      if (isAllMarkingFill()) {
+      if (isAllMarkingFill() && get(cartItemsList, 'data.data.data').length > 0) {
         setIsOrderDrower(true)
       } else {
         setIsOpenImplementMarkingDialog({ mode: 'full' })

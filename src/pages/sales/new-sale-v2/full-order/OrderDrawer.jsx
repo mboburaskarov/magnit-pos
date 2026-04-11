@@ -209,6 +209,9 @@ export default function OrderDrawer({
     paymentTypesList,
     handleAddPaymentType,
     handleFinish: () => {
+      if(!isOrderDrower){
+        return
+      }
       if (paymentsList.find((el) => el.type === 'app')) {
         setOpenScanDialog(true)
       } else {
