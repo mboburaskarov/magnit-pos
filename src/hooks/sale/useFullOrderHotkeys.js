@@ -37,7 +37,7 @@ export const useFullOrderHotkeys = ({ paymentTypesList, handleAddPaymentType, ha
       const key = event.key
 
       // F12 - Finish payment (only if no remaining amount)
-      if (key === 'F12' && !(maxAmount > 0)) {
+      if (key === 'F12' && !(maxAmount > 0) ) {
         handleFinish()
         return
       }
