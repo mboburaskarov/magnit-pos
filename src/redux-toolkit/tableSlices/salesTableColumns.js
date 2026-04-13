@@ -71,6 +71,12 @@ const columns = [
     width: 158,
   },
   {
+    field: 'uzum_tez_kor',
+    hide: false,
+    minWidth: 70,
+    width: 158,
+  },
+  {
     field: 'loyalty_card',
     hide: false,
     minWidth: 70,

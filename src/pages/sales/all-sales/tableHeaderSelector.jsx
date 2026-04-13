@@ -161,6 +161,14 @@ export default function tableHeaderSelector({ salesColumns, setOpenSaleDrawer, v
         cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='visa' />),
       }
     }
+    if(el.field === 'uzum_tez_kor') {
+      return {
+        ...el,
+        headerName: 'Uzum Tezkor',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText currency='сум' withDevider {...p} data={get(p, 'data', 0)} type='uzum_tez_kor' />),
+      }
+    }
     if (el.field === 'payme') {
       return {
         ...el,

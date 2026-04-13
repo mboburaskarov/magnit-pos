@@ -484,7 +484,7 @@ const InventoryWithCheckingPageNew = ({ onSelectRow = () => {} }) => {
             backIcon
             backHref='/products/inventory'
             text={'Инвентаризация с проверкой'}
-            subText={`${inventoryStat?.data?.data?.store?.name} - ${dayjs(inventoryStat?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
+            subText={`${inventoryStat?.data?.store?.name} - ${dayjs(inventoryStat?.data?.data?.created_at).format('DD.MM.YYYY - HH:mm')}`}
             checkAccessId={'product-create'}
           />
           <Container>

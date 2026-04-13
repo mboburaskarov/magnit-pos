@@ -41,6 +41,12 @@ const columns = [
     width: 300,
   },
   {
+    field: 'max_price',
+    hide: false,
+    minWidth: 70,
+    width: 300,
+  },
+  {
     field: 'percent',
     hide: false,
     minWidth: 70,
