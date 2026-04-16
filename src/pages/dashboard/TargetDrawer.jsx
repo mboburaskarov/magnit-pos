@@ -12,6 +12,7 @@ import thousandDivider from '@utils/thousandDivider'
 import { t } from 'i18next'
 import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
+import TargetByEmployee from './TargetByEmployeeModal'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -125,6 +126,7 @@ export default function TargetDrawer({ openDrawer, closeDrawer }) {
   const { values } = useQueryParams()
   const [orderStoring, setOrderStoring] = useState({ position: 0, colId: '' })
   const [offsetCount, setOffsetCount] = useState(0)
+  const [openTargetByEmployee, setOpenTargetByEmployee] = useState(false)
   const [selectedYear, setSelectedYear] = useState(2026)
   const [selectedMonth, setSelectedMonth] = useState(3)
   const targetListFIlter = useMemo(() => {
@@ -165,8 +167,8 @@ export default function TargetDrawer({ openDrawer, closeDrawer }) {
         orderStoring,
         setOrderStoring,
         cellRenderer: ({ data, rowIndex }) => (
-          <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap'>
-            <Typography>{data?.store_name}</Typography>
+          <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap' onClick={() => setOpenTargetByEmployee({ store_id: data?.store_id, open: true })} sx={{ cursor: 'pointer' }}>
+            <Typography color={'orange.500'}>{data?.store_name}</Typography>
           </Box>
         ),
       },
@@ -327,6 +329,7 @@ export default function TargetDrawer({ openDrawer, closeDrawer }) {
           }}
         />
       </Box>
+      <TargetByEmployee open={openTargetByEmployee} setOpen={setOpenTargetByEmployee} />
     </Drawer>
   )
 }

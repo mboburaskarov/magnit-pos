@@ -9,11 +9,13 @@ export const useFullOrderHotkeys = ({ paymentTypesList, handleAddPaymentType, ha
     naqd: 'F1',
     humo: 'F2',
     uzcard: 'F3',
-    visa: 'F4',
     click: 'F5',
     uzum: 'F6',
+    balans: 'F11',
+    alif: 'F8',
     payme: 'F7',
     pay: 'F12',
+    uzumtezkor: 'F4',
   }
 
   // Get hotkey label for payment type

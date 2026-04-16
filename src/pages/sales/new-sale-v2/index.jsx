@@ -586,7 +586,9 @@ function NewSaleV2() {
     },
   })
   const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
-
+useEffect(()=>{
+  setIsOrderDrower(false)
+},[cartItemsList])
   useEffect(() => {
     refetchcartItemsList()
   }, [id])
