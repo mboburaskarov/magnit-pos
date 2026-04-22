@@ -27,7 +27,7 @@ export default function DashboarB2BPage() {
       is_franchise: selectedComapanies == 'all' ? true : undefined,
       start_date: getFilterStartDate(values),
       end_date: getFilterEndDate(values),
-      company_ids: selectedComapanies.length <= 63 && selectedComapanies != 'all' ? [...selectedComapanies?.map((a) => a.id)] : null || null,
+      store_ids: selectedComapanies.length <= 63 && selectedComapanies != 'all' ? [...selectedComapanies?.map((a) => a.id)] : null || null,
       offset: values?.search ? 0 : values?.offset || 0,
     }
   }, [values?.offset, selectedComapanies, values?.start_date, values?.end_date, values?.from_time, values?.to_time, values?.limit, values?.search])
