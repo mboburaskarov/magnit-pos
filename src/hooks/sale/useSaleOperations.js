@@ -98,8 +98,6 @@ export const useSaleOperations = ({
         }
       } catch (parseError) {
         console.warn('Failed to parse error response:', parseError)
-        console.log(parseError,err);
-        
         errorMessage = `Ошибка при Продажа завершена:: ${get(err, 'response.data.data') || get(err, 'data') || get(err, 'message') || 'Неизвестная ошибка'}`
       }
       error(errorMessage)
@@ -109,7 +107,6 @@ export const useSaleOperations = ({
   const {
     mutate: gelOldEposCheck,
     isLoading: isGelOldEposCheck,
-    isError: gelOldEposCheckError,
   } = useMutation(requests.gelOldEposCheck, {
     onSuccess: ({ data }) => {
       setCustomerId('')

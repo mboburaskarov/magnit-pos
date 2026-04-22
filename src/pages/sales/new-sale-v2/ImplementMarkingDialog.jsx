@@ -45,13 +45,14 @@ const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCart
     },
   })
   const implementMarkingList = (marking, id, index) => {
-    saveMarkingToCartItem({
+    if(get(open,'cashBoxDetails.data.data.sale_type','SALE') != 'RETURN'){
+        saveMarkingToCartItem({
       id,
       data: {
         marking,
       },
     })
-    
+      }
     setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
   }
 
@@ -151,7 +152,12 @@ const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCart
         }
       }
       //hammasi ok
-
+      if(get(open,'cashBoxDetails.data.data.sale_type','SALE') == 'RETURN'){
+        if(!get(item,'markings',[]).includes(e.target.value)){
+            error('Bu savdo qilingan dori markirofkasi emas!')
+            return
+        }
+      }
       implementMarkingList(e.target.value, id, childIndex)
     }
   }
@@ -199,7 +205,6 @@ const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCart
     const value = changeingMarkingData?.value
     const id = changeingMarkingData?.id
     const childIndex = changeingMarkingData?.childIndex
-    console.log(id,value,childIndex);
     
     implementMarkingList(value, id, childIndex)
   }
@@ -208,8 +213,6 @@ const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCart
     const value = changeingBarcodegData?.value
     const id = changeingBarcodegData?.id
     const childIndex = changeingBarcodegData?.childIndex
-    console.log(id,value,childIndex);
-    
     implementMarkingList(value, id, childIndex)
   }
 
