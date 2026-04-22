@@ -35,8 +35,23 @@ function ImplementMarkingDialog({
   const [changeingMarkingData, setChangeingMarkingData] = useState(false)
   const [changeingBarcodegData, setChangeingBarcodegData] = useState(false)
   const user_data = useSelector((state) => state.user)
-
+const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCartItem, {
+    onSuccess: () => {
+     success('Маркировка обновлена')
+      
+    },
+    onError: () => {
+      error('Ошибка при сохранении маркировки')
+    },
+  })
   const implementMarkingList = (marking, id, index) => {
+    saveMarkingToCartItem({
+      id,
+      data: {
+        marking,
+      },
+    })
+    
     setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
   }
 

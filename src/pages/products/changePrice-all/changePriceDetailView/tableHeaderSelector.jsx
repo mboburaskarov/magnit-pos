@@ -124,6 +124,14 @@ export default function tableHeaderSelector({ revaluationColumns }) {
         )),
       }
     }
+     if (el.field === 'max_price') {
+          return {
+            ...el,
+            headerName: 'Макс. цена',
+            colId: el.field,
+            cellRenderer: memo((p) => <SimpleText {...p} type='max_price' withDevider currency={'сум'} />),
+          }
+        }
     if (el.field === 'scanned_count') {
       return {
         ...el,
