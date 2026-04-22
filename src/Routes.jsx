@@ -3,14 +3,12 @@ import { Suspense, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate, useRoutes } from 'react-router-dom'
 import LoadingContainer from '../components/LoadingContainer'
+import TerminalAccessGuard from './guards/TerminalAccessGuard'
 import MainLayout from './layouts/MainLayout'
 import NotFoundPage from './pages/404'
 import Redirect from './pages/redirect'
 import Test from './pages/test'
 import routes from './routes/index'
-
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDc0NmMzMDM1ZTQ1ODFkNzQ0MGNiOTIiLCJmdWxsTmFtZSI6Ik11aGFtbWFkcW9kaXIgUGFycGl5ZXYiLCJwaG9uZSI6OTk4OTM0ODIwMDExLCJkYklkIjoiNjQ2ZmM0NTM5NDA5YWY0ZGZhYjk3YWJkIiwidHlwZSI6IkJPU1MiLCJzdGF0dXMiOiJBQ1RJVkUiLCJpc0RlbGV0ZWQiOmZhbHNlLCJjcmVhdGVkQXQiOiIyMDIzLTA1LTI5VDA5OjExOjEyLjk4OVoiLCJ1cGRhdGVkQXQiOiIyMDIzLTA2LTE5VDExOjM4OjU1LjAzNloiLCJfX3YiOjAsIlR5cGUiOiJWRU5ET1IiLCJzZXNzaW9uSWQiOiI2NTAwM2UwNWEzMzVkYTE3Y2MyMDRmOTAiLCJpYXQiOjE2OTU3OTM2NDR9.D5ZSoryUnTczQh5HUY3eBHWO6Ws_hRN2Xw0AJTvRvpk'
 
 export const filterNavData = (routes, urls, user_data) => {
   if (user_data?.type === 'SUPERADMIN') {
@@ -149,5 +147,9 @@ export default function Routes() {
       ],
     },
   ])
-  return <Suspense fallback={<LoadingContainer />}>{formattedRoutes}</Suspense>
+  return (
+    <Suspense fallback={<LoadingContainer />}>
+      <TerminalAccessGuard>{formattedRoutes}</TerminalAccessGuard>
+    </Suspense>
+  )
 }

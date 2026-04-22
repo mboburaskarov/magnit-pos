@@ -2,6 +2,7 @@ import { faChevronLeft, faExclamationCircle } from '@fortawesome/free-solid-svg-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Box, Button, Drawer, IconButton, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { clearAuthSession } from '@utils/session'
 import { useNavigate } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
@@ -72,9 +73,7 @@ export default function UserLogOutDrawer({ isOpen, closeDrawer, goBack }) {
   const navigate = useNavigate()
 
   const logout = () => {
-    // localStorage.clear()
-    localStorage.removeItem('access_token')
-
+    clearAuthSession()
     window.location.replace('/login')
     navigate('/login')
   }
