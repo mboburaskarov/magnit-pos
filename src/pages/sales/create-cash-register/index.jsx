@@ -224,8 +224,10 @@ function NewCashRegister() {
     onSuccess: ({ data }) => {
       const terminalID = getEposTerminalId(data)
       const terminalIds = userData?.store?.terminal_ids || []
+      
       const allowedTerminal = isAllowedTerminal(terminalID, terminalIds)
-
+      
+      console.log(terminalID,terminalIds,allowedTerminal,hasAccess('check-terminal-id', userData));
       if (!allowedTerminal && hasAccess('check-terminal-id', userData)) {
         setisEposTurnOn({ is_open: false, message:`Вы в другом филиале! Epos: ${terminalID} Pharma: ${terminalIds?.join(',')}` })
         return
