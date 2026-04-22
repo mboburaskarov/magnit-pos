@@ -35,8 +35,24 @@ function ImplementMarkingDialog({
   const [changeingMarkingData, setChangeingMarkingData] = useState(false)
   const [changeingBarcodegData, setChangeingBarcodegData] = useState(false)
   const user_data = useSelector((state) => state.user)
-
+const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCartItem, {
+    onSuccess: () => {
+     success('Маркировка обновлена')
+      
+    },
+    onError: () => {
+      error('Ошибка при сохранении маркировки')
+    },
+  })
   const implementMarkingList = (marking, id, index) => {
+    if(get(open,'cashBoxDetails.data.data.sale_type','SALE') != 'RETURN'){
+        saveMarkingToCartItem({
+      id,
+      data: {
+        marking,
+      },
+    })
+      }
     setMarkingList((prev) => ({ ...prev, [id]: { ...prev[id], [index]: marking } }))
   }
 
@@ -136,7 +152,12 @@ function ImplementMarkingDialog({
         }
       }
       //hammasi ok
-
+      if(get(open,'cashBoxDetails.data.data.sale_type','SALE') == 'RETURN'){
+        if(!get(item,'markings',[]).includes(e.target.value)){
+            error('Bu savdo qilingan dori markirofkasi emas!')
+            return
+        }
+      }
       implementMarkingList(e.target.value, id, childIndex)
     }
   }
@@ -184,7 +205,6 @@ function ImplementMarkingDialog({
     const value = changeingMarkingData?.value
     const id = changeingMarkingData?.id
     const childIndex = changeingMarkingData?.childIndex
-    console.log(id,value,childIndex);
     
     implementMarkingList(value, id, childIndex)
   }
@@ -193,8 +213,6 @@ function ImplementMarkingDialog({
     const value = changeingBarcodegData?.value
     const id = changeingBarcodegData?.id
     const childIndex = changeingBarcodegData?.childIndex
-    console.log(id,value,childIndex);
-    
     implementMarkingList(value, id, childIndex)
   }
 

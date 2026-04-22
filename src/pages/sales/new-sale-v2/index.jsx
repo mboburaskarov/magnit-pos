@@ -750,7 +750,7 @@ useEffect(()=>{
       if (isAllMarkingFill() && get(cartItemsList, 'data.data.data').length > 0) {
         setIsOrderDrower(true)
       } else {
-        setIsOpenImplementMarkingDialog({ mode: 'full' })
+        setIsOpenImplementMarkingDialog({ mode: 'full',cashBoxDetails })
       }
     },
     {
@@ -770,7 +770,7 @@ useEffect(()=>{
         setLiteOrder(true)
       } else {
         setLiteOrder(false)
-        setIsOpenImplementMarkingDialog({ mode: 'lite' })
+        setIsOpenImplementMarkingDialog({ mode: 'lite' ,cashBoxDetails})
       }
     },
     {
@@ -1269,7 +1269,7 @@ useEffect(()=>{
                       setLiteOrder(true)
                     } else {
                       setLiteOrder(false)
-                      setIsOpenImplementMarkingDialog({ mode: 'lite' })
+                      setIsOpenImplementMarkingDialog({ mode: 'lite',cashBoxDetails })
                     }
                   }}
                   color='primary'
@@ -1327,7 +1327,7 @@ useEffect(()=>{
                       if (isAllMarkingFill() || !sendToEpos) {
                         setIsOrderDrower(true)
                       } else {
-                        setIsOpenImplementMarkingDialog({ mode: 'full' })
+                        setIsOpenImplementMarkingDialog({ mode: 'full' ,cashBoxDetails})
                       }
                     }}
                   >

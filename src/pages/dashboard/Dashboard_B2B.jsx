@@ -77,7 +77,7 @@ export default function Dashboard_B2B({ selectedShops, setSelectedShops }) {
             onChange={(val) => {
               setSelectedShops(val)
             }}
-            request={requests.getAllCompanies}
+            request={requests.getAllStores}
           />
         </Box>
         {/* <GroupMultiSelect label='Select Items' onChange={setSlel} value={sele} groupedOptions={groupedOptions} /> */}

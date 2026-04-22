@@ -12,9 +12,10 @@ import UserFilledIcon from '../../assets/icons/UserFilledIcon'
 import LogOutIcon from '../../assets/icons/logOutIcon'
 import { headerStyles } from './HeaderStyles'
 import useGlobalWebSocket from '@/hooks/useGlobalWebSocket'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { requests } from '@utils/requests'
+import { clearAuthSession } from '@utils/session'
 import notificationAudio from '@/assets/audio/notification.mp3'
 import MessagesDrawer from './Messages'
 import { success } from '@utils/toast'
@@ -64,7 +65,6 @@ function LayoutHeader() {
   }, [])
 
   const {
-    data: noorOrderCount,
     refetch: refetchNoorOrderCount,
     isLoading,
   } = useQuery(['noorOrderCount'], () => requests.getNoorOrderCount({}), {
@@ -93,7 +93,7 @@ function LayoutHeader() {
   })
   const classes = headerStyles({ isOpen })
   const logout = () => {
-    localStorage.removeItem('access_token')
+    clearAuthSession()
     window.location.replace('/login')
     navigate('/login')
   }

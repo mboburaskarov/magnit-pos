@@ -10,6 +10,7 @@ import { Box, Button, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import hasAccess from '@utils/hasAccess'
 import { requests } from '@utils/requests'
+import { EPOS_STATUS_PAYLOAD, EPOS_TERMINAL_PAYLOAD, getEposTerminalId, isAllowedTerminal } from '@utils/terminalAccess'
 import { error } from '@utils/toast'
 import { get } from 'lodash'
 import { useEffect, useState } from 'react'
@@ -209,10 +210,7 @@ function NewCashRegister() {
       if (get(data, 'error', true)) {
         setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
       } else {
-        closeCheckZReport({
-    "token": "DXJFX32CN1296678504F2",
-    "method": "getStatus"
-        })
+        closeCheckZReport(EPOS_TERMINAL_PAYLOAD)
       }
     },
     onError: (err) => {
@@ -224,14 +222,11 @@ function NewCashRegister() {
   })
   const { mutate: closeCheckZReport,isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
-      const zReportFilesSent = get(data, 'message.Sender.ZReportFilesSent')
-      const terminalID =
-        zReportFilesSent && typeof zReportFilesSent === 'object' ? Object.keys(zReportFilesSent)[0] : null
+      const terminalID = getEposTerminalId(data)
       const terminalIds = userData?.store?.terminal_ids || []
-      const isAllowedTerminal =
-        !terminalID || terminalIds.includes(terminalID) || terminalIds.includes(Number(terminalID))
+      const allowedTerminal = isAllowedTerminal(terminalID, terminalIds)
 
-      if (!isAllowedTerminal && hasAccess('check-terminal-id', userData)) {
+      if (!allowedTerminal && hasAccess('check-terminal-id', userData)) {
         setisEposTurnOn({ is_open: false, message:`Вы в другом филиале! Epos: ${terminalID} Pharma: ${terminalIds?.join(',')}` })
         return
       }
@@ -250,10 +245,7 @@ function NewCashRegister() {
   })
 
   useEffect(() => {
-    checkEPOSTurnOn({
-      token: 'DXJFX32CN1296678504F2',
-      method: 'checkStatus',
-    })
+    checkEPOSTurnOn(EPOS_STATUS_PAYLOAD)
   }, [])
   
   return (
@@ -375,5 +367,4 @@ function NewCashRegister() {
 }
 
 export default NewCashRegister
-
 
