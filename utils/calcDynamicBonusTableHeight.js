@@ -1,5 +1,5 @@
 export const getDynamicBonusTableHeight = (user_data, hasClient) => {
-  const my_actions = user_data?.role_actions.filter((role) => role?.type == 'ACTION')
+  const my_actions = user_data?.role_actions?.filter((role) => role?.type == 'ACTION')
   let count = 6
   const userCount = !hasClient ? 115 : 0
   if (user_data?.type == 'SUPERADMIN') return userCount
