@@ -11,7 +11,8 @@ export const EPOS_TERMINAL_PAYLOAD = {
 }
 
 export const getEposTerminalId = (data) => {
-  const zReportFilesSent = get(data, 'message.Sender.ZReportFilesSent')
+    const zReportFilesSent = get(data, 'message.Sender.ZReportFilesSent') || get(data, 'message.Sender.FullReceiptFilesSent') || get(data, 'message.Sender.TotalFilesSent')
+
 
   if (!zReportFilesSent || typeof zReportFilesSent !== 'object') {
     return null
