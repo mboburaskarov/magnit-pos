@@ -1,6 +1,7 @@
 import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
 import InputRange from '@components/Inputs/InputRange'
 import LazySelect from '@components/Select/LazySelect'
+import SelectSimple from '@components/Select/SelectSimple'
 import { useQueryParams } from '@hooks/useQueryParams'
 import CloseIcon from '@icons/CloseIcon'
 import { Box, Button, Typography } from '@mui/material'
@@ -45,6 +46,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
       producer_id: data.producer_id?.value || undefined,
       producer_name: data.producer_id?.name || undefined,
       no_barcode: data.no_barcode?.id || undefined,
+      is_return: data.is_return?.id || undefined,
     }
     const requestParams = qs.stringify({ ...values, ...requestBody, offset: 0 }, { addQueryPrefix: true })
 
@@ -63,7 +65,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { supply_price_to, no_barcode, retail_price_to, supply_price_from, retail_price_from, category_id, store_id, producer_id } = values
+    const { supply_price_to, no_barcode,is_return, retail_price_to, supply_price_from, retail_price_from, category_id, store_id, producer_id } = values
 
     reset(
       {
@@ -74,6 +76,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
         retail_price_to: retail_price_to || null,
         supply_price_from: supply_price_from || null,
         retail_price_from: retail_price_from || null,
+        referral: is_return ?{ name: 'Возврат доступен', id: 'true' }:{ name: 'Без возврата', id: 'false' },
         no_barcode: no_barcode ? getOptionsFromUrlParam(no_barcode, barcodeFilterList, 'name')[0] : null,
       },
       { keepDirty: true }
@@ -87,6 +90,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
     values?.retail_price_from,
     values?.supply_price_to,
     values?.supply_price_from,
+    values?.is_return,
     categories,
     producers,
     shopList,
@@ -200,7 +204,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                   name='category_id'
                   isMulti={false}
                   label={t('input.category.label')}
-                  placeholder={t('input.category.placeholder')}
+                  placeholder={t('Выберите')}
                   minWidth='auto'
                   isClearable={true}
                   request={requests.getAllCategories}
@@ -211,6 +215,22 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                   }}
                   filterOption={() => true}
                 />
+
+                <Box width={'20px'} />
+
+                 <SelectSimple
+                                  fullWidth
+                                  id='is_return'
+                                  name='is_return'
+                                  white
+                                  minWidth='auto'
+                                  label={'Возврат'}
+                                  placeholder={t('Выберите')}
+                                  getOptionLabel={(el) => el.name}
+                                  options={[
+                                   { name: 'Возврат доступен', id: 'true' },{ name: 'Без возврата', id: 'false' }
+                                  ]}
+                                />
                 <Box width={'20px'} />
 
                 <LazySelect
@@ -220,7 +240,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                   name='producer_id'
                   isMulti={false}
                   label={t('input.manufacturer.label')}
-                  placeholder={t('input.manufacturer.placeholder')}
+                  placeholder={t('Выберите')}
                   minWidth='auto'
                   isClearable={true}
                   request={requests.getProducer}

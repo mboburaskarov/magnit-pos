@@ -395,10 +395,40 @@ export default function tableHeaderSelector({
         cellRenderer: memo((p) => (
           <Box id={`${'expire_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
             {p.data?.['expire_date'] ? (
-              <>
+              <Box sx={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', rowGap: '4px' }}>
                 <Typography>{dayjs(p.data?.['expire_date']).format('DD.MM.YYYY')}</Typography>
                 <Typography color={getDateColor(p.data['expire_day'])}>{p.data['expire_day']} kun</Typography>
-              </>
+                {/* green dot if return */}
+                {p?.data?.['is_return'] ? (
+                  <Box
+                    sx={{
+                      width: '15px',
+                      height: '15px',
+                      position: 'absolute',
+                      top: '3px',
+                      right: '-30px',
+                      borderRadius: '50%',
+                      backgroundColor: 'green.500',
+                    }}
+                  >
+                    <StyledTooltip sx={{ width: '15px', height: '15px' }} title={'Компания может отозвать этот товар'} />
+                  </Box>
+                ) : (
+                  <Box
+                    sx={{
+                      width: '15px',
+                      height: '15px',
+                      position: 'absolute',
+                      top: '3px',
+                      right: '-30px',
+                      borderRadius: '50%',
+                      backgroundColor: 'red.500',
+                    }}
+                  >
+                    <StyledTooltip sx={{ width: '15px', height: '15px' }} title={'Компания не принимает этот товар на возврат'} />
+                  </Box>
+                )}
+              </Box>
             ) : (
               <Typography>Выберите филиал</Typography>
             )}

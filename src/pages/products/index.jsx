@@ -200,7 +200,7 @@ export default function ProductsPage() {
       retail_price_to: values?.retail_price_to,
       region: values?.region_id,
       order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
-
+      is_return: values?.is_return, 
       supply_price_from: values?.supply_price_from,
       retail_price_from: values?.retail_price_from,
       no_barcode: values?.no_barcode == '1' ? true : false,
