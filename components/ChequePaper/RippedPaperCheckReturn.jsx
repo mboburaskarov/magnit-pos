@@ -261,12 +261,12 @@ function RippedPaperCheckReturn({ saleDetailsList, qrCodeUrl, customerId = '', c
                 {<FiskalText data={get(saleDetailsList, 'fiscal_sign')} />}
               </Box>
             </Box>
-            {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
+            {/* {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
               {/* {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? ( */}
               {/* <> */}
 
-              <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
+              {/* <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
                 Siz xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
               </Typography>
               <QRCodeCanvas size={200} value={qrCodeUrl} />
@@ -276,13 +276,13 @@ function RippedPaperCheckReturn({ saleDetailsList, qrCodeUrl, customerId = '', c
               </Typography>
               <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
                 XARIDINGIZ UCHUN RAHMAT!!!
-              </Typography>
+              </Typography> */}
 
               {/* </> */}
               {/* ) : ( */}
               {/* <></> */}
               {/* )} */}
-            </Box>
+            {/* </Box>  */}
           </Fragment>
         </Box>
       </Box>
